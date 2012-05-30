@@ -796,6 +796,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				));
 			}
 
+			if (!dp_get_config('no_install_dat_file')) {
+				@file_put_contents(dp_get_data_dir() . '/is_installed.dat', "Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.");
+			}
+
 			$this->getOrm()->getConnection()->commit();
 
 		} catch (\Exception $e) {

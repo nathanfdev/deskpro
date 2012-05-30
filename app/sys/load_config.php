@@ -115,6 +115,11 @@ function dp_get_config($path, $default = null)
 	dp_load_config();
 	$array = $DP_CONFIG;
 
+	// Special value handling
+	if ($path == 'is_installed_flag') {
+		return file_exists(dp_get_data_dir() . '/is_installed.dat');
+	}
+
 	// If its not a path at all, we can do a simple lookup
 	if (strpos($path, '.') === false) {
 		return isset($array[$path]) ? $array[$path] : $default;

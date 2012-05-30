@@ -303,6 +303,9 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		} catch (\PDOException $e) {
 			global $DP_CONFIG;
 			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
+				// This will show an error page if already installed, so the redirect to install wont happen
+				deskpro_handle_boot_db_exception($e);
+
 				$response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
 				return $response;
 			} else {

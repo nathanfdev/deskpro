@@ -189,6 +189,12 @@ class KernelBooter
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'dev');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
+
+			if (dp_get_config('is_installed_flag')) {
+				echo deskpro_install_basic_error("DeskPRO has already been installed. If this is a mistake, remove the data/is_installed.dat file to make the installer function again.", 'Error');
+				exit;
+			}
+
 			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
 			define('DP_INTERFACE', 'install');
 
@@ -220,6 +226,9 @@ class KernelBooter
 			$kernel->handle($request)->send();
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+				// This will show an error page if already installed, so the redirect to install wont happen
+				deskpro_handle_boot_db_exception($e);
+
 				header('Location: ' . $request->getBasePath() . '/index.php/install/');
 				exit;
 			}

@@ -19,6 +19,7 @@
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.txt
 
+/data/is_installed.dat
 /data/logs/*
 !/data/logs/index.html
 /data/logs/emails/*
