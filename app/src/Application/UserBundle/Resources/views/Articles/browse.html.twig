@@ -26,23 +26,25 @@
 {% block content %}
 
 {% if category_children|length %}
-	<section class="dp-portal-section">
-		<header>
-			{% if category %}
-				<h1>{{ phrase('user.knowledgebase.title-categories', {'count': category_children|length}) }}</h1>
-			{% else %}
-				<h1>{{ phrase('user.knowledgebase.knowledgebase') }}</h1>
-			{% endif %}
-		</header>
-		<div class="dp-content-block dp-news-block">
-			<div class="dp-content-wrapper">
-				<ul class="dp-content-list">
-					{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
-				</ul>
+	<div style="overflow: hidden;">
+		<section class="dp-portal-section">
+			<header>
+				{% if category %}
+					<h1>{{ phrase('user.knowledgebase.title-categories', {'count': category_children|length}) }}</h1>
+				{% else %}
+					<h1>{{ phrase('user.knowledgebase.knowledgebase') }}</h1>
+				{% endif %}
+			</header>
+			<div class="dp-content-block dp-news-block">
+				<div class="dp-content-wrapper">
+					<ul class="dp-content-list">
+						{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
+					</ul>
+				</div>
 			</div>
-		</div>
-	</section>
-	<br style="clear: both; height: 1px; overflow: hidden" />
+		</section>
+		<br style="clear: both; height: 1px; overflow: hidden" />
+	</div>
 {% endif %}
 
 {% if articles %}
