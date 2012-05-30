@@ -58,7 +58,7 @@
 			<?php if (isset($errors['config'])): ?>
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_missing') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			/config.php is missing. Copy /config.new.php and edit it to add your database settings.
-			<?php elseif (!isset($errors['config_values'])): ?>
+			<?php elseif (isset($errors['config_values'])): ?>
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			/config.php exists but it does not contain the required settings. You should copy /config.new.php and edit it to add your database settings.
 			<?php endif ?>
