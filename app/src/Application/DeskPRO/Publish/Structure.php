@@ -894,7 +894,7 @@ class Structure implements PersonContextInterface
 
 		// No valid context means all categories
 		// Agents dont have permissions on publish categories
-		if (!$this->person_context || $this->person_context->is_agent) {
+		if (!$this->person_context || ($this->person_context->is_agent && DP_INTERFACE == 'agent')) {
 			$this->context_category_data[$ent] = $this->category_data[$ent];
 			return;
 		}
