@@ -192,9 +192,9 @@ DeskPRO.User.Window = new Orb.Class({
 
 function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 
-	var phrasepre = 'reltime';
+	var phrasepre = 'time';
 	if (ago) {
-		phrasepre = 'reltimeago';
+		phrasepre = 'time-ago';
 	}
 
 	if (type == 'min') type = 'minute';
