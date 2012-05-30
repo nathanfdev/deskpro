@@ -74,7 +74,7 @@
 				{{ phrase('admin.settings.max_upload_size') }}: <span id="user_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="user_attach_maxsize_slider"></div>
 				<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-					{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+					{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
 				</div>
 			</div>
 
@@ -93,7 +93,7 @@
 				{{ phrase('admin.settings.max_upload_size') }}: <span id="agent_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="agent_attach_maxsize_slider"></div>
 				<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-                    {{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+                    {{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
 				</div>
 			</div>
 
