@@ -27,11 +27,11 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="dp-form-label"><label>{{ phrase('agent.general.criteria') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="{{baseId}}_criteria_list">
-					<div class="search-terms"></div>
 					<div class="term">
 						{{ phrase('agent.tickets.active_tickets_term') }}
 						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.active_tickets_term_explain') }}"></span>
 					</div>
+					<div class="search-terms"></div>
 					<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
