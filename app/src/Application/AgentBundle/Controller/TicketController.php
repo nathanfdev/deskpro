@@ -895,6 +895,10 @@ class TicketController extends AbstractController
 			));
 		} else {
 			$ticket->addMessage($message);
+
+			if (!$this->in->getBool('options.notify_user')) {
+				$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+			}
 		}
 
 		// havent persisted the messag yet, it was just for dupe checking
