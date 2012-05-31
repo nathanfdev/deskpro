@@ -214,6 +214,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$loader = $cache->perms;
 			$name = Util::getBaseClassname($loader);
 
+			if ($loader instanceof PersonContextInterface) {
+				$loader->setPersonContext($this->person);
+			}
+
 			$this->loaders[strtolower($name)] = $loader;
 		}
 
