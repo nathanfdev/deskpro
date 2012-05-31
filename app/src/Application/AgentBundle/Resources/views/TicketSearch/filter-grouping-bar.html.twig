@@ -39,7 +39,7 @@
 				{% endfor %}
 			{% endif %}
 			{% if count_all > 0 %}
-				<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on"{% endif %} id="{{baseId}}_total_grouped_count">
+				<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on" id="{{baseId}}_total_grouped_count"{% endif %}>
 					<a data-route="{{ grouping_url ~ cat.id }}"
                        {% if group_by == 'urgency' %}
                             class="group-by-pill urgency-{{cat.title}}"
@@ -60,7 +60,7 @@
 					{% for subcat in cat.children %}
 						{% set subcount = grouped_info.counts[subcat.id].total %}
 						{% if subcount > 0 %}
-							<li class="subList {% if grouping_option == subcat.id %}on{% endif %}" id="{{baseId}}_total_grouped_count" data-grouping-option="{{ subcat.id }}">
+							<li class="subList {% if grouping_option == subcat.id %}on{% endif %}" {% if grouping_option == subcat.id %}id="{{baseId}}_total_grouped_count"{% endif %} data-grouping-option="{{ subcat.id }}">
 								<span class="borderLink"></span>
 								<a data-route="{{ grouping_url ~ subcat.id }}">
 									{{ cat.title }} &gt;
