@@ -57,8 +57,8 @@ class StaticRuntimeReflectionService implements ReflectionService
 	 */
 	public function getClassShortName($className)
 	{
-		if (strpos($className, '\\') !== false) {
-			$className = substr($className, strrpos($className, "\\")+1);
+		if (($p = strrpos($className, '\\')) !== false) {
+			$className = substr($className, $p);
 		}
 		return $className;
 	}
@@ -72,8 +72,8 @@ class StaticRuntimeReflectionService implements ReflectionService
 	public function getClassNamespace($className)
 	{
 		$namespace = '';
-		if (strpos($className, '\\') !== false) {
-			$namespace = strrev(substr( strrev($className), strpos(strrev($className), '\\')+1 ));
+		if (($p = strrpos($className, '\\')) !== false) {
+			$namespace = substr($className, 0, $p);
 		}
 		return $namespace;
 	}
