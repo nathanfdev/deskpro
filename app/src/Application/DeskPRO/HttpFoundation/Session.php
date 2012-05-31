@@ -113,7 +113,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if (!$vis) {
 			$vis = new Entity\Visitor();
-			$vis['ip_address'] = App::getRequest()->getClientIp();
+			$vis['ip_address'] = App::getRequest()->getClientIp() ?: '';
 			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
 			$vis['landing_page'] = $current_page;
 			$vis['ref_page'] = $ref_page;
