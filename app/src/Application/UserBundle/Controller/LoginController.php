@@ -185,6 +185,19 @@ HTML;
 				$this->container->getMailer()->send($message);
 			}
 
+			// Save login log
+			if ($attempt_person) {
+				$this->db->insert('login_log', array(
+					'person_id'    => $attempt_person->getId(),
+					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
+					'is_success'   => 0,
+					'ip_address'   => App::getRequest()->getClientIp(),
+					'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+					'date_created' => date('Y-m-d H:i:s')
+				));
+			}
+
 			$this->session->set('failed_login_name', $this->in->getString('email'));
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
@@ -228,6 +241,17 @@ HTML;
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				$this->container->getMailer()->send($message);
 			}
+
+			// Login log
+			$this->db->insert('login_log', array(
+				'person_id'    => $person->getId(),
+				'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
+				'is_success'   => 1,
+				'ip_address'   => App::getRequest()->getClientIp(),
+				'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+				'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+				'date_created' => date('Y-m-d H:i:s')
+			));
 
 			$this->em->persist($cm);
 			$this->em->flush();

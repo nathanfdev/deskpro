@@ -84,6 +84,8 @@ class MainController extends AbstractController
 			$cron_running_time = \Orb\Util\Dates::secsToReadable(time() - $last_run, 5);
 		}
 
+		$last_login = $this->em->getRepository('DeskPRO:LoginLog')->getLast($this->person);
+
 		return $this->render('AdminBundle:Main:index.html.twig', array(
 			'lic'                => License::getLicense(),
 			'notice_items'       => $notice_items,
@@ -93,6 +95,7 @@ class MainController extends AbstractController
 			'error_count'        => $error_count,
 			'is_cron_crash'      => $is_cron_crash,
 			'cron_running_time'  => $cron_running_time,
+			'last_login'         => $last_login,
 		));
 	}
 
