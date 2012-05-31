@@ -9,7 +9,9 @@
 # Your mySQL Database Configuration                  #
 ######################################################
 
-// The database server, often localhost
+// The database server. If you are using windows and your 
+// mysql server is on the same machine; it is important not 
+// to specify localhost, specify 127.0.0.1 instead.
 define('DP_DATABASE_HOST', 'localhost');
 
 // The database username
