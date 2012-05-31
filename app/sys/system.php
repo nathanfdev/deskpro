@@ -321,6 +321,29 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			return $response;
 		}
 
+		// Make sure filesystem and db builds are the same, or else the upgrader needs to run
+		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
+			// Show info to agent/admin interface
+			if (preg_match('#^/admin/?#', $path) || preg_match('#^/agent/?#', $path)) {
+				echo deskpro_install_basic_error("
+					<p>
+						It appears as though you have recently upgraded the DeskPRO source files, but you have not performed the required database upgrades.
+					</p>
+					<p style='margin: 6px 0 6px 0;'>
+						To complete the upgrade process, execute the upgrade command to bring your database up to date:
+					</p>
+					<div style=\"font-family: 'Monaco', 'Courier New', monaco; background: #fff; padding: 8px; border: 1px solid #999; \">
+						/path/to/php /path/to/deskpro/upgrade.php --run-db-upgrade
+					</div>
+				", "DeskPRO Upgrade");
+				exit;
+
+			// Standard offline mode for users
+			} else {
+				$GLOBALS['DP_HELPDESK_DISABLED'] = true;
+			}
+		}
+
 		// Make sure we arent offline
 		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
 			$response = new Response();
@@ -453,6 +476,10 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 	public function isHelpdeskOffline()
 	{
+		if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
+			return true;
+		}
+
 		// Offline setting applies to all but admin
 		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
 			return true;
