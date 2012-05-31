@@ -88,7 +88,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $this->redirect($this->get('router')->generate('report_login', array('return' => $return)));
 		}
 
-		if (!$this->_userHasPermissions() || 1) {
+		if (!$this->_userHasPermissions()) {
 			return $this->renderStandardPermissionError('You do not have permission to use the reports interface.');
 		}
 	}

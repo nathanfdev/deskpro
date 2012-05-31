@@ -37,6 +37,9 @@
 					</li>
 				</ul>
 			</article>
+			<div style="text-align: center; padding-top: 4px;">
+				<a class="btn" href="{{ app.request.getBaseUrl() }}/reports">View more reports</a>
+			</div>
 		</div>
 	</div>
 
@@ -55,6 +58,9 @@
 				</ul>
 				<div style="font-size: 11px; padding-top: 4px; text-align: right;">
 					And {{ count_online_users }} online users.
+				</div>
+				<div style="text-align: center; padding-top: 4px;">
+					<a class="btn" href="{{ app.request.getBaseUrl() }}/reports/agent-activity">View tech activity</a>
 				</div>
 			</article>
 		</div>
@@ -165,7 +171,7 @@
 
 <br />
 
-{% if 1 or notice_items %}
+{% if notice_items %}
 	<div class="content-table">
 		<table width="100%">
 			<thead>
