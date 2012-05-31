@@ -544,7 +544,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($rating != 1 && $rating != -1) {
 			$rating = 0;
 		}
-		$this['rating_overall'] = $rating;
+		$this->setModelField('rating_overall', $rating);
 	}
 
 	public function setRatingResponseTime($rating)
@@ -552,7 +552,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($rating != 1 && $rating != -1) {
 			$rating = 0;
 		}
-		$this['rating_response_time'] = $rating;
+		$this->setModelField('rating_response_time', $rating);
 	}
 
 	/**
