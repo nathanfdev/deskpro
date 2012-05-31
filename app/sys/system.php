@@ -656,7 +656,7 @@ class CliKernel extends AgentKernel
 		$server_check->checkServer();
 
 		try {
-			$server_check->checkDatabase(App::getConfig('db'));
+			$server_check->checkDatabase(null);
 		} catch (\Exception $e) {}
 
 		if ($server_check->hasFatalErrors()) {

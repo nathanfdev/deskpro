@@ -546,13 +546,11 @@ class ServerChecks
 	/**
 	 * Checks the database to make sure details are correct and version etc is ok
 	 *
-	 * @param array $db_conf
+	 * @param array $db_conf If null, will use config data and try to conect through App::getDb
 	 * @return bool
 	 */
-	public function checkDatabase(array $db_conf, $should_be_empty = false)
+	public function checkDatabase(array $db_conf = null, $should_be_empty = false)
 	{
-		$db_conf['driver'] = 'pdo_mysql';
-
 		// Dont attempt check if theres a PDO failure
 		if ($this->hasErrorType('pdo_ext') || $this->hasErrorType('pdo_mysql_ext')) {
 			return;
@@ -560,8 +558,16 @@ class ServerChecks
 
 		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
 		try {
-			$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
-			$db->connect();
+
+			if ($db_conf) {
+				$db_conf['driver'] = 'pdo_mysql';
+				$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
+				$db->connect();
+			} else {
+				$db = App::getDb();
+				$db->connect();
+			}
+
 		} catch (\Exception $e) {
 			$this->has_fatal_db_errors = true;
 			$msg = "Connection failed: {$e->getMessage()}";
