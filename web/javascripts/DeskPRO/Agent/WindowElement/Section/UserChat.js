@@ -132,6 +132,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleUpdateCounts: function(data) {
 		var count = parseInt($('#userchat_deplist_0_counter').text()) + parseInt($('#userchat_list_allagents_counter').text());
 		this.updateBadge(count);
+
+		if (!count) {
+			$('#userchat_deplist_all').find('.sub-group').removeClass('show');
+		} else {
+			$('#userchat_deplist_all').find('.sub-group').addClass('show');
+		}
 	},
 
 	isChatOpen: function(convoId) {

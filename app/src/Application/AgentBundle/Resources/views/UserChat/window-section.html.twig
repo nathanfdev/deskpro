@@ -28,7 +28,7 @@
 					{{ phrase('agent.chat.title_new_chats') }}
 				</h3>
 				{% if not single_dep_mode %}
-				<ul class="sub-group show">
+				<ul class="sub-group {% if dep_counts['0_total'] %}show{% endif %}">
 					{% for dep in departments %}
 						{{ _self.dep_row(dep, dep_counts, 0) }}
 					{% endfor %}
