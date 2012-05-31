@@ -152,6 +152,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		$this->set('dpvid', $vis['id']);
 		$this->set('dplast', time());
+		$_SESSION['_symfony2']['dplast'] = time();
 	}
 
 

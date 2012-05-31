@@ -73,9 +73,10 @@ class Session extends EntityRepository
 		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$ids = App::getDb()->fetchAllCol("
-			SELECT person_id
+			SELECT DISTINCT(sessions.person_id)
 			FROM sessions
-			WHERE date_last >= ? AND active_status = ? AND person_id IS NOT NULL
+			LEFT JOIN people ON (people.id = sessions.person_id)
+			WHERE sessions.date_last >= ? AND sessions.active_status = ? AND people.is_agent = 1
 		", array($datecut, 'available'));
 
 		return $ids;
