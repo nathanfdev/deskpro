@@ -52,6 +52,8 @@ class Website extends AbstractContactData
 	{
 		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
 
+		$input['url'] = isset($input['url']) ? $input['url'] : '';
+
 		if (!preg_match('#^(.*?)://#', $input['url'])) {
 			$input['url'] = 'http://' . $input['url'];
 		}
