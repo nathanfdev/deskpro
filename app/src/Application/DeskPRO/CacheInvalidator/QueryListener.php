@@ -94,6 +94,9 @@ class QueryListener
 			case 'update_usergroups':
 			case 'insert_usergroups':
 			case 'delete_usergroups':
+			case 'update_permissions':
+			case 'insert_permissions':
+			case 'delete_permissions':
 				$this->updates[] = 'permissions';
 				break;
 
