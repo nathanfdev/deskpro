@@ -101,6 +101,13 @@ class KernelBooter
 			require(DP_ROOT . '/sys/compiled.php');
 		}
 
+		if (isset($GLOBALS['DP_AUTOLOADER']) && !dp_get_config('no_use_classmap_file') && file_exists(DP_ROOT.'/sys/cache/classmap.php')) {
+			$map = require DP_ROOT.'/sys/cache/classmap.php';
+			if ($map) {
+				$GLOBALS['DP_AUTOLOADER']->registerClassNames($map);
+			}
+		}
+
 		require(DP_ROOT . '/sys/system.php');
 	}
 

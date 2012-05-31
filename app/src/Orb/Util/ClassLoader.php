@@ -99,9 +99,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 	 */
 	public function registerClassNames(array $class_names)
 	{
-		foreach ($class_names as $class_name => $path) {
-			$this->class_map[$class_name] = $path;
-		}
+		$this->class_map = array_merge($this->class_map, $class_names);
 	}
 
 
