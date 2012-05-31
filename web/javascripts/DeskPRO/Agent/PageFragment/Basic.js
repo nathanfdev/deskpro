@@ -17,7 +17,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 	updateUi: function() {
 		this.wrapper.find('.with-scroll-handler').each(function() {
-			$(this).data('scroll_handler').updateSize();
+			var sh = $(this).data('scroll_handler');
+			if (sh[0] && sh.updateSize) {
+				sh.updateSize();
+			}
 		});
 		this.fireEvent('updateUi');
 	},
