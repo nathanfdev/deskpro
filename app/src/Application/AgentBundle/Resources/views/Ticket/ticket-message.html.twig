@@ -11,7 +11,7 @@
 		/></div>
 	<div class="content">
 		<header>
-			<span class="message-counter with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
+			<span class="message-counter message-counter-{{ message.id }} with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
 			<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
 			<time class="full-time" datetime="{{message.date_created|date('c')}}">{{message.date_created|date('fulltime')}}</time>
 			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>

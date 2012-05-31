@@ -409,6 +409,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 		this.lastMessageCount = lastCount;
+
+		var wr = this.getEl('messages_wrap');
+		wr.find('.message-id-txt').each(function() {
+			var findclass = '.message-counter-' + $(this).data('message-id');
+			var counterText = wr.find(findclass).text().trim();
+			if (counterText.length) {
+				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
+			}
+		});
 	},
 
 	incCount: function(id) {
