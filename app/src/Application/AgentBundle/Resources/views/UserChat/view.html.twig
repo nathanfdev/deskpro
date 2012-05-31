@@ -50,16 +50,16 @@ pageMeta.baseId = '{{ baseId }}';
                     <article>
                         <dl>
                             <dt></dt>
-                            <dd>
+                            <dd style="padding:4px 11px 0 10px">
                                 {% if convo.person %}
-                                    <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}">
+                                    <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
                                         <span style="background-image: url('{{ convo.person.getPictureUrl(20) }}');">
                                             {{ convo.person.display_name }}
                                             <span class="email"><b class="pemail-{{convo.person.id}}" data-hide="@parent">{{ convo.person.email_address }}</b></span>
                                         </span>
                                     </a>
                                 {% else %}
-									<a class="user-link clean-white">
+									<a class="user-link clean-white" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
 										{% if convo.person_email %}
 											<span style="background-image: url('{{ gravatar_for_email(convo.person_email, 20) }}');">
 										{% else %}
