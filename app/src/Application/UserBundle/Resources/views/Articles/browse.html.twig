@@ -5,7 +5,7 @@
 {% set this_section = 'articles' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles') }}">{{ phrase('user.knowledgebase.knowledgebase') }}</a>{% if category %}{% endif %}</li>
+<li xmlns="http://www.w3.org/1999/html"><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles') }}">{{ phrase('user.knowledgebase.knowledgebase') }}</a>{% if category %}{% endif %}</li>
 	{% if category %}
 		{% for cat in category_path %}
 			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
@@ -67,7 +67,7 @@
 								<ul class="dp-post-info">
 									<li class="dp-author"><i class="dp-icon-user"></i> {{ article.person.display_name }}</li>
 									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ article.date_created|date('full') }}</li>
-									<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}</li>
+									<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}</li></a>
 								</ul>
 							</header>
 						</section>

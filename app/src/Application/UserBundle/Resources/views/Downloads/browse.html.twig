@@ -6,7 +6,7 @@
 {% set this_section = 'downloads' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
+<li xmlns="http://www.w3.org/1999/html"><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
 	{% if category %}
 		{% for cat in category_path %}
 			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
@@ -64,7 +64,7 @@
 								<ul class="dp-post-info">
 									<li class="dp-file"><i class="dp-icon-file"></i> <a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">{{ download.filename }}</a> {{ download.readable_filesize }}</li>
 									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ download.date_created|date('full') }}</li>
-									<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[download.id]|default(0)}) }}</li>
+									<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[download.id]|default(0)}) }}</li></a
 								</ul>
 							</header>
 						</section>
