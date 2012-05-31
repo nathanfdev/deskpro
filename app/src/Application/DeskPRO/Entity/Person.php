@@ -413,10 +413,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->_is_new_person = true;
 
-		$this->date_created     = new \DateTime();
-		$this->secret_string    = Strings::random(40);
-		$this->timezone         = 'UTC';
-		$this->salt             = Strings::random(40);
+		$this->setModelField('date_created',    new \DateTime());
+		$this->setModelField('secret_string',   Strings::random(40));
+		$this->setModelField('timezone',        'UTC');
+		$this->setModelField('salt',            Strings::random(40));
 
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
@@ -471,9 +471,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($org_id) {
 			$org = App::getEntityRepository('DeskPRO:Organization')->find($org_id);
-			$this->organization = $org;
+			$this->setModelField('organization', $org);
 		} else {
-			$this->organization = null;
+			$this->setModelField('organization', null);
 		}
 	}
 
@@ -825,6 +825,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->preferences->add($pref);
 		$pref['person'] = $this;
+		$this->_onPropertyChanged('preferences', $this->preferences);
 	}
 
 
@@ -1025,6 +1026,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$contact_data['person'] = $this;
 		$em->persist($contact_data);
+		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
 	}
 
 
@@ -1096,6 +1098,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['person'] = $this;
+		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 	}
 
 
@@ -1212,7 +1215,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Sets the primray email address on the account
 	 *
 	 * @param $email_address
-	 * @return void
+	 * @return PersonEmail
 	 */
 	public function setEmail($email_address, $validated = false)
 	{
@@ -1225,7 +1228,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->addEmailAddress($email);
 
-		$this->primary_email = $email;
+		$this->setModelField('primary_email', $email);
 
 		return $email;
 	}
@@ -1260,9 +1263,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function addEmailAddress(PersonEmail $email)
 	{
 		if (!$this->primary_email && $this->emails->count() < 1) {
-			$this->primary_email = $email;
+			$this->setModelField('primary_email', $email);
 		}
 		$this->emails->add($email);
+		$this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
 		$email->person = $this;
 
@@ -1326,13 +1330,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			if ($next_valid_email) {
-				$this->primary_email = $next_valid_email;
+				$this->setModelField('primary_email', $next_valid_email);
 				$em->persist($this);
 			} else if ($next_email) {
-				$this->primary_email = $next_email;
+				$this->setModelField('primary_email', $next_email);
 				$em->persist($this);
 			}
 		}
+
+		$this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
 		return $the_email;
 	}
@@ -1383,6 +1389,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 		$this['usergroups']->add($usergroup);
+		$this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
 		return true;
 	}
 
@@ -1414,6 +1421,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$label['person'] = $this;
 		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
 	}
 
 	public function getUsergroupSetKey()
@@ -1433,7 +1441,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setPictureBlob(Blob $blob = null)
 	{
-		$this->picture_blob = $blob;
+		$this->setModelField('picture_blob', $blob);
 	}
 
 
@@ -1445,7 +1453,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setGravatarUrl($url)
 	{
-		$this->gravatar_url = $url;
+		$this->setModelField('gravatar_url', $url);
 	}
 
 
@@ -1566,7 +1574,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->organization_position = $position;
 
 		$this->_onPropertyChanged('organization', $old_o, $this->organization);
-		$this->_onPropertyChanged('organization', $old_op, $this->organization_position);
+		$this->_onPropertyChanged('organization_position', $old_op, $this->organization_position);
 
 		// Improve importance when adding the user to the org that
 		// has a higher importance
@@ -1607,8 +1615,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if (!$this->first_name AND !$this->last_name) {
 				$m = null;
 				if (preg_match('#^(?P<first_name>[A-Za-z]{3,})\s+(?P<last_name>[A-Za-z]{3,})$#', $this->name, $m)) {
-					$this->first_name = $m['first_name'];
-					$this->last_name = $m['last_name'];
+					$this->setModelField('first_name', $m['first_name']);
+					$this->setModelField('last_name', $m['last_name']);
 				}
 			}
 		} else {
@@ -1639,16 +1647,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if (!$time) $time = new \DateTime();
 
-		$this->date_last_login = $time;
-	}
-
-
-
-	public function _prePersist()
-	{
-		if (!$this->date_created) {
-			$this->date_created = new \DateTime();
-		}
+		$this->setModelField('date_last_login', $time);
 	}
 
 
@@ -1778,7 +1777,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if (!$organization_position) {
 			$organization_position = '';
 		}
-		$this->organization_position = $organization_position;
+		$this->setModelField('organization_position', $organization_position);
 	}
 
 
@@ -1814,10 +1813,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
 		$metadata->addLifecycleCallback('smartSetName', 'prePersist');
-		$metadata->addLifecycleCallback('_prePersist', 'prePersist');
 		$metadata->addLifecycleCallback('smartSetName', 'preUpdate');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');

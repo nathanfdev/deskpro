@@ -112,7 +112,7 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -145,7 +145,7 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
+		$this['visitor'] = $visitor;
 
 		if ($visitor === null) return;
 
@@ -178,18 +178,4 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	abstract public function setContentObject($obj);
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'RatingAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-	}
 }

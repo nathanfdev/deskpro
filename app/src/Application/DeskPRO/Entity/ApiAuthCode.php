@@ -83,7 +83,7 @@ class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->apikey = Strings::random(50, Strings::CHARS_KEY);
+		$this['apikey'] = Strings::random(50, Strings::CHARS_KEY);
 	}
 
 
@@ -96,7 +96,7 @@ class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'api_auth_codes', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'code', ));
 		$metadata->mapField(array( 'fieldName' => 'scope', 'type' => 'string', 'length' => 250, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'scope', ));

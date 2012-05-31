@@ -226,7 +226,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 	}
@@ -544,7 +544,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($rating != 1 && $rating != -1) {
 			$rating = 0;
 		}
-		$this->rating_overall = $rating;
+		$this['rating_overall'] = $rating;
 	}
 
 	public function setRatingResponseTime($rating)
@@ -552,7 +552,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($rating != 1 && $rating != -1) {
 			$rating = 0;
 		}
-		$this->rating_response_time = $rating;
+		$this['rating_response_time'] = $rating;
 	}
 
 	/**
@@ -597,6 +597,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversation';
 		$metadata->setPrimaryTable(array(
 			'name' => 'chat_conversations',

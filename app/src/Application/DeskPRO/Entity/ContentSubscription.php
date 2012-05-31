@@ -130,9 +130,9 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->last_dismiss_date  = new \DateTime();
-		$this->last_email_date    = new \DateTime();
-		$this->updated_date       = new \DateTime();
+		$this['last_dismiss_date']  = new \DateTime();
+		$this['last_email_date']    = new \DateTime();
+		$this['updated_date']       = new \DateTime();
 	}
 
 	/**
@@ -152,8 +152,8 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function touch()
 	{
-		$this->last_dismiss_date = new \DateTime();
-		$this->last_email_date = new \DateTime();
+		$this['last_dismiss_date'] = new \DateTime();
+		$this['last_email_date'] = new \DateTime();
 	}
 
 
@@ -167,7 +167,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ContentSubscription';
 		$metadata->setPrimaryTable(array( 'name' => 'content_subscriptions', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'use_email', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'use_email', ));
 		$metadata->mapField(array( 'fieldName' => 'last_dismiss_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'last_dismiss_date', ));

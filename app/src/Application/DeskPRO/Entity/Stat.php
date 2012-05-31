@@ -238,7 +238,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -313,8 +313,8 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setDisabled($disabled)
 	{
-		$this->disabled = $disabled;
-		$this->generate_stats = $disabled;
+		$this['disabled'] = $disabled;
+		$this['generate_stats'] = $disabled;
 	}
 
 	/**
@@ -584,7 +584,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			throw new \Exception("Unable to set run frequency to type $run_frequency. Supported types are " . join(", ", self::$availableRunFrequencies));
 		}
 
-		$this->run_frequency = $run_frequency;
+		$this['run_frequency'] = $run_frequency;
 	}
 
 	public function setVariation($variaition)
@@ -593,7 +593,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			throw new \Exception("Unable to set variaition to type $variaition. Supported types are " . join(", ", self::$availableVariations));
 		}
 
-		$this->variation = $variaition;
+		$this['variation'] = $variaition;
 	}
 
 	public function getGroupingInformation()
@@ -955,7 +955,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Stat';
 		$metadata->setPrimaryTable(array( 'name' => 'stat', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'criteria', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'criteria', ));

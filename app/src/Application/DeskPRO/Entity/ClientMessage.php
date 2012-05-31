@@ -132,8 +132,8 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
-		$this->auth = Strings::random(15, Strings::CHARS_KEY);
+		$this->setModelField('date_created', new \DateTime());
+		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 
 		if (App::has('event_dispatcher')) {
 			$this->event_dispatcher = App::get('event_dispatcher');
@@ -185,7 +185,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
 		$metadata->setPrimaryTable(array( 'name' => 'client_messages', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel', ));

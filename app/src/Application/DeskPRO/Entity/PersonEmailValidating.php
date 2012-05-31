@@ -101,8 +101,8 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->_is_new = true;
-		$this->date_created = new \DateTime();
-		$this->auth = Strings::random(8, Strings::CHARS_KEY);
+		$this->setModelField('date_created', new \DateTime());
+		$this->setModelField('auth', Strings::random(8, Strings::CHARS_KEY));
 	}
 
 	public function isNewEntity()
@@ -129,7 +129,11 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 
 	public function addValidatingContent($entity_name, $id)
 	{
+		$old = $this->validating_content;
+
 		$this->validating_content[] = array($entity_name, $id);
+
+		$this->_onPropertyChanged('validating_content', $old, $this->validating_content);
 	}
 
 
@@ -148,7 +152,7 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 				'email_idx' => array('columns' => array('email'))
 			),
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));

@@ -151,7 +151,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
+		$this['created_at'] = new \DateTime();
 	}
 
 	/**
@@ -177,7 +177,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 				'priority_idx' => array('columns' => array('priority'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname', ));
 		$metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority', ));

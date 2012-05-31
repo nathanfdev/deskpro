@@ -195,6 +195,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->children->add($def);
 		$def['parent'] = $this;
+		$this->_onPropertyChanged('children', $this->children, $this->children);
 	}
 
 
@@ -207,6 +208,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function removeChild(CustomDefAbstract $def)
 	{
 		$this->children->removeElement($def);
+		$this->_onPropertyChanged('children', $this->children, $this->children);
 	}
 
 
@@ -224,6 +226,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 				return;
 			}
 		}
+		$this->_onPropertyChanged('children', $this->children, $this->children);
 	}
 
 
@@ -313,11 +316,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setOption($name, $value)
 	{
+		$old_opt = $this->options;
+
 		if ($value === null) {
 			unset($this->options[$name]);
 		} else {
 			$this->options[$name] = $value;
 		}
+
+		$this->_onPropertyChanged('options', $old_opt, $this->options);
 	}
 
 
@@ -401,18 +408,5 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 			default:
 				return false;
 		}
-	}
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'CustomDefAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

@@ -74,7 +74,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->stat_unix = time();
+		$this['stat_unix'] = time();
 	}
 
 	/**
@@ -128,7 +128,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\StatValue';
 		$metadata->setPrimaryTable(array( 'name' => 'stat_value', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'decimal', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'value', ));
 		$metadata->mapField(array( 'fieldName' => 'stat_unix', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'stat_unix', ));

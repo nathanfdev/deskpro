@@ -152,7 +152,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 
@@ -219,7 +219,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
+		$this['visitor'] = $visitor;
 
 		if ($visitor === null) return;
 
@@ -362,19 +362,5 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getObjectContentType()
 	{
 		return $this->getObject()->getTableName();
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'CommentAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

@@ -330,6 +330,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$label['blob'] = $this;
 		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
 	}
 
 
@@ -356,7 +357,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Blob';
 		$metadata->setPrimaryTable(array( 'name' => 'blobs', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc', ));

@@ -94,7 +94,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_onPropertyChanged('person', $this->person, $person);
-		$this->person = $person;
+		$this['person'] = $person;
 
 		if (!$this->person_email && $this->person->primary_email) {
 			$this->setPersonEmail($this->person->primary_email);
@@ -132,7 +132,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 				$access_code = new TicketAccessCode();
 			}
 
-			$this->access_code = $access_code;
+			$this['access_code'] = $access_code;
 		}
 
 		$this->access_code->person = $this->person;
@@ -149,7 +149,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_setAccessCode', 'prePersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'default_on', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_on', ));

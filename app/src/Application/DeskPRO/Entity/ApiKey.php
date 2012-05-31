@@ -78,7 +78,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->code = Strings::random(25, Strings::CHARS_KEY);
+		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
 	}
 
 
@@ -105,7 +105,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKey';
 		$metadata->setPrimaryTable(array( 'name' => 'api_keys', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'code', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'code', ));
 		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));

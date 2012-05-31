@@ -173,18 +173,4 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
 		return $vars;
 	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'ContactDataAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-	}
 }

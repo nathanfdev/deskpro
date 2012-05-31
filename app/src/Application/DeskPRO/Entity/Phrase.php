@@ -106,7 +106,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->created_at = $this->updated_at = new \DateTime();
+		$this->setModelField('created_at', $this->updated_at = new \DateTime());
 	}
 
 	/**
@@ -119,18 +119,18 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setName($name)
 	{
-		$this->name = $name;
+		$this->setModelField('name', $name);
 		$dotpos = strpos($this->name, '.');
 		if ($dotpos) {
-			$this->groupname = substr($this->name, 0, $dotpos);
+			$this->setModelField('groupname', substr($this->name, 0, $dotpos));
 		} else {
-			$this->groupname = null;
+			$this->setModelField('groupname', null);
 		}
 	}
 
 	public function incUpdatedAt()
 	{
-		$this->updated_at = new \DateTime();
+		$this->setModelField('updated_at', new \DateTime());
 	}
 
 
@@ -149,7 +149,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 				'name_idx' => array('columns' => array('groupname', 'name'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('incUpdatedAt', 'preUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));

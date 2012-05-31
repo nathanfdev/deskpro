@@ -82,7 +82,7 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this->setModelField('date_created', new \DateTime());
 		$this->_is_new = true;
 	}
 
@@ -133,9 +133,9 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 	public function setRating($rating)
 	{
 		if ($rating > 0) {
-			$this->rating = 1;
+			$this->setModelField('rating', 1);
 		} else {
-			$this->rating = -1;
+			$this->setModelField('rating', -1);
 		}
 	}
 
@@ -146,7 +146,7 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 
 	public function rateDown()
 	{
-		return $this->setRating(-1);
+		$this->setRating(-1);
 	}
 
 
@@ -160,7 +160,7 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFeedback';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_feedback', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rating', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));

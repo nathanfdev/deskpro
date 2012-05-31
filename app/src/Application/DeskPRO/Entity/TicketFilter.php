@@ -127,9 +127,9 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	public function setPersonId($id)
 	{
 		if ($id) {
-			$this->person = App::getEntityRepository('DeskPRO:Person')->find($id);
+			$this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
 		} else {
-			$this->person = null;
+			$this->setModelField('person', null);
 		}
 	}
 
@@ -328,7 +328,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFilter';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_filters', 'uniqueConstraints' => array( 'sys_name_unique' => array( 'columns' => array( 0 => 'sys_name', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global', ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));

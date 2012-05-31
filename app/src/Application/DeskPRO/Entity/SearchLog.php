@@ -113,7 +113,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -136,7 +136,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 		$query = Strings::utf8_strtolower($query);
 		$query = Strings:: utf8_accents_to_ascii($query);
 
-		$this->query = $query;
+		$this['query'] = $query;
 	}
 
 
@@ -156,7 +156,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 				'num_results_idx' => array('columns' => array('num_results')),
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'email', ));

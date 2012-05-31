@@ -178,7 +178,7 @@ class Feedback extends ContentAbstract
 
 	public function setCategoryId($id)
 	{
-		$this->category = App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id);
+		$this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
 	}
 
 	public function getLink()
@@ -244,7 +244,7 @@ class Feedback extends ContentAbstract
 			case self::STATUS_CLOSED:
 				$this['status'] = $status;
 				$status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
-				$this->status_category = $status_cat;
+				$this->setModelField('status_category', $status_cat);
 				break;
 
 			case self::STATUS_HIDDEN:
@@ -339,7 +339,7 @@ class Feedback extends ContentAbstract
 				'status_idx' => array('columns' => array('status')),
 			),
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
 		$metadata->mapField(array( 'fieldName' => 'popularity', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'popularity', ));

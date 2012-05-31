@@ -104,9 +104,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->auth = Strings::random(15, Strings::CHARS_KEY);
-		$this->date_created = new \DateTime();
-		$this->date_last = new \DateTime();
+		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
+		$this->setModelField('date_created', new \DateTime());
+		$this->setModelField('date_last', new \DateTime());
 	}
 
 	/**
@@ -157,11 +157,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	public function setPersonId($person_id)
 	{
 		if ($person_id) {
-			$this->is_person = true;
-			$this->person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+			$this->setModelField('is_person', true);
+			$this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($person_id));
 		} else {
-			$this->is_person = false;
-			$this->person = null;
+			$this->setModelField('is_person', false);
+			$this->setModelField('person', null);
 		}
 	}
 
@@ -215,7 +215,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
 	public function updateLastTime()
 	{
-		$this->date_last = new \DateTime();
+		$this->setModelField('date_last', new \DateTime());
 	}
 
 	public static function getIdFromCode($sess_code)
@@ -239,7 +239,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Session';
 		$metadata->setPrimaryTable(array( 'name' => 'sessions', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', 1 => 'is_person', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));

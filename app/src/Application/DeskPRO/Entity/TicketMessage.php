@@ -136,7 +136,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this->setModelField('date_created', new \DateTime());
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
@@ -150,7 +150,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setTicketId($id)
 	{
-		$this->ticket = App::getEntityRepository('DeskPRO:Ticket')->find($id);
+		$this->setModelField('ticket', App::getEntityRepository('DeskPRO:Ticket')->find($id));
 	}
 
 	public function getTicketId()
@@ -160,7 +160,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setPersonId($id)
 	{
-		$this->person = App::getEntityRepository('DeskPRO:Person')->find($id);
+		$this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
 	}
 
 	public function getPersonId()
@@ -222,7 +222,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setMessage($message)
 	{
-		$this->message = $message;
+		$this->setModelField('message', $message);
 	}
 
 	public function addAttachment(TicketAttachment $attach)
@@ -235,7 +235,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
+		$this->setModelField('visitor', $visitor);
 
 		if ($visitor === null) return;
 
@@ -324,7 +324,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessage';
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
 		$metadata->addLifecycleCallback('initPersonAccessCode', 'postPersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

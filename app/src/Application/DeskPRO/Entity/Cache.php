@@ -65,7 +65,7 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
 	public function setData($data)
 	{
 		if (!is_array($data)) {
-			$this->data = array('VALUE' => $data);
+			$this['data'] = array('VALUE' => $data);
 		}
 	}
 
@@ -94,7 +94,7 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
 				'date_expire_idx' => array('columns' => array('date_expire')),
 			),
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire', ));

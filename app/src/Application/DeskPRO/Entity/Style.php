@@ -117,8 +117,8 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
-		$this->css_updated = new \DateTime();
+		$this->setModelField('created_at', new \DateTime());
+		$this->setModelField('css_updated', new \DateTime());
 	}
 
 	/**
@@ -132,9 +132,9 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	public function setParentId($parent_id)
 	{
 		if ($parent_id) {
-			$this->parent = App::getEntityRepository('DeskPRO:Style')->find($parent_id);
+			$this->setModelField('parent', App::getEntityRepository('DeskPRO:Style')->find($parent_id));
 		} else {
-			$this->parent = null;
+			$this->setModelField('parent', null);
 		}
 	}
 
@@ -173,12 +173,16 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setCssVar($name, $value)
 	{
+		$old_opts = $this->options;
+
 		if (!isset($this->options['css_vars'])) {
 			$this->options['css_vars'] = array();
 		}
 
 		$this->options['css_vars'][$name] = $value;
-		$this->css_updated = new \DateTime();
+
+		$this->_onPropertyChanged('options', $old_opts, $this->options);
+		$this->setModelField('css_updated', new \DateTime());
 	}
 
 	public function getCssVars()
@@ -200,7 +204,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'styles', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));

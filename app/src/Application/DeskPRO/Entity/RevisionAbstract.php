@@ -72,7 +72,7 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created	= new \DateTime();
+		$this['date_created']	= new \DateTime();
 	}
 
 	/**
@@ -81,19 +81,5 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getId()
 	{
 		return $this->id;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'RevisionAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

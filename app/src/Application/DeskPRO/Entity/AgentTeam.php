@@ -90,11 +90,13 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	public function addPerson(Entity\Person $person)
 	{
 		$this->members->add($person);
+		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
 
 	public function removePerson(Entity\Person $person)
 	{
 		$this->members->removeElement($person);
+		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
 
 
@@ -108,7 +110,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
 		$metadata->setPrimaryTable(array( 'name' => 'agent_teams', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

@@ -365,11 +365,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 
-		$this->date_created = new \DateTime();
-		$this->date_status = new \DateTime();
+		$this['date_created'] = new \DateTime();
+		$this['date_status'] = new \DateTime();
 
 		$len = App::getSetting('core_tickets.ptac_auth_code_len');
-		$this->auth = Strings::random($len, Strings::CHARS_KEY);
+		$this['auth'] = Strings::random($len, Strings::CHARS_KEY);
 
 		if ($tracker) {
 			$this->_initTicketLogger();
@@ -1529,7 +1529,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($this->status == 'hidden') {
-			$this->status = self::STATUS_AWAITING_AGENT;
+			$this->setModelField('status', self::STATUS_AWAITING_AGENT);
 		}
 
 		App::getOrm()->remove($del);
@@ -1802,7 +1802,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Get the new ref
 		if (!$this->ref) {
-			$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+			$this['ref'] = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
 		}
 
 		if (!$this->_no_log && $this->_ticket_logger) {
@@ -1946,7 +1946,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				'ref_idx' => array('columns' => array('ref'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_initTicketLogger', 'postLoad');
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
 		$metadata->addLifecycleCallback('_preInsert', 'prePersist');

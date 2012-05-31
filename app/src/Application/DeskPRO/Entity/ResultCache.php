@@ -89,13 +89,12 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setPerson($person)
 	{
-		$this->person = $person;
-		$this->person_id = $person['id'];
+		$this['person'] = $person;
 	}
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 
@@ -141,7 +140,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setCriteria($criteria)
     {
-        $this->criteria = $criteria;
+        $this['criteria'] = $criteria;
     }
 
     /**
@@ -161,7 +160,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setResults($results)
     {
-        $this->results = $results;
+        $this['results'] = $results;
     }
 
     /**
@@ -181,7 +180,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setExtra($extra)
     {
-        $this->extra = $extra;
+        $this['extra'] = $extra;
     }
 
     /**
@@ -201,7 +200,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setNumResults($numResults)
     {
-        $this->num_results = $numResults;
+        $this['num_results'] = $numResults;
     }
 
     /**
@@ -221,7 +220,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDateCreated($dateCreated)
     {
-        $this->date_created = $dateCreated;
+        $this['date_created'] = $dateCreated;
     }
 
     /**
@@ -264,7 +263,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'result_cache', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'criteria', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'criteria', ));
 		$metadata->mapField(array( 'fieldName' => 'results', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'results', ));

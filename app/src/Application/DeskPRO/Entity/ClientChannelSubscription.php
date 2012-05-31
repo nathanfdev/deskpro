@@ -109,7 +109,7 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 
 	public function updatePingTime()
 	{
-		$this->date_ping = new \DateTime();
+		$this->setModelField('date_ping', new \DateTime());
 	}
 
 
@@ -123,7 +123,7 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientChannelSubscription';
 		$metadata->setPrimaryTable(array( 'name' => 'client_channel_subscriptions', 'indexes' => array( 'date_ping' => array( 'columns' => array( 0 => 'date_ping', ), ), 'channel' => array( 'columns' => array( 0 => 'channel', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel', ));
 		$metadata->mapField(array( 'fieldName' => 'private_channel_id', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'private_channel_id', ));

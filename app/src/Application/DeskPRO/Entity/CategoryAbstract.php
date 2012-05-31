@@ -298,6 +298,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		$metadata->isMappedSuperclass = true;
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 	}
 }

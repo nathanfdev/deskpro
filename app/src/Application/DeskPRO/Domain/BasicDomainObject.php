@@ -44,7 +44,7 @@ use Orb\Util\Util;
 /**
  * The basic entitiy class
  */
-abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
+abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 {
 	const TOARRAY_NOOP = 1;
 	const TOARRAY_DEEP = 2;

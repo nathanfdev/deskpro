@@ -63,6 +63,7 @@ class ChatConversationPing extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversationPing';
 		$metadata->setPrimaryTable(array(
 			'name' => 'chat_conversation_pings',

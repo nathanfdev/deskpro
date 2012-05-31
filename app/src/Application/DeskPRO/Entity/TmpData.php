@@ -104,8 +104,8 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->auth         = Strings::random(15, Strings::CHARS_KEY);
-		$this->date_created = new \DateTime();
-		$this->date_expire  = new \DateTime('+1 week');
+		$this['date_created'] = new \DateTime();
+		$this['date_expire']  = new \DateTime('+1 week');
 	}
 
 	/**
@@ -156,11 +156,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setData($key, $value)
 	{
+		$old = $this->data;
 		if ($value === null) {
 			unset($this->data[$key]);
 		} else {
 			$this->data[$key] = $value;
 		}
+
+		$this->_onPropertyChanged('data', $old, $this->data);
 	}
 
 
@@ -209,7 +212,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 				'date_expire_idx' => array('columns' => array('date_expire'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));

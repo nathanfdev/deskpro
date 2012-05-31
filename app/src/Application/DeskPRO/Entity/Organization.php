@@ -128,10 +128,10 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->date_created        = new \DateTime();
+		$this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
+		$this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
+		$this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
+		$this->setModelField('date_created'        , new \DateTime());
 	}
 
 	/**
@@ -169,6 +169,8 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 				return $data;
 			}
 		}
+
+		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
 		return null;
 	}
@@ -211,6 +213,8 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			$this->addCustomData($custom_data);
 		}
 
+		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
 		return $custom_data;
 	}
 
@@ -223,6 +227,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['organization'] = $this;
+		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 	}
 
 
@@ -348,6 +353,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$label['organization'] = $this;
 		$this->labels->add($label);
+		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
 	}
 
 	public function getLabelManager()
@@ -375,7 +381,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Organization';
 		$metadata->setPrimaryTable(array( 'name' => 'organizations', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));

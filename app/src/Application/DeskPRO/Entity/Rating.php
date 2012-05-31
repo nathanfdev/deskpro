@@ -57,8 +57,8 @@ class Rating extends RatingAbstract
 
 	public function setContentObject($obj)
 	{
-		$this->object_type = $obj->getContentType();
-		$this->object_id   = $obj->getId();
+		$this['object_type'] = $obj->getContentType();
+		$this['object_id']   = $obj->getId();
 	}
 
 
@@ -77,7 +77,7 @@ class Rating extends RatingAbstract
 				'object_idx' => array('columns' => array('object_type', 'object_id'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
 		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

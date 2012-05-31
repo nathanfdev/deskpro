@@ -90,6 +90,9 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setValue($val)
 	{
+		$old_val_str = $this->value_str;
+		$old_val_arr = $this->value_array;
+
 		$this->value_str = null;
 		$this->value_array = null;
 
@@ -98,6 +101,9 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->value_str = (string)$val;
 		}
+
+		$this->_onPropertyChanged('value_str', $old_val_str, $this->value_str);
+		$this->_onPropertyChanged('value_array', $old_val_arr, $this->value_array);
 	}
 
     /**
@@ -107,7 +113,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setModelField('name', $name);
     }
 
     /**
@@ -127,7 +133,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setValueStr($valueStr)
     {
-        $this->value_str = $valueStr;
+        $this->setModelField('alue_str', $valueStr);
     }
 
     /**
@@ -147,7 +153,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setValueArray($valueArray)
     {
-        $this->value_array = $valueArray;
+        $this->setModelField('value_array', $valueArray);
     }
 
     /**
@@ -167,7 +173,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDateExpire($dateExpire)
     {
-        $this->date_expire = $dateExpire;
+        $this->setModelField('date_expire', $dateExpire);
     }
 
     /**
@@ -187,7 +193,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(\Application\DeskPRO\Entity\Person $person)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
     }
 
     /**
@@ -211,7 +217,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
 		$metadata->setPrimaryTable(array( 'name' => 'people_prefs', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str', ));

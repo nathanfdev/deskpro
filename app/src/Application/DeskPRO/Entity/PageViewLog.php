@@ -76,7 +76,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this->setModelField('date_created', new \DateTime());
 	}
 
 	/**

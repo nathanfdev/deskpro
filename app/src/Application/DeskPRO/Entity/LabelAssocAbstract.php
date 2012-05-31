@@ -43,7 +43,7 @@ use Application\DeskPRO\App;
  * Base labels associations class
  *
  */
-class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The 'type' of label this is for, as it could be found in the
@@ -75,20 +75,5 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		return $this->label;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'LabelAssocAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('syncWithDef', 'postPersist');
 	}
 }

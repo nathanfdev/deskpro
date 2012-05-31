@@ -102,8 +102,8 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 		sort($ids, SORT_NUMERIC);
 		$this->_usergroup_ids = $ids;
 
-		$this->usergroup_ids = implode(',', $ids);
-		$this->usergroup_key = self::generateUsergroupSetKey($this->_usergroup_ids);
+		$this->setModelField('usergroup_ids', implode(',', $ids));
+		$this->setModelField('usergroup_key', self::generateUsergroupSetKey($this->_usergroup_ids));
 	}
 
 	public function getUsergroupIds()
@@ -150,7 +150,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 				'usergroup_key_idx' => array('columns' => array('usergroup_key'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 32, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'usergroup_ids', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_ids', ));

@@ -113,7 +113,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -128,9 +128,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Could be a guest, in which case we dont care
 		if ($author && $author->id) {
-			$this->author = $author;
+			$this['author'] = $author;
 			if ($author && !$this->person_name) {
-				$this->person_name = $author->getDisplayName();
+				$this['person_name'] = $author->getDisplayName();
 			}
 		}
 	}
@@ -164,7 +164,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		// If we have no name, then assume the message is
 		// by the user who started the chat
 		if (!$this->person_name && $this->conversation['person_name']) {
-			$this->person_name = $this->conversation['person_name'];
+			$this['person_name'] = $this->conversation['person_name'];
 		}
 	}
 
@@ -236,7 +236,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'chat_messages', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_setUserName', 'prePersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name', ));

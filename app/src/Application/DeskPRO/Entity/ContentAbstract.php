@@ -165,12 +165,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 		$this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 
-		$this->status = self::STATUS_HIDDEN;
-		$this->hidden_status = self::HIDDEN_STATUS_DRAFT;
+		$this['status'] = self::STATUS_HIDDEN;
+		$this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
 	}
 
 	/**
@@ -386,15 +386,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function addRating($rating)
 	{
-		$this->num_ratings = $this->num_ratings + 1;
-		$this->total_rating = $this->total_rating + $rating->rating;
+		$this['num_ratings'] = $this->num_ratings + 1;
+		$this['total_rating'] = $this->total_rating + $rating->rating;
 		$rating->setContentObject($this);
 	}
 
 	public function removeRating($rating)
 	{
-		$this->num_ratings   = $this->num_ratings - 1;
-		$this->total_rating  = $this->total_rating - $rating->rating;
+		$this['num_ratings']   = $this->num_ratings - 1;
+		$this['total_rating'] = $this->total_rating - $rating->rating;
 	}
 
 	public function addComment($comment)
@@ -435,19 +435,5 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $name;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->isMappedSuperclass = true;
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'ContentAbstract', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

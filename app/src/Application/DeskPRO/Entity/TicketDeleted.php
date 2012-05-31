@@ -73,7 +73,7 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -97,9 +97,9 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	public function setByPersonId($id)
 	{
 		if ($id) {
-			$this->by_person = App::getEntityRepository('DeskPRO:Person')->find($id);
+			$this['by_person'] = App::getEntityRepository('DeskPRO:Person')->find($id);
 		} else {
-			$this->by_person = null;
+			$this['by_person'] = null;
 		}
 	}
 
@@ -113,7 +113,7 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_deleted', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'new_ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_ticket_id', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

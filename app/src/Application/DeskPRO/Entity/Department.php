@@ -240,6 +240,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
 		$metadata->setPrimaryTable(array( 'name' => 'departments', ));
 

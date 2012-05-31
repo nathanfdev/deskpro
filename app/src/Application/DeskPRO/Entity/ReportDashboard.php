@@ -111,10 +111,10 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->number_columns = 4;
-		$this->disabled       = false;
-		$this->date_created   = new \DateTime();
-		$this->report_dashboard_stat = new ArrayCollection();
+		$this['number_columns'] = 4;
+		$this['disabled']       = false;
+		$this['date_created']   = new \DateTime();
+		$this['report_dashboard_stat'] = new ArrayCollection();
 	}
 
 	/**
@@ -184,7 +184,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportDashboard';
 		$metadata->setPrimaryTable(array( 'name' => 'report_dashboard', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'number_columns', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'number_columns', ));

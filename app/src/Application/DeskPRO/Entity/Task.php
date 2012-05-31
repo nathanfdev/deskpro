@@ -155,7 +155,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$this->comments          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
 
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -315,7 +315,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->person->tasks->remove($this);
-		$this->person = $person;
+		$this['person'] = $person;
 	}
 
 
@@ -357,7 +357,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 			);
 		}
 
-		$this->assigned_agent = $agent;
+		$this['assigned_agent'] = $agent;
 	}
 
 
@@ -392,7 +392,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 			throw new \InvalidArgumentException('No agent team for id ' . $id);
 		}
 
-		$this->assigned_agent_team = $agent_team;
+		$this['assigned_agent_team'] = $agent_team;
 	}
 
 
@@ -443,7 +443,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Task';
 		$metadata->setPrimaryTable(array( 'name' => 'tasks', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'is_completed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_completed', ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));

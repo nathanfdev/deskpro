@@ -89,9 +89,9 @@ class TicketPageDisplay extends PageDisplayAbstract
 	public function setDepartmentId($id)
 	{
 		if (!$id) {
-			$this->department = 0;
+			$this->setModelField('department', 0);
 		} else {
-			$this->department = App::getEntityRepository('DeskPRO:Department')->find($id);
+			$this->setModelField('department', App::getEntityRepository('DeskPRO:Department')->find($id));
 		}
 	}
 
@@ -133,7 +133,9 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 */
 	public function setOption($name, $value)
 	{
+		$old = $this->options;
 		$this->options[$name] = $value;
+		$this->_onPropertyChanged('options', $old, $this->options);
 	}
 
 
@@ -167,7 +169,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketPageDisplay';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_page_display', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'zone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'zone', ));
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

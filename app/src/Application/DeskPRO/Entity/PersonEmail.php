@@ -103,9 +103,9 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
-		$this->date_validated = new \DateTime();
-		$this->is_validated = true;
+		$this->setModelField('date_created', new \DateTime());
+		$this->setModelField('date_validated', new \DateTime());
+		$this->setModelField('is_validated', true);
 	}
 
 	/**
@@ -190,12 +190,12 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setIsValidated($yesno)
 	{
-		$this->is_validated = $yesno;
+		$this->setModelField('is_validated', $yesno);
 
 		if ($yesno) {
-			$this->date_validated = new \DateTime();
+			$this->setModelField('date_validated', new \DateTime());
 		} else {
-			$this->date_validated = null;
+			$this->setModelField('date_validated', null);
 		}
 	}
 
@@ -218,7 +218,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 				'email_idx' => array('columns' => array('email'))
 			),
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain', ));

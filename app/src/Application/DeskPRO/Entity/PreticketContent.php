@@ -138,7 +138,7 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->date_created = new \DateTime();
+		$this['date_created'] = new \DateTime();
 	}
 
 	/**
@@ -172,14 +172,14 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setContentObject($obj)
 	{
-		$this->object_type = $obj->getContentType();
-		$this->object_id   = $obj->getId();
+		$this['object_type'] = $obj->getContentType();
+		$this['object_id']   = $obj->getId();
 	}
 
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
+		$this['visitor'] = $visitor;
 
 		if ($visitor === null) return;
 
@@ -209,7 +209,7 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 				'object_idx' => array('columns' => array('object_type', 'object_id'))
 			)
 		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'email', ));
