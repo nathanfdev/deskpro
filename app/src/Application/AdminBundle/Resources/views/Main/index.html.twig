@@ -88,7 +88,7 @@
 					</td>
 				</tr>
 			{% endif %}
-			{% if cron_is_problem %}
+			{% if app.getVariable('cron_is_problem') %}
 				<tr>
 					<td>
 						The scheduled tasks are either not running or the time between executions is too high.
