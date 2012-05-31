@@ -825,7 +825,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->preferences->add($pref);
 		$pref['person'] = $this;
-		$this->_onPropertyChanged('preferences', $this->preferences);
 	}
 
 
