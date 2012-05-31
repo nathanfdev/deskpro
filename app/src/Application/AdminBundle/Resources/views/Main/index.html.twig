@@ -79,7 +79,7 @@
 	at <a href="http://support.deskpro.com/">support.deskpro.com</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
 </p>
 
-{% if is_cron_problem or error_count %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
