@@ -103,7 +103,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		$company_info = $this->getOldDb()->fetchAssoc("SELECT * FROM user_company WHERE id = ?", array($company_id));
-		$linked_rule = $this->getOldDb()->fetchAll("SELECT * FROM user_rules WHERE link_company = ?", array($company_id));
+		$linked_rule = $this->getOldDb()->fetchAssoc("SELECT * FROM user_rules WHERE link_company = ?", array($company_id));
 
 		$this->getDb()->beginTransaction();
 
@@ -116,11 +116,15 @@ class CompaniesStep extends AbstractDeskpro3Step
 
 			$this->saveMappedId('company', $company_id, $org->id);
 
-			if ($linked_rule && !empty($linked_rule['email_match'])) {
-				foreach ($linked_rule['email_match'] as $email_match) {
+			if ($linked_rule) {
+				$linked_rule['criteria'] = unserialize($linked_rule['criteria']);
+			}
+
+			if ($linked_rule && !empty($linked_rule['criteria']['email_match'])) {
+				foreach ($linked_rule['criteria']['email_match'] as $email_match) {
 					// We can only use domains now, but DP3 allowed full email addresses too
 					$m = null;
-					if (!preg_match('#^*@([a-zA-Z0-9\-\.]+)$#', $email_match, $m)) {
+					if (!preg_match('#^\*@([a-zA-Z0-9\-\.]+)$#', $email_match, $m)) {
 						continue;
 					}
 
