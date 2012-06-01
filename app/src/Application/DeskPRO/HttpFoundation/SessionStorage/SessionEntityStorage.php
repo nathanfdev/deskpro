@@ -300,9 +300,19 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$sess_rec['is_person'] = 1;
 			$sess_rec['person_id'] = $_SESSION['_symfony2']['attributes']['auth_person_id'];
 
-			if (!empty($_SESSION['_symfony2']['attributes']['dp_active_status'])) {
-				$sess_rec['active_status'] = $_SESSION['_symfony2']['attributes']['dp_active_status'];
+			if (!empty($_SESSION['_symfony2']['attributes']['active_status'])) {
+				$sess_rec['active_status'] = $_SESSION['_symfony2']['attributes']['active_status'];
+			} else {
+				$sess_rec['active_status'] = '';
 			}
+			if ($sess_rec['active_status'] == 'available') {
+				$sess_rec['is_chat_available'] = isset($_SESSION['_symfony2']['attributes']['is_chat_available']) ? (int)$_SESSION['_symfony2']['attributes']['is_chat_available'] : 0;
+			} else {
+				$sess_rec['is_chat_available'] = 0;
+			}
+		} else {
+			$sess_rec['active_status'] = '';
+			$sess_rec['is_chat_available'] = 0;
 		}
 
 		$this->db->update('sessions', $sess_rec, array('id' => $id));

@@ -47,6 +47,9 @@ use Orb\Util\Util;
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STATUS_AVAILABLE = 'available';
+	const STATUS_AWAY = 'away';
+
 	/**
 	 * The unique ID.
 	 *
@@ -82,10 +85,16 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_person = false;
 
 	/**
-	 * For agents, if they are available for chat or away
+	 * (Agents) Status (available or away)
 	 * @var string
 	 */
 	protected $active_status = 'available';
+
+	/**
+	 * (Agents) Wehn status is available, if they are available for chat
+	 * @var bool
+	 */
+	protected $is_chat_available = true;
 
 	/**
 	 * @var int
@@ -245,6 +254,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person', ));
 		$metadata->mapField(array( 'fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_status', ));
+		$metadata->mapField(array( 'fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available', ));
 		$metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last', ));

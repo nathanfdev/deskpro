@@ -160,10 +160,18 @@
 					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.interface.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.general.away') }}</em><em class="label-dnd">{{ phrase('agent.interface.do_not_disturb_short') }}</em></a>
 					<div id="agent_status_menu" style="display:none;">
 						<div class="createDropdown">
-							<ul class="createBtnPopups">
-								<li class="status_go_available"><a><span class="statusAvailable">{{ phrase('agent.interface.available') }}</span></a></li>
-								<li class="status_go_away"><a><span class="statusAway">{{ phrase('agent.general.away') }}</span></a></li>
-								<li class="status_go_dnd"><a><span class="statusDnd">{{ phrase('agent.interface.do_not_disturb') }}</span></a></li>
+							<ul>
+								<li>
+									<div class="options">
+										<label class="status-title"><input type="radio" name="status" value="available" checked="checked" /> Available</label>
+										<div class="sub-options">
+											<label><input type="checkbox" name="is_chat_available" value="1" checked="checked" /> Available for chat</label>
+										</div>
+									</div>
+									<div class="options">
+										<label class="status-title"><input type="radio" name="status" value="away" /> Away</label>
+									</div>
+								</li>
 							</ul>
 						</div>
 					</div>

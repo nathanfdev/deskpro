@@ -2110,20 +2110,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var close = function() {
 				list.hide();
 				backdrop.remove();
+				self.toggleAgentStatus();
 			};
 			backdrop.on('click', close);
-			list.on('click', close);
 			$('#agent_status_away_overlay').on('click', close);
-		});
-
-		$('#agent_status_menu .status_go_available').on('click', function() {
-			self.toggleAgentStatus('available');
-		});
-		$('#agent_status_menu .status_go_away').on('click', function() {
-			self.toggleAgentStatus('away');
-		});
-		$('#agent_status_menu .status_go_dnd').on('click', function() {
-			self.toggleAgentStatus('dnd');
 		});
 
 		$('#agent_status').data('status', 'available');
@@ -2138,12 +2128,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
 
-	toggleAgentStatus: function(status) {
-		var statusEl = $('#agent_status');
+	toggleAgentStatus: function() {
 
-		if (statusEl.data('status') == status) {
-			return;
-		}
+		var status   = $('#agent_status_menu').find('input[name="status"]:checked').val();
+		var postData = $('#agent_status_menu').find('input[name="status"]:checked').closest('.options').find('input').serializeArray();
+
+		var statusEl = $('#agent_status');
 		statusEl.data('status', status);
 
 		$('#agent_status_away_overlay').remove();
@@ -2153,7 +2143,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/available',
-				type: 'GET'
+				type: 'POST',
+				data: postData
 			});
 
 		} else if (status == 'away') {
@@ -2163,14 +2154,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/away',
-				type: 'GET'
-			});
-		} else if (status == 'dnd') {
-			statusEl.addClass('dnd').removeClass('away');
-
-			$.ajax({
-				url: BASE_URL + 'agent/misc/set-agent-status/away',
-				type: 'GET'
+				type: 'POST'
 			});
 		}
 	},

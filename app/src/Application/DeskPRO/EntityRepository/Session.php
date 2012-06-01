@@ -76,8 +76,8 @@ class Session extends EntityRepository
 			SELECT DISTINCT(sessions.person_id)
 			FROM sessions
 			LEFT JOIN people ON (people.id = sessions.person_id)
-			WHERE sessions.date_last >= ? AND sessions.active_status = ? AND people.is_agent = 1
-		", array($datecut, 'available'));
+			WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
+		", array($datecut));
 
 		return $ids;
 	}

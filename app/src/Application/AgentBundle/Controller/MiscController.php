@@ -369,6 +369,10 @@ JS;
 
 		$sessionEnt = $this->session->getEntity();
 		$sessionEnt['active_status'] = $status;
+		$sessionEnt['is_chat_available'] = $this->in->getBool('is_chat_available');
+
+		$this->session->set('is_chat_available', $this->in->getBool('is_chat_available'));
+		$this->session->set('active_status', $status);
 
 		$this->em->transactional(function($em) use ($sessionEnt) {
 			$em->persist($sessionEnt);
