@@ -1,7 +1,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-<ul xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<ul>
 	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.user_registration.registration_options') }}</a></li>
 	{% if not usersource.id %}
 		<li><a href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.user_registration.new_usersource') }}</a></li>
@@ -9,6 +9,13 @@
 		<li>{{ usersource.title }}</li>
 	{% endif %}
 </ul>
+{% if usersource.id %}
+	<nav>
+		<ul>
+			<li class="delete"><a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.user_registration.confirm_delete_user_source') }}');">{{ phrase('agent.general.delete') }}</a></li>
+		</ul>
+	</nav>
+{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -40,11 +47,5 @@
 
 	<button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>
-
-{% if usersource.id %}
-<div class="delete-link-wrap">
-	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.user_registration.confirm_delete_user_source') }}');">{{ phrase('agent.general.delete') }}</a>
-</div>
-{% endif %}
 
 {% endblock %}

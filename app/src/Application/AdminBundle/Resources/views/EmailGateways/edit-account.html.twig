@@ -13,6 +13,14 @@
 			<li>{{ phrase('admin.gateway.new_gateway') }}</li>
 		{% endif %}
 	</ul>
+
+	{% if gateway.id %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -31,11 +39,5 @@
 </div>
 
 {% include 'AdminBundle:EmailGateways:edit-account-form.html.twig' %}
-
-{% if gateway.id %}
-<div class="delete-link-wrap">
-	<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');">{{ phrase('agent.general.delete') }}</a>
-</div>
-{% endif %}
 
 {% endblock %}

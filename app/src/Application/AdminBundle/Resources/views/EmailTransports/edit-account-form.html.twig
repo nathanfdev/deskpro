@@ -348,10 +348,4 @@
 	</div>
 </div>
 
-{% if transport.id and transport.match_type != 'all' %}
-	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailtrans_del', {id: transport.id, security_token: security_token('delete_transport') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_transport') }}');">{{ phrase('admin.gateway.delete_transport') }}</a>
-	</div>
-{% endif %}
-
 </div>

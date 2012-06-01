@@ -9,6 +9,14 @@
 			<li>{{ phrase('admin.products.new_product') }}</li>
 		{% endif %}
 	</ul>
+
+	{% if product.id %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -41,10 +49,4 @@
 
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>
-
-{% if product.id %}
-<div class="delete-link-wrap">
-	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('agent.general.delete') }}</a>
-</div>
-{% endif %}
 {% endblock %}

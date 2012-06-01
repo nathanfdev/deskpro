@@ -158,7 +158,7 @@
 	'agent.general.days'                                    => 'days',
 	'agent.general.deal_stage'                              => 'Deal Stage',
 	'agent.general.default'                                 => 'Default',
-	'agent.general.delete'                                  => 'delete',
+	'agent.general.delete'                                  => 'Delete',
 	'agent.general.delete_comment'                          => 'Delete Comment',
 	'agent.general.delete_content'                          => 'Delete content',
 	'agent.general.delete_snippet'                          => 'Delete Snippet',

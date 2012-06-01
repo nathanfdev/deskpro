@@ -9,6 +9,13 @@
 		 	<li>{{ phrase('admin.user_groups.new_usergroup') }}</li>
 		 {% endif %}
      </ul>
+	{% if usergroup.id and usergroup.id != 1 %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.user_groups.confirm_delete_usergroup') }}');">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -74,11 +81,4 @@
 
 <br class="clear" />
 </form>
-
-{% if usergroup.id and usergroup.id != 1 %}
-<div class="delete-link-wrap">
-	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.user_groups.confirm_delete_usergroup') }}');">{{ phrase('agent.general.delete') }}</a>
-</div>
-{% endif %}
-
 {% endblock %}

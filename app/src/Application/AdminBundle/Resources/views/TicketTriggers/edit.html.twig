@@ -36,6 +36,13 @@ function TicketTriggerEditPage_initTerms(handler) {
 		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
 		<li>{% if trigger.id %}{{ phrase('admin.tickets.edit_triggers') }}{% else %}{{ phrase('admin.tickets.new_trigger') }}{% endif %}</li>
 	</ul>
+	{% if trigger.id %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -135,12 +142,6 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% endfor %}
 
 </form>
-
-{% if trigger.id %}
-	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.general.delete') }}</a>
-	</div>
-{% endif %}
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
 	'classname': 'criteria-tpl',

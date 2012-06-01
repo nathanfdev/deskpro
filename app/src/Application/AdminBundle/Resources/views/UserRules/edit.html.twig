@@ -8,6 +8,13 @@
 			<li>{{ phrase('admin.user_rules.edit_rule') }}</li>
 		{% endif %}
 	</ul>
+	{% if rule.id %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}
 {% block page %}
 
@@ -42,9 +49,4 @@
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>
 
-{% if rule.id %}
-	<div class="delete-link-wrap">
-		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">{{ phrase('agent.general.delete') }}</a>
-	</div>
-{% endif %}
 {% endblock %}
