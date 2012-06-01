@@ -213,6 +213,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			success: function(result) {
+
+				if (result.error && result.error == 'no_message') {
+					DeskPRO_Window.showAlert("Please enter a message");
+					return;
+				}
+
 				this.handleTicketUpdate(result);
 
 				if (result.close_tab) {

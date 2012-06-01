@@ -856,6 +856,11 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveReplyAction($ticket_id)
 	{
+
+		if (!$this->in->getString('message')) {
+			return $this->createJsonResponse(array('error' => 'no_message'));
+		}
+
 		$ticket = $this->getTicketOr404($ticket_id, 'reply');
 
 		#------------------------------
