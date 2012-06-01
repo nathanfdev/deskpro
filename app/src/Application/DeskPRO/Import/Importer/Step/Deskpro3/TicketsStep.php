@@ -610,24 +610,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
-		# Saved tickets become flagged
-		#------------------------------
-
-		$saved_tickets = $all_ticket_info['tech_ticket_save'];
-
-		$saved_tickets = array_unique($saved_tickets);
-
-		foreach ($saved_tickets as $saved_tech) {
-			$agent_id = $this->getMappedNewId('tech', $saved_tech);
-			if (!$agent_id) continue;
-			$this->db->insert('tickets_flagged', array(
-				'ticket_id' => $insert_ticket['id'],
-				'person_id' => $agent_id,
-				'color' => 'red'
-			));
-		}
-
-		#------------------------------
 		# Ticket reminders become tasks
 		#------------------------------
 
@@ -1474,7 +1456,6 @@ class TicketsStep extends AbstractDeskpro3Step
 				'ticket_message' => array(),
 				'ticket_attachments' => array(),
 				'ticket_participant' => array(),
-				'tech_ticket_save' => array(),
 				'tickets_logs' => array(),
 				'tech_ticket_watch' => array()
 			);
@@ -1536,20 +1517,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			if (!isset($batch[$r['ticket']])) continue;
 			$batch[$r['ticket']]['ticket_participant'][] = $r;
-		}
-		$q->closeCursor();
-		unset($q);
-
-		#------------------------------
-		# Fetch tech_ticket_save
-		#------------------------------
-
-		$q = $this->olddb->query("SELECT ticketid, techid FROM tech_ticket_save WHERE ticketid $between_where");
-		$q->execute();
-
-		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-			if (!isset($batch[$r['ticketid']])) continue;
-			$batch[$r['ticketid']]['tech_ticket_save'][] = $r['techid'];
 		}
 		$q->closeCursor();
 		unset($q);
