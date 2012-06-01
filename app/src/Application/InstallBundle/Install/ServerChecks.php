@@ -215,9 +215,9 @@ class ServerChecks
 	public function getNonFatalErrors()
 	{
 		$ret = array();
-		foreach ($this->server_errors as $e) {
+		foreach ($this->server_errors as $k => $e) {
 			if ($e['level'] != 'fatal') {
-				$ret[] = $e;
+				$ret[$k] = $e;
 			}
 		}
 
@@ -562,6 +562,25 @@ class ServerChecks
 			$db_server = DP_DATABASE_HOST;
 		}
 
+		#------------------------------
+		# db_iis_localhost
+		#------------------------------
+
+		if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+			$this->getLogger()->log("[CHECK] Checking if IIS and DB is connecing through localhost", Logger::DEBUG);
+			if ($db_server != 'localhost') {
+				$this->getLogger()->log("[OK] Not connecting through localhost", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "We recommend connecting to MySQL through 127.0.0.1 due to very poor performance on some IIS servers when connecting through localhost.";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['db_iis_localhost'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
+				);
+			}
+		}
+
 		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
 		try {
 
@@ -635,25 +654,6 @@ class ServerChecks
 				} else {
 					$this->getLogger()->log("[OK] Database is empty", Logger::DEBUG);
 				}
-			}
-		}
-
-		#------------------------------
-		# db_iis_localhost
-		#------------------------------
-
-		if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
-			$this->getLogger()->log("[CHECK] Checking if IIS and DB is connecing through localhost", Logger::DEBUG);
-			if ($db_server == 'localhost') {
-				$this->getLogger()->log("[OK] Not connecting through localhost", Logger::DEBUG);
-			} else {
-				$this->has_fatal_server_errors = true;
-				$msg = "We recommend connecting to MySQL through 127.0.0.1 due to very poor performance on some IIS servers when connecting through localhost.";
-				$this->getLogger()->log("$msg", Logger::INFO);
-				$this->server_errors['db_iis_localhost'] = array(
-					'message' => $msg,
-					'level' => 'recommended'
-				);
 			}
 		}
 

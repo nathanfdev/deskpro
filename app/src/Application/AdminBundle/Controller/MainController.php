@@ -42,6 +42,7 @@ class MainController extends AbstractController
 	{
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
 		$server_check->checkServer();
+		$server_check->checkDatabase(null, true);
 
 		$notice_items = $server_check->getNonFatalErrors();
 
