@@ -477,6 +477,10 @@ class TemplatingExtension extends \Twig_Extension
 			}
 		}
 
+		if (!$timezone) {
+			$timezone = new \DateTimeZone('UTC');
+		}
+		
 		$date->setTimezone($timezone);
 
 		return $this->container->getTranslator()->date($format, $date);
