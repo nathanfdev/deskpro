@@ -59,5 +59,9 @@ class TicketProps
 
 	public function __construct()
 	{
+		if (!$this->department_id) {
+			$default = App::getOrm()->getRepository('DeskPRO:Department')->getDefaultDepartment();
+			$this->department_id = $default->getId();
+		}
 	}
 }

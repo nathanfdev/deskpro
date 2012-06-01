@@ -45,4 +45,52 @@ class Department extends AbstractCategoryRepository
 	{
 		return $this->getRootNodes();
 	}
+
+
+	/**
+	 * Get the default ticket department for a given context (ticket, chat)
+	 *
+	 * @param string $context
+	 * @return \Application\DeskPRO\Entity\Department
+	 */
+	public function getDefaultDepartment($context)
+	{
+		switch ($context) {
+			case 'ticket':
+				$opt = 'core.tickets.default_department';
+				$check_field = 'is_tickets_enabled';
+				break;
+			case 'ticket':
+				$opt = 'core.chat.default_department';
+				$check_field = 'is_chat_enabled';
+				break;
+			default:
+				throw new \InvalidArgumentException("Unknown context `$context`");
+		}
+
+		$dep_id = App::getSetting($opt);
+		$dep = null;
+		if ($dep_id) {
+			$dep = $this->find($dep_id);
+		}
+
+		if (!$dep) {
+			// There should always be a correct default set, but this is
+			// error handling in case
+			$dep_id = App::getDb()->fetchColumn("
+				SELECT d.id
+				FROM departments d
+				LEFT JOIN departments AS subdep ON (subdep.parent_id = dep.id)
+				WHERE subdep.id IS NULL AND $check_field = 1
+				ORDER BY display_order ASC
+				LIMIT 1
+			");
+
+			if ($dep_id) {
+				$dep = $this->find($dep_id);
+			}
+		}
+
+		return $dep;
+	}
 }
