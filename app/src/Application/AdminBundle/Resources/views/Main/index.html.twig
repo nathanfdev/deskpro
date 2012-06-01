@@ -183,7 +183,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% if 1 or notice_items.apc_check %}
+				{% if notice_items.db_iis_localhost %}
+					<tr>
+						<td>
+							We recommend changing your MySQL host to 127.0.0.1 in config.php. On some versions of IIS, connecting through localhost
+							can yield very slow performance.
+						</td>
+					</tr>
+				{% endif %}
+				{% if notice_items.apc_check %}
 					<tr>
 						<td>
 							We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.

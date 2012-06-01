@@ -556,6 +556,12 @@ class ServerChecks
 			return;
 		}
 
+		if ($db_conf) {
+			$db_server = $db_conf['host'];
+		} else {
+			$db_server = DP_DATABASE_HOST;
+		}
+
 		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
 		try {
 
@@ -629,6 +635,25 @@ class ServerChecks
 				} else {
 					$this->getLogger()->log("[OK] Database is empty", Logger::DEBUG);
 				}
+			}
+		}
+
+		#------------------------------
+		# db_iis_localhost
+		#------------------------------
+
+		if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+			$this->getLogger()->log("[CHECK] Checking if IIS and DB is connecing through localhost", Logger::DEBUG);
+			if ($db_server == 'localhost') {
+				$this->getLogger()->log("[OK] Not connecting through localhost", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "We recommend connecting to MySQL through 127.0.0.1 due to very poor performance on some IIS servers when connecting through localhost.";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['db_iis_localhost'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
+				);
 			}
 		}
 
