@@ -709,11 +709,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			var formData = editBox.find(':checkbox.ug-check:checked').serializeArray();
 			formData.push({name: 'action', value: 'set-usergroups'});
 
-			ugbox.find(':checkbox.ug-check:checked').each(function() {
-				var id = $(this).val();
-				displayBox.find('li.ug-row-' + id).show();
-			});
-
 			displayBox.find('li.ug-row').hide();
 			if (ugbox.find(':checkbox.ug-check:checked').length) {
 				ugbox.find('> section').show();
@@ -722,6 +717,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				ugbox.find('> section').hide();
 				ugbox.addClass('no-section');
 			}
+
+			ugbox.find(':checkbox.ug-check:checked').each(function() {
+				var id = $(this).val();
+				displayBox.find('li.ug-row-' + id).show();
+			});
 
 			showSaving();
 			$.ajax({
