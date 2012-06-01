@@ -144,10 +144,10 @@ class TicketPageDisplay extends EntityRepository
 		);
 
 		// Custom fields
-		$fields = $this->_em->getRepository('DeskPRO:CustomDefTicket')->getEnabledTopFields();
+		$fields = App::getSystemService('ticket_fields_manager')->getFields();
 		foreach ($fields as $f) {
 			$page_data[] = array(
-				'id' => 'ticket_field[1]',
+				'id' => 'ticket_field['.$f->getId().']',
 				'field_type' => 'ticket_field',
 				'field_id' => $f->getId()
 			);

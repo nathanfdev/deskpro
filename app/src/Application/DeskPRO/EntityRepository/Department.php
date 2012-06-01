@@ -80,9 +80,9 @@ class Department extends AbstractCategoryRepository
 			$dep_id = App::getDb()->fetchColumn("
 				SELECT d.id
 				FROM departments d
-				LEFT JOIN departments AS subdep ON (subdep.parent_id = dep.id)
-				WHERE subdep.id IS NULL AND $check_field = 1
-				ORDER BY display_order ASC
+				LEFT JOIN departments AS subdep ON (subdep.parent_id = d.id)
+				WHERE subdep.id IS NULL AND d.$check_field = 1
+				ORDER BY d.display_order ASC
 				LIMIT 1
 			");
 
