@@ -21,10 +21,6 @@ pageMeta.baseId = '{{ baseId }}';
 <form id="{{baseId}}_newfeedback" class="keybound-submit">
 
 <div class="first section cat-section" id="{{baseId}}_cat_section">
-	<div class="step">
-		<span class="num">1</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<div class="col">
 			<h4>{{ phrase('agent.general.type') }}</h4>
@@ -49,10 +45,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section title-section" id="{{baseId}}_title_section">
-	<div class="step">
-		<span class="num">2</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
 		<input type="title" name="newfeedback[title]" id="{{baseId}}_title" value="{{ state.newfeedback.title }}" />
@@ -61,10 +53,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section article-section" id="{{baseId}}_content_section">
-	<div class="step">
-		<span class="num">3</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.description') }}</h4>
 		<textarea type="text" name="newfeedback[content]" id="{{baseId}}_content">{{ state.newfeedback.content }}</textarea>
@@ -73,10 +61,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 
 <div class="section other-section" id="{{baseId}}_other_section">
-	<div class="step">
-		<span class="num">5</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">

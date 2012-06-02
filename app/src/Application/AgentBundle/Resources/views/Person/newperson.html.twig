@@ -21,10 +21,6 @@ pageMeta.baseId = '{{ baseId }}';
 <script class="template-download" type="text/x-tmpl">
 </script>
 <div class="first section cat-section" id="{{baseId}}_email_section">
-	<div class="step">
-		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.email') }}</h4>
 		<input type="text" name="newperson[email]" id="{{baseId}}_email" value="" class="fill" />
@@ -32,10 +28,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section cat-section" id="{{baseId}}_name_section">
-	<div class="step">
-		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.name') }}</h4>
 		<input type="text" name="newperson[name]" id="{{baseId}}_name" value="" class="fill" />
@@ -44,10 +36,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 
 <div class="section title-section" id="{{baseId}}_org_section">
-	<div class="step">
-		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.organization') }}</h4>
 		<div
@@ -91,10 +79,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 {% if custom_fields|length %}
 <div class="section title-section" id="{{baseId}}_fields_section">
-	<div class="step">
-		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
         {% for f in custom_fields %}
         	<h4>{{ f.title }}</h4>
@@ -106,10 +90,6 @@ pageMeta.baseId = '{{ baseId }}';
 {% endif %}
 
 <div class="section other-section" id="{{baseId}}_other_section">
-	<div class="step">
-		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">

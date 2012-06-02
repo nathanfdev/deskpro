@@ -32,16 +32,28 @@ var DP = {
 			skin_variant : "silver",
 
 			theme: 'advanced',
-			plugins : "fullscreen",
-			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
-			theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+			plugins : "fullscreen,table,contextmenu,wordcount",
+			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,styleselect,fontselect,fontsizeselect',
+			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
 			theme_advanced_buttons3: '',
 			theme_advanced_toolbar_location: 'top',
 			theme_advanced_toolbar_align: 'left',
 			theme_advanced_resizing: true,
 			theme_advanced_statusbar_location: 'bottom',
 			theme_advanced_path: false,
-			relative_urls: false
+			relative_urls: false,
+			width: '100%',
+			content_css: ASSETS_BASE_URL + '/stylesheets/user/content-editor.css',
+
+			style_formats: [
+				{ title: 'Paragraph', block: 'p' },
+				{ title: 'Heading 1', block: 'h2' },
+				{ title: 'Heading 2', block: 'h3' },
+				{ title: 'Heading 3', block: 'h4' },
+				{ title: 'Heading 4', block: 'h5' },
+				{ title: 'Quote', block: 'blockquote' },
+				{ title: 'Code Box', block: 'code', classes: 'codebox' }
+			]
 		};
 
 		options = Object.merge(defaultOptions, options || {});

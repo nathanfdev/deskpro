@@ -46,10 +46,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section user-section first" id="{{baseId}}_user_section">
-	<div class="step">
-		<span class="num">1</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.general.change_user') }}</button>
 		<div id="{{baseId}}_choose_user">
@@ -95,10 +91,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section department-section" id="{{baseId}}_dep_section">
-	<div class="step">
-		<span class="num">2</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<div class="col">
 			<h4>{{ phrase('agent.general.department') }}</h4>
@@ -194,10 +186,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section subject-section" id="{{baseId}}_subject_section">
-	<div class="step">
-		<span class="num">3</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.subject') }}</h4>
 		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
@@ -206,10 +194,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section message-section" id="{{baseId}}_message_section">
-	<div class="step">
-		<span class="num">4</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		<h4>{{ phrase('agent.general.message') }}</h4>
 		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
@@ -218,10 +202,6 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="section other-section" id="{{baseId}}_other_section">
-	<div class="step">
-		<span class="num">5</span>
-		<span class="check">{{ phrase('agent.general.done') }}</span>
-	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
