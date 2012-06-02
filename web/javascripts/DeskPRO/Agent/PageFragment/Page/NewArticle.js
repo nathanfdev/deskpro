@@ -213,6 +213,11 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 				});
 			}
 		});
+
+		this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+			page: this,
+			rte: this.getEl('content')
+		});
 	},
 
 	//#########################################################################

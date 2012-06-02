@@ -46,6 +46,11 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		});
 		this.ownObject(this.relatedContentList);
 
+		this.sendContentLink = new DeskPRO.Agent.PageHelper.SendContentLink(this, {
+			contentListEl: this.listWrapper
+		});
+		this.ownObject(this.sendContentLink);
+
 		// Sorting options
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
 		this.sortingMenu = new DeskPRO.UI.Menu({

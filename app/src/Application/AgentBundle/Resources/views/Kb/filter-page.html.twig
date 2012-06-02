@@ -15,6 +15,10 @@
 						<a class="row-title click-through">{{ article.title }}</a>
 					</h3>
 				</div>
+				<div class="top-row-right visible-content-link-control">
+					<div class="bound-faded"></div>
+					<span class="tipped insert-content-link" title="Inser a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.getTitle() }}"></span>
+				</div>
 				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-faded"></div>
 					<span class="tipped kb-insert-link" title="{{ phrase('agent.general.insert_link') }}" data-article-id="{{ article.id }}"></span>

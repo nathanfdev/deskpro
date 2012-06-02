@@ -734,6 +734,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	showEditor: function() {
 
+		$('body').addClass('content-link-control-on');
+
 		var self = this;
 
 		$('.article-content-wrap', this.getEl('content_ed')).hide();
@@ -769,6 +771,15 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				}
 			});
 
+			var saveBtn = this.getEl('save_btn');
+			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+				page: this,
+				rte: txt,
+				isReadyCallback: function() {
+					return saveBtn.is(':visible');
+				}
+			});
+
 			this._hasInitEdBefore = true;
 		}
 
@@ -778,6 +789,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	hideEditor: function() {
+		$('body').removeClass('content-link-control-on');
 		this.getEl('edit_btn').show();
 		this.getEl('save_btn').hide();
 		this.getEl('cancel_btn').hide();
