@@ -96,7 +96,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			$filetype = 'application/octet-stream';
 		}
 
-		if ($blob['filepath']) {
+		if (isset($blob['filepath']) && $blob['filepath']) {
 			$file = @file_get_contents($this->importer->getConfig('existing_attachment_files') . '/' . $blob['filepath']);
 			if (!$file) {
 				$this->logMessage("Blob {$blob['id']} is missing from filesystem: " . $blob['filepath']);

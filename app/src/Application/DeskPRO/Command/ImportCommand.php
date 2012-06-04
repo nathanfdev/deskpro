@@ -408,13 +408,19 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				# Verify attachment paths
 				#----------------------------------------
 
-				$has_filepath = $importer->getOldDb()->fetchColumn("
-					SELECT filepath
-					FROM blobs
-					WHERE filepath IS NOT NULL
-					ORDER BY id DESC
-					LIMIT 1
-				");
+				try {
+					$has_filepath = $importer->getOldDb()->fetchColumn("
+						SELECT filepath
+						FROM blobs
+						WHERE filepath IS NOT NULL
+						ORDER BY id DESC
+						LIMIT 1
+					");
+				} catch (\Exception $e) {
+					$has_filepath = false;
+					// it could fail if using an old version of deskpro,
+					// so just catch it and it means not using file system (obviously)
+				}
 
 				if ($has_filepath) {
 					if (!isset($DP_CONFIG['import']['existing_attachment_files']) || !$DP_CONFIG['import']['existing_attachment_files']) {
