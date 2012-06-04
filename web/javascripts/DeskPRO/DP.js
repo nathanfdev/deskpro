@@ -34,7 +34,7 @@ var DP = {
 			theme: 'advanced',
 			plugins : "fullscreen,table,contextmenu,wordcount",
 			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,styleselect,fontselect,fontsizeselect',
-			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
+			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,dp_media,image,|,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
 			theme_advanced_buttons3: '',
 			theme_advanced_toolbar_location: 'top',
 			theme_advanced_toolbar_align: 'left',
@@ -54,6 +54,20 @@ var DP = {
 				{ title: 'Quote', block: 'blockquote' },
 				{ title: 'Code Box', block: 'code', classes: 'codebox' }
 			]
+		};
+
+		var oldsetup = options.setup || function() { };
+		options.setup = function(ed) {
+			ed.addButton('dp_media', {
+				title : 'Upload Image',
+				image : ASSETS_BASE_URL + '/images/agent/icons/picture_add.png',
+				onclick : function() {
+					MEDIA_MANAGER_WINDOW.bindToEditor(ed);
+					MEDIA_MANAGER_WINDOW.open();
+				}
+			});
+
+			oldsetup(ed);
 		};
 
 		options = Object.merge(defaultOptions, options || {});

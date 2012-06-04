@@ -124,6 +124,10 @@ $CONFIG['agent_settingswin'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/MacroEdit.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
+
+		'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
+		'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
+		'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
 	)
 );
 

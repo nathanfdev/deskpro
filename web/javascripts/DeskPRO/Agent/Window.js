@@ -251,7 +251,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (!options.url) {
-					options.url = BASE_URL + 'agent/misc/accept-upload';
+					if (options.saveMedia) {
+						options.url = BASE_URL + 'agent/misc/accept-upload?save_media=1';
+					} else {
+						options.url = BASE_URL + 'agent/misc/accept-upload';
+					}
 				}
 
 				if (options.uploadTemplate) {

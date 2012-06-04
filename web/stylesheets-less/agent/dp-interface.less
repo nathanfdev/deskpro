@@ -3085,3 +3085,85 @@ blockquote {
 	font-style: italic;
 	color: #9D9D9D;
 }
+
+
+#mediawin {
+	z-index: 32001;
+}
+
+#mediawin_pages > section {
+	padding: 10px;
+	display: none;
+}
+#mediawin_pages > section.on {
+	display: block;
+}
+
+#mediawin_pages > section > .page-loading {
+	padding: 50px;
+	background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 50%;
+}
+
+#mediawin_saved_overlay {
+	position: absolute;
+	top: 36px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+
+	background: #fff;
+
+	.inner-shadow(0, 0, 12px, 0.5);
+}
+
+#mediawin_saved_overlay h3 {
+
+    background: url(../../images/agent/icons/check-big.png) no-repeat 50% 0;
+
+	display: block;
+	text-align: center;
+	margin-top: 50px;
+	padding-top: 30px;
+}
+
+#mediawin header.pageheader {
+	margin: -10px -10px 10px -10px;
+	background-color: #EEEEEF;
+	border-bottom: 1px solid #ABAFB5;
+	padding-left: 8px;
+}
+
+#mediawin header.pageheader nav {
+	height:	25px;
+}
+
+#mediawin header.pageheader nav ul li {
+	display: block;
+	margin-top: 4px;
+	margin-right: 4px;
+	.border-radius(4px, 4px, 0, 0);
+	padding: 0 4px 0 4px;
+
+	float: left;
+	height:	20px;
+	line-height: 20px;
+	background-color: #E6E7E8;
+	border: 1px solid #ABAFB5;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
+#mediawin header.pageheader nav ul li.on,
+#mediawin header.pageheader nav ul li:hover {
+	background-color: #fff;
+	margin-top: 5px;
+}
+
+#mediawin .blob-row {
+	background-color: #EDEDED;
+	padding: 8px;
+	border: 1px solid darken(#EDEDED, 10%);
+	margin-bottom: 10px;
+}

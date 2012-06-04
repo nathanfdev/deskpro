@@ -299,13 +299,20 @@ JS;
 			}
 		}
 
+		if ($this->in->getBool('save_media')) {
+			$blob->is_media_upload = true;
+			$this->em->persist($blob);
+			$this->em->flush();
+		}
+
 		$res = $this->createJsonResponse(array(array(
 			'blob_id'           => $blob['id'],
 			'blob_auth'         => $blob->authcode,
 			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
 			'download_url'      => $blob->getDownloadUrl(true),
 			'filename'          => $blob['filename'],
-			'filesize_readable' => $blob->getReadableFilesize()
+			'filesize_readable' => $blob->getReadableFilesize(),
+			'is_image'          => $blob->isImage()
 		)));
 
 		// Required for iframe transport on IE to prevent 'download' popup

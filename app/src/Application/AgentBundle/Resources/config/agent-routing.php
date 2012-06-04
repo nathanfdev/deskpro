@@ -2324,5 +2324,29 @@ $collection->add('agent_userchat_getsectiondata', new Route(
 	array()
 ));
 
+################################################################################
+# Media Manager
+################################################################################
+
+$collection->add('agent_mediamanager', new Route(
+	'/media-manager',
+	array('_controller' => 'AgentBundle:MediaManager:window'),
+	array(),
+	array()
+));
+
+$collection->add('agent_mediamanager_upload', new Route(
+	'/media-manager/upload',
+	array('_controller' => 'AgentBundle:MediaManager:upload'),
+	array(),
+	array()
+));
+
+$collection->add('agent_mediamanager_browse', new Route(
+	'/media-manager/browse',
+	array('_controller' => 'AgentBundle:MediaManager:browse'),
+	array(),
+	array()
+));
 
 return $collection;
