@@ -89,6 +89,20 @@ class UnitOfWork extends DoctrineUnitOfWork
 
 
 	/**
+	 * Marks a repository as prelaoded
+	 *
+	 * @param $entityName
+	 */
+	public function markAsPreloaded($entityName)
+	{
+		$class = $this->em->getClassMetadata($entityName);
+		$classname = $class->getName();
+
+		$this->loaded_sets[$classname] = true;
+	}
+
+
+	/**
 	 * Load the full set of a particular entity
 	 *
 	 * @param $entity_name

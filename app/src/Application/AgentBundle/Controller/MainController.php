@@ -54,9 +54,9 @@ class MainController extends AbstractController
 
 		// Used in some header menus for search options
 		$titles = array();
-		$titles['organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
-		$titles['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
+		$titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
+		$titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
+		$titles['languages']     = $this->container->getDataService('DeskPRO:Language')->getTitles();
 
 		// Person menu needs these
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();

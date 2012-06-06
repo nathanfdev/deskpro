@@ -70,6 +70,7 @@ class DepartmentDataService extends BaseRepositoryService
 			FROM DeskPRO:Department d INDEX BY d.id
 			ORDER BY d.display_order ASC
 		")->execute();
+		$this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Department');
 
 		$cats = array();
 
