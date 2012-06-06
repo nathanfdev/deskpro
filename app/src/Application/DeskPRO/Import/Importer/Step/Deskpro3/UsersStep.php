@@ -169,7 +169,7 @@ class UsersStep extends AbstractDeskpro3Step
 		foreach ($check_emails as $email_info) {
 			if (\Orb\Validator\StringEmail::isValueValid($email_info['email'])) {
 				$email_info['email'] = strtolower($email_info['email']);
-				$user_emails[] = $email_info;
+				$user_emails[$email_info['email']] = $email_info;
 			}
 		}
 
@@ -177,6 +177,10 @@ class UsersStep extends AbstractDeskpro3Step
 			$this->logMessage("-- User {$user_id} has no valid emails");
 			return;
 		}
+
+		// Emails were keyed by email for easy dupe removal,
+		// but from here on we want them numerically indexed
+		$user_emails = array_values($user_emails);
 
 		#------------------------------
 		# Make sure their email doesnt already match someone in the system
