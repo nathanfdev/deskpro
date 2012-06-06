@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Browse = new Orb.Class({
 				MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<a href="' + btn.data('download-url') + '">' + btn.data('file-name') + '</a>');
 			}
 
-			MEDIA_MANAGER_WINDOW.close();w
+			MEDIA_MANAGER_WINDOW.close();
 		});
 	}
 });
