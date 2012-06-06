@@ -29,5 +29,13 @@ schtasks /create /tn DeskPRO /sc MINUTE /tr "\"%php%\" -q \"%~dp0cron.php\""
 echo %DATE% %TIME% > data\tmp\schedule.txt
 echo.
 echo It will take 60 seconds for the scheduled task to begin
+echo.
+echo Please note that although your scheduled task has now been
+echo created; it will only run when this windows user account is
+echo logged in. To use DeskPRO in production you will probably
+echo need to modify the scheduled task from the Windows Task Scheduler 
+echo to specify the username and password of the windows account
+echo the task should run under if this user is not logged in.
+echo.
 "%php%" "app\src\Application\InstallBundle\Install\WinSetup.php" "%php%"
 pause
