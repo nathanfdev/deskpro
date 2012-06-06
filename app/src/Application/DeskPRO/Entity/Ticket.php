@@ -390,8 +390,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_no_log = true;
 	}
 
-	/**
-	 */
 	public function _initTicketLogger()
 	{
 		if ($this->_ticket_logger) {

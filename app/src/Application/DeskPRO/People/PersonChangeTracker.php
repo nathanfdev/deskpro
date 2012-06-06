@@ -104,14 +104,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		}
 	}
 
-
-
-	/**
-	 * Notify all listeners that changes to the person have been committed
-	 *
-	 * @return void
-	 */
-	public function done()
+	public function preSave()
 	{
 		if ($this->running) {
 			return;
@@ -130,7 +123,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					}
 					if ($r->add_organization) {
 						$change = true;
-						$this->person->organization = $r->add_organization;
+						$this->person->setOrganization($r->add_organization);
 					}
 				}
 			}
@@ -140,27 +133,28 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			$orgem = App::getContainer()->getEm()->createQuery("
 				SELECT od
 				FROM DeskPRO:OrganizationEmailDomain od
+				LEFT JOIN od.organization org
 				WHERE od.domain = ?1
 			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
 
 			if ($orgem) {
 				$change = true;
-				$this->person->organization = $orgem->organization;
-			}
-
-			if ($change) {
-				App::getContainer()->getEm()->getConnection()->beginTransaction();
-
-				try {
-					App::getContainer()->getEm()->persist($this->person);
-					App::getContainer()->getEm()->getConnection()->commit();
-				} catch (\Exception $e) {
-					App::getContainer()->getEm()->getConnection()->rollback();
-					throw $e;
-				}
+				$this->person->setOrganization($orgem->organization);
 			}
 		}
 
 		$this->running = false;
+	}
+
+
+
+	/**
+	 * Notify all listeners that changes to the person have been committed
+	 *
+	 * @return void
+	 */
+	public function done()
+	{
+
 	}
 }

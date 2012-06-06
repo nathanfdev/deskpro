@@ -444,8 +444,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
-	/**
-	 */
 	public function _initPersonLogger()
 	{
 		$person_logger = new \Application\DeskPRO\People\PersonChangeTracker($this);
@@ -1566,20 +1564,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return;
 		}
 
-		$old_o = $this->organization;
-		$old_op = $this->organization_position;
-
-		$this->organization = $org;
-		$this->organization_position = $position;
-
-		$this->_onPropertyChanged('organization', $old_o, $this->organization);
-		$this->_onPropertyChanged('organization_position', $old_op, $this->organization_position);
-
-		// Improve importance when adding the user to the org that
-		// has a higher importance
-		if ($this->organization['importance'] > $this->importance) {
-			$this->setImportance($this->organization['importance']);
-		}
+		$this->setModelField('organization', $org);
+		$this->setModelField('organization_position', $position);
 	}
 
 
@@ -1725,8 +1711,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_person_logger) {
 			$this->_person_logger->done();
+			$this->_initPersonLogger();
 		}
 	}
+
+	public function _presavePerson()
+	{
+		if ($this->_person_logger) {
+			$this->_person_logger->preSave();
+		}
+	}
+
 
 	public function getTimezone()
 	{
@@ -1815,6 +1810,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
 		$metadata->addLifecycleCallback('smartSetName', 'prePersist');
+		$metadata->addLifecycleCallback('_presavePerson', 'prePersist');
 		$metadata->addLifecycleCallback('smartSetName', 'preUpdate');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
