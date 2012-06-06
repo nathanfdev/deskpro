@@ -254,15 +254,18 @@ class TermSummary
 				break;
 
 			case 'email':
-				$this->summary[] = $tr->phrase('agent.general.email_is_summary', array('email' => $choice));
+				$name = array_pop($choice);
+				$summary = $tr->phrase('agent.general.email_is_summary', array('email' => $name));
 				break;
 
 			case 'email_domain':
-				$this->summary[] = $tr->phrase('agent.general.domain_is_summary', array('domain' => $choice));
+				$name = array_pop($choice);
+				$summary = $tr->phrase('agent.general.domain_is_summary', array('domain' => $name));
 				break;
 
 			case 'name':
-				$this->summary[] = $tr->phrase('agent.general.name_is_summary', array('name' => $choice));
+				$name = array_pop($choice);
+				$summary = $tr->phrase('agent.general.name_is_summary', array('name' => $name));
 				break;
 
 			case 'ticket_participant':
