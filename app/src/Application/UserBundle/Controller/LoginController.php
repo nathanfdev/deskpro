@@ -217,7 +217,8 @@ HTML;
 		if ($person['is_agent']) {
 
 			// Set their status to available by default
-			$this->session->set('dp_active_status', 'available');
+			$this->session->set('active_status', 'available');
+			$this->session->set('is_chat_available', 1);
 
 			$data = array(
 				'agent_id'   => $person['id'],
