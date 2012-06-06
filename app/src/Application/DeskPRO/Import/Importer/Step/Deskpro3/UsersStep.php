@@ -319,7 +319,7 @@ class UsersStep extends AbstractDeskpro3Step
 			list (,$insert_email['email_domain']) = explode('@', $email_info['email'], 2);
 			$insert_email['date_validated'] = date('Y-m-d H:i:s');
 			$insert_email['date_created'] = date('Y-m-d H:i:s');
-			$insert_email['is_validated'] = date('Y-m-d H:i:s');
+			$insert_email['is_validated'] = 1;
 
 			$this->db->insert('people_emails', $insert_email);
 
