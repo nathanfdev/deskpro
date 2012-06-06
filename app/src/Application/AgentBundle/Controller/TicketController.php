@@ -857,7 +857,7 @@ class TicketController extends AbstractController
 	public function ajaxSaveReplyAction($ticket_id)
 	{
 
-		if (!$this->in->getString('message')) {
+		if (!$this->in->getString('message') || $this->in->getString('message') == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
 
@@ -896,7 +896,8 @@ class TicketController extends AbstractController
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createJsonResponse(array(
 				'dupe_message' => true,
-				'message_id' => $dupe_message['id']
+				'message_id' => $dupe_message['id'],
+				'time' => $dupe_message->date_created->getTimestamp()
 			));
 		} else {
 			$ticket->addMessage($message);

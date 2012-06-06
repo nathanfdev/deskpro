@@ -215,10 +215,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			dataType: 'json',
 			data: formData,
 			context: this,
-			complete: function() {
-				loadingEl.hide();
-			},
 			success: function(result) {
+
+				loadingEl.hide();
 
 				if (result.error && result.error == 'no_message') {
 					DeskPRO_Window.showAlert("Please enter a message");
@@ -243,9 +242,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					statusProp.setIncomingValue(result.status);
 				}
 
+				if (result.dupe_message) {
+					DeskPRO_Window.showAlert("You have already sent that message.");
+					return;
+				}
+
 				this.rescanMessageTypes();
 			},
 			complete: function(xhr, textStatus) {
+				loadingEl.hide();
 				reply_form.removeClass('loading');
 			}
 		});

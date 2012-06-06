@@ -157,17 +157,25 @@ class TicketMessage extends EntityRepository
 
 		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
-		$check = $this->getEntityManager()->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMessage m
-			WHERE m.message_hash = ?1 AND m.date_created > ?2
-		")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getResult();
+		if ($ticket) {
+			$check = $this->getEntityManager()->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessage m
+				WHERE m.message_hash = ?1 AND m.date_created > ?2 AND m.ticket = ?3
+			")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip, 3=>$ticket))->getResult();
+		} else {
+			$check = $this->getEntityManager()->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessage m
+				WHERE m.message_hash = ?1 AND m.date_created > ?2
+			")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getResult();
+		}
 
 		if (count($check)) {
 			$check = array_shift($check);
 		}
 
-		if ($check && ($ticket && $message->ticket['id'] == $ticket['id'])) {
+		if ($check) {
 			return $check;
 		}
 
