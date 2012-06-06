@@ -558,15 +558,19 @@ class ServerChecks
 
 		if ($db_conf) {
 			$db_server = $db_conf['host'];
-		} else {
+		} elseif (defined('DP_DATABASE_HOST')) {
 			$db_server = DP_DATABASE_HOST;
+		} elseif (isset($GLOBALS['DP_CONFIG']['db']['host'])) {
+			$db_server = $GLOBALS['DP_CONFIG']['db']['host'];
+		} else {
+			$db_server = null;
 		}
 
 		#------------------------------
 		# db_iis_localhost
 		#------------------------------
 
-		if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+		if ($db_server && !empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
 			$this->getLogger()->log("[CHECK] Checking if IIS and DB is connecing through localhost", Logger::DEBUG);
 			if ($db_server != 'localhost') {
 				$this->getLogger()->log("[OK] Not connecting through localhost", Logger::DEBUG);
