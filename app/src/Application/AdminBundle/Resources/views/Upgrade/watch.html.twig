@@ -16,8 +16,7 @@
 	data-check-started-url="{{ path('admin_upgrade_watch_checkstarted') }}"
 >
 	<div id="waiting">
-		Upgrade is scheduled for {{ app.getSetting('core.upgrade_time')|date('fulltime') }}
-		(<a href="{{ path('admin_upgrade_abort') }}">cancel</a>).
+		Upgrade is waiting to start
 	</div>
 	<div id="upgrade_started">
 		<ul>
