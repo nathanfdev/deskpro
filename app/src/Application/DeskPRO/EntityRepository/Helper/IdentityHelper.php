@@ -88,7 +88,7 @@ class IdentityHelper
 			$missing = $ids;
 		} else {
 			foreach ($ids as $id) {
-				$obj = $this->em->getUnitOfWork()->tryGetById($find_id, $this->entity_name);
+				$obj = $this->em->getUnitOfWork()->tryGetById($id, $this->entity_name);
 				if ($obj && $obj->__getPropValue__('id')) {
 					$return[$id] = $obj;
 				} else {
@@ -130,7 +130,7 @@ class IdentityHelper
 		}
 
 		$ret = array();
-		foreach ($map[$this->entity_name] as $id_hash) {
+		foreach ($map[$this->entity_name] as $id_hash => $object) {
 			$ret[] = $this->em->getUnitOfWork()->getByIdHash($id_hash, $this->entity_name);
 		}
 

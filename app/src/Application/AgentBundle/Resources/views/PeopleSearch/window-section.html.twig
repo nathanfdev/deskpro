@@ -76,21 +76,6 @@
 					{{ phrase('agent.general.organizations') }}
 				</h3>
 			</li>
-
-			{#
-			{% for id,title in usergroup_names %}
-				<li
-					class="usergroup-{{id}} nav-usergroup-org-{{id}} is-nav-item"
-					data-usergroup-id="{{id}}"
-					data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
-				>
-					<h3 class="title">
-						<span class="list-counter">{{ org_usergroup_counts[id]|default(0) }}</span>
-						{{title}}
-					</h3>
-				</li>
-			{%
-			#}
 		</ul>
 
 		<section class="source-tabs" style="margin-top: 8px;">

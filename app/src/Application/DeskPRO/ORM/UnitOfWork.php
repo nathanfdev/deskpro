@@ -62,6 +62,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 		'Application\\DeskPRO\\Entity\\Department'                     => 1,
 		'Application\\DeskPRO\\Entity\\TicketCategory'                 => 1,
 		'Application\\DeskPRO\\Entity\\ArticleCategory'                => 1,
+		'Application\\DeskPRO\\Entity\\DownloadCategory'               => 1,
 		'Application\\DeskPRO\\Entity\\FeedbackCategory'               => 1,
 		'Application\\DeskPRO\\Entity\\NewsCategory'                   => 1,
 		'Application\\DeskPRO\\Entity\\Product'                        => 1,

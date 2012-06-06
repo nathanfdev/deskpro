@@ -68,15 +68,23 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 		if (!$ids) return array();
 
 		$class = $this->getName();
-		$q_res = $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM {$class} o INDEX BY o.id
-			WHERE o.id IN(?0)
-		")->execute(array($ids));
 
-		$q_res = Arrays::orderIdArray($ids, $q_res);
+		if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
+			$this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
+			return $this->getIdentityHelper()->findByIds($ids, $keep_order);
+		} else {
+			$q_res = $this->getEntityManager()->createQuery("
+				SELECT o
+				FROM {$class} o INDEX BY o.id
+				WHERE o.id IN(?0)
+			")->execute(array($ids));
 
-		return $q_res;
+			if ($keep_order) {
+				$q_res = Arrays::orderIdArray($ids, $q_res);
+			}
+
+			return $q_res;
+		}
 	}
 
 

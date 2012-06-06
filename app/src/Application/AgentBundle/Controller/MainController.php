@@ -56,7 +56,7 @@ class MainController extends AbstractController
 		$titles = array();
 		$titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
 		$titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
-		$titles['languages']     = $this->container->getDataService('DeskPRO:Language')->getTitles();
+		$titles['languages']     = $this->container->getDataService('Language')->getTitles();
 
 		// Person menu needs these
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
