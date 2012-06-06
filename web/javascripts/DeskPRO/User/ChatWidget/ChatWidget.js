@@ -276,6 +276,8 @@ var DpChatWidget = new (function() {
 			url += '&is_window=1';
 		}
 
+		url += '&_ts=' + ((new Date()).getTime());
+
 		DpConsole.log('DpChatWidget.initSession: adding script: ' + url);
 
 		var script_tag = document.createElement('script');
