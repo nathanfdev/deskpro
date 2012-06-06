@@ -273,7 +273,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			message: message
 		});
 
-		$('.messages-container:first', this.wrapper).append(newMessage).scrollTop(100000);
+		$('.messages-container', this.wrapper).append(newMessage);
+		$('.messages-box').scrollTop(100000);
 	},
 
 
@@ -284,7 +285,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 */
 	showMyMessage: function(message) {
 		var newMessage = $.tmpl('agent_chat_message_me', { message: message });
-		$('.messages-container:first', this.wrapper).append(newMessage).scrollTop(100000);
+		$('.messages-container', this.wrapper).append(newMessage);
+		$('.messages-box').scrollTop(100000);
 	},
 
 
