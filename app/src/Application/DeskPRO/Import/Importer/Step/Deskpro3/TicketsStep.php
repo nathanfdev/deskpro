@@ -725,7 +725,6 @@ class TicketsStep extends AbstractDeskpro3Step
 					if ($tlog['id_after']) {
 						$new_id = $this->getMappedNewId('ticket_category', $tlog['id_after']);
 						if (!$new_id) {
-							$this->importer->getLogger()->log('[Bad TicketLog] ' . print_r($tlog, true), 'DEBUG');
 							break;
 						}
 					}
@@ -755,14 +754,12 @@ class TicketsStep extends AbstractDeskpro3Step
 					if ($tlog['id_before']) {
 						$old_id = $this->getMappedNewId('ticket_workflow', $tlog['id_before']);
 						if (!$old_id) {
-							$this->importer->getLogger()->log('[Bad TicketLog] ' . print_r($tlog, true), 'DEBUG');
 							break;
 						}
 					}
 					if ($tlog['id_after']) {
 						$new_id = $this->getMappedNewId('ticket_workflow', $tlog['id_after']);
 						if (!$new_id) {
-							$this->importer->getLogger()->log('[Bad TicketLog] ' . print_r($tlog, true), 'DEBUG');
 							break;
 						}
 					}
@@ -792,14 +789,12 @@ class TicketsStep extends AbstractDeskpro3Step
 					if ($tlog['id_before']) {
 						$old_id = $this->getMappedNewId('ticket_priority', $tlog['id_before']);
 						if (!$old_id) {
-							$this->importer->getLogger()->log('[Bad TicketLog] ' . print_r($tlog, true), 'DEBUG');
 							break;
 						}
 					}
 					if ($tlog['id_after']) {
 						$new_id = $this->getMappedNewId('ticket_priority', $tlog['id_after']);
 						if (!$new_id) {
-							$this->importer->getLogger()->log('[Bad TicketLog] ' . print_r($tlog, true), 'DEBUG');
 							break;
 						}
 					}

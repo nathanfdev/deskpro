@@ -57,7 +57,6 @@ class KbRelatedStep extends AbstractDeskpro3Step
 			$id2 = $this->getMappedNewId('faq_article', $related['related_article']);
 
 			if (!$id1 || !$id2) {
-				print_r($related);
 				continue;
 			}
 
