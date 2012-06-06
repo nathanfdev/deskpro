@@ -82,7 +82,7 @@
 				<li
 					class="usergroup-{{id}} nav-usergroup-org-{{id}} is-nav-item"
 					data-usergroup-id="{{id}}"
-					data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
+					data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 				>
 					<h3 class="title">
 						<span class="list-counter">{{ org_usergroup_counts[id]|default(0) }}</span>
