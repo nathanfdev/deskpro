@@ -5478,3 +5478,27 @@ div.cc-autocomplete.loading .is-not-loading { display: none !important; }
 		text-align: center;
 	}
 }
+
+.ticket-sending-overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	.rounded(4px);
+
+	border: 1px solid darken(#AFB5B9, 10%);
+
+	background: rgba(255, 255, 255, 0.75);
+	z-index: 100;
+
+	text-align: center;
+
+	strong {
+		display: block;
+		margin-top: 45px;
+		font-size: 13pt;
+		background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 0;
+		padding-top: 40px;
+	}
+}

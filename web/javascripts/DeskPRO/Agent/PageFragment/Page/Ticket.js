@@ -206,12 +206,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
 
+		var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
+		loadingEl.fadeIn();
+
 		$.ajax({
 			url: reply_form.attr('action'),
 			type: 'POST',
 			dataType: 'json',
 			data: formData,
 			context: this,
+			complete: function() {
+				loadingEl.hide();
+			},
 			success: function(result) {
 
 				if (result.error && result.error == 'no_message') {
@@ -277,7 +283,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var new_messages = null;
 		if (data.ticket_messages_block) {
 			new_messages = $(data.ticket_messages_block).hide();
-			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
+			var self = this;
+			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast', function() {
+				self.updateUi();
+			});
 		}
 
 		if (data.updated_agent_parts_html) {
@@ -331,6 +340,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var new_message = $(html).hide();
 
 		slideCallback = slideCallback || function(){};
+
+		var old_slideCallback = slideCallback;
+		var self = this;
+		slideCallback = function() {
+			self.updateUi();
+			old_slideCallback();
+		};
 
 		new_message.appendTo($(this.getEl('messages_wrap'))).slideDown('fast', slideCallback);
 
