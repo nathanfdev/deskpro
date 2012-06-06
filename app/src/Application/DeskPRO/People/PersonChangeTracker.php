@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Arrays;
 
@@ -45,10 +45,22 @@ use Orb\Util\Arrays;
  */
 class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
-	protected $ticket;
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * @var bool
+	 */
 	protected $is_new_person = false;
 
-	public function __construct(Entity\Person $person)
+	/**
+	 * @var bool
+	 */
+	protected $running = false;
+
+	public function __construct(Person $person)
 	{
 		$this->entity = $person;
 		$this->person = $person;
@@ -60,7 +72,9 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 
 	/**
-	 * Get the ticket
+	 * Get the person
+	 *
+	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	public function getPerson()
 	{
@@ -99,6 +113,11 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		if ($this->running) {
+			return;
+		}
+		$this->running = true;
+
 		if ($this->is_new_person && $this->person->getPrimaryEmail()) {
 			$change = false;
 
@@ -118,15 +137,15 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 			// And check orgs with domain assocs
 			$domain = $this->person->getPrimaryEmail()->email_domain;
-			$org = App::getContainer()->getEm()->createQuery("
+			$orgem = App::getContainer()->getEm()->createQuery("
 				SELECT od
 				FROM DeskPRO:OrganizationEmailDomain od
 				WHERE od.domain = ?1
 			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
 
-			if ($org) {
+			if ($orgem) {
 				$change = true;
-				$this->person->organization = $org;
+				$this->person->organization = $orgem->organization;
 			}
 
 			if ($change) {
@@ -141,5 +160,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 				}
 			}
 		}
+
+		$this->running = false;
 	}
 }
