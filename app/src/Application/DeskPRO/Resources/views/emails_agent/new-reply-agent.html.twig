@@ -12,11 +12,20 @@
 {% if is_new_agent_reply %}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
 {% elseif is_new_user_reply %}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
 {% endif %}
+<br /><br />
 
 {{ layout.section('', content) }}
 
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
+	<tr>
+		<td width="130">View Online</td>
+		<td>
+			<a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">
+				{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}
+			</a>
+		</td>
+	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.general.id') }}</td>
 		<td>{{ ticket.id }}</td>

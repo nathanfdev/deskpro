@@ -5,11 +5,19 @@
 {{ phrase('agent.emails.reply_above_line') }}
 <br /><br />
 
-{% set content %}{{ phrase('agent.emails.ticket_was_created') }}{% endset %}
+{% set content %}{{ phrase('agent.emails.ticket_was_created') }}<br /><br />{% endset %}
 {{ layout.section('', content) }}
 
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
+	<tr>
+		<td width="130">View Online</td>
+		<td>
+			<a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">
+				{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}
+			</a>
+		</td>
+	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.general.id') }}</td>
 		<td>{{ ticket.id }}</td>

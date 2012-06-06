@@ -6,9 +6,18 @@
 {{ layout.section('', content) }}
 
 {{ phrase('agent.emails.ticket_updated', {'subject':ticket.subject}) }}
+<br /><br />
 
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
+	<tr>
+		<td width="130">View Online</td>
+		<td>
+			<a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">
+				{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}
+			</a>
+		</td>
+	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.general.agent') }}</td>
 		<td>{{ticket.agent.display_name|default(phrase('agent.general.none'))}}</td>
