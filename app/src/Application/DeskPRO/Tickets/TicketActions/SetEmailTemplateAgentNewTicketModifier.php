@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-class SetEmailTemplateAgentNewTicketValidateModifier extends SetEmailTemplateModifier
+class SetEmailTemplateAgentNewTicketModifier extends SetEmailTemplateModifier
 {
 
 }
