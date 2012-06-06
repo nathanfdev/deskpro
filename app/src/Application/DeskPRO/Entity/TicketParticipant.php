@@ -94,7 +94,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_onPropertyChanged('person', $this->person, $person);
-		$this['person'] = $person;
+		$this->person = $person;
 
 		if (!$this->person_email && $this->person->primary_email) {
 			$this->setPersonEmail($this->person->primary_email);
