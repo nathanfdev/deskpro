@@ -133,7 +133,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setValueStr($valueStr)
     {
-        $this->setModelField('alue_str', $valueStr);
+        $this->setModelField('value_str', $valueStr);
     }
 
     /**
