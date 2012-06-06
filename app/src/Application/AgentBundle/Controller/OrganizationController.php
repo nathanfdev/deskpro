@@ -610,11 +610,11 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$org = $this->getOrgOr404($organization_id);
-
-		if (!$this->session->getEntity()->checkSecurityToken('delete_org', $security_token) OR !$this->person->hasPerm('orgs.delete')) {
+		if (!$this->session->getEntity()->checkSecurityToken('delete_org', $security_token)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
+
+		$org = $this->getOrgOr404($organization_id);
 
 		$edit_manager = $this->container->getSystemService('org_edit_manager');
 		$edit_manager->deleteOrganization($org);
