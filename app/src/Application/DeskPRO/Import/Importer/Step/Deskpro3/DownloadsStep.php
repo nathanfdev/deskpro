@@ -123,8 +123,8 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$new_download->blob = $new_blob;
 		$new_download->category = $new_category;
 		$new_download->person = $new_person;
-		$new_download->title = $download['filename'];
-		$new_download->content = $download['filename'];
+		$new_download->title = $download['filename'] ?: 'untitled';
+		$new_download->content = $download['filename'] ?: 'untitled';
 		$new_download->date_created = new \DateTime('@' . $download['timestamp']);
 		$new_download->date_published = new \DateTime('@' . $download['timestamp']);
 

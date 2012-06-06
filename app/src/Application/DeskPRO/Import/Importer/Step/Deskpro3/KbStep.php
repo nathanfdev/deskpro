@@ -182,7 +182,7 @@ class KbStep extends AbstractDeskpro3Step
 			$new_article->setStatusCode(Article::STATUS_ARCHIVED);
 		}
 		$new_article->person = $new_person;
-		$new_article->title = $article['title'];
+		$new_article->title = $article['title'] ?: 'Untitled';
 		$new_article->content = $article['question'] . "<br /><br />" . $article['answer'];
 		$new_article->date_created = new \DateTime('@' . $article['timestamp_made']);
 		$new_article->date_published = new \DateTime('@' . $article['timestamp_made']);
