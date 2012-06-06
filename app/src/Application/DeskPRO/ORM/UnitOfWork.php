@@ -113,7 +113,9 @@ class UnitOfWork extends DoctrineUnitOfWork
 			$repos->preload();
 		} else {
 			foreach ($repos->findAll() as $e) {
-				$e->__load();
+				if ($e instanceof \Doctrine\ORM\Proxy\Proxy) {
+					$e->__load();
+				}
 			}
 		}
 	}
@@ -130,7 +132,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 		$class = $this->em->getClassMetadata($entityName);
 		$classname = $class->getName();
 
-		return isset($this->loaded_sets[$classname]);
+		return isset($this->enable_preload_set[$classname]);
 	}
 
 

@@ -63,7 +63,7 @@ class DepartmentDataService extends BaseRepositoryService
 		if ($this->has_init) {
 			return;
 		}
-		$this->has_init = false;
+		$this->has_init = true;
 
 		$this->cats = $this->em->createQuery("
 			SELECT d

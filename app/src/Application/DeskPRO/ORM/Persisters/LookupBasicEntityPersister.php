@@ -79,30 +79,31 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
 	{
 		$uof = $this->_em->getUnitOfWork();
-		$classname = $this->_class->getName();
 
 		if ($assoc['mappedBy'] == 'parent' && $sourceEntity->getId()) {
-			if ($uof->isAddedPreloadedEntity($classname)) {
-				$uof->preloadEntitySet($classname);
-			}
-
 			$persister = $uof->getEntityPersister($assoc['targetEntity']);
 			$classname = $assoc['targetEntity'];
 			$has = false;
 
-			if ($persister instanceof LookupBasicEntityPersister) {
-				$idmap = $uof->getIdentityMap();
-				if (isset($idmap[$classname])) {
-					foreach ($idmap[$classname] as $ent) {
-						if ($ent->__hasRunLoad__() && $ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
-							$has = true;
-							$coll->hydrateAdd($ent);
+			if ($uof->isAddedPreloadedEntity($classname)) {
+				$uof->preloadEntitySet($classname);
+
+				if ($persister instanceof LookupBasicEntityPersister) {
+					$idmap = $uof->getIdentityMap();
+					if (isset($idmap[$classname])) {
+						foreach ($idmap[$classname] as $ent) {
+							if ($ent->__hasRunLoad__() && $ent->getId() && $ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
+								$has = true;
+								$coll->hydrateAdd($ent);
+							}
 						}
 					}
-				}
 
-				if ($has) {
-					return $coll;
+					// We have any matches , or if its a prelaoded entyt
+					// (note that the resulting col might be legitimately empty)
+					if ($has || $uof->isAddedPreloadedEntity($classname)) {
+						return $coll;
+					}
 				}
 			}
 		}
