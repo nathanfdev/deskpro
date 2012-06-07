@@ -82,12 +82,15 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 						throw $e;
 					}
 				} else {
-					return $this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
+					$this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
 				}
 			}
 		}
 
-		$url = $this->generateUrl('agent', array(), true);
+		$url = $this->in->getString('return');
+		if (!$url) {
+			$url = $this->generateUrl('agent', array(), true);
+		}
 		$has_logged_out = $this->in->checkIsset('o');
 
 		$failed_login_name = false;

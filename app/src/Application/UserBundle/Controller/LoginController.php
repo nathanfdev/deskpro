@@ -171,7 +171,6 @@ HTML;
 		}
 
 		$result = $this->authLocalInput();
-
 		$return = $this->in->getString('return');
 
 		if (!$result->isValid()) {

@@ -82,9 +82,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 					$return = $this->request->getRequestUri();
 				}
 
-
-				$redirect_url = $this->get('router')->generate('agent_login', array('return' => $return));
-				return $this->redirect($redirect_url);
+				return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+					'return' => $return
+				));
 			}
 		}
 
