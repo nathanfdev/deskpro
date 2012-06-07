@@ -84,7 +84,11 @@ class TicketMergeStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$this->getDb()->insert('import_datastore', array(
+		if (!isset($merge_info['old_authcode'])) {
+			return;
+		}
+
+		$this->getDb()->replace('import_datastore', array(
 			'typename' => 'dp3_ticketmerge_' . $merge_info['old_ref'],
 			'data' => serialize(array(
 				'old_auth' => $merge_info['old_authcode'],

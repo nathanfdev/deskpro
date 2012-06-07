@@ -1126,7 +1126,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 				case 'email_tech':
 
-					$extra = unserialize($tlog['extra']);
+					$extra = @unserialize($tlog['extra']);
 					if (!$extra) {
 						break;
 					}
