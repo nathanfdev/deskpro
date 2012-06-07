@@ -38,6 +38,11 @@ use Application\DeskPRO\App;
 
 class DisableNotificationsModifier implements CollectionModifierInterface
 {
+	public function __construct()
+	{
+
+	}
+
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		$notify_types = array();
