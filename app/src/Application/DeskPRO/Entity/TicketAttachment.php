@@ -77,7 +77,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->setModelField('date_created', new \DateTime());
+
 	}
 
 	/**
