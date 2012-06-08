@@ -306,6 +306,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	saveSnippet: function(row) {
+		var self = this;
 		var data = $('input, textarea', row).serializeArray();
 
 		if (this.meta.ticket_id) {
