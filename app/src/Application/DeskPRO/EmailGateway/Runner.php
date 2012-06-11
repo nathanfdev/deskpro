@@ -221,9 +221,7 @@ class Runner
 			if ($created_obj) {
 				$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
 				$source['object_id'] = $created_obj->id;
-			}
 
-			if ($created_obj) {
 				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 			}
 		} catch (\Exception $e) {

@@ -185,14 +185,14 @@ class ErrorReporter
 			$copy_keys = array(
 				'type', 'session_name', 'exception_type', 'die', 'pri',
 				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-				'display'
+				'display', 'process_log'
 			);
 			$info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
 		} else {
 			$copy_keys = array(
 				'type', 'session_name', 'die', 'pri',
 				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-				'display'
+				'display', 'process_log'
 			);
 			$info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
 		}

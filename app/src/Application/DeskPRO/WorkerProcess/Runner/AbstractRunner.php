@@ -37,6 +37,7 @@ namespace Application\DeskPRO\WorkerProcess\Runner;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
+use Orb\Log\LogItem;
 
 /**
  * A Runner is a thing that knows how to run jobs.
@@ -162,6 +163,26 @@ abstract class AbstractRunner
 		if ($this->_init_logger_callback) {
 			call_user_func($this->_init_logger_callback, $logger, $worker_job);
 		}
+
+		// Copy log lines to the process log in error controller,
+		// so we can send the log in error reports
+		\DeskPRO\Kernel\KernelErrorHandler::clearProcessLog();
+		$wr = new \Orb\Log\Writer\Callback(function($log_item) {
+			$message_line = "[%datetime% %priority_name%] %message%";
+
+			foreach ($log_item as $k => $v) {
+				if ($v instanceof \DateTime) {
+					$v = $v->format('Y-m-d H:i:s');
+				}
+
+				if (is_scalar($v)) {
+					$message_line = str_replace("%$k%", $v, $message_line);
+				}
+			}
+
+			\DeskPRO\Kernel\KernelErrorHandler::addProcessLog($message_line);
+		});
+		$logger->addWriter($wr);
 
 		return $logger;
 	}

@@ -77,13 +77,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function logMessage($message, $pri = 'debug')
 	{
+		$line = sprintf("[%s %s] %s", date('Y-m-d H:i:s'), $message, $pri);
+
 		parent::logMessage($message, $pri);
 
 		if (!$this->source_info) {
 			$this->source_info = array();
 		}
 
-		$this->source_info[] = sprintf("[%s %s] %s", date('Y-m-d H:i:s'), $message, $pri);
+		$this->source_info[] = $line;
 	}
 
 	protected function init()

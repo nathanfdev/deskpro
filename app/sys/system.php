@@ -860,7 +860,40 @@ class KernelErrorHandler
 	public static $is_handling_exception = false;
 	public static $wrote_log_file = false;
 	public static $wrote_php_log = false;
+	protected static $process_log = array();
 
+
+	/**
+	 * Add a log line that'll be saved with an error. This is used with things like the gateway, where
+	 * if there's an error we'll want to know everything that happened up to the error point.
+	 *
+	 * @param $line
+	 */
+	public static function addProcessLog($line)
+	{
+		self::$process_log[] = $line;
+	}
+
+
+	/**
+	 * Clears the process log. For example, with the gateway, if a new email is started then the last log
+	 * might be cleared.
+	 */
+	public static function clearProcessLog()
+	{
+		self::$process_log = array();
+	}
+
+
+	/**
+	 * Handle an error. Typically used as the error handler with set_error_handler()
+	 *
+	 * @param int $errno
+	 * @param string $errstr
+	 * @param string $errfile
+	 * @param string $errline
+	 * @return void
+	 */
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
 		if (!(error_reporting() & $errno)) {
@@ -906,6 +939,13 @@ class KernelErrorHandler
 		}
 	}
 
+
+	/**
+	 * Handle logging of an exception.
+	 *
+	 * @param \Exception $exception
+	 * @return void
+	 */
 	public static function handleException(\Exception $exception)
 	{
 		if (self::$is_handling_exception) {
@@ -946,6 +986,10 @@ class KernelErrorHandler
 		self::$is_handling_exception = false;
 	}
 
+
+	/**
+	 * Tries to clean up before dieing after a fatal error.
+	 */
 	public static function tryCleanup()
 	{
 		if (class_exists('Application\DeskPRO\App')) {
@@ -958,13 +1002,20 @@ class KernelErrorHandler
 		}
 	}
 
+
+	/**
+	 * Takes care of logging an error. $errinfo is an info array from getExceptionInfo or getErrorInfo.
+	 *
+	 * @param array $errinfo
+	 * @return void
+	 */
 	public static function logErrorInfo(array $errinfo)
 	{
 		if (self::$is_logging) return;;
 		self::$is_logging = true;
 
 		if (!class_exists('Application\DeskPRO\App')) {
-			return null;
+			return;
 		}
 
 		self::logToFile($errinfo);
@@ -997,6 +1048,12 @@ class KernelErrorHandler
 		self::$is_logging = false;
 	}
 
+
+	/**
+	 * Logs error info to the data/error.log file and the summary to the PHP error log.
+	 *
+	 * @param array $errinfo
+	 */
 	public static function logToFile(array $errinfo)
 	{
 		self::$wrote_log_file = false;
@@ -1048,6 +1105,13 @@ class KernelErrorHandler
 		}
 	}
 
+
+	/**
+	 * Gets a standard error info array from an exception.
+	 *
+	 * @param \Exception $exception
+	 * @return array
+	 */
 	public static function getExceptionInfo(\Exception $exception)
 	{
 		$errno   = $exception->getCode();
@@ -1092,12 +1156,23 @@ class KernelErrorHandler
 			'errfile'        => $errfile,
 			'errline'        => $errline,
 			'display'        => $display,
-			'build'          => DP_BUILD_TIME
+			'build'          => DP_BUILD_TIME,
+			'process_log'    => implode("\n", self::$process_log)
 		);
 
 		return $errinfo;
 	}
 
+
+	/**
+	 * Gets a standard error info array from an error.
+	 *
+	 * @param int $errno
+	 * @param string $errstr
+	 * @param string $errfile
+	 * @param string $errline
+	 * @return array
+	 */
 	public static function getErrorInfo($errno, $errstr, $errfile, $errline)
 	{
 		$die = false;
@@ -1167,10 +1242,18 @@ class KernelErrorHandler
 			'errfile'      => $errfile,
 			'errline'      => $errline,
 			'display'      => $display,
-			'build'        => DP_BUILD_TIME
+			'build'        => DP_BUILD_TIME,
+			'process_log'  => implode("\n", self::$process_log)
 		);
 	}
 
+
+	/**
+	 * Strips the full path prefix from $content. This makes all paths relative to the root of DeskRPO install.
+	 *
+	 * @param string $content
+	 * @return string
+	 */
 	public static function stripPathPrefix($content)
 	{
 		$content = str_replace('\\', '/', $content);
@@ -1184,6 +1267,13 @@ class KernelErrorHandler
 		return $content;
 	}
 
+
+	/**
+	 * Formats a backtrace.
+	 *
+	 * @param array $backtrace
+	 * @return string
+	 */
 	public static function formatBacktrace(array $backtrace)
 	{
 		$trace = '';
@@ -1220,6 +1310,15 @@ class KernelErrorHandler
 		return trim($trace);
 	}
 
+
+	/**
+	 * Used with formatBacktrace to format an array (usually parameters) to a string, being sure not to recurse
+	 * too deep.
+	 *
+	 * @param mixed $var
+	 * @param int $_depth
+	 * @return string
+	 */
 	public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
