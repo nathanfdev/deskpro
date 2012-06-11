@@ -9,4 +9,12 @@
 			<li>{{ phrase('admin.general.new_field') }}</li>
 		{% endif %}
      </ul>
+
+	{% if field.id %}
+		<nav>
+			<ul>
+				<li class="delete"><a href="{{ path('admin_customdeftickets_delete', {'field_id': field.id, 'security_token': security_token('delete_custom_field') }) }}" onclick="return confirm('Are you sure?');">{{ phrase('agent.general.delete') }}</a></li>
+			</ul>
+		</nav>
+	{% endif %}
 {% endblock %}

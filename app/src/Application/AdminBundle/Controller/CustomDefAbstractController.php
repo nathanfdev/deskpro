@@ -200,6 +200,24 @@ abstract class CustomDefAbstractController extends AbstractController
 	}
 
 
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($field_id, $security_token)
+	{
+		$this->ensureAuthToken('delete_custom_field', $security_token);
+		$field = $this->getFieldOr404($field_id);
+
+		$this->em->transactional(function($em) use ($field) {
+			$em->remove($field);
+			$em->flush();
+		});
+
+		return $this->redirectRoute($this->getListingRoute());
+	}
+
+
 
 	############################################################################
 

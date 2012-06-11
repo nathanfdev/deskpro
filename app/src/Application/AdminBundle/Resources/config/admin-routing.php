@@ -1047,6 +1047,13 @@ $collection->add('admin_customdefpeople_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_customdefpeople_delete', new Route(
+	'/people-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefPeople:delete'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_customdefpeople_setenabled', new Route(
 	'/people-fields/{field_id}/set-enabled',
 	array('_controller' => 'AdminBundle:CustomDefPeople:setEnabled'),
@@ -1086,6 +1093,13 @@ $collection->add('admin_customdeftickets_new_choosetype', new Route(
 $collection->add('admin_customdeftickets_edit', new Route(
 	'/ticket-fields/{field_id}/edit',
 	array('_controller' => 'AdminBundle:CustomDefTickets:edit'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdeftickets_delete', new Route(
+	'/ticket-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefTickets:delete'),
 	array('field_id' => '\\d+'),
 	array()
 ));
@@ -1198,6 +1212,13 @@ $collection->add('admin_customdeforganizations_new_choosetype', new Route(
 $collection->add('admin_customdeforganizations_edit', new Route(
 	'/organization-fields/{field_id}/edit',
 	array('_controller' => 'AdminBundle:CustomDefOrganizations:edit'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdeforganizations_delete', new Route(
+	'/organization-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefOrganizations:delete'),
 	array('field_id' => '\\d+'),
 	array()
 ));
@@ -1586,6 +1607,13 @@ $collection->add('admin_customdefarticles_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_customdefarticles_delete', new Route(
+	'/article-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefArticles:delete'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_customdefarticles_setenabled', new Route(
 	'/article-fields/{field_id}/set-enabled',
 	array('_controller' => 'AdminBundle:CustomDefArticles:setEnabled'),
@@ -1617,6 +1645,13 @@ $collection->add('admin_customdeffeedback_new_choosetype', new Route(
 $collection->add('admin_customdeffeedback_edit', new Route(
 	'/feedback-fields/{field_id}/edit',
 	array('_controller' => 'AdminBundle:CustomDefFeedback:edit'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_customdeffeedback_delete', new Route(
+	'/feedback-fields/{field_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:CustomDefFeedback:delete'),
 	array('field_id' => '\\d+'),
 	array()
 ));
