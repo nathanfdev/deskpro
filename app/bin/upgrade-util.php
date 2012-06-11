@@ -1996,7 +1996,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->clearSpinner();
 
-		$this->out("<info>Download was successful. Pacakge saved to:\n{$this->dl_distro}\n</info>");
+		$this->out("<info>Download was successful. Package saved to:\n{$this->dl_distro}\n</info>");
 		$this->out();
 
 		$this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
