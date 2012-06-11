@@ -384,6 +384,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#page_loading').remove();
 		$('#loading_css').remove();
 
+		if (!window.DeskPRO_FragmentRouter) {
+			DP.console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
+			window.DeskPRO_FragmentRouter = {
+				baseUrl: '',
+				setBaseUrl: function(x) { this.baseUrl = x; },
+				hasFragment: function() { return false; },
+				getFragmentPattern: function() { return ''; },
+				getFragmentType: function() { return ''; },
+				getUrl: function() { return ''; },
+				getUrlNamedArgs: function() { return ''; }
+			};
+		}
+
 		this.fragmentRouter = window.DeskPRO_FragmentRouter;
 		this.fragmentRouter.setBaseUrl(BASE_URL);
 
