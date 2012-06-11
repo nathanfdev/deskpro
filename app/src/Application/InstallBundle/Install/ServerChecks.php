@@ -272,7 +272,15 @@ class ServerChecks
 			if (file_exists(DP_CONFIG_FILE)) {
 				require_once(DP_CONFIG_FILE);
 
-				if (!defined('DP_DATABASE_HOST') || !defined('DP_DATABASE_USER') || !defined('DP_DATABASE_PASSWORD') || !defined('DP_DATABASE_NAME')) {
+				if (defined('DATABASE_HOST')) {
+					$this->has_fatal_server_errors = true;
+					$msg = "/config.php exists but appears to contain configuration from a DeskPRO v3 file";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['config_dp3_values'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
+				} else if (!defined('DP_DATABASE_HOST') || !defined('DP_DATABASE_USER') || !defined('DP_DATABASE_PASSWORD') || !defined('DP_DATABASE_NAME')) {
 					$this->has_fatal_server_errors = true;
 					$msg = "/config.php exists but does not contain the required database values";
 					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
@@ -529,6 +537,25 @@ class ServerChecks
 				$msg = "The data directory and all sub-directories must exist and be writable (path: $dir).";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['data_write'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# dp3_files
+		#------------------------------
+
+		if ($type == 'dp3_files' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking to make sure DeskPRO v3 files are not present", Logger::DEBUG);
+			if (!file_exists(DP_WEB_ROOT.'/newticket.php')) {
+				$this->getLogger()->log("[OK] DeskPRO v3 files not here", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "[FATAL] It appears as though you installed the DeskPRO v4 files over a copy of DeskPRO v3. DeskPRO v4 is completely new and shares no common files with v3, and having v3 files in the same directory is a security risk. You should delete the directory and extract a fresh copy of DeskPRO v4.";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['dp3_files'] = array(
 					'message' => $msg,
 					'level' => 'fatal'
 				);

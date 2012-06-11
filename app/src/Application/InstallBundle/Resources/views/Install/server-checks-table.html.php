@@ -47,7 +47,7 @@
 
 <tr>
 	<td>
-		<?php if (!isset($errors['config']) && !isset($errors['config_values'])): ?>
+		<?php if (!isset($errors['config']) && !isset($errors['config_values']) && !isset($errors['config_dp3_values'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; ?>
 		<span class="label important" style="float:right">FAIL</span>
@@ -56,11 +56,14 @@
 		<?php if ($failed): ?>
 		<div class="alert-message block-message error">
 			<?php if (isset($errors['config'])): ?>
-			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_missing') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-			/config.php is missing. Copy /config.new.php and edit it to add your database settings.
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_missing') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				/config.php is missing. Copy /config.new.php and edit it to add your database settings.
 			<?php elseif (isset($errors['config_values'])): ?>
-			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-			/config.php exists but it does not contain the required settings. You should copy /config.new.php and edit it to add your database settings.
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				/config.php exists but it does not contain the required settings. You should copy /config.new.php and edit it to add your database settings.
+			<?php elseif (isset($errors['config_dp3_values'])): ?>
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				/config.php exists but it appears to contain values from an old DeskPRO v3 installation. DeskPRO v3 and DeskPRO v4 use different config.php formats. You should copy /config.new.php and edit it to add your database settings.
 			<?php endif ?>
 		</div>
 		<?php endif ?>
@@ -292,6 +295,22 @@
 		<?php endif ?>
 	</td>
 </tr>
+
+<?php if (isset($errors['dp3_files'])): ?>
+<?php $failed = true ?>
+<tr>
+	<td>
+		<span class="label important" style="float:right">FAIL</span>
+		DeskPRO v3 files
+		<div class="alert-message block-message error">
+			We have detected that there are DeskPRO v3 files present. DeskPRO v4 should NOT be installed over an existing
+			v3 install. Having v3 files present in the v4 directory is a security risk. You should completely delete the directory
+			and then re-extract your DeskPRO v4 distribution so you have a pristine installation.
+		</div>
+	</td>
+</tr>
+<?php endif ?>
+
 </tbody>
 </table>
 
