@@ -311,7 +311,7 @@ class TriggerExecutor
 		# Flood checks / autoreply checks
 		#------------------------------
 
-		if (!DP_DEBUG && !App::getSetting('core.disable_gateway_floodcheck')) {
+		if (!App::getSetting('core.disable_gateway_floodcheck')) {
 			$is_autoreply = false;
 
 			if (in_array('new_ticket', $this->event_types)) {
