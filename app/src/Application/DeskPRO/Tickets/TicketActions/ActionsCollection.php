@@ -140,7 +140,7 @@ class ActionsCollection
 	public function hasActionType($name)
 	{
 		if (strpos($name, '\\') === false) {
-			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
 		}
 
 		return isset($this->actions[$name]);
@@ -155,7 +155,7 @@ class ActionsCollection
 	public function hasModifierType($name)
 	{
 		if (strpos($name, '\\') === false) {
-			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
 		}
 
 		return isset($this->applied_modifier_types[$name]);
@@ -172,7 +172,7 @@ class ActionsCollection
 	public function getActionType($name)
 	{
 		if (strpos($name, '\\') === false) {
-			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
 		}
 
 		if (!$this->hasActionType($name)) {
@@ -193,7 +193,7 @@ class ActionsCollection
 	public function removeActionType($name)
 	{
 		if (strpos($name, '\\') === false) {
-			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
 		}
 
 		if (!$this->hasActionType($name)) {
