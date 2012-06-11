@@ -210,7 +210,11 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$file_path_full = $dir_path_full . DIRECTORY_SEPARATOR . $filename;
 
 		if (!is_dir($dir_path_full)) {
-			if (!@mkdir($dir_path_full, 0777, true)) {
+			$old_umask = umask(0);
+			$mkdir_success = @mkdir($dir_path_full, 0777, true);
+			umask($old_umask);
+
+			if (!$mkdir_success) {
 				throw new \RuntimeException("Could not create filesystem storage directory");
 			}
 		}
