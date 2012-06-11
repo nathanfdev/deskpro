@@ -44,12 +44,22 @@
 			<label>{{ phrase('admin.license.your_license_code') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<textarea name="license_code" style="height: 150px"></textarea>
+			<textarea name="license_code" style="height: 150px">{{ app.getSetting('core.license') }}</textarea>
 		</div>
 	</div>
 </div>
 
 	<button class="clean-white">{{ phrase('admin.license.save_license') }}</button>
 </form>
+
+<div style="margin: 40px 38px 30px 30px; background-color: #EDEDED; padding: 10px;">
+	<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
+	<p>
+		If your server is not connected to the internet or there is a problem setting your license automatically,
+		then our agents may ask you to email this keyfile to <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
+		so your license code can be manually generated.
+	</p>
+	<br style="clear: left; height: 10px;" />
+</div>
 
 {% endblock %}
