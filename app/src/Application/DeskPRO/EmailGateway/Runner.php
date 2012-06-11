@@ -227,20 +227,17 @@ class Runner
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
 
-			App::getOrm()->persist($source);
-			App::getOrm()->flush();
+			$this->_updateSource($source);
 
 			throw $e;
 		}
 
-		App::getOrm()->persist($source);
-		App::getOrm()->flush();
+		$this->_updateSource($source);
 		App::getOrm()->commit();
 
 		$end_time = microtime(true);
 		$this->logger->log(sprintf("Finished processing source. Took %.2f seconds.", $end_time - $start_time), 'info');
 	}
-
 
 	/**
 	 * Execute a gateway
@@ -354,14 +351,12 @@ class Runner
 			} catch (\Exception $e) {
 				App::getOrm()->rollback();
 
-				App::getOrm()->persist($source);
-				App::getOrm()->flush();
+				$this->_updateSource($source);
 
 				throw $e;
 			}
 
-			App::getOrm()->persist($source);
-			App::getOrm()->flush();
+			$this->_updateSource($source);
 			App::getOrm()->commit();
 
 			$time_so_far = time() - $exec_start;
@@ -372,5 +367,26 @@ class Runner
 
 		$end_time = microtime(true);
 		$this->logger->log(sprintf("Finished processing gateway. Took %.2f seconds.", $end_time - $start_time), 'info');
+	}
+
+	/**
+	 * Updating the source without Doctrine to ensure the record is still updated
+	 * when there is a critical error during a commit in the UoW. Since Doctrine
+	 * cannot recover from a critical error during commit-time, if we'd try to persist
+	 * the entity through the EM we'd get an error about the entity manager being closed.
+	 *
+	 * Examples of when this might happen would be invalid forign keys, database connection
+	 * error that happened precisely within the time it took to do the commit, or any other
+	 * error in that time.
+	 *
+	 * @param $source
+	 */
+	protected function _updateSource($source)
+	{
+		App::getDb()->update('email_sources', array(
+			'status'      => $source['status'],
+			'error_code'  => $source['error_code'],
+			'source_info' => serialize($source['source_info'] ?: array()),
+		), array('id' => $source->getId()));
 	}
 }
