@@ -20,6 +20,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		this.wrapper = el;
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
 
