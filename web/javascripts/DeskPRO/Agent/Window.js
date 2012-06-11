@@ -786,7 +786,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param name
 	 */
 	getData: function(name) {
-		if (!window.DESKPRO_DATA_REGISTRY[name]) {
+		if (!window.DESKPRO_DATA_REGISTRY || !window.DESKPRO_DATA_REGISTRY[name]) {
 			DP.console.error('Unknown data name %s', name);
 			return null;
 		}
