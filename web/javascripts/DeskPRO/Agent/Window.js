@@ -2463,6 +2463,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+
+				$(this).on('click', function(ev) {
+					Tipped.hideAll();
+				});
+
 				$(this).addClass('tipped-inited');
 			});
 		}, 80);

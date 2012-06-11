@@ -1,10 +1,8 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-if (!file_exists(DP_CONFIG_FILE)) exit;
-
 $is_authed = false;
-if (isset($_GET['_'])) {
-$is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
+if (isset($_GET['_']) && file_exists(DP_CONFIG_FILE)) {
+	$is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
 }
 
 switch ($_GET['_sys']) {
@@ -18,6 +16,10 @@ switch ($_GET['_sys']) {
 
 	case 'check':
 		require DP_ROOT . '/sys/scripts/check.php';
+		break;
+
+	case 'phpinfo':
+		require DP_ROOT . '/sys/scripts/phpinfo.php';
 		break;
 
 	case 'checkurl':
