@@ -212,6 +212,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		if (!$new_agent_id) $new_agent_id = null;
 
 		$insert_ticket = array(
+			'id' => $ticket_info['id'],
 			'subject' => trim($ticket_info['subject']),
 			'person_id' => $new_person_id,
 			'agent_id' => $new_agent_id,
