@@ -10,6 +10,7 @@
 
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 require DP_ROOT . '/sys/load_config.php';
+dp_load_config();
 
 
 #------------------------------
@@ -41,7 +42,7 @@ $errors = array();
 $errors_codes = array();
 
 if (!deskpro_install_check_version()) {
-	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
+	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer but you are using " . phpversion() . ". You need to upgrade your version.";
 	$errors_codes[] = 'php_version';
 }
 
@@ -66,6 +67,9 @@ if (php_sapi_name() == 'cli') {
 }
 
 if ($errors) {
+
+	deskpro_install_simple_data_submit(implode("\n", $errors));
+
 	if (php_sapi_name() == 'cli') {
 		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
 		$msg .= '- ' . implode("\n- ", $errors);

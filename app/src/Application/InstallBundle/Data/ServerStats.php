@@ -92,8 +92,14 @@ class ServerStats
 
 		if (class_exists('PDO')) {
 			$stats['php_has_pdo'] = 1;
+			if (in_array('mysql', \PDO::getAvailableDrivers())) {
+				$stats['php_has_pdo_mysql'] = 1;
+			} else {
+				$stats['php_has_pdo_mysql'] = 0;
+			}
 		} else {
 			$stats['php_has_pdo'] = 0;
+			$stats['php_has_pdo_mysql'] = 0;
 		}
 
 		if (function_exists('json_decode')) {

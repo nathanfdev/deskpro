@@ -68,6 +68,120 @@ function deskpro_install_check_memory_limit()
 	return true;
 }
 
+function deskpro_install_simple_data_submit($log)
+{
+	$install_token_file = dp_get_log_dir() . '/install_token.dat';
+	if (file_exists($install_token_file)) {
+		$GLOBALS['dp_install_token'] = @file_get_contents($install_token_file);
+	} elseif (isset($_COOKIE['dp_install_token'])) {
+		$GLOBALS['dp_install_token'] = $_COOKIE['dp_install_token'];
+	} else {
+		$GLOBALS['dp_install_token'] = sha1(uniqid('', true) . mt_rand(1000,99999));
+	}
+
+	@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
+	@setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'));
+
+	$data = array(
+		'source_type' => 'install.web',
+		'log' => $log,
+		'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+		'nostats' => 0,
+		'total_time' => 0,
+		'error_type' => 'php',
+		'error_info' => array(
+			'exception_type' => 'Application\\InstallBundle\\Install\\ServerCheckException',
+			'summary' => 'Pre-boot check failures',
+			'errstr' => 'Pre-boot check failures',
+		),
+		'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
+		'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
+		'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
+		'client_referrer'   => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+		'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+		'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
+		'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0',
+	);
+
+	$data['php_version'] = phpversion();
+
+	if (function_exists('apc_cache_info')) {
+		$data['php_has_apc'] = 1;
+	} else {
+		$data['php_has_apc'] = 0;
+	}
+
+	if (function_exists('mb_get_info')) {
+		$data['php_has_mbstring'] = 1;
+	} else {
+		$data['php_has_mbstring'] = 0;
+	}
+
+	if (function_exists('gd_info')) {
+		$data['php_has_gd'] = 1;
+	} else {
+		$data['php_has_gd'] = 0;
+	}
+
+	if (class_exists('Imagick', false)) {
+		$data['php_has_imagick'] = 1;
+	} else {
+		$data['php_has_imagick'] = 0;
+	}
+
+	if (class_exists('Gmagick', false)) {
+		$data['php_has_gmagick'] = 1;
+	} else {
+		$data['php_has_gmagick'] = 0;
+	}
+
+	if (class_exists('PDO')) {
+		$data['php_has_pdo'] = 1;
+		if (in_array('mysql', \PDO::getAvailableDrivers())) {
+			$data['php_has_pdo_mysql'] = 1;
+		} else {
+			$data['php_has_pdo_mysql'] = 0;
+		}
+	} else {
+		$data['php_has_pdo'] = 0;
+		$data['php_has_pdo_mysql'] = 0;
+	}
+
+	if (function_exists('json_decode')) {
+		$data['php_has_json'] = 1;
+	} else {
+		$data['php_has_json'] = 0;
+	}
+
+	if (function_exists('ctype_digit')) {
+		$data['php_has_ctype'] = 1;
+	} else {
+		$data['php_has_ctype'] = 0;
+	}
+
+	if (function_exists('token_get_all')) {
+		$data['php_has_tokenizer'] = 1;
+	} else {
+		$data['php_has_tokenizer'] = 0;
+	}
+
+	if (defined('DP_MA_SERVER')) {
+		$ma_server = DP_MA_SERVER;
+	} else {
+		$ma_server = 'http://www.deskpro.com/members';
+	}
+
+	$opts = array(
+		'http' => array(
+			'timeout' => 10
+		)
+	);
+
+	$context  = stream_context_create($opts);
+
+	@file_get_contents($ma_server . '/api/data-submit/report-install.json?' . http_build_query($data, '', '&'), false, $context);
+}
+
 function deskpro_install_check_data_writable($data_dir = null)
 {
 
