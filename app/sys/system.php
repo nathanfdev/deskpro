@@ -1080,6 +1080,12 @@ class KernelErrorHandler
 			}
 		}
 
+		if (!empty($errinfo['context_data'])) {
+			$str[] = "Context Data:\n";
+			$str[] = $errinfo['context_data'];
+			$str[] = "\n\n";
+		}
+
 		$str = implode('', $str);
 
 		// Always write error line to standard error log
@@ -1120,9 +1126,14 @@ class KernelErrorHandler
 
 		$backtrace = $exception->getTrace();
 		$trace = self::formatBacktrace($backtrace);
+		$context_data = '';
 
 		if (isset($exception->_dp_query)) {
 			$errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
+
+			if (!empty($exception->_dp_query_params)) {
+				$context_data = self::varToString($exception->_dp_query_params);
+			}
 		}
 
 		$type = get_class($exception);
@@ -1156,7 +1167,8 @@ class KernelErrorHandler
 			'errline'        => $errline,
 			'display'        => $display,
 			'build'          => DP_BUILD_TIME,
-			'process_log'    => implode("\n", self::$process_log)
+			'process_log'    => implode("\n", self::$process_log),
+			'context_data'   => $context_data
 		);
 
 		return $errinfo;
@@ -1215,6 +1227,8 @@ class KernelErrorHandler
 				$errname = 'UNKNOWN';
 		}
 
+		$context_data = '';
+
 		$display = true;
 		if (!(error_reporting() & $errno)) {
 			$display = false;
@@ -1229,20 +1243,21 @@ class KernelErrorHandler
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
 		return array(
-			'type'         => 'error',
-			'session_name' => null,
-			'die'          => $die,
-			'pri'          => $pri,
-			'trace'        => $trace,
-			'summary'      => $summary,
-			'errstr'       => $errstr,
-			'errname'      => $errname,
-			'errno'        => $errno,
-			'errfile'      => $errfile,
-			'errline'      => $errline,
-			'display'      => $display,
-			'build'        => DP_BUILD_TIME,
-			'process_log'  => implode("\n", self::$process_log)
+			'type'            => 'error',
+			'session_name'    => null,
+			'die'             => $die,
+			'pri'             => $pri,
+			'trace'           => $trace,
+			'summary'         => $summary,
+			'errstr'          => $errstr,
+			'errname'         => $errname,
+			'errno'           => $errno,
+			'errfile'         => $errfile,
+			'errline'         => $errline,
+			'display'         => $display,
+			'build'           => DP_BUILD_TIME,
+			'process_log'     => implode("\n", self::$process_log),
+			'context_data'    => $context_data,
 		);
 	}
 
