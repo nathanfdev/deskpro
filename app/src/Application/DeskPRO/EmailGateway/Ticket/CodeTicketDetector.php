@@ -86,7 +86,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 				if (!$tac) continue;
 
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
-				if (!$ticket->isArchived()) {
+				if ($ticket && !$ticket->isArchived()) {
 					$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
 					return $ticket;
 				}
