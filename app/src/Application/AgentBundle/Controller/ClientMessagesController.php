@@ -79,6 +79,11 @@ class ClientMessagesController extends AbstractController
 		foreach ($dos as $do) {
 			$do = Strings::dashToCamelCase($do);
 			$method = $do . 'Message';
+
+			if (!method_exists($this, $method)) {
+				continue;
+			}
+
 			$method_data = $this->$method();
 			$method_data = Arrays::removeFalsey($method_data);
 
@@ -212,5 +217,17 @@ class ClientMessagesController extends AbstractController
 		}
 
 		return $messages;
+	}
+
+	############################################################################
+	# getOnlineAgents
+	############################################################################
+
+	public function getOnlineAgentsMessage()
+	{
+		$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgents();
+		$online_agents = array_keys($active_agents);
+
+		return array(array(null, 'agent.online-agents', array('online_agents' => $online_agents)));
 	}
 }

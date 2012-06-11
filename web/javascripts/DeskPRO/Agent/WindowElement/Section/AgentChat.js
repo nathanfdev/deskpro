@@ -27,6 +27,12 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agentchat-section.list-activated', function (info) {
 			this.highlightNavItem($('.agent-' + info.id, this.getSectionElement()));
 		}, this);
+
+		DeskPRO_Window.getPoller().addData(
+			[{name: 'do[]', value: 'get-online-agents'}],
+			'agent.online-agents',
+			{recurring: true, minDelay: 210000/*3.5 mintues*/, minDelayAfterOne:true }
+		);
 	},
 
 	onShow: function() {
@@ -42,10 +48,20 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	_initMessageHandlers: function() {
+		var self = this;
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.newIncomingMessage, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', function(info) {
 			var agent_id = info.agent_id;
-			this.addOnlineAgent.bind(agent_id);
+			this.addOnlineAgent(agent_id);
+		}, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents', function(info) {
+			$('#agent_online_list').find('li').not('.no-agents').remove();
+			$('#agent_online_list').find('li.no-agents').show();
+			self.onlineCountEl.html('0');
+
+			Array.each(info.online_agents, function(agent_id) {
+				self.addOnlineAgent(agent_id);
+			});
 		}, this);
 	},
 
@@ -187,7 +203,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 	addOnlineAgent: function(agent_id) {
 
-		if (agent_id.agent_id) {
+		if (typeof agent_id.agent_id != 'undefined') {
 			agent_id = agent_id.agent_id;
 		}
 
