@@ -2,8 +2,11 @@
 <section class="report-wrapper">
 	<header>
 		<h2>
-			There are {{ data.sum }} Tickets 'Awaiting Agent' | Showing Grouped by {{ macros.grouping_field_select(data.grouping_field) }}
+			There are {{ data.sum }} Tickets 'Awaiting Agent'
 		</h2>
+		<h3>
+			Showing Grouped by {{ macros.grouping_field_select(data.grouping_field) }}
+		</h3>
 	</header>
 	<article>
 		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
