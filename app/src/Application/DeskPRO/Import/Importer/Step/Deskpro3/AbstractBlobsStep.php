@@ -53,6 +53,12 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	public function countPages()
 	{
 		$table = $this->getTable();
+
+		$table_exists = $this->getOldDb()->fetchColumn("SHOW TABLES LIKE '$table'");
+		if (!$table_exists) {
+			return 1;
+		}
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM $table");
 		if (!$count) {
 			return 1;
@@ -65,6 +71,11 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	public function run($page = 1)
 	{
 		$table = $this->getTable();
+
+		$table_exists = $this->getOldDb()->fetchColumn("SHOW TABLES LIKE '$table'");
+		if (!$table_exists) {
+			return;
+		}
 
 		$batch = $this->getBatch($table, $page - 1);
 
