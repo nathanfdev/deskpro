@@ -126,6 +126,10 @@ class Env
 	 */
 	public static function getPhpIniPath()
 	{
+		if (self::isFunctionDisabled('phpinfo')) {
+			return false;
+		}
+
 		ob_start();
 		phpinfo();
 		$phpinfo = ob_get_clean();
@@ -139,5 +143,30 @@ class Env
 		} else {
 			return false;
 		}
+	}
+
+
+	/**
+	 * Check if a function has been disabled in php.ini with 'disable_functions'
+	 *
+	 * @param string $func_name
+	 * @return string
+	 */
+	public static function isFunctionDisabled($func_name)
+	{
+		static $disabled = null;
+
+		if ($disabled === null) {
+			$disabled = explode(',', ini_get('disable_functions'));
+			foreach ($disabled as &$_v) {
+				$_v = trim(strtolower($_v));
+			}
+
+			$disabled = array_flip($disabled);
+		}
+
+		$func_name = strtolower($func_name);
+
+		return isset($disabled[$func_name]);
 	}
 }
