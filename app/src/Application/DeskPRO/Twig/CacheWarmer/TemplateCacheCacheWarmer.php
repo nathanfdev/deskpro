@@ -49,6 +49,15 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
 			'TwigBundle:Exception:exception.html.twig',
 			'TwigBundle:Exception:exception_full.html.twig',
 			'TwigBundle::layout.html.twig',
+
+			'ReportBundle:Chart:AmChart/Settings/column.xml.twig',
+			'ReportBundle:Chart:AmChart/Settings/line.xml.twig',
+			'ReportBundle:Chart:AmChart/Settings/pie.xml.twig',
+			'ReportBundle:Chart:AmChart/Settings/stackedColumn.xml.twig',
+			'ReportBundle:Chart:AmChart/Settings/stackedLine.xml.twig',
+			'ReportBundle:Chart:DeskPRO/detailedDrillDown.html.twig',
+			'ReportBundle:Chart:DeskPRO/simpleDrillDown.html.twig',
+			'ReportBundle:Chart:DeskPRO/simpleVariation.html.twig',
 		);
 
         foreach ($extra as $template_name) {
