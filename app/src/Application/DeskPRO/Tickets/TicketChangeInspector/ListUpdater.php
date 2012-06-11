@@ -47,7 +47,7 @@ use Orb\Log\Logger;
 class ListUpdater
 {
 	/**
-	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketListener
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	protected $tracker;
 

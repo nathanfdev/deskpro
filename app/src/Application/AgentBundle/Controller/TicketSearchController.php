@@ -67,10 +67,13 @@ class TicketSearchController extends AbstractController
 		$all_filters      = $filter_info['all_filters'];
 		$sys_filters      = $filter_info['sys_filters'];
 		$sys_filters_hold = $filter_info['sys_filters_hold'];
+		$archive_filters  = $filter_info['archive_filters'];
 		$custom_filters   = $filter_info['custom_filters'];
 
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
+
+		$archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters);
 
 		// Summary of terms for all filters
 		$filters_summary = array();
@@ -100,18 +103,18 @@ class TicketSearchController extends AbstractController
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
-		$archive_counts = $this->em->getRepository('DeskPRO:Ticket')->getArchiveCounts();
 		$initial_inbox_grouping = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.ticket-source-grouping', $this->person->id);
 
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
+			'archive_filters' => $archive_filters,
+			'archive_filter_counts' => $archive_filter_counts,
 			'filter_id_matches' => $filter_id_matches,
 			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
 			'flag_counts' => $flag_counts,
-			'archive_counts' => $archive_counts,
 			'filter_show_options' => $filter_show_options,
 			'labels_index' => $index,
 			'labels_cloud' => $cloud,

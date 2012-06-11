@@ -81,17 +81,30 @@ class Filters
 		$sys_filters = array();
 		$sys_filters_hold = array();
 		$custom_filters = array();
+		$archive_filters = array();
+
+
+		$unset_ids = array();
 
 		foreach ($all_filters as $id => $filter) {
 			if ($filter['sys_name']) {
 				if (strpos($filter['sys_name'], '_w_hold')) {
 					$sys_filters_hold[$filter['sys_name']] = $filter;
+				} elseif (strpos($filter['sys_name'], 'archive_') === 0) {
+					$archive_filters[$filter['sys_name']] = $filter;
+
+					// Archive filters are special and dont act exactly like normal filters, so unset them from the 'all' array
+					$unset_ids[] = $id;
 				} else {
-				$sys_filters[$filter['sys_name']] = $filter;
+					$sys_filters[$filter['sys_name']] = $filter;
 				}
 			} else {
 				$custom_filters[$id] = $filter;
 			}
+		}
+
+		foreach ($unset_ids as $uid) {
+			unset($all_filters[$uid]);
 		}
 
 		// Force order of sys
@@ -130,6 +143,7 @@ class Filters
 			'all_filters' => $all_filters,
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
+			'archive_filters' => $archive_filters,
 			'custom_filters' => $custom_filters,
 		);
 	}
@@ -205,7 +219,10 @@ class Filters
 		$counts = array();
 
 		foreach ($ticket_filters as $ticket_filter) {
-			$counts[$ticket_filter['id']] = $ticket_filter->getResultsCount();
+			$searcher = $ticket_filter->getSearcher();
+			$searcher->setPerson(App::getCurrentPerson());
+
+			$counts[$ticket_filter['id']] = $searcher->getCount(null);
 		}
 
 		return $counts;

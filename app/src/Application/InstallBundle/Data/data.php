@@ -416,6 +416,114 @@ $em->persist($q);
 $em->flush();
 
 
+##BEGIN:create_filter.archive_awaiting_user##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Awaiting User';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_awaiting_user';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'awaiting_user',)
+	)
+);
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_filter.archive_resolved##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Resolved';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_resolved';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'resolved',)
+	)
+);
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_filter.archive_closed##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Resolved';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_closed';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'closed',)
+	)
+);
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_filter.archive_validating##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Awaiting Validation';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_validating';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'hidden.validating')
+	)
+);
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_filter.archive_spam##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Spam';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_spam';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'hidden.spam')
+	)
+);
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_filter.archive_deleted##
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.date_created:desc';
+$q['person']     = null;
+$q['title']      = 'Deleted';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'archive_deleted';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'hidden.deleted')
+	)
+);
+$em->persist($q);
+$em->flush();
+
 ################################################################################
 # Triggers
 ################################################################################

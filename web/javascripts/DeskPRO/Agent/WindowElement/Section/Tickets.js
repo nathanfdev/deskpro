@@ -18,7 +18,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}, this);
 
 		this.lastArchiveUpdate = new Date();
-		this.archiveUpdateTimer = window.setTimeout(this.updateArchiveIfTime.bind(this), 303000);
 	},
 
 	_initSection: function(data) {
@@ -32,13 +31,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
 			onTabSwitch: function(info) {
-				if (info.tabContent.attr('id') == 'tickets_outline_archive') {
-					self.updateArchiveIfTime();
-				}
 			}
 		});
 
 		this.filterTicketIds = data.filter_id_matches;
+		var archiveFilterIds = [];
+		$('#tickets_outline_archive').find('li.is-archive-filter').each(function() {
+			archiveFilterIds.push($(this).data('filter-id'));
+		});
+		this.archiveFilterIds = archiveFilterIds;
 
 		this._initFilters();
 		this._initFlagged();
@@ -245,7 +246,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		// Init counts based on IDs we have cached
-		$('li.filter', this.sectionEl).each((function(i, el) {
+		$('li.filter', this.sectionEl).not('.is-archive-filter').each((function(i, el) {
 			el = $(el);
 
 			var filterId = parseInt(el.data('filter-id'));
@@ -261,6 +262,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	getFilterCount: function(filter_id) {
 		return parseInt($('#ticket_filter_' + filter_id + '_count').data('count') || 0);
+	},
+
+	modFilterCount: function(filter_id, op) {
+		filter_id = parseInt(filter_id);
+		var count = parseInt($('#ticket_filter_' + filter_id + '_count').text().trim());
+
+		if (op == 'add') {
+			count++;
+		} else {
+			count--;
+		}
+
+		if (count < 0) {
+			count = 0;
+		}
+
+		var el = $('#ticket_filter_' + filter_id + '_count').html(count).data('count', count);
 	},
 
 	setFilterCount: function(filter_id, count) {
@@ -328,6 +346,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	updateFilterCounts: function(counts) {
 		Object.each(counts, function (count, filter_id) {
+			if (this.archiveFilterIds.indexOf(filter_id) != -1) {
+				return;
+			}
 			this.setFilterCount(filter_id, count);
 		}, this);
 
@@ -349,20 +370,28 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		if (data.op == 'add') {
-			this.filterTicketIds[filterId].include(ticketId);
+			if (this.archiveFilterIds.indexOf(filterId) != -1) {
+				this.modFilterCount(filterId, 'add');
+			} else {
+				this.filterTicketIds[filterId].include(ticketId);
 
-			var count = this.filterTicketIds[filterId].length;
-			this.setFilterCount(filterId, count);
+				var count = this.filterTicketIds[filterId].length;
+				this.setFilterCount(filterId, count);
+			}
 
 			if (page && ticketId) {
 				page.addTicket(ticketId);
 			}
 
 		} else if (data.op == 'del') {
-			this.filterTicketIds[filterId].erase(ticketId);
+			if (this.archiveFilterIds.indexOf(filterId) != -1) {
+				this.modFilterCount(filterId, 'del');
+			} else {
+				this.filterTicketIds[filterId].erase(ticketId);
 
-			var count = this.filterTicketIds[filterId].length;
-			this.setFilterCount(filterId, count);
+				var count = this.filterTicketIds[filterId].length;
+				this.setFilterCount(filterId, count);
+			}
 
 			if (page && ticketId) {
 				page.delTicket(ticketId);
@@ -705,40 +734,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var new_flag_count = parseInt($('#ticket_flag_' + info.new_flag + '_count').text());
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
-	},
-
-	//#########################################################################
-	// Archive
-	//#########################################################################
-
-	updateArchiveIfTime: function() {
-		var d = new Date();
-
-		// Dont update if it was updated less than a minute ago
-		if (d.getTime() - this.lastArchiveUpdate.getTime() < 60000) {
-			return;
-		}
-
-		this.lastArchiveUpdate = d;
-
-		this.reloadArchiveSection();
-	},
-
-	reloadArchiveSection: function() {
-		$('#tickets_outline_archive').addClass('loading').empty();
-
-		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/get-section-data/reload-archive-section',
-			dataType: 'html',
-			context: this,
-			complete: function() {
-				$('#tickets_outline_archive').removeClass('loading');
-			},
-			success: function(html) {
-				$('#tickets_outline_archive').append(html);
-				this.lastArchiveUpdate = new Date();
-			}
-		});
 	},
 
 	//#########################################################################

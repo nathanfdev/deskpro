@@ -279,6 +279,135 @@ class TicketSearch extends SearcherAbstract
 	}
 
 
+	/**
+	 * Run the search and get the count
+	 *
+	 * @param int $limit Null for no limit
+	 */
+	public function getCount($limit = 1000)
+	{
+		$ticket_parts = $this->getSqlParts();
+		$user_parts = null;
+		if ($this->person_search) {
+			$user_parts = $this->person_search->getSqlParts();
+		}
+
+		$where = '';
+
+		if ($this->isArchiveSearch()) {
+			$table = 'tickets';
+		} else {
+			$table = 'tickets_search_active';
+		}
+
+		$select = '';
+		if ($this->add_raw_selects) {
+			$select = ', ' . implode(', ', $this->add_raw_selects);
+		}
+		$sql = "SELECT COUNT(*) FROM $table AS tickets ";
+
+		#------------------------------
+		# Standard for permissions
+		#------------------------------
+
+		if ($this->person AND $this->person['is_agent']) {
+
+			$where_perm = array();
+			$where = '((';
+
+			if ($this->person->getDisallowedDepartments()) {
+				$where_perm[] = "tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ")";
+			}
+
+			if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+				$where_perm[] = 'tickets.agent_id IS NOT NULL';
+			}
+
+			if (!$this->person->hasPerm('agent_tickets.view_others')) {
+				$part = array();
+				$part[] = "tickets.agent_id = {$this->person['id']}";
+				if ($this->person->getAgentTeamIds()) {
+					$part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
+				}
+
+				$where_perm[] = '(' . implode(' OR ', $part) . ')';
+			}
+
+			if (!$where_perm) {
+				$where_perm[] = '1';
+			}
+
+			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
+
+			$ticket_parts['joins'][] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)");
+			$where .= "tickets.agent_id = {$this->person['id']} OR ";
+			if ($this->person->getAgentTeamIds()) {
+				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
+			}
+
+			$where .= "tickets_participants_perm.person_id = {$this->person->id})) AND ";
+		}
+
+
+		#------------------------------
+		# Add joins
+		#------------------------------
+
+		foreach ($ticket_parts['joins'] as $j) {
+			if (is_array($j)) {
+				$sql .= $j[1] . " ";
+			} else {
+				$sql .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
+			}
+		}
+
+		if ($user_parts) {
+			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
+		}
+
+		if ($user_parts AND $user_parts['joins']) {
+
+			foreach ($user_parts['joins'] as $j) {
+				if (is_array($j)) {
+					$sql .= $j[1] . " ";
+				} else {
+					$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+				}
+			}
+		}
+
+		if ($this->add_raw_joins) {
+			$sql .= implode(' ', $this->add_raw_joins);
+		}
+
+		#------------------------------
+		# Add wheres
+		#------------------------------
+
+		if (!empty($ticket_parts['wheres'])) {
+			$where .= implode(" AND ", $ticket_parts['wheres']);
+		}
+		if (!empty($user_parts['wheres'])) {
+			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
+		}
+
+		if ($this->add_raw_wheres) {
+			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
+		}
+
+		if ($where) {
+			$sql .= " WHERE $where";
+		}
+
+		if ($limit) {
+			$sql .= "LIMIT $limit";
+		}
+
+		$db = App::getDb();
+		return $db->fetchColumn($sql);
+	}
+
+
 
 	/**
 	 * Get the SQL query that'll fetch the results
