@@ -15,7 +15,7 @@
 			</h1>
 		</header>
 		<article>
-            {{ agentui.scroll_containers('', '') }}
+        {{ agentui.scroll_containers('', '') }}
 			{% if macros|length %}
 				<div class="macro-load">
 					<select class="macro is-not-loading">
@@ -172,7 +172,7 @@
 					</div>
 				</dd>
 			</dl>
-        {{ agentui.scroll.containers.end() }}
+        {{ agentui.scroll_containers_end() }}
 		</article>
 		<footer>
 			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.general.apply') }}</button></div>
