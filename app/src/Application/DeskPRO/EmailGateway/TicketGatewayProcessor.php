@@ -104,12 +104,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket = null;
 		$person = null;
 
+		/*
 		if (App::getSetting('core_tickets.gateway_catchall')) {
 			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
 			$ticket = $detector->findExistingTicket($this->reader);
 
 			$this->logMessage('[TicketGatewayProcessor] ToEmailTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
+		*/
 
 		if (!$ticket) {
 			$detector = new CodeTicketDetector();
@@ -118,6 +120,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
+		/*
 		if (!$ticket) {
 			// Try to find it from In-Reply-To
 			$detector = new InReplyToDetector();
@@ -125,6 +128,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$this->logMessage('[TicketGatewayProcessor] InReplyToDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
+		*/
 
 		// If we imported form DP3, run the old codes
 		if (!$ticket && App::getSetting('core.deskpro3importer')) {

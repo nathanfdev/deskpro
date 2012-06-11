@@ -1634,7 +1634,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			if ($this->person_email) {
 				return $this->person_email;
 			} else {
-				return $this->person_email->primary_email;
+				return $this->person->primary_email;
 			}
 		} else if ($this->agent == $person) {
 			return $this->agent->primary_email;
