@@ -71,10 +71,15 @@ class ActivityLogger
 		$activity['action_type'] = $action_type;
 		$activity['details'] = $details;
 
-		$this->em->transactional(function($em) use ($activity) {
-			$em->persist($activity);
-			$em->flush();
-		});
+		$this->em->getConnection()->beginTransaction();
+		try {
+			$this->em->persist($activity);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
 
 		return $activity;
 	}
