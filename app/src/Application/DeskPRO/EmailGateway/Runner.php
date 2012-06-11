@@ -327,6 +327,14 @@ class Runner
 
 						$source['status'] = 'error';
 						$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+
+						foreach ($errinfo as &$_v) {
+							if (is_object($_v)) {
+								$_v = get_class($_v);
+							} elseif (is_array($_v)) {
+								$_v = KernelErrorHandler::varToString($_v);
+							}
+						}
 						$source['source_info'] = $errinfo;
 					}
 				} else {

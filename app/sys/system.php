@@ -1011,7 +1011,7 @@ class KernelErrorHandler
 	 */
 	public static function logErrorInfo(array $errinfo)
 	{
-		if (self::$is_logging) return;;
+		if (self::$is_logging) return;
 		self::$is_logging = true;
 
 		if (!class_exists('Application\DeskPRO\App')) {
@@ -1104,7 +1104,6 @@ class KernelErrorHandler
 			}
 		}
 	}
-
 
 	/**
 	 * Gets a standard error info array from an exception.
