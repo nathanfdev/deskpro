@@ -132,7 +132,6 @@ class AddLabelsAction extends AbstractAction
 	public function getDescription($as_html = true)
 	{
         $tr = App::getTranslator();
-        $tr->phrase('agent.tickets.agents_action', array('agents' => $desc_agents));
 		return $tr->phrase('agent.tickets.add_labels_action', array('labels' => implode(', ', $this->add_labels)));
 	}
 }

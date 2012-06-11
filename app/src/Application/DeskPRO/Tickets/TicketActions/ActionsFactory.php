@@ -117,11 +117,13 @@ class ActionsFactory
 				break;
 			case 'add_labels':
 				$options['add_labels'] = array();
-				if (!empty($value['labels'])) $options['add_labels'] = Strings::explodeTrim(',', $value['labels']);
+				if (is_array($value['labels'])) $options['add_labels'] = $value['labels'];
+				elseif (!empty($value['labels'])) $options['add_labels'] = Strings::explodeTrim(',', $value['labels']);
 				break;
 			case 'remove_labels':
 				$options['remove_labels'] = array();
-				if (!empty($value['labels'])) $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
+				if (is_array($value['labels'])) $options['remove_labels'] = $value['labels'];
+				elseif (!empty($value['labels'])) $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
 				break;
 			case 'reply':
 				$options['reply_text'] = $value['reply_text'];
