@@ -78,7 +78,7 @@ class Dp3Detector implements TicketDetectorInterface
 
 			// In DP3 they must already be on the ticket
 			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
-			if ($ticket->findEmailForPerson($person)) {
+			if ($person && $ticket->findEmailForPerson($person)) {
 				$this->_found_person = $person;
 			}
 
