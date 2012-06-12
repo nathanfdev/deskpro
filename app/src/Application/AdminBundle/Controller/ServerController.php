@@ -239,62 +239,34 @@ class ServerController extends AbstractController
 
 	public function errorLogsAction()
 	{
-		$page = max(1, $this->in->getUint('p'));
-
-		$logs_count = $this->em->getRepository('DeskPRO:LogItem')->getErrorLogsCount($page);
-		$logs = $this->em->getRepository('DeskPRO:LogItem')->getErrorLogs($page, 25);
-		$pagination = Numbers::getPaginationPages($logs_count, $page, 25, 5);
+		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
 
 		return $this->render('AdminBundle:Server:error-logs.html.twig', array(
-			'logs_count' => $logs_count,
-			'logs' => $logs,
-			'pagination' => $pagination
+			'logs' => $log_reader
 		));
 	}
 
-	public function viewSnAction($log_sn)
+	public function viewErrorLogAction($log_id)
 	{
-		$log_sn = trim(preg_replace('#^SN#', '', $log_sn));
+		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
+		$log_reader->enableRawLog();
+		$log_reader->setIdFilter($log_id);
 
-		$log = $this->em->getRepository('DeskPRO:LogItem')->findBySn($log_sn);
+		$log = $log_reader->next();
+
 		if (!$log) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_log");
-		}
-
-		$data_structure = '';
-		if ($log['data']) {
-			$data_structure = print_r($log['data'], true);
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		return $this->render('AdminBundle:Server:error-view.html.twig', array(
-			'log' => $log,
-			'data_structure' => $data_structure
-		));
-	}
-
-	public function viewAction($log_id)
-	{
-		$log = $this->em->getRepository('DeskPRO:LogItem')->find($log_id);
-		if (!$log) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_log");
-		}
-
-		$data_structure = '';
-		if ($log['data']) {
-			$data_structure = print_r($log['data'], true);
-		}
-
-		return $this->render('AdminBundle:Server:error-view.html.twig', array(
-			'log' => $log,
-			'data_structure' => $data_structure
+			'log' => $log
 		));
 	}
 
 	public function errorLogsClearAllAction()
 	{
 		$this->ensureRequestToken('clear_error_logs', 'x');
-		$this->db->exec("DELETE FROM log_items WHERE log_name = 'error_log'");
-
+		@file_put_contents(dp_get_log_dir() . '/error.log', '');
 		return $this->redirectRoute('admin_server_error_logs');
 	}
 

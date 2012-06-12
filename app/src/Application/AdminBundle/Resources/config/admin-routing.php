@@ -1853,14 +1853,7 @@ $collection->add('admin_server_error_logs_clear', new Route(
 
 $collection->add('admin_server_error_logs_view', new Route(
 	'/server/error-logs/{log_id}',
-	array('_controller' => 'AdminBundle:Server:view'),
-	array('log_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_server_error_logs_view_sn', new Route(
-	'/server/error-logs/{log_sn}',
-	array('_controller' => 'AdminBundle:Server:viewSn'),
+	array('_controller' => 'AdminBundle:Server:viewErrorLog'),
 	array(),
 	array()
 ));

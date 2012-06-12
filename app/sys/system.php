@@ -1092,7 +1092,7 @@ class KernelErrorHandler
 			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
 			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
-			$str[] = sprintf("Error %s\n", $errinfo['errstr']);
+			$str[] = sprintf("Error: %s\n", $errinfo['errstr']);
 			$str[] = sprintf("\tType: %s\n", $errinfo['errname']);
 			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
 			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
@@ -1114,6 +1114,7 @@ class KernelErrorHandler
 		}
 
 		$str = trim(implode('', $str));
+		$str .= "\n";
 
 		// Prefix each line for easier parsing
 		$str = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);

@@ -15,7 +15,6 @@
 		<thead>
 			<tr>
 				<th width="50">{{ phrase('agent.general.id') }}</th>
-				<th width="50">{{ phrase('admin.general.pri') }}</th>
 				<th>{{ phrase('agent.general.message') }}</th>
 				<th width="180">{{ phrase('agent.general.date') }}</th>
 				<th>Details&nbsp;</th>
@@ -25,34 +24,13 @@
 			{% for log in logs %}
 				<tr>
 					<td>{{log.id}}</td>
-					<td>{{log.priority_name}}</td>
-					<td>{{log.message}}</td>
-					<td>{{log.date_created|date('fulltime')}}</td>
+					<td>{{log.summary}}</td>
+					<td>{{log.date}}</td>
 					<td><a href="{{ path('admin_server_error_logs_view', {'log_id': log.id}) }}">{{ phrase('admin.general.view') }}</a></td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
-</div><br />
-
-{% if pagination.pages|length > 1 %}
-<div class="page_nav">
-	<ul>
-		{% if pagination.curpage != pagination.first %}
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.first}) }}">{{ phrase('admin.general.first') }}</a></li>
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">{{ phrase('agent.general.prev') }}</a></li>
-		{% endif %}
-
-		{% for i in pagination.pages %}
-			<li {% if i == pagination.curpage %}class="cur_page"{% endif %}><a href="{{ path('admin_server_error_logs', {'p': i}) }}">{{i}}</a></li>
-		{% endfor %}
-
-		{% if pagination.curpage != pagination.last %}
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.next}) }}">{{ phrase('admin.general.next') }}</a></li>
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.last}) }}">{{ phrase('admin.general.last') }}</a></li>
-		{% endif %}
-	</ul>
 </div>
-{% endif %}
 
 {% endblock %}

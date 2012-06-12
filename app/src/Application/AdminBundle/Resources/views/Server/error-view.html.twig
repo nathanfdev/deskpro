@@ -22,61 +22,25 @@
 			<label>{{ phrase('agent.general.date') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.date_created|date('fulltime') }}
+			{{ log.date }}
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.general.log_name') }}</label>
+			<label>Summary</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.log_name }}
+			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.summary}}</textarea>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.general.sn_code') }}</label>
+			<label>Raw</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.session_name|default(phrase('agent.general.none')) }}
-		</div>
-	</div>
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.priority') }}</label>
-		</div>
-		<div class="dp-form-input">
-			{{log.priority}} {{log.priority_name}}
-		</div>
-	</div>
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.flag') }}</label>
-		</div>
-		<div class="dp-form-input">
-			{{ log.flag|default(phrase('agent.general.none')) }}
-		</div>
-	</div>
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.message') }}</label>
-		</div>
-		<div class="dp-form-input">
-			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.message}}</textarea>
-		</div>
-	</div>
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('admin.general.additional_data') }}</label>
-		</div>
-		<div class="dp-form-input">
-			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>
+			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.log}}</textarea>
 		</div>
 	</div>
 </div>

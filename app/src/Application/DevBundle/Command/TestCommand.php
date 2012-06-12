@@ -35,16 +35,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$j = new \Application\DeskPRO\Entity\WorkerJob();
-		$j['id'] = 'update_view_counts';
-		$j['worker_group'] = 'update_view_counts';
-		$j['title'] = 'Update View Counts';
-		$j['description'] = 'Updates view counts on objects';
-		$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\UpdateViewCounts';
-		$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\UpdateViewCounts::DEFAULT_INTERVAL;
-
-		$em = App::getOrm();
-		$em->persist($j);
-		$em->flush();
+		echo $tst;
 	}
 }
