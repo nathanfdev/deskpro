@@ -47,6 +47,14 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
 			});
+			oWrapper.on('goscrollto', function(ev, scrollTo) {
+				iScroll = scrollTo;
+				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
+				iScroll + 10;
+
+				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
+				oContent.obj.css(sDirection, -iScroll);
+			});
 			oWrapper.on('goscrollbottom', function() {
 
 				// No scrolling, there is no bottom
@@ -124,6 +132,13 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oContent.obj.css(sDirection, 0);
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
+			});
+			oWrapper.on('goscrollto', function(ev, scrollTo) {
+				iScroll = scrollTo;
+				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
+
+				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
+				oContent.obj.css(sDirection, -iScroll);
 			});
 			oWrapper.on('goscrollbottom', function() {
 

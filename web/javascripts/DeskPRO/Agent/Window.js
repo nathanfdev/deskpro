@@ -998,9 +998,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		handler.setListPageFragment(page, noswitch);
 
-		this.listPage = page;
-
 		if (!noswitch) {
+			this.listPage = page;
 			this.updateWindowUrlFragment();
 		}
 	},
@@ -2273,6 +2272,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		handler.fireEvent('aftershow', [no_load_list]);
 
 		this.openSection = handler;
+
+		if (this.openSection.listPage) {
+			this.listPage = this.openSection.listPage;
+		}
 
 		this.updateWindowUrlFragment();
 	},
