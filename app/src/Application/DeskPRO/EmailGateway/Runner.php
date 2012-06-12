@@ -315,7 +315,12 @@ class Runner
 						}
 
 						$source['source_info'] = $proc->getSourceInfo();
+
+						App::getOrm()->commit();
+
 					} catch (\Exception $e) {
+
+						App::getOrm()->rollback();
 
 						$e->_dp_sn = KernelErrorHandler::genSessionName();
 
@@ -357,7 +362,6 @@ class Runner
 			}
 
 			$this->_updateSource($source);
-			App::getOrm()->commit();
 
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
