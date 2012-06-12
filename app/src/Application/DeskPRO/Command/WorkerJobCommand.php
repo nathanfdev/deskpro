@@ -142,7 +142,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				$date_cut = new \DateTime('-15 minutes');
 				$diff = \Orb\Util\Dates::secsToReadable(time() - $date->getTimestamp(), 5);
 
-				if (0 and $date_cut < $date) {
+				if ($date_cut < $date) {
 					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . $date->format('Y-m-d H:i:s') . ")"); }
 					return 0;
 				} else {
