@@ -646,10 +646,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$self->updateStatus($output, '1. Installing Database', $count, $total);
 				if ($status == 'error') {
 					$errors[] = $e . " (SQL: $sql)";
-				} elseif ($status == 'done') {
-					// $e in this case will be the time
-					$sql = str_replace("\n", ' ', $sql);
-					$logger->log(sprintf("[Install Query %.5f] %s", $e, $sql), 'DEBUG');
 				}
 			};
 

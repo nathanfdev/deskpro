@@ -128,13 +128,11 @@ class CompaniesStep extends AbstractDeskpro3Step
 						continue;
 					}
 
-					$org_email_domain = new OrganizationEmailDomain();
-					$org_email_domain->domain = $m[1];
-					$org_email_domain->organization = $org;
-
-					$this->getEm()->persist($org_email_domain);
+					$this->getDb()->replace('organization_email_domains', array(
+						'domain' => $m[1],
+						'organization_id' => $org->getId()
+					));
 				}
-				$this->getEm()->flush();
 			}
 
 			//---
@@ -149,7 +147,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 				$new_ug_id = $this->getMappedNewId('usergroup', $ug_id);
 				if (!$new_ug_id) continue;
 
-				$this->getDb()->insert('organization2usergroups', array(
+				$this->getDb()->replace('organization2usergroups', array(
 					'organization_id' => $org['id'],
 					'usergroup_id'=> $new_ug_id
 				));
@@ -212,6 +210,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
+			throw $e;
 		}
 	}
 
@@ -222,8 +221,8 @@ class CompaniesStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_company ORDER BY id ASC LIMIT $start, 1000");
+		$start = $page * 250;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_company ORDER BY id ASC LIMIT $start, 250");
 
 		return $ids;
 	}
