@@ -1325,8 +1325,6 @@ class KernelErrorHandler
 	{
 		$trace = '';
 
-		$longest = 100;
-
 		foreach($backtrace as $k=>$v){
 
 			$prefix = "#$k ";
@@ -1353,6 +1351,8 @@ class KernelErrorHandler
 
 			$trace .= $prefix . ' ' . trim($line) . "\n";
 		}
+
+		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
 
 		return trim($trace);
 	}
