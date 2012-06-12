@@ -218,8 +218,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setVisitor(Visitor $visitor = null)
 	{
-		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this['visitor'] = $visitor;
+		$this->setModelField('visitor', $visitor);
 
 		if ($visitor === null) return;
 
