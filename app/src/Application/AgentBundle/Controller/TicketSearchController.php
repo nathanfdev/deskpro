@@ -399,6 +399,7 @@ class TicketSearchController extends AbstractController
 				'organization'  => array('op' => 'contains', 'options' => array()),
 				'language'      => array('op' => 'contains', 'options' => array()),
 			);
+
 			foreach ($set_terms_map as $name => $info) {
 				$in_val = $this->container->getIn()->getCleanValueArray('set_term.'.$name, 'raw', 'discard');
 				if ($in_val) {
@@ -406,6 +407,13 @@ class TicketSearchController extends AbstractController
 					$new_term['options'] = $in_val;
 					Arrays::unshiftAssoc($new_term, 'type', $name);
 					$terms[] = $new_term;
+				}
+			}
+
+			foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {
+				$in_val = $this->container->getIn()->getString('set_term.field_'.$field->getId());
+				if ($in_val) {
+					$terms[] = array('type' => 'ticket_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
 				}
 			}
 

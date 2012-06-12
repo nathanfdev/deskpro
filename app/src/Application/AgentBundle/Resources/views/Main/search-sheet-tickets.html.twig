@@ -145,7 +145,7 @@
 				<li {% if 'Choice' in field.field_def.handler_class %}class="ob"{% else %}class="field-input"{% endif %}>
 					<label>{{field.field_def.title}}</label>
 					<div class="values">
-						{{ render_custom_field_form(field) }}
+						{{ render_custom_field_form(field, {field_group: 'set_term'}) }}
 					</div>
 				</li>
 				{% endif %}
