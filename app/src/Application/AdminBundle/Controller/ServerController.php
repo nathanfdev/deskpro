@@ -49,7 +49,13 @@ class ServerController extends AbstractController
 	public function phpinfoAction()
 	{
 		$config_hash = md5_file(DP_CONFIG_FILE);
-		$php_config = array(
+
+		#------------------------------
+		# Web PHP
+		#------------------------------
+
+		$web_php = array();
+		$web_php['php_config'] = array(
 			'version' => phpversion(),
 			'memory_limit' => \Orb\Util\Env::getMemoryLimit(),
 			'error_log' => ini_get('error_log'),
@@ -58,17 +64,42 @@ class ServerController extends AbstractController
 		ob_start();
 		phpinfo();
 		$phpinfo = ob_get_clean();
-
 		preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
 
 		if (isset($m[1])) {
 			$phpinfo = $m[1];
 		}
 
+		$web_php['phpinfo'] = $phpinfo;
+
+		#------------------------------
+		# CLI PHP
+		#------------------------------
+
+		$cli_php = array('phpinfo' => null, 'php_config' => null);
+
+		if (file_exists(dp_get_data_dir() .'/cli-phpinfo.html')) {
+			$phpinfo = file_get_contents(dp_get_data_dir() .'/cli-phpinfo.html');
+			preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
+
+			if (isset($m[1])) {
+				$phpinfo = $m[1];
+			}
+
+			$cli_php['phpinfo'] = $phpinfo;
+		}
+
+		if (file_exists(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
+			$data = file_get_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat');
+			$data = @unserialize($data);
+
+			$cli_php['php_config'] = $data;
+		}
+
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
-			'phpinfo' => $phpinfo,
+			'web_php'     => $web_php,
+			'cli_php'     => $cli_php,
 			'config_hash' => $config_hash,
-			'php_config' => $php_config,
 		));
 	}
 

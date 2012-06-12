@@ -13,27 +13,6 @@ require DP_ROOT . '/sys/load_config.php';
 dp_load_config();
 
 #------------------------------
-# Attempt to set min memory limit to 128 MB
-#------------------------------
-
-$mem_size = @ini_get('memory_limit');
-if ($mem_size && $mem_size != '-1' && deskpro_install_check_parseinisize($mem_size) < 134217728/* 128 MB */) {
-	@ini_set('memory_limit', 134217728);
-}
-unset($mem_size);
-
-
-#------------------------------
-# Attempt to set max_execution_time to at least 40s
-#------------------------------
-
-$max_time = @ini_get('max_execution_time');
-if (!$max_time || $max_time < 40) {
-	@set_time_limit(40);
-}
-unset($max_time);
-
-#------------------------------
 # Handle CLI logging of info
 #------------------------------
 
@@ -60,11 +39,41 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 
 		$data = deskpro_install_check_reqs();
 		$data['gen_time'] = time();
+		$data['php_version'] = phpversion();
+		$data['memory_limit'] = @ini_get('memory_limit');
+		if ($data['memory_limit'] == -1) {
+			$data['memory_limit'] = -1;
+		} else {
+			$data['memory_limit'] = deskpro_install_check_parseinisize($data['memory_limit']);
+		}
+		$data['error_log'] = @ini_get('error_log');
+
 		@file_put_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat', serialize($data));
 	}
 
 	unset($do_update, $phpinfo, $data);
 }
+
+#------------------------------
+# Attempt to set min memory limit to 128 MB
+#------------------------------
+
+$mem_size = @ini_get('memory_limit');
+if ($mem_size && $mem_size != '-1' && deskpro_install_check_parseinisize($mem_size) < 134217728/* 128 MB */) {
+	@ini_set('memory_limit', 134217728);
+}
+unset($mem_size);
+
+
+#------------------------------
+# Attempt to set max_execution_time to at least 40s
+#------------------------------
+
+$max_time = @ini_get('max_execution_time');
+if (!$max_time || $max_time < 40) {
+	@set_time_limit(40);
+}
+unset($max_time);
 
 #------------------------------
 # Run low-level server checks

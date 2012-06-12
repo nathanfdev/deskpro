@@ -3,36 +3,63 @@
 	<ul>
 		<li>{{ phrase('admin.general.php_info') }}</li>
 	</ul>
+	<nav>
+		<ul>
+			<li><a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to public PHP Info</a></li>
+		</ul>
+	</nav>
 {% endblock %}
 {% block page %}
 
-<h1>{{ phrase('admin.server.important_configuration_values') }}</h1>
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.general.setting') }}</th>
-				<th style="text-align:left">{{ phrase('agent.general.value') }}</th>
+				<th width="33%" style="text-align:left">&nbsp; {{ phrase('admin.general.setting') }}</th>
+				<th width="33%" style="text-align:left">Web PHP Value</th>
+				<th width="33%" style="text-align:left">Command-line PHP Value</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>{{ phrase('admin.server.php_version') }}</td>
-				<td>{{ php_config.version }}</td>
+				<td>{{ web_php.php_config.version }}</td>
+				<td>{% if cli_php.php_config %}{{ cli_php.php_config.php_version }}{% else %}n/a{% endif %}</td>
 			</tr>
 			<tr>
 				<td>{{ phrase('admin.server.memory_limit') }}</td>
-				<td>{{ php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
+				<td>{{ web_php.php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
+				<td>{% if cli_php.php_config %}{{ cli_php.php_config.memory_limit }}{% else %}n/a{% endif %}</td>
 			</tr>
 			<tr>
 				<td>{{ phrase('admin.server.error_log') }}</td>
-				<td>{{ php_config.error_log }}</td>
+				<td>{{ web_php.php_config.error_log }}</td>
+				<td>{% if cli_php.php_config %}{{ cli_php.php_config.error_log }}{% else %}n/a{% endif %}</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
-<hr />
+<br />
+<br />
 
-{{ phpinfo|raw }}
+<nav class="check-grid-tabs">
+	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+		<li class="on" data-tab-for="#web_php_info"><span>Web PHP Info</span></li>
+		<li data-tab-for="#cli_php_info"><span>Command-line PHP Info</span></li>
+	</ul>
+</nav>
+
+<div id="web_php_info">
+	<div class="check-grid" style="padding: 25px;">
+		{{ web_php.phpinfo|raw }}
+	</div>
+</div>
+
+<div id="cli_php_info" style="display: none">
+	<div class="check-grid" style="padding: 25px;">
+		{{ cli_php.phpinfo|raw }}
+	</div>
+</div>
+
 {% endblock %}
