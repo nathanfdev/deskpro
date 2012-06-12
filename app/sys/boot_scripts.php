@@ -14,6 +14,11 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/memtest.php';
 		break;
 
+	case 'errorlog':
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/errorlog.php';
+		break;
+
 	case 'check':
 		require DP_ROOT . '/sys/scripts/check.php';
 		break;

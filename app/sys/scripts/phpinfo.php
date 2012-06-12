@@ -33,4 +33,18 @@ if (!$is_authed) die('Invalid auth code.');
 # Show PHP Info
 #------------------------------
 
-phpinfo();
+if (isset($_GET['cli'])) {
+	if (!file_exists(dp_get_data_dir() . '/cli-phpinfo.html')) {
+		die('CLI phpinfo has not been generated yet');
+	}
+
+	$phpinfo = file_get_contents(dp_get_data_dir() . '/cli-phpinfo.html');
+	if (strpos($phpinfo, '<body') === false) {
+		header('Content-Type: text/plain');
+		header('Content-Disposition: inline; filename=error.log.txt');
+	}
+	echo $phpinfo;
+} else {
+	phpinfo();
+}
+

@@ -1,15 +1,35 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-	<nav>
-          <ul>
-               <li><a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">{{ phrase('admin.general.clear_logs') }}</a></li>
-          </ul>
-     </nav>
 	<ul>
 		<li>{{ phrase('admin.general.error_logs') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td>
+					There are {{ logs.count() }} logged errors.
+					<a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">Clear all logged errors</a>.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					A support agent may request access to your logs.<br />
+					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}" onclick="prompt('Copy the URL below:                           ', $(this).attr('href')); return false;">Copy link to DeskPRO error log file</a><br />
+					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}&web=1" onclick="prompt('Copy the URL below:                        ', $(this).attr('href')); return false;">Copy link to PHP error log file</a><br />
+					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}&cli=1" onclick="prompt('Copy the URL below:                  ', $(this).attr('href')); return false;">Copy link to PHP error log file for the command-line</a><br />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+<br />
+
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>

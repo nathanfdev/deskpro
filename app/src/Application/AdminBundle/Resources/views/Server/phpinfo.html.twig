@@ -3,11 +3,6 @@
 	<ul>
 		<li>{{ phrase('admin.general.php_info') }}</li>
 	</ul>
-	<nav>
-		<ul>
-			<li><a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to public PHP Info</a></li>
-		</ul>
-	</nav>
 {% endblock %}
 {% block page %}
 
@@ -35,6 +30,15 @@
 				<td>{{ phrase('admin.server.error_log') }}</td>
 				<td>{{ web_php.php_config.error_log }}</td>
 				<td>{% if cli_php.php_config %}{{ cli_php.php_config.error_log }}{% else %}n/a{% endif %}</td>
+			</tr>
+			<tr>
+				<td>Link to PHP Info</td>
+				<td>
+					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link Web PHP Info</a>
+				</td>
+				<td>
+					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}&cli=1" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to Command-line PHP Info</a>
+				</td>
 			</tr>
 		</tbody>
 	</table>

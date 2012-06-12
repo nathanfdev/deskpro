@@ -239,9 +239,12 @@ class ServerController extends AbstractController
 
 	public function errorLogsAction()
 	{
+		$config_hash = md5_file(DP_CONFIG_FILE);
+
 		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
 
 		return $this->render('AdminBundle:Server:error-logs.html.twig', array(
+			'config_hash' => $config_hash,
 			'logs' => $log_reader
 		));
 	}
