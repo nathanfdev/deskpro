@@ -111,6 +111,8 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/notificon/notificon.min.js',
+
+		'vendor/select2/select2.js'
 	)
 );
 
@@ -680,6 +682,8 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/jquery-textext/src/css/textext.plugin.focus.css',
 		'vendor/jquery/jquery-textext/src/css/textext.plugin.prompt.css',
 		'vendor/jquery/jquery-textext/src/css/textext.plugin.tags.css',
+
+		'vendor/select2/select2.css'
 	)
 );
 
