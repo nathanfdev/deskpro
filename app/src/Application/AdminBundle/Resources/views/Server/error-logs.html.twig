@@ -12,21 +12,21 @@
 			<tr>
 				<td>DeskPRO Error Log</td>
 				<td>
-					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}{% endset %}
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ static_security_token_secret(config_hash ~ 'errorlog', 86400) }}{% endset %}
 					<a href="{{ url }}" target="_blank">{{ url }}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Web PHP Error Log</td>
 				<td>
-					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}&amp;web{% endset %}
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ static_security_token_secret(config_hash ~ 'errorlog', 86400) }}&amp;web{% endset %}
 					<a href="{{ url }}" target="_blank">{{ url }}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Command-line PHP Error Log</td>
 				<td>
-					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}&amp;cli{% endset %}
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ static_security_token_secret(config_hash ~ 'errorlog', 86400) }}&amp;cli{% endset %}
 					<a href="{{ url }}" target="_blank">{{ url }}</a>
 				</td>
 			</tr>

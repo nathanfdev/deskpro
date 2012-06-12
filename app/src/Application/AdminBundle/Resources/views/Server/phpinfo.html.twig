@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<td>{{ phrase('admin.server.memory_limit') }}</td>
-				<td>{{ web_php.php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
+				<td>{{ web_php.php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ static_security_token_secret(config_hash ~ 'memtest', 86400) }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
 				<td>{% if cli_php.php_config %}{{ cli_php.php_config.memory_limit }}{% else %}n/a{% endif %}</td>
 			</tr>
 			<tr>
@@ -34,10 +34,10 @@
 			<tr>
 				<td>Link to PHP Info</td>
 				<td>
-					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link Web PHP Info</a>
+					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ static_security_token_secret(config_hash ~ 'phpinfo', 86400) }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link Web PHP Info</a>
 				</td>
 				<td>
-					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ config_hash }}&cli=1" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to Command-line PHP Info</a>
+					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ static_security_token_secret(config_hash ~ 'phpinfo', 86400) }}&cli=1" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to Command-line PHP Info</a>
 				</td>
 			</tr>
 		</tbody>

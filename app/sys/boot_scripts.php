@@ -2,7 +2,33 @@
 
 $is_authed = false;
 if (isset($_GET['_']) && file_exists(DP_CONFIG_FILE)) {
-	$is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
+	$check_fn = function ($token, $secret) {
+		// Check to make sure its a valid format
+		if (substr_count($token, '-') != 2) {
+			return false;
+		}
+
+		list($expire_time_enc, $rand_str, $hash) = explode('-', $token, 3);
+
+		// Check the hash first
+		$check_hash = sha1($secret . $expire_time_enc . $rand_str);
+
+		if ($check_hash != $hash) {
+			return false;
+		}
+
+		// Check the time now
+		if ($expire_time_enc != '0') {
+			$expire_time = base_convert($expire_time_enc, 36, 10);
+			if (time() > $expire_time) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	$is_authed = $check_fn($_GET['_'], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
 }
 
 switch ($_GET['_sys']) {
