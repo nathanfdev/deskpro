@@ -243,6 +243,25 @@
 	</td>
 </tr>
 
+<?php if (isset($do_data_dir_check) && $do_data_dir_check): ?>
+	<tr id="check_data_dir_web" style="display: none">
+		<td>
+			<span class="label important" style="float:right">FAIL</span>
+			Check that the data directory is not readable from the web
+			<div class="alert-message block-message error">
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_data_dir_web_readable') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				The data directory (<?php echo $data_dir ?>) is readable from the web. This means anyone who knows the URL of a file can download it.
+				File attachments and potentially sensitive log information resides in the data directory so it is important that this directory is never web-readable.
+				<br /><br />
+				The best way to resolve this error is to move the data directory outside of your web root.
+				To do this, copy the data/ directory to another location and then edit the 'dir_data' line in your config.php:
+				<br />
+				<code>$DP_CONFIG['dir_data'] = '/some/path/outside-of-web-root';</code>
+			</div>
+		</td>
+	</tr>
+<?php endif ?>
+
 <tr>
 	<td>
 		<?php $failed = false ?>

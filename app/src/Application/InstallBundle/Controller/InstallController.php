@@ -242,20 +242,32 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		} catch (\Exception $e) {}
 		*/
 
+		#------------------------------
+		# Check to see if data dir is under web root
+		#------------------------------
+
+		$do_data_dir_check = null;
+		$dir_data_check = str_replace('\\', '/', dp_get_data_dir());
+		$dir_web_check  = str_replace('\\', '/', DP_WEB_ROOT);
+
+		if (strpos($dir_data_check, $dir_web_check) === 0) {
+			$do_data_dir_check = str_replace($dir_web_check, '', $dir_data_check);
+		}
 
 		return $this->render('InstallBundle:Install:index.html.php', array(
-			'can_write_config' => $can_write_config,
-			'errors' => $server_check->getErrors(),
-			'has_config' => $has_config,
-			'is_fatal' => $is_fatal,
-			'has_db_checks' => $has_db_checks,
-			'db_config' => App::getConfig('db'),
-			'data_dir' => $data_dir,
-			'ini_path' => $ini_path,
-			'did_create_db' => $did_create_db,
-			'new_download' => $new_download,
-			'this_build' => $this_build,
-			'new_build' => $new_build
+			'can_write_config'    => $can_write_config,
+			'errors'              => $server_check->getErrors(),
+			'has_config'          => $has_config,
+			'is_fatal'            => $is_fatal,
+			'has_db_checks'       => $has_db_checks,
+			'db_config'           => App::getConfig('db'),
+			'data_dir'            => $data_dir,
+			'ini_path'            => $ini_path,
+			'did_create_db'       => $did_create_db,
+			'new_download'        => $new_download,
+			'this_build'          => $this_build,
+			'new_build'           => $new_build,
+			'do_data_dir_check'   => $do_data_dir_check
 		));
 	}
 
