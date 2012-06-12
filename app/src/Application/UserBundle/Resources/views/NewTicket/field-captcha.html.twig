@@ -4,12 +4,12 @@
 
 <div class="dp-control-group">
 	<div class="dp-control-label">
-		<label><strong>{{ phrase('user.tickets.prove_you_are_human') }}</strong></label>
+		<label><strong>{{ phrase('user.tickets.form_error_captcha') }}</strong></label>
 	</div>
 	<div class="dp-controls dp-fill">
 		{{ captcha_html|raw }}
 		<div class="dp-help-inline dp-error-explain">
-			{{ phrase('user.tickets.captcha_incorrect') }}
+			{{ phrase('user.tickets.form_error_captcha_invalid') }}
 		</div>
 	</div>
 </div>

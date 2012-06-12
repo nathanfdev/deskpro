@@ -5,7 +5,7 @@
 <table class="dp-table dp-table-striped dp-table-bordered">
 	<tbody>
 		<tr>
-			<th width="150">{{ phrase('user.tickets.department') }}</th>
+			<th width="150">{{ phrase('user.tickets.fields_department') }}</th>
 			<td>{{ ticket.department.full_user_title }}</td>
 		</tr>
 
@@ -23,21 +23,21 @@
 
 		{% if ticket.category %}
 			<tr>
-				<th>{{ phrase('user.tickets.category') }}</th>
+				<th>{{ phrase('user.tickets.fields_category') }}</th>
 				<td>{{ phrase_object(ticket.category, 'full') }}</td>
 			</tr>
 		{% endif %}
 
 		{% if ticket.product %}
 			<tr>
-				<th>{{ phrase('user.tickets.product') }}</th>
+				<th>{{ phrase('user.tickets.fields_product') }}</th>
 				<td>{{ phrase_object(ticket.product, 'full') }}</td>
 			</tr>
 		{% endif %}
 
 		{% if ticket.priority %}
 			<tr>
-				<th>{{ phrase('user.tickets.priority') }}</th>
+				<th>{{ phrase('user.tickets.fields_priority') }}</th>
 				<td>{{ phrase_object(ticket.priority) }}</td>
 			</tr>
 		{% endif %}

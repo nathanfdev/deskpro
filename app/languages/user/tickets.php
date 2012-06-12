@@ -1,19 +1,40 @@
 <?php return array(
-	'user.ticekts.add_reply_btn'                       => 'Submit Reply',
-	'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
+	'user.tickets.reply.form.button'                   => 'Submit Reply',
+    'user.tickets.reply.if_resolved'                   => 'Have we answered your question? Feel free to <a href="{{link_url}}">resolve this ticket</a>',
+
+    'user.tickets.title'                               => 'Contact Us',
+
+    'user.tickets.fields_category'                            => 'Category',
+    'user.tickets.fields_department'                          => 'Department',
+    'user.tickets.fields_priority'                            => 'Priority',
+    'user.tickets.fields_product'                             => 'Product',
+
+    'user.tickets.form_error_category'            => 'Please choose a category',
+    'user.tickets.form_error_department'          => 'Please choose a department',
+    'user.tickets.form_error_priority'              => 'Please choose a priority',
+    'user.tickets.form_error_product'               => 'Please choose a product',
+    'user.tickets.form_error_subject'      => 'Please enter a subject of at least 5 characters',
+    'user.tickets.form_error_message'               => 'Please enter at least 10 characters',
+    'user.tickets.form_error_captcha'                 => 'Please enter the code',
+    'user.tickets.form_error_captcha_invalid'                   => 'The code you entered is incorrect.',
+
+
+
+
+    'user.tickets.form_errors_correct'                 => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
+
+    'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
 	'user.tickets.assigned-agent'                      => 'Assigned Agent',
 	'user.tickets.begin_with_department'               => 'Begin by choosing a department',
 	'user.tickets.btn_continue'                        => 'Continue &rarr;',
-	'user.tickets.captcha_incorrect'                   => 'The code you entered is incorrect.',
-	'user.tickets.category'                            => 'Category',
+
 	'user.tickets.cc_form_add_title'                   => 'Add using name and email',
 	'user.tickets.check_email'                         => 'check your email',
 	'user.tickets.click_to_close'                      => 'Click to close this ticket',
 	'user.tickets.close_window'                        => 'Close Window',
-	'user.tickets.contact-us'                          => 'Contact Us',
+
 	'user.tickets.contact_us_explain'                  => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
 	'user.tickets.content-suggestions_answered'        => 'We are happy we were able to answer your question. Do you still want to email us?',
-	'user.tickets.department'                          => 'Department',
 	'user.tickets.dont_add_me_to_ticket'               => 'No thanks',
 	'user.tickets.download_pdf'                        => 'Download PDF',
 	'user.tickets.edit'                                => 'Edit',
@@ -26,9 +47,7 @@
 	'user.tickets.feedback_thanks_pos'                 => 'Thanks, we appreciate your feedback!',
 	'user.tickets.flash_new_ticket_login'              => 'Your ticket has been submitted. Log in to view it now.',
 	'user.tickets.flash_new_ticket_validating_email'   => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
-	'user.tickets.form_errors_correct'                 => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
 	'user.tickets.from_x_at_y'                         => 'From {{name}} at {{date}}',
-	'user.tickets.have_we_answered'                    => 'Have we answered your question? Feel free to <a href="{{link_url}}">resolve this ticket</a>',
 	'user.tickets.i_dont_need_to_email'                => 'I do not need to contact you anymore',
 	'user.tickets.i_still_want_to_email'               => 'I still want to submit my question',
 	'user.tickets.join_explain'                        => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
@@ -51,15 +70,7 @@
 	'user.tickets.new_ticket_email'                    => 'Your new ticket has been submitted. Our agents will reply to your email address {{email}}.',
 	'user.tickets.oops_form_mistakes'                  => 'Oops! There are mistakes with your form. Correct the highlighted feels and then try again.',
 	'user.tickets.open_tickets'                        => 'Open Tickets',
-	'user.tickets.please_choose_a_category'            => 'Please choose a category',
-	'user.tickets.please_choose_a_department'          => 'Please choose a department',
-	'user.tickets.please_choose_priority'              => 'Please choose a priority',
-	'user.tickets.please_choose_product'               => 'Please choose a product',
-	'user.tickets.please_choose_subject_at_least'      => 'Please enter a subject of at least 5 characters',
-	'user.tickets.please_enter_at_least'               => 'Please enter at least 10 characters',
-	'user.tickets.priority'                            => 'Priority',
-	'user.tickets.product'                             => 'Product',
-	'user.tickets.prove_you_are_human'                 => 'Please prove you are human!',
+
 	'user.tickets.rate_helpful'                        => 'Helpful',
 	'user.tickets.rate_unhelpful'                      => 'Not Helpful',
 	'user.tickets.remove_participant'                  => 'Remove Participant',

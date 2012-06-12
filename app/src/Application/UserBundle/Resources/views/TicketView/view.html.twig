@@ -50,7 +50,7 @@
 
 	{% if ticket.status == 'awaiting_agent' %}
 		<article class="dp-early-close dp-well">
-			{{ phrase('user.tickets.have_we_answered', {'link_url': path('user_tickets_resolve', {'ticket_ref': ticket.public_id})}) }}
+			{{ phrase('user.tickets.reply.if_resolved', {'link_url': path('user_tickets_resolve', {'ticket_ref': ticket.public_id})}) }}
 		</article>
 	{% endif %}
 
@@ -110,7 +110,7 @@
 						</div>
 					</div>
 
-					<button class="dp-btn dp-btn-primary" style="margin-top: 10px;">{{ phrase('user.ticekts.add_reply_btn') }}</button>
+					<button class="dp-btn dp-btn-primary" style="margin-top: 10px;">{{ phrase('user.tickets.reply.form.button') }}</button>
 				</form>
 			</div>
 		</article>

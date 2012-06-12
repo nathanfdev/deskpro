@@ -184,11 +184,11 @@
 			<div class="dp-more-link">
 				<button class="dp-btn dp-btn-success">{{ phrase('user.portal.search_more-results')}} &rarr;</button>
 			</div>
-			<h4>{{ phrase('user.portal.search_unhelpful') }}</h4>
+			<h4>{{ phrase('user.portal.search.no_matches') }}</h4>
 			<ul>
-				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.contact-us') }}</a></li>
-				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.feedback.create_feedback') }}</a></li>
-				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.portal.button-start-chat') }}</a></li>
+				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.portal.search.new-ticket') }}</a></li>
+				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.portal.search.new-feedback') }}</a></li>
+				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.portal.search.new-chat') }}</a></li>
 			</ul>
 		</div>
 	</div>

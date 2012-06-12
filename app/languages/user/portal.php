@@ -2,8 +2,11 @@
 	'user.portal.tab_home-description'          => 'Welcome &amp; News',
 	'user.portal.button-start-chat'             => 'Start Chat',
 	'user.portal.search-everything'             => 'Everything', // search-everything
-	'user.portal.search_unhelpful'            => 'If the above search results did not help ...', // search_unhelpful
+	'user.portal.search.no_matches' => 'Nothing suitable? ...',
 	'user.portal.search_labels_title'           => 'Search Labels',
+    'user.portal.search.new-ticket'            =>  'Contact Us',
+    'user.portal.search.new-chat'              =>  'Start Chat',
+    'user.portal.search.new-feedback'          =>  'Submit Feedback',
 	'user.portal.login-box_cancel-button'       => 'Cancel',
 	'user.portal.more_labels'                   => 'More Labels',
 	'user.portal.no_results_help'               => 'No results, try using different terms.',
@@ -11,7 +14,7 @@
 	'user.portal.our-staff'                     => 'Our Staff', // our-staff
 	'user.portal.search'                        => 'Search',
 	'user.portal.search_label-search_with'   => 'labelled with', //search_label-search_with
-	'search_label-search_show'    => 'Show',//search_label-search_show
+	'search_label-search_show'                  => 'Show',//search_label-search_show
 	'user.portal.share_this'                    => 'Share this',
 	'user.portal.tab_feedback'                  => 'Feedback',
 	'user.portal.tab_feedback-description'      => 'Customer Suggestions',
