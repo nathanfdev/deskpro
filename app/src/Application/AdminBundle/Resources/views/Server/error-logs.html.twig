@@ -10,17 +10,24 @@
 	<table width="100%">
 		<tbody>
 			<tr>
+				<td>DeskPRO Error Log</td>
 				<td>
-					There are {{ logs.count() }} logged errors.
-					<a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">Clear all logged errors</a>.
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}{% endset %}
+					<a href="{{ url }}" target="_blank">{{ url }}</a>
 				</td>
 			</tr>
 			<tr>
+				<td>Web PHP Error Log</td>
 				<td>
-					A support agent may request access to your logs.<br />
-					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}" onclick="prompt('Copy the URL below:                           ', $(this).attr('href')); return false;">Copy link to DeskPRO error log file</a><br />
-					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}&web=1" onclick="prompt('Copy the URL below:                        ', $(this).attr('href')); return false;">Copy link to PHP error log file</a><br />
-					&bull; <a href="{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&_={{ config_hash }}&cli=1" onclick="prompt('Copy the URL below:                  ', $(this).attr('href')); return false;">Copy link to PHP error log file for the command-line</a><br />
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}&amp;web{% endset %}
+					<a href="{{ url }}" target="_blank">{{ url }}</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Command-line PHP Error Log</td>
+				<td>
+					{% set url %}{{ app.getSetting('core.deskpro_url') }}?_sys=errorlog&amp;_={{ config_hash }}&amp;cli{% endset %}
+					<a href="{{ url }}" target="_blank">{{ url }}</a>
 				</td>
 			</tr>
 		</tbody>
@@ -30,27 +37,34 @@
 <br />
 <br />
 
-<div class="check-grid item-list">
-	<table width="100%">
-		<thead>
-			<tr>
-				<th width="50">{{ phrase('agent.general.id') }}</th>
-				<th>{{ phrase('agent.general.message') }}</th>
-				<th width="180">{{ phrase('agent.general.date') }}</th>
-				<th>Details&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for log in logs %}
+{% if logs.count() %}
+	<div class="check-grid item-list">
+		<table width="100%">
+			<thead>
 				<tr>
-					<td>{{log.id}}</td>
-					<td>{{log.summary}}</td>
-					<td>{{log.date}}</td>
-					<td><a href="{{ path('admin_server_error_logs_view', {'log_id': log.id}) }}">{{ phrase('admin.general.view') }}</a></td>
+					<th colspan="4" style="text-align: left; padding-left: 8px;">
+						There are {{ logs.count() }} logged errors.
+						<a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">Clear all logged errors</a>.
+					</th>
 				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
-
+				<tr>
+					<th width="50">{{ phrase('agent.general.id') }}</th>
+					<th>{{ phrase('agent.general.message') }}</th>
+					<th width="180">{{ phrase('agent.general.date') }}</th>
+					<th>Details&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for log in logs %}
+					<tr>
+						<td>{{log.id}}</td>
+						<td>{{log.summary}}</td>
+						<td>{{log.date}}</td>
+						<td><a href="{{ path('admin_server_error_logs_view', {'log_id': log.id}) }}">{{ phrase('admin.general.view') }}</a></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endif %}
 {% endblock %}

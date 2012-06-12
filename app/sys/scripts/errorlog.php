@@ -43,27 +43,10 @@ if (isset($_GET['web'])) {
 
 	echo "CLI ERROR LOG FILE\n\n";
 
-	$data = null;
-	if (file_exists(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
-		$data = file_get_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat');
-		$data = @unserialize($data);
-	}
+	$log_file_path = dp_get_log_dir() . '/cli-phperr.log';
 
-	if (!$data) {
-		die('cli-server-reqs-check.dat file does not exist or is invalid');
-	}
-
-	$log_file_path = $data['error_log'];
-	if (!$log_file_path) {
-		die('error_log value not set');
-	}
-
-	if (!is_file($log_file_path)) {
-		die('error_log file does not exist: ' . $log_file_path);
-	}
-
-	if (!is_readable($log_file_path)) {
-		die('error_log file is not readable: ' . $log_file_path);
+	if (!file_exists($log_file_path)) {
+		die('No cli-phperr.log file');
 	}
 
 } else {
@@ -79,6 +62,6 @@ if (isset($_GET['web'])) {
 
 $fp = fopen($log_file_path, 'r');
 while (!feof($fp)) {
-	echo fread($fp, 8192);
+	echo str_replace("\r", '', fread($fp, 8192));
 }
 fclose($fp);

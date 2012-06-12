@@ -19,6 +19,7 @@ dp_load_config();
 if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 
 	$do_update = false;
+	$last_error_log_hash = null;
 	if (file_exists(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
 		$data = file_get_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat');
 		$data = @unserialize($data);
@@ -26,6 +27,10 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		// Update these files every 5 minutes on cron
 		if (!$data || !isset($data['gen_time']) || $data['gen_time'] < time() - 300) {
 			$do_update = true;
+		}
+
+		if (isset($data['error_log_hash'])) {
+			$last_error_log_hash = $data['error_log_hash'];
 		}
 	} else {
 		$do_update = true;
@@ -36,6 +41,7 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		@phpinfo();
 		$phpinfo = ob_get_clean();
 		@file_put_contents(dp_get_data_dir() .'/cli-phpinfo.html', $phpinfo);
+		@chmod(dp_get_data_dir() .'/cli-phpinfo.html', 0777);
 
 		$data = array('checks' => deskpro_install_check_reqs());
 		$data['gen_time'] = time();
@@ -48,7 +54,17 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		}
 		$data['error_log'] = @ini_get('error_log');
 
+		if ($data['error_log'] && file_exists($data['error_log']) && is_readable($data['error_log'])) {
+			$data['error_log_hash'] = md5_file($data['error_log']);
+
+			if ($last_error_log_hash != $data['error_log_hash']) {
+				@copy($data['error_log'], dp_get_log_dir() . '/cli-phperr.log');
+				@chmod(dp_get_log_dir() . '/cli-phperr.log', 0777);
+			}
+		}
+
 		@file_put_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat', serialize($data));
+		@chmod(dp_get_data_dir() .'/cli-server-reqs-check.dat', 0777);
 	}
 
 	unset($do_update, $phpinfo, $data);

@@ -1084,14 +1084,14 @@ class KernelErrorHandler
 		$str = array();
 		if ($errinfo['type'] == 'exception') {
 			$e = $errinfo['exception'];
-			$line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s\n", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
+			$line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
 			$str[] = sprintf("Exception: %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
 			$str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
 			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
 			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
 			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
-			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
+			$line = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
 			$str[] = sprintf("Error: %s\n", $errinfo['errstr']);
 			$str[] = sprintf("\tType: %s\n", $errinfo['errname']);
 			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
