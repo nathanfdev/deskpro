@@ -68,7 +68,9 @@ if (php_sapi_name() == 'cli') {
 
 if ($errors) {
 
-	deskpro_install_simple_data_submit(implode("\n", $errors));
+	if (!(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron')) {
+		deskpro_install_simple_data_submit(implode("\n", $errors));
+	}
 
 	if (php_sapi_name() == 'cli') {
 		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
