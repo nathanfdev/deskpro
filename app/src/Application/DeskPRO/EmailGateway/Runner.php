@@ -203,7 +203,7 @@ class Runner
 					$source['source_info'] = $proc->getSourceInfo();
 				} catch (\Exception $e) {
 
-					$e->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+					$e->_dp_sn = KernelErrorHandler::genSessionName();
 
 					$errinfo = KernelErrorHandler::getExceptionInfo($e);
 					KernelErrorHandler::logErrorInfo($errinfo);
@@ -317,7 +317,7 @@ class Runner
 						$source['source_info'] = $proc->getSourceInfo();
 					} catch (\Exception $e) {
 
-						$e->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+						$e->_dp_sn = KernelErrorHandler::genSessionName();
 
 						$errinfo = KernelErrorHandler::getExceptionInfo($e);
 						KernelErrorHandler::logErrorInfo($errinfo);

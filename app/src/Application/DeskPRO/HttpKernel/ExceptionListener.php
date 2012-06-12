@@ -79,7 +79,7 @@ class ExceptionListener
 			return;
 		}
 
-		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+		$exception->_dp_sn = KernelErrorHandler::genSessionName();
 
 		$errinfo = KernelErrorHandler::getExceptionInfo($exception);
 		KernelErrorHandler::logErrorInfo($errinfo);
@@ -92,7 +92,7 @@ class ExceptionListener
 		$trace = KernelErrorHandler::formatBacktrace($exception->getTrace());
 		$trace = KernelErrorHandler::stripPathPrefix($trace);
 
-		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+		$exception->_dp_sn = KernelErrorHandler::genSessionName();
 
 		try {
 			$logger = App::createNewLogger('error_not_found', null);

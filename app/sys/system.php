@@ -1004,6 +1004,37 @@ class KernelErrorHandler
 
 
 	/**
+	 * @static
+	 *
+	 */
+	public static function genSessionName()
+	{
+		static $counter = 0;
+
+		list($time, $ms) = explode(' ', microtime());
+
+		return self::_encodeNum($time) . self::_encodeNum($ms) . self::_encodeNum(++$counter);
+	}
+
+	protected static function _encodeNum($num)
+	{
+		$alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		$arr = array();
+		$base = strlen($alphabet);
+
+		while ($num) {
+			$rem = $num % $base;
+			$num = (int)($num / $base);
+			$arr[] = $alphabet[$rem];
+		}
+
+		$arr = array_reverse($arr);
+		return implode('', $arr);
+	}
+
+
+	/**
 	 * Takes care of logging an error. $errinfo is an info array from getExceptionInfo or getErrorInfo.
 	 *
 	 * @param array $errinfo
@@ -1021,15 +1052,7 @@ class KernelErrorHandler
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
-		// Only log to db when the error logger isn't overriden (as is case in install/import)
-		if (empty($GLOBALS['DP_ERR_LOGGER'])) {
-			try {
-				$logger = App::createNewLogger('error_log', null);
-				$logger->log($errinfo['summary'], $errinfo['pri'], $errinfo);
-			} catch (\Exception $e) {}
-		}
-
-		if (!class_exists('\Application\DeskPRO\App') || !\Application\DeskPRO\App::getConfig('no_report_errors')) {
+		if (class_exists('\Application\DeskPRO\App') && !\Application\DeskPRO\App::getConfig('no_report_errors')) {
 			if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
 				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
 			}
@@ -1062,14 +1085,18 @@ class KernelErrorHandler
 		if ($errinfo['type'] == 'exception') {
 			$e = $errinfo['exception'];
 			$line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s\n", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
-			$str[] = sprintf("[%s] Exception %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
-			$str[] = sprintf("\t-> Type: %s\n", $errinfo['exception_type']);
-			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("Exception: %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
+			$str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
+			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
+			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
 			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
-			$str[] = sprintf("[%s] Error %s\n", date('Y-m-d H:i:s'), $errinfo['errstr']);
-			$str[] = sprintf("\t-> Type: %s\n", $errinfo['errname']);
-			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
+			$str[] = sprintf("Error %s\n", $errinfo['errstr']);
+			$str[] = sprintf("\tType: %s\n", $errinfo['errname']);
+			$str[] = sprintf("\tDate: %s\n", date('Y-m-d H:i:s'));
+			$str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+			$str[] = sprintf("\tLine %d of %s\n", $errinfo['errline'], $errinfo['errfile']);
 		}
 
 		$errinfo['trace'] = trim($errinfo['trace']);
@@ -1086,23 +1113,28 @@ class KernelErrorHandler
 			$str[] = "\n\n";
 		}
 
-		$str = implode('', $str);
+		$str = trim(implode('', $str));
+
+		// Prefix each line for easier parsing
+		$str = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
+		$line = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $line);
 
 		// Always write error line to standard error log
 		@error_log($line, 0);
 
 		if (dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
+
 			$written = @fwrite($fh, $str);
 			@fclose($fh);
 
 			if ($written) {
 				self::$wrote_log_file = dp_get_log_dir() . '/error.log';
 
-				// Max 5MB
-				if (filesize(self::$wrote_log_file) > 5242880) {
+				// Max 15MB
+				if (filesize(self::$wrote_log_file) > 15728640) {
 					$file = @file_get_contents(self::$wrote_log_file);
 					if ($file) {
-						$file = substr($file, -5242880);
+						$file = substr($file, -15728640);
 						@file_put_contents(self::$wrote_log_file, $file);
 						$file = null;
 					}
@@ -1153,7 +1185,7 @@ class KernelErrorHandler
 
 		$errinfo = array(
 			'type'           => 'exception',
-			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
+			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
 			'exception'      => $exception,
 			'exception_type' => get_class($exception),
 			'die'            => true,
@@ -1244,7 +1276,7 @@ class KernelErrorHandler
 
 		return array(
 			'type'            => 'error',
-			'session_name'    => null,
+			'session_name'    => self::genSessionName(),
 			'die'             => $die,
 			'pri'             => $pri,
 			'trace'           => $trace,

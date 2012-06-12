@@ -12,7 +12,6 @@ require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions
 require DP_ROOT . '/sys/load_config.php';
 dp_load_config();
 
-
 #------------------------------
 # Attempt to set min memory limit to 128 MB
 #------------------------------
@@ -33,6 +32,39 @@ if (!$max_time || $max_time < 40) {
 	@set_time_limit(40);
 }
 unset($max_time);
+
+#------------------------------
+# Handle CLI logging of info
+#------------------------------
+
+if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
+
+	$do_update = false;
+	if (file_exists(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
+		$data = file_get_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat');
+		$data = @unserialize($data);
+
+		// Update these files every 5 minutes on cron
+		if (!$data || !isset($data['gen_time']) || $data['gen_time'] < time() - 300) {
+			$do_update = true;
+		}
+	} else {
+		$do_update = true;
+	}
+
+	if ($do_update) {
+		ob_start();
+		@phpinfo();
+		$phpinfo = ob_get_clean();
+		@file_put_contents(dp_get_data_dir() .'/cli-phpinfo.html', $phpinfo);
+
+		$data = deskpro_install_check_reqs();
+		$data['gen_time'] = time();
+		@file_put_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat', serialize($data));
+	}
+
+	unset($do_update, $phpinfo, $data);
+}
 
 #------------------------------
 # Run low-level server checks

@@ -1,5 +1,65 @@
 <?php
 
+function deskpro_install_check_reqs()
+{
+	$errors = array();
+	if (!deskpro_install_check_version()) {
+		$errors['php_version'] = 'fatal';
+	}
+
+	if (!function_exists('json_encode')) {
+		$errors['json_ext'] = 'fatal';
+	}
+
+	if (!function_exists('session_start')) {
+		$errors['session_ext'] = 'fatal';
+	}
+
+	if (!deskpro_install_check_image_manip()) {
+		$errors['image_manip'] = 'fatal';
+	}
+
+	if (!function_exists('ctype_alpha')) {
+		$errors['ctype_ext'] = 'fatal';
+	}
+
+	if (!function_exists('token_get_all')) {
+		$errors['tokenizer_ext'] = 'fatal';
+	}
+
+	if (!deskpro_install_check_pdo()) {
+		$errors['pdo_ext'] = 'fatal';
+	} elseif (!deskpro_install_check_pdo_mysql()) {
+		$errors['pdo_mysql_ext'] = 'fatal';
+	}
+
+	if (!extension_loaded('openssl')) {
+		$errors['openssl_ext'] = 'recommended';
+	}
+
+	if (!(function_exists('apc_store') && ini_get('apc.enabled'))) {
+		$errors['apc_check'] = 'recommended';
+	}
+
+	if (!function_exists('get_magic_quotes_gpc')) {
+		$errors['magic_quotes_gpc_check'] = 'recommended';
+	}
+
+	if (!function_exists('iconv')) {
+		$errors['iconv_ext'] = 'recommended';
+	}
+
+	if (!deskpro_install_check_memory_limit()) {
+		$errors['memory_limit'] = 'fatal';
+	}
+
+	if (!deskpro_install_check_data_writable(dp_get_data_dir())) {
+		$errors['data_write'] = 'fatal';
+	}
+
+	return $errors;
+}
+
 function deskpro_install_check_version()
 {
 	return version_compare(phpversion(), '5.3.2', '>=');
