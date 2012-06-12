@@ -40,7 +40,7 @@ class Build1339522924 extends AbstractBuild
 	{
 		$this->out("Inserting new system archive filters");
 		$this->execMutateSql("
-			INSERT INTO `ticket_filters` (`id`, `person_id`, `agent_team_id`, `is_global`, `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`)
+			REPLACE INTO `ticket_filters` (`id`, `person_id`, `agent_team_id`, `is_global`, `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`)
 			VALUES
 				(NULL, NULL, NULL, 1, 'Awaiting User', 1, 'archive_awaiting_user', X'613A313A7B693A303B613A333A7B733A343A2274797065223B733A363A22737461747573223B733A323A226F70223B733A323A226973223B733A373A226F7074696F6E73223B613A313A7B733A363A22737461747573223B733A31333A226177616974696E675F75736572223B7D7D7D', '', 'ticket.date_created:desc'),
 				(NULL, NULL, NULL, 1, 'Resolved', 1, 'archive_resolved', X'613A313A7B693A303B613A333A7B733A343A2274797065223B733A363A22737461747573223B733A323A226F70223B733A323A226973223B733A373A226F7074696F6E73223B613A313A7B733A363A22737461747573223B733A383A227265736F6C766564223B7D7D7D', '', 'ticket.date_created:desc'),
