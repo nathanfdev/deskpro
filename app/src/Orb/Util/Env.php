@@ -135,6 +135,18 @@ class Env
 		$phpinfo = ob_get_clean();
 		$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
 
+		return self::getPhpIniPathFromInfo($phpinfo);
+	}
+
+
+	/**
+	 * Get php.ini path from the phpinfo HTML string
+	 *
+	 * @param $phpinfo
+	 * @return false|string
+	 */
+	public static function getPhpIniPathFromInfo($phpinfo)
+	{
 		if (preg_match('#^Loaded Configuration File (.*?)$#m', $phpinfo, $m)) {
 			$path = $m[1];
 			$path = str_replace('=>', '', $path);

@@ -37,7 +37,7 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		$phpinfo = ob_get_clean();
 		@file_put_contents(dp_get_data_dir() .'/cli-phpinfo.html', $phpinfo);
 
-		$data = deskpro_install_check_reqs();
+		$data = array('checks' => deskpro_install_check_reqs());
 		$data['gen_time'] = time();
 		$data['php_version'] = phpversion();
 		$data['memory_limit'] = @ini_get('memory_limit');

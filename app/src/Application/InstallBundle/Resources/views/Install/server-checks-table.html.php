@@ -1,4 +1,5 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!isset($run_context)) $run_context = 'install'; ?>
 <style type="text/css">
 	.kb-read-more {
 		font-size: 11px;
@@ -45,6 +46,7 @@
 	</td>
 </tr>
 
+<?php if ($run_context == 'install'): ?>
 <tr>
 	<td>
 		<?php if (!isset($errors['config']) && !isset($errors['config_values']) && !isset($errors['config_dp3_values'])): ?>
@@ -69,7 +71,7 @@
 		<?php endif ?>
 	</td>
 </tr>
-
+<?php endif ?>
 
 <tr>
 	<td>
@@ -296,24 +298,27 @@
 	</td>
 </tr>
 
-<?php if (isset($errors['dp3_files'])): ?>
-<?php $failed = true ?>
-<tr>
-	<td>
-		<span class="label important" style="float:right">FAIL</span>
-		DeskPRO v3 files
-		<div class="alert-message block-message error">
-			We have detected that there are DeskPRO v3 files present. DeskPRO v4 should NOT be installed over an existing
-			v3 install. Having v3 files present in the v4 directory is a security risk. You should completely delete the directory
-			and then re-extract your DeskPRO v4 distribution so you have a pristine installation.
-		</div>
-	</td>
-</tr>
+<?php if ($run_context == 'install'): ?>
+	<?php if (isset($errors['dp3_files'])): ?>
+	<?php $failed = true ?>
+	<tr>
+		<td>
+			<span class="label important" style="float:right">FAIL</span>
+			DeskPRO v3 files
+			<div class="alert-message block-message error">
+				We have detected that there are DeskPRO v3 files present. DeskPRO v4 should NOT be installed over an existing
+				v3 install. Having v3 files present in the v4 directory is a security risk. You should completely delete the directory
+				and then re-extract your DeskPRO v4 distribution so you have a pristine installation.
+			</div>
+		</td>
+	</tr>
+	<?php endif ?>
 <?php endif ?>
 
 </tbody>
 </table>
 
+<?php if ($run_context == 'install'): ?>
 <?php $db_failed = false; ?>
 <?php if ($has_db_checks): ?>
 <h3>Database Checks</h3>
@@ -399,4 +404,5 @@
 	</tbody>
 	<?php endif ?>
 </table>
+<?php endif ?>
 <?php endif ?>

@@ -109,16 +109,12 @@ class ServerController extends AbstractController
 
 	public function serverChecksAction()
 	{
+		#------------------------------
+		# Web checks
+		#------------------------------
+
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
 		$server_check->checkServer();
-
-		$is_fatal = $server_check->hasFatalErrors();
-		$has_db_checks = false;
-
-		if (!$is_fatal) {
-			$has_db_checks = true;
-			$server_check->checkDatabase(App::getConfig('db'), false);
-		}
 
 		$is_fatal = $server_check->hasFatalErrors();
 
@@ -127,16 +123,42 @@ class ServerController extends AbstractController
 			$ini_path = \Orb\Util\Env::getPhpIniPath();
 		}
 
-		$vars = array(
+		$table_vars = array(
 			'errors' => $server_check->getErrors(),
 			'is_fatal' => $is_fatal,
-			'has_db_checks' => $has_db_checks,
+			'has_db_checks' => false,
 			'db_config' => App::getConfig('db'),
 			'ini_path' => $ini_path,
 		);
 
-		$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $vars);
-		$vars['table'] = $table;
+		$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $table_vars);
+		$vars['web_table'] = $table;
+
+		#------------------------------
+		# CLI checks
+		#------------------------------
+
+		if (file_exists(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
+			$data = file_get_contents(dp_get_data_dir() .'/cli-server-reqs-check.dat');
+			$data = @unserialize($data);
+
+			$phpinfo = '';
+			if (file_exists(dp_get_data_dir() .'/cli-phpinfo.html')) {
+				$phpinfo = file_get_contents(dp_get_data_dir() .'/cli-phpinfo.html');
+			}
+
+			$is_fatal = in_array('fatal', $data['checks']);
+
+			$table_vars = array(
+				'errors' => $data['checks'],
+				'is_fatal' => $is_fatal,
+				'has_db_checks' => false,
+				'ini_path' => \Orb\Util\Env::getPhpIniPathFromInfo($phpinfo),
+			);
+
+			$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $table_vars);
+			$vars['cli_table'] = $table;
+		}
 
 		return $this->render('AdminBundle:Server:server-checks.html.twig', $vars);
 	}
