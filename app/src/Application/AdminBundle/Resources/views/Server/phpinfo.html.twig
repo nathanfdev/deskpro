@@ -32,6 +32,11 @@
 				<td>{% if cli_php.php_config %}{{ cli_php.php_config.error_log }}{% else %}n/a{% endif %}</td>
 			</tr>
 			<tr>
+				<td>Path to PHP.ini</td>
+				<td>{{ web_php.ini_path|default('n/a') }}</td>
+				<td>{{ cli_php.ini_path|default('n/a') }}</td>
+			</tr>
+			<tr>
 				<td>Link to PHP Info</td>
 				<td>
 					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ static_security_token_secret(config_hash ~ 'phpinfo', 86400) }}" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link Web PHP Info</a>

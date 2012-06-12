@@ -133,7 +133,6 @@ class Env
 		ob_start();
 		phpinfo();
 		$phpinfo = ob_get_clean();
-		$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
 
 		return self::getPhpIniPathFromInfo($phpinfo);
 	}
@@ -147,14 +146,16 @@ class Env
 	 */
 	public static function getPhpIniPathFromInfo($phpinfo)
 	{
+		$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
+
 		if (preg_match('#^Loaded Configuration File (.*?)$#m', $phpinfo, $m)) {
 			$path = $m[1];
 			$path = str_replace('=>', '', $path);
 			$path = trim($path);
 			return $path;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 

@@ -71,6 +71,7 @@ class ServerController extends AbstractController
 		}
 
 		$web_php['phpinfo'] = $phpinfo;
+		$web_php['ini_path'] = \Orb\Util\Env::getPhpIniPathFromInfo($web_php['phpinfo']);
 
 		#------------------------------
 		# CLI PHP
@@ -80,10 +81,16 @@ class ServerController extends AbstractController
 
 		if (file_exists(dp_get_data_dir() .'/cli-phpinfo.html')) {
 			$phpinfo = file_get_contents(dp_get_data_dir() .'/cli-phpinfo.html');
-			preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
+			$cli_php['ini_path'] = \Orb\Util\Env::getPhpIniPathFromInfo($phpinfo);
 
-			if (isset($m[1])) {
-				$phpinfo = $m[1];
+			if (strpos($phpinfo, '<body') === false) {
+				$phpinfo = '<code>' . nl2br(htmlspecialchars($phpinfo)) . '</code>';
+			} else {
+				preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
+
+				if (isset($m[1])) {
+					$phpinfo = $m[1];
+				}
 			}
 
 			$cli_php['phpinfo'] = $phpinfo;
