@@ -40,6 +40,8 @@ class OverviewController extends AbstractController
 {
 	public function indexAction()
 	{
+		$this->person->loadPrefGroup('reports.ui.overview.options');
+
 		return $this->render('ReportBundle:Overview:index.html.twig', array(
 			'tickets_status_data'            => $this->getValues('tickets_status'),
 			'tickets_awaiting_agent_data'    => $this->getValues('tickets_awaiting_agent'),
@@ -54,14 +56,23 @@ class OverviewController extends AbstractController
 
 	public function updateStatAction($type)
 	{
+		$this->person->loadPrefGroup('reports.ui.overview.options');
+
 		switch ($type) {
 			case 'tickets_awaiting_agent':
 				$grouping_field = $this->in->getString('grouping_field');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_awaiting_agent.grouping', $grouping_field);
+
 				return $this->render('ReportBundle:Overview:tickets-awaiting-agent.html.twig', array('data' => $this->getValues('tickets_awaiting_agent', array('grouping_field' => $grouping_field))));
 
 			case 'tickets_resolved':
 				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_resolved.grouping', $grouping_field);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_resolved.date_choice', $date_choice);
+
 				return $this->render('ReportBundle:Overview:tickets-resolved.html.twig', array(
 					'data' => $this->getValues('tickets_resolved', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
 				);
@@ -69,18 +80,28 @@ class OverviewController extends AbstractController
 			case 'tickets_response_time':
 				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_response_time.grouping', $grouping_field);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_response_time.date_choice', $date_choice);
+
 				return $this->render('ReportBundle:Overview:tickets-response-time.html.twig', array(
 					'data' => $this->getValues('tickets_response_time', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
 				);
 
 			case 'tickets_user_waiting_time':
 				$grouping_field = $this->in->getString('grouping_field');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_user_waiting_time.grouping', $grouping_field);
+
 				return $this->render('ReportBundle:Overview:tickets-user-waiting-time.html.twig', array(
 					'data' => $this->getValues('tickets_user_waiting_time', array('grouping_field' => $grouping_field))
 				));
 
 			case 'tickets_opened_hour':
 				$date_choice = $this->in->getString('date_choice');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_opened_hour.date_choice', $date_choice);
+
 				return $this->render('ReportBundle:Overview:tickets-opened-hour.html.twig', array(
 					'data' => $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice))
 				));
@@ -93,6 +114,10 @@ class OverviewController extends AbstractController
 			case 'chats_created':
 				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
+
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.chats_created.grouping', $grouping_field);
+				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.chats_created.date_choice', $date_choice);
+
 				return $this->render('ReportBundle:Overview:chats-created.html.twig', array(
 					'data' => $this->getValues('chats_created', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
 				);
@@ -105,6 +130,20 @@ class OverviewController extends AbstractController
 	public function getValues($type, array $options = array())
 	{
 		$options = new \Orb\Util\OptionsArray($options);
+
+		if (!$options->get('grouping_field')) {
+			$pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.grouping');
+			if ($pref) {
+				$options->set('grouping_field', $pref);
+			}
+		}
+
+		if (!$options->get('date_choice')) {
+			$pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.date_choice');
+			if ($pref) {
+				$options->set('date_choice', $pref);
+			}
+		}
 
 		switch ($type) {
 

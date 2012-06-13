@@ -164,4 +164,20 @@ class PersonPref extends EntityRepository
 			WHERE person_id = ? AND name = ? LIMIT 1
 		", array($person_id, $pref_name));
 	}
+
+
+	public function savePref($person, $pref_id, $value)
+	{
+		$pref = $person->setPreference($pref_id, $value);
+
+		App::getDb()->replace('people_prefs', array(
+			'person_id' => $person->getId(),
+			'name' => $pref['name'],
+			'value_str' => $pref['value_str'],
+			'value_array' => $pref['value_array'],
+			'date_expire' => $pref['date_expire']
+		));
+
+		return $pref;
+	}
 }
