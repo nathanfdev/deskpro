@@ -215,17 +215,17 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			umask($old_umask);
 
 			if (!$mkdir_success) {
-				throw new \RuntimeException("Could not create filesystem storage directory");
+				throw new \Application\DeskPRO\FileStorage\Exception\PermissionException("Could not create filesystem storage directory");
 			}
 		}
 		if ($data) {
 			if (!@file_put_contents($file_path_full, $data)) {
-				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
+				throw new \Application\DeskPRO\FileStorage\Exception\PermissionException("Could not write file to storage directory: $file_path_full");
 			}
 			@chmod($file_path_full, 0777);
 		} else {
 			if (!@touch($file_path_full)) {
-				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
+				throw new \Application\DeskPRO\FileStorage\Exception\PermissionException("Could not write file to storage directory: $file_path_full");
 			}
 		}
 

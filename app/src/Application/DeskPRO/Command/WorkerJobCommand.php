@@ -149,7 +149,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 					$title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
-					$e = new \Exception($title);
+					$e = new Exception\CronRunningException($title);
 					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
 

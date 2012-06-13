@@ -182,6 +182,28 @@ class ErrorReporter
 		$info = self::getBasicData();
 
 		if ($errinfo['type'] == 'exception') {
+
+			$ignore_types = array(
+				'Application\\DeskPRO\\Command\\Exception\\CronRunningException',
+				'Application\\DeskPRO\\FileStorage\\Exception\\PermissionException',
+				'Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException',
+			);
+
+			if (in_array($errinfo['exception_type'], $ignore_types)) {
+				return;
+			}
+
+			if ($errinfo['exception'] instanceof \PDOException) {
+				$ignore_codes = array(
+					'HY000', // MySQL server has gone away
+					'1203',  // more than 'max_user_connections' active connections
+				);
+
+				if (in_array($errinfo['exception']->getCode(), $ignore_codes)) {
+					return;
+				}
+			}
+
 			$copy_keys = array(
 				'type', 'session_name', 'exception_type', 'die', 'pri',
 				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
