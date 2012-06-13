@@ -1057,6 +1057,10 @@ class KernelErrorHandler
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
+		if (isset($GLOBALS['DP_CRON_LOGGER'])) {
+			$GLOBALS['DP_CRON_LOGGER']->log("ERROR {$errinfo['session_name']}: {$errinfo['summary']}", 'ERR', array('flag' => 'job_error'));
+		}
+
 		if (class_exists('\Application\DeskPRO\App') && !\Application\DeskPRO\App::getConfig('no_report_errors')) {
 			if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
 				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);

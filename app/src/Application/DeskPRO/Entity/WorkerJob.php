@@ -100,11 +100,82 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	protected $last_run_date = null;
 
 	/**
+	 * The last time this job was started
+	 *
+	 * @var \DateTime
+	 */
+	protected $last_start_date = null;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
 	{
 		return $this->id;
+	}
+
+
+	/**
+	 * Is the task running right now?
+	 *
+	 * @return bool
+	 */
+	public function getIsRunning()
+	{
+		if (!$this->last_start_date) {
+			return false;
+		}
+
+		if ($this->last_start_date && !$this->last_run_date) {
+			return true;
+		}
+
+		if ($this->last_start_date->getTimestamp() > $this->last_run_date->getTimestamp()) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Guess if the task has crashed or did crash
+	 *
+	 * @param int $threshold
+	 * @return bool
+	 */
+	public function getIsCrashed($threshold = 900)
+	{
+		// Only tasks thata re still running can be crashed
+		if (!$this->getIsRunning()) {
+			return false;
+		}
+
+		$start = $this->last_start_date->getTimestamp();
+		$now   = time();
+
+		if ($now - $start > $threshold) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getRunningTime()
+	{
+		// Only tasks thata re still running can be crashed
+		if (!$this->getIsRunning()) {
+			return 0;
+		}
+
+		$start = $this->last_start_date->getTimestamp();
+		$now   = time();
+
+		return $now - $start;
 	}
 
 
@@ -115,14 +186,32 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getNextRunDate()
 	{
-		if ($this->last_run_date) {
-			$d = clone $this->last_run_date;
+		if ($this->last_start_date) {
+			$d = clone $this->last_start_date;
 		} else {
 			$d = new \DateTime();
 		}
 
 		$d->add(new \DateInterval('PT' . $this->interval . 'S'));
 		return $d;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getNextRunRelativeTime()
+	{
+		$date = $this->getNextRunDate();
+		$ts = $date->getTimestamp();
+
+		$diff = $ts - time();
+
+		if ($diff < 1) {
+			return 'immediately';
+		}
+
+		return \Orb\Util\Dates::secsToReadable($diff, 2, 'short');
 	}
 
 
@@ -157,12 +246,12 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isReady()
 	{
-		if (!$this->interval OR !$this->last_run_date) {
+		if (!$this->interval OR !$this->last_start_date) {
 			return true;
 		}
 
 		$cut = time() - $this->interval;
-		if ($this->last_run_date->getTimestamp() < $cut) {
+		if ($this->last_start_date->getTimestamp() < $cut) {
 			return true;
 		}
 
@@ -188,5 +277,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'interval', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_interval', ));
 		$metadata->mapField(array( 'fieldName' => 'last_run_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_run_date', ));
+		$metadata->mapField(array( 'fieldName' => 'last_start_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_start_date', ));
 	}
 }

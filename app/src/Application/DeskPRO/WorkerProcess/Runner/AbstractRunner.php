@@ -98,17 +98,24 @@ abstract class AbstractRunner
 	 */
 	public function runJob(Entity\WorkerJob $worker_job)
 	{
+		unset($GLOBALS['DP_CRON_LOGGER']);
+
 		if ($this->job_time_limit) {
 			@set_time_limit($this->job_time_limit);
 		}
 
 		$job = $this->getJob($worker_job);
 		$logger = $job->getLogger();
+		$GLOBALS['DP_CRON_LOGGER'] = $logger;
+
+		if ($worker_job->getIsCrashed()) {
+			$logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at " . $worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
+		}
 
 		$mtime_start = microtime(true);
-		$logger->log("Job {$worker_job['id']} start", Logger::DEBUG, array('flag' => 'job_start'));
+		$logger->log("Job {$worker_job['id']} start", Logger::INFO, array('flag' => 'job_start'));
 
-		$worker_job['last_run_date'] = new \DateTime();
+		$worker_job['last_start_date'] = new \DateTime();
 		App::getOrm()->persist($worker_job);
 		App::getOrm()->flush();
 
@@ -118,11 +125,17 @@ abstract class AbstractRunner
 		$mtime_total = $mtime_end - $mtime_start;
 		$mtime_total = sprintf("%.5f", $mtime_total);
 
+		$worker_job['last_run_date'] = new \DateTime();
+		App::getOrm()->persist($worker_job);
+		App::getOrm()->flush();
+
 		$logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, array('flag' => 'job_end'));
 
 		if ($this->job_time_limit) {
 			@set_time_limit(0);
 		}
+
+		unset($GLOBALS['DP_CRON_LOGGER']);
 	}
 
 

@@ -29,85 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
+ * @subpackage
  */
 
-namespace Application\AdminBundle\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-/**
- * Displays cron jobs
- */
-class CronController extends AbstractController
+class Build1339602652 extends AbstractBuild
 {
-	public function listAction()
+	public function run()
 	{
-		$jobs = $this->em->createQuery("
-			SELECT j
-			FROM DeskPRO:WorkerJob j
-			ORDER BY j.interval ASC
-		")->execute();
-
-		$last_run = $this->container->getSetting('core.last_cron_run');
-		if (!$last_run) $last_run = 0;
-
-		$time_since_run = time() - $last_run;
-		$is_problem = false;
-		if ($time_since_run > 301) {
-			$is_problem = true;
-		}
-
-		return $this->render("AdminBundle:Cron:list.html.twig", array(
-			'jobs' => $jobs,
-			'last_run' => $last_run,
-			'time_since_run' => $time_since_run,
-			'is_problem' => $is_problem,
-		));
-	}
-
-	public function logsAction()
-	{
-		$jobs = $this->em->createQuery("
-			SELECT j
-			FROM DeskPRO:WorkerJob j
-			ORDER BY j.interval ASC
-		")->execute();
-
-		$job_id = $this->in->getString('job_id');
-		if ($job_id) {
-			$search_job = 'worker_job.' . $job_id;
-		} else {
-			$search_job = 'worker_job.%';
-		}
-
-		$search_pri = 10;
-		if ($this->in->getUint('priority')) {
-			$search_pri = $this->in->getUint('priority');
-		}
-
-		$logs = $this->db->fetchAll("
-			SELECT log_name, session_name, message, priority
-			FROM log_items
-			WHERE log_name LIKE ? AND priority <= ?
-			ORDER BY id DESC
-			LIMIT 2000
-		", array($search_job, $search_pri));
-
-		return $this->render('AdminBundle:Cron:logs.html.twig', array(
-			'job_id' => $job_id,
-			'priority' => $search_pri,
-			'logs' => $logs,
-			'jobs' => $jobs,
-		));
-	}
-
-	public function clearLogsAction()
-	{
-		$this->ensureRequestToken('clear_cron_logs', 'x');
-		$this->db->exec("DELETE FROM log_items WHERE log_name LIKE 'worker_job.%'");
-
-		return $this->redirectRoute('admin_server_cron');
+		$this->out("Inserting new system archive filters");
+		$this->execMutateSql("ALTER TABLE worker_jobs ADD last_start_date DATETIME DEFAULT NULL");
 	}
 }
