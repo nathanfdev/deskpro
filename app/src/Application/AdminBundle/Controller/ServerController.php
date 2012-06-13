@@ -104,10 +104,12 @@ class ServerController extends AbstractController
 
 			$cli_php['php_config'] = $data;
 
-			if ($cli_php['php_config']['memory_limit_real'] == -1) {
-				$cli_php['effective_max_upload'] = -1;
-			} else {
-				$cli_php['effective_max_upload'] = $cli_php['php_config']['memory_limit_real'] / 3;
+			if (isset($cli_php['php_config']['memory_limit_real'])) {
+				if ($cli_php['php_config']['memory_limit_real'] == -1) {
+					$cli_php['effective_max_upload'] = -1;
+				} else {
+					$cli_php['effective_max_upload'] = $cli_php['php_config']['memory_limit_real'] / 3;
+				}
 			}
 		}
 
@@ -343,6 +345,9 @@ class ServerController extends AbstractController
 
 		$php_ini = \Orb\Util\Env::getPhpIniPath();
 		$effective_max = \Orb\Util\Env::getEffectiveMaxUploadSize();
+
+		$php_vars['memory_limit'] = \Orb\Util\Env::getMemoryLimit();
+		$php_vars['memory_limit_real'] = DP_REAL_MEMSIZE;
 
 		return $this->render('AdminBundle:Server:attachments.html.twig', array(
 			'php_vars' => $php_vars,

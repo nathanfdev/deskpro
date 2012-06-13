@@ -29,16 +29,16 @@
 					{% endif %}
 					(<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ static_security_token_secret(config_hash ~ 'memtest', 86400) }}">{{ phrase('admin.server.test_this_value') }}</a>)
 					{% if web_php.php_config.memory_limit and web_php.php_config.memory_limit != web_php.php_config.memory_limit_real %}
-						<div style="font-size: 10px;">Successfully changed to {{ web_php.php_config.memory_limit|filesize_display }} at runtime</div>
+						<div style="font-size: 11px;">Successfully changed to {{ web_php.php_config.memory_limit|filesize_display }} at runtime</div>
 					{% endif %}
 				</td>
 				<td>
 					{% if cli_php.php_config %}
-						{% if cli_php.php_config.memory_limit_real == -1 %}No limit
+						{% if cli_php.php_config.memory_limit_real or not cli_php.php_config.memory_limit_real %}No limit
 						{% else %}{{ cli_php.php_config.memory_limit_real|filesize_display }}
 						{% endif %}
 						{% if cli_php.php_config.memory_limit and cli_php.php_config.memory_limit != cli_php.php_config.memory_limit_real %}
-							<div style="font-size: 10px;">Successfully changed to {{ cli_php.php_config.memory_limit|filesize_display }} at runtime</div>
+							<div style="font-size: 11px;">Successfully changed to {{ cli_php.php_config.memory_limit|filesize_display }} at runtime</div>
 						{% endif %}
 					{% else %}
 						n/a
@@ -48,17 +48,15 @@
 			<tr>
 				<td>Effective max attachment size</td>
 				<td>
-					{{ web_php.effective_max_upload|filesize_display }}
-					<div style="font-size: 10px; line-height: 110%;">
+					Approximately {{ web_php.effective_max_upload|filesize_display }}
+					<div style="font-size: 11px; line-height: 110%;">
 						Web-uploaded files are limited by a number of settings. <a href="{{ path('admin_server_attach') }}">Read more about configuring this limit</a>.
 					</div>
 				</td>
 				<td>
-					{% if cli_php.effective_max_upload == -1 %}Unlimited (up to your servers physical memory)
-					{% else %}{{ cli_php.effective_max_upload|filesize_display }}
-					{% endif %}
-					<div style="font-size: 10px; line-height: 110%;">
-						File operations on the command-line (e.g. reading email attachments) are limited by your memory limit. Raising the memory limit will increase this value.
+					<div style="font-size: 11px; line-height: 110%;">
+						File operations on the command-line (e.g. reading email attachments) are limited by your memory limit. If you have problems
+						accepting large file attachments, try raising the memory limit.
 					</div>
 				</td>
 			</tr>

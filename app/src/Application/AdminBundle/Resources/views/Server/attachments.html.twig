@@ -143,7 +143,14 @@
 					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.memory-limit">memory_limit</a></h3>
 					<p>{{ phrase('admin.server.upload_memory_limit_explain') }}</p>
 				</td>
-				<td>{{ php_vars.post_max_size }}</td>
+				<td>
+					{% if php_vars.memory_limit_real == -1 %}No limit
+					{% else %}{{ php_vars.memory_limit_real|filesize_display }}
+					{% endif %}
+					{% if php_vars.memory_limit and php_vars.memory_limit != php_vars.memory_limit_real %}
+						<div style="font-size: 11px;">Successfully changed to {{ php_vars.memory_limit|filesize_display }} at runtime</div>
+					{% endif %}
+				</td>
 			</tr>
 
 			<tr>
@@ -151,7 +158,7 @@
 					<h3>{{ phrase('admin.server.upload_effect_max') }}</h3>
 					<p>{{ phrase('admin.server.upload_effect_max_explain') }}</p>
 				</td>
-				<td>{{ effective_max_display }}</td>
+				<td>Approximately {{ effective_max_display }}</td>
 			</tr>
 
 			<tr>
