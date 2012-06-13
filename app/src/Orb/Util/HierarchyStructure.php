@@ -251,7 +251,7 @@ class HierarchyStructure
 	public function getParent($category)
 	{
 		$pid = $this->getParentId($category);
-		if (!$pid) {
+		if (!$pid || !isset($this->cats[$pid])) {
 			return null;
 		}
 
