@@ -327,7 +327,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		if (this._hasRunAutoLoadRoutes || this.listPage || !this.hasLoaded) return;
 		this._hasRunAutoLoadRoutes = true;
 
-		if (DeskPRO_Window.getDebug('noAutoLoadList')) {
+		// Dont autoload if debug setting, or if a page is already loading (e.g., from hash on page refresh)
+		if (DeskPRO_Window.getDebug('noAutoLoadList') || (!isBackgroundLoad && DeskPRO_Window.loadingListPage)) {
 			return;
 		}
 
