@@ -77,7 +77,7 @@ class UpgradeController extends AbstractController
 
 	public function checkStartedAction()
 	{
-		if ($this->container->getSetting('core.upgrade_started')) {
+		if ($this->container->getSetting('core.upgrade_started') || $this->container->getSetting('core.last_auto_upgrade_time') >= $this->in->getInt('start_time')) {
 			return $this->createJsonResponse(array('started' => true));
 		} elseif ($this->container->getSetting('core.upgrade_error_writeperm')) {
 			return $this->createJsonResponse(array('write_perm_error' => true));

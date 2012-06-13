@@ -99,6 +99,7 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 			this.pollFileTimeout = window.setTimeout(function() {
 				$.ajax({
 					url: url,
+					data: { start_time: self.startTime },
 					cache: false,
 					error: function() {
 						self.startPollTimer();
