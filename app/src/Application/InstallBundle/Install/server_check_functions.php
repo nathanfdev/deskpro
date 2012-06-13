@@ -343,6 +343,10 @@ HTML;
  */
 function deskpro_install_check_parseinisize($val)
 {
+	if ($val == -1 || !$val) {
+		return $val;
+	}
+
 	$val = trim($val);
 	$last = strtoupper($val[strlen($val)-1]);
 

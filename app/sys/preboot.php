@@ -13,6 +13,29 @@ require DP_ROOT . '/sys/load_config.php';
 dp_load_config();
 
 #------------------------------
+# Attempt to set min memory limit to 128 MB
+#------------------------------
+
+define('DP_REAL_MEMSIZE', deskpro_install_check_parseinisize(@ini_get('memory_limit')));
+$mem_size = DP_REAL_MEMSIZE;
+if ($mem_size && $mem_size != '-1' && $mem_size < 134217728/* 128 MB */) {
+	@ini_set('memory_limit', 134217728);
+}
+unset($mem_size);
+
+
+#------------------------------
+# Attempt to set max_execution_time to at least 40s
+#------------------------------
+
+define('DP_REAL_MAX_EXEC_TIME', @ini_get('max_execution_time'));
+$max_time = DP_REAL_MAX_EXEC_TIME;
+if (!$max_time || $max_time < 40) {
+	@set_time_limit(40);
+}
+unset($max_time);
+
+#------------------------------
 # Handle CLI logging of info
 #------------------------------
 
@@ -46,12 +69,8 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		$data = array('checks' => deskpro_install_check_reqs());
 		$data['gen_time'] = time();
 		$data['php_version'] = phpversion();
-		$data['memory_limit'] = @ini_get('memory_limit');
-		if ($data['memory_limit'] == -1) {
-			$data['memory_limit'] = -1;
-		} else {
-			$data['memory_limit'] = deskpro_install_check_parseinisize($data['memory_limit']);
-		}
+		$data['memory_limit'] = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
+		$data['memory_limit_real'] = DP_REAL_MEMSIZE;
 		$data['error_log'] = @ini_get('error_log');
 
 		if ($data['error_log'] && file_exists($data['error_log']) && is_readable($data['error_log'])) {
@@ -69,27 +88,6 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 
 	unset($do_update, $phpinfo, $data);
 }
-
-#------------------------------
-# Attempt to set min memory limit to 128 MB
-#------------------------------
-
-$mem_size = @ini_get('memory_limit');
-if ($mem_size && $mem_size != '-1' && deskpro_install_check_parseinisize($mem_size) < 134217728/* 128 MB */) {
-	@ini_set('memory_limit', 134217728);
-}
-unset($mem_size);
-
-
-#------------------------------
-# Attempt to set max_execution_time to at least 40s
-#------------------------------
-
-$max_time = @ini_get('max_execution_time');
-if (!$max_time || $max_time < 40) {
-	@set_time_limit(40);
-}
-unset($max_time);
 
 #------------------------------
 # Run low-level server checks

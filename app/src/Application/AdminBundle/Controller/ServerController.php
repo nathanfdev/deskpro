@@ -58,6 +58,7 @@ class ServerController extends AbstractController
 		$web_php['php_config'] = array(
 			'version' => phpversion(),
 			'memory_limit' => \Orb\Util\Env::getMemoryLimit(),
+			'memory_limit_real' => DP_REAL_MEMSIZE,
 			'error_log' => ini_get('error_log'),
 		);
 
@@ -72,6 +73,7 @@ class ServerController extends AbstractController
 
 		$web_php['phpinfo'] = $phpinfo;
 		$web_php['ini_path'] = \Orb\Util\Env::getPhpIniPathFromInfo($web_php['phpinfo']);
+		$web_php['effective_max_upload'] = \Orb\Util\Env::getEffectiveMaxUploadSize();
 
 		#------------------------------
 		# CLI PHP
@@ -101,6 +103,12 @@ class ServerController extends AbstractController
 			$data = @unserialize($data);
 
 			$cli_php['php_config'] = $data;
+
+			if ($cli_php['php_config']['memory_limit_real'] == -1) {
+				$cli_php['effective_max_upload'] = -1;
+			} else {
+				$cli_php['effective_max_upload'] = $cli_php['php_config']['memory_limit_real'] / 3;
+			}
 		}
 
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(

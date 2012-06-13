@@ -137,6 +137,7 @@ class TemplatingExtension extends \Twig_Extension
 			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
 			'first' =>new \Twig_Filter_Method($this, 'getFirst'),
 			'last' =>new \Twig_Filter_Method($this, 'getLast'),
+			'filesize_display' =>new \Twig_Filter_Method($this, 'filesizeDisplay'),
 
 			'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -145,6 +146,15 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function filesizeDisplay($size)
+	{
+		if ($size < 0) {
+			return 'n/a';
+		}
+
+		return \Orb\Util\Numbers::filesizeDisplay($size);
+	}
 
 	public function getTimeGroupPhrase($time)
 	{

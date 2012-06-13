@@ -47,7 +47,5 @@ DirectoryIndex index.php index.html index.htm
 	php_value mbstring.http_input             pass
 	php_value mbstring.http_output            pass
 	php_flag mbstring.encoding_translation    off
-	php_value memory_limit                    256M
-	php_value max_execution_time              18000
 	php_flag zend.ze1_compatibility_mode      Off
 </IfModule>
