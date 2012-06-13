@@ -88,7 +88,7 @@ class CronController extends AbstractController
 		}
 
 		$logs = $this->db->fetchAll("
-			SELECT log_name, session_name, message, priority
+			SELECT log_name, session_name, message, priority, UNIX_TIMESTAMP(date_created) AS date_created
 			FROM log_items
 			WHERE log_name LIKE ? AND priority <= ?
 			ORDER BY id DESC
