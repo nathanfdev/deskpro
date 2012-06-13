@@ -323,7 +323,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 			SELECT r, p
 			FROM $ent r
 			LEFT JOIN r.person p
-			WHERE r.$field = ?1
+			WHERE r.$field = ?1 AND r.person IS NOT NULL
 			ORDER BY r.date_created DESC
 		")->setParameter(1, $this)->execute();
 
