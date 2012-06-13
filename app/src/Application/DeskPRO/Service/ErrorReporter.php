@@ -356,6 +356,7 @@ class ErrorReporter
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
+			return $r->getBody();
 		} catch (\Exception $e) {}
 	}
 

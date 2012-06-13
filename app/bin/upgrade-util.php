@@ -599,6 +599,7 @@ class Upgrade
 		if ($checks_fail) {
 			$write_status("error_basic_checks_fail");
 			$this->outAndLog("Failed basic checks");
+			$this->sendLog();
 			exit(10);
 		}
 
@@ -618,6 +619,7 @@ class Upgrade
 			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog();
 			exit(20);
 		}
 
@@ -645,6 +647,7 @@ class Upgrade
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog();
 			exit(14);
 		}
 
@@ -668,6 +671,7 @@ class Upgrade
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog();
 			exit(15);
 		}
 
@@ -687,6 +691,8 @@ class Upgrade
 			if (!$is_error_halt) {
 				$this->revertAutoUpgrade();
 			}
+
+			$this->sendLog();
 			exit(25);
 		}
 
@@ -722,6 +728,7 @@ class Upgrade
 				$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
 			}
 
+			$this->sendLog();
 			exit(30);
 		}
 
@@ -1355,42 +1362,64 @@ class Upgrade
 
 	public function sendLog()
 	{
-		$log = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
-		if (!$log) $log = '';
-
-		$old_build = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
-
-		if (defined('DP_NEW_BUILD_TIME')) {
-			$build = DP_NEW_BUILD_TIME;
-		} elseif (defined('DP_BUILD_TIME')) {
-			$build = DP_BUILD_TIME;
-		} else {
-			$build = 0;
+		static $has_sent = false;
+		if ($has_sent) {
+			return;
 		}
+		$has_sent = true;
 
-		$license_id = null;
+		$stats = array();
+
+		if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
+			$stats['server_os'] = 'win';
+		} elseif (strpos(strtoupper(PHP_OS), 'DARWIN') === 0) {
+			$stats['server_os'] = 'mac';
+		} elseif (strpos(strtoupper(PHP_OS), 'FREEBSD') === 0) {
+			$stats['server_os'] = 'freebsd';
+		} elseif (strpos(strtoupper(PHP_OS), 'LINUX') === 0) {
+			$stats['server_os'] = 'linux';
+		} else {
+			$stats['server_os'] = PHP_OS;
+		}
+		$stats['php_version'] = phpversion();
+
+		$info = array(
+			'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
+			'os'                => isset($stats['server_os'])         ? $stats['server_os'] : '',
+			'php_version'       => isset($stats['php_version'])       ? $stats['php_version'] : '',
+			'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
+			'build'             => DP_BUILD_TIME,
+		);
+		$info['hostname'] = @gethostname();
+
 		try {
 			global $DP_CONFIG;
-			if (!empty($DP_CONFIG)) {
-				$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-				$license_code = $pdo->query("SELECT value FROM settings WHERE name = 'core.license'")->fetch(\PDO::FETCH_NUM);
-				if ($license_code) {
-					$license_code = $license_code[0];
-					$license_code = trim($license_code);
-					$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
-					$license_code = base64_decode($license_code);
-					$license_id   = substr($license_code, 0, 14);
-				}
+			$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+
+			$q = $pdo->query("SELECT name, value FROM settings");
+			$settings = $q->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+			$info['url'] = isset($settings['core.deskpro_url']) ? $settings['core.deskpro_url'] : '';
+			$info['build'] = isset($settings['core.deskpro_build']) ? $settings['core.deskpro_build'] : 0;
+
+			$info['license_id'] = 0;
+			if (isset($settings['core.license'])) {
+				$license_code = str_replace(array("\n", "\r", " ", "\t"), "", trim($settings['core.license']));
+				$license_code = @base64_decode($license_code);
+				$info['license_id'] = substr($license_code, 0, 14);
 			}
+
 		} catch (\Exception $e) {}
 
+		$info['log'] = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
+		$info['old_build'] = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
+		$info['new_build'] = defined('DP_NEW_BUILD_TIME') ? DP_NEW_BUILD_TIME : '0';
+
 		try {
-			$this->callService('/data-submit/report-upgrade.json', array(
-				'log' => $log,
-				'old_build' => $old_build,
-				'build' => $build,
-				'license_id' => $license_id
-			));
+			$url = $this->callService('get-service-url.json');
+			if ($url && !empty($url['url'])) {
+				$this->callService('/data-submit/report-upgrade.json', $info, $url['url']);
+			}
 		} catch (\Exception $e) {}
 	}
 
@@ -1514,9 +1543,13 @@ class Upgrade
 	 * @param array $post_data
 	 * @return array
 	 */
-	public function callService($endpoint, array $post_data = array())
+	public function callService($endpoint, array $post_data = array(), $url = null)
 	{
-		$url = DP_MA_SERVER . '/api/' . ltrim($endpoint, '/');
+		if ($url === null) {
+			$url = DP_MA_SERVER;
+		}
+
+		$url = rtrim($url, '/') . '/api/' . ltrim($endpoint, '/');
 		return $this->fetchServiceResult($url, $post_data);
 	}
 
@@ -2115,7 +2148,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		chdir(DP_START_DIR);
 
 		if ($ret) {
-			$this->outAndLog("Upgrade returned erorr status $ret");
+			$this->upgrade->outAndLog("Upgrade returned erorr status $ret");
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
@@ -2273,6 +2306,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$fileutil = new FilesystemUtil();
 		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 
+		$this->upgrade->sendLog();
 		exit(1);
 	}
 
