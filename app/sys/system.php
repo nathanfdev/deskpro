@@ -423,42 +423,46 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				return $response;
 			}
 
+			if (
+				!preg_match('#^/admin/login#', $path)
+				&& !preg_match('#^/admin/license#', $path)
+			) {
+				#------------------------------
+				# Max agent checks
+				#------------------------------
 
-			#------------------------------
-			# Max agent checks
-			#------------------------------
+				if (License::getLicense()->getMaxAgents()) {
+					// The main interface frame is a good place to stick this check
+					if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
+						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+						if ($count > License::getLicense()->getMaxAgents()) {
+							die('[LIC ERR 1] Too many agents');
+						}
+					}
 
-			if (License::getLicense()->getMaxAgents()) {
-				// The main interface frame is a good place to stick this check
-				if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
-					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
-					if ($count > License::getLicense()->getMaxAgents()) {
-						die('[LIC ERR 1] Too many agents');
+					// On every admin page, redirect them to agents management, dont let them do anything else
+					// Also let them use the license page to update the license!
+					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+						if ($count > License::getLicense()->getMaxAgents()) {
+							$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
+							return $response;
+						}
 					}
 				}
 
-				// On every admin page, redirect them to agents management, dont let them do anything else
-				// Also let them use the license page to update the license!
-				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
-					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
-					if ($count > License::getLicense()->getMaxAgents()) {
-						$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
+				#------------------------------
+				# Expiry checks
+				#------------------------------
+
+				if (License::getLicense()->isPastExpireDate()) {
+					// On every admin page, redirect them to license management
+					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+						$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
 						return $response;
+					} else {
+						die('[LIC ERR 2] License has expired');
 					}
-				}
-			}
-
-			#------------------------------
-			# Expiry checks
-			#------------------------------
-
-			if (License::getLicense()->isPastExpireDate()) {
-				// On every admin page, redirect them to license management
-				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
-					$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
-					return $response;
-				} else {
-					die('[LIC ERR 2] License has expired');
 				}
 			}
 		}
