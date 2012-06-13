@@ -56,6 +56,18 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
+		if ($check) {
+			$date = new \DateTime('@'.$check);
+			$date_cut = new \DateTime('-15 minutes');
+
+			if ($date_cut < $date) {
+				// Giving it more time to run
+				return 0;
+			}
+			// Otherwise assume crashed and continue
+		}
+
 		if (file_exists(DP_WEB_ROOT . '/auto-update-status.txt')) {
 			@unlink(DP_WEB_ROOT . '/auto-update-status.txt');
 		}
