@@ -108,10 +108,12 @@ class AcceptAttachment
 			$restriction = $this->getRestrictionSet($restriction_set_id);
 		}
 
+		$max_size = min(\Orb\Util\Env::getEffectiveMaxUploadSize(), $restriction->getMaxSize());
+
 		if ($file === null) {
 			// This means the file is too big and PHP basically rejected the whole request data
 			if (isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
-				return array('error_code' => self::ERR_SIZE, 'error_detail' => \Orb\Util\Env::getEffectiveMaxUploadSize());
+				return array('error_code' => self::ERR_SIZE, 'error_detail' => Numbers::filesizeDisplay($max_size));
 			}
 
 			return array('error_code' => self::ERR_NO_FILE, 'error_detail' => 'null_file');
@@ -127,7 +129,7 @@ class AcceptAttachment
 			switch ($file->getError()) {
 				case \UPLOAD_ERR_INI_SIZE:
 					$error['error_code'] = self::ERR_SIZE;
-					$error['error_detail'] = \Orb\Util\Env::getEffectiveMaxUploadSize();
+					$error['error_detail'] = Numbers::filesizeDisplay($max_size);
 					break;
 
 				case \UPLOAD_ERR_PARTIAL:
