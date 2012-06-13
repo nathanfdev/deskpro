@@ -149,7 +149,7 @@ class CategoryEdit
 		$cat = App::getOrm()->find($entity, $category_id);
 
 		if (!$cat) {
-			throw new \InvalidArgumentException();
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		$usergroup_ids = Arrays::castToType($usergroup_ids, 'integer');
@@ -291,7 +291,7 @@ class CategoryEdit
 		$cat = $repos->find($category_id);
 
 		if (!$cat) {
-			throw new \InvalidArgumentException("Unknown category `$category_id` for `$entity`");
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		$counts = $repos->getAllCounts(App::getCurrentPerson(), null);
