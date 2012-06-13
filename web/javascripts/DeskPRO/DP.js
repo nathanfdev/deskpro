@@ -26,7 +26,7 @@ var DP = {
 		field = $(field);
 
 		defaultOptions = {
-			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce_src.js',
 
 			skin : "o2k7",
 			skin_variant : "silver",
