@@ -426,6 +426,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			if (
 				!preg_match('#^/admin/login#', $path)
 				&& !preg_match('#^/admin/license#', $path)
+				&& !preg_match('#^/admin/upgrade#', $path)
 			) {
 				#------------------------------
 				# Max agent checks
