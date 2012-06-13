@@ -58,6 +58,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		$this->setDefinition(array(
 			new InputArgument('pack', InputArgument::REQUIRED, 'The packs to compile separated by comma. Example: agent_vendors. Or ALL for everything'),
 			new InputOption('regex', 'p', InputOption::VALUE_NONE, 'Pack name is interpretted as a regex'),
+			new InputOption('not', null, InputOption::VALUE_NONE, 'Pack name is excluded'),
 			new InputOption('reload', 'r', InputOption::VALUE_NONE, 'Files are regenerated even if they arent stale'),
 		))->setName('dp:assetic');
 	}
@@ -72,7 +73,10 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		if ($packs == 'ALL' || $input->getOption('regex')) {
 			if ($input->getOption('regex')) {
 				foreach ($assetic_manager->getAllBundleNames() as $k) {
-					if (preg_match('#' . $packs . '#', $k)) {
+					$match = preg_match('#' . $packs . '#', $k);
+					if ($input->getOption('not') && !$match) {
+						$bundles[] = $k;
+					} elseif (!$input->getOption('not') && $match) {
 						$bundles[] = $k;
 					}
 				}
