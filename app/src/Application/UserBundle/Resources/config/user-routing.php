@@ -371,6 +371,13 @@ $collection->add('user_tickets_feedback_closeticket', new Route(
 	array()
 ));
 
+$collection->add('user_articles_home', new Route(
+	'/kb',
+	array('_controller' => 'UserBundle:Articles:browse', 'slug' => ''),
+	array(),
+	array()
+));
+
 $collection->add('user_articles', new Route(
 	'/kb/{slug}',
 	array('_controller' => 'UserBundle:Articles:browse', 'slug' => ''),
@@ -391,6 +398,14 @@ $collection->add('user_articles_newcomment', new Route(
 	array(),
 	array()
 ));
+
+$collection->add('user_downloads_home', new Route(
+	'/downloads',
+	array('_controller' => 'UserBundle:Downloads:browse', 'slug' => ''),
+	array(),
+	array()
+));
+
 
 $collection->add('user_downloads', new Route(
 	'/downloads/{slug}',
@@ -413,6 +428,13 @@ $collection->add('user_downloads_newcomment', new Route(
 	array()
 ));
 
+$collection->add('user_news_home', new Route(
+	'/news',
+	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1),
+	array(),
+	array()
+));
+
 $collection->add('user_news', new Route(
 	'/news/{slug}',
 	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1),
@@ -430,6 +452,13 @@ $collection->add('user_news_view', new Route(
 $collection->add('user_news_newcomment', new Route(
 	'/news/new-comment/{post_id}',
 	array('_controller' => 'UserBundle:News:newComment'),
+	array(),
+	array()
+));
+
+$collection->add('user_feedback_home', new Route(
+	'/feedback',
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
 	array(),
 	array()
 ));
