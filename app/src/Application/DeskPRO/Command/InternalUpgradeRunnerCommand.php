@@ -122,6 +122,10 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		$ret = null;
 		exec($cmd, $out, $ret);
 
+		$write_status('exec_result', $ret);
+		$str_collapsed = implode(' ', $out);
+		$write_status('exec_output', $str_collapsed);
+
 		$str = implode("\n", $out);
 		if ($str) {
 			echo $str;
