@@ -118,9 +118,16 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$skip_seg
 		);
 
+		$write_status('exec_cmd', $cmd);
+
 		set_time_limit(0);
 		$ret = null;
+		$out = null;
 		exec($cmd, $out, $ret);
+
+		if (!$out) {
+			$out = array();
+		}
 
 		$write_status('exec_result', $ret);
 		$str_collapsed = implode(' ', $out);
@@ -129,6 +136,11 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		$str = implode("\n", $out);
 		if ($str) {
 			echo $str;
+		}
+
+		// Report a error status
+		if ($ret) {
+			$write_status('error_command', $str_collapsed);
 		}
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());

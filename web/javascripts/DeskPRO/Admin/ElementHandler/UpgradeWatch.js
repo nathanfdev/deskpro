@@ -134,6 +134,9 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 		}
 
 		switch (code) {
+			case 'runner_start':
+				$('li.step-start').addClass('done on');
+				break;
 			case 'start':
 				$('li.step-start').addClass('done on');
 				break;
