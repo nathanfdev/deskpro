@@ -366,7 +366,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Figure out PHP path
 		#----------------------------------------
 
-		$php_path = dp_get_php_path(true);
+		if ($mode == 'run') {
+			// First (main) runner, make sure php binary is actually right
+			$php_path = dp_get_php_path(true);
+		} else {
+			// Other calls dont need to do the binary check
+			$php_path = dp_get_php_path(false);
+		}
 
 		if (!$php_path) {
 			$logger->log("Unknown path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
