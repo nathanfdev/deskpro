@@ -51,6 +51,16 @@ class ServerController extends AbstractController
 		$config_hash = md5_file(DP_CONFIG_FILE);
 
 		#------------------------------
+		# Binary paths
+		#------------------------------
+
+		$binary_paths = array(
+			'php' => dp_get_php_path(true),
+			'mysql' => dp_get_mysql_path(true),
+			'mysqldump' => dp_get_mysqldump_path(true)
+		);
+
+		#------------------------------
 		# Web PHP
 		#------------------------------
 
@@ -60,6 +70,7 @@ class ServerController extends AbstractController
 			'memory_limit' => \Orb\Util\Env::getMemoryLimit(),
 			'memory_limit_real' => DP_REAL_MEMSIZE,
 			'error_log' => ini_get('error_log'),
+			'error_log_real' => DP_REAL_ERROR_LOG,
 		);
 
 		ob_start();
@@ -114,9 +125,10 @@ class ServerController extends AbstractController
 		}
 
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
-			'web_php'     => $web_php,
-			'cli_php'     => $cli_php,
-			'config_hash' => $config_hash,
+			'binary_paths' => $binary_paths,
+			'web_php'      => $web_php,
+			'cli_php'      => $cli_php,
+			'config_hash'  => $config_hash,
 		));
 	}
 

@@ -36,6 +36,19 @@ if (!$max_time || $max_time < 40) {
 unset($max_time);
 
 #------------------------------
+# Attempt to set error log file if unset
+#------------------------------
+
+define('DP_REAL_ERROR_LOG', @ini_get('error_log'));
+if (!DP_REAL_ERROR_LOG) {
+	if (defined('DP_BOOT_MODE') && (DP_BOOT_MODE == 'cron' || DP_BOOT_MODE == 'cli')) {
+		@ini_set('error_log', dp_get_log_dir() . '/server-phperr-cli.log');
+	} else {
+		@ini_set('error_log', dp_get_log_dir() . '/server-phperr-web.log');
+	}
+}
+
+#------------------------------
 # Handle CLI logging of info
 #------------------------------
 
@@ -72,6 +85,7 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 		$data['memory_limit'] = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
 		$data['memory_limit_real'] = DP_REAL_MEMSIZE;
 		$data['error_log'] = @ini_get('error_log');
+		$data['error_log_real'] = DP_REAL_ERROR_LOG;
 
 		if ($data['error_log'] && file_exists($data['error_log']) && is_readable($data['error_log'])) {
 			$data['error_log_hash'] = md5_file($data['error_log']);

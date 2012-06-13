@@ -28,7 +28,7 @@ if (isset($_GET['web'])) {
 
 	$log_file_path = @ini_get('error_log');
 	if (!$log_file_path) {
-		die('error_log value not set');
+		$log_file_path = dp_get_log_dir() . '/server-phperr-web.log';
 	}
 
 	if (!is_file($log_file_path)) {

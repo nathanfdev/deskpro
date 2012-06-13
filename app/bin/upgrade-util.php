@@ -81,6 +81,10 @@ require_once DP_ROOT.'/src/Orb/Util/Env.php';
 
 dp_load_config();
 
+if (!@ini_get('error_log')) {
+	@ini_set('error_log', dp_get_log_dir() . '/server-phperr-cli.log');
+}
+
 if (!defined('DP_MA_SERVER')) {
 	define('DP_MA_SERVER', 'http://www.deskpro.com/members');
 }

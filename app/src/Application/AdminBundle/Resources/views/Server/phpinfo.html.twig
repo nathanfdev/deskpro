@@ -1,6 +1,6 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-	<ul>
+<ul xmlns="http://www.w3.org/1999/html">
 		<li>{{ phrase('admin.general.php_info') }}</li>
 	</ul>
 {% endblock %}
@@ -29,7 +29,7 @@
 					{% endif %}
 					(<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ static_security_token_secret(config_hash ~ 'memtest', 86400) }}">{{ phrase('admin.server.test_this_value') }}</a>)
 					{% if web_php.php_config.memory_limit and web_php.php_config.memory_limit != web_php.php_config.memory_limit_real %}
-						<div style="font-size: 11px;">Successfully changed to {{ web_php.php_config.memory_limit|filesize_display }} at runtime</div>
+						<div style="font-size: 11px;">Successfully changed at runtime: {{ web_php.php_config.memory_limit|filesize_display }}</div>
 					{% endif %}
 				</td>
 				<td>
@@ -38,7 +38,7 @@
 						{% else %}{{ cli_php.php_config.memory_limit_real|filesize_display }}
 						{% endif %}
 						{% if cli_php.php_config.memory_limit and cli_php.php_config.memory_limit != cli_php.php_config.memory_limit_real %}
-							<div style="font-size: 11px;">Successfully changed to {{ cli_php.php_config.memory_limit|filesize_display }} at runtime</div>
+							<div style="font-size: 11px;">Successfully changed at runtime: {{ cli_php.php_config.memory_limit|filesize_display }}</div>
 						{% endif %}
 					{% else %}
 						n/a
@@ -62,8 +62,18 @@
 			</tr>
 			<tr>
 				<td>{{ phrase('admin.server.error_log') }}</td>
-				<td>{{ web_php.php_config.error_log }}</td>
-				<td>{% if cli_php.php_config %}{{ cli_php.php_config.error_log }}{% else %}n/a{% endif %}</td>
+				<td>
+					{{ web_php.php_config.error_log_real|default('None') }}
+					{% if web_php.php_config.error_log and web_php.php_config.error_log != web_php.php_config.error_log_real %}
+						<div style="font-size: 11px; line-height: 110%;">Successfully changed at runtime:<br />{{ web_php.php_config.error_log }}</div>
+					{% endif %}
+				</td>
+				<td>
+					{{ cli_php.php_config.error_log_real|default('None') }}
+					{% if cli_php.php_config.error_log and cli_php.php_config.error_log != cli_php.php_config.error_log_real %}
+						<div style="font-size: 11px; line-height: 110%;">Successfully changed at runtime:<br />{{ cli_php.php_config.error_log }}</div>
+					{% endif %}
+				</td>
 			</tr>
 			<tr>
 				<td>Path to PHP.ini</td>
@@ -77,6 +87,38 @@
 				</td>
 				<td>
 					<a href="{{ app.getSetting('core.deskpro_url') }}?_sys=phpinfo&_={{ static_security_token_secret(config_hash ~ 'phpinfo', 86400) }}&cli=1" onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">Copy link to Command-line PHP Info</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th colspan="2" style="text-align:left">&nbsp; Binary Paths</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PHP Binary</td>
+				<td>{{ binary_paths.php|default('Unknown') }}</td>
+			</tr>
+			<tr>
+				<td>MySQL Binary</td>
+				<td>{{ binary_paths.mysql|default('Unknown') }}</td>
+			</tr>
+			<tr>
+				<td>MySQL Dump Binary</td>
+				<td>{{ binary_paths.mysqldump|default('Unknown') }}</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="font-size:11px;">
+					DeskPRO requires the paths to these system binaries for some features like the automatic upgrader.
+					<br />To specify the path to these binaries, edit your config.php file.
 				</td>
 			</tr>
 		</tbody>
