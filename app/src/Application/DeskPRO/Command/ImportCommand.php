@@ -366,7 +366,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Figure out PHP path
 		#----------------------------------------
 
-		$php_path = $this->getContainer()->getPhpBinaryPath();
+		$php_path = dp_get_php_path(true);
 
 		if (!$php_path) {
 			$logger->log("Unknown path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
@@ -570,9 +570,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if ($tables && $mode == 'run' && !$start_step) {
 
 			try {
-				$is_dp3       = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'deskpro_version'");
-				$is_installed = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.install_timestamp'");
-				$is_imported  = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.install_timestamp'");
+				$is_dp3              = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'deskpro_version'");
+				$is_installed        = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.install_timestamp'");
+				$is_imported         = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.imported_timestamp'");
+				$is_imported_started = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.imported_timestamp_start'");
 
 				if ($is_dp3) {
 					$logger->log(
@@ -582,8 +583,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						."Refer to the README.txt file for more information.\n"
 					, Logger::ERR);
 					return 22;
-				} elseif ($is_imported) {
-					$logger->log("The import has already been processed. You should now try logging in to the admin interface at /admin/."  . PHP_EOL, Logger::ERR);
+				} elseif ($is_imported_started) {
+					if (!$is_imported) {
+						$logger->log(
+							"It appears as though you have attempted an import before but it did not finish. Unfortunately, there is "
+							."no  method to resume an incomplete import. To try again, delete and re-create the DeskPRO v4 database "
+							."and then execute this command to begin the process from the start."
+						, Logger::ERR);
+					} else {
+						$logger->log("The import has already been processed. You should now try logging in to the admin interface at /admin/."  . PHP_EOL, Logger::ERR);
+					}
 					return 23;
 				} elseif ($is_installed) {
 					$logger->log(
@@ -752,7 +761,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function executeImport($importer, $mode, $page, InputInterface $input, OutputInterface $output)
 	{
 		$logger = $this->logger;
-		$php_path = $this->getContainer()->getPhpBinaryPath();
+		$php_path = dp_get_php_path(false);
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core.imported_timestamp_start',
+			'value' => time(),
+		));
 
 		$start_time = microtime(true);
 
