@@ -56,6 +56,16 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	 */
 	protected $filter = null;
 
+	/**
+	 * @var int
+	 */
+	protected $count = 0;
+
+	/**
+	 * @var bool
+	 */
+	protected $count_mode = false;
+
 	public function __construct($path)
 	{
 		$this->path = $path;
@@ -101,6 +111,14 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 		$this->store_raw = true;
 	}
 
+
+	/**
+	 * Only keeps track of a count, no data is parsed
+	 */
+	public function enableCountMode()
+	{
+		$this->count_mode = true;
+	}
 
 	/**
 	 * Loads the log file and does the parsing
@@ -162,6 +180,11 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	 */
 	protected function _initItem($id, array $log_lines)
 	{
+		$this->count++;
+		if ($this->count_mode) {
+			return;
+		}
+
 		if ($this->filter && !call_user_func($this->filter, 'raw', $id, $log_lines)) {
 			return;
 		}
@@ -236,7 +259,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	public function count()
 	{
 		$this->_initItems();
-		return count($this->items);
+		return $this->count;
 	}
 
 
