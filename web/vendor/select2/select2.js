@@ -593,7 +593,9 @@
                         opts.initSelection = function (element) {
                             var data = [];
                             $(splitVal(element.val(), ",")).each(function () {
-                                data.push({id: this, text: this});
+								if ($.trim(this) !== "") {
+									data.push({id: this, text: this});
+								}
                             });
                             return data;
                         };
