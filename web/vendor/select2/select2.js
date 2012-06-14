@@ -512,11 +512,11 @@
 
                     return proc(results, 0);
                 },
-                formatSelection: function (data) {
-                    if (data.fullText) {
-                        return data.fullText;
+                formatSelection: function (result) {
+                    if (!opts.noGroupTitle && result.fullText) {
+                        return result.fullText;
                     } else {
-                        return data.text;
+                        return result.text;
                     }
                 },
                 formatNoMatches: function () { return "No matches found"; },
@@ -548,21 +548,26 @@
                             var item = {
                                 id: 'select2-group-' + (uid++),
                                 uid: uid++,
+								el: el,
                                 text: el.attr('label'),
                                 unselectable: true,
                                 children: []
                             };
+							$(this).data('select2-item', item);
                             data.map[item.uid] = item;
 
                             el.find('> option').each(function() {
                                 var sub = {
                                     id: $(this).attr('value'),
                                     uid: uid++,
+									el: $(this),
                                     text: $(this).text(),
                                     unselectable: false,
                                     fullText: el.attr('label') + ' > ' + $(this).text(),
                                     children: []
                                 };
+
+								$(this).data('select2-item', sub);
 
                                 data.map[sub.uid] = sub;
                                 item.children.push(sub);
@@ -573,10 +578,12 @@
                             var item = {
                                 id: $(this).attr('value'),
                                 uid: uid++,
+								el: el,
                                 text: $(this).text(),
                                 unselectable: false,
                                 children: []
                             };
+							$(this).data('select2-item', item);
 
                             data.map[item.uid] = item;
                             data.results.push(item);
@@ -963,7 +970,8 @@
                         return matches[1];
                 }
             }
-            return this.opts.element.width() + 'px';
+			var add = this.opts.addWidth || 30;
+            return (this.opts.element.width() + add) + 'px';
         }
     });
 
@@ -975,7 +983,7 @@
                 "style": "width: " + this.getContainerWidth()
             }).html([
                 "    <a href='javascript:void(0)' class='select2-choice'>",
-                "   <span></span><abbr class='select2-search-choice-close' style='display:none;'></abbr>",
+                "   <span class='select2-choice-wrap'></span><abbr class='select2-search-choice-close' style='display:none;'></abbr>",
                 "   <div><b></b></div>" ,
                 "</a>",
                 "    <div class='select2-drop' style='display:none;'>" ,
@@ -1114,7 +1122,7 @@
                 opts.initSelection = function (element) {
                     var selected = element.find(":selected");
                     // a single select box always has a value, no need to null check 'selected'
-                    return {id: selected.attr("value"), text: selected.text()};
+                    return {id: selected.attr("value"), text: selected.text(), item: selected.data('select2-item'), el: selected };
                 };
             }
 
@@ -1181,7 +1189,7 @@
 
         updateSelection: function (data) {
             this.selection
-                .find("span")
+                .find("span.select2-choice-wrap")
                 .html(this.opts.formatSelection(data));
 
             this.selection.removeClass("select2-default");
@@ -1205,7 +1213,7 @@
                 this.select
                     .val(val)
                     .find(":selected").each(function () {
-                        data = {id: $(this).attr("value"), text: $(this).text()};
+                        data = {id: $(this).attr("value"), text: $(this).text(), item: $(this).data('select2-item'), el: $(this) };
                         return false;
                     });
                 this.updateSelection(data);
@@ -1256,7 +1264,7 @@
                 opts.initSelection = function (element) {
                     var data = [];
                     element.find(":selected").each(function () {
-                        data.push({id: $(this).attr("value"), text: $(this).text()});
+                        data.push({id: $(this).attr("value"), text: $(this).text(), item: $(this).data('select2-item'), el: $(this) });
                     });
                     return data;
                 };
@@ -1605,7 +1613,7 @@
                 // val is a list of ids
                 this.setVal(val);
                 this.select.find(":selected").each(function () {
-                    data.push({id: $(this).attr("value"), text: $(this).text()});
+                    data.push({id: $(this).attr("value"), text: $(this).text(), item: $(this).data('select2-item'), el: $(this) });
                 });
                 this.updateSelection(data);
             } else {
@@ -1660,6 +1668,12 @@
 
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
+
+				// Already created
+				if ($(this).data('select2')) {
+					return;
+				}
+
                 opts = args.length === 0 ? {} : $.extend({}, args[0]);
                 opts.element = $(this);
 

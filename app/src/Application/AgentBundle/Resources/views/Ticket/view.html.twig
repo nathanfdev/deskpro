@@ -231,35 +231,56 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<section id="{{baseId}}_people_box_agent">
 			<article>
 				<dl>
-					<dt class="agent-row">{{ phrase('agent.general.agent') }}</dt>
-					<dd class="agent-row">
-                        {% set agent_class -%}
-                        {%- if ticket.agent.id == app.user.id -%}
-                            me
-                        {%- elseif not ticket.agent.id -%}
-                                no-agent
-                            {%- else -%}
-                                other-agent
-                            {%- endif -%}
-                        {%- endset %}
-						<span class="agent-link agent-icon prop-agent-id {{agent_class}}" data-none-label="{{ phrase('agent.general.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">
-                            {{- ticket.agent.display_name|default(phrase('agent.general.no_agent_assigned')) -}}
-                        </span>
+					<dt>{{ phrase('agent.general.agent') }}</dt>
+					<dd>
+
+						<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+							<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
+							{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
+								<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+							{% endif %}
+							{% for agent in agents %}
+								{% if agent.id != app.user.id %}
+									<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
 					</dd>
-					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.general.team') }}</dt>
-					<dd class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>
-						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default(phrase('agent.general.none')) }}</span>
+					<dt>{{ phrase('agent.general.team') }}</dt>
+					<dd>
+						<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+							{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
+								<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+							{% endif %}
+
+							{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+							<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+								{% for team in app.user.getAgent().getTeams() %}
+									<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+								{% endfor %}
+							</optgroup>
+							{% endif %}
+
+							{% for team in agent_teams %}
+								{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+									<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
 					</dd>
 
-					<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.general.followers') }}</dt>
-					<dd class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>
-						<ul id="{{baseId}}_followers_list" class="comma-list">
-							{% for part in agent_parts %}
-								<li><span class="agent-link" data-agent-id="{{ part.person.id }}">{{ part.person.display_name }}</span></li>
-							{% else %}
-								<li>{{ phrase('agent.tickets.no_followers') }}</li>
+					<dt>{{ phrase('agent.general.followers') }}</dt>
+					<dd>
+						<select id="{{baseId}}_followers_sel" class="dpe_select" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16">
+							{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
+								<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+							{% endif %}
+							{% for agent in agents %}
+								{% if agent.id != app.user.id %}
+									<option {% if agent_parts[agent.id] %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+								{% endif %}
 							{% endfor %}
-						</ul>
+						</select>
 					</dd>
 				</dl>
 			</article>

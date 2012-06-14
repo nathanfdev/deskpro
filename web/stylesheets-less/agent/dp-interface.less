@@ -430,7 +430,7 @@ input.tab-focus {
 .icon-flag-zw { background-image: url("../../images/flags/zw.png"); }
 
 
-.select2-search input {
+.select2-search input[type="text"] {
     background: #fff url('../../images/select2.png') no-repeat 100% -22px;
     background: url('../../images/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
     background: url('../../images/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
@@ -451,19 +451,19 @@ input.tab-focus {
 }
 
 .select2-more-results.select2-active {
-    background: #f4f4f4 url('spinner.gif') no-repeat 100%;
+    background: #f4f4f4 url('../../images/spinners/loading-small.gif') no-repeat 100%;
 }
 
 .select2-search-choice-close {
-  background: url(select2.png) right top no-repeat;
+  background: url('../../images/select2.png') right top no-repeat;
 }
 
 .select2-container .select2-choice abbr {
-  background: url(select2.png) right top no-repeat;
+  background: url('../../images/select2.png') right top no-repeat;
 }
 
 .select2-container .select2-choice div b {
-    background: url('select2.png') no-repeat 0 1px;
+    background: url('../../images/select2.png') no-repeat 0 1px;
 }
 
 .t_Content_black, .t_Content_cloud, .t_Content_dark, .t_Content_lavender, .t_Content_light, .t_Content_liquid, .t_Content_lime, .t_Content_blue, .t_Content_salmon, .t_Content_yellow, .t_Content_facebook {
@@ -3203,4 +3203,44 @@ blockquote {
 	padding: 8px;
 	border: 1px solid darken(#EDEDED, 10%);
 	margin-bottom: 10px;
+}
+
+.select2-drop {
+	z-index: 9999999999;
+}
+
+.select2-results .with-icon .select2-result-label {
+	padding: 5px;
+}
+
+.select2-drop .with-icon .result-icon {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	line-height: 16px;
+	padding-left: 20px;
+}
+
+.select2-drop .with-icon .result-icon.no-icon {
+	padding-left: 0px;
+}
+
+.select2-choice .choice-icon {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	line-height: 26px;
+	padding-left: 20px;
+	display: inline-block;
+}
+
+.select2-search-choice .choice-icon {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	line-height: 16px;
+	padding-left: 16px;
+	display: inline-block;
+
+}
+
+.dpe_select-with-icon .select2-search-choice-close {
+	top: 5px;
 }

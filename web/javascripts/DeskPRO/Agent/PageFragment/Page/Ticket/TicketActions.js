@@ -26,6 +26,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			self.changeManager.setInstantChange(prop, value);
 		});
 
+		DP.select(this.getEl('agent_sel'));
+		DP.select(this.getEl('agent_team_sel'));
+		DP.select(this.getEl('followers_sel'));
+
 		var followersList = this.getEl('followers_list');
 		var el = this.getEl('agent_assign_ob');
 		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({

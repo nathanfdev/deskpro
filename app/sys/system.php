@@ -372,18 +372,6 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
 		}
 
-		// Do version check
-		if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev'] && file_exists(DP_ROOT.'/sys/VERSION')) {
-			$file_v = (int)file_get_contents(DP_ROOT.'/sys/VERSION');
-			$db_v   = (int)App::getSetting('core.deskpro_version');
-
-			if ($db_v && $db_v < $file_v) {
-				$url = $request->getBaseUrl() . '/index.php?_sys=dev_run_migrations&_=' . md5_file(DP_CONFIG_FILE);
-				$response = new RedirectResponse($url);
-				return $response;
-			}
-		}
-
 		// Kernels might have work to do before loading a page
 		// This is where index.php checks take place
 		$res = $this->preResponseHandled($request, $type, $catch);

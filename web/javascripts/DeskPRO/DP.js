@@ -94,6 +94,64 @@ var DP = {
 			this.lastBox.remove();
 			this.lastBox = null;
 		}
+	},
+
+	select: function(el) {
+		if (el.data('select2')) {
+			return;
+		}
+
+		var options = {};
+
+		if (el.data('style-type')) {
+			switch (el.data('style-type')) {
+				case 'icons':
+					var iconSize = el.data('select-icon-size');
+					if (!iconSize) iconSize = 16;
+					iconSize = parseInt(iconSize);
+
+					var addCss = '';
+					var addCssLh = '';
+					if (iconSize != 16) {
+						addCss = 'padding-left: ' + (iconSize + 4) + 'px; line-height: ' + iconSize + 'px';
+						addCssLh = 'line-height: ' + iconSize + 'px';
+					}
+
+					options.addWidth = iconSize + 35;
+
+					el.addClass('dpe_select-with-icon dpe_select-with-icon-' + iconSize);
+
+					options.addResultClass = 'with-icon';
+					options.formatLabel = function(result) {
+						var name = Orb.escapeHtml(result.text);
+						if (result.el.data('icon')) {
+							return '<div class="result-icon" style="background-image: url(' + result.el.data('icon') + ');'+addCss+'">' + name + '</div>';
+						} else {
+							return '<div class="result-icon no-icon" style="'+addCssLh+'">' + name + '</div>';
+						}
+					};
+					options.formatSelection = function(data) {
+						var el = data.el;
+						var name = Orb.escapeHtml(data.text);
+						if (el.data('icon')) {
+							return '<span class="choice-icon" style="background-image: url(' + el.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>';
+						} else {
+							return name;
+						}
+					};
+					break;
+			}
+		}
+
+		if (el.data('select-nogrouptitle')) {
+			options.noGroupTitle = true;
+		}
+
+		if (el.data('select-width') == 'auto') {
+			options.width = el.parent().width() - 15 + 'px';
+		}
+
+		el.select2(options);
 	}
 };
 DP.init();
