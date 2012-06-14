@@ -610,6 +610,19 @@ class Upgrade
 		$write_status("basic_checks_done");
 
 		#----------------------------------------
+		# Make sure we can comm with DeskPRO server
+		#----------------------------------------
+
+		try {
+			$this->getLatestVersion();
+		} catch (ServiceCallException $e) {
+			$write_status("error_server_comm", $e->getMessage());
+			$this->outAndLog("Error communicating with server: " . $e->getMessage());
+			$this->sendLog();
+			exit(13);
+		}
+
+		#----------------------------------------
 		# Download newest version
 		#----------------------------------------
 
