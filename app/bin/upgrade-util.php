@@ -150,6 +150,12 @@ class Upgrade
 	protected $latest_version = null;
 
 	/**
+	 * True when the log should be cleared
+	 * @var bool
+	 */
+	protected $should_reset_log = false;
+
+	/**
 	 * @var resource
 	 * @see log
 	 */
@@ -221,7 +227,7 @@ class Upgrade
 			}
 
 			if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
-				$this->outAndLog("Log  directory does not exist or is not writable: " . $this->not());
+				$this->outAndLog("Log directory does not exist or is not writable: " . $this->getLogDir());
 				exit(1);
 			}
 
@@ -289,11 +295,15 @@ class Upgrade
 	public function log($string)
 	{
 		if (!$this->log_fh) {
-			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', 'a');
+			$mode = 'a';
+			if ($this->should_reset_log) {
+				$mode = 'w';
+			}
+			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', $mode);
 			if (!$this->log_fh) {
 				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
 			}
-			@chmod($this->getLogDir() . '/upgrade.log');
+			@chmod($this->getLogDir() . '/upgrade.log', 0777);
 
 			$this->registerCleanupParam('close_log_fh', $this->log_fh);
 
@@ -302,6 +312,15 @@ class Upgrade
 
 		$string = trim($string);
 		fwrite($this->log_fh, sprintf("[%s] %s\n", date('Y-m-d H:i:s'), $string));
+	}
+
+
+	/**
+	 * Marks the cron log for reset the next call to log()
+	 */
+	public function resetLog()
+	{
+		$this->should_reset_log = true;
 	}
 
 
@@ -463,6 +482,8 @@ class Upgrade
 			exit(0);
 		}
 
+		$this->resetLog();
+
 		#----------------------------------------
 		# Requirement Checks
 		#----------------------------------------
@@ -603,7 +624,6 @@ class Upgrade
 		if ($checks_fail) {
 			$write_status("error_basic_checks_fail");
 			$this->outAndLog("Failed basic checks");
-			$this->sendLog();
 			exit(10);
 		}
 
@@ -618,7 +638,6 @@ class Upgrade
 		} catch (ServiceCallException $e) {
 			$write_status("error_server_comm", $e->getMessage());
 			$this->outAndLog("Error communicating with server: " . $e->getMessage());
-			$this->sendLog();
 			exit(13);
 		}
 
@@ -636,7 +655,6 @@ class Upgrade
 			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
-			$this->sendLog();
 			exit(20);
 		}
 
@@ -664,7 +682,6 @@ class Upgrade
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
-			$this->sendLog();
 			exit(14);
 		}
 
@@ -688,7 +705,6 @@ class Upgrade
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
-			$this->sendLog();
 			exit(15);
 		}
 
@@ -709,7 +725,6 @@ class Upgrade
 				$this->revertAutoUpgrade();
 			}
 
-			$this->sendLog();
 			exit(25);
 		}
 
@@ -745,7 +760,6 @@ class Upgrade
 				$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
 			}
 
-			$this->sendLog();
 			exit(30);
 		}
 
@@ -796,7 +810,6 @@ class Upgrade
 
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
-		$out = '';
 		passthru($cmd, $ret);
 		chdir(DP_START_DIR);
 
@@ -1075,6 +1088,7 @@ class Upgrade
 			throw new UpgradeFilesException("No sql file in the zip", MysqlRestoreException::EXTRACT_ERROR);
 		}
 
+		/** @var $sql_filename \SplFileInfo */
 		$sql_filename = $file->getFilename();
 
 		#------------------------------
@@ -2283,7 +2297,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		chdir(DP_START_DIR);
 
 		if ($ret) {
-			$this->outAndLog("Upgrade returned erorr status $ret");
+			$this->upgrade->outAndLog("Upgrade returned erorr status $ret");
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
@@ -2316,7 +2330,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		if ($this->revert_checkpoint == 'db'){
 			$this->out(sprintf("%-40s", "<info>[*] Restoring database from backup ...</info>"), false);
-			$this->restoreDbFromZip($this->db_backup);
+			$this->upgrade->restoreDbFromZip($this->db_backup);
 			$this->out("<info>Done</info>");
 		}
 
@@ -2554,7 +2568,6 @@ class Zip_PHP implements DpZip
 		$path = str_replace('\\', '/', $path);
 		$path = rtrim($path, '/');
 
-		$dir          = dirname($path);
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
 		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
@@ -2631,7 +2644,6 @@ class Zip_PclZip implements DpZip
 	{
 		$path = str_replace('\\', '/', $path);
 
-		$dir          = dirname($path);
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
 		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
