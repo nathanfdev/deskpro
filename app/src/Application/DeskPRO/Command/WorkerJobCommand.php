@@ -126,6 +126,16 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		# Run
 		#------------------------------
 
+		$time_start = microtime(true);
+		App::getDb()->insert('log_items', array(
+			'log_name' => 'worker_job.cron_runner',
+			'session_name' => 'cron_runner.' . $time_start,
+			'flag' => 'cron_start',
+			'priority' => 6,
+			'priority_name' => 'INFO',
+			'message' => 'Cron runner started',
+			'date_created' => date('Y-m-d H:i:s')
+		));
 		App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
 
 		$cron_id = 'dp-cron';
@@ -144,8 +154,27 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 				if ($date_cut < $date) {
 					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . $date->format('Y-m-d H:i:s') . ")"); }
+					App::getDb()->insert('log_items', array(
+						'log_name' => 'worker_job.cron_runner',
+						'session_name' => 'cron_runner.' . $time_start,
+						'flag' => 'cron_abort',
+						'priority' => 6,
+						'priority_name' => 'INFO',
+						'message' => 'Cron runner aborted (still running)',
+						'date_created' => date('Y-m-d H:i:s')
+					));
 					return 0;
 				} else {
+
+					App::getDb()->insert('log_items', array(
+						'log_name' => 'worker_job.cron_runner',
+						'session_name' => 'cron_runner.' . $time_start,
+						'flag' => 'cron_resume',
+						'priority' => 3,
+						'priority_name' => 'ERR',
+						'message' => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
+						'date_created' => date('Y-m-d H:i:s')
+					));
 
 					$title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
@@ -182,6 +211,17 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
 			App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
+
+			$done_time = microtime(true);
+			App::getDb()->insert('log_items', array(
+				'log_name' => 'worker_job.cron_runner',
+				'session_name' => 'cron_runner.' . $time_start,
+				'flag' => 'cron_end',
+				'priority' => 6,
+				'priority_name' => 'INFO',
+				'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
+				'date_created' => date('Y-m-d H:i:s')
+			));
 			return $ret;
 		} catch (\Exception $e) {
 			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
