@@ -122,7 +122,7 @@
 	'admin.general.view_by'                             => 'View by',
 	'admin.general.yes'                                 => 'Yes',
 	'admin.general.you_are_outdated_by_x_buils'         => 'Your helpdesk is outdated by {{count}} versions|Your helpdesk is outdated by {{count}} versions',
-	'admin.general.you_are_up_to_date'                  => 'Your helpdesk is all up to date.',
+	'admin.general.you_are_up_to_date'                  => 'Your helpdesk is up to date.',
 	'admin.general.you_have_not_created_categories'     => 'You have not created any categories yet. Click the "Add New Category" button to create one now.',
 	'admin.general.you_have_not_created_filters'        => 'You have not created any filters yet. Click the "Add New Filter" button to create one now.',
 	'admin.general.your_current_deskpro_build'          => 'Your current DeskPRO version:',
