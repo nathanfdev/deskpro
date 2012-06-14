@@ -961,26 +961,27 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return page.getMetaData('fragmentClass', '').indexOf(x) != -1;
 		};
 		var handler = null;
+		var sectionId = null;
 		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish')) {
-			handler = this.sections['publish_section'];
+			sectionId = 'publish_section';
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
-			handler = this.sections['tickets_section'];
+			sectionId = 'tickets_section';
 		} else if (testcl('.People') || testcl('.Org')) {
-			handler = this.sections['people_section'];
+			sectionId = 'people_section';
 		} else if (testcl('.AgentChat')) {
-			handler = this.sections['agent_chat_section'];
+			sectionId = 'agent_chat_section';
 		} else if (testcl('.OpenChats') || testcl('.UserChatFilter')) {
-			handler = this.sections['chat_section'];
+			sectionId = 'chat_section';
 		} else if (testcl('.Feedback')) {
-			handler = this.sections['feedback_section'];
+			sectionId = 'feedback_section';
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
-			handler = this.sections['tickets_section'];
+			sectionId = 'tickets_section';
 		}else if (testcl('.Task')) {
-			handler = this.sections['tasks_section'];
-		}else if (testcl('.Deal')) {
-			handler = this.sections['deals_section'];
-		}else if (testcl('.Twitter')) {
-			handler = this.sections['twitter_section'];
+			sectionId = 'tasks_section';
+		}
+
+		if (sectionId) {
+			handler = this.sections[sectionId];
 		}
 
 		if (!handler) {
@@ -988,18 +989,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		if (!noswitch && !handler.isVisible()) {
-			noswitch = true;
-		}
+		if (typeof noswitch === undefined) {
+			if (!noswitch && !handler.isVisible()) {
+				noswitch = true;
+			}
 
-		if (handler.isVisible() && !handler.listPage) {
-			noswitch = false;
+			if (handler.isVisible() && !handler.listPage) {
+				noswitch = false;
+			}
 		}
 
 		handler.setListPageFragment(page, noswitch);
 
 		if (!noswitch) {
 			this.listPage = page;
+			this.switchToSection(sectionId, true);
 			this.updateWindowUrlFragment();
 		}
 	},
