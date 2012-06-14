@@ -21,12 +21,22 @@
 		<tbody>
 		<tr>
 			<td>
-				Time tasks were last executed:
-				{% if last_run %}
-					{{ relative_time(time_since_run) }} ago
-					({{ last_run|date('fulltime') }})
+				{% if not last_start %}
+					Tasks have never been run.
 				{% else %}
-					Never
+					&bull; The last time tasks were executed was
+					{{ relative_time(time_since_start) }} ago
+					({{ last_start|date('fulltime') }}).
+
+					<br />
+
+					{% if not last_run %}
+						&bull; Tasks have never completed successfully.
+					{% else %}
+						&bull; The last time tasks completed successfully was
+						{{ relative_time(time_since_run) }} ago
+						({{ last_run|date('fulltime') }}).
+					{% endif %}
 				{% endif %}
 			</td>
 		</tr>

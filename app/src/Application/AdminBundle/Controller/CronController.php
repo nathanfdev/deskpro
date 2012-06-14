@@ -50,20 +50,20 @@ class CronController extends AbstractController
 			ORDER BY j.interval ASC
 		")->execute();
 
+		$last_start = $this->container->getSetting('core.last_cron_start');
+		if (!$last_start) $last_start = 0;
+		$time_since_start = time() - $last_start;
+
 		$last_run = $this->container->getSetting('core.last_cron_run');
 		if (!$last_run) $last_run = 0;
-
 		$time_since_run = time() - $last_run;
-		$is_problem = false;
-		if ($time_since_run > 301) {
-			$is_problem = true;
-		}
 
 		return $this->render("AdminBundle:Cron:list.html.twig", array(
 			'jobs' => $jobs,
 			'last_run' => $last_run,
 			'time_since_run' => $time_since_run,
-			'is_problem' => $is_problem,
+			'last_start' => $last_start,
+			'time_since_start' => $time_since_start,
 		));
 	}
 
