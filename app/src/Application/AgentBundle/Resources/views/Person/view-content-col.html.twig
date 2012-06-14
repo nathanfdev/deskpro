@@ -36,15 +36,6 @@
 		<h4>{{ phrase('agent.general.properties') }}</h4>
 	</header>
 	<section>
-		{% if person.labels|length or perms.edit %}
-		<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
-			<tr>
-				<th>{{ phrase('agent.general.labels') }}</th>
-				<td class="people-tags tags-wrap"><input id="{{baseId}}_label_input" type="text" value="{% for label in person.labels %}{{label.label}},{% endfor %}" /></td>
-			</tr>
-		</table>
-		{% endif %}
-
 		<div class="table-list" id="{{baseId}}_custom_fields_rendered">
 			{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
 		</div>

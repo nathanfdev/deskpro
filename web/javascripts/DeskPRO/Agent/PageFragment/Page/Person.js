@@ -43,15 +43,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		// then forces textext to invalidatebounds
 		var propBox = self.getEl('properties_box');
 
-		var input = self.getEl('label_input');
-		if (input) {
-			input.width(propBox.width() - 140);
-
-			self.hasInitTxtbox = false;
-
-
-		}
-
 		if (this.meta.perms.edit) {
 			this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
@@ -592,14 +583,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	//#########################################################################
 
 	_initLabels: function() {
-
-		// Tags
-		var labelsList = $(".people-tags input", this.wrapper);
-
-		if (labelsList[0]) {
+		if (this.getEl('labels_input')[0]) {
 			this.labelsInput = new DeskPRO.UI.LabelsInput({
-				type: 'people',
-				textarea: labelsList,
+				type: 'tickets',
+				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
 			this.ownObject(this.labelsInput);
