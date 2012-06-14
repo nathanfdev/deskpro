@@ -90,14 +90,6 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			return true;
 		};
 
-		$skip_seg = '';
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
-			$skip_seg .= ' --skip-backup-file';
-		}
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
-			$skip_seg .= ' --skip-backup-db ';
-		}
-
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
@@ -121,6 +113,52 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$write_status("error_basic_checks_fail");
 			$output->write('<error>Could not find path to PHP</error>');
 			return 1;
+		}
+
+		#-------------------------
+		# Check PHP infos
+		#-------------------------
+
+		if (dp_is_php_path_guessed()) {
+			$cmd = sprintf(
+				"%s %s",
+				dp_get_php_path(),
+				escapeshellarg(DP_ROOT.'/bin/phpinfo.php')
+			);
+
+			$ret = null;
+			$out = null;
+			exec($cmd, $out, $ret);
+
+			$fail = true;
+			if ($out) {
+				$check_phpinfo = implode("\n", $out);
+				$fail = !\Orb\Util\Env::isSamePhpInfo(
+					\Orb\Util\Env::getPhpInfo(),
+					$check_phpinfo,
+					$mute
+				);
+			}
+
+			if ($fail) {
+				$write_status('error_php_path');
+				$write_status("error_unknown_binary", array('php'));
+				$write_status("error_basic_checks_fail");
+				$output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
+				return 1;
+			}
+		}
+
+		#-------------------------
+		# Exec upgrade command
+		#-------------------------
+
+		$skip_seg = '';
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
+			$skip_seg .= ' --skip-backup-file';
+		}
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
+			$skip_seg .= ' --skip-backup-db ';
 		}
 
 		$cmd = sprintf(

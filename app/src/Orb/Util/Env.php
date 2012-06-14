@@ -120,6 +120,21 @@ class Env
 
 
 	/**
+	 * Get phpinfo() as a string
+	 *
+	 * @return string
+	 */
+	public static function getPhpInfo()
+	{
+		ob_start();
+		phpinfo();
+		$phpinfo = ob_get_clean();
+
+		return $phpinfo;
+	}
+
+
+	/**
 	 * Gets the path to the laoded php.ini file by scanning phpinfo
 	 *
 	 * @return false|string
@@ -181,5 +196,36 @@ class Env
 		$func_name = strtolower($func_name);
 
 		return isset($disabled[$func_name]);
+	}
+
+
+	/**
+	 * Check to see if two phpinfo's appear to be the same.
+	 * This does a string check but ignores meaningless differences like request time.
+	 *
+	 * @param string $phpinfo1
+	 * @param string $phpinfo2
+	 */
+	public static function isSamePhpInfo($phpinfo1, $phpinfo2, &$mutated = null)
+	{
+		$cleaner = function($str) {
+			$str = preg_replace("#(\r|\r\n|\n)#", "\n", $str);
+
+			$pos1 = strpos($str, 'phpinfo()');
+			$pos2 = strpos($str, 'This program makes use of the Zend Scripting Language Engine');
+
+			$str = substr($str, $pos1, $pos2);
+			$str = trim($str);
+			$str = preg_replace('#\s+$#m', '', $str);
+
+			return $str;
+		};
+
+		$phpinfo1 = $cleaner($phpinfo1);
+		$phpinfo2 = $cleaner($phpinfo2);
+
+		$mutated = array(0 => $phpinfo1, 1 => $phpinfo2);
+
+		return $phpinfo1 == $phpinfo2;
 	}
 }

@@ -274,7 +274,12 @@ function dp_get_php_path($test = false)
 			$path = dp_get_config('php_path');
 		}
 		if (!$path) {
-			$path = dp_find_binary('php');
+			if (defined('PHP_BINARY')) {
+				$path = PHP_BINARY;
+			} else {
+				$GLOBALS['DP_PHP_PATH_GUESSED'] = true;
+				$path = dp_find_binary('php');
+			}
 		}
 
 		if (!$path) {
@@ -302,6 +307,22 @@ function dp_get_php_path($test = false)
 	}
 
 	return $path;
+}
+
+
+/**
+ * Was the path to the PHP binary guessed?
+ *
+ * @return bool
+ */
+function dp_is_php_path_guessed()
+{
+	dp_get_php_path(false);
+	if (isset($GLOBALS['DP_PHP_PATH_GUESSED']) && $GLOBALS['DP_PHP_PATH_GUESSED']) {
+		return true;
+	}
+
+	return false;
 }
 
 
