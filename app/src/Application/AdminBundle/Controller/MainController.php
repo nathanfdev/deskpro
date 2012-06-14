@@ -68,11 +68,11 @@ class MainController extends AbstractController
 		$stats['resolved_today'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_resolved > ?", array($today));
 		$stats['awaiting_agent'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status = 'awaiting_agent'");
 
-		$error_count = $this->db->fetchColumn("
-			SELECT COUNT(*)
-			FROM log_items
-			WHERE log_name = 'error_log'
-		");
+		$is_errors = false;
+		$err_file = dp_get_log_dir() . '/error.log';
+		if (is_file($err_file) && filesize($err_file) > 10) {
+			$is_errors = true;
+		}
 
 		$last_run = $this->container->getSetting('core.last_cron_run');
 		if (!$last_run) $last_run = 0;
@@ -93,7 +93,7 @@ class MainController extends AbstractController
 			'online_agents'      => $online_agents,
 			'count_online_users' => $count_online_users,
 			'stats'              => $stats,
-			'error_count'        => $error_count,
+			'is_errors'          => $is_errors,
 			'is_cron_crash'      => $is_cron_crash,
 			'cron_running_time'  => $cron_running_time,
 			'last_login'         => $last_login,

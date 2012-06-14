@@ -79,7 +79,7 @@
 	at <a href="http://support.deskpro.com/">support.deskpro.com</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
 </p>
 
-{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or is_errors %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
@@ -90,10 +90,10 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% if error_count %}
+			{% if is_errors %}
 				<tr>
 					<td>
-						There are <a href="{{ path('admin_server_error_logs') }}">{{ error_count }} logged errors</a> that you should investigate.
+						There are <a href="{{ path('admin_server_error_logs') }}">logged errors</a> that you should investigate.
 					</td>
 				</tr>
 			{% endif %}
