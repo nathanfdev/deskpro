@@ -38,8 +38,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Expanding cc row
 		//------------------------------
 
-		$('.expander').on('click', function() {
-			var target = $($(this).data('target'));
+		this.el.find('.expander').on('click', function() {
+			var target = self.el.find($(this).data('target'));
 			if (target.is(':visible')) {
 				$(this).removeClass('expanded').addClass('is-hidden');
 				target.slideUp('fast');

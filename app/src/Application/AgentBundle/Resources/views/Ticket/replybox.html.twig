@@ -82,7 +82,7 @@
 					<li class="to-row hide-note">
 						<label>
                             {% if ticket_perms.modify_cc or user_parts|length %}
-							    <span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row_mod">+/-</span>
+							    <span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
                             {% endif %}
 							{{ phrase('agent.general.to') }}:
 						</label>
