@@ -123,13 +123,18 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 
 		while (($l = fgets($fp)) !== false) {
 			$m = null;
-			if (!preg_match('#^(.*?)<DP_LOG:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
+			$l = trim($l);
+
+			if (!preg_match('#^<DP_LOG:([0-9A-Z]+)>\s*(.*?)$#', $l, $m)) {
+				if ($log_lines && $last_id) {
+					$this->_initItem($last_id, $log_lines);
+				}
 				$log_lines = array();
 				continue;
 			}
 
-			$id  = $m[2];
-			$txt = $m[3];
+			$id  = $m[1];
+			$txt = $m[2];
 
 			if ($log_lines && $last_id != $id) {
 				$this->_initItem($last_id, $log_lines);
