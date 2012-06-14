@@ -55,9 +55,9 @@ class ServerController extends AbstractController
 		#------------------------------
 
 		$binary_paths = array(
-			'php' => dp_get_php_path(true),
-			'mysql' => dp_get_mysql_path(true),
-			'mysqldump' => dp_get_mysqldump_path(true)
+			'php' => dp_get_config('php_path'),
+			'mysql' => dp_get_config('mysql_path'),
+			'mysqldump' => dp_get_config('mysqldump_path')
 		);
 
 		#------------------------------
