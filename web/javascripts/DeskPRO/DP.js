@@ -122,19 +122,23 @@ var DP = {
 					el.addClass('dpe_select-with-icon dpe_select-with-icon-' + iconSize);
 
 					options.addResultClass = 'with-icon';
-					options.formatLabel = function(result) {
-						var name = Orb.escapeHtml(result.text);
-						if (result.el.data('icon')) {
-							return '<div class="result-icon" style="background-image: url(' + result.el.data('icon') + ');'+addCss+'">' + name + '</div>';
+					options.formatResult = function(result) {
+						var opt = el.find('option[value="' + result.id + '"]');
+						var name = Orb.escapeHtml(opt.text());
+						if (opt.data('icon')) {
+							return '<div class="result-icon" style="background-image: url(' + opt.data('icon') + ');'+addCss+'">' + name + '</div>';
 						} else {
 							return '<div class="result-icon no-icon" style="'+addCssLh+'">' + name + '</div>';
 						}
 					};
 					options.formatSelection = function(data) {
-						var el = data.el;
-						var name = Orb.escapeHtml(data.text);
-						if (el.data('icon')) {
-							return '<span class="choice-icon" style="background-image: url(' + el.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>';
+						var opt = el.find('option[value="' + data.id + '"]');
+						if (!opt) {
+							return '';
+						}
+						var name = Orb.escapeHtml(opt.text());
+						if (opt.data('icon')) {
+							return '<span class="choice-icon" style="background-image: url(' + opt.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>';
 						} else {
 							return name;
 						}
