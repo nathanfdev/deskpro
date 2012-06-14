@@ -96,12 +96,12 @@ var DP = {
 		}
 	},
 
-	select: function(el) {
+	select: function(el, options) {
 		if (el.data('select2')) {
 			return;
 		}
 
-		var options = {};
+		var options = options || {};
 
 		if (el.data('style-type')) {
 			switch (el.data('style-type')) {

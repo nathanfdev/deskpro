@@ -15,9 +15,9 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		var self = this;
 		this.options = {
 			/**
-			 * The labels textareato apply to
+			 * The labels select
 			 */
-			textarea: null,
+			input: null,
 
 			/**
 			 * The field name the labels should be added (ie labels[])
@@ -30,12 +30,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			 */
 			type: '',
 
-			showMax: 50,
-
-			placeholder: false,
+			placeholder: false
 		};
 
 		this.setOptions(options);
+
+		this.input = $(this.options.input);
 
 		var tagSource = false;
 
@@ -56,58 +56,15 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		if (!tagSource) tagSource = [];
 
-		var exist = [];
-		var val = this.options.textarea.val().trim();
-		this.options.textarea.val('');
-		Array.each(val.split(','), function(t) {
-			t = t.trim();
-			if (t.length) {
-				exist.push(t);
-			}
+		this.input.on('change', function() {
+			self.fireEvent('change', self.getLabels());
 		});
 
-		// TODO
-		// Keep an eye on https://github.com/alexgorbatchev/jquery-textext/issues
-		// - 'filter' plugin causes tags.items not to render properly
-		// - Cant click 'autocomplete' items to enter them
-
-		this.options.textarea.textext({
-			plugins: 'autocomplete suggestions tags prompt',
-			suggestions: tagSource,
-			prompt: this.options.placeholder || (DESKPRO_LANG['agent.general.add_a_label'] || 'Add a label...'),
-			tags: {
-				items: exist
-			}
+		DP.select(this.input, {
+			tags: tagSource
 		});
 
-		self.data = exist;
-
-		var last = (this.options.textarea.textext()[0]).hiddenInput().val();
-		this.options.textarea.bind('setFormData', function(e, data, isEmpty) {
-			var me = this;
-			var textext = $(e.target).textext()[0];
-			var str = textext.hiddenInput().val();
-			if (str != last) {
-				last = str;
-				self.data = data;
-				self.fireEvent('change', data);
-			}
-		});
-
-		// Clicking a label opens the omni search boxeroo
-		this.options.textarea.textext()[0].hiddenInput().closest('.text-core').on('click', '.text-tag', function(ev) {
-			if (ev.target && $(ev.target).is('.text-remove')) {
-				return;
-			}
-
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var label = $(this).find('.text-label').text().trim();
-			if (label) {
-				$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
-			}
-		});
+		//$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
 	},
 
 
@@ -117,7 +74,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getLabels: function() {
-		return this.data;
+		return this.input.select2('val') || [];
 	},
 
 
@@ -127,7 +84,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getFormData: function() {
-		var tags = this.data;
+		var tags = this.getLabels();
 		var field = this.options.fieldName;
 
 		var postData = [];

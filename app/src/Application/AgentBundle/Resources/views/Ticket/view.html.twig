@@ -110,8 +110,24 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 <header class="page-header">
-	<h4 class="id-number">#{{ ticket.id }}</h4>
-	<h1>{{ ticket.subject }}</h1>
+	<div class="person-picture-box">
+		<img src="{{ ticket.person.getPictureUrl(60) }}" />
+	</div>
+	<div class="titlewrap">
+		<h4 class="id-number">#{{ ticket.id }}</h4>
+		<h1>{{ ticket.subject }}</h1>
+		<div class="labels-line">
+			<input
+				type="hidden"
+				id="{{baseId}}_labels_input"
+				class="dpe_select dpe_select_noborder"
+				data-select-width="auto"
+				data-placeholder="Add a label"
+				value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+			/>
+		</div>
+	</div>
+
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
@@ -270,7 +286,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 					<dt>{{ phrase('agent.general.followers') }}</dt>
 					<dd>
-						<select id="{{baseId}}_followers_sel" class="dpe_select" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16">
+						<select id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add a follower">
 							{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 								<option {% if agent_parts[app.user.id] %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 							{% endif %}
