@@ -35,26 +35,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		});
 		this.ownObject(this.contactEditor);
 
-		// TextExt doesnt play well with fluid columns
-		// so this listens for resizes, and then updates the input width,
-		// then forces textext to invalidatebounds
-		var propBox = self.getEl('properties_box');
-		var input = self.getEl('label_input');
-		if (input[0]) {
-			input.width(propBox.width() - 140);
-
-			$(window).resize(function() {
-				window.setTimeout(function() {
-					var w = propBox.width() - 130;
-					input.width(w);
-					if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
-						self.labelsInput.options.textarea.textext()[0].originalWidth = w;
-						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
-					}
-				}, 500);
-			});
-		}
-
 		if (this.meta.perms.edit) {
 			// Name is editable
 			var name = $('h3.name.editable:first', el);
@@ -531,14 +511,10 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	//#########################################################################
 
 	_initLabels: function() {
-
-		// Tags
-		this.labelsList = $(".org-tags input", this.wrapper);
-
-		if (this.labelsList[0]) {
+		if (this.getEl('labels_input')[0]) {
 			this.labelsInput = new DeskPRO.UI.LabelsInput({
-				type: 'organizations',
-				textarea: this.labelsList,
+				type: 'tickets',
+				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
 			this.ownObject(this.labelsInput);
@@ -557,11 +533,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json',
-			success: function(data) {
-				var sect = DeskPRO_Window.sections.people_section;
-				sect.reloadLabels();
-			}
+			dataType: 'json'
 		});
 	},
 
