@@ -37,8 +37,18 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<h4 class="id-number">#{{ feedback.id }}</h4>
 	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ feedback.title }}</h1>
+	<div class="labels-line">
+		<input
+			type="hidden"
+			id="{{baseId}}_labels_input"
+			class="dpe_select dpe_select_noborder"
+			data-select-width="auto"
+			data-placeholder="Add a label"
+			value="{% for label in feedback.labels %}{{ label.label }},{% endfor %}"
+		/>
+	</div>
 	<br class="clear" />
-	<div class="meta-line">
+	<div class="meta-line flat">
 		<div class="status the-status feedback-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
 			{% if feedback.status == 'new' %}
 				{{ phrase('agent.feedback.status_active') }}

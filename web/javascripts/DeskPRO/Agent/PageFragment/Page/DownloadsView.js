@@ -244,7 +244,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'downloads',
-			textarea: this.getEl('labels_input'),
+			input: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

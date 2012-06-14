@@ -421,7 +421,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'article',
-			textarea: this.getEl('labels_input'),
+			input: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
