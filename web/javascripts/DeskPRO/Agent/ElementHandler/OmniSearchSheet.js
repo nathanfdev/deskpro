@@ -50,6 +50,11 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			self.close();
 		});
 
+		this.el.find('form').on('submit', function(ev) {
+			ev.preventDefault();
+			$('#omnisearch_submit').click();
+		});
+
 		$('#omnisearch_submit').on('click', function(ev) {
 			ev.preventDefault();
 			var activeTab = self.typeTabs.getActiveTabContent();
