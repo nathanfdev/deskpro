@@ -708,5 +708,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 		});
+
+		if (!displayBox.find('li')[0]) {
+			ugbox.find('> section').hide();
+		}
 	}
 });

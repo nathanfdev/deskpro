@@ -123,7 +123,7 @@
 			{% endif %}
 			<h4>{{ phrase('agent.general.usergroups') }}</h4>
 		</header>
-		<section {% if person.getUsergroupIds()|length < 2 %}style="display:none"{% endif %}>
+		<section>
 			<div id="{{baseId}}_ug_display_box" class="contact-list">
 				<ul>
 					{% for id,name in app.getDataRepository('Usergroup').getUsergroupNames() %}
