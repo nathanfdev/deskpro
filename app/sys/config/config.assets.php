@@ -282,6 +282,7 @@ $CONFIG['agent_common'] = array(
 		'javascripts/Orb/Util/Events.js',
 		'javascripts/Orb/Util/EventObj.js',
 		'javascripts/Orb/Util/TimeAgo.js',
+		'javascripts/Orb/Util/CallQueue.js',
 		'javascripts/Orb/Compat.js',
 		'javascripts/DeskPRO/ElementHandler.js',
 		'javascripts/DeskPRO/ElementHandler/ListRadio.js',

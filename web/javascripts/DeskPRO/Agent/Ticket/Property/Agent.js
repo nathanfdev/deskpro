@@ -18,47 +18,12 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 	},
 
 	setValue: function(value) {
-		var agentInfo = null;
 		this.getFormEl().val(value);
-
-		if (value == "0" || value === "") {
-			value = 0;
-		} else {
-			agentInfo = DeskPRO_Window.getAgentInfo(value);
-		}
-
-
-		var el = this.getInterfaceElement();
-		el.removeClass('me no-agent');
-
-		if (!agentInfo) {
-
-			el.text(el.data('none-label'));
-			el.data('agent-id', 0);
-			el.attr('data-agent-id', 0);
-			el.css('background-image', '');
-			el.addClass('no-agent');
-		} else {
-			el.text(agentInfo.name);
-			el.data('agent-id', agentInfo.id);
-			el.attr('data-agent-id', agentInfo.id);
-			el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
-
-			if (agentInfo.id == DESKPRO_PERSON_ID) {
-				el.addClass('me');
-			}
-		}
-
-		// Hide buttons that dont make sense anymore
-		if (value == DESKPRO_PERSON_ID) {
-			$('.assign-me', this.ticketPage.wrapper);
-		} else if (value == 0) {
-			$('.assign-none', this.ticketPage.wrapper);
-		}
+		this.getInterfaceElement().val(value);
 	},
 
 	getInterfaceElement: function() {
-		return $('.prop-agent-id:first', this.ticketPage.wrapper);
+		return this.ticketPage.getEl('agent_sel');
 	},
 
 	_formEl: null,

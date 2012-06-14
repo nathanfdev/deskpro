@@ -30,68 +30,59 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		DP.select(this.getEl('agent_team_sel'));
 		DP.select(this.getEl('followers_sel'));
 
-		var followersList = this.getEl('followers_list');
-		var el = this.getEl('agent_assign_ob');
-		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-			element: el,
-			trigger: this.getEl('assign_ob_trigger'),
-			onSave: function(ob) {
-				var selections = ob.getAllSelected();
-
-				var agent_id = parseInt(selections.agents || 0);
-				var agentProp = self.changeManager.getPropertyManager('agent_id');
-				self.changeManager.addChange(agentProp, agent_id, true);
-
-				var agent_team_id = parseInt(selections.teams || 0);
-				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
-				self.changeManager.addChange(agentTeamProp, agent_team_id, true);
-
-				followersList.empty();
-
-				var selections = ob.getAllSelected();
-
-				var postData = [{
-					name: 'with_set_agent_parts',
-					value: 1
-				}];
-				Array.each(selections.followers, function(part_id) {
-					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
-
-					var li = $('<li />');
-					var span = $('<span />');
-					span.addClass('agent-link');
-					span.data('agent-id', part_id);
-					span.attr('data-agent-id', part_id);
-					span.text(label);
-					span.appendTo(li);
-
-					followersList.append(li);
-
-					postData.push({
-						name: 'set_agent_part_ids[]',
-						value: part_id
-					});
-				});
-
-				if (!selections.followers.length) {
-					followersList.append('<li>No followers</li>');
-				}
-
-				self.changeManager.saveChanges(postData);
-
-				if (!agent_team_id) {
-					$('.team-row', self.getEl('people_box_agent')).hide();
-				} else {
-					$('.team-row', self.getEl('people_box_agent')).show();
-				}
-				if (!selections.followers.length) {
-					$('.followers-row', self.getEl('people_box_agent')).hide();
-				} else {
-					$('.followers-row', self.getEl('people_box_agent')).show();
-				}
-
-				window.setTimeout(self.page.updateUi.bind(self.page), 450);
+		var showSaving = this.getEl('agent_prop_controls').find('.mark-loading');
+		var showSaved  = this.getEl('agent_prop_controls').find('.mark-saved');
+		var callQueue = new Orb.Util.CallQueue({
+			startCallback: function() {
+				showSaved.stop().hide();
+				showSaving.show();
+			},
+			endCallback: function() {
+				showSaving.hide();
+				showSaved.show().fadeOut(1000);
 			}
+		});
+
+		this.getEl('agent_sel').on('change', function() {
+			var agent_id = parseInt($(this).find(':selected').val()) || 0;
+			var agentProp = self.changeManager.getPropertyManager('agent_id');
+
+			callQueue.call(function() {
+				self.changeManager.setInstantChange(agentProp, agent_id, function() {
+					callQueue.next();
+				});
+			});
+		});
+
+		this.getEl('agent_team_sel').on('change', function() {
+
+			var agent_team_id = parseInt($(this).find(':selected').val()) || 0;
+			var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
+
+			callQueue.call(function() {
+				self.changeManager.setInstantChange(agentTeamProp, agent_team_id, function() {
+					callQueue.next();
+				});
+			});
+		});
+
+		this.getEl('followers_sel').on('change', function() {
+			var postData = [{
+				name: 'with_set_agent_parts',
+				value: 1
+			}];
+			$(this).find(':selected').each(function() {
+				postData.push({
+					name: 'set_agent_part_ids[]',
+					value: $(this).val()
+				});
+			});
+
+			callQueue.call(function() {
+				self.changeManager.saveChanges(postData, function() {
+					callQueue.next();
+				});
+			});
 		});
 
 		var box1 = self.getEl('people_box_person');

@@ -19,23 +19,11 @@ DeskPRO.Agent.Ticket.Property.AgentTeam = new Class({
 
 	setValue: function(value) {
 		this.getFormEl().val(value);
-
-		if (value == "0") value = 0;
-
-		var el = this.getInterfaceElement();
-
-		if (value == 0) {
-			el.text('Unassigned');
-			el.css('background-image', '');
-		} else {
-			var teamInfo = DeskPRO_Window.getTeamInfo(value);
-			el.text(teamInfo.name);
-			el.css('background-image', teamInfo.pictureUrlSizable.replace('{SIZE}', 20));
-		}
+		this.getInterfaceElement().val(value);
 	},
 
 	getInterfaceElement: function() {
-		return $('.prop-agent-team-id:first', this.ticketPage.wrapper);
+		return this.ticketPage.getEl('agent_team_sel');
 	},
 
 	_formEl: null,

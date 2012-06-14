@@ -221,10 +221,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </td><td width="50%" valign="top">
 	<div class="profile-box-container people-box second">
 		<header>
-			<div class="controls">
-				{% if ticket_perms.modify_assign_agent or ticket_perms.modify_assign_team or ticket_perms.modify_assign_self %}
-					<span class="edit-gear noedit-hide" id="{{baseId}}_assign_ob_trigger"></span>
-				{% endif %}
+			<div class="controls" id="{{baseId}}_agent_prop_controls">
+				<span style="display:none" class="mark-loading"></span>
+				<span style="display:none" class="mark-saved">Saved</span>
 			</div>
 			<h4>{{ phrase('agent.general.assignments') }}</h4>
 		</header>

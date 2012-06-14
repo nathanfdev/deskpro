@@ -295,7 +295,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					if (callback) {
-						//callback(data);
+						callback(data);
 					}
 
 					this.fireEvent('updateResult', [data]);
