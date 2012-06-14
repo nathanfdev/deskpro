@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Labels;
 
+use Application\DeskPRO\App;
+
 class LabelManager
 {
 	protected $entity;
@@ -88,6 +90,12 @@ class LabelManager
 		$labelobj = $this->createLabelEntity();
 		$labelobj['label'] = $label;
 		$this->entity->addLabel($labelobj);
+
+		$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+		App::getDb()->replace('label_defs', array(
+			'label_type' => $type_name,
+			'label' => $label
+		));
 
 		return $labelobj;
 	}

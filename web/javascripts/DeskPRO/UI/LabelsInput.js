@@ -93,7 +93,10 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				name: field + '[]',
 				value: x
 			});
-		});
+			if (DeskPRO.UI.LabelsInput_Grouped[this.options.type].indexOf(x) === -1) {
+				DeskPRO.UI.LabelsInput_Grouped[this.options.type].push(x);
+			}
+		}, this);
 
 		return postData;
 	}
