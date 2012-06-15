@@ -29,7 +29,7 @@
 		{% endif %}
 	{% endif %}
 {% endmacro %}
-<select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr }}>
+<select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr|raw }}>
 	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
 	{% for k,cat in categories %}
 		{{ _self.render_options(k, cat, selected, 0, '', title_prop, child_prop) }}

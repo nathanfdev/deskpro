@@ -33,7 +33,7 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		this._hasInitSheet = true;
 
 		this.typeTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('> header > ul > li', this.el),
+			triggerElements: $('> .header-section > ul > li', this.el),
 			onBeforeTabSwitch: function(info) {
 				var id = info.tabContent.attr('id');
 

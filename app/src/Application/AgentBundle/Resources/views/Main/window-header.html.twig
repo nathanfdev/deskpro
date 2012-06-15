@@ -1,5 +1,5 @@
 <!-- BEGIN HEADER BAR -->
-<div id="dp_header" xmlns="http://www.w3.org/1999/html">
+<div id="dp_header">
 	{# User Logo #}
 	<div id="dp_header_user">
 		<div class="button-wrap" id="userSetting_trigger">
@@ -210,10 +210,8 @@
 	</script>
 </div>
 
-{% include 'AgentBundle:Main:keyboard-shortcuts-sheet.html.twig' %}
-
 <div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
-	<header>
+	<div class="header-section">
 		<span id="omnisearch_reset">{{ phrase('agent.interface.reset_form') }}</span>
 		<span class="close close-search-sheet"></span>
 		<em>{{ phrase('agent.general.search') }}:</em>
@@ -223,33 +221,35 @@
 			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.general.organizations') }}</li>
 			<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.general.publish_and_feedback') }}</li>
 		</ul>
-	</header>
+	</div>
 
 	{# Ticket Search Form #}
-	<article id="dp_searchsheet_tickets" data-type="tickets">
+	<div class="sheet-section" id="dp_searchsheet_tickets" data-type="tickets">
 		{% include 'AgentBundle:Main:search-sheet-tickets.html.twig' %}
-	</article>
+	</div>
 	{# /Ticket Search Form #}
 
 	{# People Search Form #}
-	<article id="dp_searchsheet_people" data-type="people">
+	<div class="sheet-section" id="dp_searchsheet_people" data-type="people">
 		{% include 'AgentBundle:Main:search-sheet-people.html.twig' %}
-	</article>
+	</div>
 	{# /People Search Form #}
 
 	{# Orgs Search Form #}
-	<article id="dp_searchsheet_orgs" data-type="orgs">
+	<div class="sheet-section" id="dp_searchsheet_orgs" data-type="orgs">
 		{% include 'AgentBundle:Main:search-sheet-orgs.html.twig' %}
-	</article>
+	</div>
 	{# /Orgs Search Form #}
 
 	{# Content Search Form #}
-	<article id="dp_searchsheet_content" data-type="content">
+	<div class="sheet-section" id="dp_searchsheet_content" data-type="content">
 		{% include 'AgentBundle:Main:search-sheet-content.html.twig' %}
-	</article>
+	</div>
 	{# /Content Search Form #}
 
-	<footer>
+	<div class="footer-section">
 		<button id="omnisearch_submit">{{ phrase('agent.general.search') }}</button>
-	</footer>
+	</div>
 </div>
+
+{% include 'AgentBundle:Main:keyboard-shortcuts-sheet.html.twig' %}
