@@ -487,6 +487,16 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		return false;
 	}
 
+	public function isUpgradePending()
+	{
+		// Make sure filesystem and db builds are the same, or else the upgrader needs to run
+		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function registerBundles()
 	{
 		$bundles = array(

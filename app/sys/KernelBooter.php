@@ -382,8 +382,17 @@ class KernelBooter
 		$kernel->boot($mode);
 
 		try {
+			if ($kernel->isUpgradePending()) {
+				if (in_array('--verbose', $_SERVER['argv'])) {
+					echo "Upgrade pending\n";
+				}
+				return null;
+			}
 			if ($enforce_offline_mode || ($mode == 'cron' && !App::getSetting('core.setup_initial'))) {
 				if ($kernel->isHelpdeskOffline()) {
+					if (in_array('--verbose', $_SERVER['argv'])) {
+						echo "Helpdesk offline\n";
+					}
 					return null;
 				}
 			}
