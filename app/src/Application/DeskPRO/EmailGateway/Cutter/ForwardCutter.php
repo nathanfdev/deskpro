@@ -100,6 +100,15 @@ class ForwardCutter
 
 
 	/**
+	 * @return array
+	 */
+	public function getData()
+	{
+		return $this->forward_info;
+	}
+
+
+	/**
 	 * Check if the forwarded message was read correctly and has all required information
 	 *
 	 * @return bool

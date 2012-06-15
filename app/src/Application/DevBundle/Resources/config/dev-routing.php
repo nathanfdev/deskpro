@@ -146,4 +146,18 @@ $collection->add('dev_lang_phrase_user_context', new Route(
 	array()
 ));
 
+$collection->add('dev_emaildecodetest', new Route(
+	'/email-decode-test',
+	array('_controller' => 'DevBundle:EmailDecodeTest:index'),
+	array(),
+	array()
+));
+
+$collection->add('dev_emaildecodetest_run', new Route(
+	'/email-decode-test/run',
+	array('_controller' => 'DevBundle:EmailDecodeTest:run'),
+	array(),
+	array()
+));
+
 return $collection;
