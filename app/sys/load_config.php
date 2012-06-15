@@ -72,6 +72,13 @@ function dp_load_config()
 			define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
 		}
 	}
+	if (!defined('DP_BUILD_NUM')) {
+		if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
+			require(DP_ROOT.'/sys/config/build-num.php');
+		} else {
+			define('DP_BUILD_NUM', 0); // would be used by someone who isnt using default distro
+		}
+	}
 }
 
 

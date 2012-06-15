@@ -1344,8 +1344,8 @@ class Upgrade
 	{
 		$version_info = $this->getLatestVersion();
 
-		$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_TIME, $this->formatBuild(DP_BUILD_TIME)));
-		$this->out(sprintf("Latest build:    %s (%s)", $version_info['build'], $this->formatBuild($version_info['build'])));
+		$this->out(sprintf("Your build:      %s (built %s)", DP_BUILD_NUM, $this->formatBuild(DP_BUILD_TIME)));
+		$this->out(sprintf("Latest build:    %s (build %s)", $version_info['build_num'], $this->formatBuild($version_info['build'])));
 		$this->out(sprintf("                 %s", $version_info['download']));
 		$this->out(str_repeat('-', 70));
 
@@ -1953,8 +1953,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#-----
 
 		if ($version_info) {
-			$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_TIME, $this->upgrade->formatBuild(DP_BUILD_TIME)));
-			$this->out(sprintf("Latest build:    %s (%s)", $version_info['build'], $this->upgrade->formatBuild($version_info['build'])));
+			$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
+			$this->out(sprintf("Latest build:    %s (%s)", $version_info['build_num'], $this->upgrade->formatBuild($version_info['build'])));
 			$this->upgrade->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
 
 			$this->out();
@@ -2208,6 +2208,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
+		$version_num = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
 
 		if (!$version) {
 			$this->errorExit("We could not find your currently installed version.");
@@ -2215,8 +2216,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$version = $version[0];
 
-		$this->out(sprintf("File build version:      %s (%s)", DP_BUILD_TIME, $this->upgrade->formatBuild(DP_BUILD_TIME)));
-		$this->out(sprintf("Database build version:  %s (%s)", $version, $this->upgrade->formatBuild($version)));
+		$this->out(sprintf("File build version:      %s (built %s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
+		$this->out(sprintf("Database build version:  %s (built %s)", $version_num, $this->upgrade->formatBuild($version)));
 
 		$this->out();
 

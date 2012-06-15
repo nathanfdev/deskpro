@@ -791,6 +791,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
 			));
 			$db->replace('settings', array(
+				'name' => 'core.deskpro_build_num',
+				'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+			));
+			$db->replace('settings', array(
 				'name' => 'core.deskpro_version',
 				'value' => date('YmdHis'),
 			));

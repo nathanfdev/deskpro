@@ -732,6 +732,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'value' => DP_BUILD_TIME,
 			));
 			App::getDb()->replace('settings', array(
+				'name' => 'core.deskpro_build_num',
+				'value' => DP_BUILD_NUM,
+			));
+			App::getDb()->replace('settings', array(
 				'name' => 'core.deskpro_version',
 				'value' => date('YmdHis'),
 			));

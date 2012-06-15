@@ -1,6 +1,9 @@
 {% if version_info %}
-	{{ phrase('admin.general.latest_deskpro_build') }}
-	<span class="label {% if version_info.build == constant('DP_BUILD_TIME') %}success{% else %}important{% endif %}">{{ version_info.build|date('Y-m-d.H') }}</span>
+	The latest version is
+	<span class="{% if version_info.build == constant('DP_BUILD_TIME') %}{% else %}label important{% endif %}">
+		#{{ version_info.build_num }}
+		built on {{ version_info.build|date('Y-m-d') }}
+	</span>
 
 	<article class="box-hint" style="text-align: center">
 		{% if version_info.build == constant('DP_BUILD_TIME') %}

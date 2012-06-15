@@ -130,7 +130,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		if (defined('DP_BUILD_TIME')) {
 			$current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
 			if ($current < DP_BUILD_TIME) {
-				App::getDb()->update('settings', array('value' => DP_BUILD_TIME), array('name' => 'core.deskpro_build'));
+				App::getDb()->replace('settings', array('value' => DP_BUILD_TIME), array('name' => 'core.deskpro_build'));
+				App::getDb()->replace('settings', array('value' => DP_BUILD_NUM), array('name' => 'core.deskpro_build_num'));
 			}
 		}
 

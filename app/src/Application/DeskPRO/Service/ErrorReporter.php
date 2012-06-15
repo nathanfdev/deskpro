@@ -52,6 +52,7 @@ class ErrorReporter
 			$info = array(
 				'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 				'build'             => DP_BUILD_TIME,
+				'build_num'         => DP_BUILD_NUM,
 			);
 		} else {
 			if (class_exists('Application\\DeskPRO\\App')) {
@@ -78,6 +79,7 @@ class ErrorReporter
 				'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 				'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
 				'build'             => DP_BUILD_TIME,
+				'build_num'         => DP_BUILD_NUM,
 			);
 
 			$info['hostname'] = @gethostname();

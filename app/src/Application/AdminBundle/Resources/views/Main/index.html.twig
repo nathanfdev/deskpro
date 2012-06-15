@@ -12,8 +12,8 @@
 				<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
 			</header>
 			<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
-				{{ phrase('admin.general.your_current_deskpro_build') }}
-				<span class="label success">{{ constant('DP_BUILD_TIME')|date('Y-m-d.H') }}</span>
+				You are using DeskPRO v4 #{{ constant('DP_BUILD_NUM') }}
+				built on {{ constant('DP_BUILD_TIME')|date('Y-m-d') }}
 				<div id="version_info_expanded"></div>
 			</article>
 		</div>
