@@ -33,6 +33,8 @@
 /web/stylesheets/admin
 /web/stylesheets/report
 
+/app/sys/config/changed-files.php
+
 # Place devs can use as scratch space
 /_dev
 

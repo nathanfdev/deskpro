@@ -235,7 +235,7 @@ echo "build-checkphp ... ";
 if ($quick) {
 	echo "SKIPPED (--quick)";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php', DP_ROOT.'/bin/build');
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php --only-changed', DP_ROOT.'/bin/build');
 	$proc->setTimeout(600);
 	$proc->run($output_realtime);
 

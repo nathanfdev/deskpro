@@ -24,41 +24,58 @@ $paths = array(
 
 echo "Checking files for PHP errors\n";
 $x = 0;
-foreach ($paths as $dir) {
 
-	$finder = new \Symfony\Component\Finder\Finder();
-	$finder->files()->name('*.php')->in($dir);
+$check_files = array();
 
-	$has_failed = array();
-	$bad_size = array();
-	foreach ($finder as $file) {
-		/** @var \Symfony\Component\Finder\SplFileinfo $file */
-		$filepath = $file->getRealPath();
-
-		if (strpos($filepath, '/src/vendor/') === false) {
-			$cmd = DP_PHP_PATH . " -l \"" . $file->getRealPath() . "\"";
-
-			$out = null;
-			exec($cmd, $out, $ret);
-		} else {
-			$ret = true;
+if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/config/changed-files.php')) {
+	echo "Using changerd-files file\n";
+	$tmp = include(DP_ROOT.'/sys/config/changed-files.php');
+	foreach ($tmp as $file) {
+		if ($file && preg_match('#\.php$#', $file) && file_exists(DP_WEB_ROOT . '/' . $file)) {
+			$check_files[] = DP_WEB_ROOT . '/' . $file;
 		}
+	}
+} else {
+	foreach ($paths as $dir) {
+		$finder = new \Symfony\Component\Finder\Finder();
+		$finder->files()->name('*.php')->in($dir);
 
-		if ($ret) {
-			echo "\n";
-			echo implode("\n", $out);
-			echo "\n";
-			$has_failed[] = str_replace(DP_ROOT, '', $file->getRealPath());
-		} elseif (filesize($file->getRealPath()) == 4096) {
-			$bad_size[] = str_replace(DP_ROOT, '', $file->getRealPath());
-		} else {
-			$x++;
-			if ($x % 10 === 0) {
-				echo ".";
-			}
-			if ($x % 100 == 0) {
-				echo $x;
-			}
+		foreach ($finder as $file) {
+			/** @var \Symfony\Component\Finder\SplFileinfo $file */
+			$check_files[] = $file->getRealPath();
+		}
+	}
+}
+
+echo "Checking " . count($check_files) . " files ...\n";
+
+$has_failed = array();
+$bad_size = array();
+foreach ($check_files as $filepath) {
+	if (strpos($filepath, '/src/vendor/') === false) {
+		$cmd = DP_PHP_PATH . " -l \"" . $filepath . "\"";
+
+		$out = null;
+		exec($cmd, $out, $ret);
+	} else {
+		$ret = false;
+		$out = array();
+	}
+
+	if ($ret) {
+		echo "\n";
+		echo implode("\n", $out);
+		echo "\n";
+		$has_failed[] = str_replace(DP_ROOT, '', $filepath);
+	} elseif (filesize($filepath) == 4096) {
+		$bad_size[] = str_replace(DP_ROOT, '', $filepath);
+	} else {
+		$x++;
+		if ($x % 10 === 0) {
+			echo ".";
+		}
+		if ($x % 100 == 0) {
+			echo $x;
 		}
 	}
 }
