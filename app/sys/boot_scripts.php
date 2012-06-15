@@ -1,7 +1,7 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
 $is_authed = false;
-if (isset($_GET['_']) && file_exists(DP_CONFIG_FILE)) {
+if ((isset($_GET['_']) || isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) && file_exists(DP_CONFIG_FILE)) {
 	$check_fn = function ($token, $secret) {
 		// Check to make sure its a valid format
 		if (substr_count($token, '-') != 2) {
@@ -28,7 +28,14 @@ if (isset($_GET['_']) && file_exists(DP_CONFIG_FILE)) {
 		return true;
 	};
 
-	$is_authed = $check_fn($_GET['_'], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
+	if (isset($_GET['_'])) {
+		$is_authed = $check_fn($_GET['_'], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
+		if ($is_authed) {
+			setcookie('dp_sysscript_' . $_GET['_sys'], $_GET['_'], time() + 18000, '/');
+		}
+	} elseif (isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) {
+		$is_authed = $check_fn($_COOKIE['dp_sysscript_'.$_GET['_sys']], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
+	}
 }
 
 switch ($_GET['_sys']) {
@@ -51,6 +58,11 @@ switch ($_GET['_sys']) {
 
 	case 'phpinfo':
 		require DP_ROOT . '/sys/scripts/phpinfo.php';
+		break;
+
+	case 'apc':
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/apc.php';
 		break;
 
 	case 'checkurl':

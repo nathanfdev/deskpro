@@ -124,11 +124,17 @@ class ServerController extends AbstractController
 			}
 		}
 
+		$has_apc = false;
+		if (function_exists('apc_store') && ini_get('apc.enabled')) {
+			$has_apc = true;
+		}
+
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
 			'binary_paths' => $binary_paths,
 			'web_php'      => $web_php,
 			'cli_php'      => $cli_php,
 			'config_hash'  => $config_hash,
+			'has_apc'      => $has_apc,
 		));
 	}
 

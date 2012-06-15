@@ -93,6 +93,31 @@
 	</table>
 </div>
 
+{% if has_apc %}
+	<br />
+
+	<div class="check-grid item-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left">&nbsp; APC</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>APC is installed and is enabled. Click the link below to view statistics and cache-controls for APC.</td>
+				</tr>
+				<tr>
+					<td>
+						{% set link %}{{ app.getSetting('core.deskpro_url') }}?_sys=apc&amp;_={{ static_security_token_secret(config_hash ~ 'apc', 86400) }}{% endset %}
+						<a href="{{ link }}" target="_blank">{{ link }}</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endif %}
+
 <br />
 
 <div class="check-grid item-list">
