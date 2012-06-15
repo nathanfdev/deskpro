@@ -50,7 +50,7 @@ class Session extends EntityRepository
 	 */
 	public function hasAvailableAgents()
 	{
-		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
+		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$check = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
@@ -70,7 +70,7 @@ class Session extends EntityRepository
 	 */
 	public function getAvailableAgentIds()
 	{
-		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
+		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$ids = App::getDb()->fetchAllCol("
 			SELECT DISTINCT(sessions.person_id)
@@ -78,6 +78,10 @@ class Session extends EntityRepository
 			LEFT JOIN people ON (people.id = sessions.person_id)
 			WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
 		", array($datecut));
+
+		if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
+			\Orb\Util\Arrays::pushUnique($ids, App::getCurrentPerson()->getId());
+		}
 
 		return $ids;
 	}
@@ -150,7 +154,7 @@ class Session extends EntityRepository
 	 */
 	public function getSessionForPerson(PersonEntity $person)
 	{
-		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
 
 		return $this->getEntityManager()->createQuery("
 			SELECT s

@@ -81,7 +81,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 
 			$ret = call_user_func($callback, $message);
 			if ($ret & self::PROCESS_SUCCESS) {
-				$queue_info['date_sent'] = date('Y-m-d H:m:s');
+				$queue_info['date_sent'] = date('Y-m-d H:i:s');
 				$db->executeUpdate("
 					UPDATE sendmail_queue
 					SET attempts = ?, date_sent = ?, has_sent = 1, date_next_attempt = null
@@ -92,33 +92,33 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 			if ($ret & self::PROCESS_FAILURE) {
 				switch ($queue_info['attempts']) {
 					case 1:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+5 minutes'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 						break;
 
 					case 2:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+15 minutes'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 						break;
 
 					case 3:
 					case 4:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+45 minutes'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+45 minutes'));
 						break;
 
 					case 5:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+1.5 hours'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+1.5 hours'));
 						break;
 
 					case 6:
 					case 7:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+3 hours'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+3 hours'));
 						break;
 
 					case 8:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+5 hours'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+5 hours'));
 						break;
 
 					case 9:
-						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+12 hours'));
+						$queue_info['date_next_attempt'] = date('Y-m-d H:i:s', strtotime('+12 hours'));
 						break;
 
 					default:
@@ -146,7 +146,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 			WHERE has_sent = 0 AND date_next_attempt < ?
 			ORDER BY id ASC
 			LIMIT 1
-		", array(date('Y-m-d H:m:s')));
+		", array(date('Y-m-d H:i:s')));
 
 		return $queue_id;
 	}
@@ -167,8 +167,8 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 		$db->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
 			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''), // this is really just for info purposes, easier to grep the db
-			'date_created' => date('Y-m-d H:m:s'),
-			'date_next_attempt' => date('Y-m-d H:m:s', time() + 120),
+			'date_created' => date('Y-m-d H:i:s'),
+			'date_next_attempt' => date('Y-m-d H:i:s', time() + 120),
 		));
 		$queue_id = $db->lastInsertId();
 
@@ -206,8 +206,8 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 		$db->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
 			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''),
-			'date_created' => date('Y-m-d H:m:s'),
-			'date_sent' => date('Y-m-d H:m:s'),
+			'date_created' => date('Y-m-d H:i:s'),
+			'date_sent' => date('Y-m-d H:i:s'),
 			'has_sent' => true,
 			'attempts' => 1
 		));

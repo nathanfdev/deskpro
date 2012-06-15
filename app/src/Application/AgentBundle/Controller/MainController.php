@@ -103,7 +103,7 @@ class MainController extends AbstractController
 			'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
 		);
 
-		$cutoff = date('Y-m-d H:m:s', time() - $this->container->getSetting('core.sessions_lifetime'));
+		$cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
 		$online_agent_ids = $this->db->fetchAllCol("
 			SELECT p.id
 			FROM sessions s

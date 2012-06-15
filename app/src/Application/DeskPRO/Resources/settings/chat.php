@@ -15,7 +15,7 @@
 	/**
 	 * Number of seconds until the agent times out and the chat is unassigned
 	 */
-	'core_chat.agent_timeout' => 15,
+	'core_chat.agent_timeout' => 20,
 
 	/**
 	 * Number of seconds until the user times out

@@ -225,6 +225,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 
 		var li = origLi.clone();
+		li.show();
 		this.onlineListEl.append(li);
 
 		// Offline one is hidden now

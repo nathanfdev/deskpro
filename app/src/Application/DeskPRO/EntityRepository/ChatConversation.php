@@ -289,7 +289,7 @@ class ChatConversation extends AbstractEntityRepository
 			$date_limit = new \DateTime($date_limit);
 		}
 		if ($date_limit) {
-			$date_limit = $date_limit->format('Y-m-d H:m:s');
+			$date_limit = $date_limit->format('Y-m-d H:i:s');
 		}
 
 		array_walk($participant_ids, function(&$item) {

@@ -20,15 +20,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.initial_visit') }}</td>
-		<td>{{ session.visitor.date_created|date('Y-m-d H:m:s') }}</td>
+		<td>{{ session.visitor.date_created|date('Y-m-d H:i:s') }}</td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.session_started') }}</td>
-		<td>{{ session.date_created|date('Y-m-d H:m:s') }}</td>
+		<td>{{ session.date_created|date('Y-m-d H:i:s') }}</td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.last_activity') }}</td>
-		<td>{{ session.visitor.date_last|date('Y-m-d H:m:s') }}</td>
+		<td>{{ session.visitor.date_last|date('Y-m-d H:i:s') }}</td>
 	</tr>
 	<tr class="white line-1">
 		<td>{{ phrase('agent.general.ip_address') }}</td>

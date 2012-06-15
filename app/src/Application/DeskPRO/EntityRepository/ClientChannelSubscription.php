@@ -48,7 +48,7 @@ class ClientChannelSubscription extends EntityRepository
 		}
 
 		$expire = new \DateTime('-10 minutes');
-		$expire = $expire->format('Y-m-d H:m:s');
+		$expire = $expire->format('Y-m-d H:i:s');
 
 		$subs = $this->getEntityManager()->createQuery("
 			SELECT s

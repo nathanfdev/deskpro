@@ -89,6 +89,6 @@ class Cache extends EntityRepository
 	 */
 	public function cleanExpired()
 	{
-		return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:m:s')));
+		return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
 	}
 }

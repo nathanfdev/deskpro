@@ -133,18 +133,27 @@ class Person extends AbstractEntityRepository
 	 */
 	public function getActiveAgents($ids_only = false)
 	{
-		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+		$cutoff = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
+
+		$or_id = '';
+		if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
+			$or_id = "OR s.person = :person";
+		}
 
 		$sessions_q = App::getOrm()->createQuery("
 			SELECT s,p
 			FROM DeskPRO:Session s
 			LEFT JOIN s.person p
-			WHERE p.is_agent = true AND s.date_last > ?1
+			WHERE (p.is_agent = true AND s.date_last > :cutoff) $or_id
 			GROUP BY p.id
 			ORDER BY s.id DESC
 		");
 
-		$sessions = $sessions_q->setParameter(1, $cutoff)->execute();
+		if ($or_id) {
+			$sessions_q->setParameter('person', App::getCurrentPerson());
+		}
+
+		$sessions = $sessions_q->setParameter('cutoff', $cutoff)->execute();
 
 
 		$online_agents = array();

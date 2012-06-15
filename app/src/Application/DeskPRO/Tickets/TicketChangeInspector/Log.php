@@ -88,7 +88,7 @@ class Log
 			WHERE l.ticket = ?1 AND l.action_type = ?2 AND l.date_created >= ?3
 		")->setParameter(1, $this->ticket)
 		  ->setParameter(2, 'changed_urgency')
-		  ->setParameter(3, $old_reply_time->format('Y-m-d H:m:s'))
+		  ->setParameter(3, $old_reply_time->format('Y-m-d H:i:s'))
 		  ->execute();
 
 		$mod = 0;

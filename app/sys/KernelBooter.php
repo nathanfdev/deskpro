@@ -382,7 +382,7 @@ class KernelBooter
 		$kernel->boot($mode);
 
 		try {
-			if ($kernel->isUpgradePending()) {
+			if ($mode == 'crom' && $kernel->isUpgradePending()) {
 				if (in_array('--verbose', $_SERVER['argv'])) {
 					echo "Upgrade pending\n";
 				}
