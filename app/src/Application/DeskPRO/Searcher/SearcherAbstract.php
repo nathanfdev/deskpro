@@ -39,6 +39,8 @@ use Application\DeskPRO\Entity\Person;
 
 use Application\DeskPRO\People\PersonContextInterface;
 
+use Orb\Log\Logger;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -78,6 +80,39 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 * @var array
 	 */
 	protected $order_by = array();
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+
+	/**
+	 * Get a logger instance
+	 */
+	public function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new Logger();
+
+			$search_name = strtolower(\Orb\Util\Util::getBaseClassname($this));
+			if (dp_get_config('enable_' . $search_name . '_log')) {
+				$wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/' . $search_name . '.log');
+				$this->logger->addWriter($wr);
+			}
+		}
+
+		return $this->logger;
+	}
+
+
+	/**
+	 * @param Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
 
 
 	/**

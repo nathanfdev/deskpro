@@ -86,17 +86,54 @@ class Logger
 	protected $_session_name = null;
 
 	/**
-	 * True to disable logger
+	 * True to disable logger.
+	 *
+	 * Defaults to disabled with default_disabled until a writer is added.
 	 *
 	 * @var bool
 	 */
-	public $disabled = false;
+	public $disabled = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $default_disabled = true;
 
 
 
 	public function __construct()
 	{
 		$this->_writer_chain = new Writer\WriterChain();
+	}
+
+
+	/**
+	 * Disable logger
+	 */
+	public function disable()
+	{
+		$this->disabled	= true;
+		$this->default_disabled = false;
+	}
+
+
+	/**
+	 * Enable logger
+	 */
+	public function enable()
+	{
+		$this->disabled = true;
+		$this->default_disabled = false;
+	}
+
+
+	/**
+	 * Is the logger enabled?
+	 * @return bool
+	 */
+	public function isEnabled()
+	{
+		return $this->disabled;
 	}
 
 
@@ -144,6 +181,13 @@ class Logger
 	 */
 	public function addWriter(\Orb\Log\Writer\AbstractWriter $writer)
 	{
+		// If its disabled because of default, we'll enable
+		// it because this is the first writer
+		if ($this->disabled && $this->default_disabled) {
+			$this->disabled = false;
+			$this->default_disabled = false;
+		}
+
 		$this->_writer_chain->addWriter($writer);
 	}
 

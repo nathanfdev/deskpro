@@ -271,9 +271,16 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function getMatches(array $pageinfo = null)
 	{
-		$db = App::getDb();
+		$sql = $this->getSql($pageinfo);
+		$this->getLogger()->logDebug("Search Query: " . $sql);
+		$time = microtime(true);
 
-		$ticket_ids = $db->fetchAllCol($this->getSql($pageinfo));
+		$db = App::getDb();
+		$ticket_ids = $db->fetchAllCol($sql);
+
+		$this->getLogger()->logDebug("-- Time: " . sprintf("%.5f", microtime(true) - $time));
+		$this->getLogger()->logDebug("-- Count: " . count($ticket_ids));
+		$this->getLogger()->logDebug("-- IDs: " . implode(', ', $ticket_ids));
 
 		return $ticket_ids;
 	}
@@ -403,8 +410,16 @@ class TicketSearch extends SearcherAbstract
 			$sql .= "LIMIT $limit";
 		}
 
+		$this->getLogger()->logDebug("Search Count Query: " . $sql);
+		$time = microtime(true);
+
 		$db = App::getDb();
-		return $db->fetchColumn($sql);
+		$result = $db->fetchColumn($sql);
+
+		$this->getLogger()->logDebug("-- Time: " . sprintf("%.5f", microtime(true) - $time));
+		$this->getLogger()->logDebug("-- Count: " . $result);
+
+		return $result;
 	}
 
 
