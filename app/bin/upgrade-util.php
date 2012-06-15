@@ -716,6 +716,9 @@ class Upgrade
 			$this->installFilesFromZip($new_source_zip, false);
 			if (!$is_quiet) $this->out("-> Done");
 			$write_status("installing_files_done");
+
+			// Remove downloaded zip
+			@unlink($new_source_zip);
 		} catch (\Exception $e) {
 			$write_status("error_installing_files", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
@@ -2143,6 +2146,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		}
 
 		$this->out("<info>DONE</info>");
+
+		// Remove downloaded zip
+		@unlink($this->dl_distro);
 
 		#------------------------------
 		# Backup database
