@@ -367,7 +367,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		if ($mode == 'run') {
-			// First (main) runner, make sure php binary is actually right
+			// First (main) runner, make sure php CLI is actually right
 			$php_path = dp_get_php_path(true);
 		} else {
 			// Other calls dont need to do the binary check

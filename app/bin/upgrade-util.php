@@ -495,7 +495,7 @@ class Upgrade
 
 		if (!$php_path || (!$skip_db_backup && !$mysql_dump_path)) {
 			$unknown_binary_paths = array();
-			if (!$php_path)        $this->outAndLog("Cannot find path to `php` binary");
+			if (!$php_path)        $this->outAndLog("Cannot find path to `php` CLI");
 
 			if (!$skip_db_backup) {
 				if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
@@ -805,7 +805,7 @@ class Upgrade
 	{
 		$php_path = $this->getPhpBinaryPath();
 		if (!$php_path) {
-			$this->outAndLog("Cannot find path to `php` binary");
+			$this->outAndLog("Cannot find path to the `php` CLI");
 		}
 
 		chdir(DP_ROOT);
@@ -1905,7 +1905,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 			$this->out("The upgrader could not locate the paths to the following utilitie(s):");
 			if (!$php_path) {
-				$this->upgrade->log("Cannot find path to `php` binary");
+				$this->upgrade->log("Cannot find path to the `php` CLI");
 				$this->out("\t- Could not find the path to php");
 			}
 			if (!$mysql_dump_path) {

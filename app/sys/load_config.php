@@ -311,7 +311,7 @@ function dp_get_php_path($test = false)
 
 
 /**
- * Was the path to the PHP binary guessed?
+ * Was the path to the PHP CLI guessed?
  *
  * @return bool
  */

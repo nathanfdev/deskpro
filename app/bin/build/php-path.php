@@ -1,7 +1,7 @@
 <?php
 
 /**
- * You can edit this line to set the path to the PHP CLI binary if you know it.
+ * You can edit this line to set the path to the PHP CLI if you know it.
  */
 $php_path = null;
 
@@ -43,13 +43,13 @@ if (!$php_path) {
 	if ($php_path) {
 		exec("$php_path -v", $out);
 		if (!isset($out[0]) || strpos($out[0], 'PHP 5.') === false) {
-			echo "Detected possible PHP at $php_path, but it seems invalid. Edit /appfiles/bin/build/php-path.php with the specific path to the PHP binary.\n";
+			echo "Detected possible PHP at $php_path, but it seems invalid. Edit /appfiles/bin/build/php-path.php with the specific path to the PHP CLI.\n";
 			exit(1);
 		}
 	}
 
 	if (!$php_path) {
-		echo "We could not detect where your PHP CLI binary is. Edit /appfiles/bin/build/php-path.php with the specific path to the PHP binary.\n";
+		echo "We could not detect where your PHP CLI is. Edit /appfiles/bin/build/php-path.php with the specific path to the PHP CLI.\n";
 		exit(1);
 	}
 }
