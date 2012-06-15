@@ -9,14 +9,16 @@
 <div class="alert-message block-message info" style="border: 2px solid #CADFE5; margin-bottom: 15px;">
 	<h3>Your Version</h3>
 	<p>
-		You are currently running: {{ current_version|date('Y-m-d.H') }}
+		You are using DeskPRO v4 build #{{ constant('DP_BUILD_NUM') }} (built on {{ constant('DP_BUILD_TIME')|date('Y-m-d') }}).
 	</p>
 	<br />
 
 	{% if version_info.build %}
 		<h3>Latest Version</h3>
 		<p>
-			The latest version is: {{ version_info.build|date('Y-m-d.H') }}
+			The latest build is
+				<span class="{% if version_info.build == constant('DP_BUILD_TIME') %}{% else %}label important{% endif %}">#{{ version_info.build_num }}</span>
+				(built on {{ version_info.build|date('Y-m-d') }}).
 		</p>
 		{% if version_info.count_behind %}
 			<p>You are <span class="label" style="text-shadow: none; color: #000;">{{ version_info.count_behind }} version{% if version_info.count_behind != 1 %}s{% endif %} behind</span>. You can upgrade using one of the options outlined below.</p>
