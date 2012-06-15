@@ -90,6 +90,14 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			return true;
 		};
 
+		$skip_seg = '';
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
+			$skip_seg .= ' --skip-backup-file';
+		}
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
+			$skip_seg .= ' --skip-backup-db ';
+		}
+
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
@@ -152,14 +160,6 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		#-------------------------
 		# Exec upgrade command
 		#-------------------------
-
-		$skip_seg = '';
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
-			$skip_seg .= ' --skip-backup-file';
-		}
-		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
-			$skip_seg .= ' --skip-backup-db ';
-		}
 
 		$cmd = sprintf(
 			"%s %s --auto --quiet --write-status-file %s",

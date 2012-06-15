@@ -151,12 +151,6 @@ class Upgrade
 	protected $latest_version = null;
 
 	/**
-	 * True when the log should be cleared
-	 * @var bool
-	 */
-	protected $should_reset_log = false;
-
-	/**
 	 * @var resource
 	 * @see log
 	 */
@@ -295,12 +289,16 @@ class Upgrade
 	 */
 	public function log($string)
 	{
+		static $has_opened = false;
+
+		if (!$has_opened) {
+			// Reset log
+			@file_put_contents($this->getLogDir() . '/upgrade.log', '');
+		}
+		$has_opened = true;
+
 		if (!$this->log_fh) {
-			$mode = 'a';
-			if ($this->should_reset_log) {
-				$mode = 'w';
-			}
-			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', $mode);
+			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', 'a');
 			if (!$this->log_fh) {
 				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
 			}
@@ -314,16 +312,6 @@ class Upgrade
 		$string = trim($string);
 		fwrite($this->log_fh, sprintf("[%s] %s\n", date('Y-m-d H:i:s'), $string));
 	}
-
-
-	/**
-	 * Marks the cron log for reset the next call to log()
-	 */
-	public function resetLog()
-	{
-		$this->should_reset_log = true;
-	}
-
 
 	/**
 	 * Log an exception
@@ -626,8 +614,6 @@ class Upgrade
 			$this->outAndLog("Failed basic checks");
 			exit(10);
 		}
-
-		$this->resetLog();
 
 		$write_status("basic_checks_done");
 
