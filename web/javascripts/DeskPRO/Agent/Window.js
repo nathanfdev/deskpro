@@ -962,7 +962,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 		var handler = null;
 		var sectionId = null;
-		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish')) {
+		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch')) {
 			sectionId = 'publish_section';
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			sectionId = 'tickets_section';
