@@ -50,7 +50,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 			{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
-			{% if viewtpl == 'custom-filter' %}
+			{% if not filter or not filter.sys_name %}
 				{% include 'AgentBundle:TicketSearch:filter-terms-bar.html.twig' %}
 			{% endif %}
 
