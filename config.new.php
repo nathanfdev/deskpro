@@ -33,6 +33,10 @@ define('DP_TECHNICAL_EMAIL', '');
 
 
 
+
+
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # The mySQL database settings are the only required
 # settings needed to install DeskPRO. You only need 
@@ -46,6 +50,34 @@ define('DP_TECHNICAL_EMAIL', '');
 $DP_CONFIG = array('debug' => array());
 
 # ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
+
+######################################################
+# Location of PHP Command Line Interface CLI         #
+#                                                    #
+# You need to specify this path if the system        #
+# cannot detect it automatically.                    #
+#                                                    #
+# On Linux PHP is often located at:                  #
+#    /usr/bin/php or /usr/local/bin/php              #
+#                                                    #
+# On Windows PHP maybe found at                      #
+#	 C:\Program Files\php\php-win.exe                #
+#                                                    #
+# If you are using windows please ensure you use the #
+# win-php.exe version of PHP and not the php.exe     #
+# version. This prevents a command line window being #
+# generated everytime PHP is run.                    #
+#                                                    #
+# Please note that it must be the CLI version of PHP #
+# and not, for example, a cgi-fcgi binary. You can   #
+# determine the PHP type by typing /path/to/php -v   #
+# on the command line and looking for the string     #
+# such as the one below. The cli part is required    #
+#                                                    #
+# PHP 5.3.10 (cli) (built: Mar 27 2012 1239:38)      #
+######################################################
+
+$DP_CONFIG['php_path'] = '';
 
 ######################################################
 # Location of mysqldump                              #
@@ -82,26 +114,6 @@ $DP_CONFIG['mysqldump_path'] = '';
 ######################################################
 
 $DP_CONFIG['mysql_path'] = '';
-
-######################################################
-# Location of PHP Binary                             #
-#                                                    #
-# You need to specify this path if the system        #
-# cannot detect it automatically.                    #
-#                                                    #
-# On Linux PHP is often located at:                  #
-#    /usr/bin/php or /usr/local/bin/php              #
-#                                                    #
-# On Windows PHP maybe found at                      #
-#	 C:\Program Files\php\php-win.exe                #
-#                                                    #
-# If you are using windows please ensure you use the #
-# win-php.exe version of PHP and not the php.exe     #
-# version. This prevents a command line window being #
-# generated everytime PHP is run.                    #
-######################################################
-
-$DP_CONFIG['php_path'] = '';
 
 ######################################################
 # Location of the Data directory                     #
