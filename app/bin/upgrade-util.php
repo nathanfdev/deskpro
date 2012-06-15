@@ -475,16 +475,6 @@ class Upgrade
 		$write_status("start");
 		@chmod(DP_WEB_ROOT . '/auto-update-status.txt', 0777);
 
-		if (!$this->isInstanceOutdated()) {
-			$write_status("done");
-			if (!$is_quiet) {
-				$this->out("You are all up to date.");
-			}
-			exit(0);
-		}
-
-		$this->resetLog();
-
 		#----------------------------------------
 		# Requirement Checks
 		#----------------------------------------
@@ -637,6 +627,8 @@ class Upgrade
 			exit(10);
 		}
 
+		$this->resetLog();
+
 		$write_status("basic_checks_done");
 
 		#----------------------------------------
@@ -649,6 +641,18 @@ class Upgrade
 			$write_status("error_server_comm", $e->getMessage());
 			$this->outAndLog("Error communicating with server: " . $e->getMessage());
 			exit(13);
+		}
+
+		#----------------------------------------
+		# Check if we need an upgrade at all
+		#----------------------------------------
+
+		if (!$this->isInstanceOutdated()) {
+			$write_status("done");
+			if (!$is_quiet) {
+				$this->out("You are all up to date.");
+			}
+			exit(0);
 		}
 
 		#----------------------------------------
