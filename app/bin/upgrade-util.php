@@ -78,6 +78,7 @@ require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/Outpu
 require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
 require_once DP_ROOT.'/src/Orb/Util/Numbers.php';
 require_once DP_ROOT.'/src/Orb/Util/Env.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
 
 dp_load_config();
 
@@ -564,6 +565,15 @@ class Upgrade
 		} catch (\Exception $e) {
 			$write_status('error_zip_ext', \Orb\Util\Env::getPhpIniPath());
 			$this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
+			$checks_fail = true;
+		}
+
+		$req_strategy = \DeskPRO_LowUtil_RemoteRequester::detectStrategy();
+		if ($req_strategy) {
+			$write_status('remoterequester_okay', $req_strategy);
+		} else {
+			$write_status('error_remoterequester', \Orb\Util\Env::getPhpIniPath());
+			$this->outAndLog("CURL not enabled and allow_url_fopen disabled, there is no way to download files");
 			$checks_fail = true;
 		}
 
@@ -1320,7 +1330,11 @@ class Upgrade
 		$this->log("downloadLatest: Downloading from " . $version_info['download']);
 		$this->log("downloadLatest: Saving to " . $save_path);
 
-		file_put_contents($save_path, file_get_contents($version_info['download']));
+		try {
+			\DeskPRO_LowUtil_RemoteRequester::create()->download($version_info['download'], $save_path);
+		} catch (\Exception $e) {
+			throw new DownloadException("Download failed: " . $e->getMessage());
+		}
 
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
@@ -1592,17 +1606,12 @@ class Upgrade
 	 */
 	public function fetchServiceResult($url, array $post_data = array())
 	{
-		$context = stream_context_create(array(
-			'http' => array(
-				'timeout'  => 15,
-				'method'   => 'POST',
-				'header'   => 'Content-type: application/x-www-form-urlencoded',
-				'content'  => http_build_query($post_data, null, '&')
-			)
-		));
-
 		$this->log('Calling: ' . $url);
-		$result = @file_get_contents($url, null, $context);
+		try {
+			$result = \DeskPRO_LowUtil_RemoteRequester::create()->request($url, $post_data, 'POST');
+		} catch (\Exception $e) {
+			throw new ServiceCallException("Failed contacting server: " . $e->getMessage(), ServiceCallException::NO_RESPONSE);
+		}
 		$this->log('-> ' . $result);
 
 		if (!$result) {
