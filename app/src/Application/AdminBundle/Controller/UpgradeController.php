@@ -93,7 +93,9 @@ class UpgradeController extends AbstractController
 			return $this->redirectRoute('admin_upgrade');
 		}
 
-		return $this->render('AdminBundle:Upgrade:watch.html.twig');
+		return $this->render('AdminBundle:Upgrade:watch.html.twig', array(
+			'backup_path' => dp_get_backup_dir()
+		));
 	}
 
 	public function stopAction()

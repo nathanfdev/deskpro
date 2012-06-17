@@ -24,9 +24,13 @@
 			<li class="step-start"><span>Started</span></li>
 			<li class="step-checks"><span>Basic Checks</span></li>
 			<li class="step-download"><span>Download latest version</span></li>
-			<li class="step-backup-files"><span>Backing up files (<em class="step-backup-files-copy">Copying</em>, <em class="step-backup-files-zip">Zipping</em>, <em class="step-backup-files-cleanup">Cleanup</em>)</span></li>
+			{% if app.getSetting('core.upgrade_backup_files') %}
+				<li class="step-backup-files"><span>Backing up files to (<em class="step-backup-files-copy">Copying</em>, <em class="step-backup-files-zip">Zipping</em>, <em class="step-backup-files-cleanup">Cleanup</em>)<i id="backup_path" style="display: none">. Backed up to: {{backup_path}}</i></span></li>
+			{% endif %}
 			<li class="step-disable-hd"><span>Disabling helpdesk</span></li>
-			<li class="step-backup-db"><span>Backing up database</span></li>
+			{% if app.getSetting('core.upgrade_backup_db') %}
+				<li class="step-backup-db"><span>Backing up database<i id="backup_path2" style="display: none">. Backed up to: {{backup_path}}</i></span></li>
+			{% endif %}
 			<li class="step-install-files"><span>Installing files</span></li>
 			<li class="step-install-db"><span>Installing database updates</span></li>
 			<li class="step-done"><span>Done</span></li>
