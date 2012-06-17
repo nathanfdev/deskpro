@@ -1941,6 +1941,41 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 
 		#------------------------------
+		# Check req
+		#------------------------------
+
+		$continue_anyway = false;
+		$inipath = \Orb\Util\Env::getPhpIniPath();
+
+		$req_strategy = \DeskPRO_LowUtil_RemoteRequester::detectStrategy();
+		if (!$req_strategy) {
+			$this->out(
+				"<error>Your server is unable to make outbound connection to the DeskPRO servers to check for version status or to download updates.\n"
+				."The upgrade utility requires one of the two: "
+				."    - allow_url_fopen enabled in php.ini"
+				."    - Or the cURL extension enabled"
+				.($inipath ? "We have detected the path to php.ini you will need to edit: $inipath\n" : '')
+				."\n"
+				."If you require assistance, you can contact us at support@deskpro.com</error>"
+			);
+			$this->out();
+
+			$this->out(
+				"<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
+				." check the version of your database, you can still run this tools.</prompt>"
+			);
+			$this->out("Continue? [y/N]> ", false);
+			$ret = $this->dialogHelper->askConfirmation($this, '', false);
+
+			if (!$ret) {
+				$this->out("\n");
+				exit(0);
+			}
+
+			$continue_anyway = true;
+		}
+
+		#------------------------------
 		# Menu
 		#------------------------------
 
@@ -1980,7 +2015,10 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# We don't know about the version
 		#-----
 
-		} else {
+		// $continue_anyway is set when we didnt have a requester strategy,
+		// so they might've already stated they want to continue anyway
+
+		} elseif (!$continue_anyway) {
 
 			$this->out(
 				"<error>We could not fetch version information from our web server. There are a number of possible causes:\n"
