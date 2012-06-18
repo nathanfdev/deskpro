@@ -7,12 +7,16 @@
 			alt=""
 			width="40"
 			height="40"
-			{% if not message.person.is_agent %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"{% endif %}
+			{% if message.person.is_agent %}class="agent-link" data-agent-id="{{ message.person.id }}"
+			{% else %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
+			{% endif %}
 		/></div>
 	<div class="content">
 		<header>
 			<span class="message-counter message-counter-{{ message.id }} with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
-			<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
+			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.name}}</h4>
+			{% else %}<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
+			{% endif %}
 			<time class="full-time" datetime="{{message.date_created|date('c')}}">{{message.date_created|date('fulltime')}}</time>
 			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>
 		</header>
