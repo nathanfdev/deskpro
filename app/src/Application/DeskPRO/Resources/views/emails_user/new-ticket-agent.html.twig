@@ -8,6 +8,7 @@
 	{% if messages|length > 1 %}
 		<br />
 		{{ layout.render_ticket_messages(messages, '', { skip_top: 1}) }}
+
 	{% endif %}
 {% endblock %}
 {% block footer_content %}

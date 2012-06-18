@@ -221,12 +221,6 @@ class AgentNotificationAction extends AbstractAction
 
 		$tr = App::getTranslator();
 
-		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
-			'limit' => 25,
-			'order' => 'DESC',
-			'with_notes' => true
-		));
-
 		foreach ($this->notify_agents as $agent_id) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
@@ -250,12 +244,32 @@ class AgentNotificationAction extends AbstractAction
 			$vars['ticket'] = $ticket;
 			$vars['person'] = $agent;
 			$vars['tac'] = $tac;
-			$vars['messages'] = $messages;
+
+			$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $agent);
+			$vars['ticketdisplay'] = $ticketdisplay;
+			$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
+
+			if ($is_new_ticket || $is_new_agent_reply || $is_new_user_reply) {
+				$new_message = \Orb\Util\Arrays::getFirstItem($vars['messages']);
+
+				$attach_attachments = array();
+				if ($new_message && $ticketdisplay->getMessageAttachments($new_message)) {
+					$max = App::getSetting('core.sendemail_attach_maxsize');
+					$size = 0;
+					foreach ($ticketdisplay->getMessageAttachments($new_message) as $attach) {
+						if ($size + $attach->blob->filesize > $max) {
+							break;
+						}
+
+						$message->attachBlob($attach->blob);
+					}
+				}
+			}
 
 			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $this->getFromAddress($ticket));
 

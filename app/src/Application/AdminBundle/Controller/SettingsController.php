@@ -70,6 +70,8 @@ class SettingsController extends AbstractController
 				'core.attach_user_must_exts'   => $_POST['settings']['core.attach_user_must_exts'],
 				'core.attach_user_not_exts'    => $_POST['settings']['core.attach_user_not_exts'],
 
+				'core.sendemail_attach_maxsize' => (int)$_POST['settings']['core.sendemail_attach_maxsize'],
+
 				'core.date_fulltime'    => $_POST['settings']['core.date_fulltime'],
 				'core.date_full'    => $_POST['settings']['core.date_full'],
 				'core.date_day'    => $_POST['settings']['core.date_day'],

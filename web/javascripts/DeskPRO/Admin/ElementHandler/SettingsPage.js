@@ -8,12 +8,17 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 
 		var form = $('#settings_form');
 
-		Array.each(['user', 'agent'], function(x) {
-			if ($('#'+x+'_attach_limit_list_whitelist').val().length) {
-				var exist = $('#'+x+'_attach_limit_list_whitelist').val().split(',');
+		Array.each(['user', 'agent', 'sendemail'], function(x) {
+			if ($('#'+x+'_attach_limit_list_whitelist')[0]) {
+				if ($('#'+x+'_attach_limit_list_whitelist').val().length) {
+					var exist = $('#'+x+'_attach_limit_list_whitelist').val().split(',');
+				} else {
+					var exist = $('#'+x+'_attach_limit_list_blacklist').val().split(',');
+				}
 			} else {
-				var exist = $('#'+x+'_attach_limit_list_blacklist').val().split(',');
+				var exist = null;
 			}
+
 			if (!exist) {
 				exist = [];
 			}
@@ -40,13 +45,17 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 					maxSizeEl.hide();
 				}
 
-				var mb = parseFloat(val / 1000000).toFixed(2);
+				if (val) {
+					var mb = parseFloat(val / 1000000).toFixed(2);
+				} else {
+					var mb = 0;
+				}
 
 				$('#'+x+'_attach_maxsize_label').text(mb);
 				$('#'+x+'_attach_maxsize').val(val);
 			}
 			$('#'+x+'_attach_maxsize_slider').slider({
-				min: 100000,   // 0.1 mb
+				min: 0,   // 0.1 mb
 				max: 50000000, // 100 mb
 				step: 100000,
 				value: $('#'+x+'_attach_maxsize').val(),

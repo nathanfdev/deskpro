@@ -164,6 +164,23 @@ class TicketDisplay implements PersonContextInterface
 		return $this->message_to_attach;
 	}
 
+	public function getMessageAttachments($message)
+	{
+		$id = $message->getId();
+		$messagetoattach = $this->getMessagesToAttachments();
+
+		if (!isset($messagetoattach[$id])) {
+			return null;
+		}
+
+		$ret = array();
+		foreach ($messagetoattach[$id] as $aid) {
+			$ret[$aid] = $this->attachments[$aid];
+		}
+
+		return $ret;
+	}
+
 	public function getFeedbackRatings()
 	{
 		if ($this->user_ratings !== null) return $this->user_ratings;

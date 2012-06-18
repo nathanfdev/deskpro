@@ -11,7 +11,7 @@
 	{{ layout.section('', content) }}
 
 	<br />
-	{{ layout.render_ticket_messages(messages, '', { skip_top: 0}) }}
+	{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay }) }}
 {% endblock %}
 {% block footer_content %}
 	{% set content %}

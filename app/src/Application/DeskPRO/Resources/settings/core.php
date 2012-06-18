@@ -319,4 +319,9 @@
 	 * Show suggestions newticket
 	 */
 	'core.show_ticket_suggestions' => true,
+
+	/**
+	 * Max size of attachments to send in email notifications
+	 */
+	'core.sendemail_attach_maxsize' => 0,
 );

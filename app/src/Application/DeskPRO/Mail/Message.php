@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Mail;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\App;
 
 class Message extends \Orb\Mail\Message
 {
@@ -53,6 +55,11 @@ class Message extends \Orb\Mail\Message
 	 * @var array
 	 */
 	protected $template_vars;
+
+	/**
+	 * @var array
+	 */
+	protected $attach_blobs = array();
 
 	/**
 	 * Is the message being re-sent?
@@ -96,6 +103,27 @@ class Message extends \Orb\Mail\Message
 		$this->template        = null;
 		$this->template_vars   = null;
 		$this->template_engine = null;
+
+		// Attach blobs
+		foreach ($this->attach_blobs as $blob) {
+			$this->attach(\Swift_Attachment::newInstance(
+				App::getSystemService('filestorage')->getFileDescriptor($blob->getId())->get(),
+				$blob->filename,
+				$blob->content_type
+			));
+		}
+		$this->attach_blobs = null;
+	}
+
+
+	/**
+	 * Attach a blob to the message
+	 *
+	 * @param Blob $blob
+	 */
+	public function attachBlob(Blob $blob)
+	{
+		$this->attach_blobs[] = $blob;
 	}
 
 

@@ -110,16 +110,26 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['participants'] = $parts;
 		$vars['access_code'] = $ticket->getAccessCode();
 
-		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
-			'limit' => 25,
-			'order' => 'DESC',
-			'with_notes' => false
-		));
-		$vars['messages'] = $messages;
-
 		$from_address = $this->getFromAddress($ticket);
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids) {
+		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
+		$vars['ticketdisplay'] = $ticketdisplay;
+		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
+
+		$attach_attachments = array();
+		if ($this->via_message && $ticketdisplay->getMessageAttachments($this->via_message)) {
+			$max = App::getSetting('core.sendemail_attach_maxsize');
+			$size = 0;
+			foreach ($ticketdisplay->getMessageAttachments($this->via_message) as $attach) {
+				if ($size + $attach->blob->filesize > $max) {
+					break;
+				}
+
+				$attach_attachments[] = $attach;
+			}
+		}
+
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids, $attach_attachments) {
 
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
@@ -134,6 +144,12 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			}
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+
+			if ($attach_attachments) {
+				foreach ($attach_attachments as $attach) {
+					$message->attachBlob($attach->blob);
+				}
+			}
 
 			App::getMailer()->send($message);
 		});
