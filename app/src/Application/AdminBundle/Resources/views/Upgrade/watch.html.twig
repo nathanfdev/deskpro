@@ -14,6 +14,7 @@
 	data-start-time="{{ app.getSetting('core.upgrade_time') }}"
 	data-element-handler="DeskPRO.Admin.ElementHandler.UpgradeWatch"
 	data-check-started-url="{{ path('admin_upgrade_watch_checkstarted') }}"
+	data-clear-cache-url="{{ app.request.getBaseUrl() }}?_sys=apcclear&_={{ static_security_token_secret(config_hash ~ 'apcclear', 86400) }}&nocache={{ el_uid() }}"
 >
 	<div id="waiting">
 		Upgrade is waiting to start

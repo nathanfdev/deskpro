@@ -65,6 +65,11 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/apc.php';
 		break;
 
+	case 'apcclear':
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/apcclear.php';
+		break;
+
 	case 'checkurl':
 		require DP_ROOT . '/sys/scripts/checkurl.php';
 		break;

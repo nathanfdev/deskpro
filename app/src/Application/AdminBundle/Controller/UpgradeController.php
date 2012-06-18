@@ -93,8 +93,11 @@ class UpgradeController extends AbstractController
 			return $this->redirectRoute('admin_upgrade');
 		}
 
+		$config_hash = md5_file(DP_CONFIG_FILE);
+
 		return $this->render('AdminBundle:Upgrade:watch.html.twig', array(
-			'backup_path' => dp_get_backup_dir()
+			'backup_path' => dp_get_backup_dir(),
+			'config_hash' => $config_hash,
 		));
 	}
 

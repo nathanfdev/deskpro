@@ -187,6 +187,11 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 
 		if (code == 'done') {
 			$('#done').show();
+
+			// ping apc cache clear
+			var img = $('<img/>');
+			img.attr('width', 1).attr('height', 1).attr('src', this.el.data('clear-cache-url'));
+			img.appendTo('body');
 		}
 	},
 

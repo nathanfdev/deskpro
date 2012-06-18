@@ -13,6 +13,19 @@ require DP_ROOT . '/sys/load_config.php';
 dp_load_config();
 
 #------------------------------
+# See if we need to clear apc
+#------------------------------
+
+if (file_exists(dp_get_tmp_dir() . '/apc-clear.trigger')) {
+	error_log("cleared");
+	if (function_exists('apc_clear_cache')) {
+		apc_clear_cache();
+		apc_clear_cache('user');
+	}
+	@unlink(dp_get_tmp_dir() . '/apc-clear.trigger');
+}
+
+#------------------------------
 # Attempt to set min memory limit to 128 MB
 #------------------------------
 

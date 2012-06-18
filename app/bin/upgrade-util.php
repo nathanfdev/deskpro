@@ -782,6 +782,8 @@ class Upgrade
 
 		$this->sendLog();
 
+		$this->clearApc();
+
 		exit(0);
 	}
 
@@ -1023,6 +1025,19 @@ class Upgrade
 	public function getPhpBinaryPath()
 	{
 		return dp_get_php_path();
+	}
+
+	public function clearApc()
+	{
+		if (function_exists('apc_clear_cache')) {
+			apc_clear_cache();
+			apc_clear_cache('user');
+
+			// We need to trigger this on the web too, we do that
+			// by touching this trigger file that the web kernel uses
+			@touch(dp_get_tmp_dir() . '/apc-clear.trigger');
+			@chmod(dp_get_tmp_dir() . '/apc-clear.trigger', 0777);
+		}
 	}
 
 	####################################################################################################################
@@ -2235,6 +2250,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 		$this->out('');
 
+		$this->upgrade->clearApc();
+
 		$this->upgrade->sendLog();
 	}
 
@@ -2351,6 +2368,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
 		$this->out();
 		$this->out('');
+
+		$this->upgrade->clearApc();
 
 		$this->upgrade->sendLog();
 	}
