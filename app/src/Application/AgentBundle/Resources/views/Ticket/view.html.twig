@@ -110,25 +110,28 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 <header class="page-header">
-	<div class="person-picture-box">
-		<img src="{{ ticket.person.getPictureUrl(60) }}" />
-	</div>
-	<div class="titlewrap">
-		<h4 class="id-number">#{{ ticket.id }}</h4>
-		<h1>{{ ticket.subject }}</h1>
-		<div class="labels-line">
-			{% if ticket_perms.modify_labels or ticket.labels|length %}
-				<input
-					type="hidden"
-					id="{{baseId}}_labels_input"
-					class="dpe_select dpe_select_noborder"
-					data-select-width="auto"
-					data-placeholder="Add a label"
-					value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
-				/>
-			{% endif %}
+	<table cellspacing="0" cellpadding="0"><tr><td width="60">
+		<div class="person-picture-box">
+			<img src="{{ ticket.person.getPictureUrl(60) }}" />
 		</div>
-	</div>
+	</td><td>
+		<div class="titlewrap">
+			<h4 class="id-number">#{{ ticket.id }}</h4>
+			<h1>{{ ticket.subject }}</h1>
+			<div class="labels-line">
+				{% if ticket_perms.modify_labels or ticket.labels|length %}
+					<input
+						type="hidden"
+						id="{{baseId}}_labels_input"
+						class="dpe_select dpe_select_noborder"
+						data-select-width="auto"
+						data-placeholder="Add a label"
+						value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+					/>
+				{% endif %}
+			</div>
+		</div>
+	</td></tr></table>
 
 	<br class="clear" />
 	<div class="meta-line">
