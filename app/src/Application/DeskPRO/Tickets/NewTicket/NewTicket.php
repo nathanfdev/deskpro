@@ -206,6 +206,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket['subject'] = $this->ticket->subject;
 			$ticket['validating'] = $validating;
 			$ticket['language'] = App::getSession()->getLanguage();
+			$ticket['notify_email'] = $this->ticket->notify_email;
 
 			if ($email_validating) {
 				$ticket->person_email_validating = $email_validating;

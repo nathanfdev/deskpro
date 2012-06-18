@@ -43,6 +43,7 @@ class TicketProps
 {
 	public $subject = '';
 	public $message = '';
+	public $notify_email = '';
 
 	/**
 	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile

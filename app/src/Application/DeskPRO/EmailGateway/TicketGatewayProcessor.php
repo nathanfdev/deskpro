@@ -503,16 +503,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");
 		$newticket->ticket->department_id = $dep_id;
 
+		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
+			$this->logMessage('[TicketGatewayProcessor] Setting ticket email: ' . $this->gateway_address->match_pattern);
+			$newticket->ticket->notify_email = $this->gateway_address->match_pattern;
+		} else {
+			$this->logMessage('[TicketGatewayProcessor] Could not find ticket email!');
+		}
+
 		App::getOrm()->beginTransaction();
 
 		$ticket = $newticket->save();
 
 		$ticket->email_gateway = $this->gateway;
 		$ticket->email_gateway_address = $this->gateway_address;
-
-		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
-			$ticket->notify_email = $this->gateway_address->match_pattern;
-		}
 
 		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 
