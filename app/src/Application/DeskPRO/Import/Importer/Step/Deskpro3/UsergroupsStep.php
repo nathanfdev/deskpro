@@ -65,19 +65,40 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
 		$this->perms = $scanner->getNames();
 
-		$this->ticket_cats = $this->getOldDb()->fetchAll("SELECT * FROM ticket_cat ORDER BY displayorder ASC");
+		$this->ticket_cats = $this->getOldDb()->fetchAllKeyed("SELECT * FROM ticket_cat ORDER BY displayorder ASC");
 		$this->ticket_cats = \Orb\Util\Arrays::intoHierarchy($this->ticket_cats, 0, 'parent');
 
-		$this->faq_cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats ORDER BY displayorder ASC");
+		$this->faq_cats = $this->getOldDb()->fetchAllKeyed("SELECT * FROM faq_cats ORDER BY displayorder ASC");
 		$this->faq_cats = \Orb\Util\Arrays::intoHierarchy($this->faq_cats, 0, 'parent');
 
-		$this->files_cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY displayorder ASC");
+		$this->files_cats = $this->getOldDb()->fetchAllKeyed("SELECT * FROM files_cats ORDER BY displayorder ASC");
 
 		$this->getDb()->beginTransaction();
 
 		try {
 			foreach ($usergroups as $group_info) {
 				$this->processUsergroup($group_info);
+			}
+
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
+		}
+
+		// Clean up
+		$this->getDb()->beginTransaction();
+		try {
+
+			// Parents never have permissions of their own, so we should
+			// delete any that we might've inserted with processing
+
+			$parent_ids = $this->getDb()->fetchAllCol("SELECT DISTINCT(parent_id) FROM departments WHERE parent_id IS NOT NULL");
+			if ($parent_ids) {
+				$this->getDb()->executeUpdate("
+					DELETE FROM department_permissions
+					WHERE department_id IN (" . implode(',', $parent_ids) . ")
+				");
 			}
 
 			$this->getDb()->commit();
@@ -296,7 +317,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 	protected function _insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $ug_id)
 	{
 		foreach ($insert_perms as $k => $v) {
-			$this->getDb()->insert('permissions', array(
+			$this->getDb()->replace('permissions', array(
 				'usergroup_id' => $ug_id,
 				'name' => $k,
 				'value' => 1
@@ -306,7 +327,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$insert_depperms = array_unique($insert_depperms);
 		foreach ($insert_depperms as $v) {
 			if (!$v) continue;
-			$this->getDb()->insert('department_permissions', array(
+			$this->getDb()->replace('department_permissions', array(
 				'usergroup_id' => $ug_id,
 				'department_id' => $v,
 				'app' => 'tickets'
@@ -316,7 +337,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$insert_faqperms = array_unique($insert_faqperms);
 		foreach ($insert_faqperms as $v) {
 			if (!$v) continue;
-			$this->getDb()->insert('article_category2usergroup', array(
+			$this->getDb()->replace('article_category2usergroup', array(
 				'usergroup_id' => $ug_id,
 				'category_id' => $v,
 			));
@@ -325,7 +346,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$insert_filesperms = array_unique($insert_filesperms);
 		foreach ($insert_filesperms as $v) {
 			if (!$v) continue;
-			$this->getDb()->insert('download_category2usergroup', array(
+			$this->getDb()->replace('download_category2usergroup', array(
 				'usergroup_id' => $ug_id,
 				'category_id' => $v,
 			));
