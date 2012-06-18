@@ -168,7 +168,7 @@ class TemplatesController extends AbstractController
 		$name = $this->in->getString('name');
 		$this->db->delete('templates', array('name' => $name));
 
-		if ($name == 'UserBundle:Css:main.css.twig') {
+		if ($name == 'UserBundle:Css:main.css.twig' || $name == 'UserBundle:Css:custom.css.twig') {
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 
@@ -225,7 +225,7 @@ class TemplatesController extends AbstractController
 			throw $e;
 		}
 
-		if ($name == 'UserBundle:Css:main.css.twig') {
+		if ($name == 'UserBundle:Css:main.css.twig' || $name == 'UserBundle:Css:custom.css.twig') {
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 

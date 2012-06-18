@@ -1,3 +1,11 @@
+{##
+ # This template is used to define the user interface CSS.
+ #
+ # It is recommended to avoid editing this template as it is updated regularly between new releases.
+ # Instead, you can use the portal editor in the admin interface to make quick changes, or you can edit
+ # the "custom.css" template to define custom CSS that will be appended to this file.
+ ##}
+
 /*
  * DeskPRO http://www.deskpro.com/
  * CSS generated {{ 'now'|date('Y-m-d H:i:s') }}
@@ -3868,3 +3876,5 @@ dp .dp-labels-search td {
 #dp .dp-overlay .dp-comments-placeholder:hover {
 	border: 1px solid #D9DBDB;
 }
+
+{% include 'UserBundle:Css:custom.css.twig' %}

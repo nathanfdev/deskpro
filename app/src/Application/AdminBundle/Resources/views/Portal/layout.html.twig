@@ -11,7 +11,7 @@
 				<li class="{% if this_page == 'website_widgets' %}on{% endif %}"><a href="{{ path('admin_portal_widgets') }}">{{ phrase('admin.portal.website_widgets') }}</a></li>
 				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
-				<li><a href="{{ path('admin_templates_user', {open: 'UserBundle:Css:main.css.twig'}) }}">{{ phrase('admin.general.edit_css') }}</a></li>
+				<li><a href="{{ path('admin_templates_user', {open: 'UserBundle:Css:custom.css.twig'}) }}">Edit Custom CSS</a></li>
 			</ul>
 		</article>
 
