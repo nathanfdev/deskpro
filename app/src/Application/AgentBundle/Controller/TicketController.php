@@ -148,11 +148,11 @@ class TicketController extends AbstractController
 		$user_parts = array();
 
 		foreach ($participants as $p) {
-			$participant_ids[] = $p->person->id;
+			$participant_ids[$p->person->getId()] = $p->person->id;
 			if ($p->person->is_agent) {
-				$agent_parts[] = $p;
+				$agent_parts[$p->person->getId()] = $p;
 			} else {
-				$user_parts[] = $p;
+				$user_parts[$p->person->getId()] = $p;
 			}
 		}
 
