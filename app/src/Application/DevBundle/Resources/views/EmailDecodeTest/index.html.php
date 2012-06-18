@@ -30,8 +30,10 @@
 		<td colspan="2">Saved Sources (<?php echo $email_sources_dir ?>)</td>
 	</tr>
 	<?php foreach ($email_sources as $filename => $filepath): ?>
-		<td><?php echo $filename ?></td>
-		<td width="50"><button type="submit" name="source_from" value="<?php echo $filepath ?>">Test</button></td>
+		<tr>
+			<td><?php echo $filename ?></td>
+			<td width="50"><button type="submit" name="source_from" value="<?php echo $filepath ?>">Test</button></td>
+		</tr>
 	<?php endforeach ?>
 </table>
 

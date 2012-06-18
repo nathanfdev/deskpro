@@ -86,8 +86,10 @@ class HtmlPurifier implements CleanerPlugin
 		$value = Strings::trimHtml($value);
 
 		if ($type == 'html_email') {
-			for ($x = 0; $x < 3; $x++) {
+			for ($x = 0; $x < 10; $x++) {
 				$value = preg_replace('#<span[^>]*>(\s|&nbsp;)*</span>#u', '', $value);
+				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
+				$value = preg_replace('#<div[^>]*>(\s|&nbsp;)*</div>#u', '', $value);
 				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;)*</p>\s*#u', '', $value);
 				$value = preg_replace('#\s*<p:o[^>]*>(\s|&nbsp;)*</p:o>\s*#u', '', $value);
 			}
@@ -97,6 +99,8 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('<__dp_old_p__><__dp_old_p__>', '<br /><br />', $value);
 			$value = str_replace('<__dp_old_p__>', '<br /><br />', $value);
 		}
+
+		$value = Strings::trimHtml($value);
 
 		return $value;
 	}
@@ -132,34 +136,7 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);
-				$config->set('CSS.AllowedFonts', array(
-					'Arial',
-					'Comic Sans MS',
-					'Courier',
-					'Courier New',
-					'Geneva',
-					'Georgia',
-					'Helvetica',
-					'Helvetica Neue',
-					'Impact',
-					'Lucida Grande',
-					'Marker Felt',
-					'Microsoft Sans Serif',
-					'<onaco',
-					'monospace',
-					'monospaced',
-					'Palatino',
-					'Papyrus',
-					'sans-serif',
-					'serif',
-					'Tahoma',
-					'Times',
-					'Times New Roman',
-					'Trebuchet MS',
-					'Verdana',
-					'Wingdings',
-				));
-				$config->set('CSS.AllowedProperties', array('font-family', 'font-weight', 'font-style', 'font-size', 'color'));
+				$config->set('CSS.AllowedProperties', array('font-weight', 'font-style'));
 				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
 				$config->set('HTML.TidyLevel', 'medium');
 				break;

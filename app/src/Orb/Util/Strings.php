@@ -1074,6 +1074,14 @@ class Strings
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
+
+			// Try to unwrap useless divs
+			$m1 = $m2 = null;
+			if (preg_match('#^<div\s*>#m', $string, $m1) && preg_match('#</div>$#', $string, $m2)) {
+				$string = substr($string, strlen($m1[0]), -strlen($m2[0]));
+				$string = trim($string);
+			}
+
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#imu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#imu', '', $string);
 

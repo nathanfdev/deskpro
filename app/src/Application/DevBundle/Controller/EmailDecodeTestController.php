@@ -89,13 +89,21 @@ class EmailDecodeTestController extends \Application\DeskPRO\HttpKernel\Controll
 			$body_is_html = false;
 		}
 
+		$body_clean = $body;
+		if ($body_is_html) {
+			$body_clean = $this->container->getIn()->getCleaner()->clean($body, 'html_email');
+		}
+
 		$cutter_type = $_REQUEST['cutter_type'];
 		$cutter_data = null;
 
 		if ($cutter_type) {
 			$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
 			if ($cutter_type == 'normal') {
-				$cutter_data['cut_quote_block'] = $generic_cutter->cutQuoteBlock($body, true);
+				$cutter_data['cut_quote_block'] = $generic_cutter->cutQuoteBlock($body_clean, $body_is_html);
+				if ($body_is_html) {
+					$cutter_data['cut_quote_block'] = $this->container->getIn()->getCleaner()->clean($cutter_data['cut_quote_block'], 'html_email');
+				}
 			} else {
 				$body = $reader->getBodyText()->getBodyUtf8();
 				$body_is_html = false;
@@ -104,7 +112,7 @@ class EmailDecodeTestController extends \Application\DeskPRO\HttpKernel\Controll
 					$body_is_html = true;
 				}
 
-				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($body, false, $generic_cutter);
+				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($body_clean, false, $generic_cutter);
 
 				$cutter_data = $cutter->getData();
 			}
