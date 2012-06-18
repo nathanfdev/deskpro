@@ -183,9 +183,15 @@ class KbStep extends AbstractDeskpro3Step
 		}
 		$new_article->person = $new_person;
 		$new_article->title = $article['title'] ?: 'Untitled';
-		$new_article->content = $article['question'] . "<br /><br />" . $article['answer'];
+		$new_article->content = '<div class="dp-question">'.$article['question'].'</div>' . $article['answer'];
 		$new_article->date_created = new \DateTime('@' . $article['timestamp_made']);
 		$new_article->date_published = new \DateTime('@' . $article['timestamp_made']);
+
+		// Try a bit of cleanup to remove common whitespace
+		$new_article->content = str_replace(
+			array('<p></p>', '<p>&nbsp;</p>'),
+			array('<br />', '<br />'),
+		$new_article->content);
 
 		$this->getEm()->persist($new_article);
 		$this->getEm()->flush();
