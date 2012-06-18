@@ -481,6 +481,28 @@ class PersonController extends AbstractController
 					$data['html'] = $html;
 				}
 
+				$tickets = $this->em->createQuery("
+					SELECT t
+					FROM DeskPRO:Ticket t
+					WHERE t.person = ?0 AND t.organization IS NULL
+					ORDER BY t.id DESC
+				")->setMaxResults(150)->execute(array($person));
+
+				if ($person->organization) {
+					$this->db->beginTransaction();
+					try {
+						foreach ($tickets as $t) {
+							$t->organization = $person->organization;
+							$this->em->persist($t);
+						}
+						$this->em->flush();
+						$this->db->commit();
+					} catch (\Exception $e) {
+						$this->db->rollback();
+						throw $e;
+					}
+				}
+
 				break;
 
 			case 'set-usergroups':
@@ -491,7 +513,7 @@ class PersonController extends AbstractController
 					$usergroup_ids = array_unique($usergroup_ids);
 
 					// Make sure only valid ones are set
-					$usergroup_ids = $this->container->getDb()->fetchAllCol("
+					$usergroup_ids = $this->db->fetchAllCol("
 						SELECT id
 						FROM usergroups
 						WHERE id IN (" . implode(',', $usergroup_ids).")
@@ -499,7 +521,7 @@ class PersonController extends AbstractController
 					");
 				}
 
-				$this->container->getDb()->delete('person2usergroups', array('person_id' => $person->id));
+				$this->db->delete('person2usergroups', array('person_id' => $person->id));
 
 				if ($usergroup_ids) {
 					$inserts = array();
@@ -507,7 +529,7 @@ class PersonController extends AbstractController
 						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
 					}
 
-					$this->container->getDb()->batchInsert('person2usergroups', $inserts);
+					$this->db->batchInsert('person2usergroups', $inserts);
 				}
 				break;
 
