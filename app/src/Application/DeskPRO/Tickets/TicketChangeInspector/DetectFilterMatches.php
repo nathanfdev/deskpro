@@ -105,6 +105,10 @@ class DetectFilterMatches
 					$changed_fields[] = 'ticket.agent_id';
 					break;
 
+				case 'agent_team':
+					$changed_fields[] = 'ticket.agent_team_id';
+					break;
+
 				case 'category':
 					$changed_fields[] = 'ticket.category_id';
 					break;
