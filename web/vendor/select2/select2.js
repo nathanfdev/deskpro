@@ -890,6 +890,7 @@
             window.setTimeout(this.bind(function () {
                 this.search.focus();
             }), 10);
+			this.search.focus();
         },
 
         selectHighlighted: function () {
