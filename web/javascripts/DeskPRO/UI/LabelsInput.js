@@ -64,7 +64,19 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			tags: tagSource
 		});
 
-		//$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
+		this.input.select2('container').on('click', '.select2-search-choice', function(ev) {
+			if (ev.target && $(ev.target).is('.select2-search-choice-close')) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var label = $(this).text().trim();
+			if (label) {
+				$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
+			}
+		});
 	},
 
 
