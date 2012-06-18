@@ -49,9 +49,11 @@ class RefreshStylesheets
 	{
 		$style = $container->getSystemService('style');
 
-		if ($style && $style->css_blob->getId()) {
-			$desc = $container->getFilestorage()->getFileDescriptor($style->css_blob->getId());
-			$desc->delete();
+		if ($style) {
+			if ($style->css_blob && $style->css_blob->getId()) {
+				$desc = $container->getFilestorage()->getFileDescriptor($style->css_blob->getId());
+				$desc->delete();
+			}
 
 			$style->css_blob = null;
 			$container->getDb()->update('styles', array('css_blob_id' => null, 'css_updated' => date('Y-m-d H:i:s')), array('id' => $style->getId()));
