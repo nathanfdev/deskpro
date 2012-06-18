@@ -235,6 +235,12 @@ class FilestorageLoader
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 		}
 
+		if (!$blob) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found (no css_blob_id)";
+			return;
+		}
+
 		$this->showBlob($blob);
 	}
 
