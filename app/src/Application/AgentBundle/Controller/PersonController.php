@@ -435,6 +435,8 @@ class PersonController extends AbstractController
 					}
 				}
 
+				$old_org = $person->organization;
+
 				if ($org) {
 					$person->organization = $org;
 					$person->organization_position = $this->in->getString('position');
@@ -481,18 +483,38 @@ class PersonController extends AbstractController
 					$data['html'] = $html;
 				}
 
-				$tickets = $this->em->createQuery("
-					SELECT t
-					FROM DeskPRO:Ticket t
-					WHERE t.person = ?0 AND t.organization IS NULL
-					ORDER BY t.id DESC
-				")->setMaxResults(150)->execute(array($person));
-
 				if ($person->organization) {
+					$tickets = $this->em->createQuery("
+						SELECT t
+						FROM DeskPRO:Ticket t
+						WHERE t.person = ?0 AND t.organization IS NULL
+						ORDER BY t.id DESC
+					")->setMaxResults(250)->execute(array($person));
+
 					$this->db->beginTransaction();
 					try {
 						foreach ($tickets as $t) {
 							$t->organization = $person->organization;
+							$this->em->persist($t);
+						}
+						$this->em->flush();
+						$this->db->commit();
+					} catch (\Exception $e) {
+						$this->db->rollback();
+						throw $e;
+					}
+				} elseif ($old_org) {
+					$tickets = $this->em->createQuery("
+						SELECT t
+						FROM DeskPRO:Ticket t
+						WHERE t.person = ?0 AND t.organization = ?1
+						ORDER BY t.id DESC
+					")->setMaxResults(250)->execute(array($person, $old_org));
+
+					$this->db->beginTransaction();
+					try {
+						foreach ($tickets as $t) {
+							$t->organization = null;
 							$this->em->persist($t);
 						}
 						$this->em->flush();
