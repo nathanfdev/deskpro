@@ -105,7 +105,7 @@ class Deskpro3RedirectController extends AbstractController
 
 	public function redirectIdeaHomeAction()
 	{
-		return $this->redirectRoute('user_ideas');
+		return $this->redirectRoute('user_feedback');
 	}
 
 	public function redirectIdeaAction()
