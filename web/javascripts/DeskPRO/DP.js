@@ -153,6 +153,7 @@ var DP = {
 
 		if (el.data('select-width') == 'auto') {
 			options.width = el.parent().width() - 15 + 'px';
+			options.width = '95%';
 		}
 
 		el.select2(options);
