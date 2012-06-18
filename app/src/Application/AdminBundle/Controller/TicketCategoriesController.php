@@ -138,7 +138,7 @@ class TicketCategoriesController extends AbstractController
 			// First category: enable the feature
 			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 			if ($count == 1) {
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '1');
 			}
 
 			$this->em->getConnection()->commit();

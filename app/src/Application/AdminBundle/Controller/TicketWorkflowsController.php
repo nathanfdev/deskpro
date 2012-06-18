@@ -116,7 +116,7 @@ class TicketWorkflowsController extends AbstractController
 			// First workflow: enable the feature
 			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 			if ($count == 1) {
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '1');
 			}
 
 			$this->em->getConnection()->commit();

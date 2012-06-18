@@ -120,7 +120,7 @@ class TicketPrioritiesController extends AbstractController
 			// First priority: enable the feature
 			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
 			if ($count == 1) {
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '1');
 			}
 
 			$this->em->getConnection()->commit();
