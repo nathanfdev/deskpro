@@ -660,6 +660,9 @@ class FilestorageLoader
 		}
 
 		$d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
+		if (!$d) {
+			$d = new \DateTime();
+		}
 		header('Last-Modified: ' . $d->format('D, d M Y H:i:s').' GMT');
 		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
 		header('Cache-Control: max-age=31556926,private');
