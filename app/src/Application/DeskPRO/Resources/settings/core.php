@@ -1,4 +1,4 @@
-<?php return array(
+\<?php return array(
 
 	/**
 	 * When there's a problem where we cant get user input any other way, this address will be displayed.
@@ -323,5 +323,5 @@
 	/**
 	 * Max size of attachments to send in email notifications
 	 */
-	'core.sendemail_attach_maxsize' => 0,
+	'core.sendemail_attach_maxsize' => 10485760,
 );
