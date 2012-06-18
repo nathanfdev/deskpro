@@ -52,6 +52,8 @@ unset($max_time);
 # Attempt to set error log file if unset
 #------------------------------
 
+@ini_set('log_errors', true);
+
 define('DP_REAL_ERROR_LOG', @ini_get('error_log'));
 if (!DP_REAL_ERROR_LOG) {
 	if (defined('DP_BOOT_MODE') && (DP_BOOT_MODE == 'cron' || DP_BOOT_MODE == 'cli')) {
