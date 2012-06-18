@@ -5,9 +5,10 @@ DeskPRO.Agent.PageHelper.ListNav = new Orb.Class({
 
 	initialize: function(page) {
 		this.page = page;
-		this.itemSelector = 'article.row-item';
-		this.activeClass = 'selection-on';
+		this.itemSelector    = 'article.row-item';
+		this.activeClass     = 'selection-on';
 		this.scrollContainer = this.page.wrapper.find('.scroll-content').first();
+		this.scrollView      = this.page.wrapper.find('.scroll-viewport').first();
 	},
 
 	getCurrentSelection: function() {
@@ -21,6 +22,10 @@ DeskPRO.Agent.PageHelper.ListNav = new Orb.Class({
 
 	scrollIntoView: function(row) {
 		if (!row || !row.position()) {
+			return;
+		}
+
+		if (this.scrollContainer.height() <= this.scrollView.height()) {
 			return;
 		}
 
