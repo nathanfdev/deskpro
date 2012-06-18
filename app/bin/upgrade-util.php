@@ -769,6 +769,9 @@ class Upgrade
 		if (!$is_quiet) $this->out("-> Done");
 		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 
+		if (!$is_quiet) $this->out("Helpdesk turned on");
+		$write_status('helpdesk_online');
+
 		$write_status("done");
 
 		$this->revert_checkpoint = null;
