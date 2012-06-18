@@ -349,6 +349,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_no_log = false;
 
+	/**
+	 * Parts that were originally on the ticket (before any changes)
+	 * @var array
+	 */
+	protected $_loaded_part_ids = array();
+
 	protected $_label_manager = null;
 
 	/**
@@ -403,6 +409,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getUserParticipants()
 	{
+		$this->getOriginalParticipantIds();
 		$ret = array();
 
 		foreach ($this['participants'] as $p) {
@@ -416,6 +423,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getAgentParticipants()
 	{
+		$this->getOriginalParticipantIds();
+
 		$ret = array();
 		foreach ($this->participants as $p) {
 			if ($p->person['is_agent']) {
@@ -424,6 +433,26 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * The ticket tracker needs to know who was originally added on the ticket, to properly
+	 * determine if the pre-updated ticket used to match a filter. So the change tracker uses this construct
+	 * the "original ticket" object
+	 *
+	 * @return array
+	 */
+	public function getOriginalParticipantIds()
+	{
+		if ($this->_loaded_part_ids !== null) {
+			return $this->_loaded_part_ids;
+		}
+
+		$this->_loaded_part_ids = array();
+		foreach ($this->participants as $part) {
+			$this->_loaded_part_ids[$part->person->getId()] = $part->person->getId();
+		}
+		return $this->_loaded_part_ids;
 	}
 
 
@@ -436,6 +465,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setAgentParticipants(array $agents)
 	{
+		$this->getOriginalParticipantIds();
 		$current_agent_ids = array();
 		foreach ($this->participants as $p) {
 			if ($p->person->is_agent) {
@@ -530,6 +560,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getParticipantPeopleIds()
 	{
+		$this->getOriginalParticipantIds();
 		$ids = array();
 		foreach ($this->getParticipants() as $p) {
 			$ids[] = $p['person']['id'];
@@ -540,11 +571,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getRawParticipants()
 	{
+		$this->getOriginalParticipantIds();
 		return $this->participants;
 	}
 
 	public function setRawParticipants($parts)
 	{
+		$this->getOriginalParticipantIds();
 		$this->participants = $parts;
 	}
 
@@ -559,6 +592,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hasParticipantPerson($person_or_id)
 	{
+		$this->getOriginalParticipantIds();
 		$person_id = $person_or_id;
 		if ($person_or_id instanceof Person) {
 			$person_id = $person_or_id['id'];
@@ -583,6 +617,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function addParticipantPerson($person_or_id)
 	{
+		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -622,6 +657,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function removeParticipantPerson($person_or_id)
 	{
+		$this->getOriginalParticipantIds();
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
@@ -644,8 +680,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function addParticipant(TicketParticipant $part)
 	{
+		$this->getOriginalParticipantIds();
 		$part->ticket = $this;
 		$this->participants->add($part);
+		if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $participants[$k]);
 	}
 
 
@@ -658,6 +696,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setParticipantAgentIds(array $set_agent_ids)
 	{
+		$this->getOriginalParticipantIds();
 		$got_agent_ids = array();
 		$remove_ks = array();
 
@@ -714,6 +753,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setParticipantUserIds(array $set_user_ids)
 	{
+		$this->getOriginalParticipantIds();
 		$got_user_ids = array();
 
 		$set_user_ids_info = array();
@@ -1738,6 +1778,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		parent::__clone();
 		$this->_ticket_logger = null;
+		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 

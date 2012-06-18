@@ -385,6 +385,15 @@ class TicketChangeTracker extends ChangeTracker
 					$this->original_ticket['agent'] = $old_val;
 					break;
 
+				case 'participants':
+					foreach ($this->ticket->getOriginalParticipantIds() as $pid) {
+						$p = App::getOrm()->getRepository('DeskPRO:Person')->find($pid);
+						if ($p) {
+							$this->original_ticket->addParticipantPerson($p);
+						}
+					}
+					break;
+
 				case 'agent_team':
 					$this->original_ticket['agent_team'] = $old_val;
 					break;

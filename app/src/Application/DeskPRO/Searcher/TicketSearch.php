@@ -1458,13 +1458,13 @@ class TicketSearch extends SearcherAbstract
 
 					if ($agent_ids) {
 						$participant_ids = array();
-						foreach ($ticket->getRawParticipants() as $part) {
-							$participant_ids[] = $part->person->id;
+						foreach ($ticket->getParticipantPeopleIds() as $part) {
+							$participant_ids[] = $part;
 						}
 
 						$any = false;
 						foreach ($participant_ids as $pid) {
-							if ($this->_testChoiceMatch($pid, $op, $agent_ids)) {
+							if ($this->_testChoiceMatch($pid, $op, $agent_ids, true)) {
 								$any = true;
 								break;
 							}
