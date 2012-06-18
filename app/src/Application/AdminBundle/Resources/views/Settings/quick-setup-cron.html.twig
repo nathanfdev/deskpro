@@ -32,6 +32,12 @@
 						<br />
 						<strong>{{ phrase('agent.general.note_attn') }}:</strong>
 						{{ phrase('admin.settings.could_not_find_php_use_real') }}
+					{% elseif not php_path_set %}
+						<br />
+						<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+						The above path to PHP was auto-detected but may be incorrect. If you have configured the task but this step does not get marked as completed,
+						it means the PHP path is incorrect and you will need to change it. If you are having trouble, you should attempt to run the command manually
+						from the command-line so you can see any possible errors. If you require assistance, email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
 					{% endif %}
 				</div>
 				<br />

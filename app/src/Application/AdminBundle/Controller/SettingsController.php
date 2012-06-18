@@ -390,12 +390,14 @@ class SettingsController extends AbstractController
 		}
 
 		$php_path = $this->container->getPhpBinaryPath();
+		$php_path_set = dp_get_config('php_path');
 
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
 			'is_import' => $is_import,
 			'php_path' => $php_path,
+			'php_path_set' => $php_path_set,
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),
