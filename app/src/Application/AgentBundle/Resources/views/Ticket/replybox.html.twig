@@ -12,25 +12,6 @@
 	data-base-id="{{replyBaseId}}"
 >
 
-{% if ticket.agent.id == app.user.id %}
-	<input type="hidden" id="{{replyBaseId}}_do_agent_id" name="options[do_assign]" value="0" />
-{% else %}
-	<input type="hidden" id="{{replyBaseId}}_do_agent_id" name="options[do_assign]" value="1" />
-{% endif %}
-
-<input type="hidden" id="{{replyBaseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-
-<input type="hidden" id="{{replyBaseId}}_do_agent_team_id" name="options[do_assign_team]" value="0" />
-<input type="hidden" id="{{replyBaseId}}_agent_team_id" name="options[agent_team_id]" value="0" />
-
-{% if ticket.status_code == 'awaiting_agent' %}
-	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="awaiting_user" />
-	<input type="hidden" id="{{replyBaseId}}_ticket_do_status" name="options[do_status]" value="1" />
-{% else %}
-	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="" />
-	<input type="hidden" id="{{replyBaseId}}_ticket_do_status" name="options[do_status]" value="0" />
-{% endif %}
-
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
 
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
@@ -144,101 +125,50 @@
 							</div>
 						</li>
 					{% endif %}
-					<li class="hide-note">
+					<li class="hide-note with-select2">
 						<label>{{ phrase('agent.general.status') }}:</label>
-						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'awaiting_agent' %}changed{% endif %}">
-							<a class="status-trigger prop-change with-menu-click-position">
-                                {% set phrase_part %}
-                                <span class="new-val-label">{{ phrase('agent.tickets.status_awaiting_user') }}</span>
-                                {% endset %}
-                                {{ phrase('agent.tickets.change_status', {'old':phrase('agent.tickets.status_' ~ ticket.status), 'new':phrase_part}) }}
-							</a>
-							<a class="status-trigger prop-no-change with-menu-click-position">
-                                {{ phrase('agent.tickets.keep_status_set', {'old':phrase('agent.tickets.status_' ~ ticket.status)}) }}
-							</a>
+						<div>
+							<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]">
+								<option value="awaiting_user" selected="selected">Awaiting User</option>
+								<option value="awaiting_agent">Awaiting Agent</option>
+								<option value="resolved">Resolved</option>
+							</select>
 						</div>
 					</li>
-					<li class="hide-note">
+					<li class="hide-note with-select2">
 						<label>{{ phrase('agent.general.assign') }}:</label>
-						<div id="{{replyBaseId}}_assign_detail">
-							<a id="{{replyBaseId}}_assign_btn" class="with-menu-click-position">
-							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
-								<span class="prop-change">
-									{% if ticket.agent %}
-                                        {% set phrase_part %}
-                                            <span class="new-val-label">{{ phrase('agent.general.me') }}</span>
-                                        {% endset %}
-                                        {{ phrase('agent.tickets.change_agent', {'old':tools.name_or_me(ticket.agent),'new':phrase_part}) }}
-										{% if app.getSetting('core.use_agent_team') %} | {% endif %}
-									{% else %}
-                                        {% set phrase_part %}
-                                            <span class="new-val-label">{{ phrase('agent.general.me') }}</span>
-                                        {% endset %}
-										{{ phrase('agent.tickets.remain_assigned_to_agent', {'agent':phrase_part}) }}  {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+						<div>
+							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+								<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
+								{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
+									<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+								{% endif %}
+								{% for agent in agents %}
+									{% if agent.id != app.user.id %}
+										<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 									{% endif %}
-								</span>
-								<span class="prop-no-change">
-									{% if ticket.agent %}
-										{{ phrase('agent.tickets.remain_assigned_to_agent', {'agent':tools.name_or_me(ticket.agent)}) }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
-									{% else %}
-										{{ phrase('agent.tickets.remain_unassigned') }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+								{% endfor %}
+							</select>
+
+							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+								{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
+									<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+								{% endif %}
+
+								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+									{% for team in app.user.getAgent().getTeams() %}
+										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+									{% endfor %}
+								</optgroup>
+								{% endif %}
+
+								{% for team in agent_teams %}
+									{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endif %}
-								</span>
-							</span>
-							{% if app.getSetting('core.use_agent_team') %}
-								<span id="{{replyBaseId}}_assign_detail_agent_team">
-									<span class="prop-change">
-										{% if ticket.agent_team %}
-											{% set phrase_part %}
-                                                <span class="new-val-label">{{ phrase('agent.general.me') }}</span>
-                                            {% endset %}
-                                            {{ phrase('agent.tickets.change_team', {'old':tools.team_name_or_me(ticket.agent_team),'new':phrase_part}) }}
-										{% else %}
-											{{ phrase('agent.tickets.remain_assigned_to') }} <span class="new-val-label"></span>
-										{% endif %}
-									</span>
-									<span class="prop-no-change">
-										{% if ticket.agent_team %}
-                                            {{ phrase('agent.tickets.remain_assigned_to_team', {'name':tools.team_name_or_me(ticket.agent_team)}) }}
-										{% else %}
-											{{ phrase('agent.tickets.remain_unassigned_team') }}
-										{% endif %}
-									</span>
-								</span>
-							{% endif %}
-							<span id="{{replyBaseId}}_assign_detail_followers">
-								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									| {% set phrase_part %}<span class="count">{{ agent_parts|length }}</span>{% endset %}
-                                    {{ phrase('agent.tickets.count_followers', {'display_count':phrase_part, 'count':agent_parts|length}) }}
-									<div class="inputs" style="display: none">
-										{% for p in agent_parts %}
-											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
-										{% endfor %}
-									</div>
-								</span>
-							</span>
-							</a>
-						</div>
-					</li>
-					<li class="hide-reply" style="display: none">
-						<label>{{ phrase('agent.general.followers') }}:</label>
-						<div id="{{replyBaseId}}_assign_followers">
-							<a id="{{replyBaseId}}_assign_followers_btn" class="with-menu-click-position">
-							<span id="{{replyBaseId}}_assign_followers_detail">
-								<span class="no-followers" {% if agent_parts|length %}style="display: none"{% endif %}>
-									{{ phrase('agent.tickets.no_followers') }}
-								</span>
-								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									| {% set phrase_part %}<span class="count">{{ agent_parts|length }}</span>{% endset %}
-                                    {{ phrase('agent.tickets.count_followers', {'display_count':phrase_part, 'count':agent_parts|length}) }}
-									<div class="inputs" style="display: none">
-										{% for p in agent_parts %}
-											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
-										{% endfor %}
-									</div>
-								</span>
-							</span>
-							</a>
+								{% endfor %}
+							</select>
 						</div>
 					</li>
 					<li id="{{replyBaseId}}_attach_row" class="attach-row is-hidden" style="display: none">
@@ -264,141 +194,5 @@
 </div>
 
 {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'attach'} %}
-
-<ul style="display: none" id="{{replyBaseId}}_status_menu">
-	<li data-status="no-change">{{ phrase('agent.tickets.keep_current_status') }}: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
-	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>{% endif %}
-	{% if ticket.status != 'awaiting_user' %}<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>{% endif %}
-</ul>
-
-<div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
-	<header>
-		<h4>{{ phrase('agent.general.assignments') }}</h4>
-		<span class="close close-trigger"></span>
-	</header>
-	<div class="col">
-		<section data-section-name="agents">
-			<header>
-				<h3>{{ phrase('agent.general.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				<li class="me last-me">
-					<input type="radio" name="{{replyBaseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
-				</li>
-
-				<li>
-					<input type="radio" name="{{replyBaseId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">{{ phrase('agent.general.unassigned') }}</span></label>
-				</li>
-
-				{% for agent in agents %}
-					{% if agent.id != app.user.id %}
-						<li>
-							<input type="radio" name="{{replyBaseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
-							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	{% if app.getSetting('core.use_agent_team') %}
-	<div class="col">
-		<section data-section-name="teams">
-			<header>
-				<h3>{{ phrase('agent.general.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				{% for team in app.user.getAgent().getTeams() %}
-					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
-						<input type="radio" name="{{replyBaseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
-						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-						<div class="bound-fade"></div>
-					</li>
-				{% endfor %}
-
-				<li class="{% if not ticket.agent_team %}on{% endif %}">
-					<input type="radio" name="{{replyBaseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-					<label><span class="agent-team-label-0">{{ phrase('agent.general.no_team') }}</span></label>
-				</li>
-
-				{% for team in agent_teams %}
-					{% if team.id not in app.user.getAgent().getTeamIds() %}
-						<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
-							<input type="radio" name="{{replyBaseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
-							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	{% endif %}
-	<div class="col">
-		<section data-section-name="followers">
-			<header>
-				<h3>{{ phrase('agent.general.followers') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
-					<input type="checkbox" name="{{replyBaseId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
-				</li>
-
-				{% for agent in agents %}
-					{% if agent.id != app.user.id %}
-						<li {% if agent.id in participant_ids %}class="on"{% endif %}>
-							<input type="checkbox" name="{{replyBaseId}}_part" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
-							<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	<br class="clear" />
-	<footer>
-		<button class="save-trigger">{{ phrase('agent.general.apply') }}</button>
-	</footer>
-</div>
-
-<div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_followers_selector">
-	<header>
-		<h4>{{ phrase('agent.general.followers') }}</h4>
-		<span class="close close-trigger"></span>
-	</header>
-	<section data-section-name="followers">
-		<header>
-			<h3>{{ phrase('agent.general.followers') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-		</header>
-		<ul>
-			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
-				<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
-			</li>
-
-			{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-					<li {% if agent.id in participant_ids %}class="on"{% endif %}>
-						<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
-						<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-						<div class="bound-fade"></div>
-					</li>
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-	<footer>
-		<button class="save-trigger">{{ phrase('agent.general.apply') }}</button>
-	</footer>
-</div>
 
 </form>

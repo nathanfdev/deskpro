@@ -184,102 +184,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Assignments
 		//------------------------------
 
-		var agentDetailEl  = this.getElById('assign_detail_agent');
-		var teamDetailEl   = this.getElById('assign_detail_agent_team');
-		var followDetailEl = this.getElById('assign_detail_followers');
+		var agentSel  = this.getElById('agent_sel');
+		var teamSel   = this.getElById('agent_team_sel');
+		var statusSel = this.getElById('status_sel');
 
-		//assign_btn
-		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-			element: this.getElById('agent_selector'),
-			trigger: this.getElById('assign_btn'),
-			onSave: function(ob) {
-				var selections = ob.getAllSelected();
-
-				var exist_agent_id      = parseInt(self.getElById('exist_agent_id').val());
-				var exist_agent_team_id = parseInt(self.getElById('exist_agent_team_id').val());
-
-				// Agent
-				var agent_id = parseInt(selections.agents || 0);
-				if (agent_id == exist_agent_id) {
-					agentDetailEl.removeClass('changed');
-					self.getElById('do_agent_id').val('0');
-				} else {
-					agentDetailEl.addClass('changed');
-					self.getElById('do_agent_id').val('0');
-					self.getElById('agent_id').val(agent_id);
-
-					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
-					$('.new-val-label', agentDetailEl).text(label);
-				}
-
-				// Agent Team
-				var agent_team_id = parseInt(selections.teams || 0);
-				if (agent_team_id == exist_agent_team_id) {
-					teamDetailEl.removeClass('changed');
-					self.getElById('do_agent_team_id').val('0');
-				} else {
-					teamDetailEl.addClass('changed');
-					self.getElById('do_agent_team_id').val('1');
-					self.getElById('agent_team_id').val(agent_team_id);
-
-					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
-					$('.new-val-label', teamDetailEl).text(label);
-				}
-
-				// Followers
-				var follower_names = [];
-				var inputs = $('.inputs', followDetailEl).empty();
-
-				Array.each(selections.followers, function(part_id) {
-					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
-					follower_names.push(label);
-
-					var i = $('<input type="hidden" name="agent_parts[]" value="'+part_id+'" />');
-					inputs.append(i);
-				});
-				if (follower_names.length) {
-					$('.no-followers', followDetailEl).hide();
-					var f = $('.is-followers', followDetailEl).show();
-					f.find('.names').text(follower_names.join(', '));
-					f.find('.count').text(follower_names.length);
-				} else {
-					$('.no-followers', followDetailEl).show();
-					$('.is-followers', followDetailEl).text('').hide();
-				}
-			}
-		});
-
-		//assign_btn
-		var noteFollowDetailEl = this.getElById('assign_followers_detail');
-
-		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-			element: this.getElById('agent_followers_selector'),
-			trigger: this.getElById('assign_followers_btn'),
-			onSave: function(ob) {
-				var selections = ob.getAllSelected();
-
-				// Followers
-				var follower_names = [];
-				var inputs = $('.inputs', noteFollowDetailEl).empty();
-
-				Array.each(selections.followers, function(part_id) {
-					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
-					follower_names.push(label);
-
-					var i = $('<input type="hidden" name="agent_parts[]" value="'+part_id+'" />');
-					inputs.append(i);
-				});
-				if (follower_names.length) {
-					$('.no-followers', noteFollowDetailEl).hide();
-					var f = $('.is-followers', noteFollowDetailEl).show();
-					f.find('.names').text(follower_names.join(', '));
-					f.find('.count').text(follower_names.length);
-				} else {
-					$('.no-followers', noteFollowDetailEl).show();
-					$('.is-followers', noteFollowDetailEl).text('').hide();
-				}
-			}
-		});
+		DP.select(agentSel);
+		DP.select(teamSel);
+		DP.select(statusSel);
 
 		//------------------------------
 		// Submit
