@@ -1,4 +1,4 @@
-\<?php return array(
+<?php return array(
 
 	/**
 	 * When there's a problem where we cant get user input any other way, this address will be displayed.
