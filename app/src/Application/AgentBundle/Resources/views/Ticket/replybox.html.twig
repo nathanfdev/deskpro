@@ -20,7 +20,7 @@
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 	<div class="ticket-sending-overlay" style="display: none">
-		<strong>Sending your message</strong>
+		<strong><span class="hide-note">Sending your message</span><span class="hide-reply">Adding your note</span></strong>
 	</div>
 	<header>
 		<nav>
@@ -54,7 +54,7 @@
 					<span><em class="check"></em></span>
 					<input type="checkbox" name="options[notify_user]" checked="checked" />
 				</li>
-				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.general.send') }}</span><span class="hide-reply">{{ phrase('agent.general.send') }}</span></li>
+				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.general.send') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.general.add_note') }}</span></li>
 			</ul>
 		</nav>
 		<article>

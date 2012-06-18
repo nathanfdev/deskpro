@@ -1104,14 +1104,17 @@ article.content-message .content header {
 	overflow: hidden;
 }
 
+article.content-message.note-message .content {
+	border: 1px dashed #ACB2BF;
+}
+
 article.content-message.note-message .content header {
-	.gradient(rgba(235,236,239,1), rgba(215,217,220,1));
+	background: #EDEDED;
 	.border-radius(3px, 3px, 0, 0);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
-	border-bottom: 1px solid #acb2bf;
+	border-bottom: 1px dotted #acb2bf;
 	position: relative;
-
-	color: #5B513D;
+	color: #777;
 	line-height: 26px;
 }
 
