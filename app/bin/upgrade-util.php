@@ -958,8 +958,10 @@ class Upgrade
 		}
 
 		$pass = '';
+		$log_pass = '';
 		if ($DP_CONFIG['db']['password']) {
 			$pass = "--password=" . escapeshellarg($DP_CONFIG['db']['password']);
+			$log_pass = '--password=...';
 		}
 		$cmd = sprintf(
 			"%s --opt -Q -h%s -u%s %s %s > %s",
@@ -971,8 +973,18 @@ class Upgrade
 			escapeshellarg($f)
 		);
 
+		$log_cmd = sprintf(
+			"%s --opt -Q -h%s -u%s %s %s > %s",
+			$mysql_dump_path,
+			escapeshellarg($DP_CONFIG['db']['host']),
+			escapeshellarg($DP_CONFIG['db']['user']),
+			$log_pass,
+			escapeshellarg($DP_CONFIG['db']['dbname']),
+			escapeshellarg($f)
+		);
+
 		$this->log("Backup directory:  {$this->getBackupDir()}");
-		$this->log("Backup command:    $cmd");
+		$this->log("Backup command:    $log_cmd");
 
 		$out = null;
 		$ret = $this->execCommand($cmd, $this->getBackupDir(), $out);
