@@ -330,6 +330,9 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 	enableEditMode: function(section) {
 
+		var showWrapper = $('.fields-show', this.sectionProperties);
+		var editWrapper = $('.fields-edit', this.sectionProperties);
+
 		$('select', editWrapper).each(function() {
 			var el = $(this);
 			if (el.is('.has-init')) return;
@@ -341,9 +344,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			});
 			el.addClass('has-init');
 		});
-
-		var showWrapper = $('.fields-show', this.sectionProperties);
-		var editWrapper = $('.fields-edit', this.sectionProperties);
 
 		showWrapper.hide();
 		editWrapper.show();

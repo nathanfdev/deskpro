@@ -40,8 +40,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.ownObject(this.ticketDisplay);
 
-		this._initCustomFieldsEditor();
-
 		this._initMessage($('.messages-wrap'));
 
 		this._initTicketActionsMenu();
@@ -486,60 +484,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	//#################################################################
-	//# Custom Fields popout
-	//#################################################################
-
-	_initCustomFieldsEditor: function() {
-		$('.ticket-custom-fields-edit-btn', this.wrapper).on('click', (function() {
-			this.showCustomFieldEditor();
-		}).bind(this));
-
-		this.custom_fields_display = $('.ticket-custom-fields:not(.edit)', this.wrapper);
-		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
-		this.custom_fields_edit.detach().appendTo(this.custom_fields_display.parent().parent().parent().parent());
-
-		$('.close-trigger', this.custom_fields_edit).on('click', (function() {
-			this.closeCustomFieldEditor();
-		}).bind(this));
-
-		var self = this;
-		$('.save-trigger', this.custom_fields_edit).on('click', (function() {
-			var fieldEls = $(':input', self.custom_fields_edit);
-			this._saveCustomFields(fieldEls);
-		}).bind(this));
-	},
-
-	showCustomFieldEditor: function() {
-
-		var pos = this.custom_fields_display.position();
-		var width = this.custom_fields_display.width();
-
-		if (width > 690) {
-			pos.left += width-690; // always want it hugging the right
-			width = 690;
-		}
-
-		this.custom_fields_edit.css({
-			position: 'absolute',
-			top: pos.top,
-			left: pos.left,
-			width: width
-		});
-
-		this.custom_fields_edit.slideDown();
-		window.setTimeout(this.updateUi.bind(this), 450);
-	},
-
-	closeCustomFieldEditor: function() {
-		this.custom_fields_edit.slideUp();
-		window.setTimeout(this.updateUi.bind(this), 450);
-	},
-
-	_saveCustomFields: function(fieldEls) {
-		DP.console.error('This method shold be overriden in a subclass!');
-	},
-
-	//#################################################################
 	//# Labels
 	//#################################################################
 
@@ -602,36 +546,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}, this);
 			}
 		});
-	},
-
-	//#################################################################
-	//# Custom Fields popout
-	//#################################################################
-
-	_saveCustomFields: function(fieldEls) {
-		$('.buttons .loading-off', this.custom_fields_edit).hide();
-		$('.buttons .loading-on', this.custom_fields_edit).show();
-
-		var data = fieldEls.serializeArray();
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-custom-fields',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				this._handleSaveCustomFieldsSuccess(html);
-			}
-		});
-	},
-
-	_handleSaveCustomFieldsSuccess: function(html) {
-		$('.buttons .loading-on', this.custom_fields_edit).hide();
-		$('.buttons .loading-off', this.custom_fields_edit).show();
-		this.closeCustomFieldEditor();
-
-		$('.wrap', this.custom_fields_display).html(html);
 	},
 
 	//#################################################################
