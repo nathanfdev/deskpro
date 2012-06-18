@@ -878,7 +878,7 @@ class TicketSearch extends SearcherAbstract
 						$this->specific_fields[] = self::TERM_WORKFLOW;
 					}
 
-					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice. true);
+					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice, true);
 					break;
 				case self::TERM_LANGUAGE:
 					$this->affected_fields[] = 'ticket.language_id';
