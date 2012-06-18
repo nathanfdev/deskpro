@@ -69,7 +69,9 @@ var ticketReader = {
 <div
 	class="dp-newticket-page with-handler {% if not set_dep_id %}require-js{% endif %}"
 	data-element-handler="DeskPRO.User.ElementHandler.NewTicket"
-	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}"
+	{% if app.user.hasPerm('articles.use') and app.getSetting('core.show_ticket_suggestions') %}
+		data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}"
+	{% endif %}
 >
 <section class="dp-portal-section dp-new-feedback-section">
 	<header>

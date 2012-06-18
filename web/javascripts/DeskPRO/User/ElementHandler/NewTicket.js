@@ -21,14 +21,16 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initSuggestionsBox: function() {
-		this.inlineSuggestions = new DeskPRO.User.InlineSuggestions({
-			elementWrapper: this.el,
-			titleText: this.titleTxt,
-			contentText: this.messageTxt,
-			onResolved: this.setTicketSolvedAjax.bind(this),
-			onResolvedRedirect: this.setTicketSolvedRedirect.bind(this),
-			onNotResolved: this.setTicketUnsolvedAjax.bind(this)
-		});
+		if (this.el.data('suggestions-url')) {
+			this.inlineSuggestions = new DeskPRO.User.InlineSuggestions({
+				elementWrapper: this.el,
+				titleText: this.titleTxt,
+				contentText: this.messageTxt,
+				onResolved: this.setTicketSolvedAjax.bind(this),
+				onResolvedRedirect: this.setTicketSolvedRedirect.bind(this),
+				onNotResolved: this.setTicketUnsolvedAjax.bind(this)
+			});
+		}
 	},
 
 	setTicketSolvedAjax: function(content_type, content_id) {

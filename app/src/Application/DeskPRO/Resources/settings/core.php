@@ -314,4 +314,9 @@
 	 * True to disable floodchecking in gateway
 	 */
 	'core.disable_gateway_floodcheck' => false,
+
+	/**
+	 * Show suggestions newticket
+	 */
+	'core.show_ticket_suggestions' => true,
 );
