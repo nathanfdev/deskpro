@@ -196,32 +196,46 @@ class AgentNotificationAction extends AbstractAction
 
 		$change_info = array(
 			'type' => 'agent_notify',
-			'notify_type' => 'ticketnofity',
+			'notify_type' => 'updated',
 			'emailed' => array()
 		);
 
-		$subject_phrase = 'agent.emails.subject_ticket_updated';
-		$tpl = $this->ticket_update_email_tpl;
-		$is_new_ticket = false;
+		$is_new_ticket      = false;
 		$is_new_agent_reply = false;
-		$is_new_user_reply = false;
+		$is_new_user_reply  = false;
+
 		if ($this->tracker->isNewTicket()) {
+			$this->tracker->logMessage("[AgentNotificationAction] isNewTicket");
 			$change_info['notify_type'] = 'newticket';
 			$tpl = $this->newticket_email_tpl;
 			$is_new_ticket = true;
 		} elseif ($this->tracker->hasNewAgentReply()) {
+			$this->tracker->logMessage("[AgentNotificationAction] hasNewAgentReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_agent_email_tpl;
 			$is_new_agent_reply = true;
 		} elseif ($this->tracker->hasNewUserReply()) {
+			$this->tracker->logMessage("[AgentNotificationAction] hasNewUserReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
+		} else {
+			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
+			$tpl = $this->ticket_update_email_tpl;
 		}
+
+		$agent_change = $this->tracker->getChangedProperty('agent');
+		$team_change  = $this->tracker->getChangedProperty('agent_team');
+		$part_change  = $this->tracker->getChangedProperty('participants');
 
 		$tr = App::getTranslator();
 
+		// This will generate an array of ticket logs that will be saved after notifcations are sent
+		// But we call now so getting the diff for the email is easier, same logic as logs
+		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogs();
+
 		foreach ($this->notify_agents as $agent_id) {
+			/** @var $agent \Application\DeskPRO\Entity\Person */
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
 			if (!$agent || !$agent->getPrimaryEmailAddress()) {
@@ -229,11 +243,41 @@ class AgentNotificationAction extends AbstractAction
 				continue;
 			}
 
+			$agent->loadHelper('Agent');
+
+			$type_flag = null;
+			if ($change_info['notify_type'] == 'updated') {
+				if ($agent_change && $agent_change['new'] && $agent_change['new']->getId() == $agent_id) {
+					$type_flag = 'assigned';
+				} elseif ($team_change && $team_change['new'] && $agent->getHelper('Agent')->isTeamMember($team_change['new']->getId())) {
+					$type_flag = 'assigned_team';
+				} elseif ($part_change) {
+					$added_part = false;
+					foreach ($part_change as $change) {
+						if ($change['new'] && $change['new']->getId() == $agent_id) {
+							$added_part = true;
+							break;
+						}
+					}
+					if ($added_part) {
+						$type_flag = 'added_part';
+					}
+				}
+			}
+
+			if (!$type_flag) {
+				$type_flag = $change_info['notify_type'];
+			}
+
+			$this->tracker->logMessage("[AgentNotificationAction] Type flag: " . $type_flag);
+
 			$vars = array(
-				'email_subject' => new DelegatePhrase($subject_phrase, array('ticket_subject' => $ticket['subject'])),
-				'is_new_ticket' => $is_new_ticket,
+				'type_flag'          => $type_flag,
+				'is_new_ticket'      => $is_new_ticket,
 				'is_new_agent_reply' => $is_new_agent_reply,
-				'is_new_user_reply' => $is_new_user_reply,
+				'is_new_user_reply'  => $is_new_user_reply,
+				'action_performer'   => App::getCurrentPerson(),
+				'ticket_logs'        => $ticket_logs,
 			);
 
 			if ($this->notify_info[$agent->id]) {

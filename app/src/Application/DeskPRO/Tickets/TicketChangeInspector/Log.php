@@ -140,6 +140,12 @@ class Log
 						}
 						break;
 
+					case 'agent_team':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\AgentTeam($old_val, $new_val);
+						}
+						break;
+
 					case 'category':
 						if (!$this->tracker->isNewTicket()) {
 							$action = new LogActions\Category($old_val, $new_val);
@@ -310,36 +316,59 @@ class Log
 		return $actions;
 	}
 
-	public function run()
+	public function getTicketLogs()
 	{
-		$this->tracker->logMessage('[Log] run');
+		$log_items = array();
 
 		if ($this->tracker->isExtraSet('ticket_merge')) {
 			$merge_info = $this->tracker->getExtra('ticket_merge');
 			$action = new LogActions\Merge($this->ticket, $merge_info['other_ticket_id']);
-			$this->addLogItem($action);
+			$l = $this->createNewTicketLog($action);
+			if ($l) {
+				$log_items[] = $l;
+			}
 		}
 
 		if ($this->tracker->isExtraSet('ticket_split')) {
 			$split_info = $this->tracker->getExtra('ticket_split');
 			$action = new LogActions\Split($this->ticket, $split_info['old_ticket']);
-			$this->addLogItem($action);
+			$l = $this->createNewTicketLog($action);
+			if ($l) {
+				$log_items[] = $l;
+			}
 		}
 
 		if ($this->tracker->isExtraSet('ticket_created')) {
 			$action = new LogActions\Created($this->ticket);
-			$this->addLogItem($action);
+			$l = $this->createNewTicketLog($action);
+			if ($l) {
+				$log_items[] = $l;
+			}
 		}
 
 		$log_actions = $this->getLogActions();
 		foreach ($log_actions as $action) {
-			$this->addLogItem($action);
+			$l = $this->createNewTicketLog($action);
+			if ($l) {
+				$log_items[] = $l;
+			}
+		}
+
+		return $log_items;
+	}
+
+	public function run()
+	{
+		$this->tracker->logMessage('[Log] run');
+
+		foreach ($this->getTicketLogs() as $log_item) {
+			App::getOrm()->persist($log_item);
 		}
 
 		App::getOrm()->flush();
 	}
 
-	protected function addLogItem(LogActionInterface $action)
+	protected function createNewTicketLog(LogActionInterface $action)
 	{
 		$ticket_log = new Entity\TicketLog();
 		$ticket_log['person'] = App::getCurrentPerson();
@@ -358,7 +387,9 @@ class Log
 		}
 
 		if ($ticket_log['details']) {
-			App::getOrm()->persist($ticket_log);
+			return $ticket_log;
 		}
+
+		return null;
 	}
 }

@@ -21,6 +21,14 @@
 {% macro link_style() %}color: #0065A3;text-decoration: underline;{% endmacro %}
 {% macro info_link_style() %}color: #949494;text-decoration: underline;{% endmacro %}
 
+{% macro actiontext_style(type) %}{% spaceless %}
+	{% if type == 'row' %}padding: 5px 0 5px 0;
+	{% elseif type == 'type' %}font-weight: bold;
+	{% elseif type == 'old-val' %}
+	{% elseif type == 'new-val' %}
+	{% endif %}
+{% endspaceless %}{% endmacro %}
+
 {% macro info_section(content, options) %}
 	<p style="{{ _self.standard_font() }} font-size: 12px; margin: 0; padding: 0;">{{ content }}</p>
 {% endmacro %}
