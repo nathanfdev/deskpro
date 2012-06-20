@@ -131,8 +131,14 @@ class ServerController extends AbstractController
 
 		$debug_settings = array();
 		foreach (dp_get_config('debug') as $k => $v) {
+			if (!$v) {
+				continue;
+			}
 			if (is_array($v)) {
 				foreach ($v as $sk => $sv) {
+					if (!$sv) {
+						continue;
+					}
 					if (!is_scalar($sv)) {
 						$debug_settings[$k.'.'.$sk] = print_r($sv,1);
 					} else {
