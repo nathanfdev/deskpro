@@ -8,6 +8,8 @@
 {% endblock %}
 {% block content %}
 {% set content %}
+{{ phrase('agent.emails.reply_above_line') }}
+<br /><br />
 {% if action_performer %}{{ action_performer.getDisplayName() }}{% else %}System{% endif %} updated the ticket "{{ ticket.subject }}"
 
 
