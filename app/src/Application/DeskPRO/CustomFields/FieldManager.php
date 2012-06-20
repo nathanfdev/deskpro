@@ -140,6 +140,24 @@ class FieldManager
 
 
 	/**
+	 * Get a named system field
+	 *
+	 * @param string $sys_name
+	 * @return mixed
+	 */
+	public function getSystemField($sys_name)
+	{
+		foreach ($this->getFields() as $field) {
+			if (isset($field['sys_name']) && $field['sys_name'] == $sys_name) {
+				return $field;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * @param $field_def
 	 * @return array
 	 */

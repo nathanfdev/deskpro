@@ -188,6 +188,16 @@ class FeedbackController extends AbstractController
 
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
+		$cf_man = $this->container->getSystemService('FeedbackFieldsManager');
+		$newfeedback_cat_field = $cf_man->getSystemField('cat');
+
+		if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
+			$newfeedback_cat_field = null;
+		} else {
+			$custom_fields = $cf_man->getDisplayArray();
+			$newfeedback_cat_field = $custom_fields[$newfeedback_cat_field->getId()];
+		}
+
 		#------------------------------
 		# New feedback submitted
 		#------------------------------
@@ -198,6 +208,7 @@ class FeedbackController extends AbstractController
 			$is_submitted = true;
 			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
+			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 			$form->bindRequest($this->get('request'));
 
 			$newfeedback->setAttachBlobs($this->in->getCleanValueArray('attach_ids', 'str_simple', 'discard'));
@@ -220,6 +231,8 @@ class FeedbackController extends AbstractController
 				$error_fields = $validator->getErrorGroups(true);
 			}
 		}
+
+
 
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
 			'feedback_cats'      => $feedback_cats,
@@ -245,6 +258,7 @@ class FeedbackController extends AbstractController
 			'just_form'    => $just_form,
 			'is_submitted' => $is_submitted,
 			'newfeedback'  => $newfeedback,
+			'newfeedback_cat_field' => $newfeedback_cat_field,
 			'form'         => $form->createView(),
 			'errors'       => $errors,
 			'error_fields' => $error_fields,

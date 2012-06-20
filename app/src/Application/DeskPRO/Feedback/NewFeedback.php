@@ -64,6 +64,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 	public $title = '';
 	public $content = '';
 	public $attach_blobs = array();
+	public $custom_fields = array();
 
 	public function __construct(Visitor $visitor = null, Person $person = null)
 	{
@@ -217,6 +218,11 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			$this->em->persist($feedback);
+
+			if ($this->custom_fields) {
+				$cf_man = App::getSystemService('FeedbackFieldsManager');
+				$cf_man->saveFormToObject($this->custom_fields, $feedback);
+			}
 
 			foreach ($this->attach_blobs as $blob) {
 				$attach = new \Application\DeskPRO\Entity\FeedbackAttachment();

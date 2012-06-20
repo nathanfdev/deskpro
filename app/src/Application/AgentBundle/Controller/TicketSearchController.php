@@ -206,7 +206,6 @@ class TicketSearchController extends AbstractController
 			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
 		}
 
-
 		$all_custom_fields = array();
 		$user_all_custom_fields = array();
 

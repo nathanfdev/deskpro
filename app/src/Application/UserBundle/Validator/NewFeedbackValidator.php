@@ -67,14 +67,26 @@ class NewFeedbackValidator extends AbstractValidator
 			$this->addError('content.short');
 		}
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 2));
-		if (!$validator->isValid($this->newfeedback->person_name)) {
-			$this->addError('person_name.short');
-		}
-
 		$cat = App::getEntityRepository('DeskPRO:FeedbackCategory')->find($this->newfeedback->category_id);
 		if (!$cat) {
 			$this->addError('category_id.invalid');
+		}
+
+		$cf_man = App::getSystemService('FeedbackFieldsManager');
+		$newfeedback_cat_field = $cf_man->getSystemField('cat');
+		if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
+			$newfeedback_cat_field = null;
+		}
+
+		if ($newfeedback_cat_field) {
+			if (!isset($newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()])) {
+				$this->addError('usercat.invalid');
+			} else {
+				$children = $cf_man->getFieldChildren($newfeedback_cat_field);
+				if (!isset($children[$newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()]])) {
+					$this->addError('usercat.invalid');
+				}
+			}
 		}
 
 		$person_context = $this->newfeedback->getPersonContext();
@@ -82,6 +94,11 @@ class NewFeedbackValidator extends AbstractValidator
 			$validator = new \Orb\Validator\StringEmail();
 			if (!$validator->isValid($this->newfeedback->person_email)) {
 				$this->addError('person_email.invalid');
+			}
+
+			$validator = new \Orb\Validator\StringLength(array('min' => 2));
+			if (!$validator->isValid($this->newfeedback->person_name)) {
+				$this->addError('person_name.short');
 			}
 		}
 

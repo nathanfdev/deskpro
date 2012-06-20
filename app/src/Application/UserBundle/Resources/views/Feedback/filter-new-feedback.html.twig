@@ -8,6 +8,17 @@
 	data-suggest-url="{{ path('user_search_similarto', {content_type: 'feedback'}) }}"
 	data-element-handler="DeskPRO.User.ElementHandler.FeedbackInlineNew"
 >
+	<form
+		{% if just_form %}
+			action="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) }}"
+		{% else %}
+			action="{{ path('user_feedback_new') }}"
+		{% endif %}
+		method="post"
+		class="with-form-validator"
+		id="new_suggest_form"
+	>
+
 	<div class="dp-search-bar">
 		<table class="dp-layout" width="100%"><tr>
 			<td style="vertical-align: top; white-space: nowrap;" width="100%" class="{% if error_fields['title'] %}dp-error{% endif %}">
@@ -37,21 +48,22 @@
 		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.feedback.form_new_error_title') }}
 		</div>
-
-		<form
-			{% if just_form %}
-				action="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) }}"
-			{% else %}
-				action="{{ path('user_feedback_new') }}"
-			{% endif %}
-			method="post"
-			class="with-form-validator"
-			id="new_suggest_form"
-		>
 			<input type="hidden" name="process_new" value="1" />
 			<input type="hidden" name="feedback[title]" id="feedback_title" value="{{ newfeedback.title }}" />
 			<div class="dp-feedback-form dp-well dp-well-light dp-form-vertical" {% if not just_form and not is_submitted %}style="display: none"{% endif %}>
 				<fieldset>
+					{% if newfeedback_cat_field %}
+						<div class="dp-control-group {% if error_fields['usercat'] %}dp-error{% endif %}">
+							<label class="dp-control-label"><strong>{{ phrase('user.feedback.category') }}</strong></label>
+							<div class="dp-controls dp-fill">
+								{{ render_custom_field_form(newfeedback_cat_field, {field_group: 'feedback[custom_fields]'}) }}
+								<div class="dp-help-inline dp-error-explain">
+									{{ phrase('user.feedback.form_new_error_category') }}
+								</div>
+							</div>
+						</div>
+					{% endif %}
+
 					<div class="dp-control-group {% if error_fields['content'] %}dp-error{% endif %}">
 						<label class="dp-control-label"><strong>{{ phrase('user.feedback.form_title') }}</strong></label>
 						<div class="dp-controls dp-fill">
@@ -142,6 +154,6 @@
 					<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.feedback.form_new_button-submit') }}" />
 				</fieldset>
 			</div>
-		</form>
 	</div>
+	</form>
 </article>

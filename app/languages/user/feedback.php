@@ -8,6 +8,7 @@
 	'user.feedback.form_new_button-submit' => 'Submit Feedback',
 	'user.feedback.form_new_error_message' => 'Please enter a summary of at least 5 characters',
 	'user.feedback.form_new_error_title'   => 'Please enter a title of at least 5 characters',
+	'user.feedback.form_new_error_category' => 'Please choose a category',
 	'user.feedback.form_new_prefix'        => 'I have a...',
 	'user.feedback.form_title'             => 'Tell us about your <span class="dp-cat-title-place">idea</span>',
 	'user.feedback.related_feedback'       => 'Related Feedback',
