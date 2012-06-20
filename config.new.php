@@ -1,16 +1,16 @@
 <?php
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#                Welcome to DeskPRO                 
-#             http://support.deskpro.com             
+#                Welcome to DeskPRO
+#             http://support.deskpro.com
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
 # Your mySQL Database Configuration                  #
 ######################################################
 
-// The database server. If you are using windows and your 
-// mysql server is on the same machine; it is important not 
+// The database server. If you are using windows and your
+// mysql server is on the same machine; it is important not
 // to specify localhost, specify 127.0.0.1 instead.
 define('DP_DATABASE_HOST', 'localhost');
 
@@ -39,10 +39,10 @@ define('DP_TECHNICAL_EMAIL', '');
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # The mySQL database settings are the only required
-# settings needed to install DeskPRO. You only need 
-# to change the settings that follow if the DeskPRO 
-# software, a knowledgebase article or a member 
-# of DeskPRO's customer service team advise you 
+# settings needed to install DeskPRO. You only need
+# to change the settings that follow if the DeskPRO
+# software, a knowledgebase article or a member
+# of DeskPRO's customer service team advise you
 # to do so.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -89,16 +89,16 @@ $DP_CONFIG['php_path'] = '';
 # cannot detect it automatically.                    #
 #                                                    #
 # On Linux mysqlump is often located at:             #
-#    /usr/bin/mysqldump or /usr/local/bin/mysqldump  # 
+#    /usr/bin/mysqldump or /usr/local/bin/mysqldump  #
 #                                                    #
 # On Windows mysqldump may be found at:              #
-#    C:\Program Files\mysql\bin\mysqldump.exe        #    
+#    C:\Program Files\mysql\bin\mysqldump.exe        #
 ######################################################
 
 $DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
-# Location of mysql                                  #                
+# Location of mysql                                  #
 #                                                    #
 # mysql is the command line version of the mysql     #
 # client                                             #
@@ -110,7 +110,7 @@ $DP_CONFIG['mysqldump_path'] = '';
 #    /usr/bin/mysql or /usr/local/bin/mysql          #
 #                                                    #
 # On Windows mysql maybe be found at:                #
-#    C:\Program Files\mysql\bin\mysql.exe            #    
+#    C:\Program Files\mysql\bin\mysql.exe            #
 ######################################################
 
 $DP_CONFIG['mysql_path'] = '';
@@ -180,8 +180,8 @@ $DP_CONFIG['import'] = array(
 # this option to help debug a problem                #
 ######################################################
 
-$DP_CONFIG['enable_debug_trace'] = false;
-$DP_CONFIG['enable_debug_trace_keep'] = false;
+$DP_CONFIG['debug']['enable_debug_trace'] = false;
+$DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 
 ######################################################
 # OPTIONAL : Slow Page Logs                          #
@@ -190,8 +190,8 @@ $DP_CONFIG['enable_debug_trace_keep'] = false;
 # these options to help debug a problem              #
 ######################################################
 
-$DP_CONFIG['enable_slow_page_log'] = false;
-$DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
+$DP_CONFIG['debug']['enable_slow_page_log'] = false;
+$DP_CONFIG['debug']['enable_slow_page_log_minquerytime'] = false;
 
 ######################################################
 # OPTIONAL : Usersource Log                          #
@@ -200,7 +200,7 @@ $DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
 # troubleshooting.                                   #
 ######################################################
 
-$DP_CONFIG['enable_usersource_log'] = false;
+$DP_CONFIG['debug']['enable_usersource_log'] = false;
 
 ######################################################
 # OPTIONAL : Mail Debug                              #

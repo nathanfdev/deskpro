@@ -60,9 +60,9 @@ class KernelBooter
 
 		dp_load_config();
 
-		if (isset($DP_CONFIG['enable_debug_trace']) && $DP_CONFIG['enable_debug_trace']) {
+		if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {
 			if (!function_exists('xdebug_start_trace')) {
-				exit('To use the `enable_debug_trace` setting, the xdebug extension must be installed');
+				exit('To use the `debug.enable_debug_trace` setting, the xdebug extension must be installed');
 			}
 
 			$debug_dir = dp_get_debug_dir();
@@ -572,7 +572,7 @@ HTML;
 		self::DeskPRO_Done_MarkerCheck();
 		xdebug_stop_trace();
 
-		if (isset($GLOBALS['DP_CONFIG']['enable_debug_trace_keep']) AND $GLOBALS['DP_CONFIG']['enable_debug_trace_keep']) {
+		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) AND $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
 			return;
 		}
 

@@ -134,7 +134,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			session_write_close();
 		}
 
-		if (isset($DP_CONFIG['enable_debug_log_tpl_use']) && $DP_CONFIG['enable_debug_log_tpl_use']) {
+		if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
 			$loc = $this->container->get('templating.locator');
 			$write = array();
 
@@ -1059,7 +1059,7 @@ class KernelErrorHandler
 			$GLOBALS['DP_CRON_LOGGER']->log("ERROR {$errinfo['session_name']}: {$errinfo['summary']}", 'ERR', array('flag' => 'job_error'));
 		}
 
-		if (class_exists('\Application\DeskPRO\App') && !\Application\DeskPRO\App::getConfig('no_report_errors')) {
+		if (class_exists('\Application\DeskPRO\App') && !\Application\DeskPRO\App::getConfig('debug.no_report_errors')) {
 			if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
 				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
 			}

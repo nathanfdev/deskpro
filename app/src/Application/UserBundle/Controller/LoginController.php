@@ -514,7 +514,7 @@ HTML;
 	{
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
-		if (App::getConfig('enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
+		if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
 			$adapter->setLogger($this->_getAdapterLogger());
 		}
 

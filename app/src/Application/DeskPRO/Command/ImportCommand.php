@@ -947,7 +947,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			// Cleanup install token
 			@unlink($this->getContainer()->getLogDir() . '/install_token.dat');
 
-			if (!dp_get_config('no_install_dat_file')) {
+			if (!dp_get_config('debug.no_install_dat_file')) {
 				@file_put_contents(dp_get_data_dir() . '/is_installed.dat', "Do not remove this file. It tells DeskPRO that the software has been installed and turns off access to /install/.");
 			}
 
@@ -1007,7 +1007,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	public static function sendLogFile($errinfo = null)
 	{
 		global $DP_CONFIG;
-		if (isset($DP_CONFIG['no_report_errors']) AND $DP_CONFIG['no_report_errors']) {
+		if (isset($DP_CONFIG['debug']['no_report_errors']) AND $DP_CONFIG['debug']['no_report_errors']) {
 			return;
 		}
 
