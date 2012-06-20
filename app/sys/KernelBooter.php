@@ -54,10 +54,6 @@ class KernelBooter
 		#------------------------------
 
 		global $DP_CONFIG;
-		if (is_array($DP_CONFIG)) {
-			return;
-		}
-
 		dp_load_config();
 
 		if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {

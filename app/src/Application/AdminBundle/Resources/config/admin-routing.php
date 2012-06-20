@@ -1559,28 +1559,28 @@ $collection->add('admin_feedback_status_updateorders', new Route(
 ));
 
 $collection->add('admin_feedback_cats', new Route(
-	'/portal/feedback/categories',
+	'/portal/feedback/types',
 	array('_controller' => 'AdminBundle:Feedback:categories'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_feedback_cats_edit', new Route(
-	'/portal/feedback/categories/{category_id}/edit',
+	'/portal/feedback/types/{category_id}/edit',
 	array('_controller' => 'AdminBundle:Feedback:editCategory'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_feedback_cats_del', new Route(
-	'/portal/feedback/categories/{category_id}/delete',
+	'/portal/feedback/types/{category_id}/delete',
 	array('_controller' => 'AdminBundle:Feedback:deleteCategory'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_feedback_cats_updateorders', new Route(
-	'/portal/feedback/categories/update-orders',
+	'/portal/feedback/types/update-orders',
 	array('_controller' => 'AdminBundle:Feedback:updateCategoryOrders'),
 	array(),
 	array()

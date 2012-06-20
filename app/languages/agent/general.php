@@ -87,6 +87,7 @@
 	'agent.general.calendar'                                => 'Calendar',
 	'agent.general.cancel'                                  => 'Cancel',
 	'agent.general.categories'                              => 'Categories',
+	'agent.general.types'                                   => 'Types',
 	'agent.general.category'                                => 'Category',
 	'agent.general.cc_address'                              => 'CC\'d Address',
 	'agent.general.change_notif_settings'                   => 'Change your notification settings',
