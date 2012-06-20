@@ -77,10 +77,17 @@ class Choice extends HandlerAbstract
 			$children = $this->field_def['children'];
 		}
 
+		// Index array
+		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
+
 		foreach ($children as $child) {
 			$id = $child['id'];
 			if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-				$val[] = $child['title'];
+				$parent_title = '';
+				if ($child->getOption('parent_id')) {
+					$parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
+				}
+				$val[] = $parent_title . $child['title'];
 			}
 		}
 
@@ -102,13 +109,33 @@ class Choice extends HandlerAbstract
 			$children = $this->field_def['children'];
 		}
 
+		// Index array
+		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
+
+		// Add options
+		$has_children = array();
+		foreach ($children as $child) {
+			if ($child->getOption('parent_id')) {
+				$has_children[$child->getOption('parent_id')] = true;
+			}
+		}
+
+		foreach ($children as $child) {
+			if (isset($has_children[$child->getId()])) {
+				$options[$child->getTitle()] = array();
+			} elseif ($child->getOption('parent_id')) {
+				$title = $children[$child->getOption('parent_id')]->getTitle();
+				$options[$title][$child->getId()] = $child->getTitle();
+			} else {
+				$options[$child->getId()] = $child->getTitle();
+			}
+		}
+
 		foreach ($children as $child) {
 			$id = $child['id'];
 			if ($child['handler_class']) {
 				$has_other = $id;
 			} else {
-				$options[$id] = $child['title'];
-
 				if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
 					$selected_options[] = $id;
 				}
