@@ -1783,6 +1783,26 @@ dp .dp-new-feedback td {
 	margin-left: 15px;
 }
 
+/*
+ * IE hack. For some reason IE adds a bunch of whitespace preceding the fadeaway container
+ * if the container has overflow:hidden. The overflow:hidden is required so text is clipped.
+ * So this hack removes it from the container where it usually is, and adds it to the parent
+ * ul instead which visually looks the same.
+ */
+.browser-ie #dp ul.dp-browse-list ul.dp-contains-fadaway {
+	overflow: hidden;
+	padding-right: 0;
+	margin-right: 0;
+}
+.browser-ie #dp ul.dp-browse-list ul.dp-contains-fadaway li {
+	padding-right: 0;
+}
+.browser-ie #dp ul.dp-browse-list ul.dp-contains-fadaway .dp-fadeaway-container {
+	overflow: visible;
+}
+
+
+
 #dp ul.dp-browse-list:first-of-type {
 	border-top: none;
 	margin-top: 0;

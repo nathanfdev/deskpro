@@ -37,9 +37,7 @@
 			</header>
 			<div class="dp-content-block dp-news-block">
 				<div class="dp-content-wrapper">
-					<ul class="dp-content-list">
-						{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
-					</ul>
+					{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
 				</div>
 			</div>
 		</section>
