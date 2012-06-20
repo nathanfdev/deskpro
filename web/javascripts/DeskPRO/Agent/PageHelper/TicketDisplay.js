@@ -333,20 +333,16 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		var showWrapper = $('.fields-show', this.sectionProperties);
 		var editWrapper = $('.fields-edit', this.sectionProperties);
 
+		showWrapper.hide();
+		editWrapper.show();
+
 		$('select', editWrapper).each(function() {
 			var el = $(this);
 			if (el.is('.has-init')) return;
 
-			var ob = new DeskPRO.UI.OptionBoxBuilder({
-				values: el,
-				noValText: 'Choose...',
-				title: 'Choose an option'
-			});
+			DP.select(el);
 			el.addClass('has-init');
 		});
-
-		showWrapper.hide();
-		editWrapper.show();
 
 		this.page.getEl('properties_controls').hide();
 	},
