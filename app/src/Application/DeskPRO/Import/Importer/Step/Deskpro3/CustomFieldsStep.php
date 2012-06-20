@@ -211,7 +211,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'radio':
 			case 'checkbox':
 
-				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+				if (in_array($f['formtype'], array('checkbox', 'multiselect'))) {
 					$new_field->setOption('multiple', true);
 				}
 
@@ -228,16 +228,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		// For choice options, need to insert choices
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
-			foreach ($choice_data as $k => $choice_info) {
-				$child = $new_field->createChild();
-				$child->title = $choice_info[2];
-				$child->display_order = $k;
-
-				$this->getEm()->persist($child);
-				$this->getEm()->flush();
-
-				$this->saveMappedId('ticket_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
-			}
+			$this->saveChoiceFields('ticket_def_choice', $new_field, $f['id'], $choice_data);
 		}
 	}
 
@@ -299,16 +290,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		// For choice options, need to insert choices
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
-			foreach ($choice_data as $k => $choice_info) {
-				$child = $new_field->createChild();
-				$child->title = $choice_info[2];
-				$child->display_order = $k;
-
-				$this->getEm()->persist($child);
-				$this->getEm()->flush();
-
-				$this->saveMappedId('people_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
-			}
+			$this->saveChoiceFields('people_def_choice', $new_field, $f['id'], $choice_data);
 		}
 	}
 
@@ -371,16 +353,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		// For choice options, need to insert choices
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
-			foreach ($choice_data as $k => $choice_info) {
-				$child = $new_field->createChild();
-				$child->title = $choice_info[2];
-				$child->display_order = $k;
-
-				$this->getEm()->persist($child);
-				$this->getEm()->flush();
-
-				$this->saveMappedId('org_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
-			}
+			$this->saveChoiceFields('org_def_choice', $new_field, $f['id'], $choice_data);
 		}
 	}
 
@@ -440,15 +413,49 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		// For choice options, need to insert choices
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
-			foreach ($choice_data as $k => $choice_info) {
-				$child = $new_field->createChild();
-				$child->title = $choice_info[2];
-				$child->display_order = $k;
+			$this->saveChoiceFields('kb_def_choice', $new_field, $f['id'], $choice_data);
+		}
+	}
 
-				$this->getEm()->persist($child);
-				$this->getEm()->flush();
 
-				$this->saveMappedId('kb_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
+	/**
+	 * Saves choice sub-fileds on custom Choice field
+	 *
+	 * @param $map_name
+	 * @param $new_field
+	 * @param $old_field_id
+	 * @param $choice_data
+	 */
+	protected function saveChoiceFields($map_name, $new_field, $old_field_id, $choice_data)
+	{
+		error_log(print_r($choice_data,1));
+		// For choice options, need to insert choices
+		$x = 0;
+		foreach ($choice_data as $choice_info) {
+			$x++;
+			$child = $new_field->createChild();
+			$child->title = $choice_info[2];
+			$child->display_order = $x;
+			$child->setOption('parent_id', 0);
+
+			$this->getEm()->persist($child);
+			$this->getEm()->flush();
+
+			$this->saveMappedId($map_name, $old_field_id . '_' . $choice_info[0], $child->id);
+
+			if (isset($choice_info[3])) {
+				foreach ($choice_info[3] as $sub_choice_info) {
+					$x++;
+					$sub_child = $new_field->createChild();
+					$sub_child->title = $sub_choice_info[2];
+					$sub_child->display_order = $x;
+					$sub_child->setOption('parent_id', $child->id);
+
+					$this->getEm()->persist($sub_child);
+					$this->getEm()->flush();
+
+					$this->saveMappedId($map_name, $old_field_id . '_' . $sub_choice_info[0], $sub_child->id);
+				}
 			}
 		}
 	}
@@ -463,25 +470,29 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 	protected function transform2lvToSelect(array $f)
 	{
 		$f['formtype'] = 'select';
-
 		$data = unserialize($f['data']);
+
 		$newdata = array();
 		foreach ($data[0] as $parent) {
+
+			$children = array();
 			if (isset($data[$parent['key']])) {
 				foreach ($data[$parent['key']] as $child) {
-					$newdata[] = array(
+					$children[] = array(
 						$child['key'],
 						'',
-						$parent['value'] . ' > ' . $child['value']
+						$child['value'],
+						array()
 					);
 				}
-			} else {
-				$newdata[] = array(
-					$parent['key'],
-					'',
-					$parent['value']
-				);
 			}
+
+			$newdata[] = array(
+				$parent['key'],
+				'',
+				$parent['value'],
+				$children
+			);
 		}
 
 		$f['data'] = serialize($newdata);
