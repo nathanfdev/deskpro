@@ -426,18 +426,6 @@ class KbStep extends AbstractDeskpro3Step
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-					$val = str_replace('|||', '', $article[$name]);
-					$new_val = $this->getMappedNewId('kb_def_choice', $field_info['id'].'_'.$val);
-					if ($new_val) {
-						$this->getDb()->insert('custom_data_article', array(
-							'article_id' => $new_article->id,
-							'field_id' => $new_val,
-							'value' => 1
-						));
-					}
-					break;
-
-				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
 					$vals = explode('|||', $article[$name]);
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('kb_def_choice', $field_info['id'].'_'.$val);

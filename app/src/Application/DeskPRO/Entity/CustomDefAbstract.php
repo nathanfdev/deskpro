@@ -402,7 +402,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		switch ($this->handler_class) {
 			case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-			case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMultie':
 				return true;
 
 			default:

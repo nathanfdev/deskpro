@@ -407,18 +407,6 @@ class UsersStep extends AbstractDeskpro3Step
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-					$val = str_replace('|||', '', $user_info[$name]);
-					$new_val = $this->getMappedNewId('people_def_choice', $field_info['id'].'_'.$val);
-					if ($new_val) {
-						$this->db->insert('custom_data_person', array(
-							'person_id' => $insert_person['id'],
-							'field_id' => $new_val,
-							'value' => 1
-						));
-					}
-					break;
-
-				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
 					$vals = explode('|||', $user_info[$name]);
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('people_def_choice', $field_info['id'].'_'.$val);

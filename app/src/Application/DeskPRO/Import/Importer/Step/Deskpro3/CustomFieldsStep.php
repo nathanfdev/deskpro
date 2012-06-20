@@ -210,6 +210,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'select':
 			case 'radio':
 			case 'checkbox':
+
+				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+					$new_field->setOption('multiple', true);
+				}
+
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
 				$has_choices = true;
 				break;
@@ -277,6 +282,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'select':
 			case 'radio':
 			case 'checkbox':
+
+				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+					$new_field->setOption('multiple', true);
+				}
+
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
 				$has_choices = true;
 				break;
@@ -343,6 +353,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'select':
 			case 'radio':
 			case 'checkbox':
+
+				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+					$new_field->setOption('multiple', true);
+				}
+
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
 				$new_field->default_value = $f['default_value'];
 				$has_choices = true;
@@ -408,6 +423,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'select':
 			case 'radio':
 			case 'checkbox':
+
+				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+					$new_field->setOption('multiple', true);
+				}
+
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
 				$has_choices = true;
 				break;
