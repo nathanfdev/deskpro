@@ -93,15 +93,8 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 		$new_category = $this->getEm()->find('DeskPRO:DownloadCategory', $this->getMappedNewId('file_cat', $download['category']));
 		if (!$new_category) {
-			// Used to allow "0"
-			if ($download['category'] == 0) {
-				$new_category = $this->getEm()->createQuery("SELECT c FROM DeskPRO:DownloadCategory c ORDER BY c.id ASC")->setMaxResults(1)->getOneOrNullResult();
-			}
-
-			if (!$new_category) {
-				$this->logMessage("{$download['id']} has an invalid category {$download['category']}, skipping");
-				return;
-			}
+			$this->logMessage("{$download['id']} has an invalid category {$download['category']}, skipping");
+			return;
 		}
 
 		$new_person = null;

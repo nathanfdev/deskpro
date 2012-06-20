@@ -70,15 +70,6 @@ class DownloadCatsStep extends AbstractDeskpro3Step
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 		}
-
-		if (!$this->getDb()->fetchColumn("SELECT id FROM download_categories LIMIT 1")) {
-			// We need a default category that "top" level downloads will go into
-			$new_cat = new DownloadCategory();
-			$new_cat->title = 'General';
-			$new_cat->display_order = 0;;
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-		}
 	}
 
 
@@ -89,7 +80,20 @@ class DownloadCatsStep extends AbstractDeskpro3Step
 	{
 		$cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY id ASC");
 		if (!$cats) {
-			return;
+			$cats = array();
+		}
+
+		// If there are any files in 'top category', then we'll create a new cat called 'Files'
+		$top_files = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM files WHERE category = 0 LIMIT 1");
+
+		if ($top_files) {
+			$this->getLogger()->log("Adding top-level category", 'DEBUG');
+			$cat = array(
+				'id' => 0,
+				'name' => 'Files',
+				'displayorder' => 0
+			);
+			array_unshift($cats, $cat);
 		}
 
 		foreach ($cats as $cat) {
