@@ -55,6 +55,40 @@ class Environment extends \Twig_Environment
 		parent::__construct($loader, $options);
 	}
 
+
+	public function loadTemplate($name, $index = null)
+    {
+        $cls = $this->getTemplateClass($name, $index);
+
+        if (isset($this->loadedTemplates[$cls])) {
+            return $this->loadedTemplates[$cls];
+        }
+
+        if (!class_exists($cls, false)) {
+            if (false === $cache = $this->getCacheFilename($name)) {
+                eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
+            } else {
+				if (strpos($cache, 'dptpl://') === 0) {
+					$tplinfo = \Application\DeskPRO\Twig\Loader\DbStreamWrapper::getTemplateInfo(str_replace('dptpl://load/', '', $cache));
+					eval('?>'.$tplinfo['template_compiled']);
+				} else {
+					if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
+						$this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
+					}
+
+					require_once $cache;
+				}
+            }
+        }
+
+        if (!$this->runtimeInitialized) {
+            $this->initRuntime();
+        }
+
+        return $this->loadedTemplates[$cls] = new $cls($this);
+    }
+
+
 	/**
 	 * If theres a custom template with an error, then
 	 * we'll try and use the default template instead.
