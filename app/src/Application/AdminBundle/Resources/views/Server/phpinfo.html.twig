@@ -93,6 +93,28 @@
 	</table>
 </div>
 
+{% if debug_settings %}
+	<br />
+
+	<div class="check-grid item-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th colspan="2" style="text-align: left">&nbsp; Debug Settings</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for k,v in debug_settings %}
+					<tr>
+						<td>{{ k }}</td>
+						<td>{{ v }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endif %}
+
 {% if has_apc %}
 	<br />
 

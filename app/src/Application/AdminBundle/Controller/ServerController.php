@@ -129,12 +129,32 @@ class ServerController extends AbstractController
 			$has_apc = true;
 		}
 
+		$debug_settings = array();
+		foreach (dp_get_config('debug') as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as $sk => $sv) {
+					if (!is_scalar($sv)) {
+						$debug_settings[$k.'.'.$sk] = print_r($sv,1);
+					} else {
+						$debug_settings[$k.'.'.$sk] = $sv;
+					}
+				}
+			} else {
+				if (!is_scalar($v)) {
+					$debug_settings[$k] = print_r($v,1);
+				} else {
+					$debug_settings[$k] = $v;
+				}
+			}
+		}
+
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
-			'binary_paths' => $binary_paths,
-			'web_php'      => $web_php,
-			'cli_php'      => $cli_php,
-			'config_hash'  => $config_hash,
-			'has_apc'      => $has_apc,
+			'binary_paths'   => $binary_paths,
+			'web_php'        => $web_php,
+			'cli_php'        => $cli_php,
+			'config_hash'    => $config_hash,
+			'has_apc'        => $has_apc,
+			'debug_settings' => $debug_settings,
 		));
 	}
 
