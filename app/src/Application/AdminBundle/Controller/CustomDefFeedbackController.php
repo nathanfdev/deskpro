@@ -39,4 +39,10 @@ use Application\DeskPRO\App;
 class CustomDefFeedbackController extends CustomDefAbstractController
 {
 	const API_NAME = 'custom_fields.feedback';
+
+	public function editAction($field_id)
+	{
+		$res = parent::editAction($field_id);
+		return $this->redirectRoute('admin_feedback_usercats');
+	}
 }

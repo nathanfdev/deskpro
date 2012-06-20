@@ -1586,6 +1586,13 @@ $collection->add('admin_feedback_cats_updateorders', new Route(
 	array()
 ));
 
+$collection->add('admin_feedback_usercats', new Route(
+	'/portal/feedback/categories',
+	array('_controller' => 'AdminBundle:Feedback:userCategory'),
+	array(),
+	array()
+));
+
 $collection->add('admin_customdefarticles', new Route(
 	'/article-fields',
 	array('_controller' => 'AdminBundle:CustomDefArticles:index'),

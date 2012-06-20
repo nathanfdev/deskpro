@@ -40,5 +40,12 @@ use \Doctrine\ORM\EntityRepository;
 
 class CustomDefFeedback extends CustomDefAbstract
 {
-
+	public function getCategoryField()
+	{
+		return $this->_em->createQuery("
+			SELECT f
+			FROM DeskPRO:CustomDefFeedback f
+			WHERE f.sys_name = 'cat'
+		")->setMaxResults(1)->getOneOrNullResult();
+	}
 }

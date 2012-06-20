@@ -341,4 +341,54 @@ class FeedbackController extends AbstractController
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
 		return $helper->doUpdate('feedback_categories');
 	}
+
+	############################################################################
+	# user-category
+	############################################################################
+
+	public function userCategoryAction()
+	{
+		$field = $this->container->getDataService('CustomDefFeedback')->getCategoryField();
+
+		if (!$field) {
+			$field = new \Application\DeskPRO\Entity\CustomDefFeedback();
+			$field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+			$field->title = 'Category';
+			$field->sys_name = 'cat';
+			$field->description = 'Category';
+			$this->em->persist($field);
+			$this->em->flush();
+		}
+
+		$choices_structure = array();
+		if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+			$choices = array();
+			foreach ($field->children as $child) {
+				$choices[$child->getId()] = $child;
+				$choices_structure[] = array(
+					'id' => $child->getId(),
+					'title' => $child->getTitle(),
+					'parent_id' => $child->getOption('parent_id', 0)
+				);
+			}
+
+			usort($choices_structure, function($a, $b) use ($choices) {
+				$f1 = $choices[$a['id']];
+				$f2 = $choices[$b['id']];
+
+				if ($f1->getDisplayOrder() == $f2->getDisplayOrder()) {
+					return 0;
+				}
+
+				return $f1->getDisplayOrder() < $f2->getDisplayOrder() ? -1 : 1;
+			});
+		}
+
+		$vars = array(
+			'field' => $field,
+			'choices_structure' => $choices_structure,
+		);
+
+		return $this->render('AdminBundle:Feedback:user-categories.html.twig', $vars);
+	}
 }

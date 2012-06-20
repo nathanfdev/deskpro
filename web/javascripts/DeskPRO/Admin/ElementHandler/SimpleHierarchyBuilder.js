@@ -20,37 +20,42 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 		var addedList   = [];
 
 		var noUpdateParentSelect = true;
+		var isInline = parseInt(this.el.data('inline'));
 
 		var overlay       = new DeskPRO.UI.Overlay({
 			triggerElement: btnTrigger,
 			contentElement: editorEl,
 			onClose: function() {
-				var data = [];
-				builderList.find('> li').each(function() {
+				exportData();
+			}
+		});
+
+		function exportData() {
+			var data = [];
+			builderList.find('> li').each(function() {
+				data.push({
+					id: $(this).data('option-id'),
+					title: $(this).data('option-title'),
+					parent_id: 0
+				});
+				var parent_id = $(this).data('option-id');
+				$(this).find('li').each(function() {
 					data.push({
 						id: $(this).data('option-id'),
 						title: $(this).data('option-title'),
-						parent_id: 0
-					});
-					var parent_id = $(this).data('option-id');
-					$(this).find('li').each(function() {
-						data.push({
-							id: $(this).data('option-id'),
-							title: $(this).data('option-title'),
-							parent_id: parent_id
-						});
+						parent_id: parent_id
 					});
 				});
+			});
 
-				var list = builderList.clone();
-				list.find('i').remove();
-				resultContain.empty().append(list);
+			var list = builderList.clone();
+			list.find('i').remove();
+			resultContain.empty().append(list);
 
-				console.log(JSON.stringify(data));
-				structureHold.val(JSON.stringify(data));
-				structureDel.val(JSON.stringify(removedList));
-			}
-		});
+			console.log(JSON.stringify(data));
+			structureHold.val(JSON.stringify(data));
+			structureDel.val(JSON.stringify(removedList));
+		};
 
 		newOptTitle.on('keypress', function(ev) {
 			// Enter key
@@ -161,6 +166,8 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 			row.remove();
 
 			updateParentSelect();
+
+			if (isInline) exportData();
 		};
 
 		function addOption(title, parentId, id) {
@@ -192,6 +199,8 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 
 			parent.append(li);
 			updateParentSelect();
+
+			if (isInline) exportData();
 		};
 	}
 });
