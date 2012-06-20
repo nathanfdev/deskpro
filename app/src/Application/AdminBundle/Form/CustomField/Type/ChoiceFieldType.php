@@ -48,13 +48,6 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
 			'checkbox' => 'Checkboxes (multiple selection)',
 		)));
 
-		$builder->add('choices', 'collection', array(
-			'type' => 'hidden',
-			'required' => true,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
-
 		$builder->add('min_length', 'text', array('required' => false));
 		$builder->add('max_length', 'text', array('required' => false));
 

@@ -4176,3 +4176,94 @@ ul.standard-list li {
 	line-height: 100%;
 	box-shadow: none;
 }
+
+
+.choice-builder-overlay {
+
+	header {
+		background-color: #DFE5EB;
+		margin: -10px -10px 10px -10px;
+		padding: 6px;
+		.rounded(0);
+
+		input[type="text"] {
+			width: 300px;
+		}
+
+		.new-option-trigger {
+			float: right;
+		}
+	}
+
+	ul.options-list > li {
+		border: 1px solid #CCCCCC;
+		.rounded(4px);
+		margin-bottom: 6px;
+		background-color: #fff;
+	}
+
+	ul.options-list > li ul {
+		border-top: 1px solid #CCCCCC;
+		.label {
+			background: url(../../images/agent/elbow-end.gif) no-repeat 16px 8px;
+			padding-left: 35px;
+		}
+	}
+
+	.label {
+		position: relative;
+		padding: 8px 28px 8px 20px;
+	}
+
+	.label:hover {
+		i.move-grip {
+			display: block;
+		}
+	}
+
+	i.move-grip {
+		position: absolute;
+		top: 12px;
+		left: 2px;
+		.iconbase(13px, 9px);
+		background: url(../../images/agent/icons/move-grip.png);
+		cursor: move;
+		display: none;
+		.opacity(70);
+	}
+
+	i.remove-trigger {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+
+		cursor: pointer;
+		.iconbase(16px, 16px);
+		background: url(../../images/agent/icons/cross.png);
+		cursor: pointer;
+	}
+}
+
+.choices-list-wrap {
+	width: 500px;
+
+	ul.options-list > li {
+		border: 1px solid #CCCCCC;
+		.rounded(4px);
+		margin-top: 6px;
+		background-color: #fff;
+	}
+
+	ul.options-list > li ul {
+		border-top: 1px solid #CCCCCC;
+		.label {
+			background: url(../../images/agent/elbow-end.gif) no-repeat 10px 8px;
+			padding-left: 28px;
+		}
+	}
+
+	.label {
+		position: relative;
+		padding: 6px;
+	}
+}

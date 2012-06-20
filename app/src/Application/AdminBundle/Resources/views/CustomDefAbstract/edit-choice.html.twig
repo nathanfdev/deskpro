@@ -14,44 +14,11 @@
 			<label>{{ phrase('admin.custom_fields.options') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
-				<header>
-					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">{{ phrase('agent.general.add') }}</button>
-				</header>
-				<div style="display: none" id="choice_extra_fields"></div>
-				<ul class="list">
-					{% for id,choice in editfield.choices %}
-					<li class="item" data-choice-id="{{ id }}">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.custom_fields.drag') }}</a></li></ul></div>
-						<div class="label">{{ choice }}</div>
-						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist.{{ loop.index0 }}:{{ id }}:{{ choice }}" />
-					</li>
-					{% endfor %}
-				</ul>
-				<script type="text/x-deskpro-plain" class="row-tpl">
-					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.custom_fields.drag') }}</a></li></ul></div>
-						<div class="label"></div>
-						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
-					</li>
-				</script>
-				<script type="text/x-deskpro-plain" id="move_options_overlay">
-					<div id="overlay_wrapper" style="width: 400px; height: 160px; display: none;">
-						<div class="overlay-title">
-							<span class="close-trigger close-overlay"></span>
-							<h4>{{ phrase('admin.custom_fields.existing_values') }}</h4>
-						</div>
-						<div class="overlay-content">
-							<p>{{ phrase('admin.custom_fields.notice_existing_items') }}</p>
-							<select class="move-value"></select>
-						</div>
-						<div class="overlay-footer">
-							<button class="clean-white save-trigger">{{ phrase('agent.general.okay') }}</button>
-						</div>
-					</div>
-				</script>
+			<div class="choices-list-wrap" data-element-handler="DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder">
+				<button class="clean-white edit-choices-trigger">Edit Choices</button>
+				<div class="choices-list"></div>
+				<input type="hidden" name="choices_structure" class="choices_structure" value="{{ choices_structure|json_encode }}" />
+				<input type="hidden" name="choices_removed_structure" class="choices_removed" value="" />
 			</div>
 		</div>
 	</div>
@@ -109,6 +76,28 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<div id="define_choices_overlay" class="choice-builder-overlay" style="width: 600px; height: 500px; overflow:auto; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay close-trigger"></span>
+			<h4>Choice Builder</h4>
+		</div>
+		<div class="overlay-content">
+			<header>
+				<input type="text" class="new-option-title" placeholder="Add a new option" />
+				<select class="new-option-parent" style="display: none"></select>
+				<button class="clean-white new-option-trigger">Add</button>
+			</header>
+			<article>
+				<ul class="options-list">
+
+				</ul>
+			</article>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white save-trigger">Done</button>
 		</div>
 	</div>
 {% endblock %}

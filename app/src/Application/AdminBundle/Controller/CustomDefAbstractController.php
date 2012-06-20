@@ -123,29 +123,13 @@ abstract class CustomDefAbstractController extends AbstractController
 		if ($this->request->isPost()) {
 			if (1 /*$form->isValid()*/) {
 
-				// Sort out moves first
-				$moves = $this->in->getCleanValueArray('move', 'string', 'uint');
-
-				$move_to_map = array();
-
-				foreach ($moves as $choice_id => $find_val) {
-					foreach ($field->children as $f) {
-						if ($f->title == $find_val) {
-							$move_to_map[$choice_id] = $f->id;
-							break;
-						}
-					}
-				}
-
 				$this->em->getConnection()->beginTransaction();
-
 				try {
-
 					$name = str_replace('custom_def_', '', $field->getTableName());
 
-					foreach ($move_to_map as $from_id => $to_id) {
-						$this->db->executeUpdate("UPDATE IGNORE custom_data_$name SET field_id = $to_id WHERE field_id = $from_id");
-						$this->db->executeUpdate("DELETE FROM custom_data_$name WHERE field_id = $from_id");
+					if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+						$editfield->choices_structure = $this->in->getString('choices_structure');
+						$editfield->choices_removed_structure = $this->in->getString('choices_removed_structure');
 					}
 
 					$form->bindRequest($this->get('request'));
@@ -169,11 +153,36 @@ abstract class CustomDefAbstractController extends AbstractController
 			}
 		}
 
+		$choices_structure = array();
+		if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+			$choices = array();
+			foreach ($field->children as $child) {
+				$choices[$child->getId()] = $child;
+				$choices_structure[] = array(
+					'id' => $child->getId(),
+					'title' => $child->getTitle(),
+					'parent_id' => $child->getOption('parent_id', 0)
+				);
+			}
+
+			usort($choices_structure, function($a, $b) use ($choices) {
+				$f1 = $choices[$a['id']];
+				$f2 = $choices[$b['id']];
+
+				if ($f1->getDisplayOrder() == $f2->getDisplayOrder()) {
+					return 0;
+				}
+
+				return $f1->getDisplayOrder() < $f2->getDisplayOrder() ? -1 : 1;
+			});
+		}
+
 		$vars = array(
 			'field' => $field,
 			'editfield' => $editfield,
 			'form' => $form->createView(),
-			'base_edit_tpl' => $this->getTemplateName('edit.html.twig')
+			'base_edit_tpl' => $this->getTemplateName('edit.html.twig'),
+			'choices_structure' => $choices_structure,
 		);
 
 		$tpl_name = 'edit-' . strtolower($basetype) . '.html.twig';

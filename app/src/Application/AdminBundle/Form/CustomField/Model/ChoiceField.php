@@ -47,10 +47,8 @@ class ChoiceField extends CustomFieldAbstract
 	public $agent_max_length;
 
 	public $field_type = null;
-
-	// Will be id=>choices on load,
-	// On form submit will be new:label or exist:id:label
-	public $choices = array();
+	public $choices_structure = '';
+	public $choices_removed_structure = '';
 
 	protected function init()
 	{
@@ -149,43 +147,67 @@ class ChoiceField extends CustomFieldAbstract
 
 	protected function saveAdditional()
 	{
-		// Parse choices array
-		$new_choices = array();
-		$exist_choices = array();
-		foreach ($this->choices as $c) {
-			$match = null;
-			if (preg_match('#^new\.(?P<order>[0-9]+):(?P<label>.*?)$#', $c, $match)) {
-				$new_choices[] = array($match['label'], $match['order']);
-			} elseif (preg_match('#^exist\.(?P<order>[0-9]+):(?P<id>[0-9]+):(?P<label>.*?)$#', $c, $match)) {
-				$exist_choices[$match['id']] = array($match['label'], $match['order']);
-			}
+		$choices_structure = @json_decode($this->choices_structure, true);
+		$choices_removed   = @json_decode($this->choices_removed_structure, true);
+
+		$choices = array();
+		foreach ($this->_field->children as $child) {
+			$choices[$child->getId()] = $child;
 		}
 
-		// Delete/update fields we have
-		if (!$this->isNewField()) {
-			foreach ($this->_field->children as $k => $child) {
-				// Delete
-				if (!isset($exist_choices[$child->id])) {
-					$this->_em->remove($child);
-					$this->_field->children->remove($k);
-
-				// Update
-				} else {
-					$child->title = $exist_choices[$child->id][0];
-					$child->display_order = $exist_choices[$child->id][1];
-
-					$this->_em->persist($child);
+		foreach ($choices_removed as $id) {
+			if (isset($choices[$id])) {
+				$this->_em->remove($choices[$id]);
+				unset($choices[$id]);
+				foreach ($choices as $cid => $c) {
+					if ($c->getOption('parent_id') == $id) {
+						$this->_em->remove($choices[$cid]);
+						unset($choices[$cid]);
+					}
 				}
 			}
 		}
 
-		// Add new fields
-		foreach ($new_choices as $new_choice) {
-			$child = $this->_field->createChild();
-			$child->title = $new_choice[0];
-			$child->display_order = $new_choice[1];
+		$this->_em->flush();
 
-			$this->_em->persist($child);
+		// Maps string IDs generated on the client with real
+		// field IDs saved in the database that we've saved right now
+		$new_id_map = array();
+
+		foreach ($choices_structure as $k => $info) {
+			$parent_id = $info['parent_id'];
+			if ($parent_id && is_string($parent_id)) {
+				if (!isset($new_id_map[$parent_id])) {
+					continue;
+				}
+				$parent_id = $new_id_map[$parent_id];
+			}
+			if (!$parent_id) {
+				$parent_id = 0;
+			}
+
+			$id = $info['id'];
+			$title = $info['title'];
+
+			if (isset($choices[$id])) {
+				$choices[$id]->setTitle($title);
+				$choices[$id]->setDisplayOrder($k);
+
+				$this->_em->persist($choices[$id]);
+			} else {
+				$child = $this->_field->createChild();
+				$child->setTitle($title);
+				$child->setDisplayOrder($k);
+				$child->setOption('parent_id', $parent_id);
+
+				$this->_em->persist($child);
+				$this->_em->flush();
+
+				$new_id_map[$id] = $child->getId();
+				$choices[$child->getId()] = $child;
+			}
 		}
+
+		$this->_em->flush();
 	}
 }
