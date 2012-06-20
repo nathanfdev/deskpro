@@ -145,11 +145,20 @@ class TemplatesController extends AbstractController
 		$name = $this->in->getString('name');
 
 		$code = $this->db->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($name));
+		$custom = true;
 		if (!$code && isset($map[$name])) {
+			$custom = false;
 			$code = file_get_contents($map[$name]['path']);
 		}
 		if (!$code) {
 			$code = '';
+		}
+
+		if ($this->in->getBool('info')) {
+			return $this->createJsonResponse(array(
+				'custom' => $custom,
+				'code' => $code,
+			));
 		}
 
 		return $this->createResponse($code);

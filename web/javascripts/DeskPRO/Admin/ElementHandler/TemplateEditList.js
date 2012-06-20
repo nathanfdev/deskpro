@@ -90,14 +90,22 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 		this.overlayEl.find('.overlay-footer').removeClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name,
+			url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name + '&info=1',
 			context: this,
+			dataType: 'json',
 			error: function() {
 				this.closeTemplateEditor();
 			},
-			success: function(val) {
+			success: function(data) {
 				this.editingTemplate = template_name;
-				this.overlayEl.find('textarea.template-code').val(val).removeClass('loading');
+
+				if (data.custom) {
+					this.overlayEl.find('.revert-trigger').show();
+				} else {
+					this.overlayEl.find('.revert-trigger').hide();
+				}
+
+				this.overlayEl.find('textarea.template-code').val(data.code).removeClass('loading');
 			}
 		});
 	},
