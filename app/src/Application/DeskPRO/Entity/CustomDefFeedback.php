@@ -57,6 +57,11 @@ class CustomDefFeedback extends CustomDefAbstract
 	 */
 	protected $children = null;
 
+	/**
+	 * @var string
+	 */
+	protected $sys_name = null;
+
 
 
 	############################################################################
@@ -70,6 +75,7 @@ class CustomDefFeedback extends CustomDefAbstract
 		$metadata->setPrimaryTable(array( 'name' => 'custom_def_feedback', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'js_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'js_class', ));
 		$metadata->mapField(array( 'fieldName' => 'has_form_template', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_form_template', ));
 		$metadata->mapField(array( 'fieldName' => 'has_display_template', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_display_template', ));
