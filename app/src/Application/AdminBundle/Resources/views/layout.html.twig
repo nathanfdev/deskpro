@@ -63,7 +63,7 @@
 
 	<script src="{{ path('dp_agent_lang') }}"></script>
 </head>
-<body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
+<body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %} {{ body_class }}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 <div id="please_wait_overlay" style="display: none;">
 	<article>
 		Loading

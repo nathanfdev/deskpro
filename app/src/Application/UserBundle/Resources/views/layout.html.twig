@@ -104,6 +104,7 @@
 		{% if app.getSetting('user.portal_tab_news') %}{% set any_tabs = true %}{% endif %}
 		{% if app.user.hasPerm('articles.use') and app.getSetting('user.portal_tab_articles') %}{% set any_tabs = true %}{% endif %}
 		{% if app.user.hasPerm('feedback.use') and app.getSetting('user.portal_tab_feedback') %}{% set any_tabs = true %}{% endif %}
+		{% if app.user.hasPerm('downloads.use') and app.getSetting('user.portal_tab_downloads') %}{% set any_tabs = true %}{% endif %}
 		{% if app.getSetting('user.portal_tab_tickets') %}{% set any_tabs = true %}{% endif %}
 
 		<div id="dp_page_wrapper" {% if not any_tabs and not admin_portal_controls %}class="dp-no-tabs"{% endif %}>
@@ -137,6 +138,14 @@
 									<a href="{{ path('user_feedback') }}">
 										<i class="dp-icon-file"></i> <h3>{{ phrase('user.portal.tab_feedback') }}</h3>
 										<label>{{ phrase('user.portal.tab_feedback-description') }}</label>
+									</a>
+								</li>
+							{% endif %}
+							{% if app.user.hasPerm('downloads.use') and (admin_portal_controls or app.getSetting('user.portal_tab_downloads')) %}
+								<li class="dp-tab-downloads {% if this_section == 'downloads' %}on{% endif %} {% if not app.getSetting('user.portal_tab_downloads') %}disabled{% endif %}" data-tab="downloads">
+									<a href="{{ path('user_downloads_home') }}">
+										<i class="dp-icon-file"></i> <h3>{{ phrase('user.portal.tab_downloads') }}</h3>
+										<label>{{ phrase('user.portal.tab_downloads-description') }}</label>
 									</a>
 								</li>
 							{% endif %}

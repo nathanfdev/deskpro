@@ -30,4 +30,6 @@
 	'user.portal.welcome-back-guest'            => 'Welcome back, guest', // sidebar_welcome-guest
 	'user.portal.sidebar_welcome-user'                => 'Welcome back, {{name}}', // sidebar_welcome-user
 	'user.portal.search_result-count'              => '{{count}} search result|{{count}} search results', // search_count
+	'user.portal.tab_downloads' => 'Downloads',
+	'user.portal.tab_downloads-description' => 'Browse our downloads',
 );
