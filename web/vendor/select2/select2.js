@@ -523,6 +523,8 @@
             opts = $.extend({}, {
                 containerCss: {},
                 dropdownCss: {},
+				addResultClass: '',
+				addWidth: 30,
                 populateResults: function(container, results, query) {
                     var uidToData={}, populate, markup=[], uid, data, result, children, formatted;
 
@@ -538,6 +540,7 @@
                             markup.push("<li class='select2-result-depth-"+depth);
                             if (!selectable) { markup.push(" select2-result-unselectable"); } else { markup.push(" select2-result");}
                             if (compound) { markup.push(" select2-result-with-children"); }
+							markup.push(' ' + opts.addResultClass);
 
                             markup.push("'");
 
@@ -650,7 +653,9 @@
                         opts.initSelection = function (element) {
                             var data = [];
                             $(splitVal(element.val(), ",")).each(function () {
-                                data.push({id: this, text: this});
+                                if ($.trim(this) !== "") {
+                                    data.push({id: this, text: this});
+                                }
                             });
                             return data;
                         };
@@ -984,7 +989,7 @@
                         return matches[1];
                 }
             }
-            return this.opts.element.width() + 'px';
+            return (this.opts.element.width() + this.opts.addWidth) + 'px';
         }
     });
 
@@ -996,7 +1001,7 @@
                 "style": "width: " + this.getContainerWidth()
             }).html([
                 "    <a href='javascript:void(0)' class='select2-choice'>",
-                "   <span></span><abbr class='select2-search-choice-close' style='display:none;'></abbr>",
+				"   <span class='select2-choice-wrap'></span><abbr class='select2-search-choice-close' style='display:none;'></abbr>",
                 "   <div><b></b></div>" ,
                 "</a>",
                 "    <div class='select2-drop' style='display:none;'>" ,
@@ -1204,7 +1209,7 @@
 
         updateSelection: function (data) {
             this.selection
-                .find("span")
+                .find("span.select2-choice-wrap")
                 .html(this.opts.formatSelection(data));
 
             this.selection.removeClass("select2-default");
