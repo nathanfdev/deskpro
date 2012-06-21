@@ -59,4 +59,38 @@ class Date extends Text
 
 		return $field;
 	}
+
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	{
+		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+
+		if (!is_scalar($data)) {
+			return $this->makeErrorArray(array('invalid_input'));
+		}
+
+		#------------------------------
+		# Validate options
+		#------------------------------
+
+		$opt_prefix = '';
+		if ($context == self::CONTEXT_AGENT) {
+			$opt_prefix = 'agent_';
+		}
+
+		$options = array();
+		foreach (array('required', 'min_length', 'max_length', 'regex') as $k) {
+			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
+		}
+
+		if ($options['required']) {
+			if (!$data) {
+				return $this->makeErrorArray(array('min_length'));
+			}
+
+			// Make sure its a valid date
+			// todo
+		}
+
+		return array();
+	}
 }

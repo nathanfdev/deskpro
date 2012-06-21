@@ -47,6 +47,9 @@ abstract class HandlerAbstract
 	const CONTEXT_HTML = 'html';
 	const CONTEXT_TEXT = 'text';
 
+	const CONTEXT_USER  = 'user';
+	const CONTEXT_AGENT = 'agent';
+
 	/**
 	 * @var \Symfony\Component\Templating\EngineInterface
 	 */
@@ -54,9 +57,14 @@ abstract class HandlerAbstract
 
 	/**
 	 * The form field definition
-	 * @var Entity\CustomDefAbstract
+	 * @var \Application\DeskPRO\Entity\CustomDefAbstract
 	 */
 	protected $field_def;
+
+	/**
+	 * @var \\Application\DeskPRO\Entity\CustomDefAbstract[]
+	 */
+	protected $field_children;
 
 	public function __construct(Entity\CustomDefAbstract $field_def = null)
 	{
@@ -67,6 +75,37 @@ abstract class HandlerAbstract
 	public function init()
 	{
 
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
+	 */
+	public function getFieldChildren()
+	{
+		if ($this->field_children !== null) {
+			return $this->field_children;
+		}
+
+		if ($this->field_def->field_manager) {
+			$children = $this->field_def->field_manager->getFieldChildren($this->field_def);
+		} else {
+			$children = $this->field_def['children'];
+		}
+
+		// Index array
+		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
+
+		uasort($children, function($a, $b) {
+			if ($a->getDisplayOrder() == $b->getDisplayOrder()) {
+				return 0;
+			}
+
+			return $a->getDisplayOrder() < $b->getDisplayOrder() ? -1 : 1;
+		});
+
+		$this->field_children = $children;
+
+		return $this->field_children;
 	}
 
 
@@ -310,7 +349,7 @@ abstract class HandlerAbstract
 	 *
 	 * @return Symfony\Component\Form\Field
 	 */
-	abstract function getFormField(array $data = null);
+	abstract public function getFormField(array $data = null);
 
 
 
@@ -322,7 +361,36 @@ abstract class HandlerAbstract
 	 *
 	 * @return array
 	 */
-	abstract function getDataFromForm(array $form_data);
+	abstract public function getDataFromForm(array $form_data);
+
+
+	/**
+	 * Get an array of errors from a posted form.
+	 *
+	 * This must return a standard array of error codes (see Orb\Validator\ValidatorInterface).
+	 * If an empty array is returned, then that means the field is valid.
+	 *
+	 * @param array $form_data
+	 * @return array
+	 */
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	{
+		return array();
+	}
+
+
+	/**
+	 * @param array $codes
+	 * @return array
+	 */
+	public function makeErrorArray(array $codes)
+	{
+		foreach ($codes as &$c) {
+			$c = $this->getFormFieldName() . '.' . $c;
+		}
+
+		return $codes;
+	}
 
 
 	/**

@@ -103,22 +103,7 @@ class Choice extends HandlerAbstract
 
 		$selected_options = array();
 
-		if ($this->field_def->field_manager) {
-			$children = $this->field_def->field_manager->getFieldChildren($this->field_def);
-		} else {
-			$children = $this->field_def['children'];
-		}
-
-		// Index array
-		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
-
-		uasort($children, function($a, $b) {
-			if ($a->getDisplayOrder() == $b->getDisplayOrder()) {
-				return 0;
-			}
-
-			return $a->getDisplayOrder() < $b->getDisplayOrder() ? -1 : 1;
-		});
+		$children = $this->getFieldChildren();
 
 		// Add options
 		$has_children = array();
@@ -177,7 +162,7 @@ class Choice extends HandlerAbstract
 		return $field_choice;
 	}
 
-	function getDataFromForm(array $form_data)
+	public function getDataFromForm(array $form_data)
 	{
 		$name = $this->getFormFieldName();
 
@@ -201,6 +186,51 @@ class Choice extends HandlerAbstract
 			}
 
 			return $ret;
+		}
+
+		return array();
+	}
+
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	{
+		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
+
+		#------------------------------
+		# Validate selections
+		#------------------------------
+
+		$children = $this->getFieldChildren();
+		foreach ($data as $id) {
+			if (!is_numeric($id) || !isset($children[$id])) {
+				return $this->makeErrorArray(array('invalid_choice'));
+			}
+		}
+
+		#------------------------------
+		# Validate options
+		#------------------------------
+
+		$opt_prefix = '';
+		if ($context == self::CONTEXT_AGENT) {
+			$opt_prefix = 'agent_';
+		}
+
+		$options = array();
+		foreach (array('required', 'min_length', 'max_length') as $k) {
+			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
+		}
+
+		// Without required there are no requirements
+		if (!$options['required']) {
+			return array();
+		}
+
+		if ($options['min_length'] && count($data) < $options['min_length']) {
+			return $this->makeErrorArray(array('min_length'));
+		}
+
+		if ($options['max_length'] && count($data) > $options['max_length']) {
+			return $this->makeErrorArray(array('max_length'));
 		}
 
 		return array();

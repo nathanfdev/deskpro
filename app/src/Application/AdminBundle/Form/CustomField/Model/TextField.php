@@ -89,6 +89,12 @@ class TextField extends CustomFieldAbstract
 			$field->setOption('max_length', $this->max_length);
 		} elseif ($this->validation_type == 'regex') {
 			$field->setOption('required', false);
+
+			// No delims
+			if ($this->regex[0] != substr($this->regex, -1, 1)) {
+				$this->regex = '/' . $this->regex . '/';
+			}
+
 			$field->setOption('regex', $this->regex);
 		} else {
 			$field->setOption('required', null);
@@ -103,6 +109,12 @@ class TextField extends CustomFieldAbstract
 			$field->setOption('agent_max_length', $this->agent_max_length);
 		} elseif ($this->agent_validation_type == 'regex') {
 			$field->setOption('agent_required', false);
+
+			// No delims
+			if ($this->agent_regex[0] != substr($this->agent_regex, -1, 1)) {
+				$this->agent_regex = '/' . $this->agent_regex . '/';
+			}
+
 			$field->setOption('agent_regex', $this->agent_regex);
 		} else {
 			$field->setOption('agent_required', null);

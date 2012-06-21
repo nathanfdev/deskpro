@@ -36,6 +36,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 /**
  * Handles the text field
@@ -66,6 +67,49 @@ class Text extends HandlerAbstract
 		return array(
 			array($this->field_def['id'], 'input', $value)
 		);
+	}
+
+	public function validateFormData(array $form_data, $context = self::CONTEXT_USER)
+	{
+		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+
+		if (!is_scalar($data)) {
+			return $this->makeErrorArray(array('invalid_input'));
+		}
+
+		#------------------------------
+		# Validate options
+		#------------------------------
+
+		$opt_prefix = '';
+		if ($context == self::CONTEXT_AGENT) {
+			$opt_prefix = 'agent_';
+		}
+
+		$options = array();
+		foreach (array('required', 'min_length', 'max_length', 'regex') as $k) {
+			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
+		}
+
+		if ($options['required']) {
+			$len = Strings::utf8_strlen($data);
+
+			if ($options['min_length'] && $len < $options['min_length']) {
+				return $this->makeErrorArray(array('min_length'));
+			}
+
+			if ($options['max_length'] && $len > $options['max_length']) {
+				return $this->makeErrorArray(array('max_length'));
+			}
+		}
+
+		if ($options['regex']) {
+			if (!preg_match($options['regex'], $data)) {
+				return $this->makeErrorArray(array('regex_fail'));
+			}
+		}
+
+		return array();
 	}
 
 	public function getSearchCapabilities()
