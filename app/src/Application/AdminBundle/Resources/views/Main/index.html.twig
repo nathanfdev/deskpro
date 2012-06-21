@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
-	<ul>
+<ul xmlns="http://www.w3.org/1999/html">
 		<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
 	</ul>
 {% endblock %}
@@ -132,7 +132,10 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th class="single-title" colspan="2">Your License</th>
+				<th class="single-title" colspan="2">
+					Your License
+					<small style="font-size: 11px; font-weight: normal; position:relative;top: -1px;">(<a href="{{ path('admin_license') }}">update</a>) </small>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
