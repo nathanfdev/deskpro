@@ -112,6 +112,14 @@ class Choice extends HandlerAbstract
 		// Index array
 		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
 
+		uasort($children, function($a, $b) {
+			if ($a->getDisplayOrder() == $b->getDisplayOrder()) {
+				return 0;
+			}
+
+			return $a->getDisplayOrder() < $b->getDisplayOrder() ? -1 : 1;
+		});
+
 		// Add options
 		$has_children = array();
 		foreach ($children as $child) {
@@ -125,6 +133,9 @@ class Choice extends HandlerAbstract
 				$options[$child->getTitle()] = array();
 			} elseif ($child->getOption('parent_id')) {
 				$title = $children[$child->getOption('parent_id')]->getTitle();
+				if (!isset($options[$title])) {
+					$options[$title] = array();
+				}
 				$options[$title][$child->getId()] = $child->getTitle();
 			} else {
 				$options[$child->getId()] = $child->getTitle();

@@ -198,6 +198,8 @@ class FeedbackCollection
 		}
 
 		$options = $this->feedback_fm->getFieldChildren($cat_field);
+		$options = Arrays::keyFromData($options, 'id');
+
 		$custom_data = $this->getDataForFeedback($feedback);
 		$chosen = null;
 		foreach ($options as $opt) {
