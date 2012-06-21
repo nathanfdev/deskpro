@@ -41,6 +41,8 @@ use Application\DeskPRO\Tickets\NewTicket\NewTicket;
 use Application\DeskPRO\Tickets\NewTicket\PersonProps;
 use Application\DeskPRO\Tickets\NewTicket\TicketProps;
 
+use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
+
 use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
@@ -58,11 +60,27 @@ class NewTicketValidator extends AbstractValidator
 	 */
 	protected $display_fields = array();
 
+	/**
+	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+	 */
+	protected $captca;
+
+	/**
+	 * @param array $page_data
+	 */
 	public function setPageData($page_data)
 	{
 		foreach ($page_data as $i) {
 			$this->display_fields[$i['id']] = $i['id'];
 		}
+	}
+
+	/**
+	 * @param CaptchaAbstract $captcha
+	 */
+	public function setCaptcha(CaptchaAbstract $captcha)
+	{
+		$this->captca = $captcha;
 	}
 
 	/**
@@ -236,6 +254,15 @@ class NewTicketValidator extends AbstractValidator
 					}
 				}
 				break;
+
+			case 'captcha':
+				if (!$this->captca) {
+					break;
+				}
+
+				if (!$this->captca->validate()) {
+					$this->addError('captcha.invalid');
+				}
 		}
 	}
 }

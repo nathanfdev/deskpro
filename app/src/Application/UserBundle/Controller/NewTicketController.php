@@ -75,6 +75,9 @@ class NewTicketController extends AbstractController
 		$error_fields = array();
 
 		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+		if ($captcha) {
+			$validator->setCaptcha($captcha);
+		}
 
 		// Custom fields
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
