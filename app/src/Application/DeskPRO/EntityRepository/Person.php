@@ -62,7 +62,7 @@ class Person extends AbstractEntityRepository
 			$agents = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:Person p INDEX BY p.id
-				WHERE p.is_agent = true
+				WHERE p.is_agent = true AND p.is_deleted = false
 				ORDER BY p.first_name ASC, p.last_name ASC
 			")->execute();
 
@@ -85,7 +85,7 @@ class Person extends AbstractEntityRepository
 			$priority = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:Person p
-				WHERE CONCAT(first_name, ' ', last_name) LIKE ?1
+				WHERE CONCAT(first_name, ' ', last_name) LIKE ?1 AND p.is_deleted = false
 			")->setParameter(1, "%$name%")->getSingleResult();
 		} catch (\Exception $e) {
 			return null;
@@ -144,7 +144,7 @@ class Person extends AbstractEntityRepository
 			SELECT s,p
 			FROM DeskPRO:Session s
 			LEFT JOIN s.person p
-			WHERE (p.is_agent = true AND s.date_last > :cutoff) $or_id
+			WHERE (p.is_agent = true AND p.is_deleted = false AND s.date_last > :cutoff) $or_id
 			GROUP BY p.id
 			ORDER BY s.id DESC
 		");
