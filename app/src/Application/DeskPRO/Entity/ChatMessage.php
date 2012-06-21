@@ -48,10 +48,18 @@ use Orb\Util\Strings;
  */
 class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 {
+	const ORIGIN_AGENT = 'agent';
+	const ORIGIN_USER  = 'user';
+
 	/**
 	 * @var int
 	 */
 	protected $id = null;
+
+	/**
+	 * @var string
+	 */
+	protected $origin = '';
 
 	/**
 	 * The conversation the message belongs to
@@ -240,6 +248,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_setUserName', 'prePersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'origin', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'origin', ));
 		$metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name', ));
 		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
 		$metadata->mapField(array( 'fieldName' => 'is_sys', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sys', ));

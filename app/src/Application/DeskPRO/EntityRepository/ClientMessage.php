@@ -287,6 +287,18 @@ class ClientMessage extends EntityRepository
 			$channels[] = $ch['channel'];
 		}
 
+		// They're automatically subscribed to their own chats of course
+		$chat_ids = App::getDb()->fetchAllCol("
+			SELECT c.id
+			FROM chat_conversations c
+			LEFT JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
+			WHERE c.agent_id = ? OR c2p.person_id = ?
+		", array($person_id, $person_id));
+
+		foreach ($chat_ids as $chat_id) {
+			$channels[] = 'chat_convo.' . $chat_id;
+		}
+
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);
 	}
 }

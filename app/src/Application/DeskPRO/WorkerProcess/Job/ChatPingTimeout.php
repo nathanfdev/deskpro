@@ -54,13 +54,22 @@ class ChatPingTimeout extends AbstractJob
 		#------------------------------
 
 		$cutoff = date('Y-m-d H:i:s', time() - 20); // 20 secs for agents
+
+		// Agnets who we know are online
+		$agent_ids = App::getDb()->fetchAllCol("
+			SELECT sessions.person_id
+			FROM sessions
+			LEFT JOIN people ON people.id = sessions.person_id
+			WHERE people.is_agent = 1 AND sessions.date_last > '$cutoff'
+		");
+
+		$agent_ids[] = 0;
+
+		// Get all open chats belonging to agents who arent online/have timed out
 		$timeouts = App::getDb()->fetchAllKeyValue("
-			SELECT c.id, p.person_id
+			SELECT c.id, c.agent_id
 			FROM chat_conversations c
-			LEFT JOIN chat_conversation_to_person AS p ON p.conversation_id = c.id
-			LEFT JOIN sessions AS s ON s.person_id = p.person_id
-			WHERE c.status = 'open' AND s.date_last < '$cutoff'
-			ORDER BY s.id DESC
+			WHERE c.status = 'open' AND c.agent_id NOT IN (" . implode(',', $agent_ids) . ")
 		");
 
 		$count_agents = 0;

@@ -148,7 +148,7 @@ pageMeta.baseId = '{{ baseId }}';
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
 							</div>
-						{% elseif message.author.is_agent and message.author.id != convo.person.id %}
+						{% elseif message.origin == 'agent' %}
 							<div class="message-content">
 								<div class="chatSend">
 									<div class="chatMsgSend">

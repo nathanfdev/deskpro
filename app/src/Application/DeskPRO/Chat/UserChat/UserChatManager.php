@@ -434,9 +434,6 @@ class UserChatManager
 	{
 		$this->em->beginTransaction();
 		try {
-			$convo->agent = null;
-			$this->em->persist($convo);
-
 			$url_show = preg_replace('#^https?://(www\.)?#i', '', $url);
 			if (strlen($url_show) > 50) {
 				$url_show = substr($url_show, 0, 50) . '...';
@@ -769,6 +766,13 @@ class UserChatManager
 	public function addMessage(ChatConversation $convo, Person $author = null, $message, array $metadata = array())
 	{
 		$msg = new ChatMessage();
+
+		if (DP_INTERFACE == 'agent') {
+			$msg->origin = 'agent';
+		} elseif (DP_INTERFACE == 'user') {
+			$msg->origin = 'user';
+		}
+
 		if ($author) {
 			$msg->author = $author;
 		}
