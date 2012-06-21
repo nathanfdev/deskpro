@@ -274,7 +274,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'radio':
 			case 'checkbox':
 
-				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+				if (in_array($f['formtype'], array('checkbox', 'multiselect'))) {
 					$new_field->setOption('multiple', true);
 				}
 
@@ -336,7 +336,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'radio':
 			case 'checkbox':
 
-				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+				if (in_array($f['formtype'], array('checkbox', 'multiselect'))) {
 					$new_field->setOption('multiple', true);
 				}
 
@@ -397,7 +397,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 			case 'radio':
 			case 'checkbox':
 
-				if ($f['formtype'] == 'radio' || $f['checkbox'] || $f['multiselect']) {
+				if (in_array($f['formtype'], array('checkbox', 'multiselect'))) {
 					$new_field->setOption('multiple', true);
 				}
 
@@ -428,7 +428,6 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 	 */
 	protected function saveChoiceFields($map_name, $new_field, $old_field_id, $choice_data)
 	{
-		error_log(print_r($choice_data,1));
 		// For choice options, need to insert choices
 		$x = 0;
 		foreach ($choice_data as $choice_info) {

@@ -41,6 +41,9 @@ use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackStep extends AbstractDeskpro3Step
 {
+	protected $feedback_category;
+	protected $user_cat_field;
+
 	public static function getTitle()
 	{
 		return 'Import Feedback';
@@ -77,6 +80,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 			return;
 		}
 
+		$this->feedback_category = $this->getEm()->find('DeskPRO:FeedbackCategory', 1);
+		$this->user_cat_field    = $this->getEm()->getRepository('DeskPRO:CustomDefFeedback')->findOneBy(array('sys_name' => 'cat'));
 		$batch = $this->getIdsBatch($page - 1);
 
 		$ids = implode(',', $batch);
@@ -124,11 +129,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		# Create it
 		#------------------------------
 
-		$new_category = $this->getEm()->find('DeskPRO:FeedbackCategory', $this->getMappedNewId('feedback_cat', $feedback['category_id']));
-		if (!$new_category) {
-			$this->logMessage("{$feedback['id']} has an invalid category, skipping");
-			return;
-		}
+		$new_category = $this->feedback_category;
 
 		$new_person = null;
 		if ($feedback['user_id']) {
@@ -169,6 +170,16 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('feedback', $feedback['id'], $new_feedback->id, true);
+
+		$user_cat_id = $this->getMappedNewId('feedback_cat', $feedback['category_id']);
+		if ($user_cat_id) {
+			$this->db->insert('custom_data_feedback', array(
+				'feedback_id' => $new_feedback->id,
+				'field_id'    => $this->user_cat_field->getId(),
+				'value'       => $user_cat_id,
+				'input'       => ''
+			));
+		}
 
 		$this->db->insert('import_datastore', array(
 			'typename' => 'dp3_ideaid_' . $feedback['id'],

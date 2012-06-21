@@ -40,6 +40,9 @@ use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackCatsStep extends AbstractDeskpro3Step
 {
+	protected $cat_field;
+	protected $cat_count = 0;
+
 	public static function getTitle()
 	{
 		return 'Import Idea Categories';
@@ -51,35 +54,33 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			return;
 		}
 
+		$this->getDb()->delete('custom_def_feedback', array('sys_name' => 'cat'));
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
-		if ($count) {
+		$this->logMessage(sprintf("Importing %d feedback categories", $count));
 
-			// Deleting the default example data because we're importing them
-			$default_check = $this->getDb()->fetchColumn("SELECT id FROM feedback ORDER BY id DESC LIMIT 1");
-			$default_check2 = $this->getDb()->fetchColumn("SELECT id FROM feedback_categories ORDER BY id DESC LIMIT 1");
-			if (!$default_check || $default_check == 1 && (!$default_check2 || $default_check2 == 2)) {
-				$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-				$this->getDb()->exec("DELETE FROM feedback");
-				$this->getDb()->exec("DELETE FROM feedback_categories");
-				$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
-			}
+		$start_time = microtime(true);
 
-			$this->logMessage(sprintf("Importing %d feedback categories", $count));
+		$this->getDb()->beginTransaction();
+		try {
+			// Create the field
+			$this->cat_field = new \Application\DeskPRO\Entity\CustomDefFeedback();
+			$this->cat_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+			$this->cat_field->title = 'Category';
+			$this->cat_field->sys_name = 'cat';
+			$this->cat_field->description = 'Category';
+			$this->getEm()->persist($this->cat_field);
+			$this->getEm()->flush();
 
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				$this->processCategories(0);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
+			$this->processCategories(0);
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
+
+		$end_time = microtime(true);
+		$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 
 		// Create the initial status categories
 		foreach (array('planned' => 'Planning', 'started' => 'Started', 'review' => 'Under Review') as $type => $t) {
@@ -104,7 +105,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 	}
 
 
-	protected function processCategories($parent_id, $prefix = array())
+	protected function processCategories($parent_id, $processing_parent_id = 0, $depth = 0, $prefix = array())
 	{
 		if ($parent_id) {
 			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
@@ -115,15 +116,22 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$new_parent = null;
+		$new_parent = 0;
 		if ($parent_id) {
-			$new_parent = $this->getEm()->find('DeskPRO:FeedbackCategory', $this->getMappedNewId('feedback_cat', $parent_id));
+			if ($depth >= 2) {
+				$new_parent = $this->getMappedNewId('feedback_cat', $processing_parent_id);
+			} else {
+				$new_parent = $this->getMappedNewId('feedback_cat', $parent_id);
+			}
+
 			if (!$new_parent) {
 				return;
 			}
 		}
 
 		foreach ($cats as $cat) {
+
+			$this->cat_count++;
 
 			#------------------------------
 			# Make sure we havent already done them
@@ -135,48 +143,32 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 				continue;
 			}
 
-			#------------------------------
-			# Subcageory: We're mapping to the parent
-			#------------------------------
-
-			if ($parent_id) {
-				$new_parent_cat_id = $this->getMappedNewId('feedback_cat', $parent_id);
-				$this->saveMappedId('feedback_cat', $cat['id'], $new_parent_cat_id);
-
-			#------------------------------
-			# Create it
-			#------------------------------
-
+			if ($depth == 0) {
+				$title = $cat['title'];
 			} else {
-
 				$prefix[] = $cat['title'];
-
-				$new_cat = new FeedbackCategory();
-				$new_cat->title = implode(' > ', $prefix);
-				$new_cat->display_order = $cat['display_order'];
-				if ($new_parent) {
-					// Cats are single-level
-					//$new_cat->parent = $new_parent;
-				}
-
-				$this->getEm()->persist($new_cat);
-				$this->getEm()->flush();
-
-				$this->getDb()->insert('feedback_category2usergroup', array(
-					'category_id' => $new_cat->id,
-					'usergroup_id' => 1
-				));
-
-				$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
-
-				$this->db->insert('import_datastore', array(
-					'typename' => 'dp3_ideacatid_' . $cat['id'],
-					'data' => $new_cat->id
-				));
+				$title = implode(' > ', $prefix);
 			}
 
-			// Process any subcats
-			$this->processCategories($cat['id'], $prefix);
+			$child = $this->cat_field->createChild();
+			$child->setTitle($title);
+			$child->setDisplayOrder($this->cat_count);
+			$child->setOption('parent_id', $new_parent);
+
+			$this->getEm()->persist($child);
+			$this->getEm()->flush();
+
+			$this->saveMappedId('feedback_cat', $cat['id'], $child->getId());
+
+			if (!$processing_parent_id) {
+				$processing_parent_id = $cat['id'];
+			}
+
+			$this->processCategories($cat['id'], $processing_parent_id, $depth+1, $prefix);
+
+			if ($depth >= 1) {
+				array_pop($prefix);
+			}
 		}
 	}
 }
