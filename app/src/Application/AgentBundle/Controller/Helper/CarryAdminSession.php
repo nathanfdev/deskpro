@@ -61,6 +61,11 @@ class CarryAdminSession
 				if ($admin_session) {
 					$this->controller->session->set('auth_person_id', $admin_session->person->id);
 					$this->controller->session->set('dp_interface', DP_INTERFACE);
+
+					// Set their status to available by default
+					$this->controller->session->set('active_status', 'available');
+					$this->controller->session->set('is_chat_available', 1);
+
 					$this->controller->session->save();
 
 					$this->controller->person = $admin_session->person;
