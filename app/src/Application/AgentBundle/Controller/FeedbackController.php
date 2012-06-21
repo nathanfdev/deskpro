@@ -757,10 +757,21 @@ class FeedbackController extends AbstractController
 			$display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
 		}
 		if (!$display_fields) {
-			$display_fields = array('date_created');
+			$display_fields = array('date_created', 'category');
 		}
 
+		$user_cat_field = $this->container->getSystemService('FeedbackFieldsManager')->getUserCategoryField();
+
+		$feedback_collection = new \Application\DeskPRO\Feedback\FeedbackCollection(
+			$feedback,
+			$this->container->getEm(),
+			$this->container->getSystemService('FeedbackFieldsManager')
+		);
+
+		$display = $feedback_collection->getDisplayArray();
+
 		return $this->render($template, array_merge(array(
+			'display'      => $display,
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
 			'result_ids'   => $result_cache['results'],
@@ -768,6 +779,7 @@ class FeedbackController extends AbstractController
 			'num_results'  => $result_cache['num_results'],
 			'per_page'     => 50,
 			'criteria'     => $result_cache['criteria'],
+			'user_cat_field' => $user_cat_field,
 
 			'feedback_cats'          => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
