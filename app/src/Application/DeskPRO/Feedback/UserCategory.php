@@ -29,28 +29,91 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Feedback;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\FeedbackFieldManager;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 
-class FeedbackFieldsManagerService
+class UserCategory
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new FeedbackFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-				'entity_name'        => 'DeskPRO:CustomDefFeedback',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
-				'data_entity_name'   => 'DeskPRO:CustomDataFeedback',
-			)
-		);
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
+	 */
+	protected $field;
 
-		return $m;
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefFeedback|null
+	 */
+	protected $sub_field;
+
+	public function __construct(CustomDefFeedback $field, CustomDefFeedback $sub_field = null)
+	{
+		$this->field = $field;
+		$this->sub_field = $sub_field;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDefFeedback
+	 */
+	public function getField()
+	{
+		return $this->field;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
+	 */
+	public function getSubField()
+	{
+		return $this->sub_field;
+	}
+
+
+	/**
+	 * Get the category ID
+	 *
+	 * @return mixed
+	 */
+	public function getCategoryId()
+	{
+		if ($this->sub_field) {
+			return $this->sub_field->getId();
+		}
+
+		return $this->field->getId();
+	}
+
+
+	/**
+	 * Get the category title
+	 *
+	 * @param string $sep
+	 * @return string
+	 */
+	public function getTitle($sep = ' > ')
+	{
+		$parts = array();
+		$parts[] = $this->field->getTitle();
+
+		if ($this->sub_field) {
+			$parts[] = $this->sub_field->getTitle();
+		}
+
+		return implode($sep, $parts);
+	}
+
+
+	/**
+	 * Is there a sub-category?
+	 *
+	 * @return bool
+	 */
+	public function hasSub()
+	{
+		return $this->sub_field !== null;
 	}
 }

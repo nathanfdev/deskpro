@@ -48,6 +48,8 @@ use Application\UserBundle\Controller\Helper\FacebookLike;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
+use Application\DeskPRO\Feedback\FeedbackCollection;
+
 class FeedbackController extends AbstractController
 {
 	/**
@@ -232,9 +234,11 @@ class FeedbackController extends AbstractController
 			}
 		}
 
-
+		$feedback_collection = new FeedbackCollection($feedback, $this->container->getEm(), $cf_man);
+		$display = $feedback_collection->getDisplayArray();
 
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
+			'display'            => $display,
 			'feedback_cats'      => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
@@ -400,20 +404,28 @@ class FeedbackController extends AbstractController
 
 		$this->container->getSystemService('view_log')->view($feedback);
 
+		$feedback_collection = new FeedbackCollection(
+			array($feedback),
+			$this->container->getEm(),
+			$this->container->getSystemService('FeedbackFieldsManager')
+		);
+		$display = $feedback_collection->getDisplayArrayForFeedback($feedback);
+
 		return $this->render($tpl, array(
-			'num_votes_this' => $num_votes_this,
+			'display'           => $display,
+			'num_votes_this'    => $num_votes_this,
 
 			'feedback'          => $feedback,
-			'category_path' => $category_path,
-			'category'      => $category,
-			'categories'    => $categories,
+			'category_path'     => $category_path,
+			'category'          => $category,
+			'categories'        => $categories,
 
-			'comments' => $comments,
-			'comments_widget' => $comments_widget,
+			'comments'          => $comments,
+			'comments_widget'   => $comments_widget,
 
-			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
+			'facebook_like'     => isset($facebook_like) ? $facebook_like : null,
 
-			'related_content' => $related_content
+			'related_content'   => $related_content
 		));
 	}
 

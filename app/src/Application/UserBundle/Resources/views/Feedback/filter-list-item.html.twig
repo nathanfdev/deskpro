@@ -1,7 +1,7 @@
 {##
  # A feedback result row listed in the feedback section.
  ##}
-
+{% set feedback = result.feedback %}
 <li class="dp-feedback-row {% if has_voted_ids[feedback.id] %}dp-voted-row{% endif %}"">
 	<section class="dp-feedback-post dp-content-post">
 		<header>
@@ -29,8 +29,10 @@
 					</h3></div>
 				<ul class="dp-post-info">
 					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
-					<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
-					<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
+					<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+					{% if result.user_category %}
+						<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ result.user_category.getTitle() }}</li>
+					{% endif %}
 					<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</a></li>
 				</ul>
 			</div>

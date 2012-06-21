@@ -29,28 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\FeedbackFieldManager;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 
-class FeedbackFieldsManagerService
+class FeedbackFieldManager extends FieldManager
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * Get the category field if it exists and has options
+	 *
+	 * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
+	 */
+	public function getUserCategoryField()
 	{
-		$m = new FeedbackFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-				'entity_name'        => 'DeskPRO:CustomDefFeedback',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
-				'data_entity_name'   => 'DeskPRO:CustomDataFeedback',
-			)
-		);
+		$field = $this->getSystemField('cat');
+		if (!$field) {
+			return null;
+		}
 
-		return $m;
+		if (!$this->getFieldChildren($field)) {
+			return null;
+		}
+
+		return $field;
 	}
 }
