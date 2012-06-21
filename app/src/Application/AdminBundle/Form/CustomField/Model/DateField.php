@@ -38,6 +38,8 @@ class DateField extends CustomFieldAbstract
 {
     public $default_value = '';
     public $default_mode = 'current';
+	public $required = false;
+	public $agent_required = false;
 
     public function init()
     {
@@ -51,6 +53,13 @@ class DateField extends CustomFieldAbstract
         if(empty($this->default_mode)) {
             $this->default_mode = 'current';
         }
+
+		if ($this->_field->getOption('required')) {
+			$this->required = true;
+		}
+		if ($this->_field->getOption('agent_required')) {
+			$this->agent_required = true;
+		}
     }
 
     protected function setFieldProperties()
@@ -58,5 +67,8 @@ class DateField extends CustomFieldAbstract
         $field = $this->_field;
         $field->default_value = $this->default_value;
         $field->setOption('default_mode', $this->default_mode);
+
+		$field->setOption('required', (bool)$this->required);
+		$field->setOption('agent_required', (bool)$this->agent_required);
     }
 }

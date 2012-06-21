@@ -98,10 +98,13 @@ class NewTicketValidator extends AbstractValidator
 				$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
 				$ticket_display->addPagesFromDb();
 
+				/** @var $ticket_page \Application\DeskPRO\PageDisplay\Page\TicketPageZone */
 				$ticket_page = $ticket_display->getPage($department_id);
 
 				if ($ticket_page) {
-					//$this->_traverseItems($ticket_page);
+					/** @var $page \Application\DeskPRO\Entity\TicketPageDisplay */
+					$page = $ticket_page->getPageDisplay('default');
+					$this->_traverseItems($page->data);
 				}
 			}
 		}
@@ -180,7 +183,7 @@ class NewTicketValidator extends AbstractValidator
 	protected function _traverseItems(array $items)
 	{
 		foreach ($items as $item) {
-			if ($item['item_type'] == 'group') {
+			if ($item['field_type'] == 'group') {
 				if (empty($item['items'])) {
 					continue;
 				}
@@ -194,8 +197,8 @@ class NewTicketValidator extends AbstractValidator
 
 	protected function _validateItem($item)
 	{
-		switch ($item['item_type']) {
-			case 'product':
+		switch ($item['field_type']) {
+			case 'ticket_product':
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
 					'repository' => App::getEntityRepository('DeskPRO:Product'),
 					'allow_none' => true
@@ -221,6 +224,16 @@ class NewTicketValidator extends AbstractValidator
 				));
 				if (!$validator->isValid($this->newticket->ticket->category_id)) {
 					$this->addError('ticket.priority_id');
+				}
+				break;
+
+			case 'ticket_field':
+				$field = App::getSystemService('TicketFieldsManager')->getFieldFromId($item['field_id']);
+				if ($field) {
+					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
+					foreach ($errors as $code) {
+						$this->addError('ticket.' . $code);
+					}
 				}
 				break;
 		}

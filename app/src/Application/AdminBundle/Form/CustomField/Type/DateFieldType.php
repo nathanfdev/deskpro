@@ -43,6 +43,8 @@ class DateFieldType extends CustomFieldTypeAbstract
     {
         $builder->add('default_value', 'text', array('required' => false));
         $builder->add('default_mode', 'text', array('required' => true));
+		$builder->add('required', 'checkbox', array('required' => false));
+		$builder->add('agent_required', 'checkbox', array('required' => false));
     }
 
 	public function getDefaultOptions(array $options)

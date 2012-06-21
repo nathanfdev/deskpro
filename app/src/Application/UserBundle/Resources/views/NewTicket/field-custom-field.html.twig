@@ -1,10 +1,18 @@
 {##
  # The standard custom field row of the new ticket form.
  ##}
-
-<div class="dp-control-group custom-ticket-field-{{f.id}}">
+{% import 'UserBundle:Common:macros-form.html.twig' as form %}
+<div class="dp-control-group custom-ticket-field-{{f.id}} {% if error_fields['ticket.field_' ~ f.field_def.id] %}dp-error dp-error-static{% endif %}">
 	<div class="dp-control-label">
 		<label><strong>{{f.title}}</strong> {% if f.field_def.description %}<i class="dp-help-pop dp-icon-question-sign" data-title="{{ f.title }}" data-content="{{ f.field_def.description }}"></i>{% endif %}</label>
 	</div>
-	<div class="dp-controls dp-fill">{{ render_custom_field_form(f) }}</div>
+	<div class="dp-controls dp-fill">
+		{{ render_custom_field_form(f) }}
+
+		{% if error_fields['ticket.field_' ~ f.field_def.id] %}
+			<div class="dp-help-inline dp-error-explain">
+				{{ form.custom_field_errors(errors, f.field_def, 'ticket.field_' ~ f.field_def.id) }}
+			</div>
+		{% endif %}
+	</div>
 </div>

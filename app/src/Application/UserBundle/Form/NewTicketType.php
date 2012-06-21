@@ -135,14 +135,10 @@ class NewTicketType extends AbstractType
 
 		if ($this->mode == self::MODE_NORMAL) {
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-
-			$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
-
-			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
+			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
 			$this->ticket_fields = $custom_fields;
 
 			$builder->add($ticket_builder);
-			$builder->add($ticket_fields_builder);
 		}
 	}
 

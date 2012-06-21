@@ -95,7 +95,11 @@ class Text extends HandlerAbstract
 			$len = Strings::utf8_strlen($data);
 
 			if ($options['min_length'] && $len < $options['min_length']) {
-				return $this->makeErrorArray(array('min_length'));
+				if ($options['min_length'] == 1) {
+					return $this->makeErrorArray(array('required'));
+				} else {
+					return $this->makeErrorArray(array('min_length'));
+				}
 			}
 
 			if ($options['max_length'] && $len > $options['max_length']) {

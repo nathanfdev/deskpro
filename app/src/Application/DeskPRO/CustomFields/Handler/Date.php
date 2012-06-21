@@ -41,19 +41,47 @@ use Application\DeskPRO\App;
 /**
  * Handles the date field
  */
-class Date extends Text
+class Date extends HandlerAbstract
 {
+	function getDataFromForm(array $form_data)
+	{
+		$name = $this->getFormFieldName();
+
+		$value = null;
+		if (!empty($form_data[$name])) {
+			$value = $form_data[$name];
+		}
+
+		if (!$value) {
+			return array();
+		}
+
+		$date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+		if (!$date) {
+			return array();
+		}
+
+		$date = \Orb\Util\Dates::convertToUtcDateTime($date);
+
+		return array(
+			array($this->field_def['id'], 'value', $date->getTimestamp())
+		);
+	}
+
 	public function getFormField(array $data = null)
 	{
 		$setData = null;
 		if ($data AND !empty($data['value'])) {
-			$setData = $data['value'];
+			try {
+				$date = new \DateTime('@' . $data['value']);
+				$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+				$setData = $date->format('Y-m-d');
+			} catch (\Exception $e) {
+				$setData = null;
+			}
 		}
 
 		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array(
-			//'widget' => 'text',
-			//'input' => 'timestamp',
-			//'format' => 3,
 			'required' => false
 		));
 
@@ -78,17 +106,21 @@ class Date extends Text
 		}
 
 		$options = array();
-		foreach (array('required', 'min_length', 'max_length', 'regex') as $k) {
+		foreach (array('required') as $k) {
 			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
 		}
 
 		if ($options['required']) {
 			if (!$data) {
-				return $this->makeErrorArray(array('min_length'));
+				return $this->makeErrorArray(array('required'));
 			}
+		}
 
-			// Make sure its a valid date
-			// todo
+		if ($data) {
+			$date = \DateTime::createFromFormat('Y-m-d', $data);
+			if (!$date) {
+				return $this->makeErrorArray(array('invalid_input'));
+			}
 		}
 
 		return array();

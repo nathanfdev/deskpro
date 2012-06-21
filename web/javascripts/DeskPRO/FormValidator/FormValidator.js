@@ -59,6 +59,8 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 	},
 
 	validateAll: function() {
+		this.el.find('.dp-error.dp-error-static').removeClass('dp-error');
+
 		this.formElements.each(function() {
 
 			var validators, i;

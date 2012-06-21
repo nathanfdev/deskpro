@@ -226,7 +226,11 @@ class Choice extends HandlerAbstract
 		}
 
 		if ($options['min_length'] && count($data) < $options['min_length']) {
-			return $this->makeErrorArray(array('min_length'));
+			if ($options['min_length'] == 1) {
+				return $this->makeErrorArray(array('required'));
+			} else {
+				return $this->makeErrorArray(array('min_length'));
+			}
 		}
 
 		if ($options['max_length'] && count($data) > $options['max_length']) {

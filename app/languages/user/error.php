@@ -17,4 +17,12 @@
 	'user.error.permission-denied-login' => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',
 	'user.error.permission-denied-title' => 'You are not allowed to do that',
 	'user.error.server-error'            => 'There was a server error that prevented the page from loading. Please try again.',
+	'user.error.form_date_invalid'       => 'Please enter a valid date',
+	'user.error.form_required'           => 'This field is required',
+	'user.error.form_choice_invalid'     => 'Please choose an option from the list',
+	'user.error.form_choice_min'         => 'Please select at least 1 option|Please select at least {{count}} options',
+	'user.error.form_choice_max'         => 'Please select at most 1 option|Please select at most {{count}} options',
+	'user.error.form_text_min'           => 'Please enter at least 1 character|Please enter at least {{count}} characters',
+	'user.error.form_text_max'           => 'Please enter at most 1 character|Please enter at most {{count}} characters',
+	'user.error.form_text_regex'         => 'Please enter a correct value',
 );

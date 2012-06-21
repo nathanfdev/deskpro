@@ -459,6 +459,52 @@ class FieldManager
 
 
 	/**
+	 * Returns an array of data objects of type $data_class based on form input
+	 *
+	 * @return \Application\DeskPRO\Entity\CustomDataAbstract[]
+	 */
+	public function getStrucutredDataFromForm(array $form, $data_class)
+	{
+		$structured_data = array();
+
+		foreach ($this->getFields() as $field_def) {
+			foreach ($field_def->getHandler()->getDataFromForm($form) as $in_data) {
+				list($set_field_id, $value_type, $value) = $in_data;
+
+				// The field we're actually saving under
+				// Usually the same as $field_def, but not always
+				// Ex: Choice fields we save under the actual choice option
+				$set_field = null;
+
+				if ($field_def->id == $set_field_id) {
+					$set_field = $field_def;
+				} elseif (isset($this->field_to_children[$field_def->getId()])) {
+					foreach ($this->field_to_children[$field_def->getId()] as $c) {
+						if ($c->id == $set_field_id) {
+							$set_field = $c;
+							break;
+						}
+					}
+				}
+
+				// No value
+				if ($value === null || $set_field === null) {
+					continue;
+				}
+
+				$data = new $data_class();
+				$data->field = $set_field;
+				$data[$value_type] = $value;
+
+				$structured_data[] = $data;
+			}
+		}
+
+		return $structured_data;
+	}
+
+
+	/**
 	 * @param $object
 	 * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
 	 * @param array $in_data

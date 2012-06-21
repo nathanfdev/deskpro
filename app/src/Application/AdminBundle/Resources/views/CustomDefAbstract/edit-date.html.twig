@@ -28,4 +28,33 @@
         </div>
     </div>
 </div>
+
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Required for users</label>
+	</div>
+	<div class="dp-form-input">
+		<div class="dp-input-group">
+			<label>
+				{{ form_widget(form.required) }}
+				&nbsp; Required
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Required for agents</label>
+	</div>
+	<div class="dp-form-input">
+		<div class="dp-input-group">
+			<label>
+				{{ form_widget(form.agent_required) }}
+				&nbsp; Required
+			</label>
+		</div>
+	</div>
+</div>
+
 {% endblock %}

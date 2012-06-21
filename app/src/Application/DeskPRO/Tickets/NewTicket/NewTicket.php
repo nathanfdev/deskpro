@@ -84,10 +84,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
 
-		for ($i = 0; $i < 500; $i++) {
-			$this->custom_ticket_fields["field_$i"] = null;
-		}
-
 		$this->creation_system = $creation_system;
 	}
 

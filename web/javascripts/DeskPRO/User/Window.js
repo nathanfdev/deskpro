@@ -135,7 +135,9 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		$('.timeago').timeago();
-		$('input.datepicker, .datepicker input').datepicker();
+		$('input.datepicker, .datepicker input').datepicker({
+			dateFormat: 'yy-mm-dd'
+		});
 
 		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
