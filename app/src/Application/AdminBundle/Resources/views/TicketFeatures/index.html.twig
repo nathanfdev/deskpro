@@ -18,6 +18,7 @@
 <input type="hidden" name="set_settings[]" value="core.tickets.enable_feedback" />
 <input type="hidden" name="set_settings[]" value="core.tickets.feedback_agents_read" />
 <input type="hidden" name="set_settings[]" value="core.show_ticket_suggestions" />
+<input type="hidden" name="set_settings[]" value="core.ref_pattern" />
 
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.feedback') }}</h4>
@@ -36,6 +37,43 @@
 		</div>
 	</div>
 </div>
+
+<div class="setting_field_row">
+	<h4>Reference Format</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			Each ticket is given a unique numeric ID as well as a unique reference code. The reference code is meant to be more readbale and user-friendly.
+			By default, ref codes look like <em>ABCD-1234-EFGH</em> but you can change this format by entering a new pattern below.
+			<div style="padding-top: 5px; padding-bottom: 5px;">
+				<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 85%; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+			</div>
+
+			<p>The pattern consists of tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
+
+			<ul class="token-list inline">
+				<li><em>&lt;A&gt;</em> - A random letter</li>
+				<li><em>&lt;#&gt;</em> - A random number</li>
+				<li><em>&lt;?&gt;</em> - A random letter or number</li>
+				<li><em>&lt;+&gt;</em> - An incrementing number from 1</li>
+				<li><em>&lt;YEAR&gt;</em> - Year as a four-digit number ({{ 'now'|date('Y') }})</li>
+				<li><em>&lt;MONTH&gt;</em> - Month as a two-digit number ({{ 'now'|date('m') }})</li>
+				<li><em>&lt;DAY&gt;</em> - Day as a two-digit number ({{ 'now'|date('d') }})</li>
+				<li><em>&lt;HOUR&gt;</em> - Hour in 24h time ({{ 'now'|date('H') }})</li>
+				<li><em>&lt;MIN&gt;</em> - Minute ({{ 'now'|date('i') }})</li>
+				<li><em>&lt;SEC&gt;</em> - Second ({{ 'now'|date('s') }})</li>
+			</ul>
+
+			<br />
+			<p>Here are some examples:</p>
+			<ul class="token-list">
+				<li><em>{{ '<YEAR>-<MONTH>-<+><+><+>'|e }}</em> creates <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-001</em></li>
+				<li><em>{{ '<?><?><?><?><?><?>'|e }}</em> creates <em>{{ rand() ~ rand() ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>
+				<li><em>{{ '<YEAR>-<A><A><?><?><?>'|e }}</em> creates <em>{{ 'now'|date('Y') ~ '-AB' ~ rand() ~ rand() }}</em></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
 <div class="setting_field_row" style="text-align: center">
 	<button class="btn primary">{{ phrase('admin.general.save_settings') }}</button>
 </div>

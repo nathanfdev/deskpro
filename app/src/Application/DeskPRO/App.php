@@ -616,7 +616,7 @@ class App
 	 */
 	public static function getRefGenerator()
 	{
-		return self::get('deskpro.ref_generator');
+		return self::getContainer()->getSystemService('RefGenerator');
 	}
 
 

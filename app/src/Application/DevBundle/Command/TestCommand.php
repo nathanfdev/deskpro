@@ -35,6 +35,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo $tst;
+		$ref_gen = $this->getContainer()->getSystemService('RefGenerator');
+
+		for ($i = 0; $i < 10; $i++) {
+			echo $ref_gen->generateReference('DeskPRO:Ticket');
+			echo "\n";
+		}
 	}
 }

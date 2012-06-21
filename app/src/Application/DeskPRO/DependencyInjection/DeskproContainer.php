@@ -396,7 +396,7 @@ class DeskproContainer extends Container
 	 */
 	public function getRefGenerator()
 	{
-		return $this->get('deskpro.ref_generator');
+		return $this->getSystemService('RefGenerator');
 	}
 
 
