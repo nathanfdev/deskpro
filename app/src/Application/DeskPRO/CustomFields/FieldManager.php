@@ -133,6 +133,19 @@ class FieldManager
 					$this->field_to_children[$p][] = $f;
 				}
 			}
+
+			// Choice fields that have no options are considered disabled
+			foreach ($this->fields as $f) {
+				if ($f->isChoiceType()) {
+					if (!$this->getFieldChildren($f)) {
+						unset(
+							$this->all_fields[$f->getId()],
+							$this->fields[$f->getId()],
+							$this->field_to_children[$f->getId()]
+						);
+					}
+				}
+			}
 		}
 
 		return $this->fields;
