@@ -391,6 +391,7 @@
 	'agent.general.new_person'                              => 'New Person',
 	'agent.general.new_pic'                                 => 'New Picture',
 	'agent.general.new_reply_ticket_subject'                => 'New Reply: {{ticket_subject}}',
+	'agent.general.new_note_ticket_subject'                 => 'New Agent Note: {{ticket_subject}}',
 	'agent.general.new_task'                                => 'New Task',
 	'agent.general.new_ticket'                              => 'New Ticket',
 	'agent.general.new_user_summary'                        => 'Is a new user',

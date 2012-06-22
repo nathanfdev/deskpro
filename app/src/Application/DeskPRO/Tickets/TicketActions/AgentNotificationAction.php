@@ -204,6 +204,7 @@ class AgentNotificationAction extends AbstractAction
 		$is_new_agent_reply = false;
 		$is_new_user_reply  = false;
 
+		$new_message = null;
 		if ($this->tracker->isNewTicket()) {
 			$this->tracker->logMessage("[AgentNotificationAction] isNewTicket");
 			$change_info['notify_type'] = 'newticket';
@@ -214,11 +215,13 @@ class AgentNotificationAction extends AbstractAction
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_agent_email_tpl;
 			$is_new_agent_reply = true;
+			$new_message = $this->tracker->getNewAgentReply();
 		} elseif ($this->tracker->hasNewUserReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewUserReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
+			$new_message = $this->tracker->hasNewUserReply();
 		} else {
 			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
 			$tpl = $this->ticket_update_email_tpl;
@@ -278,6 +281,7 @@ class AgentNotificationAction extends AbstractAction
 				'is_new_user_reply'  => $is_new_user_reply,
 				'action_performer'   => App::getCurrentPerson(),
 				'ticket_logs'        => $ticket_logs,
+				'new_message'        => $new_message,
 			);
 
 			if ($this->notify_info[$agent->id]) {

@@ -1,7 +1,9 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	{% if is_new_agent_reply %}{{ phrase('agent.general.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
+	{% if is_new_agent_reply %}
+		{% if new_message.is_agent_note %}{{ phrase('agent.general.new_note_ticket_subject', { ticket_subject: ticket.subject }) }}
+		{% else %}{{ phrase('agent.general.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}{% endif %}
 	{% else %}{{ phrase('agent.general.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
 	{% endif %}
 {% endblock %}
