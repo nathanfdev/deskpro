@@ -98,6 +98,16 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('UsersourceManager');
 	}
 
+	public function getTicketFieldManager()
+	{
+		return App::getSystemService('TicketFieldsManager');
+	}
+
+	public function getPersonFieldManager()
+	{
+		return App::getSystemService('PersonFieldsManager');
+	}
+
 	public function getDataRepository($ent)
 	{
 		return App::getSystemService("{$ent}Data");
