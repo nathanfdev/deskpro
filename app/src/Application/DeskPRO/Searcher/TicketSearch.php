@@ -735,6 +735,12 @@ class TicketSearch extends SearcherAbstract
 				$choice = Arrays::getFirstItem($choice);
 			}
 
+			if ($term_id) {
+				$this->getLogger()->logDebug(sprintf("Term: %s[%s] %s %s", $term, $term_id, $op, print_r($choice,1)));
+			} else {
+				$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, print_r($choice,1)));
+			}
+
 			switch ($term) {
 				case self::TERM_ID:
 					$this->enableArchiveSearch();
@@ -839,7 +845,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_URGENCY:
 					$this->affected_fields[] = 'ticket.urgency';
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.urgency", $op, $choice);
+					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
 					break;
 				case self::TERM_DATE_CREATED:
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
@@ -1245,19 +1251,40 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_USER_WAITING:
 					$this->enableArchiveSearch();
 					$this->affected_fields[] = 'ticket.date_user_waiting';
+
+					if (is_array($choice)) {
+						$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+					}
+
 					$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
 					break;
 
 				case self::TERM_AGENT_WAITING:
 					$this->affected_fields[] = 'ticket.date_agent_waiting';
+
+					if (is_array($choice)) {
+						$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+					}
+
 					$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
 					break;
 
 				case self::TERM_TOTAL_USER_WAITING:
 					$this->affected_fields[] = 'ticket.total_user_waiting';
-
 					$now = time();
-					$wheres[] = "(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now))) BETWEEN {$choice[0]} AND {$choice[1]}";
+
+					if (is_array($choice) && isset($choice['waiting_time'])) {
+						$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+						$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
+					}
+
+					if (is_array($choice)) {
+						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
+					} else {
+						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
+					}
 					break;
 
 				case self::TERM_CREATION_SYSTEM:

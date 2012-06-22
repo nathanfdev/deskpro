@@ -371,10 +371,10 @@
 	<div class="type" title="{{ phrase('agent.general.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
+				<option value="gte">&gt;=</option>
+				<option value="lte">&lt;=</option>
 				<option value="is">{{ phrase('agent.general.is') }}</option>
 				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="lte">&lt;=</option>
-				<option value="gte">&gt;=</option>
 				{% if with_change_terms %}
 					<optgroup label="{{ phrase('agent.general.changed') }}">
 						<option value="changed">{{ phrase('agent.general.changed') }}</option>
@@ -470,6 +470,34 @@
 	</div>
 	{% endif %}
 
+	<div class="type" title="User Waiting Time" data-rule-type="user_waiting">
+		<div class="op">
+			<input type="hidden" name="op" value="gte" />
+		</div>
+		<div class="options">
+			<input type="text" name="waiting_time" value="" style="width="50px" />
+			<select name="waiting_time_unit">
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="type" title="User Total Waiting Time" data-rule-type="total_user_waiting">
+		<div class="op">
+			<input type="hidden" name="op" value="gte" />
+		</div>
+		<div class="options">
+			<input type="text" name="waiting_time" value="" style="width="50px" />
+			<select name="waiting_time_unit">
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
 	{% if 'date_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="{{ phrase('agent.general.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
 		<div class="op">
@@ -485,6 +513,7 @@
 	</div>
 	{% endif %}
 
+	{% if search_context != 'filter' %}
     {% if 'time_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
     <div class="type" title="{{ phrase('agent.general.time_created') }}" data-rule-type="time_created">
         <div class="op">
@@ -509,7 +538,9 @@
         </div>
     </div>
     {% endif %}
+    {% endif %}
 
+	{% if search_context != 'filter' %}
     {% if 'time_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
     <div class="type" title="{{ phrase('agent.general.time_of_last_user_reply') }}" data-rule-type="time_user_replied">
         <div class="op">
@@ -534,7 +565,9 @@
         </div>
     </div>
     {% endif %}
+    {% endif %}
 
+	{% if search_context != 'filter' %}
     {% if 'day_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
     <div class="type" title="{{ phrase('agent.general.day_created') }}" data-rule-type="day_created">
         <div class="op">
@@ -552,7 +585,9 @@
         </div>
     </div>
     {% endif %}
+	{% endif %}
 
+	{% if search_context != 'filter' %}
     {% if 'day_last_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
     <div class="type" title="{{ phrase('agent.general.day_last_user_reply') }}" data-rule-type="day_last_user_reply">
         <div class="op">
@@ -570,6 +605,7 @@
         </div>
     </div>
     {% endif %}
+	{% endif %}
 
 	{% if 'date_resolved' not in no_show_fields and (not event_trigger or event_trigger == 'time_resolved') %}
 	<div class="type" title="{{ phrase('agent.general.date_resolved') }}" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">

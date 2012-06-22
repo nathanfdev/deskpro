@@ -55,6 +55,18 @@ class Dates
 	const SECS_YEAR = 29030400;
 	/**#@-**/
 
+	/**@#+
+	 * Units of time
+	 * @var int
+	 */
+	const UNIT_MINUTES = 'minutes';
+	const UNIT_HOURS   = 'hours';
+	const UNIT_DAYS    = 'days';
+	const UNIT_WEEKS   = 'weeks';
+	const UNIT_MONTHS  = 'months';
+	const UNIT_YEARS   = 'years';
+	/**#@-**/
+
 	/**
 	 * Check if a year is a leap year
 	 *
@@ -395,4 +407,33 @@ class Dates
 
 		return false;
     }
+
+
+	/**
+	 * Convert unit of time into seconds (years, days, hours etc to seconds).
+	 *
+	 * @param int $num
+	 * @param string $unit
+	 * @return int
+	 * @throws \InvalidArgumentException
+	 */
+	public static function getUnitInSeconds($num, $unit)
+	{
+		switch ($unit) {
+			case self::UNIT_MINUTES:
+				return $num * 60;
+			case self::UNIT_HOURS:
+				return $num * 60 * 60;
+			case self::UNIT_DAYS:
+				return $num * 60 * 60 * 24;
+			case self::UNIT_WEEKS:
+				return $num * 60 * 60 * 24 * 7;
+			case self::UNIT_MONTHS:
+				return $num * 60 * 60 * 24 * 7 * 30;
+			case self::UNIT_YEARS:
+				return $num * 60 * 60 * 24 * 365;
+		}
+
+		throw new \InvalidArgumentException("$unit is not a known unit");
+	}
 }

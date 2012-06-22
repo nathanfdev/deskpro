@@ -52,6 +52,10 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 				DeskPRO.UI.LabelsInput_Grouped[this.options.type] = tagSource;
 			}
+
+			if (!tagSource) {
+				console.warn('No type %s', this.options.type);
+			}
 		}
 
 		if (!tagSource) tagSource = [];
