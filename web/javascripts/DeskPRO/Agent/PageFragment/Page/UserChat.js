@@ -25,7 +25,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 
 				self.sendMessage(msg);
-				self.addMessageRow(self.meta.youName, msg, 'agent');
+				self.addMessageRow(self.meta.youName, msg, 'agent', false, null, { no_notify: true });
 			}
 
 			messageTextarea.on('keypress', function(ev) {
@@ -475,6 +475,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (reqData && reqData.author_type && reqData.author_type == 'agent' && reqData.from_client == DESKPRO_SESSION_ID) {
 				notify = false;
 			}
+		}
+
+		if (metadata && metadata.no_notify) {
+			notify = false;
 		}
 
 		if (notify) {
