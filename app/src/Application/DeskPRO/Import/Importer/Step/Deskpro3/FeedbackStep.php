@@ -175,8 +175,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 		if ($user_cat_id) {
 			$this->db->insert('custom_data_feedback', array(
 				'feedback_id' => $new_feedback->id,
-				'field_id'    => $this->user_cat_field->getId(),
-				'value'       => $user_cat_id,
+				'field_id'    => $user_cat_id,
+				'value'       => 1,
 				'input'       => ''
 			));
 		}
