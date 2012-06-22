@@ -736,9 +736,9 @@ class TicketSearch extends SearcherAbstract
 			}
 
 			if ($term_id) {
-				$this->getLogger()->logDebug(sprintf("Term: %s[%s] %s %s", $term, $term_id, $op, print_r($choice,1)));
+				$this->getLogger()->logDebug(sprintf("Term: %s[%s] %s %s", $term, $term_id, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
 			} else {
-				$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, print_r($choice,1)));
+				$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
 			}
 
 			switch ($term) {
