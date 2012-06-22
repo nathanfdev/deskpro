@@ -53,6 +53,19 @@
 	data-validate-url="{{ path('admin_agents_edit_formvalidate', {person_id: agent.id|default('0')}) }}"
 >
 
+<div id="errors_container" style="display: none;">
+	<h3>Please correct the following errors:</h3>
+	<ul></ul>
+	<div id="dupe_confirm" style="display: none">
+		&bull; The email address you entered already belongs to an existing user account.
+		Do you want to convert the user into an agent?<br />
+		<label>
+			<input type="checkbox" name="confirm_email_dupe" value="1" {% if confirm_email_dupe %}checked="checked"{% endif %} />
+			Yes, convert the user into an agent
+		</label>
+	</div>
+</div>
+
 <div class="dp-form">
 	<div class="dp-form-section">
 		<div class="dp-form-row">

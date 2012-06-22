@@ -254,8 +254,18 @@ class AgentsController extends AbstractController
 			$errors[] = 'The email address you entered is not valid.';
 		} elseif (!$agent or !$agent->findEmailAddress($email)) {
 			$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($exist_check && $exist_check) {
-				$errors[] = 'The new email address you entered already belongs to an existing user.';
+			if ($exist_check) {
+				if ($person_id) {
+					$errors[] = "The email address you entered already belongs to an existing user.";
+				} else {
+					if ($exist_check->is_agent) {
+						$errors[] = "The email address you entered already belongs to an existing user.";
+					} else {
+						if (!$this->in->getBool('confirm_email_dupe')) {
+							$errors[] = 'show_dupe_confirm';
+						}
+					}
+				}
 			}
 		}
 
@@ -275,10 +285,22 @@ class AgentsController extends AbstractController
 
 	public function editAgentSaveAction($person_id)
 	{
-		if ($person_id) {
+		$set_email = $this->in->getString('agent.email');
+		$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
+
+		if (!$person_id && $exist_check && !$exist_check->is_agent && $this->in->getBool('confirm_email_dupe')) {
+			$person_id = $exist_check->getId();
+			$agent = $exist_check;
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
+			$agent->is_agent = true;
+			$is_new = false;
+
+		} elseif ($person_id) {
 			$agent = $this->getAgentOr404($person_id);
 			$is_new = false;
 		} else {
+
 			$agent = new \Application\DeskPRO\Entity\Person();
 
 			$agent->setPassword(Strings::random(20));
@@ -304,12 +326,10 @@ class AgentsController extends AbstractController
 			$agent->$prop = $this->in->getBool('agent.' . $prop);
 		}
 
-		$set_email = $this->in->getString('agent.email');
 		if (!$agent->findEmailAddress($set_email)) {
 			if (!\Orb\Validator\StringEmail::isValueValid($set_email)) {
 				$errors[] = 'The email address you entered is invalid';
 			} else {
-				$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
 				if ($exist_check && $exist_check->id != $agent->id) {
 					$errors[] = 'The new email address you entered already belongs to a different user.';
 				}

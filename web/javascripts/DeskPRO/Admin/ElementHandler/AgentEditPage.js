@@ -28,13 +28,14 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 			if (errors.length) {
 				alert("Please correct the following errors and try again:\n - " + errors.join("\n - "));
-				return;
+				//return;
 			}
 
 			self.el.addClass('loading');
 
 			// We also need to send the ajax verify too
 			var postData = self.el.serializeArray();
+			$('#errors_container').hide();
 			$.ajax({
 				url: self.el.data('validate-url'),
 				type: 'POST',
@@ -49,7 +50,17 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 					self.okSubmit = true;
 					self.el.submit();
 				} else {
-					alert("Please correct the following errors and try again:\n - " + data.error_messages.join("\n - "));
+					$(document).scrollTop(0);
+					$('#errors_container').show().find('ul').empty();
+					Array.each(data.error_messages, function(err) {
+						if (err == 'show_dupe_confirm') {
+							$('#dupe_confirm').show();
+						} else {
+							var li = $('<li/>');
+							li.html('&bull; ' + err);
+							$('#errors_container').show().find('ul').append(li);
+						}
+					});
 				}
 			});
 		});
