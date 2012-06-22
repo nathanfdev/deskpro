@@ -13,7 +13,7 @@
 	'user.feedback.form_title'             => 'Tell us about your <span class="dp-cat-title-place">idea</span>',
 	'user.feedback.related_feedback'       => 'Related Feedback',
 	'user.feedback.sidebar_description'    => 'There are currently {{phrase1}} as well as {{phrase2}}. Upvote feedback you agree with or submit your own.',
-	'user.feedback.sidebar_description_none-none'  => 'We do not currently have any user submitted feedback. <a href="{{link}}">Do you have a suggestion for us?</a>',
+	'user.feedback.sidebar_description-none'  => 'We do not currently have any user submitted feedback. <a href="{{link}}">Do you have a suggestion for us?</a>',
 	'user.feedback.sort_by'                => 'Sort by',
 	'user.feedback.sort_i-voted'           => 'I Voted',
 	'user.feedback.sort_most-votes'        => 'Most Votes',
