@@ -200,7 +200,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 
-	public function omnisearch($query_text, array $limit_types = null)
+	public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
 	{
 		$per_page = 25; $page = 1; $top = false;
 

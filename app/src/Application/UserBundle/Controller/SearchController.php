@@ -37,7 +37,6 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\SearchLog;
 
-use Application\DeskPRO\Elastica\Searcher\ContentSearcher;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 
 use Application\DeskPRO\Search\StickyWordSearch;
@@ -84,7 +83,7 @@ class SearchController extends AbstractController
 			$search     = App::getSearchAdapter();
 			$search->setPersonContext($this->person);
 
-			$result_set = $search->getContentSearcher()->query($q, $per_page, $cur_page);
+			$result_set = $search->getContentSearcher()->omnisearch($q, null, $per_page, $cur_page);
 			$total      = $result_set->totalCount();
 			$results    = $search->getResultSetObjects($result_set, true);
 
