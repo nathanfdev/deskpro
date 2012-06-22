@@ -245,6 +245,11 @@ class Choice extends HandlerAbstract
 		return array('is', 'not');
 	}
 
+	public function getFilterCapabilities()
+	{
+		return array('is', 'not');
+	}
+
 	public function getSearchType()
 	{
 		return 'id';
