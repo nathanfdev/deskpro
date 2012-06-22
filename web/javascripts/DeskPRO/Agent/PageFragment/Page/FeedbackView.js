@@ -128,7 +128,9 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = $('.feedback-editor-wrap', this.getEl('content_ed')).get(0);
-		el.parentNode.removeChild(el);
+		if (el && el.parentNode) {
+			el.parentNode.removeChild(el);
+		}
 	},
 
 	handleUnloadRevisions: function(revision_id) {
