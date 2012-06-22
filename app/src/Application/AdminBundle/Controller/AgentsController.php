@@ -119,6 +119,18 @@ class AgentsController extends AbstractController
 			ORDER BY d.display_order
 		")->execute();
 
+		$add_from_usersource = array();
+		$usersources = $this->em->createQuery("
+			SELECT us
+			FROM DeskPRO:Usersource us
+			ORDER BY us.display_order ASC, us.title ASC
+		")->execute();
+		foreach ($usersources as $us) {
+			if (in_array($us['source_type'], array('ldap', 'active_directory'))) {
+				$add_from_usersource[] = $us;
+			}
+		}
+
 		return $this->render('AdminBundle:Agents:list.html.twig', array(
 			'all_agents'     => $all_agents,
 			'agent_to_groups' => $agent_to_groups,
@@ -127,6 +139,7 @@ class AgentsController extends AbstractController
 			'all_teams'      => $all_teams,
 			'all_usergroups' => $all_usergroups,
 			'all_departments' => $all_departments,
+			'add_from_usersource' => $add_from_usersource,
 
 			'team_member_ids'      => $team_member_ids,
 			'usergroup_member_ids' => $usergroup_member_ids,
@@ -154,6 +167,131 @@ class AgentsController extends AbstractController
 		return $this->render('AdminBundle:Agents:list-deleted.html.twig', array(
 			'all_agents'     => $all_agents,
 		));
+	}
+
+	############################################################################
+	# add-from
+	############################################################################
+
+	public function newFromUsersourceAction($usersource_id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+
+		return $this->render('AdminBundle:Agents:add-from-usersource.html.twig', array(
+			'usersource' => $usersource
+		));
+	}
+
+	public function newFromUsersourceMakeAction($usersource_id)
+	{
+		$username = $this->in->getString('search_term');
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+
+		$raw_info = $this->_tryFetchUser($username, $usersource);
+
+		if (!$raw_info) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$identity = new \Orb\Auth\Identity($raw_info['identity'], $raw_info);
+
+		$this->db->beginTransaction();
+		try {
+			$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($usersource, $identity);
+			$person = $login_processor->getPerson();
+
+			$person->is_agent = true;
+			$person->can_agent = true;
+
+			$this->em->persist($person);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents_edit', array('person_id' => $person->getId()));
+	}
+
+	public function newFromUsersourceSearchAction($usersource_id)
+	{
+		$username = $this->in->getString('search_term');
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+
+		$raw_info = $this->_tryFetchUser($username, $usersource);
+
+		return $this->render('AdminBundle:Agents:add-from-usersource-result.html.twig', array(
+			'usersource' => $usersource,
+			'raw_info' => $raw_info,
+			'search_term' => $username,
+		));
+	}
+
+	protected function _tryFetchUser($username, $usersource)
+	{
+		$adapter = $usersource->getAdapter();
+		$options = $usersource->options;
+
+		/** @var $zend_auth \Zend\Authentication\Adapter\Ldap */
+		$zend_auth = $adapter->getAuthAdapter()->getZendAuthAdapter();
+
+		// Bogus because zend only creates ldap obj when its needed,
+		// so this is a hack to get it to set all the correct options
+		// for us
+		try {
+			$zend_auth->setUsername('__bogus__');
+			$zend_auth->setPassword('__bogus__');
+			$zend_auth->authenticate();
+		} catch (\Exception $e) {}
+
+		/** @var $ldap \Zend\Ldap\Ldap */
+		$ldap = $zend_auth->getLdap();
+
+		$raw_info = null;
+
+		$dn = $ldap->getCanonicalAccountName($username, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+		$rec = $ldap->getNode($dn);
+
+		$raw_info = null;
+		if ($rec) {
+			$raw_info = array();
+
+			if ($rec->getAttribute('sAMAccountName')) {
+				$raw_info['identity'] = $rec->getAttribute('sAMAccountName');
+			} elseif ($rec->getAttribute('uid')) {
+				$raw_info['identity'] = $rec->getAttribute('uid');
+			} else {
+				$raw_info['identity'] = $dn;
+			}
+
+			$raw_info['dn'] = $dn;
+
+			if ($rec->getAttribute('givenName')) {
+				$raw_info['first_name'] = $rec->getAttribute('givenName');
+			}
+			if ($rec->getAttribute('SN')) {
+				$raw_info['last_name'] = $rec->getAttribute('SN');
+			}
+
+			if ($rec->getAttribute('name')) {
+				$raw_info['name'] = $rec->getAttribute('name');
+			} elseif ($rec->getAttribute('CN')) {
+				$raw_info['name'] = $rec->getAttribute('CN');
+			}
+
+			if ($rec->getAttribute('mail')) {
+				$raw_info['email_address'] = $rec->getAttribute('mail');
+			}
+
+			foreach ($raw_info as &$v) {
+				if (is_array($v)) {
+					$v = Arrays::getFirstItem($v);
+				}
+			}
+		}
+
+		return $raw_info;
 	}
 
 

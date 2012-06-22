@@ -38,7 +38,7 @@ class Ldap extends \Zend\Ldap\Ldap
 {
 	/**
 	 * Custom version to support multiple %s placeholders in custom account filter format
-	 * 
+	 *
 	 * @param $acctname
 	 * @return string
 	 */

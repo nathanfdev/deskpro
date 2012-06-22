@@ -730,6 +730,27 @@ $collection->add('admin_agents_new', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_new_fromusersource', new Route(
+	'/agents/new-from-usersource/{usersource_id}',
+	array('_controller' => 'AdminBundle:Agents:newFromUsersource', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new_fromusersource_make', new Route(
+	'/agents/new-from-usersource/{usersource_id}/make',
+	array('_controller' => 'AdminBundle:Agents:newFromUsersourceMake', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new_fromusersource_search', new Route(
+	'/agents/new-from-usersource/{usersource_id}/search',
+	array('_controller' => 'AdminBundle:Agents:newFromUsersourceSearch', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
 $collection->add('admin_agents_edit', new Route(
 	'/agents/{person_id}/edit',
 	array('_controller' => 'AdminBundle:Agents:editAgent'),

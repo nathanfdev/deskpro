@@ -105,6 +105,15 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 
 	/**
+	 * @return \Zend\Authentication\Adapter\Ldap
+	 */
+	public function getZendAuthAdapter()
+	{
+		return new \Zend\Authentication\Adapter\Ldap($this->options, $this->set_username, $this->set_password);
+	}
+
+
+	/**
 	 * Authenticate a user.
 	 *
 	 * @return
@@ -121,11 +130,11 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 		$time_start = microtime(true);
 		if ($this->logger) {
 			$this->logger->log("START ActiveDirectory::authenticate", Logger::DEBUG);
-			$this->logger->log("Options: " . trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+			$this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
 			$this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
 		}
 
-		$auth = new \Zend\Authentication\Adapter\Ldap($this->options, $this->set_username, $this->set_password);
+		$auth = $this->getZendAuthAdapter();
 
 		try {
 			/** @var $result \Zend\Authentication\Result */

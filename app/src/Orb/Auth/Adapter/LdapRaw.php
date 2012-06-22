@@ -109,6 +109,30 @@ class LdapRaw implements FormLoginInterface, Loggable
 
 
 	/**
+	 * @return \Zend\Authentication\Adapter\Ldap
+	 */
+	public function getZendAuthAdapter()
+	{
+		$options = array();
+		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn') as $k) {
+			if (isset($this->options[$k]) && $this->options[$k]) {
+				$options[$k] = $this->options[$k];
+			}
+		}
+
+		$auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
+
+		if ($this->options['ldapClass']) {
+			$class = $this->options['ldapClass'];
+			$ldap = new $class();
+			$auth->setLdap($ldap);
+		}
+
+		return $auth;
+	}
+
+
+	/**
 	 * Authenticate a user.
 	 *
 	 * @return
@@ -129,20 +153,7 @@ class LdapRaw implements FormLoginInterface, Loggable
 			$this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
 		}
 
-		$options = array();
-		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn') as $k) {
-			if (isset($this->options[$k]) && $this->options[$k]) {
-				$options[$k] = $this->options[$k];
-			}
-		}
-
-		$auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
-
-		if ($this->options['ldapClass']) {
-			$class = $this->options['ldapClass'];
-			$ldap = new $class();
-			$auth->setLdap($ldap);
-		}
+		$auth = $this->getZendAuthAdapter();
 
 		try {
 			/** @var $result \Zend\Authentication\Result */

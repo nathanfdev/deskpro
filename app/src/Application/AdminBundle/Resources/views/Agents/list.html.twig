@@ -8,6 +8,11 @@
 	<nav>
 		<ul>
 			<li class="add"><a href="{{ path('admin_agents_new') }}">{{ phrase('admin.agents.add_agent') }}</a></li>
+			{% if add_from_usersource %}
+				{% for us in add_from_usersource %}
+					<li class="add" style="margin-left: 6px"><a href="{{ path('admin_agents_new_fromusersource', {usersource_id: us.id}) }}">Add from: {{ us.title }}</a></li>
+				{% endfor %}
+			{% endif %}
 		</ul>
 	</nav>
 	<ul>
