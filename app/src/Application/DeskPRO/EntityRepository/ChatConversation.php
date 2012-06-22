@@ -196,7 +196,7 @@ class ChatConversation extends AbstractEntityRepository
 
 		$conversations = $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:ChatConversation c
+			FROM DeskPRO:ChatConversation c INDEX BY c.id
 			WHERE c.id IN(" . implode(',', $conversation_ids) . ")
 			ORDER BY c.id ASC
 		")->execute();
@@ -360,7 +360,7 @@ class ChatConversation extends AbstractEntityRepository
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:ChatConversation c
+			FROM DeskPRO:ChatConversation c INDEX BY c.id
 			WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
 			ORDER BY c.id ASC
 		")->setParameter(1, $person)

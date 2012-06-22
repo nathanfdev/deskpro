@@ -226,6 +226,11 @@ class UserChatManager
 				$this->em->flush();
 			}
 
+			if ($convo->person) {
+				$action = new \Application\DeskPRO\People\ActivityLogger\ActionType\NewChat($convo->person, $convo);
+				App::getPersonActivityLogger()->saveAction($action);
+			}
+
 			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
