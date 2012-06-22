@@ -75,7 +75,7 @@ class TicketTriggers extends AbstractJob
 		$install_date = new \DateTime('@' . $instal_timestamp);
 		$searcher->addTerm('date_created', 'gt', array('date1' => $install_date));
 
-		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'DEBUG');
+		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'INFO');
 
 		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 100));
 
