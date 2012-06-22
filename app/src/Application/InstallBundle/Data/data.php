@@ -99,37 +99,37 @@ if (!$IMPORT_INSTALL) {
 ################################################################################
 
 ##BEGIN:create_feedback.default##
+$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
+$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
+$em->persist($DEFAULT_IDEA_CAT);
+$em->flush();
+
+$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
+$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
+$em->persist($cat);
+$em->flush();
+
+$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
+$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
+$em->persist($cat);
+$em->flush();
+
+foreach (array('planning', 'started', 'under-review') as $t) {
+	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+	$s->status_type = 'active';
+	$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+	$em->persist($s);
+}
+
+foreach (array('completed', 'duplicate', 'declined') as $t) {
+	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+	$s->status_type = 'closed';
+	$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+	$em->persist($s);
+}
+$em->flush();
+
 if (!$IMPORT_INSTALL) {
-	$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
-	$em->persist($DEFAULT_IDEA_CAT);
-	$em->flush();
-
-	$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
-	$em->persist($cat);
-	$em->flush();
-
-	$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
-	$em->persist($cat);
-	$em->flush();
-
-	foreach (array('planning', 'started', 'under-review') as $t) {
-		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-		$s->status_type = 'active';
-		$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-		$em->persist($s);
-	}
-
-	foreach (array('completed', 'duplicate', 'declined') as $t) {
-		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-		$s->status_type = 'closed';
-		$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-		$em->persist($s);
-	}
-	$em->flush();
-
 	$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
 	$DEFAULT_IDEA->person = $AGENT;
 	$DEFAULT_IDEA->title = $translate->phrase('user.defaults.feedback_example_title');
