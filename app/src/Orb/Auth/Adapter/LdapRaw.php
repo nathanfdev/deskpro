@@ -80,14 +80,20 @@ class LdapRaw implements FormLoginInterface, Loggable
 		self::OPT_FIELD_ID           => 'dn',
 		self::OPT_FIELD_EMAIL        => 'mail',
 		self::OPT_FIELD_USERNAME     => 'uid',
+		'accountCanonicalForm'       => 2,
+		'bindRequiresDn'             => true,
+		'ldapClass'                  => null,
 	);
 
 	public function __construct(array $options)
 	{
 		$this->options = array_merge($this->options, $options);
-		$this->options['accountFilterFormat']   = '(&(objectClass=user)(|(' . $this->options[self::OPT_FIELD_ID] . '=%s)(' . $this->options[self::OPT_FIELD_EMAIL] . '=%s)(' . $this->options[self::OPT_FIELD_USERNAME] . '=%s)))';
-		$this->options['bindRequiresDn']        = true;
-		$this->options['accountCanonicalForm']  = 2;
+		if (!$this->options['field_email']) $this->options['field_email'] = 'mail';
+		if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
+
+		if (!isset($this->options['accountFilterFormat'])) {
+			$this->options['accountFilterFormat']   = '(uid=%s)';
+		}
 	}
 
 
@@ -119,11 +125,24 @@ class LdapRaw implements FormLoginInterface, Loggable
 		$time_start = microtime(true);
 		if ($this->logger) {
 			$this->logger->log("START Ldap::authenticate", Logger::DEBUG);
-			$this->logger->log("Options: " . trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+			$this->logger->log("Options: " . trim(print_r($this->options,1)), Logger::DEBUG);
 			$this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
 		}
 
-		$auth = new \Zend\Authentication\Adapter\Ldap($this->options, $this->set_username, $this->set_password);
+		$options = array();
+		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn') as $k) {
+			if (isset($this->options[$k]) && $this->options[$k]) {
+				$options[$k] = $this->options[$k];
+			}
+		}
+
+		$auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
+
+		if ($this->options['ldapClass']) {
+			$class = $this->options['ldapClass'];
+			$ldap = new $class();
+			$auth->setLdap($ldap);
+		}
 
 		try {
 			/** @var $result \Zend\Authentication\Result */
@@ -161,25 +180,25 @@ class LdapRaw implements FormLoginInterface, Loggable
 			if ($rec) {
 				$raw_info = array_merge($raw_info, $rec->getAttributes());
 
-				$raw_info['identity'] = $raw_info['dn'];
+				$raw_info['identity'] = Arrays::getFirstItem($raw_info['uid']);
 
 				if ($rec->getAttribute('givenName')) {
-					$raw_info['first_name'] = $rec->getAttribute('givenName');
+					$raw_info['first_name'] = Arrays::getFirstItem($rec->getAttribute('givenName'));
 				}
 				if ($rec->getAttribute('SN')) {
-					$raw_info['last_name'] = $rec->getAttribute('SN');
+					$raw_info['last_name'] = Arrays::getFirstItem($rec->getAttribute('SN'));
 				}
 
 				if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
-					$raw_info['name'] = $rec->getAttribute('givenName') . ' ' . $rec->getAttribute('SN');
+					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('givenName')) . ' ' . Arrays::getFirstItem($rec->getAttribute('SN'));
 				} elseif ($rec->getAttribute('name')) {
-					$raw_info['name'] = $rec->getAttribute('name');
+					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
 				} elseif ($rec->getAttribute('CN')) {
-					$raw_info['name'] = $rec->getAttribute('CN');
+					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('CN'));
 				}
 
 				if ($rec->getAttribute('mail')) {
-					$raw_info['email_address'] = $rec->getAttribute('mail');
+					$raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
 				}
 			}
 		} catch (\Exception $e) {}
