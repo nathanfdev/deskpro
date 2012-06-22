@@ -850,6 +850,15 @@ class UserChatManager
 		$msg->metadata = $metadata;
 		$convo->addMessage($msg);
 
+		// If subject less than 250 chars, add message onto it so subject is like a little preview
+		if (!$msg->is_user_hidden and !$msg->is_sys and strlen($convo->subject) < 250) {
+			if ($convo->subject) {
+				$convo->subject .= ' | ';
+			}
+
+			$convo->subject .= strip_tags($msg->content);
+		}
+
 		$this->em->beginTransaction();
 
 		try {
