@@ -597,6 +597,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		// If the clicked thing was the close button, or if its a middle-click...
 		if (el_click.is('.close') || event.which == 2 || event.isDbl) {
 			var tab = this.getTab(tabId);
+			if (!tab) {
+				return;
+			}
+
 			if (tab.page && tab.page.fireEvent) {
 				event.deskpro = {cancelClose: false};
 				tab.page.fireEvent('closeTab', [event, tab]);
