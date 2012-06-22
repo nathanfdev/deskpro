@@ -242,10 +242,51 @@ class UserChatManager
 	 *
 	 * @return \Application\DeskPRO\Entity\ChatConversation
 	 */
-	public function getChat()
+	public function getChat($allow_timeout = false)
 	{
-		$convo = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($this->session);
+		$convo = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($this->session, $allow_timeout);
 		return $convo;
+	}
+
+
+	/**
+	 * @param $chat
+	 */
+	public function reopenTimoutChat(ChatConversation $convo)
+	{
+		$convo['status'] = 'open';
+		$convo['date_ended'] = null;
+		$convo['ended_by'] = '';
+		$convo['agent'] = null;
+
+		$this->em->beginTransaction();
+		try {
+			$this->em->persist($convo);
+			$this->em->flush();
+
+			$this->addSystemMessage(
+				$convo,
+				'message_user-returned'
+			);
+
+			// Resend the new chat alerts to agents
+			$newchat_cm_data = $convo->getInfo();
+			$newchat_cm_data['restarted'] = true;
+
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => 'chat.new',
+				'data' => $newchat_cm_data,
+				'created_by_client' => $this->getCurrentClientId(),
+			));
+
+			$this->em->persist($cm);
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
 	}
 
 
@@ -571,7 +612,7 @@ class UserChatManager
 				array(),
 				array('user_timed_out' => true)
 			);
-			$this->endChat($convo);
+			$this->endChat($convo, null, 'timeout');
 
 			$this->em->flush();
 			$this->em->commit();
@@ -596,15 +637,24 @@ class UserChatManager
 
 		$convo->status = 'ended';
 
+		if ($author) {
+			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_AGENT;
+		} elseif ($reason == 'timeout') {
+			$reason = '';
+			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_TIMEOUT;
+		}
+
 		$this->em->beginTransaction();
 
 		try {
 			$this->em->persist($convo);
 
-			if ($author) {
-				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
-			} else {
-				$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
+			if ($convo->ended_by != 'timeout') {
+				if ($author) {
+					$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
+				} else {
+					$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
+				}
 			}
 
 			$this->em->flush();
@@ -636,7 +686,7 @@ class UserChatManager
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
 	 * @return void
 	 */
-	public function endChatUser(ChatConversation $convo)
+	public function endChatUser(ChatConversation $convo, $ended_by = null)
 	{
 		// Already ended
 		if ($convo->status == 'ended') {
@@ -644,6 +694,10 @@ class UserChatManager
 		}
 
 		$convo->status = 'ended';
+
+		if ($ended_by) {
+			$convo->ended_by = $ended_by;
+		}
 
 		$this->em->beginTransaction();
 

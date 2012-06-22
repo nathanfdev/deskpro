@@ -27,6 +27,7 @@
 	'user.chat.message_uploading'               => 'Uploading ...',
 	'user.chat.message_user-joined'             => '{{name}} joined the chat',
 	'user.chat.message_user-left'               => '{{name}} left the chat',
+	'user.chat.message_user-returned'           => 'User has returned',
 	'user.chat.message_user-timeout'            => 'User timed out',
 	'user.chat.message_wait'                    => 'We are finding an agent for you',
 	'user.chat.name'                            => 'Your Name',

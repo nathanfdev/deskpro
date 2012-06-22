@@ -23,4 +23,5 @@
 	'agent.userchat.message_user-joined'    => '{{name}} joined the chat',
 	'agent.userchat.message_user-left'      => '{{name}} left the chat',
 	'agent.userchat.message_user-timeout'   => 'User timed out',
+	'agent.userchat.message_user-returned'  => 'User has returned',
 );

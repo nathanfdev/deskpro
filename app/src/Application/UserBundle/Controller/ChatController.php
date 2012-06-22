@@ -240,7 +240,14 @@ class ChatController extends AbstractController
 		$session = $sessionObj->getEntity();
 
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
-		$convo = $chat_manager->getChat();
+
+		// True to allow fetching of chats w/ timeout
+		$convo = $chat_manager->getChat(true);
+
+		// If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
+		if ($convo['status'] == 'ended') {
+			$chat_manager->reopenTimoutChat($convo);
+		}
 
 		// If the user is on a new page, tell the agent
 		if ($convo) {
@@ -285,7 +292,7 @@ class ChatController extends AbstractController
 
 		$sent_transcript = false;
 		if ($convo['status'] != ChatConversation::STATUS_ENDED) {
-			$chat_manager->endChatUser($convo);
+			$chat_manager->endChatUser($convo, ChatConversation::ENDED_USER);
 
 			// The transcript is sent automatically by the chat manager,
 			// set this flag so the JS knows though

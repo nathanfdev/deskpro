@@ -368,7 +368,7 @@ class ChatConversation extends AbstractEntityRepository
 		  ->execute();
 	}
 
-	public function getLatestChatForSession($session, $active = true)
+	public function getLatestChatForSession($session, $allow_timeout = false)
 	{
 		try {
 			$conversation = $this->getEntityManager()->createQuery("
@@ -381,8 +381,11 @@ class ChatConversation extends AbstractEntityRepository
 			$conversation = null;
 		}
 
-		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_OPEN)) {
-			$conversation = null;
+		if ($conversation && $conversation['status'] != ChatConversationEntity::STATUS_OPEN) {
+			if ($allow_timeout && $conversation['ended_by'] == 'timeout' && (time() - $conversation['date_ended']->getTimestamp() < 1800)) {
+			} else {
+				$conversation = null;
+			}
 		}
 
 		return $conversation;

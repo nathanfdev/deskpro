@@ -53,6 +53,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_OPEN  = 'open';
 	const STATUS_ENDED = 'ended';
 
+	const ENDED_TIMEOUT = 'timeout';
+	const ENDED_AGENT   = 'agent';
+	const ENDED_USER    = 'user';
+
 	/**
 	 * @var int
 	 */
@@ -180,6 +184,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 */
 	protected $date_ended;
+
+	/**
+	 * @var string
+	 */
+	protected $ended_by = '';
 
 	protected $_created_messages = array();
 
@@ -619,6 +628,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned', ));
 		$metadata->mapField(array( 'fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message', ));
 		$metadata->mapField(array( 'fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended', ));
+		$metadata->mapField(array( 'fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
