@@ -94,7 +94,13 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });
 					this.closeSelf();
 				} else {
-					alert('There was an error with the form');
+					var errorMessages = $('<div/>');
+					errorMessages.append('<p>Please correct the following errors with your form:</p>');
+
+					Array.each(data.error_messages, function(msg) {
+						errorMessages.append('<div>&bull; ' + msg + '</div>');
+					});
+					DeskPRO_Window.showAlert(errorMessages, 'error');
 				}
 			}
 		});

@@ -973,6 +973,23 @@ class PersonController extends AbstractController
 
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
 
+		// Check for dupe email address
+		$new_email = $this->in->getString('newperson.email');
+		if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
+			return $this->createJsonResponse(array(
+				'success' => false,
+				'error_messages' => array('Please enter a valid email address'),
+			));
+		} else {
+			$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
+			if ($check_exists) {
+				return $this->createJsonResponse(array(
+					'success' => false,
+					'error_messages' => array('The email address you entered already belongs to an existing user'),
+				));
+			}
+		}
+
 		$formType = new \Application\AgentBundle\Form\Type\NewPerson();
 		$form = $this->get('form.factory')->create($formType, $newperson);
 
