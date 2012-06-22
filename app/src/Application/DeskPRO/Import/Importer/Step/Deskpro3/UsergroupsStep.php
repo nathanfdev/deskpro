@@ -45,6 +45,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 	protected $ticket_cats;
 	protected $faq_cats;
 	protected $files_cats;
+	protected $feedback_types;
 
 	public static function getTitle()
 	{
@@ -72,6 +73,8 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$this->faq_cats = \Orb\Util\Arrays::intoHierarchy($this->faq_cats, 0, 'parent');
 
 		$this->files_cats = $this->getOldDb()->fetchAllKeyed("SELECT * FROM files_cats ORDER BY displayorder ASC");
+
+		$this->feedback_types = $this->getDb()->fetchAllKeyed("SELECT * FROM feedback_categories");
 
 		$this->getDb()->beginTransaction();
 
@@ -349,6 +352,16 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			$this->getDb()->replace('download_category2usergroup', array(
 				'usergroup_id' => $ug_id,
 				'category_id' => $v,
+			));
+		}
+
+		// DP3 didnt have the concept of types, so
+		// the ones we created are default and should be usable by all
+
+		foreach ($this->feedback_types as $type) {
+			$this->getDb()->replace('feedback_category2usergroup', array(
+				'usergroup_id' => $ug_id,
+				'category_id' => $type['id'],
 			));
 		}
 	}
