@@ -386,7 +386,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
 			this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
-				delete delete self.openingChatTimeout[data.conversation_id];
+				delete self.openingChatTimeout[data.conversation_id];
 			}, 1000);
 		}
 
