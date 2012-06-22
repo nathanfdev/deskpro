@@ -169,6 +169,10 @@ class ChatController extends AbstractController
 		$chat_manager = $this->getChatManager($session_code);
 		$convo = $chat_manager->getChat();
 
+		if (!$convo) {
+			$convo = $chat_manager->startChat($_REQUEST);
+		}
+
 		$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
 
 		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
