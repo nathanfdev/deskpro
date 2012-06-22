@@ -64,6 +64,11 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 
 		$this->via_message = $this->tracker->getNewAgentReply();
 
+		// Users arent notified of notes ofc
+		if ($this->via_message->is_agent_note) {
+			return;
+		}
+
 		$change_info = array(
 			'type' => 'user_notify',
 			'notify_type' => 'newreply',
