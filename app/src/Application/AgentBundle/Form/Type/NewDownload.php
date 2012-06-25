@@ -45,8 +45,8 @@ class NewDownload extends AbstractType
 		# Basic fields
 		#------------------------------
 
-		$builder->add('title', 'text');
-		$builder->add('content', 'textarea');
+		$builder->add('title', 'text', array('required' => false));
+		$builder->add('content', 'textarea', array('required' => false));
 		$builder->add('status', 'text');
 
 		$builder->add('category_id', 'text');

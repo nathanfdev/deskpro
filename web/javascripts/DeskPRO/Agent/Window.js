@@ -1276,7 +1276,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
-				if(routeData.routeTriggerEl.data('route-notabreload')) {
+				if(routeData && routeData.routeTriggerEl && routeData.routeTriggerEl.data('route-notabreload')) {
 					DeskPRO_Window.TabBar.tabToFrontTabById(existTab.id);
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
 				}

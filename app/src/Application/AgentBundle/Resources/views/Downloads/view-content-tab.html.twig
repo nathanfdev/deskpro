@@ -1,20 +1,10 @@
 <div class="full-tab-content">
 	<div class="download-content-wrap content-post-wrap">
-		{# Top #}
-		<div class="download-content-info">
-			{% if download.blob.is_image %}
-				<div class="thumb">
-					<a href="{{ download.blob.download_url }}" target="_blank"><img src="{{ download.blob.getThumbnailUrl(50)  }}" /></a>
-				</div>
-			{% endif %}
-
-			<a class="clean-white small" href="{{ download.blob.download_url }}" target="_blank" title="{{ download.blob.content_type }}">
-				{{ download.blob.filename }}
-			</a> ({{ download.blob.readable_filesize }})
-			<br class="clear" />
-		</div>
-		{# /Top #}
-		{{ download.content_html|raw }}
+		{% if download.content_html %}
+			{{ download.content_html|raw }}
+		{% else %}
+			<em>No content</em>
+		{% endif %}
 	</div>
 	<div class="download-editor-wrap article-editor-wrap" style="display: none">
 		<div class="download-editor">
@@ -27,13 +17,6 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="download[content]" rows="5" cols="50">{{ state.download.content|default(download.content) }}</textarea>
-
-			<br />
-
-			{{ phrase('agent.publish.download_replace_file') }}:
-			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
-			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'download[attach]', noremove: true} %}
-			<ul class="files file-list"></ul>
 		</div>
 	</div>
 </div>

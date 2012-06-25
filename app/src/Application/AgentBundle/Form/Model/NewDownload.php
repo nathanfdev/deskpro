@@ -40,10 +40,10 @@ use Application\DeskPRO\Entity\Person;
 
 class NewDownload
 {
-	public $title;
+	public $title = '';
 	public $category_id;
 	public $status;
-	public $content;
+	public $content = '';
 
 	public $slug;
 	public $labels_json;
@@ -80,6 +80,14 @@ class NewDownload
 
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
 		$download->blob = $blob;
+
+		if (!$download->title) {
+			$download->title = $blob->filename;
+		}
+
+		$blob->filename = $download->title;
+		$this->_em->persist($blob);
+
 		$this->_em->persist($download);
 
 		if ($this->labels_json) {

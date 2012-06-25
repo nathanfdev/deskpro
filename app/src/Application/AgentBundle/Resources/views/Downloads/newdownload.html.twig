@@ -51,14 +51,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-<div class="section title-section" id="{{baseId}}_title_section">
-	<div class="content">
-		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="title" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
-		<div class="error-message title">Please enter a title.</div>
-	</div>
-</div>
-
 <div class="section file-section" id="{{baseId}}_file_section">
 	<div class="content">
 		<h4>File</h4>
@@ -68,10 +60,15 @@ pageMeta.baseId = '{{ baseId }}';
 		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]' } %}
         <ul class="files file-list"></ul>
 	</div>
+	<div class="content" style="margin-top: 8px;">
+		<h4>Filename</h4>
+		<small style="font-size: 11px; margin-bottom: 4px;">Optionally specify a different filename.</small><br />
+		<input type="text" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
+	</div>
 </div>
 
 <div class="section article-section" id="{{baseId}}_content_section">
-	<div class="content">
+	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
 		<textarea type="text" name="newdownload[content]" id="{{baseId}}_content">{{ state.newdownload.content }}</textarea>
 	</div>

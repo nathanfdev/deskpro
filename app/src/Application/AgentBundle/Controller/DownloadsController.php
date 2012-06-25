@@ -209,16 +209,36 @@ class DownloadsController extends AbstractController
 				);
 				break;
 
+			case 'file':
+
+				$rev = ContentRevisionUtil::findOrCreate($download, array('blob', 'title'), $this->person);
+
+				if ($this->in->getUint('download.attach') && $blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('download.attach'))) {
+        			$download->blob = $blob;
+
+					$title = $this->in->getString('download.title');
+					if (!$title) {
+						$title = $blob->filename;
+					}
+
+					$download->title = $title;
+
+					$blob->filename = $title;
+					$this->em->persist($blob);
+
+					$rev['title'] = $title;
+					$rev->blob = $download->blob;
+				}
+
+				$data['file_html'] = $this->renderView('AgentBundle:Downloads:view-fileinfo.html.twig', array(
+					'download' => $download
+				));
+
+				break;
+
 			case 'content':
 
 				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editdownload', $this->person->id);
-
-				$changed_blob = false;
-				if ($this->in->getUint('attach')) {
-					$changed_blob = true;
-					$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
-        			$download->blob = $blob;
-				}
 
 				$changed_content = false;
 				if ($this->in->getString('content') != $download['content']) {
@@ -230,14 +250,10 @@ class DownloadsController extends AbstractController
 					'download' => $download
 				));
 
-				$rev = ContentRevisionUtil::findOrCreate($download, array('content','blob'), $this->person);
+				$rev = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
 
 				if ($changed_content) {
 					$rev['content'] = $download['content'];
-				}
-
-				if ($changed_blob) {
-					$rev->blob = $download->blob;
 				}
 
 				break;

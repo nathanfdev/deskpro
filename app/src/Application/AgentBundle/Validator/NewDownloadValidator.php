@@ -53,10 +53,6 @@ class NewDownloadValidator extends AbstractValidator
 			$this->addError('category_id.invalid');
 		}
 
-		if (!$download->title) {
-			$this->addError('title.missing');
-		}
-
 		if (!$download->status) {
 			$this->addError('status.invalid');
 		}

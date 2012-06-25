@@ -75,6 +75,74 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
+
+		var editBtn    = this.getEl('editfile_controls').find('.edit-trigger');
+		var cancelBtn  = this.getEl('editfile_controls').find('.cancel-trigger');
+		var saveBtn    = this.getEl('editfile_controls').find('.save-trigger');
+		var loadingBtn = this.getEl('editfile_controls').find('.is-loading');
+
+		var editArea = this.getEl('editfile');
+		var showArea = this.getEl('showfile');
+
+		editBtn.on('click', function(ev) {
+			ev.preventDefault();
+			editBtn.hide();
+			cancelBtn.show();
+			saveBtn.show();
+
+			showArea.hide();
+			editArea.show();
+
+			editArea.find('.file-list').empty();
+		});
+
+		saveBtn.on('click', function(ev) {
+			ev.preventDefault();
+			editBtn.hide();
+			cancelBtn.hide();
+			saveBtn.hide();
+
+			loadingBtn.show();
+			$.ajax({
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				data: {
+					action: 'file',
+					"download[title]": editArea.find('[name="download[title]"]').val(),
+					"download[attach]": editArea.find('[name="download[attach]"]').val()
+				},
+				error: function() {
+					loadingBtn.hide();
+					cancelBtn.show();
+					saveBtn.show();
+				},
+				success: function(data) {
+					loadingBtn.hide();
+					cancelBtn.hide();
+					saveBtn.hide();
+					editBtn.show();
+
+					self.handleUnloadRevisions(data.revision_id);
+					editArea.hide();
+					showArea.empty().html(data.file_html).show();
+				}
+			})
+		});
+
+		cancelBtn.on('click', function(ev) {
+			ev.preventDefault();
+			editBtn.show();
+			cancelBtn.hide();
+			saveBtn.hide();
+
+			editArea.hide();
+			showArea.show();
+		});
+
+		var list = $('.file-list', editArea);
+		DeskPRO_Window.util.fileupload(editArea, { page: this });
+		this.wrapper.bind('fileuploadadd', function() {
+			$('ul.file-list', editArea).empty();
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -418,12 +486,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 						self.editStateSaver.triggerChange();
 					});
 				}
-			});
-
-			var list = $('.file-list', this.getEl('content_ed'));
-			DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
-			this.wrapper.bind('fileuploadadd', function() {
-				$('ul.file-list', self.getEl('content_ed')).empty();
 			});
 
 			this._hasInitEdBefore = true;

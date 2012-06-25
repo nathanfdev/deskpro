@@ -73,6 +73,7 @@ class TemplatingExtension extends \Twig_Extension
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
 			'url_full' => new \Twig_Function_Method($this, 'urlFull'),
 			'url_display' => new \Twig_Function_Method($this, 'urlDisplay'),
+			'helpdesk_url' => new \Twig_Function_Method($this, 'helpdeskUrl'),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
 			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
@@ -730,6 +731,11 @@ class TemplatingExtension extends \Twig_Extension
 
 		$url = $this->container->get('router')->getGenerator()->generatePath($name, $parameters, false);
 		return rtrim(App::getSetting('core.deskpro_url'), '/') . $url;
+	}
+
+	public function helpdeskUrl($path)
+	{
+		return App::getSetting('core.deskpro_url') . ltrim($path, '/');
 	}
 
 	public function urlFragment($name, array $parameters = array())

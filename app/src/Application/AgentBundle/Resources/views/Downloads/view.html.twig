@@ -56,6 +56,38 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container-outer">
 	<div class="profile-box-container">
 		<header>
+			<div class="controls" id="{{baseId}}_editfile_controls">
+				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+				<button class="edit-trigger">Change File</button>
+				<button class="cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
+				<button class="save-trigger" id="{{baseId}}_org_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
+			</div>
+			<h4>File</h4>
+		</header>
+		<section class="description-area">
+			<div id="{{baseId}}_showfile">{% include 'AgentBundle:Downloads:view-fileinfo.html.twig' %}</div>
+			<div id="{{baseId}}_editfile" style="display: none;">
+				<dl class="info-list">
+					<dt>File:</dt>
+					<dd>
+						<input type="file" name="file-upload" multiple="multiple" />
+						{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'download[attach]', noremove: true} %}
+						<ul class="files file-list"></ul>
+					</dd>
+					<dt>Filename:</dt>
+					<dd>
+						<input type="text" name="download[title]" value="{{ download.title }}" /><br />
+						<small style="font-size: 11px;">Optionally specify a different filename.</small>
+					</dd>
+				</dl>
+			</div>
+		</section>
+	</div>
+</div>
+
+<div class="profile-box-container-outer">
+	<div class="profile-box-container">
+		<header>
 			<h4>{{ phrase('agent.general.properties') }}</h4>
 		</header>
 		<section class="description-area">
