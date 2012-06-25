@@ -26,17 +26,17 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="new_ticket" checked="checked" />
-						New Tickets
+						New Tickets (The trigger is run when a ticket is created)
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
-							'new_ticket.web_person': phrase('admin.tickets.new_ticket_web'),
-							'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway'),
-							'new_ticket.widget': phrase('admin.tickets.new_ticket_widget'),
-							'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
+							'new_ticket.web_person': 'Only tickets created by a user, via the web interface',
+							'new_ticket.gateway_person': 'Only tickets created by a user, via the email gateway',
+							'new_ticket.widget': 'Only tickets created by a user, via the website widget',
+							'new_ticket.agent': 'Only tickets created by an agent',
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_ticket" /> All new tickets</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_ticket" /> All tickets</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label><br /></li>
 							{% endfor %}
@@ -47,16 +47,16 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="new_reply" />
-						New Replies
+						Ticket Reply (The trigger is run when a reply is added to a ticket)
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
-							'new_reply.web_person': phrase('admin.tickets.new_reply_web'),
-							'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway'),
-							'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
+							'new_reply.web_person': 'Only replies created by a user, via the web interface',
+							'new_reply.gateway_person': 'Only replies created by a user, via the email gateway',
+							'new_reply.agent': 'Only replies by an agent',
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_reply" /> All new replies</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_reply" /> All replies</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label></li>
 							{% endfor %}
@@ -67,15 +67,15 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="property_change" />
-						Ticket Updates
+						Ticket Property Change (The trigger is run when any property of a ticket is changed)
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
-							'property_change.user': phrase('admin.tickets.property_change_user'),
-							'property_change.agent': phrase('admin.tickets.property_change_agent'),
+							'property_change.user': 'Only ticket property changes initiated by a user',
+							'property_change.agent': 'Only ticket property changes initiated by an agent',
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="property_change" /> All ticket updates</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="property_change" /> All ticket property change</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label></li>
 							{% endfor %}
@@ -86,7 +86,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="escalations" />
-						Time-based Escalations
+						Time Based Triggers/Escalations (The trigger is run when a ticket matches a specific time criteria)
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<ul>
