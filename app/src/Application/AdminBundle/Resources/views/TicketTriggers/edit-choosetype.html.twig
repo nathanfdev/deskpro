@@ -26,7 +26,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="new_ticket" checked="checked" />
-						New Tickets (The trigger is run when a ticket is created)
+						{{ phrase('admin.tickets.trigger_group_new_ticket') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
@@ -47,7 +47,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="new_reply" />
-						Ticket Reply (The trigger is run when a reply is added to a ticket)
+						{{ phrase('admin.tickets.trigger_group_new_reply') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
@@ -67,7 +67,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="trigger_group_group" value="property_change" />
-						Ticket Property Change (The trigger is run when any property of a ticket is changed)
+						{{ phrase('admin.tickets.trigger_group_property_change') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						{% set types = {
@@ -85,8 +85,8 @@
 
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger" name="trigger_group_group" value="escalations" />
-						Time Based Triggers/Escalations (The trigger is run when a ticket matches a specific time criteria)
+						<input type="radio" class="option-trigger" name="trigger_group_group" value="escalation" />
+						{{ phrase('admin.tickets.trigger_group_escalation') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<ul>

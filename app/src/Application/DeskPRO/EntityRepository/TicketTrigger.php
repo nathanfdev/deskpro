@@ -94,12 +94,25 @@ class TicketTrigger extends EntityRepository
 		$grouped = array();
 
 		foreach ($triggers as $tr) {
-			$group = $tr->getTriggerGroup();
+			$group = $tr->event_trigger;
+			$sub_group = null;
+			if (strpos($group, 'time_') === 0) {
+				$sub_group = $group;
+				$group = 'time';
+			}
+
 			if (!isset($grouped[$group])) {
 				$grouped[$group] = array();
 			}
 
-			$grouped[$group][] = $tr;
+			if ($sub_group) {
+				if (!isset($grouped[$group][$sub_group])) {
+					$grouped[$group][$sub_group] = array();
+				}
+				$grouped[$group][$sub_group][] = $tr;
+			} else {
+				$grouped[$group][] = $tr;
+			}
 		}
 
 		return $grouped;

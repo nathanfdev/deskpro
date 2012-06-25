@@ -657,6 +657,8 @@ class TicketTerms
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
 					$descs[] = $term;
+				} else {
+					error_log("Unknown term description for {$info['type']}");
 				}
 			}
 		}

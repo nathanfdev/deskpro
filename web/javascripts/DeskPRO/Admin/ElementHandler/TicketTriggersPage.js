@@ -5,8 +5,8 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 
 	init: function() {
 		var self = this;
-		var uls = $('ul.trigger-set');		
-		
+		var uls = $('ul.trigger-set');
+
 		var updateRunOrderDisplay = function() {
 			uls.each(function() {
 				var x = 0;
@@ -53,17 +53,17 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 		uls.each(function() {
 			var el = $(this);
 			$(this).sortable({
-				items: '> li:not(.trigger-val)',
+				items: '> li.orderable:not(.trigger-val)',
 				update: function() {
 					var postData = [];
-					
+
 					$('li.is-trigger').each(function(i) {
 						var id = $(this).data('trigger-id');
 						if (id) {
 							postData.push({name: 'trigger_ids[]', value: id});
 						}
 					});
-					
+
 					updateRunOrderDisplay();
 
 					$.ajax({

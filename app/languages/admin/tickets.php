@@ -168,4 +168,8 @@
 	'admin.tickets.x_since_time_resolved'                   => '&gt; {{time}} since status was set to resolved',
 	'admin.tickets.x_since_time_user_waiting'               => '&gt; {{time}} since status was set to awaiting user',
 	'admin.tickets.x_since_total_user_waiting'              => 'User has been waiting &gt; {{time}}',
+	'admin.tickets.trigger_group_new_ticket' => 'New Tickets (The trigger is run when a ticket is created)',
+	'admin.tickets.trigger_group_new_reply' => 'Ticket Reply (The trigger is run when a reply is added to a ticket)',
+	'admin.tickets.trigger_group_property_change' => 'Ticket Property Change (The trigger is run when any property of a ticket is changed)',
+	'admin.tickets.trigger_group_escalation' => 'Time Based Triggers/Escalations (The trigger is run when a ticket matches a specific time criteria)',
 );
