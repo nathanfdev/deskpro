@@ -230,6 +230,7 @@ class AgentsController extends AbstractController
 
 	protected function _tryFetchUser($username, $usersource)
 	{
+		$usersource->setOption('bindRequiresDn', true);
 		$adapter = $usersource->getAdapter();
 		$options = $usersource->options;
 
@@ -257,7 +258,9 @@ class AgentsController extends AbstractController
 		if ($rec) {
 			$raw_info = array();
 
-			if ($rec->getAttribute('sAMAccountName')) {
+			if ($rec->getAttribute('userPrincipalName')) {
+				$raw_info['identity'] = $rec->getAttribute('userPrincipalName');
+			} elseif ($rec->getAttribute('sAMAccountName')) {
 				$raw_info['identity'] = $rec->getAttribute('sAMAccountName');
 			} elseif ($rec->getAttribute('uid')) {
 				$raw_info['identity'] = $rec->getAttribute('uid');

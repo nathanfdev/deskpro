@@ -85,11 +85,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	{
 		$this->options = array_merge($this->options, $options);
 
-		if (!empty($this->options[self::OPT_FILTER_FORMAT])) {
-			$this->options['accountFilterFormat'] = '(&(objectClass=user)(' . $this->options['self::OPT_FILTER_FIELD'] . '=%s))';
-		}
-
-		$this->options['accountCanonicalForm'] = 3;
+		$this->options['accountCanonicalForm'] = 4;
 	}
 
 
@@ -109,7 +105,22 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	 */
 	public function getZendAuthAdapter()
 	{
-		return new \Zend\Authentication\Adapter\Ldap($this->options, $this->set_username, $this->set_password);
+		$options = array();
+		foreach (array('host', 'port', 'useStartTls', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
+			if (isset($this->options[$k]) && $this->options[$k]) {
+				$options[$k] = $this->options[$k];
+			}
+		}
+
+		$auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
+
+		if (!empty($this->options['ldapClass'])) {
+			$class = $this->options['ldapClass'];
+			$ldap = new $class();
+			$auth->setLdap($ldap);
+		}
+
+		return $auth;
 	}
 
 
@@ -172,22 +183,22 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 				$raw_info = array_merge($raw_info, $rec->getAttributes());
 
 				if ($rec->getAttribute('givenName')) {
-					$raw_info['first_name'] = $rec->getAttribute('givenName');
+					$raw_info['first_name'] = Arrays::getFirstItem($rec->getAttribute('givenName'));
 				}
 				if ($rec->getAttribute('SN')) {
-					$raw_info['last_name'] = $rec->getAttribute('SN');
+					$raw_info['last_name'] = Arrays::getFirstItem($rec->getAttribute('SN'));
 				}
 
-				if ($rec->getAttribute('givenName') && $rec->getAttribute('SN')) {
-					$raw_info['name'] = $rec->getAttribute('givenName') . ' ' . $rec->getAttribute('SN');
+				if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
+					$raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
 				} elseif ($rec->getAttribute('name')) {
-					$raw_info['name'] = $rec->getAttribute('name');
+					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
 				} elseif ($rec->getAttribute('CN')) {
-					$raw_info['name'] = $rec->getAttribute('CN');
+					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('CN'));
 				}
 
 				if ($rec->getAttribute('mail')) {
-					$raw_info['email_address'] = $rec->getAttribute('mail');
+					$raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
 				}
 			}
 		} catch (\Exception $e) {}

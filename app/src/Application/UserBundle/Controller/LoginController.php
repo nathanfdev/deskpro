@@ -434,6 +434,7 @@ HTML;
 				$this->session->set('auth_usersource_type', $usersource->source_type);
 				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
+				$this->session->save();
 
 				$return = $this->in->getString('return');
 				if ($return) {
