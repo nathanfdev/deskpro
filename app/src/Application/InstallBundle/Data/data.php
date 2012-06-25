@@ -1077,7 +1077,7 @@ $em->flush();
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'downloads_cat_list';
-$b->is_enabled = false;
+$b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
