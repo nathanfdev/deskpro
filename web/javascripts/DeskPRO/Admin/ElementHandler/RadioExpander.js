@@ -10,6 +10,7 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 		var expandClass = this.el.data('expand-class');
 		var radios = $('.option-trigger', this.el);
 
+		var firstSubRadio = this.el.data('select-first-subradio');
 		var currentGroup = null;
 
 		function switchtoradio(radio) {
@@ -22,13 +23,17 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 			var group = radio.closest('.' + groupClass).addClass('on');
 			$('.' + expandClass, group).show();
 			currentGroup = group;
+
+			if (firstSubRadio) {
+				group.find(':radio.' + firstSubRadio).first().click();
+			}
 		}
 
 		$(':radio.option-trigger:checked', this.el).each(function() {
 			switchtoradio($(this));
 		});
 
-		this.el.on('click', ':radio', function() {
+		this.el.on('click', ':radio.option-trigger', function() {
 			switchtoradio($(this));
 		});
 

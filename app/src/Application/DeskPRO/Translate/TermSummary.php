@@ -517,7 +517,7 @@ class TermSummary
 		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
 		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
-			return App::getTranslator()->phrase('agent.general.x_before_y', array(
+			return App::getTranslator()->phrase('agent.general.x_is_y', array(
 				'field' => $field,
 				'value' => (int)$choice['date1_relative'] . " {$choice['date1_relative_type']} ago"
 			));
@@ -529,7 +529,7 @@ class TermSummary
 		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
 		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
-			return App::getTranslator()->phrase('agent.general.x_before_y', array(
+			return App::getTranslator()->phrase('agent.general.x_is_y', array(
 				'field' => $field,
 				'value' => (int)$choice['date2_relative'] . " {$choice['date2_relative_type']} ago"
 			));
