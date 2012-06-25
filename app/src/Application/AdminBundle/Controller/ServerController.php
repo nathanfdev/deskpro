@@ -316,7 +316,7 @@ class ServerController extends AbstractController
 		$log_reader->enableRawLog();
 		$log_reader->setIdFilter($log_id);
 
-		$log = $log_reader->next();
+		$log = $log_reader->current();
 
 		if (!$log) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
