@@ -58,15 +58,25 @@
 				<ul class="dp-content-list">
 					{% for download in downloads %}
 					<li>
-						<section class="dp-article-post dp-content-post">
+						<section class="dp-article-post dp-content-post dp-download-post">
 							<header>
-								<h3 style="margin-bottom: 0" class="dp-fadeaway-container"><a class="dp-fadeaway-title" href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a><div class="dp-fadeaway"></div></h3>
+								<h3 style="margin-bottom: 0">
+									<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
+										{{ download.title }}
+										<em>{{ download.blob.getReadableFilesize() }}</em>
+									</a>
+								</h3>
 								<ul class="dp-post-info">
-									<li class="dp-file"><i class="dp-icon-file"></i> <a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">{{ download.filename }}</a> {{ download.readable_filesize }}</li>
 									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ download.date_created|date('full') }}</li>
 									<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[download.id]|default(0)}) }}</li></a
 								</ul>
 							</header>
+							{% if download.content %}
+								<div class="short-desc">
+									{{ download.content_desc }}
+									<a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ phrase('user.general.read_more') }}</a>
+								</div>
+							{% endif %}
 						</section>
 					</li>
 					{% endfor %}

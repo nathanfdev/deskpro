@@ -1,5 +1,5 @@
 <?php return array(
-	'user.downloads.button-download'     => 'Download: {{filename}}',
+	'user.downloads.button-download'     => 'Download',
 	'user.downloads.categories'          => 'Folders',
 	'user.downloads.related_downloads'   => 'Related Files',
 	'user.downloads.sidebar_description' => 'Browse through our {{count}} files|Browse through our {{count}} files',

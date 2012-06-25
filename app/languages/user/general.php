@@ -41,4 +41,5 @@
 	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
 	'user.general.your_email_address'            => 'Your Email Address',
 	'user.general.your_name'                     => 'Your Name',
+	'user.general.read_more'                     => 'Read more',
 );

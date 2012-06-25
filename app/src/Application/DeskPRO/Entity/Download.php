@@ -139,6 +139,24 @@ class Download extends ContentAbstract
 		$this->labels->add($label);
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getContentDesc()
+	{
+		$content = $this->content;
+		$content = strip_tags($content);
+		$content = str_replace("\n", ' ', $content);
+		$content = preg_replace('# {2,}#', ' ', $content);
+
+		if (strlen($content) > 120) {
+			$content = substr($content, 0, 120) . '...';
+		}
+
+		return $content;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

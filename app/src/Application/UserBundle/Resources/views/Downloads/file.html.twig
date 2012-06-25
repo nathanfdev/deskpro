@@ -36,7 +36,7 @@
 			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ download.date_created|date('full') }}</li>
 		</ul>
 	</header>
-	<article id="dp_article_content">
+	<article id="dp_article_content" style="overflow: hidden">
 		<div class="dp-download-btn-wrap">
 			<div class="dp-download-btn">
 				<a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
