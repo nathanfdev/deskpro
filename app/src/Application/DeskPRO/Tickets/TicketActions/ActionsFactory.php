@@ -168,6 +168,10 @@ class ActionsFactory
 				$options = array('codes' => $value['codes']);
 				break;
 
+			case 'send_ticket_email':
+				$options = array('message' => $value['message']);
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

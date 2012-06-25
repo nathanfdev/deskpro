@@ -1,0 +1,24 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+    {{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}
+{% endblock %}
+{% block content %}
+	{% set content %}
+		{{ message|raw }}
+	{% endset %}
+	{{ layout.section('', content) }}
+{% endblock %}
+{% block footer_content %}
+	{% set content %}
+        {{ phrase('user.emails.ticket_access_ticket_online') }}
+		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
+			{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
+		</a>
+	{% endset %}
+	{{ layout.info_section(content, {center: 1}) }}
+{% endblock %}
+{% block email_end %}
+	<br/><br/>
+	{{ layout.replycode(ticket.access_code) }}
+{% endblock %}

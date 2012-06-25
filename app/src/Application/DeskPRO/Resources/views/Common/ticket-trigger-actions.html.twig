@@ -231,6 +231,11 @@
 			{% endif %}
 		</div>
 	</div>
+	<div class="type" title="Send the user an email message relating to the ticket" data-rule-type="send_ticket_email">
+		<div class="options" style="display:block">
+			<textarea name="message" cols="80" rows="4"></textarea>
+		</div>
+	</div>
 	<div class="type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply">
 		<div class="options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
