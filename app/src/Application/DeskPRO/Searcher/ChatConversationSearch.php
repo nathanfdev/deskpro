@@ -257,7 +257,7 @@ class ChatConversationSearch extends SearcherAbstract
 					$children = array();
 					foreach ((array)$choice as $did) {
 						$children[] = $did;
-						$children = array_merge($choice, App::getDataService('Department')->getIdsInTree($did, true));
+						$children = array_merge($children, App::getDataService('Department')->getIdsInTree($did, true));
 					}
 					$wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
 					break;
