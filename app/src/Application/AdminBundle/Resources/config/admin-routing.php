@@ -426,6 +426,13 @@ $collection->add('admin_portal_blocktoggle', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_blocktoggle', new Route(
+	'/portal/blocks/{pid}/delete-template-block.json',
+	array('_controller' => 'AdminBundle:Portal:deleteTemplateBlock'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_toggle', new Route(
 	'/portal/toggle-portal',
 	array('_controller' => 'AdminBundle:Portal:togglePortal'),

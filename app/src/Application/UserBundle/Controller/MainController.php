@@ -58,21 +58,47 @@ class MainController extends AbstractController
 			throw new $this->createNotFoundException();
 		}
 
-		$res = null;
-		switch ($type) {
-			case 'header':
-				$res = $this->render('UserBundle::custom-header.html.twig');
-				break;
-			case 'welcome':
-				$res = $this->render('UserBundle:Portal:welcome-block.html.twig');
-				break;
-			case 'footer':
-				$res = $this->render('UserBundle::custom-footer.html.twig');
-				break;
-		}
+		if ($pid = \Orb\Util\Strings::extractRegexMatch('#^block:([0-9]+)$#', $type)) {
+			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 
-		if (!$res) {
-			throw new $this->createNotFoundException();
+			if (!$page_display) {
+				throw new $this->createNotFoundException();
+			}
+
+			if (strpos($page_display->type, '\\') === false) {
+				$type_class = ucfirst(\Orb\Util\Strings::underscoreToCamelCase($page_display->type));
+				$type_class = "Application\\DeskPRO\\PageDisplay\\Item\\Portal\\$type_class";
+			} else {
+				$type_class = $type;
+			}
+
+			$data = $page_display->data;
+			$data['pid'] = $page_display->id;
+			$data['is_enabled'] = $page_display->is_enabled;
+			$data['display_order'] = $page_display->display_order;
+			$data['admin_mode'] = true;
+
+			$obj = new $type_class($page_display->section, $page_display->data, $this->container, $this->person);
+
+			$res = new \Symfony\Component\HttpFoundation\Response($obj->getHtml(), 200);
+
+		} else {
+			$res = null;
+			switch ($type) {
+				case 'header':
+					$res = $this->render('UserBundle::custom-header.html.twig');
+					break;
+				case 'welcome':
+					$res = $this->render('UserBundle:Portal:welcome-block.html.twig');
+					break;
+				case 'footer':
+					$res = $this->render('UserBundle::custom-footer.html.twig');
+					break;
+			}
+
+			if (!$res) {
+				throw new $this->createNotFoundException();
+			}
 		}
 
 		$res->setMaxAge(0);

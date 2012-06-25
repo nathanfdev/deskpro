@@ -32,6 +32,8 @@
 }
 
 .dp-portal-block:hover .dp-block-controls,
+.dp-p:hover .dp-block-controls,
+#dp .dp-p:hover .dp-block-controls,
 #dp_header:hover .dp-block-controls,
 #dp .dp-portal-block:hover .dp-block-controls {
 	.transition(0.1s);
@@ -386,4 +388,20 @@ em.dp-collapse-block { display: none; }
 
 #dp_content_tabs li:hover .dp-block-controls {
 	.opacity(100);
+}
+
+#dp_custom_sidebar_add {
+    display: block;
+    margin-top: 8px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #999898;
+    padding: 10px;
+    .rounded(6px);
+
+    a {
+        background: url(../../images/admin/icons/portal-block-on.png) no-repeat 0 50%;
+        padding-left: 19px;
+    }
 }

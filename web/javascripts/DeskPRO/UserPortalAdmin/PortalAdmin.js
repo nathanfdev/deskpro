@@ -32,7 +32,7 @@ var PortalAdmin = {
 		this.sideCol = $('#dp_sidebar');
 
 		//this.initBlocks(this.contentCol, '.dp-content-block');
-		this.initBlocks(this.sideCol, '.dp-sidebar-block');
+		this.initBlocks(this.sideCol, '.dp-p');
 
 		//----------------------------------------
 		// Alert admin that we're ready
@@ -63,7 +63,7 @@ var PortalAdmin = {
 	 */
 	initBlocks: function(wrapper, blockSelector) {
 		var self = this;
-		var contentBlocks = $(blockSelector, wrapper);
+		var contentBlocks = $(blockSelector, wrapper).not('.dp-template');
 
 		contentBlocks.each(function() {
 			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li></div>');
@@ -108,7 +108,7 @@ var PortalAdmin = {
 			opacity: 0.7,
 			zIndex: 1000,
 			cursor: 'move',
-			appendTo: '#deskpro',
+			appendTo: '#dp',
 			forcePlaceholderSize: true,
 			refreshPositions: true,
 			helper: function(event, el) {
@@ -130,6 +130,14 @@ var PortalAdmin = {
 
 				self.tellAdmin('update_orders', {orderedIds: ids});
 			}
+		});
+
+		wrapper.find('.dp-p.dp-template').each(function() {
+			var controller = new PortalAdmin_TemplateBlock($(this));
+		});
+
+		$('#dp_custom_sidebar_add').on('click', function() {
+			self.tellAdmin('new_sidebar_block');
 		});
 	},
 
@@ -189,6 +197,16 @@ var PortalAdmin = {
 				$('#dp_custom_header').empty().html(data.html);
 				$('#dp_custom_header_wrap').show();
 				break;
+
+			case 'new_sidebar_block':
+				var wrapper = $('<div />');
+				wrapper.data('dp-pid', data.pid);
+				wrapper.addClass('dp-p').addClass('dp-pid-' + data.pid);
+				wrapper.insertBefore('#dp_custom_sidebar_add');
+
+				var controller = new PortalAdmin_TemplateBlock(wrapper);
+				controller.update();
+				break;
 		}
 	},
 
@@ -200,6 +218,7 @@ var PortalAdmin = {
 	 * @param data
 	 */
 	tellAdmin: function(id, data) {
+		console.log("Sending message %s: %o", id, data);
 		if (window.parent && window.parent.PortalEditor) {
 			window.parent.PortalEditor.acceptMessage(id, data);
 		}
@@ -320,6 +339,87 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 	}
 });
 
+
+/**
+ * A template block is anything on the page that corresponds with a template. Right now these are just sidebar blocks.
+ *
+ * Or in the case of creating a new block, we inject a new wrapper div into place and the block becomes a managed
+ * template block like anything else.
+ *
+ * The element passed in is the wrapper div.
+ *
+ * @type {Orb.Class}
+ */
+var PortalAdmin_TemplateBlock = new Orb.Class({
+	initialize: function(el) {
+		this.el = el;
+		this.el.data('dp-controller', this);
+		this.id = el.data('dp-pid');
+
+		this._initContent();
+	},
+
+	_initContent: function() {
+		var self = this;
+
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-remove-block"><span>delete</span></li><li class="dp-edit-html"><span>edit</span></li></div>');
+		this.el.prepend(controls);
+		this.el.append('<div class="dp-drag-overlay" style="cursor: default;" />');
+
+		controls.on('click', '.dp-remove-block', function(ev) {
+			ev.preventDefault();
+			self.clickRemove();
+		});
+
+		controls.on('click', '.dp-edit-html', function(ev) {
+			ev.preventDefault();
+			self.clickEdit();
+		});
+	},
+
+	clickRemove: function() {
+		PortalAdmin.tellAdmin('delete_template_block', { pid: this.id, controller: this });
+	},
+
+	clickEdit: function() {
+		PortalAdmin.tellAdmin('edit_template_block', {
+			pid: this.id,
+			controller: this
+		});
+	},
+
+	update: function() {
+		$.ajax({
+			url: BASE_URL + 'admin-render-template/block:' + this.id,
+			context: this,
+			success: function(content) {
+				this.setContent(content);
+			}
+		});
+	},
+
+	remove: function() {
+		this.el.remove();
+	},
+
+	setContent: function(html) {
+		this.el.empty().html(html);
+		this._initContent();
+	},
+
+	getEl: function() {
+		return this.el;
+	}
+});
+
+
+/**
+ * Placeholders are pre-defined template blocks and templates. They toggle between a "edited" state where the content
+ * has been edited, and the template becomes visible, and a "unedited" state where the block/wrapper is normally
+ * hidden but in the admin editor we show it as a placeholder that can be clicked.
+ *
+ * @type {Orb.Class}
+ */
 var PortalAdmin_Placeholder = new Orb.Class({
 	initialize: function(place) {
 		var self = this;

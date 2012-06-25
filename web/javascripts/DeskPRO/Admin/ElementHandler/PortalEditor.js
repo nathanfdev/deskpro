@@ -69,6 +69,8 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 	 */
 	acceptMessage: function(id, data) {
 
+		var self = this;
+
 		data = data || {};
 		DP.console.log("New message: %s %o", id, data);
 
@@ -259,6 +261,42 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				});
 				overlay.open();
 				break;
+
+			case 'new_sidebar_block':
+				this.showHtmlEditor('NEW_SIDEBAR_BLOCK', function(action, data) {
+					switch (action) {
+						case 'update': self.tellPortal('new_sidebar_block', {
+							pid: data.pid
+						});
+					}
+				});
+				break;
+
+			case 'edit_template_block':
+				var controller = data.controller;
+				this.showHtmlEditor('EDIT_SIDEBAR_BLOCK:' + data.pid, function(action, data) {
+					switch (action) {
+						case 'update': controller.update();
+						break;
+					}
+				});
+				break;
+
+			case 'delete_template_block':
+				var controller = data.controller;
+				var el = controller.getEl();
+				el.hide();
+
+				$.ajax({
+					url: BASE_URL + 'admin/portal/blocks/' + data.pid + '/delete-template-block.json',
+					error: function() {
+						el.show();
+					},
+					success: function() {
+						controller.remove();
+					}
+				});
+				break;
 		}
 	},
 
@@ -278,6 +316,12 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			template_name = 'UserBundle::custom-headinclude.html.twig';
 		} else if (name == 'welcome') {
 			template_name = 'UserBundle:Portal:welcome-block.html.twig';
+		} else if (name == 'NEW_SIDEBAR_BLOCK') {
+			// TemplatesController::saveTemplateAction knows to treat this special
+			template_name = 'UserBundle:Portal:new-sidebar-block.html.twig';
+		} else if (name.indexOf('EDIT_SIDEBAR_BLOCK:') !== -1) {
+			// TemplatesController knows to treat this special
+			template_name = name;
 		} else {
 			template_name = 'UserBundle::custom-footer.html.twig';
 		}
@@ -352,7 +396,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 									return;
 								}
 
-								callback('update');
+								callback('update', data);
 								overlay.close();
 							}
 						});

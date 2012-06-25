@@ -187,6 +187,31 @@ class PortalController extends AbstractController
 		return $this->createJsonResponse(array('success'=>1));
 	}
 
+	public function deleteTemplateBlockAction($pid)
+	{
+		$pd = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+		if (!$pd || $pd->type != 'template') {
+			return $this->createNotFoundException();
+		}
+
+		$tpl = $pd->data['tpl'];
+		$this->db->delete('templates', array('name' => $tpl));
+
+		$this->em->getConnection()->beginTransaction();
+		try {
+			$this->db->delete('templates', array('name' => $tpl));
+			$this->em->remove($pd);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success'=>1));
+	}
+
 	############################################################################
 	# Portal Sections
 	############################################################################

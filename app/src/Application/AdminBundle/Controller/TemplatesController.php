@@ -144,6 +144,15 @@ class TemplatesController extends AbstractController
 		$map = $tplfiles->getTemplateMap();
 		$name = $this->in->getString('name');
 
+		if ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
+			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+			if (!$page_display || $page_display->type != 'template') {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+			}
+
+			$name = $page_display->data['tpl'];
+		}
+
 		$code = $this->db->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($name));
 		$custom = true;
 		if (!$code && isset($map[$name])) {
@@ -195,6 +204,24 @@ class TemplatesController extends AbstractController
 	public function saveTemplateAction()
 	{
 		$name = $this->in->getString('name');
+
+		$block = null;
+		if ($name == 'UserBundle:Portal:new-sidebar-block.html.twig') {
+			$name = 'DeskPRO:CustomBlocks:Sidebar_' . mt_rand(1000,9999) . '_' . time() . '.html.twig';
+			$block = new \Application\DeskPRO\Entity\PortalPageDisplay();
+			$block->type = 'template';
+			$block->data = array('tpl' => $name);
+			$block->is_enabled = true;
+			$block->section = 'sidebar';
+		} elseif ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
+			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+			if (!$page_display || $page_display->type != 'template') {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+			}
+
+			$name = $page_display->data['tpl'];
+		}
+
 		$this->db->delete('templates', array('name' => $name));
 
 		$code = $this->in->getRaw('code');
@@ -224,11 +251,24 @@ class TemplatesController extends AbstractController
 		$template->name = $name;
 		$template->setTemplate($code, $compiled);
 
+		$ret_data = array(
+			'success' => true,
+			'name' => $name,
+		);
+
 		$this->db->beginTransaction();
 		try {
 			$this->em->persist($template);
+			if ($block) {
+				$this->em->persist($block);
+			}
+
 			$this->em->flush();
 			$this->db->commit();
+
+			if ($block) {
+				$ret_data['pid'] = $block->getId();
+			}
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
@@ -238,7 +278,7 @@ class TemplatesController extends AbstractController
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 
-		return $this->createJsonResponse(array('success' => true, 'name' => $name));
+		return $this->createJsonResponse($ret_data);
 	}
 
 	####################################################################################################################

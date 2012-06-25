@@ -36,7 +36,16 @@
 {# Processing #}
 {% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
 {% if not breadcrumb|trim %}{% set breadcrumb = false %}{% endif %}
-{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
+{% set sidebar %}
+	{% block sidebar %}
+		{{ portal_section('sidebar') }}
+		{% if admin_portal_controls %}
+			<div id="dp_custom_sidebar_add">
+				<a>Add sidebar block</a>
+			</div>
+		{% endif %}
+	{% endblock %}
+{% endset %}
 {% if not sidebar|trim %}{% set sidebar = false %}{% endif %}
 
 {% if admin_portal_controls %}
