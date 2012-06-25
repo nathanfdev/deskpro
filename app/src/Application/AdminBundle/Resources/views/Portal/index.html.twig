@@ -39,7 +39,11 @@
 		<div
 			id="admin_portal_editor"
 			data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
-			data-portal-url="{{ app.request.getBaseUrl() }}/{{ portal_path }}?admin_portal_controls=1"
+			{% if portal_path %}
+				data-portal-url="/{{ portal_path }}?admin_portal_controls=1"
+			{% else %}
+				data-portal-url="{{ app.request.getBaseUrl() }}/{{ portal_path }}?admin_portal_controls=1"
+			{% endif %}
 			data-url-update-orders="{{ path('admin_portal_updateblockorder') }}"
 			data-url-block-toggle="{{ path('admin_portal_blocktoggle', {pid: '_PID_'}) }}"
 		>
