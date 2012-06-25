@@ -64,6 +64,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 		$tpl_globals->setVariable('search_query', $this->search_query);
+
+		if ($this->in->getBool('admin_portal_controls') && $this->session->getPerson()->can_admin) {
+			$tpl_globals->setVariable('admin_portal_controls', true);
+			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+		}
 	}
 
 	public function preAction($action, $arguments = null)

@@ -45,8 +45,14 @@ class PortalController extends AbstractController
 	{
 		$default_portal_style = $this->container->get('deskpro.core.settings')->getDefaultGroup('user_style');
 
+		$portal_path = '';
+		if ($this->in->getString('portal_path')) {
+			$portal_path = ltrim($this->in->getString('portal_path'), '/');
+		}
+
 		return $this->render('AdminBundle:Portal:index.html.twig', array(
-			'default_portal_style' => $default_portal_style
+			'default_portal_style' => $default_portal_style,
+			'portal_path'          => $portal_path,
 		));
 	}
 

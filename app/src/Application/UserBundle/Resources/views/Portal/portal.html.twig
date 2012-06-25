@@ -10,7 +10,7 @@
 {% endblock %}
 {% block content %}
 
-	{% if admin_portal_controls %}
+	{% if app.admin_portal_controls %}
 		{% set welcome_block %}{% include 'UserBundle:Portal:welcome-block.html.twig' %}{% endset %}
 		{% set welcome_block = welcome_block|trim %}
 		<div id="dp_custom_welcome_wrap" class="dp-portal-block" {% if not welcome_block %}style="display: none"{% endif %}>

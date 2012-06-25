@@ -35,6 +35,19 @@ var PortalAdmin = {
 		this.initBlocks(this.sideCol, '.dp-p');
 
 		//----------------------------------------
+		// Tabs at the top switch paths in the admin page
+		//----------------------------------------
+
+		$('#dp_content_tabs').find('a').on('click', function(ev) {
+			ev.preventDefault();
+			var path = $(this).attr('href');
+
+			self.tellAdmin('switch_page', {
+				path: path
+			});
+		});
+
+		//----------------------------------------
 		// Alert admin that we're ready
 		//----------------------------------------
 

@@ -25,16 +25,28 @@
 {% endblock %}
 {% block content %}
 
+{% if app.admin_portal_controls %}
+	{% set tpl_res %}{% include 'UserBundle:Articles:section-header.html.twig' %}{% endset %}
+	<div id="dp_custom_header_wrap" class="dp-portal-block" {% if not tpl_res|trim %}style="display: none"{% endif %}>
+		<div id="dp_page_custom_header" class="dp-portal-block-content">
+			{{ tpl_res|raw }}
+		</div>
+	</div>
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="articles_header" data-portal-for="#dp_page_custom_header" {% if tpl_res|trim %}style="display: none"{% endif %}>
+		<em>{{ phrase('admin.designer.edit_header_section') }}</em>
+	</div>
+{% else %}
+	{% include 'UserBundle:Articles:section-header.html.twig' %}
+{% endif %}
+
 {% if category_children|length %}
 	<div style="overflow: hidden;">
 		<section class="dp-portal-section">
+			{% if category %}
 			<header>
-				{% if category %}
-					<h1>{{ phrase('user.knowledgebase.title-categories', {'count': category_children|length}) }}</h1>
-				{% else %}
-					<h1>{{ phrase('user.knowledgebase.knowledgebase') }}</h1>
-				{% endif %}
+				<h3>{{ phrase('user.knowledgebase.title-categories', {'count': category_children|length}) }}</h3>
 			</header>
+			{% endif %}
 			<div class="dp-content-block dp-news-block">
 				<div class="dp-content-wrapper">
 					{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
@@ -49,8 +61,8 @@
 	<section class="dp-portal-section">
 		{% if category %}
 			<header>
-				{% if category %}
-					<h1>{{ phrase('user.knowledgebase.title-articles', {'count': articles|length}) }}</h1>
+				{% if category and articles|length > 1 %}
+					<h3>{{ phrase('user.knowledgebase.title-articles', {'count': articles|length}) }}</h3>
 				{% endif %}
 			</header>
 		{% endif %}

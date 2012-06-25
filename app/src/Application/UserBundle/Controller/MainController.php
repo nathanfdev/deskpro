@@ -88,6 +88,15 @@ class MainController extends AbstractController
 				case 'header':
 					$res = $this->render('UserBundle::custom-header.html.twig');
 					break;
+				case 'articles_header':
+					$res = $this->render('UserBundle:Articles:section-header.html.twig');
+					break;
+				case 'downloads_header':
+					$res = $this->render('UserBundle:Downloads:section-header.html.twig');
+					break;
+				case 'feedback_header':
+					$res = $this->render('UserBundle:Feedback:section-header.html.twig');
+					break;
 				case 'welcome':
 					$res = $this->render('UserBundle:Portal:welcome-block.html.twig');
 					break;

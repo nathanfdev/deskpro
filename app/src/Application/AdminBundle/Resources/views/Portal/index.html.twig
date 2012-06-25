@@ -31,7 +31,7 @@
 	</div>
 {% endblock %}
 {% block dp_full_page %}
-<div id="dp_fauxbrowser"><em class="address">{{ app.getSetting('core.deskpro_url') }}</em><div><div><div>
+<div id="dp_fauxbrowser"><em class="address">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</em><div><div><div>
 
 {% include 'AdminBundle:Portal:portal-color-editor.html.twig' %}
 
@@ -39,7 +39,7 @@
 		<div
 			id="admin_portal_editor"
 			data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
-			data-portal-url="{{ app.request.getBaseUrl() }}/?admin_portal_controls=1"
+			data-portal-url="{{ app.request.getBaseUrl() }}/{{ portal_path }}?admin_portal_controls=1"
 			data-url-update-orders="{{ path('admin_portal_updateblockorder') }}"
 			data-url-block-toggle="{{ path('admin_portal_blocktoggle', {pid: '_PID_'}) }}"
 		>

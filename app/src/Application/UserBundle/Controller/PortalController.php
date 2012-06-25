@@ -52,7 +52,8 @@ class PortalController extends AbstractController
 			$custom_templates = $this->db->fetchAllKeyValue("SELECT name,id FROM templates");
 		}
 
-		if (!$show_portal_controls) {
+		$tpl_globals = $this->container->get('templating.globals');
+		if (!$tpl_globals->getVariable('admin_portal_controls')) {
 			/** @var $portal_page \Application\DeskPRO\PageDisplay\Page\PortalPage */
 			$portal_page = $this->container->get('deskpro.user_portal_page');
 
@@ -77,10 +78,7 @@ class PortalController extends AbstractController
 			}
 		}
 
-        return $this->render('UserBundle:Portal:portal.html.twig', array(
-			'admin_portal_controls' => $show_portal_controls,
-			'custom_templates' => $custom_templates,
-		));
+        return $this->render('UserBundle:Portal:portal.html.twig');
     }
 
 	public function saveRatingAction($object_type, $object_id)

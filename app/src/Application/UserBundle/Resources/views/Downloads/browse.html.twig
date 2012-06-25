@@ -26,16 +26,23 @@
 {% endblock %}
 {% block content %}
 
+{% if app.admin_portal_controls %}
+	{% set tpl_res %}{% include 'UserBundle:Downloads:section-header.html.twig' %}{% endset %}
+	<div id="dp_custom_header_wrap" class="dp-portal-block" {% if not tpl_res|trim %}style="display: none"{% endif %}>
+		<div id="dp_page_custom_header" class="dp-portal-block-content">
+			{{ tpl_res|raw }}
+		</div>
+	</div>
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="downloads_header" data-portal-for="#dp_page_custom_header" {% if tpl_res|trim %}style="display: none"{% endif %}>
+		<em>{{ phrase('admin.designer.edit_header_section') }}</em>
+	</div>
+{% else %}
+	{% include 'UserBundle:Downloads:section-header.html.twig' %}
+{% endif %}
+
 {% if category_children|length %}
 	<div style="overflow: hidden;">
 		<section class="dp-portal-section">
-			<header>
-				{% if category %}
-					<h1>{{ phrase('user.downloads.title-categories', {'count': category_children|length}) }}</h1>
-				{% else %}
-					<h1>{{ phrase('user.downloads.categories') }}</h1>
-				{% endif %}
-			</header>
 			<div class="dp-content-block dp-news-block">
 				<div class="dp-content-wrapper">
 					<ul class="dp-cat-list">
@@ -50,9 +57,6 @@
 
 {% if downloads|length %}
 	<section class="dp-portal-section">
-		<header>
-			<h1>{{ phrase('user.downloads.title-downloads', {'count': downloads|length}) }}</h1>
-		</header>
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">
 				<ul class="dp-content-list">

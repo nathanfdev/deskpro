@@ -81,6 +81,9 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'update_height':
 				this.updateHeight(data.height);
 				break;
+			case 'switch_page':
+				window.location = BASE_URL + 'admin/portal?portal_path=' + encodeURI(data.path);
+				break;
 			case 'enable_logo_area':
 				$.ajax({
 					url: BASE_URL + 'admin/portal/save-editor/enable_logo_area',
@@ -316,6 +319,12 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			template_name = 'UserBundle::custom-headinclude.html.twig';
 		} else if (name == 'welcome') {
 			template_name = 'UserBundle:Portal:welcome-block.html.twig';
+		} else if (name == 'articles_header') {
+			template_name = 'UserBundle:Articles:section-header.html.twig';
+		} else if (name == 'downloads_header') {
+			template_name = 'UserBundle:Downloads:section-header.html.twig';
+		} else if (name == 'feedback_header') {
+			template_name = 'UserBundle:Feedback:section-header.html.twig';
 		} else if (name == 'NEW_SIDEBAR_BLOCK') {
 			// TemplatesController::saveTemplateAction knows to treat this special
 			template_name = 'UserBundle:Portal:new-sidebar-block.html.twig';

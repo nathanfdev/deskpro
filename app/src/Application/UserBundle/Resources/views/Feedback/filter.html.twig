@@ -100,16 +100,19 @@
 {% endblock %}
 {% block content %}
 
-<section class="dp-portal-section dp-new-feedback-section">
-	<header>
-		<h1>{{ phrase('user.feedback.feedback') }}</h1>
-	</header>
-	<article>
-		<p>
-			{{ phrase('user.feedback.description') }}
-		</p>
-	</article>
-</section>
+{% if app.admin_portal_controls %}
+	{% set tpl_res %}{% include 'UserBundle:Feedback:section-header.html.twig' %}{% endset %}
+	<div id="dp_custom_header_wrap" class="dp-portal-block" {% if not tpl_res|trim %}style="display: none"{% endif %}>
+		<div id="dp_page_custom_header" class="dp-portal-block-content">
+			{{ tpl_res|raw }}
+		</div>
+	</div>
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="feedback_header" data-portal-for="#dp_page_custom_header" {% if tpl_res|trim %}style="display: none"{% endif %}>
+		<em>{{ phrase('admin.designer.edit_header_section') }}</em>
+	</div>
+{% else %}
+	{% include 'UserBundle:Feedback:section-header.html.twig' %}
+{% endif %}
 
 {% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
 
