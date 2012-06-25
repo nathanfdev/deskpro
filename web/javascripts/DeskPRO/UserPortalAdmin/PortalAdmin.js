@@ -90,7 +90,7 @@ var PortalAdmin = {
 		});
 
 		wrapper.on('click', '.dp-toggle-block', function() {
-			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
+			var block = $(this).closest('.dp-p');
 			block.toggleClass('disabled');
 
 			var pid = $(this).closest('.dp-p').data('dp-pid');
@@ -100,19 +100,13 @@ var PortalAdmin = {
 		});
 
 		wrapper.on('click', '.dp-expand-block, .dp-collapse-block', function() {
-			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
+			var block = $(this).closest('.dp-p');
 			block.toggleClass('expanded');
 
 			var pid = $(this).closest('.dp-p').data('dp-pid');
 			if (pid) {
 				self.tellAdmin('block_toggled', { pid: pid, enabled: !block.hasClass('disabled') });
 			}
-		});
-
-		// Init to current state
-		$('.dp-p-disabled', wrapper).each(function() {
-			var block = $(this).find('.dp-content-block, .dp-sidebar-block');
-			block.toggleClass('disabled');
 		});
 
 		wrapper.sortable({

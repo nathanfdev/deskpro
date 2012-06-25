@@ -118,10 +118,10 @@
     position: relative;
 }
 
-.dp-content-block.dp-height-collapse .dp-box-content-wrapper,
-.dp-sidebar-block.dp-height-collapse {
-    max-height: 220px;
+.dp-p.dp-height-collapse {
+    max-height: 250px;
     overflow: hidden;
+	margin-bottom: 10px;
 }
 
 .dp-content-block .dp-height-collapse-expand {
@@ -169,7 +169,9 @@ em.dp-collapse-block, {
     left: 0;
     right: 0;
 
-    background-color: #ECF0F4;
+	border: 1px solid #D2D0D0;
+	border-top: none;
+    background-color: #eee;
     font-style: normal;
     cursor: pointer;
     z-index: 102;
@@ -182,12 +184,11 @@ em.dp-collapse-block:hover, {
 
 em.dp-collapse-block { display: none; }
 
-.expanded .dp-height-collapse-expand {
+.expanded.dp-height-collapse-expand {
     display: none;
 }
 
-.expanded .dp-box-content-wrapper,
-.expanded.dp-sidebar-block {
+.expanded.dp-p {
     max-height: 2000px !important;
     margin-bottom: 25px;
 }

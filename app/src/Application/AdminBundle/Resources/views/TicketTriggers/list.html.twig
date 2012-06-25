@@ -19,6 +19,28 @@
 {% block page %}
 
 {% macro trigger_row(index, trigger, type) %}
+
+	{% set types_phrases = {
+		'new_ticket': phrase('admin.tickets.new_ticket'),
+		'new_ticket.web_person': phrase('admin.tickets.new_ticket_web'),
+		'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway'),
+		'new_ticket.widget': phrase('admin.tickets.new_ticket_widget'),
+		'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
+		'new_reply': phrase('admin.tickets.new_reply'),
+		'new_reply.web_person': phrase('admin.tickets.new_reply_web'),
+		'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway'),
+		'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
+		'property_change': phrase('admin.tickets.property_change'),
+		'property_change.user': phrase('admin.tickets.property_change_user'),
+		'property_change.agent': phrase('admin.tickets.property_change_agent'),
+		'time_open': phrase('admin.tickets.time_open'),
+		'time_user_waiting': phrase('admin.tickets.time_user_waiting'),
+		'time_total_user_waiting': phrase('admin.tickets.time_total_user_waiting'),
+		'time_agent_waiting': phrase('admin.tickets.time_agent_waiting'),
+		'time_resolved': phrase('admin.tickets.time_resolved'),
+		'other': phrase('agent.general.other'),
+	} %}
+
 	{% if 'time_' in trigger.event_trigger %}{% set show_reorder = false %}{% else %}{% set show_reorder = true %}{% endif %}
 	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %} {% if show_reorder %}orderable{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
 		<div class="dp-block-controls">
@@ -40,6 +62,7 @@
 			<div class="trigger-desc" {% if trigger.isUneditable() %}style="display: none"{% endif %}>
 				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
 					<div class="terms">
+						<em class="op type">{{ types_phrases[trigger.getTriggerGroup()] }}</em>
 						<em class="op ctrl">{{ phrase('admin.tickets.if') }}</em>
 						{% if trigger.event_trigger_option %}
 							{% if trigger.getOptionScale() == 'seconds' %}
