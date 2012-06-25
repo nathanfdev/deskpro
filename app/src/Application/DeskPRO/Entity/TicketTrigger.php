@@ -471,6 +471,16 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $secs;
 	}
 
+	public function setEventTriggerOption($opt)
+	{
+		$this->setModelField('event_trigger_option', $opt);
+
+		// For time fields, the run order is based off their time.
+		// Admins never see this num so its perfect to keep ordering queryies
+		// the same everywhere.
+		$this->setModelField('run_order', $this->getOptionSeconds());
+	}
+
 	/**
 	 * Gets the logical trigger group based on the event type and the criteria.
 	 * For example, there is one "new ticket" type but depending on who and how the ticket created,
