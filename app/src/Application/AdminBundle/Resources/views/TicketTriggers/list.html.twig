@@ -59,24 +59,28 @@
 			{% elseif trigger.title %}
 				<lable><h2>{{ trigger.title }}</h2></lable>
 			{% endif %}
-			<div class="trigger-desc" {% if trigger.isUneditable() %}style="display: none"{% endif %}>
+			<div class="trigger-desc">
 				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
 					<div class="terms">
-						<em class="op type">{{ types_phrases[trigger.getTriggerGroup()] }}</em>
-						<em class="op ctrl">{{ phrase('admin.tickets.if') }}</em>
+						{% if show_reorder %}
+							<em class="trigger-type-phrase">{{ types_phrases[trigger.getTriggerGroup()] }}</em>
+						{% else %}
+							<em class="op ctrl">{{ phrase('admin.tickets.if') }}</em>
+						{% endif %}
 						{% if trigger.event_trigger_option %}
 							{% if trigger.getOptionScale() == 'seconds' %}
 								{{ phrase('admin.tickets.x_since_' ~ type, { time: relative_time(trigger.getOptionSeconds())}) }}
 							{% else %}
 							{{ phrase('admin.tickets.x_since_' ~ type, { time: trigger.event_trigger_option }) }}
 							{% endif %}
-							<br /><em class="op">{{ phrase('agent.general.and') }}</em>
 						{% endif %}
-						{% for desc in trigger.getTermDescriptions() %}
+						{% for desc in trigger.getTermDescriptions(true) %}
+							<br /><em class="op">{{ phrase('agent.general.and') }}</em>
 							<span class="term">{{ desc }}</span>
-							{% if not loop.last %}<br /><em class="op">{{ phrase('agent.general.and') }}</em>{% endif %}
 						{% else %}
-							<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
+							{% if not show_reorder%}
+								<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
+							{% endif %}
 						{% endfor %}
 					</div>
 				</td><td valign="top" width="50%" style="padding-left: 15px;">

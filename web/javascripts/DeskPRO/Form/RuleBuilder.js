@@ -276,7 +276,9 @@ DeskPRO.Form.RuleBuilder = new Class({
 			var choiceSel = $('select:not(.no-auto):not([multiple])', choice);
 			if (choiceSel.length) {
 				row.addClass('with-select2');
-				DP.select(choiceSel);
+				window.setTimeout(function() {
+					DP.select(choiceSel);
+				}, 150);
 			} else {
 				var inputEl = $('input[type="text"]:not(.no-auto), textarea:not(.no-auto)', choice);
 				if (inputEl.length) {

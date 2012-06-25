@@ -284,9 +284,21 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return array
 	 */
-	public function getTermDescriptions()
+	public function getTermDescriptions($ignore_grouping_terms = false)
 	{
-		return $this->getTicketTerms()->getDescriptions();
+		$descs = $this->getTicketTerms()->getDescriptions();
+
+		if ($ignore_grouping_terms) {
+			$exclude = array(
+				'creation_system' => true,
+				'action_performer' => true,
+			);
+			$descs = \Orb\Util\Arrays::filter($descs, function ($v, $k) use ($exclude) {
+				return !isset($exclude[$k]);
+			});
+		}
+
+		return $descs;
 	}
 
 

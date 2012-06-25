@@ -96,6 +96,9 @@ class TicketTerms
 		$this->terms = $terms;
 
 		foreach ($terms as $info) {
+			if (!isset($info['options'])) {
+				continue;
+			}
 			if (isset($info['type'])) {
 				if (!isset($this->term_ids[$info['type']])) {
 					$this->term_ids_map[$info['type']] = array();
@@ -651,20 +654,16 @@ class TicketTerms
 			if (strpos($op, 'changed') !== false) {
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
-					$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
+					$descs[$info['type']] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
 				}
 			} else {
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
-					$descs[] = $term;
+					$descs[$info['type']] = $term;
 				} else {
 					error_log("Unknown term description for {$info['type']}");
 				}
 			}
-		}
-
-		if (!$descs) {
-			$descs[] = $tr->phrase('admin.tickets.any_ticket');
 		}
 
 		return $descs;

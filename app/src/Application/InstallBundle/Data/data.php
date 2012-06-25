@@ -531,7 +531,7 @@ $em->flush();
 ##BEGIN:create_trigger.email_validation_web##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'Enable email validation for new users';
-$q->sys_name = 'email_validation.web';
+$q->sys_name = 'email_validation.email';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 0;
 $q->terms = array(
@@ -559,7 +559,7 @@ $em->flush();
 ##BEGIN:create_trigger.email_validation_email##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'Enable email validation for new users';
-$q->sys_name = 'email_validation.email';
+$q->sys_name = 'email_validation.web';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 0;
 $q->terms = array(
@@ -571,7 +571,7 @@ $q->terms = array(
 	array(
 		'type' => 'creation_system',
 		'op' => 'is',
-		'options' => array('creation_system' => 'new_ticket.web_person'),
+		'options' => array('creation_system' => 'web.person'),
 	),
 );
 $q->actions = array(
@@ -599,7 +599,7 @@ $q->terms = array(
 	array(
 		'type' => 'creation_system',
 		'op' => 'is',
-		'options' => array('creation_system' => 'new_ticket.widget'),
+		'options' => array('creation_system' => 'widget'),
 	),
 );
 $q->actions = array(

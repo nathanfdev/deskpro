@@ -36,7 +36,7 @@
 							'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_ticket" /> All tickets</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_ticket" /> Every ticket</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label><br /></li>
 							{% endfor %}
@@ -56,7 +56,7 @@
 							'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_reply" /> All replies</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="new_reply" /> Every reply</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label></li>
 							{% endfor %}
@@ -75,7 +75,7 @@
 							'property_change.agent': phrase('admin.tickets.property_change_agent'),
 						} %}
 						<ul>
-							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="property_change" /> All ticket property change</label></li>
+							<li><label><input type="radio" name="trigger_group" class="trigger_group" value="property_change" /> Every ticket property change</label></li>
 							{% for type,title in types %}
 								<li><label><input type="radio" name="trigger_group" class="trigger_group" value="{{ type }}" /> {{ title }}</label></li>
 							{% endfor %}

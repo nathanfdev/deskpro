@@ -1776,4 +1776,24 @@ class Arrays
 
 		return $data;
 	}
+
+
+	/**
+	 * Just like array_filter except you also get passed the current key as the second parameter.
+	 *
+	 * @param array $array
+	 * @param $fn
+	 */
+	public static function filter(array $array, $fn)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			if ($fn($v, $k) !== false) {
+				$new_array[$k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
 }
