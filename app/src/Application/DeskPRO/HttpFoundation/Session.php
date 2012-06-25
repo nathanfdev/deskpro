@@ -74,7 +74,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		parent::start();
 
-		if ((!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['auth_person_id']) || !$_SESSION['_symfony2']['auth_person_id'])) {
+		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['auth_person_id']) || !$_SESSION['_symfony2']['auth_person_id'])) {
 			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
