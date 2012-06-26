@@ -723,7 +723,7 @@ $q->title = 'auto_close.resolve_agent_reply';
 $q->sys_name = 'auto_close.resolve_agent_reply';
 $q->event_trigger = 'time_agent_waiting';
 $q->event_trigger_option = '5 days';
-$q->is_enabled = 1;
+$q->is_enabled = 0;
 $q->terms = array(
 	array (
 		'type' => 'status',
@@ -738,6 +738,35 @@ $q->actions = array(
 		'type' => 'status',
 		'options' => array(
 			'status' => 'resolved'
+		)
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.warn_auto_close##
+// When a ticket has been awaiting user for 3 days, warn the user it will be closed
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = 'auto_close.warn_user';
+$q->sys_name = 'auto_close.warn_user';
+$q->event_trigger = 'time_agent_waiting';
+$q->event_trigger_option = '3 days';
+$q->is_enabled = 0;
+$q->terms = array(
+	array (
+		'type' => 'status',
+		'op' => 'is',
+		'options' => array (
+			'status' => 'awaiting_agent',
+		),
+	)
+);
+$q->actions = array(
+	array(
+		'type' => 'ticket_send_email',
+		'options' => array(
+			'message' => $translate->phrase('user.defaults.trigger_warn_autoclose')
 		)
 	)
 );
