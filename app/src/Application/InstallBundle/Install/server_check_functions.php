@@ -197,7 +197,7 @@ function deskpro_install_simple_data_submit($log)
 
 	if (class_exists('PDO')) {
 		$data['php_has_pdo'] = 1;
-		if (in_array('mysql', \PDO::getAvailableDrivers())) {
+		if (in_array('mysql', PDO::getAvailableDrivers())) {
 			$data['php_has_pdo_mysql'] = 1;
 		} else {
 			$data['php_has_pdo_mysql'] = 0;
