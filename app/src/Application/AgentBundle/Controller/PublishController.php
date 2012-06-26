@@ -298,8 +298,6 @@ class PublishController extends AbstractController
 			} else {
 				$message->setTo($comment->getUserEmail());
 			}
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
 			$message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
 				'comment' => $comment
 			));
