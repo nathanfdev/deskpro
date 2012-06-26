@@ -65,7 +65,19 @@ class TicketController extends AbstractController
 	public function viewAction($ticket_id)
 	{
         $is_pdf = $this->in->getBool('pdf');
-		$ticket = $this->getTicketOr404($ticket_id);
+
+		try	{
+			$ticket = $this->getTicketOr404($ticket_id);
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			// try to find a delete log
+			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));
+			if ($delete_log) {
+				return $this->render('AgentBundle:Ticket:deleted.html.twig', array('delete_log' => $delete_log));
+			} else {
+				throw $e;
+			}
+		}
+
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
