@@ -469,6 +469,11 @@ function deskpro_build_cleanvendors_zend($dir)
 	}
 }
 
+function deskpro_build_cleanvendors_querypath($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf .gitignore API build.xml composer.json config.doxy INSTALL Makefile package.xml package_compatible.xml pear-summary.txt quickstart-guide.md README.md RELEASE bin/ examples/ patches/ phar/ test/ tutorials/ src/QueryPath/Extension/QPDB.php src/QueryPath/Extension/QPTPL.php src/QueryPath/Extension/QPList.php", $dir);
+}
+
 ###############################################################################
 # Run
 ###############################################################################

@@ -64,6 +64,11 @@
 		'repos' => 'git://github.com/dsyph3r/ProfilerLiveBundle.git',
 		'version' => '397204f49f19782bb6fe8077015ce5814a3baa78',
 	),
+	'querypath' => array(
+		'into' => DP_ROOT.'/vendor/querypath',
+		'repos' => 'git://github.com/technosophos/querypath.git',
+		'version' => 'HEAD',
+	),
 	'swiftmailer' => array(
 		'into' => DP_ROOT.'/vendor/swiftmailer',
 		'repos' => 'git://github.com/swiftmailer/swiftmailer.git',
