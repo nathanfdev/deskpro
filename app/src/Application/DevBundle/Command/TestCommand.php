@@ -35,16 +35,17 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$email = file_get_contents(DP_ROOT . '/src/Application/DevBundle/Resources/email-sources/re-outlook.txt');
 		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-		$em = $this->getContainer()->getEm();
+		$reader->setRawSource($email);
 
-		$detect = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply($em, $reader);
+		$body = $reader->getBodyHtml()->getBodyUtf8();
 
-		$str1 = 'this is a reply this is a reply this is a reply this is a reply this is a reply this is a reply';
-		$str2 = 'this is a reply this is a reply this is a reply this is a reply this is a reply this is a reply!!!!@!!!@@@@@£@£@£@£@£@£';
+		$pattern = 'div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div';
+		$matcher = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlMatcher($body, $pattern);
+		$body = $matcher->getCutBody();
+		$body = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($body, 'html_email');
 
-		var_dump($detect->getMessageDifference($str1, $str2));
-
-		echo "\n";
+		echo $body;
 	}
 }

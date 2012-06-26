@@ -86,3 +86,4 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
 
 require DP_ROOT.'/vendor/swiftmailer/lib/swift_required.php';
+require DP_ROOT.'/vendor/querypath/src/qp.php';
