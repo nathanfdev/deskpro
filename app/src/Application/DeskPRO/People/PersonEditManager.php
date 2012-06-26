@@ -44,7 +44,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-class PersonEditManager
+class PersonEditManager implements PersonContextInterface
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -57,6 +57,13 @@ class PersonEditManager
 	protected $db;
 
 	/**
+	 * Who is performing these edits
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	/**
 	 * @param \Doctrine\ORM\EntityManager $em
 	 */
 	public function __construct(EntityManager $em)
@@ -67,16 +74,11 @@ class PersonEditManager
 
 	public function deleteUser(Person $person)
 	{
-		$this->em->beginTransaction();
-
-		try {
-			$this->em->remove($person);
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		$purger = new Purger($person, $this->em);
+		if ($this->person_context) {
+			$purger->setPersonContext($this->person_context);
 		}
+		$purger->purge();
 	}
 
 	public function mergeUsers(Person $person, Person $other_person)
@@ -203,5 +205,25 @@ class PersonEditManager
 		}
 
 		return $new_subs;
+	}
+
+
+	/**
+	 * Set the context (who is making these edits)
+	 *
+	 * @param Person $person
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getPersonContext()
+	{
+		return $this->person_context;
 	}
 }

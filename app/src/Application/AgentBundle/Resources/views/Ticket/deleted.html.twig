@@ -12,6 +12,10 @@ pageMeta.title = 'Ticket Deleted';
 	<article>
 		Ticket #{{ delete_log.ticket_id }} was deleted on {{ delete_log.date_created|date('fulltime') }} by
 		{% if delete_log.by_person %}{{ delete_log.by_person.getDisplayContact() }}{% else %} an unknown agent.{% endif %}
+		{% if delete_log.reason %}
+			<br /><br />
+			Reason: {{ delete_log.reason }}
+		{% endif %}
 	</article>
 </div>
 
