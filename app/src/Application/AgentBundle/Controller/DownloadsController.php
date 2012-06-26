@@ -122,7 +122,7 @@ class DownloadsController extends AbstractController
 		$download = $this->em->find('DeskPRO:Download', $download_id);
 
 		if (!$download || !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
-			return new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');

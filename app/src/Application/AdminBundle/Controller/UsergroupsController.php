@@ -204,7 +204,7 @@ class UsergroupsController extends AbstractController
 	public function deleteAction($id, $auth)
 	{
 		if (!$this->session->checkSecurityToken('delete_usergroup', $auth)) {
-			return new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		if (!$id) {

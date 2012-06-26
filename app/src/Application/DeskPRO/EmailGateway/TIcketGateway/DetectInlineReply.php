@@ -57,7 +57,7 @@ class DetectInlineReply
 	/**
 	 * @var float
 	 */
-	protected $threshold = 0.18;
+	protected $threshold = 0.24;
 
 	public function __construct(EntityManager $em, AbstractEmailReader $reader)
 	{
@@ -100,7 +100,7 @@ class DetectInlineReply
 	{
 		$message_texts = $this->getMessageTexts();
 		if (!$message_texts) {
-			return false;
+			return null;
 		}
 
 		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds(array_keys($message_texts));
@@ -137,10 +137,12 @@ class DetectInlineReply
 		$len2 = strlen($message2);
 
 		if ($len1 > $len2) {
-			return 1.0 - ($len2 / $len1);
+			$diff = 1.0 - ($len2 / $len1);
 		} else {
-			return 1.0 - ($len1 / $len2);
+			$diff = 1.0 - ($len1 / $len2);
 		}
+
+		return $diff;
 	}
 
 
@@ -197,7 +199,10 @@ class DetectInlineReply
 	public function normalizeMessage($message_text)
 	{
 		$message_text = strip_tags($message_text);
+		$message_text = html_entity_decode($message_text, \ENT_QUOTES);
+		$message_text = trim($message_text);
 		$message_text = preg_replace('#\s#', ' ', $message_text);
+		$message_text = preg_replace('# {2,}#', ' ', $message_text);
 
 		return $message_text;
 	}

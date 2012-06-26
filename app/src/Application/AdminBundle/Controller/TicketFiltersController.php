@@ -105,7 +105,7 @@ class TicketFiltersController extends AbstractController
 		} else {
 			$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 			if (!$filter) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$access_tester = new \Application\DeskPRO\Tickets\FilterAccessResolver($this->em);
@@ -148,7 +148,7 @@ class TicketFiltersController extends AbstractController
 
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 		if (!$filter) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->db->beginTransaction();

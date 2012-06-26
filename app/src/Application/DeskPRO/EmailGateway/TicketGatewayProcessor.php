@@ -291,11 +291,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$body_full = $email_info['body'];
 
+		// Get rid of our cut line
+		$body_full = str_replace('_______________________.', '', $body_full);
+
 		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
 		$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
 		if ($email_info['body_is_html']) {
 			// Send through cleaner again to fix html problems from cutting
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+			$body_full = $this->cleaner->clean($body_full, 'html_email');
 		}
 
 		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
@@ -328,6 +332,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['message'] = $email_info['body'];
 		$message['message_full'] = $body_full;
 
+		$message['show_full_hint'] = false;
 		$inline_reply_detector = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply(App::getOrm(), $this->reader);
 		if ($inline_reply_detector->hasDifferentMessage()) {
 			$message['show_full_hint'] = true;

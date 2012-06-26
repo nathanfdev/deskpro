@@ -173,7 +173,7 @@ class PortalController extends AbstractController
 	{
 		$pd = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 		if (!$pd) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$pd->is_enabled = $this->in->getBool('enabled');
@@ -197,7 +197,7 @@ class PortalController extends AbstractController
 	{
 		$pd = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 		if (!$pd || $pd->type != 'template') {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$tpl = $pd->data['tpl'];
