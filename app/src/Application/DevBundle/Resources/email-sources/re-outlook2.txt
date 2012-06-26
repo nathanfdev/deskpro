@@ -1,0 +1,281 @@
+Delivered-To: chris.nadeau@deskpro.com
+Received: by 10.112.1.68 with SMTP id 4csp173087lbk;
+        Tue, 26 Jun 2012 11:07:56 -0700 (PDT)
+Received: by 10.180.80.35 with SMTP id o3mr34599291wix.7.1340734076786;
+        Tue, 26 Jun 2012 11:07:56 -0700 (PDT)
+Return-Path: <chris.padfield@deskpro.com>
+Received: from mail-we0-f176.google.com (mail-we0-f176.google.com [74.125.82.176])
+        by mx.google.com with ESMTPS id o43si20452201wee.151.2012.06.26.11.07.56
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 26 Jun 2012 11:07:56 -0700 (PDT)
+Received-SPF: pass (google.com: domain of chris.padfield@deskpro.com designates 74.125.82.176 as permitted sender) client-ip=74.125.82.176;
+Authentication-Results: mx.google.com; spf=pass (google.com: domain of chris.padfield@deskpro.com designates 74.125.82.176 as permitted sender) smtp.mail=chris.padfield@deskpro.com
+Received: by weyr3 with SMTP id r3so197385wey.21
+        for <chris.nadeau@deskpro.com>; Tue, 26 Jun 2012 11:07:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=from:to:references:in-reply-to:subject:date:message-id:mime-version
+         :content-type:x-mailer:thread-index:content-language
+         :x-gm-message-state;
+        bh=T5+9RbCjx+Tsrc6NPnAi37CAvxRKt5DlN+fICHjLZQ8=;
+        b=mL3evL4ih8RAZj1nZUsCb0dyrmjtkGhZjKhrsRuemIYzOBgoMB0GOpkZCtYNy9b+4q
+         S7HZr2FvrnFGQWHeqKh3zfIcPrl9mbJGBc4jIMHtzpLzLOdnPXiV4vhu2BMybgxcQxXu
+         xEiRA8mxBMGJFfs6aXZuQy0ueintZwqiFO0hV1n/AP4G8+N6gnvqGNLgoGAyMJjPXdAi
+         X7djvkWA9BvUV0LtZoclBuyWMGiysg6ppBTwN7XrCDdVXXGxX19c426N0vthun8nerWK
+         KfM45tSXn5IPHZcQZe95m3yejWmLR/OtIP4jLG6sxLqYIf3en7xLKhFQpKabvDxd8nSV
+         zCPQ==
+Received: by 10.180.82.42 with SMTP id f10mr33262404wiy.22.1340734076138;
+        Tue, 26 Jun 2012 11:07:56 -0700 (PDT)
+Return-Path: <chris.padfield@deskpro.com>
+Received: from DESKPROCHRIS (iw-01.clients.vorboss.net. [194.8.255.114])
+        by mx.google.com with ESMTPS id ce3sm10073654wib.11.2012.06.26.11.07.54
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 26 Jun 2012 11:07:54 -0700 (PDT)
+From: "Chris Padfield" <chris.padfield@deskpro.com>
+To: <chris.nadeau@deskpro.com>
+References: <20120626175441.CD3E418006E@app06.odesk.com>
+In-Reply-To: <20120626175441.CD3E418006E@app06.odesk.com>
+Subject: RE: New Candidate for: Logo based sticker
+Date: Tue, 26 Jun 2012 19:07:55 +0100
+Message-ID: <038701cd53c6$9d008760$d7019620$@deskpro.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0388_01CD53CE.FEC5D9C0"
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQKFkwCH97UTBrxcZnfVIjU0UA4x85WcZzAA
+Content-Language: en-gb
+X-Gm-Message-State: ALoCoQlyurQoVrr0fcH2WWkc4jAdNElDG3ukhPMhJT2ulrNtZz4bwLT4Id755WZCliYuuQoC2tGq
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_0388_01CD53CE.FEC5D9C0
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+=20
+
+=20
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Chris Padfield
+
+CEO, DeskPRO Ltd.
+
+ <http://www.deskpro.com> http://www.deskpro.com
+
+=20
+
+email:  <mailto:chris.padfield@deskpro.com> chris.padfield@deskpro.com
+
+twitter:  <http://www.twitter.com/chrispadfield> =
+http://www.twitter.com/chrispadfield
+
+skype: christopherpadfield
+
+=20
+
+From: oDesk Notification [mailto:donotreply@odesk.com]=20
+Sent: 26 June 2012 18:55
+To: Christopher Padfield
+Subject: New Candidate for: Logo based sticker
+
+=20
+
+
+oDesk=20
+
+=09
+=09
+=09
+
+
+Hi Christopher,
+
+Shafaq Khan applied to your job: Logo based sticker =
+<https://www.odesk.com/applications/216821669?clk_thru=3Demail> .
+
+View application =
+<https://www.odesk.com/applications/216821669?clk_thru=3Demail> .=20
+
+Thanks,
+oDesk Support=20
+
+ <https://www.odesk.com/help/help/permalink/418> View online help about =
+this
+
+=09
+
+
+Change email preferences <https://www.odesk.com/mc/preferences>  - oDesk =
+Home <https://www.odesk.com/w/>  - Contact Support =
+<https://www.odesk.com/help> =20
+
+You (deskpro@odesk.com) are receiving this email as part of your oDesk =
+membership. If you want to stop receiving this type of messages go to =
+Message Center Preferences =
+<https://www.odesk.com/mc/preferences#er_japp_submitted> . This is an =
+automated message from oDesk, Inc. - 901 Marshall Street, 2nd Floor, =
+Redwood City, CA 94063=20
+
+=09
+=09
+
+=20
+
+
+------=_NextPart_000_0388_01CD53CE.FEC5D9C0
+Content-Type: text/html;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 14 (filtered =
+medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-reply;
+	font-family:"Calibri","sans-serif";
+	color:#1F497D;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue =
+vlink=3Dpurple><div class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>C=
+hris Padfield</span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>C=
+EO, DeskPRO Ltd.</span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><a href=3D"http://www.deskpro.com"><span =
+style=3D'font-size:8.0pt'>http://www.deskpro.com</span></a><o:p></o:p></s=
+pan></p><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>&=
+nbsp;</span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>e=
+mail: </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><a href=3D"mailto:chris.padfield@deskpro.com"><span =
+style=3D'font-size:8.0pt'>chris.padfield@deskpro.com</span></a><o:p></o:p=
+></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>t=
+witter: </span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><a href=3D"http://www.twitter.com/chrispadfield"><span =
+style=3D'font-size:8.0pt'>http://www.twitter.com/chrispadfield</span></a>=
+<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Calibri","sans-serif";color:gray'>s=
+kype: christopherpadfield</span><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497=
+D'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><b><span =
+lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'>From:</span>=
+</b><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Tahoma","sans-serif"'> oDesk =
+Notification [mailto:donotreply@odesk.com] <br><b>Sent:</b> 26 June 2012 =
+18:55<br><b>To:</b> Christopher Padfield<br><b>Subject:</b> New =
+Candidate for: Logo based sticker<o:p></o:p></span></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div =
+style=3D'margin-left:12.0pt;margin-top:12.0pt;margin-right:12.0pt;margin-=
+bottom:12.0pt'><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+valign=3Dbottom style=3D'background:white;padding:0cm 0cm 0cm 0cm'><p =
+class=3DMsoNormal><b><span style=3D'font-size:25.0pt'>oDesk</span></b> =
+<o:p></o:p></p></td><td valign=3Dbottom style=3D'padding:0cm 0cm 0cm =
+0cm'></td></tr><tr style=3D'height:3.0pt'><td colspan=3D2 =
+style=3D'background:white;padding:0cm 0cm 0cm =
+0cm;height:3.0pt'></td></tr><tr style=3D'height:2.25pt'><td colspan=3D2 =
+style=3D'background:#345B9E;padding:0cm 0cm 0cm =
+0cm;height:2.25pt'></td></tr></table><p class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><span =
+style=3D'font-size:10.5pt;font-family:"Tahoma","sans-serif"'><br>Hi =
+Christopher,<br><br>Shafaq Khan applied to your job: <a =
+href=3D"https://www.odesk.com/applications/216821669?clk_thru=3Demail" =
+target=3D"_blank">Logo based sticker</a>.<br><br><a =
+href=3D"https://www.odesk.com/applications/216821669?clk_thru=3Demail" =
+target=3D"_blank">View application</a>. <br><br>Thanks,<br>oDesk Support =
+<o:p></o:p></span></p><div><p class=3DMsoNormal><span =
+style=3D'font-size:8.0pt;font-family:"Tahoma","sans-serif"'><a =
+href=3D"https://www.odesk.com/help/help/permalink/418"><span =
+style=3D'text-decoration:none'>View online help about =
+this</span></a><o:p></o:p></span></p></div><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%'><tr style=3D'height:3.0pt'><td =
+style=3D'background:#DAD8CB;padding:0cm 0cm 0cm =
+0cm;height:3.0pt'></td></tr><tr><td valign=3Dbottom =
+style=3D'background:white;padding:0cm 0cm 0cm 0cm'><div =
+style=3D'margin-bottom:6.0pt'><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center'><span =
+style=3D'font-size:9.5pt;color:#222222'><a =
+href=3D"https://www.odesk.com/mc/preferences">Change email =
+preferences</a> - <a href=3D"https://www.odesk.com/w/">oDesk Home</a> - =
+<a href=3D"https://www.odesk.com/help">Contact Support</a> =
+<o:p></o:p></span></p></div><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center'><span =
+style=3D'font-size:8.5pt;color:#222222'>You (<a =
+href=3D"mailto:deskpro@odesk.com">deskpro@odesk.com</a>) are receiving =
+this email as part of your oDesk membership. If you want to stop =
+receiving this type of messages go to <a =
+href=3D"https://www.odesk.com/mc/preferences#er_japp_submitted">Message =
+Center Preferences</a>. This is an automated message from oDesk, Inc. - =
+901 Marshall Street, 2nd Floor, Redwood City, CA 94063 =
+</span><o:p></o:p></p></td></tr><tr style=3D'height:3.0pt'><td =
+style=3D'background:white;padding:0cm 0cm 0cm =
+0cm;height:3.0pt'></td></tr><tr style=3D'height:1.5pt'><td =
+style=3D'background:#DAD8CB;padding:0cm 0cm 0cm =
+0cm;height:1.5pt'></td></tr></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div></div></body></html>
+------=_NextPart_000_0388_01CD53CE.FEC5D9C0--
+

@@ -10,7 +10,7 @@
 	'unknown_2'                          => 'hr /hr font p b #from:#i /b #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /p /font',
 
 	// Sparrow mac client
-	'sparrow_1'                          => 'p $mark #On .*?,.*?wrote:#i /p blockquote /blockquote',
+	'sparrow_1'                          => 'p #On .*?,.*?wrote:#i /p blockquote /blockquote',
 
 	// mail from blackberry.net
 	'blackberry_1'                       => 'hr /hr div b #from:#i /b /div div b #date:#i /b /div div b #to:#i /b /div',
@@ -36,7 +36,7 @@
 	'windows_live_mail_1'                => 'div b #from:#i /b /div div b #sent:#i /b /div div b #to:#i /b /div div b #subject:#i /b /div',
 
 	// X-Mailer: Microsoft Office Outlook 12.0
-	'outlook_1'                          => 'div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div',
+	'outlook_1'                          => 'p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p',
 
 	// X-Mailer: Microsoft Windows Mail 6.0.6002.18197
 	'windows_mail_1'                     => 'blockquote div #-+\soriginal\smessage\s-+#i /div div b #from:#i /b /div div b #to:#i /b /div div b #sent:#i /b /div /blockquote',

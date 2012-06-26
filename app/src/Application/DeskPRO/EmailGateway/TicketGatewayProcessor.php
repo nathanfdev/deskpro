@@ -291,6 +291,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$body_full = str_replace('_______________________.', '', $body_full);
 
 		$has_cut = false;
+		/*
 		if ($email_info['body_is_html']) {
 			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
 			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
@@ -305,6 +306,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage("Cutter did not match any pattern");
 			}
 		}
+		*/
 
 		if (!$has_cut) {
 			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();

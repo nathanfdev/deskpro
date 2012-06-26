@@ -55,7 +55,7 @@ class HtmlMatcher
 	/**
 	 * @var array
 	 */
-	protected $pattern_matches;
+	protected $pattern_match;
 
 	/**
 	 * @var string
@@ -86,21 +86,43 @@ class HtmlMatcher
 	 */
 	public function process()
 	{
-		if ($this->pattern_matches !== null) {
-			return $this->pattern_matches;
+		if ($this->pattern_match !== null) {
+			return $this->pattern_match;
 		}
 
 		$tokens = $this->pattern->getTokens();
 
-		$results = array($this->getQpBranch());
-		while ($tokens && count($results)) {
-			$results = $this->consumeNavigates($results, $tokens);
-			$results = $this->consumeMatches($results, $tokens);
+		$first_token = array_shift($tokens);
+		$roots = array();
+		$this->getQpBranch()->find($first_token[1])->each(function($i, $m) use (&$roots) {
+			$roots[] = \QueryPath::with($m);
+		});
+
+		foreach ($roots as $root) {
+			$use_tokens = $tokens;
+
+			$branch = $root->branch()->first();
+			$branch->_dp_stack = array();
+			while ($use_tokens) {
+				$branch = $this->consumeNavigates($branch, $use_tokens);
+				if (!$branch) {
+					break;
+				}
+				$branch = $this->consumeMatches($branch, $use_tokens);
+				if (!$branch) {
+					break;
+				}
+			}
+
+			if ($branch) {
+				$this->pattern_match = $root;
+				return $this->pattern_match;
+			}
 		}
 
-		$this->pattern_matches = $results;
+		echo "no match";
 
-		return $this->pattern_matches;
+		return null;
 	}
 
 
@@ -112,7 +134,7 @@ class HtmlMatcher
 	public function isMatch()
 	{
 		$this->process();
-		if ($this->pattern_matches) {
+		if ($this->pattern_match) {
 			return true;
 		}
 
@@ -133,17 +155,12 @@ class HtmlMatcher
 			return $this->marked_body;
 		}
 
-		$results = $this->process();
-		if (!$results) {
+		$match = $this->process();
+		if (!$match) {
 			return $this->body;
 		}
 
-		foreach ($results as $res) {
-			if (isset($res->_dp_mark)) {
-				$res = $res->_dp_mark;
-			}
-			$res->before(self::CUT_MARK);
-		}
+		$match->before(self::CUT_MARK);
 
 		ob_start();
 		$this->getQp()->writeXHTML();
@@ -179,61 +196,48 @@ class HtmlMatcher
 	 * @param array $tokens
 	 * @return array
 	 */
-	public function consumeNavigates(array $results, array &$tokens)
+	public function consumeNavigates($branch, array &$tokens)
 	{
-		$new_results = $results;
+		$current = $branch->branch()->first();
+
+		if (isset($branch->_dp_stack)) {
+			$stack = $branch->_dp_stack;
+		} else {
+			$stack = array();
+		}
+
+		$stack[] = $current->branch();
 
 		while ($token = array_shift($tokens)) {
-			if ($token[0] == 'mark') {
-				foreach ($results as $res) {
-					$res->_dp_mark = $res->branch();
-				}
-				break;
-			}
 
-			// Next token isnt a nav
+			// Next token isnt a match
 			if ($token[0] != 'nav') {
 				array_unshift($tokens, $token);
 				break;
 			}
 
-			// Get rid of token type on the array
-			array_shift($token);
+			$sel = $token[1];
 
-			$new_results = array();
+			echo " > $sel";
 
-			foreach ($results as $branch) {
-				$mark = null;
-				if (isset($branch->_dp_mark)) {
-					$mark = $branch->_dp_mark;
+			if ($sel == ':close') {
+				$current = array_pop($stack);
+			} else {
+
+				$try = $current->branch()->next();
+				$try->next();
+				if (!$try->length || $try->get(0)->tagName != $sel) {
+					return null;
 				}
-				if ($token[0] == ':parent') {
-					$branch->parent();
-					if ($branch->length) {
-						$branch->_dp_mark = $mark;
-						$new_results[] = $branch;
-					}
-				} else {
-					foreach ($token as $sel) {
-						if ($sel === null) {
-							$new_results[] = $branch;
-						} else {
-							$try_branch = $branch->branch();
-							$try_branch->find($sel);
 
-							if ($try_branch->length) {
-								$try_branch->_dp_mark = $mark;
-								$new_results[] = $try_branch;
-							}
-						}
-					}
-				}
+				$stack[] = $current;
+				$current = $try;
 			}
-
-			$results = $new_results;
 		}
 
-		return $new_results;
+		$current->_dp_stack = $stack;
+
+		return $current;
 	}
 
 
@@ -244,10 +248,8 @@ class HtmlMatcher
 	 * @param array $tokens
 	 * @return array
 	 */
-	public function consumeMatches(array $results, array &$tokens)
+	public function consumeMatches($branch, array &$tokens)
 	{
-		$new_results = $results;
-
 		while ($token = array_shift($tokens)) {
 
 			// Next token isnt a match
@@ -259,19 +261,14 @@ class HtmlMatcher
 			// Get rid of token type on the array
 			array_shift($token);
 
-			$new_results = array();
+			$text = $branch->text();
 
-			foreach ($results as $branch) {
-				$text = $branch->text();
-				if (preg_match($token[0], $text)) {
-					$new_results[] = $branch;
-				}
+			if (!preg_match($token[0], $text)) {
+				return null;
 			}
-
-			$results = $new_results;
 		}
 
-		return $new_results;
+		return $branch;
 	}
 
 

@@ -81,7 +81,7 @@ class HtmlPattern
 
 		$segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
-		$with_mark = false;
+		$depth = 0;
 		foreach ($segments as $segment) {
 
 			$segment = str_replace('__dp_esc_hash__', '\\#', $segment);
@@ -110,46 +110,13 @@ class HtmlPattern
 					// Closing tag: This just means :parent for us,
 					// its just telling the matcher to go up the tree again
 					if ($tag[0] == '/') {
-						if ($token_bunch) {
-							$this->tokens[] = array('nav', '> ' . implode(' > ', $token_bunch));
-							$token_bunch = array();
-						}
-						$this->tokens[] = array('nav', ':parent');
-
-					} elseif ($tag == '$mark') {
-						if ($token_bunch) {
-							$this->tokens[] = array('nav', '> ' . implode(' > ', $token_bunch));
-							$token_bunch = array();
-						}
-						$this->tokens[] = array('mark');
-						$with_mark = true;
-
-					// Option tag: This starts a new nav branch, so it needs to be its own separate token
-					} elseif ($tag[0] == '?') {
-						if ($token_bunch) {
-							$this->tokens[] = array('nav', '> ' . implode(' > ', $token_bunch));
-							$token_bunch = array();
-						}
-						$this->tokens[] = array('nav', '> ' . ltrim($tag, '?'), null);
+						$this->tokens[] = array('nav', ':close', $depth--);
 
 					// Normal tag, add it to the current tag bunch
 					} else {
-						$token_bunch[] = $tag;
+						$this->tokens[] = array('nav', $tag, $depth++);
 					}
 				}
-
-				if ($token_bunch) {
-					$this->tokens[] = array('nav', '> ' . implode(' > ', $token_bunch));
-				}
-			}
-		}
-
-		// trim off > from first nav rule,
-		// we use that to fetch the root to start looking at
-		foreach ($this->tokens as &$v) {
-			if ($v[0] == 'nav') {
-				$v[1] = preg_replace('/^\s*>\s*/', '', $v[1]);
-				break;
 			}
 		}
 
