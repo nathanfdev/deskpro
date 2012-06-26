@@ -40,7 +40,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class TicketMessage extends EntityRepository
+class TicketMessage extends AbstractEntityRepository
 {
 	public function getLastAgentReply($ticket)
 	{

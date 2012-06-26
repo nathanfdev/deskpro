@@ -328,6 +328,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['message'] = $email_info['body'];
 		$message['message_full'] = $body_full;
 
+		$inline_reply_detector = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply(App::getOrm(), $this->reader);
+		if ($inline_reply_detector->hasDifferentMessage()) {
+			$message['show_full_hint'] = true;
+		}
+
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;

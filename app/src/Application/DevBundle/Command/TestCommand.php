@@ -35,11 +35,16 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$ref_gen = $this->getContainer()->getSystemService('RefGenerator');
+		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$em = $this->getContainer()->getEm();
 
-		for ($i = 0; $i < 10; $i++) {
-			echo $ref_gen->generateReference('DeskPRO:Ticket');
-			echo "\n";
-		}
+		$detect = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply($em, $reader);
+
+		$str1 = 'this is a reply this is a reply this is a reply this is a reply this is a reply this is a reply';
+		$str2 = 'this is a reply this is a reply this is a reply this is a reply this is a reply this is a reply!!!!@!!!@@@@@£@£@£@£@£@£';
+
+		var_dump($detect->getMessageDifference($str1, $str2));
+
+		echo "\n";
 	}
 }
