@@ -1104,6 +1104,13 @@ $collection->add('admin_features', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketfeatures_regensearch', new Route(
+	'/tickets/features/regenerate-search',
+	array('_controller' => 'AdminBundle:TicketFeatures:regenSearch'),
+	array(),
+	array()
+));
+
 $collection->add('admin_customdeftickets', new Route(
 	'/ticket-fields',
 	array('_controller' => 'AdminBundle:CustomDefTickets:index'),

@@ -54,4 +54,23 @@ class TicketFeaturesController extends AbstractController
 
 		));
 	}
+
+	############################################################################
+	# refill-search-tables
+	############################################################################
+
+	public function regenSearchAction()
+	{
+		$res = '<pre>';
+		$res .= 'Regenerating tickets_search_active table ... ';
+
+		$time_start = microtime(true);
+		App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
+		$time_end = microtime(true);
+
+		$res .= sprintf("Done in %.4f seconds\n", $time_end-$time_start);
+		$res .= '</pre>';
+
+		return new \Symfony\Component\HttpFoundation\Response($res);
+	}
 }
