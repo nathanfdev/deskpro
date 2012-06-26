@@ -31,104 +31,29 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\EmailGateway\Cutter;
+namespace Application\DeskPRO\Config;
 
-use Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern;
-use Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlMatcher;
-use Application\DeskPRO\EmailGateway\Cutter\Def\QuoteDef;
-
-class PatternCutter implements QuoteDef
+/**
+ * Loads config from/sys/config/config.xxx.php and merges it with /config.xxx.php if it exists.
+ */
+class UserFileConfig extends \Orb\Util\OptionsArray
 {
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern[]
-	 */
-	protected $patterns = array();
-
-	/**
-	 * @var PatternCutter\HtmlPattern
-	 */
-	protected $matched_pattern;
-
-
-	/**
-	 * @param \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern|string $pattern
-	 */
-	public function addPattern($pattern)
+	public function __construct($name)
 	{
-		if (is_string($pattern)) {
-			$pattern = new HtmlPattern($pattern);
+		$array = array();
+
+		$sys_file  = DP_ROOT . '/sys/config/config.' . $name . '.php';
+		$user_file = dirname(DP_CONFIG_FILE) . '/config.' . $name . '.php';
+
+		if (file_exists($sys_file)) {
+			$array = require($sys_file);
 		}
 
-		$this->patterns[] = $pattern;
-	}
-
-
-	/**
-	 * Add an array of patterns
-	 *
-	 * @param array $patterns
-	 */
-	public function addPatterns(array $patterns)
-	{
-		foreach ($patterns as $pattern) {
-			$this->addPattern($pattern);
-		}
-	}
-
-
-	/**
-	 * Cut out the quote block
-	 *
-	 * @param string $body
-	 * @param bool $is_html
-	 * @return string
-	 */
-	public function cutQuoteBlock($body, $is_html = false)
-	{
-		if (!$is_html) {
-			return $body;
+		if (file_exists($user_file)) {
+			$user_array = require($user_file);
+			$array = array_merge($array, $user_array);
 		}
 
-		$matcher = $this->findMatchingMatcher($body);
-		if ($matcher) {
-			$body = $matcher->getCutBody();
-		}
-
-		return $body;
-	}
-
-
-	/**
-	 * @param $body
-	 * @return PatternCutter\HtmlMatcher|null
-	 */
-	public function findMatchingMatcher($body)
-	{
-		$last_qp = null;
-		foreach ($this->patterns as $pattern) {
-			$matcher = new HtmlMatcher($body, $pattern);
-			if ($last_qp) {
-				$last_qp->top();
-				$matcher->_setQp($last_qp);
-			}
-
-			if ($matcher->isMatch()) {
-				$this->matched_pattern = $pattern;
-				return $matcher;
-			}
-
-			$last_qp = $matcher->getQp();
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * @return PatternCutter\HtmlPattern|null
-	 */
-	public function getMatchedPattern()
-	{
-		return $this->matched_pattern;
+		parent::__construct($array);
 	}
 }

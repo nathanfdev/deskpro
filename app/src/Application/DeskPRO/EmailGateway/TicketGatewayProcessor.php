@@ -285,17 +285,32 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = false;
 		}
 
-		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
-		}
-
 		$body_full = $email_info['body'];
 
 		// Get rid of our cut line
 		$body_full = str_replace('_______________________.', '', $body_full);
 
-		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-		$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		$has_cut = false;
+		if ($email_info['body_is_html']) {
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
+
+			if ($cutter->getMatchedPattern()) {
+				$has_cut = true;
+				$this->logMessage("Cutter matched pattern: " . $cutter->getMatchedPattern()->getPattern());
+			} else {
+				$this->logMessage("Cutter did not match any pattern");
+			}
+		}
+
+		if (!$has_cut) {
+			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		}
+
 		if ($email_info['body_is_html']) {
 			// Send through cleaner again to fix html problems from cutting
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');

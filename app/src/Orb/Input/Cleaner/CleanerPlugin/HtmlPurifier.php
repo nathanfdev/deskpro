@@ -53,6 +53,7 @@ class HtmlPurifier implements CleanerPlugin
 			'html',
 			'simple_html',
 			'html_email',
+			'html_fix',
 		);
 	}
 
@@ -139,6 +140,11 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('CSS.AllowedProperties', array('font-weight', 'font-style'));
 				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
 				$config->set('HTML.TidyLevel', 'medium');
+				break;
+
+			case 'html_fix':
+				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+				$config->set('HTML.TidyLevel', 'none');
 				break;
 		}
 

@@ -109,7 +109,7 @@ class HtmlMatcher
 	 *
 	 * @return bool
 	 */
-	public function doesMatch()
+	public function isMatch()
 	{
 		$this->process();
 		if ($this->pattern_matches) {
@@ -139,6 +139,9 @@ class HtmlMatcher
 		}
 
 		foreach ($results as $res) {
+			if (isset($res->_dp_mark)) {
+				$res = $res->_dp_mark;
+			}
 			$res->before(self::CUT_MARK);
 		}
 
@@ -181,6 +184,12 @@ class HtmlMatcher
 		$new_results = $results;
 
 		while ($token = array_shift($tokens)) {
+			if ($token[0] == 'mark') {
+				foreach ($results as $res) {
+					$res->_dp_mark = $res->branch();
+				}
+				break;
+			}
 
 			// Next token isnt a nav
 			if ($token[0] != 'nav') {
@@ -194,9 +203,14 @@ class HtmlMatcher
 			$new_results = array();
 
 			foreach ($results as $branch) {
+				$mark = null;
+				if (isset($branch->_dp_mark)) {
+					$mark = $branch->_dp_mark;
+				}
 				if ($token[0] == ':parent') {
 					$branch->parent();
 					if ($branch->length) {
+						$branch->_dp_mark = $mark;
 						$new_results[] = $branch;
 					}
 				} else {
@@ -208,6 +222,7 @@ class HtmlMatcher
 							$try_branch->find($sel);
 
 							if ($try_branch->length) {
+								$try_branch->_dp_mark = $mark;
 								$new_results[] = $try_branch;
 							}
 						}
@@ -257,6 +272,20 @@ class HtmlMatcher
 		}
 
 		return $new_results;
+	}
+
+
+	/**
+	 * Used internally by the PatternCutter to fetch the qp and set it on the next pattern when
+	 * we know a pattern didnt match and we havent mutated the collection, saves
+	 * from re-creating the doc.
+	 *
+	 * @internal
+	 * @param \QueryPath\DOMQuery $qp
+	 */
+	public function _setQp(\QueryPath\DOMQuery $qp)
+	{
+		$this->qp = $qp;
 	}
 
 

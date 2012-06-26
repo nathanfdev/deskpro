@@ -55,6 +55,16 @@ class HtmlPattern
 		$this->pattern = $pattern;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getPattern()
+	{
+		return $this->pattern;
+	}
+
+
 	/**
 	 * Get tokens for the pattern
 	 *
@@ -66,16 +76,20 @@ class HtmlPattern
 			return $this->tokens;
 		}
 
-		$pattern = $this->pattern;
+		$pattern = " {$this->pattern} ";
 		$pattern = str_replace('\\#', '__dp_esc_hash__', $pattern);
 
-		$segments = preg_split('/ (#(?:.*?)#(?:[ims]?)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+		$segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
+		$with_mark = false;
 		foreach ($segments as $segment) {
+
+			$segment = str_replace('__dp_esc_hash__', '\\#', $segment);
+			$segment = trim($segment);
 
 			// Match token is a regex string
 			if ($segment[0] == '#') {
-				$this->tokens[] = array('match', $segment);
+				$this->tokens[] = array('match', trim($segment));
 
 			// Tag token
 			} else {
@@ -88,6 +102,11 @@ class HtmlPattern
 
 				$token_bunch = array();
 				foreach ($tag_segments as $tag) {
+					$tag = trim($tag);
+					if (!$tag) {
+						continue;
+					}
+
 					// Closing tag: This just means :parent for us,
 					// its just telling the matcher to go up the tree again
 					if ($tag[0] == '/') {
@@ -96,6 +115,14 @@ class HtmlPattern
 							$token_bunch = array();
 						}
 						$this->tokens[] = array('nav', ':parent');
+
+					} elseif ($tag == '$mark') {
+						if ($token_bunch) {
+							$this->tokens[] = array('nav', '> ' . implode(' > ', $token_bunch));
+							$token_bunch = array();
+						}
+						$this->tokens[] = array('mark');
+						$with_mark = true;
 
 					// Option tag: This starts a new nav branch, so it needs to be its own separate token
 					} elseif ($tag[0] == '?') {
