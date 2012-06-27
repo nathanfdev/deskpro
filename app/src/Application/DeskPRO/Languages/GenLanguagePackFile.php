@@ -116,6 +116,7 @@ class GenLanguagePackFile
 	public function getDomDocument()
 	{
 		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom->formatOutput = true;
 
 		$pack = $dom->createElement('pack');
 		$dom->appendChild($pack);
@@ -127,10 +128,12 @@ class GenLanguagePackFile
 		# <language> header
 		#------------------------------
 
-		$title = $dom->createElement('title', $this->title);
+		$title = $dom->createElement('title');
+		$title->appendChild($dom->createTextNode($this->title));
 		$lang->appendChild($title);
 
-		$locale = $dom->createElement('locale', $this->locale);
+		$locale = $dom->createElement('locale');
+		$locale->appendChild($dom->createTextNode($this->locale));
 		$lang->appendChild($locale);
 
 		#------------------------------
@@ -143,7 +146,8 @@ class GenLanguagePackFile
 		ksort($this->phrases, \SORT_STRING);
 
 		foreach ($this->phrases as $id => $phrase) {
-			$p = $dom->createElement('phrase', $phrase);
+			$p = $dom->createElement('phrase');
+			$p->appendChild($dom->createTextNode($phrase));
 			$p->setAttribute('id', $id);
 			$phrases->appendChild($p);
 		}

@@ -94,7 +94,8 @@ class AllPhrases
 			if ($phrase_group && is_array($phrase_group)) {
 				foreach ($phrase_group as $id => $phrase) {
 					if ($this->callback) {
-						$this->callback($id, $phrase);
+						$callback = $this->callback;
+						$callback($id, $phrase);
 					}
 
 					if ($id) {
@@ -105,5 +106,14 @@ class AllPhrases
 		}
 
 		return $this->phrases;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->getPhrases());
 	}
 }

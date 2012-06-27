@@ -65,7 +65,10 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		});
 		$phrases = $phrase_reader->getPhrases();
 
-		print_r($phrases);
+		$gen = new \Application\DeskPRO\Languages\GenLanguagePackFile('Test', 'en_US');
+		$gen->addPhrases($phrases);
+
+		echo $gen->getXml();
 
 		echo "\n";
 	}
