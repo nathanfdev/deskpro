@@ -138,7 +138,7 @@ class TechsStep extends AbstractDeskpro3Step
 				if ($agent->can_admin) {
 					$this->getDb()->insert('person2usergroups', array(
 						'person_id' => $agent->id,
-						'usergroup_id' => 2
+						'usergroup_id' => 3
 					));
 
 				// Otherwise we'll import perms into overrides
