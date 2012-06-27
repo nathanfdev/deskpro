@@ -150,7 +150,7 @@ class LanguagePackFile
 		$this->phrases = array();
 
 		foreach ($this->xml->phrases->phrase as $node) {
-			$id = $node->id;
+			$id = (string)$node['id'];
 			$text = (string)$node;
 
 			$this->phrases[$id] = $text;
