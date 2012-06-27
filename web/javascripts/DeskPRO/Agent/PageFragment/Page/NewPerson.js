@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 				if (data.success) {
 					if (this.getEl('org_id').val().length && this.fromCompanyTab) {
 						DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
-							organization_id: this.orgSel.val(),
+							organization_id: this.getEl('org_id').val(),
 							person_id: data.person_id
 						});
 					} else {
@@ -107,7 +107,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 	},
 
 	setOrganization: function(org_id) {
-		this.orgSel.val(org_id);
+		this.this.getEl('org_id').val(org_id);
 		this.fromCompanyTab = true;
 	},
 
