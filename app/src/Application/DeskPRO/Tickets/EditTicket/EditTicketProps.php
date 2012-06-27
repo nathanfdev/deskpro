@@ -56,5 +56,6 @@ class EditTicketProps
 		$this->category_id    = $ticket->category ? $ticket->category->getId() : 0;
 		$this->priority_id    = $ticket->priority ? $ticket->priority->getId() : 0;
 		$this->product_id     = $ticket->product ? $ticket->product->getId() : 0;
+		$this->subject        = $ticket->subject;
 	}
 }

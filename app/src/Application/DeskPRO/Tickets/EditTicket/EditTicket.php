@@ -94,6 +94,9 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 	{
 		App::getDb()->beginTransaction();
 		try {
+			if (isset($this->display_fields['ticket_subject'])) {
+				$this->ticket_object->subject = $this->ticket->subject;
+			}
 			if (isset($this->display_fields['ticket_department'])) {
 				$this->ticket_object->department = $this->ticket->department_id ? App::findEntity('DeskPRO:Department', $this->ticket->department_id) : null;
 			}

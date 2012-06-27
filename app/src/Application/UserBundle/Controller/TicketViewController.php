@@ -211,14 +211,40 @@ class TicketViewController extends AbstractController
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-			$page_data = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($ticket->department, 'modify', 'default', $is_default);
+			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+			$ticket_display->setPersonContext($this->person);
+			$ticket_display->addPagesFromDb();
+			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
-			$newticket->setPageData($page_data);
+			$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
+
+			if ($default_page) {
+				$default_page_data = $default_page->getPageDisplay('default')->data;
+				$page_data_field_ids = array();
+				foreach ($default_page->getPageDisplay('default')->data as $info) {
+					$page_data_field_ids[] = $info['id'];
+				}
+			} else {
+				$default_page_data = array();
+				$page_data_field_ids = array();
+			}
+
+			$unique_items = array();
+			foreach ($ticket_display->getPagesData() as $page) {
+				foreach ($page as $item) {
+					$unique_items[$item['id']] = $item;
+				}
+			}
+
+			$errors = array();
+			$error_fields = array();
 
 			if ($this->in->getBool('process')) {
 
+				$newticket->setPageData($default_page_data);
+
 				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-				$validator->setPageData($page_data);
+				$validator->setPageData($default_page_data);
 				$form->bindRequest($this->get('request'));
 
 				if ($validator->isValid($newticket)) {
@@ -231,7 +257,10 @@ class TicketViewController extends AbstractController
 			}
 
 			$vars = array_merge($vars, array(
-				'default_page_data' => $page_data,
+				'default_page_data' => $default_page_data,
+				'page_data_field_ids' => $page_data_field_ids,
+				'all_items' => $unique_items,
+
 				'form' => $form->createView(),
 				'newticket' => $newticket,
 				'custom_fields' => $custom_fields,
