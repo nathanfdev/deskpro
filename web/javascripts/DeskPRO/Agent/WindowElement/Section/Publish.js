@@ -4,11 +4,33 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+		this.expanded_ids = [];
 		this.buttonEl = $('#publish_section');
 
 		this.urlFragmentName = 'publish';
 
 		this.setSectionElement($('<section id="publish_outline"></section>'));
+
+		DeskPRO_Window.getSectionData('publish_section', this._initSection.bind(this));
+
+		window.setInterval(function() {
+			self.reload();
+		}, 420000); // update every 7 mins
+	},
+
+	reload: function() {
+		var expanded_ids = [];
+
+		if (this.contentEl && this.contentEl.length) {
+			this.contentEl.find('section.group-section.open').each(function() {
+				var id = $(this).attr('id');
+				if (id) {
+					expanded_ids.push(id);
+				}
+			});
+		}
+
+		this.expanded_ids = expanded_ids;
 
 		DeskPRO_Window.getSectionData('publish_section', this._initSection.bind(this));
 	},
@@ -19,7 +41,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		this.setHasInitialLoaded();
 
 		this.contentEl.html(data.section_html);
-		//this.contentEl.addClass('scroll-content').tinyscrollbar();
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
 			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '-');
@@ -237,6 +258,17 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 							li.show();
 						},
 						success: function(info) {
+
+							if (info.error) {
+								if (info.error_code == 'not_empty') {
+									DeskPRO_Window.showAlert('The category is not empty. You cannot delete categories that contain articles or other categories.');
+								}
+
+								li.stop().show();
+								self.reload();
+								return;
+							}
+
 							li.remove();
 							updateNewOverlay();
 						}
@@ -260,6 +292,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 
 		this.recountBadge();
+
+		if (this.expanded_ids.length) {
+			this.contentEl.find('section.group-section').removeClass('open').find('> article').hide();
+			Array.each(this.expanded_ids, function(id) {
+				$('#' + id).addClass('open').find('> article').show();
+			});
+		}
 
 		this.fireEvent('sectionInit');
 	},

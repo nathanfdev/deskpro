@@ -781,7 +781,16 @@ class PublishController extends AbstractController
 
 	public function deleteCategoryAction($type)
 	{
-		PublishCategoryEdit::deleteCategory($type, $this->in->getUint('category_id'));
+		try {
+			PublishCategoryEdit::deleteCategory($type, $this->in->getUint('category_id'));
+		} catch (\OutOfBoundsException $e) {
+			return $this->createJsonResponse(array(
+				'error'       => true,
+				'error_code'  => 'not_empty',
+				'category_id' => $this->in->getUint('category_id'),
+				'type'        => $type,
+			));
+		}
 
 		return $this->createJsonResponse(array(
 			'success' => true,
