@@ -35,43 +35,17 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$email = file_get_contents(DP_ROOT . '/src/Application/DevBundle/Resources/email-sources/re-outlook.txt');
+		$email = file_get_contents(DP_ROOT . '/src/Application/DevBundle/Resources/email-sources/re-outlook2.txt');
 		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$reader->setRawSource($email);
 
 		$raw_body = $reader->getBodyHtml()->getBodyUtf8();
 		$body = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($raw_body, 'html_fix');
-		$body = $raw_body;
-		$raw_body = <<<STR
-<div>
-	<p class=MsoNormal>
-		<b>
-			<span lang=EN-US style='font-size:10.0pt;font-family:"Tahoma","sans-serif"'>
-				From:
-			</span>
-		</b>
-		<span lang=EN-US style='font-size:10.0pt;font-family:"Tahoma","sans-serif"'>
-			DeskPRO [mailto:hello@deskpro.com]
-			<br></br>
-			<b>Sent:</b>
-			18 June 2012 10:42
-			<br></br>
-			<b>To:</b>
-			Christopher Padfield
-			<br></br>
-			<b>Subject:</b>
-			New Reply: Test Subject - 2012-06-18 10:36:27
-		</span>
-		</p>
-</div>
-STR;
-		$body = $raw_body;
-
 		$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-		//$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-		//$cutter->addPatterns($pattern_config->all());
+		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+		$cutter->addPatterns($pattern_config->all());
 		//$cutter->addPattern('p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p');
-		$cutter->addPattern('p b span #from:#i /span /b span #.*# br /br b /b /span /p');
+		//$cutter->addPattern('p b span #from:#i /span /b span #.*# br /br b /b /span /p');
 
 		$time = microtime(true);
 

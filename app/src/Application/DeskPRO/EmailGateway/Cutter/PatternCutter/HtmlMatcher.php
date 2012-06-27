@@ -62,6 +62,11 @@ class HtmlMatcher
 	 */
 	protected $marked_body;
 
+	/**
+	 * @var array
+	 */
+	protected $root_state;
+
 
 	/**
 	 * @param string $body
@@ -98,17 +103,21 @@ class HtmlMatcher
 			$roots[] = \QueryPath::with($m);
 		});
 
-		foreach ($roots as $root) {
+		foreach ($roots as $id => $root) {
 			$use_tokens = $tokens;
 
 			$branch = $root->branch()->first();
-			$branch->_dp_stack = array();
+			$this->root_state[$id] = array(
+				'closed' => false
+			);
+
+
 			while ($use_tokens) {
-				$branch = $this->consumeNavigates($branch, $use_tokens);
+				$branch = $this->consumeNavigates($id, $branch, $use_tokens);
 				if (!$branch) {
 					break;
 				}
-				$branch = $this->consumeMatches($branch, $use_tokens);
+				$branch = $this->consumeMatches($id, $branch, $use_tokens);
 				if (!$branch) {
 					break;
 				}
@@ -119,8 +128,6 @@ class HtmlMatcher
 				return $this->pattern_match;
 			}
 		}
-
-		echo "no match";
 
 		return null;
 	}
@@ -196,17 +203,9 @@ class HtmlMatcher
 	 * @param array $tokens
 	 * @return array
 	 */
-	public function consumeNavigates($branch, array &$tokens)
+	public function consumeNavigates($id, $branch, array &$tokens)
 	{
 		$current = $branch->branch()->first();
-
-		if (isset($branch->_dp_stack)) {
-			$stack = $branch->_dp_stack;
-		} else {
-			$stack = array();
-		}
-
-		$stack[] = $current->branch();
 
 		while ($token = array_shift($tokens)) {
 
@@ -217,25 +216,28 @@ class HtmlMatcher
 			}
 
 			$sel = $token[1];
-
-			echo " > $sel";
+			$depth = $token[2];
 
 			if ($sel == ':close') {
-				$current = array_pop($stack);
-			} else {
-
-				$try = $current->branch()->next();
-				$try->next();
-				if (!$try->length || $try->get(0)->tagName != $sel) {
-					return null;
+				if ($this->root_state[$id]['closed']) {
+					$current->parent();
 				}
-
-				$stack[] = $current;
-				$current = $try;
+				$this->root_state[$id]['closed'] = true;
+			} else {
+				if ($this->root_state[$id]['closed']) {
+					$current->next();
+					if (!$current->length || $current->get(0)->tagName != $sel) {
+						return null;
+					}
+					$this->root_state[$id]['closed'] = false;
+				} else {
+					$current->find($sel)->first();
+					if (!$current->length) {
+						return null;
+					}
+				}
 			}
 		}
-
-		$current->_dp_stack = $stack;
 
 		return $current;
 	}
@@ -248,7 +250,7 @@ class HtmlMatcher
 	 * @param array $tokens
 	 * @return array
 	 */
-	public function consumeMatches($branch, array &$tokens)
+	public function consumeMatches($id, $branch, array &$tokens)
 	{
 		while ($token = array_shift($tokens)) {
 
