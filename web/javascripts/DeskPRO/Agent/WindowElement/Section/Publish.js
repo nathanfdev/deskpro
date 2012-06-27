@@ -4,6 +4,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+		var self = this;
 		this.expanded_ids = [];
 		this.buttonEl = $('#publish_section');
 
