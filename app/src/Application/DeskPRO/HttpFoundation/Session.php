@@ -227,11 +227,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		if ($person && !$person->isGuest()) {
 			$this->language = $person->getLanguage();
 		} elseif ($this->get('language_id')) {
-			$this->language = App::getEntityRepository('DeskPRO:Language')->find($this->get('language_id'));
+			$this->language = App::getDataService('Language')->get($this->get('language_id'));
 		}
 
 		if (!$this->language) {
-			$this->language = App::getEntityRepository('DeskPRO:Language')->getDefault();
+			$this->language = App::getDataService('Language')->getDefault();
 		}
 
 		// still no locale? we might be pre-install, lets use the fake one

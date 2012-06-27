@@ -932,7 +932,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return $this->language;
 		}
 
-		return App::getEntityRepository('DeskPRO:Language')->getDefault();
+		return App::getDataService('Language')->getDefault();
 	}
 
 

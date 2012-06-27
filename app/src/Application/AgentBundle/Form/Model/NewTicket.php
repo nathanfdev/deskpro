@@ -147,7 +147,7 @@ class NewTicket
 		// Ticket props
 		$ticket = new Ticket();
 		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT;
-		$ticket['language'] = $person->getLanguage();
+		$ticket['language'] = $person->getRealLanguage();
 
 		$this->_email = $person->findEmailAddress($this->person->email_address);
 		if ($this->_email) {

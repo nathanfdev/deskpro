@@ -17,7 +17,11 @@
 	<li data-field="email" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="email" {% if not show_all or 'email' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.email_address') }}</label></li>
 	<li data-field="org" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org" {% if not show_all or 'org' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.organization') }}</label></li>
 	<li data-field="org_pos" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org_pos" {% if not show_all or 'org_pos' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.position') }}</label></li>
-	<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.language') }}</li>
+
+	{% if app.getDataRepository('Language').isMultiLang() %}
+		<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.language') }}</li>
+	{% endif %}
+
 	<li data-field="labels"><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.labels') }}</li>
 	<li data-field="num_tickets"><input type="checkbox" name="num_tickets" {% if 'num_tickets' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.search.number_of_tickets') }}</li>
 	{% for f in person_field_defs %}

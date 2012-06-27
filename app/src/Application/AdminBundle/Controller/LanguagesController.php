@@ -49,6 +49,15 @@ class LanguagesController extends AbstractController
     {
 		$languages = $this->em->getRepository('DeskPRO:Language')->findAll();
 
+		if ($this->in->checkIsset('set_enable_languages')) {
+			$this->container->getSettingsHandler()->setSetting('core.enable_languages', $this->in->getBool('set_enable_languages'));
+			return $this->redirectRoute('admin_langs');
+		}
+
+		if (!$this->container->getSetting('core.enable_languages')) {
+			return $this->render('AdminBundle:Languages:landing-enable.html.twig', array());
+		}
+
         return $this->render('AdminBundle:Languages:index.html.twig', array(
 			'languages' => $languages,
 		));

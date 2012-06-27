@@ -16,6 +16,11 @@
 	 */
 	'core.rewrite_urls' => false,
 
+	/**
+	 * Is multi-language features enabeld?
+	 */
+	'core.enable_languages' => false,
+
 	/**#@+
 	 * Date formats
 	 */
@@ -128,11 +133,6 @@
 	 * When the installation took place
 	 */
 	'core.install_time' => 0,
-
-	/**
-	 * True to use single-language ode
-	 */
-	'core.single_lang_mode' => true,
 
 	/**
 	 * The site ID. Only used when multiple helpdesks need to talk to eachother.

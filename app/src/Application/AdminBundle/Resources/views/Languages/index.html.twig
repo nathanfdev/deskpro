@@ -1,3 +1,4 @@
+{% set admin_page_class = 'with_top_border' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
@@ -36,6 +37,22 @@
 		</article>
 	</div>
 </div>
+{% endblock %}
+{% block pagebar_after %}
+	<div class="portal-toggle">
+		<a class="toggle-btn" href="{{ path('admin_langs', {set_enable_languages: 0}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+		<p>
+			Multi-lingual features are enabled. This allows you to install multiple language packs and modify text phrases used throughout the system.
+		</p>
+		<div
+			data-element-handler="DeskPRO.Admin.ElementHandler.LangEditSettings"
+			data-set-default-lang-url="{{ path('admin_settings_set', {'setting_name':'core.default_language_id', 'security_token': security_token('set_setting')}) }}"
+		>
+			<p>
+				You have {% if languages|length == 1%}1 language{% else %}{{ languages|length }} languages{% endif %} installed. <a href="http://www.deskpro.com/languages/">Download more from DeskPRO.com</a>.
+			</p>
+		</div>
+	</div>
 {% endblock %}
 {% block page %}
 <h1>{{ phrase('admin.general.languages') }}</h1>

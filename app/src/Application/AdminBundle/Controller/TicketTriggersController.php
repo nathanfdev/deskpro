@@ -165,9 +165,12 @@ class TicketTriggersController extends AbstractController
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		$ticket_options['people_term_options']  = array();
 		$ticket_options['people_term_options']  = array();
-		$ticket_options['people_term_options']['organizations']  = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
-		$ticket_options['people_term_options']['usergroups']  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$ticket_options['people_term_options']['languages']  = $this->em->getRepository('DeskPRO:Language')->getTitles();
+		$ticket_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
+		$ticket_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
+
+		if ($this->container->getDataService('Language')->isMultiLang()) {
+			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
+		}
 
 		$form = $this->get('form.factory')->create(new EditTicketTriggerType($trigger), $trigger);
 

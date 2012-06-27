@@ -483,9 +483,13 @@ class PeopleSearchController extends AbstractController
 
 		// Used in the search form again
         $titles = array();
-        $titles['organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
-        $titles['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
+        $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
+        $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
+
+		if ($this->container->getDataService('Language')->isMultiLang()) {
+			$titles['languages']     = $this->container->getDataService('Language')->getTitles();
+		}
+
 		$vars['titles'] = $titles;
 
 		if (!$set_view_name) {
