@@ -166,12 +166,7 @@ class LanguageDataService extends BaseRepositoryService
 
 		// If lang isnt enabeld, we know to just fetch the first
 		if (!$this->lang_is_enabled) {
-			$lang = new Language();
-			$lang->id = 1;
-			$lang->title = "English (US)";
-			$lang->language_package = 'DeskproLanguages\\LangPackage';
-			$lang->locale = 'en_US';
-
+			$lang = $this->em->find('DeskPRO:Language', 1);
 			$this->languages[1] = $lang;
 			$this->default_lang_id = 1;
 
