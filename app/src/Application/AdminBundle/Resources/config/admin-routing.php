@@ -989,9 +989,9 @@ $collection->add('admin_langs_dellang', new Route(
 	array()
 ));
 
-$collection->add('admin_langs_newlang', new Route(
-	'/languages/new-lang',
-	array('_controller' => 'AdminBundle:Languages:newLanguage'),
+$collection->add('admin_langs_install', new Route(
+	'/languages/install',
+	array('_controller' => 'AdminBundle:Languages:install'),
 	array(),
 	array()
 ));
