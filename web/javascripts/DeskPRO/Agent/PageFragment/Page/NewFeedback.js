@@ -24,7 +24,6 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
-			self.submit();
 		});
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));

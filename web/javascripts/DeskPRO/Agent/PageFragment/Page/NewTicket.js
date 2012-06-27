@@ -18,7 +18,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
-			self.submit();
 		});
 
 		this._initUserSection();
