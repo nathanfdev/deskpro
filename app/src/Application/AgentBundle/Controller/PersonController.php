@@ -543,7 +543,12 @@ class PersonController extends AbstractController
 					");
 				}
 
-				$this->db->delete('person2usergroups', array('person_id' => $person->id));
+				$this->container->getDb()->executeUpdate("
+					DELETE person2usergroups
+					FROM person2usergroups
+					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
+					WHERE usergroups.is_agent_group = 0
+				");
 
 				if ($usergroup_ids) {
 					$inserts = array();
