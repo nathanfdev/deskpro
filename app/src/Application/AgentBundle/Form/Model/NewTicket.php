@@ -34,7 +34,7 @@
 
 namespace Application\AgentBundle\Form\Model;
 
-use Application\DeskPRO\App;
+use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -57,31 +57,61 @@ class NewTicket
 	public $workflow_id = 0;
 	public $product_id = 0;
 
-	public $new_parts = '';
+	public $add_cc_person = array();
+	public $add_cc_newperson = array();
 	public $attach = array();
 
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $_em;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
 	protected $_ticket;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
 	protected $_person_context;
 
-	public function __construct(Person $person_context)
+	public function __construct(EntityManager $em, Person $person_context)
 	{
-		$this->person = new NewTicketPerson();
+		$this->_em = $em;
 		$this->_person_context = $person_context;
+
+		$this->person = new NewTicketPerson();
 	}
 
+	/**
+	 * @throws \Exception
+	 * @return \Application\DeskPRO\Entity\Ticket
+	 */
 	public function save()
 	{
-		$em = App::getOrm();
-		$em->beginTransaction();
+		$this->_em->getConnection()->beginTransaction();
+		try {
+			$res = $this->_save();
+			$this->_em->getConnection()->commit();
 
+			return $res;
+		} catch (\Exception $e) {
+			$this->_em->getConnection()->rollback();
+			throw $e;
+		}
+	}
+
+	protected function _save()
+	{
 		#------------------------------
 		# The user owner
 		#------------------------------
 
 		if ($this->person->id) {
-			$person = $em->find('DeskPRO:Person', $this->person->id);
+			$person = $this->_em->find('DeskPRO:Person', $this->person->id);
 		} else {
-			$person = $em->getRepository('DeskPRO:Person')->findOneByEmail($this->person->email_address);
+			$person = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($this->person->email_address);
 		}
 
 		if (!$person) {
@@ -90,11 +120,11 @@ class NewTicket
 		}
 
 		if ($this->person->organization) {
-			$org = $em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
+			$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
 			if (!$org) {
 				$org = new Organization();
 				$org['name'] = $this->person->organization;
-				$em->persist($org);
+				$this->_em->persist($org);
 			}
 			$person->organization = $org;
 
@@ -107,8 +137,8 @@ class NewTicket
 			$person->name = $this->person->name;
 		}
 
-		$em->persist($person);
-		$em->flush();
+		$this->_em->persist($person);
+		$this->_em->flush();
 
 		#------------------------------
 		# Ticket
@@ -119,9 +149,9 @@ class NewTicket
 		$ticket['creation_system'] = Ticket::CREATED_WEB_AGENT;
 		$ticket['language'] = $person->getLanguage();
 
-		$email = $person->findEmailAddress($this->person->email_address);
-		if ($email) {
-			$ticket->person_email = $email;
+		$this->_email = $person->findEmailAddress($this->person->email_address);
+		if ($this->_email) {
+			$ticket->person_email = $this->_email;
 		}
 
 		$standard = array(
@@ -154,7 +184,7 @@ class NewTicket
 		// Message Attachments
 		foreach ($this->attach as $blob_id) {
 
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
 			$attach = new TicketAttachment();
 			$attach['blob'] = $blob;
@@ -165,50 +195,71 @@ class NewTicket
 
 		$ticket->addMessage($message);
 
-		$em->persist($ticket);
-		$em->flush();
-		$em->persist($message);
-		$em->flush();
+		$this->_em->persist($ticket);
+		$this->_em->flush();
+		$this->_em->persist($message);
+		$this->_em->flush();
 
 		#------------------------------
 		# Participants
 		#------------------------------
 
-		$user_parts_emails = $this->new_parts;
-		$user_parts_emails = explode(',', $user_parts_emails);
+		$add_cc_peopleids = $this->add_cc_person;
+		$add_cc_people = array();
 
-		// CC'ed
-		$new_parts_to_people = array();
-		$email_validator = new \Orb\Validator\StringEmail();
-
-		foreach ($user_parts_emails as $email) {
-			$email = trim($email);
-			if (!$email || !$email_validator->isValid($email)) {
+		$added_new = false;
+		foreach ($this->add_cc_newperson as $info) {
+			if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email'])) {
 				continue;
 			}
 
-			$cc_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
-			if (!$cc_person) {
-				$cc_person = Person::newContactPerson(array('email' => $email));
-				$em->persist($cc_person);
+			$check_exist = $this->_em->getRepository('DeskPRO:Person')->findOneByEmail($info['email']);
+			if ($check_exist) {
+				$add_cc_people[] = $check_exist;
+			} else {
+				// New person, coming right up
+				$added_new = true;
+
+				$new_cc_person = Person::newContactPerson(array(
+					'email' => $info['email'],
+					'name' => !empty($info['name']) ? $info['name'] : ''
+				));
+				$this->_em->persist($new_cc_person);
+
+				$add_cc_people[] = $new_cc_person;
 			}
-
-			$new_parts_to_people[] = $cc_person;
 		}
 
-		$em->flush();
-
-		foreach ($new_parts_to_people as $cc_person) {
-			$ticket->addParticipantPerson($cc_person);
+		if ($added_new) {
+			$this->_em->flush();
 		}
 
-		$em->persist($ticket);
-		$em->flush();
-		$em->commit();
+		$add_cc_people = array_merge(
+			$add_cc_people,
+			$this->_em->getRepository('DeskPRO:Person')->getByIds($add_cc_peopleids)
+		);
+		foreach ($add_cc_people as $add_cc_person) {
+			if ($add_cc_person->getId() != $ticket->person->getId()) {
+				$part = $ticket->addParticipantPerson($add_cc_person);
+				if ($part) {
+					$this->_em->persist($part);
+				}
+			}
+		}
+
+		if ($add_cc_people) {
+			$this->_em->flush();
+		}
 
 		$this->_ticket = $ticket;
+
+		return $this->_ticket;
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Ticket
+	 */
 	public function getTicket()
 	{
 		return $this->_ticket;

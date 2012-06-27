@@ -72,8 +72,18 @@ class NewTicket extends AbstractType
 		$builder->add('workflow_id', 'text', array('required' => false));
 		$builder->add('product_id', 'text', array('required' => false));
 
-		$builder->add('new_parts', 'hidden', array(
+		$builder->add('add_cc_person', 'collection', array(
+			'type' => 'hidden',
 			'required' => false,
+			'allow_add' => true,
+			'allow_delete' => true
+		));
+
+		$builder->add('add_cc_newperson', 'collection', array(
+			'type' => 'hidden',
+			'required' => false,
+			'allow_add' => true,
+			'allow_delete' => true
 		));
 
 		$builder->add('attach', 'collection', array(

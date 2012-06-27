@@ -23,8 +23,8 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			return $('.ticket-reply-form', self.el.data('replybox-container')).data('handler');
 		};
 
-		this.el.closest('article').on('click', '.remove-row-trigger', function(ev) {
-			var row = $(this).closest('.addrow');
+		this.el.find('ul').on('click', '.remove-row-trigger', function(ev) {
+			var row = $(this).closest('li');
 			var personId = row.data('person-id');
 			var email = row.data('email-address');
 

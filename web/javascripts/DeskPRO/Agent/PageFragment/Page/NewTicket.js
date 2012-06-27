@@ -338,11 +338,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					html.push('<li>');
 						html.push('<em class="remove"></em>');
 						html.push('<a data-route="page:'+data.url+'">' + data.contact_name + '</a>');
-						html.push('<input type="hidden" name="add_cc_person[]" value="'+personId+'" />');
+						html.push('<input type="hidden" name="newticket[add_cc_person][]" value="'+personId+'" />');
 					html.push('</li>');
 
 					html = html.join('');
 					self.getEl('cc_list').append(html);
+					self.updateUi();
 				}
 			});
 			sb.close();
@@ -355,8 +356,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var html = [];
 			html.push('<li>');
 				html.push('<em class="remove"></em>');
-				html.push('<input type="text" class="name" name="new_cc_person_name['+rowid+']" placeholder="Enter a full name" />');
-				html.push('<input type="text" class="email" name="new_cc_person_email['+rowid+']" placeholder="Enter an email address" />');
+				html.push('<input type="text" class="name" name="newticket[add_cc_newperson]['+rowid+'][name]" placeholder="Enter a full name" />');
+				html.push('<input type="text" class="email" name="newticket[add_cc_newperson]['+rowid+'][email]" placeholder="Enter an email address" />');
 			html.push('</li>');
 
 			html = $(html.join(''));

@@ -806,15 +806,25 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$part = $this->em->createQuery("
+			SELECT part
+			FROM DeskPRO:TicketParticipant part
+			WHERE part.ticket = ?0 AND part.person = ?1
+		")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$part) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
 		$this->db->beginTransaction();
 
 		try {
-			$ticket->removeParticipantPerson($person);
-			$this->em->persist($ticket);
+			$this->em->remove($part);
+			$this->em->flush();
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
-            return $this->createJsonResponse(array('success' => false));
+            throw $e;
 		}
 
 		return $this->createJsonResponse(array('success' => true));
@@ -1622,7 +1632,10 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->person);
+		$newticket = new \Application\AgentBundle\Form\Model\NewTicket(
+			$this->em,
+			$this->person
+		);
 
 		$formType = new \Application\AgentBundle\Form\Type\NewTicket();
 		$form = $this->get('form.factory')->create($formType, $newticket);

@@ -668,7 +668,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($this->participants as $k => $p) {
-			if ($p['person']['id'] == $person['id']) {
+			if ($p['person']->getId() == $person->getId()) {
 				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $p['person'], null);
 				$this->participants->remove($k);
 				return $p;
