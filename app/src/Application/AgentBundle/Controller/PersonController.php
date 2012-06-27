@@ -143,6 +143,7 @@ class PersonController extends AbstractController
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 		$usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$reg_group = $this->em->getRepository('DeskPRO:Usergroup')->find(\Application\DeskPRO\Entity\Usergroup::REG_ID);
 
 		$person->loadHelper('PermissionsManager');
 		$person_usergroups_ids = $person->getPermissionsManager()->getUsergroupIds();
@@ -282,7 +283,8 @@ class PersonController extends AbstractController
 			'org_members_count' => $org_members_count,
 			'org_contact_data' => $org_contact_data,
 			'perms' => $perms,
-			'is_person_editable' => $is_editable
+			'is_person_editable' => $is_editable,
+			'reg_group' => $reg_group,
 		));
 	}
 

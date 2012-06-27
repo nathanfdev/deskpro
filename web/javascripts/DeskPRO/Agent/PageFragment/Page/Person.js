@@ -643,14 +643,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			cancelBtn.hide();
 			displayBox.show();
 			editBox.hide();
-
-			if (ugbox.find(':checkbox.ug-check:checked').length) {
-				ugbox.find('> section').show();
-				ugbox.removeClass('no-section');
-			} else {
-				ugbox.find('> section').hide();
-				ugbox.addClass('no-section');
-			}
 		};
 		var showNormal = function() {
 			ugbox.removeClass('loading');
@@ -659,14 +651,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			cancelBtn.hide();
 			displayBox.show();
 			editBox.hide();
-
-			if (ugbox.find(':checkbox.ug-check:checked').length) {
-				ugbox.find('> section').show();
-				ugbox.removeClass('no-section');
-			} else {
-				ugbox.find('> section').hide();
-				ugbox.addClass('no-section');
-			}
 		};
 
 		editBtn.on('click', function() {
@@ -680,13 +664,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			formData.push({name: 'action', value: 'set-usergroups'});
 
 			displayBox.find('li.ug-row').hide();
-			if (ugbox.find(':checkbox.ug-check:checked').length) {
-				ugbox.find('> section').show();
-				ugbox.removeClass('no-section');
-			} else {
-				ugbox.find('> section').hide();
-				ugbox.addClass('no-section');
-			}
 
 			ugbox.find(':checkbox.ug-check:checked').each(function() {
 				var id = $(this).val();
@@ -708,9 +685,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 		});
-
-		if (!displayBox.find('li')[0]) {
-			ugbox.find('> section').hide();
-		}
 	}
 });
