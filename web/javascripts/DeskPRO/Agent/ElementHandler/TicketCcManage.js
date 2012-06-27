@@ -67,16 +67,26 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				url: addUrl,
 				type: 'POST',
 				data: { email_address: email },
-				dataType: 'html',
-				success: function(html) {
-					var li = $(html);
+				dataType: 'json',
+				complete: function() {
+					row.remove();
+				},
+				success: function(data) {
+
+					if (data.error) {
+						if (data.error_code == 'invalid_email') {
+							DeskPRO_Window.showAlert('Please enter a valid email address');
+						}
+						return;
+					}
+
+					var li = $(data.row);
 
 					li.appendTo(list);
 
 					var email = li.data('email-address');
 					var trb = getReplyController();
 					trb.addCc(email);
-					row.remove();
 				}
 			});
 		});

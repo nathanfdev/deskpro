@@ -752,6 +752,14 @@ class TicketController extends AbstractController
 		if ($this->in->getUint('person_id')) {
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('perosn_id'));
 		} elseif ($email_address = $this->in->getString('email_address')) {
+
+			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => 'invalid_email'
+				));
+			}
+
 			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_address);
 
 			if (!$person) {
@@ -766,7 +774,10 @@ class TicketController extends AbstractController
 
 		if ($person->id) {
 			if ($ticket->hasParticipantPerson($person)) {
-				return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms));
+				return $this->createJsonResponse(array(
+					'success' => true,
+					'row' => $this->renderView('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms))
+				));
 			}
 		}
 
@@ -790,7 +801,10 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms));
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'row' => $this->renderView('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms))
+		));
 	}
 
 	############################################################################

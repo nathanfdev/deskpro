@@ -177,6 +177,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	public function setEmail($email)
 	{
 		if ($email) {
+
+			if (!strpos($email, '@')) {
+				throw new \InvalidArgumentException("Email address is invalid");
+			}
+
 			$this->setModelField('email', strtolower($email));
 			list (, $email_domain) = explode('@', $email, 2);
 		} else {
