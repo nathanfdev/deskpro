@@ -634,7 +634,7 @@ $em->flush();
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';
 $q->event_trigger = 'time_user_waiting';
-$q->event_trigger_option = '1 day';
+$q->event_trigger_option = '1 days';
 $q->is_enabled = 0;
 $q->terms = array();
 $q->actions = array(
