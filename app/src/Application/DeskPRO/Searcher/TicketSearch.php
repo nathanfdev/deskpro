@@ -1254,7 +1254,7 @@ class TicketSearch extends SearcherAbstract
 
 					$choice = $this->normalizeWaitingTime($choice);
 
-					if (is_array($choice)) {
+					if (is_array($choice) && isset($choice['waiting_time'])) {
 						$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
 					}
@@ -1269,7 +1269,7 @@ class TicketSearch extends SearcherAbstract
 
 					$choice = $this->normalizeWaitingTime($choice);
 
-					if (is_array($choice)) {
+					if (is_array($choice) && isset($choice['waiting_time'])) {
 						$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
 					}
@@ -1285,7 +1285,8 @@ class TicketSearch extends SearcherAbstract
 
 					$choice = $this->normalizeWaitingTime($choice);
 
-					if (is_array($choice)) {
+					// Need the check on waiting_time because it could be date1/date2 instead
+					if (is_array($choice) && isset($choice['waiting_time'])) {
 						$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
 					}
@@ -1408,7 +1409,12 @@ class TicketSearch extends SearcherAbstract
 	{
 		if (is_array($choice)) {
 			$choice = Arrays::removeFalsey($choice);
-			if (!$choice || empty($choice['waiting_time']) || empty($choice['waiting_time_unit'])) {
+			if (!$choice) {
+				return 0;
+			}
+			if (isset($choice['date1']) || isset($choice['date2'])) {
+				return $choice;
+			} elseif (empty($choice['waiting_time']) || empty($choice['waiting_time_unit'])) {
 				return 0;
 			}
 		}
