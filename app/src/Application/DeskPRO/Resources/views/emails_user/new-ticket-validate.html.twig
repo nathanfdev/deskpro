@@ -13,5 +13,5 @@
 	{% endset %}
 	{{ layout.section('', content) }}
 
-	{{ layout.render_ticket_messages(messages) }}
+	{{ layout.render_ticket_messages(messages, '', { person_id: ticket.person.id }) }}
 {% endblock %}

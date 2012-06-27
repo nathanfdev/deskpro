@@ -8,7 +8,7 @@
 	{{ layout.render_top_message(messages|first, { ticketdisplay: ticketdisplay }) }}
 	{% if messages|length > 1 %}
 		<br />
-		{{ layout.render_ticket_messages(messages, '', { skip_top: 1, ticketdisplay: ticketdisplay}) }}
+		{{ layout.render_ticket_messages(messages, '', { skip_top: 1, ticketdisplay: ticketdisplay, person_id: ticket.person.id }) }}
 	{% endif %}
 {% endblock %}
 {% block footer_content %}

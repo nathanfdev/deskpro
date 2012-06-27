@@ -56,14 +56,20 @@
 </table>
 {% endmacro %}
 
-{% macro message(author, time, message, options) %}
+{% macro message(message, options) %}
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">{{ phrase('user.emails.ticket_message_title', { date: time|date('full'), time: time|date('time'), author: author|e }) }}</td></tr>
+		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">
+			{% if options.show_author_email or options.person_id == message.person.id or not message.person.is_agent %}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.getDisplayContact()|e }) }}
+			{% else %}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e }) }}
+			{% endif %}
+		</td></tr>
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
-				<span class="dp_message_{{ options.message_id }}_begin" title="dp_message_{{ options.message_id }}_begin" id="dp_message_{{ options.message_id }}_begin" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
-				{{ message|raw }}
-				<span class="dp_message_{{ options.message_id }}_end" title="dp_message_{{ options.message_id }}_end" id="dp_message_{{ options.message_id }}_end" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+				<span class="dp_message_{{ message.id }}_begin" title="dp_message_{{ message.id }}_begin" id="dp_message_{{ message.id }}_begin" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+				{{ message.message_html|raw }}
+				<span class="dp_message_{{ message.id }}_end" title="dp_message_{{ message.id }}_end" id="dp_message_{{ message.id }}_end" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
 				{% if options.attachments %}
 					<div style="font-size:11px">
 						<br />
@@ -106,11 +112,7 @@
 			{% for message in messages %}
 				{% if options.skip_top and loop.first %}
 				{% else %}
-					{% if message.person.is_agent %}
-						{{ _self.message(message.person.display_name, message.date_created, message.message_html, { attachments: options.ticketdisplay.getMessageAttachments(message), message_id: message.id }) }}
-					{% else %}
-						{{ _self.message(message.person.display_contact, message.date_created, message.message_html, { attachments: options.ticketdisplay.getMessageAttachments(message), message_id: message.id }) }}
-					{% endif %}
+					{{ _self.message(message, { attachments: options.ticketdisplay.getMessageAttachments(message), person_id: options.person_id, show_author_email: options.show_author_email }) }}
 				{% endif %}
 			{% endfor %}
 		{% endset %}

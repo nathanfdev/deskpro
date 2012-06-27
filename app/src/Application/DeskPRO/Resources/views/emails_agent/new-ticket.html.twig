@@ -14,7 +14,7 @@
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
-{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), { ticketdisplay: ticketdisplay }) }}
+{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), { ticketdisplay: ticketdisplay, show_author_email: true }) }}
 
 <br/><br/>
 {{ layout.replycode(tac.access_code) }}

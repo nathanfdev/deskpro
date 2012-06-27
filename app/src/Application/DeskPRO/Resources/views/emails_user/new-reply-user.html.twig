@@ -13,7 +13,7 @@
 
 	{% if messages|length %}
 		<br />
-		{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay}) }}
+		{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay, person_id: ticket.person.id }) }}
 	{% endif %}
 {% endblock %}
 {% block footer_content %}

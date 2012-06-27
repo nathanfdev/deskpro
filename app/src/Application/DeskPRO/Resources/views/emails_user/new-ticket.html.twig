@@ -12,7 +12,7 @@
 	{{ layout.section('', content) }}
 
 	<br />
-	{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay }) }}
+	{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay, person_id: ticket.person.id }) }}
 {% endblock %}
 {% block footer_content %}
 	{% set content %}
