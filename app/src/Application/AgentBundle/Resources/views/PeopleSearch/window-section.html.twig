@@ -100,3 +100,32 @@
 		</section>
 	</article>
 </section>
+
+{##################################}
+{# AGENTS #}
+{##################################}
+
+<section class="source-section sys-filters-section">
+	<header>
+		<h1>Agents</h1>
+	</header>
+	<article>
+		<ul class="source-list" id="people_outline_agent_list">
+			<li class="people nav-people is-nav-item" >
+				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=agent_mode&amp;terms[0][op]=is&amp;terms[0][agent_mode]=1">
+					<span class="list-counter">{{ agent_count }}</span>
+					Agents
+				</h3>
+			</li>
+
+			{% for id,title in team_names %}
+				<li class="people nav-people is-nav-item" >
+					<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_agent_team&amp;terms[0][op]=is&amp;terms[0][team_id]={{ id }}">
+						<span class="list-counter">{{ team_counts[id]|default(0) }}</span>
+						{{ title }}
+					</h3>
+				</li>
+			{% endfor %}
+		</ul>
+	</article>
+</section>

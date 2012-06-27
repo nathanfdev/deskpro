@@ -113,6 +113,19 @@ class AgentTeam extends AbstractEntityRepository
 		return $ret;
 	}
 
+	public function getTeamCounts()
+	{
+		$counts = App::getDb()->fetchAllKeyValue("
+			SELECT team_id, COUNT(*)
+			FROM agent_team_members
+			LEFT JOIN people ON (people.id = agent_team_members.person_id)
+			WHERE people.is_deleted = 0
+			GROUP BY team_id
+		");
+
+		return $counts;
+	}
+
 	public function getMemberIds($team_id)
 	{
 		if ($team_id instanceof AgentTeamEntity) {

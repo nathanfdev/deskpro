@@ -68,6 +68,14 @@ class PeopleSearchController extends AbstractController
 		$people_tag_index = $label_lister->getIndexList();
 
 		#------------------------------
+		# Agents and teams
+		#------------------------------
+
+		$team_names  = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+		$team_counts = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamCounts();
+		$agent_count = count($this->em->getRepository('DeskPRO:Person')->getAgents());
+
+		#------------------------------
 		# Org labels
 		#------------------------------
 
@@ -86,6 +94,10 @@ class PeopleSearchController extends AbstractController
 		$data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
 			'usergroup_names'      => $usergroup_names,
 			'usergroup_counts'     => $usergroup_counts,
+
+			'team_names'   => $team_names,
+			'team_counts'  => $team_counts,
+			'agent_count'  => $agent_count,
 
 			'people_count'     => $people_count,
 			'validating_count' => $validating_count,

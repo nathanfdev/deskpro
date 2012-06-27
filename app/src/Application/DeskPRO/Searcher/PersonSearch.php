@@ -43,6 +43,9 @@ use Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {
+	const MODE_USER = 'user';
+	const MODE_AGENT = 'agent';
+
 	// These are all prefixed with person_ because this searcher
 	// can be combined with the TicketSearch, so we need to namespace
 	// these term names.
@@ -63,6 +66,8 @@ class PersonSearch extends SearcherAbstract
 	const TERM_CONTACT_IM         = 'person_contact_im';
 	const TERM_ALPHA              = 'alphabetical';
 	const TERM_IS_AGENT_CONFIRMED = 'is_agent_confirmed';
+	const TERM_AGENT_TEAM         = 'person_agent_team';
+	const TERM_AGENT_MODE         = 'agent_mode';
 
 	/**
 	 * From getSqlParts()
@@ -75,6 +80,11 @@ class PersonSearch extends SearcherAbstract
 	 * @var array
 	 */
 	protected $summary = null;
+
+	/**
+	 * @var string
+	 */
+	protected $mode = 'user';
 
 
 	/**
@@ -103,6 +113,15 @@ class PersonSearch extends SearcherAbstract
 	{
 		$this->getSqlParts();
 		return $this->summary;
+	}
+
+
+	/**
+	 * @param string $mode MODE_USER or MODE_AGETN
+	 */
+	public function setMode($mode)
+	{
+		$this->mode = $mode;
 	}
 
 
@@ -531,12 +550,42 @@ class PersonSearch extends SearcherAbstract
 					}
 					break; // end TERM_PERSON_FIELD
 
+				case self::TERM_AGENT_TEAM:
+
+					$this->setMode(self::MODE_AGENT);
+
+					$joins[] = array(
+						'agent_team_members',
+						"LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)"
+					);
+
+					$this->summary[] = $this->_choiceSummary("Agent Team", $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+						return $titles;
+					});
+
+					$wheres[] = $this->_choiceMatch("$join_name.team_id", $op, $choice, true);
+
+					break;
+
+				case self::TERM_AGENT_MODE:
+					$this->setMode(self::MODE_AGENT);
+					break;
+
 				default:
 					throw new \InvalidArgumentException("Unknown term: $term");
 			}
 		}
 
 		$joins = array_unique($joins);
+
+		if ($this->mode == self::MODE_AGENT) {
+			$wheres[] = "people.is_agent = 1";
+		} else {
+			$wheres[] = "people.is_agent = 0";
+		}
+
+		$wheres[] = 'people.is_deleted = 0';
 
 		$this->sql_parts = array(
 			'joins' => $joins,
