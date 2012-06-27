@@ -1731,6 +1731,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getPublicId()
 	{
+		if (App::getSetting('core.tickets.use_ref')) {
+			return $this->ref;
+		}
+
 		return $this->id;
 	}
 

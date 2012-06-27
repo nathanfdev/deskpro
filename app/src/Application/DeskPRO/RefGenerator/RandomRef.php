@@ -82,7 +82,7 @@ class RandomRef implements RefGeneratorInterface
 	 */
 	public function isRefMatch($ref)
 	{
-		return preg_match('#^([A-Z]{4}\-[0-9]{4}\-[A-Z]{4})$#', $ref);
+		return preg_match('#^([A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4})$#', $ref);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class RandomRef implements RefGeneratorInterface
 	public function extractRefs($string, $ldelim = '\b', $rdelim = '\b')
 	{
 		$m = null;
-		if (preg_match_all('#('.$ldelim.')([A-Z]{4}\-[0-9]{4}\-[A-Z]{4})('.$rdelim.')#', $string, $m, \PREG_PATTERN_ORDER)) {
+		if (preg_match_all('#('.$ldelim.')([A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4})('.$rdelim.')#', $string, $m, \PREG_PATTERN_ORDER)) {
 			return $m[2];
 		}
 
