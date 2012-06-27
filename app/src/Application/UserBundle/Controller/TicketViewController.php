@@ -123,7 +123,7 @@ class TicketViewController extends AbstractController
 			}
 		}
 
-		throw $this->createNotFoundException();
+		return $this->renderLoginOrPermissionError();
 	}
 
 	###########################################################################
