@@ -114,15 +114,15 @@ msgid "admin.user_registration.enter_port_here"
 msgstr "If you are using a non-standard port (389, or 636 for secure connections), enter it here"
 
 msgid "admin.user_registration.enter_raw_php_code"
-msgstr "Enter the raw PHP code to use when checking the validity of an inputted password against\n"
-"				a found user record. The following variables are available for use:\n"
-"				<ul>\n"
-"					<li>&middot; $userinfo is the full row from your table</li>\n"
-"					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo['yourpasswordfield']</li>\n"
-"					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li>\n"
-"					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it is invalid, set it to false.</li>\n"
-"				</ul>\n"
-"                Here is some example code to check a salted password:<br />\n"
+msgstr "Enter the raw PHP code to use when checking the validity of an inputted password against\n"
+"				a found user record. The following variables are available for use:\n"
+"				<ul>\n"
+"					<li>&middot; $userinfo is the full row from your table</li>\n"
+"					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo['yourpasswordfield']</li>\n"
+"					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li>\n"
+"					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it is invalid, set it to false.</li>\n"
+"				</ul>\n"
+"                Here is some example code to check a salted password:<br />\n"
 "				<code>$pass = (md5($password_input . $userinfo['salt']) == $userinfo_password);</code>"
 
 msgid "admin.user_registration.enter_table_prefix_here"
@@ -222,8 +222,8 @@ msgid "admin.user_registration.notice_enabled_facebook"
 msgstr "To enable Facebook integration, you must register with Facebook to get your own application key and application secret."
 
 msgid "admin.user_registration.notice_force_validate_email"
-msgstr "Force users to validate their email address when they first register.\n"
-"\n"
+msgstr "Force users to validate their email address when they first register.\n"
+"\n"
 "This applies to everything except new tickets. You can enable email validation on tickets via <a href="{{path}}">ticket triggers</a> or by enabling these built-in triggers:"
 
 msgid "admin.user_registration.notice_like_request_registration"
@@ -437,7 +437,7 @@ msgid "admin.tickets.agent_filters"
 msgstr "Agent Filters"
 
 msgid "admin.tickets.agent_waiting_for_user"
-msgstr "The agent has been waiting for the user to reply for"
+msgstr "When agents have been waiting for the user to reply for"
 
 msgid "admin.tickets.all_tickets_match"
 msgstr "No terms. All tickets match."
@@ -467,7 +467,7 @@ msgid "admin.tickets.captcha"
 msgstr "CAPTCHA"
 
 msgid "admin.tickets.changed_to_effect"
-msgstr "Changed so that {desc}"
+msgstr "Changed so that {{desc}}"
 
 msgid "admin.tickets.choice_agents_read_ticket_feedback"
 msgstr "Let agents read ticket feedback"
@@ -491,7 +491,7 @@ msgid "admin.tickets.choose_a_product"
 msgstr "Choose a product..."
 
 msgid "admin.tickets.choose_trigger_event"
-msgstr "Choose the event that should initiate the trigger"
+msgstr "Select the type of event that causes your trigger to be run:"
 
 msgid "admin.tickets.choose_type"
 msgstr "Choose Type"
@@ -689,40 +689,43 @@ msgid "admin.tickets.new_priority"
 msgstr "New Priority"
 
 msgid "admin.tickets.new_reply"
-msgstr "New Reply"
+msgstr "Every new reply"
 
 msgid "admin.tickets.new_reply_agent"
-msgstr "New Reply by an Agent"
+msgstr "When there is a reply by an agent"
 
 msgid "admin.tickets.new_reply_gateway"
-msgstr "New Reply via Email"
+msgstr "When there is a reply created by a user via the email gateway"
 
 msgid "admin.tickets.new_reply_triggers"
 msgstr "New Reply Triggers"
 
 msgid "admin.tickets.new_reply_web"
-msgstr "New Reply via Web Interface"
+msgstr "When there is a reply created by a user via the web interface"
 
 msgid "admin.tickets.new_ticket"
-msgstr "New Ticket"
+msgstr "Every new ticket"
 
 msgid "admin.tickets.new_ticket_agent"
-msgstr "New Ticket created by an Agent"
+msgstr "When there is a ticket created by an agent"
 
 msgid "admin.tickets.new_ticket_form"
 msgstr "New Ticket Form"
 
+msgid "admin.tickets.new_ticket_form_default_explain"
+msgstr "These options are being automatically generated. All of the available fields your helpdesk has defined are enabled."
+
 msgid "admin.tickets.new_ticket_gateway"
-msgstr "New Ticket via Email"
+msgstr "When there is a ticket created by a user via the email gateway"
 
 msgid "admin.tickets.new_ticket_triggers"
 msgstr "New Ticket Triggers"
 
 msgid "admin.tickets.new_ticket_web"
-msgstr "New Ticket via Web Interface"
+msgstr "When there is a ticket created by a user via the web interface"
 
 msgid "admin.tickets.new_ticket_widget"
-msgstr "New Ticket via Website Widget"
+msgstr "When there is a ticket created by a user via the website widget"
 
 msgid "admin.tickets.new_trigger"
 msgstr "New Trigger"
@@ -764,10 +767,10 @@ msgid "admin.tickets.property_change"
 msgstr "Ticket Updated"
 
 msgid "admin.tickets.property_change_agent"
-msgstr "Ticket Updated by an Agent"
+msgstr "When there is a ticket property change initiated by an agent"
 
 msgid "admin.tickets.property_change_user"
-msgstr "Ticket Updated by a User"
+msgstr "When there is a ticket property change initiated by a user"
 
 msgid "admin.tickets.select_agent_filter_access"
 msgstr "Select the agent that can use this filter"
@@ -776,10 +779,13 @@ msgid "admin.tickets.select_team_filter_access"
 msgstr "Select the team that can use this filter"
 
 msgid "admin.tickets.set_status_to_x"
-msgstr "Set status to {status}"
+msgstr "Set status to {{status}}"
 
 msgid "admin.tickets.set_urgency_to_x"
-msgstr "Set urgency to {urgency}"
+msgstr "Set urgency to {{urgency}}"
+
+msgid "admin.tickets.set_urgency_to_x_when_lower"
+msgstr "Set urgency to {{urgency}} when below this urgency"
 
 msgid "admin.tickets.show_field_when_choice"
 msgstr "Only show this field when {{choice}} of these terms match"
@@ -809,19 +815,19 @@ msgid "admin.tickets.ticket_filters"
 msgstr "Ticket Filters"
 
 msgid "admin.tickets.ticket_layout_editor"
-msgstr "Ticket Layout Editor:"
+msgstr "Ticket Layout Editor"
 
 msgid "admin.tickets.ticket_message"
 msgstr "Ticket Message"
 
 msgid "admin.tickets.ticket_open_for_duration"
-msgstr "Ticket has been open for"
+msgstr "When a ticket has been open for"
 
 msgid "admin.tickets.ticket_ref"
 msgstr "Ticket Ref"
 
 msgid "admin.tickets.ticket_resolved_duration"
-msgstr "The ticket has been resolved for"
+msgstr "When a ticket has been resolved for"
 
 msgid "admin.tickets.ticket_subject"
 msgstr "Ticket Subject"
@@ -850,6 +856,18 @@ msgstr "Time a user has been waiting for a reply"
 msgid "admin.tickets.title_has_no_members"
 msgstr "{{title}} has no members. No one uses this filter."
 
+msgid "admin.tickets.trigger_group_escalation"
+msgstr "Time Based Triggers/Escalations (The trigger is run when a ticket matches a specific time criteria)"
+
+msgid "admin.tickets.trigger_group_new_reply"
+msgstr "Ticket Reply (The trigger is run when a reply is added to a ticket)"
+
+msgid "admin.tickets.trigger_group_new_ticket"
+msgstr "New Tickets (The trigger is run when a ticket is created)"
+
+msgid "admin.tickets.trigger_group_property_change"
+msgstr "Ticket Property Change (The trigger is run when any property of a ticket is changed)"
+
 msgid "admin.tickets.triggers_on_agent_wait_duration"
 msgstr "Triggers based on the time an agent has been waiting for a user reply"
 
@@ -869,10 +887,13 @@ msgid "admin.tickets.used_by"
 msgstr "Used by"
 
 msgid "admin.tickets.user_waiting_duration"
-msgstr "The user has been waiting for a total of"
+msgstr "When the user has been waiting for a total of"
 
 msgid "admin.tickets.user_waiting_on_agent_duration"
-msgstr "The user has been waiting for an agent to reply for"
+msgstr "When the user has been waiting for an agent to reply for"
+
+msgid "admin.tickets.view_modify_ticket_page_default_explain"
+msgstr "These options are being automatically generated based on the fields visible on the "New Ticket Form""
 
 msgid "admin.tickets.view_ticket_page"
 msgstr "View Ticket Page"
@@ -885,6 +906,21 @@ msgstr "Widget Location"
 
 msgid "admin.tickets.widget_type"
 msgstr "Widget Type"
+
+msgid "admin.tickets.x_since_time_agent_waiting"
+msgstr "&gt; {{time}} since status was set to awaiting agent"
+
+msgid "admin.tickets.x_since_time_open"
+msgstr "&gt; {{time}} since ticket was opened"
+
+msgid "admin.tickets.x_since_time_resolved"
+msgstr "&gt; {{time}} since status was set to resolved"
+
+msgid "admin.tickets.x_since_time_user_waiting"
+msgstr "&gt; {{time}} since status was set to awaiting user"
+
+msgid "admin.tickets.x_since_total_user_waiting"
+msgstr "User has been waiting &gt; {{time}}"
 
 msgid "admin.templates.agent_and_admin_templates"
 msgstr "Agent and Admin Templates"
@@ -1021,6 +1057,9 @@ msgstr "Cookie Domain"
 msgid "admin.settings.cookie_path"
 msgstr "Cookie Path"
 
+msgid "admin.settings.could_not_find_php_use_real"
+msgstr "We could not detect the path to PHP. Be sure to use the real path to PHP for your server."
+
 msgid "admin.settings.cron_detailed_instructions"
 msgstr "Click here for detailed instructions"
 
@@ -1028,7 +1067,7 @@ msgid "admin.settings.cron_explain"
 msgstr "To perform tasks such as processing email, running triggers and sending notifications DeskPRO requires that you schedule the <var>cron.php</var> file in the root folder to be regularly run with a cron script (on linux) or a scheduled task (on windows). It is recommend that you run the <var>cron.php</var> file every minute."
 
 msgid "admin.settings.cron_notice_php_path_not_found"
-msgstr "Note: We could not automatically detect the path to the PHP binary. You should edit <var>config.php</var> to specify the path, and then refresh this page for the proper command."
+msgstr "Note: We could not automatically detect the path to the PHP CLI. You should edit <var>config.php</var> to specify the path, and then refresh this page for the proper command."
 
 msgid "admin.settings.cron_setup_linux"
 msgstr "Creating a cron job on Linux"
@@ -1132,6 +1171,12 @@ msgstr "Revert Settings"
 msgid "admin.settings.revert_settings_to_default"
 msgstr "Revert setting back to default"
 
+msgid "admin.settings.rewrite_urls_desc"
+msgstr "Enable clean URLs. When this is disabled, URLs will contain a /index.php/ segment. You can only enable this option if your server supports URL rewriting."
+
+msgid "admin.settings.saved_success"
+msgstr "Settings were saved successfully"
+
 msgid "admin.settings.select_timezone"
 msgstr "Please select a timezone"
 
@@ -1177,9 +1222,6 @@ msgstr "Your website name"
 msgid "admin.settings.your_website_url"
 msgstr "Your website URL"
 
-msgid "admin.server.blobs_storage"
-msgstr "blobs_storage"
-
 msgid "admin.server.btn_confirm_switch"
 msgstr "Confirm: Switch to the {{subphrase}} storage mechanism"
 
@@ -1213,6 +1255,9 @@ msgstr "the database to the filesystem"
 msgid "admin.server.download_attachment"
 msgstr "Download attachment"
 
+msgid "admin.server.edit_php_ini_to_make_changes"
+msgstr "To make changes to any of these values, you will need to edit your servers php.ini file."
+
 msgid "admin.server.error_log"
 msgstr "error_log"
 
@@ -1236,6 +1281,9 @@ msgstr "the filesystem to the database"
 
 msgid "admin.server.important_configuration_values"
 msgstr "Important Configuration Values"
+
+msgid "admin.server.learn_about_editing_php_ini"
+msgstr "Click here to learn more about editing php.ini."
 
 msgid "admin.server.max_post_size"
 msgstr "This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same."
@@ -1268,16 +1316,16 @@ msgid "admin.server.notice_transfer_is_gradually_done"
 msgstr "The transfer is done gradually via a scheduled task. It may take some time before all of your files are completely transferred. All normal attachment functions like uploading and downloading will continue to work."
 
 msgid "admin.server.php_file_uploads"
-msgstr "file_uploads"
+msgstr "Uploading and File Storage"
+
+msgid "admin.server.php_settings"
+msgstr "PHP Settings"
 
 msgid "admin.server.php_upload_location"
 msgstr "This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work."
 
 msgid "admin.server.php_version"
 msgstr "php_version"
-
-msgid "admin.server.post_max_size"
-msgstr "post_max_size"
 
 msgid "admin.server.recommend_fs_storage"
 msgstr "We recommend {{link}} where files are stored as files in a directory on your server."
@@ -1290,9 +1338,6 @@ msgstr "Storage Mechanism"
 
 msgid "admin.server.storage_path"
 msgstr "Storage Path"
-
-msgid "admin.server.storage_table"
-msgstr "Storage Table"
 
 msgid "admin.server.success"
 msgstr "Success"
@@ -1312,11 +1357,17 @@ msgstr "test this value"
 msgid "admin.server.test_upload"
 msgstr "Test Upload"
 
-msgid "admin.server.upload_max_filesize"
-msgstr "upload_max_filesize"
+msgid "admin.server.upload_effect_max"
+msgstr "Effective Maximum Filesize"
 
-msgid "admin.server.upload_tmp_dir"
-msgstr "upload_tmp_dir"
+msgid "admin.server.upload_effect_max_explain"
+msgstr "Based on the three values above, this is the effective maximum filesize your server is currently able to accept."
+
+msgid "admin.server.upload_memory_limit_explain"
+msgstr "This is the maximum amount of memory PHP can use. A file must be read into memory for DeskPRO to process and save it. The maximum filesize you can accept through an upload will be about 1/3 of this value."
+
+msgid "admin.server.we_detected_php_ini_at"
+msgstr "We have detected the path to your php.ini file at {{path}}"
 
 msgid "admin.products.add_new_product"
 msgstr "Add New Product"
@@ -1368,6 +1419,9 @@ msgstr "Allow users to rate content"
 
 msgid "admin.portal.allow_users_to_submit_comments"
 msgstr "Allow users to submit comments"
+
+msgid "admin.portal.cannot_disable"
+msgstr "Cannot disable"
 
 msgid "admin.portal.click_button_to_reenable_or_use_widgets"
 msgstr "Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site."
@@ -1486,6 +1540,12 @@ msgstr "The text color in "view all" buttons"
 msgid "admin.portal.color_content_pill_btn_text_color_title"
 msgstr ""View All" Button Text Color"
 
+msgid "admin.portal.color_dark_well_bg_color_desc"
+msgstr "The background color of the dark well areas, including the welcome box and comment form wrappers"
+
+msgid "admin.portal.color_dark_well_bg_color_title"
+msgstr "Dark well background color"
+
 msgid "admin.portal.color_editor"
 msgstr "Color Editor"
 
@@ -1502,13 +1562,28 @@ msgid "admin.portal.color_header_bar_bg_color_title"
 msgstr "Header Bar Background"
 
 msgid "admin.portal.color_header_name_color_desc"
-msgstr "The color of the site name text at the top of the page"
+msgstr "The color of the custom title at the top of the page, if you set one"
 
 msgid "admin.portal.color_header_name_color_title"
 msgstr "Site Name"
 
 msgid "admin.portal.color_header_tagline_color_desc"
 msgstr "The color of the tagline text at the top of the page"
+
+msgid "admin.portal.color_header_tagline_color_title"
+msgstr "The text color of your custom tagline if you have one set"
+
+msgid "admin.portal.color_header_text_color_desc"
+msgstr "The text color of the title in the header bar"
+
+msgid "admin.portal.color_header_text_color_title"
+msgstr "Header bar text color"
+
+msgid "admin.portal.color_light_well_bg_color_desc"
+msgstr "The background color of the light well areas, including the inner wrappers of the comment form, usually the same as the content background"
+
+msgid "admin.portal.color_light_well_bg_color_title"
+msgstr "Light well background color"
 
 msgid "admin.portal.color_link_color_desc"
 msgstr "Main link color"
@@ -1585,6 +1660,9 @@ msgstr "Edit HTML"
 msgid "admin.portal.edit_logo"
 msgstr "Edit Logo"
 
+msgid "admin.portal.edit_title"
+msgstr "Edit Title"
+
 msgid "admin.portal.global_settings"
 msgstr "Global Settings"
 
@@ -1621,6 +1699,9 @@ msgstr "Save logo"
 msgid "admin.portal.save_title_and_tagline"
 msgstr "Save title and tagline"
 
+msgid "admin.portal.share_widgets"
+msgstr "Share Widgets"
+
 msgid "admin.portal.show_addthis"
 msgstr "Show AddThis widget"
 
@@ -1632,6 +1713,24 @@ msgstr "Show Google +1 button"
 
 msgid "admin.portal.show_ratings"
 msgstr "Show ratings publicly"
+
+msgid "admin.portal.show_ratings_explain"
+msgstr "Show user ratings on content after this many votes, or enter 0 to never show ratings publicly"
+
+msgid "admin.portal.show_share_widget"
+msgstr "Enable the share widget on news, articles and feedback"
+
+msgid "admin.portal.show_share_widget_facebook"
+msgstr "Show the facebook "Like" button"
+
+msgid "admin.portal.show_share_widget_gplus"
+msgstr "Show the Google Plus "+1" button"
+
+msgid "admin.portal.show_share_widget_linkedin"
+msgstr "Show the LinkedIn "Share" button"
+
+msgid "admin.portal.show_share_widget_twitter"
+msgstr "Show the twitter "Tweet" button"
 
 msgid "admin.portal.ticket_editor"
 msgstr "ticket editor"
@@ -1645,8 +1744,23 @@ msgstr "Upload a new logo"
 msgid "admin.portal.warning_dont_want_public_site"
 msgstr "If you do not want a public facing website you can disable the portal. You will still be able to accept tickets from the email gateways, and use HTML widgets on your website, but the user portal will be disabled and traces of the public website such as links in emails will be removed."
 
+msgid "admin.portal.website_widget_install"
+msgstr "Copy and paste this HTML code into your website. We recommend placing it directly before the &lt;/body&gt; tag."
+
 msgid "admin.portal.website_widgets"
 msgstr "Website Widgets"
+
+msgid "admin.portal.website_widgets_chat"
+msgstr "Chat Widget"
+
+msgid "admin.portal.website_widgets_chat_explain"
+msgstr "The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a small chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active."
+
+msgid "admin.portal.website_widgets_overlay"
+msgstr "Helpdesk Widget"
+
+msgid "admin.portal.website_widgets_overlay_explain"
+msgstr "The tab widget places a tab button on the left of your website. When the user clicks the tab, an overlay opens on top of your site where a user can interact with the helpdesk without ever leaving the page they are on."
 
 msgid "admin.plugins.available_plugins"
 msgstr "Available Plugins"
@@ -1690,6 +1804,18 @@ msgstr "Change how the helpdesk should handle user registration"
 msgid "admin.menu.change_settings"
 msgstr "Change your helpdesk settings, like your website URL"
 
+msgid "admin.menu.check_file_integrity"
+msgstr "Check File Integrity"
+
+msgid "admin.menu.check_file_integrity_explain"
+msgstr "Check DeskPRO's source file integrity. This will reveal any files are changed or invalid from the default."
+
+msgid "admin.menu.check_server_requirements"
+msgstr "Check Server Requirements"
+
+msgid "admin.menu.check_server_requirements_explain"
+msgstr "Check server requirements and view recommended changes"
+
 msgid "admin.menu.click_to_configure"
 msgstr "The DeskPRO setup guide and admin dashboard is under final development. For now, please access DeskPRO options using the menu above."
 
@@ -1704,6 +1830,9 @@ msgstr "Create groups of actions that can be performed on tickets with a single 
 
 msgid "admin.menu.create_user_groups"
 msgstr "Create user groups to easily manage similar users, and to manage permissions on them."
+
+msgid "admin.menu.crm"
+msgstr "CRM"
 
 msgid "admin.menu.define_organization_labels"
 msgstr "Define labels that can be applied to organizations."
@@ -1731,6 +1860,9 @@ msgstr "Edit the emails sent to agents and users"
 
 msgid "admin.menu.editor"
 msgstr "Editor"
+
+msgid "admin.menu.email_gateway_errors"
+msgstr "Email Errors and Rejections"
 
 msgid "admin.menu.email_notification_templates"
 msgstr "Email Notification Templates"
@@ -1815,6 +1947,9 @@ msgstr "User Groups"
 
 msgid "admin.menu.view_logged_errors"
 msgstr "View logged errors"
+
+msgid "admin.menu.view_logged_gateway_errors"
+msgstr "View errors that were rejected or produced errors"
 
 msgid "admin.menu.view_mysql_installation"
 msgstr "View information about your MySQL installation"
@@ -2089,6 +2224,9 @@ msgstr "Chat Phrases"
 msgid "admin.languages.phrasegroup_agent_deal"
 msgstr "Deal Phrases"
 
+msgid "admin.languages.phrasegroup_agent_defaults"
+msgstr "Agent Default Data"
+
 msgid "admin.languages.phrasegroup_agent_emails"
 msgstr "Email Phrases"
 
@@ -2140,26 +2278,41 @@ msgstr "Tickets: User Emails"
 msgid "admin.languages.phrasegroup_agent_twitter"
 msgstr "Twitter Phrases"
 
+msgid "admin.languages.phrasegroup_agent_userchat"
+msgstr "User Chat"
+
 msgid "admin.languages.phrasegroup_user"
 msgstr "User Interface Phrases"
 
 msgid "admin.languages.phrasegroup_user_articles"
-msgstr "Artical Phrases"
+msgstr "Article Phrases"
 
 msgid "admin.languages.phrasegroup_user_chat"
 msgstr "Chat Phrases"
 
+msgid "admin.languages.phrasegroup_user_defaults"
+msgstr "User Default Data"
+
 msgid "admin.languages.phrasegroup_user_downloads"
 msgstr "Download Phrases"
 
+msgid "admin.languages.phrasegroup_user_email_subjects"
+msgstr "Email Subjects"
+
 msgid "admin.languages.phrasegroup_user_emails"
 msgstr "Emails"
+
+msgid "admin.languages.phrasegroup_user_error"
+msgstr "Errors"
 
 msgid "admin.languages.phrasegroup_user_feedback"
 msgstr "Feedback Phrases"
 
 msgid "admin.languages.phrasegroup_user_general"
 msgstr "General Phrases"
+
+msgid "admin.languages.phrasegroup_user_knowledgebase"
+msgstr "Knowledgebase"
 
 msgid "admin.languages.phrasegroup_user_news"
 msgstr "News Phrases"
@@ -2175,6 +2328,12 @@ msgstr "Search Phrases"
 
 msgid "admin.languages.phrasegroup_user_tickets"
 msgstr "Ticket Phrases"
+
+msgid "admin.languages.phrasegroup_user_time"
+msgstr "Time and Dates"
+
+msgid "admin.languages.phrasegroup_user_widget"
+msgstr "Website Widget"
 
 msgid "admin.languages.save_your_phrase"
 msgstr "Save Customized Phrase"
@@ -2194,6 +2353,57 @@ msgstr "Additional Data"
 msgid "admin.general.alphabetical"
 msgstr "Alphabetical"
 
+msgid "admin.general.apps"
+msgstr "Apps"
+
+msgid "admin.general.apps_chat"
+msgstr "Chat"
+
+msgid "admin.general.apps_chat_explain"
+msgstr "The chat application allows your users to start a real-time chat with your agents. When enabled, a small "Start Chat" button will be added to the bottom of every page on the portal, and you can easily add a widget to your own website too."
+
+msgid "admin.general.apps_crm"
+msgstr "CRM"
+
+msgid "admin.general.apps_crm_explain"
+msgstr "Management of people and organizations"
+
+msgid "admin.general.apps_downloads"
+msgstr "Downloads"
+
+msgid "admin.general.apps_downloads_explain"
+msgstr "The downloads applications allows your agents to upload files into a structured downloads section that users can search and browse from your portal."
+
+msgid "admin.general.apps_feedback"
+msgstr "Feedback"
+
+msgid "admin.general.apps_feedback_explain"
+msgstr "The feedback application allows users to submit suggestions or feedback, and browse, vote and comment on other users suggestions. This can give you valuable insight into common requests or problems from the perspective of your customers."
+
+msgid "admin.general.apps_kb"
+msgstr "Knowledgebase"
+
+msgid "admin.general.apps_kb_explain"
+msgstr "The knowledgebase application allows your agents to write help articles that users can search and browse from your portal."
+
+msgid "admin.general.apps_news"
+msgstr "News"
+
+msgid "admin.general.apps_news_explain"
+msgstr "The news application adds a news feed to the home page of your portal. This is usually used as a blog or news feed."
+
+msgid "admin.general.apps_tasks"
+msgstr "Agent Tasks"
+
+msgid "admin.general.apps_tasks_explain"
+msgstr "The tasks application is used by agents to manage lists of todo items. Tasks can be created and set due dates, and assigned to specific agents or teams."
+
+msgid "admin.general.apps_tickets"
+msgstr "Tickets"
+
+msgid "admin.general.apps_tickets_explain"
+msgstr "User submit tickets from your website, portal or email. Tickets are the core of DeskPRO and cannot be disabled."
+
 msgid "admin.general.banning"
 msgstr "Banning"
 
@@ -2202,6 +2412,12 @@ msgstr "Choose Field Type"
 
 msgid "admin.general.clear_logs"
 msgstr "Clear Logs"
+
+msgid "admin.general.click_here_for_upgrade_instructions"
+msgstr "Click here to upgrade your helpdesk"
+
+msgid "admin.general.click_to_reenable_helpdesk"
+msgstr "Enable Helpdesk"
 
 msgid "admin.general.confirm_delete"
 msgstr "Yes, I am sure I want to delete"
@@ -2224,8 +2440,17 @@ msgstr "Departments"
 msgid "admin.general.deskpro_admin_interface"
 msgstr "DeskPRO Admin Interface"
 
+msgid "admin.general.deskpro_version"
+msgstr "DeskPRO Version"
+
+msgid "admin.general.download_raw_source"
+msgstr "Download Raw Source"
+
 msgid "admin.general.edit_category"
 msgstr "Edit Category"
+
+msgid "admin.general.edit_css"
+msgstr "Edit CSS"
 
 msgid "admin.general.edit_field"
 msgstr "Edit Field"
@@ -2233,11 +2458,26 @@ msgstr "Edit Field"
 msgid "admin.general.email_addresses"
 msgstr "Email Addresses"
 
+msgid "admin.general.email_from"
+msgstr "From"
+
 msgid "admin.general.email_gateways"
 msgstr "Email Gateways"
 
+msgid "admin.general.email_headers"
+msgstr "Email Headers"
+
+msgid "admin.general.email_info"
+msgstr "Email Info"
+
+msgid "admin.general.email_subject"
+msgstr "Subject"
+
 msgid "admin.general.email_templates"
 msgstr "Email Templates"
+
+msgid "admin.general.email_to"
+msgstr "To"
 
 msgid "admin.general.error_cron_inactive"
 msgstr "We have detected that the DeskPRO scheduled task is not running. This task is required for DeskPRO to function properly."
@@ -2251,8 +2491,11 @@ msgstr "Error Log #{{id}}"
 msgid "admin.general.error_logs"
 msgstr "Error Logs"
 
+msgid "admin.general.error_see_response"
+msgstr "Click here to see the raw error response returned from the server."
+
 msgid "admin.general.error_sending_test"
-msgstr "There was an error while trying to send the test email"
+msgstr "There was an error while trying to send the test email. Check the inputted options and try again."
 
 msgid "admin.general.error_ssl_feature_link"
 msgstr "Learn how to install OpenSSL."
@@ -2261,7 +2504,10 @@ msgid "admin.general.error_ssl_feature_tip"
 msgstr "This feature requires the OpenSSL PHP extension which is currently not installed."
 
 msgid "admin.general.error_ssl_tip"
-msgstr "Secure connections require the OpenSSL PHP extension which is currently not installed."
+msgstr "Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information."
+
+msgid "admin.general.error_type"
+msgstr "Error Type"
 
 msgid "admin.general.file_uploads"
 msgstr "File Uploads"
@@ -2275,14 +2521,23 @@ msgstr "From email address"
 msgid "admin.general.full_email_address"
 msgstr "Full Email Address"
 
+msgid "admin.general.gateway_error_logs"
+msgstr "Gateway Rejections"
+
+msgid "admin.general.gateway_source_id"
+msgstr "Gateway Source {{id}}"
+
 msgid "admin.general.general"
 msgstr "General"
 
 msgid "admin.general.google_apps"
-msgstr "Google Apps"
+msgstr "Gmail / Google Apps"
 
 msgid "admin.general.helpdesk"
 msgstr "Helpdesk"
+
+msgid "admin.general.helpdesk_currently_disabled"
+msgstr "Your helpdesk is currently disabed for both users and agents."
 
 msgid "admin.general.home"
 msgstr "Home"
@@ -2292,6 +2547,9 @@ msgstr "Languages"
 
 msgid "admin.general.last"
 msgstr "Last"
+
+msgid "admin.general.latest_deskpro_build"
+msgstr "The newest DeskPRO version is:"
 
 msgid "admin.general.locale"
 msgstr "Locale"
@@ -2398,6 +2656,9 @@ msgstr "SMTP Account"
 msgid "admin.general.sn_code"
 msgstr "SN Code"
 
+msgid "admin.general.start"
+msgstr "Start"
+
 msgid "admin.general.tagline"
 msgstr "Tagline"
 
@@ -2428,6 +2689,9 @@ msgstr "Ticket Workflows"
 msgid "admin.general.triggers"
 msgstr "Triggers"
 
+msgid "admin.general.user_title_explain"
+msgstr "This is the title that will appear to users. You can leave this blank and users will see the same title as agents do."
+
 msgid "admin.general.username"
 msgstr "Username"
 
@@ -2437,8 +2701,26 @@ msgstr "Variable Name"
 msgid "admin.general.view"
 msgstr "View"
 
+msgid "admin.general.view_by"
+msgstr "View by"
+
 msgid "admin.general.yes"
 msgstr "Yes"
+
+msgid "admin.general.you_are_outdated_by_x_buils"
+msgstr "Your helpdesk is outdated by {{count}} versions|Your helpdesk is outdated by {{count}} versions"
+
+msgid "admin.general.you_are_up_to_date"
+msgstr "Your helpdesk is up to date."
+
+msgid "admin.general.you_have_not_created_categories"
+msgstr "You have not created any categories yet. Click the "Add New Category" button to create one now."
+
+msgid "admin.general.you_have_not_created_filters"
+msgstr "You have not created any filters yet. Click the "Add New Filter" button to create one now."
+
+msgid "admin.general.your_current_deskpro_build"
+msgstr "Your current DeskPRO version:"
 
 msgid "admin.gateway.account_information"
 msgstr "Account Information"
@@ -2682,6 +2964,9 @@ msgstr "Click here to set custom header HTML"
 
 msgid "admin.designer.edit_page_head"
 msgstr "Click here to edit custom &lt;head&gt; HTML"
+
+msgid "admin.designer.edit_welcome_section"
+msgstr "Click here to set a custom welcome block"
 
 msgid "admin.designer.initial_status"
 msgstr "Initially {{option}}, and then toggle when {{all}} of these rules match:"
