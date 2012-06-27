@@ -4,6 +4,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+		this.archiveFilterIds = [];
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
 
