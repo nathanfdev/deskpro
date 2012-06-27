@@ -603,6 +603,7 @@
 	'agent.general.triggers_auto_close_close_resolved'      => 'Auto-close tickets that are resolved',
 	'agent.general.triggers_auto_close_resolve_agent_reply' => 'Auto-resolve tickets that are awaiting user',
 	'agent.general.triggers_auto_close_resolve_user_reply'  => 'Auto-resolve tickets that are awaiting user',
+	'agent.general.triggers_auto_close_warn_user'           => 'Warn user about their ticket being closed automatically',
 	'agent.general.triggers_urgency_base'                   => 'Default urgency for new tickets',
 	'agent.general.tuesday'                                 => 'Tuesday',
 	'agent.general.twitter'                                 => 'Twitter',
