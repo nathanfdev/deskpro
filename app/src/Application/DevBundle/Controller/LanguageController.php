@@ -284,13 +284,22 @@ class LanguageController extends Controller
             echo "Exporting: {$file}\n";
             $fs = fopen($file, 'w');
 
+			fwrite($fs, 'msgid ""' . "\n");
+			fwrite($fs, 'msgstr ""' . "\n");
+			fwrite($fs, '"MIME-Version: 1.0\n"' . "\n");
+			fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"' . "\n");
+			fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"' . "\n");
+
             foreach($strings as $source => $target) {
+
                 fwrite($fs, "\nmsgid \"{$source}\"\n");
                 fwrite($fs, "msgstr ");
                 $parts = explode("\n", $target);
 
                 foreach($parts as $i=>$part) {
-                    fwrite($fs, '"'.$part);
+
+					// escape " for PO format
+                    fwrite($fs, '"'. str_replace('"', '\\"', $part));
 
                     if($i != count($parts) -1) {
                         fwrite($fs, '\n');
