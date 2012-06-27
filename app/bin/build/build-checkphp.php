@@ -67,7 +67,7 @@ foreach ($check_files as $filepath) {
 		echo implode("\n", $out);
 		echo "\n";
 		$has_failed[] = str_replace(DP_ROOT, '', $filepath);
-	} elseif (filesize($filepath) == 4096) {
+	} elseif (filesize($filepath) % 4096 && filesize($filepath) != 0) {
 		$bad_size[] = str_replace(DP_ROOT, '', $filepath);
 	} else {
 		$x++;
