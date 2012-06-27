@@ -106,8 +106,11 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 	},
 
-	setOrganization: function(org_id) {
-		this.this.getEl('org_id').val(org_id);
+	setOrganization: function(org_id, org_name) {
+		this.getEl('org_id').val(org_id);
+		this.getEl('org_name').val(org_name);
+		this.getEl('org_pos').show();
+		this.updateUi();
 		this.fromCompanyTab = true;
 	},
 

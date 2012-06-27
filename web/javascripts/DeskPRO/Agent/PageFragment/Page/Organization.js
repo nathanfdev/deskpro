@@ -112,7 +112,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.getEl('add_searchbox').bind('personsearchboxclicknew', function(ev, term, sb) {
 			DeskPRO_Window.newPersonLoader.open(function(page) {
 				page.setGuessTerm(term);
-				page.setOrganization(self.meta.org_id);
+				page.setOrganization(self.meta.org_id, self.getEl('editname').find('input[name="name"]').val());
 			});
 
 			sb.close();
