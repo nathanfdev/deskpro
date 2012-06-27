@@ -52,7 +52,6 @@
 				disableSectionHandlers: {% if js_debug.disableSectionHandlers %}true{% else %}false{% endif %},
 				noAutoLoadList: {% if js_debug.noAutoLoadList%}true{% else %}false{% endif %},
 				enableSectionHandlers: {% if js_debug.enableSectionHandlers %}{{ js_debug.enableSectionHandlers|json_encode|raw }}{% else %}false{% endif %},
-				disableSaveState: {% if js_debug.disableSaveState %}true{% else %}false{% endif %},
 				logClientMessages: {% if js_debug.logClientMessages %}true{% else %}false{% endif %},
 				disableUrlFragments: {% if js_debug.disableUrlFragments%}true{% else %}false{% endif %}
 			};

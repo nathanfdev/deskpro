@@ -65,12 +65,6 @@ class MainController extends AbstractController
 		// Ticket options for search pane of tickets menu
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$state_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
-		$restore_state = null;
-		if ($state_pref) {
-			$restore_state = $state_pref['value'];
-		}
-
 		// Agent info
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
@@ -123,7 +117,6 @@ class MainController extends AbstractController
 			'people_fields' => $people_fields,
 			'org_fields' => $org_fields,
 			'ticket_options' => $ticket_options,
-			'restore_state' => $restore_state,
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
 			'phone_country_info' => $phone_country_info,

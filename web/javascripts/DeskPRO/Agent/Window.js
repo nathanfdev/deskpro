@@ -35,7 +35,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.loadingIndicatorCount = 0;
 		this.ajaxErrorOverlay = null;
 
-		this.winStateQueue = [];
 		this.cancelHashLoad = 0;
 
 		this.util = {
@@ -613,52 +612,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.cancelHashLoad++;
 		jQuery.history.load(browserHash);
-	},
-
-	windowStateUpdated: function(type) {
-
-		return;
-		if (this.DEBUG.disableSaveState) return;
-
-		this.winStateQueue.include(type);
-
-		if (this.saveWindowState_timeout) {
-			window.clearTimeout(this.saveWindowState_timeout);
-		}
-
-		this.saveWindowState_timeout = this.saveWindowState.delay(4500, this);
-	},
-
-	saveWindowState: function() {
-		var data = [];
-
-		if (this.winStateQueue.contains('tabs')) {
-			Object.each(DeskPRO_Window.TabBar.getTabs(), function (tab) {
-				if (tab.page && tab.page.getMetaData('routeUrl') && !tab.page.noRestoreTab) {
-					data.push({'name': 'tabs[]', 'value': 'page:' + tab.page.getMetaData('routeUrl')});
-				}
-			});
-			Object.each(this.listTabStrip.getTabs(), function (tab) {
-				if (tab.page && tab.page.getMetaData('routeUrl') && !tab.page.noRestoreTab) {
-					data.push({'name': 'tabs[]', 'value': 'listpane:' + tab.page.getMetaData('routeUrl')});
-				}
-			});
-		}
-
-		this.winStateQueue = [];
-
-		if (!data.length) {
-			return;
-		}
-
-		$.ajax({
-			dataType: 'json',
-			url: BASE_URL + 'agent/misc/ajax-save-state',
-			type: 'POST',
-			data: data,
-			success: function() {},
-			error: function() {}
-		});
 	},
 
 	//#################################################################
@@ -2303,9 +2256,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.tabWatcher.addTabTypeWatcher('ticket', new DeskPRO.Agent.WindowElement.TabWatcher.Tickets());
-
-		DeskPRO_Window.TabBar.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs'); });
-		DeskPRO_Window.TabBar.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 	},
 
 	_initInterfaceServices: function() {

@@ -197,27 +197,6 @@ JS;
 		));
 	}
 
-	public function ajaxSaveStateAction()
-	{
-		$value = array();
-		$value['tabs'] = $this->in->getCleanValueArray('tabs', 'raw', 'discard');
-
-		$pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
-		if (!$pref) {
-			$pref = new Entity\PersonPref();
-			$pref['name'] = 'agent.ui.state';
-			$this->person->addPreference($pref);
-		}
-		$pref['value'] = $value;
-
-		$this->em->persist($pref);
-		$this->em->flush();
-
-		return $this->createJsonResponse(array(
-			'success' => true
-		));
-	}
-
 	public function ajaxLabelsAutocompleteAction($label_type)
 	{
 		$search = $this->in->getString('term');
