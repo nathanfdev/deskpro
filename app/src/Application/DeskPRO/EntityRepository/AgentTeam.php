@@ -107,7 +107,7 @@ class AgentTeam extends AbstractEntityRepository
 				continue;
 			}
 
-			$ret[] = $team->getName();
+			$ret[$team->getId()] = $team->getName();
 		}
 
 		return $ret;
