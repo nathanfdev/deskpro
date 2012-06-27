@@ -13,62 +13,63 @@
 
 {% block page %}
 
-<div class="check-grid item-list">
-	<table width="100%">
-		<thead>
-			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.general.usergroup') }}</th>
-				<th style="text-align:center" width="180">{{ phrase('agent.general.number_of_members') }}</th>
-				<th style="text-align:left" width="50">&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					{{ sys_usergroups.everyone.title }}
-					{% if sys_usergroups.everyone.note %}<div style="font-size:10px;">{{ sys_usergroups.everyone.note }}</div>{% endif %}
-				</td>
-				<td style="text-align:center">
-					&nbsp;
-				</td>
-				<td style="padding: 3px 3px 0 0; text-align: right;">
-					<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}"><span class="btn-edit-gear"></span></a>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					{{ sys_usergroups.registered.title }}
-					{% if sys_usergroups.registered.note %}<div style="font-size:10px;">{{ sys_usergroups.registered.note }}</div>{% endif %}
-				</td>
-				<td style="text-align:center">
-					<a href="{{ app.getRequest().getBaseUrl() }}/agent/#app.people">{{ member_counts[0]|default('0') }}</a>
-				</td>
-				<td style="padding: 3px 3px 0 0; text-align: right;">
-					<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}"><span class="btn-edit-gear"></span></a>
-				</td>
-			</tr>
-		{% for usergroup in usergroups %}
-			<tr>
-				<td>
-					{{ usergroup.title }}
-					{% if usergroup.note %}
-						<div style="font-size: 9px; margin-left: 15px;">{{ usergroup.note }}</div>
-					{% endif %}
-				</td>
-				<td style="text-align:center">
-					{% if member_counts[usergroup.id]|default('0') %}
+<div class="page-content agent-listing" style="padding:0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">{{ phrase('agent.general.usergroup') }}</th>
+					<th class="single-title" width="80" style="text-align: center">Members</th>
+					<th class="r-col" width="80" style="text-align: center">Edit<br />Permissions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">
+						<h4><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}">{{ sys_usergroups.everyone.title }}</a></h4>
+						{% if sys_usergroups.everyone.note %}<div style="font-size:11px;">{{ sys_usergroups.everyone.note }}</div>{% endif %}
+					</td>
+					<td class="prop r-col">
+						&nbsp;
+					</td>
+					<td class="prop r-col" valign="middle" style="text-align: center">
+						<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}"><span class="btn-edit-gear"></span></a>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">
+						<h4><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}">{{ sys_usergroups.registered.title }}</a></h4>
+						{% if sys_usergroups.registered.note %}<div style="font-size:11px;">{{ sys_usergroups.registered.note }}</div>{% endif %}
+					</td>
+					<td class="prop r-col" valign="middle" style="text-align: center">
+						<a href="{{ app.getRequest().getBaseUrl() }}/agent/#app.people">{{ member_counts[0]|default('0') }}</a>
+					</td>
+					<td class="prop r-col" valign="middle" style="text-align: center">
+						<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}"><span class="btn-edit-gear"></span></a>
+					</td>
+				</tr>
+				{% for usergroup in usergroups %}
+				<tr>
+					<td class="title">
+						<h4><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></h4>
+						{% if usergroup.note %}
+						<div style="font-size: 11px; margin-left: 15px;">{{ usergroup.note }}</div>
+						{% endif %}
+					</td>
+					<td class="prop r-col" valign="middle" style="text-align: center">
+						{% if member_counts[usergroup.id]|default('0') %}
 						<a href="{{ app.getRequest().getBaseUrl() }}/agent/#app.people,usergroup:{{ usergroup.id }}">{{ member_counts[usergroup.id]|default('0') }}</a>
-					{% else %}
+						{% else %}
 						0
-					{% endif %}
-				</td>
-				<td style="padding: 3px 3px 0 0; text-align: right;">
-					<a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}"><span class="btn-edit-gear"></span></a>
-				</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+						{% endif %}
+					</td>
+					<td class="prop r-col" valign="middle" style="text-align: center">
+						<a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}"><span class="btn-edit-gear"></span></a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
-
 {% endblock %}
