@@ -172,10 +172,11 @@ class LanguageController extends Controller
         $files = Language::GetFileFinder()->getLanguageFileList();
 
         foreach($files as $file) {
+
             $phrases = require($file);
             $lengths = array();
             ksort($phrases);
-            $data = "<?php return array(\n";
+            $data = "<?php return array(\r";
             $pairs = array();
 
             foreach($phrases as $id=>$text) {
@@ -190,11 +191,14 @@ class LanguageController extends Controller
 
             foreach($pairs as $id=>$text) {
                 $id = str_pad($id, $length);
-                $data .= "\t{$id} => {$text},\n";
+                $data .= "\t{$id} => {$text},\r";
             }
 
             $data .= ');';
-            file_put_contents($file, $data);
+
+			if ($data != file_get_contents($file)) {
+				file_put_contents($file, $data);
+			}
         }
 
         return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Reformatted Language Files'));
