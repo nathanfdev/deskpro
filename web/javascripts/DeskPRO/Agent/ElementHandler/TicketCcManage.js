@@ -44,7 +44,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				row.fadeOut('fast');
 
 				var trb = getReplyController();
-				trb.removeCc(email);
+				if (trb && trb.removeCc) {
+					trb.removeCc(email);
+				}
 			}
 
 			row.fadeOut('fast', function() {
@@ -86,7 +88,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 					var email = li.data('email-address');
 					var trb = getReplyController();
-					trb.addCc(email);
+					if (trb && trb.addCc) {
+						trb.addCc(email);
+					}
 				}
 			});
 		});
