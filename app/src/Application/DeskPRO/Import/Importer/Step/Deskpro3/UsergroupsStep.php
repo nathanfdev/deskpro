@@ -294,6 +294,11 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			}
 		}
 
+		// The new top level we created
+		if ($this->getMappedNewId('file_cat', 0)) {
+			$insert_filesperms[] = $this->getMappedNewId('file_cat', 0);
+		}
+
 		#------------------------------
 		# Create it
 		#------------------------------
