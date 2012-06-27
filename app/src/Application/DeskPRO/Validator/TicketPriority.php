@@ -74,7 +74,12 @@ class TicketPriority extends AbstractPersonContextValidator
 	protected function checkIsValid($value)
 	{
 		$value = (int)$value;
-		if (!$value && !$this->allow_none) {
+		if (!$value) {
+			if ($this->allow_none) {
+				return true;
+			}
+
+			$this->addError('none');
 			return false;
 		}
 

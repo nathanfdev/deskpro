@@ -69,7 +69,35 @@ class NewTicketController extends AbstractController
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+		$ticket_display->setPersonContext($this->person);
+		$ticket_display->addPagesFromDb();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+
+		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
+
+		if ($default_page) {
+			$default_page_data = $default_page->getPageDisplay('default')->data;
+			$page_data_field_ids = array();
+			foreach ($default_page->getPageDisplay('default')->data as $info) {
+				$page_data_field_ids[] = $info['id'];
+			}
+		} else {
+			$default_page_data = array();
+			$page_data_field_ids = array();
+		}
+
+		$unique_items = array();
+		foreach ($ticket_display->getPagesData() as $page) {
+			foreach ($page as $item) {
+				$unique_items[$item['id']] = $item;
+			}
+		}
+
+		$captcha = null;
+		if (isset($unique_items['captcha'])) {
+			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+		}
 
 		$errors = array();
 		$error_fields = array();
@@ -110,31 +138,6 @@ class NewTicketController extends AbstractController
 			$set_dep_id = $newticket->ticket->department_id;
 		}
 
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-		$ticket_display->setPersonContext($this->person);
-		$ticket_display->addPagesFromDb();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-
-		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
-
-		if ($default_page) {
-			$default_page_data = $default_page->getPageDisplay('default')->data;
-			$page_data_field_ids = array();
-			foreach ($default_page->getPageDisplay('default')->data as $info) {
-				$page_data_field_ids[] = $info['id'];
-			}
-		} else {
-			$default_page_data = array();
-			$page_data_field_ids = array();
-		}
-
-		$unique_items = array();
-		foreach ($ticket_display->getPagesData() as $page) {
-			foreach ($page as $item) {
-				$unique_items[$item['id']] = $item;
-			}
-		}
-
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 			$form->bindRequest($this->get('request'));
 
@@ -143,8 +146,6 @@ class NewTicketController extends AbstractController
 			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
 
 			if ($validator->isValid($newticket)) {
-				exit;
-
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
 

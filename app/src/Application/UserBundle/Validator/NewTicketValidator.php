@@ -221,7 +221,7 @@ class NewTicketValidator extends AbstractValidator
 					'repository' => App::getEntityRepository('DeskPRO:Product'),
 					'allow_none' => true
 				));
-				if (!$validator->isValid($this->newticket->ticket->category_id)) {
+				if (!$validator->isValid($this->newticket->ticket->product_id)) {
 					$this->addError('ticket.product_id');
 				}
 				break;
@@ -240,7 +240,7 @@ class NewTicketValidator extends AbstractValidator
 				$validator = new \Application\DeskPRO\Validator\TicketPriority(array(
 					'allow_none' => true
 				));
-				if (!$validator->isValid($this->newticket->ticket->category_id)) {
+				if (!$validator->isValid($this->newticket->ticket->priority_id)) {
 					$this->addError('ticket.priority_id');
 				}
 				break;
