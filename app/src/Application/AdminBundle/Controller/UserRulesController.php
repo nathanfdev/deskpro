@@ -35,6 +35,7 @@
 namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -59,8 +60,11 @@ class UserRulesController extends AbstractController
 			ORDER BY organizations.name ASC
 		", array(), 'id');
 
+		$reg_ug = $this->em->getRepository('DeskPRO:Usergroup')->find(Usergroup::REG_ID);
+
 		return $this->render('AdminBundle:UserRules:list.html.twig', array(
 			'rules' => $rules,
+			'reg_ug' => $reg_ug,
 			'org_domains' => $org_domains,
 		));
 	}

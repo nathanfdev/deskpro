@@ -29,5 +29,7 @@
 	'agent.defaults.usergroup_agent_all_perms'                           => 'All Permissions',
 	'agent.defaults.usergroup_agent_all_perms_note'                      => 'Agent has full permissions',
 	'agent.defaults.usergroup_everyone'                                  => 'Everyone',
-	'agent.defaults.usergroup_everyone_note'                             => 'Permissions applied to every user in the system by default',
+	'agent.defaults.usergroup_everyone_note'                             => 'Every user including both guests and registered members.',
+	'agent.defaults.usergroup_registered'                                => 'Registered',
+	'agent.defaults.usergroup_registered_note'                           => 'All registered people in the system',
 );

@@ -50,12 +50,23 @@ class UsergroupsController extends AbstractController
 
 	public function listAction()
 	{
-		$usergroups = $this->em->createQuery("
+		$all_ug = $this->em->createQuery("
 			SELECT ug
 			FROM DeskPRO:Usergroup ug
-			WHERE ug.is_agent_group = false AND ug.sys_name IS NULL
+			WHERE ug.is_agent_group = false
 			ORDER BY ug.title ASC
 		")->execute();
+
+		$usergroups = array();
+		$sys_usergroups = array();
+
+		foreach ($all_ug as $ug) {
+			if ($ug->sys_name) {
+				$sys_usergroups[$ug->sys_name] = $ug;
+			} else {
+				$usergroups[$ug->id] = $ug;
+			}
+		}
 
 		$member_counts = $this->db->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
@@ -69,6 +80,7 @@ class UsergroupsController extends AbstractController
 
 		return $this->render('AdminBundle:Usergroups:list.html.twig', array(
 			'usergroups' => $usergroups,
+			'sys_usergroups' => $sys_usergroups,
 			'member_counts' => $member_counts
 		));
 	}

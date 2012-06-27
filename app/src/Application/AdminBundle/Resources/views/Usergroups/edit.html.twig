@@ -48,7 +48,7 @@
 			</div>
 		</div>
 
-		{% if usergroup.id %}
+		{% if usergroup.id and not usergroup.sys_name %}
 			<div class="dp-form-row">
 				<div class="dp-form-label">
 					<label>{{ phrase('agent.general.number_of_members') }}</label>

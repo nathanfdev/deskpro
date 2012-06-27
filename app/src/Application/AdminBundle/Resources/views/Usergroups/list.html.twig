@@ -24,12 +24,27 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td>{{ phrase('agent.general.usergroup_everyone') }}</td>
+				<td>
+					{{ sys_usergroups.everyone.title }}
+					{% if sys_usergroups.everyone.note %}<div style="font-size:10px;">{{ sys_usergroups.everyone.note }}</div>{% endif %}
+				</td>
+				<td style="text-align:center">
+					&nbsp;
+				</td>
+				<td style="padding: 3px 3px 0 0; text-align: right;">
+					<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}"><span class="btn-edit-gear"></span></a>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					{{ sys_usergroups.registered.title }}
+					{% if sys_usergroups.registered.note %}<div style="font-size:10px;">{{ sys_usergroups.registered.note }}</div>{% endif %}
+				</td>
 				<td style="text-align:center">
 					<a href="{{ app.getRequest().getBaseUrl() }}/agent/#app.people">{{ member_counts[0]|default('0') }}</a>
 				</td>
 				<td style="padding: 3px 3px 0 0; text-align: right;">
-					<a href="{{ path('admin_usergroups_edit', {'id': 1}) }}"><span class="btn-edit-gear"></span></a>
+					<a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}"><span class="btn-edit-gear"></span></a>
 				</td>
 			</tr>
 		{% for usergroup in usergroups %}

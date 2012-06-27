@@ -112,6 +112,8 @@ abstract class AbstractBuild
 	 */
 	public function execMutateSql($sql)
 	{
+		$sql = preg_replace('#^\s*#m', '', $sql);
+
 		echo "\t-> " . $sql;
 		echo "\n";
 		$this->container->getDb()->exec($sql);

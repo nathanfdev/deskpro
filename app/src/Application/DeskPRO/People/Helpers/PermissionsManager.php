@@ -37,6 +37,7 @@ namespace Application\DeskPRO\People\Helpers;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\People\PersonContextInterface;
 
@@ -108,8 +109,11 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			WHERE person_id = ?
 		", array($this->person['id']));
 
-		// For 'everyone'
-		$this->usergroup_ids[] = 1;
+		$this->usergroup_ids[] = Usergroup::EVERYONE_ID;
+
+		if ($person->getId()) {
+			$this->usergroup_ids[] = Usergroup::REG_ID;
+		}
 
 		// And usergroup ones...
 		$this->org_usergroup_ids = array();

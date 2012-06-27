@@ -1150,10 +1150,19 @@ $em->flush();
 $g = new \Application\DeskPRO\Entity\Usergroup();
 $g['title'] = $translate->phrase('agent.defaults.usergroup_everyone');
 $g['note'] = $translate->phrase('agent.defaults.usergroup_everyone_note');
-$g['sys_name'] = 'everyone';
+$g['sys_name'] = \Application\DeskPRO\Entity\Usergroup::EVERYONE_NAME;
 $em->persist($g);
 $em->flush();
 $USERGROUP_EVERYONE = $g;
+
+##BEGIN:usergroups.everyone##
+$g = new \Application\DeskPRO\Entity\Usergroup();
+$g['title'] = $translate->phrase('agent.defaults.usergroup_registered');
+$g['note'] = $translate->phrase('agent.defaults.usergroup_registered_note');
+$g['sys_name'] = \Application\DeskPRO\Entity\Usergroup::REG_NAME;
+$em->persist($g);
+$em->flush();
+$USERGROUP_REG = $g;
 
 ##BEGIN:usergroups.agent_all##
 $AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();

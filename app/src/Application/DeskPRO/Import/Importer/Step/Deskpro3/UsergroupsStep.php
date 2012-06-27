@@ -299,22 +299,20 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		if ($group_info['system_name'] == 'guest') {
-			$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, 1);
-			return;
+			$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, Usergroup::EVERYONE_ID);
+		} elseif ($group_info['system_name'] == 'registered') {
+			$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, Usergroup::REG_ID);
+			$this->saveMappedId('usergroup', $group_info['id'], Usergroup::REG_ID);
+			$this->saveMappedId('usergroup_sys', 'registered', Usergroup::REG_ID);
 		} else {
 			$usergroup = new Usergroup();
 			$usergroup->title = $group_info['name'];
 			$this->getEm()->persist($usergroup);
 			$this->getEm()->flush();
+
+			$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
+			$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $usergroup->id);
 		}
-
-		$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
-
-		if ($group_info['system_name'] == 'registered') {
-			$this->saveMappedId('usergroup_sys', 'registered', $usergroup->id);
-		}
-
-		$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $usergroup->id);
 	}
 
 	protected function _insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $ug_id)

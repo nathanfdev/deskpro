@@ -48,10 +48,10 @@ use Orb\Util\Arrays;
  */
 class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The sysname of the everyone group
-	 */
 	const EVERYONE_NAME = 'everyone';
+	const EVERYONE_ID   = 1;
+	const REG_NAME      = 'registered';
+	const REG_ID        = 2;
 
 	/**
 	 * The unique ID.

@@ -1792,6 +1792,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret() . $this->secret_string));
 	}
 
+	public function _postPersist()
+	{
+		// Unset permissions manager so it'll be relaoded now that the user is registered
+		$this->_permissions_manager = null;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -1812,6 +1818,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('smartSetName', 'prePersist');
 		$metadata->addLifecycleCallback('_presavePerson', 'prePersist');
 		$metadata->addLifecycleCallback('smartSetName', 'preUpdate');
+		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
