@@ -29,29 +29,81 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
  */
 
-namespace Application\AdminBundle\Form;
+namespace Application\DeskPRO\Languages;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Symfony\Component\Finder\Finder;
 
-use Orb\Util\Arrays;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class EditLanguageType extends AbstractType
+/**
+ * This is a simple fileystem reader that loads all phrases from all files under a directory
+ */
+class AllPhrases
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	/**
+	 * @var string
+	 */
+	protected $dir;
+
+	/**
+	 * @var string[]
+	 */
+	protected $phrases;
+
+	/**
+	 * @var callback
+	 */
+	protected $callback;
+
+	public function __construct($dir)
 	{
-		$builder->add('title', 'text');
-		$builder->add('locale', 'text');
+		$this->dir = $dir;
 	}
 
-	public function getName()
+
+	/**
+	 * Set a callback function to be called for each phrase.
+	 *
+	 * The function will be passed $id and $phrase. You should accept the vars by reference and modify them directly.
+	 *
+	 * @param callback $callback
+	 */
+	public function setCallback($callback)
 	{
-		return 'language';
+		$this->callback = $callback;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getPhrases()
+	{
+		if ($this->phrases !== null) {
+			return $this->phrases !== null;
+		}
+
+		$this->phrases = array();
+
+		$finder = Finder::create()->files()->name('*.php')->in(array($this->dir))->depth('< 2');
+		foreach ($finder as $file) {
+			/** @var $file \SplFileInfo */
+			$path = $file->getRealPath();
+
+			$phrase_group = include($path);
+			if ($phrase_group && is_array($phrase_group)) {
+				foreach ($phrase_group as $id => $phrase) {
+					if ($this->callback) {
+						$this->callback($id, $phrase);
+					}
+
+					if ($id) {
+						$this->phrases[$id] = $phrase;
+					}
+				}
+			}
+		}
+
+		return $this->phrases;
 	}
 }

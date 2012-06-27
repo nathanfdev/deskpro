@@ -59,6 +59,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$phrase_reader = new \Application\DeskPRO\Languages\AllPhrases(DP_ROOT . '/languages');
+		$phrase_reader->setCallback(function (&$id, &$phrase) {
+			$phrase = strrev($phrase);
+		});
+		$phrases = $phrase_reader->getPhrases();
 
+		print_r($phrases);
+
+		echo "\n";
 	}
 }

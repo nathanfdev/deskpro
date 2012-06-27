@@ -29,29 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
+ * @subpackage
  */
 
-namespace Application\AdminBundle\Form;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class EditLanguageType extends AbstractType
+class Build1340825490 extends AbstractBuild
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function run()
 	{
-		$builder->add('title', 'text');
-		$builder->add('locale', 'text');
-	}
-
-	public function getName()
-	{
-		return 'language';
+		$this->out("Add custom_phrase instead of original_phrase");
+		$this->execMutateSql("ALTER TABLE phrases ADD custom_phrase LONGTEXT DEFAULT NULL, DROP original_phrase");
 	}
 }

@@ -64,43 +64,6 @@ class LanguagesController extends AbstractController
 	}
 
 	############################################################################
-	# new-language
-	############################################################################
-
-	public function newLanguageAction()
-	{
-		$packs_reader = new \Application\DeskPRO\ResourceScanner\LanguagePacks();
-		$packs = $packs_reader->getPacks();
-
-		return $this->render('AdminBundle:Languages:new-lang.html.twig', array(
-			'packs' => $packs,
-		));
-	}
-
-	public function newLanguageSaveAction()
-	{
-		$packs_reader = new \Application\DeskPRO\ResourceScanner\LanguagePacks();
-		$packs = $packs_reader->getPacks();
-
-		$pack = $this->in->getString('language_package');
-		if (!isset($packs[$pack])) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
-		$language = new \Application\DeskPRO\Entity\Language();
-		$language->language_package = $pack;
-		$language->title = $pack::getTitle();
-		$language->locale = $pack::getLocale();
-
-		$this->em->transactional(function($em) use ($language) {
-			$em->persist($language);
-			$em->flush();
-		});
-
-		return $this->redirectRoute('admin_langs_editlang', array('language_id' => $language->id));
-	}
-
-	############################################################################
 	# edit-language
 	############################################################################
 
@@ -115,9 +78,6 @@ class LanguagesController extends AbstractController
 			$this->em->persist($lang);
 			$this->em->flush();
 		}
-
-		$packs_reader = new \Application\DeskPRO\ResourceScanner\LanguagePacks();
-		$vars['packs'] = $packs_reader->getPacks();
 
 		$form = $this->get('form.factory')->create(new EditLanguageType(), $vars['language']);
 		$vars['form'] = $form->createView();
@@ -139,6 +99,12 @@ class LanguagesController extends AbstractController
 
 		$this->em->beginTransaction();
 		try {
+
+			// It was default, so set it back to English
+			if ($this->container->getDataService('Language')->getDefault()->getId() == $language->getId()) {
+				$this->container->getSettingsHandler()->setSetting('core.default_language_id', 1);
+			}
+
 			$this->em->remove($language);
 			$this->em->flush();
 			$this->em->commit();
