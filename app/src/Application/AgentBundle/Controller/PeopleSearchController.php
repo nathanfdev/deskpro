@@ -685,6 +685,11 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
+		$agent_sql = ' p.is_agent = 0 AND ';
+		if ($this->in->getBool('with_agents')) {
+			$agent_sql = '';
+		}
+
 		$limit = $this->in->getUint('limit');
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
@@ -696,7 +701,8 @@ class PeopleSearchController extends AbstractController
 				SELECT p.id, p.first_name, p.last_name, e.email
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
-				" . ($not_in_org ? " WHERE p.organization_id != $not_in_org " : '') . "
+				WHERE $agent_sql
+				" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
 				ORDER BY p.name ASC
 				LIMIT $limit
 			");
@@ -707,6 +713,7 @@ class PeopleSearchController extends AbstractController
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
 				WHERE
+					$agent_sql
 					(e.email LIKE ?
 					OR p.name LIKE ?
 					OR p.first_name LIKE ?
