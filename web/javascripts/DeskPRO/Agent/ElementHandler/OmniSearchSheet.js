@@ -84,6 +84,17 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		});
 	},
 
+	getBackdrop: function() {
+		if (!this.backdrop) {
+			this.backdrop = $('<div class="backdrop"></div>').appendTo('body');
+			this.backdrop.css('z-index', 29000);
+
+			this.backdrop.on('click', this.close.bind(this));
+		}
+
+		return this.backdrop;
+	},
+
 	reloadForm: function(section) {
 		if (!section) {
 			section = this.typeTabs.lastActiveTabContent;
@@ -137,6 +148,7 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		this.updatePositions();
 
 		this.el.slideDown('fast');
+		this.getBackdrop().show();
 	},
 
 	isOpen: function() {
@@ -149,6 +161,7 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		}
 
 		this.el.slideUp('fast');
+		this.getBackdrop().hide();
 		this._isOpen = false;
 	},
 
