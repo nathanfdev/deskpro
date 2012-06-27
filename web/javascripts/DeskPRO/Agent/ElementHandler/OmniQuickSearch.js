@@ -108,6 +108,36 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 			// Otherwise do the "long" search
 			} else {
+
+				// But handle special queries
+				var q = this.el.val().trim();
+				var pieces = q.split(':');
+				if (pieces && pieces.length === 2) {
+					var type = pieces[0].trim();
+					var id = parseInt(pieces[1].trim());
+
+					if (id) {
+						switch (type) {
+							case 'ticket':
+							case 't':
+								DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/' + id);
+								return;
+
+							case 'person':
+							case 'p':
+							case 'user':
+								DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/people/' + id);
+								return;
+
+							case 'organization':
+							case 'org':
+							case 'o':
+								DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + id);
+								return;
+						}
+					}
+				}
+
 				self.updateResultsLong();
 			}
 
