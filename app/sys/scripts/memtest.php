@@ -33,9 +33,7 @@
  */
  
 // no direct access
-<?php if (!defined('DP_ROOT')) exit('No access');
-
-
+if (!defined('DP_ROOT')) exit('No access');
 
 $memlimit = ini_get('memory_limit');
 if (!$memlimit || $memlimit == -1) {
