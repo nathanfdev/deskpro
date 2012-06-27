@@ -444,14 +444,14 @@ class AsseticManager
 				);
 				$filter->setDisableOptimizations(true);
 				$filter->setNomunge(true);
-				$filter->setLineBreak(500);
+				$filter->setLineBreak(100);
 				break;
 			case 'yui':
 				$filter = new \Assetic\Filter\Yui\JsCompressorFilter(
 					$this->options->get('yui_compressor'),
 					$this->options->get('java_path')
 				);
-				$filter->setLineBreak(500);
+				$filter->setLineBreak(100);
 				break;
 			case 'image_gradients':
 				$filter = new \Application\DeskPRO\Assetic\Filter\CssGradientImage(array(
