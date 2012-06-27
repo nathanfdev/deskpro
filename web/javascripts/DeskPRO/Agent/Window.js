@@ -349,8 +349,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initPage: function() {
 
-		$('#dp_loading').remove();
-
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
 			// if a drop target isnt configured yet (ie no tab open to accept a file)
@@ -374,14 +372,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$('html').addClass('dp');
-		this._initBasic();
-		this._initSections();
-		this._initRoutes();
 		this._initWindowInterface();
 		this._initLayout();
-
+		this._initBasic();
+		this._initRoutes();
+		this._initSections();
 		this._initInterfaceServices();
 
+		$('#dp_loading').remove();
 		$('#page_loading').remove();
 		$('#loading_css').remove();
 
@@ -2299,8 +2297,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			bodyPane: $('#dp_content_wrap'),
 			menuBtn: $('#tabDropdownPicker')
 		});
-
-		DeskPRO_Window.TabBar = DeskPRO_Window.TabBar;
 
 		this.tabWatcher = new DeskPRO.Agent.TabWatcher({
 			tabManager: DeskPRO_Window.TabBar
