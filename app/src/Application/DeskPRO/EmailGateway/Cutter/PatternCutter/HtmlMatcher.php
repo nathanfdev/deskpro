@@ -185,7 +185,7 @@ class HtmlMatcher
 	 */
 	public function getCutBody()
 	{
-		$body = $this->getMarkedDocument(self::CUT_MARK);
+		$body = $this->getMarkedDocument();
 
 		$pos = strpos($body, self::CUT_MARK);
 		if ($pos === false) {

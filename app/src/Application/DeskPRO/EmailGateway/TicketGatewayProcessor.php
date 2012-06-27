@@ -299,9 +299,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
 
-			if ($cutter->getMatchedPattern()) {
+			if ($cutter->getMatchedPatterns()) {
 				$has_cut = true;
-				$this->logMessage("Cutter matched pattern: " . $cutter->getMatchedPattern()->getPattern());
+				foreach ($cutter->getMatchedPattern() as $p) {
+					$this->logMessage("Cutter matched pattern: " . $p->getPattern());
+				}
 			} else {
 				$this->logMessage("Cutter did not match any pattern");
 			}

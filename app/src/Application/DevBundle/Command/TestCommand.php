@@ -53,14 +53,17 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$body = $cutter->cutQuoteBlock($body, true);
 		$body = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($body, 'html_email');
 
-		$matched = $cutter->getMatchedPattern();
+		$matched = $cutter->getMatchedPatterns();
 
 		if ($matched) {
 			echo $body;
 
 			echo "\n\n\n\n";
-			echo "Matched: ";
-			echo $matched->getPattern();
+			foreach ($matched as $p) {
+				echo "Matched: ";
+				echo $p->getPattern();
+				echo "\n";
+			}
 			echo "\n";
 		} else {
 			echo $raw_body;

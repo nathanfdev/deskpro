@@ -45,9 +45,9 @@ class PatternCutter implements QuoteDef
 	protected $patterns = array();
 
 	/**
-	 * @var PatternCutter\HtmlPattern
+	 * @var PatternCutter\HtmlPattern[]
 	 */
-	protected $matched_pattern;
+	protected $matched_patterns;
 
 
 	/**
@@ -89,9 +89,17 @@ class PatternCutter implements QuoteDef
 			return $body;
 		}
 
-		$matcher = $this->findMatchingMatcher($body);
-		if ($matcher) {
-			$body = $matcher->getCutBody();
+		foreach ($this->patterns as $pattern) {
+			$matcher = new HtmlMatcher($body, $pattern);
+			if ($matcher->isMatch()) {
+				$this->matched_patterns[] = $pattern;
+				$body = $matcher->getMarkedDocument();
+			}
+		}
+
+		$pos = strpos($body, HtmlMatcher::CUT_MARK);
+		if ($pos !== false) {
+			$body = substr($body, 0, $pos);
 		}
 
 		return $body;
@@ -113,7 +121,7 @@ class PatternCutter implements QuoteDef
 			}
 
 			if ($matcher->isMatch()) {
-				$this->matched_pattern = $pattern;
+				$this->matched_patterns[] = $pattern;
 				return $matcher;
 			}
 
@@ -127,8 +135,8 @@ class PatternCutter implements QuoteDef
 	/**
 	 * @return PatternCutter\HtmlPattern|null
 	 */
-	public function getMatchedPattern()
+	public function getMatchedPatterns()
 	{
-		return $this->matched_pattern;
+		return $this->matched_patterns;
 	}
 }
