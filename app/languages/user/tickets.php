@@ -1,38 +1,12 @@
 <?php return array(
-	'user.tickets.reply.form.button'                   => 'Submit Reply',
-    'user.tickets.reply.if_resolved'                   => 'Have we answered your question? Feel free to <a href="{{link_url}}">resolve this ticket</a>',
-
-    'user.tickets.title'                               => 'Contact Us',
-
-    'user.tickets.fields_category'                            => 'Category',
-    'user.tickets.fields_department'                          => 'Department',
-    'user.tickets.fields_priority'                            => 'Priority',
-    'user.tickets.fields_product'                             => 'Product',
-
-    'user.tickets.form_error_category'            => 'Please choose a category',
-    'user.tickets.form_error_department'          => 'Please choose a department',
-    'user.tickets.form_error_priority'              => 'Please choose a priority',
-    'user.tickets.form_error_product'               => 'Please choose a product',
-    'user.tickets.form_error_subject'      => 'Please enter a subject of at least 5 characters',
-    'user.tickets.form_error_message'               => 'Please enter at least 10 characters',
-    'user.tickets.form_error_captcha'                 => 'Please enter the code',
-    'user.tickets.form_error_captcha_invalid'                   => 'The code you entered is incorrect.',
-
-
-
-
-    'user.tickets.form_errors_correct'                 => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
-
-    'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
+	'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
 	'user.tickets.assigned-agent'                      => 'Assigned Agent',
 	'user.tickets.begin_with_department'               => 'Begin by choosing a department',
 	'user.tickets.btn_continue'                        => 'Continue &rarr;',
-
 	'user.tickets.cc_form_add_title'                   => 'Add using name and email',
 	'user.tickets.check_email'                         => 'check your email',
 	'user.tickets.click_to_close'                      => 'Click to close this ticket',
 	'user.tickets.close_window'                        => 'Close Window',
-
 	'user.tickets.contact_us_explain'                  => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
 	'user.tickets.content-suggestions_answered'        => 'We are happy we were able to answer your question. Do you still want to email us?',
 	'user.tickets.dont_add_me_to_ticket'               => 'No thanks',
@@ -45,8 +19,21 @@
 	'user.tickets.feedback_thanks'                     => 'Thank you for rating our support',
 	'user.tickets.feedback_thanks_neg'                 => 'Your feedback will be reviewed by the helpdesk managers. We hope we can do better in the future.',
 	'user.tickets.feedback_thanks_pos'                 => 'Thanks, we appreciate your feedback!',
+	'user.tickets.fields_category'                     => 'Category',
+	'user.tickets.fields_department'                   => 'Department',
+	'user.tickets.fields_priority'                     => 'Priority',
+	'user.tickets.fields_product'                      => 'Product',
 	'user.tickets.flash_new_ticket_login'              => 'Your ticket has been submitted. Log in to view it now.',
 	'user.tickets.flash_new_ticket_validating_email'   => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
+	'user.tickets.form_error_captcha'                  => 'Please enter the code',
+	'user.tickets.form_error_captcha_invalid'          => 'The code you entered is incorrect.',
+	'user.tickets.form_error_category'                 => 'Please choose a category',
+	'user.tickets.form_error_department'               => 'Please choose a department',
+	'user.tickets.form_error_message'                  => 'Please enter at least 10 characters',
+	'user.tickets.form_error_priority'                 => 'Please choose a priority',
+	'user.tickets.form_error_product'                  => 'Please choose a product',
+	'user.tickets.form_error_subject'                  => 'Please enter a subject of at least 5 characters',
+	'user.tickets.form_errors_correct'                 => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
 	'user.tickets.from_x_at_y'                         => 'From {{name}} at {{date}}',
 	'user.tickets.i_dont_need_to_email'                => 'I do not need to contact you anymore',
 	'user.tickets.i_still_want_to_email'               => 'I still want to submit my question',
@@ -70,10 +57,11 @@
 	'user.tickets.new_ticket_email'                    => 'Your new ticket has been submitted. Our agents will reply to your email address {{email}}.',
 	'user.tickets.oops_form_mistakes'                  => 'Oops! There are mistakes with your form. Correct the highlighted feels and then try again.',
 	'user.tickets.open_tickets'                        => 'Open Tickets',
-
 	'user.tickets.rate_helpful'                        => 'Helpful',
 	'user.tickets.rate_unhelpful'                      => 'Not Helpful',
 	'user.tickets.remove_participant'                  => 'Remove Participant',
+	'user.tickets.reply.form.button'                   => 'Submit Reply',
+	'user.tickets.reply.if_resolved'                   => 'Have we answered your question? Feel free to <a href="{{link_url}}">resolve this ticket</a>',
 	'user.tickets.resolve_my_ticket_btn'               => 'Resolve my ticket',
 	'user.tickets.resolve_my_ticket_send_feedback_btn' => 'Resolve my ticket and send feedback',
 	'user.tickets.resolve_ticket'                      => 'Resolve Ticket: {{subject}}',
@@ -91,6 +79,7 @@
 	'user.tickets.ticket_starter'                      => 'Ticket Starter',
 	'user.tickets.ticket_was_closed'                   => 'Your ticket was resolved successfully',
 	'user.tickets.tickets'                             => 'Tickets',
+	'user.tickets.title'                               => 'Contact Us',
 	'user.tickets.title_links_safe'                    => 'Do not worry, you can click a title and you will remain on this page.',
 	'user.tickets.type_your_reply_here'                => 'Type your reply here...',
 	'user.tickets.unassigned'                          => 'Unassigned',

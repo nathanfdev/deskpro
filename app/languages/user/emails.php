@@ -3,10 +3,12 @@
 	'user.emails.comment_approved'            => 'Your comment has been published.',
 	'user.emails.comment_deleted'             => 'Your comment was used to improve the page.',
 	'user.emails.comment_thank-you'           => 'Thank you for your comment on {{link}}.',
+	'user.emails.comment_validate-email'      => 'Please validate your email address online by clicking the following link:',
 	'user.emails.feedback_closed'             => 'Your submitted feedback "{{title}}" was closed: {{status}}',
 	'user.emails.feedback_published'          => 'Your submitted feedback "{{title}}" has been validated and will now appear on our website.',
 	'user.emails.feedback_thank-you'          => 'Thank you for submitting your feedback "{{title}}"',
 	'user.emails.feedback_updated'            => 'Your submitted feedback "{{title}}" has been updated. It is now filed under the new status "{{status}}"',
+	'user.emails.feedback_validate-email'     => 'Please validate your email address online by clicking the following link:',
 	'user.emails.feedback_votes'              => 'Your feedback currently has <strong>{{count}}</strong> vote. View your feedback online at:|Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:',
 	'user.emails.greeting'                    => 'Dear {{name}},',
 	'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
@@ -25,6 +27,4 @@ To protect against an auto-responder loop our helpdesk will not send to you any 
 	'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. Our agents will respond to you as soon as they can.',
 	'user.emails.ticket_validate'             => 'Thank you for contacting us.
 Before our agents will read and reply to your message, you must validate your email address.',
-	'user.emails.comment_validate-email'          => 'Please validate your email address online by clicking the following link:',
-	'user.emails.feedback_validate-email'          => 'Please validate your email address online by clicking the following link:',
 );

@@ -9,7 +9,7 @@
 	'user.email_subjects.feedback_updated'       => 'Your feedback was updated: {{title}}',
 	'user.email_subjects.password_agent-reset'   => 'An agent has reset your password',
 	'user.email_subjects.password_reset'         => 'Reset Password',
+	'user.email_subjects.re'                     => 'RE: {{subject}}',
 	'user.email_subjects.ticket_new-participant' => 'A new person has been added to your ticket',
 	'user.email_subjects.validate-email'         => 'Validate your email address',
-	'user.email_subjects.re'                  => 'RE: {{subject}}',
 );

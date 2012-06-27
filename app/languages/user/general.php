@@ -30,6 +30,7 @@
 	'user.general.please_enter_your_name'        => 'Please enter your name',
 	'user.general.post_comment_btn'              => 'Post Comment',
 	'user.general.rating_x_of_y_found_helpful'   => '{{vote_up}} of {{vote_count}} people found this page helpful',
+	'user.general.read_more'                     => 'Read more',
 	'user.general.save'                          => 'Save',
 	'user.general.set_as_helpful'                => 'This page was helpful',
 	'user.general.set_as_unhelpful'              => 'This page was unhelpful',
@@ -41,5 +42,4 @@
 	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
 	'user.general.your_email_address'            => 'Your Email Address',
 	'user.general.your_name'                     => 'Your Name',
-	'user.general.read_more'                     => 'Read more',
 );

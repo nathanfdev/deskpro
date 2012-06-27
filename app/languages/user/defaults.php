@@ -5,8 +5,8 @@
 	'user.defaults.department_sales'              => 'Sales',
 	'user.defaults.department_support'            => 'Support',
 	'user.defaults.download_category_general'     => 'General',
-	'user.defaults.feedback_example_title'        => 'Example Suggestion',
 	'user.defaults.feedback_example_content'      => 'This is an example suggestion. Feel free to edit or delete it from the agent interface.',
+	'user.defaults.feedback_example_title'        => 'Example Suggestion',
 	'user.defaults.feedback_status_completed'     => 'Completed',
 	'user.defaults.feedback_status_declined'      => 'Declined',
 	'user.defaults.feedback_status_duplicate'     => 'Duplicate',
@@ -20,5 +20,5 @@
 	'user.defaults.news_category_general'         => 'General',
 	'user.defaults.news_example_content'          => 'This is an example news post. Feel free to edit or delete it from the agent interface.',
 	'user.defaults.news_example_title'            => 'Example News Post',
-	'user.defaults.trigger_warn_autoclose'        => 'You have not replied to your ticket in 3 days. If your problem has been solved, you can simply ignore this message and your ticket will be closed automatically in another two days. If you still require assistance, please reply to this message to keep your ticket open.'
+	'user.defaults.trigger_warn_autoclose'        => 'You have not replied to your ticket in 3 days. If your problem has been solved, you can simply ignore this message and your ticket will be closed automatically in another two days. If you still require assistance, please reply to this message to keep your ticket open.',
 );

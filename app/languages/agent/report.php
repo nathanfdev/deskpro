@@ -26,6 +26,7 @@
 	'agent.report.new_dashboard'                                  => 'New Dashboard',
 	'agent.report.notice_disabling_effect'                        => 'Disabling the statistic will cause future data to be unavailable',
 	'agent.report.number_columns'                                 => 'Number Columns',
+	'agent.report.overview'                                       => 'Overview',
 	'agent.report.report_builder'                                 => 'Report Builder',
 	'agent.report.select_group_field'                             => 'Select the field to group the results by.',
 	'agent.report.select_show_chart_legend'                       => 'Select yes to display the chart legend (works best with bigger charts)',
@@ -45,5 +46,4 @@
 	'agent.report.updates'                                        => 'Updates',
 	'agent.report.view_chart'                                     => 'View Chart',
 	'agent.report.x'                                              => '[x]',
-	'agent.report.overview'                                       => 'Overview',
 );
