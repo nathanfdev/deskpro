@@ -691,9 +691,9 @@ class OrganizationController extends AbstractController
 	 */
 	protected function getOrgOr404($organization_id)
 	{
-		try {
-			$org = $this->em->find('DeskPRO:Organization', $organization_id);
-		} catch (\Doctrine\ORM\NoResultException $e) {
+		$org = $this->em->find('DeskPRO:Organization', $organization_id);
+
+		if (!$org) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no organization with ID $organization_id");
 		}
 
