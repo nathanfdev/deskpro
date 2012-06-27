@@ -1252,37 +1252,47 @@ class TicketSearch extends SearcherAbstract
 					$this->enableArchiveSearch();
 					$this->affected_fields[] = 'ticket.date_user_waiting';
 
+					$choice = $this->normalizeWaitingTime($choice);
+
 					if (is_array($choice)) {
 						$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
 					}
 
-					$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
+					if ($choice) {
+						$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
+					}
 					break;
 
 				case self::TERM_AGENT_WAITING:
 					$this->affected_fields[] = 'ticket.date_agent_waiting';
+
+					$choice = $this->normalizeWaitingTime($choice);
 
 					if (is_array($choice)) {
 						$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
 					}
 
-					$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
+					if ($choice) {
+						$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
+					}
 					break;
 
 				case self::TERM_TOTAL_USER_WAITING:
 					$this->affected_fields[] = 'ticket.total_user_waiting';
 					$now = time();
 
-					if (is_array($choice) && isset($choice['waiting_time'])) {
+					$choice = $this->normalizeWaitingTime($choice);
+
+					if (is_array($choice)) {
 						$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
 					}
 
-					if (is_array($choice)) {
+					if ($choice && is_array($choice)) {
 						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
-					} else {
+					} elseif ($choice) {
 						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
 					}
 					break;
@@ -1392,6 +1402,22 @@ class TicketSearch extends SearcherAbstract
 		);
 
 		return $this->sql_parts;
+	}
+
+	public function normalizeWaitingTime($choice)
+	{
+		if (is_array($choice)) {
+			$choice = Arrays::removeFalsey($choice);
+			if (!$choice || empty($choice['waiting_time']) || empty($choice['waiting_time_unit'])) {
+				return 0;
+			}
+		}
+
+		if (!$choice) {
+			return 0;
+		}
+
+		return $choice;
 	}
 
 
