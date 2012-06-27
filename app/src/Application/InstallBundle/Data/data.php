@@ -1155,7 +1155,7 @@ $em->persist($g);
 $em->flush();
 $USERGROUP_EVERYONE = $g;
 
-##BEGIN:usergroups.everyone##
+##BEGIN:usergroups.register##
 $g = new \Application\DeskPRO\Entity\Usergroup();
 $g['title'] = $translate->phrase('agent.defaults.usergroup_registered');
 $g['note'] = $translate->phrase('agent.defaults.usergroup_registered_note');
