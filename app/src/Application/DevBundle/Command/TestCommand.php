@@ -59,44 +59,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$email = file_get_contents(DP_ROOT . '/src/Application/DevBundle/Resources/email-sources/re-outlook2.txt');
-		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-		$reader->setRawSource($email);
 
-		$raw_body = $reader->getBodyHtml()->getBodyUtf8();
-		$body = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($raw_body, 'html_fix');
-		$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-		$cutter->addPatterns($pattern_config->all());
-		//$cutter->addPattern('p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p');
-		//$cutter->addPattern('p b span #from:#i /span /b span #.*# br /br b /b /span /p');
-
-		$time = microtime(true);
-
-
-		$body = $cutter->cutQuoteBlock($body, true);
-		$body = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($body, 'html_email');
-
-		$matched = $cutter->getMatchedPatterns();
-
-		if ($matched) {
-			echo $body;
-
-			echo "\n\n\n\n";
-			foreach ($matched as $p) {
-				echo "Matched: ";
-				echo $p->getPattern();
-				echo "\n";
-			}
-			echo "\n";
-		} else {
-			echo $raw_body;
-
-			echo "\n\n\n\n";
-			echo "NO MATCH";
-			echo "\n\n";
-		}
-
-		echo sprintf("Took %.04f seconds\n", microtime(true) - $time);
 	}
 }
