@@ -286,6 +286,14 @@ class MainController extends AbstractController
 
 		} else {
 
+			$ref_gen = $this->container->getSystemService('RefGenerator');
+			if ($ref_gen->isRefMatch($q)) {
+				$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($q);
+				if ($ticket) {
+					$results['ticket'][] = $ticket;
+				}
+			}
+
 			if (!$is_label) {
 				#------------------------------
 				# Email address: Full or partial
