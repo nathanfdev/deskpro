@@ -52,7 +52,12 @@ class NewArticle extends AbstractType
 		$builder->add('status', 'text');
 		$builder->add('slug', 'text');
 
-		$builder->add('labels_json', 'hidden');
+		$builder->add('labels', 'collection', array(
+			'type' => 'hidden',
+			'required' => false,
+			'allow_add' => true,
+			'allow_delete' => true
+		));
 
 		$builder->add('attach', 'collection', array(
 			'type' => 'hidden',

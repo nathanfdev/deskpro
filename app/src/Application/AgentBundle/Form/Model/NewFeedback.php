@@ -51,7 +51,6 @@ class NewFeedback
 	public $content;
 
 	public $slug;
-	public $labels_json;
 	public $labels = array();
 
 	public $attach_ids;
@@ -81,15 +80,8 @@ class NewFeedback
 		$this->em->persist($feedback);
 		$this->em->flush();
 
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
-		}
-
 		if ($this->labels) {
-			$feedback->getLabelManager()->setLabelsArray($this->labels);
+			$feedback->getLabelManager()->setLabelsArray($this->labels, $this->em);
 			$this->em->flush();
 		}
 

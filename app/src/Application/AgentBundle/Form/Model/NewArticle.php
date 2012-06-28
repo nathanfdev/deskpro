@@ -49,7 +49,6 @@ class NewArticle
 	public $slug;
 	public $labels = array();
 	public $attach = array();
-	public $labels_json;
 
 	protected $_article;
 
@@ -79,15 +78,11 @@ class NewArticle
 		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
 		$article->addToCategory($cat);
 
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
-		}
+		$this->_em->persist($article);
+		$this->_em->flush();
 
 		if ($this->labels) {
-			$article->getLabelManager()->setLabelsArray($this->labels);
+			$article->getLabelManager()->setLabelsArray($this->labels, $this->_em);
 		}
 
 		// Message Attachments
@@ -102,7 +97,6 @@ class NewArticle
 			$article->addAttachment($attach);
 		}
 
-		$this->_em->persist($article);
 		$this->_em->flush();
 
 		$this->_em->commit();

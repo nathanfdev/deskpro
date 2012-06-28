@@ -130,7 +130,7 @@ class LabelManager
 		return false;
 	}
 
-	public function setLabelsArray(array $labels)
+	public function setLabelsArray(array $labels, $em = null)
 	{
 		$labels_raw = $labels;
 		$labels = array();
@@ -147,10 +147,16 @@ class LabelManager
 		$removed = array_diff($existing_labels, $labels);
 
 		foreach ($added as $added_label) {
-			$this->addLabel($added_label);
+			$obj = $this->addLabel($added_label);
+			if ($em && $obj) {
+				$em->persist($obj);
+			}
 		}
 		foreach ($removed as $removed_label) {
 			$this->removeLabel($removed_label);
+			if ($em && $obj) {
+				$em->remove($obj);
+			}
 		}
 	}
 

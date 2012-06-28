@@ -65,6 +65,9 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 	submit: function() {
 		var formData = this.form.serializeArray();
+		if (this.labelsInput) {
+			formData.append(this.labelsInput.getFormData());
+		}
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
@@ -217,7 +220,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 					self.labelsInput = new DeskPRO.UI.LabelsInput({
 						type: 'downloads',
 						fieldName: 'newdownload[labels]',
-						textarea: $(".tags-wrap input", eventData.tabContent),
+						input: $(".tags-wrap input", eventData.tabContent),
 						onChange: function() {
 							self.stateSaver.triggerChange();
 						}

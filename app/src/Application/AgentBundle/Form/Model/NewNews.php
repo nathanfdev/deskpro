@@ -81,15 +81,8 @@ class NewNews
 		$this->_em->persist($news);
 		$this->_em->flush();
 
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
-		}
-
 		if ($this->labels) {
-			$news->getLabelManager()->setLabelsArray($this->labels);
+			$news->getLabelManager()->setLabelsArray($this->labels, $this->_em);
 			$this->_em->flush();
 		}
 
