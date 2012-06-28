@@ -114,20 +114,23 @@ $cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
 $em->persist($cat);
 $em->flush();
 
-foreach (array('planning', 'started', 'under-review') as $t) {
-	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-	$s->status_type = 'active';
-	$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-	$em->persist($s);
-}
+// Statuses are done as part of FeedbackCatsStep so we can map id's
+if (!$IMPORT_INSTALL) {
+	foreach (array('planning', 'started', 'under-review') as $t) {
+		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+		$s->status_type = 'active';
+		$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+		$em->persist($s);
+	}
 
-foreach (array('completed', 'duplicate', 'declined') as $t) {
-	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-	$s->status_type = 'closed';
-	$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
-	$em->persist($s);
+	foreach (array('completed', 'duplicate', 'declined') as $t) {
+		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+		$s->status_type = 'closed';
+		$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+		$em->persist($s);
+	}
+	$em->flush();
 }
-$em->flush();
 
 if (!$IMPORT_INSTALL) {
 	$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
