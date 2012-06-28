@@ -73,10 +73,10 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 
 		foreach ($this->codes as $send_to) {
 			if ($send_to == 'assigned_agent') {
-				$desc_agents[] = $tr->phrase('agent.tickets.assigned');
+				$desc_agents[] = $tr->phrase('agent.general.assigned_agent');
 
 			} elseif ($send_to == 'assigned_agent_team') {
-				$desc_teams[] = $tr->phrase('agent.tickets.assigned');
+				$desc_teams[] = $tr->phrase('agent.general.assigned_team');
 
 			} elseif (strpos($send_to, 'agent.') === 0) {
 				list (, $agent_id) = explode('.', $send_to, 2);

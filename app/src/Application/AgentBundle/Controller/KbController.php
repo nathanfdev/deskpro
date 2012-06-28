@@ -307,7 +307,7 @@ class KbController extends AbstractController
 				$errors = array();
 
 				if($missing) {
-					$errors[] = $tr->phrase('agent.publish.error_kb_missing_articles', array('count' => $missing));
+					$errors[] = $tr->phrase('agent.publish.error_kb_missing', array('count' => $missing));
 				}
 
 				if($perm_failures) {

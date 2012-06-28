@@ -236,7 +236,7 @@ class TermSummary
 				break;
 
 			case 'ticket_hold':
-				$summary = $tr->phrase('agent.general.is_not_x', array('field' => $tr->phrase('ticket.general.on_hold_summary')));
+				$summary = $tr->phrase('agent.tickets.tickets_on_hold');
 				break;
 
 			case 'organization':
