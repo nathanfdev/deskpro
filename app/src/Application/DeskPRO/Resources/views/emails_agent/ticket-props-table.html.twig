@@ -3,6 +3,12 @@
 		<td width="130">{{ phrase('agent.general.id') }}</td>
 		<td>{{ ticket.id }}</td>
 	</tr>
+	{% if app.getSetting('core.tickets.use_ref') %}
+		<tr>
+			<td width="130">{{ phrase('agent.general.reference') }}</td>
+			<td>{{ ticket.ref }}</td>
+		</tr>
+	{% endif %}
 	<tr>
 		<td width="130">{{ phrase('agent.general.department') }}</td>
 		<td>{{ticket.department.full_title|default(phrase('agent.general.none'))}}</td>
