@@ -82,47 +82,49 @@ class DownloadsController extends AbstractController
 			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category', 'is', $category['id']);
 
+			if ($search_options['order_by']) {
+				$searcher->setOrderByCode($search_options['order_by']);
+			} else {
+				$searcher->setOrderBy('id', 'desc');
+			}
+
+			$total = $searcher->getCount();
+
+			$per_page = 20;
+			if ($this->request->isPartialRequest() == 'portal') {
+				$per_page = 5;
+			}
+
+			$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
+			$limit = array(
+				'offset' => ($pageinfo['curpage']-1) * $per_page,
+				'max' => $per_page
+			);
+
+			$download_ids = $searcher->getMatches($limit);
+
+			$downloads = $this->em->getRepository('DeskPRO:Download')->getByResultIds($download_ids);
+
+			$comment_counts = array();
+			if ($downloads) {
+				$comment_counts = $this->em->getRepository('DeskPRO:DownloadCategory')
+						->getCommentHelper()
+						->countsOnCollection($downloads);
+			}
+
+		// No category, no results to display
 		} else {
 			$category = null;
 			$category_path = null;
 
-			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
-			$searcher->setPersonContext($this->person);
+			$downloads = null;
+			$comment_counts = null;
+			$total = null;
+			$pageinfo = null;
 		}
 
 		$category_counts = $structure->getDownloadCategoryCounts($this->person);
-
 		$categories = $structure->getDownloadRootCategories();
-
-		if ($search_options['order_by']) {
-			$searcher->setOrderByCode($search_options['order_by']);
-		} else {
-			$searcher->setOrderBy('id', 'desc');
-		}
-
-		$total = $searcher->getCount();
-
-		$per_page = 20;
-		if ($this->request->isPartialRequest() == 'portal') {
-			$per_page = 5;
-		}
-
-		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
-		$limit = array(
-			'offset' => ($pageinfo['curpage']-1) * $per_page,
-			'max' => $per_page
-		);
-
-		$download_ids = $searcher->getMatches($limit);
-
-		$downloads = $this->em->getRepository('DeskPRO:Download')->getByResultIds($download_ids);
-
-		$comment_counts = array();
-		if ($downloads) {
-			$comment_counts = $this->em->getRepository('DeskPRO:DownloadCategory')
-				->getCommentHelper()
-				->countsOnCollection($downloads);
-		}
 
 		if ($category) {
 			$category_children = $category->getChildren();

@@ -6,7 +6,7 @@
 {% set this_section = 'downloads' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-<li xmlns="http://www.w3.org/1999/html"><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
+<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
 	{% if category %}
 		{% for cat in category_path %}
 			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
@@ -88,6 +88,14 @@
 			</div>
 		</div>
 	</section>
+{% elseif category %}
+	<section class="dp-portal-section">
+		<div class="dp-content-block dp-articles-block">
+			<div class="dp-content-wrapper">
+				<p>{{ phrase('user.downloads.message_no-files') }}</p>
+			</div>
+		</div>
+	</div>
 {% endif %}
 
 <br style="clear: both; height: 1px; overflow: hidden" />
