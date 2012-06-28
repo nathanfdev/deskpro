@@ -227,7 +227,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.updatePositions();
 	},
 
-	hasFormsChanged: function(no_resave) {
+	hasFormsChanged: function(do_resave) {
 		var data = this.popover.find('input, select, textarea').serializeArray();
 		var newFormString = JSON.stringify(data);
 		var ret = false;
@@ -236,7 +236,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			ret = true;
 		}
 
-		if (!no_resave) {
+		if (do_resave) {
 			this.formString = newFormString;
 		}
 
@@ -385,9 +385,17 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 	},
 
-	close: function() {
+	close: function(ignoreForms) {
 
 		if (this.isDestroyed) return;
+
+		if (!ignoreForms && this.hasFormsChanged()) {
+			var self = this;
+			DeskPRO_Window.showConfirm('Are you sure you want to close the form? Your changes will be lost.', function() {
+				self.close(true);
+			});
+			return;
+		}
 
 		var ev = {pop: this, cancel: false};
 		this.fireEvent('close', ev);
@@ -401,7 +409,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this.page.stateSaver.resetState();
 		}
 
-		if (this.options.destroyOnClose) {
+		if (this.options.destroyOnClose && this.hasFormsChanged()) {
 			if (this.page) {
 				this.page.closeSelf();
 			}
