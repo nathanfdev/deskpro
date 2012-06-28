@@ -195,6 +195,12 @@ class Choice extends HandlerAbstract
 	{
 		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
 
+		// Single-selections dont come in as arrays,
+		// but we treat them the same so need this casting
+		if (!is_array($data)) {
+			$data = array($data);
+		}
+
 		#------------------------------
 		# Validate selections
 		#------------------------------
