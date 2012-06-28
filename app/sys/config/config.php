@@ -205,6 +205,15 @@ $container->loadFromExtension('framework', array(
 	'form' => array('enabled' => true)
 ));
 
+// Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
+$container->loadFromExtension('monolog', array(
+	'handlers' => array(
+		'main' => array(
+			'type' => 'null',
+		)
+	)
+));
+
 
 ############################################################################
 # Twig Configuration
