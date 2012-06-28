@@ -301,7 +301,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($cutter->getMatchedPatterns()) {
 				$has_cut = true;
-				foreach ($cutter->getMatchedPattern() as $p) {
+				foreach ($cutter->getMatchedPatterns() as $p) {
 					$this->logMessage("Cutter matched pattern: " . $p->getPattern());
 				}
 			} else {
