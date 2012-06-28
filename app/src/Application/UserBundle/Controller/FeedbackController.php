@@ -55,7 +55,7 @@ class FeedbackController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function filterAction($status = 'any-status', $slug = 'all-categories', $order_by = 'popular', $just_form = false)
+	public function filterAction($status = 'open', $slug = 'all-categories', $order_by = 'popular', $just_form = false)
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
@@ -72,7 +72,7 @@ class FeedbackController extends AbstractController
 		$sub_status_id = 0;
 
 		if (!$status) {
-			$status = 'any-status';
+			$status = 'open';
 		}
 
 		if (!$slug) {
@@ -122,14 +122,16 @@ class FeedbackController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
 		$searcher->setVisitor($this->session->getVisitor());
-		if ($status != 'any-status') {
+		if ($status == 'any-status') {
+			$searcher->addTerm('status', 'not', 'hidden');
+		} elseif ($status == 'open') {
+			$searcher->addTerm('status', 'is', array('new', 'active'));
+		} else {
 			$set_status = $status;
 			if ($set_status == 'gathering-feedback') {
 				$set_status = 'new';
 			}
 			$searcher->addTerm('status', 'is', $set_status);
-		} else {
-			$searcher->addTerm('status', 'not', 'hidden');
 		}
 
 		$status_cat = null;

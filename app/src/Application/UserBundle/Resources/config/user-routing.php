@@ -458,17 +458,17 @@ $collection->add('user_news_newcomment', new Route(
 
 $collection->add('user_feedback_home', new Route(
 	'/feedback',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'open', 'slug' => 'all-categories', 'order_by' => 'popular'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback', new Route(
 	'/feedback/{order_by}/{status}/{slug}',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'open', 'slug' => 'all-categories', 'order_by' => 'popular'),
 	array(
 		'slug'   => '((\\d+(\\-.*?)?)?)|all\-categories',
-		'status' => '(any-status|gathering\-feedback|active|closed)(\\.([0-9]+))?',
+		'status' => '(open|any-status|gathering\-feedback|active|closed)(\\.([0-9]+))?',
 		'order_by'   => '(popular|newest|most\-voted|i\-voted)',
 	),
 	array()

@@ -41,28 +41,31 @@
 	</li>
 	<li class="dp-dropdown dp-alt-option dp-last" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
-			{% if status == 'any-status' %}
-				{{ phrase('user.feedback.status_any') }}
+			<span class="dp-info-prefix">{{ phrase('user.feedback.status') }}:</span>
+			{% if status_cat %}
+				{{ status_cat.title }}
 			{% else %}
-				<span class="dp-info-prefix">{{ phrase('user.feedback.status') }}:</span>
-				{% if status_cat %}
-					{{ status_cat.title }}
-				{% else %}
-					{% if status == 'gathering-feedback' %}{{ phrase('user.feedback.status_new') }}
-					{% elseif status == 'active' %}{{ phrase('user.feedback.status_active') }}
-					{% elseif status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
-					{% endif %}
+				{% if status == 'open' %}{{ phrase('user.feedback.status_open') }}
+				{% elseif status == 'gathering-feedback' %}{{ phrase('user.feedback.status_new') }}
+				{% elseif status == 'any-status' %}{{ phrase('user.feedback.status_any') }}
+				{% elseif status == 'active' %}{{ phrase('user.feedback.status_active') }}
+				{% elseif status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
 				{% endif %}
 			{% endif %}
 			<b class="dp-caret"></b>
 		</a>
 		<ul class="dp-dropdown-element dp-cat-list" id="dp_feedback_cat_menu">
 			<li>
+				<i class="dp-icon-th"></i>
+				<a href="{{ path('user_feedback', {'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_open') }}</a>
+				<span class="dp-badge dp-small">{{ status_counts['open']|default(0) }}</span>
+			</li>
+			<li>
 				<i class="dp-icon-repeat"></i>
-				<a href="{{ path('user_feedback', {'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_any') }}</a>
+				<a href="{{ path('user_feedback', {'status': 'any-status', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_any') }}</a>
 				<span class="dp-badge dp-small">{{ status_counts['all']|default(0) }}</span>
 			</li>
-			<li class="sep"></li>
+			<li class="sep thick"></li>
 			<li>
 				<i class="dp-icon-asterisk"></i>
 				<a href="{{ path('user_feedback', {'status': 'gathering-feedback', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_new') }}</a>
