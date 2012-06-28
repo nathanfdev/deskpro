@@ -562,6 +562,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 
 			if (activateSectionId) {
+				this.fragLoadingSection = activateSectionId;
 				this.switchToSection(activateSectionId);
 			}
 		}
@@ -2156,6 +2157,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var handlerClass = Orb.getNamespacedObject(handlerClassName);
 			var handler = new handlerClass();
+			handler.section_id = el.attr('id');
 
 			if (++count) {
 				handler.addEvent('sectionInit', function() {

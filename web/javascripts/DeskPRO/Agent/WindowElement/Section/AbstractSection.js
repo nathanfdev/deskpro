@@ -28,6 +28,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			DeskPRO_Window.updateWindowUrlFragment();
 			if (this.hasLoaded) {
 				$('#dp_source_loading').removeClass('on');
+				if (DeskPRO_Window.fragLoadingSection && DeskPRO_Window.fragLoadingSection == this.section_id) {
+					DeskPRO_Window.fragLoadingSection = null;
+				}
 			}
 		}, this);
 		this.addEvent('firstshow', this.onFirstShow);
@@ -71,6 +74,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	setHasInitialLoaded: function() {
 		this.hasLoaded = true;
 		$('#dp_source_loading').removeClass('on');
+
+		if (DeskPRO_Window.fragLoadingSection && DeskPRO_Window.fragLoadingSection == this.section_id) {
+			DeskPRO_Window.fragLoadingSection = null;
+		}
 	},
 
 
@@ -346,7 +353,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			}
 		}
 
-		if (isBackgroundLoad) {
+		if (isBackgroundLoad || DeskPRO_Window.fragLoadingSection) {
 			DeskPRO_Window.runPageRoute(el.data('route'), { isBackgroundLoad: true });
 		} else {
 			DeskPRO_Window.runPageRoute(el.data('route'));
