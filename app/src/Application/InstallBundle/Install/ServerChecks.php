@@ -453,7 +453,7 @@ class ServerChecks
 
 		if ($type == 'apc_check' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking if APC is enabled", Logger::DEBUG);
-			if (function_exists('apc_store') && ini_get('apc.enabled')) {
+			if ((function_exists('apc_store') && ini_get('apc.enabled') || extension_loaded('wincache'))) {
 				$this->getLogger()->log("[OK] APC store installed", Logger::DEBUG);
 			} else {
 				$msg = "We recommend installing the APC extension for PHP to dramatically improve performance";

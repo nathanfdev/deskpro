@@ -267,7 +267,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'new_download'        => $new_download,
 			'this_build'          => $this_build,
 			'new_build'           => $new_build,
-			'do_data_dir_check'   => $do_data_dir_check
+			'do_data_dir_check'   => $do_data_dir_check,
+			'is_win'              => $this->container->getSystemService('instance_ability')->isWindows()
 		));
 	}
 

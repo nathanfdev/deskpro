@@ -190,6 +190,7 @@ class ServerController extends AbstractController
 			'has_db_checks' => false,
 			'db_config' => App::getConfig('db'),
 			'ini_path' => $ini_path,
+			'is_win' => $this->container->getSystemService('instance_ability')->isWindows()
 		);
 
 		$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $table_vars);

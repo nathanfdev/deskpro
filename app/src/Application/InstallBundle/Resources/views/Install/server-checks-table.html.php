@@ -288,11 +288,22 @@
 		<?php else: $failed = true; ?>
 		<span class="label notice" style="float:right">RECOMMENDED</span>
 		<?php endif ?>
-		Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>
+		<?php if (isset($is_win) && $is_win): ?>
+			Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> or the
+			<a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a>.
+		<?php else: ?>
+			Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>
+		<?php endif ?>
 		<?php if ($failed): ?>
 		<div class="alert-message block-message info">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_apc') ?>" class="kb-read-more" target="_blank">Read more about this</a>
+			<?php if (isset($is_win) && $is_win): ?>
+				We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>
+				or the <a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a>
+				to dramatically improve performance.
+			<?php else: ?>
 			We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.
+			<?php endif ?>
 		</div>
 		<?php endif ?>
 	</td>
