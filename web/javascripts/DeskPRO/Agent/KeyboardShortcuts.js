@@ -7,6 +7,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+shift+left', this.tabLeft.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
+		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 
 		// Navigating list pane
 		$(document).bind('keydown', 'down', function() {
@@ -151,12 +152,16 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 			return false;
 		}
 
-		var form = $('form.keybound-submit', wrapper);
-		if (!form.length) {
-			return false;
-		}
+		if (page.submit) {
+			page.submit();
+		} else {
+			var form = $('form.keybound-submit', wrapper);
+			if (!form.length) {
+				return false;
+			}
 
-		form.submit();
+			form.submit();
+		}
 	},
 
 	tabLeft: function() {
