@@ -260,17 +260,26 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						},
 						success: function(info) {
 
+							// It could've been removed by now
+							if (!li || !li.closest('html').length) {
+								li = null;
+							}
+
 							if (info.error) {
 								if (info.error_code == 'not_empty') {
 									DeskPRO_Window.showAlert('The category is not empty. You cannot delete categories that contain articles or other categories.');
 								}
 
-								li.stop().show();
+								if (li) {
+									li.show();
+								}
 								self.reload();
 								return;
 							}
 
-							li.remove();
+							if (li) {
+								li.remove();
+							}
 							updateNewOverlay();
 						}
 					});
