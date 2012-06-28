@@ -806,6 +806,23 @@ nav#dp_content_tabs label {
 	padding: 10px;
 }
 
+#dp .dp-sidebar-block.dp-userinfo ul {
+	list-style-type: none;
+	margin-left: 8px;
+}
+
+#dp .dp-sidebar-block.dp-userinfo ul li i {
+	{{ _self.opacity(0.3) }}
+}
+
+#dp .dp-sidebar-block.dp-userinfo ul li:hover i {
+{{ _self.opacity(1) }}
+}
+
+#dp .dp-sidebar-block.dp-userinfo ul li {
+	margin: 3px 0;
+}
+
 /***********************************************************************************************************************
 * Content
 * These styles are general styling applied to pages in DeskPRO
