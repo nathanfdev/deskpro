@@ -13,6 +13,10 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
 	},
 
+	reload: function() {
+		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
+	},
+
 	_initSection: function(data) {
 
 		this.setHasInitialLoaded();

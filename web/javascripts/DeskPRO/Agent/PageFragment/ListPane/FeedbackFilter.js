@@ -65,7 +65,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 				var menuEl = itemEl.parent();
 				var menuType = menuEl.data('menu-type');
 
-				var postData = self.selectionBar.getCheckedFormValues('ids');
+				var postData = self.selectionBar.getCheckedFormValues('ids[]');
 				var removeFromList = false;
 				var action = '';
 
@@ -135,6 +135,9 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 						}
 
 						self.selectionBar.checkNone();
+
+						DeskPRO_Window.runPageRoute('listpane:' + self.meta.routeUrl);
+						DeskPRO_Window.sections.feedback_section.reload();
 					}
 				});
 			}
