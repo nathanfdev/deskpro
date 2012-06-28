@@ -91,7 +91,7 @@ if ($has_failed) {
 
 if ($bad_size) {
 	echo "The following files are susceptible to the magic 4096 bug (https://bugs.php.net/bug.php?id=60998):\n";
-	echo "- " . implode("\n- ", $has_failed);
+	echo "- " . implode("\n- ", $bad_size);
 	echo "\n";
 	exit(1);
 }
