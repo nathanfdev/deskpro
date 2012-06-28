@@ -169,7 +169,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				var doXfer = function() {
 					this.isWaiting = false;
 					DeskPRO_Window.runPageRoute(self.options.tabRoute);
-					self.close();
+					self.close(true);
 				};
 
 				if (self.hasFormsChanged()) {
