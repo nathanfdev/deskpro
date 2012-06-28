@@ -102,6 +102,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			url: this.options.pageUrl,
 			type: 'GET',
 			context: this,
+			cache: false,
 			complete: function() {
 				this.loadingAjax = null;
 				delete this.loadingAjax;
