@@ -93,7 +93,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			$this->saveMappedId('ideas_cat_active', $type, $s->id);
 		}
 
-		foreach (array('completed' => 'Completed', 'duplidate' => 'Duplicate', 'exists' => 'Already Exists', 'declined' => 'Declined') as $type => $t) {
+		foreach (array('completed' => 'Completed', 'duplidate' => 'Duplicate', 'declined' => 'Declined') as $type => $t) {
 			$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 			$s->status_type = 'closed';
 			$s->title = $t;
