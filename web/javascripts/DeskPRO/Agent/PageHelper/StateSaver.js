@@ -157,6 +157,27 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 		});
 	},
 
+	resetState: function() {
+		var data = [];
+		data.push({
+			name: 'prefs[agent.ui.state.'+this.options.stateId+']',
+			value: ''
+		});
+		data.push({
+			name: 'prefs_expire[agent.ui.state.'+this.options.stateId+']',
+			value: ''
+		});
+
+		window.setTimeout(function() {
+			$.ajax({
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
+				type: 'POST',
+				data: data,
+				context: this
+			});
+		}, 150);
+	},
+
 	destroy: function() {
 		if (this.ajax) {
 			this.ajax.abort();

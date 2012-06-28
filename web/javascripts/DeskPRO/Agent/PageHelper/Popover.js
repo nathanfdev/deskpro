@@ -33,7 +33,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			/**
 			 * Destroy the popover when it closes?
 			 */
-			destroyOnClose: false,
+			destroyOnClose: true,
 
 			overFrom: '#dp_content',
 
@@ -73,6 +73,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.options.loadTimeout) {
 			this.autoloadTimeout = window.setTimeout(this._loadPage.bind(this), this.options.loadTimeout);
 		}
+
+		this.formString = '';
 	},
 
 	_loadPage: function() {
@@ -160,13 +162,26 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.options.tabRoute) {
 			$('.move-to-tab:first', this.popoverOuter).on('click', (function(ev) {
+
 				ev.preventDefault();
 				ev.stopPropagation();
 
-				this.isWaiting = false;
+				var doXfer = function() {
+					this.isWaiting = false;
+					DeskPRO_Window.runPageRoute(self.options.tabRoute);
+					self.close();
+				};
 
-				DeskPRO_Window.runPageRoute(this.options.tabRoute);
-				this.close();
+				if (self.hasFormsChanged()) {
+					DeskPRO_Window.showConfirm(
+						'This will re-load a new form in the tabbed area to the right. You will lose all unsaved changes. Do you want to continue?',
+						function() {
+							doXfer();
+						}
+					);
+				} else {
+					doXfer();
+				}
 			}).bind(this));
 		} else {
 			$('.move-to-tab:first', this.popoverOuter).remove();
@@ -181,6 +196,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	_initFragment: function() {
 		if (this.page) return;
 		if (!this.pageSource) return;
+
+		var self = this;
 
 		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
 		this.page.addEvent('updateUi', this.updatePositions.bind(this));
@@ -202,7 +219,28 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			foot.detach().appendTo($('> section', this.popoverOuter));
 		}
 
+		window.setTimeout(function() {
+			var data = self.popover.find('input, select, textarea').serializeArray();
+			self.formString = JSON.stringify(data);
+		}, 800);
+
 		this.updatePositions();
+	},
+
+	hasFormsChanged: function(no_resave) {
+		var data = this.popover.find('input, select, textarea').serializeArray();
+		var newFormString = JSON.stringify(data);
+		var ret = false;
+
+		if (this.formString != newFormString) {
+			ret = true;
+		}
+
+		if (!no_resave) {
+			this.formString = newFormString;
+		}
+
+		return ret;
 	},
 
 	updatePositions: function() {
@@ -359,9 +397,14 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.popoverOuter.hide();
 
+		if (this.page && this.page.stateSaver) {
+			this.page.stateSaver.resetState();
+		}
+
 		if (this.options.destroyOnClose) {
-			this.page.fireEvent('deactivate');
-			this.destroy();
+			if (this.page) {
+				this.page.closeSelf();
+			}
 		} else {
 			if (this.page) {
 				this.page.fireEvent('deactivate');

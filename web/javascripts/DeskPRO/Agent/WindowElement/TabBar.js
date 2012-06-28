@@ -185,7 +185,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		// The tab content
 		data.wrapperId = 'tabcontent_' + id;
-		data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + page.getHtml() + '</div>').appendTo(this.bodyPane);
+
+		if (page.meta.existingWrapper) {
+			data.wrapper = page.meta.existingWrapper;
+			data.wrapper.attr('id', data.wrapperId);
+			data.wrapper.attr('class', 'tabViewDetailContent test');
+			data.wrapper.css('display', 'none');
+			data.wrapper.appendTo(this.bodyPane);
+		} else {
+			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + page.getHtml() + '</div>').appendTo(this.bodyPane);
+		}
 
 		//----------
 		// Render tab button
