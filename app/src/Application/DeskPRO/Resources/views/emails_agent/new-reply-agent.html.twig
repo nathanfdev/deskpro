@@ -12,9 +12,9 @@
 {{ phrase('agent.emails.reply_above_line') }}
 <br /><br />
 
-{% if is_new_agent_reply %}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
-{% elseif is_new_user_reply %}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
-{% endif %}
+{%- if is_new_agent_reply -%}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
+{%- elseif is_new_user_reply -%}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
+{%- endif -%} : <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
 <br /><br />
 
 {{ layout.section('', content) }}
