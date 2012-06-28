@@ -1,13 +1,7 @@
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
 		<td width="130">{{ phrase('agent.general.id') }}</td>
-		<td>
-			{{ ticket.id }}
-			&nbsp;&middot;&nbsp;
-			View Online: <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">
-				{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}
-			</a>
-		</td>
+		<td>{{ ticket.id }}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.general.department') }}</td>

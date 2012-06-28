@@ -6,7 +6,10 @@
 {{ phrase('agent.emails.reply_above_line') }}
 <br /><br />
 
-{% set content %}{{ phrase('agent.emails.ticket_was_created') }}<br /><br />{% endset %}
+{% set content %}{{ phrase('agent.emails.ticket_was_created') }} : <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
+
+<br /><br />{% endset %}
+
 {{ layout.section('', content) }}
 
 {% set content %}
