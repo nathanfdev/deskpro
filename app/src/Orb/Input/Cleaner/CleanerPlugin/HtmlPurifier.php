@@ -70,19 +70,6 @@ class HtmlPurifier implements CleanerPlugin
 		$purifier = new \HTMLPurifier();
 		$config = $this->getConfigForType($type);
 
-		if ($type == 'html_email') {
-			if (($pos = strpos($value, '<body')) !== false) {
-				$value = substr($value, $pos);
-				if (($pos = strpos($value, '>')) !== false) {
-					$value = substr($value, $pos+1);
-				}
-			}
-
-			if (($pos = strpos($value, '</body>')) !== false) {
-				$value = substr($value, 0, $pos);
-			}
-		}
-
 		$value = $purifier->purify($value, $config);
 		$value = Strings::trimHtml($value);
 

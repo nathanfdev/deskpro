@@ -289,6 +289,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// Get rid of our cut line
 		$body_full = str_replace('_______________________.', '', $body_full);
+		if ($email_info['body_is_html']) {
+			$body_full = $this->cleaner->clean($body_full, 'html_email');
+		}
 
 		$has_cut = false;
 
@@ -315,12 +318,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($email_info['body_is_html']) {
-			// Send through cleaner again to fix html problems from cutting
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
-			$body_full = $this->cleaner->clean($body_full, 'html_email');
+			$email_info['body'] = $this->trimHtmlWhitespace($email_info['body']);
+			$body_full = $this->trimHtmlWhitespace($body_full);
 		}
-
-		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
@@ -408,6 +408,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
 
 		return $message;
+	}
+
+	public function trimHtmlWhitespace($html)
+	{
+		return \Orb\Util\Strings::trimHtmlAdvanced($html);
 	}
 
 	public function handleCc($ticket, array $ccs)

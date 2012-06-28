@@ -1075,13 +1075,6 @@ class Strings
 		do {
 			$old_string = $string;
 
-			// Try to unwrap useless divs
-			$m1 = $m2 = null;
-			if (preg_match('#^<div\s*>#', $string, $m1) && preg_match('#</div>$#', $string, $m2)) {
-				$string = substr($string, strlen($m1[0]), -strlen($m2[0]));
-				$string = trim($string);
-			}
-
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#imu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#imu', '', $string);
 
@@ -1092,6 +1085,96 @@ class Strings
 		} while ($string != $old_string);
 
 		return $string;
+	}
+
+
+	/**
+	 * More advanced version of trimHtml is able to better detect empty elements to trim them out,
+	 * and replaces empty divs or ps with simple newlines.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function trimHtmlAdvanced($html)
+	{
+		$qp = \QueryPath::withHTML($html, 'body');
+		$qp->top()->find('span');
+		foreach ($qp as $span) {
+			$text = $span->text();
+			$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
+			$text = trim($text);
+
+			if (!$text) {
+				$span->remove();
+			} else {
+				// If its not got attributes, then having a span is useless anyway
+				if (!$span->get(0)->attributes->length) {
+					$span->unwrap();
+				}
+			}
+		}
+
+		$qp->top()->find('p');
+		foreach ($qp as $p) {
+			$text = $p->text();
+			$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
+			$text = trim($text);
+
+			if (!$text) {
+				$p->replaceWith('<br />');
+			}
+		}
+
+		// Unwrap divs
+		do {
+			$changed = false;
+			$qp->top()->find('div');
+			foreach ($qp as $div) {
+				if (!trim($div->text())) {
+					$changed = true;
+					$children = $div->branch();
+					$children->children();
+					foreach ($children as $child) {
+						$div->before($child);
+					}
+					$div->remove();
+				}
+			}
+		} while ($changed);
+
+		ob_start();
+		$qp->writeXHTML();
+		$html = ob_get_clean();
+
+		// Unwrap outer div
+		do {
+			$qp = \QueryPath::withHTML($html);
+			$changed = false;
+
+			$div = $qp->top()->find('body > *');
+			if ($div->length == 1 && $div->tag() == 'div') {
+				$changed = true;
+				$html = $div->html();
+
+				$html = trim($html);
+				$html = preg_replace('#^<div.*?>#', '', $html);
+				$html = preg_replace('#</div>$#', '', $html);
+			}
+		} while($changed);
+
+		$html = str_replace('<br></br>', '<br />', $html);
+
+		$html = \Orb\Util\Strings::trimHtml($html);
+
+		$pos = strpos($html, '<body>');
+		$html = substr($html, $pos+6);
+
+		$pos = strpos($html, '</body>');
+		$html = substr($html, 0, $pos);
+
+		$html = self::trimHtml($html);
+
+		return $html;
 	}
 
 

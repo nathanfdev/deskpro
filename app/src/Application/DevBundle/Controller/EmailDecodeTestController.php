@@ -92,6 +92,7 @@ class EmailDecodeTestController extends \Application\DeskPRO\HttpKernel\Controll
 		$body_clean = $body;
 		if ($body_is_html) {
 			$body_clean = $this->container->getIn()->getCleaner()->clean($body, 'html_email');
+			$body_clean = $this->trimHtmlWhitespace($body_clean);
 		}
 
 		$cutter_type = $_REQUEST['cutter_type'];
@@ -125,5 +126,12 @@ class EmailDecodeTestController extends \Application\DeskPRO\HttpKernel\Controll
 			'reader'       => $reader,
 			'body_is_html' => $body_is_html
 		));
+	}
+
+	public function trimHtmlWhitespace($html)
+	{
+		return \Orb\Util\Strings::trimHtmlAdvanced($html);
+
+		return $html;
 	}
 }
