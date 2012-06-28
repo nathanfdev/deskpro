@@ -295,7 +295,7 @@ class CategoryEdit
 		}
 
 		$counts = $repos->getAllCounts(App::getCurrentPerson(), null);
-		if (isset($counts[$cat['id']]) && $counts[$cat['id']]) {
+		if ($cat->children || isset($counts[$cat['id']]) && $counts[$cat['id']]) {
 			throw new \OutOfBoundsException("Category is not empty");
 		}
 
