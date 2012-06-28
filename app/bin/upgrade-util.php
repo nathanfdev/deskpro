@@ -785,7 +785,7 @@ class Upgrade
 
 		$this->sendLog();
 
-		$this->clearApc();
+		$this->postUpgrade();
 
 		exit(0);
 	}
@@ -1042,7 +1042,7 @@ class Upgrade
 		return dp_get_php_path();
 	}
 
-	public function clearApc()
+	public function postUpgrade()
 	{
 		if (function_exists('apc_clear_cache')) {
 			apc_clear_cache();
@@ -1052,6 +1052,13 @@ class Upgrade
 			// by touching this trigger file that the web kernel uses
 			@touch(dp_get_tmp_dir() . '/apc-clear.trigger');
 			@chmod(dp_get_tmp_dir() . '/apc-clear.trigger', 0777);
+		}
+
+		foreach (array('error.log', 'cli-phperr.log', 'server-phperr-cli.log', 'server-phperr-web.log') as $f) {
+			$path = dp_get_log_dir() . '/' . $f;
+			if (file_exists($path)) {
+				@file_put_contents('', $path);
+			}
 		}
 	}
 
@@ -2265,7 +2272,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 		$this->out('');
 
-		$this->upgrade->clearApc();
+		$this->upgrade->postUpgrade();
 
 		$this->upgrade->sendLog();
 	}
@@ -2384,7 +2391,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 		$this->out('');
 
-		$this->upgrade->clearApc();
+		$this->upgrade->postUpgrade();
 
 		$this->upgrade->sendLog();
 	}
