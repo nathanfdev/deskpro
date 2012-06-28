@@ -13,7 +13,6 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
 		if (!this.getEl('cat').find('option')[0]) {
@@ -69,7 +68,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
-		this.wrapper.parent().addClass('loading');
+		this.wrapper.addClass('loading');
 
 		$.ajax({
 			url: BASE_URL + 'agent/news/new/save',
@@ -78,7 +77,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.parent().removeClass('loading');
+				this.wrapper.removeClass('loading');
 			},
 			success: function(data) {
 				if (data.error) {
