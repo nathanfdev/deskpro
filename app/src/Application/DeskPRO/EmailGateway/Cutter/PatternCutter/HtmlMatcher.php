@@ -99,9 +99,18 @@ class HtmlMatcher
 
 		$first_token = array_shift($tokens);
 		$roots = array();
-		$this->getQpBranch()->find($first_token[1])->each(function($i, $m) use (&$roots) {
-			$roots[] = \QueryPath::with($m);
-		});
+
+		try {
+			$this->getQpBranch()->find($first_token[1])->each(function($i, $m) use (&$roots) {
+				$roots[] = \QueryPath::with($m);
+			});
+		} catch (\QueryPath\Exception $e) {
+			// This can happen if the document has no tags
+			// (eg they were all stripped out, it was plaintext without a root etc)
+			// -> So obviously it's a no match if there are no tags to parse
+			return null;
+		}
+
 
 		foreach ($roots as $id => $root) {
 			$use_tokens = $tokens;
