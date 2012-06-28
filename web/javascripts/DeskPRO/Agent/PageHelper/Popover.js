@@ -405,10 +405,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.popoverOuter.hide();
 
-		if (this.page && this.page.stateSaver) {
-			this.page.stateSaver.resetState();
-		}
-
 		if (this.options.destroyOnClose && this.hasFormsChanged()) {
 			if (this.page) {
 				this.page.closeSelf();
