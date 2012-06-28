@@ -127,7 +127,7 @@ class CategoryHierarchy
 			return array();
 		}
 
-		return $this->repos->getByIds($root_ids);
+		return $this->repos->getByIds($root_ids, true);
 	}
 
 
@@ -341,7 +341,7 @@ class CategoryHierarchy
 			return array();
 		}
 
-		return $this->repos->getByIds($ids);
+		return $this->repos->getByIds($ids, true);
 	}
 
 
@@ -408,8 +408,7 @@ class CategoryHierarchy
 		if (!$ids) {
 			return array();
 		}
-
-		return $this->repos->getByIds($ids);
+		return $this->repos->getByIds($ids, true);
 	}
 
 	/**

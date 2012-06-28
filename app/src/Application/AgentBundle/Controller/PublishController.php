@@ -74,14 +74,17 @@ class PublishController extends AbstractController
 		#------------------------------
 
 		$kb_cats              = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
+		$kb_repo              = $this->em->getRepository('DeskPRO:ArticleCategory');
 		$kb_cats_counts       = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 		$kb_cats_usergroups   = $this->publish_helper->getCategoryUsergroups(PublishHelper::ARTICLES);
 
 		$news_cats            = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
+		$news_repo            = $this->em->getRepository('DeskPRO:NewsCategory');
 		$news_cats_counts     = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 		$news_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::NEWS);
 
 		$download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
+		$download_repo        = $this->em->getRepository('DeskPRO:DownloadCategory');
 		$download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 		$download_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::DOWNLOADS);
 
@@ -102,14 +105,17 @@ class PublishController extends AbstractController
 			'counts'                => $counts,
 
 			'kb_cats'               => $kb_cats,
+			'kb_repo'               => $kb_repo,
 			'kb_cats_counts'        => $kb_cats_counts,
 			'kb_cats_usergroups'    => $kb_cats_usergroups,
 
 			'news_cats'             => $news_cats,
+			'news_repo'             => $news_repo,
 			'news_cats_counts'      => $news_cats_counts,
 			'news_cats_usergroups'  => $news_cats_usergroups,
 
 			'download_cats'         => $download_cats,
+			'download_repo'         => $download_repo,
 			'download_cats_counts'  => $download_cats_counts,
 			'download_cats_usergroups' => $download_cats_usergroups,
 

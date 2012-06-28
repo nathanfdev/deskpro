@@ -15,8 +15,8 @@
 			<em class="spacer">&nbsp;</em>
 		</span>
 		<ul class="sub-group">
-		{% if cat.children|length %}
-			{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': cat.children, 'counts': counts, 'depth': depth+1 } %}
+		{% if news_repo.getChildren(cat)|length %}
+			{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_repo.getChildren(cat), 'counts': counts, 'depth': depth+1 } %}
 		{% endif %}
 		</ul>
 	</li>
