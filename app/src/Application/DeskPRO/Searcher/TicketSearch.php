@@ -595,6 +595,8 @@ class TicketSearch extends SearcherAbstract
 			$dir = self::ORDER_DESC;
 		}
 
+		$r_dir = $dir == self::ORDER_ASC ? 'DESC' : 'ASC';
+
 		$term_id = null;
 		$m = null;
 		if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
@@ -609,7 +611,7 @@ class TicketSearch extends SearcherAbstract
 		switch ($type) {
 			case 'ticket.urgency':
 				if($this->needsUrgency()) {
-					$order_by = "ORDER BY status = 'awaiting_agent' $dir, tickets.urgency $dir, tickets.id $dir";
+					$order_by = "ORDER BY status = 'awaiting_agent' $dir, tickets.urgency $dir, tickets.date_user_waiting $r_dir";
 				}
 				else {
 					$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
