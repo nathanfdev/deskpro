@@ -199,7 +199,9 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 				});
 
 				ed.onKeyPress.add(function() {
-					self.stateSaver.triggerChange();
+					if (self.stateSaver) {
+						self.stateSaver.triggerChange();
+					}
 				});
 			}
 		});
@@ -222,7 +224,9 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 						fieldName: 'newdownload[labels]',
 						input: $(".tags-wrap input", eventData.tabContent),
 						onChange: function() {
-							self.stateSaver.triggerChange();
+							if (self.stateSaver) {
+								self.stateSaver.triggerChange();
+							}
 						}
 					});
 					self.ownObject(self.labelsInput);

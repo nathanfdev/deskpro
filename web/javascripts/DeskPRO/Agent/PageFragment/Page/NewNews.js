@@ -167,7 +167,9 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 					self.getEl('content_section').addClass('done');
 				});
 				ed.onKeyPress.add(function() {
-					self.stateSaver.triggerChange();
+					if (self.stateSaver) {
+						self.stateSaver.triggerChange();
+					}
 				});
 			}
 		});
@@ -190,7 +192,9 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 						fieldName: 'newnews[labels]',
 						input: $(".tags-wrap input", eventData.tabContent),
 						onChange: function() {
-							self.stateSaver.triggerChange();
+							if (self.stateSaver) {
+								self.stateSaver.triggerChange();
+							}
 						}
 					});
 					self.ownObject(self.labelsInput);
