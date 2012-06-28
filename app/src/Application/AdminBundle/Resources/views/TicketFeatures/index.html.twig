@@ -52,19 +52,28 @@
 		<div class="field_row">
 			<label><input id="ref_options_toggle" type="checkbox" name="settings[core.tickets.use_ref]" {% if app.getSetting('core.tickets.use_ref') %}checked="checked"{% endif %} />
 			Use ref codes
+			</label>
 
 			<div id="ref_options" {% if not app.getSetting('core.tickets.use_ref') %}style="display: none"{% endif %}>
 				<div style="padding-top: 5px; padding-bottom: 5px;">
-					<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 85%; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+					<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 350px; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+					and append <select name="settings[core.ref_append_counter]">
+						{% for i in [0,1,2,3,4,5,6,7,8] %}
+							<option value="{{ i }}" {% if i == app.getSetting('core.ref_append_counter') %}selected="selected"{% endif %}>
+								{% if i == 1 %}1 Digit
+								{% else %}{{ i }} Digits{% endif %}
+							</option>
+						{% endfor %}
+					</select>
+					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This will append a counter to the end of your pattern. For example, if you based it on the year, you might choose 5 digits and get refs like 2012-00001 and 2012-00002, counting upwards.<br /><br />If your pattern has a low number of possibilities, then it is highly recommended to use a counter to avoid collisions."></span>
 				</div>
 
-				<p>The pattern consists of tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
+				<p>Your pattern can use tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
 
 				<ul class="token-list inline">
 					<li><em>&lt;A&gt;</em> - A random letter</li>
 					<li><em>&lt;#&gt;</em> - A random number</li>
 					<li><em>&lt;?&gt;</em> - A random letter or number</li>
-					<li><em>&lt;+&gt;</em> - An incrementing number from 1</li>
 					<li><em>&lt;YEAR&gt;</em> - Year as a four-digit number ({{ 'now'|date('Y') }})</li>
 					<li><em>&lt;MONTH&gt;</em> - Month as a two-digit number ({{ 'now'|date('m') }})</li>
 					<li><em>&lt;DAY&gt;</em> - Day as a two-digit number ({{ 'now'|date('d') }})</li>
@@ -76,7 +85,7 @@
 				<br />
 				<p>Here are some examples:</p>
 				<ul class="token-list">
-					<li><em>{{ '<YEAR>-<MONTH>-<+><+><+>'|e }}</em> creates <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-001</em></li>
+					<li><em>{{ '<YEAR>-<MONTH>'|e }}- and 3 digits</em> creates <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-001</em>, then <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-002</em></li>
 					<li><em>{{ '<?><?><?><?><?><?>'|e }}</em> creates <em>{{ rand() ~ rand() ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>
 					<li><em>{{ '<YEAR>-<A><A><?><?><?>'|e }}</em> creates <em>{{ 'now'|date('Y') ~ '-AB' ~ rand() ~ rand() }}</em></li>
 					<li><em>{{ 'TICKET-<A><A><?><?><?><?><?>'|e }}</em> creates <em>{{ 'TICKET' ~ '-AB' ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>

@@ -50,7 +50,6 @@ class CustomRef implements RefGeneratorInterface
 		'HOUR'       => true,
 		'MIN'        => true,
 		'SEC'        => true,
-		'+'          => true,
 	);
 
 	/**
@@ -71,7 +70,14 @@ class CustomRef implements RefGeneratorInterface
 	/**
 	 * @var int
 	 */
-	protected $max_tries = 1000;
+	protected $max_tries = 100;
+
+	/**
+	 * How many digits to append to the end
+	 *
+	 * @var int
+	 */
+	protected $append_count = 0;
 
 	/**
 	 * $format_string shold encase keywords in brakcets. For example:
@@ -80,10 +86,11 @@ class CustomRef implements RefGeneratorInterface
 	 * @param EntityManager $em
 	 * @param $format_string
 	 */
-	public function __construct(\Doctrine\ORM\EntityManager $em, $format_string)
+	public function __construct(\Doctrine\ORM\EntityManager $em, $format_string, $append_count = 0)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
+		$this->append_count = $append_count;
 
 		#------------------------------
 		# Parses format string into array(token, repeated)
@@ -143,14 +150,46 @@ class CustomRef implements RefGeneratorInterface
 		$stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
 
 		$attempt = 0;
+		$append_count = 0;
+
+		// Get the last count used for this series of pattern,
+		// Ex: Queries db for '2012-06-%' and we extract the trailing
+		// nums to get the last number used, and the inc
+		if ($this->append_count) {
+			$ref_check = $this->generateRefString(null);
+			$last = $this->db->fetchColumn("
+				SELECT `$field` AS ref
+				FROM `$table`
+				WHERE `$field` LIKE ?
+				ORDER BY id DESC
+				LIMIT 1
+			", array("$ref_check%"));
+
+			$m = null;
+			if ($this->isRefMatch($last, $m)) {
+				$append_count = (int)$m['count'];
+			}
+
+
+			if (!$append_count) {
+				$append_count = 0;
+			}
+		}
+
 		do {
 			$attempt++;
+			$append_count++;
 
 			if ($attempt > $this->max_tries) {
 				throw new \Exception("Cannot find unique ref after $attempt attempts. Aborting.");
 			}
 
-			$ref = $this->generateRefString($attempt);
+			if ($attempt > $this->max_tries-5) {
+				// Last five allowed attempts, fallback to trying random nums at the end
+				$ref = $this->generateRefString($append_count . mt_rand(1000,9999));
+			} else {
+				$ref = $this->generateRefString($append_count);
+			}
 
 			$stmt->execute(array($ref));
 			$count = $stmt->fetchColumn();
@@ -185,10 +224,6 @@ class CustomRef implements RefGeneratorInterface
 					$ref[] = Strings::random($length, Strings::CHARS_ALPHANUM_IU);
 					break;
 
-				case '+':
-					$ref[] = sprintf("%0{$length}d", $count);
-					break;
-
 				case 'YEAR':
 					$ref[] = date('Y');
 					break;
@@ -219,6 +254,11 @@ class CustomRef implements RefGeneratorInterface
 			}
 		}
 
+		if ($count) {
+			$length = $this->append_count;
+			$ref[] = sprintf("%0{$length}d", $count);
+		}
+
 		return implode('', $ref);
 	}
 
@@ -240,10 +280,6 @@ class CustomRef implements RefGeneratorInterface
 
 				case '?':
 					$regex[] = "([0-9A-Z]\{$length\})";
-					break;
-
-				case '+':
-					$regex[] = "([0-9]\{$length,\})";
 					break;
 
 				case 'YEAR':
@@ -271,9 +307,13 @@ class CustomRef implements RefGeneratorInterface
 					break;
 
 				default:
-					$regex[] = "(" . preg_quote('#', str_repeat($type, $length)) . ")";
+					$regex[] = "(" . preg_quote(str_repeat($type, $length), '#') . ")";
 					break;
 			}
+		}
+
+		if ($this->append_count) {
+			$regex[] = '(?P<count>[0-9]+)';
 		}
 
 		$regex[] = ')';
@@ -289,9 +329,9 @@ class CustomRef implements RefGeneratorInterface
 	 * @param string $ref
 	 * @return bool
 	 */
-	public function isRefMatch($ref)
+	public function isRefMatch($ref, &$m = null)
 	{
-		return preg_match('#^'.$this->getRegexString().'#', $ref);
+		return preg_match('#^'.$this->getRegexString().'$#', $ref, $m);
 	}
 
 	/**
