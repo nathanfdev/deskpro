@@ -299,6 +299,18 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			downloadTemplate: $('.template-download', this.replyBox)
 		});
 
+		var sels = this.wrapper.find('select.dpe_select');
+
+		window.setTimeout(function() {
+			sels.each(function() {
+				DP.select($(this));
+			});
+		}, 150);
+
+		sels.on('change', function() {
+			self.updatePreview();
+		});
+
 		this.wrapper.bind('fileuploaddone', function() {
 			self.getElById('attach_row').fadeIn();
 		});
@@ -329,15 +341,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			this.assignOptionBox.destroy();
 		}
 
-		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-			element: this.getElById('agent_selector'),
-			trigger: $('li', this.getElById('assign_btn')),
-			onSave: function(ob) {
-				self.updateAssignmentsDisplay();
-				self.updatePreview();
-			}
-		});
-
 		var add = $('.other-properties-wrapper', this.wrapper);
 
 		// Remove all the stuff we have layed out in a different way
@@ -366,62 +369,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 	},
 
 	updateAssignmentsDisplay: function() {
-		var self = this;
-		var noneRow = $('li.no-changes', this.wrapper);
-		var agentRow = $('li.assign-agent', this.wrapper);
-		var teamRow = $('li.assign-team', this.wrapper);
-		var followersRow = $('li.add-followers', this.wrapper);
-		var ob = this.assignOptionBox;
-		var selections = ob.getAllSelected();
 
-		var agent_id = parseInt(selections.agents || -1);
-		var agent_team_id = parseInt(selections.teams || -1);
-
-		if (agent_id != -1) {
-			var input = $('<input type="hidden" name="actions[agent]" />').val(agent_id);
-			var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
-			$('.label', agentRow).empty().text(label).append(input);
-			agentRow.show();
-		} else {
-			$('.label', agentRow).empty();
-			agentRow.hide();
-		}
-
-		if (agent_team_id != -1) {
-			var input = $('<input type="hidden" name="actions[agent_team]" />').val(agent_team_id);
-			var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
-			$('.label', teamRow).empty().text(label).append(input);
-			teamRow.show();
-		} else {
-			$('.label', teamRow).empty();
-			teamRow.hide();
-		}
-
-		// Followers
-		var follower_names = [];
-		var follower_inputs = [];
-
-		var rowLabel = $('.label', followersRow).empty();
-		Array.each(selections.followers, function(part_id) {
-			var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
-			follower_names.push(label);
-
-			var i = $('<input type="hidden" name="actions[add_participants][]" value="'+part_id+'" />');
-			follower_inputs.push(i.get(0));
-		});
-		if (follower_names.length) {
-			$('.label', followersRow).empty().text(follower_names.join(', ')).append($(follower_inputs));
-			followersRow.show();
-		} else {
-			$('.label', followersRow).empty()
-			followersRow.hide();
-		}
-
-		if (agentRow.is(':visible') || teamRow.is(':visible') || followersRow.is(':visible')) {
-			noneRow.hide();
-		} else {
-			noneRow.show();
-		}
 	},
 
 	getElById: function(id) {
@@ -454,7 +402,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
 
-			var val = $(this).val().trim(), name = $(this).attr('name');
+			var val = ($(this).val() || '').trim(), name = $(this).attr('name');
 
 			if ($(this).is(':radio, :checkbox')) {
 				if (!$(this).is(':checked')) {

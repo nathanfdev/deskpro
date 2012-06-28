@@ -58,12 +58,40 @@
 
 				<dt>{{ phrase('agent.general.assignments') }}</dt>
 				<dd class="assignments">
-					<ul id="{{baseId}}_assign_btn">
-						<li class="no-changes"><em>{{ phrase('agent.general.set_assignments') }}</em></li>
-						<li style="display:none" class="assign-agent"><em>{{ phrase('agent.general.assign_agent') }}</em>: <span class="label"></span></li>
-						{% if app.getSetting('core.use_agent_team') %}<li style="display:none" class="assign-team"><em>{{ phrase('agent.general.assign_agent') }}</em>: <span class="label"></span></li>{% endif %}
-						<li style="display:none" class="add-followers"><em>{{ phrase('agent.general.add_followers') }}</em>: <span class="label"></span></li>
-					</ul>
+					<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22" data-placeholder="Agent">
+						<option value="0">Unassigned</option>
+						<option data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+
+						{% for agent in agents %}
+						{% if agent.id != app.user.id %}
+							<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+					<select name="actions[agent_team]" class="dpe_select" data-select-nogrouptitle="1" data-placeholder="Team">
+						<option value="0">No Team</option>
+
+						{% if app.user.getAgent().getTeams()|length %}
+						<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+							{% for team in app.user.getAgent().getTeams() %}
+							<option value="{{ team.id }}">{{ team.name }}</option>
+							{% endfor %}
+						</optgroup>
+						{% endif %}
+
+						{% for team in agent_teams %}
+						<option value="{{ team.id }}">{{ team.name }}</option>
+						{% endfor %}
+					</select>
+
+					<select name="actions[add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add followers">
+						<option data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+						{% for agent in agents %}
+						{% if agent.id != app.user.id %}
+							<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
 				</dd>
 
 				<dt>{{ phrase('agent.general.change_property') }}</dt>
