@@ -219,8 +219,6 @@ class CategoryHierarchy
 		$this->_cat_hierarchy = $cats;
 		$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
 
-		error_log(print_r($this->_cat_hierarchy,1));
-
 		return $this->_cat_hierarchy;
 	}
 
