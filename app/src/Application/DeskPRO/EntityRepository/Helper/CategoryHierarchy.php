@@ -163,9 +163,16 @@ class CategoryHierarchy
 					$select_keys = array('id', 'parent_id', 'title', 'user_title', 'display_order');
 				}
 				foreach ($this->repos->getIdentityHelper()->findAll() as $c) {
-					$cats[$c['id']] = array();
+					$id = $c->getId();
+					$cats[$id] = array();
 					foreach ($select_keys as $k) {
-						$cats[$c['id']][$k] = $c[$k];
+						if ($k == 'id') {
+							$cats[$id]['id'] = $id;
+						} elseif ($k == 'parent_id') {
+							$cats[$id][$k] = $c->parent ? $c->parent->getId() : 0;
+						} else {
+							$cats[$id][$k] = $c[$k];
+						}
 					}
 				}
 
@@ -211,6 +218,8 @@ class CategoryHierarchy
 		$cats = Arrays::intoHierarchy($cats, null);
 		$this->_cat_hierarchy = $cats;
 		$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
+
+		error_log(print_r($this->_cat_hierarchy,1));
 
 		return $this->_cat_hierarchy;
 	}
