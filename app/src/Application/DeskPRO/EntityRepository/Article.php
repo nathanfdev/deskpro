@@ -212,7 +212,6 @@ class Article extends AbstractEntityRepository
 
 			$params = array();
 			$params['cat_ids'] = array_values($cat_ids);
-			$params['done_aids'] = array_values($done_articles);
 
 			$perm_where = '';
 			if ($person_context && !$person_context->is_agent) {
@@ -229,7 +228,6 @@ class Article extends AbstractEntityRepository
 				LEFT JOIN a.categories cat
 				WHERE
 					cat.id IN (:cat_ids)
-					AND a.id NOT IN (:done_aids)
 					AND a.status = 'published'
 					$perm_where
 				GROUP BY a.id
