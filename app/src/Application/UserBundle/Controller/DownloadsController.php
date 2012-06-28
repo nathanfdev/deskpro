@@ -210,6 +210,7 @@ class DownloadsController extends AbstractController
 			'comments' => $comments,
 
 			'download' => $download,
+			'category' => $category,
 			'category_path' => $category_path,
 
 			'related_content' => $related_content

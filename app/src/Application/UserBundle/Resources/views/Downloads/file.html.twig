@@ -16,15 +16,17 @@
 	{% for cat in category_path %}
 		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
 	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
 {% endblock %}
 {% block page_title %}
-	{{ download.title }} - {{ download.filename }}
+	{{ download.filename }}
 	-
 	{{ phrase('user.downloads.title') }}
 	{% for cat in category_path %}
 		/ {{cat.title}}
 	{% endfor %}
+	{{category.title}}
 {% endblock %}
 {% block content %}
 
