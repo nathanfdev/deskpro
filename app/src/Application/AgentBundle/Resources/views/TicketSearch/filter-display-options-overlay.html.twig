@@ -26,6 +26,7 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
+	{% if app.getSetting('core.tickets.use_ref') %}<li data-field="ref"><label><input type="checkbox" name="ref" {% if 'ref' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.reference') }}</label></li>{% endif %}
 	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.subject') }}</label></li>
 	<li data-field="user" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="user" {% if not show_all or 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.user') }}</label></li>
 	<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.department') }}</label></li>

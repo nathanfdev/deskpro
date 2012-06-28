@@ -36,45 +36,52 @@
 			<label><input type="checkbox" name="settings[core.show_ticket_suggestions]" {% if app.getSetting('core.show_ticket_suggestions') %}checked="checked"{% endif %} />
 				Show article suggestions on new ticket form</label>
 		</div>
-		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.tickets.use_ref]" {% if app.getSetting('core.tickets.use_ref') %}checked="checked"{% endif %} />
-				Use ticket ref's instead of ID's in the user interface</label>
-		</div>
 	</div>
 </div>
 
 <div class="setting_field_row">
-	<h4>Reference Format</h4>
+	<h4>Ticket Refs</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			Each ticket is given a unique numeric ID as well as a unique reference code. The reference code is meant to be more readbale and user-friendly.
-			By default, ref codes look like <em>ABCD-1234-EFGH</em> but you can change this format by entering a new pattern below.
-			<div style="padding-top: 5px; padding-bottom: 5px;">
-				<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 85%; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+			<p>
+				Each ticket is given a unique numeric ID that identifies it. You may also add "ref codes" to
+				enable a reference string that your end-users will see instead of the ID. These ref codes are generally more readable
+				and user-friendly. By default, ref codes look like <em>ABCD-1234-EFGH</em> but you can customize it to include other tokens.
+			</p>
+		</div>
+		<div class="field_row">
+			<label><input id="ref_options_toggle" type="checkbox" name="settings[core.tickets.use_ref]" {% if app.getSetting('core.tickets.use_ref') %}checked="checked"{% endif %} />
+			Use ref codes
+
+			<div id="ref_options" {% if not app.getSetting('core.tickets.use_ref') %}style="display: none"{% endif %}>
+				<div style="padding-top: 5px; padding-bottom: 5px;">
+					<input type="text" name="settings[core.ref_pattern]" value="{{ app.getSetting('core.ref_pattern') }}" placeholder="{{ '<A><A><A><A>-<#><#><#><#>-<A><A><A><A>'|e }}" style="width: 85%; font-family: 'Monaco', 'Courier New', monospaced; color: #000;" />
+				</div>
+
+				<p>The pattern consists of tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
+
+				<ul class="token-list inline">
+					<li><em>&lt;A&gt;</em> - A random letter</li>
+					<li><em>&lt;#&gt;</em> - A random number</li>
+					<li><em>&lt;?&gt;</em> - A random letter or number</li>
+					<li><em>&lt;+&gt;</em> - An incrementing number from 1</li>
+					<li><em>&lt;YEAR&gt;</em> - Year as a four-digit number ({{ 'now'|date('Y') }})</li>
+					<li><em>&lt;MONTH&gt;</em> - Month as a two-digit number ({{ 'now'|date('m') }})</li>
+					<li><em>&lt;DAY&gt;</em> - Day as a two-digit number ({{ 'now'|date('d') }})</li>
+					<li><em>&lt;HOUR&gt;</em> - Hour in 24h time ({{ 'now'|date('H') }})</li>
+					<li><em>&lt;MIN&gt;</em> - Minute ({{ 'now'|date('i') }})</li>
+					<li><em>&lt;SEC&gt;</em> - Second ({{ 'now'|date('s') }})</li>
+				</ul>
+
+				<br />
+				<p>Here are some examples:</p>
+				<ul class="token-list">
+					<li><em>{{ '<YEAR>-<MONTH>-<+><+><+>'|e }}</em> creates <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-001</em></li>
+					<li><em>{{ '<?><?><?><?><?><?>'|e }}</em> creates <em>{{ rand() ~ rand() ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>
+					<li><em>{{ '<YEAR>-<A><A><?><?><?>'|e }}</em> creates <em>{{ 'now'|date('Y') ~ '-AB' ~ rand() ~ rand() }}</em></li>
+					<li><em>{{ 'TICKET-<A><A><?><?><?><?><?>'|e }}</em> creates <em>{{ 'TICKET' ~ '-AB' ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>
+				</ul>
 			</div>
-
-			<p>The pattern consists of tokens surrounded by &lt;brackets&gt;. Here are the available tokens:</p>
-
-			<ul class="token-list inline">
-				<li><em>&lt;A&gt;</em> - A random letter</li>
-				<li><em>&lt;#&gt;</em> - A random number</li>
-				<li><em>&lt;?&gt;</em> - A random letter or number</li>
-				<li><em>&lt;+&gt;</em> - An incrementing number from 1</li>
-				<li><em>&lt;YEAR&gt;</em> - Year as a four-digit number ({{ 'now'|date('Y') }})</li>
-				<li><em>&lt;MONTH&gt;</em> - Month as a two-digit number ({{ 'now'|date('m') }})</li>
-				<li><em>&lt;DAY&gt;</em> - Day as a two-digit number ({{ 'now'|date('d') }})</li>
-				<li><em>&lt;HOUR&gt;</em> - Hour in 24h time ({{ 'now'|date('H') }})</li>
-				<li><em>&lt;MIN&gt;</em> - Minute ({{ 'now'|date('i') }})</li>
-				<li><em>&lt;SEC&gt;</em> - Second ({{ 'now'|date('s') }})</li>
-			</ul>
-
-			<br />
-			<p>Here are some examples:</p>
-			<ul class="token-list">
-				<li><em>{{ '<YEAR>-<MONTH>-<+><+><+>'|e }}</em> creates <em>{{ 'now'|date('Y') }}-{{ 'now'|date('m') }}-001</em></li>
-				<li><em>{{ '<?><?><?><?><?><?>'|e }}</em> creates <em>{{ rand() ~ rand() ~ rand() ~ rand() ~ rand() ~ rand() }}</em></li>
-				<li><em>{{ '<YEAR>-<A><A><?><?><?>'|e }}</em> creates <em>{{ 'now'|date('Y') ~ '-AB' ~ rand() ~ rand() }}</em></li>
-			</ul>
 		</div>
 	</div>
 </div>
@@ -97,4 +104,15 @@
 
 </form>
 
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#ref_options_toggle').on('click', function() {
+		if ($(this).is(':checked')) {
+			$('#ref_options').slideDown();
+		} else {
+			$('#ref_options').slideUp();
+		}
+	});
+});
+</script>
 {% endblock %}

@@ -6,6 +6,7 @@
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
 			{% if field == 'subject' %}<th>{{ phrase('agent.general.subject') }}</th>
+			{% elseif field == 'ref' %}<th>{{ phrase('agent.general.reference') }}</th>
 			{% elseif field == 'user' %}<th>{{ phrase('agent.general.user') }}</th>
 			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">{{ phrase('agent.general.deleted_reason') }}</th>
 			{% elseif field == 'person_email' %}<th data-field="person">{{ phrase('agent.tickets.user_email') }}</th>

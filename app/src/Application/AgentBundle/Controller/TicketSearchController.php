@@ -752,6 +752,10 @@ class TicketSearchController extends AbstractController
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
 
+		if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
+			$vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
+		}
+
 		$vars = array_merge($vars, array(
 			'agents'             => $agents,
 			'agent_teams'        => $agent_teams,

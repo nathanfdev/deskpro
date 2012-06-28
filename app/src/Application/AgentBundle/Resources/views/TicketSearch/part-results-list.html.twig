@@ -22,6 +22,10 @@
 						{{ticket.person.getDisplayName()}}
 					</a>
 				</td>
+			{% elseif field == 'ref' %}
+				<td>
+					{{ ticket.ref }}
+				</td>
 			{% elseif field == 'date_created' %}
 				<td class="{{field}}">
 					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('day')}}</span>

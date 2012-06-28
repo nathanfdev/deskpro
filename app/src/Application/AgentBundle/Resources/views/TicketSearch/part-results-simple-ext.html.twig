@@ -62,6 +62,11 @@
 					{% endif %}
 					</span>
 				</li>
+			{% elseif field == 'ref' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.reference') }}:</span>
+					<span class="prop-val ref" data-prop-value="{{ticket.ref}}">{{ ticket.ref }}</span>
+				</li>
 			{% elseif field == 'category' and (ticket.category or changed_fields[ticket.id].category) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].category %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
