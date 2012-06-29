@@ -80,6 +80,17 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 	},
 
+	updateUi: function() {
+		if (this.sectionEl) {
+			this.sectionEl.find('.with-scroll-handler').each(function() {
+				var sh = $(this).data('scroll_handler');
+				if (sh && sh.updateSize) {
+					sh.updateSize();
+				}
+			});
+		}
+	},
+
 
 	/**
 	 * Sets the standard button element, and then you can use this.buttonEl thereafter.

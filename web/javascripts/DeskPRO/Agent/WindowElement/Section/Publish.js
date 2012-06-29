@@ -67,10 +67,14 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			var section = $(this).parent();
 			if (section.is('.open')) {
 				section.removeClass('open');
-				$('> article', section).slideUp('fast');
+				$('> article', section).slideUp('fast', function() {
+					self.updateUi();
+				});
 			} else {
 				section.addClass('open');
-				$('> article', section).slideDown('fast');
+				$('> article', section).slideDown('fast', function() {
+					self.updateUi();
+				});
 			}
 		});
 
@@ -125,8 +129,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		Array.each(types, function(type) {
 
 			var listEl = $('#publish_outline_'+type+'cat_list');
-
-			listEl.before('<div class="tree-restructure-loading-message"><h3>Saving Structure</h3></div>');
 			listEl.parent().css('position', 'relative');
 
 			var catTreeLoading = function(turn_on) {
@@ -211,6 +213,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 								// Reset tree checker
 								ed.pristineStructure = ed.getStructure();
+								self.updateUi();
 							}
 						});
 					}); //end timeout
@@ -242,6 +245,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						return;
 					}
 					var title = input.val().trim();
+					self.updateUi();
 
 					catTreeLoading(1);
 					$.ajax({
@@ -262,6 +266,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 							// Reset tree checker
 							ed.pristineStructure = ed.getStructure();
+							self.updateUi();
 						}
 					});
 				}
@@ -273,8 +278,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 				if (ul.hasClass('edit-mode')) {
 					ed.enableEditMode();
+					self.updateUi();
 				} else {
 					ed.disableEditMode();
+					self.updateUi();
 				}
 			});
 
@@ -315,6 +322,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					li = li.parent();
 				}
 
+				self.updateUi();
 				var fn = function() {
 					catTreeLoading(1);
 					$.ajax({

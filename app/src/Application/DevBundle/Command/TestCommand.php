@@ -59,16 +59,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$phrase_reader = new \Application\DeskPRO\Languages\AllPhrases(DP_ROOT . '/languages');
-		$phrase_reader->setCallback(function (&$id, &$phrase) {
-			$phrase = strrev($phrase);
-		});
-		$phrases = $phrase_reader->getPhrases();
+		$x = $this->getContainer()->getEm()->find('DeskPRO:ArticleCategory', 6);
 
-		$gen = new \Application\DeskPRO\Languages\GenLanguagePackFile('Test', 'en_US');
-		$gen->addPhrases($phrases);
-
-		$xml = $gen->getXml();
-		echo $xml;
+		foreach ($x->children as $c) {
+			echo $c->title;
+			echo "\n";
+		}
 	}
 }
