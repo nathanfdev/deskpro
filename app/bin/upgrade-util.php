@@ -2001,8 +2001,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 				"<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
 				." check the version of your database, you can still run this tools.</prompt>"
 			);
-			$this->out("Continue? [y/N]> ", false);
-			$ret = $this->dialogHelper->askConfirmation($this, '', false);
+			$ret = $this->dialogHelper->askConfirmation($this, "Continue? [y/N]> ", false);
 
 			if (!$ret) {
 				$this->out("\n");
@@ -2036,9 +2035,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 			if ($this->upgrade->isInstanceOutdated()) {
 				$this->out("<prompt>Your current instance is outdated. Would you like to download updates now?</prompt>");
-				$this->out("[Y/n]> ", '', true);
 
-				$ret = $this->dialogHelper->askConfirmation($this, false);
+				$ret = $this->dialogHelper->askConfirmation($this, '[Y/n]> ', true);
 				if ($ret) {
 					$this->runAction_downloadAndInstallChoice();
 				} else {
@@ -2071,8 +2069,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 				"<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
 				." check the version of your database, you can still run this tools.</prompt>"
 			);
-			$this->out("Continue? [y/N]> ", false);
-			$ret = $this->dialogHelper->askConfirmation($this, '', false);
+			$ret = $this->dialogHelper->askConfirmation($this, "Continue? [y/N]> ", false);
 
 			if (!$ret) {
 				$this->out("\n");
@@ -2146,11 +2143,11 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$file_backup_path = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-files.zip';
 
 		while(true) {
-			$this->out("Do you want to back up your current source files? [Y/n]> ", false);
-			$this->answer_backup_files = $this->dialogHelper->askConfirmation($this, '', true);
+			$this->out("Do you want to back up your current source files? ", false);
+			$this->answer_backup_files = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 
-			$this->out("Do you want to back up your database? [Y/n]> ", false);
-			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
+			$this->out("Do you want to back up your database? ", false);
+			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 
 			$this->out();
 			$this->out("<comment>Backup files: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
@@ -2165,9 +2162,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 			$this->out();
 			$this->out("<prompt>Are you ready to continue?\nAnswer 'n' to re-input backup options.</prompt>");
-			$this->out("Continue with the upgrade? [Y/n]> ", false);
+			$this->out("Continue with the upgrade? ", false);
 
-			$ret = $this->dialogHelper->askConfirmation($this, '', true);
+			$ret = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 			if ($ret) {
 				break;
 			}
@@ -2316,9 +2313,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#------------------------------
 
 		$this->out("<info>Your database is out of date. Would you like to perform an upgrade now?</info>");
-		$this->out("Upgrade now? [Y/n]> ", false);
+		$this->out("Upgrade now? ", false);
 
-		$ret = $this->dialogHelper->askConfirmation($this, '', true);
+		$ret = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 		if (!$ret) {
 			$this->out();
 			$this->out("");
@@ -2328,17 +2325,17 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out("<prompt>Before we install the updates, you should generate back up first.</prompt>");
 
 		while(true) {
-			$this->out("Do you want to back up your database? [Y/n]> ", false);
-			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
+			$this->out("Do you want to back up your database? ", false);
+			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 
 			$this->out();
 			$this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 
 			$this->out();
 			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
-			$this->out("Continue with the upgrade? [Y/n]> ", false);
+			$this->out("Continue with the upgrade? ", false);
 
-			$ret = $this->dialogHelper->askConfirmation($this, '', true);
+			$ret = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
 			if ($ret) {
 				break;
 			}
