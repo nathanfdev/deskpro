@@ -38,120 +38,278 @@ use Application\DeskPRO\Entity;
 
 use Orb\Util\Util;
 use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 class Deskpro3RedirectController extends AbstractController
 {
-	public function redirectKbHomeAction()
-	{
-		return $this->redirectRoute('user_articles');
-	}
+	############################################################################
+	# downloads
+	############################################################################
 
-	public function redirectKbAction()
-	{
-		$ref = isset($_GET['ref']) ? $_GET['ref'] : 0;
-		$lookup = 'dp3_kbref_' . $ref;
-		$new_id = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup));
-
-		$article = null;
-		if ($new_id) {
-			$article = $this->em->find('DeskPRO:Article', $new_id);
-		}
-
-		if (!$article) {
-			throw $this->createNotFoundException();
-		}
-
-
-		return $this->redirectRoute('user_articles_article', array('slug' => $article->getUrlSlug()), 301);
-	}
-
-	public function redirectKbCatAction()
+	/**
+	 * files.php
+	 * files.php?id=123
+	 */
+	public function downloadCatAction()
 	{
 		$id = isset($_GET['id']) ? $_GET['id'] : 0;
-		$lookup = 'dp3_kbcatid_' . $id;
-		$new_id = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup));
 
-		$cat = null;
-		if ($new_id) {
-			$cat = $this->em->find('DeskPRO:ArticleCategory', $new_id);
+		if ($id) {
+			$new_id = $this->getNewId('dp3_file_cat_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:DownloadCategory', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_downloads', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
 		}
 
-		if (!$cat) {
-			throw $this->createNotFoundException();
-		}
-
-
-		return $this->redirectRoute('user_articles', array('slug' => $cat->getUrlSlug()), 301);
+		return $this->redirectRoute('user_downloads_home', array(), 301);
 	}
 
-	public function redirectNewsAction()
+	/**
+	 * attachment_files.php?id=123
+	 */
+	public function downloadViewAction()
 	{
 		$id = isset($_GET['id']) ? $_GET['id'] : 0;
-		$lookup = 'dp3_newsid_' . $id;
-		$new_id = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup));
 
-		$news = null;
-		if ($new_id) {
-			$news = $this->em->find('DeskPRO:News', $new_id);
+		if ($id) {
+			$new_id = $this->getNewId('dp3_filescat_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:Download', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_downloads_file', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
 		}
 
-		if (!$cat) {
-			throw $this->createNotFoundException();
-		}
-
-
-		return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
+		return $this->redirectRoute('user_downloads_home', array(), 301);
 	}
 
-	public function redirectIdeaHomeAction()
+	############################################################################
+	# Feedback
+	############################################################################
+
+	/**
+	 * ideas.php
+	 * ideas.php?cat=123
+	 * ideas.php?123-some-idea
+	 */
+	public function feedbackAction()
 	{
-		return $this->redirectRoute('user_feedback');
+		$cat_id = isset($_GET['cat']) ? $_GET['cat'] : 0;
+		$idea_str = Arrays::getFirstKey($_GET);
+
+		if ($cat_id) {
+			// Ignore (go to home)
+			// We dont filter on cats anymore
+		} elseif ($idea_str) {
+			$id = Strings::extractRegexMatch('#^([0-9]+)#', $idea_str);
+			$new_id = $this->getNewId('dp3_ideaid_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:Feedback', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_feedback_view', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
+		}
+
+		return $this->redirectRoute('user_feedback', array(), 301);
 	}
 
-	public function redirectIdeaAction()
+
+	############################################################################
+	# Articles
+	############################################################################
+
+	/**
+	 * kb_article.php?ref=1790-TMRE-3093
+	 */
+	public function articleViewAction()
 	{
-		if (isset($_GET['cat'])) {
-			return $this->redirectIdeaCatAction();
+		$id = isset($_GET['ref']) ? $_GET['ref'] : 0;
+
+		if ($id) {
+			$new_id = $this->getNewId('dp3_kbref_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:Article', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_articles_article', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
 		}
 
-		$id = isset($_GET[0]) ? $_GET[0] : 0;
-
-		if (!$id) {
-			return $this->redirectIdeaHomeAction();
-		}
-
-		$lookup = 'dp3_ideaid_' . $id;
-		$new_id = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup));
-
-		$feedback = null;
-		if ($new_id) {
-			$feedback = $this->em->find('DeskPRO:Feedback', $new_id);
-		}
-
-		if (!$cat) {
-			throw $this->createNotFoundException();
-		}
-
-
-		return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()), 301);
+		return $this->redirectRoute('user_articles_home', array(), 301);
 	}
 
-	public function redirectIdeaCatAction()
+	/**
+	 * kb_cat.php?id=1
+	 */
+	public function articleCatAction()
 	{
 		$id = isset($_GET['id']) ? $_GET['id'] : 0;
-		$lookup = 'dp3_kbcatid_' . $id;
-		$new_id = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup));
 
-		$cat = null;
-		if ($new_id) {
-			$cat = $this->em->find('DeskPRO:ArticleCategory', $new_id);
+		if ($id) {
+			$new_id = $this->getNewId('dp3_kbcatid_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:ArticleCategory', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_articles', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
 		}
 
-		if (!$cat) {
-			throw $this->createNotFoundException();
+		return $this->redirectRoute('user_articles_home', array(), 301);
+	}
+
+	/**
+	 * kb.php
+	 */
+	public function articlesHomeAction()
+	{
+		return $this->redirectRoute('user_articles_home', array(), 301);
+	}
+
+	############################################################################
+	# News
+	############################################################################
+
+	/**
+	 * news.php?id=2
+	 * news_full.php?id=2
+	 */
+	public function newsViewAction()
+	{
+		$id = isset($_GET['id']) ? $_GET['id'] : 0;
+
+		if ($id) {
+			$new_id = $this->getNewId('dp3_newsid_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:News', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_news_view', array('slug' => $obj->getUrlSlug()), 301);
+				}
+			}
 		}
 
+		return $this->redirectRoute('user_news_home', array(), 301);
+	}
 
-		return $this->redirectRoute('user_feedback', array('slug' => $cat->getUrlSlug()), 301);
+	/**
+	 * news_archive.php
+	 */
+	public function newsArchiveAction()
+	{
+		return $this->redirectRoute('user_news_home', array(), 301);
+	}
+
+	############################################################################
+	# Tickets
+	############################################################################
+
+	/**
+	 * newticket.php
+	 */
+	public function newTicketAction()
+	{
+		return $this->redirectRoute('user_tickets_new', array(), 301);
+	}
+
+	/**
+	 * ticketlist.php
+	 * ticketlist_company.php
+	 * ticketlist_participate.php
+	 */
+	public function ticketListAction()
+	{
+		return $this->redirectRoute('user_tickets', array(), 301);
+	}
+
+	/**
+	 * view.php?ticketref=6630-QVNM-6486
+	 */
+	public function ticketViewAction()
+	{
+		$id = isset($_GET['ref']) ? $_GET['ref'] : 0;
+
+		if ($id) {
+			$new_id = $this->getNewId('dp3_ticketref_'.$id);
+			if ($new_id) {
+				$obj = $this->em->find('DeskPRO:Ticket', $new_id);
+				if ($obj) {
+					return $this->redirectRoute('user_tickets_view', array('slug' => $obj->getRef()), 301);
+				}
+			}
+		}
+
+		return $this->redirectRoute('user_tickets', array(), 301);
+	}
+
+	############################################################################
+	# Login, reg and profiles
+	############################################################################
+
+	/**
+	 * login.php
+	 */
+	public function loginAction()
+	{
+		return $this->redirectRoute('user_login', array(), 301);
+	}
+
+	/**
+	 * register.php
+	 */
+	public function registerAction()
+	{
+		return $this->redirectRoute('user_register', array(), 301);
+	}
+
+	/**
+	 * profile_email.php
+	 * profile_password.php
+	 * profile.php
+	 */
+	public function profileAction()
+	{
+		return $this->redirectRoute('user_profile', array(), 301);
+	}
+
+	############################################################################
+	# Unsupported : Manuals and Troubles
+	############################################################################
+
+	/**
+	 * manual.php
+	 * manual.php?m=2
+	 * manual.php?m=2
+	 * manual.php?p=49
+	 * manual_download.php?m=2&do=single
+	 * manual_download.php?m=2&do=zip
+	 */
+	public function manualsAction()
+	{
+		return $this->redirectRoute('user', array(), 301);
+	}
+
+	/**
+	 * troubleshooter.php
+	 * troubleshooter.php?id=1
+	 */
+	public function troublesAction()
+	{
+		return $this->redirectRoute('user', array(), 301);
+	}
+
+	############################################################################
+
+	/**
+	 * @param string $lookup_id
+	 * @return int
+	 */
+	public function getNewId($lookup_id)
+	{
+		return $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup_id));
 	}
 }
