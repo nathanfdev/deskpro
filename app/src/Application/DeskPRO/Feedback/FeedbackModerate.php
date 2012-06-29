@@ -140,9 +140,9 @@ class FeedbackModerate implements PersonContextInterface
 		}
 
 		$agent  = $this->person_context;
-		$mailer = $this->container->getMailer();
+		$mailer = $this->mailer;
 
-		$this->container->getTranslator()->setTemporaryLanguage($feedback->person->getLanguage(), function() use ($mailer, $feedback, $agent, $reason) {
+		$this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function() use ($mailer, $feedback, $agent, $reason) {
 			$vars = array(
 				'feedback' => $feedback,
 				'agent'    => $agent,

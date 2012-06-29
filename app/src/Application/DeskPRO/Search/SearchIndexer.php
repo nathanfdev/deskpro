@@ -92,7 +92,7 @@ class SearchIndexer
 		if ($op == 'update') {
 			App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
 		} else {
-			App::getContainer()->getSearchAdapter()->deleteObjectsInIndex(array($object));
+			App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
 		}
 	}
 }

@@ -10,11 +10,11 @@
 	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
 	<p>
 		{% if reason %}
-			{{ phrase('user.emails.feedback_disapproved') }}
-		{% else %}
-			{{ phrase('user.emails.feedback_disapproved-reason') }}
+			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name}) }}
 			<br /><br />
 			{{ reason }}
+		{% else %}
+			{{ phrase('user.emails.feedback_disapproved') }}
 		{% endif %}
 	</p>
 {% endblock %}
