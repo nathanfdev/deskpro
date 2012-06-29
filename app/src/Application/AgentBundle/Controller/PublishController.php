@@ -387,15 +387,14 @@ class PublishController extends AbstractController
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
 		if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
-			$obj->status = 'new';
+			$this->approveFeedback($obj);
 		} else {
 			$obj->status = 'published';
+			$this->em->beginTransaction();
+			$this->em->persist($obj);
+			$this->em->flush();
+			$this->em->commit();
 		}
-
-		$this->em->beginTransaction();
-		$this->em->persist($obj);
-		$this->em->flush();
-		$this->em->commit();
 
 		$next = $this->_findNextValidating($content_validating, $type, $content_id);
 
@@ -410,6 +409,18 @@ class PublishController extends AbstractController
 		));
 	}
 
+	public function approveFeedback(\Application\DeskPRO\Entity\Feedback $feedback)
+	{
+		$feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
+		$feedback_moderate->approveFeedback($feedback);
+	}
+
+	public function disapproveFeedback(\Application\DeskPRO\Entity\Feedback $feedback)
+	{
+		$feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
+		$feedback_moderate->disapproveFeedback($feedback);
+	}
+
 	public function disapproveContentAction($type, $content_id)
 	{
 		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
@@ -418,22 +429,21 @@ class PublishController extends AbstractController
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
 		if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
-			$obj->status_code = 'hidden.deleted';
+			$this->disapproveFeedback($obj);
 		} else {
 			$obj->status_code = 'hidden.draft';
-		}
+			$reason = $this->in->getString('reason');
+			if (0 && $reason) {
+				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+				$reason .= ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
+				$agent_chat->sendAgentMessage($reason, array($obj->person['id']));
+			}
 
-		$reason = $this->in->getString('reason');
-		if (0 && $reason) {
-			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-			$reason .= ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
-			$agent_chat->sendAgentMessage($reason, array($obj->person['id']));
+			$this->em->beginTransaction();
+			$this->em->persist($obj);
+			$this->em->flush();
+			$this->em->commit();
 		}
-
-		$this->em->beginTransaction();
-		$this->em->persist($obj);
-		$this->em->flush();
-		$this->em->commit();
 
 		$next = $this->_findNextValidating($content_validating, $type, $content_id);
 

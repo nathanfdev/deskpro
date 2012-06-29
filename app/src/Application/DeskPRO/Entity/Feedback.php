@@ -202,6 +202,8 @@ class Feedback extends ContentAbstract
 
 	public function setStatus($status)
 	{
+		$last_status = $this->status;
+
 		$this->_onPropertyChanged('status', $this->status, $status);
 		$this->status = $status;
 
@@ -223,6 +225,10 @@ class Feedback extends ContentAbstract
 			case self::STATUS_HIDDEN:
 				$this['status_category'] = null;
 				break;
+		}
+
+		if ($this->status != 'hidden' && $last_status == 'hidden') {
+			$this->date_published = new \DateTime();
 		}
 	}
 

@@ -12,6 +12,9 @@
 {% endblock %}
 {% block content %}
 	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
+	{% if feedback.status_code == 'hidden.validating' %}
+		<p>{{ phrase('user.emails.feedback_agent-validation') }}</p>
+	{% endif %}
 	{% if validating %}
 		{{ phrase('user.emails.feedback_validate-email') }}
 		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
