@@ -1144,6 +1144,12 @@ $t['name'] = $translate->phrase('agent.defaults.team_lvl2_support');
 $em->persist($t);
 $em->flush();
 
+##BEGIN:agent_teams.setting##
+$t = new \Application\DeskPRO\Entity\Setting();
+$t['name'] = 'core.use_agent_team';
+$t['value'] = '1';
+$em->persist($t);
+$em->flush();
 
 ################################################################################
 # Usergroups
