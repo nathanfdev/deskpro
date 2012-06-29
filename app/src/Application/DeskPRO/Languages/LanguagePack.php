@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,49 +25,17 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Languages;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class LanguagePack
 {
-	protected function configure()
-	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$phrase_reader = new \Application\DeskPRO\Languages\AllPhrases(DP_ROOT . '/languages');
-		$phrase_reader->setCallback(function (&$id, &$phrase) {
-			$phrase = strrev($phrase);
-		});
-		$phrases = $phrase_reader->getPhrases();
-
-		$gen = new \Application\DeskPRO\Languages\GenLanguagePackFile('Test', 'en_US');
-		$gen->addPhrases($phrases);
-
-		$xml = $gen->getXml();
-		echo $xml;
-	}
+	public $title;
+	public $locale;
+	public $phrases;
 }

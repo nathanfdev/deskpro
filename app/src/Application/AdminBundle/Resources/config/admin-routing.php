@@ -996,6 +996,13 @@ $collection->add('admin_langs_install', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_installupload', new Route(
+	'/languages/install-upload',
+	array('_controller' => 'AdminBundle:Languages:installUpload'),
+	array(),
+	array()
+));
+
 $collection->add('admin_langs_newlang_save', new Route(
 	'/languages/new-lang/save',
 	array('_controller' => 'AdminBundle:Languages:newLanguageSave'),

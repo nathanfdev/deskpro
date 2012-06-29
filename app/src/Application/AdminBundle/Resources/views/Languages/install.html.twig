@@ -6,19 +6,21 @@
 </ul>
 {% endblock %}
 {% block page %}
-	<div class="dp-form">
-		<div class="dp-form-section">
-			<div class="dp-form-row">
-				<div class="dp-form-label">
-					<label>Upload Language Pack</label>
-				</div>
-				<div class="dp-form-input">
-					<input type="file" name="upfile" /><br />
-					Upload a language pack file (it should end in .xml) from your hard-drive.
-					<br />
-					<button class="clean-white">Install Language</button>
+	<form action="{{ path('admin_langs_installupload') }}" method="POST" enctype="multipart/form-data">
+		<div class="dp-form">
+			<div class="dp-form-section">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Upload Language Pack</label>
+					</div>
+					<div class="dp-form-input">
+						<input type="file" name="upfile" /><br />
+						Upload a language pack file (it should end in .xml) from your hard-drive.
+						<br />
+						<button class="clean-white">Install Language</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</form>
 {% endblock %}

@@ -38,6 +38,10 @@ use Application\DeskPRO\Entity;
 use Application\AdminBundle\Form\EditLanguageType;
 use Orb\Util\Arrays;
 use Symfony\Component\Form;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Application\DeskPRO\Languages\LanguagePackFile;
+use Application\DeskPRO\Languages\LanguagePack;
+use Application\DeskPRO\Languages\LanguageInstaller;
 
 class LanguagesController extends AbstractController
 {
@@ -70,6 +74,23 @@ class LanguagesController extends AbstractController
 	public function installAction()
 	{
 		return $this->render('AdminBundle:Languages:install.html.twig');
+	}
+
+	public function installUploadAction()
+	{
+		/** @var $file UploadedFile */
+		$file = $this->request->files->get('upfile');
+
+		if (!$file || !$file->isValid()) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$pack_file = LanguagePackFile::newFromFile($file->getRealPath());
+
+		$lang_installer = new LanguageInstaller($this->em);
+		$lang = $lang_installer->installFromPackFile($pack_file);
+
+		return $this->redirectRoute('admin_langs_editlang', array('language_id' => $lang->getId()));
 	}
 
 	############################################################################

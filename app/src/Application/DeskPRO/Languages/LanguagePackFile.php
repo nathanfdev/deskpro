@@ -56,23 +56,14 @@ class LanguagePackFile
 	protected $xml;
 
 	/**
-	 * @var string
+	 * @var LanguagePack
 	 */
-	protected $title;
-
-	/**
-	 * @var string
-	 */
-	protected $locale;
-
-	/**
-	 * @var string[]
-	 */
-	protected $phrases;
+	protected $pack;
 
 	public function __construct(\SimpleXMLElement $xml)
 	{
 		$this->xml = $xml;
+		$this->pack = new LanguagePack();
 	}
 
 	/**
@@ -115,12 +106,12 @@ class LanguagePackFile
 	 */
 	public function getTitle()
 	{
-		if ($this->title !== null) {
-			return $this->title;
+		if ($this->pack->title !== null) {
+			return $this->pack->title;
 		}
 
-		$this->title = (string)$this->xml->language->title;
-		return $this->title;
+		$this->pack->title = (string)$this->xml->language->title;
+		return $this->pack->title;
 	}
 
 
@@ -129,12 +120,12 @@ class LanguagePackFile
 	 */
 	public function getLocale()
 	{
-		if ($this->locale !== null) {
-			return $this->locale;
+		if ($this->pack->locale !== null) {
+			return $this->pack->locale;
 		}
 
-		$this->locale = (string)$this->xml->language->locale;
-		return $this->locale;
+		$this->pack->locale = (string)$this->xml->language->locale;
+		return $this->pack->locale;
 	}
 
 
@@ -143,19 +134,32 @@ class LanguagePackFile
 	 */
 	public function getPhrases()
 	{
-		if ($this->phrases !== null) {
-			return $this->phrases;
+		if ($this->pack->phrases !== null) {
+			return $this->pack->phrases;
 		}
 
-		$this->phrases = array();
+		$this->pack->phrases = array();
 
 		foreach ($this->xml->phrases->phrase as $node) {
 			$id = (string)$node['id'];
 			$text = (string)$node;
 
-			$this->phrases[$id] = $text;
+			$this->pack->phrases[$id] = $text;
 		}
 
-		return $this->phrases;
+		return $this->pack->phrases;
+	}
+
+
+	/**
+	 * @return LanguagePack
+	 */
+	public function getPack()
+	{
+		$this->getTitle();
+		$this->getLocale();
+		$this->getPhrases();
+
+		return $this->pack;
 	}
 }
