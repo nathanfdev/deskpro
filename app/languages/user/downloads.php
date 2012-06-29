@@ -5,7 +5,7 @@
 	'user.downloads.noun'                => 'File',
 	'user.downloads.related_downloads'   => 'Related Files',
 	'user.downloads.sidebar_description' => 'View our file|Browse through our {{count}} files',
-	'user.downloads.title'               => 'Downloads 2',
+	'user.downloads.title'               => 'Downloads',
 	'user.downloads.title-categories'    => 'There is 1 sub-folder|There are {{count}} sub-folders',
 	'user.downloads.title-downloads'     => 'There is 1 file|There are {{count}} files',
 );
