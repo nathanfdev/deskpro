@@ -11,6 +11,7 @@
 	'user.feedback.form_new_error_title'     => 'Please enter a title of at least 5 characters',
 	'user.feedback.form_new_prefix'          => 'I have a...',
 	'user.feedback.form_title'               => 'Tell us about your <span class="dp-cat-title-place">idea</span>',
+	'user.feedback.note_awaiting-validation' => 'Note: Your feedback is currently awaiting validation before it appears publicly on the main website.',
 	'user.feedback.related_feedback'         => 'Related Feedback',
 	'user.feedback.sidebar_description'      => 'There are currently {{phrase1}} as well as {{phrase2}}. Up vote feedback you agree with or submit your own.',
 	'user.feedback.sidebar_description-none' => 'We do not currently have any user submitted feedback. <a href="{{link}}">Do you have a suggestion for us?</a>',
