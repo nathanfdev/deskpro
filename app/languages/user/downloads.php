@@ -3,7 +3,7 @@
 	'user.downloads.file_not_found'      => 'The file could not be found',
 	'user.downloads.message_no-files'    => 'There are no files in this folder.',
 	'user.downloads.noun'                => 'File',
-	'user.downloads.related_downloads'   => 'Related Files',
+	'user.downloads.related_downloads'   => 'Related Files 2',
 	'user.downloads.sidebar_description' => 'View our file|Browse through our {{count}} files',
 	'user.downloads.title'               => 'Downloads',
 	'user.downloads.title-categories'    => 'There is 1 sub-folder|There are {{count}} sub-folders',
