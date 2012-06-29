@@ -119,8 +119,8 @@
 				<li class="{{field}} {% if changed_fields[ticket.id].agent_team %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
 					<span class="prop-val agent_team_id" data-prop-value="{{ticket_agent_team.id}}">
-					{% if ticket_agent_team %}
-						<span class="agent-team agent-team-{{ ticket_agent_team.id }}" title="{{ ticket_agent_team.name }}">{{ ticket_agent_team.name }}</span>
+					{% if ticket.agent_team %}
+						<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
 					{% else %}
 						{{ phrase('agent.general.no_team') }}
 					{% endif %}

@@ -117,7 +117,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface
 		}
 
 		return array(
-			array('action' => 'agent_team', 'agent_id' => $agent_team_id)
+			array('action' => 'agent_team', 'agent_team_id' => $agent_team_id)
 		);
 	}
 
