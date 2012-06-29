@@ -18,19 +18,27 @@
 	{% else %}
 		{% set full_title = title %}
 	{% endif %}
-	<option data-full-title="{{ full_title }}" value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
-
-	{% if child_prop != 'NONE' %}
-		{% if not child_prop %}{% set child_prop = 'children' %}{% endif %}
-		{% if cat[child_prop] %}
+	{% if not child_prop %}{% set child_prop = 'children' %}{% endif %}
+	{% if depth == 0 and cat[child_prop] %}
+		<optgroup label="{{ title }}">
 			{% for subk,subcat in cat[child_prop] %}
 				{{ _self.render_options(subk, subcat, selected, depth+1, full_title, title_prop, child_prop) }}
 			{% endfor %}
+		</optgroup>
+	{% else %}
+		<option data-full-title="{{ full_title }}" value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth > 1 %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
+
+		{% if child_prop != 'NONE' %}
+			{% if cat[child_prop] %}
+				{% for subk,subcat in cat[child_prop] %}
+					{{ _self.render_options(subk, subcat, selected, depth+1, full_title, title_prop, child_prop) }}
+				{% endfor %}
+			{% endif %}
 		{% endif %}
 	{% endif %}
 {% endmacro %}
 <select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr|raw }}>
-	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
+	{% if with_blank %}<option value="{{ with_blank_value|default('') }}">{{ blank_title }}</option>{% endif %}
 	{% for k,cat in categories %}
 		{{ _self.render_options(k, cat, selected, 0, '', title_prop, child_prop) }}
 	{% endfor %}

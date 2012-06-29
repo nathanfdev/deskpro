@@ -307,10 +307,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			});
 		}, 150);
 
-		sels.on('change', function() {
-			self.updatePreview();
-		});
-
 		this.wrapper.bind('fileuploaddone', function() {
 			self.getElById('attach_row').fadeIn();
 		});
@@ -402,7 +398,15 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
 
-			var val = ($(this).val() || '').trim(), name = $(this).attr('name');
+			var val = $(this).val(), name = $(this).attr('name');
+
+			if (!val) {
+				val = '';
+			}
+
+			if (val == '-1') {
+				val = '';
+			}
 
 			if ($(this).is(':radio, :checkbox')) {
 				if (!$(this).is(':checked')) {

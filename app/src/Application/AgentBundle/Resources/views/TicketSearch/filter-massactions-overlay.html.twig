@@ -58,31 +58,28 @@
 
 				<dt>{{ phrase('agent.general.assignments') }}</dt>
 				<dd class="assignments">
-					<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22" data-placeholder="Agent">
-						<option value="0">Unassigned</option>
-						<option data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+					<table cellspacing="0" cellpadding="0" border="0"><tr>
+						<td>
+							<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22" placeholder="Agent">
+								<option selected="selected" value="-1">Agent</option>
+								<option value="0">Unassigned</option>
 
-						{% for agent in agents %}
-						{% if agent.id != app.user.id %}
-							<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-					<select name="actions[agent_team]" class="dpe_select" data-select-nogrouptitle="1" data-placeholder="Team">
-						<option value="0">No Team</option>
+								{% for agent in agents %}
+									<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+								{% endfor %}
+							</select>
+						</td>
+						<td style="padding-left: 10px;">
+							<select name="actions[agent_team]" class="dpe_select" placeholder="Agent">
+								<option selected="selected" value="-1">Agent</option>
+								<option value="0">No Team</option>
 
-						{% if app.user.getAgent().getTeams()|length %}
-						<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
-							{% for team in app.user.getAgent().getTeams() %}
-							<option value="{{ team.id }}">{{ team.name }}</option>
-							{% endfor %}
-						</optgroup>
-						{% endif %}
-
-						{% for team in agent_teams %}
-						<option value="{{ team.id }}">{{ team.name }}</option>
-						{% endfor %}
-					</select>
+								{% for team in agent_teams %}
+								<option value="{{ team.id }}">{{ team.name }}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr></table>
 
 					<select name="actions[add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add followers">
 						<option data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
@@ -101,7 +98,9 @@
 						'with_blank': true,
 						'with_blank2': true,
 						'blank_title': phrase('agent.general.department'),
-						'departments': ticket_options.departments_hierarchy
+						'departments': ticket_options.departments_hierarchy,
+						'add_classname': 'dpe_select',
+						'with_blank_value': '-1'
 					} %}
 
 					{% if app.getSetting('core.use_ticket_category') %}
@@ -110,7 +109,9 @@
 							'with_blank': true,
 							'with_blank2': true,
 							'blank_title': phrase('agent.general.category'),
-							'categories': ticket_options.ticket_categories_hierarchy
+							'categories': ticket_options.ticket_categories_hierarchy,
+							'add_classname': 'dpe_select',
+							'with_blank_value': '-1'
 						} %}
 					{% endif %}
 
@@ -120,7 +121,9 @@
 							'with_blank': true,
 							'with_blank2': true,
 							'blank_title': phrase('agent.general.product'),
-							'products': ticket_options.products_hierarchy
+							'products': ticket_options.products_hierarchy,
+							'add_classname': 'dpe_select',
+							'with_blank_value': '-1'
 						} %}
 					{% endif %}
 
@@ -130,7 +133,9 @@
 							'with_blank': true,
 							'with_blank2': true,
 							'blank_title': phrase('agent.general.priority'),
-							'priorities': ticket_options.ticket_priorities
+							'priorities': ticket_options.ticket_priorities,
+							'add_classname': 'dpe_select',
+							'with_blank_value': '-1'
 						} %}
 					{% endif %}
 
@@ -140,7 +145,9 @@
 							'with_blank': true,
 							'with_blank2': true,
 							'blank_title': phrase('agent.general.workflow'),
-							'workflows': ticket_options.ticket_workflows
+							'workflows': ticket_options.ticket_workflows,
+							'add_classname': 'dpe_select',
+							'with_blank_value': '-1'
 						} %}
 					{% endif %}
 				</dd>
