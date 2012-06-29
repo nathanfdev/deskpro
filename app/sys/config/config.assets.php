@@ -99,9 +99,9 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
 
-		'vendor/jquery/fileupload/jquery.iframe-transport.js',
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+		'vendor/jquery/fileupload/jquery.iframe-transport.js',
 
 		'vendor/jquery/tag-it/tag-it.js',
 
@@ -594,6 +594,7 @@ $CONFIG['user_vendors'] = array(
 
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+		'vendor/jquery/fileupload/jquery.iframe-transport.js',
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/PIE/PIE.js',

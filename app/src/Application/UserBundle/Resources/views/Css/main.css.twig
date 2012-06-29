@@ -2493,28 +2493,47 @@ dp .dp-new-feedback td {
 #dp .dp-hidden-file-upload {
 	position: relative;
 	width: 150px;
+	height: 20px;
+	overflow: hidden;
 }
 
-#dp .dp-hidden-file-upload span {
+#dp .dp-hidden-file-upload .link{
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	font-size: 11px;
-}
 
-#dp .dp-hidden-file-upload span.link{
+	cursor: pointer;
+	display: block;
 	color: #1B94D1;
 	text-decoration: underline;
 	font-size: 10pt;
+
+	padding: 0;
+	margin: 0;
+	background-color: transparent;
+	border: none;
+	z-index: 1;
 }
 
 #dp .dp-hidden-file-upload input {
-	filter: alpha(opacity=0);
-	-khtml-opacity: 0;
-	-moz-opacity: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	border: solid transparent;
+	border-width: 0 0 100px 200px;
 	opacity: 0;
+	filter: alpha(opacity=0);
+	-moz-transform: translate(-300px, 0) scale(4);
+	direction: ltr;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	font-size: 11px;
+	z-index: 2;
 }
 
 #dp ul.file-list {
