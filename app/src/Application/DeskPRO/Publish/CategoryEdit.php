@@ -251,7 +251,7 @@ class CategoryEdit
 		if ($check_map) {
 			$table = App::getOrm()->getRepository($entity)->getTableName();
 			$current_tree = App::getDb()->fetchAllKeyValue("SELECT id, parent_id FROM $table");
-			
+
 			$accurate = true;
 			foreach ($check_map as $id => $parent_id) {
 				if (array_key_exists($parent_id, $current_tree)) {
