@@ -84,12 +84,16 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			return orderData;
 		};
 
-		var makeStructureData = function(structure) {
+		var makeStructureData = function(structure, name) {
 			var structureData = [];
+
+			if (!name) {
+				name = 'structure';
+			}
 
 			Object.each(structure, function(parent_id, id) {
 				structureData.push({
-					name: 'structure[' + id + ']',
+					name: name + '[' + id + ']',
 					value: parent_id
 				});
 			});
@@ -112,6 +116,19 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		Array.each(types, function(type) {
 
+			var listEl = $('#publish_outline_'+type+'cat_list');
+
+			listEl.before('<div class="tree-restructure-loading-message"><h3>Saving Structure</h3></div>');
+			listEl.parent().css('position', 'relative');
+
+			var catTreeLoading = function(turn_on) {
+				if (turn_on) {
+					listEl.parent().addClass('mark-loading');
+				} else {
+					listEl.parent().removeClass('mark-loading');
+				}
+			};
+
 			var updateNewOverlay = function() {
 				if (type == 'articles' && DeskPRO_Window.newArticleLoader) {
 					DeskPRO_Window.newArticleLoader.clear();
@@ -122,7 +139,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				}
 			};
 
-			var listEl = $('#publish_outline_'+type+'cat_list');
 			var ed = new DeskPRO.UI.CatListEditor({
 				listEl: listEl,
 				itemSelector: 'li:not(.all)',
@@ -157,10 +173,29 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					// Recounts
 					self.recountChildCounts(listEl);
 
+					var postData = makeStructureData(ed.getStructure());
+					postData.append(makeStructureData(ed.pristineStructure, 'structure_check'));
+
+					catTreeLoading(1);
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
-						data: makeStructureData(ed.getStructure()),
-						type: 'POST'
+						data: postData,
+						dataType: 'json',
+						type: 'POST',
+						error: function() {
+							self.reload();
+						},
+						success: function(result) {
+							if (result.error) {
+								self.reload();
+								return;
+							}
+
+							catTreeLoading(0);
+
+							// Reset tree checker
+							ed.pristineStructure = ed.getStructure();
+						}
 					});
 				},
 				onCatUpdated: function(categoryId, newTitle, newUgs) {

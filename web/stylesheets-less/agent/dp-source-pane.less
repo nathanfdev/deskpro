@@ -127,6 +127,28 @@ section.source-section header span.add.solo {
  * Lists
 /*****************************************************************************/
 
+.tree-restructure-loading-message {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	background: rgba(255, 255, 255, 0.7);
+	display: none;
+
+	h3 {
+		margin-top: 10px;
+		background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 10px;
+		padding-top: 50px;
+		text-align: center;
+	}
+}
+
+.mark-loading .tree-restructure-loading-message {
+	display: block;
+}
+
 ul.source-list li {
 	position: relative;
 }

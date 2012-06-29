@@ -66,6 +66,8 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		});
 
 		this.isEditMode = false;
+
+		this.pristineStructure = this.getStructure();
 	},
 
 	_initLisCollection: function(lis) {
@@ -111,13 +113,10 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 					}
 				});
 
-				self.fireEvent('reordered', [ui.draggable, this]);
-
 				if (movedTree) {
-					DP.console.log('structed');
-					window.setTimeout(function() {
-						self.fireEvent('restructured', [ui.draggable, this]);
-					}, 200);
+					self.fireEvent('restructured', [ui.draggable, this]);
+				} else {
+					self.fireEvent('reordered', [ui.draggable, this]);
 				}
 			},
 			over: function() {
