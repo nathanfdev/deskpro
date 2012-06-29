@@ -216,7 +216,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 								self.updateUi();
 							}
 						});
-					}); //end timeout
+					}, 200); //end timeout
 				},
 				onCatUpdated: function(categoryId, newTitle, newUgs) {
 
