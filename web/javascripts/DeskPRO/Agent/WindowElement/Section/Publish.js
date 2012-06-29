@@ -161,51 +161,59 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				},
 				onRestructured: function() {
 
-					// Hide/show delete icons
-					$('.dp-cat-li', listEl).each(function() {
-						var show = true;
-						$('.list-counter', this).each(function() {
-							if (parseInt($(this).text().trim()) > 0) {
-								show = false;
-								return false;
+					catTreeLoading(1);
+
+					// This timeout is here because by the time we get notiifed from droppable,
+					// the dom elements arent actually in place yet,
+					// so if we want a valid structure from getStructure we need to delay for a
+					// few ms so the dom update is run first
+					window.setTimeout(function() {
+						// Hide/show delete icons
+						$('.dp-cat-li', listEl).each(function() {
+							var show = true;
+							$('.list-counter', this).each(function() {
+								if (parseInt($(this).text().trim()) > 0) {
+									show = false;
+									return false;
+								}
+							});
+
+							if (show) {
+								$('.delete-cat', this).removeClass('undeletable');
+							} else {
+								$('.delete-cat', this).addClass('undeletable');
 							}
 						});
 
-						if (show) {
-							$('.delete-cat', this).removeClass('undeletable');
-						} else {
-							$('.delete-cat', this).addClass('undeletable');
-						}
-					});
+						// Recounts
+						self.recountChildCounts(listEl);
 
-					// Recounts
-					self.recountChildCounts(listEl);
+						var postData = makeStructureData(ed.getStructure());
+						postData.append(makeStructureData(ed.pristineStructure, 'structure_check'));
 
-					var postData = makeStructureData(ed.getStructure());
-					postData.append(makeStructureData(ed.pristineStructure, 'structure_check'));
 
-					catTreeLoading(1);
-					$.ajax({
-						url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
-						data: postData,
-						dataType: 'json',
-						type: 'POST',
-						error: function() {
-							self.reload();
-						},
-						success: function(result) {
-							if (result.error) {
+						$.ajax({
+							url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
+							data: postData,
+							dataType: 'json',
+							type: 'POST',
+							error: function() {
 								self.reload();
-								DeskPRO_Window.showAlert('Could not update category structure because someone else updated it before you. The section will now refresh and you can try again.');
-								return;
+							},
+							success: function(result) {
+								if (result.error) {
+									self.reload();
+									DeskPRO_Window.showAlert('Could not update category structure because someone else updated it before you. The section will now refresh and you can try again.');
+									return;
+								}
+
+								catTreeLoading(0);
+
+								// Reset tree checker
+								ed.pristineStructure = ed.getStructure();
 							}
-
-							catTreeLoading(0);
-
-							// Reset tree checker
-							ed.pristineStructure = ed.getStructure();
-						}
-					});
+						});
+					}); //end timeout
 				},
 				onCatUpdated: function(categoryId, newTitle, newUgs) {
 

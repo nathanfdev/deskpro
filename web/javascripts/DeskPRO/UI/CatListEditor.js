@@ -184,30 +184,21 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		list = list || this.list;
 
 		var map = {};
-		this._getStructure(list, map);
+
+		var lis = list.find('li.dp-cat-li');
+		lis.each(function() {
+			var id = $(this).data('category-id');
+			var parentId = 0;
+
+			var ul = $(this).parent();
+			if (ul.parent().is('li')) {
+				parentId = ul.parent().data('category-id');
+			}
+
+			map[id] = parentId;
+		});
 
 		return map;
-	},
-
-	_getStructure: function(list, map) {
-		var self = this;
-		var dataIdName = this.options.dataId;
-		var subListSelector = this.options.subListSelector;
-		var parentId = 0;
-
-		if (list.parent().is('li.dp-cat-li')) {
-			parentId = list.parent().data(dataIdName);
-		}
-
-		$('> li.dp-cat-li', list).each(function() {
-			var id = $(this).data(dataIdName);
-			map[id] = parentId;
-
-			var subList = $(subListSelector, this);
-			if (subList.length) {
-				self._getStructure(subList, map);
-			}
-		});
 	},
 
 
