@@ -237,7 +237,7 @@ class CategoryEdit
 	 * @param array $map
 	 * @return array
 	 */
-	public static function updateStructure($type, array $map)
+	public static function updateStructure($type, array $map, array $check_map = null)
 	{
 		$entity = self::getEntityNameFor($type);
 
@@ -245,6 +245,32 @@ class CategoryEdit
 			SELECT c
 			FROM $entity c INDEX BY c.id
 		")->execute();
+
+		// If theres a check map then we want to verify that the current tree is the same,
+		// or else error out
+		if ($check_map) {
+			$table = App::getOrm()->getRepository($entity)->getTableName();
+			$current_tree = App::getDb()->fetchAllKeyValue("SELECT id, parent_id FROM $table");
+			
+			$accurate = true;
+			foreach ($check_map as $id => $parent_id) {
+				if (array_key_exists($parent_id, $current_tree)) {
+					$current_parent_id = $current_tree[$id];
+					if ($current_parent_id === null) {
+						$current_parent_id = 0;
+					}
+
+					if ($current_parent_id != $parent_id) {
+						$accurate = false;
+						break;
+					}
+				}
+			}
+
+			if (!$accurate) {
+				throw new \OutOfBoundsException("Structure check failed");
+			}
+		}
 
 		App::getOrm()->beginTransaction();
 

@@ -2545,6 +2545,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$.ajax({
 			url: url,
 			timeout: 15000,
+			dataType: 'json',
 			success: function(data) {
 				delete self.loadingSections[section_id];
 				callback(data);

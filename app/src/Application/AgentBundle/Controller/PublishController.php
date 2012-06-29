@@ -775,7 +775,18 @@ class PublishController extends AbstractController
 
 	public function updateCategoryStructureAction($type)
 	{
-		PublishCategoryEdit::updateStructure($type, $this->in->getCleanValueArray('structure', 'uint', 'uint'));
+		try {
+			PublishCategoryEdit::updateStructure(
+				$type,
+				$this->in->getCleanValueArray('structure', 'uint', 'uint'),
+				$this->in->getCleanValueArray('structure_check', 'uint', 'uint')
+			);
+		} catch (\OutOfBoundsException $e) {
+			return $this->createJsonResponse(array(
+				'error' => true
+			));
+		}
+
 		return $this->createJsonResponse(array(
 			'success' => true
 		));

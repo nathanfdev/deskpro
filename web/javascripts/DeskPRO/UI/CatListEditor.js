@@ -67,7 +67,9 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		this.isEditMode = false;
 
-		this.pristineStructure = this.getStructure();
+		window.setTimeout(function() {
+			self.pristineStructure = self.getStructure();
+		}, 300);
 	},
 
 	_initLisCollection: function(lis) {

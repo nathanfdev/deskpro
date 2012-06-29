@@ -33,25 +33,33 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		this.expanded_ids = expanded_ids;
 
-		DeskPRO_Window.getSectionData('publish_section', this._initSection.bind(this));
+		DeskPRO_Window.getSectionData('publish_section', (function(data) {
+			this._initSection(data);
+		}).bind(this));
 	},
 
 	_initSection: function(data) {
+
+		if(this.hasSectionInitialised) {
+			this.contentEl.empty();
+		} else {
+			DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
+				DeskPRO_Window.util.modCountEl('#publish_drafts_count', '-');
+				self.modBadgeCount('-');
+			});
+
+			DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-add', function (info) {
+				DeskPRO_Window.util.modCountEl('#publish_drafts_count', '+');
+				self.modBadgeCount('+');
+			});
+		}
+
+		this.hasSectionInitialised = true;
 
 		var self = this;
 		this.setHasInitialLoaded();
 
 		this.contentEl.html(data.section_html);
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
-			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '-');
-			self.modBadgeCount('-');
-		});
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-add', function (info) {
-			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '+');
-			self.modBadgeCount('+');
-		});
 
 		var self = this;
 
@@ -188,6 +196,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						success: function(result) {
 							if (result.error) {
 								self.reload();
+								DeskPRO_Window.showAlert('Could not update category structure because someone else updated it before you. The section will now refresh and you can try again.');
 								return;
 							}
 
@@ -225,18 +234,26 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						return;
 					}
 					var title = input.val().trim();
+
+					catTreeLoading(1);
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/add-category',
 						data: { title: title },
 						type: 'POST',
 						dataType: 'json',
 						success: function(info) {
+
+							catTreeLoading(0);
+
 							li.data('category-id', info.id);
 							$('.is-nav-item', li).data('route', 'listpane:' + info.url).attr('data-route', 'listpane:' + info.url);;
 							$('.list-counter', li).attr('id', type + '_cat_count_' + info.id);
 
 							// The new overlays need to be reloaded if a new cat was added
 							updateNewOverlay();
+
+							// Reset tree checker
+							ed.pristineStructure = ed.getStructure();
 						}
 					});
 				}
@@ -291,15 +308,19 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				}
 
 				var fn = function() {
+					catTreeLoading(1);
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/delete-category',
 						data: { category_id: li.data('category-id') },
 						type: 'POST',
 						dataType: 'json',
 						error: function() {
+							catTreeLoading(0);
 							li.show();
 						},
 						success: function(info) {
+
+							catTreeLoading(0);
 
 							// It could've been removed by now
 							if (!li || !li.closest('html').length) {
@@ -322,6 +343,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 								li.remove();
 							}
 							updateNewOverlay();
+
+							// Reset tree checker
+							ed.pristineStructure = ed.getStructure();
 						}
 					});
 				};
