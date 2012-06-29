@@ -64,6 +64,8 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		list.on('click', '.sub-toggle', function() {
 			$(this).parent().parent().toggleClass('sub-expanded');
 		});
+
+		this.isEditMode = false;
 	},
 
 	_initLisCollection: function(lis) {
@@ -136,6 +138,20 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			helper: 'clone',
 			zIndex: 100
 		});
+
+		if (!this.editMode) {
+			lis.draggable('disable');
+		}
+	},
+
+	enableEditMode: function() {
+		this.editMode = true;
+		this.list.find('li.dp-cat-li').draggable('enable');
+	},
+
+	disableEditMode: function() {
+		this.editMode = false;
+		this.list.find('li.dp-cat-li').draggable('disable');
 	},
 
 	/**

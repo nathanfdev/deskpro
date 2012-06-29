@@ -210,6 +210,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#publish_outline_'+type+'cat_editmode').on('click', function() {
 				var ul = $(this).parent().parent();
 				ul.toggleClass('edit-mode');
+
+				if (ul.hasClass('edit-mode')) {
+					ed.enableEditMode();
+				} else {
+					ed.disableEditMode();
+				}
 			});
 
 			$('#publish_outline_'+type+'cat_edittiles').on('click', function() {

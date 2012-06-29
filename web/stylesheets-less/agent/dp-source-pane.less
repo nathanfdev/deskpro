@@ -175,6 +175,14 @@ ul.source-list li.no-data {
 	color: #7C838B;
 }
 
+ul.source-list {
+	.ui-state-disabled, .ui-widget-content .ui-state-disabled,
+	.ui-widget-header .ui-state-disabled {
+		.opacity(100);
+		cursor: pointer;
+	}
+}
+
 ul.source-list.ed-open li.no-data {
 	display: none;
 }
