@@ -213,7 +213,10 @@ class TriggerExecutor
 			);
 
 			$ticket_created_trigger = $trigger;
-		} elseif ($this->tracker->hasNewAgentReply()) {
+
+		// We need the is_user_reply check to make sure the reply wasnt made from the user interface
+		// i.e., an agent logged in to user interface replying
+		} elseif ($this->tracker->hasNewAgentReply() && !$this->tracker->isExtraSet('is_user_reply')) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
 			$trigger->actions = array(
@@ -221,7 +224,7 @@ class TriggerExecutor
 			);
 
 			array_unshift($all_triggers, $trigger);
-		} elseif ($this->tracker->hasNewUserReply()) {
+		} elseif ($this->tracker->hasNewUserReply() || $this->tracker->isExtraSet('is_user_reply')) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
 			$trigger->actions = array(

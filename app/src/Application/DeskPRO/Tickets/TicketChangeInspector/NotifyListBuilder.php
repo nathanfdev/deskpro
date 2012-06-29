@@ -151,7 +151,7 @@ class NotifyListBuilder
 
 		// We dont want to notify ourselves (that is, the one that performed whatever action prompted the changeset)
 		$person_context = App::getCurrentPerson();
-		if ($person_context && $person_context->id) {
+		if ($person_context && $person_context->id && !$this->tracker->isExtraSet('is_user_reply')) {
 			$agent_ids = array_filter($agent_ids, function($aid) use ($person_context) {
 				if ($aid == $person_context->id) {
 					return false;

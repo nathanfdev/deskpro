@@ -841,6 +841,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_onPropertyChanged('messages', null, $message);
+
+		if ($this->getTicketLogger() && DP_INTERFACE == 'user') {
+			$this->getTicketLogger()->recordExtra('is_user_reply', true);
+		}
 	}
 
 
