@@ -195,7 +195,7 @@ class ErrorReporter
 				return;
 			}
 
-			if ($errinfo['exception'] instanceof \PDOException) {
+			if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
 				$ignore_codes = array(
 					'HY000', // MySQL server has gone away
 					'1203',  // more than 'max_user_connections' active connections
