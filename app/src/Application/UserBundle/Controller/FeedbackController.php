@@ -380,7 +380,7 @@ class FeedbackController extends AbstractController
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
 
-		$num_votes_this   = $this->person->FeedbackVotes->getVotesOnFeedback($feedback);
+		$has_voted_this   = $this->person->FeedbackVotes->getVotesOnFeedback($feedback);
 
 		$comments = null;
 		$comments_widget = null;
@@ -415,7 +415,7 @@ class FeedbackController extends AbstractController
 
 		return $this->render($tpl, array(
 			'display'           => $display,
-			'num_votes_this'    => $num_votes_this,
+			'has_voted_this'    => $has_voted_this,
 
 			'feedback'          => $feedback,
 			'category_path'     => $category_path,

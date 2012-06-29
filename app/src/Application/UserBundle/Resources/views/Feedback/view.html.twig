@@ -29,20 +29,22 @@
 {% block content %}
 
 <section class="dp-article-post dp-content-post dp-content-page">
-	<header>
+	<header class="dp-feedback-row {% if has_voted_this %}dp-voted-row{% endif %}">
 		<table class="dp-layout" width="100%"><tr>
 			<td width="50" style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 			<td class="dp-row-contain">
-				<span class="dp-feedback-status" style="float: right; margin-left: 6px;">
-					{% if feedback.status_category %}
-						{{ feedback.status_category.title }}
-					{% else %}
-						{% if feedback.status == 'new' %}{{ phrase('user.feedback.status_new') }}
-						{% elseif feedback.status == 'active' %}{{ phrase('user.feedback.status_active') }}
-						{% elseif feedback.status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+				{% if feedback.status != 'hidden' %}
+					<span class="dp-feedback-status" style="float: right; margin-left: 6px;">
+						{% if feedback.status_category %}
+							{{ feedback.status_category.title }}
+						{% else %}
+							{% if feedback.status == 'new' %}{{ phrase('user.feedback.status_new') }}
+							{% elseif feedback.status == 'active' %}{{ phrase('user.feedback.status_active') }}
+							{% elseif feedback.status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+							{% endif %}
 						{% endif %}
-					{% endif %}
-				</span>
+					</span>
+				{% endif %}
 				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
 				<ul class="dp-post-info">
 					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
@@ -56,6 +58,13 @@
 		</tr></table>
 	</header>
 	<article>
+
+		{% if feedback.status_code == 'hidden.validating' %}
+			<div class="dp-alert dp-alert-info">
+				{{ phrase('user.feedback.note_awaiting-validation')}}
+			</div>
+		{% endif %}
+
 		{{ feedback.content_html|raw }}
 		{% if feedback.attachments|length %}
 			<ul class="attachment-list">
