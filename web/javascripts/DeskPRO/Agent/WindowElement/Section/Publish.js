@@ -193,7 +193,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						var postData = makeStructureData(ed.getStructure());
 						postData.append(makeStructureData(ed.pristineStructure, 'structure_check'));
 
-
 						$.ajax({
 							url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
 							data: postData,

@@ -255,6 +255,9 @@ class Numbers
 		$info['first'] = 1;
 		$info['last'] = $num_pages;
 		$info['curpage'] = $page;
+		$info['total_results'] = $num_results;
+		$info['first_result'] = (($page-1) * $per_page) + 1;
+		$info['last_result'] = (($page-1) * $per_page) + $per_page;
 
 		$info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 

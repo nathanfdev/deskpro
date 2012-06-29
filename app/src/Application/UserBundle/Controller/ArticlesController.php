@@ -58,7 +58,7 @@ class ArticlesController extends AbstractController
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
-		$page = $this->in->getUint('page');
+		$page = $this->in->getUint('p');
 		$page = max(1, $page);
 
 		$per_page = 25;
@@ -100,11 +100,14 @@ class ArticlesController extends AbstractController
 
 			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 
+			$pageinfo = Numbers::getPaginationPages($total, $page, $per_page);
+
 		} else {
 			$category = null;
 			$category_children = $structure->getArticleRootCategories();
 			$category_path = array();
 			$articles = array();
+			$pageinfo = null;
 		}
 
 		$category_counts = $structure->getArticleCategoryCounts($this->person);
@@ -121,6 +124,7 @@ class ArticlesController extends AbstractController
 		$tpl = 'UserBundle:Articles:browse.html.twig';
 
 		return $this->render($tpl, array(
+			'pageinfo' => $pageinfo,
 			'category' => $category,
 			'category_path' => $category_path,
 			'category_children' => $category_children,

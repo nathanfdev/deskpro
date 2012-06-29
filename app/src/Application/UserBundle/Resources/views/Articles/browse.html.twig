@@ -62,7 +62,11 @@
 		{% if category %}
 			<header>
 				{% if category and articles|length %}
-					<h3>{{ phrase('user.knowledgebase.title-articles', {'count': articles|length}) }}</h3>
+					{% if pageinfo.total_results > articles|length %}
+						<h3>{{ phrase('user.knowledgebase.title-articles-paged', {'total': pageinfo.total_results, 'first': pageinfo.first_result, 'last': pageinfo.last_result}) }}</h3>
+					{% else %}
+						<h3>{{ phrase('user.knowledgebase.title-articles', {'count': pageinfo.total_results}) }}</h3>
+					{% endif %}
 				{% endif %}
 			</header>
 		{% endif %}
@@ -84,6 +88,19 @@
 					</li>
 					{% endfor %}
 				</ul>
+
+				{% if pageinfo.last != 1 %}
+					{% set page_url = path('user_articles', {'slug': category.url_slug|default('all-categories') }) ~ '?p=' %}
+					<div class="dp-pagination">
+						<ul>
+							{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+							{% for p in pageinfo.pages %}
+							<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+								{% endfor %}
+							{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.next') }} &rarr;</a></li>{% endif %}
+						</ul>
+					</div>
+					{% endif %}
 			</div>
 		</div>
 	</section>
