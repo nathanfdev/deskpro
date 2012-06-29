@@ -197,7 +197,7 @@ class LanguageController extends Controller
             $phrases = require($file);
             $lengths = array();
             ksort($phrases);
-            $data = "<?php return array(\r";
+            $data = "<?php return array(\n";
             $pairs = array();
 
             foreach($phrases as $id=>$text) {
@@ -212,7 +212,7 @@ class LanguageController extends Controller
 
             foreach($pairs as $id=>$text) {
                 $id = str_pad($id, $length);
-                $data .= "\t{$id} => {$text},\r";
+                $data .= "\t{$id} => {$text},\n";
             }
 
             $data .= ');';
