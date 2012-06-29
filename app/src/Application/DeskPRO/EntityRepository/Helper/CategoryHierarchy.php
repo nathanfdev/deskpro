@@ -381,7 +381,7 @@ class CategoryHierarchy
 				// Once we get one level deeper, then we're
 				// no longer direct children
 				if ($direct && $c['depth'] >= $depth+2) {
-					break;
+					continue;
 				}
 
 				$child_ids[] = $c['id'];
