@@ -43,6 +43,11 @@
 {% if category_children|length %}
 	<div style="overflow: hidden;">
 		<section class="dp-portal-section">
+			{% if category %}
+				<header>
+					<h3>{{ phrase('user.downloads.title-categories', {'count': category_children|length}) }}</h3>
+				</header>
+			{% endif %}
 			<div class="dp-content-block dp-news-block">
 				<div class="dp-content-wrapper">
 					<ul class="dp-cat-list">
@@ -57,6 +62,13 @@
 
 {% if downloads|length %}
 	<section class="dp-portal-section">
+		{% if category %}
+			<header>
+				{% if category and downloads|length %}
+				<h3>{{ phrase('user.downloads.title-downloads', {'count': downloads|length}) }}</h3>
+				{% endif %}
+			</header>
+		{% endif %}
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">
 				<ul class="dp-content-list">
