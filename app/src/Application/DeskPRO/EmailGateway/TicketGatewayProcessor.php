@@ -74,6 +74,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected $error;
 	protected $source_info;
+	protected $is_dp3_reply = false;
 
 	public function logMessage($message, $pri = 'debug')
 	{
@@ -135,6 +136,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$detector = new Dp3Detector();
 			$ticket = $detector->findExistingTicket($this->reader);
 			$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+			$this->is_dp3_reply = true;
 		}
 
 		if (!$ticket) {
@@ -264,62 +266,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['subject'] = $this->reader->getSubject()->getSubject();
 		}
 
-		if ($this->reader->getBodyHtml()->getBody()) {
-			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
-			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
-			if (!$email_info['body']) {
-				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
-				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
-			}
-			$email_info['body_is_html'] = true;
-
+		if ($this->is_dp3_reply) {
+			$email_info = array_merge($email_info, $this->getEmailBodyInfoDp3());
 		} else {
-			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
-			$txt = $this->reader->getBodyText()->getBodyUtf8();
-			if (!$txt && $this->reader->getBodyText()->getBody()) {
-				$txt = $this->reader->getBodyText()->getBody();
-				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
-			}
-
-			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
-			$email_info['body_is_html'] = false;
-		}
-
-		$body_full = $email_info['body'];
-
-		// Get rid of our cut line
-		$body_full = str_replace('_______________________.', '', $body_full);
-		if ($email_info['body_is_html']) {
-			$body_full = $this->cleaner->clean($body_full, 'html_email');
-		}
-
-		$has_cut = false;
-
-		if ($email_info['body_is_html']) {
-			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-			$cutter->addPatterns($pattern_config->all());
-
-			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
-
-			if ($cutter->getMatchedPatterns()) {
-				$has_cut = true;
-				foreach ($cutter->getMatchedPatterns() as $p) {
-					$this->logMessage("Cutter matched pattern: " . $p->getPattern());
-				}
-			} else {
-				$this->logMessage("Cutter did not match any pattern");
-			}
-		}
-
-		if (!$has_cut) {
-			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
-		}
-
-		if ($email_info['body_is_html']) {
-			$email_info['body'] = $this->trimHtmlWhitespace($email_info['body']);
-			$body_full = $this->trimHtmlWhitespace($body_full);
+			$email_info = array_merge($email_info, $this->getEmailBodyInfo());
 		}
 
 		$ev = $this->createGatewayEvent(array(
@@ -348,7 +298,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
 		$message['message'] = $email_info['body'];
-		$message['message_full'] = $body_full;
+		$message['message_full'] = $email_info['body_full'];
 
 		$message['show_full_hint'] = false;
 		$inline_reply_detector = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply(App::getOrm(), $this->reader);
@@ -408,6 +358,137 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
 
 		return $message;
+	}
+
+	protected function getEmailBodyInfo()
+	{
+		$email_info = array();
+
+		if ($this->reader->getBodyHtml()->getBody()) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
+			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			if (!$email_info['body']) {
+				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+			}
+			$email_info['body_is_html'] = true;
+
+		} else {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
+			$txt = $this->reader->getBodyText()->getBodyUtf8();
+			if (!$txt && $this->reader->getBodyText()->getBody()) {
+				$txt = $this->reader->getBodyText()->getBody();
+				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+			}
+
+			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+			$email_info['body_is_html'] = false;
+		}
+
+		$email_info['body_full'] = $email_info['body'];
+
+		// Get rid of our cut line
+		$email_info['body_full'] = str_replace('_______________________.', '', $email_info['body_full']);
+		if ($email_info['body_is_html']) {
+			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
+		}
+
+		$has_cut = false;
+
+		if ($email_info['body_is_html']) {
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
+
+			if ($cutter->getMatchedPatterns()) {
+				$has_cut = true;
+				foreach ($cutter->getMatchedPatterns() as $p) {
+					$this->logMessage("Cutter matched pattern: " . $p->getPattern());
+				}
+			} else {
+				$this->logMessage("Cutter did not match any pattern");
+			}
+		}
+
+		if (!$has_cut) {
+			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		}
+
+		if ($email_info['body_is_html']) {
+			$email_info['body'] = $this->trimHtmlWhitespace($email_info['body']);
+			$email_info['body_full'] = $this->trimHtmlWhitespace($email_info['body_full']);
+		}
+
+		return $email_info;
+	}
+
+	protected function getEmailBodyInfoDp3()
+	{
+		$email_info = array();
+		$email_info['body_is_html'] = false;
+
+		$this->logMessage('[TicketGatewayProcessor] Processing DP3 reply text');
+
+		if ($this->reader->getBodyText()->getBodyUtf8()) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
+			$txt = $this->reader->getBodyText()->getBodyUtf8();
+			if (!$txt && $this->reader->getBodyText()->getBody()) {
+				$txt = $this->reader->getBodyText()->getBody();
+				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+			}
+
+			$email_info['body'] = $txt;
+		} else {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
+			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			if (!$email_info['body']) {
+				$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBody());
+				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+			}
+		}
+
+		$email_info['body_full'] = $email_info['body'];
+
+		$agent_pos_1 = strpos($email_info['body'], '=== Enter your reply below this line ===');
+		$agent_pos_2 = strpos($email_info['body'], '=== Enter your reply above this line ===');
+
+		#------------------------------
+		# Agent markers
+		#------------------------------
+
+		if ($agent_pos_1 !== false && $agent_pos_2 !== false) {
+			$email_info['body'] = \Orb\Util\Strings::getBetweenBoundary(
+				$email_info['body'],
+				'=== Enter your reply below this line ===',
+				'=== Enter your reply above this line ==='
+			);
+
+		#------------------------------
+		# User email
+		#------------------------------
+
+		} else {
+			$user_pos_1 = strpos($email_info['body'], '========= Please enter your reply ABOVE this line =========');
+			if ($user_pos_1 !== false) {
+				$email_info['body'] = \Orb\Util\Strings::getAboveBoundary(
+					$email_info['body'],
+					'========= Please enter your reply ABOVE this line ========='
+				);
+			}
+		}
+
+		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+		$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+
+		$email_info['body'] = trim($email_info['body'], " >\n\r");
+
+		$email_info['body'] = nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8'));
+		$email_info['body_full'] = nl2br(htmlspecialchars($email_info['body_full'], \ENT_QUOTES, 'UTF-8'));
+
+		return $email_info;
 	}
 
 	public function trimHtmlWhitespace($html)
@@ -611,7 +692,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		return $ticket;
 	}
-
 
 	############################################################################
 	# New Ticket: Agent forwarded message
