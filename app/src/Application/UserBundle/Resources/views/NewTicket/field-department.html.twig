@@ -13,7 +13,11 @@
 			<label><strong>{{ phrase('user.tickets.fields_department') }} *</strong></label>
 		</div>
 		<div class="dp-controls dp-fill">
-			<select name="newticket[ticket][department_id]" class="department_id">
+			<select
+				name="newticket[ticket][department_id]"
+				class="department_id"
+				data-field-validators="DeskPRO.Form.LengthValidator"
+			>
 				<option value=""></option>
 				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
 					{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
