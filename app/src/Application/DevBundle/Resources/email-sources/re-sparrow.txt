@@ -56,7 +56,7 @@ On Tuesday, 26 June 2012 at 18:00, DeskPRO wrote:
 > _______________________.
 > Dear Christopher Nadeau,
 >
-> Your ticket has been recieved and our agents will reply to you as soon as they can.
+> Your ticket has been received and our agents will reply to you as soon as they can.
 > On Tue, 26th Jun 2012 at 5:00 pm, Christopher Nadeau <chris.nadeau@deskpro.com (mailto:chris.nadeau@deskpro.com)> wrote:
 >
 > Test Subject - 20120626180025
@@ -118,7 +118,7 @@ erif; =20
 font-size:12px; line-height:125%; padding-bottom:0;=22>
 								Dear Christopher Nadeau,<br><br>
 
-		Your ticket has been recieved and our agents will reply to you as soon =
+		Your ticket has been received and our agents will reply to you as soon =
 as =20
 they can.
 	=09

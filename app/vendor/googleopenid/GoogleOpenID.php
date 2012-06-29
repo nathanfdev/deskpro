@@ -341,7 +341,7 @@
 
     //returns an associative array of all openid parameters for this openid
     //session. the array contains all the GET attributes that would be sent
-    //or that have been recieved, meaning:
+    //or that have been received, meaning:
     //
     //if mode = "cancel" returns only the mode and ns attributes
     //if mode = "id_res" returns all attributes that are not null

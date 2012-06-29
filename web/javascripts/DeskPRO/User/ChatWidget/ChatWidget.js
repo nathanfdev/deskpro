@@ -463,7 +463,7 @@ var DpChatWidget = new (function() {
 		var data = messageData.split(':');
 		var messageId = data.shift();
 
-		console.log('[ChatWidget] comms recieved: %s %o', messageId, data);
+		console.log('[ChatWidget] comms received: %s %o', messageId, data);
 
 		switch (messageId) {
 			case 'started':

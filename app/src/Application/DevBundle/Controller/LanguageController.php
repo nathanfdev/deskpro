@@ -167,6 +167,27 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:batch.replace.html.twig', array('changed' => array_keys($changed)));
     }
 
+    public function spellcheckAction()
+    {
+
+        $strings = '';
+
+        $files = Language::GetFileFinder()->getLanguageFileList('user');
+
+        foreach ($files AS $file) {
+
+            $phrases = require($file);
+            foreach ($phrases AS $id => $text) {
+                $strings .= $text . "\n\n";
+            }
+        }
+
+        $vars = array('strings' => $strings);
+
+        return $this->render('DevBundle:Language:spell.html.twig', $vars);
+
+    }
+
     public function reformatLanguageFilesAction()
     {
         $files = Language::GetFileFinder()->getLanguageFileList();

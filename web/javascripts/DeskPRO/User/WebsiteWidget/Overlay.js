@@ -145,7 +145,7 @@ var DpOverlayWidget = new (function() {
 		var messageData = messageData.split(':');
 		var messageId = messageData.shift();
 
-		console.log('[ChatWidget] comms recieved: %s %o', messageId, data);
+		console.log('[ChatWidget] comms received: %s %o', messageId, data);
 
 		var self = this;
 		console.log('[Recieving] %s', messageId);

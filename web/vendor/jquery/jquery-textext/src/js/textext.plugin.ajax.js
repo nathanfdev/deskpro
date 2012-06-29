@@ -146,7 +146,7 @@
 
 		/**
 		 * In the event of successful AJAX request, the AJAX coponent dispatches the `setSuggestions`
-		 * event meant to be recieved by the Autocomplete plugin.
+		 * event meant to be received by the Autocomplete plugin.
 		 *
 		 * @name setSuggestions
 		 * @author agorbatchev
