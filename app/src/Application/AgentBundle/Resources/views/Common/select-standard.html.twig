@@ -1,7 +1,10 @@
 {% macro render_options(k, cat, selected, depth, parent_title, title_prop, child_prop) %}
 	{% set id = cat.id|default(k) %}
 	{% if title_prop %}
-		{% set title = cat[title_prop] %}
+		{% set title = phrase_object(cat, 'title') %}
+		{% if not title %}
+			{% set title = cat[title_prop] %}
+		{% endif %}
 	{% else %}
 		{% if cat.title is defined %}
 			{% set title = cat.title %}

@@ -16,6 +16,19 @@
 		</article>
 	</section>
 
+	<section class="top">
+		<header>
+			<h4>Translate Resources</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if this_page == 'phrase_group_CUSTOM' %}on{% endif %}">
+					<a href="{{ path('admin_langs_departments', {'language_id': language.id}) }}">Departments</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
 	{% for group,subgroups in phrase_groups %}
 		<section class="top">
 			<header>

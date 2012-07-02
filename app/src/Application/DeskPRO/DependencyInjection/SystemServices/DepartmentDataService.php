@@ -43,14 +43,25 @@ class DepartmentDataService extends BaseRepositoryService
 	protected $cat_ids = array();
 	protected $filtered_nodes = array();
 
+	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	protected $translator;
+
 	public static function create(DeskproContainer $container, array $options = null)
 	{
 		if (!$options) $options = array();
 		$options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
+		$options['translator'] = $container->getTranslator();
 
 		$em = $container->getEm();
 		$o = new static($em, $options);
 		return $o;
+	}
+
+	protected function init()
+	{
+		$this->translator = $this->options['translator'];
 	}
 
 	public function get($dep_id)
@@ -92,6 +103,17 @@ class DepartmentDataService extends BaseRepositoryService
 		$this->repos->getInHierarchy($cats);
 	}
 
+	public function getNames($for_ids = null)
+	{
+		$ret = array();
+
+		foreach ($this->cat_ids as $cid) {
+			$ret[$cid] = $this->translator->getPhraseObject($this->get($cid), 'title');
+		}
+
+		return $ret;
+	}
+
 	public function getByIds(array $ids, $keep_order = false)
 	{
 		$this->preload();
@@ -129,7 +151,7 @@ class DepartmentDataService extends BaseRepositoryService
 			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), $app);
 		};
 
-		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxy::makeTreeProxyArray($this->getRootNodes(), $filter);
+		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
 		return $this->filtered_nodes[$key];
 	}
 

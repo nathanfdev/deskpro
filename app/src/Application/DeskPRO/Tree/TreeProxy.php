@@ -64,7 +64,7 @@ class TreeProxy implements \ArrayAccess
 				continue;
 			}
 
-			$c_obj = new TreeProxy($c, $filter);
+			$c_obj = new static($c, $filter);
 			$ret[$k] = $c_obj;
 		}
 

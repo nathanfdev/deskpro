@@ -1,3 +1,5 @@
+{% import 'UserBundle::macros.html.twig' as 'dp' %}
+
 {##
  # The table of ticket properties that is at the top of the view ticket page.
  ##}
@@ -6,7 +8,7 @@
 	<tbody>
 		<tr>
 			<th width="150">{{ phrase('user.tickets.fields_department') }}</th>
-			<td>{{ ticket.department.full_user_title }}</td>
+			<td>{{ dp.full_title(ticket.department) }}</td>
 		</tr>
 
 		<tr>

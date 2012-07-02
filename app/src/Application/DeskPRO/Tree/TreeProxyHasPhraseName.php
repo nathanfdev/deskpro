@@ -29,62 +29,37 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Translate
  */
 
-namespace Application\DeskPRO\Translate;
+namespace Application\DeskPRO\Tree;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 
-use Orb\Util\Util;
-
-/**
- * This takes an object, and then based on its state, produces a phrase ID that
- * we can use to look up a phrase. This is how we translate thigns like category
- * titles. The category itself becomes a "phrase", and is handled like any other.
- */
-class ObjectPhraseNamer
+class TreeProxyHasPhraseName extends TreeProxy implements HasPhraseName
 {
-	public function getPhraseName($object, $property = null)
+
+	/**
+	 * Return a unique ID that we can use to look up translations for this object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param Translate $translate The translate object requesting
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
 	{
-		$id = null;
-		if (method_exists($object, 'getId')) {
-			$id = $object->getId();
-		} elseif ($object instanceof \ArrayAccess AND isset($object['id'])) {
-			$id = $object['id'];
-		}
-
-		if ($id) {
-			$baseclass = Util::getBaseClassname($object);
-			$prefix = 'obj_' . strtolower($baseclass) . '.';
-			$name = $prefix . $id;
-			if ($property) {
-				$name .= '_' . $property;
-			}
-			return $name;
-		}
-
-		return null;
+		return $this->__obj->getPhraseName($property, $translate);
 	}
 
-	public function getPhraseDefault($object, $property = null)
+	/**
+	 * Get the default value phrase for the object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @param Translate $translate The translate object requesting
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
 	{
-		if ($object instanceof \ArrayAccess) {
-			if ($property === null) {
-				if (isset($object['full_title'])) {
-					return $object['full_title'];
-				} elseif (isset($object['title'])) {
-					return $object['title'];
-				} elseif (isset($object['name'])) {
-					return $object['title'];
-				}
-			}
-
-			if (isset($object[$property])) {
-				return $object[$property];
-			}
-		}
-
-		return null;
+		return $this->__obj->getPhraseDefault($property, $translate);
 	}
 }

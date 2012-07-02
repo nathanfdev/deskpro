@@ -141,11 +141,11 @@
 							{% if dep.children|length %}
 								<optgroup label="{{ dep.title }}">
 									{% for subdep in dep.children %}
-										<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
+										<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ phrase_object(subdep, 'user') }}</option>
 									{% endfor %}
 								</optgroup>
 							{% else %}
-								<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.user_title }}</option>
+								<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ phrase_object(subdep, 'user') }}</option>
 							{% endif %}
 						{% endfor %}
 					</select>

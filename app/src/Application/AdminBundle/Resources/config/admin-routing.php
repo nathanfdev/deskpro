@@ -1010,6 +1010,13 @@ $collection->add('admin_langs_newlang_save', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_departments', new Route(
+	'/languages/{language_id}/phrases/departments',
+	array('_controller' => 'AdminBundle:Languages:departments'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_langs_editphrases', new Route(
 	'/languages/{language_id}/phrases/{group}',
 	array('_controller' => 'AdminBundle:Languages:editPhrases'),
