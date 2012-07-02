@@ -61,11 +61,13 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 	public function preRunAll()
 	{
 		$this->importer->removeTableIndexes('searchlog');
+		$this->importer->removeTableIndexes('ratings');
 	}
 
 	public function postRunAll()
 	{
 		$this->importer->restoreTableIndexes('searchlog');
+		$this->importer->restoreTableIndexes('ratings');
 	}
 
 	public function run($page = 1)
