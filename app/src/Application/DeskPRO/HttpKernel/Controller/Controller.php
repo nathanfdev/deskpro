@@ -196,7 +196,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$response = $this->container->get('response');
 
 		// Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
-		if (isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+		if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
 			$response->headers->set('Content-Type', 'application/json');
 		} else {
 			$response->headers->set('Content-Type', 'text/plain');
