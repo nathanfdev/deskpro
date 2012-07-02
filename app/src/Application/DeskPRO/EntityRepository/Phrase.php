@@ -43,25 +43,18 @@ class Phrase extends EntityRepository
 {
 	public function getPhraseForLanguage($phrase_name, $language = null)
 	{
-		try {
-			if ($language === null OR $language === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT p
-					FROM DeskPRO:Phrase p
-					WHERE p.language IS NULL AND p.name = ?1
-				")->setParameters(array(1=>$phrase_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT p
-					FROM DeskPRO:Phrase p
-					WHERE p.language = ?1 AND p.name = ?2
-				")->setParameters(array(1=>$language, 2=>$phrase_name));
-			}
-
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
-			return null;
+		if ($language === null OR $language === 0) {
+			return $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Phrase p
+				WHERE p.language IS NULL AND p.name = ?1
+			")->setParameters(array(1=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Phrase p
+				WHERE p.language = ?1 AND p.name = ?2
+			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();;
 		}
 	}
 
@@ -70,7 +63,7 @@ class Phrase extends EntityRepository
 		$names = App::getDb()->fetchColumn("
 			SELECT name
 			FROM phrases
-			WHERE language_id = ?
+			WHERE language_id = ? AND phrase IS NOT NULL
 		", array($language['id']));
 
 		return $names;
@@ -86,11 +79,21 @@ class Phrase extends EntityRepository
 			}
 		}
 		$phrases = App::getDb()->fetchAllKeyValue("
-			SELECT name, phrase
+			SELECT name, COALESCE(phrase, original_phrase) AS phrase
 			FROM phrases
 			WHERE language_id = ? AND groupname = ?
 		", array($language->id, $group));
 
 		return $phrases;
+	}
+
+
+	public function getLanguagePhrasesInGroup($language, $group)
+	{
+		return $this->_em->createQuery("
+			SELECT p
+			FROM DeskPRO:Phrase p INDEX BY p.name
+			WHERE p.language = ?0 AND p.groupname = ?1
+		")->setParameters(array($language, $group))->execute();
 	}
 }

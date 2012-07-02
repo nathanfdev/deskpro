@@ -125,11 +125,12 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	public function setName($name)
 	{
 		$this->setModelField('name', $name);
-		$dotpos = strpos($this->name, '.');
-		if ($dotpos) {
-			$this->setModelField('groupname', substr($this->name, 0, $dotpos));
-		} else {
-			$this->setModelField('groupname', null);
+
+		$groupname = Strings::rexplode('.', $name, 2);
+		$groupname = array_shift($groupname);
+
+		if ($groupname) {
+			$this->setModelField('groupname', $groupname);
 		}
 	}
 

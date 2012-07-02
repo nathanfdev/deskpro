@@ -46,6 +46,11 @@ class DbLoader implements LoaderInterface
 	protected $dbconn;
 
 	/**
+	 * @var array
+	 */
+	protected $loaded_langs = array();
+
+	/**
 	 * @param \Application\DeskPRO\DBAL\Connection $dbconn
 	 */
 	public function __construct(\Application\DeskPRO\DBAL\Connection $dbconn)
@@ -61,7 +66,14 @@ class DbLoader implements LoaderInterface
 			return array();
 		}
 
-		$group_in = "'" . implode("','", $groups) . "'";
+		// The LoaderInterface expects to load groups as they're needed,
+		// but thats expensive in the db so we load then entire thing in one query
+		// - This check prevents the query from re-running when another call is made
+		if (isset($this->loaded_langs[$language['id']])) {
+			return array();
+		}
+
+		$this->loaded_langs[$language['id']] = true;
 
 		$langs = array();
 		$langs[] = 1; // default deskpro lang
@@ -81,19 +93,34 @@ class DbLoader implements LoaderInterface
 		// priority over parent phrases. Children are always created after parents, therefore
 		// their ID's are always higher.
 
+		// Depending on the interface, we load user, user+agent or user+agent+admin
+		if (DP_INTERFACE == 'admin') {
+			$group_like = '1';
+		} elseif (DP_INTERFACE == 'agent') {
+			$group_like = 'groupname LIKE "agent.%" OR groupname LIKE "user.%"';
+		} else {
+			$group_like = 'groupname LIKE "user.%"';
+		}
+
 		$q = $this->dbconn->query("
-			SELECT name, COALESCE(original_phrase, phrase) AS phrase, groupname
+			SELECT name, phrase, original_phrase, groupname
 			FROM phrases
-			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
+			WHERE language_id IN ($lang_in) AND ($group_like)
 			GROUP BY name
 			ORDER BY language_id DESC
 		");
 
 		$phrases = array();
 		while ($r = $q->fetch()) {
+
+			$phrase_text = $r['phrase'];
+			if (empty($phrase_text)) {
+				$phrase_text = $r['original_phrase'];
+			}
+
 			if (!isset($phrases[$r['groupname']])) $phrases[$r['groupname']] = array();
 
-			$phrases[$r['groupname']][$r['name']] = $r['phrase'];
+			$phrases[$r['groupname']][$r['name']] = $phrase_text;
 		}
 
 		return $phrases;

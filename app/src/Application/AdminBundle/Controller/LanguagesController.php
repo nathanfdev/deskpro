@@ -155,14 +155,7 @@ class LanguagesController extends AbstractController
 		$master_phrases = $groups_reader->getGroupPhrases($group);
 		$vars['master_phrases'] = $master_phrases;
 
-		$class = $vars['language']->language_package;
-		if (class_exists($class, true));
-		$path = $class::getLangPath();
-
-
-		$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases($path);
-		$lang_phrases = $groups_reader->getGroupPhrases($group);
-		$vars['lang_phrases'] = $lang_phrases;
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
 
 		$custom_phrases = $this->em->getRepository('DeskPRO:Phrase')->getPhrasesInGroup($vars['language'], $group);
 		$vars['custom_phrases'] = $custom_phrases;
@@ -181,16 +174,17 @@ class LanguagesController extends AbstractController
 		$this->em->beginTransaction();
 		try {
 			foreach ($phrases as $phrase_id => $phrase_text) {
-				$phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($language, $phrase_id);
+				$phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $language);
 				if (!$phrase) {
 					$phrase = new \Application\DeskPRO\Entity\Phrase();
 					$phrase->language = $language;
 					$phrase->name = $phrase_id;
+					$master_phrase = $phrase_reader->getMasterPhrase($phrase_id);
+					$phrase->original_phrase = $master_phrase;
+					$phrase->original_hash = $phrase_reader->generatePhraseHash($master_phrase);
 				}
 
-				$master_phrase = $phrase_reader->getMasterPhrase($phrase_id);
-
-				if ($phrase_text == $master_phrase || !$phrase_text) {
+				if ($phrase_text == $phrase->original_phrase || !$phrase_text) {
 					if ($phrase->id) {
 						$this->em->remove($phrase);
 					}
@@ -198,8 +192,6 @@ class LanguagesController extends AbstractController
 				}
 
 				$phrase->phrase = $phrase_text;
-				$phrase->original_hash = $phrase_reader->generatePhraseHash($master_phrase);
-				$phrase->is_outdated = false;
 
 				$this->em->persist($phrase);
 			}
@@ -230,7 +222,14 @@ class LanguagesController extends AbstractController
 
 		$vars = array();
 		$vars['language'] = $language;
-		$vars['phrase_groups'] = $groups_reader->getGroups();
+		$phrase_groups = $groups_reader->getGroups();
+
+		// Order so user, agent, admin
+		$vars['phrase_groups'] = array(
+			'user'  => $phrase_groups['user'],
+			'agent' => $phrase_groups['agent'],
+			'admin' => $phrase_groups['admin'],
+		);
 
 		return $vars;
 	}
