@@ -78,17 +78,39 @@ class LanguagesController extends AbstractController
 
 	public function installUploadAction()
 	{
-		/** @var $file UploadedFile */
-		$file = $this->request->files->get('upfile');
+		if ($this->in->getRaw('pack_string')) {
+			$pack = base64_decode($this->in->getRaw('pack_string'));
+			$pack = \Orb\Util\Util::signedUnserialize($pack, $this->container->getSetting('core.app_secret'));
 
-		if (!$file || !$file->isValid()) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			if (!$pack) {
+				return $this->redirectRoute('admin_langs');
+			}
+		} else {
+			/** @var $file UploadedFile */
+			$file = $this->request->files->get('upfile');
+
+			if (!is_object($file) || !$file->isValid()) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			}
+
+			$pack_file = LanguagePackFile::newFromFile($file->getRealPath());
+			$pack = $pack_file->getPack();
 		}
 
-		$pack_file = LanguagePackFile::newFromFile($file->getRealPath());
+		$exist_lang = $this->em->getRepository('DeskPRO:Language')->findOneBy(array('sys_name' => $pack->sys_name));
+		if ($exist_lang && !$this->in->getBool('confirm_upgrade')) {
+			return $this->render('AdminBundle:Languages:install-confirm-upgrade.html.twig', array(
+				'language' => $exist_lang,
+				'lang_title' => $pack->title,
+				'pack' => base64_encode(\Orb\Util\Util::signedSerialize($pack, $this->container->getSetting('core.app_secret')))
+			));
+		}
 
 		$lang_installer = new LanguageInstaller($this->em);
-		$lang = $lang_installer->installFromPackFile($pack_file);
+		if ($exist_lang) {
+			$lang_installer->setUpgradeLanguage($exist_lang);
+		}
+		$lang = $lang_installer->installPack($pack);
 
 		return $this->redirectRoute('admin_langs_editlang', array('language_id' => $lang->getId()));
 	}

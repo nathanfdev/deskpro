@@ -291,7 +291,7 @@ class Util
 
 		$md5_check = md5($sign_key . $ser);
 		if ($md5 != $md5_check) {
-			throw new Exception('Invalid data or sign key.');
+			throw new \Exception('Invalid data or sign key.');
 		}
 
 		return @unserialize(@base64_decode($ser));
