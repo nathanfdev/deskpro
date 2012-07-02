@@ -228,6 +228,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$this->language = $person->getLanguage();
 		} elseif ($this->get('language_id')) {
 			$this->language = App::getDataService('Language')->get($this->get('language_id'));
+		} elseif (isset($_COOKIE['dplid'])) {
+			$this->language = App::getDataService('Language')->get($_COOKIE['dplid']);
 		}
 
 		if (!$this->language) {

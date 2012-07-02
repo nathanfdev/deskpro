@@ -6,6 +6,7 @@
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+	var DESKPRO_SESSION_ID = '{{ app.getSession().getEntity().getSessionCode() }}';
 
 	{% if constant('DP_DEBUG') %}
 	DP_DEBUG = true;

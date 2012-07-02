@@ -77,7 +77,7 @@
 					<label>{{ phrase('user.portal.language_chooser') }}</label>
 					<select name="language_id" onchange="$('#dp_lang_chooser_form').submit();">
 						{% for lang in app.getDataRepository('Language').getAll() %}
-							<option value="{{ lang.id }}" {% if lang.id == app.user.getLanguageId() %}selected="selected"{% endif %}>{{ lang.title }}</option>
+							<option value="{{ lang.id }}" {% if lang.id == app.session.getLanguage().getId() %}selected="selected"{% endif %}>{{ lang.title }}</option>
 						{% endfor %}
 					</select>
 				</form>

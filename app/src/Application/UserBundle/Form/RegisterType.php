@@ -60,6 +60,13 @@ class RegisterType extends AbstractType
 		$builder->add('email', 'text', array('required' => false));
 		$builder->add('password', 'password', array('required' => false));
 		$builder->add('password2', 'password', array('required' => false));
+
+		$langs = App::getDataService('Language')->getTitles();
+		if (count($langs) != 1) {
+			$builder->add('language_id', 'choice', array(
+				'choices' => $langs
+			));
+		}
 	}
 
 	public function getName()

@@ -312,6 +312,10 @@ HTML;
 			throw $e;
 		}
 
+		// Set cookie too so it lasts after session expires
+		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $lang->getId(), 'never');
+		$cookie->send();
+
 		return $this->redirectRoute('user');
 	}
 }

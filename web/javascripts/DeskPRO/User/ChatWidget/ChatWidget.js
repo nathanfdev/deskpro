@@ -259,7 +259,11 @@ var DpChatWidget = new (function() {
 		}
 		url += '&_2=';
 
-		var sid = getCookie('dpchat_sid');
+		if (typeof DESKPRO_SESSION_ID != 'undefined') {
+			var sid = DESKPRO_SESSION_ID;
+		} else {
+			var sid = getCookie('dpchat_sid');
+		}
 		if (sid) {
 			url += '&__sid=' + sid + '&';
 		}

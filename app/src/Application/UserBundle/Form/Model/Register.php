@@ -44,6 +44,7 @@ class Register
 	public $email;
 	public $password;
 	public $password2;
+	public $language_id = 1;
 
 	public $no_validation;
 

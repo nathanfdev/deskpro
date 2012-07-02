@@ -50,6 +50,11 @@ class RegisterController extends AbstractController
 		}
 
 		$register = new \Application\UserBundle\Form\Model\Register();
+
+		if ($this->session->get('language_id')) {
+			$register->language_id = $this->session->get('language_id');
+		}
+
 		$reg_formtype = new RegisterType();
 
 		$from_ticket = false;
