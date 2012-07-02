@@ -14,6 +14,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 	Extends: DeskPRO.BasicWindow,
 
 	init: function() {
+		var self = this;
 		this.util = {
 			modCountEl: function(el, op, num) {
 
@@ -82,6 +83,10 @@ DeskPRO.Admin.Window = new Orb.Class({
 				return html;
 			}
 		};
+
+		$(window).on('resize', function() {
+			self.updatePageNavPos();
+		});
 
 		$(document).ajaxError(this.ajaxGlobalErrorHandler.bind(this));
 	},
