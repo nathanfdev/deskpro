@@ -315,39 +315,6 @@ class KbStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
-		# Rated searches become ratings with linked searches
-		#------------------------------
-
-		$searchlog_solved = $this->getOldDb()->fetchAll("
-			SELECT searchid, userid, solved
-			FROM faq_searchlog_solved
-			WHERE articleid = ?
-		", array($article['id']));
-
-		foreach ($searchlog_solved as $solved) {
-			$search_id = $this->getMappedNewId('searchlog', $solved['searchid']);
-			if (!$search_id) continue;
-
-			if ($solved['userid']) {
-				$person_id = $this->getMappedNewId('user', $solved['userid']);
-				if (!$person_id) {
-					continue;
-				}
-			} else {
-				$person_id = null;
-			}
-
-			$insert_rating = array();
-			$insert_rating['object_type']  = 'article';
-			$insert_rating['object_id']    = $new_article->id;
-			$insert_rating['date_created'] = date('Y-m-d H:i:s');
-			$insert_rating['rating']       = $solved['solved'] ? 1 : -1;
-			$insert_rating['searchlog_id'] = $search_id;
-
-			$this->getDb()->insert('ratings', $insert_rating);
-		}
-
-		#------------------------------
 		# Keywords as sticky words
 		#------------------------------
 

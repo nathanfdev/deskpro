@@ -169,6 +169,17 @@ abstract class AbstractStep
 
 
 	/**
+	 * @param string $type
+	 * @param array $old_ids
+	 * @return array
+	 */
+	public function getMappedNewIdsArray($type, array $old_ids)
+	{
+		return $this->importer->getMappedNewIdsArray($type, $old_ids);
+	}
+
+
+	/**
 	 * @param $type
 	 * @param $old_id
 	 * @return mixed

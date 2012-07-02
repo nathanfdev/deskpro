@@ -398,6 +398,52 @@ abstract class AbstractImporter
 
 
 	/**
+	 * @param string $type
+	 * @param array $old_ids
+	 * @return array
+	 */
+	public function getMappedNewIdsArray($type, array $old_ids)
+	{
+		if (!$old_ids) {
+			return array();
+		}
+
+		if (!isset($this->cached_maps[$type])) {
+			$this->cached_maps[$type] = array();
+		}
+
+		$old_ids_str = implode(',', $old_ids);
+		$q = $this->db->query("
+			SELECT typename, old_id, new_id
+			FROM import_map
+			WHERE typename = '$type'
+			AND old_id IN ($old_ids_str)
+			/*DP_QLOG_NOLOG*/
+		");
+		$q->execute();
+
+		$ret = array();
+		while ($rec = $q->fetch(\PDO::FETCH_ASSOC)) {
+			$old_id = $rec['old_id'];
+			$id     = $rec['new_id'];
+
+			$this->cached_maps[$type][$old_id] = $id;
+
+			$ret[$old_id] = $id;
+		}
+
+		// Loop over all the ids again, unset ones are null
+		foreach ($old_ids as $oid) {
+			if (!isset($this->cached_maps[$type][$oid])) {
+				$this->cached_maps[$type][$oid] = null;
+			}
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Get the old Id by looking up the new one
 	 *
 	 * @param $type

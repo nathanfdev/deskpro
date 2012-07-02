@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\ArticleComment;
 
 class KbSearchLogStep extends AbstractDeskpro3Step
 {
+	const PERPAGE = 1000;
+
 	public static function getTitle()
 	{
 		return 'Import Search Log';
@@ -72,30 +74,15 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 			$this->preRunAll();
 		}
 
-		$start = ($page - 1) * 1000;
-		$batch = $this->getOldDb()->fetchAll("
-			SELECT id, `timestamp`, query, total, userid
-			FROM faq_searchlog
-			ORDER BY id ASC
-			LIMIT $start, 1000
-		");
+		$batch = $this->getBatch($page);
 
 		$this->getDb()->beginTransaction();
 		try {
-			foreach ($batch as $log) {
-				$person_id = $this->getMappedNewId('user', $log['userid']);
-				if (!$person_id) {
-					$person_id = null;
-				}
-
-				$this->getDb()->insert('searchlog', array(
-					'person_id' => $person_id,
-					'query' => $log['query'],
-					'num_results' => (int)$log['total'],
-					'date_created' => date('Y-m-d H:i:s', $log['timestamp'] ? $log['timestamp'] : time())
-				));
-
-				$this->saveMappedId('searchlog', $log['id'], $this->getDb()->lastInsertId(), true);
+			foreach ($batch['faq_searchlog'] as $log) {
+				$this->processLog(
+					$log,
+					isset($batch['faq_searchlog_solved'][$log['id']]) ? $batch['faq_searchlog_solved'][$log['id']] : array()
+				);
 			}
 
 			$this->flushSaveMappedIdBuffer();
@@ -109,5 +96,139 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 		if ($page >= $this->countPages()) {
 			$this->postRunAll();
 		}
+	}
+
+	public function processLog($log, array $searchlog_solved)
+	{
+		if ($log['userid']) {
+			$person_id = $this->getMappedNewId('user', $log['userid']);
+			if (!$person_id) {
+				$person_id = null;
+			}
+		}
+		$person_id = null;
+
+		#------------------------------
+		# Save searchlog
+		#------------------------------
+
+		$this->getDb()->insert('searchlog', array(
+			'person_id' => $person_id,
+			'query' => $log['query'],
+			'num_results' => (int)$log['total'],
+			'date_created' => date('Y-m-d H:i:s', $log['timestamp'] ? $log['timestamp'] : time())
+		));
+
+		$search_id = $this->getDb()->lastInsertId();
+
+		#------------------------------
+		# Rated searches become ratings with linked searches
+		#------------------------------
+
+		foreach ($searchlog_solved as $solved) {
+			if ($solved['userid']) {
+				$person_id = $this->getMappedNewId('user', $solved['userid']);
+				if (!$person_id) {
+					continue;
+				}
+			} else {
+				$person_id = null;
+			}
+
+			$article_id = $this->getMappedNewId('faq_article', $solved['articleid']);
+			if (!$article_id) {
+				continue;
+			}
+
+			$insert_rating = array();
+			$insert_rating['object_type']  = 'article';
+			$insert_rating['object_id']    = $article_id;
+			$insert_rating['date_created'] = date('Y-m-d H:i:s');
+			$insert_rating['rating']       = $solved['solved'] ? 1 : -1;
+			$insert_rating['searchlog_id'] = $search_id;
+
+			$this->getDb()->insert('ratings', $insert_rating);
+		}
+	}
+
+
+	public function getBatch($page)
+	{
+		$start = (($page-1) * self::PERPAGE) + 1;
+		$end   = $page * self::PERPAGE;
+
+		$between_where = "BETWEEN $start AND $end";
+
+		$batch = array(
+			'faq_searchlog' => array(),
+			'faq_searchlog_solved' => array(),
+		);
+
+		#------------------------------
+		# Fetch faq_searchlog
+		#------------------------------
+
+		$q = $this->olddb->query("
+			SELECT id, `timestamp`, query, total, userid
+			FROM faq_searchlog
+			WHERE id $between_where
+		");
+		$q->execute();
+
+		$user_ids = array();
+		while ($l = $q->fetch(\PDO::FETCH_ASSOC)) {
+			$batch['faq_searchlog'][$l['id']] = $l;
+			if ($l['userid']) {
+				$user_ids[] = $l['userid'];
+			}
+		}
+
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch faq_searchlog_solved
+		#------------------------------
+
+		$q = $this->olddb->query("
+			SELECT id, articleid, searchid, userid, solved
+			FROM faq_searchlog_solved
+			WHERE searchid $between_where
+		");
+		$q->execute();
+
+		$article_ids = array();
+		while ($l = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch['faq_searchlog'][$l['searchid']])) {
+				continue;
+			}
+
+			if (!isset($batch['faq_searchlog_solved'][$l['searchid']])) {
+				$batch['faq_searchlog_solved'][$l['searchid']] = array();
+			}
+
+			$batch['faq_searchlog_solved'][$l['searchid']][] = $l;
+
+			if ($l['userid']) {
+				$userids[] = $l['userid'];
+			}
+			$article_ids[] = $l['articleid'];
+		}
+
+		$q->closeCursor();
+		unset($q);
+
+
+		#------------------------------
+		# Cache user ids and article ids
+		#------------------------------
+
+		$user_ids    = array_unique($user_ids);
+		$article_ids = array_unique($article_ids);
+
+		$this->getMappedNewIdsArray('user', $user_ids);
+		$this->getMappedNewIdsArray('faq_article', $article_ids);
+
+		return $batch;
 	}
 }

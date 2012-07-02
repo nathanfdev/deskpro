@@ -311,7 +311,7 @@ class Deskpro3Importer extends AbstractImporter
 	 * We are a bit clever and combine the alter queries into one so they execute faster,
 	 * rather than trying to do them one at a time as Doctrine does by default
 	 */
-	public function removeTableIndexes($table)
+	public function removeTableIndexes($table, $keep_indexes = array())
 	{
 		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
 		$sm = $this->getDb()->getSchemaManager();
@@ -325,6 +325,30 @@ class Deskpro3Importer extends AbstractImporter
 		foreach ($indexes as $x) {
 			if ($x->isPrimary()) continue;
 
+			$cols = $x->getColumns();
+			$skip = false;
+
+			foreach ($keep_indexes as $keep) {
+				$count = count($keep);
+				$found_count = 0;
+				if (count($cols) == $count) {
+					foreach ($cols as $idx_col) {
+						if (in_array($idx_col, $keep)) {
+
+							$found_count++;
+						}
+					}
+				}
+
+				if ($found_count == $count) {
+					$skip = true;
+				}
+			}
+
+			if ($skip) {
+				continue;
+			}
+
 			$p = $sm->getDatabasePlatform()->getDropIndexSQL($x, $table);
 			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
 			$p = preg_replace("# ON (.*?)$#", '', trim($p));
@@ -337,6 +361,31 @@ class Deskpro3Importer extends AbstractImporter
 			$restore_parts[] = $p;
 		}
 		foreach ($fkeys as $x) {
+
+			$cols = $x->getColumns();
+			$skip = false;
+
+			foreach ($keep_indexes as $keep) {
+				$count = count($keep);
+				$found_count = 0;
+				if (count($cols) == $count) {
+					foreach ($cols as $idx_col) {
+						if (in_array($idx_col, $keep)) {
+
+							$found_count++;
+						}
+					}
+				}
+
+				if ($found_count == $count) {
+					$skip = true;
+				}
+			}
+
+			if ($skip) {
+				continue;
+			}
+
 			$p = $sm->getDatabasePlatform()->getDropForeignKeySQL($x, $table);
 			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
 			$drop_parts[] = $p;
