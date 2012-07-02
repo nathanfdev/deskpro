@@ -48,14 +48,14 @@
 				<header>
 					<h4>{{ phrase('admin.languages.default_phrase_for', {'title':language.title}) }}</h4>
 				</header>
-				<article><textarea class="lang_phrase" name="lang_phrase"></textarea></article>
+				<article><textarea class="lang_phrase" name="lang_phrase" readonly="readonly"></textarea></article>
 			</section>
 			{% if language.id != 1 %}
 				<section class="phrase-section master">
 					<header>
 						<h4>{{ phrase('admin.languages.default_deskpro_phrase') }}</h4>
 					</header>
-					<article><textarea class="master_phrase" name="master_phrase"></textarea></article>
+					<article><textarea class="master_phrase" name="master_phrase" readonly="readonly"></textarea></article>
 				</section>
 			{% endif %}
 		</div>
