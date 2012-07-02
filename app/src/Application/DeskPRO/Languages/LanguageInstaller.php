@@ -38,7 +38,15 @@ use Application\DeskPRO\Entity\Language;
 
 class LanguageInstaller
 {
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
 	protected $em;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Language
+	 */
+	protected $upgrade_language;
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
@@ -46,6 +54,18 @@ class LanguageInstaller
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
+	}
+
+
+	/**
+	 * This will insert the lang pack into an existing language,
+	 * upgrading it instead of installing a brand new one.
+	 *
+	 * @param \Application\DeskPRO\Entity\Language $language
+	 */
+	public function setUpgradeLanguage(Language $language)
+	{
+		$this->upgrade_language = $language;
 	}
 
 
@@ -93,15 +113,52 @@ class LanguageInstaller
 	 */
 	public function installPack(LanguagePack $pack)
 	{
-		$lang = new Language();
-		$lang->title  = $pack->title;
-		$lang->locale = $pack->locale;
-
 		$this->em->getConnection()->beginTransaction();
 		try {
 
-			$this->em->persist($lang);
-			$this->em->flush();
+			if ($this->upgrade_language) {
+
+				$lang = $this->upgrade_language;
+				$lang->sys_name = $pack->sys_name;
+
+				// Delete all phrases that arent customized
+				$this->em->getConnection()->executeUpdate("
+					DELETE FROM phrases
+					WHERE language_id = ? AND phrase IS NULL OR phrase = ''
+				", array($lang->getId()));
+
+				// Figure out obsolete phrases to delete
+				$custom_phrase_ids = $this->em->getConnection()->fetchAllCol("
+					SELECT name FROM phrases
+					WHERE language_id = ?
+				", array($lang->getId()));
+
+				$delete_ids = array();
+
+				foreach ($custom_phrase_ids as $phrase_id) {
+					if (!isset($pack->phrases[$phrase_id])) {
+						$delete_ids[] = $phrase_id;
+					}
+				}
+
+				if ($delete_ids) {
+					$delete_ids = '"' . implode('","', $delete_ids) . '"';
+
+					$this->em->getConnection()->executeUpdate("
+						DELETE FROM phrases
+						WHERE language_id = ? AND name IN ($delete_ids)
+					", $lang->getId());
+				}
+
+			} else {
+				$lang = new Language();
+				$lang->title    = $pack->title;
+				$lang->locale   = $pack->locale;
+				$lang->sys_name = $pack->sys_name;
+
+				$this->em->persist($lang);
+				$this->em->flush();
+			}
 
 			$lang_id = $lang->getId();
 			$created_at = date('Y-m-d H:i:s');

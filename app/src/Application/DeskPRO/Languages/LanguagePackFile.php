@@ -39,7 +39,7 @@ use \SimpleXMLElement;
  * A language pack file is simple XML that looks like this:
  *
  * <pack>
- *     <language>
+ *     <language id="system_name">
  *         <title>English (US)</locale>
  *         <locale>en_US</locale>
  *     </language>
@@ -104,6 +104,20 @@ class LanguagePackFile
 	/**
 	 * @return string
 	 */
+	public function getSysName()
+	{
+		if ($this->pack->sys_name !== null) {
+			return $this->pack->sys_name;
+		}
+
+		$this->pack->sys_name = (string)$this->xml->language['id'];
+		return $this->pack->sys_name;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getTitle()
 	{
 		if ($this->pack->title !== null) {
@@ -156,6 +170,7 @@ class LanguagePackFile
 	 */
 	public function getPack()
 	{
+		$this->getSysName();
 		$this->getTitle();
 		$this->getLocale();
 		$this->getPhrases();

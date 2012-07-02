@@ -57,6 +57,13 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * The unique sys name assigned to the language
+	 *
+	 * @var string
+	 */
+	protected $sys_name;
+
+	/**
 	 * Title of the language
 	 *
 	 * @var string
@@ -98,6 +105,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'languages', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath', ));
 		$metadata->mapField(array( 'fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale', ));
