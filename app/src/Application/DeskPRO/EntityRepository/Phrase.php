@@ -96,4 +96,13 @@ class Phrase extends EntityRepository
 			WHERE p.language = ?0 AND p.groupname = ?1
 		")->setParameters(array($language, $group))->execute();
 	}
+
+	public function getCustomPhrases($language)
+	{
+		return $this->_em->createQuery("
+			SELECT p
+			FROM DeskPRO:Phrase p INDEX BY p.name
+			WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != ''
+		")->setParameters(array($language))->execute();
+	}
 }

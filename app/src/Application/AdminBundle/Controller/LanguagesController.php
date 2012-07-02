@@ -151,15 +151,36 @@ class LanguagesController extends AbstractController
 		$vars = $this->getLangInfo($language_id);
 		$vars['group'] = $group;
 
-		$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
-		$master_phrases = $groups_reader->getGroupPhrases($group);
-		$vars['master_phrases'] = $master_phrases;
+		if ($group == 'CUSTOM') {
+			$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
+		} else {
+			$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+		}
 
-		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+		$groups = array();
+		foreach ($vars['lang_phrases'] as $phrase) {
+			$groups[] = $phrase->groupname;
+		}
+		$groups = array_unique($groups);
 
-		$custom_phrases = $this->em->getRepository('DeskPRO:Phrase')->getPhrasesInGroup($vars['language'], $group);
-		$vars['custom_phrases'] = $custom_phrases;
+		$vars['master_phrases'] = array();
+		if ($groups) {
+			foreach ($groups as $g) {
+				$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+				$master_phrases = $groups_reader->getGroupPhrases($g);
+				$vars['master_phrases'] = array_merge($vars['master_phrases'], $master_phrases);
+			}
+		}
 
+		// If we're in custom, only show the phrases we actually have
+		if ($group == 'CUSTOM') {
+			$set = array();
+			foreach ($vars['lang_phrases'] as $phrase) {
+				$set[$phrase->name] = isset($vars['master_phrases'][$phrase->name]) ? $vars['master_phrases'][$phrase->name] : null;
+			}
+
+			$vars['master_phrases'] = $set;
+		}
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
 	}
 

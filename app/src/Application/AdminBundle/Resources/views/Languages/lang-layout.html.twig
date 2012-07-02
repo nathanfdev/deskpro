@@ -9,6 +9,9 @@
 		<article>
 			<ul>
 				<li class="{% if this_page == 'edit_lang' %}on{% endif %}"><a href="{{ path('admin_langs_editlang', {'language_id': language.id}) }}">{{ phrase('admin.languages.edit_details') }}</a></li>
+				<li class="{% if this_page == 'phrase_group_CUSTOM' %}on{% endif %}">
+					<a href="{{ path('admin_langs_editphrases', {'language_id': language.id, 'group': 'CUSTOM'}) }}">Customized Phrases</a>
+				</li>
 			</ul>
 		</article>
 	</section>

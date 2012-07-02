@@ -82,4 +82,5 @@
 	'admin.languages.phrasegroup_user_widget'              => 'Website Widget',
 	'admin.languages.save_your_phrase'                     => 'Save Customized Phrase',
 	'admin.languages.your_phrase'                          => 'Your Customized Phrase',
+	'admin.languages.phrasegroup_CUSTOM'                   => 'Customized Phrases'
 );
