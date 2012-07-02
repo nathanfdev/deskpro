@@ -109,7 +109,7 @@ class LanguageInstaller
 			$insert_phrases = array();
 			foreach ($pack->phrases as $id => $phrase) {
 
-				$groupname = explode('.', $id);
+				$groupname = \Orb\Util\Strings::rexplode('.', $id);
 				$groupname = array_shift($groupname);
 
 				$insert_phrases[] = array(

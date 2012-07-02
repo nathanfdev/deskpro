@@ -279,4 +279,39 @@ HTML;
 
 		return $this->createResponse($html);
 	}
+
+
+	public function quickSetLanguageAction()
+	{
+		$this->ensureRequestToken('lang_chooser');
+
+		$lang_id = $this->in->getUint('language_id');
+		$lang = $this->container->getDataService('Language')->get($lang_id);
+
+		// Ignore invalid langs
+		if (!$lang) {
+			return $this->redirectRoute('user');
+		}
+
+		$this->person->language = $lang;
+
+		$this->db->beginTransaction();
+		try {
+
+			if (!$this->person->isGuest()) {
+				$this->em->persist($this->person);
+			}
+
+			$this->session->set('language_id', $lang->getId());
+			$this->session->save();
+
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('user');
+	}
 }

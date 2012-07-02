@@ -51,6 +51,7 @@
 	'user.profile.reset_password_done'                 => 'A special password reset link has been sent to your email address. Check your email and click on the link to reset your password.',
 	'user.profile.set_as_primary_address'              => 'Set as primary address',
 	'user.profile.timezone'                            => 'Timezone',
+	'user.profile.language'                            => 'Language',
 	'user.profile.trying_to_add_invalid_email'         => 'The email address you entered is invalid.',
 	'user.profile.ucfirst_delete'                      => 'Delete',
 	'user.profile.validation_resent_to'                => 'Validation email was resent to {{email}}',

@@ -31,4 +31,5 @@
 	'user.portal.twitter-user-link'             => '@{{name}} on twitter',
 	'user.portal.twitter-view-more'             => 'View more from @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'            => 'Welcome back, guest',
+	'user.portal.language_chooser'              => 'Language:',
 );

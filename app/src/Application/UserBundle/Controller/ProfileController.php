@@ -84,7 +84,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		));
 	}
 
-
 	############################################################################
 	# change-password
 	############################################################################

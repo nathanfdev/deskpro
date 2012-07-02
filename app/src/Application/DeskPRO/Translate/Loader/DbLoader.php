@@ -82,7 +82,7 @@ class DbLoader implements LoaderInterface
 		// their ID's are always higher.
 
 		$q = $this->dbconn->query("
-			SELECT name, phrase, groupname
+			SELECT name, COALESCE(original_phrase, phrase) AS phrase, groupname
 			FROM phrases
 			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
 			GROUP BY name

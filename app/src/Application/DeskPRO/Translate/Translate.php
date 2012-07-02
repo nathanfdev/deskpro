@@ -49,6 +49,8 @@ use Application\DeskPRO\EventDispatcher\DataEvent;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+use Application\DeskPRO\HttpFoundation\Session;
+
 /**
  * This class is responsible for loading phrases from a language stored in the database.
  *
@@ -148,6 +150,28 @@ class Translate implements PersonContextInterface
         }
 
 		$this->_event_dispatcher = $event_dispatcher;
+	}
+
+
+	/**
+	 * @param Session $session
+	 */
+	public function setSession(Session $session = null)
+	{
+		if (!$session) {
+			return;
+		}
+
+		if (!$session->getPerson()->isGuest()) {
+			$this->setLanguage($session->getPerson()->getLanguage());
+			$this->setDefaultLanguage($session->getPerson()->getLanguage());
+		} elseif ($session->get('language_id')) {
+			$lang = App::getDataService('Language')->get($session->get('language_id'));
+			if ($lang) {
+				$this->setLanguage($lang);
+				$this->setDefaultLanguage($lang);
+			}
+		}
 	}
 
 

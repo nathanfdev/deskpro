@@ -51,6 +51,17 @@
 				</div>
 			</div>
 
+			{% if form.language_id %}
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ phrase('user.profile.language') }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						{{ form_widget(form.language_id) }}
+					</div>
+				</div>
+			{% endif %}
+
 			<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
 		</div>
 	</section>

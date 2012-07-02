@@ -936,6 +936,29 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return int
+	 */
+	public function getLanguageId()
+	{
+		return $this->getLanguage()->getId();
+	}
+
+
+	/**
+	 * @param int $id
+	 */
+	public function setLanguageId($id)
+	{
+		$lang = App::getDataService('Language')->get($id);
+		if (!$lang) {
+			$lang = null;
+		}
+
+		$this['language'] = $lang;
+	}
+
+
 
 	/**
 	 * Get the locale string

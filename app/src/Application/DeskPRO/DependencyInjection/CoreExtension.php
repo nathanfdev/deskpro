@@ -128,6 +128,7 @@ class CoreExtension extends Extension
 			new Reference('deskpro.core.translate_loader'),
 			new Reference('event_dispatcher')
 		));
+		$definition->addMethodCall('setSession', array(new Reference('session')));
 		$container->setDefinition('deskpro.core.translate', $definition);
 
 		// Attach listener for no phrase

@@ -153,6 +153,13 @@ $collection->add('user_profile', new Route(
 	array()
 ));
 
+$collection->add('user_profile_setlang', new Route(
+	'/profile/quick-set-language',
+	array('_controller' => 'UserBundle:Main:quickSetLanguage'),
+	array(),
+	array()
+));
+
 $collection->add('user_profile_changepassword', new Route(
 	'/profile/change-password',
 	array('_controller' => 'UserBundle:Profile:changePassword'),
