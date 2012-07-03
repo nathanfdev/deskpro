@@ -79,8 +79,13 @@ class HtmlPurifier implements CleanerPlugin
 				$value = preg_replace('#\s*<p:o[^>]*>(\s|&nbsp;)*</p:o>\s*#u', '', $value);
 			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
-			$value = str_replace('<p>', '', $value);
-			$value = str_replace('</p>', '<__dp_old_p__>', $value);
+
+			// Outlook inserts these like crazy, but they dont appear to be used for
+			// actual spacing because br's are inserted as well
+			$value = str_replace('<p class="MsoNormal">', '', $value);
+
+			$value = str_replace('<p>', '<__dp_old_p__>', $value);
+			$value = str_replace('</p>', '', $value);
 			$value = str_replace('<__dp_old_p__><__dp_old_p__>', '<br /><br />', $value);
 			$value = str_replace('<__dp_old_p__>', '<br /><br />', $value);
 
