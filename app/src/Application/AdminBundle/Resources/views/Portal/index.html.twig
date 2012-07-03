@@ -31,7 +31,11 @@
 	</div>
 {% endblock %}
 {% block dp_full_page %}
-<div id="dp_fauxbrowser"><em class="address">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</em><div><div><div>
+<div id="dp_fauxbrowser" style="height: 600px;"><div>
+	<div id="dp_fauxbrowser_top"><div><div>
+		<em class="address">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</em>
+	</div></div></div>
+	<div id="dp_fauxbrowser_middle"><div>
 
 {% include 'AdminBundle:Portal:portal-color-editor.html.twig' %}
 
@@ -77,6 +81,7 @@
 			</div>
 		</div>
 	{% endif %}
-
-</div></div></div></div>
+	</div></div>
+	<div id="dp_fauxbrowser_bottom"><div><div></div></div></div>
+</div></div>
 {% endblock %}

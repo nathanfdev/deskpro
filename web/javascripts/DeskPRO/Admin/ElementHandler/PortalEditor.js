@@ -440,6 +440,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		this.iframeWindow = this.iframeDocument.window;
 
 		$('#portal_iframe').height(height + 25);
+		$('#dp_fauxbrowser').height(height + 188);
 		this.iframeQuery('html').css('overflow', 'hidden');
 		this.iframeQuery('body').css('overflow', 'hidden');
 
@@ -451,6 +452,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 
 	updateHeight: function(height) {
 		$('#portal_iframe').height(height + 25);
+		$('#dp_fauxbrowser').height(height + 188);
 	},
 
 

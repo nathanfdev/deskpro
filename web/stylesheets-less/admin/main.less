@@ -2074,6 +2074,10 @@ footer.setting_field_row {
 	margin-left: -10px;
 }
 
+#admin_portal_editor {
+	height: 500px;
+}
+
 #portal_iframe_loading {
 
     margin: 25px;
@@ -3234,36 +3238,86 @@ nav.admin-object-nav li:hover {
 
 
 #dp_fauxbrowser {
-    background: url(../../images/admin/browser-frame-top.png) no-repeat top left;
-
-	width: 965px;
+	width: 1080px;
 	margin: 0 auto 0 auto;
 	position: relative;
+	overflow: hidden;
+	left: -60px;
 
-	> em {
+	background: #FFF url(../../images/admin/browser-middle-left.png) repeat-y top left;
+
+	> div {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		position: absolute;
+		background: url(../../images/admin/browser-middle-right.png) repeat-y top right;
+	}
+}
+
+#dp_fauxbrowser_top {
+	position: absolute;
+	background: url(../../images/admin/browser-top-middle-bg.png) repeat-x top left;
+
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 760px;
+
+	div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	> div { background: url(../../images/admin/browser-top-left-bg.png) no-repeat top left; }
+	> div > div { background: url(../../images/admin/browser-top-right-bg.png) no-repeat top right; }
+
+	em {
 		position: absolute;
 		font-style: normal;
 		top: 41px;
 		left: 110px;
 	}
-
-	> div {
-	    background: url(../../images/admin/browser-frame-btm.png) no-repeat bottom left;
-	 	padding-top: 90px;
-		padding-bottom: 8px;
-
-		> div {
-		    background: url(../../images/admin/browser-frame-bg.png) repeat-y top left;
-           	min-height: 760px;
-		}
-
-		> div {
-		    position: relative;
-			padding: 0 8px 0 8px;
-		}
-	}
 }
 
+#dp_fauxbrowser_middle {
+	margin-top: 90px;
+	position: absolute;
+	top: 0;
+	left: 8px;
+	right: 9px;
+}
+
+#dp_fauxbrowser_bottom {
+	position: absolute;
+	background: url(../../images/admin/browser-bottom-middle.png) repeat-x top left;
+	height: 8px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	> div { background: url(../../images/admin/browser-bottom-left.png) no-repeat top left; }
+	> div > div { background: url(../../images/admin/browser-bottom-right-bg.png) no-repeat top right; }
+
+	em {
+		position: absolute;
+		font-style: normal;
+		top: 41px;
+		left: 110px;
+	}
+}
 
 footer.controls {
 	background-color: lighten(#CCD7E2, 5%);
