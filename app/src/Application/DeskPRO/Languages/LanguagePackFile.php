@@ -144,7 +144,7 @@ class LanguagePackFile
 			return $this->pack->lang_code;
 		}
 
-		$this->pack->lang_code = (string)$this->xml->language->lang_code;
+		$this->pack->lang_code = (string)$this->xml->language->lang;
 		return $this->pack->lang_code;
 	}
 
