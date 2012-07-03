@@ -1,7 +1,7 @@
 {##
  # The ticket listing showing all a users tickets
  ##}
-{% import 'UserBundle::macros.html.twig' as 'dp' %}
+{% import 'UserBundle::macros.html.twig' as dp %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.tickets') }}</a></li>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		<ul class="dp-post-info">
-			<li class="dp-category"><i class="dp-icon-folder-close"></i> {{ dp.full_title(ticket.department) }}</li>
+			<li class="dp-category"><i class="dp-icon-folder-close"></i> {{ ticket.department.full_title }}</li>
 			<li class="dp-author"><i class="dp-icon-user"></i>
 				{% if last_messages[ticket.id].person.id == app.user.id %}
 					{{ phrase('user.tickets.list_last_activity_by_you') }}

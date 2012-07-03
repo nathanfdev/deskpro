@@ -1,4 +1,4 @@
-{% import 'UserBundle::macros.html.twig' as 'dp' %}
+{% import 'UserBundle::macros.html.twig' as dp %}
 
 {##
  # The table of ticket properties that is at the top of the view ticket page.
@@ -26,21 +26,21 @@
 		{% if ticket.category %}
 			<tr>
 				<th>{{ phrase('user.tickets.fields_category') }}</th>
-				<td>{{ phrase_object(ticket.category, 'full') }}</td>
+				<td>{{ ticket.category.full_title }}</td>
 			</tr>
 		{% endif %}
 
 		{% if ticket.product %}
 			<tr>
 				<th>{{ phrase('user.tickets.fields_product') }}</th>
-				<td>{{ phrase_object(ticket.product, 'full') }}</td>
+				<td>{{ ticket.product.full_title }}</td>
 			</tr>
 		{% endif %}
 
 		{% if ticket.priority %}
 			<tr>
 				<th>{{ phrase('user.tickets.fields_priority') }}</th>
-				<td>{{ phrase_object(ticket.priority) }}</td>
+				<td>{{ ticket.priority.title }}</td>
 			</tr>
 		{% endif %}
 
