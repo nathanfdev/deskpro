@@ -1075,12 +1075,12 @@ class Strings
 		do {
 			$old_string = $string;
 
-			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#imu', '', $string);
-			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#imu', '', $string);
+			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
+			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
 			// Div wrappers around whitespce
-			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#imu', '', $string);
-			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#imu', '', $string);
+			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#iu', '<br />', $string);
+			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#iu', '<br />', $string);
 
 		} while ($string != $old_string);
 
