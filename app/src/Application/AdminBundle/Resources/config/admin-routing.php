@@ -1017,6 +1017,41 @@ $collection->add('admin_langs_departments', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_ticketpriorities', new Route(
+	'/languages/{language_id}/phrases/ticket-priorities',
+	array('_controller' => 'AdminBundle:Languages:ticketPriorities'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_langs_ticketworkflows', new Route(
+	'/languages/{language_id}/phrases/ticket-workflows',
+	array('_controller' => 'AdminBundle:Languages:ticketWorkflows'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_langs_products', new Route(
+	'/languages/{language_id}/phrases/products',
+	array('_controller' => 'AdminBundle:Languages:products'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_langs_ticketcategories', new Route(
+	'/languages/{language_id}/phrases/ticket-categories',
+	array('_controller' => 'AdminBundle:Languages:ticketCategories'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_langs_customfields', new Route(
+	'/languages/{language_id}/phrases/fields/{field_type}',
+	array('_controller' => 'AdminBundle:Languages:customFields'),
+	array('language_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_langs_editphrases', new Route(
 	'/languages/{language_id}/phrases/{group}',
 	array('_controller' => 'AdminBundle:Languages:editPhrases'),

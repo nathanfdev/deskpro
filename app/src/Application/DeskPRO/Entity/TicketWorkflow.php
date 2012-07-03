@@ -37,11 +37,15 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\Translate;
+use Application\DeskPRO\Translate\HasPhraseName;
+
 /**
  * Ticket workflows
  *
  */
-class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject
+class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
@@ -65,6 +69,49 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject
 	public function getId()
 	{
 		return $this->id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'title');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+
+	/**
+	 * @param string $property
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		if (!$property) {
+			$property = 'title';
+		}
+		$phrase_name = 'obj_ticketworkflow.' . $this->id . '_' . $property;
+
+		return $phrase_name;
+	}
+
+
+	/**
+	 * @param string $property
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		return $this->title;
 	}
 
 

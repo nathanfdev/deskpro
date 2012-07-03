@@ -38,33 +38,21 @@ use Application\DeskPRO\App;
 
 class TicketWorkflow extends AbstractEntityRepository
 {
-	protected $_workflow_names = null;
-
-	protected function _loadWorkflowNames()
-	{
-		if ($this->_workflow_names !== null) return;
-
-		$db = App::getDb();
-		$this->_workflow_names = $db->fetchAllKeyValue("
-			SELECT id, title
-			FROM ticket_workflows
-			ORDER BY display_order ASC
-		");
-	}
-
 	public function getNames($for_ids = null)
 	{
-		$this->_loadWorkflowNames();
-
-		if ($for_ids === null) {
-			return $this->_workflow_names;
+		if ($for_ids) {
+			$works = $this->getByIds($for_ids);
+		} else {
+			$works = $this->getEntityManager()->createQuery("
+				SELECT w
+				FROM DeskPRO:TicketWorkflow w
+				ORDER BY w.display_order
+			")->execute();
 		}
 
 		$ret = array();
-		foreach ($for_ids as $id) {
-			if (isset($this->_workflow_names[$id])) {
-				$ret[] = $this->_workflow_names[$id];
-			}
+		foreach ($works as $w) {
+			$ret[$w->getId()] = $w->getTitle();
 		}
 
 		return $ret;

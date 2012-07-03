@@ -74,6 +74,7 @@ class CategoryHierarchy
 	 */
 	protected $cache_tag = null;
 
+	protected $_cats = null;
 	protected $_cat_hierarchy = null;
 	protected $_cat_hierarchy_flat = null;
 	protected $_cat_names = null;
@@ -206,6 +207,7 @@ class CategoryHierarchy
 			}
 
 			$this->_cat_ids[] = $c['id'];
+			$this->_cats[$c['id']] = $c;
 		}
 		unset($c);
 
@@ -243,13 +245,13 @@ class CategoryHierarchy
 	{
 		$this->getInHierarchy();
 		if ($for_ids === null) {
-			return $this->_cat_names;
+			$for_ids = $this->_cat_ids;
 		}
 
 		$ret = array();
 		foreach ($for_ids as $id) {
 			if (isset($this->_cat_names[$id])) {
-				$ret[] = $this->_cat_names[$id];
+				$ret[] = $this->_cats[$id]['title'];
 			}
 		}
 

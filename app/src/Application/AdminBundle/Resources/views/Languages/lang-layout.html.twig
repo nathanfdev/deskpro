@@ -22,8 +22,37 @@
 		</header>
 		<article>
 			<ul>
-				<li class="{% if this_page == 'phrase_group_CUSTOM' %}on{% endif %}">
+				<li class="{% if this_page == 'departments' %}on{% endif %}">
 					<a href="{{ path('admin_langs_departments', {'language_id': language.id}) }}">Departments</a>
+				</li>
+				{% if app.getSetting('core.use_product') %}
+					<li class="{% if this_page == 'products' %}on{% endif %}">
+						<a href="{{ path('admin_langs_products', {'language_id': language.id}) }}">Products</a>
+					</li>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_category') %}
+					<li class="{% if this_page == 'ticketpriorities' %}on{% endif %}">
+						<a href="{{ path('admin_langs_ticketpriorities', {'language_id': language.id}) }}">Ticket Categories</a>
+					</li>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_priority') %}
+					<li class="{% if this_page == 'ticketpriorities' %}on{% endif %}">
+						<a href="{{ path('admin_langs_ticketpriorities', {'language_id': language.id}) }}">Ticket Priorities</a>
+					</li>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_workflow') %}
+					<li class="{% if this_page == 'ticketworkflows' %}on{% endif %}">
+						<a href="{{ path('admin_langs_ticketworkflows', {'language_id': language.id}) }}">Ticket Workflows</a>
+					</li>
+				{% endif %}
+				<li>
+					<a href="{{ path('admin_langs_customfields', {'language_id': language.id, 'field_type': 'tickets'}) }}">Ticket Fields</a>
+				</li>
+				<li>
+					<a href="{{ path('admin_langs_customfields', {'language_id': language.id, 'field_type': 'people'}) }}">Person Fields</a>
+				</li>
+				<li>
+					<a href="{{ path('admin_langs_customfields', {'language_id': language.id, 'field_type': 'organizations'}) }}">Organization Fields</a>
 				</li>
 			</ul>
 		</article>

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 
@@ -46,12 +47,32 @@ use Application\DeskPRO\Translate\Translate;
 class Product extends CategoryAbstract implements HasPhraseName
 {
 	/**
+	 * @var \Application\DeskPRO\Entity\Product
 	 */
 	protected $parent;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Product
 	 */
 	protected $children;
+
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'title');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
 
 	/**
 	 * Return a unique ID that we can use to look up translations for this object
@@ -81,7 +102,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 		if ($property == 'full') {
 			return $this->getFullTitle();
 		}
-		return $this->title;
+		return $this->getTitle();
 	}
 
 

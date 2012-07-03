@@ -133,6 +133,16 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		return 0;
 	}
 
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
 
 	/**
 	 * Get an array of titles from parents down to this.
@@ -145,7 +155,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		foreach ($this->getTreeParents() as $p) {
 			$titles[] = $p['title'];
 		}
-		$titles[] = $this->title;
+		$titles[] = $this->getTitle();
 
 		return $titles;
 	}

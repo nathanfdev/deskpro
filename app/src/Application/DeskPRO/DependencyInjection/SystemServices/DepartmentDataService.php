@@ -87,7 +87,7 @@ class DepartmentDataService extends BaseRepositoryService
 
 		// force hydration
 		foreach ($this->cats as $c) {
-			$this->cat_ids = $c->getId();
+			$this->cat_ids[] = $c->getId();
 			$c->getTitle();
 
 			$cats[$c->getId()] = array(
@@ -105,6 +105,8 @@ class DepartmentDataService extends BaseRepositoryService
 
 	public function getNames($for_ids = null)
 	{
+		$this->preload();
+
 		$ret = array();
 
 		foreach ($this->cat_ids as $cid) {

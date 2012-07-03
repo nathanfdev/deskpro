@@ -136,6 +136,17 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		}
 	}
 
+	public function getTitle()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'title');
+	}
+
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+
 	/**
 	 * Get the 'full' name of this department by prepending the parents name to it.
 	 *
@@ -146,10 +157,10 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		if ($sep === null) $sep = ' > ';
 
 		if (!$this->parent) {
-			return $this->title;
+			return $this->getTitle();
 		}
 
-		return $this->parent['title'] . $sep . $this->title;
+		return $this->parent->getTitle() . $sep . $this->getTitle();
 	}
 
 	public function getFullUserTitle($sep = null)
@@ -220,7 +231,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public function getPhraseDefault($property = null, Translate $translate)
 	{
 		if ($property == 'full') {
-			return $this->getFullTitle();
+			return $this->getRealTitle();
 		}
 		return $this->title;
 	}

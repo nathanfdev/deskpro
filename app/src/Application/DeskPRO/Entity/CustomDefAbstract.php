@@ -38,6 +38,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\Translate;
+use Application\DeskPRO\Translate\HasPhraseName;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -46,7 +48,7 @@ use Orb\Util\Arrays;
  * A custom field definition
  *
  */
-class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
+class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * The unique ID.
@@ -184,6 +186,41 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return 0;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'title');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'description');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealDescription()
+	{
+		return $this->description;
+	}
 
 
 	/**
@@ -407,5 +444,36 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 			default:
 				return false;
 		}
+	}
+
+
+	/**
+	 * @param string $property
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		if (!$property) {
+			$property = 'title';
+		}
+
+		$name = strtolower(\Orb\Util\Util::getBaseClassname($this));
+
+		$phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+
+		return $phrase_name;
+	}
+
+
+	/**
+	 * @param string $property
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		if ($property == 'description') {
+			return $this->description;
+		}
+		return $this->title;
 	}
 }

@@ -59,7 +59,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	protected $parent = null;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $children = null;
 
@@ -106,6 +106,24 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 
 
 	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return App::getTranslator()->getPhraseObject($this, 'title');
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRealTitle()
+	{
+		return $this->title;
+	}
+
+
+	/**
 	 * Get the 'full' name
 	 *
 	 * @return string
@@ -115,10 +133,10 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 		if ($sep === null) $sep = ' > ';
 
 		if (!$this->parent) {
-			return $this->title;
+			return $this->getTitle();
 		}
 
-		return $this->parent['title'] . $sep . $this->title;
+		return $this->parent->getTitle() . $sep . $this->getTitle();
 	}
 
 

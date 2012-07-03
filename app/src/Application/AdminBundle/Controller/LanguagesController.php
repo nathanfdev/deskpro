@@ -139,6 +139,138 @@ class LanguagesController extends AbstractController
 	}
 
 	############################################################################
+	# edit-products
+	############################################################################
+
+	public function productsAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_products = $this->em->createQuery("
+			SELECT prod
+			FROM DeskPRO:Product prod
+			WHERE prod.parent IS NULL
+			ORDER BY prod.display_order ASC
+		")->getResult();
+
+		$vars['all_products'] = $all_products;
+
+		$group = 'obj_department';
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-products.html.twig', $vars);
+	}
+
+	############################################################################
+	# edit-ticket-categories
+	############################################################################
+
+	public function ticketCategoriesAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_categories = $this->em->createQuery("
+			SELECT cat
+			FROM DeskPRO:ticketCategory cat
+			WHERE cat.parent IS NULL
+			ORDER BY cat.display_order ASC
+		")->getResult();
+
+		$vars['all_categories'] = $all_categories;
+
+		$group = 'obj_department';
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-ticket-categories.html.twig', $vars);
+	}
+
+	############################################################################
+	# edit-ticket-priorities
+	############################################################################
+
+	public function ticketPrioritiesAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_priorities = $this->em->createQuery("
+			SELECT pri
+			FROM DeskPRO:TicketPriority pri
+			ORDER BY pri.priority ASC
+		")->getResult();
+
+		$vars['all_priorities'] = $all_priorities;
+
+		$group = 'obj_ticketpriority';
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-ticket-priorities.html.twig', $vars);
+	}
+
+	############################################################################
+	# edit-ticket-workflows
+	############################################################################
+
+	public function ticketWorkflowsAction($language_id)
+	{
+		$vars = $this->getLangInfo($language_id);
+
+		$all_priorities = $this->em->createQuery("
+			SELECT work
+			FROM DeskPRO:TicketWorkflow work
+			ORDER BY work.display_order ASC
+		")->getResult();
+
+		$vars['all_priorities'] = $all_priorities;
+
+		$group = 'obj_ticketworkflow';
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-ticket-workflows.html.twig', $vars);
+	}
+
+	############################################################################
+	# custom-ticket-fields
+	############################################################################
+
+	public function customFieldsAction($language_id, $field_type)
+	{
+		switch ($field_type) {
+			case 'tickets':
+				$ent = 'DeskPRO:CustomDefTicket';
+				$group = 'obj_customdefticket';
+				break;
+
+			case 'people':
+				$ent = 'DeskPRO:CustomDefPerson';
+				$group = 'obj_customdefperson';
+				break;
+
+			case 'organizations':
+				$ent = 'DeskPRO:CustomDefOrganization';
+				$group = 'obj_customdeforganization';
+				break;
+
+			default: throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$vars = $this->getLangInfo($language_id);
+
+		$all_fields = $this->em->createQuery("
+			SELECT f
+			FROM $ent f
+			WHERE f.parent IS NULL
+			ORDER BY f.display_order ASC
+		")->getResult();
+
+		$vars['all_fields'] = $all_fields;
+		$vars['lang_group'] = $group;
+
+		$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+
+		return $this->render('AdminBundle:Languages:lang-phrases-fields.html.twig', $vars);
+	}
+
+	############################################################################
 	# edit-language
 	############################################################################
 

@@ -38,8 +38,6 @@ use Application\DeskPRO\App;
 
 class TicketPriority extends AbstractEntityRepository
 {
-	protected $priority_names = null;
-
 	public function findByTitle($title)
 	{
 		try {
@@ -60,26 +58,22 @@ class TicketPriority extends AbstractEntityRepository
 	 */
 	public function getNames($for_ids = null)
 	{
-		if ($this->priority_names !== null && !$for_ids) return $this->priority_names;
-
-		if ($this->priority_names === null) {
-			$db = App::getDb();
-			$this->priority_names = $db->fetchAllKeyValue("
-				SELECT id, title
-				FROM ticket_priorities
-				ORDER BY priority ASC
-			");
-		}
-
 		if ($for_ids) {
-			$ret = array();
-			foreach ($for_ids as $id) {
-				$ret[$id] = $this->priority_names[$id];
-			}
-			return $ret;
+			$pris = $this->getByIds($for_ids);
+		} else {
+			$pris = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:TicketPriority p
+				ORDER BY p.priority
+			")->execute();
 		}
 
-		return $this->priority_names;
+		$ret = array();
+		foreach ($pris as $p) {
+			$ret[$p->getId()] = $p->getTitle();
+		}
+
+		return $ret;
 	}
 
 
