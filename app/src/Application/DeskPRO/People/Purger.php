@@ -95,7 +95,7 @@ class Purger implements PersonContextInterface
 	public function purgeTickets()
 	{
 		$ticket_ids = $this->db->fetchAllCol("
-			SELECT id FROM tickets WHERE person_id = ?
+			SELECT id FROM tickets WHERE person_id = ? AND hidden_status != 'deleted'
 		", array($this->person->getId()));
 
 		if (!$ticket_ids) {
