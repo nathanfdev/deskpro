@@ -19,7 +19,7 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 
 	setValue: function(value) {
 		this.getFormEl().val(value);
-		this.getInterfaceElement().val(value);
+		this.getInterfaceElement().addClass('eat-change').val(value).change();
 	},
 
 	getInterfaceElement: function() {

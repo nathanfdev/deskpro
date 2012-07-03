@@ -44,6 +44,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		this.getEl('agent_sel').on('change', function() {
+
+			if ($(this).hasClass('eat-change')) {
+				$(this).removeClass('eat-change');
+				return;
+			}
+
 			var agent_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentProp = self.changeManager.getPropertyManager('agent_id');
 
@@ -55,6 +61,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		this.getEl('agent_team_sel').on('change', function() {
+
+			if ($(this).hasClass('eat-change')) {
+				$(this).removeClass('eat-change');
+				return;
+			}
 
 			var agent_team_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
