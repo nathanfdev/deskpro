@@ -8,6 +8,9 @@
 				<span class="add-new-article tipped" id="publish_outline_news_add" title="{{ phrase('agent.general.create_news') }}" data-newloader-name="newNewsLoader"></span>
 			{% endif %}
 			<span class="all-route title" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} {{ phrase('agent.publish.posts') }}</span>
+			<div class="cat-editor-instruction">
+				Drag and drop to move folders, click the gears to edit titles and permissions, and click the recycle bin to delete empty categories.
+			</div>
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 	</ul>

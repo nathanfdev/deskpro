@@ -8,6 +8,9 @@
 				<span class="add-new-article tipped" id="publish_outline_downloads_add" title="{{ phrase('agent.general.create_download') }}" data-newloader-name="newDownloadLoader"></span>
 			{% endif %}
 			<span class="all-route title" data-route="listpane:{{ path('agent_downloads_list') }}">{{ phrase('agent.general.count_files', {'count':download_cats_counts['0_total']|default(0)}) }}</span>
+			<div class="cat-editor-instruction">
+				Drag and drop to move folders, click the gears to edit titles and permissions, and click the recycle bin to delete empty categories.
+			</div>
 		</li>
 		{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 	</ul>
