@@ -1,4 +1,10 @@
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 <table cellspacing="0" cellpadding="3" width="100%">
+	<tr>
+		<td colspan="2">
+			View this ticket online: <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
+		</td>
+	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.general.id') }}</td>
 		<td>{{ ticket.id }}</td>

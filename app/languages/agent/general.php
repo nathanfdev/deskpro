@@ -359,6 +359,7 @@
 	'agent.general.merge_x_into'                            => 'Merge "{{name}}" into...',
 	'agent.general.message'                                 => 'Message',
 	'agent.general.messages'                                => 'Messages',
+	'agent.general.message_history'                         => 'Message History',
 	'agent.general.minute'                                  => 'Minute',
 	'agent.general.minutes'                                 => 'minutes',
 	'agent.general.misc'                                    => 'Miscellaneous',

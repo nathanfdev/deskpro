@@ -3,22 +3,27 @@
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject }) }}{% endblock %}
 {% block content %}
-{{ phrase('agent.emails.reply_above_line') }}
-<br /><br />
 
-{% set content %}{{ phrase('agent.emails.ticket_was_created') }} : <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
+{% set content %}
+	{{ phrase('agent.emails.reply_above_line') }}
+	<br /><br />
 
-<br /><br />{% endset %}
-
+	{{ phrase('agent.emails.ticket_was_created') }}
+{% endset %}
 {{ layout.section('', content) }}
+
+<br />
+
+{{ layout.render_ticket_messages(messages, '', { ticketdisplay: ticketdisplay, show_author_email: true }) }}
+
+<br />
 
 {% set content %}
 	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
-{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), { ticketdisplay: ticketdisplay, show_author_email: true }) }}
-
 <br/><br/>
+
 {{ layout.replycode(tac.access_code) }}
 {% endblock %}

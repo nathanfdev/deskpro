@@ -110,7 +110,7 @@
 	{% if not options.skip_top or (options.skip_top and messages|length > 1) %}
 		{% set section_content %}
 			{% for message in messages %}
-				{% if options.skip_top and loop.first %}
+				{% if options.skip_top and loop.first or options.only_top and not loop.first %}
 				{% else %}
 					{{ _self.message(message, { attachments: options.ticketdisplay.getMessageAttachments(message), person_id: options.person_id, show_author_email: options.show_author_email }) }}
 				{% endif %}

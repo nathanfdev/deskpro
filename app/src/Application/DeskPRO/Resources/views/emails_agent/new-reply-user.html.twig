@@ -7,23 +7,34 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
-{{ phrase('agent.emails.reply_above_line') }}
-<br /><br />
 
-{%- if is_new_agent_reply -%}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
-{%- elseif is_new_user_reply -%}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
-{%- endif -%} : <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
-<br /><br />
+{% set content %}
+	{{ phrase('agent.emails.reply_above_line') }}
+	<br /><br />
 
+	{%- if is_new_agent_reply -%}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
+	{%- elseif is_new_user_reply -%}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
+	{%- endif -%}
+{% endset %}
 {{ layout.section('', content) }}
+
+<br />
+
+{{ layout.render_ticket_messages(messages, '', { ticketdisplay: ticketdisplay, show_author_email: true, only_top: true }) }}
+
+<br />
 
 {% set content %}
 	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
-{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), { ticketdisplay: ticketdisplay, show_author_email: true }) }}
+<br/><br/>
+
+{{ layout.render_ticket_messages(messages, phrase('agent.general.message_history'), { ticketdisplay: ticketdisplay, show_author_email: true, skip_top: true }) }}
 
 <br/><br/>
+
 {{ layout.replycode(tac.access_code) }}
+
 {% endblock %}
