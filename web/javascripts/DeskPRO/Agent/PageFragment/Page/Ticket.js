@@ -247,6 +247,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 
 				this.rescanMessageTypes();
+
+				// Reload the message row in results
+				//addTicket
+				if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
+					var row = DeskPRO_Window.sections.tickets_section.listPage.wrapper.find('article.ticket-' + this.meta.ticket_id);
+					if (row[0]) {
+						DeskPRO_Window.sections.tickets_section.listPage.addTicket(this.meta.ticket_id, true);
+					}
+				}
 			},
 			complete: function(xhr, textStatus) {
 				loadingEl.hide();
