@@ -316,7 +316,7 @@
 								<div class="line-2">
 									<input type="text" size="10" name="contact_data[{{ contact.id }}][city]" value="{{ contact.city }}" placeholder="{{ phrase('agent.people.address_city') }}" />
 									<input type="text" size="10" name="contact_data[{{ contact.id }}][state]" value="{{ contact.state }}" placeholder="{{ phrase('agent.people.address_state') }}" />
-									<input type="text" size="10" name="contact_data[{{ contact.id }}][zip]" value="{{ contact.state }}" placeholder="{{ phrase('agent.people.address_postal') }}" />
+									<input type="text" size="10" name="contact_data[{{ contact.id }}][zip]" value="{{ contact.zip }}" placeholder="{{ phrase('agent.people.address_postal') }}" />
 								</div>
 								<div class="line-3">
 									<select name="contact_data[{{ contact.id }}][country]">
@@ -349,7 +349,7 @@
 						<div class="line-2">
 							<input type="text" size="10" name="new_contact_data[address][%id%][city]" value="{{ contact.city }}" placeholder="{{ phrase('agent.people.address_city') }}" />
 							<input type="text" size="10" name="new_contact_data[address][%id%][state]" value="{{ contact.state }}" placeholder="{{ phrase('agent.people.address_state') }}" />
-							<input type="text" size="10" name="new_contact_data[address][%id%][zip]" value="{{ contact.state }}" placeholder="{{ phrase('agent.people.address_postal') }}" />
+							<input type="text" size="10" name="new_contact_data[address][%id%][zip]" value="{{ contact.zip }}" placeholder="{{ phrase('agent.people.address_postal') }}" />
 						</div>
 						<div class="line-3">
 							<select name="contact_data[{{ contact.id }}][country]">
