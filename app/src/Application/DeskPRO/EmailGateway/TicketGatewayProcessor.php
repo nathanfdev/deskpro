@@ -373,6 +373,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
+			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
+
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
@@ -576,6 +579,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
+
+			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
+
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();

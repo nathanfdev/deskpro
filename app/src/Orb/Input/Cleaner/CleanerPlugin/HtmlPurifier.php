@@ -53,6 +53,7 @@ class HtmlPurifier implements CleanerPlugin
 			'html',
 			'simple_html',
 			'html_email',
+			'html_email_basicclean',
 			'html_fix',
 		);
 	}
@@ -65,15 +66,11 @@ class HtmlPurifier implements CleanerPlugin
 			return $value;
 		}
 
-		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+		#------------------------------
+		# Basic email clean
+		#------------------------------
 
-		$purifier = new \HTMLPurifier();
-		$config = $this->getConfigForType($type);
-
-		$value = $purifier->purify($value, $config);
-		$value = Strings::trimHtml($value);
-
-		if ($type == 'html_email') {
+		if ($type == 'html_email_basicclean') {
 			for ($x = 0; $x < 10; $x++) {
 				$value = preg_replace('#<span[^>]*>(\s|&nbsp;)*</span>#u', '', $value);
 				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
@@ -86,6 +83,24 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('</p>', '<__dp_old_p__>', $value);
 			$value = str_replace('<__dp_old_p__><__dp_old_p__>', '<br /><br />', $value);
 			$value = str_replace('<__dp_old_p__>', '<br /><br />', $value);
+
+			return $value;
+		}
+
+		#------------------------------
+		# HTML Purifier cleaners
+		#------------------------------
+
+		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+
+		$purifier = new \HTMLPurifier();
+		$config = $this->getConfigForType($type);
+
+		$value = $purifier->purify($value, $config);
+		$value = Strings::trimHtml($value);
+
+		if ($type == 'html_email') {
+			$value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
 		}
 
 		$value = Strings::trimHtml($value);
