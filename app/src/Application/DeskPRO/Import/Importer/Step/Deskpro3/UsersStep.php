@@ -461,7 +461,9 @@ class UsersStep extends AbstractDeskpro3Step
 		# Fetch user_map
 		#------------------------------
 
-		$q = $this->olddb->query("SELECT * FROM user_map WHERE localid $between_where AND sourceid = 1");
+		$dp_source_id = (int)$this->olddb->fetchColumn("SELECT id FROM user_source WHERE module = 'Dp' LIMIT 1");
+
+		$q = $this->olddb->query("SELECT * FROM user_map WHERE localid $between_where AND sourceid = $dp_source_id");
 		$q->execute();
 
 		$remote_ids = array();
@@ -482,18 +484,22 @@ class UsersStep extends AbstractDeskpro3Step
 		if ($remote_ids) {
 
 			$remote_ids = implode(',', $remote_ids);
+			$remote_ids = \Orb\Util\Arrays::castToType($remote_ids, 'int');
+			$remote_ids = \Orb\Util\Arrays::removeFalsey($remote_ids);
 
-			$q = $this->olddb->query("SELECT * FROM user_deskpro WHERE id IN ($remote_ids)");
-			$q->execute();
+			if ($remote_ids) {
+				$q = $this->olddb->query("SELECT * FROM user_deskpro WHERE id IN ($remote_ids)");
+				$q->execute();
 
-			while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-				if (!isset($remote_id_map[$r['id']])) continue;
-				$localid = $remote_id_map[$r['id']];
-				if (!isset($batch[$localid])) continue;
-				$batch[$localid]['user_deskpro'] = $r;
+				while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+					if (!isset($remote_id_map[$r['id']])) continue;
+					$localid = $remote_id_map[$r['id']];
+					if (!isset($batch[$localid])) continue;
+					$batch[$localid]['user_deskpro'] = $r;
+				}
+				$q->closeCursor();
+				unset($q);
 			}
-			$q->closeCursor();
-			unset($q);
 		}
 
 		unset($remote_ids, $remote_id_map);
