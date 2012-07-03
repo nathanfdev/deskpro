@@ -1098,32 +1098,39 @@ class Strings
 	public static function trimHtmlAdvanced($html)
 	{
 		$qp = \QueryPath::withHTML($html, 'body');
-		$qp->top()->find('span');
-		foreach ($qp as $span) {
-			$text = $span->text();
-			$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
-			$text = trim($text);
+		do {
+			$qp->top()->find('span');
 
-			if (!$text) {
-				$span->remove();
-			} else {
-				// If its not got attributes, then having a span is useless anyway
-				if (!$span->get(0)->attributes->length) {
-					$span->unwrap();
+			$changed = false;
+			foreach ($qp as $span) {
+				$text = $span->text();
+				$text = str_replace(array('&nbsp;', '&#xcompiled.phpA0;'), ' ', $text);
+				$text = trim($text);
+
+				if (!$text) {
+					$span->remove();
+					$changed = true;
+					break;
 				}
 			}
-		}
+		} while ($changed);
 
-		$qp->top()->find('p');
-		foreach ($qp as $p) {
-			$text = $p->text();
-			$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
-			$text = trim($text);
+		do {
+			$qp->top()->find('p');
 
-			if (!$text) {
-				$p->replaceWith('<br />');
+			$changed = false;
+			foreach ($qp as $p) {
+				$text = $p->text();
+				$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
+				$text = trim($text);
+
+				if (!$text) {
+					$p->replaceWith('<br />');
+					$changed = true;
+					break;
+				}
 			}
-		}
+		} while ($changed);
 
 		// Unwrap divs
 		do {
@@ -1138,6 +1145,7 @@ class Strings
 						$div->before($child);
 					}
 					$div->remove();
+					break;
 				}
 			}
 		} while ($changed);
@@ -1161,6 +1169,10 @@ class Strings
 				$html = preg_replace('#</div>$#', '', $html);
 			}
 		} while($changed);
+
+		ob_start();
+		$qp->writeXHTML();
+		$html = ob_get_clean();
 
 		$html = str_replace('<br></br>', '<br />', $html);
 
