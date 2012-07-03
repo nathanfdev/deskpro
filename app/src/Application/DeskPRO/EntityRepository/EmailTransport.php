@@ -55,7 +55,7 @@ class EmailTransport extends EntityRepository
 		$transports = $this->findAll();
 
 		foreach ($transports as $tr) {
-			if ($tr->doesMatchFromAddress($address)) {
+			if ($tr->match_type != 'all' && $tr->doesMatchFromAddress($address)) {
 				return $tr;
 			}
 		}
