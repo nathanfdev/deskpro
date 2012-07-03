@@ -120,6 +120,7 @@ class LanguageInstaller
 
 				$lang = $this->upgrade_language;
 				$lang->sys_name = $pack->sys_name;
+				$lang->lang_code = $pack->lang_code;
 
 				// Delete all phrases that arent customized
 				$this->em->getConnection()->executeUpdate("
@@ -152,9 +153,10 @@ class LanguageInstaller
 
 			} else {
 				$lang = new Language();
-				$lang->title    = $pack->title;
-				$lang->locale   = $pack->locale;
-				$lang->sys_name = $pack->sys_name;
+				$lang->title     = $pack->title;
+				$lang->locale    = $pack->locale;
+				$lang->sys_name  = $pack->sys_name;
+				$lang->lang_code = $pack->lang_code;
 
 				$this->em->persist($lang);
 				$this->em->flush();

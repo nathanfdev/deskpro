@@ -559,6 +559,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewTicket(Entity\Person $person)
 	{
+		#------------------------------
+		# Read email body/subject
+		#------------------------------
+
 		$email_info = array();
 
 		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
@@ -604,6 +608,39 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$email_info = $ev->email_info;
+
+		#------------------------------
+		# If the user is new with no lang, then try to guess based off the email
+		#------------------------------
+
+		$lang_codes = App::getDataService('Language')->getLangCodes();
+		if ($person->isNewPerson() && !$person->getRealLanguage() && count($lang_codes) > 1) {
+			$l = new \Text_LanguageDetect();
+			$l->setNameMode(3);
+
+			$set_lang_codes = array();
+			foreach ($lang_codes as $code) {
+				if ($l->languageExists($code)) {
+					$set_lang_codes[] = $code;
+				}
+			}
+
+			if ($set_lang_codes) {
+				$l->omitLanguages($set_lang_codes, true);
+
+				$body_test = strip_tags($email_info['body']);
+				$detected_lang = $l->detectSimple($body_test);
+
+				if ($detected_lang) {
+					$lang = App::getDataService('Language')->findLangCode($detected_lang);
+					$person->language = $lang;
+				}
+			}
+		}
+
+		#------------------------------
+		# Create the ticket
+		#------------------------------
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_GATEWAY_PERSON,

@@ -40,8 +40,14 @@ use \SimpleXMLElement;
  *
  * <pack>
  *     <language id="system_name">
+ *         <!-- Human readable title -->
  *         <title>English (US)</locale>
+ *
+ *         <!-- The default locale to use -->
  *         <locale>en_US</locale>
+ *
+ *         <!-- The ISO 639-2 language code -->
+ *         <lang>eng</lang>
  *     </language>
  *     <phrases>
  *         <phrase id="section.group.id">Phrase contents here</phrase>
@@ -132,6 +138,20 @@ class LanguagePackFile
 	/**
 	 * @return string
 	 */
+	public function getLangCode()
+	{
+		if ($this->pack->lang_code !== null) {
+			return $this->pack->lang_code;
+		}
+
+		$this->pack->lang_code = (string)$this->xml->language->lang_code;
+		return $this->pack->lang_code;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getLocale()
 	{
 		if ($this->pack->locale !== null) {
@@ -173,6 +193,7 @@ class LanguagePackFile
 		$this->getSysName();
 		$this->getTitle();
 		$this->getLocale();
+		$this->getLangCode();
 		$this->getPhrases();
 
 		return $this->pack;

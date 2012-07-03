@@ -9,6 +9,7 @@ $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = $translate->phrase('user.defaults.language_english');
 $l['locale'] = 'en_US';
 $l['sys_name'] = 'dp_enlgish';
+$l['lang_code'] = 'eng';
 $l['language_package'] = 'DeskproLanguages\\LangPackage';
 $em->persist($l);
 $em->flush();

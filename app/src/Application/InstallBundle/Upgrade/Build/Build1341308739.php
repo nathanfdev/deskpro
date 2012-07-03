@@ -29,15 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Languages;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class LanguagePack
+class Build1341308739 extends AbstractBuild
 {
-	public $sys_name;
-	public $title;
-	public $locale;
-	public $lang_code;
-	public $phrases;
+	public function run()
+	{
+		$this->out("Add lang_code to languages table");
+		$this->execMutateSql("ALTER TABLE languages ADD lang_code VARCHAR(3) NOT NULL");
+		$this->execMutateSql("UPDATE languages SET lang_code = 'eng'");
+	}
 }

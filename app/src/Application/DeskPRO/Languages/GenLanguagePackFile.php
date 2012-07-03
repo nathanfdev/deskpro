@@ -48,15 +48,21 @@ class GenLanguagePackFile
 	protected $locale;
 
 	/**
+	 * @var string
+	 */
+	protected $lang_code;
+
+	/**
 	 * @var string[]
 	 */
 	protected $phrases;
 
-	public function __construct($title, $locale, $phrases = array())
+	public function __construct($title, $locale, $lang_code, $phrases = array())
 	{
-		$this->title   = $title;
-		$this->locale  = $locale;
-		$this->phrases = $phrases;
+		$this->title     = $title;
+		$this->locale    = $locale;
+		$this->lang_code = $lang_code;
+		$this->phrases   = $phrases;
 	}
 
 	/**
@@ -134,6 +140,10 @@ class GenLanguagePackFile
 
 		$locale = $dom->createElement('locale');
 		$locale->appendChild($dom->createTextNode($this->locale));
+		$lang->appendChild($locale);
+
+		$locale = $dom->createElement('lang');
+		$locale->appendChild($dom->createTextNode($this->lang));
 		$lang->appendChild($locale);
 
 		#------------------------------

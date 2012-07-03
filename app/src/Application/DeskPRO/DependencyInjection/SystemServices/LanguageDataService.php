@@ -111,6 +111,43 @@ class LanguageDataService extends BaseRepositoryService
 
 
 	/**
+	 * Find a language by a lang code
+	 *
+	 * @param string $code
+	 * @return \Application\DeskPRO\Entity\Language|null
+	 */
+	public function findLangCode($code)
+	{
+		$this->preload();
+		foreach ($this->languages as $lang) {
+			if ($lang->lang_code == $code) {
+				return $lang;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Get an array of lang codes
+	 *
+	 * @return string[]
+	 */
+	public function getLangCodes()
+	{
+		$this->preload();
+		$codes = array();
+
+		foreach ($this->languages as $lang) {
+			$codes[] = $lang->lang_code;
+		}
+
+		return $codes;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Entity\Language
 	 */
 	public function getDefault()
