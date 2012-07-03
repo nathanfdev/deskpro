@@ -20,15 +20,6 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_comment', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_feedback', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.addRow(info.row); }, this);
-
-		$('#dp_notify_list').on('click', 'li[data-route]', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.removeRow($(this));
-			self.close();
-			DeskPRO_Window.runPageRouteFromElement($(this));
-		});
 	},
 
 	addRow: function(html_or_el) {
@@ -65,6 +56,10 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		row.remove();
 		this.modCount(type, '-');
+
+		if (!$('#dp_notify_list').find('> li.msg-row').length) {
+			this.close();
+		}
 	},
 
 	modCount: function(type, op, count) {
@@ -135,7 +130,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.menu.on('click', '.dismiss', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-
+			ev.stopImmediatePropagation();
 			var row = $(this).closest('li');
 			self.removeRow(row);
 		});
