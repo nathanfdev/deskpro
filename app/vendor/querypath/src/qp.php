@@ -17,14 +17,14 @@
  * @endcode
  *
  * If no autoloader is currently operating, this will use
- * QueryPath's default autoloader **unless** 
- * QP_NO_AUTOLOADER is defined, in which case all of the 
+ * QueryPath's default autoloader **unless**
+ * QP_NO_AUTOLOADER is defined, in which case all of the
  * files will be statically required in.
  */
 
 // This is sort of a last ditch attempt to load QueryPath if no
 // autoloader is used.
-if (!class_exists('\QueryPath\QueryPath')) {
+if (!class_exists('QueryPath\QueryPath')) {
 
   // If classloaders are explicitly disabled, load everything.
   if (defined('QP_NO_AUTOLOADER')) {

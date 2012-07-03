@@ -71,6 +71,8 @@ spl_autoload_register(function($classname) {
 
 $loader->register();
 
+define('QP_NO_AUTOLOADER', true);
+
 $GLOBALS['DP_AUTOLOADER'] = $loader;
 
 // ezC autoloading
