@@ -34,11 +34,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1340825490 extends AbstractBuild
+class Build1341318405 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Add custom_phrase instead of original_phrase");
-		$this->execMutateSql("ALTER TABLE phrases ADD custom_phrase LONGTEXT DEFAULT NULL, DROP original_phrase");
+		$this->out("Make sure original_phrase is on phrases");
+		try {
+			$this->execMutateSql("ALTER TABLE phrases ADD original_phrase LONGTEXT NOT NULL");
+		} catch (\Exception $e) {}
 	}
 }
