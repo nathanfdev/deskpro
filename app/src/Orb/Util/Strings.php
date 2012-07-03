@@ -1104,7 +1104,7 @@ class Strings
 			$changed = false;
 			foreach ($qp as $span) {
 				$text = $span->text();
-				$text = str_replace(array('&nbsp;', '&#xcompiled.phpA0;'), ' ', $text);
+				$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
 				$text = trim($text);
 
 				if (!$text) {
