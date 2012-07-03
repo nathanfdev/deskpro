@@ -184,13 +184,22 @@ class Generic implements ForwardDef, QuoteDef
 	 */
 	public function cutQuoteBlock($body, $is_html = false)
 	{
-		if (($pos = strpos($body, '<!--DP_TOP_MARK-->')) === false) {
-			if (($pos = strpos($body, '_______________________.')) === false) {
-				return $body;
-			}
+		// Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
+		$pos = strpos($body, 'DP_TOP_MARK');
+		if ($pos === false) {
+			return $body;
 		}
 
 		$body = substr($body, 0, $pos);
+
+		// We also want to cut from is the < character, so we dont
+		// cut mid-way into an html tag
+		if ($is_html) {
+			$pos = strrpos($body, "<");
+			if ($pos) {
+				$body = substr($body, 0, $pos);
+			}
+		}
 
 		// We try to cut known markers only when the top marker was successfully found
 		$body = $this->cutKnownQuoteMarkers($body, $is_html);

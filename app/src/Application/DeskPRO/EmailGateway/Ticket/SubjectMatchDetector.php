@@ -80,7 +80,7 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		$ticket_ids = App::getDb()->fetchAllCol("
 			SELECT id
 			FROM tickets
-			WHERE )subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
+			WHERE (subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
 			ORDER BY id DESC
 			LIMIT 20
 		", array($subject_orig, $subject_re, $this->_time_cutoff));

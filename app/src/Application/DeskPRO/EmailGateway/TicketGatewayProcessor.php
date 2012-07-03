@@ -387,8 +387,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body_full'] = $email_info['body'];
 
-		// Get rid of our cut line
-		$email_info['body_full'] = str_replace('_______________________.', '', $email_info['body_full']);
 		if ($email_info['body_is_html']) {
 			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
 		}
@@ -618,12 +616,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$l = new \Text_LanguageDetect();
 			$l->setNameMode(3);
 
+			$this->logMessage("Installed languages: " . implode(', ', $lang_codes));
+
 			$set_lang_codes = array();
 			foreach ($lang_codes as $code) {
 				if ($l->languageExists($code)) {
 					$set_lang_codes[] = $code;
 				}
 			}
+
+			$this->logMessage("Detectable languages: " . implode(', ', $set_lang_codes));
 
 			if ($set_lang_codes) {
 				$l->omitLanguages($set_lang_codes, true);
@@ -633,7 +635,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 				if ($detected_lang) {
 					$lang = App::getDataService('Language')->findLangCode($detected_lang);
+
+					$this->logMessage("Detected language $detected_lang, setting {$lang->getId()}");
+
 					$person->language = $lang;
+				} else {
+					$this->logMessage("No language detected");
 				}
 			}
 		}
