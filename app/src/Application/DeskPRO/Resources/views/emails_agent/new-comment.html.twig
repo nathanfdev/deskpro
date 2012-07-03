@@ -4,5 +4,11 @@
 	New comment by {{ comment.getUserName() }} on "{{ comment.getObject().title }}" {% if comment.status == 'validating' %}(requires validation){% endif %}
 {% endblock %}
 {% block content %}
-	New comment by {{ comment.getUserDisplayContact() }} on "{{ comment.getObject().title }}" {% if comment.status == 'validating' %}(requires validation){% endif %}
+	<p>
+		New comment by {{ comment.getUserDisplayContact() }} on "{{ comment.getObject().title }}" {% if comment.status == 'validating' %}(requires validation){% endif %}
+	</p>
+
+	<p>
+		View online: <a href="{{ url_full('agent') }}#app.publish,validating_comments" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.publish,validating_comments</a>
+	</p>
 {% endblock %}
