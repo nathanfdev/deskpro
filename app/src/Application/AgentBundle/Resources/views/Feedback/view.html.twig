@@ -36,7 +36,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	<h4 class="id-number">#{{ feedback.id }}</h4>
-	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ feedback.title }}</h1>
+	<h1>
+		<span id="{{baseId}}_showname">{{ feedback.title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ feedback.title }}" /></span>
+		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
+		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+	</h1>
 	<div class="labels-line">
 		<input
 			type="hidden"
@@ -71,11 +76,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
-			<dt class="type-labels">{{ phrase('agent.general.labels') }}:</dt>
-			<dd class="feedback-tags tags-wrap noedit-tags">
-				<input type="text" id="{{baseId}}_labels_input" value="{% for label in feedback.labels %}{{label.label}},{% endfor %}" />
-			</dd>
-
 			<dt>{{ phrase('agent.general.votes') }}:</dt>
 			<dd>
 				<span class="link-look who-voted-trigger">

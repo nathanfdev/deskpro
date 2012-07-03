@@ -12,4 +12,13 @@
 	<p>
 		View online: <a href="{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}</a>
 	</p>
+
+	<table width="620" border="0" cellspacing="0" cellpadding="3">
+		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
+				{{ feedback.getContent()|raw }}
+			</td></tr></table>
+		</td></tr>
+		<tr><td style="padding-bottom: 6px;"><br /></td></tr>
+	</table>
 {% endblock %}

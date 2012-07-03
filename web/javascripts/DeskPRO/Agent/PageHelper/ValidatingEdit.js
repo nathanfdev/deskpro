@@ -47,6 +47,10 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 				});
 
 				DeskPRO_Window.removePage(this.page);
+
+				if (DeskPRO_Window.sections.feedback_section) {
+					DeskPRO_Window.sections.feedback_section.reload();
+				}
 			}
 		});
 	},
@@ -70,6 +74,10 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 					typename: this.options.typename,
 					contentId: this.options.contentId
 				});
+
+				if (DeskPRO_Window.sections.feedback_section) {
+					DeskPRO_Window.sections.feedback_section.reload();
+				}
 
 				DeskPRO_Window.removePage(this.page);
 			}
