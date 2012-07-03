@@ -1037,9 +1037,16 @@ class TicketController extends AbstractController
 			#------------------------------
 
 			if (!$message['is_agent_note']) {
-				$ticket['agent_id']      = $this->in->getUint('options.agent_id');
-				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
-				$ticket['status']        = $this->in->getString('options.status');
+				if ($this->in->getUint('options.agent_id') != -1) {
+					$ticket['agent_id'] = $this->in->getUint('options.agent_id');
+				}
+				if ($this->in->getUint('options.agent_team_id') != -1) {
+					$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
+				}
+
+				if ($this->in->getString('options.status')) {
+					$ticket['status'] = $this->in->getString('options.status');
+				}
 
 				if ($this->in->getBool('options.do_kbpending')) {
 					$kb_pending = new ArticlePendingCreate();

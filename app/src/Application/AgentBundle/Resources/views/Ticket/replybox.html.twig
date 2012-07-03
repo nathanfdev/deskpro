@@ -129,6 +129,7 @@
 						<label>{{ phrase('agent.general.status') }}:</label>
 						<div>
 							<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]">
+								<option value="">Do not change status</option>
 								<option value="awaiting_user" selected="selected">Awaiting User</option>
 								<option value="awaiting_agent">Awaiting Agent</option>
 								<option value="resolved">Resolved</option>
@@ -138,19 +139,32 @@
 					<li class="hide-note with-select2">
 						<label>{{ phrase('agent.general.assign') }}:</label>
 						<div>
+							{% set is_selected = false %}
 							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-								<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">Unassigned</option>
+								{% if ticket.agent %}
+									<option value="-1">Do not change agent</option>
+								{% endif %}
+
+								<option {% if not ticket.agent.id %}{% set is_selected = true %}selected="selected"{% endif %} value="0">Unassigned</option>
+
 								{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-									<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
+									{% set is_selected = true %}
+									<option selected="selected" data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 								{% endif %}
 								{% for agent in agents %}
 									{% if agent.id != app.user.id %}
-										<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+										<option {% if not is_selected and agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 									{% endif %}
 								{% endfor %}
 							</select>
 
+							{% set is_selected = false %}
 							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+
+								{% if ticket.agent_team %}
+									<option value="-1">Do not change team</option>
+								{% endif %}
+
 								{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 									<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
 								{% endif %}
