@@ -82,7 +82,8 @@
 								-->
 							</div>
 						{% endif %}
-						<div class="dp-control-group {% if error_fields['message'] %}dp-error{% endif %}">
+						<div class="dp-control-group {% if error_fields['message'] %}dp-error{% endif %}" style="position:relative;">
+							<div class="dp-drop-file-zone"><h1>{{ phrase('user.general.upload-drag') }}</h1></div>
 							<div class="dp-controls dp-fill">
 								<textarea
 									name="newreply[message]"
