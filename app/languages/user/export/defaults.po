@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.defaults.article_category_general"
+msgstr "General"
+
+msgid "user.defaults.article_example_content"
+msgstr "This is an example knowledgebase article. Feel free to edit or delete it from the agent interface."
+
+msgid "user.defaults.article_example_title"
+msgstr "Example Article"
+
+msgid "user.defaults.department_sales"
+msgstr "Sales"
+
+msgid "user.defaults.department_support"
+msgstr "Support"
+
+msgid "user.defaults.download_category_general"
+msgstr "General"
+
+msgid "user.defaults.downloads_category_general"
+msgstr "Documents"
+
+msgid "user.defaults.feedback_example_content"
+msgstr "This is an example suggestion. Feel free to edit or delete it from the agent interface."
+
+msgid "user.defaults.feedback_example_title"
+msgstr "Example Suggestion"
+
+msgid "user.defaults.feedback_status_completed"
+msgstr "Completed"
+
+msgid "user.defaults.feedback_status_declined"
+msgstr "Declined"
+
+msgid "user.defaults.feedback_status_duplicate"
+msgstr "Duplicate"
+
+msgid "user.defaults.feedback_status_planning"
+msgstr "Planning"
+
+msgid "user.defaults.feedback_status_started"
+msgstr "Started"
+
+msgid "user.defaults.feedback_status_under-review"
+msgstr "Under Review"
+
+msgid "user.defaults.feedback_type_bug-report"
+msgstr "Bug Report"
+
+msgid "user.defaults.feedback_type_feature-request"
+msgstr "Feature Request"
+
+msgid "user.defaults.feedback_type_suggestion"
+msgstr "Suggestion"
+
+msgid "user.defaults.language_english"
+msgstr "English"
+
+msgid "user.defaults.news_category_general"
+msgstr "General"
+
+msgid "user.defaults.news_example_content"
+msgstr "This is an example news post. Feel free to edit or delete it from the agent interface."
+
+msgid "user.defaults.news_example_title"
+msgstr "Example News Post"
+
+msgid "user.defaults.trigger_warn_autoclose"
+msgstr "You have not replied to your ticket in 3 days. If your problem has been solved, you can simply ignore this message and your ticket will be closed automatically in another two days. If you still require assistance, please reply to this message to keep your ticket open."

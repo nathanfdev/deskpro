@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.error.attach_ext-allowed"
+msgstr "Only the following file types can be uploaded: {{error_detail}}"
+
+msgid "user.error.attach_ext-not-allow"
+msgstr "The type of file you uploaded is not allowed."
+
+msgid "user.error.attach_failed"
+msgstr "Your attachment failed to upload (did you cancel it?). You should try again."
+
+msgid "user.error.attach_no-file"
+msgstr "Please select a file to upload"
+
+msgid "user.error.attach_size"
+msgstr "Your attachment is too large. The maximum file size is {{error_detail}}"
+
+msgid "user.error.attach_unknown-error"
+msgstr "There was a problem with our server while trying to accept your attachment. Please try again."
+
+msgid "user.error.error_code"
+msgstr "Error Code"
+
+msgid "user.error.error_title"
+msgstr "Error"
+
+msgid "user.error.expired-token"
+msgstr "The page you are trying to access has expired. Please go back and try again."
+
+msgid "user.error.form_choice_invalid"
+msgstr "Please choose an option from the list"
+
+msgid "user.error.form_choice_max"
+msgstr "Please select at most 1 option|Please select at most {{count}} options"
+
+msgid "user.error.form_choice_min"
+msgstr "Please select at least 1 option|Please select at least {{count}} options"
+
+msgid "user.error.form_date_invalid"
+msgstr "Please enter a valid date"
+
+msgid "user.error.form_required"
+msgstr "This field is required"
+
+msgid "user.error.form_text_max"
+msgstr "Please enter at most 1 character|Please enter at most {{count}} characters"
+
+msgid "user.error.form_text_min"
+msgstr "Please enter at least 1 character|Please enter at least {{count}} characters"
+
+msgid "user.error.form_text_regex"
+msgstr "Please enter a correct value"
+
+msgid "user.error.invalid_email"
+msgstr "Invalid email address"
+
+msgid "user.error.invalid_email-code"
+msgstr "The validation link seems to be invalid."
+
+msgid "user.error.invalid_email-explain"
+msgstr "We could not find that email address on your account."
+
+msgid "user.error.not-found"
+msgstr "The page you are looking for was not found."
+
+msgid "user.error.not-found-title"
+msgstr "Not Found"
+
+msgid "user.error.permission-denied"
+msgstr "Sorry, the action you are trying to perform is not allowed."
+
+msgid "user.error.permission-denied-login"
+msgstr "You are currently logged out. <a href=\"{{login_url}}\">Log in</a> and try again."
+
+msgid "user.error.permission-denied-title"
+msgstr "You are not allowed to do that"
+
+msgid "user.error.server-error"
+msgstr "There was a server error that prevented the page from loading. Please try again."

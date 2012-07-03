@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.chat.email"
+msgstr "Your Email Address"
+
+msgid "user.chat.ended-no-agent"
+msgstr "We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later."
+
+msgid "user.chat.form_chat_button-submit"
+msgstr "Send"
+
+msgid "user.chat.form_chat_send-file"
+msgstr "Upload a File"
+
+msgid "user.chat.form_create_button-submit"
+msgstr "Start Chat"
+
+msgid "user.chat.form_create_department"
+msgstr "Choose department"
+
+msgid "user.chat.form_create_title"
+msgstr "Start a Chat with an Agent"
+
+msgid "user.chat.form_feedback_button-submit"
+msgstr "Send Feedback & Close Window"
+
+msgid "user.chat.form_feedback_comments"
+msgstr "Comments?"
+
+msgid "user.chat.form_feedback_rate-satisfaction"
+msgstr "Were you satisfied with this conversation?"
+
+msgid "user.chat.form_feedback_rate-satisfied"
+msgstr "Yes"
+
+msgid "user.chat.form_feedback_rate-time"
+msgstr "Was our response time fast enough?"
+
+msgid "user.chat.form_feedback_rate-unsatisfied"
+msgstr "No"
+
+msgid "user.chat.form_feedback_title"
+msgstr "Send us feedback"
+
+msgid "user.chat.form_feedback_transcript-email"
+msgstr "Send a transcript of this chat to"
+
+msgid "user.chat.message_agent-timeout"
+msgstr "Our Apologies; {{name}} appears to have been disconnected. Please wait while will try to find another agent."
+
+msgid "user.chat.message_assigned"
+msgstr "Chat assigned to {{name}}"
+
+msgid "user.chat.message_chatting-with"
+msgstr "You are chatting with"
+
+msgid "user.chat.message_ended"
+msgstr "Chat ended"
+
+msgid "user.chat.message_ended-by"
+msgstr "Chat ended by {{name}}"
+
+msgid "user.chat.message_ended-by-user"
+msgstr "Chat ended by user"
+
+msgid "user.chat.message_finding-agent"
+msgstr "Finding an agent"
+
+msgid "user.chat.message_long-wait"
+msgstr "We are still trying to find an available agent to take your chat; this normally takes less than a minute. <br /><br />In a rush? <a class=\"cancel-and-newticket-trigger\">leave us a message instead?</a>"
+
+msgid "user.chat.message_set-department"
+msgstr "{{name}} set department to {{department}}"
+
+msgid "user.chat.message_started"
+msgstr "Chat started"
+
+msgid "user.chat.message_unassigned"
+msgstr "Chat unassigned"
+
+msgid "user.chat.message_uploading"
+msgstr "Uploading ..."
+
+msgid "user.chat.message_user-joined"
+msgstr "{{name}} joined the chat"
+
+msgid "user.chat.message_user-left"
+msgstr "{{name}} left the chat"
+
+msgid "user.chat.message_user-returned"
+msgstr "User has returned"
+
+msgid "user.chat.message_user-timeout"
+msgstr "User timed out"
+
+msgid "user.chat.message_wait"
+msgstr "We are finding an agent for you"
+
+msgid "user.chat.name"
+msgstr "Your Name"
+
+msgid "user.chat.submit-ticket-button"
+msgstr "Email Us"
+
+msgid "user.chat.submit-ticket-title"
+msgstr "Email us instead"
+
+msgid "user.chat.window_cancel"
+msgstr "Cancel"
+
+msgid "user.chat.window_cancel-confirm"
+msgstr "Are you sure you want to end your chat?"
+
+msgid "user.chat.window_close"
+msgstr "No thanks, just close the window"
+
+msgid "user.chat.window_end-chat"
+msgstr "End Chat"
+
+msgid "user.chat.window_open-new"
+msgstr "Open this chat in a new window"
+
+msgid "user.chat.window_resume-button"
+msgstr "Open your chat"
+
+msgid "user.chat.window_start-button"
+msgstr "Click here to chat with us"
+
+msgid "user.chat.window_upload-drag"
+msgstr "Drop your file here to upload it to the chat"

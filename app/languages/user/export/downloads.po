@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.downloads.button-download"
+msgstr "Download"
+
+msgid "user.downloads.file_not_found"
+msgstr "The file could not be found"
+
+msgid "user.downloads.message_no-files"
+msgstr "There are no files in this folder."
+
+msgid "user.downloads.noun"
+msgstr "File"
+
+msgid "user.downloads.related_downloads"
+msgstr "Related Files"
+
+msgid "user.downloads.sidebar_description"
+msgstr "View our file|Browse through our {{count}} files"
+
+msgid "user.downloads.title"
+msgstr "Downloads"
+
+msgid "user.downloads.title-categories"
+msgstr "There is 1 sub-folder|There are {{count}} sub-folders"
+
+msgid "user.downloads.title-downloads"
+msgstr "There is 1 file|There are {{count}} files"

@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.general.add"
+msgstr "Add"
+
+msgid "user.general.attachments"
+msgstr "Attachments"
+
+msgid "user.general.comments_add-comment"
+msgstr "Add a comment"
+
+msgid "user.general.comments_logged_in_as"
+msgstr "Logged In As"
+
+msgid "user.general.comments_no_comments"
+msgstr "There are no comments."
+
+msgid "user.general.comments_please_enter_email"
+msgstr "Please enter your email address"
+
+msgid "user.general.count_comments"
+msgstr "{{count}} Comment|{{count}} Comments"
+
+msgid "user.general.deskpro"
+msgstr "DeskPRO"
+
+msgid "user.general.email_address"
+msgstr "Email Address"
+
+msgid "user.general.email_addresses"
+msgstr "Email Addresses"
+
+msgid "user.general.first_name"
+msgstr "First Name"
+
+msgid "user.general.form_fix_email"
+msgstr "Enter a valid email address"
+
+msgid "user.general.go"
+msgstr "Go"
+
+msgid "user.general.go_back"
+msgstr "Go Back"
+
+msgid "user.general.helpdesk_by"
+msgstr "Helpdesk software by <strong>{{deskpro}}</strong>"
+
+msgid "user.general.label_captcha"
+msgstr "Confirmation code"
+
+msgid "user.general.last_name"
+msgstr "Last Name"
+
+msgid "user.general.loading"
+msgstr "Loading"
+
+msgid "user.general.log_in"
+msgstr "Log In"
+
+msgid "user.general.log_out"
+msgstr "Log Out"
+
+msgid "user.general.login_below"
+msgstr "Have an account? Login below."
+
+msgid "user.general.marked_as_helpful"
+msgstr "You marked this page as helpful"
+
+msgid "user.general.marked_as_unhelpful"
+msgstr "You marked this page as unhelpful"
+
+msgid "user.general.name"
+msgstr "Name"
+
+msgid "user.general.next"
+msgstr "Next"
+
+msgid "user.general.page"
+msgstr "Page"
+
+msgid "user.general.page_prev"
+msgstr "Prev"
+
+msgid "user.general.please_enter_your_email"
+msgstr "Please enter your email address"
+
+msgid "user.general.please_enter_your_name"
+msgstr "Please enter your name"
+
+msgid "user.general.post_comment_btn"
+msgstr "Post Comment"
+
+msgid "user.general.rating_x_of_y_found_helpful"
+msgstr "{{vote_up}} of {{vote_count}} people found this page helpful"
+
+msgid "user.general.read_more"
+msgstr "Read more"
+
+msgid "user.general.save"
+msgstr "Save"
+
+msgid "user.general.set_as_helpful"
+msgstr "This page was helpful"
+
+msgid "user.general.set_as_unhelpful"
+msgstr "This page was unhelpful"
+
+msgid "user.general.upload"
+msgstr "Upload"
+
+msgid "user.general.upload-drag"
+msgstr "Drop your file here to upload it"
+
+msgid "user.general.upload_a_file"
+msgstr "Upload a file"
+
+msgid "user.general.uploading"
+msgstr "Uploading:"
+
+msgid "user.general.you"
+msgstr "You"
+
+msgid "user.general.your_comment_agent_validation"
+msgstr "Your comment is awaiting agent validation before it appears publicly"
+
+msgid "user.general.your_email_address"
+msgstr "Your Email Address"
+
+msgid "user.general.your_name"
+msgstr "Your Name"

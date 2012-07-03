@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "search_label-search_show"
+msgstr "Show"
+
+msgid "user.portal.language_chooser"
+msgstr "Language:"
+
+msgid "user.portal.login-box_cancel-button"
+msgstr "Cancel"
+
+msgid "user.portal.more_labels"
+msgstr "More Labels"
+
+msgid "user.portal.no_results_help"
+msgstr "No results, try using different terms."
+
+msgid "user.portal.online-staff"
+msgstr "Online Staff"
+
+msgid "user.portal.our-staff"
+msgstr "Our Staff"
+
+msgid "user.portal.search"
+msgstr "Search"
+
+msgid "user.portal.search-everything"
+msgstr "Everything"
+
+msgid "user.portal.search.new-chat"
+msgstr "Start Chat"
+
+msgid "user.portal.search.new-feedback"
+msgstr "Submit Feedback"
+
+msgid "user.portal.search.new-ticket"
+msgstr "Contact Us"
+
+msgid "user.portal.search.no_matches"
+msgstr "Nothing suitable? ..."
+
+msgid "user.portal.search_label-search_with"
+msgstr "labelled with"
+
+msgid "user.portal.search_labels_title"
+msgstr "Search Labels"
+
+msgid "user.portal.search_more-results"
+msgstr "View more search results"
+
+msgid "user.portal.search_result-count"
+msgstr "{{count}} search result|{{count}} search results"
+
+msgid "user.portal.share_this"
+msgstr "Share this"
+
+msgid "user.portal.sidebar_staff-description"
+msgstr "Our friendly support staff are here to help."
+
+msgid "user.portal.sidebar_welcome-user"
+msgstr "Welcome back, {{name}}"
+
+msgid "user.portal.tab_downloads"
+msgstr "Downloads"
+
+msgid "user.portal.tab_downloads-description"
+msgstr "Browse our downloads"
+
+msgid "user.portal.tab_feedback"
+msgstr "Feedback"
+
+msgid "user.portal.tab_feedback-description"
+msgstr "Customer Suggestions"
+
+msgid "user.portal.tab_home"
+msgstr "Home"
+
+msgid "user.portal.tab_home-description"
+msgstr "Welcome &amp; News"
+
+msgid "user.portal.tab_knowledgebase"
+msgstr "Knowledgebase"
+
+msgid "user.portal.tab_knowledgebase-description"
+msgstr "Read help articles"
+
+msgid "user.portal.tab_tickets"
+msgstr "Contact Us"
+
+msgid "user.portal.tab_tickets-description"
+msgstr "We are here to help"
+
+msgid "user.portal.twitter-user-link"
+msgstr "@{{name}} on twitter"
+
+msgid "user.portal.twitter-view-more"
+msgstr "View more from @{{name}} &rarr;"
+
+msgid "user.portal.welcome-back-guest"
+msgstr "Welcome back, guest"

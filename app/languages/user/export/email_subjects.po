@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "user.email_subjects.chat_transcript"
+msgstr "Chat Transcript"
+
+msgid "user.email_subjects.comment-approved"
+msgstr "Your comment was approved"
+
+msgid "user.email_subjects.comment-confirmation"
+msgstr "Thank you for your comment"
+
+msgid "user.email_subjects.comment-deleted"
+msgstr "Your comment was read by our agents"
+
+msgid "user.email_subjects.email_new-confirm"
+msgstr "Validate your email address"
+
+msgid "user.email_subjects.feedback_new"
+msgstr "Thank you for submitting your feedback"
+
+msgid "user.email_subjects.feedback_new-approved"
+msgstr "Your feedback has been approved"
+
+msgid "user.email_subjects.feedback_new-confirm"
+msgstr "Thank you for submitting your feedback (validation required)"
+
+msgid "user.email_subjects.feedback_new-disapproved"
+msgstr "Your feedback has been declined"
+
+msgid "user.email_subjects.feedback_updated"
+msgstr "Your feedback was updated: {{title}}"
+
+msgid "user.email_subjects.password_agent-reset"
+msgstr "An agent has reset your password"
+
+msgid "user.email_subjects.password_reset"
+msgstr "Reset Password"
+
+msgid "user.email_subjects.re"
+msgstr "RE: {{subject}}"
+
+msgid "user.email_subjects.ticket_new-participant"
+msgstr "A new person has been added to your ticket"
+
+msgid "user.email_subjects.validate-email"
+msgstr "Validate your email address"
