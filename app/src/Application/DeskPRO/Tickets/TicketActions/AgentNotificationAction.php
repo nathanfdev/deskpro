@@ -210,21 +210,25 @@ class AgentNotificationAction extends AbstractAction
 			$change_info['notify_type'] = 'newticket';
 			$tpl = $this->newticket_email_tpl;
 			$is_new_ticket = true;
+			$from_name = $ticket->person->getDisplayName();
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewAgentReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_agent_email_tpl;
 			$is_new_agent_reply = true;
 			$new_message = $this->tracker->getNewAgentReply();
+			$from_name = $new_message->person->getDisplayName();
 		} elseif ($this->tracker->hasNewUserReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewUserReply");
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
 			$new_message = $this->tracker->hasNewUserReply();
+			$from_name = $new_message->person->getDisplayName();
 		} else {
 			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
 			$tpl = $this->ticket_update_email_tpl;
+			$from_name = null;
 		}
 
 		$agent_change = $this->tracker->getChangedProperty('agent');
@@ -321,7 +325,9 @@ class AgentNotificationAction extends AbstractAction
 
 			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $this->getFromAddress($ticket));
 
-			$message->setFrom($this->getFromAddress($ticket));
+			$from_address = $this->getFromAddress($ticket);
+			$from_address = array($from_address => $from_address ? $from_name : $from_address);
+			$message->setFrom($from_address);
 
 			$email_time = microtime(true);
 			App::getMailer()->send($message);

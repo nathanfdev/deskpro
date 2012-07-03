@@ -8,17 +8,17 @@
 	{{ phrase('agent.emails.reply_above_line') }}
 	<br /><br />
 
-	{{ phrase('agent.emails.ticket_was_created') }}
+{{ layout.render_top_message(messages|first) }}
 {% endset %}
 {{ layout.section('', content) }}
 
 <br />
 
-{{ layout.render_ticket_messages(messages, '', { ticketdisplay: ticketdisplay, show_author_email: true }) }}
-
-<br />
-
 {% set content %}
+	{{ phrase('agent.emails.ticket_was_created') }}
+
+	<br /><br />
+
 	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
