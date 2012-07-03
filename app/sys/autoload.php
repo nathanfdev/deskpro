@@ -51,6 +51,11 @@ $loader->registerClassNames(array(
 	'Markdown_Parser'                 => DP_ROOT.'/vendor/php-markdown/markdown.php',
 	'FineDiff'                        => DP_ROOT.'/vendor/PHP-FineDiff/finediff.php',
 	'GoogleOpenID'                    => DP_ROOT.'/vendor/googleopenid/GoogleOpenID.php',
+
+	'Text_LanguageDetect'             => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect.php',
+	'Text_LanguageDetect_Exception'   => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
+	'Text_LanguageDetect_ISO639'      => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
+	'Text_LanguageDetect_Parser'      => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
 ));
 
 spl_autoload_register(function($classname) {
