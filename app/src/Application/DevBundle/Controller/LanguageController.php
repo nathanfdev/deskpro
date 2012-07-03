@@ -222,12 +222,16 @@ class LanguageController extends Controller
 			}
         }
 
+        $this->exportPOAction('user');
+
         return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Reformatted Language Files'));
+
     }
 
     public function exportToPOAction($package)
     {
         set_time_limit(0);
+
         $files = Language::GetFileFinder()->getLanguageFileList($package);
         $strings = array();
 
@@ -248,6 +252,7 @@ class LanguageController extends Controller
         $fs = fopen(DP_ROOT.'/tmp.po', 'a');
 
         foreach($strings as $source => $target) {
+
             fwrite($fs, "\nmsgid \"{$source}\"\n");
             fwrite($fs, "msgstr ");
             $parts = explode("\n", $target);
@@ -273,6 +278,59 @@ class LanguageController extends Controller
         unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
 
         return $response;
+    }
+
+    public function exportPOAction($package)
+    {
+
+         $folder = DP_ROOT.'/languages/'.$package;
+
+         $dh = opendir($folder);
+
+         while(($filename = readdir($dh)) !== false) {
+
+             $filepath = $folder.'/'. $filename;
+             if (is_file($filepath)) {
+
+                 $strings = require($filepath);
+
+                 $outfile = DP_ROOT.'/languages/' . $package . '/' . 'export' . '/' . str_replace('.php', '', $filename) . '.po';
+
+                 echo "Exporting: {$filepath} <br />";
+
+                 $fs = fopen($outfile, 'w');
+
+                 fwrite($fs, 'msgid ""' . "\n");
+                 fwrite($fs, 'msgstr ""' . "\n");
+                 fwrite($fs, '"MIME-Version: 1.0\n"' . "\n");
+                 fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"' . "\n");
+                 fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"' . "\n");
+
+                 foreach($strings as $source => $target) {
+
+                     fwrite($fs, "\nmsgid \"{$source}\"\n");
+                     fwrite($fs, "msgstr ");
+
+                     $parts = explode("\n", $target);
+                     foreach($parts as $i=>$part) {
+
+                         // escape " for PO format
+                         fwrite($fs, '"'. str_replace('"', '\\"', $part));
+
+                         if($i != count($parts) -1) {
+                             fwrite($fs, '\n');
+                         }
+
+                         fwrite($fs, "\"\n");
+                     }
+                 }
+
+                 fclose($fs);
+             }
+         }
+
+         closedir($dh);
+         return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Exported PO files'));
     }
 
     public function exportAllToPOAction()
