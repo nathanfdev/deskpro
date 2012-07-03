@@ -201,7 +201,7 @@
 	'agent.tickets.ticket_is_marked_as_spam'            => 'This ticket has been marked as spam.',
 	'agent.tickets.ticket_log'                          => 'Ticket Log',
 	'agent.tickets.ticket_split_form'                   => 'Ticket split from',
-	'agent.tickets.tickets_on_hold'                     => 'Tickets on hold',
+	'agent.tickets.tickets_on_hold'                     => 'On Hold',
 	'agent.tickets.unassign_action'                     => 'Unassign agent',
 	'agent.tickets.unassign_team'                       => 'Unassign team',
 	'agent.tickets.unhelpful'                           => 'unhelpful',
