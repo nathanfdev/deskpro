@@ -1,5 +1,6 @@
 <?php return array(
 	'search_label-search_show'                  => 'Show',
+	'user.portal.language_chooser'              => 'Language:',
 	'user.portal.login-box_cancel-button'       => 'Cancel',
 	'user.portal.more_labels'                   => 'More Labels',
 	'user.portal.no_results_help'               => 'No results, try using different terms.',
@@ -31,5 +32,4 @@
 	'user.portal.twitter-user-link'             => '@{{name}} on twitter',
 	'user.portal.twitter-view-more'             => 'View more from @{{name}} &rarr;',
 	'user.portal.welcome-back-guest'            => 'Welcome back, guest',
-	'user.portal.language_chooser'              => 'Language:',
 );

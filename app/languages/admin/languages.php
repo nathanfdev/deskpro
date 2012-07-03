@@ -13,6 +13,7 @@
 	'admin.languages.language_pack'                        => 'Language Pack',
 	'admin.languages.new_language'                         => 'New Language',
 	'admin.languages.notice_default_language'              => 'The default language used for users and submitted content (such as tickets)',
+	'admin.languages.phrasegroup_CUSTOM'                   => 'Customized Phrases',
 	'admin.languages.phrasegroup_admin'                    => 'Admin Interface Phrases',
 	'admin.languages.phrasegroup_admin_agents'             => 'Agent Configuration Phrases',
 	'admin.languages.phrasegroup_admin_api'                => 'API Phrases',
@@ -82,5 +83,4 @@
 	'admin.languages.phrasegroup_user_widget'              => 'Website Widget',
 	'admin.languages.save_your_phrase'                     => 'Save Customized Phrase',
 	'admin.languages.your_phrase'                          => 'Your Customized Phrase',
-	'admin.languages.phrasegroup_CUSTOM'                   => 'Customized Phrases'
 );
