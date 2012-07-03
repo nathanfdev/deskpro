@@ -72,17 +72,18 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		$subject = trim($reader->getSubject()->subject);
 
 		// Strip off Re: prefix (and alternatives in some other langs)
-		$subject = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject);
-		$subject = trim($subject);
+		$subject_orig = trim($subject);
+		$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject);
+		$subject_re   = trim($subject);
 
 		// Now lets try to find it...
 		$ticket_ids = App::getDb()->fetchAllCol("
 			SELECT id
 			FROM tickets
-			WHERE subject = ? AND date_created > ? AND status != 'closed'
+			WHERE )subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
 			ORDER BY id DESC
 			LIMIT 20
-		", array($subject, $this->_time_cutoff));
+		", array($subject_orig, $subject_re, $this->_time_cutoff));
 
 		if (!$ticket_ids) return null;
 
