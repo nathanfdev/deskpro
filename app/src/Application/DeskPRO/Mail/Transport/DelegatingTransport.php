@@ -295,14 +295,22 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];
 
+		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage finding address: %s", $from_address));
+
 		$from_account = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($from_address);
 		if ($from_account) {
+
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage found transport %s", $from_account->getId()));
+
 			if ($get_backup_transport) {
 				$tr = null;
 			} else {
 				$tr = $from_account->getTransport();
 			}
 		} else {
+
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
+
 			try {
 				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_address}", array('raw_message' => $message->toString()));
 			} catch (\Exception $e) {}
