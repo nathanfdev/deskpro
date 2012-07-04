@@ -210,6 +210,7 @@ class AgentNotificationAction extends AbstractAction
 			$change_info['notify_type'] = 'newticket';
 			$tpl = $this->newticket_email_tpl;
 			$is_new_ticket = true;
+			$new_message = $this->tracker->getNewReply();
 			$from_name = $ticket->person->getDisplayName();
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewAgentReply");
@@ -306,14 +307,26 @@ class AgentNotificationAction extends AbstractAction
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 
-			if ($is_new_ticket || $is_new_agent_reply || $is_new_user_reply) {
+			if ($is_new_ticket) {
+				$max = App::getSetting('core.sendemail_attach_maxsize');
+				$size = 0;
+				foreach ($new_message->attachments as $attach) {
+					$size += $attach->blob->filesize;
+					if ($size > $max) {
+						break;
+					}
+
+					$message->attachBlob($attach->blob);
+				}
+			} elseif ($is_new_agent_reply || $is_new_user_reply) {
 				$new_message = \Orb\Util\Arrays::getFirstItem($vars['messages']);
 
 				if ($new_message && $ticketdisplay->getMessageAttachments($new_message)) {
 					$max = App::getSetting('core.sendemail_attach_maxsize');
 					$size = 0;
 					foreach ($ticketdisplay->getMessageAttachments($new_message) as $attach) {
-						if ($size + $attach->blob->filesize > $max) {
+						$size += $attach->blob->filesize;
+						if ($size > $max) {
 							break;
 						}
 

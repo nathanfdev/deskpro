@@ -677,6 +677,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		App::getOrm()->beginTransaction();
 
+		$newticket->attach_blobs = $this->processBlobs();
 		$ticket = $newticket->save();
 
 		$ticket->email_gateway = $this->gateway;
@@ -686,15 +687,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$message = $newticket->new_message;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
-
-		foreach ($this->processBlobs() as $blob) {
-			$this->logMessage('[TicketGatewayProcessor] Adding blob ' . $blob->id);
-			$attach = new Entity\TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $person;
-
-			$message->addAttachment($attach);
-		}
 
 		if ($this->reader->getCcAddresses()) {
 			$this->logMessage('[TicketGatewayProcessor] Has CC');

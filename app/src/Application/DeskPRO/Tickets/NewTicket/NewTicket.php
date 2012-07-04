@@ -68,6 +68,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public $require_login = false;
 
+	public $attach_blobs = array();
+
 	protected $mode = 'untrusted';
 
 	/**
@@ -276,6 +278,19 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 						$blob->is_temp = false;
 						App::getOrm()->persist($blob);
 					}
+				}
+			}
+
+			if ($this->attach_blobs) {
+				foreach ($this->attach_blobs as $blob) {
+					$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $person;
+
+					$ticket_message->addAttachment($attach);
+
+					$blob->is_temp = false;
+					App::getOrm()->persist($blob);
 				}
 			}
 
