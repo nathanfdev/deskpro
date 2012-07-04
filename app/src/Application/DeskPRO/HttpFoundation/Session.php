@@ -82,8 +82,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 				$_SESSION['_symfony2']['auth_person_id'] = $person->getId();
 
 				if ($person->is_agent) {
-					$_SESSION['_symfony2']['active_status'] = 'available';
-					$_SESSION['_symfony2']['is_chat_available'] = 1;
+					if (!is_array($_SESSION['_symfony2']['attributes'])) {
+						$_SESSION['_symfony2']['attributes'] = array();
+					}
+					$_SESSION['_symfony2']['attributes']['active_status'] = 'available';
+					$_SESSION['_symfony2']['attributes']['is_chat_available'] = 1;
 				}
 
 				$this->attributes['auth_person_id'] = $person->getId();
