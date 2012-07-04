@@ -306,7 +306,7 @@ class HtmlMatcher
 			return $this->qp;
 		}
 
-		$this->qp = \QueryPath::withHTML($this->body, 'body', array('convert_to_encoding' => null));
+		$this->qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$this->body, 'body', array('convert_to_encoding' => null));
 
 		return $this->qp;
 	}

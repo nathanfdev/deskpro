@@ -1099,7 +1099,7 @@ class Strings
 	 */
 	public static function trimHtmlAdvanced($html)
 	{
-		$qp = \QueryPath::withHTML($html, 'body');
+		$qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$html, null, array('convert_to_encoding' => null));
 		do {
 			$qp->top()->find('span');
 
@@ -1158,7 +1158,7 @@ class Strings
 
 		// Unwrap outer divs, p's
 		do {
-			$qp = \QueryPath::withHTML($html);
+			$qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
 			$div = $qp->top()->find('body > *, body > dp_tag > *');
