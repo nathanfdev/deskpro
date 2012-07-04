@@ -483,9 +483,9 @@ class UsersStep extends AbstractDeskpro3Step
 
 		if ($remote_ids) {
 
-			$remote_ids = implode(',', $remote_ids);
 			$remote_ids = \Orb\Util\Arrays::castToType($remote_ids, 'int');
 			$remote_ids = \Orb\Util\Arrays::removeFalsey($remote_ids);
+			$remote_ids = implode(',', $remote_ids);
 
 			if ($remote_ids) {
 				$q = $this->olddb->query("SELECT * FROM user_deskpro WHERE id IN ($remote_ids)");
