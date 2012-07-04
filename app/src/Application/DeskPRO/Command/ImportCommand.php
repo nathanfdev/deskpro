@@ -140,6 +140,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			// notices etc will be sent in normal log at the end of a process,
 			// these instant-report-sendings are meant for fatal type errors.
 			if (isset($log_item['errinfo']) && isset($log_item['errinfo']['die']) && !$log_item['errinfo']['die']) {
+				$GLOBALS['DP_HAS_NONFATAL_ERROR'] = $log_item['errinfo']['summary'];
 				return;
 			}
 
@@ -1025,7 +1026,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			'total_time' => isset($GLOBALS['import_total_time']) ? $GLOBALS['import_total_time'] : 'na',
 			'log' => @file_get_contents($import_log_path),
 			'errinfo' => $errinfo ? $errinfo : 0,
-			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : ''
+			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+			'nonfatal_error' => isset($GLOBALS['DP_HAS_NONFATAL_ERROR']) ? $GLOBALS['DP_HAS_NONFATAL_ERROR'] : 0
 		);
 
 		try {
