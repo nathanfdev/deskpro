@@ -67,9 +67,9 @@
 		</td></tr>
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
-				<span class="dp_message_{{ message.id }}_begin" title="dp_message_{{ message.id }}_begin" id="dp_message_{{ message.id }}_begin" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+				<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
 				{{ message.message_html|raw }}
-				<span class="dp_message_{{ message.id }}_end" title="dp_message_{{ message.id }}_end" id="dp_message_{{ message.id }}_end" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+				<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
 				{% if options.attachments %}
 					<div style="font-size:11px">
 						<br />
@@ -89,9 +89,9 @@
 {% macro render_top_message(message, options) %}
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
-			<span class="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+			<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
 			{{ message.message_html|raw }}
-			<span class="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end" style="width:1px;font-size:1px;border:none;padding:0;margin:0;">&nbsp;</span>
+			<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
 			{% if options.ticketdisplay.getMessageAttachments(message) %}
 				<div style="font-size:11px">
 					<br />
