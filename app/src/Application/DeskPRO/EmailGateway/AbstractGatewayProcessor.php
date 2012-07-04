@@ -69,9 +69,17 @@ abstract class AbstractGatewayProcessor
 	protected $options = array();
 
 	/**
+	 * Indexed by blob id
 	 * @var \Application\DeskPRO\Entity\Blob[]
 	 */
 	protected $processed_blobs = null;
+
+	/**
+	 * Same as processed_blobs except indexed by Content-ID
+	 *
+	 * @var \Application\DeskPRO\Entity\Blob[]
+	 */
+	protected $processed_blobs_cid = array();
 
 	/**
 	 * @var \Orb\Input\Cleaner\Cleaner
@@ -153,7 +161,11 @@ abstract class AbstractGatewayProcessor
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
 			$this->logMessage(sprintf("Processed blob %s (%i)", $blob->filename, $blob->id));
-			$this->processed_blobs[] = $blob;
+			$this->processed_blobs[$blob->id] = $blob;
+
+			if ($attach->getContentId()) {
+				$this->processed_blobs_cid[$attach->getContentId()] = $blob;
+			}
 		}
 
 		$ev = $this->createGatewayEvent(array('processed_blobs' => $this->processed_blobs));

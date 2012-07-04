@@ -45,6 +45,7 @@ class Attachment
 	public $file_contents;
 	public $file_name;
 	public $mime_type;
+	public $content_id;
 
 	public function getFileContents()
 	{
@@ -65,5 +66,10 @@ class Attachment
 	public function getMimeType()
 	{
 		return $this->mime_type;
+	}
+
+	public function getContentId()
+	{
+		return $this->content_id;
 	}
 }

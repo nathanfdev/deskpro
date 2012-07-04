@@ -136,7 +136,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$detector = new Dp3Detector();
 			$ticket = $detector->findExistingTicket($this->reader);
 			$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-			$this->is_dp3_reply = true;
+
+			if ($ticket) {
+				$this->is_dp3_reply = true;
+			}
 		}
 
 		if (!$ticket) {
@@ -259,6 +262,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function doNewReply($ticket, $person)
 	{
+		$this->processBlobs();
+
 		$email_info = array();
 
 		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
@@ -364,6 +369,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	{
 		$email_info = array();
 
+		$inline_images = new InlineImageTokens($this->reader);
+
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -372,6 +379,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
+
+			// Replace inline image tags with tokens
+			$email_info['body'] = $inline_images->processTokens($email_info['body']);
 
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
@@ -423,6 +433,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = $this->trimHtmlWhitespace($email_info['body_full']);
 		}
 
+		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
+
 		return $email_info;
 	}
 
@@ -430,6 +442,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	{
 		$email_info = array();
 		$email_info['body_is_html'] = false;
+
+		$inline_images = new InlineImageTokens($this->reader);
 
 		$this->logMessage('[TicketGatewayProcessor] Processing DP3 reply text');
 
@@ -449,6 +463,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBody());
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
+
+			// Replace inline image tags with tokens
+			$email_info['body'] = $inline_images->processTokens($email_info['body']);
 		}
 
 		$email_info['body_full'] = $email_info['body'];
@@ -488,6 +505,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body'] = nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8'));
 		$email_info['body_full'] = nl2br(htmlspecialchars($email_info['body_full'], \ENT_QUOTES, 'UTF-8'));
+
+		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
 		return $email_info;
 	}
@@ -566,6 +585,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = array();
 
+		$this->processBlobs();
+		$inline_images = new InlineImageTokens($this->reader);
+
 		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
 		if (!$email_info['subject'] && $this->reader->getSubject()->getSubject()) {
 			$email_info['subject'] = $this->reader->getSubject()->getSubject();
@@ -579,6 +601,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
+
+			// Replace inline image tags with tokens
+			$email_info['body'] = $inline_images->processTokens($email_info['body']);
 
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
@@ -613,6 +638,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$email_info = $ev->email_info;
+
+		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
 		#------------------------------
 		# If the user is new with no lang, then try to guess based off the email
@@ -840,6 +867,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		return $ticket;
+	}
+
+	public function replaceInlineAttachTokens($body, InlineImageTokens $inline_images)
+	{
+		foreach ($inline_images->getCids() as $cid) {
+			if (!isset($this->processed_blobs_cid[$cid])) {
+				continue;
+			}
+
+			$blob = $this->processed_blobs_cid[$cid];
+			if ($blob->isImage()) {
+				$replace = '[attach:image:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
+			} else {
+				$replace = '[attach:file:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
+			}
+
+			$body = $inline_images->replaceToken($cid, $replace, $body);
+		}
+
+		return $body;
 	}
 
 	public function getErrorCode()

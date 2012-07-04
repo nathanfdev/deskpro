@@ -178,7 +178,28 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessageHtml()
 	{
-		return $this->message;
+		// An email might have inline attachments and we tokenize them with these
+		// codes so we can now turn them into inline images or attachment links
+		$fn = function($m) {
+			$download_url = App::getSetting('core.deskpro_url');
+			$download_url .= ltrim(App::get('router')->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
+
+			if ($m[1] == 'image') {
+				$url = App::getSetting('core.deskpro_url');
+				$url .= ltrim(App::get('router')->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 200), false), '/');
+
+				$replace = sprintf('<a href="%s" target="_blank"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+			} else {
+				$replace = sprintf('<a href="%s" target="_blank">%s</a>', $download_url, $m[3]);
+			}
+
+			return $replace;
+		};
+
+		$message = $this->message;
+		$message = preg_replace_callback('#\[attach:(image|file):(.*?):(.*?)\]#', $fn, $message);
+
+		return $message;
 	}
 
 	public function getMessageText()

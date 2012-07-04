@@ -177,9 +177,15 @@ class EzcReader extends AbstractReader
 
 		foreach ($this->mail->fetchParts(array('ezcMailFile')) as $part) {
 			$attach = new Item\Attachment();
-			$attach->file_name = basename($part->fileName);
-			$attach->tmp_file  = $part->fileName;
-			$attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($attach->file_name);
+			$attach->file_name  = basename($part->fileName);
+			$attach->tmp_file   = $part->fileName;
+			$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($attach->file_name);
+
+			$attach->content_id = $part->getHeader('Content-ID');
+			if ($attach->content_id) {
+				// Content-ID is enclosed in brackets, remove those
+				$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
+			}
 
 			$attachments[] = $attach;
 		}
