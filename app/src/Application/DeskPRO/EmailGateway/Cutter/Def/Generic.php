@@ -201,68 +201,6 @@ class Generic implements ForwardDef, QuoteDef
 			}
 		}
 
-		// We try to cut known markers only when the top marker was successfully found
-		$body = $this->cutKnownQuoteMarkers($body, $is_html);
-
 		return $body;
-	}
-
-
-	/**
-	 * @param $body
-	 * @param $is_html
-	 */
-	public function cutKnownQuoteMarkers($body, $is_html)
-	{
-		$body = Strings::standardEol($body);
-
-		// On Wednesday, 25 April 2012 at 17:18, John Doe wrote:
-		$parts = preg_split('#(<p>)?\s*On [a-zA-Z]+, [0-9]+ [a-zA-Z]+? [0-9]+ at [0-9]+:[0-9]+\s*(AM|am|PM|pm)?, .*? wrote:\s*(</p>)?#', $body, 2);
-		if (isset($parts[1])) {
-			return trim($parts[0]);
-		}
-
-		// On 24/04/2012 17:12, John Doe wrote:
-		$parts = preg_split('#(<p>)?\s*On [0-9]{2}(/|\-)[0-9]{2}(/|\-)[0-9]{2,4} [0-9]{1,2}:[0-9]{1,2}( AM| am| PM| pm)?, .*? wrote:\s*(</p>)?#', $body, 2);
-		if (isset($parts[1])) {
-			return trim($parts[0]);
-		}
-
-		// -----Original Message-----
-		// From: John Doe
-		$parts = preg_split("#(>*\s*)?-----Original Message-----\n(>*\s*)?From:\s#", $body, 2);
-		if (isset($parts[1])) {
-			return trim($parts[0]);
-		}
-
-		// From: John Doe
-		// Sent: 30 April 2012 08:24
-		// To: Jane Doe
-		// Subject: ABC
-		if (!$is_html) {
-			$parts = preg_split("#From: .*?\nSent: .*?\nTo: .*?\nSubject: .*?#", $body, 2);
-			if (isset($parts[1])) {
-				return trim($parts[0]);
-			}
-		} else {
-			// Standard formatting with outlook
-			$parts = preg_split("#<b><span.*?>From:\s*</span></b>\s*<span.*?>.*?</span>\s*(<br>|<br/>|<br />)\n?<b><span.*?>Sent:\s*</span></b>\s*<span.*?>.*?</span>\s*(<br>|<br/>|<br />)\n?<b><span.*?>To:\s*</span></b>\s*<span.*?>.*?</span>\s*(<br>|<br/>|<br />)\n?<b><span.*?>Subject:\s*</span></b>\s*<span.*?>.*?</span>\s*(<br>|<br/>|<br />)#", $body, 2);
-			if (isset($parts[1])) {
-				return trim($parts[0]);
-			}
-
-			// Standard formatting with outlook
-			$parts = preg_split("#
-				(<span.*?>From:\s*</span>\s*<span.*?>.*?</span>|From:\s*.*?)\s*(<br>|<br/>|<br />)\n?
-				(<span.*?>Sent:\s*</span>\s*<span.*?>.*?</span>|Sent:\s*.*?)\s*(<br>|<br/>|<br />)\n?
-				(<span.*?>To:\s*</span>\s*<span.*?>.*?</span>|To:\s*.*?)\s*(<br>|<br/>|<br />)\n?
-				(<span.*?>Subject:\s*</span>\s*<span.*?>.*?</span>|Subject:\s*.*?)
-			#x", $body, 2);
-			if (isset($parts[1])) {
-				return trim($parts[0]);
-			}
-		}
-
-		return trim($body);
 	}
 }

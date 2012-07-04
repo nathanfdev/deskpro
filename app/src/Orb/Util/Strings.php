@@ -1069,8 +1069,6 @@ class Strings
 	 */
 	public static function trimHtml($string)
 	{
-		$string = trim($string);
-
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
@@ -1079,11 +1077,6 @@ class Strings
 
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
-
-			// Div wrappers around whitespce
-			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#iu', '<br />', $string);
-			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#iu', '<br />', $string);
-
 		} while ($string != $old_string);
 
 		return $string;
@@ -1115,6 +1108,8 @@ class Strings
 					break;
 				}
 			}
+
+			$qp->top();
 		} while ($changed);
 
 		do {
@@ -1132,6 +1127,8 @@ class Strings
 					break;
 				}
 			}
+
+			$qp->top();
 		} while ($changed);
 
 		// Unwrap divs
@@ -1150,6 +1147,8 @@ class Strings
 					break;
 				}
 			}
+
+			$qp->top();
 		} while ($changed);
 
 		ob_start();
@@ -1161,8 +1160,8 @@ class Strings
 			$qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
-			$div = $qp->top()->find('body > *, body > dp_tag > *');
-			if ($div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
+			$div = $qp->top()->find('body > div, body > p, body > dp_tag > div, body > dp_tag > p');
+			if (false && $div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
 				$changed = true;
 				$html = $div->html();
 
@@ -1174,6 +1173,8 @@ class Strings
 
 				$html = '<dptag>' . $html . '</dptag>';
 			}
+
+			$qp->top();
 		} while($changed);
 
 		ob_start();
@@ -1183,15 +1184,21 @@ class Strings
 		$html = str_replace(array('<dptag>', '</dptag>'), '', $html);
 		$html = str_replace('<br></br>', '<br />', $html);
 
-		$html = \Orb\Util\Strings::trimHtml($html);
-
-		$pos = strpos($html, '<body>');
+		$pos = strpos($html, '<body');
 		$html = substr($html, $pos+6);
+		$pos = strpos($html, '>');
+		$html = substr($html, $pos+1);
+		$html = trim($html);
 
 		$pos = strpos($html, '</body>');
 		$html = substr($html, 0, $pos);
 
+		$html_before = $html;
 		$html = self::trimHtml($html);
+
+		if (!$html) {
+			$html = $html_before;
+		}
 
 		return $html;
 	}

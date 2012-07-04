@@ -91,4 +91,5 @@
 	'user.tickets.you_rated_helpful'                   => 'You rated this message as helpful',
 	'user.tickets.you_rated_unhelpful'                 => 'You rated this message as unhelpful',
 	'user.tickets.your_tickets'                        => 'Your Tickets',
+	'user.tickets.empty_message'                       => '(Empty message)',
 );
