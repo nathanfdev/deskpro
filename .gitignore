@@ -28,6 +28,7 @@
 /data/tmp/*
 /data/backups/*
 /data/files/*
+/data/manuals
 
 /web/build
 /web/stylesheets/agent
