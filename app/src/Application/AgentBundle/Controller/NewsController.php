@@ -216,6 +216,10 @@ class NewsController extends AbstractController
 				$news['category'] = $cat;
 				$data['category_id'] = $cat['id'];
 				break;
+
+			case 'delete':
+				$news->status_code = 'hidden.deleted';
+				break;
 		}
 
 		$this->em->persist($news);
