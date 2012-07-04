@@ -555,6 +555,33 @@ header.page-header .id-number {
 	font-weight: bold;
 	color: #636b73;
 	position: relative;
+	white-space: nowrap;
+}
+
+header.page-header table.titleline-layout {
+	border: 0;
+	margin: 0;
+}
+
+header.page-header .fadeaway-container-outer {
+	height: 20px;
+	overflow: hidden;
+	position: relative;
+}
+
+header.page-header h1.fadeaway-container {
+	overflow: hidden;
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	width: 100%;
+
+	i.fadeaway-pip {
+		.fade-away(rgba(255,255,255,0), rgba(255,255,255,1), 50px);
+	}
+
+	.fadeaway-content {
+		white-space: nowrap;
+	}
 }
 
 header.page-header h1 {

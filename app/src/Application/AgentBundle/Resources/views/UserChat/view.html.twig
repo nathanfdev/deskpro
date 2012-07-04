@@ -28,10 +28,19 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="userchat-page">
 
 <header class="page-header">
-    <h4 class="id-number">#{{ convo.id }}</h4>
-    <h1>
-		{{ convo.getSubjectLine() }}
-	</h1>
+	<table cellspacing="titleline-layout" width="100%"><tr>
+		<td class="item"><h4 class="id-number">#{{ convo.id }}</h4></td>
+		<td width="100%">
+			<div class="fadeaway-container-outer">
+				<h1 class="fadeaway-container">
+					<i class="fadeaway-pip"></i>
+					<div class="fadeaway-content" title="{{ convo.getSubjectLine() }}">
+						<div>{{ convo.getSubjectLine() }}</div>
+					</div>
+				</h1>
+			</div>
+		</td>
+	</tr></table>
     <div class="clear"></div>
     <div class="meta-line">
         <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
