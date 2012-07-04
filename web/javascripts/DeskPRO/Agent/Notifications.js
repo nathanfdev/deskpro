@@ -149,6 +149,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.stopPropagation();
 			ev.preventDefault();
 
+			DeskPRO_Window.runPageRouteFromElement($(this));
 			self.removeRow($(this));
 		});
 	},
