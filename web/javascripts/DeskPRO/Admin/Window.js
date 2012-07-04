@@ -350,6 +350,10 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		var nav  = $('#dp_page_nav');
 
+		if (!nav[0]) {
+			return;
+		}
+
 		var page = $('#dp_admin_page');
 		var mode = 'normal';
 
