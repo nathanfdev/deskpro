@@ -145,7 +145,7 @@ class FeedbackCommenting implements PersonContextInterface
 		#------------------------------
 
 		$to_people_ids = array_merge($to_people_ids, $this->em->getConnection()->fetchAllCol("
-			SELECT person_id
+			SELECT DISTINCT(person_id)
 			FROM feedback_comments
 			WHERE feedback_id = ? AND person_id IS NOT NULL AND status = 'visible' AND person_id != ?
 		", array($feedback->getId(), $comment->person ? $comment->person->getId() : 0)));
@@ -164,11 +164,11 @@ class FeedbackCommenting implements PersonContextInterface
 
 		$people = $this->em->getRepository('DeskPRO:Person')->getByIds($to_people_ids);
 		foreach ($people as $person) {
-			$this->translator->setTemporaryPersonContext($person, function ($tr) use ($feedback, $comment, $mailer, $person) {
+			$this->translator->setTemporaryPersonContext($person, function () use ($feedback, $comment, $mailer, $person) {
 				$message = $mailer->createMessage();
 				$message->setTemplate('DeskPRO:emails_user:feedback-new-comment.html.twig', array(
 					'feedback' => $feedback,
-					'comment'   => $comment,
+					'comment'  => $comment,
 					'person'   => $person
 				));
 

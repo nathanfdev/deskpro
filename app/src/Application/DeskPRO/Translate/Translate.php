@@ -214,7 +214,7 @@ class Translate implements PersonContextInterface
 
 		$e = null;
 		try {
-			$func($this, $language);
+			$func($this, $person->getLanguage());
 		} catch (\Exception $e) {}
 
 		$this->setPersonContext();

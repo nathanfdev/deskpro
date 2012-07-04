@@ -69,6 +69,8 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 		$class = $this->getName();
 
+		$ids = array_values($ids);
+
 		if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
 			$this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
 			return $this->getIdentityHelper()->findByIds($ids, $keep_order);

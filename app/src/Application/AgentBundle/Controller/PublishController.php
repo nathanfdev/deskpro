@@ -312,7 +312,7 @@ class PublishController extends AbstractController
 		}
 
 		// For feedback we also notify everyone involved
-		if ($comment instanceof \Application\DeskPRO\EntityRepository\FeedbackComment) {
+		if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
 			$commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
 			$commenting->newCommentNotify($comment);
 		}
