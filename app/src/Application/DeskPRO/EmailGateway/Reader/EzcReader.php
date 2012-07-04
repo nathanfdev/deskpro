@@ -178,8 +178,8 @@ class EzcReader extends AbstractReader
 		foreach ($this->mail->fetchParts(array('ezcMailFile')) as $part) {
 			$attach = new Item\Attachment();
 			$attach->file_name = basename($part->fileName);
-			$attach->mime_type = $part->mimeType;
-			$attach->tmp_file = $part->fileName;
+			$attach->tmp_file  = $part->fileName;
+			$attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($attach->file_name);
 
 			$attachments[] = $attach;
 		}
