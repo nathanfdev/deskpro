@@ -86,6 +86,7 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('<__dp_old_p__>', '<br />', $value);
 			$value = str_replace('<br></br>', '<br />', $value);
 			$value = str_replace('<br>', '<br />', $value);
+			$value = preg_replace("#<br />\s+<br />#iu", '<br /><br />', $value);
 
 			return $value;
 		}
@@ -100,13 +101,13 @@ class HtmlPurifier implements CleanerPlugin
 		$config = $this->getConfigForType($type);
 
 		$value = $purifier->purify($value, $config);
-		$value = Strings::trimHtml($value);
 
 		if ($type == 'html_email') {
+			$value = Strings::trimHtml($value);
 			$value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
+			$value = Strings::trimHtmlAdvanced($value);
+			$value = str_replace('<br />&#xA0;<br />', '<br /><br />', $value);
 		}
-
-		$value = Strings::trimHtml($value);
 
 		return $value;
 	}

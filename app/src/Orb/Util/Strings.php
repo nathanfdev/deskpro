@@ -1075,6 +1075,8 @@ class Strings
 		do {
 			$old_string = $string;
 
+			$string = trim($string);
+
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
@@ -1108,7 +1110,7 @@ class Strings
 				$text = trim($text);
 
 				if (!$text) {
-					$span->remove();
+					@$span->remove();
 					$changed = true;
 					break;
 				}
@@ -1125,7 +1127,7 @@ class Strings
 				$text = trim($text);
 
 				if (!$text) {
-					$p->replaceWith('<br />');
+					@$p->replaceWith('<br />');
 					$changed = true;
 					break;
 				}
@@ -1142,9 +1144,9 @@ class Strings
 					$children = $div->branch();
 					$children->children();
 					foreach ($children as $child) {
-						$div->before($child);
+						@$div->before($child);
 					}
-					$div->remove();
+					@$div->remove();
 					break;
 				}
 			}
@@ -1154,19 +1156,23 @@ class Strings
 		$qp->writeXHTML();
 		$html = ob_get_clean();
 
-		// Unwrap outer div
+		// Unwrap outer divs, p's
 		do {
 			$qp = \QueryPath::withHTML($html);
 			$changed = false;
 
-			$div = $qp->top()->find('body > *');
-			if ($div->length == 1 && $div->tag() == 'div') {
+			$div = $qp->top()->find('body > *, body > dp_tag > *');
+			if ($div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
 				$changed = true;
 				$html = $div->html();
 
 				$html = trim($html);
 				$html = preg_replace('#^<div.*?>#', '', $html);
+				$html = preg_replace('#^<p.*?>#', '', $html);
 				$html = preg_replace('#</div>$#', '', $html);
+				$html = preg_replace('#</p>$#', '', $html);
+
+				$html = '<dptag>' . $html . '</dptag>';
 			}
 		} while($changed);
 
@@ -1174,6 +1180,7 @@ class Strings
 		$qp->writeXHTML();
 		$html = ob_get_clean();
 
+		$html = str_replace(array('<dptag>', '</dptag>'), '', $html);
 		$html = str_replace('<br></br>', '<br />', $html);
 
 		$html = \Orb\Util\Strings::trimHtml($html);
