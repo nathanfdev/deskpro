@@ -102,7 +102,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 		if ($property == 'full') {
 			return $this->getFullTitle();
 		}
-		return $this->getTitle();
+		return $this->title();
 	}
 
 
