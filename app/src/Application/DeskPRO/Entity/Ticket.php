@@ -825,6 +825,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 			if (!$this->date_first_agent_reply) {
 				$this['date_first_agent_reply'] = $now;
+
+				$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
 			}
 		} else {
 			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
@@ -1495,6 +1497,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($status != 'closed' && $this->date_closed) {
 			$this->setModelField('date_closed', null);
+		}
+
+		if ($status == 'closed') {
+			$this['date_closed'] = new \DateTime();
+		} elseif ($status == 'resolved') {
+			$this['date_resolved'] = new \DateTime();
 		}
 
 		$old_hstatus = $this->hidden_status;
