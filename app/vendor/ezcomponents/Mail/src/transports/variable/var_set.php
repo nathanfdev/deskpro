@@ -1,5 +1,4 @@
 <?php
-declare(encoding="latin1");
 
 /**
  * File containing the ezcMailVariableSet class
