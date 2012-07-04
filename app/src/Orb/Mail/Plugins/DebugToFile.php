@@ -63,7 +63,7 @@ class DebugToFile implements \Swift_Events_SendListener
 		}
 
 		$message = $evt->getMessage();
-		$name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()) . '.txt';
+		$name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50)) . '.txt';
 		$name = preg_replace('#-{,2}#', '-', $name);
 
 		$path = $this->filepath . DIRECTORY_SEPARATOR . $name;
