@@ -181,16 +181,16 @@ class Feedback extends ContentAbstract
 		$this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
 	}
 
-	public function getLink()
+	public function getLink($absolute = false)
 	{
-		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), true);
+		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
 
 		return $url;
 	}
 
 	public function getPermalink()
 	{
-		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), true);
+		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), $absolute);
 
 		return $url;
 	}

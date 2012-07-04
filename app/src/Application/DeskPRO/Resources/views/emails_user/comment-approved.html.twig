@@ -7,7 +7,7 @@
 	{{ phrase('user.email_subjects.comment-approved') }}
 {% endblock %}
 {% block content %}
-	{% set content = comment.getObject() %}{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
+	{% set content = comment.getObject() %}{% set phrase_link %}<a href="{{ helpdesk_url(content.getLink(false)) }}">{{ content.title }}</a>{% endset %}
 	{{ phrase('user.emails.comment_thank-you', {'link': phrase_link}) }}
 	{{ phrase('user.emails.comment_approved') }}
 {% endblock %}

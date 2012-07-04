@@ -329,7 +329,7 @@ class FeedbackController extends AbstractController
 
 		$comment = new FeedbackComment();
 		$comment->feedback = $feedback;
-		$comment->person = $this->person;
+		$comment->is_reviewed = true;
 		$comment['content'] = $this->in->getString('content');
 
 		if ($this->in->getBool('agent_only')) {
@@ -338,10 +338,9 @@ class FeedbackController extends AbstractController
 			$comment['status'] = 'visible';
 		}
 
-		$comment['date_created']  = new \DateTime();
-
-		$this->em->persist($comment);
-		$this->em->flush();
+		$commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
+		$commenting->saveComment($feedback, $comment);
+		$commenting->newCommentNotify($comment);
 
 		return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
 			'comment' => $comment

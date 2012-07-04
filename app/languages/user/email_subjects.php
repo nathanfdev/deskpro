@@ -9,6 +9,7 @@
 	'user.email_subjects.feedback_new-confirm'     => 'Thank you for submitting your feedback (validation required)',
 	'user.email_subjects.feedback_new-disapproved' => 'Your feedback has been declined',
 	'user.email_subjects.feedback_updated'         => 'Your feedback was updated: {{title}}',
+	'user.email_subjects.feedback_new-comment'     => 'There is a new comment on "{{title}}"',
 	'user.email_subjects.password_agent-reset'     => 'An agent has reset your password',
 	'user.email_subjects.password_reset'           => 'Reset Password',
 	'user.email_subjects.re'                       => 'RE: {{subject}}',

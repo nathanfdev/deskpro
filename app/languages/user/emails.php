@@ -13,6 +13,7 @@
 	'user.emails.feedback_thank-you'          => 'Thank you for submitting your feedback "{{title}}"',
 	'user.emails.feedback_updated'            => 'Your submitted feedback "{{title}}" has been updated. It is now filed under the new status "{{status}}"',
 	'user.emails.feedback_validate-email'     => 'Please validate your email address online by clicking the following link:',
+	'user.emails.feedback_new-comment'        => '{{name}} posted a new comment:',
 	'user.emails.feedback_votes'              => 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:|Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:',
 	'user.emails.greeting'                    => 'Dear {{name}},',
 	'user.emails.label_view-online'           => 'View Online',
@@ -20,13 +21,16 @@
 	'user.emails.password_reset'              => 'You requested a password reset. To reset your password, click on the link below:',
 	'user.emails.profile_email-new-confirm'   => 'To finish adding this secondary email address to your account, simply click on the following validation link',
 	'user.emails.profile_email_link-validate' => 'Simply click on the following link to validate to your email address',
-	'user.emails.register-confirm'            => 'Thank you for registering an account.Before you will be able to use your account, you must click on the following link to validate your email address',
+	'user.emails.register-confirm'            => 'Thank you for registering an account.
+Before you will be able to use your account, you must click on the following link to validate your email address',
 	'user.emails.ticket_access_ticket_online' => 'View and manage this ticket online:',
 	'user.emails.ticket_cc-new'               => 'You have been included in a ticket started by {{name}}.',
-	'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession that were most likely automated.To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.',
+	'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession that were most likely automated.
+To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.',
 	'user.emails.ticket_message_title'        => 'On {{date}} at {{time}}, {{author}} wrote:',
 	'user.emails.ticket_no-autoresponse'      => 'Warning: Confirmation emails turned off',
 	'user.emails.ticket_received'             => 'Your ticket has been received. One of our agents will reply to you shortly.',
 	'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. One of our agents will reply to you shortly.',
-	'user.emails.ticket_validate'             => 'Thank you for contacting us.Before our agents will read and reply to your message, you must validate your email address.',
+	'user.emails.ticket_validate'             => 'Thank you for contacting us.
+Before our agents will read and reply to your message, you must validate your email address.',
 );

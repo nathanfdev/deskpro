@@ -217,6 +217,11 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 			App::getOrm()->commit();
 
+			if ($obj instanceof \Application\DeskPRO\Entity\FeedbackComment && $obj->status == \Application\DeskPRO\Entity\FeedbackComment::STATUS_VISIBLE) {
+				$commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting(App::getContainer(), $person);
+				$commenting->newCommentNotify($obj);
+			}
+
 			return $obj;
 
 		} catch (\Exception $e) {
