@@ -5,7 +5,7 @@
 <section class="dp-sidebar-block">
 	<header>
 		<h3>
-			{% if title %}{{ title }}{% else %}{{ phrase('user.downloads.title') }}{% endif %}
+			<a href="{{ path('user_downloads_home') }}">{% if title %}{{ title }}{% else %}{{ phrase('user.downloads.title') }}{% endif %}</a>
 		</h3>
 	</header>
 	<article class="dp-written">

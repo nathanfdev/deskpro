@@ -4,7 +4,7 @@
 <section class="dp-sidebar-block">
 	<header>
 		<h3>
-			{% if title %}{{ title }}{% else %}{{ phrase('user.knowledgebase.knowledgebase') }}{% endif %}
+			<a href="{{ path('user_articles_home') }}">{% if title %}{{ title }}{% else %}{{ phrase('user.knowledgebase.knowledgebase') }}{% endif %}</a>
 		</h3>
 	</header>
 	<article class="dp-written">
