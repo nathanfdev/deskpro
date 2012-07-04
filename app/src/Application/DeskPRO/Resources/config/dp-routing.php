@@ -176,6 +176,13 @@ $collection->add('dp3_redirect_manual_php', new Route(
 	array()
 ));
 
+$collection->add('dp3_redirect_manual_rewritten', new Route(
+	'/manual/{manual_bit}/{page_bit}',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:rewrittenManuals', 'page_bit' => ''),
+	array(),
+	array()
+));
+
 $collection->add('dp3_redirect_manual_download_php', new Route(
 	'/manual_download.php',
 	array('_controller' => 'DeskPRO:Deskpro3Redirect:manuals'),

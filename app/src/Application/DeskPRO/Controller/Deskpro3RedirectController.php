@@ -282,6 +282,23 @@ class Deskpro3RedirectController extends AbstractController
 	# Unsupported : Manuals and Troubles
 	############################################################################
 
+	public function rewrittenManualsAction($manual_bit = '', $page_bit = '')
+	{
+		$manual_id = Strings::extractRegexMatch('#^(\d+)#', $manual_bit);
+		$page_id   = Strings::extractRegexMatch('#^(\d+)#', $page_bit);
+
+		if (!$manual_id && !$page_id) {
+			return $this->redirectRoute('user', array(), 301);
+		}
+
+		if ($page_id) {
+			return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id, 'p' => $page_id));
+		} else {
+			return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
+		}
+	}
+
+
 	/**
 	 * manual.php
 	 * manual.php?m=2
@@ -356,6 +373,9 @@ class Deskpro3RedirectController extends AbstractController
 		if (!isset($_GET['p'])) {
 			$html = file_get_contents($manual_dir . '/index.html');
 		} else {
+			if (!isset($index_data[$_GET['p']])) {
+				return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
+			}
 			$page_file = $manual_dir . '/pages/' . $index_data[$_GET['p']];
 			$html = file_get_contents($page_file);
 		}
