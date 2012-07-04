@@ -1191,6 +1191,85 @@ class Strings
 
 
 	/**
+	 * Linkfy in a string
+	 *
+	 * @static
+	 * @param string $text
+	 * @param string $attr
+	 * @return string
+	 */
+	public static function linkify($text, $attr = '')
+	{
+		$search_replace = array();
+
+		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\.]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace, $attr) {
+			$email = $m[2] . '@' . $m[3] . '.' . $m[4];
+			$key = md5(mt_rand(0,9999) . microtime());
+			$search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email) . '</a>';
+			return $key;
+		}, $text);
+
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+)#i',function($m) use (&$search_replace, $attr) {
+			$url = $m[2];
+			$key = md5(mt_rand(0,9999) . microtime());
+			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2]) . '</a>';
+			return $key;
+		}, $text);
+
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk))#i',function($m) use (&$search_replace, $attr) {
+			if ($m[2]) return $m[0];
+
+			$url = ($m[2] ? $m[2] : 'http://') . $m[3];
+			$key = md5(mt_rand(0,9999) . microtime());
+			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[3]) . '</a>';
+			return $key;
+		}, $text);
+
+		$text = str_replace(array_keys($search_replace), array_values($search_replace), $text);
+
+		return $text;
+	}
+
+
+	/**
+	 * Linkify in HTML
+	 *
+	 * @static
+	 * @param string $html
+	 * @param string $attr
+	 * @return string
+	 */
+	public static function linkifyHtml($html, $attr = '')
+	{
+		libxml_use_internal_errors(true);
+
+		$dom = new \DOMDocument();
+		if (!$dom->loadHTML($html)) {
+			return $html;
+		}
+
+		$xpath = new \DOMXPath($dom);
+
+		foreach ($xpath->query('//text()') as $text)
+		{
+			$frag = $dom->createDocumentFragment();
+			$frag->appendXML(self::linkify($text->nodeValue, $attr));
+			$text->parentNode->replaceChild($frag, $text);
+		}
+
+		$html = $dom->saveHTML();
+
+		$pos = strpos($html, '<body>');
+		$html = substr($html, $pos+6);
+
+		$pos = strrpos($html, '</body>');
+		$html = substr($html, 0, $pos);
+
+		return $html;
+	}
+
+
+	/**
 	 * Just like explode() except it runs each item through trim as well.
 	 *
 	 * @param $string

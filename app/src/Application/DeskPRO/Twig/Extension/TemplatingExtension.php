@@ -296,46 +296,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function safeLinkUrlsHtml($text)
 	{
-		$search_replace = array();
-
-		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\.]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace) {
-			$email = $m[2] . '@' . $m[3] . '.' . $m[4];
-			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="mailto:' . $email . '">' . htmlspecialchars($email) . '</a>';
-			return $key;
-		}, $text);
-
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+)#i',function($m) use (&$search_replace) {
-			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[2]));
-			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[2]) . '</a>';
-			return $key;
-		}, $text);
-
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk))#i',function($m) use (&$search_replace) {
-			if ($m[2]) return $m[0];
-
-			$url = App::getRouter()->generate('agent_redirect_out', array('url' => 'http://' . $m[3]));
-			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[3]) . '</a>';
-			return $key;
-		}, $text);
-
-		$text = str_replace(array_keys($search_replace), array_values($search_replace), $text);
-
-		return $text;
+		return Strings::linkifyHtml($text, 'target="_blank"');
 	}
 
 	public function safeLinkUrls($text)
 	{
 		$text = htmlspecialchars($text);
-
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s]+)#i',function($m) {
-			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[2]));
-			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[2]) . '</a>';
-		}, $text);
-
-		return $text;
+		return Strings::linkifyHtml($text, 'target="_blank"');
 	}
 
 	public function getAssetic($name)

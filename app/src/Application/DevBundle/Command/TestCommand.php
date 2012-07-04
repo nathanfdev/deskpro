@@ -59,11 +59,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$x = $this->getContainer()->getEm()->find('DeskPRO:ArticleCategory', 6);
 
-		foreach ($x->children as $c) {
-			echo $c->title;
-			echo "\n";
-		}
 	}
 }
