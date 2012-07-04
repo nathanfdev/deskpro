@@ -59,6 +59,13 @@ class DetectInlineReply
 	 */
 	protected $threshold = 0.24;
 
+	/**
+	 * How many messages to go back to detect changes
+	 *
+	 * @var int
+	 */
+	protected $history_limit = 1;
+
 	public function __construct(EntityManager $em, AbstractEmailReader $reader)
 	{
 		$this->em     = $em;
@@ -184,6 +191,10 @@ class DetectInlineReply
 			$message = $this->normalizeMessage($message);
 
 			$this->message_texts[$message_id] = $message;
+
+			if (count($this->message_texts) >= $this->history_limit) {
+				break;
+			}
 		}
 
 		return $this->message_texts;
@@ -199,7 +210,7 @@ class DetectInlineReply
 	public function normalizeMessage($message_text)
 	{
 		$message_text = strip_tags($message_text);
-		$message_text = html_entity_decode($message_text, \ENT_QUOTES);
+		$message_text = html_entity_decode($message_text, \ENT_QUOTES, 'UTF-8');
 		$message_text = trim($message_text);
 		$message_text = preg_replace('#\s#', ' ', $message_text);
 		$message_text = preg_replace('# {2,}#', ' ', $message_text);
