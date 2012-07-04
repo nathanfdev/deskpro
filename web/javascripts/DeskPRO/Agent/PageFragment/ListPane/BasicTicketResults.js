@@ -167,6 +167,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		if (this.resultsHelper.getCurrentPage() == 1) {
 			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
 
+			if (replace_existing) {
+				var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
+				if (!exist[0] || exist.hasClass('removing')) {
+					return;
+				}
+			}
+
 			$.ajax({
 				url: url,
 				dataType: 'html',
@@ -190,6 +197,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 					$('.timeago', el).timeago();
 
 					var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
+
+					if (replace_existing && !exist[0]) {
+						return;
+					}
+					if (exist[0] && exist.hasClass('removing')) {
+						return;
+					}
 
 					if (exist[0] && replace_existing) {
 
