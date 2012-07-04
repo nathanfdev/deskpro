@@ -215,6 +215,10 @@
 * Tweaks to respond to width of devices
 ***********************************************************************************************************************/
 
+.dp-device-small {
+	display: none;
+}
+
 @media (max-width: 1100px) {  #dp #dp_sidebar_wrapper { width: 230px; }   #dp #dp_content_wrapper { margin-right: 248px; }  #dp input#dp_search { width: 430px !important; } }
 @media (max-width: 1000px) {  #dp #dp_sidebar_wrapper { width: 220px; }   #dp #dp_content_wrapper { margin-right: 238px; }  #dp input#dp_search { width: 420px !important; } }
 @media (max-width: 900px) {   #dp #dp_sidebar_wrapper { width: 210px; }   #dp #dp_content_wrapper { margin-right: 228px; }  #dp input#dp_search { width: 410px !important; } }
@@ -224,10 +228,19 @@
 	#dp #dp_sidebar_wrapper { display: none; }
 	#dp #dp_content_wrapper { margin-right: 0; }
 	#dp input#dp_search { width: 320px !important; }
+	.dp-device-small { display: block; }
 }
 
 #dp_main_inner {
 	min-width: 745px;
+}
+
+.dp-topbar-block {
+	background-color: #fff;
+	border: 1px solid #C7C5C5;
+	{{ _self.border_radius(6) }}
+	padding: 10px;
+	margin-bottom: 15px;
 }
 
 /***********************************************************************************************************************

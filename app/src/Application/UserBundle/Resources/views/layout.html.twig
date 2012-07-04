@@ -134,6 +134,11 @@
 		{% if app.getSetting('user.portal_tab_tickets') %}{% set any_tabs = true %}{% endif %}
 
 		<div id="dp_page_wrapper" {% if not any_tabs and not app.admin_portal_controls %}class="dp-no-tabs"{% endif %}>
+
+			<div class="dp-device-small">
+				{% include 'UserBundle:Portal:userinfo-topbar.html.twig' %}
+			</div>
+
 			<div id="dp_sidebar_wrapper">
 				<section id="dp_sidebar">
 					{{ sidebar }}
