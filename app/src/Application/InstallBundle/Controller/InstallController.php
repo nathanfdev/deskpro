@@ -138,7 +138,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function indexAction()
 	{
-		if (!file_exists(DP_CONFIG_FILE) && is_writable(dirname(DP_CONFIG_FILE))) {
+		if (
+			!file_exists(DP_CONFIG_FILE) && is_writable(dirname(DP_CONFIG_FILE))
+			&& file_exists(DP_WEB_ROOT.'/config.new.php')
+		) {
 			return $this->redirect($this->generateUrl('install_configedit'));
 		}
 
@@ -285,7 +288,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function configEditorAction()
 	{
-		if ( (!file_exists(DP_CONFIG_FILE) && !is_writable(dirname(DP_CONFIG_FILE))) || (file_exists(DP_CONFIG_FILE) && !is_writable(DP_CONFIG_FILE))) {
+		if (
+			// Config must be writable
+			(!file_exists(DP_CONFIG_FILE) && !is_writable(dirname(DP_CONFIG_FILE)))
+			|| (file_exists(DP_CONFIG_FILE) && !is_writable(DP_CONFIG_FILE))
+
+			// Blank config file must exist
+			|| !file_exists(DP_WEB_ROOT.'/config.new.php')
+		) {
 			return $this->redirect($this->generateUrl('install_checks'));
 		}
 		$exist = array(
