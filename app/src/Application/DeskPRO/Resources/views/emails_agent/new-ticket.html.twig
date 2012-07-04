@@ -15,13 +15,13 @@
 <br />
 
 {% set content %}
-	{{ phrase('agent.emails.ticket_was_created') }}
+	{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayName()}) }}
 
 	<br /><br />
 
 	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 {% endset %}
-{{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
+{{ layout.section(phrase('agent.emails.section_ticket'), content) }}
 
 <br/><br/>
 

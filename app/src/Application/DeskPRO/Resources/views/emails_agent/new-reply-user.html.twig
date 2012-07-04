@@ -17,15 +17,13 @@
 <br />
 
 {% set content %}
-	{%- if is_new_agent_reply -%}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
-	{%- elseif is_new_user_reply -%}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
-	{%- endif -%}
+	{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayName(), 'subject':ticket.subject}) }}
 
 	<br /><br />
 
 	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 {% endset %}
-{{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
+{{ layout.section(phrase('agent.emails.section_ticket'), content) }}
 
 <br/><br/>
 
