@@ -223,7 +223,7 @@ class AgentNotificationAction extends AbstractAction
 			$change_info['notify_type'] = 'newreply';
 			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
-			$new_message = $this->tracker->hasNewUserReply();
+			$new_message = $this->tracker->getNewUserReply();
 			$from_name = $new_message->person->getDisplayName();
 		} else {
 			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
@@ -309,7 +309,6 @@ class AgentNotificationAction extends AbstractAction
 			if ($is_new_ticket || $is_new_agent_reply || $is_new_user_reply) {
 				$new_message = \Orb\Util\Arrays::getFirstItem($vars['messages']);
 
-				$attach_attachments = array();
 				if ($new_message && $ticketdisplay->getMessageAttachments($new_message)) {
 					$max = App::getSetting('core.sendemail_attach_maxsize');
 					$size = 0;
