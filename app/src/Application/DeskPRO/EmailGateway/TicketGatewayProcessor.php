@@ -398,13 +398,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = false;
 		}
 
-		$email_info['body_full'] = $email_info['body'];
-
-		if ($email_info['body_is_html']) {
-			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
-		}
-
 		$has_cut = false;
+
+		$email_info['body_full'] = $email_info['body'];
 
 		if ($email_info['body_is_html']) {
 			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
@@ -434,6 +430,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
+		$email_info['body_full'] = $this->replaceInlineAttachTokens($email_info['body_full'], $inline_images);
 
 		return $email_info;
 	}
