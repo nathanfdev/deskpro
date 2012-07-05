@@ -122,8 +122,10 @@ class TransifexBuild extends AbstractBuild
 
 		$project = $this->getProjectName($section);
 
+		$category_url = str_replace('_', '-', $category);
+
 		try {
-			$data = $this->restGet("project/$project/resource/$category/translation/$locale");
+			$data = $this->restGet("project/$project/resource/$category_url/translation/$locale");
 		} catch (\RuntimeException $e) {
 			if ($e->getCode() == 404) {
 				$this->getLogger()->logInfo("$id is missing $section.$category");
@@ -155,26 +157,6 @@ class TransifexBuild extends AbstractBuild
 		}
 
 		return $words;
-	}
-
-
-	/**
-	 * Build a language
-	 *
-	 * @param string $id The standard DeskPRO ID for the language
-	 */
-	public function buildLanguage($id)
-	{
-		$this->clearLang($id);
-
-		foreach ($this->getDefaultSections() as $section) {
-			foreach ($this->getDefaultCategories($section) as $category) {
-				$words = $this->getCategoryWords($id, $section, $category);
-				if ($words) {
-					$this->writeLangFile($id, $section, $category, $words);
-				}
-			}
-		}
 	}
 
 

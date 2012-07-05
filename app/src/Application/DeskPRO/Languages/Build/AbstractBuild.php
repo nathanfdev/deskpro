@@ -49,13 +49,16 @@ abstract class AbstractBuild
 	 */
 	private $logger;
 
+	/**
+	 * @var array
+	 */
+	private $diff_track = array();
 
 	/**
-	 * Build a language
-	 *
-	 * @param string $id The standard DeskPRO ID for the language
+	 * @param string $id
+	 * @return array
 	 */
-	abstract public function buildLanguage($id);
+	abstract public function getCategoryWords($id, $section, $category);
 
 	/**
 	 * @return array
@@ -128,9 +131,12 @@ abstract class AbstractBuild
 
 
 	/**
+	 * Returns a diff of changed, added and removed phrase IDs
+	 *
 	 * @param string $id
 	 * @param string $section
 	 * @param string $category
+	 * @return array
 	 */
 	public function writeLangFile($id, $section, $category, array $phrases)
 	{
@@ -142,14 +148,36 @@ abstract class AbstractBuild
 		$file = $dir . '/' . $category . '.php';
 
 		if (file_exists($file)) {
+			$exist = include($file);
 			unlink($file);
+		} else {
+			$exist = array();
 		}
+
+		$diff = array(
+			'changed' => array(),
+			'added'   => array(),
+			'removed' => array()
+		);
 
 		$longest = 0;
 		foreach ($phrases as $phrase_id => $string) {
+
+			if (!isset($exist[$phrase_id])) {
+				$diff['added'][] = $phrase_id;
+			} elseif (trim($exist[$phrase_id]) != trim($string)) {
+				$diff['changed'][] = $phrase_id;
+			}
+
 			$len = strlen($phrase_id);
 			if ($len > $longest) {
 				$longest = $len;
+			}
+		}
+
+		foreach ($exist as $phrase_id => $string) {
+			if (!isset($phrases[$phrase_id])) {
+				$diff['removed'][] = $phrase_id;
 			}
 		}
 
@@ -171,22 +199,58 @@ abstract class AbstractBuild
 
 		$this->getLogger()->logInfo('Wrote file: ' . $file);
 
-		return $file;
+		return $diff;
 	}
 
 
 	/**
 	 * Build all languages
+	 *
+	 * @return array The diff of every lang
 	 */
 	public function buildAll()
 	{
+		$diff = array();
+
 		foreach ($this->getLangPackInfo()->getLangIds() as $id) {
 			if (!$this->getLangPackInfo()->getLangInfo($id, 'is_managed')) {
 				continue;
 			}
 
-			$this->buildLanguage($id);
+			$diff[$id] = $this->buildLanguage($id);
 		}
+
+		return $diff;
+	}
+
+
+	/**
+	 * Build a language
+	 *
+	 * @param string $id The standard DeskPRO ID for the language
+	 * @return array The diff
+	 */
+	public function buildLanguage($id)
+	{
+		$diff = array(
+			'changed' => array(),
+			'added'   => array(),
+			'removed' => array()
+		);
+
+		foreach ($this->getDefaultSections() as $section) {
+			foreach ($this->getDefaultCategories($section) as $category) {
+				$words = $this->getCategoryWords($id, $section, $category);
+				if ($words) {
+					$cat_diff = $this->writeLangFile($id, $section, $category, $words);
+					$diff['changed'] = array_merge($diff['changed'], $cat_diff['changed']);
+					$diff['added']   = array_merge($diff['added'],   $cat_diff['added']);
+					$diff['removed'] = array_merge($diff['removed'], $cat_diff['removed']);
+				}
+			}
+		}
+
+		return $diff;
 	}
 
 

@@ -76,9 +76,17 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 				return 2;
 			}
 
-			$build->buildLanguage($input->getOption('lang-id'));
+			$diff = $build->buildLanguage($input->getOption('lang-id'));
+
+			$lang_title = $build->getLangPackInfo()->getLangInfo($input->getOption('lang-id'), 'title');
+			echo sprintf(">> Built %-30s Changed: %-4s Added: -%4s Removed: %-s4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
 		} else {
-			$build->buildAll();
+			$diffs = $build->buildAll();
+
+			foreach ($diffs as $id => $diff) {
+				$lang_title = $build->getLangPackInfo()->getLangInfo($id, 'title');
+				echo sprintf(">> Built %-18s Changed: %-4s Added: %-4s Removed: %-4s\n", $lang_title, count($diff['changed']), count($diff['added']), count($diff['removed']));
+			}
 		}
 
 		return 0;
