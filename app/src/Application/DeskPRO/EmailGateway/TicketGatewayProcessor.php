@@ -380,12 +380,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
-			// Replace inline image tags with tokens
-			$email_info['body'] = $inline_images->processTokens($email_info['body']);
-
-			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
-
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
@@ -417,6 +411,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			} else {
 				$this->logMessage("Cutter did not match any pattern");
 			}
+		}
+
+		if ($email_info['body_is_html']) {
+			// Replace inline image tags with tokens
+			$email_info['body'] = $inline_images->processTokens($email_info['body']);
+
+			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
+
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
 		if (!$has_cut) {
@@ -598,13 +602,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
-
-			// Replace inline image tags with tokens
-			$email_info['body'] = $inline_images->processTokens($email_info['body']);
-
-			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
-
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
@@ -617,7 +614,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = false;
 		}
 
-		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
+		// Replace inline image tags with tokens
+		$email_info['body'] = $inline_images->processTokens($email_info['body']);
+
+		if ($email_info['body_is_html']) {
+			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
+
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
