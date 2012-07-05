@@ -58,7 +58,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+		if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
