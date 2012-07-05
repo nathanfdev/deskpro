@@ -84,6 +84,10 @@ class SettingsController extends AbstractController
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);
 			}
 
+			if (!$update_settings['core.helpdesk_disabled'] && file_exists(dp_get_data_dir().'/helpdesk-offline.trigger')) {
+				unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
+			}
+
 			return $this->redirectRoute('admin_settings');
 		}
 
@@ -304,6 +308,10 @@ class SettingsController extends AbstractController
 		}
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
+
+		if ($setting_name && (!$this->in->getRaw('value') && file_exists(dp_get_data_dir().'/helpdesk-offline.trigger'))) {
+			unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
+		}
 
 		if ($this->getRequest()->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' => true));

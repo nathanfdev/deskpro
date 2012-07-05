@@ -63,6 +63,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->get('templating.globals')->setVariable('cron_last_run', $last_run);
 		$this->get('templating.globals')->setVariable('cron_time_since_last_run', $time_since_run);
 		$this->get('templating.globals')->setVariable('cron_is_problem', $is_problem);
+		$this->get('templating.globals')->setVariable('helpdesk_is_offline', file_exists(dp_get_data_dir().'/helpdesk-offline.trigger') || $this->container->getSetting('core.helpdesk_disabled'));
 	}
 
 

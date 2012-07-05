@@ -50,7 +50,7 @@
 	<h4>{{ phrase('admin.general.helpdesk') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.getSetting('core.helpdesk_disabled') %}checked="checked"{% endif %} />
+			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.helpdesk_is_offline %}checked="checked"{% endif %} />
 				{{ phrase('admin.settings.notice_helpdesk_disabled') }}</label>
 		</div>
 		<div class="field_row">
