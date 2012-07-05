@@ -99,6 +99,7 @@
 	'admin.agents.view_unassigned_tickets'              => 'View unassigned tickets',
 	'admin.agents.warning_keep_manage_email_secure'     => 'Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to.',
 	'admin.agents.warning_keep_reset_user_secure'       => 'Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to.',
+	'admin.agents.warning_perm_close_tickets'           => 'Usually you do not want agents to close or unclose tickets. Finished tickets can be set to Resolved, and then the system closes (archives) resolved tickets via triggers after a time.',
 	'admin.agents.widget_close_unclose_tickets'         => 'Can close and unclose tickets {{subphrase}}',
 	'admin.agents.widget_edit_email_addresses'          => 'Edit users email addresses {{subphrase}}',
 	'admin.agents.widget_modify_followed_tickets'       => '{{subphrase}} Modify followed tickets',
@@ -106,7 +107,7 @@
 	'admin.agents.widget_modify_own_tickets'            => '{{subphrase}} Modify own and teams tickets',
 	'admin.agents.widget_modify_unassigned_tickets'     => '{{subphrase}} Modify unassigned tickets',
 	'admin.agents.widget_reset_passwords'               => 'Reset user passwords {{subphrase}}',
-	'admin.agents.widget_use_mass_actions_to_reply'     => 'Can use mass actions to reply {{subphrase}}',
+	'admin.agents.widget_use_mass_actions_to_reply'     => 'Can use mass actions to reply',
 	'admin.agents.widget_validate_content_and_comments' => 'Validate content and comments (including own) {{subphrase}}',
 	'admin.agents.zone_access'                          => 'Zone Access',
 );
