@@ -49,7 +49,7 @@
 			data-set-default-lang-url="{{ path('admin_settings_set', {'setting_name':'core.default_language_id', 'security_token': security_token('set_setting')}) }}"
 		>
 			<p>
-				You have {% if languages|length == 1%}1 language{% else %}{{ languages|length }} languages{% endif %} installed. <a href="http://www.deskpro.com/languages/">Download more from DeskPRO.com</a>.
+				You have {% if languages|length == 1%}1 language{% else %}{{ languages|length }} languages{% endif %} installed. <a href="{{ path('admin_langs_install') }}">Install more</a>.
 			</p>
 		</div>
 	</div>

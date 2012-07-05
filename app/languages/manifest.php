@@ -7,6 +7,7 @@
 		'has_user'   => true,
 		'has_agent'  => true,
 		'has_admin'  => true,
+		'is_managed' => false
 	),
 
 	'italian' => array(
@@ -17,5 +18,6 @@
 		'has_user'   => true,
 		'has_agent'  => false,
 		'has_admin'  => false,
+		'is_managed' => true
 	)
 );

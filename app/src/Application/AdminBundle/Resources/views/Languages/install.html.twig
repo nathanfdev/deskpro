@@ -6,21 +6,42 @@
 </ul>
 {% endblock %}
 {% block page %}
-	<form action="{{ path('admin_langs_installupload') }}" method="POST" enctype="multipart/form-data">
-		<div class="dp-form">
-			<div class="dp-form-section">
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>Upload Language Pack</label>
-					</div>
-					<div class="dp-form-input">
-						<input type="file" name="upfile" /><br />
-						Upload a language pack file (it should end in .xml) from your hard-drive.
-						<br />
-						<button class="clean-white">Install Language</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</form>
+
+<div class="page-content agent-listing" style="padding-top: 0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for id,title in packs %}
+					<tr>
+						<td>
+							<div style="float:right">
+								{% if installed_packs[id] %}
+									{% if id == 'default' %}
+										<strong>Installed</strong>
+									{% else %}
+										<strong>Installed</strong>
+									{% endif %}
+								{% else %}
+									<a class="clean-white" href="{{ path('admin_langs_install_pack', {id: id}) }}">Install Language</a>
+								{% endif %}
+							</div>
+							<h4>
+								{% if installed_packs[id] %}
+									<a href="{{ path('admin_langs_editlang', {language_id: installed_packs[id]}) }}">{{ title }}</a>
+								{% else %}
+									{{ title }}
+								{% endif %}
+							</h4>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
 {% endblock %}

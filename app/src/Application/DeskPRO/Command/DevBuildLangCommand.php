@@ -31,111 +31,56 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Languages;
+namespace Application\DeskPRO\Command;
 
-class LangPackInfo
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output;
+
+use Application\DeskPRO\Languages\Build\TransifexBuild;
+
+class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	/**
-	 * @var string
-	 */
-	protected $langs_dir;
-
-	/**
-	 * @var array
-	 */
-	protected $manifest;
-
-	public function __construct()
+	protected function configure()
 	{
-		$this->langs_dir = DP_ROOT.'/languages';
-
-		$this->manifest = include($this->langs_dir . '/manifest.php');
-
-		if (dp_get_config('debug.lang_manifest')) {
-			$this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
-		}
+		$this->setName('dpdev:dev-build-lang');
+		$this->addOption('lang-id', 'l', InputOption::VALUE_REQUIRED, 'Only build a specific language instead of all');
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getLangDir()
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		return $this->langs_dir;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getLangIds()
-	{
-		return array_keys($this->manifest);
-	}
-
-
-	/**
-	 * @param string $id
-	 * @return bool
-	 */
-	public function hasLang($id)
-	{
-		return isset($this->manifest[$id]);
-	}
-
-
-	/**
-	 * Fetches info about a language.
-	 *
-	 * $key can be:
-	 * - null: Array of all info
-	 * - id: The lang id
-	 * - lang_code: The three-letter language code (ISO 639-2)
-	 * - title: Readable English title of the language
-	 * - locale: The locale
-	 * - has_user: Is the pack considered user interface complete?
-	 * - has_agent: Is the pack considered agent interface complete?
-	 * - has_admin: Is the pack considered admin interface complete?
-	 *
-	 * @param string $id
-	 * @param string|null $key
-	 * @throws \InvalidArgumentException
-	 * @return mixed
-	 */
-	public function getLangInfo($id, $key = null)
-	{
-		if (!isset($this->manifest[$id])) {
-			throw new \InvalidArgumentException("Unknown language $id");
+		if (
+			!dp_get_config('transifex.url')
+			|| !dp_get_config('transifex.username')
+			|| !dp_get_config('transifex.password')
+		) {
+			$output->writeln("Missing transifex configuration");
+			return 1;
 		}
 
-		$info = $this->manifest[$id];
+		$build = new TransifexBuild(
+			dp_get_config('transifex.url'),
+			dp_get_config('transifex.username'),
+			dp_get_config('transifex.password')
+		);
 
-		if ($key) {
-			if (!isset($info[$key])) {
-				return null;
+		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
+		$build->getLogger()->addWriter($wr);
+
+		if ($input->getOption('lang-id')) {
+
+			if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
+				$output->writeln("Invalid language ID");
+				return 2;
 			}
 
-			return $info[$key];
+			$build->buildLanguage($input->getOption('lang-id'));
+		} else {
+			$build->buildAll();
 		}
 
-		return $info;
-	}
-
-
-	/**
-	 * Get lang titles as id=>title
-	 *
-	 * @return array
-	 */
-	public function getLangTitles()
-	{
-		$ret = array();
-
-		foreach ($this->manifest as $id => $info) {
-			$ret[$id] = $info['title'];
-		}
-
-		return $ret;
+		return 0;
 	}
 }

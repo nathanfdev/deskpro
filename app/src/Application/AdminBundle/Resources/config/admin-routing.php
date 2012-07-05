@@ -996,9 +996,9 @@ $collection->add('admin_langs_install', new Route(
 	array()
 ));
 
-$collection->add('admin_langs_installupload', new Route(
-	'/languages/install-upload',
-	array('_controller' => 'AdminBundle:Languages:installUpload'),
+$collection->add('admin_langs_install_pack', new Route(
+	'/languages/install-pack/{id}',
+	array('_controller' => 'AdminBundle:Languages:installPack'),
 	array(),
 	array()
 ));

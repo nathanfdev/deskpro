@@ -47,7 +47,7 @@ class LanguagePhrases
 	public function __construct($lang_root = null)
 	{
 		if ($lang_root === null) {
-			$lang_root = DP_ROOT.'/languages';
+			$lang_root = DP_ROOT.'/languages/default';
 		}
 
 		$this->lang_root = $lang_root;

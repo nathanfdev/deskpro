@@ -174,6 +174,22 @@ abstract class AbstractBuild
 		return $file;
 	}
 
+
+	/**
+	 * Build all languages
+	 */
+	public function buildAll()
+	{
+		foreach ($this->getLangPackInfo()->getLangIds() as $id) {
+			if (!$this->getLangPackInfo()->getLangInfo($id, 'is_managed')) {
+				continue;
+			}
+
+			$this->buildLanguage($id);
+		}
+	}
+
+
 	/**
 	 * Clears out a lang from the filesystem.
 	 *

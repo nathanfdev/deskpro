@@ -73,44 +73,46 @@ class LanguagesController extends AbstractController
 
 	public function installAction()
 	{
-		return $this->render('AdminBundle:Languages:install.html.twig');
+		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+		$packs = $langpacks->getLangTitles();
+
+		$installed_packs = $this->db->fetchAllKeyValue("
+			SELECT sys_name, id
+			FROM languages
+		");
+
+		return $this->render('AdminBundle:Languages:install.html.twig', array(
+			'packs' => $packs,
+			'installed_packs' => $installed_packs,
+		));
 	}
 
-	public function installUploadAction()
+	public function installPackAction($id)
 	{
-		if ($this->in->getRaw('pack_string')) {
-			$pack = base64_decode($this->in->getRaw('pack_string'));
-			$pack = \Orb\Util\Util::signedUnserialize($pack, $this->container->getSetting('core.app_secret'));
+		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
-			if (!$pack) {
-				return $this->redirectRoute('admin_langs');
-			}
-		} else {
-			/** @var $file UploadedFile */
-			$file = $this->request->files->get('upfile');
-
-			if (!is_object($file) || !$file->isValid()) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-			}
-
-			$pack_file = LanguagePackFile::newFromFile($file->getRealPath());
-			$pack = $pack_file->getPack();
+		if (!$langpacks->hasLang($id)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$exist_lang = $this->em->getRepository('DeskPRO:Language')->findOneBy(array('sys_name' => $pack->sys_name));
-		if ($exist_lang && !$this->in->getBool('confirm_upgrade')) {
-			return $this->render('AdminBundle:Languages:install-confirm-upgrade.html.twig', array(
-				'language' => $exist_lang,
-				'lang_title' => $pack->title,
-				'pack' => base64_encode(\Orb\Util\Util::signedSerialize($pack, $this->container->getSetting('core.app_secret')))
-			));
-		}
+		$lang = new \Application\DeskPRO\Entity\Language();
+		$lang->sys_name      = $langpacks->getLangInfo($id, 'id');
+		$lang->title         = $langpacks->getLangInfo($id, 'title');
+		$lang->lang_code     = $langpacks->getLangInfo($id, 'lang_code');
+		$lang->locale        = $langpacks->getLangInfo($id, 'locale');
+		$lang->has_user      = $langpacks->getLangInfo($id, 'has_user');
+		$lang->has_agent     = $langpacks->getLangInfo($id, 'has_agent');
+		$lang->has_admin     = $langpacks->getLangInfo($id, 'has_admin');
+		$lang->base_filepath = '%DP_ROOT%/languages/' . $id;
 
-		$lang_installer = new LanguageInstaller($this->em);
-		if ($exist_lang) {
-			$lang_installer->setUpgradeLanguage($exist_lang);
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($lang);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
 		}
-		$lang = $lang_installer->installPack($pack);
 
 		return $this->redirectRoute('admin_langs_editlang', array('language_id' => $lang->getId()));
 	}
@@ -330,15 +332,14 @@ class LanguagesController extends AbstractController
 
 		if ($group == 'CUSTOM') {
 			$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
+			$groups = array();
+			foreach ($vars['lang_phrases'] as $phrase) {
+				$groups[] = $phrase->groupname;
+			}
+			$groups = array_unique($groups);
 		} else {
-			$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getLanguagePhrasesInGroup($vars['language'], $group);
+			$groups = array($group);
 		}
-
-		$groups = array();
-		foreach ($vars['lang_phrases'] as $phrase) {
-			$groups[] = $phrase->groupname;
-		}
-		$groups = array_unique($groups);
 
 		$vars['master_phrases'] = array();
 		if ($groups) {
@@ -358,6 +359,7 @@ class LanguagesController extends AbstractController
 
 			$vars['master_phrases'] = $set;
 		}
+
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
 	}
 
@@ -436,7 +438,7 @@ class LanguagesController extends AbstractController
 	}
 
 	/**
-	 * @return Application\DeskPRO\Entity\Language
+	 * @return \Application\DeskPRO\Entity\Language
 	 */
 	protected function getLanguageOr404($language_id)
 	{
