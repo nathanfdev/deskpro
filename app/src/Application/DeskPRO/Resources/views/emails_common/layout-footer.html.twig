@@ -4,12 +4,13 @@
 		{{ layout.sep }}
 		{{ footer_content|raw }}
 		<p style="margin: 6px 0 0 0; padding: 0; {{ layout.standard_font() }} font-size: 12px;">
-			{% if app.getSetting('core.site_name') %}
-				<a href="{{ app.getSetting('core.site_name') }}" style="{{ layout.info_link_style() }}; font-size: 12px;">{{ app.getSetting('core.site_name') }}</a>
-				&middot; <a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.site_url') }}</a>
-			{% else %}
-				<a href="{{ app.getSetting('core.deskpro_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.deskpro_url') }}</a>
+			{% if app.getSetting('core.site_name') and app.getSetting('core.site_url') %}
+				<a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }}; font-size: 12px;">{{ app.getSetting('core.site_name') }}</a> &middot;
+			{% elseif app.getSetting('core.site_url') %}
+				<a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.site_url') }}</a> &middot;
 			{% endif %}
+
+			<a href="{{ app.getSetting('core.deskpro_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.deskpro_url') }}</a>
 		</p>
 	</td>
 </tr>
