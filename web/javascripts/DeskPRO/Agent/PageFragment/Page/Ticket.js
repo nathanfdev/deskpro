@@ -474,6 +474,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		// Focus reply
 		$('textarea[name="message"]', self.ticketReply).focus();
+
+		// Resize it by firing change which'll run the resize
+		$('textarea[name="message"]', self.ticketReply).trigger('textareaexpander_fire');
 	},
 
 	addAttachToList: function(attachInfo) {
@@ -732,6 +735,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		txt.insertAtCaret(text);
+		txt.trigger('textareaexpander_fire');
 	},
 
 	doTicketUpdate: function() {

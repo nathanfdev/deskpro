@@ -390,7 +390,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.isDestroyed) return;
 
-		if (!ignoreForms && this.hasFormsChanged()) {
+		if (!ignoreForms && this.hasFormsChanged() && this.page && !this.page.noIgnoreForm) {
 			var self = this;
 			DeskPRO_Window.showConfirm('Are you sure you want to close the form? Your changes will be lost.', function() {
 				self.close(true);

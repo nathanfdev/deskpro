@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'ticket_snippets';
 		this.allowDupe = true;
+		this.noIgnoreForm = true;
 	},
 
 	initPage: function(el) {

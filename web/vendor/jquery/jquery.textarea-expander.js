@@ -41,6 +41,11 @@
 			if (!$(this).data('expander-min-height')) {
 				$(this).data('expander-min-height', $(this).height());
 			}
+
+			$(this).bind("textareaexpander_fire", function () {
+				update(this);
+				$(this).trigger('textareaexpander_expanded');
+			});
 			$(this).bind("keyup", function () {
 				update(this);
 				$(this).trigger('textareaexpander_expanded');
