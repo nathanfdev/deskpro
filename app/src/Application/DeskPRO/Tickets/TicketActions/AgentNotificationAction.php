@@ -287,6 +287,7 @@ class AgentNotificationAction extends AbstractAction
 				'action_performer'   => App::getCurrentPerson(),
 				'ticket_logs'        => $ticket_logs,
 				'new_message'        => $new_message,
+				'agent'              => $agent
 			);
 
 			if ($this->notify_info[$agent->id]) {

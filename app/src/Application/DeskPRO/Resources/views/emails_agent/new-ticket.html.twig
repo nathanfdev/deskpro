@@ -1,7 +1,15 @@
 {% set with_cutline = 1 %}
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}{% endblock %}
+{% block email_subject %}
+	{% if ticket.agent.id == agent.id %}
+		{{ phrase('agent.emails.subject_new_ticket_assigned', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+	{% elseif ticket.agent_team and agent.isTeamMember(ticket.agent_team.id) %}
+		{{ phrase('agent.emails.subject_new_ticket_assignedteam', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+	{% else %}
+		{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+	{% endif %}
+{% endblock %}
 {% block content %}
 
 {% set content %}

@@ -13,6 +13,8 @@
 	'agent.emails.section_ticket'                  => 'Ticket',
 	'agent.emails.subject_email_change_merge'      => 'Confirm email change and account merger',
 	'agent.emails.subject_new_ticket'              => '[#{{ticket_id}} NEW TICKET] Re: {{ticket_subject}}]',
+	'agent.emails.subject_new_ticket_assigned'     => '[#{{ticket_id}} NEW TICKET + ASSIGNED] Re: {{ticket_subject}}]',
+	'agent.emails.subject_new_ticket_assignedteam' => '[#{{ticket_id}} NEW TICKET + ASSIGNED TEAM] Re: {{ticket_subject}}]',
 	'agent.emails.subject_ticket_updated'          => 'Ticket Updated: {{ticket_subject}}',
 	'agent.emails.ticket_created_link'             => '{{name}} &lt;{{email}}&gt; has created an agent account for you on {{link}}',
 	'agent.emails.ticket_updated'                  => '[#{{ticket_id}} UPDATE] Re: {{ticket_subject}}',
