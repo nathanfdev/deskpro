@@ -33,6 +33,8 @@
 
 namespace DeskPRO\Kernel;
 
+require_once DP_ROOT.'/sys/DpShutdown.php';
+
 class KernelBooter
 {
 	/**
@@ -558,7 +560,7 @@ HTML;
 
 
 	/**#@+
-	 * Handling of xdebug traces
+	 * Handling of shutdown stack and xdebug traces
 	 */
 	private static function DeskPRO_Done_MarkerCheck() {}
 	public static function DeskPRO_Done()
@@ -566,6 +568,8 @@ HTML;
 		static $called = false;
 		if ($called) return;
 		$called = true;
+
+		\DpShutdown::run();
 
 		if (!defined('DP_DEBUG_TRACE_FILE')) {
 			return;

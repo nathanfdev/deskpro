@@ -62,6 +62,17 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		parent::__construct($params, $driver, $config, $eventManager);
+
+		$db = $this;
+		\DpShutdown::add(function() use($db) {
+			if ($db->isTransactionActive()) {
+				$level = $db->getTransactionNestingLevel();
+				$e = new ShutdownTransactionActiveException("Database transaction is still active ($level deep)");
+
+				$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+			}
+		});
 	}
 
 	public function connect()

@@ -81,7 +81,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
-		register_shutdown_function(array($this, 'flushUpdatesQuiet'));
+		\DpShutdown::add(array($this, 'flushUpdatesQuiet'));
 	}
 
 	public function flushUpdatesQuiet()

@@ -45,7 +45,7 @@ class QueryListener
 
 	public function __construct()
 	{
-		register_shutdown_function(array($this, 'sendUpdatesQuiet'));
+		\DpShutdown::add(array($this, 'sendUpdatesQuiet'));
 	}
 
 	public function sendUpdatesQuiet()

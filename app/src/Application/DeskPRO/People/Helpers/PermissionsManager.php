@@ -134,7 +134,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
-		register_shutdown_function(array($this, 'flushCache'));
+		\DpShutdown::add(array($this, 'flushCache'));
 	}
 
 

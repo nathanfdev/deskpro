@@ -146,7 +146,7 @@ class Translate implements PersonContextInterface
 		$this->loader = $loader;
 
         if(App::getConfig('debug.language_report_missing')) {
-            register_shutdown_function(array($this, 'reportMissingPhrases'));
+            \DpShutdown::add(array($this, 'reportMissingPhrases'));
         }
 
 		$this->_event_dispatcher = $event_dispatcher;

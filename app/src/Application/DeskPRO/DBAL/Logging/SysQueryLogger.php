@@ -91,7 +91,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$this->log_trace = true;
 		}
 
-		register_shutdown_function(array($this, 'writeLogQuiet'));
+		\DpShutdown::add(array($this, 'writeLogQuiet'));
 	}
 
 	public function writeLogQuiet()
