@@ -1266,6 +1266,10 @@ class Strings
 
 		foreach ($xpath->query('//text()') as $text)
 		{
+			if (strpos($text->getNodePath(), '/a/') !== false) {
+				continue;
+			}
+
 			$frag = $dom->createDocumentFragment();
 			$frag->appendXML(self::linkify($text->nodeValue, $attr));
 			$text->parentNode->replaceChild($frag, $text);
