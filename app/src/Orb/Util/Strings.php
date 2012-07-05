@@ -1258,7 +1258,7 @@ class Strings
 		libxml_use_internal_errors(true);
 
 		$dom = new \DOMDocument();
-		if (!$dom->loadHTML($html)) {
+		if (!$dom->loadHTML('<?xml encoding="UTF-8">'.$html)) {
 			return $html;
 		}
 
