@@ -1092,7 +1092,9 @@ class Strings
 	 */
 	public static function trimHtmlAdvanced($html)
 	{
-		$qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$html, null, array('convert_to_encoding' => null));
+		$html = Strings::extractBodyTag($html);
+
+		$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 		do {
 			$qp->top()->find('span');
 
@@ -1154,14 +1156,15 @@ class Strings
 		ob_start();
 		$qp->writeXHTML();
 		$html = ob_get_clean();
+		$html = Strings::extractBodyTag($html);
 
 		// Unwrap outer divs, p's
 		do {
-			$qp = \QueryPath::withHTML('<?xml encoding="UTF-8">'.$html, null, array('convert_to_encoding' => null));
+			$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
-			$div = $qp->top()->find('body > div, body > p, body > dp_tag > div, body > dp_tag > p');
-			if (false && $div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
+			$div = $qp->top()->find('body > div, body > p, body dptag > div, body dptag > p');
+			if ($div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
 				$changed = true;
 				$html = $div->html();
 
@@ -1180,18 +1183,10 @@ class Strings
 		ob_start();
 		$qp->writeXHTML();
 		$html = ob_get_clean();
+		$html = Strings::extractBodyTag($html);
 
 		$html = str_replace(array('<dptag>', '</dptag>'), '', $html);
 		$html = str_replace('<br></br>', '<br />', $html);
-
-		$pos = strpos($html, '<body');
-		$html = substr($html, $pos+6);
-		$pos = strpos($html, '>');
-		$html = substr($html, $pos+1);
-		$html = trim($html);
-
-		$pos = strpos($html, '</body>');
-		$html = substr($html, 0, $pos);
 
 		$html_before = $html;
 		$html = self::trimHtml($html);
@@ -1258,7 +1253,10 @@ class Strings
 		libxml_use_internal_errors(true);
 
 		$dom = new \DOMDocument();
-		if (!$dom->loadHTML('<?xml encoding="UTF-8">'.$html)) {
+		if (strpos($html, '<?xml') === false) {
+			$html = '<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$html;
+		}
+		if (!$dom->loadHTML($html)) {
 			return $html;
 		}
 
@@ -1276,14 +1274,39 @@ class Strings
 		}
 
 		$html = $dom->saveHTML();
-
-		$pos = strpos($html, '<body>');
-		$html = substr($html, $pos+6);
-
-		$pos = strrpos($html, '</body>');
-		$html = substr($html, 0, $pos);
+		$html = Strings::extractBodyTag($html);
 
 		return $html;
+	}
+
+
+	/**
+	 * Get text between the body tags in an html doc
+	 *
+	 * @param string $value
+	 */
+	public static function extractBodyTag($value)
+	{
+		do {
+			$changed = false;
+
+			$pos = strpos($value, "<body");
+			if ($pos !== false) {
+				$changed = true;
+				$value = substr($value, $value + 5);
+				$pos = strpos($value, ">");
+				$value = substr($value, $pos+1);
+			}
+		} while($changed);
+
+		$pos = strpos($value, '</body>');
+		if ($pos !== false) {
+			$value = substr($value, 0, $pos);
+		}
+
+		$value = trim($value);
+
+		return $value;
 	}
 
 
@@ -1526,6 +1549,34 @@ class Strings
 		}
 
 		return implode("\n", $string);
+	}
+
+
+	/**
+	 * Decodes entities that are whitespace into their UTF-8 characters
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function decodeWhitespaceHtmlEntities($string)
+	{
+		// Sometimes these chars are encoded by clients
+		$repl = array(
+			'&#10;'  => "\n",
+			'&#xa;'  => "\n",
+			'&#13;'  => "\r",
+			'&#xd;'  => "\r",
+			'&#9;'   => "	",
+			'&#x9;'  => "	",
+			'&#32;'  => ' ',
+			'&#x20;' => ' ',
+			'&#160;' => ' ',
+			'&#xa0;' => ' ',
+			'&nbsp;' => ' ',
+		);
+		$string = str_ireplace(array_keys($repl), array_values($repl), $string);
+
+		return $string;
 	}
 
 

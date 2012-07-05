@@ -59,7 +59,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/iphone.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/test-trim.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
@@ -70,21 +70,10 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
 		$cutter->addPatterns($pattern_config->all());
 
-		//$body = $cutter->cutQuoteBlock($body, true);
-
-		echo $body;
-		echo "\n";
-		exit;
-
-		$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
-		$body = $inline_image->processTokens($body);
+		$body = $cutter->cutQuoteBlock($body, true);
 		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
 		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
 		$body = Strings::trimHtmlAdvanced($body);
-
-		foreach ($r->getAttachments() as $attach) {
-			$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
-		}
 
 		echo $body;
 		echo "\n";

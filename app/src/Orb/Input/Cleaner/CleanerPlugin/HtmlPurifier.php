@@ -71,6 +71,10 @@ class HtmlPurifier implements CleanerPlugin
 		#------------------------------
 
 		if ($type == 'html_email_basicclean') {
+
+			$value = Strings::extractBodyTag($value);
+			$value = Strings::decodeWhitespaceHtmlEntities($value);
+
 			for ($x = 0; $x < 10; $x++) {
 				$value = preg_replace('#<span[^>]*>(\s|&nbsp;)*</span>#u', '', $value);
 				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
@@ -100,13 +104,20 @@ class HtmlPurifier implements CleanerPlugin
 		$purifier = new \HTMLPurifier();
 		$config = $this->getConfigForType($type);
 
+		if ($type == 'html_email') {
+			// Cut to the body, also cuts out multiple xml decls
+			// Even if the client didnt send it, DOMDocument from cutter etc wraps body wanyway
+			$value = Strings::extractBodyTag($value);
+		}
+
 		$value = $purifier->purify($value, $config);
 
 		if ($type == 'html_email') {
-			$value = Strings::trimHtml($value);
 			$value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
-			$value = Strings::trimHtmlAdvanced($value);
+			$value = Strings::decodeWhitespaceHtmlEntities($value);
+			$value = Strings::trimHtml($value);
 			$value = str_replace('<br />&#xA0;<br />', '<br /><br />', $value);
+			$value = Strings::trimHtmlAdvanced($value);
 		}
 
 		return $value;
