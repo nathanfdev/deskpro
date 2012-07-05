@@ -42,7 +42,7 @@ View this ticket online:<br />
 {% endif %}
 <br/><br/>
 
-{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), {show_author_email: true}) }}
+{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), {show_author_email: true, agent: true}) }}
 
 <br/><br/>
 {{ layout.replycode(tac.access_code) }}

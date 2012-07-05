@@ -10,4 +10,6 @@
 	'core.tickets.feedback_agents_read' => 1,
 
 	'core.tickets.use_ref' => false,
+
+	'core.tickets.email_history_limit' => 10,
 );

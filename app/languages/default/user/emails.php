@@ -33,4 +33,6 @@ To protect against an auto-responder loop our helpdesk will not send any more au
 	'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. One of our agents will reply to you shortly.',
 	'user.emails.ticket_validate'             => 'Thank you for contacting us.
 Before our agents will read and reply to your message, you must validate your email address.',
+	'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
+	'user.emails.view_full_history_online'    => 'View full ticket online',
 );

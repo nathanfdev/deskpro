@@ -107,16 +107,30 @@
 {% endmacro %}
 
 {% macro render_ticket_messages(messages, title, options) %}
+
+	{% if options.skip_top %}{% set max = app.getSetting('core.tickets.email_history_limit') + 1 %}{% else %}{% set max = app.getSetting('core.tickets.email_history_limit') %}{% endif %}
+
 	{% if not options.skip_top or (options.skip_top and messages|length > 1) %}
 		{% set section_content %}
 			{% for message in messages %}
-				{% if options.skip_top and loop.first or options.only_top and not loop.first %}
+				{% if (loop.index < max) or (options.skip_top and loop.first or options.only_top and not loop.first) %}
 				{% else %}
 					{{ _self.message(message, { attachments: options.ticketdisplay.getMessageAttachments(message), person_id: options.person_id, show_author_email: options.show_author_email }) }}
 				{% endif %}
 			{% endfor %}
 		{% endset %}
 		{{ _self.messages_section(title, section_content) }}
+	{% endif %}
+
+	{% if messages|length > max %}
+		<p>
+			{{ phrase('user.emails.tickets_ommitted', max - messages|length) }}
+			{% if options.agent %}
+				&middot; <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ phrase('user.emails.view_full_history_online') }}</a>
+			{% else %}
+				&middot; <a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">{{ phrase('user.emails.view_full_history_online') }}</a>
+			{% endif %}
+		</p>
 	{% endif %}
 {% endmacro %}
 
