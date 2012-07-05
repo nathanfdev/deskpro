@@ -167,6 +167,12 @@ class QueryPath {
   }
 
   public static function withHTML($source = NULL, $selector = NULL, $options = array()) {
+
+	  // DESKPRO CHANGE: Gets DOMDocument to read string as UTF-8
+	  if (strpos($source, '<?xml') === false) {
+		  $source = '<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$source;
+	  }
+
     // Need a way to force an HTML parse instead of an XML parse when the
     // doctype is XHTML, since many XHTML documents are not valid XML
     // (because of coding errors, not by design).
@@ -186,7 +192,7 @@ class QueryPath {
   /**
    * Enable one or more extensions.
    *
-   * Extensions provide additional features to QueryPath. To enable and 
+   * Extensions provide additional features to QueryPath. To enable and
    * extension, you can use this method.
    *
    * In this example, we enable the QPTPL extension:
