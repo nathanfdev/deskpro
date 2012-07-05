@@ -679,14 +679,14 @@ class Upgrade
 			$write_status("file_backup_done");
 		} catch (\Exception $e) {
 			$write_status("error_backup_files", $e->getMessage());
-			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+			$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			exit(14);
 		}
 
 		if (!$is_quiet) $this->out("Turning helpdesk off");
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
 		$write_status('helpdesk_offline');
 
 		try {
@@ -702,7 +702,7 @@ class Upgrade
 
 		} catch (\Exception $e) {
 			$write_status("error_backup_db", $e->getMessage());
-			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+			$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			exit(15);
@@ -760,14 +760,14 @@ class Upgrade
 			if (!$is_error_halt) {
 				$write_status("reverting_files");
 				$this->revertAutoUpgrade();
-				$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+				$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
 			}
 
 			exit(30);
 		}
 
 		if (!$is_quiet) $this->out("-> Done");
-		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		if (!$is_quiet) $this->out("Helpdesk turned on");
 		$write_status('helpdesk_online');
@@ -800,7 +800,7 @@ class Upgrade
 			$this->restoreDbFromZip($this->db_backup);
 		}
 
-		unlink(DP_ROOT.'/helpdesk-offline.trigger');
+		unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		$this->revert_checkpoint = null;
 	}
@@ -1737,7 +1737,7 @@ function Upgrade_Shutdown_Function()
 	}
 
 	try {
-		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 	} catch (\Exception $e) {}
 
 	$UPGRADE_CLEANUP = null;
@@ -2172,7 +2172,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		}
 
 		$fileutil = new FilesystemUtil();
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		if (is_file($db_backup_path)) {
 			$fileutil->remove($db_backup_path);
@@ -2260,7 +2260,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
-		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		$this->outHeader("DONE");
 		$this->out();
@@ -2343,7 +2343,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		}
 
 		$fileutil = new FilesystemUtil();
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		#------------------------------
 		# Backup database
@@ -2417,7 +2417,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		}
 
 		$fileutil = new FilesystemUtil();
-		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 
 		$this->upgrade->sendLog();
 		exit(1);

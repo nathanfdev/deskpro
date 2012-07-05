@@ -480,7 +480,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		// Offline file is inserted on cmdline upgrade,
 		// we want to disable all access
-		if (is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
+		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
 			return true;
 		}
 
