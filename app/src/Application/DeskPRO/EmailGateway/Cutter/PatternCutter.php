@@ -89,6 +89,9 @@ class PatternCutter implements QuoteDef
 			return $body;
 		}
 
+		$body = str_replace('<br></br>', '<br />', $body);
+		$body = str_replace('<br>', '<br />', $body);
+
 		foreach ($this->patterns as $pattern) {
 			$matcher = new HtmlMatcher($body, $pattern);
 			if ($matcher->isMatch()) {

@@ -54,6 +54,8 @@
 	// X-Mailer: iPhone Mail (8C148)
 	'iphone_2'                           => 'div br /br br /br #on\s.*\sat\s.*#i a /a #.*wrote:#i /div div /div blockquote /blockquote',
 
+	'iphone_3'                           => 'div #on .*?, at .*? wrote:#i /div',
+
 	// X-Mailer: Verizon Webmail
 	'verizon_webmail_1'                  => 'span #^\s?on\s.*$#i span /span #^\s?wrote:$#i /span div /div',
 
