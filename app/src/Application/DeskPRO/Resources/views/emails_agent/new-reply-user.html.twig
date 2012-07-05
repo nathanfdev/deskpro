@@ -2,7 +2,7 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	{{ phrase('agent.general.new_user_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
+	{{ phrase('agent.emails.new_user_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
 {% endblock %}
 {% block content %}
 

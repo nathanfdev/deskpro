@@ -1,7 +1,7 @@
 {% set with_cutline = 1 %}
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject }) }}{% endblock %}
+{% block email_subject %}{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}{% endblock %}
 {% block content %}
 
 {% set content %}
