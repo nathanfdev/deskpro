@@ -186,4 +186,26 @@ class AddressMatcher
 
 		return null;
 	}
+
+
+	/**
+	 * Get a default ticket account for cases when none can be located.
+	 * This only happens if the original account was deleted, or if a ticket never
+	 * had a proper one set (eg bad import).
+	 *
+	 * Right now this simply fetches the first account.
+	 */
+	public function getDefaultTicketAccountFrom()
+	{
+		$this->getPatterns();
+
+		foreach ($this->patterns as $p) {
+			if ($p['match_type'] == 'exact') {
+				return $p['match_pattern'];
+			}
+		}
+
+		// Cant find one still, maybe no accounts enabled anymore
+		return null;
+	}
 }

@@ -42,6 +42,11 @@ use Application\DeskPRO\App;
 class Message extends \Orb\Mail\Message
 {
 	/**
+	 * @var string
+	 */
+	protected $context_id;
+
+	/**
 	 * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
 	 */
 	protected $template_engine;
@@ -67,6 +72,24 @@ class Message extends \Orb\Mail\Message
 	 * @var bool
 	 */
 	protected $is_retrying = false;
+
+
+	/**
+	 * Set a context about this message. The mailer might treat it differently.
+	 */
+	public function setContextId($context_id)
+	{
+		$this->context_id = $context_id;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getContextId()
+	{
+		return $this->context_id;
+	}
 
 
 	public function doPrepare()

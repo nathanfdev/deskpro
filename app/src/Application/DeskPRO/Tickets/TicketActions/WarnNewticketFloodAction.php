@@ -61,6 +61,7 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
 			$message->setTemplate('DeskPRO:emails_user:gateway-autoresponse-warn.html.twig', $vars);
 			$message->setFrom($from_address);
 			$message->setTo($person->getEmailAddress());

@@ -63,6 +63,9 @@ class TicketsStep extends AbstractDeskpro3Step
 	 */
 	protected $personinfo_cache = array();
 
+	protected $gateway_addresses = array();
+	protected $old_gateway_addresses = array();
+
 	public static function getTitle()
 	{
 		return 'Import Tickets';
@@ -116,6 +119,17 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$this->custom_field_info = $this->olddb->fetchAll("SELECT * FROM ticket_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
+
+		$this->old_gateway_addresses = $this->olddb->fetchAllKeyed("
+			SELECT *
+			FROM gateway_emails
+		");
+
+		$this->gateway_addresses = $this->db->fetchAllKeyed("
+			SELECT *
+			FROM email_gateway_addresses
+			WHERE match_type = 'exact'
+		");
 
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
@@ -259,6 +273,19 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_lastreply']);
 		} else {
 			$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_opened']);
+		}
+
+		// Set the proper email account (the "From" address)
+		if ($ticket_info['accountid'] && isset($this->old_gateway_addresses[$ticket_info['accountid']])) {
+			$old_address = strtolower($this->old_gateway_addresses[$ticket_info['accountid']]['email']);
+			foreach ($this->gateway_addresses as $address_info) {
+				if (strtolower($address_info['match_pattern']) == $old_address) {
+					$insert_ticket['email_gateway_id'] = $address_info['email_gateway_id'];
+					$insert_ticket['email_gateway_address_id'] = $address_info['id'];
+					$insert_ticket['notify_email'] = $address_info['match_pattern'];
+					break;
+				}
+			}
 		}
 
 		switch ($ticket_info['status']) {

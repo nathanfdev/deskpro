@@ -303,6 +303,7 @@ class AgentNotificationAction extends AbstractAction
 			$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
 			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());

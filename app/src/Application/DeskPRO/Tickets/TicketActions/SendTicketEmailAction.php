@@ -114,6 +114,7 @@ class SendTicketEmailAction extends AbstractAction
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts) {
 
 			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
 			$message->setTemplate('DeskPRO:emails_user:ticket-email-blank.html.twig', $vars);
 
 			if (!empty($vars['validating_email'])) {

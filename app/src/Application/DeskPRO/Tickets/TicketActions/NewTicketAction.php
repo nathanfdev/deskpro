@@ -279,6 +279,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 				$message = App::getMailer()->createMessage();
+				$message->setContextId('ticket_gateway');
 				$message->setTemplate($tpl, $vars);
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				$message->setFrom($from_address);
@@ -320,6 +321,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
 
 			$message->setTo($ticket->person_email_validating->email, $person->getDisplayName());

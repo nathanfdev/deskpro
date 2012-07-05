@@ -76,6 +76,11 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	protected $logger;
 
 	/**
+	 * @var \Application\DeskPRO\EmailGateway\AddressMatcher
+	 */
+	protected $gateway_address_matcher;
+
+	/**
 	 * @param \Swift_Events_EventDispatcher $event_dispatcher
 	 */
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
@@ -295,6 +300,52 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];
 
+		if ($message instanceof \Application\DeskPRO\Mail\Message) {
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Message context: %s", $message->getContextId()));
+		}
+
+		if ($message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
+
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address"));
+
+			// Make sure a ticket always belongs to a gateway address
+			$matcher = $this->getGatewayAddressMatcher();
+			$address = $matcher->getMatchingAddress($from_address);
+
+			// If theres no address match, then we need to choose one
+			if (!$address) {
+
+				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
+				$new_address = $matcher->getDefaultTicketAccountFrom();
+				if ($new_address) {
+					$from = $message->getFrom();
+					if (!$from) {
+						$from = array('', null);
+					}
+					$from[0] = $new_address;
+
+					$message->setFrom($from);
+
+					$from_address = $new_address;
+
+					$this->getLogger()->logDebug("[DelegatingTransport] From set to $new_address");
+				}
+			}
+		}
+
+		$this->getLogger()->logDebug("[DelegatingTransport] From address is $from_address");
+
+		return $this->getTransportForFromAddress($from_address, $get_backup_transport);
+	}
+
+
+	/**
+	 * @param string $from_address
+	 * @param bool $get_backup_transport
+	 * @return null|\Swift_MailTransport
+	 */
+	public function getTransportForFromAddress($from_address, $get_backup_transport = false)
+	{
 		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage finding address: %s", $from_address));
 
 		$from_account = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($from_address);
@@ -311,10 +362,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
 
-			try {
-				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_address}", array('raw_message' => $message->toString()));
-			} catch (\Exception $e) {}
-
 			$tr = new \Swift_MailTransport();
 		}
 
@@ -323,6 +370,20 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		}
 
 		return $tr;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EmailGateway\AddressMatcher
+	 */
+	public function getGatewayAddressMatcher()
+	{
+		if ($this->gateway_address_matcher) {
+			return $this->gateway_address_matcher;
+		}
+
+		$this->gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+
+		return $this->gateway_address_matcher;
 	}
 
 
