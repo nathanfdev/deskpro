@@ -46,6 +46,8 @@ use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 use Application\DeskPRO\App;
 
+require_once DP_ROOT.'/sys/DpShutdown.php';
+
 ###############################################################################
 # BaseAbstractKernel
 ###############################################################################
