@@ -283,7 +283,7 @@ class LanguageController extends Controller
     public function exportPOAction($package)
     {
 
-         $folder = DP_ROOT.'/languages/'.$package;
+         $folder = DP_ROOT.'/languages/default/'.$package;
 
          $dh = opendir($folder);
 
@@ -294,7 +294,7 @@ class LanguageController extends Controller
 
                  $strings = require($filepath);
 
-                 $outfile = DP_ROOT.'/languages/' . $package . '/' . 'export' . '/' . str_replace('.php', '', $filename) . '.po';
+                 $outfile = DP_ROOT.'/languages/default/' . $package . '/' . 'export' . '/' . str_replace('.php', '', $filename) . '.po';
 
                  echo "Exporting: {$filepath} <br />";
 
@@ -339,7 +339,7 @@ class LanguageController extends Controller
 
         foreach($packages as $package) {
             $files = array();
-            $folder = DP_ROOT.'/languages/'.$package;
+            $folder = DP_ROOT.'/languages/default/'.$package;
 
             $dh = opendir($folder);
 
@@ -359,7 +359,7 @@ class LanguageController extends Controller
                 $strings = array_merge(require($file), $strings);
             }
 
-            $file = DP_ROOT.'/languages/'.ucfirst($package).'.po';
+            $file = DP_ROOT.'/languages/default/'.ucfirst($package).'.po';
             echo "Exporting: {$file}\n";
             $fs = fopen($file, 'w');
 
@@ -617,7 +617,7 @@ class LanguageController extends Controller
             $keycount = 0;
             $wordcount = 0;
 
-            $dir = DP_ROOT . '/languages/' . $interface['0'];
+            $dir = DP_ROOT . '/languages/default/' . $interface['0'];
 
             if ($handle = opendir($dir)) {
                 while (false !== ($filename = readdir($handle))) {
@@ -870,7 +870,7 @@ class LanguageController extends Controller
     }
 
     public function fixMissing($missing) {
-        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $rootdir = DP_ROOT.'/languages/default/';
         $missing = array_unique($missing);
 
         foreach($missing as $id) {
