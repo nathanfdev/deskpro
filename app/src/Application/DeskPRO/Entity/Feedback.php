@@ -188,7 +188,7 @@ class Feedback extends ContentAbstract
 		return $url;
 	}
 
-	public function getPermalink()
+	public function getPermalink($absolute = true)
 	{
 		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), $absolute);
 
