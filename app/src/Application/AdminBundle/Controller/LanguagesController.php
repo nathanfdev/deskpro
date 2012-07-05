@@ -330,8 +330,10 @@ class LanguagesController extends AbstractController
 		$vars = $this->getLangInfo($language_id);
 		$vars['group'] = $group;
 
+		$vars['lang_phrases'] = array('custom' => array(), 'original' => array());
+
 		if ($group == 'CUSTOM') {
-			$vars['lang_phrases'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
+			$vars['lang_phrases']['custom'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
 			$groups = array();
 			foreach ($vars['lang_phrases'] as $phrase) {
 				$groups[] = $phrase->groupname;
@@ -347,6 +349,11 @@ class LanguagesController extends AbstractController
 				$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
 				$master_phrases = $groups_reader->getGroupPhrases($g);
 				$vars['master_phrases'] = array_merge($vars['master_phrases'], $master_phrases);
+			}
+			foreach ($groups as $g) {
+				$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases(str_replace('%DP_ROOT%', DP_ROOT, $vars['language']->base_filepath));
+				$master_phrases = $groups_reader->getGroupPhrases($g);
+				$vars['lang_phrases']['original'] = array_merge($vars['master_phrases'], $master_phrases);
 			}
 		}
 
