@@ -41,25 +41,21 @@ use Orb\Util\Arrays;
  */
 class SystemLoader implements LoaderInterface
 {
-	protected $file_path;
-
 	/**
-	 * @param string $file_path The base path where language packs are kept
+	 * Array of filepath => array
+	 * @var array
 	 */
-	public function __construct($file_path)
-	{
-		$this->file_path = $file_path;
-	}
+	protected $loaded_files = array();
 
 	public function load($groups, $language)
 	{
 		$lang_packs = array();
 
 		// Always read from the default because it has the core phrases
-		$lang_packs[] = DP_ROOT . '/languages';
+		$lang_packs[] = DP_ROOT . '/languages/default';
 
 		if ($language && $language->base_filepath) {
-			$lang_packs[] = DP_ROOT . $language->base_filepath;
+			$lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
 		}
 
 		$lang_packs = array_unique($lang_packs);
@@ -84,15 +80,37 @@ class SystemLoader implements LoaderInterface
 					$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
 				}
 
-				if (is_file($file)) {
-					$file_phrases = include($file);
-					if ($file_phrases && is_array($file_phrases)) {
-						$phrases[$group] = array_merge($phrases[$group], $file_phrases);
-					}
+				$file_phrases = $this->loadFile($file);
+				if ($file_phrases) {
+					$phrases[$group] = array_merge($phrases[$group], $file_phrases);
 				}
 			}
 		}
 
 		return $phrases;
+	}
+
+	/**
+	 * @param string $file
+	 * @return array
+	 */
+	public function loadFile($file)
+	{
+		if (isset($this->loaded_files[$file])) {
+			return $this->loaded_files[$file];
+		}
+
+		if (is_file($file)) {
+			$file_phrases = include($file);
+			if ($file_phrases && is_array($file_phrases)) {
+				$this->loaded_files[$file] = $file_phrases;
+			}
+		}
+
+		if (!isset($this->loaded_files[$file])) {
+			$this->loaded_files[$file] = array();
+		}
+
+		return $this->loaded_files[$file];
 	}
 }

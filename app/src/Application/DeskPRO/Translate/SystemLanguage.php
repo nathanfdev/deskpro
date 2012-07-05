@@ -51,9 +51,14 @@ class SystemLanguage extends \Application\DeskPRO\Entity\Language
 
 	protected function __construct()
 	{
-		$this->id = 0;
-		$this->locale = 'en_US';
-		$this->title = "English (US)";
-		$this->language_package = 'DeskproLanguages\\LangPackage';
+		$this->id            = 0;
+		$this->sys_name      = 'default';
+		$this->lang_code     = 'eng';
+		$this->locale        = 'en_US';
+		$this->title         = "English";
+		$this->base_filepath = DP_ROOT.'/languages/default';
+		$this->has_user      = true;
+		$this->has_admin     = true;
+		$this->has_agent     = true;
 	}
 }

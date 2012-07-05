@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,48 +25,100 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Languages;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class LangPackInfo
 {
-	protected function configure()
+	/**
+	 * @var string
+	 */
+	protected $langs_dir;
+
+	/**
+	 * @var array
+	 */
+	protected $manifest;
+
+	public function __construct()
 	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
+		$this->langs_dir = DP_ROOT.'/languages';
+
+		$this->manifest = include($this->langs_dir . '/manifest.php');
+
+		if (dp_get_config('debug.lang_manifest')) {
+			$this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
+		}
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * @return string
+	 */
+	public function getLangDir()
 	{
-		$build = new \Application\DeskPRO\Languages\Build\TransifexBuild(
-			'http://lithium.serv.deskpro.com:8000',
-			'root',
-			'xxxxxxx'
-		);
+		return $this->langs_dir;
+	}
 
-		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-		$build->getLogger()->addWriter($wr);
 
-		$build->buildLanguage('italian');
+	/**
+	 * @return array
+	 */
+	public function getLangIds()
+	{
+		return array_keys($this->manifest);
+	}
+
+
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function hasLang($id)
+	{
+		return isset($this->manifest[$id]);
+	}
+
+
+	/**
+	 * Fetches info about a language.
+	 *
+	 * $key can be:
+	 * - null: Array of all info
+	 * - id: The lang id
+	 * - lang_code: The three-letter language code (ISO 639-2)
+	 * - title: Readable English title of the language
+	 * - locale: The locale
+	 * - has_user: Is the pack considered user interface complete?
+	 * - has_agent: Is the pack considered agent interface complete?
+	 * - has_admin: Is the pack considered admin interface complete?
+	 *
+	 * @param string $id
+	 * @param string|null $key
+	 * @throws \InvalidArgumentException
+	 * @return mixed
+	 */
+	public function getLangInfo($id, $key = null)
+	{
+		if (!isset($this->manifest[$id])) {
+			throw new \InvalidArgumentException("Unknown language $id");
+		}
+
+		$info = $this->manifest[$id];
+
+		if ($key) {
+			if (!isset($info[$key])) {
+				return null;
+			}
+
+			return $info[$key];
+		}
+
+		return $info;
 	}
 }

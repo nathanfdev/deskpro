@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,48 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class Build1341491480 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
+		$this->out("Changes to languages");
+		$this->execMutateSql("ALTER TABLE languages ADD has_user TINYINT(1) NOT NULL, ADD has_agent TINYINT(1) NOT NULL, ADD has_admin TINYINT(1) NOT NULL");
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$build = new \Application\DeskPRO\Languages\Build\TransifexBuild(
-			'http://lithium.serv.deskpro.com:8000',
-			'root',
-			'xxxxxxx'
-		);
-
-		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-		$build->getLogger()->addWriter($wr);
-
-		$build->buildLanguage('italian');
+		$this->execMutateSql("
+			UPDATE languages
+			SET sys_name = 'default', base_filepath = '%DP_ROOT%/languages/default', has_user = 1, has_agent = 1, has_admin = 1
+			WHERE id = 1
+		");
 	}
 }

@@ -79,7 +79,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The base filepath for default phrases for this lang.
-	 * If null, then the default system English in languages/ is used.
 	 *
 	 * @var string
 	 */
@@ -91,6 +90,21 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $locale = 'en_US';
+
+	/**
+	 * @var bool
+	 */
+	protected $has_user = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $has_agent = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $has_admin = true;
 
 	/**
 	 * @return int
@@ -117,6 +131,9 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath', ));
 		$metadata->mapField(array( 'fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale', ));
+		$metadata->mapField(array( 'fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user', ));
+		$metadata->mapField(array( 'fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
