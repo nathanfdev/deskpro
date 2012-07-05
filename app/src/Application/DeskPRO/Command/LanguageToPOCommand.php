@@ -63,7 +63,7 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
         foreach($packages as $package) {
             $files = array();
-            $folder = DP_ROOT.'/languages/'.$package;
+            $folder = DP_ROOT.'/languages/default/'.$package;
 
             $dh = opendir($folder);
 
@@ -83,7 +83,7 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
                 $strings = array_merge(require($file), $strings);
             }
 
-            $file = DP_ROOT.'/languages/'.ucfirst($package).'.po';
+            $file = DP_ROOT.'/languages/default/'.ucfirst($package).'.po';
             echo "Exporting: {$file}\n";
             $fs = fopen($file, 'w');
 

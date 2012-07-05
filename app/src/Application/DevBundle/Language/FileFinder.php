@@ -65,7 +65,7 @@ class FileFinder
 
     public function getLanguageFileList($package = '')
     {
-        $rootdir = DP_ROOT.'/languages/'.$package;
+        $rootdir = DP_ROOT.'/languages/default/'.$package;
         $this->files_temp = array();
 
         if(empty($package)) {
@@ -87,7 +87,7 @@ class FileFinder
         else {
             $this->readLangDir($rootdir);
         }
-        
+
         return $this->files_temp;
     }
 
