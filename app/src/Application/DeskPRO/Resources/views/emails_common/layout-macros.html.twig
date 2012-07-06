@@ -124,7 +124,7 @@
 
 	{% if messages|length > max %}
 		<p>
-			{{ phrase('user.emails.tickets_ommitted', max - messages|length) }}
+			{{ phrase('user.emails.tickets_ommitted', {count: max - messages|length}) }}
 			{% if options.agent %}
 				&middot; <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ phrase('user.emails.view_full_history_online') }}</a>
 			{% else %}
