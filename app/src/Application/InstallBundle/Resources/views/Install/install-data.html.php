@@ -95,7 +95,7 @@ $(document).ready(function() {
 		<div class="clearfix">
 			<label>Password</label>
 			<div class="input">
-				<input type="password" autocomplete="off" id="password" name="admin[password]" value="" size="30" />
+				<input type="password" id="password" name="admin[password]" value="" size="30" />
 				<span class="help-inline e">
 					<span id="password_mismatch">The two password fields do not match</span>
 					<span id="password_empty">Please enter a password</span>
