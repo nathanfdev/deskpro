@@ -34,6 +34,9 @@ msgstr "Your feedback has been declined"
 msgid "user.email_subjects.feedback_updated"
 msgstr "Your feedback was updated: {{title}}"
 
+msgid "user.email_subjects.feedback_new-comment"
+msgstr "There is a new comment on \"{{title}}\""
+
 msgid "user.email_subjects.password_agent-reset"
 msgstr "An agent has reset your password"
 

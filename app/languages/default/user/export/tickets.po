@@ -279,3 +279,6 @@ msgstr "You rated this message as unhelpful"
 
 msgid "user.tickets.your_tickets"
 msgstr "Your Tickets"
+
+msgid "user.tickets.empty_message"
+msgstr "(Empty message)"
