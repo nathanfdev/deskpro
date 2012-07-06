@@ -243,7 +243,6 @@ abstract class AbstractBuild
 	public function updateAllSources()
 	{
 		$sections = $this->getLangPackInfo()->getDefaultSections();
-		$sections = array('admin', 'agent');
 
 		foreach ($sections as $section) {
 			foreach ($this->getLangPackInfo()->getDefaultCategories($section) as $category) {
