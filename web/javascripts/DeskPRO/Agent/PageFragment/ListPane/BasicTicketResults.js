@@ -168,7 +168,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
 
 			if (replace_existing) {
-				var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
+				var exist = self.getEl('results_wrap').find('article.ticket-' + ticket_id);
 				if (!exist[0] || exist.hasClass('removing')) {
 					return;
 				}

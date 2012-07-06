@@ -209,7 +209,13 @@ class DetectFilterMatches
 
 		foreach ($filters as $filter) {
 
-			$changed[$filter->id] = array('add' => array(), 'del' => array(), 'orig_match' => array(), 'new_match' => array(), 'filter' => $filter);
+			$changed[$filter->id] = array(
+				'add' => array(),
+				'del' => array(),
+				'orig_match' => array(),
+				'new_match' => array(),
+				'filter' => $filter
+			);
 
 			$this->logMessage("Filter {$filter['id']} {$filter['title']}");
 
@@ -235,23 +241,24 @@ class DetectFilterMatches
 			}
 
 			foreach ($agent_scopes as $agent) {
-
 				$reset_status = false;
 				if ($filter->sys_name) {
 					// System filters are special in that we ignore status
 					// for notifications
 					$searcher = $filter->getSearcher(array(array('type' => 'status', 'op' => 'ignore'), array('type' => 'hidden_status', 'op' => 'ignore')));
+
+					// Reset because we have to re-run to get proper result for add/del lists
 					$reset_status = true;
 				} else {
 					$searcher = $filter->getSearcher();
 				}
-				$searcher->setPerson($agent);
+				$searcher->setPersonContext($agent);
 
 				if ($this->tracker->isNewTicket()) {
 					// there is no such thing as an original match with a new ticket
 					$orig_match = false;
 				} else {
-					$orig_match = $searcher->doesTicketMatch($orig_ticket);
+					$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match');
 				}
 
 				$new_match  = $searcher->doesTicketMatch($new_ticket);
@@ -265,11 +272,12 @@ class DetectFilterMatches
 
 				if ($reset_status) {
 					$searcher = $filter->getSearcher();
-					$searcher->setPerson($agent);
+					$searcher->setPersonContext($agent);
+
 					if ($this->tracker->isNewTicket()) {
 						$orig_match = false;
 					} else {
-						$orig_match = $searcher->doesTicketMatch($orig_ticket);
+						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match');
 					}
 					$new_match  = $searcher->doesTicketMatch($new_ticket);
 				}

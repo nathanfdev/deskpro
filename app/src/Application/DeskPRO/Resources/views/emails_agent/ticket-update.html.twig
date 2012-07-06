@@ -2,10 +2,10 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-{% if type_flag == 'assigned' %[#{{ ticlet.id }} ASSIGNED] Re: {{ ticket.subject }}
-{% elseif type_flag == 'assigned_team' %}[#{{ ticlet.id }} ASSIGNED TEAM] Re: {{ ticket.subject }}
-{% elseif type_flag == 'added_part' %}[#{{ ticlet.id }} FOLLOWER] Re: {{ ticket.subject }}
-{% else %}[#{{ ticlet.id }} UPDATED] Re: {{ ticket.subject }}{% endif %}
+{% if type_flag == 'assigned' %}[#{{ ticket.id }} ASSIGNED] Re: {{ ticket.subject }}
+{% elseif type_flag == 'assigned_team' %}[#{{ ticket.id }} ASSIGNED TEAM] Re: {{ ticket.subject }}
+{% elseif type_flag == 'added_part' %}[#{{ ticket.id }} FOLLOWER] Re: {{ ticket.subject }}
+{% else %}[#{{ ticket.id }} UPDATED] Re: {{ ticket.subject }}{% endif %}
 {% endblock %}
 {% block content %}
 {% set content %}

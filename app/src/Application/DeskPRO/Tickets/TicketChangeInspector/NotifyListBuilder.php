@@ -106,7 +106,9 @@ class NotifyListBuilder
 	 */
 	public function getNotifyList()
 	{
-		if ($this->notify_list !== null) return $this->notify_list;
+		if ($this->notify_list !== null) {
+			return $this->notify_list;
+		}
 
 		$filter_changes = $this->filter_detector->getFilterMatches();
 		$ticket = $this->tracker->getTicket();
@@ -141,10 +143,10 @@ class NotifyListBuilder
 		foreach ($filter_changes as $change_info) {
 			$filter_ids[] = $change_info['filter']->id;
 
-			foreach ($change_info['add'] as $agent) {
+			foreach ($change_info['orig_match'] as $agent) {
 				$agent_ids[] = $agent->id;
 			}
-			foreach ($change_info['orig_match'] as $agent) {
+			foreach ($change_info['new_match'] as $agent) {
 				$agent_ids[] = $agent->id;
 			}
 		}
@@ -173,7 +175,7 @@ class NotifyListBuilder
 
 			// Notify about tickets entering a list
 			// AKA a ticket changed such that it was added into a new list it wasnt before
-			foreach ($change_info['add'] as $agent) {
+			foreach ($change_info['new_match'] as $agent) {
 				if (!isset($agent_subs[$agent->id][$filter->id])) continue;
 				$sub = $agent_subs[$agent->id][$filter->id];
 

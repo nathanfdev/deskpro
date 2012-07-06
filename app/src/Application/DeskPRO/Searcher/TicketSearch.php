@@ -1435,14 +1435,23 @@ class TicketSearch extends SearcherAbstract
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	public function doesTicketMatch(Entity\Ticket $ticket)
+	public function doesTicketMatch(Entity\Ticket $ticket, $context = null)
 	{
+		$ignore_terms = array();
+
 		foreach ($this->terms as $term => $info) {
 			list($op, $choice) = $info;
 
+			if ($op == 'ignore' || isset($ignore_terms[$term])) {
+				$ignore_terms[$term] = 1;
+				continue;
+			}
+
 			switch ($term) {
 				case self::TERM_STATUS:
-					if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) return false;
+					if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) {
+						return false;
+					}
 					break;
 				case self::TERM_DEPARTMENT:
 					if (count($choice) == 1) $choice = Arrays::getFirstItem($choice);
@@ -1519,8 +1528,15 @@ class TicketSearch extends SearcherAbstract
 
 					if ($agent_ids) {
 						$participant_ids = array();
-						foreach ($ticket->getParticipantPeopleIds() as $part) {
-							$participant_ids[] = $part;
+
+						if ($context == 'new_match') {
+							foreach ($ticket->getOriginalParticipantIds() as $part) {
+								$participant_ids[] = $part;
+							}
+						} else {
+							foreach ($ticket->getParticipantPeopleIds() as $part) {
+								$participant_ids[] = $part;
+							}
 						}
 
 						$any = false;
