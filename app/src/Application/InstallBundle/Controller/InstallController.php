@@ -59,7 +59,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
-		setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'));
+		setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'), '/', null, false, true);
 	}
 
 	/**
@@ -213,7 +213,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$data_dir = dp_get_data_dir();
 
 		if (isset($_POST['stats_opt_out']) && $_POST['stats_opt_out']) {
-			setcookie('dp_install_stats_opt_out', 1);
+			setcookie('dp_install_stats_opt_out', 1, null, '/', null, false, true);
 		} elseif ($server_check->hasFatalErrors()) {
 			if (count($server_check->getErrors()) == 1 && $server_check->hasErrorType('config')) {
 				// Dont send when its just a config.php missing error

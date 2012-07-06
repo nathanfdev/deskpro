@@ -140,7 +140,7 @@ function deskpro_install_simple_data_submit($log)
 	}
 
 	@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
-	@setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'));
+	@setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'), '/', null, false, true);
 
 	$data = array(
 		'source_type' => 'install.web',

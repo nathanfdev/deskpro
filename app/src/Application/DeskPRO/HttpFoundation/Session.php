@@ -156,7 +156,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
             App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
         }
 
-		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never');
+		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never', true);
 		$cookie->send();
 
 		$this->set('dpvid', $vis['id']);
