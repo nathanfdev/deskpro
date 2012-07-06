@@ -59,7 +59,7 @@ class LanguagePhrases
 
 		$lang_dir = dir($this->lang_root);
 		while (($dir_name = $lang_dir->read()) !== false) {
-			if ($dir_name == '.' || $dir_name == '..') continue;
+			if ($dir_name == '.' || $dir_name == '..' || $dir_name == 'export') continue;
 
 			$dir_path = $lang_dir->path . DIRECTORY_SEPARATOR . $dir_name;
 			if (!is_dir($dir_path)) continue;
@@ -67,7 +67,7 @@ class LanguagePhrases
 			$dir = dir($dir_path);
 
 			while (($file = $dir->read()) != false) {
-				if ($file == '.' || $file == '..') continue;
+				if ($file == '.' || $file == '..' || $file == 'export') continue;
 
 				if (!isset($groups[$dir_name])) $groups[$dir_name] = array();
 				$groups[$dir_name][] = str_replace('.php', '', $file);

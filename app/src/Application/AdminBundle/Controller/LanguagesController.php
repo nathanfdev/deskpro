@@ -51,41 +51,24 @@ class LanguagesController extends AbstractController
 
 	public function indexAction()
     {
-		$languages = $this->em->getRepository('DeskPRO:Language')->findAll();
+		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+		$packs = $langpacks->getLangTitles();
 
-		if ($this->in->checkIsset('set_enable_languages')) {
-			$this->container->getSettingsHandler()->setSetting('core.enable_languages', $this->in->getBool('set_enable_languages'));
-			return $this->redirectRoute('admin_langs');
-		}
-
-		if (!$this->container->getSetting('core.enable_languages')) {
-			return $this->render('AdminBundle:Languages:landing-enable.html.twig', array());
+		$langs = $this->container->getDataService('Language')->getAll();
+		$installed_packs = array();
+		foreach ($langs as $l) {
+			$installed_packs[$l->getSysName()] = $l;
 		}
 
         return $this->render('AdminBundle:Languages:index.html.twig', array(
-			'languages' => $languages,
+			'packs' => $packs,
+			'installed_packs' => $installed_packs,
 		));
 	}
 
 	############################################################################
 	# install
 	############################################################################
-
-	public function installAction()
-	{
-		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
-		$packs = $langpacks->getLangTitles();
-
-		$installed_packs = $this->db->fetchAllKeyValue("
-			SELECT sys_name, id
-			FROM languages
-		");
-
-		return $this->render('AdminBundle:Languages:install.html.twig', array(
-			'packs' => $packs,
-			'installed_packs' => $installed_packs,
-		));
-	}
 
 	public function installPackAction($id)
 	{
@@ -114,7 +97,7 @@ class LanguagesController extends AbstractController
 			$this->db->rollback();
 		}
 
-		return $this->redirectRoute('admin_langs_editlang', array('language_id' => $lang->getId()));
+		return $this->redirectRoute('admin_langs', array('language_id' => $lang->getId()));
 	}
 
 	############################################################################

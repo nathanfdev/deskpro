@@ -58,7 +58,7 @@
 		</article>
 	</section>
 
-	{% for group,subgroups in phrase_groups %}
+	{% for group,subgroups in { 'user': phrase_groups['user'] } %}
 		<section class="top">
 			<header>
 				<h4>{{ phrase('admin.languages.phrasegroup_' ~ group) }}</h4>

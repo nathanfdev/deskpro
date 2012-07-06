@@ -1,4 +1,3 @@
-{% set admin_page_class = 'with_top_border' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
@@ -30,7 +29,7 @@
 		<article>
 			{{ phrase('admin.languages.notice_default_language') }}:<br />
 			<select id="default_lang_setting">
-				{% for lang in languages %}
+				{% for lang in installed_packs %}
 					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>{{lang.title}}</option>
 				{% endfor %}
 			</select>
@@ -38,36 +37,38 @@
 	</div>
 </div>
 {% endblock %}
-{% block pagebar_after %}
-	<div class="portal-toggle">
-		<a class="toggle-btn" href="{{ path('admin_langs', {set_enable_languages: 0}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
-		<p>
-			Multi-lingual features are enabled. This allows you to install multiple language packs and modify text phrases used throughout the system.
-		</p>
-		<div
-			data-element-handler="DeskPRO.Admin.ElementHandler.LangEditSettings"
-			data-set-default-lang-url="{{ path('admin_settings_set', {'setting_name':'core.default_language_id', 'security_token': security_token('set_setting')}) }}"
-		>
-			<p>
-				You have {% if languages|length == 1%}1 language{% else %}{{ languages|length }} languages{% endif %} installed. <a href="{{ path('admin_langs_install') }}">Install more</a>.
-			</p>
-		</div>
-	</div>
-{% endblock %}
 {% block page %}
-<h1>{{ phrase('admin.general.languages') }}</h1>
-<ul class="item-list">
-	{% for lang in languages %}
-		<li>
-			<div class="dp-block-controls">
-				<ul>
-					<li class="dp-edit">
-						<a href="{{ path('admin_langs_editlang', {'language_id': lang.id}) }}" class="popout-trigger"><span></span></a>
-					</li>
-				</ul>
-			</div>
-			<label>{{ lang.title }}</label>
-		</li>
-	{% endfor %}
-</ul>
+<div class="page-content agent-listing" style="padding-top: 0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for id,title in packs %}
+					<tr>
+						<td>
+							<div style="float:right">
+								{% if installed_packs[id] %}
+									<a class="clean-white" href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">Edit</a>
+								{% else %}
+									<a class="clean-white" href="{{ path('admin_langs_install_pack', {id: id}) }}">Install Language</a>
+								{% endif %}
+							</div>
+							<h4>
+								{% if installed_packs[id] %}
+									<a href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">{{ title }}</a>
+								{% else %}
+									{{ title }}
+								{% endif %}
+							</h4>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
 {% endblock %}

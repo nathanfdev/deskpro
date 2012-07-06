@@ -19,7 +19,7 @@
 	/**
 	 * Is multi-language features enabeld?
 	 */
-	'core.enable_languages' => false,
+	'core.enable_languages' => true,
 
 	/**#@+
 	 * Date formats
