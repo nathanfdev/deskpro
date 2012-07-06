@@ -59,6 +59,11 @@ class TransifexBuild extends AbstractBuild
 	protected $http;
 
 	/**
+	 * @var array
+	 */
+	protected $resources;
+
+	/**
 	 * @param string $url
 	 * @param string $username
 	 * @param string $password
@@ -90,7 +95,7 @@ class TransifexBuild extends AbstractBuild
 	 * @return array
 	 * @throws \RuntimeException
 	 */
-	public function restGet($path)
+	public function restGet($path, $silent = false)
 	{
 		$http = $this->getHttpClient();
 		$http->setUri($this->url . '/' . ltrim($path, '/'));
@@ -102,7 +107,70 @@ class TransifexBuild extends AbstractBuild
 		$res = $http->send($req);
 
 		if (!$res->isSuccess()) {
-			throw new \RuntimeException("Server error : {$res->getStatusCode()}", $res->getStatusCode());
+			if ($silent) {
+				return false;
+			}
+			throw new \RuntimeException("Server error : {$res->getStatusCode()}: {$res->getBody()}", $res->getStatusCode());
+		}
+
+		$body = $res->getBody();
+		$data = json_decode($body, true);
+
+		return $data;
+	}
+
+
+	/**
+	 * @param string $path
+	 * @param array $data
+	 * @return array
+	 * @throws \RuntimeException
+	 */
+	public function restPostJson($path, array $data)
+	{
+		$http = $this->getHttpClient();
+		$http->setUri($this->url . '/' . ltrim($path, '/'));
+
+		$req = new HttpRequest();
+		$req->setMethod(HttpRequest::METHOD_POST);
+		$req->setUri($http->getUri());
+		$req->headers()->addHeaderLine('Content-Type', 'application/json');
+		$req->setContent(json_encode($data));
+
+		$res = $http->send($req);
+
+		if (!$res->isSuccess()) {
+			throw new \RuntimeException("Server error : {$res->getStatusCode()}: {$res->getBody()}", $res->getStatusCode());
+		}
+
+		$body = $res->getBody();
+		$data = json_decode($body, true);
+
+		return $data;
+	}
+
+
+	/**
+	 * @param string $path
+	 * @param array $data
+	 * @return array
+	 * @throws \RuntimeException
+	 */
+	public function restPutJson($path, array $data)
+	{
+		$http = $this->getHttpClient();
+		$http->setUri($this->url . '/' . ltrim($path, '/'));
+
+		$req = new HttpRequest();
+		$req->setMethod(HttpRequest::METHOD_PUT);
+		$req->setUri($http->getUri());
+		$req->headers()->addHeaderLine('Content-Type', 'application/json');
+		$req->setContent(json_encode($data));
+
+		$res = $http->send($req);
+
+		if (!$res->isSuccess()) {
+			throw new \RuntimeException("Server error : {$res->getStatusCode()}: {$res->getBody()}", $res->getStatusCode());
 		}
 
 		$body = $res->getBody();
@@ -161,6 +229,62 @@ class TransifexBuild extends AbstractBuild
 
 
 	/**
+	 * Update a source phrase with the PO file from $source_file
+	 *
+	 * @param string $section
+	 * @param string $category
+	 * @param string $source_file  If not specified, the default file from the default export dir will be used
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 */
+	public function updateSourcePhrases($section, $category, $source_file = null)
+	{
+		$category_url = str_replace('_', '-', $category);
+		$project_url  = $this->getProjectName($section);
+
+		if (!$source_file) {
+			$source_file = $this->getLangPackInfo()->getLangDir() . '/default/' . $section . '/export/' . $category . '.po';
+		}
+
+		if (!file_exists($source_file)) {
+			$this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
+			throw new \InvalidArgumentException("PO file does not exist: " . $source_file);
+		}
+
+		$this->getLogger()->logDebug("$section.$category source file: $source_file");
+		$this->getLogger()->logDebug("$section.$category project slug: $project_url");
+		$this->getLogger()->logDebug("$section.$category resource slug: $category_url");
+
+		#-------------------------
+		# May need to init it instead of update
+		#-------------------------
+
+		$cat_exists = $this->restGet("project/$project_url/resource/$category_url", true);
+
+		if (!$cat_exists) {
+			$this->getLogger()->logDebug("$section.$category does not exist, creating it instead");
+			return $this->restPostJson("/project/$project_url/resources/", array(
+				'slug'                 => $category_url,
+				'name'                 => ucfirst($category),
+				'accept_translations'  => true,
+				'content'              => file_get_contents($source_file),
+				'i18n_type'            => 'PO'
+			));
+		}
+
+		#-------------------------
+		# Update it
+		#-------------------------
+
+		$this->getLogger()->logDebug("$section.$category already exists, updating it");
+
+		return $this->restPutJson("/project/$project_url/resource/$category_url/content/", array(
+			'content' => file_get_contents($source_file),
+		));
+	}
+
+
+	/**
 	 * Gets the project name used in transifex
 	 *
 	 * @param string $section
@@ -170,7 +294,7 @@ class TransifexBuild extends AbstractBuild
 	public function getProjectName($section)
 	{
 		switch ($section) {
-			case 'user': return 'dpuser';
+			case 'user':  return 'dpuser';
 			case 'agent': return 'dpagent';
 			case 'admin': return 'dpadmin';
 		}

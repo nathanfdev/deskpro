@@ -68,6 +68,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
 		$build->getLogger()->addWriter($wr);
 
-		$build->buildLanguage('italian');
+		$build->updateAllSources();
 	}
 }

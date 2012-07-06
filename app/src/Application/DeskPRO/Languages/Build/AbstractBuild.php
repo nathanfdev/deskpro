@@ -61,29 +61,12 @@ abstract class AbstractBuild
 	abstract public function getCategoryWords($id, $section, $category);
 
 	/**
-	 * @return array
-	 */
-	public function getDefaultSections()
-	{
-		return array('admin', 'agent', 'user');
-	}
-
-
-	/**
 	 * @param string $section
+	 * @param string $category
+	 * @param string $source_file
 	 * @return array
-	 * @throws \InvalidArgumentException
 	 */
-	public function getDefaultCategories($section)
-	{
-		switch ($section) {
-			case 'user':  return array('chat', 'defaults', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'general', 'knowledgebase', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
-			case 'agent': return array('chat', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'tasks', 'tickets', 'twitter', 'userchat');
-			case 'admin': return array('agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules');
-		}
-
-		throw new \InvalidArgumentException("Invalid section $section");
-	}
+	abstract public function updateSourcePhrases($section, $category, $source_file = null);
 
 
 	/**
@@ -238,8 +221,8 @@ abstract class AbstractBuild
 			'removed' => array()
 		);
 
-		foreach ($this->getDefaultSections() as $section) {
-			foreach ($this->getDefaultCategories($section) as $category) {
+		foreach ($this->getLangPackInfo()->getDefaultSections() as $section) {
+			foreach ($this->getLangPackInfo()->getDefaultCategories($section) as $category) {
 				$words = $this->getCategoryWords($id, $section, $category);
 				if ($words) {
 					$cat_diff = $this->writeLangFile($id, $section, $category, $words);
@@ -251,6 +234,22 @@ abstract class AbstractBuild
 		}
 
 		return $diff;
+	}
+
+
+	/**
+	 * Updates all sources for all sections and categories
+	 */
+	public function updateAllSources()
+	{
+		$sections = $this->getLangPackInfo()->getDefaultSections();
+		$sections = array('admin', 'agent');
+
+		foreach ($sections as $section) {
+			foreach ($this->getLangPackInfo()->getDefaultCategories($section) as $category) {
+				$this->updateSourcePhrases($section, $category);
+			}
+		}
 	}
 
 
