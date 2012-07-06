@@ -187,7 +187,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 					if (ticketId) {
 						var tabs = DeskPRO_Window.tabWatcher.findTabType('ticket');
 						Array.each(tabs, function(t) {
-							if (t.page.meta.ticket_id == ticketId) {
+							if (t.page.meta.ticket_id == ticket_id) {
 								ticketRow.addClass('open');
 								return false;
 							}
@@ -196,7 +196,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 					$('.timeago', el).timeago();
 
-					var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
+					var exist = self.getEl('results_wrap').find('article.ticket-' + ticket_id);
 
 					if (replace_existing && !exist[0]) {
 						return;
