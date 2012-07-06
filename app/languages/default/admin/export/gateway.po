@@ -1,0 +1,164 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.gateway.account_information"
+msgstr "Account Information"
+
+msgid "admin.gateway.add_account"
+msgstr "Add Account"
+
+msgid "admin.gateway.add_email_gateway"
+msgstr "Add Email Gateway"
+
+msgid "admin.gateway.add_new_account"
+msgstr "add a new account"
+
+msgid "admin.gateway.address_for_gateway"
+msgstr "The address that this gateway account is for"
+
+msgid "admin.gateway.addresses_matching_regex"
+msgstr "Addresses that match a regular expression"
+
+msgid "admin.gateway.all_email_is_being_sent_via"
+msgstr "All email is currently being sent through the {{link}}."
+
+msgid "admin.gateway.ask_delete_gateway"
+msgstr "Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed."
+
+msgid "admin.gateway.ask_delete_transport"
+msgstr "Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account."
+
+msgid "admin.gateway.ask_if_multiple_addresses"
+msgstr "Will this account recieve mail for more than one address?"
+
+msgid "admin.gateway.ask_use_account_when"
+msgstr "When should this account be used?"
+
+msgid "admin.gateway.backup_account"
+msgstr "Backup Account"
+
+msgid "admin.gateway.backup_mail_server"
+msgstr "Backup Mail Server"
+
+msgid "admin.gateway.backup_outgoing_mail_account"
+msgstr "Backup Outgoing Mail Account"
+
+msgid "admin.gateway.click_to_add_more"
+msgstr "Click here to add more."
+
+msgid "admin.gateway.confirm_process_account"
+msgstr "Yes, process email from this account"
+
+msgid "admin.gateway.default_from_address"
+msgstr "Default \"From\" Address"
+
+msgid "admin.gateway.default_from_email"
+msgstr "Default \"From\" email address"
+
+msgid "admin.gateway.default_outgoing_account"
+msgstr "default outgoing account"
+
+msgid "admin.gateway.delete_transport"
+msgstr "Delete Email Transport"
+
+msgid "admin.gateway.domain"
+msgstr "Domain"
+
+msgid "admin.gateway.edit_gateway"
+msgstr "Edit Gateway"
+
+msgid "admin.gateway.edit_server"
+msgstr "Edit Server"
+
+msgid "admin.gateway.enabled"
+msgstr "Enabled"
+
+msgid "admin.gateway.error_while_connecting"
+msgstr "There was an error while trying to connect to your email account"
+
+msgid "admin.gateway.exact_address"
+msgstr "Exact address"
+
+msgid "admin.gateway.explain_different_servers"
+msgstr "You may {{link}} to send emails using different servers. For example, if your SMTP server requires authentication for each specific \"From\" address, you will need to create multiple outgoing accounts for each \"From\" address you plan to support."
+
+msgid "admin.gateway.explain_email_gateway"
+msgstr "An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your agents to read and respond to. This allows you to communicate seamlessly with users via normal email."
+
+msgid "admin.gateway.from"
+msgstr "From"
+
+msgid "admin.gateway.from_domain"
+msgstr "From *@{{pattern}}"
+
+msgid "admin.gateway.from_google"
+msgstr "Google Apps: {{username}}"
+
+msgid "admin.gateway.from_pattern"
+msgstr "From {{pattern}}"
+
+msgid "admin.gateway.mail_server"
+msgstr "Mail Server"
+
+msgid "admin.gateway.match_domain"
+msgstr "Every address at a domain"
+
+msgid "admin.gateway.new_gateway"
+msgstr "New Gateway"
+
+msgid "admin.gateway.new_server"
+msgstr "New Server"
+
+msgid "admin.gateway.no_errors_were_reported"
+msgstr "No errors were reported."
+
+msgid "admin.gateway.notice_1"
+msgstr "This account is used by default when the system needs to email user. For example, registration confirmations and reset password links. You might also have email gateways and rules set up to send notifications from different email addresses."
+
+msgid "admin.gateway.notice_2"
+msgstr "If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attempt to use this account with a different \"From\" address. Depending on the service you are using, this might not work. For example, Gmail only allows the \"From\" address to be that of the account."
+
+msgid "admin.gateway.notice_mail_server_per_from"
+msgstr "You need to define a mail server for every address DeskPRO might send email \"From.\" Sometimes a single mail server might let you send email from any \"From\" address, but sometimes (such as with Google Apps), the server will only let you send email from a single address."
+
+msgid "admin.gateway.outgoing_email"
+msgstr "Outgoing Email"
+
+msgid "admin.gateway.outgoing_mail_account"
+msgstr "Outgoing Mail Account"
+
+msgid "admin.gateway.pop3_account"
+msgstr "POP3 Account"
+
+msgid "admin.gateway.revert_default_outgoing_account"
+msgstr "Go back to using the default outgoing account"
+
+msgid "admin.gateway.send_through"
+msgstr "Send through"
+
+msgid "admin.gateway.setup_default_mail_server"
+msgstr "Setup Default Mail Server"
+
+msgid "admin.gateway.test_email_connection"
+msgstr "This will test the connection to your email account."
+
+msgid "admin.gateway.test_incoming_email_account"
+msgstr "Test Incoming Email Account"
+
+msgid "admin.gateway.use_criteria"
+msgstr "Use Criteria"
+
+msgid "admin.gateway.use_different_outgoing_account"
+msgstr "Use a different outgoing account"
+
+msgid "admin.gateway.use_google_for_outgoing"
+msgstr "Use the Google Apps account defined above for outgoing mail"
+
+msgid "admin.gateway.using_the"
+msgstr "Using the {{link}}"
+
+msgid "admin.gateway.when_no_rules_match"
+msgstr "When none of the above rules match, email will be sent through the {{link}}."

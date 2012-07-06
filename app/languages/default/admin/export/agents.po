@@ -1,0 +1,338 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.agents.add_agent"
+msgstr "Add Agent"
+
+msgid "admin.agents.add_notes"
+msgstr "Add notes"
+
+msgid "admin.agents.add_notes_organization"
+msgstr "Add notes to organizations"
+
+msgid "admin.agents.assign_agents"
+msgstr "Assign agents"
+
+msgid "admin.agents.assign_self"
+msgstr "Assign self"
+
+msgid "admin.agents.assign_teams"
+msgstr "Assign teams"
+
+msgid "admin.agents.can_access_admin"
+msgstr "Can access admin"
+
+msgid "admin.agents.can_access_admin_interface"
+msgstr "Can access the admin interface"
+
+msgid "admin.agents.can_access_billing"
+msgstr "Can access billing"
+
+msgid "admin.agents.can_access_billing_interface"
+msgstr "Can access the billing interface"
+
+msgid "admin.agents.can_access_reporting_interface"
+msgstr "Can access the reporting interface"
+
+msgid "admin.agents.can_access_reports"
+msgstr "Can access reports"
+
+msgid "admin.agents.change_department"
+msgstr "Change department"
+
+msgid "admin.agents.change_fields"
+msgstr "Change fields"
+
+msgid "admin.agents.click_here"
+msgstr "Click here"
+
+msgid "admin.agents.clone_perms_from_agent"
+msgstr "Load Permissions From Agent"
+
+msgid "admin.agents.confirm_delete_dept"
+msgstr "Are you sure you want to delete the department \"<strong>{{title}}</strong>\"?"
+
+msgid "admin.agents.confirm_delete_dept_top_level"
+msgstr "Are you sure you want to delete the department \"<strong>{{title}}</strong>\"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:"
+
+msgid "admin.agents.create_organizations"
+msgstr "Create organizations"
+
+msgid "admin.agents.create_people"
+msgstr "Create people"
+
+msgid "admin.agents.create_tickets"
+msgstr "Create tickets"
+
+msgid "admin.agents.delete_agent"
+msgstr "Delete Agent"
+
+msgid "admin.agents.delete_chat_transcripts"
+msgstr "Can delete chat transcripts"
+
+msgid "admin.agents.delete_followed_tickets"
+msgstr "Delete and spam followed tickets"
+
+msgid "admin.agents.delete_name"
+msgstr "Delete {{name}}"
+
+msgid "admin.agents.delete_organizations"
+msgstr "Delete organizations"
+
+msgid "admin.agents.delete_others_tickets"
+msgstr "Delete and spam others tickets"
+
+msgid "admin.agents.delete_own_and_team_tickets"
+msgstr "Delete and spam own and teams tickets"
+
+msgid "admin.agents.delete_own_and_teams_tickets"
+msgstr "Delete own and teams tickets"
+
+msgid "admin.agents.delete_people"
+msgstr "Delete people"
+
+msgid "admin.agents.delete_permission_group"
+msgstr "Delete Permission Group"
+
+msgid "admin.agents.delete_team"
+msgstr "Delete Team"
+
+msgid "admin.agents.delete_unassigned_tickets"
+msgstr "Delete and spam unassigned tickets"
+
+msgid "admin.agents.deleted_agents"
+msgstr "Deleted Agents"
+
+msgid "admin.agents.deleted_agents_exist"
+msgstr "There is 1 deleted agent|There are {{count}} deleted agents"
+
+msgid "admin.agents.department_access_permissions"
+msgstr "Department Access Permissions"
+
+msgid "admin.agents.edit_agent"
+msgstr "Edit Agent"
+
+msgid "admin.agents.edit_cc"
+msgstr "Edit CCs"
+
+msgid "admin.agents.edit_content"
+msgstr "Edit others content"
+
+msgid "admin.agents.edit_email_addresses"
+msgstr "Edit email addresses"
+
+msgid "admin.agents.edit_labels"
+msgstr "Edit labels"
+
+msgid "admin.agents.edit_organizations"
+msgstr "Edit organizations"
+
+msgid "admin.agents.edit_others_content"
+msgstr "Edit other's content"
+
+msgid "admin.agents.edit_people"
+msgstr "Edit people"
+
+msgid "admin.agents.edit_permission_group"
+msgstr "Edit Permission Group"
+
+msgid "admin.agents.edit_team"
+msgstr "Edit Team"
+
+msgid "admin.agents.enable_vacation_mode_name"
+msgstr "Enable vacation mode for {{name}}"
+
+msgid "admin.agents.explain_agent_deleted"
+msgstr "When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned."
+
+msgid "admin.agents.explain_agent_teams"
+msgstr "Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions."
+
+msgid "admin.agents.explain_agent_vacation"
+msgstr "When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user."
+
+msgid "admin.agents.explain_agents"
+msgstr "Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation."
+
+msgid "admin.agents.explain_permission_group"
+msgstr "A permission group is a set of system permissions that you can easily re-use by adding agents to the group."
+
+msgid "admin.agents.explain_teams"
+msgstr "Teams are an a way to organize agents into work groups."
+
+msgid "admin.agents.if_name_is_back"
+msgstr "If {{name}} is back:"
+
+msgid "admin.agents.initial_password"
+msgstr "Initial Password"
+
+msgid "admin.agents.modify_others_tickets"
+msgstr "Modify others tickets"
+
+msgid "admin.agents.modify_own_and_teams_tickets"
+msgstr "Modify own and teams tickets"
+
+msgid "admin.agents.modify_unassigned_tickets"
+msgstr "Modify unassigned tickets"
+
+msgid "admin.agents.name_in_vacation"
+msgstr "{{name}} is currently in vacation mod"
+
+msgid "admin.agents.new_agent"
+msgstr "New Agent"
+
+msgid "admin.agents.new_permission_group"
+msgstr "New Permission Group"
+
+msgid "admin.agents.new_team"
+msgstr "New Team"
+
+msgid "admin.agents.no_perm_groups_yet"
+msgstr "You have not created any permission groups."
+
+msgid "admin.agents.no_teams_yet"
+msgstr "You have not created any teams."
+
+msgid "admin.agents.notice_agent_without_permission"
+msgstr "If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."
+
+msgid "admin.agents.notice_deleting_perm_group"
+msgstr "Deleting this permission group will remove all the permissions from agents that belong to it."
+
+msgid "admin.agents.notice_deleting_teams"
+msgstr "Deleting this team will also cause any tickets assigned to the team to be unassigned."
+
+msgid "admin.agents.notice_effect_of_vacation"
+msgstr "While in vacation mode, agents cannot log in or use the system at all."
+
+msgid "admin.agents.onoff"
+msgstr "On/Off"
+
+msgid "admin.agents.overrides"
+msgstr "Overrides"
+
+msgid "admin.agents.people_and_organizations"
+msgstr "People and Organizations"
+
+msgid "admin.agents.permission_groups"
+msgstr "Permission Groups"
+
+msgid "admin.agents.reply_to_followed_tickets"
+msgstr "Reply to followed tickets"
+
+msgid "admin.agents.reply_to_others_tickets"
+msgstr "Reply to others tickets"
+
+msgid "admin.agents.reply_to_unassigned_tickets"
+msgstr "Reply to unassigned tickets"
+
+msgid "admin.agents.reset_passwords"
+msgstr "Reset passwords"
+
+msgid "admin.agents.resolve_others_tickets"
+msgstr "Resolve others tickets"
+
+msgid "admin.agents.resolve_own_and_teams_tickets"
+msgstr "Resolve own and teams tickets"
+
+msgid "admin.agents.resolve_unassigned_tickets"
+msgstr "Resolve unassigned tickets"
+
+msgid "admin.agents.restore"
+msgstr "Restore"
+
+msgid "admin.agents.save_agent"
+msgstr "Save Agent"
+
+msgid "admin.agents.set_onhold"
+msgstr "Set on-hold"
+
+msgid "admin.agents.set_status_awaiting_agent"
+msgstr "Set status to awaiting agent"
+
+msgid "admin.agents.set_status_awaiting_user"
+msgstr "Set status to awaiting user"
+
+msgid "admin.agents.set_status_resolved"
+msgstr "Set status to resolved"
+
+msgid "admin.agents.to_create_one_now"
+msgstr "to create one now."
+
+msgid "admin.agents.turn_off_vacation_mode"
+msgstr "Turn off vacation mode."
+
+msgid "admin.agents.use_chat"
+msgstr "Use chat system"
+
+msgid "admin.agents.use_ticket_system"
+msgstr "Use ticket system"
+
+msgid "admin.agents.use_tickets"
+msgstr "Use ticket application"
+
+msgid "admin.agents.vacation_mode"
+msgstr "Vacation Mode"
+
+msgid "admin.agents.validate_content_and_comments"
+msgstr "Validate content and comments (including own)"
+
+msgid "admin.agents.validate_users_and_emails"
+msgstr "Validate users and user email addresses"
+
+msgid "admin.agents.view_new_unassigned_chats"
+msgstr "Can see new unassigned chats"
+
+msgid "admin.agents.view_others_chats"
+msgstr "Can see chats assigned to others"
+
+msgid "admin.agents.view_others_tickets"
+msgstr "View others tickets"
+
+msgid "admin.agents.view_own_and_teams_tickets"
+msgstr "View own and teams tickets"
+
+msgid "admin.agents.view_unassigned_tickets"
+msgstr "View unassigned tickets"
+
+msgid "admin.agents.warning_keep_manage_email_secure"
+msgstr "Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."
+
+msgid "admin.agents.warning_keep_reset_user_secure"
+msgstr "Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."
+
+msgid "admin.agents.warning_perm_close_tickets"
+msgstr "Usually you do not want agents to close or unclose tickets. Finished tickets can be set to Resolved, and then the system closes (archives) resolved tickets via triggers after a time."
+
+msgid "admin.agents.widget_close_unclose_tickets"
+msgstr "Can close and unclose tickets {{subphrase}}"
+
+msgid "admin.agents.widget_edit_email_addresses"
+msgstr "Edit users email addresses {{subphrase}}"
+
+msgid "admin.agents.widget_modify_followed_tickets"
+msgstr "{{subphrase}} Modify followed tickets"
+
+msgid "admin.agents.widget_modify_others_tickets"
+msgstr "{{subphrase}} Modify others tickets"
+
+msgid "admin.agents.widget_modify_own_tickets"
+msgstr "{{subphrase}} Modify own and teams tickets"
+
+msgid "admin.agents.widget_modify_unassigned_tickets"
+msgstr "{{subphrase}} Modify unassigned tickets"
+
+msgid "admin.agents.widget_reset_passwords"
+msgstr "Reset user passwords {{subphrase}}"
+
+msgid "admin.agents.widget_use_mass_actions_to_reply"
+msgstr "Can use mass actions to reply"
+
+msgid "admin.agents.widget_validate_content_and_comments"
+msgstr "Validate content and comments (including own) {{subphrase}}"
+
+msgid "admin.agents.zone_access"
+msgstr "Zone Access"

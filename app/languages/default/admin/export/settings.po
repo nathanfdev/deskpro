@@ -1,0 +1,212 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.settings.add_label"
+msgstr "Add Label"
+
+msgid "admin.settings.advanced_settings"
+msgstr "Advanced Settings"
+
+msgid "admin.settings.advanced_settings_view"
+msgstr "Advanced settings view"
+
+msgid "admin.settings.basics"
+msgstr "Basics"
+
+msgid "admin.settings.choice_gravatar_default"
+msgstr "Use Gravatar profile pictures by default until a custom picture is uploaded"
+
+msgid "admin.settings.command_to_run_every_minute"
+msgstr "Command to run every minute"
+
+msgid "admin.settings.configure_minute_command"
+msgstr "Configure this command to be executed every minute"
+
+msgid "admin.settings.configure_scheduled_tasks"
+msgstr "Configure Scheduled Tasks"
+
+msgid "admin.settings.configuring_scheduled_tasks"
+msgstr "Configuring Scheduled Tasks"
+
+msgid "admin.settings.confirm_configured_scheduled_tasks"
+msgstr "I have configured scheduled tasks"
+
+msgid "admin.settings.confirm_revert_all"
+msgstr "Are you sure you want to revert ALL settings on this page to their default values? There is no way to undo this action."
+
+msgid "admin.settings.continue_to_advanced_settings"
+msgstr "Continue to Advanced Settings"
+
+msgid "admin.settings.cookie_domain"
+msgstr "Cookie Domain"
+
+msgid "admin.settings.cookie_path"
+msgstr "Cookie Path"
+
+msgid "admin.settings.could_not_find_php_use_real"
+msgstr "We could not detect the path to PHP. Be sure to use the real path to PHP for your server."
+
+msgid "admin.settings.cron_detailed_instructions"
+msgstr "Click here for detailed instructions"
+
+msgid "admin.settings.cron_explain"
+msgstr "To perform tasks such as processing email, running triggers and sending notifications DeskPRO requires that you schedule the <var>cron.php</var> file in the root folder to be regularly run with a cron script (on linux) or a scheduled task (on windows). It is recommend that you run the <var>cron.php</var> file every minute."
+
+msgid "admin.settings.cron_notice_php_path_not_found"
+msgstr "Note: We could not automatically detect the path to the PHP CLI. You should edit <var>config.php</var> to specify the path, and then refresh this page for the proper command."
+
+msgid "admin.settings.cron_setup_linux"
+msgstr "Creating a cron job on Linux"
+
+msgid "admin.settings.cron_setup_linux_edit_file"
+msgstr "Edit <var>/etc/crontab</var> to add the following line:"
+
+msgid "admin.settings.cron_setup_linux_edit_file_user"
+msgstr "Replace \"exampleuser\" with the user account to run the command with. For example, you might want to run the user with the permissions of the web server which is typically \"www\" or \"nobody\"."
+
+msgid "admin.settings.cron_setup_windows"
+msgstr "Creating a scheduled task on Windows"
+
+msgid "admin.settings.default_email_from_address"
+msgstr "Default Email \"From\" Address"
+
+msgid "admin.settings.default_timezone"
+msgstr "Default Timezone"
+
+msgid "admin.settings.deskpro_name"
+msgstr "DeskPRO Name"
+
+msgid "admin.settings.deskpro_url"
+msgstr "DeskPRO URL"
+
+msgid "admin.settings.disallow_file_types"
+msgstr "Disallow these file types"
+
+msgid "admin.settings.enable_portal"
+msgstr "Enable Portal"
+
+msgid "admin.settings.enter_default_email_origin"
+msgstr "Enter the email address DeskPRO should use by default when sending emails"
+
+msgid "admin.settings.enter_helpdesk_name"
+msgstr "Please enter a name for the helpdesk"
+
+msgid "admin.settings.enter_valid_url"
+msgstr "Please enter a valid URL"
+
+msgid "admin.settings.filter"
+msgstr "Filter"
+
+msgid "admin.settings.gravatar"
+msgstr "Gravatar"
+
+msgid "admin.settings.label_types"
+msgstr "Label Types"
+
+msgid "admin.settings.link_learn_about_limit"
+msgstr "Learn why you are bound by this limit."
+
+msgid "admin.settings.linux"
+msgstr "Linux"
+
+msgid "admin.settings.max_filesize_server"
+msgstr "The max file size your server supports is {{filesize}}"
+
+msgid "admin.settings.max_upload_size"
+msgstr "Max upload size"
+
+msgid "admin.settings.mb"
+msgstr "MB"
+
+msgid "admin.settings.new_label"
+msgstr "new label"
+
+msgid "admin.settings.notice_always_redirect_users"
+msgstr "Always redirect users to the 'Helpdesk URL' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled."
+
+msgid "admin.settings.notice_default_timezone"
+msgstr "The default timezone used when expressing dates to users who do not have a preference set"
+
+msgid "admin.settings.notice_deskpro_url"
+msgstr "This is the URL to DeskPRO itself with a trailing slash"
+
+msgid "admin.settings.notice_deskpro_user_frontend"
+msgstr "DeskPRO includes a user front-end where your users can submit tickets and feedback and read knowledgebase articles and news, and download files. You can configure all the options later. If you don't want a portal and you are using DeskPRO just to manage email, you can turn this off."
+
+msgid "admin.settings.notice_helpdesk_disabled"
+msgstr "The helpdesk is currently disabled"
+
+msgid "admin.settings.notice_name_of_your_helpdesk"
+msgstr "The name of your helpdesk"
+
+msgid "admin.settings.notice_scheduled_tasks"
+msgstr "How you configure scheduled tasks depends on your server set up. Here are guides for common servers"
+
+msgid "admin.settings.notice_take_care"
+msgstr "Only make changes if you know what you are doing or have been instructed by a support agent."
+
+msgid "admin.settings.restrict_file_types"
+msgstr "Only allow these file types"
+
+msgid "admin.settings.revert_all_settings"
+msgstr "Revert ALL Settings"
+
+msgid "admin.settings.revert_settings"
+msgstr "Revert Settings"
+
+msgid "admin.settings.revert_settings_to_default"
+msgstr "Revert setting back to default"
+
+msgid "admin.settings.rewrite_urls_desc"
+msgstr "Enable clean URLs. When this is disabled, URLs will contain a /index.php/ segment. You can only enable this option if your server supports URL rewriting."
+
+msgid "admin.settings.saved_success"
+msgstr "Settings were saved successfully"
+
+msgid "admin.settings.select_timezone"
+msgstr "Please select a timezone"
+
+msgid "admin.settings.set_value"
+msgstr "Set Value"
+
+msgid "admin.settings.sort"
+msgstr "Sort"
+
+msgid "admin.settings.usage_count"
+msgstr "Usage Count"
+
+msgid "admin.settings.warning_advanced_settings_undocumented"
+msgstr "Warning: Settings listed in \"Advanced Settings\" are undocumented and changing them can have unexpected consequences."
+
+msgid "admin.settings.welcome_to_deskpro"
+msgstr "Welcome to DeskPRO"
+
+msgid "admin.settings.windows"
+msgstr "Windows"
+
+msgid "admin.settings.your_helpdesk_name"
+msgstr "Your helpdesk name"
+
+msgid "admin.settings.your_helpdesk_url"
+msgstr "Your helpdesk URL"
+
+msgid "admin.settings.your_main_website_name"
+msgstr "Your main website name"
+
+msgid "admin.settings.your_main_website_url"
+msgstr "Your main website URL"
+
+msgid "admin.settings.your_site_name"
+msgstr "Your Site Name"
+
+msgid "admin.settings.your_site_url"
+msgstr "Your Site URL"
+
+msgid "admin.settings.your_website_name"
+msgstr "Your website name"
+
+msgid "admin.settings.your_website_url"
+msgstr "Your website URL"

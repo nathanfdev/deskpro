@@ -1,0 +1,293 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.publish.add_new_glossary"
+msgstr "Add new glossary word"
+
+msgid "agent.publish.add_pending"
+msgstr "Add a new pending article"
+
+msgid "agent.publish.all_articles"
+msgstr "All Articles"
+
+msgid "agent.publish.all_downloads"
+msgstr "All Downloads"
+
+msgid "agent.publish.all_draft_content"
+msgstr "All Drafts"
+
+msgid "agent.publish.all_news"
+msgstr "All News"
+
+msgid "agent.publish.apply_action"
+msgstr "Apply Action"
+
+msgid "agent.publish.article_id"
+msgstr "Article ID"
+
+msgid "agent.publish.ask_set_to_draft"
+msgstr "Are you sure you would like to set the selected items as drafts?"
+
+msgid "agent.publish.automatically_on"
+msgstr "Automatically on"
+
+msgid "agent.publish.automatically_publish_on"
+msgstr "Automatically publish on"
+
+msgid "agent.publish.change_category"
+msgstr "Change Category"
+
+msgid "agent.publish.changes_in_content"
+msgstr "Changes in content"
+
+msgid "agent.publish.changes_in_post"
+msgstr "Changes in post"
+
+msgid "agent.publish.changes_in_title"
+msgstr "Changes in title"
+
+msgid "agent.publish.click_to_set_date"
+msgstr "(click to set date)"
+
+msgid "agent.publish.comments_awaiting_validation"
+msgstr "Comments Awaiting Validation"
+
+msgid "agent.publish.comments_to_validate"
+msgstr "Comments to review"
+
+msgid "agent.publish.compare_newer_title"
+msgstr "Newer"
+
+msgid "agent.publish.compare_older_title"
+msgstr "Older"
+
+msgid "agent.publish.compare_selected"
+msgstr "Compare Selected"
+
+msgid "agent.publish.content_to_validate"
+msgstr "Content to Validate"
+
+msgid "agent.publish.count_articles"
+msgstr "1 Article|{{count}} Articles"
+
+msgid "agent.publish.discard_unsaved_changes"
+msgstr "Discard and revert to default"
+
+msgid "agent.publish.download_category"
+msgstr "Download Category"
+
+msgid "agent.publish.download_count"
+msgstr "Download Count"
+
+msgid "agent.publish.download_replace_file"
+msgstr "Upload a new file to replace the old one"
+
+msgid "agent.publish.downloads_highest_lowest"
+msgstr "Number of Downloads (Highest-Lowest)"
+
+msgid "agent.publish.downloads_lowest_highest"
+msgstr "Number of Downloads (Lowest-Highest)"
+
+msgid "agent.publish.draft_content"
+msgstr "My Drafts"
+
+msgid "agent.publish.draft_revision"
+msgstr "Change"
+
+msgid "agent.publish.drop_file_to_add"
+msgstr "Drop your file here to add it to this post"
+
+msgid "agent.publish.edit_new_glossary"
+msgstr "Edit new glossary word"
+
+msgid "agent.publish.error_kb_bad_input"
+msgstr "Bad user input, this is probably a bug."
+
+msgid "agent.publish.error_kb_cats_same"
+msgstr "Categories are the same."
+
+msgid "agent.publish.error_kb_missing"
+msgstr "{{count}} article not found.|{{count}} articles not found."
+
+msgid "agent.publish.error_kb_not_in_db"
+msgstr "A category was not found."
+
+msgid "agent.publish.error_kb_perm_denied"
+msgstr "{{count}} permission error.|{{count}} permission errors."
+
+msgid "agent.publish.error_kb_unaffected"
+msgstr "Some articles weren't affected:"
+
+msgid "agent.publish.event_time_ago_at_when"
+msgstr "{{ago}} at {{date}}"
+
+msgid "agent.publish.event_time_ago_by_who_at_when"
+msgstr "{{ago}} by {{name}} at {{date}}"
+
+msgid "agent.publish.file_changed"
+msgstr "File changed"
+
+msgid "agent.publish.for_ticket"
+msgstr "For Ticket"
+
+msgid "agent.publish.glossary"
+msgstr "Glossary"
+
+msgid "agent.publish.helpful"
+msgstr "Helpful"
+
+msgid "agent.publish.label_new_file"
+msgstr "New File"
+
+msgid "agent.publish.label_old_file"
+msgstr "Old File"
+
+msgid "agent.publish.move_to"
+msgstr "Move to"
+
+msgid "agent.publish.n_helpful_n_unhelpful"
+msgstr "{{up_votes}} found this download helpful, {{down_votes}} found this download unhelpful"
+
+msgid "agent.publish.new_post"
+msgstr "New Post"
+
+msgid "agent.publish.news_categories"
+msgstr "News Categories"
+
+msgid "agent.publish.news_posts"
+msgstr "news posts"
+
+msgid "agent.publish.no_changes"
+msgstr "No changes detected between these two revisions"
+
+msgid "agent.publish.no_related_explain"
+msgstr "No other articles, downloads or news posts have been linked to this. Browse the listings and click \"Add as related\" to add related content."
+
+msgid "agent.publish.not_helpful"
+msgstr "Not Helpful"
+
+msgid "agent.publish.pending_articles"
+msgstr "Pending Articles"
+
+msgid "agent.publish.post"
+msgstr "Post"
+
+msgid "agent.publish.posts"
+msgstr "Posts"
+
+msgid "agent.publish.recent_and_popular_searches"
+msgstr "Recent and Popular Searches"
+
+msgid "agent.publish.revision_by"
+msgstr "Revision by {{name}}"
+
+msgid "agent.publish.search_logs"
+msgstr "Search Logs"
+
+msgid "agent.publish.search_sticky_words_explain"
+msgstr "When a user searches for any of these words, this page will always be listed in their top results."
+
+msgid "agent.publish.searches_helpful"
+msgstr "Searches where this was rated helpful"
+
+msgid "agent.publish.searches_last_100"
+msgstr "100 most recent searches"
+
+msgid "agent.publish.searches_most_popular_low"
+msgstr "The most popular search terms that returned the least results"
+
+msgid "agent.publish.searches_most_popular_terms"
+msgstr "The most popular search terms"
+
+msgid "agent.publish.searches_popular"
+msgstr "Popular Searches"
+
+msgid "agent.publish.searches_popular_low"
+msgstr "Popular Searches With Low Results"
+
+msgid "agent.publish.searches_recent"
+msgstr "Recent Searches"
+
+msgid "agent.publish.searches_unhelpful"
+msgstr "Searches where this was rated unhelpful"
+
+msgid "agent.publish.set_as_draft"
+msgstr "Set as Draft"
+
+msgid "agent.publish.set_auto_publish_date"
+msgstr "Set an automatic publish date"
+
+msgid "agent.publish.set_auto_unpublish_date"
+msgstr "Set an automatic unpublish date"
+
+msgid "agent.publish.showing_count_articles"
+msgstr "{{display_count}} article|{{display_count}} articles"
+
+msgid "agent.publish.showing_count_downloads"
+msgstr "Showing {{display_count}} download|Showing {{display_count}} downloads"
+
+msgid "agent.publish.status_archived"
+msgstr "Archived"
+
+msgid "agent.publish.status_hidden_deleted"
+msgstr "Deleted"
+
+msgid "agent.publish.status_hidden_draft"
+msgstr "Draft"
+
+msgid "agent.publish.status_hidden_spam"
+msgstr "Spam"
+
+msgid "agent.publish.status_hidden_unpublished"
+msgstr "Unpublished"
+
+msgid "agent.publish.status_hidden_user_validating"
+msgstr "User Validating"
+
+msgid "agent.publish.status_hidden_validating"
+msgstr "Validating"
+
+msgid "agent.publish.status_published"
+msgstr "Published"
+
+msgid "agent.publish.sticky_words_title"
+msgstr "Search Words"
+
+msgid "agent.publish.view_count"
+msgstr "View Count"
+
+msgid "agent.publish.view_count_highest_lowest"
+msgstr "View Count (Highest-Lowest)"
+
+msgid "agent.publish.view_count_lowest_highest"
+msgstr "View Count (Lowest-Highest)"
+
+msgid "agent.publish.when"
+msgstr "When"
+
+msgid "agent.publish.who"
+msgstr "Who"
+
+msgid "agent.publish.who_voted"
+msgstr "Who Voted"
+
+msgid "agent.publish.who_voted_none"
+msgstr "No one has voted yet"
+
+msgid "agent.publish.who_voted_show_guests"
+msgstr "Show guests"
+
+msgid "agent.publish.who_voted_show_people"
+msgstr "Show people and contacts"
+
+msgid "agent.publish.word_def"
+msgstr "Word defintion"
+
+msgid "agent.publish.word_title"
+msgstr "Word title"
+
+msgid "agent.publish.words"
+msgstr "Words"

@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.twitter.add_note"
+msgstr "Add Note"
+
+msgid "agent.twitter.characters"
+msgstr "characters"
+
+msgid "agent.twitter.count_selected"
+msgstr "{{count}} selected"
+
+msgid "agent.twitter.direct"
+msgstr "Direct"
+
+msgid "agent.twitter.example"
+msgstr "#example"
+
+msgid "agent.twitter.from_account"
+msgstr "From Account"
+
+msgid "agent.twitter.geo"
+msgstr "GEO"
+
+msgid "agent.twitter.in_reply_to"
+msgstr "In reply to"
+
+msgid "agent.twitter.location"
+msgstr "Location"
+
+msgid "agent.twitter.my_tweets"
+msgstr "My Tweets"
+
+msgid "agent.twitter.new_followers"
+msgstr "New Followers"
+
+msgid "agent.twitter.new_search"
+msgstr "New Search"
+
+msgid "agent.twitter.newest_first"
+msgstr "Newest First"
+
+msgid "agent.twitter.no_followers"
+msgstr "There are no followers for this account"
+
+msgid "agent.twitter.oldest_first"
+msgstr "Oldest First"
+
+msgid "agent.twitter.perform_action"
+msgstr "Perform Action"
+
+msgid "agent.twitter.protected"
+msgstr "Protected"
+
+msgid "agent.twitter.replies"
+msgstr "Replies"
+
+msgid "agent.twitter.retweet"
+msgstr "Retweet"
+
+msgid "agent.twitter.retweet_of"
+msgstr "Retweet of"
+
+msgid "agent.twitter.retweets"
+msgstr "ReTweets"
+
+msgid "agent.twitter.searches"
+msgstr "Searches"
+
+msgid "agent.twitter.selected"
+msgstr "selected"
+
+msgid "agent.twitter.sent"
+msgstr "Sent"
+
+msgid "agent.twitter.show_archived_tweets"
+msgstr "Show archived tweets"
+
+msgid "agent.twitter.starred_tweets"
+msgstr "Starred Tweets"
+
+msgid "agent.twitter.team_tweets"
+msgstr "Team Tweets"
+
+msgid "agent.twitter.unknown"
+msgstr "unknown"

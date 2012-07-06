@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.emails.person_replied"
+msgstr "{{name}} has replied to \"{{subject}}\""
+
+msgid "agent.emails.alert_failed_login"
+msgstr "Failed Login Attempt Alert"
+
+msgid "agent.emails.alert_successful_login"
+msgstr "Successful Login Alert"
+
+msgid "agent.emails.email_change_merge"
+msgstr "This email is to confirm you want to merge your two existing helpdesk accounts: {{old_email}} and {{new_email}}. If you do not want to merge these accounts, or did not request this, then you can ignore this email. To confirm the merger, click on the following link:"
+
+msgid "agent.emails.first_seen"
+msgstr "First Seen"
+
+msgid "agent.emails.login_url"
+msgstr "Login URL"
+
+msgid "agent.emails.notice_account_login"
+msgstr "Your account was used to successfully log in."
+
+msgid "agent.emails.notice_login_attempt"
+msgstr "Someone tried to log in using your account."
+
+msgid "agent.emails.referring_page"
+msgstr "Referring Page"
+
+msgid "agent.emails.reply_above_line"
+msgstr "=== REPLY ABOVE ==="
+
+msgid "agent.emails.section_title_ticket_properties"
+msgstr "Ticket Properties"
+
+msgid "agent.emails.section_ticket"
+msgstr "Ticket"
+
+msgid "agent.emails.subject_email_change_merge"
+msgstr "Confirm email change and account merger"
+
+msgid "agent.emails.subject_new_ticket"
+msgstr "[#{{ticket_id}} NEW TICKET] Re: {{ticket_subject}}]"
+
+msgid "agent.emails.subject_new_ticket_assigned"
+msgstr "[#{{ticket_id}} NEW TICKET + ASSIGNED] Re: {{ticket_subject}}]"
+
+msgid "agent.emails.subject_new_ticket_assignedteam"
+msgstr "[#{{ticket_id}} NEW TICKET + ASSIGNED TEAM] Re: {{ticket_subject}}]"
+
+msgid "agent.emails.subject_ticket_updated"
+msgstr "Ticket Updated: {{ticket_subject}}"
+
+msgid "agent.emails.ticket_created_link"
+msgstr "{{name}} &lt;{{email}}&gt; has created an agent account for you on {{link}}"
+
+msgid "agent.emails.ticket_updated"
+msgstr "[#{{ticket_id}} UPDATE] Re: {{ticket_subject}}"
+
+msgid "agent.emails.ticket_was_created"
+msgstr "{{name}} created a new ticket"
+
+msgid "agent.emails.user_ip"
+msgstr "User IP"
+
+msgid "agent.emails.your_initial_password"
+msgstr "Your initial password"
+
+msgid "agent.emails.new_user_reply_ticket_subject"
+msgstr "[#{{ticket_id}} USER REPLY] Re: {{ticket_subject}}"
+
+msgid "agent.emails.new_agent_reply_ticket_subject"
+msgstr "[#{{ticket_id}} AGENT REPLY] Re: {{ticket_subject}}"
+
+msgid "agent.emails.new_note_ticket_subject"
+msgstr "[#{{ticket_id}} NOTE] Re: {{ticket_subject}}"

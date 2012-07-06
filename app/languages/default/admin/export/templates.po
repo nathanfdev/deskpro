@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.templates.agent_and_admin_templates"
+msgstr "Agent and Admin Templates"
+
+msgid "admin.templates.base_template_on_other"
+msgstr "Base this new template off of ..."
+
+msgid "admin.templates.builtin_templates"
+msgstr "Built-in Templates"
+
+msgid "admin.templates.character_range"
+msgstr "(only A-Z, numbers and underscores)"
+
+msgid "admin.templates.count_custom"
+msgstr "<i>{{count}}</i> custom|<i>{{count}}</i> custom"
+
+msgid "admin.templates.count_outdated"
+msgstr "<i>{{count}}</i> outdated|<i>{{count}}</i> outdated"
+
+msgid "admin.templates.count_template"
+msgstr "<i>{{count}}</i> template|<i>{{count}}</i> templates"
+
+msgid "admin.templates.create_custom_template"
+msgstr "Create Custom Template"
+
+msgid "admin.templates.create_new_custom_template"
+msgstr "Create New Custom Template"
+
+msgid "admin.templates.custom"
+msgstr "custom"
+
+msgid "admin.templates.custom_templates"
+msgstr "Custom Templates"
+
+msgid "admin.templates.edit_agent_and_admin_templates"
+msgstr "Edit Agent and Admin Templates"
+
+msgid "admin.templates.edit_templates"
+msgstr "Edit Templates"
+
+msgid "admin.templates.layout"
+msgstr "Layout"
+
+msgid "admin.templates.none_blank_template"
+msgstr "None (blank template)"
+
+msgid "admin.templates.outdated"
+msgstr "outdated"
+
+msgid "admin.templates.revert_to_default"
+msgstr "Revert To Default"
+
+msgid "admin.templates.template_name"
+msgstr "Template Name"
+
+msgid "admin.templates.use_selected_template"
+msgstr "Use Selected Template"

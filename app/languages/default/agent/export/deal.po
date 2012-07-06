@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.deal.add_organization"
+msgstr "Add Organization"
+
+msgid "agent.deal.add_user"
+msgstr "Add User"
+
+msgid "agent.deal.change_organization"
+msgstr "Change Organization"
+
+msgid "agent.deal.closed_deals"
+msgstr "Closed Deals"
+
+msgid "agent.deal.closing"
+msgstr "Closing:"
+
+msgid "agent.deal.created_by"
+msgstr "Created By"
+
+msgid "agent.deal.custom_field_a"
+msgstr "Custom Field A"
+
+msgid "agent.deal.deal_size"
+msgstr "Deal Size"
+
+msgid "agent.deal.deal_type"
+msgstr "Deal Type"
+
+msgid "agent.deal.edit_custome_fields"
+msgstr "Edit Custome Fields"
+
+msgid "agent.deal.edit_customfields"
+msgstr "Edit Custom Fields"
+
+msgid "agent.deal.edit_name"
+msgstr "edit name"
+
+msgid "agent.deal.enter_note_"
+msgstr "Enter note ..."
+
+msgid "agent.deal.my_deals"
+msgstr "My Deals"
+
+msgid "agent.deal.new_task_kbd_k"
+msgstr "New Task(k)"
+
+msgid "agent.deal.open_deals"
+msgstr "Open Deals"
+
+msgid "agent.deal.others_deals"
+msgstr "Others Deals"
+
+msgid "agent.deal.pending_review"
+msgstr "Pending Review:"
+
+msgid "agent.deal.persons"
+msgstr "Persons"
+
+msgid "agent.deal.probability"
+msgstr "Probability"
+
+msgid "agent.deal.set_deal_stage"
+msgstr "Set Deal Stage"
+
+msgid "agent.deal.set_deal_type"
+msgstr "Set Deal Type"
+
+msgid "agent.deal.stage"
+msgstr "Stage"
+
+msgid "agent.deal.value_x"
+msgstr "Value X"
+
+msgid "agent.deal.visibility"
+msgstr "Visibility"
+
+msgid "agent.deal.won"
+msgstr "Won"

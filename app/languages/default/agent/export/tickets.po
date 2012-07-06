@@ -1,0 +1,653 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.tickets.active_tickets_term"
+msgstr "Ticket is active"
+
+msgid "agent.tickets.active_tickets_term_explain"
+msgstr "You can only create filters on active tickets. Active tickets are awaiting user, awaiting agent or resolved. Closed or hidden tickets are archived and cannot be filtered on. You can still find closed and hidden tickets by performing a search from the search bar."
+
+msgid "agent.tickets.add_attachments"
+msgstr "Add attachments"
+
+msgid "agent.tickets.add_labels_action"
+msgstr "Add labels: {{labels}}"
+
+msgid "agent.tickets.add_parts_action"
+msgstr "Add participants: {{parts}}"
+
+msgid "agent.tickets.add_reply_action"
+msgstr "Add reply"
+
+msgid "agent.tickets.add_reply_x_action"
+msgstr "Add reply {{desc}}"
+
+msgid "agent.tickets.admin_trigger_notifications"
+msgstr "Triggers that notify you"
+
+msgid "agent.tickets.admin_trigger_notifications_explain"
+msgstr "An administrator has created these triggers that send you email notifications."
+
+msgid "agent.tickets.agents_action"
+msgstr "Agents: {{agents}}"
+
+msgid "agent.tickets.always_notify_people"
+msgstr "Always notify {{parts}}"
+
+msgid "agent.tickets.and_count_were_cced"
+msgstr "(and {{display_count}} was CC'ed)|(and {{display_count}} were CC'ed)"
+
+msgid "agent.tickets.and_sep"
+msgstr " and "
+
+msgid "agent.tickets.announce_this_ticket_in_campfire"
+msgstr "Announce this ticket in Campfire"
+
+msgid "agent.tickets.any_of_my_teams"
+msgstr "Any of my teams"
+
+msgid "agent.tickets.applied"
+msgstr "applied"
+
+msgid "agent.tickets.apply_macro"
+msgstr "Apply Macro"
+
+msgid "agent.tickets.assign_current_action"
+msgstr "Assign agent to current logged in agent"
+
+msgid "agent.tickets.assign_current_team_action"
+msgstr "Assign team to current logged in agents team"
+
+msgid "agent.tickets.assign_team_action"
+msgstr "Assign team to {{name}}"
+
+msgid "agent.tickets.assign_ticket_to"
+msgstr "Assign ticket to"
+
+msgid "agent.tickets.assign_ticket_to_self"
+msgstr "Assign ticket to {{agent}}"
+
+msgid "agent.tickets.assign_to_agent_action"
+msgstr "Assign agent to {{agent}}"
+
+msgid "agent.tickets.attachment"
+msgstr "Attachment"
+
+msgid "agent.tickets.attachment_deleted"
+msgstr "Attachment deleted"
+
+msgid "agent.tickets.cc"
+msgstr "CC"
+
+msgid "agent.tickets.ccs"
+msgstr "CC's"
+
+msgid "agent.tickets.change_agent"
+msgstr "Change agent from {{old}} to {{new}}"
+
+msgid "agent.tickets.change_status"
+msgstr "Change status from {{old}} to {{new}}"
+
+msgid "agent.tickets.change_status_to"
+msgstr "Change status to"
+
+msgid "agent.tickets.change_team"
+msgstr "Change team from {{old}} to {{new}}"
+
+msgid "agent.tickets.changed_from"
+msgstr "changed from"
+
+msgid "agent.tickets.changed_to"
+msgstr "to"
+
+msgid "agent.tickets.click_to_release_hold"
+msgstr "Click to release hold"
+
+msgid "agent.tickets.close_tab_after_reply"
+msgstr "Close this ticket tab after reply"
+
+msgid "agent.tickets.coment_after_ticket_created"
+msgstr "comment after ticket is created"
+
+msgid "agent.tickets.commented_on"
+msgstr "Commented on"
+
+msgid "agent.tickets.count_agents"
+msgstr "1 agent|{{count}} agents"
+
+msgid "agent.tickets.count_followers"
+msgstr "{{display_count}} Follower|{{display_count}} Followers"
+
+msgid "agent.tickets.count_users"
+msgstr "{{count}} user|{{count}} users"
+
+msgid "agent.tickets.creating_a_ticket_for"
+msgstr "Creating ticket for"
+
+msgid "agent.tickets.creation_system"
+msgstr "Creation system"
+
+msgid "agent.tickets.creation_system_gateway_agent"
+msgstr "email gateway by agent"
+
+msgid "agent.tickets.creation_system_gateway_person"
+msgstr "email gateway by user"
+
+msgid "agent.tickets.creation_system_via"
+msgstr "Created via"
+
+msgid "agent.tickets.creation_system_web_agent"
+msgstr "web interface by agent"
+
+msgid "agent.tickets.creation_system_web_person"
+msgstr "web interface by user"
+
+msgid "agent.tickets.creation_system_widget"
+msgstr "website widget by user"
+
+msgid "agent.tickets.date_first_agent_reply"
+msgstr "Date of First Agent Reply"
+
+msgid "agent.tickets.date_opened_newerolder"
+msgstr "Date Opened (Newer-Older)"
+
+msgid "agent.tickets.date_opened_oldernewer"
+msgstr "Date Opened (Older-Newer)"
+
+msgid "agent.tickets.day_last_agent_reply"
+msgstr "Day of Last User Reply"
+
+msgid "agent.tickets.decrease_urgency_action"
+msgstr "Decrease urgency by {{amount}}"
+
+msgid "agent.tickets.deleted_by"
+msgstr "This ticket was deleted by: "
+
+msgid "agent.tickets.deleted_by_name"
+msgstr "Deleted by {{name}}"
+
+msgid "agent.tickets.disable_agent_notifs_action"
+msgstr "Disable agent notifications"
+
+msgid "agent.tickets.disable_all_notifs_action"
+msgstr "Disable all notifications"
+
+msgid "agent.tickets.disabled_user_notifs_action"
+msgstr "Disable user notifications"
+
+msgid "agent.tickets.display_options_for_results"
+msgstr "Display Options For Results"
+
+msgid "agent.tickets.edit_snippet_category"
+msgstr "Edit Snippet Category"
+
+msgid "agent.tickets.enter_a_mass_reply"
+msgstr "Enter a mass reply"
+
+msgid "agent.tickets.enter_an_email_address"
+msgstr "Enter an email address..."
+
+msgid "agent.tickets.explain_flags"
+msgstr "Flags let you create personal collections of tickets. Double-click on a flag to change its title."
+
+msgid "agent.tickets.explain_search_all_tickets"
+msgstr "Search all tickets, including tickets that are resolved or closed"
+
+msgid "agent.tickets.export_to_csv"
+msgstr "Export to CSV"
+
+msgid "agent.tickets.filter_agent"
+msgstr "My Tickets"
+
+msgid "agent.tickets.filter_agent_team"
+msgstr "My Team's Tickets"
+
+msgid "agent.tickets.filter_agent_teams"
+msgstr "My Teams' Tickets"
+
+msgid "agent.tickets.filter_all"
+msgstr "All Tickets"
+
+msgid "agent.tickets.filter_participant"
+msgstr "Tickets I Follow"
+
+msgid "agent.tickets.filter_unassigned"
+msgstr "Unassigned Tickets"
+
+msgid "agent.tickets.force_email_validation_action"
+msgstr "Force email validation"
+
+msgid "agent.tickets.from_email"
+msgstr "from email (address)"
+
+msgid "agent.tickets.from_web"
+msgstr "from web {{address}}"
+
+msgid "agent.tickets.gateway_source_id"
+msgstr "Gateway Source ID"
+
+msgid "agent.tickets.group_by"
+msgstr "Group by"
+
+msgid "agent.tickets.helpful"
+msgstr "helpful"
+
+msgid "agent.tickets.hidden_because"
+msgstr "This ticket is currently hidden because: "
+
+msgid "agent.tickets.hidden_explain"
+msgstr "This means it will not show up in most search results and it will not generate agent notifications."
+
+msgid "agent.tickets.hidden_status"
+msgstr "Hidden Status"
+
+msgid "agent.tickets.hidden_status_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.hidden_status_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.hidden_status_validating"
+msgstr "Validating"
+
+msgid "agent.tickets.in_use_by"
+msgstr "This ticket is in use by: "
+
+msgid "agent.tickets.increase_urgency_action"
+msgstr "Increase urgency by {{amount}}"
+
+msgid "agent.tickets.insert_text_snippets"
+msgstr "Insert text snippets"
+
+msgid "agent.tickets.into_this_from_ticket"
+msgstr "into this from ticket #{{id}}"
+
+msgid "agent.tickets.kbd_alt_c"
+msgstr "altc"
+
+msgid "agent.tickets.keep_current_status"
+msgstr "Keep current status"
+
+msgid "agent.tickets.keep_status_set"
+msgstr "Keep status set to {{old}}"
+
+msgid "agent.tickets.lables"
+msgstr "Lables"
+
+msgid "agent.tickets.lc_created"
+msgstr "created"
+
+msgid "agent.tickets.lc_new_reply"
+msgstr "new reply"
+
+msgid "agent.tickets.lc_new_ticket"
+msgstr "new ticket"
+
+msgid "agent.tickets.lc_new_ticket_agent"
+msgstr "new ticket by agent"
+
+msgid "agent.tickets.load_more"
+msgstr "Load More"
+
+msgid "agent.tickets.manage_participants"
+msgstr "Manage people on this ticket"
+
+msgid "agent.tickets.mark_as_pending_kb_article"
+msgstr "Mark as pending KB article"
+
+msgid "agent.tickets.merge_none"
+msgstr "The user has no other tickets, and you do not have any other ticket tabs open. To merge this ticket into another one, try finding it and opening it in a tab first."
+
+msgid "agent.tickets.merged_into_this"
+msgstr "merged into this"
+
+msgid "agent.tickets.message_deleted"
+msgstr "Message deleted"
+
+msgid "agent.tickets.message_id"
+msgstr "Message ID"
+
+msgid "agent.tickets.message_number"
+msgstr "Message #{{number}}"
+
+msgid "agent.tickets.modify_ticket"
+msgstr "Modify Ticket"
+
+msgid "agent.tickets.my_team"
+msgstr "My Team"
+
+msgid "agent.tickets.na"
+msgstr "N/A"
+
+msgid "agent.tickets.name_found_this_message_x"
+msgstr "{{name}} found this message"
+
+msgid "agent.tickets.new_attachment"
+msgstr "New attachment"
+
+msgid "agent.tickets.new_message"
+msgstr "New message"
+
+msgid "agent.tickets.new_snippet_category"
+msgstr "New Snippet Category"
+
+msgid "agent.tickets.no_criteria"
+msgstr "No criteria"
+
+msgid "agent.tickets.no_flag"
+msgstr "No flag"
+
+msgid "agent.tickets.no_followers"
+msgstr "No Followers"
+
+msgid "agent.tickets.no_grouping"
+msgstr "(No grouping)"
+
+msgid "agent.tickets.no_recent_searches"
+msgstr "No recent searches"
+
+msgid "agent.tickets.notified_of"
+msgstr "notified of"
+
+msgid "agent.tickets.on"
+msgstr "on"
+
+msgid "agent.tickets.on_hold"
+msgstr "On hold"
+
+msgid "agent.tickets.other_open_tickets"
+msgstr "Tickets you currently have open"
+
+msgid "agent.tickets.participant_added"
+msgstr "Participant added"
+
+msgid "agent.tickets.participant_removed"
+msgstr "Participant removed"
+
+msgid "agent.tickets.participants"
+msgstr "Participants"
+
+msgid "agent.tickets.percent_of"
+msgstr "% of"
+
+msgid "agent.tickets.perm_delete_note"
+msgstr "This ticket will be permanantly purged from the system in {{time}}"
+
+msgid "agent.tickets.placeholder_type_a_result"
+msgstr "Start typing a reply..."
+
+msgid "agent.tickets.please_choose_or_create_user"
+msgstr "Please choose or create a user"
+
+msgid "agent.tickets.please_enter_a_message"
+msgstr "Please enter a message"
+
+msgid "agent.tickets.please_enter_subject"
+msgstr "Please enter a subject"
+
+msgid "agent.tickets.priority_highestlowest"
+msgstr "Priority (Highest-Lowest)"
+
+msgid "agent.tickets.priority_lowesthighest"
+msgstr "Priority (Lowest-Highest)"
+
+msgid "agent.tickets.receiving_gateway"
+msgstr "Receiving gateway"
+
+msgid "agent.tickets.receiving_gateway_account"
+msgstr "Receiving gateway account"
+
+msgid "agent.tickets.remain_assigned_to"
+msgstr "Remain assigned to"
+
+msgid "agent.tickets.remain_assigned_to_agent"
+msgstr "Remain assigned to agent: {{agent}}"
+
+msgid "agent.tickets.remain_assigned_to_team"
+msgstr "Remain assigned team: {{team}}"
+
+msgid "agent.tickets.remain_unassigned"
+msgstr "Remain unassigned"
+
+msgid "agent.tickets.remain_unassigned_team"
+msgstr "Remain unassigned team"
+
+msgid "agent.tickets.remove_category_action"
+msgstr "Remove category"
+
+msgid "agent.tickets.remove_labels_action"
+msgstr "Remove labels: {{labels}}"
+
+msgid "agent.tickets.remove_participants_action"
+msgstr "Remove participants: {{parts}}"
+
+msgid "agent.tickets.remove_priority_action"
+msgstr "Remove priority"
+
+msgid "agent.tickets.remove_product_action"
+msgstr "Remove product"
+
+msgid "agent.tickets.remove_workflow_action"
+msgstr "Remove workflow"
+
+msgid "agent.tickets.results"
+msgstr "Results"
+
+msgid "agent.tickets.results_num_summary"
+msgstr "Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}} tickets"
+
+msgid "agent.tickets.search_all_tickets"
+msgstr "Search all tickets"
+
+msgid "agent.tickets.search_for_people_to_add"
+msgstr "Search for people to add, or enter their email addresses to create them"
+
+msgid "agent.tickets.send_flood_warning_action"
+msgstr "Send email warning that the user is flooding the system"
+
+msgid "agent.tickets.send_notifs_from_email_action"
+msgstr "Send notifications from {{email}}"
+
+msgid "agent.tickets.send_notifs_from_name_action"
+msgstr "Send notifications with then from name {{name}}"
+
+msgid "agent.tickets.send_reply"
+msgstr "Send Reply"
+
+msgid "agent.tickets.sending"
+msgstr "Sending"
+
+msgid "agent.tickets.sent_from_address"
+msgstr "Send From Address"
+
+msgid "agent.tickets.sent_to_gateway_address"
+msgstr "Sent to gateway address"
+
+msgid "agent.tickets.set_awaiting_agent"
+msgstr "Set awaiting agent"
+
+msgid "agent.tickets.set_awaiting_user"
+msgstr "Set awaiting user"
+
+msgid "agent.tickets.set_category_action"
+msgstr "Set category to {{category}}"
+
+msgid "agent.tickets.set_delete"
+msgstr "Mark For deletion"
+
+msgid "agent.tickets.set_department_action"
+msgstr "Set department to {{department}}"
+
+msgid "agent.tickets.set_flag_to_action"
+msgstr "Set flag to {{flag}}"
+
+msgid "agent.tickets.set_hold"
+msgstr "Set on hold"
+
+msgid "agent.tickets.set_priority_action"
+msgstr "Set priority to {{priority}}"
+
+msgid "agent.tickets.set_product_action"
+msgstr "Set product to {{product}}"
+
+msgid "agent.tickets.set_resolved"
+msgstr "Set resolved"
+
+msgid "agent.tickets.set_workflow_action"
+msgstr "Set workflow to {{workflow}}"
+
+msgid "agent.tickets.set_x_to_y_action"
+msgstr "Set {{title}} to {{value}}"
+
+msgid "agent.tickets.split_from_here"
+msgstr "Split ticket from here"
+
+msgid "agent.tickets.status_awaiting_agent"
+msgstr "Awaiting Agent"
+
+msgid "agent.tickets.status_awaiting_agent_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.status_awaiting_agent_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.status_awaiting_agent_temp"
+msgstr "Temporary"
+
+msgid "agent.tickets.status_awaiting_agent_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.status_awaiting_user"
+msgstr "Awaiting User"
+
+msgid "agent.tickets.status_awaiting_user_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.status_awaiting_user_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.status_awaiting_user_temp"
+msgstr "Temporary"
+
+msgid "agent.tickets.status_awaiting_user_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.status_closed"
+msgstr "Closed"
+
+msgid "agent.tickets.status_closed_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.status_closed_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.status_closed_temp"
+msgstr "Temporary"
+
+msgid "agent.tickets.status_closed_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.status_hidden"
+msgstr "Hidden"
+
+msgid "agent.tickets.status_hidden_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.status_hidden_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.status_hidden_temp"
+msgstr "Temporary"
+
+msgid "agent.tickets.status_hidden_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.status_resolved"
+msgstr "Resolved"
+
+msgid "agent.tickets.status_resolved_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.status_resolved_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.status_resolved_temp"
+msgstr "Temporary"
+
+msgid "agent.tickets.status_resolved_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.stop_later_triggers_action"
+msgstr "Stop processing later triggers"
+
+msgid "agent.tickets.subject_changed_from"
+msgstr "Subject changed from"
+
+msgid "agent.tickets.subscribed_tickets"
+msgstr "Subscribed tickets"
+
+msgid "agent.tickets.teams_action"
+msgstr "Teams: {{teams}}"
+
+msgid "agent.tickets.ticket_by_user"
+msgstr "Tickets by the same user"
+
+msgid "agent.tickets.ticket_field_name"
+msgstr "Ticket Field: {{field}}"
+
+msgid "agent.tickets.ticket_is_deleted"
+msgstr "Ticket is deleted"
+
+msgid "agent.tickets.ticket_is_marked_as_spam"
+msgstr "This ticket has been marked as spam."
+
+msgid "agent.tickets.ticket_log"
+msgstr "Ticket Log"
+
+msgid "agent.tickets.ticket_split_form"
+msgstr "Ticket split from"
+
+msgid "agent.tickets.tickets_on_hold"
+msgstr "On Hold"
+
+msgid "agent.tickets.unassign_action"
+msgstr "Unassign agent"
+
+msgid "agent.tickets.unassign_team"
+msgstr "Unassign team"
+
+msgid "agent.tickets.unhelpful"
+msgstr "unhelpful"
+
+msgid "agent.tickets.unset_flag_action"
+msgstr "Unset flag"
+
+msgid "agent.tickets.upload_files_here"
+msgstr "Drag and drop files onto this area or choose a file"
+
+msgid "agent.tickets.urgency_highest_lowest"
+msgstr "Urgency (Highest-Lowest)"
+
+msgid "agent.tickets.urgency_lowest_highest"
+msgstr "Urgency (Lowest-Highest)"
+
+msgid "agent.tickets.use_email_tpl_action"
+msgstr "Use email template: {{tpl}}"
+
+msgid "agent.tickets.user_email"
+msgstr "User Email"
+
+msgid "agent.tickets.user_waiting_total_x"
+msgstr "User has been waiting a total of <time>{{total}}</time> since the ticket started."
+
+msgid "agent.tickets.user_waiting_x_and_total_y"
+msgstr "User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started."
+
+msgid "agent.tickets.your_teams_tickets"
+msgstr "Your teams tickets"
+
+msgid "agent.tickets.your_tickets"
+msgstr "Your tickets"

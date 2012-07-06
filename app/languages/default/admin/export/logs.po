@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.logs.clear_all_errors"
+msgstr "Clear all errors"
+
+msgid "admin.logs.details"
+msgstr "Details"
+
+msgid "admin.logs.error_logs_count"
+msgstr "Error Logs ({{count}})|Error Logs ({{count}})"
+
+msgid "admin.logs.interval"
+msgstr "Interval"
+
+msgid "admin.logs.last_run"
+msgstr "Last Run"
+
+msgid "admin.logs.log"
+msgstr "Log"
+
+msgid "admin.logs.look_up_sn"
+msgstr "Look up SN"
+
+msgid "admin.logs.next_run"
+msgstr "Next Run"
+
+msgid "admin.logs.notice_can_use_sn_code"
+msgstr "If you have a SN code for a specific error, you can look it up here."
+
+msgid "admin.logs.notice_error_logs"
+msgstr "Error logs contain recorded information about errors and exceptions on your helpdesk. Errors should generally not happen, so any logged information here is worth investigating."
+
+msgid "admin.logs.sn"
+msgstr "SN"
+
+msgid "admin.logs.task"
+msgstr "Task"
+
+msgid "admin.logs.view_logs"
+msgstr "View Logs"

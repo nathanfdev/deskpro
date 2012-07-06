@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.user_rules.add_new_rule"
+msgstr "Add New Rule"
+
+msgid "admin.user_rules.add_to_organization"
+msgstr "Add to organization"
+
+msgid "admin.user_rules.add_to_usergroup"
+msgstr "Add to usergroup"
+
+msgid "admin.user_rules.choice_add_match_usergroup"
+msgstr "When matching, add user to usergroup"
+
+msgid "admin.user_rules.domains"
+msgstr "Domains"
+
+msgid "admin.user_rules.edit_rule"
+msgstr "Edit Rule"
+
+msgid "admin.user_rules.email_address_pattern"
+msgstr "Email Address Pattern"
+
+msgid "admin.user_rules.enter_pattern"
+msgstr "Enter a pattern, one per line. Example: *@example.com"
+
+msgid "admin.user_rules.match"
+msgstr "Match"
+
+msgid "admin.user_rules.new_rule"
+msgstr "New Rule"
+
+msgid "admin.user_rules.no_rules_yet"
+msgstr "You have not created any user rules yet."
+
+msgid "admin.user_rules.notice_organisation_domains"
+msgstr "These organizations have domain name associations. Users that register with an email address that match any of these domains will be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface."
+
+msgid "admin.user_rules.user_rules"
+msgstr "User Rules"

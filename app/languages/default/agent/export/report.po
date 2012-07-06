@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.report.add"
+msgstr "[Add]"
+
+msgid "agent.report.add_chart"
+msgstr "Add Chart"
+
+msgid "agent.report.add_dashboard_chart"
+msgstr "Add Dashboard Chart"
+
+msgid "agent.report.agent_activity"
+msgstr "Agent Activity"
+
+msgid "agent.report.agent_hours"
+msgstr "Agent Hours"
+
+msgid "agent.report.ask_positive_number"
+msgstr "Is a positive number good, bad or neutral?"
+
+msgid "agent.report.ask_run_interval"
+msgstr "How often does this statistic need to run?"
+
+msgid "agent.report.ask_time_unit_amount"
+msgstr "How many {{period_type}} worth of data do you want to display?"
+
+msgid "agent.report.chart_type"
+msgstr "Chart Type"
+
+msgid "agent.report.clone"
+msgstr "Clone"
+
+msgid "agent.report.clone_bracket"
+msgstr "[Clone]"
+
+msgid "agent.report.clone_trend"
+msgstr "Clone Trend"
+
+msgid "agent.report.current"
+msgstr "Current"
+
+msgid "agent.report.data_range"
+msgstr "Data Range"
+
+msgid "agent.report.diff_"
+msgstr "Diff %"
+
+msgid "agent.report.difference"
+msgstr "Difference"
+
+msgid "agent.report.difference_"
+msgstr "Difference %"
+
+msgid "agent.report.disable"
+msgstr "Disable"
+
+msgid "agent.report.disable_the_statistic"
+msgstr "Disable the statistic?"
+
+msgid "agent.report.display_grouping_data"
+msgstr "Display Grouping Data?"
+
+msgid "agent.report.e"
+msgstr "[E]"
+
+msgid "agent.report.edit_bracket"
+msgstr "[Edit]"
+
+msgid "agent.report.edit_trend"
+msgstr "Edit Trend"
+
+msgid "agent.report.live_reports"
+msgstr "Live Reports"
+
+msgid "agent.report.new_dashboard"
+msgstr "New Dashboard"
+
+msgid "agent.report.notice_disabling_effect"
+msgstr "Disabling the statistic will cause future data to be unavailable"
+
+msgid "agent.report.number_columns"
+msgstr "Number Columns"
+
+msgid "agent.report.overview"
+msgstr "Overview"
+
+msgid "agent.report.report_builder"
+msgstr "Report Builder"
+
+msgid "agent.report.select_group_field"
+msgstr "Select the field to group the results by."
+
+msgid "agent.report.select_show_chart_legend"
+msgstr "Select yes to display the chart legend (works best with bigger charts)"
+
+msgid "agent.report.select_show_grouped_date"
+msgstr "Select yes to display the data grouped by {{group_by}}"
+
+msgid "agent.report.show_legend"
+msgstr "Show Legend?"
+
+msgid "agent.report.star_the_statistic"
+msgstr "Star the statistic?"
+
+msgid "agent.report.stat_title_rateofticketsprocessed"
+msgstr "Rate of tickets processed"
+
+msgid "agent.report.stat_title_ticketfirstresponsetime"
+msgstr "Time until first response"
+
+msgid "agent.report.stat_title_ticketsagentparticipate"
+msgstr "Count of tickets agents participated in"
+
+msgid "agent.report.stat_title_ticketsawaitingagent"
+msgstr "Count of tickets awaiting agent"
+
+msgid "agent.report.stat_title_ticketsopened"
+msgstr "Count of open tickets"
+
+msgid "agent.report.stat_title_totalagentwaitingticketresolvedtime"
+msgstr "Total agent waiting time"
+
+msgid "agent.report.stat_title_totalticketmessages"
+msgstr "Count of all ticket messages"
+
+msgid "agent.report.stat_title_totalticketresolvetime"
+msgstr "Time from ticket creation to ticket resolution"
+
+msgid "agent.report.stat_title_totaluserwaitingticketresolvedtime"
+msgstr "Total user waiting time"
+
+msgid "agent.report.trends"
+msgstr "Trends"
+
+msgid "agent.report.updates"
+msgstr "Updates"
+
+msgid "agent.report.view_chart"
+msgstr "View Chart"
+
+msgid "agent.report.x"
+msgstr "[x]"

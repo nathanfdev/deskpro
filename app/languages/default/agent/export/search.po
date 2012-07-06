@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.search.by"
+msgstr "By"
+
+msgid "agent.search.chat_conversations"
+msgstr "Chat Conversations"
+
+msgid "agent.search.find_by_above_criteria"
+msgstr "Find by the above criteria"
+
+msgid "agent.search.find_person"
+msgstr "Find Person"
+
+msgid "agent.search.loading"
+msgstr "loading"
+
+msgid "agent.search.no_email"
+msgstr "No email"
+
+msgid "agent.search.no_labeled_tickets"
+msgstr "You have not labeled any tickets. Load a ticket to label it."
+
+msgid "agent.search.no_people_match_your_criteria"
+msgstr "No people match your criteria"
+
+msgid "agent.search.no_results_found"
+msgstr "No results were found"
+
+msgid "agent.search.number_of_tickets"
+msgstr "Number of Tickets"
+
+msgid "agent.search.person_id"
+msgstr "Person ID"
+
+msgid "agent.search.select"
+msgstr "Select"
+
+msgid "agent.search.showing_x_of_y_people"
+msgstr "Showing {{display_count}} of {{count}} people|Showing {{display_count}} of {{count}} people"
+
+msgid "agent.search.simple"
+msgstr "Simple"
+
+msgid "agent.search.view_all_results"
+msgstr "View all results"

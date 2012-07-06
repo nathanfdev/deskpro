@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.departments.add_new_department"
+msgstr "Add New Department"
+
+msgid "admin.departments.choose_destination_dept"
+msgstr "Please choose a sub-department to move them into"
+
+msgid "admin.departments.confirm_delete_dept"
+msgstr "Yes, delete this department"
+
+msgid "admin.departments.confirm_delete_dept_and_all_subdepartments"
+msgstr "Yes, delete this department and all sub-departments"
+
+msgid "admin.departments.count_agents"
+msgstr "{{count}} agent|{{count}} agents"
+
+msgid "admin.departments.count_chats"
+msgstr "{0} 0 chats|{1} 1 chat|]1,1000] {{count}} chats|[1001,Inf] over 1000 chats"
+
+msgid "admin.departments.count_tickets"
+msgstr "{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {{count}} tickets|[1001,Inf] are over 1000 tickets"
+
+msgid "admin.departments.delete_department"
+msgstr "Delete Department"
+
+msgid "admin.departments.edit_department_title"
+msgstr "Edit Department Title"
+
+msgid "admin.departments.new_custom_field"
+msgstr "New custom field"
+
+msgid "admin.departments.new_department"
+msgstr "New Department"
+
+msgid "admin.departments.new_widget"
+msgstr "New widget"
+
+msgid "admin.departments.no_agents"
+msgstr "No agents"
+
+msgid "admin.departments.notice_dept_default_grouping"
+msgstr "The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include \"Sales\", \"Support\" and \"Billing\"."
+
+msgid "admin.departments.tickets_chats_using_dept"
+msgstr "There {{tickets}} and {{chats}} using this department."
+
+msgid "admin.departments.widgets"
+msgstr "Widgets"

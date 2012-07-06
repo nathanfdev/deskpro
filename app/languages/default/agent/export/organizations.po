@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.organizations.add_person"
+msgstr "Add a person to this organization"
+
+msgid "agent.organizations.create_organization"
+msgstr "Create Organization"
+
+msgid "agent.organizations.email_domain_assoc"
+msgstr "Email Domain Associations"
+
+msgid "agent.organizations.email_domain_assoc_add"
+msgstr "Add New Domain"
+
+msgid "agent.organizations.email_domain_assoc_explain"
+msgstr "Users with emails at these domains will be automatically associated with this organization."
+
+msgid "agent.organizations.email_domain_assoc_move"
+msgstr "Assoicate 1 user|Associate {{count}} users"
+
+msgid "agent.organizations.email_domain_assoc_move_all"
+msgstr "Assoicate 1 user that already belongs to a different organization|Associate {{count}} users that already belong to different organizations"
+
+msgid "agent.organizations.email_domain_assoc_none"
+msgstr "Set an email domain to auto-associate users with this organization."
+
+msgid "agent.organizations.email_domain_assoc_remove"
+msgstr "Remove email domain"
+
+msgid "agent.organizations.email_domain_assoc_remove_users"
+msgstr "Remove email domain and unassign 1 user from this organization|Remove email domain and unassign {{count}} users from this organization"
+
+msgid "agent.organizations.email_domain_assoc_title"
+msgstr "Email Domain Associations for {{name}}"
+
+msgid "agent.organizations.enter_position"
+msgstr "Enter position"
+
+msgid "agent.organizations.is_empty"
+msgstr "This organization has no members."

@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.people.act_reg"
+msgstr "Registered an account"
+
+msgid "agent.people.act_replied_ticket"
+msgstr "Replied to a ticket: "
+
+msgid "agent.people.act_submitted_ticket"
+msgstr "Submitted a ticket: "
+
+msgid "agent.people.add_address"
+msgstr "Add an address"
+
+msgid "agent.people.add_an_email_address"
+msgstr "Add an email address"
+
+msgid "agent.people.add_another"
+msgstr "add another"
+
+msgid "agent.people.add_facebook_profile"
+msgstr "Add a Facebook profile"
+
+msgid "agent.people.add_im"
+msgstr "Add an instant messaging account"
+
+msgid "agent.people.add_linkedin_profile"
+msgstr "Add a LinkedIn profile"
+
+msgid "agent.people.add_phone"
+msgstr "Add a phone number"
+
+msgid "agent.people.add_twitter_profile"
+msgstr "Add a twitter profile"
+
+msgid "agent.people.add_website"
+msgstr "Add a website URL"
+
+msgid "agent.people.address_city"
+msgstr "City"
+
+msgid "agent.people.address_postal"
+msgstr "Post Code"
+
+msgid "agent.people.address_state"
+msgstr "State"
+
+msgid "agent.people.and_came_from"
+msgstr "and came from"
+
+msgid "agent.people.anonymous_user"
+msgstr "Anonymous User {{id}}"
+
+msgid "agent.people.auto_responder"
+msgstr "Auto-responder?"
+
+msgid "agent.people.auto_responder_yes"
+msgstr "Yes, this user auto-responds to emails"
+
+msgid "agent.people.confirm_remove_email"
+msgstr "Are you sure you want to remove this email address?"
+
+msgid "agent.people.contact_info"
+msgstr "Contact Information"
+
+msgid "agent.people.contact_info_for_x"
+msgstr "Contact Information For {{name}}"
+
+msgid "agent.people.count_members"
+msgstr "{{count}} member|{{count}} members"
+
+msgid "agent.people.create_person"
+msgstr "Create Person"
+
+msgid "agent.people.creation_by"
+msgstr "Creation By"
+
+msgid "agent.people.delete_user"
+msgstr "Delete User"
+
+msgid "agent.people.download_vcard"
+msgstr "Download vCard"
+
+msgid "agent.people.drop_your_vcard_here"
+msgstr "Drop your vCard here"
+
+msgid "agent.people.enter_name_here"
+msgstr "Enter a name here"
+
+msgid "agent.people.im"
+msgstr "IM"
+
+msgid "agent.people.im_account_placeholder"
+msgstr "Account username"
+
+msgid "agent.people.make_primary_email"
+msgstr "make primary"
+
+msgid "agent.people.member_of_teams"
+msgstr "They are a member of the following teams:"
+
+msgid "agent.people.on_page"
+msgstr "on page"
+
+msgid "agent.people.online_now"
+msgstr "Online Now"
+
+msgid "agent.people.phone_country_placeholder"
+msgstr "Country"
+
+msgid "agent.people.phone_number_placeholder"
+msgstr "Phone Number"
+
+msgid "agent.people.pos_at_org"
+msgstr "Position at organization"
+
+msgid "agent.people.primary_email"
+msgstr "primary"
+
+msgid "agent.people.reg_agent"
+msgstr "User created by an agent"
+
+msgid "agent.people.reg_gateway"
+msgstr "User was created by submitting an email to the helpdesk"
+
+msgid "agent.people.reg_website"
+msgstr "User registered using the website"
+
+msgid "agent.people.results_num_summary"
+msgstr "Showing {{current}} of {{count}} people|Showing {{current}} of {{count}} people"
+
+msgid "agent.people.since"
+msgstr "Since"
+
+msgid "agent.people.user_is_agent"
+msgstr "{{name}} is an agent on this helpdesk."
+
+msgid "agent.people.user_landed_on_page"
+msgstr "User landed on page"
+
+msgid "agent.people.warn_email_address"
+msgstr "The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information."
+
+msgid "agent.people.website"
+msgstr "Website"
+
+msgid "agent.people.website_url_placeholder"
+msgstr "Website URL"

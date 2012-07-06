@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "admin.menu.admin_dashboard"
+msgstr "Admin Dashboard"
+
+msgid "admin.menu.api"
+msgstr "API"
+
+msgid "admin.menu.ban_items"
+msgstr "Ban IP ranges and email addresses"
+
+msgid "admin.menu.change_homepage"
+msgstr "Change the appearance of your helpdesk homepage and integrate it into your website"
+
+msgid "admin.menu.change_registration"
+msgstr "Change how the helpdesk should handle user registration"
+
+msgid "admin.menu.change_settings"
+msgstr "Change your helpdesk settings, like your website URL"
+
+msgid "admin.menu.check_file_integrity"
+msgstr "Check File Integrity"
+
+msgid "admin.menu.check_file_integrity_explain"
+msgstr "Check DeskPRO's source file integrity. This will reveal any files are changed or invalid from the default."
+
+msgid "admin.menu.check_server_requirements"
+msgstr "Check Server Requirements"
+
+msgid "admin.menu.check_server_requirements_explain"
+msgstr "Check server requirements and view recommended changes"
+
+msgid "admin.menu.click_to_configure"
+msgstr "The DeskPRO setup guide and admin dashboard is under final development. For now, please access DeskPRO options using the menu above."
+
+msgid "admin.menu.create_custom_fields"
+msgstr "Create custom fields that can be added to organizations."
+
+msgid "admin.menu.create_filters"
+msgstr "Create filters that will appear in agent interface to help your team find tickets faster."
+
+msgid "admin.menu.create_groups"
+msgstr "Create groups of actions that can be performed on tickets with a single click."
+
+msgid "admin.menu.create_user_groups"
+msgstr "Create user groups to easily manage similar users, and to manage permissions on them."
+
+msgid "admin.menu.crm"
+msgstr "CRM"
+
+msgid "admin.menu.define_organization_labels"
+msgstr "Define labels that can be applied to organizations."
+
+msgid "admin.menu.define_ticket_labels"
+msgstr "Define labels that can be applied to tickets to help organize your helpdesk."
+
+msgid "admin.menu.define_triggers"
+msgstr "Define triggers to that change or escalate tickets, send notifications, set urgency and auto-close tickets."
+
+msgid "admin.menu.define_user_labels"
+msgstr "Define labels that can be applied to users."
+
+msgid "admin.menu.design_ticket_forms"
+msgstr "Design the layout of your new ticket forms and agent ticket interface."
+
+msgid "admin.menu.edit_html"
+msgstr "Edit the HTML templates for any page"
+
+msgid "admin.menu.edit_notification_emails"
+msgstr "Edit the notification emails"
+
+msgid "admin.menu.edit_user_agent_emails"
+msgstr "Edit the emails sent to agents and users"
+
+msgid "admin.menu.editor"
+msgstr "Editor"
+
+msgid "admin.menu.email_gateway_errors"
+msgstr "Email Errors and Rejections"
+
+msgid "admin.menu.email_notification_templates"
+msgstr "Email Notification Templates"
+
+msgid "admin.menu.error_no_permission"
+msgstr "You do not have permission to view use this page."
+
+msgid "admin.menu.fields"
+msgstr "Fields"
+
+msgid "admin.menu.manage_api"
+msgstr "Manage your API keys and usage."
+
+msgid "admin.menu.manage_departments"
+msgstr "Manage your departments"
+
+msgid "admin.menu.manage_email_accounts"
+msgstr "Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets"
+
+msgid "admin.menu.manage_internationalization"
+msgstr "Manage locales and languages."
+
+msgid "admin.menu.manage_plugins"
+msgstr "Manage or install plugins."
+
+msgid "admin.menu.manage_scheduled_tasks"
+msgstr "View and manage scheduled tasks like email collection and cleanup"
+
+msgid "admin.menu.manage_storage"
+msgstr "Test file uploading and change storage mechanism"
+
+msgid "admin.menu.manage_ticket_fields"
+msgstr "Manage ticket fields like categories, priorities, workflows and your own defined fields."
+
+msgid "admin.menu.manage_your_products"
+msgstr "Manage your products"
+
+msgid "admin.menu.next_step"
+msgstr "Next step"
+
+msgid "admin.menu.no_permission"
+msgstr "No Permission"
+
+msgid "admin.menu.or_skip"
+msgstr "or skip"
+
+msgid "admin.menu.organization_labels"
+msgstr "Organization Labels"
+
+msgid "admin.menu.outgoing_email_account"
+msgstr "Outgoing Email Account"
+
+msgid "admin.menu.page_templates"
+msgstr "Page Templates"
+
+msgid "admin.menu.plugins"
+msgstr "Plugins"
+
+msgid "admin.menu.portal_and_site_integration"
+msgstr "Portal &amp; Site Integration"
+
+msgid "admin.menu.registration"
+msgstr "Registration"
+
+msgid "admin.menu.rules"
+msgstr "Rules"
+
+msgid "admin.menu.set_email_methods"
+msgstr "Set up how DeskPRO sends emails"
+
+msgid "admin.menu.set_email_patterns"
+msgstr "Set up patterns of email addresses to automatically add users to usergroups and organizations"
+
+msgid "admin.menu.set_other_ticket_features"
+msgstr "Set other ticket features like feedback options."
+
+msgid "admin.menu.settings_and_features"
+msgstr "Settings &amp; Features"
+
+msgid "admin.menu.user_groups"
+msgstr "User Groups"
+
+msgid "admin.menu.view_logged_errors"
+msgstr "View logged errors"
+
+msgid "admin.menu.view_logged_gateway_errors"
+msgstr "View errors that were rejected or produced errors"
+
+msgid "admin.menu.view_mysql_installation"
+msgstr "View information about your MySQL installation"
+
+msgid "admin.menu.view_mysql_status"
+msgstr "View information about the status of your MySQL installation"
+
+msgid "admin.menu.view_php_installation"
+msgstr "View information about your PHP installation"

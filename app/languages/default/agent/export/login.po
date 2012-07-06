@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "agent.login.alert_fields_must_match"
+msgstr "The two password fields do not match."
+
+msgid "agent.login.alert_too_short"
+msgstr "Please enter a password of at least 4 characters."
+
+msgid "agent.login.apple_safari"
+msgstr "Apple Safari"
+
+msgid "agent.login.back_to_login"
+msgstr "or go back to login form"
+
+msgid "agent.login.browser_requirements"
+msgstr "Browser Requirements"
+
+msgid "agent.login.email_instructions"
+msgstr "Email Instructions"
+
+msgid "agent.login.email_username"
+msgstr "Email / Username"
+
+msgid "agent.login.enter_new_password"
+msgstr "Enter New Password"
+
+msgid "agent.login.enter_password"
+msgstr "Enter your password"
+
+msgid "agent.login.google_chrome"
+msgstr "Google Chrome"
+
+msgid "agent.login.has_logged_out"
+msgstr "You have been logged out successfully."
+
+msgid "agent.login.ie_compat_mode_explain"
+msgstr "Some versions of IE have a feature called Compatibility Mode meant to make old websites work with the newest browser technology. Sometimes this feature can be turned on erroneously. If you are using IE8 or IE9 but you still see the browser requirements page, it is probable that Compatibility Mode is enabled. To use DeskPRO you need to disable this feature:"
+
+msgid "agent.login.ie_compat_mode_step1"
+msgstr "If the Tools menu is not already visible, press the Alt key on your keyboard to reveal the main menu"
+
+msgid "agent.login.ie_compat_mode_step2"
+msgstr "From the Tools menu choose Compatibility View Setttings"
+
+msgid "agent.login.ie_compat_mode_step3"
+msgstr "Locate this website URL in the list and click the Remove button"
+
+msgid "agent.login.ie_compat_mode_step4"
+msgstr "Close this window and refresh the page"
+
+msgid "agent.login.ie_compat_mode_title"
+msgstr "Are you already using IE8 or later? <a href=\"{{url}}\">Make sure Compatibility Mode is not enabled.</a>"
+
+msgid "agent.login.login_failed"
+msgstr "Invalid login. Please try again."
+
+msgid "agent.login.mozilla_firefox"
+msgstr "Mozilla Firefox"
+
+msgid "agent.login.notice_outdated_browser"
+msgstr "The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser."
+
+msgid "agent.login.opera"
+msgstr "Opera"
+
+msgid "agent.login.password_was_reset"
+msgstr "Your password has been reset successfully."
+
+msgid "agent.login.sent_pw_reset_instructions"
+msgstr "We sent insutructions on how to reset your password to the email address you provided."
+
+msgid "agent.login.supported_browsers"
+msgstr "The following browsers are supported"
+
+msgid "agent.login.version_x_or_later"
+msgstr "v{{version}} or later"
