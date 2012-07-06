@@ -163,6 +163,10 @@ HTML;
 
 	public function authenticateLocalAction($usersource_id)
 	{
+		if ($this->request->getMethod() != 'POST') {
+			return $this->redirectRoute('user_login');
+		}
+
 		$return = $this->in->getString('return');
 
 		$result = $this->authLocalInput();
