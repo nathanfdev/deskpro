@@ -298,6 +298,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message['email_source'] = $this->reader->getProperty('email_source');
 		}
 
+		if ($person->is_agent) {
+			$message->creation_system = 'gateway.agent';
+		} else {
+			$message->creation_system = 'gateway.person';
+		}
+
 		$message['ticket'] = $ticket;
 		$message['person'] = $person;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();

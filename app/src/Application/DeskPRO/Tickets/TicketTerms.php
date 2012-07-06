@@ -288,11 +288,19 @@ class TicketTerms
 			case 'creation_system':
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
+
+				$reply = $tracker->getNewReply();
+				if ($reply) {
+					$creation_system = $reply->creation_system;
+				} else {
+					$creation_system = $ticket->creation_system;
+				}
+
 				if ($op == 'is') {
-					if ($ticket->creation_system != $choice) return false;
+					if ($creation_system != $choice) return false;
 				}
 				if ($op == 'not') {
-					if ($ticket->creation_system == $choice) return false;
+					if ($creation_system == $choice) return false;
 				}
 				break;
 

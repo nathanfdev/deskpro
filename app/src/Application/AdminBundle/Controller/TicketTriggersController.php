@@ -114,20 +114,18 @@ class TicketTriggersController extends AbstractController
 					break;
 				case 'new_reply.agent':
 					$trigger['event_trigger'] = 'new_reply';
-					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'agent')));
+					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'web.agent')));
 					break;
 				case 'new_reply.web_person':
 					$trigger['event_trigger'] = 'new_reply';
 					$trigger->terms = array(
-						array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')),
-						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web'))
+						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.person'))
 					);
 					break;
 				case 'new_reply.gateway_person':
 					$trigger['event_trigger'] = 'new_reply';
 					$trigger->terms = array(
-						array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')),
-						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway'))
+						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway.person'))
 					);
 					break;
 				case 'property_change.agent':

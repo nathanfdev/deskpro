@@ -47,6 +47,7 @@ class DisableUserNotificationsModifier implements CollectionModifierInterface
 	{
 		$notify_types = array();
 		$notify_types[] = 'UserNotificationNewReply';
+		$notify_types[] = 'UserNotificationNewReplyUser';
 		$notify_types[] = 'UserNotificationNewReplyAgent';
 
 		foreach ($notify_types as $type) {

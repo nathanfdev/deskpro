@@ -912,6 +912,7 @@ class TicketController extends AbstractController
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
 		$message['ip_address'] = $this->request->getClientIp();
+		$message['creation_system'] = 'web.agent';
 		$message->setMessageText($this->in->getString('message'));
 
 		if ($this->in->getBool('options.is_note')) {

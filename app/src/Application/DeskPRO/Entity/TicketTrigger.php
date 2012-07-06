@@ -524,20 +524,16 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
 				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : 'web.person';
 
-				$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
-				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
+				if ($type == 'web.person') {
+					return 'new_reply.web_person';
+				} elseif ($type == 'gateway.person') {
+					return 'new_reply.gateway_person';
+				} else {
+					$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
+					$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
 
-				if ($who_type == 'agent') {
-					return 'new_reply.agent';
-				}
-
-				if ($type == 'web') {
-					if ($who_type == 'user') {
-						return 'new_reply.web_person';
-					}
-				} elseif ($type == 'gateway') {
-					if ($who_type == 'user') {
-						return 'new_reply.gateway_person';
+					if ($who_type == 'agent') {
+						return 'new_reply.agent';
 					}
 				}
 

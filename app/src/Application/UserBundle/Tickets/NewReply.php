@@ -69,6 +69,7 @@ class NewReply
 		$ticket_message['message'] = htmlspecialchars($this->message);
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
+		$ticket_message->creation_system = 'web.person';
 
 		$attach = false;
 		if ($this->new_upload) {
