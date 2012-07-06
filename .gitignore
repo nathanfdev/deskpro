@@ -26,6 +26,9 @@
 /data/logs/emails/*
 /data/debug/*
 /data/tmp/*
+!/data/tmp/swiftmailer-cache
+/data/tmp/swiftmailer-cache/*
+!/data/tmp/swiftmailer-cache/index.html
 /data/backups/*
 /data/files/*
 /data/manuals
