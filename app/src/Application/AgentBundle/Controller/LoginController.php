@@ -82,7 +82,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 						throw $e;
 					}
 				} else {
-					$this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
+					return $this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
 				}
 			}
 		}
