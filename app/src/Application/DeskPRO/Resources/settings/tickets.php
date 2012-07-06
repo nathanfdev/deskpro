@@ -6,10 +6,10 @@
 	'core_tickets.tac_auth_code_len' => 15,
 	'core_tickets.ptac_auth_code_len' => 15,
 
-	'core.tickets.enable_feedback' => 1,
-	'core.tickets.feedback_agents_read' => 1,
+	'core_tickets.enable_feedback' => 1,
+	'core_tickets.feedback_agents_read' => 1,
 
-	'core.tickets.use_ref' => false,
+	'core_tickets.use_ref' => false,
 
-	'core.tickets.email_history_limit' => 10,
+	'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 );
