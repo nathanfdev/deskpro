@@ -63,7 +63,7 @@
 						<div class="dp-login-section">
 							<dl>
 								<dt>{{ phrase('user.profile.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em></dt>
-								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
+								<dd><input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
