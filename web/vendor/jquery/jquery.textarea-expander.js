@@ -25,6 +25,7 @@
 				}
 			}
 
+			var last = height;
 			while (element.clientHeight >= element.scrollHeight) {
 				last = height;
 				height -= 5;
@@ -33,6 +34,7 @@
 					break;
 				}
 			}
+
 			$elem.height(last);
 		}
 
