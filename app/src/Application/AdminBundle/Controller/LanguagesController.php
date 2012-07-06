@@ -318,7 +318,7 @@ class LanguagesController extends AbstractController
 		if ($group == 'CUSTOM') {
 			$vars['lang_phrases']['custom'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
 			$groups = array();
-			foreach ($vars['lang_phrases'] as $phrase) {
+			foreach ($vars['lang_phrases']['custom'] as $phrase) {
 				$groups[] = $phrase->groupname;
 			}
 			$groups = array_unique($groups);
@@ -343,7 +343,7 @@ class LanguagesController extends AbstractController
 		// If we're in custom, only show the phrases we actually have
 		if ($group == 'CUSTOM') {
 			$set = array();
-			foreach ($vars['lang_phrases'] as $phrase) {
+			foreach ($vars['lang_phrases']['custom'] as $phrase) {
 				$set[$phrase->name] = isset($vars['master_phrases'][$phrase->name]) ? $vars['master_phrases'][$phrase->name] : null;
 			}
 

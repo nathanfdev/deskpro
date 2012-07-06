@@ -27,6 +27,8 @@
 				<textarea style="display: none" class="custom_phrase">{{ lang_phrases.custom[phrase_id] }}</textarea>
 			</td>
 		</tr>
+	{% else %}
+		<div style="padding: 10px;">You have not customized any phrases yet.</div>
 	{% endfor %}
 	</tbody>
 {{ design.structure_table_end() }}
