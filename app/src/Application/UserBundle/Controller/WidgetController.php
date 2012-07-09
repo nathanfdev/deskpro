@@ -42,6 +42,13 @@ use Application\UserBundle\Form\NewFeedbackType;
 
 class WidgetController extends AbstractController
 {
+	protected function init()
+	{
+		$GLOBALS['DP_NON_HELPDESK_SESSION'] = true;
+
+		parent::init();
+	}
+
 	################################################################################
 	# overlay
 	################################################################################

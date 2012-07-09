@@ -53,6 +53,13 @@ use Orb\Util\Util;
  */
 class ChatController extends AbstractController
 {
+	protected function init()
+	{
+		$GLOBALS['DP_NON_HELPDESK_SESSION'] = true;
+
+		parent::init();
+	}
+
 	/**
 	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat,
 	 * and the channels are hard-coded for chat. The chat client

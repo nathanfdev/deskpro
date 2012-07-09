@@ -54,7 +54,7 @@ class MainController extends AbstractController
 
 		$count_online_users = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM sessions
-			WHERE date_last > ?
+			WHERE date_last > ? AND is_helpdesk = 1
 		", array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
 		$count_online_users -= max(0, count($online_agents));
 

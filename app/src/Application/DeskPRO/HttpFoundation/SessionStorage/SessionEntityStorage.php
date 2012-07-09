@@ -315,6 +315,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$sess_rec['is_chat_available'] = 0;
 		}
 
+		if (isset($GLOBALS['DP_NON_HELPDESK_SESSION']) && !$this->session->is_helpdesk) {
+			$sess_rec['is_helpdesk'] = 0;
+		} else {
+			$sess_rec['is_helpdesk'] = 1;
+		}
+
 		$this->db->update('sessions', $sess_rec, array('id' => $id));
 
         return true;
