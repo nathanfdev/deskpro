@@ -425,8 +425,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
-
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+
+			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_basicclean');
+			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
 		}
 
 		if (!$has_cut) {
