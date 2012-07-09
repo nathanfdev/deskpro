@@ -1075,6 +1075,12 @@ class Strings
 
 			$string = trim($string);
 
+			// Leading whitespace in a leading div wrapper
+			$string = preg_replace('#^\s*(<div[^>]*>)\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '$1', $string);
+
+			// Trailing whitespace in a trailing div wrapper
+			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 		} while ($string != $old_string);
@@ -1183,6 +1189,7 @@ class Strings
 		ob_start();
 		$qp->writeXHTML();
 		$html = ob_get_clean();
+
 		$html = Strings::extractBodyTag($html);
 
 		$html = str_replace(array('<dptag>', '</dptag>'), '', $html);
