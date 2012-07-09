@@ -15,6 +15,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 		$(this.el.data('add-trigger')).on('click', function() {
 			var row = $(rowtpl);
+			row.find('.remove-row-trigger').on('click', function() {
+				row.remove();
+			});
 			row.appendTo(list.closest('article'));
             row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(row);
 		});
