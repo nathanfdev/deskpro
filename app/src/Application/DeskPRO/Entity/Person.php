@@ -477,6 +477,20 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param bool $yesno
+	 */
+	public function setIsAgent($yesno)
+	{
+		if ($yesno) {
+			$this['is_agent_confirmed'] = true;
+			$this['is_confirmed'] = true;
+		}
+
+		$this->setModelField('is_agent', $yesno);
+	}
+
+
+	/**
 	 * Add a new helper
 	 *
 	 * @param string $name Name of the helper class

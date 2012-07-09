@@ -205,6 +205,18 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param Person $person
+	 */
+	public function setPerson(Person $person)
+	{
+		$this->setModelField('person', $person);
+		if ($person->is_agent) {
+			$this->setIsValidated(true);
+		}
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
