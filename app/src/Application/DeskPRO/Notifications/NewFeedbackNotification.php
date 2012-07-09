@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\ClientMessage;
 
 class NewFeedbackNotification extends AbstractAgentNotification
 {
@@ -76,5 +77,14 @@ class NewFeedbackNotification extends AbstractAgentNotification
 	{
 		$this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', array('feedback' => $this->feedback, 'notify_data' => array('notify_type' => 'new_feedback')));
 		$this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', array('feedback' => $this->feedback));
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'agent.ui.new-feedback',
+			'feedback_id' => $this->feedback->getId(),
+			'created_by_client' => 'sys'
+		));
+		$this->em->persist($cm);
+		$this->em->flush();
 	}
 }

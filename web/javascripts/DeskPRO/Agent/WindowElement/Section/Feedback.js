@@ -11,6 +11,8 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		this.setSectionElement($('<section id="feedback_outline"></section>'));
 
 		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-feedback', this.reload, this);
 	},
 
 	reload: function() {
