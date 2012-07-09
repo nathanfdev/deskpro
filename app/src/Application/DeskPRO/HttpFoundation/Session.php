@@ -244,6 +244,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
 		}
 
+		// Make sure the language is complete for the interface we're seeing
+		if (DP_INTERFACE == 'agent' && !$this->language->has_agent) {
+			$this->language = App::getDataService('Language')->getDefault();
+		} elseif (DP_INTERFACE == 'admin' && (!$this->language->has_agent || !$this->language->has_admin)) {
+			$this->language = App::getDataService('Language')->getDefault();
+		}
+
 		return $this->language;
 	}
 

@@ -484,7 +484,12 @@ class TemplatingExtension extends \Twig_Extension
 
 		$date->setTimezone($timezone);
 
-		return $this->container->getTranslator()->date($format, $date);
+		$prefix = 'user.time.';
+		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
+			$prefix = 'agent.time.';
+		}
+
+		return $this->container->getTranslator()->date($format, $date, $prefix);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
