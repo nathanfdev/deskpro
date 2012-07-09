@@ -140,7 +140,9 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 				parentContainer.data('page-fragment').updateUi();
 			} else {
 				parentContainer.find('.with-scroll-handler').each(function() {
-					$(this).data('scroll_handler').updateSize();
+					if ($(this).data('scroll_handler')) {
+						$(this).data('scroll_handler').updateSize();
+					}
 				});
 			}
 		}

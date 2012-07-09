@@ -42,7 +42,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$('#dp_content').css('left', this.LEFT_START + listWidth + 1); //+1 for border
 
 		$('.with-scroll-handler').each(function() {
-			$(this).data('scroll_handler').updateSize();
+			if ($(this).data('scroll_handler')) {
+				$(this).data('scroll_handler').updateSize();
+			}
 		});
 
 		this.fireEvent('resized', [this]);

@@ -1798,7 +1798,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Update sizes when textareas resize
 		$(document).on('textareaexpander_expanded', function() {
 			$('.with-scroll-handler').each(function() {
-				$(this).data('scroll_handler').updateSize();
+				if ($(this).data('scroll_handler')) {
+					$(this).data('scroll_handler').updateSize();
+				}
 			});
 		});
 
