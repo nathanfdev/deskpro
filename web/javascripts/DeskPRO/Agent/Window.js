@@ -381,8 +381,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$('html').addClass('dp');
-		this._initWindowInterface();
 		this._initLayout();
+		this._initWindowInterface();
 		this._initBasic();
 		this._initRoutes();
 		this._initSections();
