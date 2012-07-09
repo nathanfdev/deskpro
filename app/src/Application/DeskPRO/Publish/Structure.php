@@ -355,9 +355,9 @@ class Structure implements PersonContextInterface
 			$id = 'status.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
 		}
 
-		if ($counts = $this->cache->fetch($id)) {
-			return $counts;
-		}
+		//if ($counts = $this->cache->fetch($id)) {
+		//	return $counts;
+		//}
 
 		$in_cats = '';
 		if ($category) {
@@ -382,20 +382,26 @@ class Structure implements PersonContextInterface
 		$counts['all'] = array_sum($counts);
 
 		if ($category) {
-			$counts = array_merge($counts, $this->db->fetchAllKeyValue("
+			$counts_status_cats = $this->db->fetchAllKeyValue("
 				SELECT status_category_id, COUNT(*)
 				FROM feedback
 				WHERE status_category_id IS NOT NULL AND category_id IN ($in_cats)
 				GROUP BY status_category_id
-			"));
+			");
 		} else {
-			$counts = array_merge($counts, $this->db->fetchAllKeyValue("
+			$counts_status_cats = $this->db->fetchAllKeyValue("
 				SELECT status_category_id, COUNT(*)
 				FROM feedback
 				WHERE status_category_id IS NOT NULL
 				GROUP BY status_category_id
-			"));
+			");
 		}
+
+		foreach ($counts_status_cats as $id => $c) {
+			$counts[$id] = $c;
+		}
+
+		$counts['open'] = (isset($counts['new']) ? $counts['new'] : 0) + (isset($counts['active']) ? $counts['active'] : 0);
 
 		$this->cache->save($id, $counts, time() + 3600);
 
