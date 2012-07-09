@@ -1054,6 +1054,10 @@ class KernelErrorHandler
 			return;
 		}
 
+		if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+			$errinfo['email'] = true;
+		}
+
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
@@ -1066,16 +1070,6 @@ class KernelErrorHandler
 				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
 			}
 		}
-
-		try {
-			if (App::getConfig('debug.email_on_error')) {
-				$message = App::getMailer()->createMessage();
-				$message->setTo(App::getConfig('debug.email_on_error'));
-				$message->setSubject("[DeskPRO Error] {$errinfo['summary']}");
-				$message->setBody(print_r($errinfo, true));
-				App::getMailer()->send($message);
-			}
-		} catch (\Exception $e) {}
 
 		self::$is_logging = false;
 	}
@@ -1148,6 +1142,32 @@ class KernelErrorHandler
 						@file_put_contents(self::$wrote_log_file, $file);
 						$file = null;
 					}
+				}
+			}
+		}
+
+		if (function_exists('dp_should_throttle_action') && !dp_should_throttle_action('email_error', 300)) {
+			if (isset($errinfo['email']) && $errinfo['email'] && defined('DP_TECHNICAL_EMAIL') && DP_TECHNICAL_EMAIL/* && !isset($GLOBALS['DP_CONFIG']['debug']['no_report_errors'])*/) {
+
+				if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+					$line = "There has been a MySQL error: " . $errinfo['exception']->getMessage();
+				}
+
+				$fallback_send = true;
+
+				if (class_exists('Application\DeskPRO\App')) {
+					try {
+						$message = App::getMailer()->createMessage();
+						$message->setTo(DP_TECHNICAL_EMAIL);
+						$message->setSubject($line);
+						$message->setBody($str, 'text/plain');
+						App::getMailer()->send($message);
+						$fallback_send = false;
+					} catch (\Exception $e) {}
+				}
+
+				if ($fallback_send) {
+					@mail(DP_TECHNICAL_EMAIL, $line, $str);
 				}
 			}
 		}

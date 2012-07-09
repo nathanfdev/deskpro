@@ -33,6 +33,7 @@ class CloudConfig
 			define('DP_DATABASE_USER',       $site['db_user']);
 			define('DP_DATABASE_PASSWORD',   $site['db_password']);
 			define('DP_DATABASE_NAME',       $site['db_name']);
+			define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
 		} catch (\Exception $e) {
 			self::handleException($e);
 		}

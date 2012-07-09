@@ -19,6 +19,7 @@
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.txt
 
+/data/last-email_error.dat
 /data/is_installed.dat
 /data/cli-server-reqs-check.dat
 /data/cli-phpinfo.html
