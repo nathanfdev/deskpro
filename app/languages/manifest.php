@@ -19,5 +19,16 @@
 		'has_agent'  => false,
 		'has_admin'  => false,
 		'is_managed' => true
+	),
+
+	'turkish' => array(
+		'id'         => 'turkish',
+		'lang_code'  => 'tur',
+		'title'      => 'Turkish',
+		'locale'     => 'tr',
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
 	)
 );
