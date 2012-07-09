@@ -86,7 +86,7 @@ class EzcReader extends AbstractReader
 		$parts = (array)$this->mail->getHeader($name, true);
 		if ($parts) {
 			foreach ($parts as $p) {
-				$header->header_parts[] = \ezcMailTools::mimeDecode($name, 'utf-8');
+				$header->header_parts[] = \ezcMailTools::mimeDecode($p, 'utf-8');
 			}
 		}
 

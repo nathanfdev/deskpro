@@ -45,7 +45,7 @@ class Header
 
 	public function getName()
 	{
-		return $name;
+		return $this->name;
 	}
 
 	public function getHeader()

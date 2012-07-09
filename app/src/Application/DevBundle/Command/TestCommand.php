@@ -59,10 +59,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/wrap-test.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/bounce01.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
+
+		echo $r->getRawHeaders();
+
+		exit;
 
 		$body = $r->getBodyHtml()->getBodyUtf8();
 

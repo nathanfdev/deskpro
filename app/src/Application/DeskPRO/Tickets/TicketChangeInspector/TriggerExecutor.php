@@ -204,55 +204,64 @@ class TriggerExecutor
 		# Notify the user of course
 		#------------------------------
 
+		$is_bounce = false;
+		if ($this->getChangeTracker()->isExtraSet('is_bounce_message')) {
+			$is_bounce = true;
+		}
+
 		$ticket_created_trigger = null;
-		if ($this->tracker->isExtraSet('ticket_created')) {
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'new_ticket', 'options' => array('mode' => 'run'))
-			);
+		if (!$is_bounce) {
+			if ($this->tracker->isExtraSet('ticket_created')) {
+				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'new_ticket', 'options' => array('mode' => 'run'))
+				);
 
-			$ticket_created_trigger = $trigger;
+				$ticket_created_trigger = $trigger;
 
-		// We need the is_user_reply check to make sure the reply wasnt made from the user interface
-		// i.e., an agent logged in to user interface replying
-		} elseif ($this->tracker->hasNewAgentReply() && !$this->tracker->isExtraSet('is_user_reply')) {
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'user_notification_new_reply_agent', 'options' => array())
-			);
+			// We need the is_user_reply check to make sure the reply wasnt made from the user interface
+			// i.e., an agent logged in to user interface replying
+			} elseif ($this->tracker->hasNewAgentReply() && !$this->tracker->isExtraSet('is_user_reply')) {
+				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'user_notification_new_reply_agent', 'options' => array())
+				);
 
-			array_unshift($all_triggers, $trigger);
-		} elseif ($this->tracker->hasNewUserReply() || $this->tracker->isExtraSet('is_user_reply')) {
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'user_notification_new_reply_user', 'options' => array())
-			);
+				array_unshift($all_triggers, $trigger);
+			} elseif ($this->tracker->hasNewUserReply() || $this->tracker->isExtraSet('is_user_reply')) {
+				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'user_notification_new_reply_user', 'options' => array())
+				);
 
-			array_unshift($all_triggers, $trigger);
+				array_unshift($all_triggers, $trigger);
+			}
 		}
 
 		#------------------------------
 		# Add built-in agent notifications based off prefs
 		#------------------------------
 
-		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-		$trigger->terms = array();
-		$trigger->actions = array(
-			array('type' => 'agent_alert_notification', 'options' => array())
-		);
+		if (!$is_bounce) {
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_alert_notification', 'options' => array())
+			);
 
-		array_unshift($all_triggers, $trigger);
+			array_unshift($all_triggers, $trigger);
 
-		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-		$trigger->terms = array();
-		$trigger->actions = array(
-			array('type' => 'agent_notification', 'options' => array())
-		);
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_notification', 'options' => array())
+			);
 
-		array_unshift($all_triggers, $trigger);
+			array_unshift($all_triggers, $trigger);
+		}
 
 		#------------------------------
 		# Handle vacation mode agent

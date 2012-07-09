@@ -41,8 +41,9 @@ use Orb\Util\Arrays;
 abstract class AbstractReader
 {
 	protected $vals = array();
-
 	protected $properties = array();
+	protected $raw_source;
+	protected $raw_headers;
 
 	public function setProperty($name, $value)
 	{
@@ -61,7 +62,24 @@ abstract class AbstractReader
 
 	public function setRawSource($source)
 	{
+		$this->raw_source = Strings::standardEol($source);
+
+		$pos = strpos($this->raw_source, "\n\n");
+		if ($pos) {
+			$this->raw_headers = substr($this->raw_source, 0, $pos);
+		}
+
 		$this->_setRawSource($source);
+	}
+
+	public function getRawSource()
+	{
+		return $this->raw_source;
+	}
+
+	public function getRawHeaders()
+	{
+		return $this->raw_headers;
 	}
 
 	/**

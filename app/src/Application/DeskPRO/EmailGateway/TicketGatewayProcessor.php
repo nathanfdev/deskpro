@@ -75,6 +75,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected $error;
 	protected $source_info;
 	protected $is_dp3_reply = false;
+	protected $is_bounce = false;
 
 	protected function init()
 	{
@@ -92,62 +93,52 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket = null;
 		$person = null;
 
-		/*
-		if (App::getSetting('core_tickets.gateway_catchall')) {
-			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
-			$ticket = $detector->findExistingTicket($this->reader);
+		$bounce_detector = new \Application\DeskPRO\EmailGateway\Ticket\BounceDetector($this->reader, App::getOrm());
+		if ($bounce_detector->isBounced()) {
 
-			$this->logMessage('[TicketGatewayProcessor] ToEmailTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-		}
-		*/
+			$ticket	= $bounce_detector->getGuessedTicket();
+			$person = $ticket->person;
+			$this->is_bounce = true;
 
-		if (!$ticket) {
-			$detector = new CodeTicketDetector();
-			$ticket = $detector->findExistingTicket($this->reader);
+		} else {
+			if (!$ticket) {
+				$detector = new CodeTicketDetector();
+				$ticket = $detector->findExistingTicket($this->reader);
 
-			$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-		}
+				$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+			}
 
-		/*
-		if (!$ticket) {
-			// Try to find it from In-Reply-To
-			$detector = new InReplyToDetector();
-			$ticket = $detector->findExistingTicket($this->reader);
+			// If we imported form DP3, run the old codes
+			if (!$ticket && App::getSetting('core.deskpro3importer')) {
+				$detector = new Dp3Detector();
+				$ticket = $detector->findExistingTicket($this->reader);
+				$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 
-			$this->logMessage('[TicketGatewayProcessor] InReplyToDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-		}
-		*/
+				if ($ticket) {
+					$this->is_dp3_reply = true;
+				}
+			}
 
-		// If we imported form DP3, run the old codes
-		if (!$ticket && App::getSetting('core.deskpro3importer')) {
-			$detector = new Dp3Detector();
-			$ticket = $detector->findExistingTicket($this->reader);
-			$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+			if (!$ticket) {
+				// Try ref match
+				$detector = new SubjectRefMatchDetector();
+				$ticket = $detector->findExistingTicket($this->reader);
+
+				$this->logMessage('[TicketGatewayProcessor] SubjectRefMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+			}
+
+			if (!$ticket) {
+				// Finally try subject string match
+				$detector = new SubjectMatchDetector();
+				$ticket = $detector->findExistingTicket($this->reader);
+
+				$this->logMessage('[TicketGatewayProcessor] SubjectMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+			}
 
 			if ($ticket) {
-				$this->is_dp3_reply = true;
+				$person = $detector->findExistingPerson($ticket, $this->reader);
+				$this->logMessage('[TicketGatewayProcessor] findExistingPerson detected: ' . ($person ? $person['id'] : 'nothing'));
 			}
-		}
-
-		if (!$ticket) {
-			// Try ref match
-			$detector = new SubjectRefMatchDetector();
-			$ticket = $detector->findExistingTicket($this->reader);
-
-			$this->logMessage('[TicketGatewayProcessor] SubjectRefMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-		}
-
-		if (!$ticket) {
-			// Finally try subject string match
-			$detector = new SubjectMatchDetector();
-			$ticket = $detector->findExistingTicket($this->reader);
-
-			$this->logMessage('[TicketGatewayProcessor] SubjectMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
-		}
-
-		if ($ticket) {
-			$person = $detector->findExistingPerson($ticket, $this->reader);
-			$this->logMessage('[TicketGatewayProcessor] findExistingPerson detected: ' . ($person ? $person['id'] : 'nothing'));
 		}
 
 		#-------------------------
@@ -284,6 +275,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = $ev->email_info;
 
+		if ($this->is_bounce) {
+			$ticket->getTicketLogger()->recordExtra('is_bounce_message', true);
+		}
 		$message = new Entity\TicketMessage();
 		$message->email_reader = $this->reader;
 		if ($this->reader->hasProperty('email_source')) {
