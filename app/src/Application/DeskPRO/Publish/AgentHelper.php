@@ -438,7 +438,7 @@ class AgentHelper implements PersonContextInterface
 			}
 
 			$sql_parts[] = "(
-				SELECT COUNT(*)
+				SELECT COUNT(DISTINCT c.id)
 				FROM $t c
 				LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
 				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
