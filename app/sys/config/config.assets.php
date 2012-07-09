@@ -146,7 +146,6 @@ $CONFIG['agent_window_sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Deals.js',
-		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
 	)
 );
 
@@ -162,9 +161,6 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterAccountSearch.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
@@ -237,7 +233,6 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonSession.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
@@ -255,7 +250,6 @@ $CONFIG['agent_pages'] = array(
 $CONFIG['agent_element_handlers'] = array(
 	'out' => 'js/agent-element-handlers.js',
 	'files' => array(
-		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketCcManage.js',
