@@ -54,7 +54,20 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			 * How many results to show per page
 			 * @option {Integer}
 			 */
-			perPage: 50
+			perPage: 50,
+
+			/**
+			 * Refresh mode loads a new page instead of injecting new
+			 * rows into the already loaded page
+			 *
+			 * @option {Boolean}
+			 */
+			refreshMode: false,
+
+			/**
+			 * @option {Integer}
+			 */
+			currentPage: 1
 		};
 		this.setOptions(options);
 
@@ -75,7 +88,19 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		delete this.options.resultIds;
 
 		this.numPages = Math.ceil(this.resultIds.length / this.options.perPage);
-		this.currentPage = 1;
+		this.currentPage = this.options.currentPage;
+
+		if (this.currentPage < this.numPages) {
+			this.pageNav.addClass('no-prev');
+		} else {
+			this.pageNav.removeClass('no-prev');
+		}
+
+		if (this.currentPage >= this.numPages) {
+			this.pageNav.addClass('no-next');
+		} else {
+			this.pageNav.removeClass('no-next');
+		}
 
 		this.updateShowingCount();
 
@@ -152,6 +177,13 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 		// Already running
 		if (this.navEl.is('.loading')) {
+			return;
+		}
+
+		if (this.options.refreshMode) {
+			var url = this.page.meta.refreshUrl;
+			url = Orb.appendQueryData(url, 'p', pageNum);
+			DeskPRO_Window.runPageRoute('listpane:' + url);
 			return;
 		}
 

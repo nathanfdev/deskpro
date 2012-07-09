@@ -146,7 +146,9 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 
 		var opt = {
 			resultIds: this.meta.resultIds,
-			perPage: this.meta.perPage || 50
+			perPage: this.meta.perPage || 50,
+			refreshMode: true,
+			currentPage: this.meta.currentPage
 		};
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);

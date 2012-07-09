@@ -779,6 +779,7 @@ class FeedbackController extends AbstractController
 			'per_page'     => 50,
 			'criteria'     => $result_cache['criteria'],
 			'user_cat_field' => $user_cat_field,
+			'cur_page' => $page,
 
 			'feedback_cats'          => $feedback_cats,
 			'active_status_cats' => $active_status_cats,

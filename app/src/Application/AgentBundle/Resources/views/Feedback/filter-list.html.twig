@@ -1,6 +1,5 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter';
-pageMeta.pageUrl = '{{ path('agent_feedback_filter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 {% if list_type == 'category' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
 	{% set subgroup_url = path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID' %}
@@ -33,6 +32,7 @@ pageMeta.pageUrl = '{{ path('agent_feedback_filter') }}?partial=1&cache_id={{cac
 {% endif %}
 
 pageMeta.perPage = 50;
+pageMeta.currentPage = {{ cur_page }};
 pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 </script>
 {# scroll containers #}
