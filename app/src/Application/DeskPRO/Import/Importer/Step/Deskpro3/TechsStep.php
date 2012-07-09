@@ -420,12 +420,15 @@ class TechsStep extends AbstractDeskpro3Step
 				$prefs = array();
 				if ($tech['email_pm']) {
 					$prefs['chat_message.email'] = 1;
+					$prefs['chat_message.alert'] = 1;
 				}
 				if ($tech['email_user_registered']) {
 					$prefs['new_user.email'] = 1;
+					$prefs['new_user.alert'] = 1;
 				}
 				if ($tech['email_user_registered_validation']) {
 					$prefs['new_user_validate.email'] = 1;
+					$prefs['new_user_validate.alert'] = 1;
 				}
 
 				if ($tech['email_on_login']) {
@@ -436,7 +439,9 @@ class TechsStep extends AbstractDeskpro3Step
 				}
 
 				$prefs['new_feedback.email'] = 1;
+				$prefs['new_feedback.alert'] = 1;
 				$prefs['new_feedback_validate.email'] = 1;
+				$prefs['new_feedback_validate.alert'] = 1;
 				$prefs['new_comment.email'] = 1;
 				$prefs['new_comment_validate.email'] = 1;
 

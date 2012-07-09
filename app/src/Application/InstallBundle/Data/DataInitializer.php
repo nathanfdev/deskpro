@@ -170,9 +170,13 @@ class DataInitializer
 		$prefs['chat_message.email'] = 1;
 		$prefs['login_attempt_fail.email'] = 1;
 		$prefs['new_feedback.email'] = 1;
+		$prefs['new_feedback.alert'] = 1;
 		$prefs['new_feedback_validate.email'] = 1;
+		$prefs['new_feedback_validate.alert'] = 1;
 		$prefs['new_comment.email'] = 1;
+		$prefs['new_comment.alert'] = 1;
 		$prefs['new_comment_validate.email'] = 1;
+		$prefs['new_comment_validate.alert'] = 1;
 
 		foreach ($prefs as $p => $v) {
 			$this->container->getDb()->insert('people_prefs', array(
