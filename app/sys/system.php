@@ -1132,7 +1132,7 @@ class KernelErrorHandler
 		// Always write error line to standard error log
 		@error_log($line, 0);
 
-		if (dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
+		if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
 
 			$written = @fwrite($fh, $str);
 			@fclose($fh);
@@ -1297,7 +1297,7 @@ class KernelErrorHandler
 			'errfile'         => $errfile,
 			'errline'         => $errline,
 			'display'         => $display,
-			'build'           => DP_BUILD_TIME,
+			'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
 			'process_log'     => implode("\n", self::$process_log),
 			'context_data'    => $context_data,
 		);

@@ -6,8 +6,6 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
-require './php-path.php';
-
 chdir(__DIR__);
 
 define('DP_BUILDING', true);
@@ -16,6 +14,7 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 require DP_ROOT . '/bin/build/inc.php';
+require DP_ROOT . '/bin/build/php-path.php';
 
 $proc_kernel = null;
 if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {

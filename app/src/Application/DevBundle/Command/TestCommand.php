@@ -59,15 +59,18 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$build = new \Application\DeskPRO\Languages\Build\TransifexBuild(
-			'http://lithium.serv.deskpro.com:8000',
-			'root',
-			'xxxxxxx'
-		);
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/wrap-test.txt');
 
-		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-		$build->getLogger()->addWriter($wr);
+		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$r->setRawSource($source);
 
-		$build->updateAllSources();
+		$body = $r->getBodyHtml()->getBodyUtf8();
+
+		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
+		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+		$body = Strings::trimHtmlAdvanced($body);
+
+		echo $body;
+		echo "\n";
 	}
 }
