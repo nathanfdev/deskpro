@@ -181,11 +181,16 @@ class DetectInlineReply
 			$message    = $match[2];
 
 			// Clean off the spans that contain the message wraps
-			if ($pos = strpos($message, '</span>')) {
-				$message = substr($message, $pos + 7);
+			if ($pos = strpos($message, '</a>')) {
+				$message = substr($message, $pos + 4);
 			}
-			if ($pos = strrpos($message, '<span')) {
+			if ($pos = strrpos($message, '<a')) {
 				$message = substr($message, 0, $pos);
+			}
+
+			// Too short to try and guess
+			if (strlen($message) < 100) {
+				continue;
 			}
 
 			$message = $this->normalizeMessage($message);
