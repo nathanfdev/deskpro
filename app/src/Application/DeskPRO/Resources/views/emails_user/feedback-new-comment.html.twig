@@ -12,7 +12,7 @@
 			{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName()|default('Anonymous') }) }}
 		</td></tr>
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
+			<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
 				{{ comment.getContentHtml()|raw }}
 			</td></tr></table>
 		</td></tr>
