@@ -76,19 +76,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected $source_info;
 	protected $is_dp3_reply = false;
 
-	public function logMessage($message, $pri = 'debug')
-	{
-		$line = sprintf("[%s %s] %s", date('Y-m-d H:i:s'), $message, $pri);
-
-		parent::logMessage($message, $pri);
-
-		if (!$this->source_info) {
-			$this->source_info = array();
-		}
-
-		$this->source_info[] = $line;
-	}
-
 	protected function init()
 	{
 		$this->cutterDef = CutterDefFactory::getDef($this->reader);
@@ -217,6 +204,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$ret = null;
 		if ($ticket AND $person) {
+
+			if ($this->logger) {
+				$ticket->getTicketLogger()->setLogger($this->logger);
+			}
+
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 
 			App::setCurrentPerson($person);
@@ -695,6 +687,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+		if ($this->logger) {
+			$newticket->logger = $this->logger;
+		}
 		$newticket->setPersonContext($person);
 
 		$newticket->ticket->subject = $email_info['subject'];
@@ -904,13 +899,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function getSourceInfo()
 	{
-		if (!$this->source_info) {
-			return null;
+		if ($this->source_info) {
+			$messages = is_array($this->source_info) ? $this->source_info : array($this->source_info);
+		} else {
+			$messages = array();
 		}
 
-		if (!is_array($this->source_info)) {
-			$this->source_info = array($this->source_info);
+		if (isset($this->options['logger_messages'])) {
+			$messages = array_merge($messages, $this->options['logger_messages']->getMessages());
 		}
-		return $this->source_info;
+
+		return $messages;
 	}
 }

@@ -40,11 +40,11 @@ use \Orb\Log\LogItem;
  */
 class ArrayWriter extends AbstractWriter
 {
-	protected $messages;
-	protected $max_size = 1000;
-	protected $max_line_length = 1000;
+	protected $messages = array();
+	protected $max_size = 10000;
+	protected $max_line_length = 10000;
 
-	public function setMaxMessageLength($max_line_length = 1000)
+	public function setMaxMessageLength($max_line_length = 10000)
 	{
 		$this->max_line_length = $max_line_length;
 	}
@@ -72,5 +72,10 @@ class ArrayWriter extends AbstractWriter
 		while(count($this->messages) > $this->max_size) {
 			array_shift($this->messages);
 		}
+	}
+
+	public function clear()
+	{
+		$this->messages = array();
 	}
 }

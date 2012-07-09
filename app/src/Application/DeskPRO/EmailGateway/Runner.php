@@ -57,6 +57,11 @@ class Runner
 	protected $gateways;
 
 	/**
+	 * @var \Orb\Log\Writer\ArrayWriter
+	 */
+	protected $log_messages;
+
+	/**
 	 * When non-0, sets the PHP time limit per iteration
 	 *
 	 * @var int
@@ -183,6 +188,13 @@ class Runner
 
 		try {
 
+			if (!$this->log_messages) {
+				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
+				$this->logger->addWriter($this->log_messages);
+			}
+
+			$this->log_messages->clear();
+
 			$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
 			$pre_processor->run();
 
@@ -190,7 +202,7 @@ class Runner
 			if ($pre_processor->isValid()) {
 
 				try {
-					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
+					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 					$created_obj = $proc->run();
 
 					if ($proc->isValid()) {
@@ -265,6 +277,13 @@ class Runner
 
 		while ($source = $fetcher->readNext()) {
 
+			if (!$this->log_messages) {
+				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
+				$this->logger->addWriter($this->log_messages);
+			}
+
+			$this->log_messages->clear();
+
 			if ($this->set_time_limit) {
 				@set_time_limit($this->set_time_limit);
 			}
@@ -304,7 +323,7 @@ class Runner
 				if ($pre_processor->isValid()) {
 
 					try {
-						$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
+						$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 						$created_obj = $proc->run();
 
 						if ($proc->isValid()) {
@@ -367,6 +386,8 @@ class Runner
 			if ($time_limit && $time_so_far >= $time_limit) {
 				break;
 			}
+
+			$this->log_messages->clear();
 		}
 
 		$end_time = microtime(true);

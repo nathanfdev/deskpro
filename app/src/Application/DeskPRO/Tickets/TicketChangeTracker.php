@@ -180,6 +180,12 @@ class TicketChangeTracker extends ChangeTracker
 		return $this->log;
 	}
 
+
+	public function setLogger(\Orb\Log\Logger $logger)
+	{
+		$this->log = $logger;
+	}
+
 	/**
 	 * If a trigger is being applied, then this sets it so ticket log and future actions
 	 * know that a trigger is causing the changes.

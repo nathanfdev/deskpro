@@ -77,6 +77,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	 */
 	protected $email_reader;
 
+	public $logger;
+
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
 		if ($person AND !$person['id']) {
@@ -196,6 +198,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			#------------------------------
 
 			$ticket = new Entity\Ticket();
+			if ($this->logger) {
+				$ticket->getTicketLogger()->setLogger($this->logger);
+			}
 			if ($this->email_reader) {
 				$ticket->email_reader = $this->email_reader;
 			}
