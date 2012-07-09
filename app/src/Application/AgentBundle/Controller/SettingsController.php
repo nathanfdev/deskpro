@@ -122,6 +122,29 @@ class SettingsController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function updateTimezoneAction()
+	{
+		$tz = $this->in->getString('timezone');
+
+		if (!in_array($tz, \DateTimeZone::listIdentifiers())) {
+			return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_timezone'));
+		}
+
+		$this->person->timezone = $tz;
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($this->person);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	############################################################################
 	# Ticket Notifications
 	############################################################################

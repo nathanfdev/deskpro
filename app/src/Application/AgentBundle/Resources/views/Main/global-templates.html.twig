@@ -558,6 +558,29 @@
 	</footer>
 </section>
 
+<section class="dp-overlay" id="time_outofsync" data-element-handler="DeskPRO.Agent.ElementHandler.TimezoneSwitch" style="z-index: 99999; width: 450px; height: 200px;">
+	<header>
+		<span class="close close-trigger"></span>
+		<h1>Update Timezone</h1>
+	</header>
+	<article style="padding: 10px;">
+		<p>
+			The timezone saved in your profile appears to differ from the time on your computer.
+			Do you want to update your timezone now?
+		</p>
+		<br />
+		<select name="timezone" class="timezone" style="width: 300px">
+			<option value="">Select your region</option>
+			{% for title,tz in app.getTimezoneList() %}
+				<option value="{{ tz }}">{{ title }}</option>
+			{% endfor %}
+		</select>
+	</article>
+	<footer>
+		<button class="continue-trigger clean-white">Update Timezone</button>
+	</footer>
+</section>
+
 <script type="text/x-deskpro-plain" id="ticketactions_actionsform_tpl">
 	<div class="dp-form-row">
 		<div class="dp-form-input">

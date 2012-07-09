@@ -108,6 +108,8 @@ class MainController extends AbstractController
 			WHERE p.is_agent = true AND s.date_last > ?
 		", array($cutoff));
 
+		$user_date = $this->person->getDateTime();
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
@@ -126,6 +128,8 @@ class MainController extends AbstractController
 			'open_chats' => $open_chats,
 			'people_options' => $people_options,
 			'org_options' => $org_options,
+			'person_hour' => $user_date->format('H'),
+			'person_minute' => $user_date->format('i'),
 		));
 	}
 

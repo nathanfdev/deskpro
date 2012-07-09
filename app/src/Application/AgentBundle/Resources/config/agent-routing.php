@@ -311,6 +311,13 @@ $collection->add('agent_settings_profile_save', new Route(
 	array()
 ));
 
+$collection->add('agent_settings_profile_updatetimezone', new Route(
+	'/settings/profile/update-timezone.json',
+	array('_controller' => 'AgentBundle:Settings:updateTimezone'),
+	array(),
+	array()
+));
+
 $collection->add('agent_settings_ticketnotif', new Route(
 	'/settings/ticket-notifications',
 	array('_controller' => 'AgentBundle:Settings:ticketNotifications'),

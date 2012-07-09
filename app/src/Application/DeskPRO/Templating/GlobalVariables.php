@@ -171,4 +171,15 @@ class GlobalVariables extends BaseGlobalVariables
 		$logger = App::get('deskpro.exception_logger');
 		return $logger->getLastException();
 	}
+
+	public function getTimezoneList()
+	{
+		static $tz = null;
+
+		if ($tz === null) {
+			$tz = array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers());
+		}
+
+		return $tz;
+	}
 }

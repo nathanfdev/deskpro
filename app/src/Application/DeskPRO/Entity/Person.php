@@ -1759,7 +1759,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-
 	public function getTimezone()
 	{
 		if (!$this->timezone) {

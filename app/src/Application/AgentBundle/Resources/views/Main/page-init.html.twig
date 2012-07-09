@@ -16,6 +16,8 @@
 		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %}
 	};
 
+	var DESKPRO_PERSON_HOUR   = {{ person_hour }};
+	var DESKPRO_PERSON_MINUTE = {{ person_minute }};
 
 	var DP_SETTINGS = {
 		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow'] %}
