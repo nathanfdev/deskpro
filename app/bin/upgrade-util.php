@@ -2288,7 +2288,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
-		$version_num = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
 
 		if (!$version) {
 			$this->errorExit("We could not find your currently installed version.");
@@ -2296,8 +2295,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$version = $version[0];
 
-		$this->out(sprintf("File build version:      %s (built %s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
-		$this->out(sprintf("Database build version:  %s (built %s)", $version_num, $this->upgrade->formatBuild($version)));
+		$this->out(sprintf("File build time:      %s", $this->upgrade->formatBuild(DP_BUILD_TIME)));
+		$this->out(sprintf("Database build time:  %s", $this->upgrade->formatBuild($version)));
 
 		$this->out();
 
