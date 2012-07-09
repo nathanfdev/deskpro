@@ -45,6 +45,9 @@
 	// X-Mailer: Lotus Notes Release 8.5.1 September 28, 2009
 	'lotus_notes_1'                      => 'br /br table tr td td table tr td font b /b /font /td /tr /table br /br table tr td font /font td font #to:#i /font /td /td /tr /table br /br table tr td font b #please\srespond\sto\s#i /b /font /td /tr /table',
 
+	// X-Mailer: Lotus Notes Release 8.5.3FP1 March 08, 2012
+	'lotus_notes_2'                      => 'font #From:.*?# /font font /font br /br font #To:.*?# /font font /font br /br font #Date:.*?# /font font /font br /br font #Subject:.*?# /font font /font',
+
 	// X-Mailer: Microsoft Outlook 14.0
 	'outlook_2'                          => 'p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br b #subject:#i /b /span /p',
 
