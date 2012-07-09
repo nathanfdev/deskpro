@@ -75,7 +75,7 @@ class Connection extends \Doctrine\DBAL\Connection
 				$level = $db->getTransactionNestingLevel();
 				$e = new ShutdownTransactionActiveException("Database transaction is still active ($level deep)");
 
-				$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+				$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
 			}
 		});
