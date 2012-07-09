@@ -50,7 +50,6 @@ function dp_load_config()
 			if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = defined('DP_DATABASE_USER')     ? DP_DATABASE_USER     : 'YOUR_DATABASE_USER';
 			if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
 			if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
-			if (!isset($DP_CONFIG['technical_email'])) $DP_CONFIG['technical_email'] = defined('DP_TECHNICAL_EMAIL')   ? DP_TECHNICAL_EMAIL   : '';
 		} else {
 			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
 				$DP_CONFIG = array();
@@ -60,7 +59,6 @@ function dp_load_config()
 				$DP_CONFIG['db']['user']      = 'YOUR_DATABASE_USER';
 				$DP_CONFIG['db']['password']  = 'YOUR_DATABASE_PASS';
 				$DP_CONFIG['db']['dbname']    = 'YOUR_DATABASE_NAME';
-				$DP_CONFIG['technical_email'] = '';
 			}
 		}
 	}
