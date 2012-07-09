@@ -1268,9 +1268,14 @@ class Strings
 				continue;
 			}
 
-			$frag = $dom->createDocumentFragment();
-			$frag->appendXML(self::linkify($text->nodeValue, $attr));
-			$text->parentNode->replaceChild($frag, $text);
+			$origText = $text->nodeValue;
+			$newText  = self::linkify($origText, $attr);
+
+			if ($origText != $newText) {
+				$frag = $dom->createDocumentFragment();
+				$frag->appendXML(self::linkify($text->nodeValue, $attr));
+				$text->parentNode->replaceChild($frag, $text);
+			}
 		}
 
 		$html = $dom->saveHTML();
