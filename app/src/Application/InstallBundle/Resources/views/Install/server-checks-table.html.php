@@ -49,7 +49,7 @@
 <?php if ($run_context == 'install'): ?>
 <tr>
 	<td>
-		<?php if (!isset($errors['config']) && !isset($errors['config_values']) && !isset($errors['config_dp3_values'])): ?>
+		<?php if (!isset($errors['config']) && !isset($errors['config_values']) && !isset($errors['config_dp3_values']) && !isset($errors['config_technical_email'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; ?>
 		<span class="label important" style="float:right">FAIL</span>
@@ -66,6 +66,9 @@
 			<?php elseif (isset($errors['config_dp3_values'])): ?>
 				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 				/config.php exists but it appears to contain values from an old DeskPRO v3 installation. DeskPRO v3 and DeskPRO v4 use different config.php formats. You should copy /config.new.php and edit it to add your database settings.
+			<?php elseif (isset($errors['config_technical_email'])): ?>
+				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_config_invalid') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+				/config.php exists but you have not entered an email address for the DP_TECHNICAL_EMAIL setting.
 			<?php endif ?>
 		</div>
 		<?php endif ?>

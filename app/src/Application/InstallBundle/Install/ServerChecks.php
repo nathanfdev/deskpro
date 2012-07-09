@@ -288,6 +288,14 @@ class ServerChecks
 						'message' => $msg,
 						'level' => 'fatal'
 					);
+				} else if (!defined('DP_TECHNICAL_EMAIL') || !DP_TECHNICAL_EMAIL || !strpos(DP_TECHNICAL_EMAIL, '@')) {
+					$this->has_fatal_server_errors = true;
+					$msg = "/config.php exists but does not contain the required DP_TECHNICAL_EMAIL value";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['config_technical_email'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
 				} else {
 					$this->getLogger()->log("[OK] config file exists and contains required values", Logger::DEBUG);
 				}
