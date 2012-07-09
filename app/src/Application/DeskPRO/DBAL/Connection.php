@@ -61,6 +61,12 @@ class Connection extends \Doctrine\DBAL\Connection
 			$params['platform'] = new \Application\DeskPRO\DBAL\Platforms\MySqlPlatform();
 		}
 
+		$m = null;
+		if (preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
+			$params['host'] = $m[1];
+			$params['port'] = $m[2];
+		}
+
 		parent::__construct($params, $driver, $config, $eventManager);
 
 		$db = $this;
