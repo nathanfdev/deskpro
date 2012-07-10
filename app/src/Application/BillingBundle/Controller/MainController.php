@@ -33,10 +33,27 @@
  */
 namespace Application\BillingBundle\Controller;
 
+use DeskPRO\Kernel\License;
+use Orb\Util\Dates;
+
 class MainController extends AbstractController
 {
     public function indexAction()
     {
-		return $this->render('BillingBundle:Main:index.html.twig');
+		$lic = License::getLicense();
+
+		$is_expired = $lic->getExpireDate()->format('U') < time();
+		if (!$is_expired) {
+			$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
+			$expire_in_days = $lic_expire_parts['days'];
+		} else {
+			$expire_in_days = 0;
+		}
+
+		return $this->render('BillingBundle:Main:index.html.twig', array(
+			'lic' => $lic,
+			'is_expired' => $is_expired,
+			'expire_in_days' => $expire_in_days
+		));
     }
 }

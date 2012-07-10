@@ -1,43 +1,153 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-	<title>{{ phrase('admin.billing.deskpro_billing_interface') }}</title>
-	<meta charset="utf-8" />
-	<meta name="robots" content="NOINDEX" />
-	<meta http-equiv="X-UA-Compatible" content="IE=100" />
-	{% if app.getSetting('core.favicon_blob_id') %}
-	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
-	{% else %}
-	<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
-	{% endif %}
-
+{% extends 'BillingBundle::layout.html.twig' %}
+{% block page_js_exec %}
 	<script type="text/javascript">
-		{% if constant('DP_DEBUG') %}
-		DP_DEBUG = true;
-		{% else %}
-		DP_DEBUG = false;
-		{% endif %}
+		$(document).ready(function() {
+			$('#show_editlic_trigger').on('click', function(ev) {
+				ev.preventDefault();
+				$('#lic_show').hide();
+				$('#lic_edit').show();
+			});
+			$('#editlic_cancel_trigger').on('click', function(ev) {
+				ev.preventDefault();
+				$('#lic_edit').hide();
+				$('#lic_show').show();
+			});
+
+			$('#editlic_save_trigger').on('click', function() {
+
+				var formData = [];
+				formData.push({
+					name: 'license_code',
+					value: $('#editlic_code').val()
+				});
+
+				$('#editlic_showsave').hide();
+				$('#editlic_showloading').show();
+				$('#editlic_err').hide();
+				$.ajax({
+					url: '{{ path('admin_license_input_save') }}',
+					type: 'POST',
+					data: formData,
+					dataTyoe: 'json',
+					error: function() {
+						$('#editlic_showloading').hide();
+						$('#editlic_showsave').show();
+					},
+					success: function(data) {
+						if (data.success) {
+							window.location.reload(false);
+						} else {
+							$('#editlic_err').show().find('.lic-err-code').text(data.error_code);
+							$('#editlic_showloading').hide();
+							$('#editlic_showsave').show();
+						}
+					}
+				});
+			});
+		});
 	</script>
+{% endblock %}
+{% block page %}
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+			<tr>
+				<th class="single-title" colspan="2">
+					Your License
+				</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td class="title" width="100">License ID</td>
+				<td class="prop">{{ lic.getLicenseId() }}</td>
+			</tr>
+			{% if lic.get('org') %}
+				<tr>
+					<td class="title">Licensor</td>
+					<td class="prop">{{ lic.get('org') }}</td>
+				</tr>
+			{% endif %}
+			{% if lic.isDemo() %}
+				<tr>
+					<td class="title">Demo License</td>
+					<td class="prop">
+						{% if not is_expired %}
+							Your demo period expires {% if expire_in_days and expire_in_days < 20 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+						{% else %}
+							Your demo period has ended
+						{% endif %}
+						&nbsp;&nbsp;
+						<a target="_blank" class="clean-white" href="http://www.deskpro.com/pricing/">Buy Now</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">Agents</td>
+					<td class="prop">You can use unlimited agents during the demo period</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td class="title">Expires</td>
+					<td class="prop">
+						{% if not is_expired %}
+							Your license expires {% if expire_in_days and expire_in_days < 20 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+						{% else %}
+							Your license has expired
+						{% endif %}
+						&nbsp;&nbsp;
+						<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Renew</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">Agents</td>
+					<td class="prop">
+						{{ lic.getMaxAgents()|default('Unlimited') }}
+						{% if lic.getMaxAgents() %}
+							&nbsp;&nbsp;
+							<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Add more agents</a>
+						{% endif %}
+					</td>
+				</tr>
+			{% endif %}
 
-	{{ dp_asset_html('agent_vendors_css') }}
-	{{ dp_asset_html('agent_interface_css') }}
-	{{ dp_asset_html('admin_interface_css') }}
+				<tr>
+					<td class="title" width="100">License Code</td>
+					<td class="prop">
+						<div id="lic_show">
+							<textarea readonly="readonly">{{ lic.getLicenseCode() }}</textarea>
+							<br />
+							<button class="clean-white" id="show_editlic_trigger">Update</button>
+						</div>
+						<div id="lic_edit" style="display: none;">
+							<div class="alert-message block-message error errors-box" id="editlic_err" style="display: none">
+								<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
+								<ul>
+									<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':'<span class="lic-err-code"></span>'}) }}</li>
+								</ul>
+							</div>
+							<textarea id="editlic_code">{{ lic.getLicenseCode() }}</textarea>
+							<br />
+							<div id="editlic_showsave">
+								<button class="clean-white" id="editlic_save_trigger">Save</button>
+								or <a href="#" id="editlic_cancel_trigger">cancel</a>
+							</div>
+							<div id="editlic_showloading" style="display: none;">
+								<i class="flat-spinner"></i>
+							</div>
 
-	{{ dp_asset_html('agent_vendors') }}
-	{{ dp_asset_html('agent_common') }}
-	{{ dp_asset_html('agent_deskpro_ui') }}
-	{{ dp_asset_html('admin_admin_ui') }}
-	{{ dp_asset_html('admin_admin_handlers') }}
+							<div style="margin: 40px 0 0 0; background-color: #EDEDED; padding: 10px;">
+								If your server is not connected to the internet or there is a problem setting your license automatically,
+								then our agents may ask you to email a keyfile to <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
+								so your license code can be manually generated.
+								<br /><br />
+								<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}">Download license.key file</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
-	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
-</head>
-<body id="billing_interface">
 
-<div id="billing_placeholder">
-	<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%"><tr><td align="center" valign="center" style="text-align: center; vertical-align: middle;">
-		<h1>{{ phrase('admin.billing.coming_soon') }}</h1>
-	</td></tr></table>
-</div>
-
-</body>
-</html>
+{% endblock %}

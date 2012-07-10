@@ -1435,6 +1435,11 @@ class KernelErrorHandler
 final class License
 {
 	/**
+	 * @var string
+	 */
+	private $raw_code;
+
+	/**
 	 * @var \DeskPRO\Kernel\License
 	 */
 	static private $inst;
@@ -1558,6 +1563,8 @@ final class License
 		}
 
 		$license_code = trim($license_code);
+		$this->raw_code = $license_code;
+
 		$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
 		$license_code = base64_decode($license_code);
 
@@ -1584,6 +1591,11 @@ final class License
 			$this->data = array('no_license' => true);
 			return;
 		}
+	}
+
+	public function getLicenseCode()
+	{
+		return $this->raw_code;
 	}
 
 	public function getLicenseId()

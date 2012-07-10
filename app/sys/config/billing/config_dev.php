@@ -12,7 +12,7 @@ $container->setParameter('kernel.debug', true);
 
 $container->loadFromExtension('framework', array(
 	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/billing/routing_dev.php'
+		'resource' => DP_ROOT.'/sys/config/billing/routing.php'
 	),
 	'profiler' => array(
 		'only_exceptions' => false,

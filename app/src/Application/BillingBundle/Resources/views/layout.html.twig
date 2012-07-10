@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Billing</title>
+	<meta charset="utf-8" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta http-equiv="X-UA-Compatible" content="IE=100" />
+	{% if app.getSetting('core.favicon_blob_id') %}
+		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+	{% else %}
+		<link rel="shortcut icon" id="favicon" href="{{ app.getRequest().getBasePath() }}/favicon.ico" />
+	{% endif %}
+
+	<script type="text/javascript">
+		{% if constant('DP_DEBUG') %}
+			DP_DEBUG = true;
+		{% else %}
+			DP_DEBUG = false;
+		{% endif %}
+	</script>
+
+	{{ dp_asset_html('agent_vendors_css') }}
+	{{ dp_asset_html('agent_interface_css') }}
+	{{ dp_asset_html('admin_interface_css') }}
+
+	{{ dp_asset_html('agent_vendors') }}
+	{{ dp_asset_html('agent_common') }}
+	{{ dp_asset_html('agent_deskpro_ui') }}
+    {{ dp_asset_html('admin_admin_ui') }}
+    {{ dp_asset_html('admin_admin_handlers') }}
+
+    <script type="text/javascript" charset="utf-8">
+		var BASE_URL = '{{ app.request.getBaseUrl() }}/';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+
+		window.DeskPRO_Window = new DeskPRO.Admin.Window();
+
+		function _win_exec() {
+			window.DeskPRO_Window.initPage();
+
+			if (window._page_exec) {
+				_page_exec();
+			}
+
+			if (window.DeskPRO_Page) {
+				DeskPRO_Page.initPage();
+			}
+		}
+
+		{% block html_headjs_load %}{% endblock %}
+
+		$(document).ready(function() {
+			_win_exec();
+		});
+	</script>
+	{% block html_head %}{% endblock %}
+	{% block page_js_exec %}{% endblock %}
+
+	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+</head>
+<body class="{{ body_class }}">
+
+{% block header %}
+<!-- BEGIN HEADER BAR -->
+<div id="dp_header">
+	{# User Logo #}
+	<div id="dp_header_user">
+		<div class="button-wrap" id="userSetting_trigger">
+			<h1>
+				<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
+				<span class="drop"></span>
+			</h1>
+		</div>
+	</div>
+	<!-- Header - User Control Dropdown -->
+	<div id="userSetting" style="display:none;">
+		<div class="userProfileDropdown" >
+			<div class="userProfileDropdownHeader">
+				<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
+				<span class="drop"></span>
+			</div>
+			<ul>
+				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
+				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
+				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=admin">{{ phrase('agent.general.log_out') }}</a></li>
+			</ul>
+		</div>
+	</div>
+
+
+	{# DeskPRO Logo #}
+	<div id="dp_logo_wrap">
+		<div class="button-wrap">
+			<h1>
+				{{ phrase('agent.general.deskpro') }}
+				<span class="drop"></span>
+			</h1>
+		</div>
+	</div>
+	<div id="dp_logo_expand_wrap">
+		<div class="dropdown-header">
+			<h1>
+				{{ phrase('agent.general.deskpro') }}
+				<span class="drop"></span>
+			</h1>
+		</div>
+		<div class="dropdown-content">
+			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
+		</div>
+	</div>
+
+	<!-- BEGIN INTERFACE SECTION -->
+	<div id="DP-InterfaceSwitcher">
+		<div class="DP-adminSwitch">
+			<div class="adminSwitcher">
+				<a class="admin">{{ phrase('agent.general.admin_interface') }}<span class="dropdownIcon"></span></a>
+			</div>
+		</div>
+		<!-- Header - Switch Button Interfaces- Dropdown -->
+		<div id="interfacesToggle" style="display:none;">
+			<div class="dropdownSwitcherWrap">
+				<div class="switcherHeader">
+					<a class="admin"><span>{{ phrase('agent.general.admin_interface') }}</span></a>
+				</div>
+				<ul>
+					{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
+					{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('agent.general.billing_interface') }}</span></a></li>{% endif %}
+					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.report_interface') }}</span></a></li>{% endif %}
+					{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- END INTERFACE SECTION -->
+</div>
+<!-- /BEGIN HEADER BAR -->
+
+<!-- BEGIN NAV BAR -->
+<div id="dp_admin_nav" class="billing">
+	<div id="dp_admin_nav_sections" class="deskproPane">
+		<h1>Billing</h1>
+	</div>
+</div>
+
+{% endblock %}
+
+<!-- /BEGIN NAV BAR -->
+<div id="dp_page_wrap">
+
+{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
+{% if pagebar|trim|length %}
+	<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
+{% endif %}
+
+{% block pagebar_after %}{% endblock %}
+
+{% if app.session.hasFlash('success_message') %}
+	<div class="alert-message success">
+		{{ app.session.getFlash('success_message') }}
+	</div>
+{% endif %}
+{% if app.session.hasFlash('error_message') %}
+	<div class="alert-message error">
+		{{ app.session.getFlash('error_message') }}
+	</div>
+{% endif %}
+{% if app.session.hasFlash('saved') %}
+	<div class="alert-message success">
+		"{{ app.session.getFlash('saved') }}" was saved successfully
+	</div>
+{% endif %}
+{% if app.session.hasFlash('deleted') %}
+	<div class="alert-message success">
+		"{{ app.session.getFlash('deleted') }}" was deleted successfully
+	</div>
+{% endif %}
+
+{% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
+{% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
+{% block dp_full_page %}
+<div id="dp_admin_page" class="dp_admin_page {% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }} with_top_border">
+	{% block prepage %}{% endblock %}
+	<div id="dp_admin_page_inner" class="dp_admin_page_inner">
+		{% if sidebar|trim|length %}
+			<div id="dp_admin_page_sidebar" class="dp_admin_page_sidebar dp-sidebar">{{ sidebar|raw }}</div>
+		{% endif %}
+		{% if sidebar_right|trim|length %}
+			<div id="dp_admin_page_sidebar_right" class="dp_admin_page_sidebar_right dp-sidebar">{{ sidebar_right|raw }}</div>
+		{% endif %}
+		{% block content %}
+			<div class="dp-page-box">
+				<div class="page-content">
+					{% block page %}{% endblock %}
+				</div>
+			</div>
+		{% endblock %}
+	</div>
+</div>
+{% endblock %}
+
+</div>
+
+{% set page_nav %}{% block page_nav %}{% endblock %}{% endset %}
+{% set page_nav_inner %}{% block page_nav_inner %}{% endblock %}{% endset %}
+{% if page_nav|trim|length or page_nav_inner|trim|length %}
+	<div id="dp_page_nav" {% if page_nav_fixed %}class="fixed"{% endif %}>
+		{% if page_nav_inner|trim|length %}
+			{{ page_nav_inner|raw }}
+		{% else %}
+			<div class="page-nav-block">
+				<div class="inner-shadow"></div>
+				{{ page_nav|raw }}
+			</div>
+		{% endif %}
+	</div>
+{% endif %}
+
+</body>
+</html>
