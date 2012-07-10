@@ -160,6 +160,31 @@ function dp_get_config($path, $default = null)
 /**
  * @return string
  */
+function dp_get_os()
+{
+	static $os = null;
+
+	if ($os === null) {
+		if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
+			$os = 'win';
+		} elseif (strpos(strtoupper(PHP_OS), 'DARWIN') === 0) {
+			$os = 'mac';
+		} elseif (strpos(strtoupper(PHP_OS), 'FREEBSD') === 0) {
+			$os = 'freebsd';
+		} elseif (strpos(strtoupper(PHP_OS), 'LINUX') === 0) {
+			$os = 'linux';
+		} else {
+			$os = PHP_OS;
+		}
+	}
+
+	return $os;
+}
+
+
+/**
+ * @return string
+ */
 function dp_get_data_dir()
 {
 	dp_load_config();

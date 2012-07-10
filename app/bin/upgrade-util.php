@@ -1814,7 +1814,34 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 			return;
 		}
 
-		parent::remove($files);
+		$files = iterator_to_array($this->toIterator($files));
+		$files = array_reverse($files);
+		foreach ($files as $file) {
+			if (!file_exists($file)) {
+				continue;
+			}
+
+			if (is_dir($file) && !is_link($file)) {
+
+				$dir_arg = escapeshellarg($file);
+				if (dp_get_os() == 'win') {
+					$cmd = 'RD /S /Q ' . $dir_arg;
+				} else {
+					$cmd = 'rm -rf ' . $dir_arg;
+				}
+
+				$out = null;
+				$ret = null;
+				exec($cmd, $out, $ret);
+
+				if ($ret) {
+					echo $out;
+				}
+
+			} else {
+				unlink($file);
+			}
+		}
 	}
 
 	public function chmod($files, $mode, $umask = 0000)
