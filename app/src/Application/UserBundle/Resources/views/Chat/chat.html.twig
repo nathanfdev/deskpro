@@ -1,7 +1,7 @@
 {##
  # The chat window
  ##}
-
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -135,18 +135,10 @@
 					<label>{{ phrase('user.chat.form_create_department') }}</label>
 				</div>
 				<div class="dp-controls">
-					<select name="department_id">
-						<option value="0"></option>
-						{% for dep in departments %}
-							{% if dep.children|length %}
-								<optgroup label="{{ dep.title }}">
-									{% for subdep in dep.children %}
-										<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ phrase_object(subdep, 'user') }}</option>
-									{% endfor %}
-								</optgroup>
-							{% else %}
-								<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ phrase_object(subdep, 'user') }}</option>
-							{% endif %}
+					<select name="department_id" class="department_id">
+						<option value=""></option>
+						{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
+							{{ formmacro.select_options_hierarchy(cat, initial_department_id) }}
 						{% endfor %}
 					</select>
 				</div>

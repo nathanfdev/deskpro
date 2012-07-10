@@ -214,9 +214,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$property = 'title';
 		}
 		$phrase_name = 'obj_department.' . $this->id . '_' . $property;
-		if ($translate->getPersonContext() AND !$translate->getPersonContext()->getIsAgent()) {
-			$phrase_name .= "_user";
-		}
 
 		return $phrase_name;
 	}
@@ -233,6 +230,11 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		if ($property == 'full') {
 			return $this->getRealTitle();
 		}
+
+		if ($property == 'user' && $this->user_title) {
+			return $this->user_title;
+		}
+
 		return $this->title;
 	}
 
