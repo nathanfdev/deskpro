@@ -1,7 +1,7 @@
 {##
  # The ticket tab of the website widget overlay
  ##}
-
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 <div id="newticket" class="tab" style="display: none;">
 	<form id="dp_newticket_form" action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator" enctype="multipart/form-data">
 
@@ -58,16 +58,8 @@
 		<div class="fields-row dp-form-row-ticket_department_id">
 			<select name="newticket[ticket][department_id]">
 				<option value="">{{ phrase('user.widget.ticket_form_department') }}</option>
-				{% for id,info in ticket_options.departments_hierarchy %}
-					{% if info.children %}
-						<optgroup label="{{ info.user_title }}">
-							{% for subid,subinfo in info.children %}
-								<option value="{{subinfo.id}}">{{subinfo.user_title}}</option>
-							{% endfor %}
-						</optgroup>
-					{% else %}
-						<option value="{{info.id}}">{{info.user_title}}</option>
-					{% endif %}
+				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+					{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
 				{% endfor %}
 			</select>
 			<span class="tooltip-error">
