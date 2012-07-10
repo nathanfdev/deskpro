@@ -167,6 +167,14 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return \Application\DeskPRO\Entity\Stat
+	 */
+	public function getStat()
+	{
+		return $this->stat;
+	}
+
+	/**
 	 * Get the number of data points
 	 *
 	 * @return int The number of data points to display

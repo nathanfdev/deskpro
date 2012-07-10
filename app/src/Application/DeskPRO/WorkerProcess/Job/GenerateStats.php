@@ -67,7 +67,7 @@ class GenerateStats extends AbstractJob
 
 			$stat_ids = App::getEntityRepository('DeskPRO:Stat')->$method($this->date_time);
 
-			$count_stats 	= count($stat_ids);
+			$count_stats = count($stat_ids);
 
 			$msg = '[' . ucwords($run_frequency) . "] Processing {$count_stats} stats";
 			$this->logStatus($msg);

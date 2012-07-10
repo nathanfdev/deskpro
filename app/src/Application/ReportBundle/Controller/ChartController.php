@@ -49,8 +49,7 @@ class ChartController extends AbstractController
 		$chart_type = $this->getRequest()->get('chart_type', '');
 		if (false === $this->getRequest()->get('all', false)) {
 			$points = $dashboard_stat->getNumberDataPoints();
-		}
-		else {
+		} else {
 			$points = $dashboard_stat->getStat()->getMaxDataPointCount();
 		}
 
@@ -95,8 +94,7 @@ class ChartController extends AbstractController
 		$chart_type = $this->getRequest()->get('chart_type', '');
 		if (false === $this->getRequest()->get('all', false)) {
 			$points = $dashboard_stat->getNumberDataPoints();
-		}
-		else {
+		} else {
 			$points = $dashboard_stat->getStat()->getMaxDataPointCount();
 		}
 
@@ -201,7 +199,7 @@ class ChartController extends AbstractController
 	/**
 	 * Get the Dashboard Stat Entity
 	 *
-	 * @throws NotFoundHttpException
+	 * @return \Application\DeskPRO\Entity\ReportDashboardStat
 	 */
 	protected function getDashboardStat($dashboard_stat_id)
 	{

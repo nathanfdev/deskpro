@@ -145,12 +145,12 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $variation;
 
 	/**
-	 * Should we generate stats
+	 * Should we generate stats? Aka is this stat enabled.
 	 *
 	 * @var bool
 	 * @ORM_MAPPING\Column(name="generate_stats", type="boolean")
 	 */
-	protected $generate_stats = false;
+	protected $generate_stats = true;
 
 	/**
 	 * Is the stat disabled
@@ -474,6 +474,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			case 'hourly':
 				// Get a year
 				$data_points = 60;
+				break;
 			case 'daily':
 				// Get a year
 				$data_points = 60;
@@ -712,8 +713,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$stat_value_ids = array();
 
 		// Get the StatValue's
-		$stat_values = App::getEntityRepository('DeskPRO:StatValue')
-				  ->getForStatRangeDate($this->getId(), $start_date, $end_date);
+		$stat_values = App::getEntityRepository('DeskPRO:StatValue')->getForStatRangeDate($this->getId(), $start_date, $end_date);
 
 		// Transform the raw data - Set the default data points. We need
 		// to do this incase there is missing data in the DB, ie we havent
