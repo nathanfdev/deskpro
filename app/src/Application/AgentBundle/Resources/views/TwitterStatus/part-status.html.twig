@@ -88,7 +88,7 @@
 											Note "<span class="text">{{ note.text }}</span>"
 											by <span class="user with-route" data-route="person:{{ path('agent_people_view', {'person_id': note.person.id }) }}">{{ note.person.name }}</span>
 											<span class="timestamp">
-												<span class="timeago" title="{{ note.date_created|date('c') }}">{{ note.date_created|date('r') }}</span>
+												<span class="timeago" title="{{ note.date_created|date('c', 'UTC') }}">{{ note.date_created|date('r') }}</span>
 											</span>
 										</p>
 									{% endfor %}
@@ -96,7 +96,7 @@
 
 							</div>
 
-							
+
 						</td>
 					</tr>
 					<tr>

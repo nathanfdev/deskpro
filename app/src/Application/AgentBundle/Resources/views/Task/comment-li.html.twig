@@ -5,7 +5,7 @@
 		</div>
 		<div class="message-body">
 			<div class="message-meta">
-				<time class="timeago" title="{{comment.date_created|date('c')}}">{{comment.date_created|date('day')}}</time>
+				<time class="timeago" title="{{comment.date_created|date('c', 'UTC')}}">{{comment.date_created|date('day')}}</time>
 				<h4>{{comment.person.name}}:</h4>
 			</div>
 			<div class="message-text">

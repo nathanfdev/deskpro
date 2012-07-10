@@ -378,6 +378,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a', messageEl);
 
+		$('.timeago', messageEl).timeago();
+
 		imageEls.colorbox({
 			title: function(){
 				var url = $(this).attr('href');

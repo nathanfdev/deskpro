@@ -22,6 +22,6 @@
 		{% else %}
 			{{ phrase('agent.general.anonymous') }}
 		{% endif %}
-		, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
+		, <time class="timeago" datetime="{{ convo.date_created|date('c', 'UTC') }}">{{ convo.date_created|date('day_short') }}</time>
 	</div>
 </article>

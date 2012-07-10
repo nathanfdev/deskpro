@@ -74,7 +74,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="ticket-hidden-bar {% if ticket.hidden_status == 'deleted' or ticket.hidden_status == 'spam' %}deleted{% endif %}">
 		<article>
 		{% if ticket.hidden_status == 'deleted' %}
-			{{ phrase('agent.tickets.deleted_by') }} {{ ticket_deleted.by_person.display_name }} (<time class="timeago" title="{{ ticket_deleted.date_created|date('c') }}">{{ ticket_deleted.date_created|date('day') }}</time>).
+			{{ phrase('agent.tickets.deleted_by') }} {{ ticket_deleted.by_person.display_name }} (<time class="timeago" title="{{ ticket_deleted.date_created|date('c', 'UTC') }}">{{ ticket_deleted.date_created|date('day') }}</time>).
 			{% if ticket_deleted.reason %}
 				<br />{{ phrase('agent.general.reason') }}: {{ ticket_deleted.reason }}
 			{% endif %}
@@ -353,7 +353,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<tr>
 				<th>{{ phrase('agent.general.created') }}:</th>
 				<td>
-					<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
+					<time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time>
 					{{ phrase('agent.tickets.on') }} {{ ticket.date_created|date('fulltime') }}
 				</td>
 			</tr>
@@ -362,11 +362,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<th>{{ phrase('agent.general.user_waiting') }}:</th>
 				<td>
 					{% set waiting_total %}
-					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c') }}"></time>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
 					{% endset %}
 					{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
 					{% set waiting %}
-					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}"></time>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
 					{% endset %}
 					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {'waiting': waiting, 'total': waiting_total}) }}
 					{% else %}

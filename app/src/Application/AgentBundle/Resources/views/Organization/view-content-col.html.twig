@@ -208,7 +208,7 @@
 								</a>
 							{% endif %}
 						</span>
-						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('day') }}</time>
+						<time class="timeago" datetime="{{ action.date_created|date('c', 'UTC') }}">{{ action.date_created|date('day') }}</time>
 					</li>
 				{% endfor %}
 			</ul>

@@ -5,7 +5,7 @@
 		</div>
 		<div class="message-body">
 			<div class="message-meta">
-				<time class="timeago" title="{{note.date_created|date('c')}}">{{note.date_created|date('day')}}</time>
+				<time class="timeago" title="{{note.date_created|date('c', 'UTC')}}">{{note.date_created|date('day')}}</time>
 				<h4>{{note.agent.name}}:</h4>
 			</div>
 			<div class="message-text">

@@ -42,7 +42,7 @@
 			<dl class="table-list">
 				<dt class="type-labels">{{ phrase('agent.general.date_created') }}</dt>
 				<dd>
-					<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('day') }}</time>
+					<time class="timeago" datetime="{{org.date_created|date('c', 'UTC')}}">{{ org.date_created|date('day') }}</time>
 				</dd>
 			</dl>
 			<br class="clear" />

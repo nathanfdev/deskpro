@@ -215,7 +215,7 @@
 								</a>
 							{% endif %}
 						</span>
-						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('day') }}</time>
+						<time class="timeago" datetime="{{ action.date_created|date('c', 'UTC') }}">{{ action.date_created|date('day') }}</time>
 					</li>
 				{% endfor %}
 			</ul>
@@ -236,7 +236,7 @@
 					<td class="label" width="80">{{ phrase('agent.general.created') }}</td>
 					<td class="value">
 						<time>{{person.date_created|date('fulltime')}}</time>
-						(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
+						(<time class="timeago" datetime="{{person.date_created|date('c', 'UTC')}}"></time>)
 					</td>
 				</tr>
 				<tr>
@@ -258,7 +258,7 @@
 					<td class="value">
 						{% if person.date_last_login %}
 							<time>{{person.date_last_login|date('fulltime')}}</time>
-							(<time class="timeago" datetime="{{person.date_last_login|date('c')}}"></time>)
+							(<time class="timeago" datetime="{{person.date_last_login|date('c', 'UTC')}}"></time>)
 						{% else %}
 							{{ phrase('agent.general.never') }}
 						{% endif %}
@@ -269,14 +269,14 @@
 						<td class="label">{{ phrase('agent.general.online_now') }}</td>
 						<td class="value">
 							<time>{{session.date_created|date('fulltime')}}</time>
-							(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
+							(<time class="timeago" datetime="{{session.date_created|date('c', 'UTC')}}"></time>)
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{{ phrase('agent.general.last_activity') }}</td>
 						<td class="value">
 							<time>{{session.date_last|date('fulltime')}}</time>
-							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
+							(<time class="timeago" datetime="{{session.date_last|date('c', 'UTC')}}"></time>)
 							on page <em class="short-url-prev tipped" title="{{ session.visitor.last_page }}">{{ session.visitor.last_page|url_domain }}</em>
 					</tr>
 					<tr>
@@ -307,7 +307,7 @@
 						<td class="label">{{ phrase('agent.general.last_activity') }}</td>
 						<td class="value">
 							<time>{{visitor.date_last|date('fulltime')}}</time>
-							(<time class="timeago" datetime="{{visitor.date_last|date('c')}}"></time>)
+							(<time class="timeago" datetime="{{visitor.date_last|date('c', 'UTC')}}"></time>)
 							on page <em class="tipped" title="{{ visitor.last_page }}">...</em>
 					</tr>
 					<tr>

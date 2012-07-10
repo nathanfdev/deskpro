@@ -28,7 +28,7 @@
 				</td>
 			{% elseif field == 'date_created' %}
 				<td class="{{field}}">
-					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('day')}}</span>
+					<span class="timestamp timeago" title="{{ticket.date_created|date('c', 'UTC')}}">{{ticket.date_created|date('day')}}</span>
 				</td>
 			{% elseif field == 'deleted_reason' %}
 				<td class="{{field}}">
@@ -82,7 +82,7 @@
 			{% elseif field == 'date_user_waiting' %}
 				<td class="{{field}}">
 					{% if ticket.date_user_waiting %}
-						<time class="timestamp timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}">{{ticket.date_user_waiting|date('day')}}</time>
+						<time class="timestamp timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}">{{ticket.date_user_waiting|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -90,7 +90,7 @@
 			{% elseif field == 'total_user_waiting' %}
 				<td class="{{field}}">
 					{% if ticket.real_total_user_waiting %}
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c', 'UTC') }}"></time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -98,7 +98,7 @@
 			{% elseif field == 'date_last_agent_reply' %}
 				<td class="{{field}}">
 					{% if ticket.date_last_agent_reply %}
-						<time class="timestamp timeago" datetime="{{ ticket.date_last_agent_reply|date('c') }}">{{ticket.date_last_agent_reply|date('day')}}</time>
+						<time class="timestamp timeago" datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}">{{ticket.date_last_agent_reply|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -106,7 +106,7 @@
 			{% elseif field == 'date_last_user_reply' %}
 				<td class="{{field}}">
 					{% if ticket.date_last_agent_reply %}
-						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c') }}">{{ticket.date_last_user_reply|date('day')}}</time>
+						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}">{{ticket.date_last_user_reply|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}

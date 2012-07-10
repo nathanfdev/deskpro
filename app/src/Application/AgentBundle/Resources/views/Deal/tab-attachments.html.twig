@@ -13,7 +13,7 @@
                 </div>
                 <div>
                     <span>Updated By {{deal_attach.person.display_name}},</span>
-                    <time class="timeago" datetime="{{deal_attach.blob.date_created|date('c')}}"></time>
+                    <time class="timeago" datetime="{{deal_attach.blob.date_created|date('c', 'UTC')}}"></time>
                 </div>
             </li>
         {% endfor %}

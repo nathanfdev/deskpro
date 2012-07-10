@@ -110,7 +110,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.general.created_and_published') }}:</dt>
 				<dd>
                     {% set phrase_part1 %}
-                        <time class="timeago" datetime="{{article.date_created|date('c')}}"></time>
+                        <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
                     {% endset %}
                     {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>
@@ -121,7 +121,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.general.date_created') }}:</dt>
 				<dd>
                     {% set phrase_part1 %}
-                    <time class="timeago" datetime="{{article.date_created|date('c')}}"></time>
+                    <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
                     {% endset %}
                     {% set phrase_part2 %}
                     <time>{{article.date_created|date('fulltime')}}</time>
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<dt>{{ phrase('agent.general.date_published') }}:</dt>
 					<dd>
                         {% set phrase_part1 %}
-                        <time class="timeago" datetime="{{article.date_created|date('c')}}"></time>
+                        <time class="timeago" datetime="{{article.date_created|date('c', 'UTC')}}"></time>
                         {% endset %}
                         {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>

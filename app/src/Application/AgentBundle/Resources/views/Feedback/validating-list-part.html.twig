@@ -17,7 +17,7 @@
 			<div class="preview">
 				<a class="feedback-title">{{ feedback.summary_line }}</a>
 			</div>
-			<time class="timeago" datetime="{{ feedback.date_created|date('c') }}">{{ feedback.date_created|date('day_short') }}</time>
+			<time class="timeago" datetime="{{ feedback.date_created|date('c', 'UTC') }}">{{ feedback.date_created|date('day_short') }}</time>
 		</article>
 	{% endfor %}
 </section>

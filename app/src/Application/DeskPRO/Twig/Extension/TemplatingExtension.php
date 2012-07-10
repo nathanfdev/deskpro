@@ -478,7 +478,7 @@ class TemplatingExtension extends \Twig_Extension
 			}
 		}
 
-		if (!$timezone) {
+		if (!$timezone || $timezone == 'UTC') {
 			$timezone = new \DateTimeZone('UTC');
 		}
 

@@ -104,7 +104,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt></dt>
 				<dd>
 					{{ phrase('agent.general.created_timeago_by_x_on_y', {
-					'timeago': '<time class="timeago" datetime="' ~ download.date_created|date('c') ~'"></time>',
+					'timeago': '<time class="timeago" datetime="' ~ download.date_created|date('c', 'UTC') ~'"></time>',
 					'name': download.person.display_name,
 					'date': '<time>' ~ download.date_created|date('fulltime') ~ '</time>'
 				}) }}
