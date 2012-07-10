@@ -385,6 +385,54 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		#----------------------------------------
+		# Confirm path is right by checking reqs
+		#----------------------------------------
+
+		if ($mode == 'run') {
+
+			$cli_check_file = dp_get_data_dir() .'/cli-server-reqs-check.dat';
+			@unlink($cli_check_file);
+
+			$cmd = $php_path . ' cmd.php dp_write_cli_info';
+			$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT);
+			$proc->setTimeout(360000);
+			$proc->run(function ($type, $buffer) {
+				if ('err' === $type) {
+					echo '[ERR] '.$buffer;
+				} else {
+					echo $buffer;
+				}
+			});
+
+			if (!$proc->isSuccessful()) {
+				$logger->log("Error detected, stopping.", 'ERROR');
+				return 1;
+			}
+
+			// Now check for the file that should've been written
+			$okay = false;
+			if (file_exists($cli_check_file)) {
+				$cli_check = file_get_contents($cli_check_file);
+				$cli_check = @unserialize($cli_check);
+
+				if (is_array($cli_check) && isset($cli_check['checks'])) {
+					$okay = true;
+					if (in_array('fatal', $cli_check['checks'])) {
+						$okay = false;
+					}
+				}
+			}
+
+			// Means they are different: Import command (the wrapper) works fine or else we would have quit already,
+			// but the sub-command failed that generated the checks above failed.
+			if (!$okay) {
+				$logger->log("The automatically detected path to PHP is incorrect.\n", Logger::ERR);
+				$logger->log("Edit your /config.php file and specify the path to your PHP binary under the php_path setting.\n", Logger::ERR);
+				return 1;
+			}
+		}
+
+		#----------------------------------------
 		# Execute DP3 upgrade
 		#----------------------------------------
 

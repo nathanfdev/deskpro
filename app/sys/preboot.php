@@ -67,7 +67,7 @@ if (!DP_REAL_ERROR_LOG) {
 # Handle CLI logging of info
 #------------------------------
 
-if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
+if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') || (isset($_SERVER['argv']) && in_array('dp_write_cli_info', $_SERVER['argv']))) {
 
 	$do_update = false;
 	$last_error_log_hash = null;
@@ -116,6 +116,10 @@ if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 	}
 
 	unset($do_update, $phpinfo, $data);
+
+	if (isset($_SERVER['argv']) && in_array('dp_write_cli_info', $_SERVER['argv'])) {
+		exit;
+	}
 }
 
 #------------------------------
