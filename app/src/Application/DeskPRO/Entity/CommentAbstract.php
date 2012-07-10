@@ -258,6 +258,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function getContentReal()
+	{
+		return $this->content;
+	}
+
+
 	/**
 	 * @return string
 	 */

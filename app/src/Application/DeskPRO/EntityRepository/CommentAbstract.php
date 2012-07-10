@@ -100,8 +100,8 @@ class CommentAbstract extends EntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM $table
-			WHERE status = ? OR is_reviewed = ?
-		", array('validating', 0));
+			WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+		");
 	}
 
 	public function getValidatingComments()
@@ -115,5 +115,43 @@ class CommentAbstract extends EntityRepository
 		")->setParameter(1, 'validating')
 		  ->setParameter(2, false)
 		  ->execute();
+	}
+
+	/**
+	 * @param $content
+	 * @param $person
+	 * @param null $name
+	 * @param null $email
+	 */
+	public function getDuplicate($content, $person = null, $name = null, $email = null)
+	{
+		$qb = $this->createQueryBuilder('c');
+
+		if ($person && $person->getId()) {
+			$qb->andWhere('c.person = :person');
+			$qb->setParameter('person', $person);
+		} else {
+			if ($name) {
+				$qb->andWhere('c.name = :name');
+				$qb->setParameter('name', $name);
+			}
+			if ($email) {
+				$qb->andWhere('c.email = :email');
+				$qb->setParameter('email', $email);
+			}
+		}
+
+		$qb->setMaxResults(5);
+		$qb->orderBy('c.id', 'DESC');
+
+		$comments = $qb->getQuery()->execute();
+
+		foreach ($comments as $comment) {
+			if ($comment->getContentReal() == $content) {
+				return $comment;
+			}
+		}
+
+		return null;
 	}
 }

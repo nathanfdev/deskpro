@@ -467,7 +467,7 @@ class FeedbackController extends AbstractController
 				));
 			}
 
-			if ($form->isValid()) {
+			if ($form->isValid() && !$validator->checkDupe($new_comment)) {
 				$comment = $new_comment->save();
 
 				if ($new_comment->require_login) {

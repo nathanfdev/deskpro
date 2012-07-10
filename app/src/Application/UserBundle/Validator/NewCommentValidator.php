@@ -80,4 +80,22 @@ class NewCommentValidator extends AbstractValidator
 
 		return true;
 	}
+
+
+	public function checkDupe($newcomment)
+	{
+		$this->newcomment = $newcomment;
+
+		$content = $this->newcomment->content;
+		$person  = $this->newcomment->getPersonContext();
+		$name    = $this->newcomment->name;
+		$email   = $this->newcomment->email;
+
+		return App::getOrm()->getRepository($this->newcomment->getClass())->getDuplicate(
+			$content,
+			$person,
+			$name,
+			$email
+		);
+	}
 }

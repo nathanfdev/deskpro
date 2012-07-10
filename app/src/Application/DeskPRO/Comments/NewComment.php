@@ -73,6 +73,11 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 		return $this->person_context;
 	}
 
+	public function getClass()
+	{
+		return $this->class;
+	}
+
 	public function save()
 	{
 		$obj = new $this->class();
