@@ -279,6 +279,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleTicketUpdate: function(data) {
 
+		if (data.status) {
+			var statusProp = this.changeManager.getPropertyManager('status');
+			statusProp.setIncomingValue(data.status);
+		}
+
 		if (data.dupe_message) {
 			// If its a dupe then it'd already be added ot the message list,
 			// we can just clear out the message box
