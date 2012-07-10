@@ -87,6 +87,16 @@ class BounceDetector
 		$this->em = $em;
 	}
 
+
+	/**
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
 	/**
 	 * @return string[]
 	 */
@@ -96,8 +106,8 @@ class BounceDetector
 			return $this->patterns;
 		}
 
-		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns.php');
-		$this->patterns = $pattern_config->all;
+		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns');
+		$this->patterns = $pattern_config->all();
 
 		return $this->patterns;
 	}
@@ -108,9 +118,9 @@ class BounceDetector
 	 */
 	public function isBounced()
 	{
-		return false;
 		$failed = $this->reader->getHeader('X-Failed-Recipients');
 		if ($failed && $failed->getHeader()) {
+			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
 			return true;
 		}
 
@@ -122,11 +132,13 @@ class BounceDetector
 				if (isset($m['subject'])) {
 					$this->original_subject = $m['subject'];
 				}
+				if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
 				return true;
 			}
 		}
 
-		return true;
+		if ($this->logger) $this->logger->logDebug('Not a bounce');
+		return false;
 	}
 
 
@@ -180,16 +192,20 @@ class BounceDetector
 		$body = $this->reader->getBodyText()->getBodyUtf8();
 
 		foreach ($guessed_emails as $email) {
+			if ($this->logger) $this->logger->logDebug(sprintf("Finding last subjects by %s", $email));
+
 			$ticket_subjects = $this->em->getConnection()->fetchAllKeyValue("
 				SELECT tickets.id, tickets.subject
 				FROM tickets
 				LEFT JOIN people_emails ON (people_emails.person_id = tickets.person_id)
 				WHERE tickets.status IN ('awaiting_user', 'awaiting_agent') AND people_emails.email = ?
-				LIMIT 3
+				ORDER BY tickets.id DESC
+				LIMIT 5
 			", array($email));
 
 			if ($this->original_subject) {
 				foreach ($ticket_subjects as $tid => $subj) {
+					if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against original '%s'", $tid, $subj, $this->original_subject));
 					if (strpos($this->original_subject, $subj) !== false) {
 						$found_ticket_id = $tid;
 						break 2;
@@ -197,6 +213,7 @@ class BounceDetector
 				}
 			} else {
 				foreach ($ticket_subjects as $tid => $subj) {
+					if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
 					if (strpos($body, $subj) !== false) {
 						$found_ticket_id = $tid;
 						break 2;
@@ -238,9 +255,9 @@ class BounceDetector
 		$m = null;
 		if (preg_match_all('#^To: (.*?)$#imu', $this->reader->getBodyText()->getBodyUtf8(), $m, \PREG_SET_ORDER)) {
 			foreach ($m as $match) {
-				$email = Strings::extractRegexMatch('#<(.*?)@(.*?)>#', $match[1]);
+				$email = Strings::extractRegexMatch('#<((.*?)@(.*?))>#', $match[1]);
 				if (!$email) {
-					$email = Strings::extractRegexMatch('#(.*?)@(.*?)#', $match[1]);
+					$email = Strings::extractRegexMatch('#((.*?)@(.*?))#', $match[1]);
 				}
 
 				if ($email) {
@@ -249,6 +266,8 @@ class BounceDetector
 				}
 			}
 		}
+
+		$this->guessed_email_addresses = array_unique($this->guessed_email_addresses);
 
 		return $this->guessed_email_addresses;
 	}

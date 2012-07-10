@@ -94,13 +94,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$person = null;
 
 		$bounce_detector = new \Application\DeskPRO\EmailGateway\Ticket\BounceDetector($this->reader, App::getOrm());
+		$bounce_detector->setLogger($this->logger);
+
 		if ($bounce_detector->isBounced()) {
 
 			$ticket	= $bounce_detector->getGuessedTicket();
-			$person = $ticket->person;
-			$this->is_bounce = true;
+			if ($ticket) {
+				$person = $ticket->person;
+				$this->is_bounce = true;
+			}
+		}
 
-		} else {
+		if (!$ticket) {
 			if (!$ticket) {
 				$detector = new CodeTicketDetector();
 				$ticket = $detector->findExistingTicket($this->reader);
@@ -317,12 +322,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
 
-		if ($person['is_agent']) {
-			$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
-			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
-		} else {
-			$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
-			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
+		if (!$this->is_bounce) {
+			if ($person['is_agent']) {
+				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
+				$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
+			} else {
+				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
+				$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
+			}
 		}
 
 		$charset_error = $this->charset_error;
