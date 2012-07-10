@@ -188,9 +188,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSel   = this.getElById('agent_team_sel');
 		var statusSel = this.getElById('status_sel');
 
-		DP.select(agentSel);
-		DP.select(teamSel);
-		DP.select(statusSel);
+		window.setTimeout(function() {
+			DP.select(agentSel);
+			DP.select(teamSel);
+			DP.select(statusSel);
+		}, 150);
 
 		//------------------------------
 		// Submit
