@@ -294,7 +294,7 @@ class ServerChecks
 					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 					$this->server_errors['config_technical_email'] = array(
 						'message' => $msg,
-						'level' => 'fatal'
+						'level' => 'recommended'
 					);
 				} else {
 					$this->getLogger()->log("[OK] config file exists and contains required values", Logger::DEBUG);
