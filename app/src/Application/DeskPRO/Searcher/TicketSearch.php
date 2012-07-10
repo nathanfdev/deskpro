@@ -1554,6 +1554,9 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_SUBJECT:
+					$choice = (array)$choice;
+					$choice = array_pop($choice);
+
 					switch ($op) {
 						case self::OP_IS:
 							if ($ticket['subject'] != $choice) return false;
