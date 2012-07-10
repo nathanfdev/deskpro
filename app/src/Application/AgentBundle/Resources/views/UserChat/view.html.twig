@@ -7,6 +7,7 @@ pageMeta.youName         = {{ app.uassign_ob_triggerser.display_name|json_encode
 pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
+pageMeta.email = {{ convo.person_email|json_encode|raw }};
 
 pageMeta.session_id = {{ session.id|default(0) }};
 {% if convo.person.id %}

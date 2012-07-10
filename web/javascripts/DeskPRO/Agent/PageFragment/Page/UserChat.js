@@ -145,7 +145,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.getEl('create_ticket_btn').on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
-				page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle, person_id: self.meta.person_id, sesson_id: self.meta.session_id});
+				page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle, person_id: self.meta.person_id, sesson_id: self.meta.session_id, email: self.meta.email });
 			});
 		});
 

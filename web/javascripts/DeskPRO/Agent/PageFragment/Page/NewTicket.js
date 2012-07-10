@@ -171,6 +171,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	setNewByChat: function(data) {
+		var self = this;
 		this.getEl('for_chat_id').val(data.chat_id);
 		this.getEl('chat_title').text(data.chat_title);
 		$('.pending-info.chat', this.wrapper).show();
@@ -179,6 +180,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.setUser(data.person_id, data.session_id);
 			this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 			this.getEl('user_section').hide();
+		} else {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+				data: { 'email': data.email },
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					self.placeUserRow(html);
+
+					if (term.indexOf('@') !== -1) {
+						$('input.email', userfields).val(data.email);
+					} else {
+						$('input.name', userfields).val(data.email);
+					}
+
+					self.updateUi();
+				}
+			});
 		}
 
 		this.updateUi();
