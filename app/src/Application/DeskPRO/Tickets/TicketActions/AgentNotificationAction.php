@@ -230,6 +230,10 @@ class AgentNotificationAction extends AbstractAction
 			$this->tracker->logMessage("[AgentNotificationAction] Generic update");
 			$tpl = $this->ticket_update_email_tpl;
 			$from_name = null;
+
+			if (App::getCurrentPerson()->getId()) {
+				$from_name = App::getCurrentPerson()->getDisplayName();
+			}
 		}
 
 		$agent_change = $this->tracker->getChangedProperty('agent');
