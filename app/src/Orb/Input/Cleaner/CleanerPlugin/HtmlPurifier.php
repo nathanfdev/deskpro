@@ -91,6 +91,7 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('<br></br>', '<br />', $value);
 			$value = str_replace('<br>', '<br />', $value);
 			$value = preg_replace("#<br />\s+<br />#iu", '<br /><br />', $value);
+			$value = preg_replace('#<div[^>]*>\s*(<br>|<br />)*\s*</div>#um', '$1', $value);
 
 			return $value;
 		}

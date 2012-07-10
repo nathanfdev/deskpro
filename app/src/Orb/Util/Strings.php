@@ -1100,6 +1100,10 @@ class Strings
 	{
 		$html = Strings::extractBodyTag($html);
 
+		// Always wrap with this, or else in an attempt to fix structure
+		// we'll end up with superfluous <p> wrappers around some top-level text nodes
+		$html = '<dptag>' . $html . '</dptag>';
+
 		$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 		do {
 			$qp->top()->find('span');
