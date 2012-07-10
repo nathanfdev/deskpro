@@ -197,8 +197,11 @@
 				{% if notice_items.apc_check %}
 					<tr>
 						<td>
-							We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.
-							{#<a href="{{ get_service_url('dp.kb.install.error_apc') }}" target="_blank">Read more about this</a>.#}
+							{% if get_instance_ability('isWindows') %}
+								We recommend installing the <a href="http://www.php.net/manual/en/wincache.installation.php">WinCache extension</a> to dramatically improve performance.
+							{% else %}
+								We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.
+							{% endif %}
 						</td>
 					</tr>
 				{% endif %}
@@ -206,7 +209,6 @@
 					<tr>
 						<td>
 							We recommend installing the OpenSSL extension so you can use web resources that require a secure connection (such as Gmail or Google Apps, secure email servers, Facebook or Twitter).
-							{# <a href="{{ get_service_url('dp.kb.install.error_openssl') }}" target="_blank">Read more about this</a>.#}
 						</td>
 					</tr>
 				{% endif %}
@@ -214,7 +216,6 @@
 					<tr>
 						<td>
 							We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement.
-							{# <a href="{{ get_service_url('dp.kb.install.error_magic_quotes') }}" target="_blank">Read more about this</a>.#}
 						</td>
 					</tr>
 				{% endif %}
