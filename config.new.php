@@ -158,6 +158,13 @@ $DP_CONFIG['dir_data'] = '';
 # You can change the location of the data directory  #
 # which contains the files directory by setting the  #
 # Data directory setting above.                      #
+#                                                    #
+# IMPORTANT:                                         #
+#                                                    #
+# Please ensure you read the README.txt file for     #
+# instructions on how to run an import. You need to  #
+# run import.php from the command line and not       #
+# install DeskPRO using the browser.                 #
 ######################################################
 
 $DP_CONFIG['import'] = array(
