@@ -232,6 +232,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			$ticket_message = new Entity\TicketMessage();
+			$ticket_message['creation_system'] = $this->creation_system;
 			$ticket_message['person']  = $person;
 			$ticket_message['ticket']  = $ticket;
 			$ticket_message['message'] = $this->ticket->message;
