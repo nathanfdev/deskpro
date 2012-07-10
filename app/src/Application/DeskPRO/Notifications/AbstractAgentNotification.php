@@ -89,10 +89,6 @@ abstract class AbstractAgentNotification
 		}
 
 		foreach ($agents as $agent) {
-			if (isset($send_browser[$agent->getId()])) {
-				continue;
-			}
-
 			if ($this->shouldSendEmailNotification($agent)) {
 				$send_email[$agent->getId()] = $agent;
 			}
