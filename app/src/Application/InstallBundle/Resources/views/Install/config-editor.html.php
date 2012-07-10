@@ -36,6 +36,13 @@
 				<input type="text" name="DP_DATABASE_NAME" value="<?php if ($exist['DP_DATABASE_NAME']) echo $exist['DP_DATABASE_NAME']; else echo 'deskpro'; ?>" size="30" />
 			</div>
 		</div>
+		<div class="clearfix">
+			<label>Technical Email Address</label>
+			<div class="input">
+				<input type="text" name="DP_TECHNICAL_EMAIL" value="<?php if ($exist['DP_TECHNICAL_EMAIL']) echo $exist['DP_TECHNICAL_EMAIL']; else echo ''; ?>" placeholder="Enter an email address" size="30" />
+				<br /><small>This address will be used to report database errors that prevent DeskPRO from working.</small>
+			</div>
+		</div>
 		<div class="actions">
 			<input class="btn primary" type="submit" value="Write config.php and continue &rarr;" />
 		</div>

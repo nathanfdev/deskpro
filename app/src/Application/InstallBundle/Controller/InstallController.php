@@ -302,7 +302,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'DP_DATABASE_HOST'     => '',
 			'DP_DATABASE_USER'     => '',
 			'DP_DATABASE_PASSWORD' => '',
-			'DP_DATABASE_NAME'     => ''
+			'DP_DATABASE_NAME'     => '',
+			'DP_TECHNICAL_EMAIL'   => ''
 		);
 
 		if (isset($_REQUEST['process'])) {
