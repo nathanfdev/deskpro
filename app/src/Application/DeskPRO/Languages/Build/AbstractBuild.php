@@ -143,18 +143,12 @@ abstract class AbstractBuild
 			'removed' => array()
 		);
 
-		$longest = 0;
 		foreach ($phrases as $phrase_id => $string) {
 
 			if (!isset($exist[$phrase_id])) {
 				$diff['added'][] = $phrase_id;
 			} elseif (trim($exist[$phrase_id]) != trim($string)) {
 				$diff['changed'][] = $phrase_id;
-			}
-
-			$len = strlen($phrase_id);
-			if ($len > $longest) {
-				$longest = $len;
 			}
 		}
 
@@ -164,13 +158,11 @@ abstract class AbstractBuild
 			}
 		}
 
-		$longest += 4;
-
 		ksort($phrases, \SORT_STRING);
 
 		$php = array("<?php return array(\n");
 		foreach ($phrases as $phrase_id => $string) {
-			$php[] = sprintf("\t%-{$longest}s => %s,\n", "'$phrase_id'", var_export($string, true));
+			$php[] = sprintf("\t%-70s => %s,\n", "'$phrase_id'", var_export($string, true));
 		}
 
 		$php[] = ");\n";
