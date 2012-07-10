@@ -218,7 +218,7 @@ class NewTicketValidator extends AbstractValidator
 		switch ($item['field_type']) {
 			case 'ticket_product':
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
-					'repository' => App::getEntityRepository('DeskPRO:Product'),
+					'category_repository' => App::getEntityRepository('DeskPRO:Product'),
 					'allow_none' => true
 				));
 				if (!$validator->isValid($this->newticket->ticket->product_id)) {
@@ -228,7 +228,7 @@ class NewTicketValidator extends AbstractValidator
 
 			case 'ticket_category':
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(
-					'repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
+					'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
 					'allow_none' => true
 				));
 				if (!$validator->isValid($this->newticket->ticket->category_id)) {
