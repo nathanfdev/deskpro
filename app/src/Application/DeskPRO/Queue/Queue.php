@@ -116,8 +116,8 @@ class Queue extends ZendQueue
 			return $this->getAdapter()->deleteMessage($message);
 		}
 
-		$db->beginTransaction();
 		if (isset($message->qi_id)) {
+			$db->beginTransaction();
 			try {
 				$db = $this->getOption('em')->getConnection();
 				$db->delete('queue_items', array('id' => $message->qi_id));

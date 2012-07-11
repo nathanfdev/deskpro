@@ -61,21 +61,26 @@ class CleanupClientMessages extends AbstractJob
 
 		App::getDb()->beginTransaction();
 
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
-				date_created < ? AND channel NOT IN ($long_lived_channels)
-		", array($datetime));
+		try {
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM client_messages
+				WHERE
+					date_created < ? AND channel NOT IN ($long_lived_channels)
+			", array($datetime));
 
-		// Long-lived channels are still only deleted after 3 days
-		$datetime = date('Y-m-d H:i:s', time() - 259200);
-		$num += App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
-				date_created < ? AND channel IN ($long_lived_channels)
-		", array($datetime));
+				// Long-lived channels are still only deleted after 3 days
+				$datetime = date('Y-m-d H:i:s', time() - 259200);
+				$num += App::getDb()->executeUpdate("
+				DELETE FROM client_messages
+				WHERE
+					date_created < ? AND channel IN ($long_lived_channels)
+			", array($datetime));
 
-		App::getDb()->commit();
+				App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
+		}
 
 		if ($num) {
 			$this->logStatus("Cleaned up $num old client messages");

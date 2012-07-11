@@ -71,16 +71,16 @@ class HardDeleteTickets extends AbstractJob
 
 		foreach ($ticket_ids as $ticket_id) {
 
-			App::getOrm()->beginTransaction();
+			App::getDb()->beginTransaction();
 
 			try {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket_id);
 				$ticket->setNoLog(true);
 				App::getOrm()->remove($ticket);
 				App::getOrm()->flush();
-				App::getOrm()->commit();
+				App::getDb()->commit();
 			} catch (\Exception $e) {
-				App::getOrm()->rollback();
+				App::getDb()->rollback();
 				throw $e; // rethrow for error logging etc
 			}
 		}

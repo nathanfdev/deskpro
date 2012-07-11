@@ -102,13 +102,17 @@ class DeleteSpamTickets extends AbstractJob
 
 				$ticket_count++;
 			} catch (\Exception $e) {
+				if ($open_trans) {
+					App::getOrm()->rollback();
+				}
 				$open_trans = false;
-				App::getOrm()->rollback();
 				throw $e;
 			}
 
 			if ($ticket_count % 250 == 0) {
-				App::getOrm()->commit();
+				if ($open_trans) {
+					App::getOrm()->commit();
+				}
 				$open_trans = false;
 			}
 		}

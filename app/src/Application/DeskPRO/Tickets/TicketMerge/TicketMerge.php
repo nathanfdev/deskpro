@@ -168,13 +168,12 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$this->em->flush();
+			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 
 			throw $e;
 		}
-
-		$this->em->commit();
 
 		return true;
 	}

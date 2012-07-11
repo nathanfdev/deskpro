@@ -63,9 +63,8 @@ class UpdateViewCounts extends AbstractJob
 			LIMIT 250
 		", array(date('Y-m-d', $last_time)));
 
+		App::getDb()->beginTransaction();
 		try {
-			App::getDb()->beginTransaction();
-
 			foreach ($update_objects as $obj) {
 				switch ($obj['object_type']) {
 					case PageViewLog::TYPE_ARTICLE:  $table = 'articles';  break;
