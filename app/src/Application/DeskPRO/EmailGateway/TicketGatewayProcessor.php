@@ -412,6 +412,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
+		if (!$has_cut) {
+			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		}
+
 		if ($email_info['body_is_html']) {
 			// Replace inline image tags with tokens
 			$email_info['body'] = $inline_images->processTokens($email_info['body']);
@@ -422,11 +427,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_basicclean');
 			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
-		}
-
-		if (!$has_cut) {
-			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
 		}
 
 		if ($email_info['body_is_html']) {
