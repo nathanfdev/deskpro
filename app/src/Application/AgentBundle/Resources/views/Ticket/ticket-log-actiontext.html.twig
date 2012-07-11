@@ -26,10 +26,10 @@
     {{ phrase('agent.tickets.attachment') }} <span class="old-val">ID {{log.id_object}}</span> {{ phrase('agent.tickets.into_this_from_ticket', {'id':log.id_before}) }}
 {% elseif log.action_type == 'changed_category' %}
 	<span class="type">{{ phrase('agent.general.category') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.general.department'))}}</span>
+	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_department' %}
 	<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.organization'))}}</span>
+	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_organization' %}
 	<span class="type">{{ phrase('agent.general.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.general.none'))}}</span>
@@ -51,16 +51,16 @@
 	<span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">ID {{log.id_before}}</span>
 {% elseif log.action_type == 'changed_priority' %}
 	<span class="type">{{ phrase('agent.general.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_priority_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_priority_title|default(phrase('agent.general.workflow'))}}</span>
+	<span class="old-val">{{log.details.old_priority_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_priority_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_workflow' %}
 	<span class="type">{{ phrase('agent.general.workflow') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_workflow_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_workflow_title|default(phrase('agent.general.urgency'))}}</span>
+	<span class="old-val">{{log.details.old_workflow_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_workflow_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'changed_urgency' %}
 	<span class="type">{{ phrase('agent.general.urgency') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_urgency}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_urgency}}</span>
 {% elseif log.action_type == 'changed_product' %}
 	<span class="type">{{ phrase('agent.general.product') }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{log.details.old_product_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_product_title|default(phrase('agent.general.status'))}}</span>
+	<span class="old-val">{{log.details.old_product_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_product_title|default(phrase('agent.general.none'))}}</span>
 {% elseif log.action_type == 'attach_added' %}
 	<span class="type">{{ phrase('agent.tickets.new_attachment') }}</span> <span class="new-val">ID {{log.details.attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'attach_removed' %}
