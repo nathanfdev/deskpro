@@ -73,12 +73,12 @@
 					<td class="title">Demo License</td>
 					<td class="prop">
 						{% if not is_expired %}
-							Your demo period expires {% if expire_in_days and expire_in_days < 20 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+							Your demo period expires {% if expire_in_days %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
 						{% else %}
 							Your demo period has ended
 						{% endif %}
 						&nbsp;&nbsp;
-						<a target="_blank" class="clean-white" href="http://www.deskpro.com/pricing/">Buy Now</a>
+						<a target="_blank" class="clean-white" href="http://www.deskpro.com/pricing/?download">Purchase your License Now</a>
 					</td>
 				</tr>
 				<tr>
@@ -90,7 +90,7 @@
 					<td class="title">Expires</td>
 					<td class="prop">
 						{% if not is_expired %}
-							Your license expires {% if expire_in_days and expire_in_days < 20 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+							Your license expires {% if expire_in_days and expire_in_days < 30 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
 						{% else %}
 							Your license has expired
 						{% endif %}
@@ -140,7 +140,14 @@
 								then our agents may ask you to email a keyfile to <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
 								so your license code can be manually generated.
 								<br /><br />
-								<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}">Download license.key file</a>
+								<table cellspacing="0" cellpadding="8" border="0"><tr>
+									<td valign="middle" style="vertical-align: middle; padding: 8px 0 8px 8px;" width="32">
+										<a href="{{ path('admin_license_keyfile') }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
+									</td>
+									<td valign="middle" style="vertical-align: middle; padding: 0 8px 0 0;">
+										<a href="{{ path('admin_license_keyfile') }}">Download license.key file</a>
+									</td>
+								</tr></table>
 							</div>
 						</div>
 					</td>

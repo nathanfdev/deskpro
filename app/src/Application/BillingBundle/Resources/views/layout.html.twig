@@ -113,16 +113,17 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="admin">{{ phrase('agent.general.admin_interface') }}<span class="dropdownIcon"></span></a>
+				<a class="billing">{{ phrase('agent.general.billing_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 			<div class="dropdownSwitcherWrap">
 				<div class="switcherHeader">
-					<a class="admin"><span>{{ phrase('agent.general.admin_interface') }}</span></a>
+					<a class="billing"><span>{{ phrase('agent.general.billing_interface') }}</span></a>
 				</div>
 				<ul>
+					{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}
 					{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
 					{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('agent.general.billing_interface') }}</span></a></li>{% endif %}
 					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.report_interface') }}</span></a></li>{% endif %}

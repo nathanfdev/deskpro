@@ -109,23 +109,9 @@ $collection->add('admin_upgrade_watch_checkstarted', new Route(
 # License
 ################################################################################
 
-$collection->add('admin_license', new Route(
-	'/license',
-	array('_controller' => 'AdminBundle:License:index'),
-	array(),
-	array()
-));
-
 $collection->add('admin_license_reqdemo', new Route(
 	'/license/generate-demo',
 	array('_controller' => 'AdminBundle:License:requestDemo'),
-	array(),
-	array()
-));
-
-$collection->add('admin_license_input', new Route(
-	'/license/input',
-	array('_controller' => 'AdminBundle:License:input'),
 	array(),
 	array()
 ));

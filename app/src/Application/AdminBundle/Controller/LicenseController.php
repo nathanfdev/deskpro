@@ -56,15 +56,6 @@ class LicenseController extends AbstractController
 	}
 
 	############################################################################
-	# index
-	############################################################################
-
-	public function indexAction()
-	{
-		return $this->redirectRoute('admin_license_input');
-	}
-
-	############################################################################
 	# request-demo
 	############################################################################
 
@@ -199,17 +190,6 @@ class LicenseController extends AbstractController
 	############################################################################
 	# input
 	############################################################################
-
-	public function inputAction()
-	{
-		$from_demo = $this->in->getBool('from_demo');
-		$invalid = $this->in->getString('invalid');
-		return $this->render('AdminBundle:License:input.html.twig', array(
-			'from_demo' => $from_demo,
-			'invalid' => $invalid,
-			'currently_has_license' => License::getLicense()->hasLicense()
-		));
-	}
 
 	public function saveNewLicenseAction()
 	{
