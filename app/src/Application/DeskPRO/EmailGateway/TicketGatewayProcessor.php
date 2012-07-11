@@ -520,8 +520,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function handleCc($ticket, array $ccs)
 	{
-		App::getOrm()->beginTransaction();
-
 		foreach ($ccs as $cc) {
 			$person_processor = new PersonFromEmailProcessor();
 
@@ -538,18 +536,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				continue;
 			}
 
-			App::getOrm()->persist($cc_person);
-			App::getOrm()->flush();
-
 			if (!$ticket->hasParticipantPerson($cc_person)) {
 				$ticket->addParticipantPerson($cc_person);
 			}
-
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
 		}
-
-		App::getOrm()->commit();
 	}
 
 

@@ -3,9 +3,9 @@
 {% elseif log.action_type == 'changed_agent_team' %}
 	Changed agent team to {{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'participant_added' %}
-	Removed {{log.details.name}} as a participant
+	Removed {{log.details.email}} as a participant
 {% elseif log.action_type == 'participant_removed' %}
-	Added {{log.details.name}} as a participant
+	Added {{log.details.email}} as a participant
 {% elseif log.action_type == 'ticket_created' %}
 	Created ticket
 {% elseif log.action_type == 'subject' %}

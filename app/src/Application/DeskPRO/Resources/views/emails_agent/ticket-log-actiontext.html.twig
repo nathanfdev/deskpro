@@ -12,9 +12,9 @@
 		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_agent_team_name|default(phrase('agent.general.none'))}}</span>
 		{{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}</span>
 	{% elseif log.action_type == 'participant_added' %}
-		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.participant_added') }}</span>: <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.name}}</span>
+		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.participant_added') }}</span>: <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.email}}</span>
 	{% elseif log.action_type == 'participant_removed' %}
-		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.participant_removed') }}</span>: <span style="{{ layout.actiontext_style('old-val') }}">{{log.details.name}}</span>
+		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.participant_removed') }}</span>: <span style="{{ layout.actiontext_style('old-val') }}">{{log.details.email}}</span>
 	{% elseif log.action_type == 'ticket_created' %}
 		{{ phrase('agent.general.ticket') }} <span style="{{ layout.actiontext_style('new-val') }}">ID {{log.details.ticket_id}}</span> {{ phrase('agent.tickets.lc_created') }}
 	{% elseif log.action_type == 'subject' %}

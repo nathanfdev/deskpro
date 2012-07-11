@@ -27,6 +27,15 @@
 
 <br/><br/>
 
+{% set content %}
+	{% for log in ticket_logs %}
+		{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
+	{% endfor %}
+{% endset %}
+{{ layout.section('Ticket Changes', content) }}
+
+<br/><br/>
+
 {{ layout.render_ticket_messages(messages, phrase('agent.general.message_history'), { ticketdisplay: ticketdisplay, show_author_email: true, skip_top: true, agent: true }) }}
 
 <br/><br/>
