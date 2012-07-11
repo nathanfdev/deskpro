@@ -215,7 +215,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$logger->log('The database was created successfully.', Logger::DEBUG);
 				}
 			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
-				$logger->log('The new database name you have set in config.php does not exist'  . PHP_EOL, Logger::ERR);
+
+				$logger->log('Invalid user credentials set in config.php. Please check that the username and password set in config.php are correct and that the user has permission to access the database: ' . $e->getCode() . ' ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 				return 21;
 			} else {
 				$logger->log('There was a problem while trying to connect to your database: ' . $e->getCode() . ' ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
