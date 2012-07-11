@@ -1083,6 +1083,8 @@ class Strings
 
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
+
+			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 		} while ($string != $old_string);
 
 		return $string;
@@ -1173,16 +1175,22 @@ class Strings
 			$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
-			$div = $qp->top()->find('body > div, body > p, body dptag > div, body dptag > p');
-			if ($div->length == 1 && ($div->tag() == 'div' || $div->tag() == 'p')) {
+			$div = $qp->top()->find('body > dptag > *');
+			if (!$div->length) {
+				$div = $qp->top()->find('body > *');
+			}
+			if ($div->length == 1 && ($div->first() && $div->tag() == 'div' || $div->tag() == 'p')) {
 				$changed = true;
 				$html = $div->html();
-
 				$html = trim($html);
-				$html = preg_replace('#^<div.*?>#', '', $html);
-				$html = preg_replace('#^<p.*?>#', '', $html);
-				$html = preg_replace('#</div>$#', '', $html);
-				$html = preg_replace('#</p>$#', '', $html);
+
+				if ($div->tag() == 'div') {
+					$html = preg_replace('#^<div.*?>#', '', $html);
+					$html = preg_replace('#</div>$#', '', $html);
+				} else {
+					$html = preg_replace('#</p>$#', '', $html);
+					$html = preg_replace('#^<p.*?>#', '', $html);
+				}
 
 				$html = '<dptag>' . $html . '</dptag>';
 			}

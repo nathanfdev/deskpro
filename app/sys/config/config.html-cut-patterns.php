@@ -75,5 +75,8 @@
 	'exchange_1'                         => 'p #^\s*-+\s?original\smessage\s?-+\s*$#im br /br #from:\s.*#i br /br #sent:\s.*#i br /br #to:\s.*#i br /br /p',
 
 	// X-Mailer: YahooMailClassic/15.0.4 YahooMailWebService/0.8.116.338427
-	'yahoo_2'                            => 'div /div b span #from:#i /span /b br /br b span #to:#i /span /b br /br b span #sent:#i /span /b br /br b span #subject:#i /span /b'
+	'yahoo_2'                            => 'div /div b span #from:#i /span /b br /br b span #to:#i /span /b br /br b span #sent:#i /span /b br /br b span #subject:#i /span /b',
+
+	// X-Mailer: Zimbra 7.1.1_GA_3196 (Zimbra Desktop/7.1.4_11299_Windows)
+	'zimbra'                             => 'b #From: # /b br /br b #To: # /b br /br b #Sent: # /b br /br b #Subject: # /b',
 );
