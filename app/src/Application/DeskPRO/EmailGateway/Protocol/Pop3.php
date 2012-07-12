@@ -57,7 +57,13 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 
 	public function sendRequest($request)
 	{
-		if ($this->logger) $this->logger->logDebug("[Request] " . $request);
+		if ($this->logger) {
+			if (strpos($request, 'PASS ') === 0) {
+				$this->logger->logDebug("[Request] PASS xxxxxx");
+			} else {
+				$this->logger->logDebug("[Request] " . $request);
+			}
+		}
 
 		return parent::sendRequest($request);
 	}
