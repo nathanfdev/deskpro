@@ -172,10 +172,15 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$page_display->zone = 'create';
 
 		// Standard fields
-		$options[] = array('id' => 'product');
-		$options[] = array('id' => 'ticket_category');
-		$options[] = array('id' => 'ticket_workflow');
-		$options[] = array('id' => 'ticket_priority');
+		if (App::getSetting('core.use_product') && App::getDataService('Product')->getRootNodes()) {
+			$options[] = array('id' => 'product');
+		}
+		if (App::getSetting('core.use_ticket_category') && App::getDataService('TicketCategory')->getRootNodes()) {
+			$options[] = array('id' => 'ticket_category');
+		}
+		if (App::getSetting('core.use_ticket_priority') && App::getDataService('TicketPriority')->getNames()) {
+			$options[] = array('id' => 'ticket_priority');
+		}
 		$options[] = array('id' => 'ticket_department');
 		$options[] = array('id' => 'ticket_subject');
 		$options[] = array('id' => 'message');

@@ -130,18 +130,27 @@ class TicketPageDisplay extends EntityRepository
 			'id' => 'ticket_department',
 			'field_type' => 'ticket_department'
 		);
-		$page_data[] = array(
-			'id' => 'ticket_category',
-			'field_type' => 'ticket_category'
-		);
-		$page_data[] = array(
-			'id' => 'ticket_priority',
-			'field_type' => 'ticket_priority'
-		);
-		$page_data[] = array(
-			'id' => 'ticket_product',
-			'field_type' => 'ticket_product'
-		);
+
+		if (App::getSetting('core.use_ticket_category') && App::getDataService('TicketCategory')->getRootNodes()) {
+			$page_data[] = array(
+				'id' => 'ticket_category',
+				'field_type' => 'ticket_category'
+			);
+		}
+
+		if (App::getSetting('core.use_ticket_priority') && App::getDataService('TicketPriority')->getNames()) {
+			$page_data[] = array(
+				'id' => 'ticket_priority',
+				'field_type' => 'ticket_priority'
+			);
+		}
+
+		if (App::getSetting('core.use_product') && App::getDataService('Product')->getRootNodes()) {
+			$page_data[] = array(
+				'id' => 'ticket_product',
+				'field_type' => 'ticket_product'
+			);
+		}
 
 		// Custom fields
 		$fields = App::getSystemService('ticket_fields_manager')->getFields();
