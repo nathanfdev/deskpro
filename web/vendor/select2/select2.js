@@ -79,6 +79,9 @@
             case KEY.ALT:
                 return true;
             }
+
+            if (k.metaKey) return true;
+
             return false;
         },
         isFunctionKey: function (k) {
@@ -473,11 +476,11 @@
 
             installKeyUpChangeEvent(search);
             search.bind("keyup-change", this.bind(this.updateResults));
-            search.bind("focus", function () { search.addClass("select2-focused");});
+            search.bind("focus", function () { search.addClass("select2-focused"); if (search.val() === " ") search.val(""); });
             search.bind("blur", function () { search.removeClass("select2-focused");});
 
             this.dropdown.delegate(resultsSelector, "click", this.bind(function (e) {
-                if ($(e.target).closest(".select2-result:not(.select2-disabled)").length > 0) {
+                if ($(e.target).closest(".select2-result-selectable:not(.select2-disabled)").length > 0) {
                     this.highlightUnderEvent(e);
                     this.selectHighlighted(e);
                 } else {
@@ -538,7 +541,7 @@
 				addResultClass: '',
 				addWidth: 30,
                 populateResults: function(container, results, query) {
-                    var uidToData={}, populate, markup=[], uid, data, result, children, formatted;
+                    var uidToData={}, populate, markup=[], uid, data, result, children, formatted, id=this.opts.id;
 
                     populate=function(results, depth) {
 
@@ -546,21 +549,20 @@
                         for (i = 0, l = results.length; i < l; i = i + 1) {
 
                             result=results[i];
-                            selectable=("id" in result); // TODO switch to id() function
+                            selectable=id(result) !== undefined;
                             compound=("children" in result) && result.children.length > 0;
 
-                            markup.push("<li class='select2-result-depth-"+depth);
-                            if (!selectable) { markup.push(" select2-result-unselectable"); } else { markup.push(" select2-result");}
+                            markup.push("<li class='select2-result-depth-" + depth);
+                            markup.push(" select2-result");
+                            markup.push(selectable ? " select2-result-selectable" : " select2-result-unselectable");
                             if (compound) { markup.push(" select2-result-with-children"); }
 							markup.push(' ' + opts.addResultClass);
 
                             markup.push("'");
 
-                            if (selectable) {
-                                uid=nextUid();
-                                markup.push(" id='select2-result-"+uid+"'");
-                                uidToData[uid]=result;
-                            }
+                            uid=nextUid();
+                            markup.push(" id='select2-result-"+uid+"'");
+                            uidToData[uid]=result;
 
                             markup.push("><div class='select2-result-label'>");
                             formatted=opts.formatResult(result, query, markup);
@@ -582,12 +584,7 @@
 
                     populate(results, 0);
 
-                    children=container.children();
-                    if (children.length===0) {
-                        container.html(markup.join(""));
-                    } else {
-                        $(children[children.length-1]).append(markup.join(""));
-                    }
+                    container.append(markup.join(""));
 
                     for (uid in uidToData) {
                         $("#select2-result-"+uid, container).data("select2-data", uidToData[uid]);
@@ -626,10 +623,10 @@
                         var group;
                         if (element.is("option")) {
                             if (query.matcher(term, element.text())) {
-                                collection.push({id:element.attr("value"), text:element.text()});
+                                collection.push({id:element.attr("value"), text:element.text(), element: element.get()});
                             }
                         } else if (element.is("optgroup")) {
-                            group={text:element.attr("label"), children:[]};
+                            group={text:element.attr("label"), children:[], element: element.get()};
                             element.children().each2(function(i, elm) { process(elm, group.children); });
                             if (group.children.length>0) {
                                 collection.push(group);
@@ -662,14 +659,15 @@
                     } else if ("tags" in opts) {
                         opts.query = tags(opts.tags);
                         opts.createSearchChoice = function (term) { return {id: term, text: term}; };
-                        opts.initSelection = function (element) {
+                        opts.initSelection = function (element, callback) {
                             var data = [];
                             $(splitVal(element.val(), ",")).each(function () {
                                 if ($.trim(this) !== "") {
                                     data.push({id: this, text: this});
                                 }
                             });
-                            return data;
+
+                            callback(data);
                         };
                     }
                 }
@@ -733,20 +731,79 @@
 
         // abstract
         positionDropdown: function() {
-            var offset = this.container.offset();
-            var height = this.container.outerHeight();
-            var width  = this.container.outerWidth();
-            var css    = {
-                top: offset.top + height,
-                left: offset.left,
-                width: width
+            var offset = this.container.offset(),
+                height = this.container.outerHeight(),
+                width = this.container.outerWidth(),
+                dropHeight = this.dropdown.outerHeight(),
+                viewportBottom = document.body.scrollTop + document.documentElement.clientHeight,
+                dropTop = offset.top + height,
+                enoughRoomBelow = dropTop + dropHeight <= viewportBottom,
+                enoughRoomAbove = (offset.top - dropHeight) >= document.body.scrollTop,
+                aboveNow = this.dropdown.hasClass("select2-drop-above"),
+                above,
+                css;
+
+            // always prefer the current above/below alignment, unless there is not enough room
+
+            if (aboveNow) {
+                above = true;
+                if (!enoughRoomAbove && enoughRoomBelow) above = false;
+            } else {
+                above = false;
+                if (!enoughRoomBelow && enoughRoomAbove) above = true;
             }
+
+            if (above) {
+                dropTop = offset.top - dropHeight;
+                this.container.addClass("select2-drop-above");
+                this.dropdown.addClass("select2-drop-above");
+            }
+            else {
+                this.container.removeClass("select2-drop-above");
+                this.dropdown.removeClass("select2-drop-above");
+            }
+
+            css = {
+                top:dropTop,
+                left:offset.left,
+                width:width
+            };
+
             this.dropdown.css(css);
         },
 
         // abstract
+        shouldOpen: function() {
+            var event;
+
+            if (this.opened()) return false;
+
+            event = jQuery.Event("open");
+            this.opts.element.trigger(event);
+            return !event.isDefaultPrevented();
+        },
+
+        // abstract
+        clearDropdownAlignmentPreference: function() {
+            // clear the classes used to figure out the preference of where the dropdown should be opened
+            this.container.removeClass("select2-drop-above");
+            this.dropdown.removeClass("select2-drop-above");
+        },
+
+        /**
+         * Opens the dropdown
+         *
+         * @return {Boolean} whether or not dropdown was opened. This method will return false if, for example,
+         * the dropdown is already open, or if the 'open' event listener on the element called preventDefault().
+         */
+        // abstract
         open: function () {
-            if (this.opened()) return;
+
+            if (!this.shouldOpen()) return false;
+
+            this.clearDropdownAlignmentPreference();
+
+            if (this.search.val() === " ") { this.search.val(""); }
 
             this.container.addClass("select2-dropdown-open").addClass("select2-container-active");
             if(this.dropdown[0] !== this.body.children().last()[0]) {
@@ -762,11 +819,15 @@
             this.dropdown.show();
             this.ensureHighlightVisible();
             this.focusSearch();
+
+            return true;
         },
 
         // abstract
         close: function () {
             if (!this.opened()) return;
+
+            this.clearDropdownAlignmentPreference();
 
             this.dropdown.hide();
             this.container.removeClass("select2-dropdown-open");
@@ -787,7 +848,17 @@
 
             if (index < 0) return;
 
-            children = results.find(".select2-result");
+            if (index == 0) {
+
+                // if the first element is highlighted scroll all the way to the top,
+                // that way any unselectable headers above it will also be scrolled
+                // into view
+
+                results.scrollTop(0);
+                return;
+            }
+
+            children = results.find(".select2-result-selectable");
 
             child = $(children[index]);
 
@@ -815,12 +886,13 @@
 
         // abstract
         moveHighlight: function (delta) {
-            var choices = this.results.find(".select2-result"),
+            var choices = this.results.find(".select2-result-selectable"),
                 index = this.highlight();
 
             while (index > -1 && index < choices.length) {
                 index += delta;
-                if (!$(choices[index]).hasClass("select2-disabled")) {
+                var choice = $(choices[index]);
+                if (choice.hasClass("select2-result-selectable") && !choice.hasClass("select2-disabled")) {
                     this.highlight(index);
                     break;
                 }
@@ -829,7 +901,7 @@
 
         // abstract
         highlight: function (index) {
-            var choices = this.results.find(".select2-result .select2-result-label");
+            var choices = this.results.find(".select2-result-selectable");
 
             if (arguments.length === 0) {
                 return indexOf(choices.filter(".select2-highlighted")[0], choices.get());
@@ -837,10 +909,6 @@
 
             if (index >= choices.length) index = choices.length - 1;
             if (index < 0) index = 0;
-
-            if ($(choices[index]).parent().is('.select2-result-unselectable')) {
-                return;
-            }
 
             choices.removeClass("select2-highlighted");
 
@@ -852,10 +920,13 @@
 
         // abstract
         highlightUnderEvent: function (event) {
-            var el = $(event.target).closest(".select2-result");
+            var el = $(event.target).closest(".select2-result-selectable");
             if (el.length > 0 && !el.is(".select2-highlighted")) {
-        		var choices = this.results.find('.select2-result');
+        		var choices = this.results.find('.select2-result-selectable');
                 this.highlight(choices.index(el));
+            } else if (el.length == 0) {
+                // if we are over an unselectable item remove al highlights
+                this.results.find(".select2-highlighted").removeClass("select2-highlighted");
             }
         },
 
@@ -882,15 +953,15 @@
                         matcher: this.opts.matcher,
                         callback: this.bind(function (data) {
 
-                    self.opts.populateResults(results, data.results, {term: term, page: page, context:context});
+                    self.opts.populateResults.call(this, results, data.results, {term: term, page: page, context:context});
 
                     if (data.more===true) {
-                        more.detach();
-                        results.children().filter(":last").append(more);
-                        more.removeClass("select2-active");
+                        more.detach().appendTo(results.children(":last")).text(self.opts.formatLoadMore(page+1));
+                        window.setTimeout(function() { self.loadMoreIfNeeded(); }, 10);
                     } else {
                         more.remove();
                     }
+                    self.positionDropdown();
                     self.resultsPage = page;
                 })});
             }
@@ -913,6 +984,7 @@
             function postRender() {
                 results.scrollTop(0);
                 search.removeClass("select2-active");
+                self.positionDropdown();
             }
 
             function render(html) {
@@ -956,11 +1028,12 @@
                 }
 
                 results.empty();
-                self.opts.populateResults(results, data.results, {term: search.val(), page: this.resultsPage, context:null});
+                self.opts.populateResults.call(this, results, data.results, {term: search.val(), page: this.resultsPage, context:null});
                 postRender();
 
                 if (data.more === true) {
                     results.children().filter(":last").append("<li class='select2-more-results'>" + opts.formatLoadMore(this.resultsPage) + "</li>");
+                    window.setTimeout(function() { self.loadMoreIfNeeded(); }, 10);
                 }
 
                 this.postprocessResults(data, initial);
@@ -977,7 +1050,8 @@
             this.close();
             this.container.removeClass("select2-container-active");
             this.dropdown.removeClass("select2-drop-active");
-            if (this.search.is(":focus")) { this.search.blur(); }
+            // synonymous to .is(':focus'), which is available in jquery >= 1.6
+            if (this.search[0] === document.activeElement) { this.search.blur(); }
             this.clearSearch();
             this.selection.find(".select2-search-choice-focus").removeClass("select2-search-choice-focus");
         },
@@ -989,12 +1063,11 @@
             window.setTimeout(this.bind(function () {
                 this.search.focus();
             }), 10);
-			this.search.focus();
         },
 
         // abstract
         selectHighlighted: function () {
-            var data = this.results.find(".select2-highlighted").not(".select2-disabled").closest('.select2-result').not('.select2-result-unselectable').data("select2-data");
+            var data = this.results.find(".select2-highlighted").not(".select2-disabled").closest('.select2-result-selectable').data("select2-data");
             if (data) {
                 this.onSelect(data);
             }
@@ -1002,7 +1075,10 @@
 
         // abstract
         getPlaceholder: function () {
-            return this.opts.element.attr("placeholder") || this.opts.element.data("placeholder") || this.opts.placeholder;
+            return this.opts.element.attr("placeholder") ||
+                this.opts.element.attr("data-placeholder") || // jquery 1.4 compat
+                this.opts.element.data("placeholder") ||
+                this.opts.placeholder;
         },
 
         /**
@@ -1016,9 +1092,12 @@
         // abstract
         getContainerWidth: function () {
             var style, attrs, matches, i, l;
+
+            // see if there is width specified in opts
             if (this.opts.width !== undefined)
                 return this.opts.width;
 
+            // next check if there is inline style on the element that contains width
             style = this.opts.element.attr('style');
             if (style !== undefined) {
                 attrs = style.split(';');
@@ -1029,7 +1108,14 @@
                         return matches[1];
                 }
             }
-            return (this.opts.element.width() + this.opts.addWidth) + 'px';
+
+            // next check if css('width') can resolve a width that is percent based, this is sometimes possible
+            // when attached to input type=hidden or elements hidden via css
+            style = this.opts.element.css('width');
+            if (style.indexOf("%") > 0) return style;
+
+            // finally, fallback on the calculated width of the element
+            return (this.opts.element.width() === 0 ? 'auto' : (this.opts.element.outerWidth() + this.opts.addWidth) + 'px');
         }
     });
 
@@ -1055,15 +1141,6 @@
         },
 
         // single
-        open: function () {
-
-            if (this.opened()) return;
-
-            this.parent.open.apply(this, arguments);
-
-        },
-
-        // single
         close: function () {
             if (!this.opened()) return;
             this.parent.close.apply(this, arguments);
@@ -1077,7 +1154,7 @@
 
         // single
         isFocused: function () {
-            return this.selection.is(":focus");
+            return this.selection[0] === document.activeElement;
         },
 
         // single
@@ -1154,7 +1231,7 @@
 
             selection.delegate("abbr", "click", this.bind(function (e) {
                 if (!this.enabled) return;
-                this.val("");
+                this.clear();
                 killEvent(e);
                 this.close();
                 this.triggerChange();
@@ -1172,6 +1249,13 @@
             this.opts.element.bind("open", function() { focusser.hide(); });
         },
 
+        clear: function() {
+            this.opts.element.val("");
+            this.selection.find("span").empty();
+            this.selection.removeData("select2-data");
+            this.setPlaceholder();
+        },
+
         /**
          * Sets selection based on source element's value
          */
@@ -1180,15 +1264,18 @@
             var selected;
             if (this.opts.element.val() === "") {
                 this.updateSelection({id: "", text: ""});
+                this.close();
+                this.setPlaceholder();
             } else {
-                selected = this.opts.initSelection.call(null, this.opts.element);
-                if (selected !== undefined && selected !== null) {
-                    this.updateSelection(selected);
-                }
+                var self = this;
+                this.opts.initSelection.call(null, this.opts.element, function(selected){
+                    if (selected !== undefined && selected !== null) {
+                        self.updateSelection(selected);
+                        self.close();
+                        self.setPlaceholder();
+                    }
+                });
             }
-
-            this.close();
-            this.setPlaceholder();
         },
 
         // single
@@ -1196,11 +1283,12 @@
             var opts = this.parent.prepareOpts.apply(this, arguments);
 
             if (opts.element.get(0).tagName.toLowerCase() === "select") {
-                // install sthe selection initializer
-                opts.initSelection = function (element) {
+                // install the selection initializer
+                opts.initSelection = function (element, callback) {
                     var selected = element.find(":selected");
                     // a single select box always has a value, no need to null check 'selected'
-                    return {id: selected.attr("value"), text: selected.text()};
+                    if ($.isFunction(callback))
+                        callback({id: selected.attr("value"), text: selected.text()});
                 };
             }
 
@@ -1233,7 +1321,7 @@
 
             // find the selected element in the result list
 
-            this.results.find(".select2-result").each2(function (i, elm) {
+            this.results.find(".select2-result-selectable").each2(function (i, elm) {
                 if (equal(self.id(elm.data("select2-data")), self.opts.element.val())) {
                     selected = i;
                     return false;
@@ -1272,6 +1360,9 @@
 
         // single
         updateSelection: function (data) {
+
+            this.selection.data("select2-data", data);
+
             this.selection
                 .find("span.select2-choice-wrap")
                 .html(this.opts.formatSelection(data));
@@ -1314,6 +1405,20 @@
         // single
         clearSearch: function () {
             this.search.val("");
+        },
+
+        // single
+        data: function(value) {
+            if (arguments.length === 0) {
+                return this.selection.data("select2-data");
+            } else {
+                if (!value || value === "") {
+                    this.clear();
+                } else {
+                    this.opts.element.val(!value ? "" : this.id(value));
+                    this.updateSelection(value);
+                }
+            }
         }
     });
 
@@ -1348,13 +1453,16 @@
             // TODO validate placeholder is a string if specified
 
             if (opts.element.get(0).tagName.toLowerCase() === "select") {
-                // install the selection initializer
-                opts.initSelection = function (element) {
+                // install sthe selection initializer
+                opts.initSelection = function (element,callback) {
+
                     var data = [];
                     element.find(":selected").each2(function (i, elm) {
                         data.push({id: elm.attr("value"), text: elm.text()});
                     });
-                    return data;
+
+                    if ($.isFunction(callback))
+                        callback(data);
                 };
             }
 
@@ -1427,6 +1535,7 @@
 
             this.container.delegate(selector, "click", this.bind(function (e) {
                 if (!this.enabled) return;
+                this.clearPlaceholder();
                 this.open();
                 this.focusSearch();
                 e.preventDefault();
@@ -1466,18 +1575,21 @@
             var data;
             if (this.opts.element.val() === "") {
                 this.updateSelection([]);
+                this.close();
+                // set the placeholder if necessary
+                this.clearSearch();
             }
             if (this.select || this.opts.element.val() !== "") {
-                data = this.opts.initSelection.call(null, this.opts.element);
-                if (data !== undefined && data !== null) {
-                    this.updateSelection(data);
-                }
+                var self = this;
+                this.opts.initSelection.call(null, this.opts.element, function(data){
+                    if (data !== undefined && data !== null) {
+                        self.updateSelection(data);
+                        self.close();
+                        // set the placeholder if necessary
+                        self.clearSearch();
+                    }
+                });
             }
-
-            this.close();
-
-            // set the placeholder if necessary
-            this.clearSearch();
         },
 
         // multi
@@ -1487,9 +1599,11 @@
             if (placeholder !== undefined  && this.getVal().length === 0 && this.search.hasClass("select2-focused") === false) {
                 this.search.val(placeholder).addClass("select2-default");
                 // stretch the search box to full width of the container so as much of the placeholder is visible as possible
-                this.search.width(this.getContainerWidth());
+                this.search.width("auto");
             } else {
-                this.search.val("").width(10);
+                // we set this to " " instead of "" and later clear it on focus() because there is a firefox bug
+                // that does not properly render the caret when the field starts out blank
+                this.search.val(" ").width(10);
             }
         },
 
@@ -1497,16 +1611,20 @@
         clearPlaceholder: function () {
             if (this.search.hasClass("select2-default")) {
                 this.search.val("").removeClass("select2-default");
+            } else {
+                // work around for the space character we set to avoid firefox caret bug
+                if (this.search.val() === " ") this.search.val("");
             }
         },
 
         // multi
         open: function () {
-            if (this.opened()) return;
-            this.parent.open.apply(this, arguments);
-			this.clearPlaceholder();
+            if (this.parent.open.apply(this, arguments) === false) return false;
+
+            this.clearPlaceholder();
 			this.resizeSearch();
             this.focusSearch();
+            return true;
         },
 
         // multi
@@ -1636,7 +1754,7 @@
         // multi
         postprocessResults: function () {
             var val = this.getVal(),
-                choices = this.results.find(".select2-result"),
+                choices = this.results.find(".select2-result-selectable"),
                 self = this;
 
             choices.each2(function (i, choice) {
@@ -1728,7 +1846,6 @@
                 this.updateSelection(data);
             } else {
                 val = (val === null) ? [] : val;
-                this.setVal(val);
                 // val is a list of objects
                 $(val).each(function () { data.push(self.id(this)); });
                 this.setVal(data);
@@ -1759,7 +1876,7 @@
             this.searchContainer.show();
             // make sure the search container is the last item in the list
             this.searchContainer.appendTo(this.searchContainer.parent());
-            // since we collapsed the width in dragStarteed, we resize it here
+            // since we collapsed the width in dragStarted, we resize it here
             this.resizeSearch();
 
             // update selection
@@ -1769,6 +1886,22 @@
             });
             this.setVal(val);
             this.triggerChange();
+        },
+
+        // multi
+        data: function(values) {
+            var self=this, ids;
+            if (arguments.length === 0) {
+                 return this.selection
+                     .find(".select2-search-choice")
+                     .map(function() { return $(this).data("select2-data"); })
+                     .get();
+            } else {
+                ids = $.map(values, function(e) { return self.opts.id(e)});
+                this.setVal(ids);
+                this.updateSelection(values);
+                this.clearSearch();
+            }
         }
     });
 
@@ -1777,7 +1910,7 @@
         var args = Array.prototype.slice.call(arguments, 0),
             opts,
             select2,
-            value, multiple, allowedMethods = ["val", "destroy", "open", "close", "focus", "isFocused", "container", "onSortStart", "onSortEnd", "enable", "disable", "positionDropdown"];
+            value, multiple, allowedMethods = ["val", "destroy", "open", "close", "focus", "isFocused", "container", "onSortStart", "onSortEnd", "enable", "disable", "positionDropdown", "data"];
 
         this.each(function () {
             if (args.length === 0 || typeof(args[0]) === "object") {
