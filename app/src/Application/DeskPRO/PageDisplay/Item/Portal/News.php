@@ -38,13 +38,8 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
 
 use Application\DeskPRO\App;
 
-class News extends PortalItemAbstract implements CacheableItem
+class News extends PortalItemAbstract
 {
-	public function getCacheOptions()
-	{
-		return array('tags' => array('news'));
-	}
-
 	public function checkPermission()
 	{
 		return $this->person_context->hasPerm('news.use');

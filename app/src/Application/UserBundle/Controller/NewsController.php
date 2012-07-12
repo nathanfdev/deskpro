@@ -95,6 +95,8 @@ class NewsController extends AbstractController
 			$searcher->setPersonContext($this->person);
 		}
 
+		$searcher->addTerm('status', 'is', 'published');
+
 		$news_cats = $structure->getNewsCategories();
 		$news_cat_objs = $structure->getNewsCategories();
 		$category_counts = $structure->getNewsCategoryCounts($this->person);

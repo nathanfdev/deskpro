@@ -81,6 +81,7 @@ class DownloadsController extends AbstractController
 			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
 			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category', 'is', $category['id']);
+			$searcher->addTerm('status', 'is', 'published');
 
 			if ($search_options['order_by']) {
 				$searcher->setOrderByCode($search_options['order_by']);
