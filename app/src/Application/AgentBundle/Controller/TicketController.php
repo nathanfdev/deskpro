@@ -302,7 +302,12 @@ class TicketController extends AbstractController
 		$last_message_id = 0;
 		$last_log_id = 0;
 
+		$ticket_messages_num = array();
+		$x = 1;
 		foreach ($ticket_messages as $m) {
+
+			$ticket_messages_num[$m['id']] = $x++;
+
 			if ($m['id'] > $last_message_id) {
 				$last_message_id = $m['id'];
 			}
@@ -366,6 +371,7 @@ class TicketController extends AbstractController
 			$ticket_messages_block = $this->renderView($tpl, array(
 				'ticket' => $ticket,
 				'ticket_messages' => $ticket_messages,
+				'ticket_messages_num' => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
 				'ticket_attachments' => $ticket_attachments,
 				'ticket_message_logs' => $ticket_message_logs,

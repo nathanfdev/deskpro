@@ -40,7 +40,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.ownObject(this.ticketDisplay);
 
-		this._initMessage($('.messages-wrap'));
+		this._initMessage(this.wrapper.find('.messages-wrap'));
 
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
@@ -423,9 +423,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		if (messageEl.hasClass('messages-wrap')) {
-			var articles = messageEl.find('article.message');
+			var articles = messageEl.find('article.content-message');
 		} else {
-			var articles = messageEl.filter('article.message');
+			var articles = messageEl.find('article.content-message');
 		}
 		articles.each(function() {
 			var article = $(this);

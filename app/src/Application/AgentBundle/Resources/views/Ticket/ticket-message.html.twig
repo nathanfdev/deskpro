@@ -13,7 +13,7 @@
 		/></div>
 	<div class="content">
 		<header>
-			<span class="message-counter message-counter-{{ message.id }} with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
+			<span class="message-counter message-counter-{{ message.id }} with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.name}}</h4>
 			{% else %}<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
 			{% endif %}

@@ -1,5 +1,5 @@
 {% for message in ticket_messages %}
-	{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
+	{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id] } %}
 	{% if ticket_message_logs[message.id] %}
 		<div class="log-batch" style="display: none">
 			{% for log_id in ticket_message_logs[message.id] %}
