@@ -198,7 +198,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			$feedback = new Feedback();
 
 			$feedback['title']        = $this->title;
-			$feedback['content']      = $this->content;
+			$feedback['content']      = nl2br(htmlspecialchars($this->content, \ENT_QUOTES, 'UTF-8'));
 			$feedback['category_id']  = $this->category_id;
 			$feedback['status']       = Feedback::STATUS_NEW;
 			$feedback['date_created'] = new \DateTime();
