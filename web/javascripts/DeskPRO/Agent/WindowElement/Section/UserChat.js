@@ -130,7 +130,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-		var count = parseInt($('#userchat_deplist_0_counter').text()) + parseInt($('#userchat_list_allagents_counter').text());
+		var count = parseInt($('#userchat_deplist_0_counter').text());
 		this.updateBadge(count);
 
 		if (!count) {
