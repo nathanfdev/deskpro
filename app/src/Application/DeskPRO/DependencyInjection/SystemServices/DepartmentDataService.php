@@ -66,6 +66,7 @@ class DepartmentDataService extends BaseRepositoryService
 
 	public function get($dep_id)
 	{
+		$this->preload();
 		return isset($this->cats[$dep_id]) ? $this->cats[$dep_id] : null;
 	}
 

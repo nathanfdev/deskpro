@@ -322,8 +322,14 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		if ($name == 'news.use' && (!App::getSetting('core.apps_news') || $is_closed)) {
 			return false;
 		}
-		if ($name == 'chat.use' && (!App::getSetting('core.apps_chat') || $is_closed)) {
-			return false;
+		if ($name == 'chat.use') {
+			if (!App::getSetting('core.apps_chat') || $is_closed) {
+				return false;
+			}
+
+			if (!$this->get('Departments')->getAllowed('chat')) {
+				return false;
+			}
 		}
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
 	}

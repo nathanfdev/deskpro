@@ -61,6 +61,8 @@ abstract class AbstractLoader implements \Serializable
 	public function __construct(array $usergroup_ids, Person $person = null)
 	{
 		$this->usergroup_ids = $usergroup_ids;
+		$this->usergroup_ids[] = 1;
+		$this->usergroup_ids = array_unique($this->usergroup_ids);
 		sort($this->usergroup_ids, \SORT_NUMERIC);
 
 		$this->person = $person;

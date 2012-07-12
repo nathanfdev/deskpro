@@ -29,98 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\PermissionLoader;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Person;
-
-use Orb\Util\Arrays;
-
-class Departments extends AbstractLoader
+class Build1342122883 extends AbstractBuild
 {
-	/**
-	 * An array of categories allowed for real, that we get by computing
-	 * inheritance.
-	 * @var array
-	 */
-	protected $allowed_cats = array('tickets' => array(), 'chat' => array());
-
-	protected function init()
+	public function run()
 	{
-		$in = implode(',', $this->getUsergroupIds());
-		$res = App::getDb()->fetchAll("
-			SELECT department_id, app
-			FROM department_permissions
-			WHERE usergroup_id IN($in)
-		");
-
-		foreach ($res as $d) {
-			$dep = App::getDataService('Department')->get($d['department_id']);
-
-			$check = 'is_' . $d['app'] . '_enabled';
-			if (!isset($dep[$check]) || !$dep[$check]) {
-				continue;
-			}
-
-			$this->allowed_cats[$d['app']][$d['department_id']] = $d['department_id'];
-
-			// With departments, if a child is allowed, then the parent is too since its just a wrapper
-			if ($dep && $dep->parent) {
-				$this->allowed_cats[$d['app']][$dep->parent->getId()] = $dep->parent->getId();
-			}
-		}
-
-		foreach ($this->allowed_cats as &$_x) {
-			$_x = array_unique($_x);
-		}
-	}
-
-	/**
-	 * Is a dep allowed?
-	 *
-	 * @return bool
-	 */
-	public function isAllowed($id, $app)
-	{
-		return isset($this->allowed_cats[$app][$id]);
-	}
-
-
-	/**
-	 * Get an array of all allowed categories.
-	 *
-	 * @return array
-	 */
-	public function getAllowed($app)
-	{
-		return $this->allowed_cats[$app];
-	}
-
-
-	/**
-	 * Get an array of data we'll serialize
-	 *
-	 * @return array
-	 */
-	protected function serializeData()
-	{
-		return array(
-			'allowed_cats'    => $this->allowed_cats,
-		);
-	}
-
-
-	/**
-	 * Initialize this object with an array of saved data
-	 *
-	 * @param array $data
-	 */
-	protected function unserializeData(array $data)
-	{
-		$this->allowed_cats     = $data['allowed_cats'];
+		$this->out("Clear permission cache");
+		$this->execMutateSql("TRUNCATE TABLE permissions_cache");
 	}
 }
