@@ -265,6 +265,12 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 
 		this.header.on('click', '.dp-toggle-block', function() {
 			self.header.toggleClass('disabled');
+
+			if (self.header.hasClass('disabled')) {
+				PortalAdmin.tellAdmin('disable_logo_area', { controller: this });
+			} else {
+				PortalAdmin.tellAdmin('enable_logo_area', { controller: this });
+			}
 		});
 		this.header.on('click', '.dp-edit', function() {
 			PortalAdmin.tellAdmin('open_logo_editor', { controller: self });

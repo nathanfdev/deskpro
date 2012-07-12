@@ -87,7 +87,7 @@ class NewFeedbackValidator extends AbstractValidator
 			} else {
 				$children = $cf_man->getFieldChildren($newfeedback_cat_field);
 				$selected_id = $newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()];
-				
+
 				if (!isset($children[$selected_id])) {
 					$this->addError('usercat.invalid');
 				}

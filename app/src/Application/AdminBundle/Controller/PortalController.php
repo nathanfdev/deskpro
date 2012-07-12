@@ -119,12 +119,14 @@ class PortalController extends AbstractController
 				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', null);
 				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('user.portal_header', $this->in->getString('title'));
 				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('user.portal_tagline', $this->in->getString('tagline'));
+				$this->container->getSettingsHandler()->setSetting('user.portal_simpleheader', 1);
 				break;
 
 			case 'header_logo':
 				$blob = $this->container->getEm()->getRepository('DeskPRO:Blob')->getByAuthId($this->in->getString('blob_authid'));
 				if ($blob) {
 					$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', $blob->id);
+					$this->container->getSettingsHandler()->setSetting('user.portal_simpleheader', 1);
 				}
 				break;
 
