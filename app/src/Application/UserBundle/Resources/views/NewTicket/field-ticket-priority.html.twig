@@ -8,6 +8,7 @@
 	</div>
 	<div class="dp-controls dp-fill">
 		<select name="newticket[ticket][priority_id]">
+			<option></option>
 			{% for id,pri in ticket_options.ticket_priorities %}
 				<option value="{{ id }}">{{ pri }}</option>
 			{% endfor %}
