@@ -54,7 +54,10 @@ pageMeta.baseId = '{{ baseId }}';
         <td width="50%" valign="top">
             <div class="profile-box-container people-box first">
                 <header>
-                    <h4>{{ phrase('agent.general.person') }}</h4>
+                    <h4>
+						{{ phrase('agent.general.person') }}
+						{% if not convo.person %}(Unregistered){% endif %}
+					</h4>
                 </header>
                 <section id="{{baseId}}_people_box_person">
                     <article>
@@ -69,7 +72,7 @@ pageMeta.baseId = '{{ baseId }}';
                                         </span>
                                     </a>
                                 {% else %}
-									<a class="user-link clean-white" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
+									<a class="user-link clean-white anon" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
 										{% if convo.person_email %}
 											<span style="background-image: url('{{ gravatar_for_email(convo.person_email, 20) }}');">
 										{% else %}
