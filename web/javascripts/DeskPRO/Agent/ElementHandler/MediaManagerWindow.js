@@ -59,12 +59,22 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 	},
 
 	_loadPageForTabTarget: function(wrapper) {
+
+		if (wrapper.hasClass('loading')) {
+			return;
+		}
+
+		wrapper.addClass('loading')
+
 		var self = this;
 		$.ajax({
 			dataType: 'text',
 			url: wrapper.data('page-url'),
 			type: 'GET',
 			context: this,
+			complete: function() {
+				wrapper.removeClass('loading')
+			},
 			success: function(html) {
 				var page = DeskPRO_Window.createPageFragment(html);
 				page.mediaWindow = self;
