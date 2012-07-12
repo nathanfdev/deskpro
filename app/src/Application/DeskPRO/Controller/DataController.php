@@ -86,6 +86,7 @@ class DataController extends AbstractController
 			'agent.userchat.msg_agent_timeout',
 			'agent.userchat.msg_user_timeout',
 			'agent.userchat.ended_by',
+			'agent.userchat.message_ended-by-user',
 			'agent.userchat.ended',
 			'agent.userchat.ended_user',
 			'agent.userchat.message_started',
