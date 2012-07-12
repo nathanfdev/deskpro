@@ -197,6 +197,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	_initFragment: function() {
 		if (this.page) return;
 		if (!this.pageSource) return;
+		if (!this.popover) return;
 
 		var self = this;
 
