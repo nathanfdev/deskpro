@@ -181,6 +181,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		if (!el) {
 			el = $('article.' + typename + '-' + commentId, this.wrapper);
 		}
+
 		el.fadeOut();
 
 		this.updateCount('sub');
@@ -192,10 +193,14 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			dataType: 'json',
 			error: function() {
 				this.updateCount('add');
-				el.fadeIn();
+				if (el) {
+					el.fadeIn();
+				}
 			},
 			success: function(data) {
-				el.remove();
+				if (el) {
+					el.remove();
+				}
 			}
 		});
 	},
