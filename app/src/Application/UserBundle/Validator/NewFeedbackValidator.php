@@ -79,11 +79,16 @@ class NewFeedbackValidator extends AbstractValidator
 		}
 
 		if ($newfeedback_cat_field) {
+			// Not specified in the form
 			if (!isset($newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()])) {
 				$this->addError('usercat.invalid');
+
+			// Specifid but may be invalid option
 			} else {
 				$children = $cf_man->getFieldChildren($newfeedback_cat_field);
-				if (!isset($children[$newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()]])) {
+				$selected_id = $newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()];
+				
+				if (!isset($children[$selected_id])) {
 					$this->addError('usercat.invalid');
 				}
 			}

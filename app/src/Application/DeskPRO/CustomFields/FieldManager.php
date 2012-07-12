@@ -130,7 +130,7 @@ class FieldManager
 					if (!isset($this->field_to_children[$p])) {
 						$this->field_to_children[$p] = array();
 					}
-					$this->field_to_children[$p][] = $f;
+					$this->field_to_children[$p][$f->getId()] = $f;
 				}
 			}
 
