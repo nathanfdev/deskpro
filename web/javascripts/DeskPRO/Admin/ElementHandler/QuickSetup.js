@@ -43,6 +43,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			url: MA_SERVER + '/api/data-submit/ping-install.json',
 			dataType: 'html',
 			data: data,
+			cache: false,
 			timeout: 15000
 		});
 	},
@@ -80,6 +81,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var self = this;
 		$.ajax({
 			url: BASE_URL + 'admin/session-ping.json',
+			cache: false,
 			complete: function() {
 				window.setTimeout(function() {
 					self.sessionPing();
@@ -97,11 +99,13 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this._autoTimezone();
 
 		var postData = $('#setting_form').serializeArray();
+		postData.push({ name: 'set_admin_tz', value:1 });
 		var form = $('#setting_form');
 		$.ajax({
 			url: form.attr('action'),
 			method: 'POST',
-			data: postData
+			data: postData,
+			cache: false
 		});
 	},
 
@@ -150,6 +154,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			url: $('#section_install_cron').data('check-url'),
 			cache: false,
 			dataType: 'json',
+			cache: false,
 			success: function(data) {
 				console.log(data.cron_okay);
 				if (!data || !data.cron_okay) {
@@ -247,6 +252,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				data: formData,
 				dataType: 'jsonp',
 				timeout: 12000,
+				cache: false,
 				complete: function() {
 					form.removeClass('mark-loading');
 				},
@@ -307,6 +313,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				type: 'POST',
 				data: formData,
 				dataTyoe: 'json',
+				cache: false,
 				complete: function() {
 					form.removeClass('mark-loading');
 				},
@@ -365,6 +372,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				data: formData,
 				type: 'POST',
 				dataType: 'json',
+				cache: false,
 				complete: function() {
 					form.removeClass('mark-loading');
 				},
@@ -430,6 +438,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				data: formData,
 				type: 'POST',
 				dataType: 'json',
+				cache: false,
 				complete: function() {
 					form.removeClass('mark-loading');
 				},

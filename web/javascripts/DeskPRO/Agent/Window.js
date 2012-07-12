@@ -429,13 +429,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.messageBroker.removeTaggedEvents(id);
 		});
 
-		var diff = 0;
-		var now = new Date();
-		diff += Math.abs(now.getHours() - DESKPRO_PERSON_HOUR) * 60 * 60;
-		diff += Math.abs(now.getMinutes() - DESKPRO_PERSON_MINUTE) * 60;
-
-		if (diff > 1200) {
-			console.log("Time is off by %s seconds", diff);
+		if (DESKPRO_TIME_OUT_OF_SYNC) {
 			window.setTimeout(function() {
 				$('#time_outofsync').trigger('dp_open');
 			}, 1000);

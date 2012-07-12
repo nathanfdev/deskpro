@@ -426,8 +426,16 @@ class SettingsController extends AbstractController
 		$timezone = $this->in->getString('timezone');
 		$url = $this->in->getString('url');
 
-		if ($timezone && !$this->container->getSetting('core.default_timezone')) {
+		if ($timezone) {
 			$this->container->get('deskpro.core.settings')->setSetting('core.default_timezone', $timezone);
+
+			// Also update our own tz
+			if ($this->in->getBool('set_admin_tz')) {
+				$this->db->executeUpdate("
+					UPDATE people SET timezone = ?
+					WHERE id = ?
+				", array($timezone, $this->person->getId()));
+			}
 		}
 		if ($url && (!$this->container->getSetting('core.deskpro_url') || $is_import)) {
 			$url = preg_replace('#index\.php/?(.*?)$#', '', $url);

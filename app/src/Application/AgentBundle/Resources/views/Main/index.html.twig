@@ -13,6 +13,26 @@
 		{% endif %}
 	</script>
 
+	{% include 'AgentBundle:Main:page-vars.html.twig' %}
+
+	{% if not app.user.timezone or app.user.timezone == 'UTC' %}
+		<script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
+	{% endif %}
+
+	<script type="text/javascript">
+		(function() {
+			var diff = 0;
+			var now = new Date();
+			diff += Math.abs(now.getHours() - DESKPRO_PERSON_HOUR) * 60 * 60;
+			diff += Math.abs(now.getMinutes() - DESKPRO_PERSON_MINUTE) * 60;
+
+			if (diff > 1200) {
+				DESKPRO_TIME_OUT_OF_SYNC = diff;
+				console.log("Time is off by %s seconds", diff);
+			}
+		})();
+	</script>
+
 	{% if app.getSetting('core.favicon_blob_id') %}
 		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
@@ -136,13 +156,6 @@
 {% include 'AgentBundle:Main:resources.html.twig' %}
 {% include 'AgentBundle:Settings:settings-window.html.twig' %}
 {% include 'AgentBundle:MediaManager:media-window.html.twig' %}
-
-{% if js_debug.devbar %}
-	<div id="dp_devbar">
-		<a class="reload-active-tab">{{ phrase('agent.general.reload_active_tab') }}</a>
-	</div>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/devbar.js') }}"></script>
-{% endif %}
 
 {% include 'AgentBundle:Main:page-init.html.twig' %}
 

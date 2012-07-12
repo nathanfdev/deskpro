@@ -1,32 +1,27 @@
-<script>
-	var BASE_URL = '{{ path('user') }}';
-	var ASSETS_BASE_URL = '{{ asset('') }}';
-	var ASSETS_BASE_URL_FULL = '{{ asset_full('') }}';
-	var DESKPRO_PERSON_ID = {{ app.user.id }};
-	var DESKPRO_TEAM_IDS = {{ app.user.getAgent.getTeamIds()|json_encode }};
-	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
-	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
-	{# {% if app.user.is_admin %} #}
-	var DESKPRO_PERSON_ISADMIN = true;
-	{# {% endif %} #}
-	var DESKPRO_PERSON_PERMS = {
-		'agent_tickets.create': {% if app.user.hasPerm('agent_tickets.create') %}true{% else %}false{% endif %},
-		'agent_people.create': {% if app.user.hasPerm('agent_people.create') %}true{% else %}false{% endif %},
-		'agent_org.create': {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %},
-		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %}
-	};
-
-	var DESKPRO_PERSON_HOUR   = {{ person_hour }};
-	var DESKPRO_PERSON_MINUTE = {{ person_minute }};
-
-	var DP_SETTINGS = {
-		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow'] %}
-			'{{ x }}': {% if app.getSetting(x) %}true{% else %}false{% endif %},
-		{% endfor %}
-		'rand': {{ rand() }}
-	};
+<script type="text/javascript">
 
 	$(document).ready(function() {
+
+		{% if not app.user.timezone or app.user.timezone == 'UTC' %}
+			{# When we have a UTC timezone and the time is wrong, then its a default and we should guess #}
+			if (DESKPRO_TIME_OUT_OF_SYNC) {
+				var detected = jstz.determine_timezone();
+				console.log("Detected Timezone: %o", detected.name());
+				if (detected.name()) {
+					$.ajax({
+						url: BASE_URL + 'agent/settings/profile/update-timezone.json',
+						type: 'POST',
+						dataType: 'json',
+						data: { timezone: detected.name() },
+						success: function() {
+							window.location.reload(false);
+						}
+					});
+
+					return;
+				}
+			}
+		{% endif %}
 
 		{% if not constant('DP_DEBUG') %}
 			DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';
