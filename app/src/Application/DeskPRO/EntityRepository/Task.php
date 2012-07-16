@@ -110,6 +110,17 @@ class Task extends EntityRepository
 		   ->from('DeskPRO:Task', 't')
 		   ->where('t.is_completed = :is_completed')
 		   ->setParameter('is_completed', false);
+
+		$person->loadHelper('Agent');
+		if ($person->Agent->getTeamIds()) {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->setParameter('person', $person);
+			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		} else {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->setParameter('person', $person);
+		}
+
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
 	}
@@ -131,6 +142,17 @@ class Task extends EntityRepository
 		   ->andWhere('t.date_due < :date_due')
 		   ->setParameter('is_completed', false)
 		   ->setParameter('date_due', $date);
+
+		$person->loadHelper('Agent');
+		if ($person->Agent->getTeamIds()) {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->setParameter('person', $person);
+			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		} else {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->setParameter('person', $person);
+		}
+
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
 	}
@@ -150,9 +172,18 @@ class Task extends EntityRepository
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
-		   ->andWhere('t.date_due >= :today AND t.date_due < :tomorrow')
-		   ->orWhere('t.date_due IS NULL')
+		   ->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL')
 		   ->andWhere('t.is_completed = :is_completed');
+
+		$person->loadHelper('Agent');
+		if ($person->Agent->getTeamIds()) {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->setParameter('person', $person);
+			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		} else {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->setParameter('person', $person);
+		}
 
 		$qb->setParameters(array(
 			'is_completed' => false,
@@ -180,6 +211,16 @@ class Task extends EntityRepository
 		   ->from('DeskPRO:Task', 't')
 		   ->andWhere('t.date_due > :today')
 		   ->andWhere('t.is_completed = :is_completed');
+
+		$person->loadHelper('Agent');
+		if ($person->Agent->getTeamIds()) {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->setParameter('person', $person);
+			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		} else {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->setParameter('person', $person);
+		}
 
 		$qb->setParameters(array(
 			'is_completed' => false,
@@ -681,6 +722,16 @@ class Task extends EntityRepository
 		} elseif($filter_type == 'overdue') {
 			$qb->andWhere('t.date_due < :date_due');
 			$qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+		}
+
+		$person->loadHelper('Agent');
+		if ($person->Agent->getTeamIds()) {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->setParameter('person', $person);
+			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		} else {
+			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->setParameter('person', $person);
 		}
 
 		$query = $qb->getQuery();
