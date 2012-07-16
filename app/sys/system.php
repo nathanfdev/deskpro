@@ -163,7 +163,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			// 1) /admin/login               Logging in
 			// 2) /admin/welcome             Initial config
 			// 3) /admin/setup/default-smtp  Setting up outgoing email
-			// 4) /admin/license             Setting up the license
+			// 4) /billing                   Setting up the license
 
 			$is_installed = App::getSetting('core.setup_initial');
 			if (
@@ -171,7 +171,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				&& !preg_match('#^/admin/login#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
-				&& !preg_match('#^/admin/license#', $path)
+				&& !preg_match('#^/billing#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
 			) {
 				$response = new RedirectResponse($request->getBaseUrl() . '/admin/welcome');
@@ -180,7 +180,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 			if (
 				!preg_match('#^/admin/login#', $path)
-				&& !preg_match('#^/admin/license#', $path)
+				&& !preg_match('#^/billing#', $path)
 				&& !preg_match('#^/admin/upgrade#', $path)
 			) {
 				#------------------------------
@@ -198,7 +198,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 					// On every admin page, redirect them to agents management, dont let them do anything else
 					// Also let them use the license page to update the license!
-					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/billing#', $path) && !preg_match('#^/admin/login#', $path)) {
 						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
 						if ($count > License::getLicense()->getMaxAgents()) {
 							$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
@@ -213,8 +213,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 				if (License::getLicense()->isPastExpireDate()) {
 					// On every admin page, redirect them to license management
-					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
-						$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
+					if (DP_INTERFACE == 'admin' && !preg_match('#^/billing#', $path) && !preg_match('#^/billing/login#', $path)) {
+						$response = new RedirectResponse($request->getBaseUrl() . '/billing');
 						return $response;
 					} else {
 						die('[LIC ERR 2] License has expired');
