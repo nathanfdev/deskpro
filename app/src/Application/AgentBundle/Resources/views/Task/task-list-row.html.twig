@@ -28,6 +28,7 @@
 						{% else %}{{ phrase('agent.general.me') }}{% endif %}
 					</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}Public{% else %}Private{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="comment-btn">
 						<label>{{ phrase('agent.general.add_comment') }}</label><span class="drop-icon"></span>
 					</li>

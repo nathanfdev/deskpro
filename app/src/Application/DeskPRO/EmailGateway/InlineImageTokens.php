@@ -141,7 +141,6 @@ class InlineImageTokens
 	{
 		$token = $this->getToken($cid);
 		if (!$token) {
-			error_log("no token");
 			return $body;
 		}
 

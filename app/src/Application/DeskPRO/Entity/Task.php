@@ -84,7 +84,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 */
-	protected $visibility = 0;
+	protected $visibility = 1;
 
 	/**
 	 * The task's optional due date.

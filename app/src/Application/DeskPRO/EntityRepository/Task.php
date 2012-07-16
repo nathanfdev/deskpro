@@ -113,11 +113,11 @@ class Task extends EntityRepository
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
 		} else {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility =1');
 			$qb->setParameter('person', $person);
 		}
 
@@ -145,11 +145,11 @@ class Task extends EntityRepository
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
 		} else {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 		}
 
@@ -177,11 +177,11 @@ class Task extends EntityRepository
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
 		} else {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 		}
 
@@ -214,11 +214,11 @@ class Task extends EntityRepository
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
 		} else {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 		}
 
@@ -726,11 +726,11 @@ class Task extends EntityRepository
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
 		} else {
-			$qb->andWhere('t.person = :person OR t.assigned_agent = :person');
+			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
 		}
 

@@ -25,7 +25,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.tasks.task_description') }}" />
 			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
-			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="0" />
+			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="1" />
 			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
                         <input type="hidden" class="input-deal-id" name="newtask[%baseId%][deal_id]" value="0" />
 		</div>
@@ -33,6 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<ul>
 				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger visibility"><label>Public</label><span class="drop-icon"></span></li>
 			</ul>
 			<div class="linked-container" style="display:none">
 				<span class="linked-ticket" style="display:none">
