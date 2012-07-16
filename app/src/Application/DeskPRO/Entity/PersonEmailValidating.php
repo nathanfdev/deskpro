@@ -120,10 +120,6 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getEmailDomain()
 	{
-		if ($this->email_domain) {
-			return $this->email_domain;
-		}
-
 		return Strings::extractRegexMatch('#@(.*?)$#', $this->email, 1);
 	}
 

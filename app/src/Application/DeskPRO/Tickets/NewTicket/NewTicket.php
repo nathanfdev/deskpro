@@ -149,6 +149,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				} elseif ($email_validating) {
 					$validating = 'new';
 					$person = $email_validating->person;
+					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
 
 				// If we get here, then its a new user. We add the email address
 				// as a validation email address. The trigger NewTicketAction will turn it into
@@ -156,11 +157,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				} else {
 					$person = Entity\Person::newContactPerson();
 					$person->name = $this->person->name;
-					App::getOrm()->persist($person);
+					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
 
 					$email_validating = new Entity\PersonEmailValidating();
 					$email_validating->email = $this->person->email;
 					$email_validating->person = $person;
+					$person->email_validating = $email_validating;
+					App::getOrm()->persist($person);
 					App::getOrm()->persist($email_validating);
 				}
 

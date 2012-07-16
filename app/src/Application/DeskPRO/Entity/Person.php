@@ -367,6 +367,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $_person_logger = null;
 
 	/**
+	 * @var PersonEmailValidating
+	 */
+	public $email_validating;
+
+	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
 	 *
@@ -446,6 +451,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _initPersonLogger()
 	{
+		if ($this->_person_logger) {
+			return;
+		}
 		$person_logger = new \Application\DeskPRO\People\PersonChangeTracker($this);
 		$this->_person_logger = $person_logger;
 		$this->addPropertyChangedListener($person_logger);
@@ -1748,6 +1756,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_person_logger) {
 			$this->_person_logger->done();
+			$this->_person_logger = null;
 			$this->_initPersonLogger();
 		}
 	}
@@ -1756,6 +1765,40 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
+		}
+
+		if ($this->isNewPerson() && ($this->getPrimaryEmail() || $this->email_validating)) {
+			$change = false;
+
+			$email_address = $this->primary_email ? $this->getPrimaryEmail() : $this->email_validating->email;
+
+			$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($email_address);
+			if ($rules) {
+				foreach ($rules as $r) {
+					if ($r->add_usergroup) {
+						$change = true;
+						$this->addUsergroup($r->add_usergroup);
+					}
+					if ($r->add_organization) {
+						$change = true;
+						$this->setOrganization($r->add_organization);
+					}
+				}
+			}
+
+			// And check orgs with domain assocs
+			$domain = $this->primary_email ? $this->getPrimaryEmail()->email_domain : $this->email_validating->getEmailDomain();
+			$orgem = App::getContainer()->getEm()->createQuery("
+				SELECT od
+				FROM DeskPRO:OrganizationEmailDomain od
+				LEFT JOIN od.organization org
+				WHERE od.domain = ?1
+			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
+
+			if ($orgem) {
+				$change = true;
+				$this->setOrganization($orgem->organization);
+			}
 		}
 	}
 
@@ -1832,6 +1875,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Unset permissions manager so it'll be relaoded now that the user is registered
 		$this->_permissions_manager = null;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\People\PersonChangeTracker|null
+	 */
+	public function getChangeTracker()
+	{
+		$this->_initPersonLogger();
+		return $this->_person_logger;
 	}
 
 	############################################################################

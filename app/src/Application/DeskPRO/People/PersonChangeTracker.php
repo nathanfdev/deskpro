@@ -53,21 +53,12 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	/**
 	 * @var bool
 	 */
-	protected $is_new_person = false;
-
-	/**
-	 * @var bool
-	 */
 	protected $running = false;
 
 	public function __construct(Person $person)
 	{
 		$this->entity = $person;
 		$this->person = $person;
-
-		if (!$person['id']) {
-			$this->is_new_person = true;
-		}
 	}
 
 
@@ -90,7 +81,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function isNewPerson()
 	{
-		return $this->is_new_person;
+		return $this->person->isNewPerson();
 	}
 
 
@@ -110,38 +101,6 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			return;
 		}
 		$this->running = true;
-
-		if ($this->is_new_person && $this->person->getPrimaryEmail()) {
-			$change = false;
-
-			$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($this->person->getEmailAddress());
-			if ($rules) {
-				foreach ($rules as $r) {
-					if ($r->add_usergroup) {
-						$change = true;
-						$this->person->addUsergroup($r->add_usergroup);
-					}
-					if ($r->add_organization) {
-						$change = true;
-						$this->person->setOrganization($r->add_organization);
-					}
-				}
-			}
-
-			// And check orgs with domain assocs
-			$domain = $this->person->getPrimaryEmail()->email_domain;
-			$orgem = App::getContainer()->getEm()->createQuery("
-				SELECT od
-				FROM DeskPRO:OrganizationEmailDomain od
-				LEFT JOIN od.organization org
-				WHERE od.domain = ?1
-			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
-
-			if ($orgem) {
-				$change = true;
-				$this->person->setOrganization($orgem->organization);
-			}
-		}
 
 		$this->running = false;
 	}

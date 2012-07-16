@@ -116,7 +116,8 @@ class NewTicket
 
 		if (!$person) {
 			$person = new Person();
-			$person->addEmailAddressString($this->person->email_address);
+			$email_obj = $person->addEmailAddressString($this->person->email_address);
+			$person->primary_email = $email_obj;
 		}
 
 		if ($this->person->organization) {
