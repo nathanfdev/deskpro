@@ -82,6 +82,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		parent::boot();
 		App::setContainer($this->container, 'default');
 		$this->container->kernel = $this;
+
+		$this->container->get('deskpro.sys_events_loader');
 	}
 
 	protected function initializeContainer()
@@ -112,11 +114,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$this->postResponseHandled($response);
 
 		return $response;
-	}
-
-	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
-	{
-		return null;
 	}
 
 	protected function postResponseHandled($response)
@@ -261,5 +258,102 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		if (defined('DP_BUILDING')) {
 			parent::setClassCache($classes);
 		}
+	}
+
+	public function isHelpdeskOffline()
+	{
+		if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
+			return true;
+		}
+
+		// Offline setting applies to all but admin
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
+			return true;
+		}
+
+		// Offline file is inserted on cmdline upgrade,
+		// we want to disable all access
+		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isUpgradePending()
+	{
+		// Make sure filesystem and db builds are the same, or else the upgrader needs to run
+		if (App::getSetting('core.deskpro_build') < DP_BUILD_TIME) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function registerBundles()
+	{
+		$bundles = array(
+			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+			new \Symfony\Bundle\MonologBundle\MonologBundle(),
+			new \Symfony\Bundle\TwigBundle\TwigBundle(),
+			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\UserBundle\UserBundle(),
+		);
+
+		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
+
+		if ($this->isDebug()) {
+			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
+			$bundles[] = new \Application\DevBundle\DevBundle();
+			$bundles[] = new \Profiler\LiveBundle\ProfilerLiveBundle();
+		}
+
+		return $bundles;
+	}
+
+	protected function registerAdditionalBundles()
+	{
+
+	}
+
+
+	/**
+	 * Returns a Response if the kernel shouldnt route and pass control off to a controller.
+	 * Returns null if things should progress normally.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Request|null
+	 */
+	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		$path = $request->getPathInfo();
+
+		// Exclude admin interface
+		if (DP_INTERFACE == 'admin' || isset($_REQUEST['admin_portal_controls'])) {
+			return null;
+		}
+
+		// Exclude ajax requests
+		if ($request->isXmlHttpRequest()) {
+			return null;
+		}
+
+		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
+			// Force no index.php
+			if (strpos($request->getRequestUri(), '/index.php') !== false) {
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . $path, 301);
+				return $response;
+			}
+		} else {
+			// Force index.php
+			if (strpos($request->getRequestUri(), '/index.php') === false) {
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path, 301);
+				return $response;
+			}
+		}
+
+		return null;
 	}
 }
