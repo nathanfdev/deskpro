@@ -58,6 +58,11 @@ class HtmlMatcher
 	protected $pattern_match;
 
 	/**
+	 * @var int
+	 */
+	protected $pattern_match_id;
+
+	/**
 	 * @var string
 	 */
 	protected $marked_body;
@@ -117,7 +122,9 @@ class HtmlMatcher
 
 			$branch = $root->branch()->first();
 			$this->root_state[$id] = array(
-				'closed' => false
+				'closed' => false,
+				'mark_spot' => null,
+				'mark_pattern' => null
 			);
 
 
@@ -134,6 +141,7 @@ class HtmlMatcher
 
 			if ($branch) {
 				$this->pattern_match = $root;
+				$this->pattern_match_id = $id;
 				return $this->pattern_match;
 			}
 		}
@@ -176,11 +184,27 @@ class HtmlMatcher
 			return $this->body;
 		}
 
-		$match->before(self::CUT_MARK);
+		if (!$this->root_state[$this->pattern_match_id]['mark_spot']) {
+			$match->before(self::CUT_MARK);
+		}
 
 		ob_start();
 		$this->getQp()->writeXHTML();
 		$this->marked_body = ob_get_clean();
+
+		$wrap_pos = strpos($this->marked_body, 'DP_MARK_EL');
+		if ($wrap_pos) {
+			$piece1 = substr($this->marked_body, 0, $wrap_pos);
+			$piece2 = substr($this->marked_body, $wrap_pos);
+			$piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
+
+			$this->marked_body = $piece1 . $piece2;
+		}
+
+		$this->marked_body = trim($this->marked_body);
+		if (!$this->marked_body) {
+			return $this->body;
+		}
 
 		return $this->marked_body;
 	}
@@ -274,8 +298,15 @@ class HtmlMatcher
 
 			$text = $branch->text();
 
-			if (!preg_match($token[0], $text)) {
+			$m = null;
+			if (!preg_match($token[0], $text, $m)) {
 				return null;
+			}
+
+			if (!$this->root_state[$id]['mark_spot']) {
+				$this->root_state[$id]['mark_spot'] = $m[0];
+				$this->root_state[$id]['mark_pattern'] = $token[0];
+				$branch->addClass('DP_MARK_EL');
 			}
 		}
 
