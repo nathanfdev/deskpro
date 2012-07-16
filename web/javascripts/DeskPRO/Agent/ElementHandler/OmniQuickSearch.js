@@ -7,6 +7,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {
+
+		this.reqCount = 0;
+		this.reqInCount = 0;
+
 		var self = this;
 
 		$(window).on('resize', function() {
@@ -257,8 +261,9 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			dataType: 'json'
 		});
 
+		this.reqCount++;
+		var inId = this.reqCount;
 		this.runningAjax.done(function(results) {
-			self.setResults(results, true);
 
 			// Abort all ajax requests made before this one
 			Object.each(self.ajaxLoading, function(v, k) {
@@ -266,6 +271,20 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 					self._abortAjax(v[0]);
 				}
 			});
+
+			// This earlier request came in after a newer request,
+			// so just ignore it.
+			if (self.reqInCount > inId) {
+				return;
+			}
+
+			// Keeps an older result list if this one is empty,
+			// prevents some 'flashing' as a user types in a full query
+			if (!Object.keys(results).length) {
+				return;
+			}
+
+			self.setResults(results, true);
 		}).always(function() {
 			self.runningAjax = null;
 			self.el.removeClass('loading');
