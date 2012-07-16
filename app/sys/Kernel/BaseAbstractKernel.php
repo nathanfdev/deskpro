@@ -83,7 +83,9 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		App::setContainer($this->container, 'default');
 		$this->container->kernel = $this;
 
-		$this->container->get('deskpro.sys_events_loader');
+		if ($this->container->has('deskpro.sys_events_loader')) {
+			$this->container->get('deskpro.sys_events_loader');
+		}
 	}
 
 	protected function initializeContainer()
