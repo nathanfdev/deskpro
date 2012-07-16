@@ -34,7 +34,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				url = Orb.appendQueryData(url, 'd', defaultIcon);
 
 				var a = this.tabBtn.find('a');
-				a.css('background-image', 'url(' + url + ')').css('background-position', '2px 50%');
+				a.css('background-image', 'url(\'' + url + ')\'').css('background-position', '2px 50%');
 			}
 		}
 
