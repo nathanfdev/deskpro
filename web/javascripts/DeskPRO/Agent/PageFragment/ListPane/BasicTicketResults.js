@@ -399,14 +399,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		var m = $(info.menu.getOpenTriggerElement());
 		var ticketId = m.parent().parent().data('ticket-id');
+		if (!ticketId) {
+			return;
+		}
 
 		var old_flag = m.data('flag');
 
 		m.removeClass('icon-flag-'+old_flag);
 		m.addClass('icon-flag-'+flag);
 		m.data('flag', flag);
-
-		DP.console.debug('todo: loading element with flag click');
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + ticketId + '/ajax-save-flagged',
