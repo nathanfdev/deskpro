@@ -81,7 +81,7 @@
 						{% if not is_expired %}
 							Your demo period expires {% if expire_in_days %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
 						{% else %}
-							Your demo period has ended
+							Your demo period expired on {{ lic.getExpireDate()|date('day') }}
 						{% endif %}
 						&nbsp;&nbsp;
 						<a target="_blank" class="clean-white" href="http://www.deskpro.com/pricing/?download">Purchase your License Now</a>
