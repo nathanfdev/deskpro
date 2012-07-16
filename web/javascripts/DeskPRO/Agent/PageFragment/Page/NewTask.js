@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 	initPage: function(el) {
 
+		this.noIgnoreForm = true;
 		var self = this;
 		this.wrapper = el;
 
@@ -100,7 +101,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
 						btn.appendTo( buttonPane );
 
-						$(input).datepicker("widget").css('z-index', 30001);
+						$(input).datepicker("widget").css('z-index', 30101);
 					},1);
 				}
 			}, ev);
