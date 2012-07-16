@@ -1329,6 +1329,13 @@ $collection->add('agent_task_view', new Route(
 	array()
 ));
 
+$collection->add('agent_task_delete', new Route(
+	'/tasks/{task_id}/delete',
+	array('_controller' => 'AgentBundle:Task:deleteTask'),
+	array('task_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_tasksearch_getsectiondata', new Route(
 	'/tasks/get-section-data.json',
 	array('_controller' => 'AgentBundle:Task:getSectionData'),

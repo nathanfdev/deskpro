@@ -109,17 +109,17 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_completed;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $assigned_agent;
 
 	/**
-	 * @var Application\DeskPRO\Entity\AgentTeam
+	 * @var \Application\DeskPRO\Entity\AgentTeam
 	 */
 	protected $assigned_agent_team;
 

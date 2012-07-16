@@ -482,15 +482,37 @@ class TaskController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-        public function printAssociativeTaskAction($assoc = null)
-        {
-            if(method_exists($assoc, 'getDeal') && $assoc->getDeal())
-            {
-                return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
-            } else if(method_exists($assoc, 'getTicket') && $assoc->getTicket() != null){
-                return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
-            }
-        }
+	public function printAssociativeTaskAction($assoc = null)
+	{
+		if(method_exists($assoc, 'getDeal') && $assoc->getDeal())
+		{
+			return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
+		} else if(method_exists($assoc, 'getTicket') && $assoc->getTicket() != null){
+			return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
+		}
+	}
+
+
+	public function deleteTaskAction($task_id)
+	{
+		$task = $this->getTaskOr404($task_id);
+
+		if ($task->person->getId() != $this->person->getId()) {
+			return $this->createNotFoundException();
+		}
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->remove($task);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 
         /**
 	 * @return Application\DeskPRO\Entity\Task

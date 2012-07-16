@@ -4917,6 +4917,20 @@ article.task .task-title {
 	position: relative;
 }
 
+article.task .task-title i.delete-task {
+	position: absolute;
+	.iconbase(16px, 16px);
+	background: url(../../images/agent/icons/cross.png);
+	top: 3px;
+	right: 2px;
+	cursor: pointer;
+	display: none;
+}
+
+article.task:hover .task-title i.delete-task {
+	display: block;
+}
+
 article.task.completed .task-title .expand-collapse-icon {
 	display: block;
 }

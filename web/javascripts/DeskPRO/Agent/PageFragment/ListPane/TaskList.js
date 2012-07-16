@@ -245,5 +245,22 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			$(this).parent().toggleClass('collapsed')
 			self.updateUi();
 		});
+
+		el.on('click', '.delete-task', function(ev) {
+			var row = $(this).closest('.row-item');
+			var taskId = row.data('task-id');
+
+			row.slideUp();
+			updateCount('-', row);
+			$.ajax({
+				url: BASE_URL + 'agent/tasks/' + taskId + '/delete',
+				error: function() {
+					row.show();
+				},
+				success: function() {
+					row.remove();
+				}
+			});
+		});
 	}
 });
