@@ -232,6 +232,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleChatEnded: function(data) {
+		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
 		this.modListingCount(data.agent_id, '-');
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.ended', data);
@@ -258,6 +262,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleNewChat: function(data) {
+		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
 		if (!data.agent_id) {
 			if (!this.dismissedChats[data.conversation_id]) {
 				var info_line = [];
@@ -289,6 +297,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUnassignedChat: function(data) {
+		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
 		this.modListingCount(data.old_agent_id, '-');
 
 		if (data.old_agent_id) {
@@ -347,6 +359,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleReassignedChat: function(data) {
+		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
 		this.modListingCount(data.agent_id, '+');
 
 		if (data.agent_id && !data.old_agent_id) {
@@ -394,6 +410,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	showNewChatAlert: function(data) {
+
+		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
 		var conversation_id = data.conversation_id;
 		var alertEl = $(data.html);
 		alertEl.appendTo('body');
@@ -433,5 +454,13 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			alertEl.remove();
 			window.clearTimeout(waitTimer);
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+	},
+
+	isDepAllowed: function(id) {
+		id = parseInt(id);
+
+		console.log("%d in %o", id, window.DESKPRO_PERSON_PERMS.chat_dep_ids);
+
+		return window.DESKPRO_PERSON_PERMS.chat_dep_ids.indexOf(id) !== -1;
 	}
 });

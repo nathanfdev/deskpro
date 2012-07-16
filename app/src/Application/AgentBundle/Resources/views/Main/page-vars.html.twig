@@ -13,7 +13,10 @@
 		'agent_tickets.create': {% if app.user.hasPerm('agent_tickets.create') %}true{% else %}false{% endif %},
 		'agent_people.create': {% if app.user.hasPerm('agent_people.create') %}true{% else %}false{% endif %},
 		'agent_org.create': {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %},
-		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %}
+		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %},
+		'chat_dep_ids': [
+			0{% for id in app.user.PermissionsManager.get('Departments').getAllowed('chat') %},{{id}}{% endfor %}
+		]
 	};
 
 	var DESKPRO_PERSON_HOUR   = {{ person_hour }};

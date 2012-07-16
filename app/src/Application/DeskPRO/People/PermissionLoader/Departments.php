@@ -37,10 +37,11 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonContextInterface;
 
 use Orb\Util\Arrays;
 
-class Departments extends AbstractLoader
+class Departments extends AbstractLoader implements NoCache, PersonContextInterface
 {
 	/**
 	 * An array of categories allowed for real, that we get by computing
@@ -49,14 +50,27 @@ class Departments extends AbstractLoader
 	 */
 	protected $allowed_cats = array('tickets' => array(), 'chat' => array());
 
-	protected function init()
+	public function _init()
 	{
+		static $has_init = false;
+		if ($has_init) return;
+		$has_init = true;
+
 		$in = implode(',', $this->getUsergroupIds());
-		$res = App::getDb()->fetchAll("
-			SELECT department_id, app
-			FROM department_permissions
-			WHERE usergroup_id IN($in)
-		");
+
+		if (DP_INTERFACE == 'agent') {
+			$res = App::getDb()->fetchAll("
+				SELECT department_id, app
+				FROM department_permissions
+				WHERE person_id = {$this->person->getId()}
+			");
+		} else {
+			$res = App::getDb()->fetchAll("
+				SELECT department_id, app
+				FROM department_permissions
+				WHERE usergroup_id IN($in)
+			");
+		}
 
 		foreach ($res as $d) {
 			$dep = App::getDataService('Department')->get($d['department_id']);
@@ -86,6 +100,7 @@ class Departments extends AbstractLoader
 	 */
 	public function isAllowed($id, $app)
 	{
+		$this->_init();
 		return isset($this->allowed_cats[$app][$id]);
 	}
 
@@ -97,6 +112,7 @@ class Departments extends AbstractLoader
 	 */
 	public function getAllowed($app)
 	{
+		$this->_init();
 		return $this->allowed_cats[$app];
 	}
 
@@ -108,6 +124,7 @@ class Departments extends AbstractLoader
 	 */
 	protected function serializeData()
 	{
+		$this->_init();
 		return array(
 			'allowed_cats'    => $this->allowed_cats,
 		);

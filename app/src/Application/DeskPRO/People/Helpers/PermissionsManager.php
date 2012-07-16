@@ -248,7 +248,9 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 
-			$this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
+			if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache)) {
+				$this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
+			}
 		}
 	}
 
