@@ -57,7 +57,7 @@ use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 class UserChatManager
 {
 	/**
-	 * @var \Doctrine\ORM\Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $db;
 
@@ -302,7 +302,7 @@ class UserChatManager
 	 */
 	public function personJoined(ChatConversation $convo, Person $person)
 	{
-		if ($convo->hasParticipant($person)) {
+		if ($convo->hasParticipant($person) || ($convo->agent && $convo->agent->getId() == $person->getId())) {
 			return;
 		}
 
