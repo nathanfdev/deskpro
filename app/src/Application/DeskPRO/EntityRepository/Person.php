@@ -351,12 +351,20 @@ class Person extends AbstractEntityRepository
 	 *
 	 * @return int
 	 */
-	public function getCount()
+	public function getCount($only_users = false)
 	{
-		return App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM people
-		");
+		if ($only_users) {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM people
+				WHERE is_agent = 0
+			");
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM people
+			");
+		}
 	}
 
 

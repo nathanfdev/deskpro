@@ -57,7 +57,7 @@ class PeopleSearchController extends AbstractController
 		# People labels
 		#------------------------------
 
-		$people_count = $this->em->getRepository('DeskPRO:Person')->getCount();
+		$people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
 		$validating_count = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
 
 		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
