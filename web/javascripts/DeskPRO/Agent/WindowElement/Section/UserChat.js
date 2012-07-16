@@ -262,6 +262,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleNewChat: function(data) {
+		var self = this;
+
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
@@ -359,6 +361,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleReassignedChat: function(data) {
+		var self = this;
+
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
