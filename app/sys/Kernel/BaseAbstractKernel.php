@@ -1,0 +1,265 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace DeskPRO\Kernel;
+
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
+
+use Application\DeskPRO\App;
+
+abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
+{
+	public function __construct($environment, $debug)
+	{
+		parent::__construct($environment, $debug);
+
+		$name = explode("\\", get_class($this));
+		$name = array_pop($name);
+		$this->name = $name;
+
+		if (!defined('DP_DEBUG')) {
+			if ($this->isDebug()) {
+				define('DP_DEBUG', true);
+			} else {
+				define('DP_DEBUG', false);
+			}
+		}
+
+		App::setKernel($this);
+	}
+
+	public function init()
+	{
+		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
+		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+	}
+
+	public function boot()
+	{
+		static $has_booted = false;
+		if ($has_booted) return;
+		$has_booted = true;
+
+		parent::boot();
+		App::setContainer($this->container, 'default');
+		$this->container->kernel = $this;
+	}
+
+	protected function initializeContainer()
+	{
+		if ($this->environment == 'dev') {
+			$routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
+			if (!$routing_cache_cleaner->isFresh()) {
+				$routing_cache_cleaner->clearCache();
+			}
+		}
+
+		parent::initializeContainer();
+	}
+
+	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		if (false === $this->booted) {
+			$this->boot();
+		}
+
+		$response = $this->preResponseHandled($request, $type, $catch);
+		if ($response) {
+			return $response;
+		}
+
+		$response = $this->getHttpKernel()->handle($request, $type, $catch);
+
+		$this->postResponseHandled($response);
+
+		return $response;
+	}
+
+	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		return null;
+	}
+
+	protected function postResponseHandled($response)
+	{
+		global $DP_CONFIG;
+
+		if (session_id() != '') {
+			if ($this->container->isServiceInitialized('session')) {
+				$this->container->get('session')->save();
+			}
+			session_write_close();
+		}
+
+		if (isset($DP_CONFIG['debug']['enable_log_tpl_use']) && $DP_CONFIG['debug']['enable_log_tpl_use']) {
+			$loc = $this->container->get('templating.locator');
+			$write = array();
+
+			$write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
+
+			foreach ($loc->getLoadedTemplates() as $x => $info) {
+				$info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
+				$write[] = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
+			}
+
+			$write[] = '';
+			$write[] = '';
+			$write = implode("\n", $write);
+			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
+		}
+	}
+
+	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
+	{
+		// Make sure the cache dirs exist
+		$env_dir = realpath($this->getCacheDir() . '/../');
+		if (!file_exists($env_dir . '/doctrine-proxies')) mkdir($env_dir . '/doctrine-proxies', 0777, true);
+		if (!file_exists($env_dir . '/twig-compiled')) mkdir($env_dir . '/twig-compiled', 0777, true);
+
+		// cache the container
+		$dumper = new PhpDumper($container);
+		$content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
+		if (!$this->debug) {
+			$content = self::stripComments($content);
+		}
+
+		// Re-write absolute paths to use DP_ROOT instead
+		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+		// Correct double slash paths
+		$content = str_replace('prod//', 'prod/', $content);
+		// Empty logs dir that isn't used (we get it from conf)
+		$content = preg_replace("#'kernel\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
+
+		$cache->write($content, $container->getResources());
+	}
+
+	protected function getContainerClass()
+	{
+		$parts = explode('\\', get_class($this));
+		$basename = array_pop($parts);
+
+		$container_name = $basename;
+		if ($this->environment != 'prod') {
+			$container_name .= ucfirst($this->environment);
+		}
+		if ($this->debug) {
+			$container_name .= 'Debug';
+		}
+		$container_name .= 'Container';
+
+		return $container_name;
+	}
+
+	public function getRootDir()
+	{
+		return DP_ROOT.'/sys';
+	}
+
+	public function getCacheDir()
+	{
+		static $cache_dir = null;
+
+		if ($cache_dir === null) {
+			$cache_dir = DP_ROOT . '/sys/cache/%env%/';
+			$cache_dir = str_replace('%env%', $this->environment, $cache_dir);
+		}
+
+		return $cache_dir;
+	}
+
+	public function getUserLogDir()
+	{
+		require_once DP_ROOT . '/sys/load_config.php';
+		return dp_get_log_dir();
+	}
+
+	public function getLogDir()
+	{
+		return $this->getUserLogDir();
+	}
+
+	public function getBackupDir()
+	{
+		require_once DP_ROOT . '/sys/load_config.php';
+		return dp_get_backup_dir();
+	}
+
+	public function getBlobDir()
+	{
+		require_once DP_ROOT . '/sys/load_config.php';
+		return dp_get_blob_dir();
+	}
+
+	protected function getKernelParameters()
+	{
+		$params = parent::getKernelParameters();
+		$params['DP_ROOT'] = DP_ROOT;
+
+		return $params;
+	}
+
+	protected function getContainerBaseClass()
+	{
+		return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
+	}
+
+	public function registerBundleDirs()
+	{
+		return array(
+			'Application'        => DP_ROOT.'/src/Application',
+			'Bundle'             => DP_ROOT.'/src/Bundle',
+			'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle',
+		);
+	}
+
+	public function loadClassCache($name = 'classes', $extension = '.php')
+	{
+
+	}
+
+	public function setClassCache(array $classes)
+	{
+		if (defined('DP_BUILDING')) {
+			parent::setClassCache($classes);
+		}
+	}
+}
