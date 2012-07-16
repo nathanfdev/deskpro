@@ -151,11 +151,11 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 		var phrasename = 'agent.general.' + phrasepre + '_less_second';
 	}
 
-	if (!DESKPRO_LANG[phrasename]) {
+	if (!window.DESKPRO_LANG || !window.DESKPRO_LANG[phrasename]) {
 		console.warn("Missing phrase %s", phrasename);
 	}
 
-	return (DESKPRO_LANG[phrasename] || "").replace(/\{0\}/g, num);
+	return (window.DESKPRO_LANG && window.DESKPRO_LANG[phrasename] || "").replace(/\{0\}/g, num);
 }
 JS;
 
