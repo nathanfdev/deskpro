@@ -94,21 +94,28 @@ class SearchUpdater
 	 */
 	public function run()
 	{
-		App::getDb()->replace('tickets_search_message', $this->getCloneData(true));
-		App::getDb()->replace('tickets_search_subject', array(
-			'id' => $this->ticket->id,
-			'subject' => $this->ticket->subject
-		));
-
-		if (!$this->ticket->isArchived()) {
-			App::getDb()->replace('tickets_search_active', $this->getCloneData());
-			App::getDb()->replace('tickets_search_message_active', $this->getCloneData(true));
+		if ($this->ticket->_isRemoved) {
+			App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->_isRemoved));
+			App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->_isRemoved));
+			App::getDb()->delete('tickets_search_message', array('id' => $this->ticket->_isRemoved));
+			App::getDb()->delete('tickets_search_subject', array('id' => $this->ticket->_isRemoved));
 		} else {
-			App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
-			App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->id));
-		}
+			App::getDb()->replace('tickets_search_message', $this->getCloneData(true));
+			App::getDb()->replace('tickets_search_subject', array(
+				'id' => $this->ticket->id,
+				'subject' => $this->ticket->subject
+			));
 
-		App::getSystemService('search_indexer')->update($this->ticket, 'update');
+			if (!$this->ticket->isArchived()) {
+				App::getDb()->replace('tickets_search_active', $this->getCloneData());
+				App::getDb()->replace('tickets_search_message_active', $this->getCloneData(true));
+			} else {
+				App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
+				App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->id));
+			}
+
+			App::getSystemService('search_indexer')->update($this->ticket, 'update');
+		}
 	}
 
 

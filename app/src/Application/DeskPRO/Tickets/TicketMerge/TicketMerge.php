@@ -104,6 +104,15 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			throw new \DomainException('User does not have permission to merge these tickets');
 		}
 
+		// Old tikcet set to deleted so proper CM's are sent
+		$old_status = $this->other_ticket->getStatusCode();
+		$this->other_ticket->setStatus('hidden.deleted');
+		$this->em->persist($this->other_ticket);
+		$this->em->flush();
+
+		$this->other_ticket->setNoLog();
+		$this->other_ticket->unsetTicketLogger();
+
 		$this->em->beginTransaction();
 
 		try {
@@ -135,7 +144,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				'product',
 				'workflow',
 				'organization',
-				'status',
 				'hidden_status',
 				'subject'
 			);
@@ -145,6 +153,8 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
 				$prop_standard->merge();
 			}
+
+			$this->ticket->setStatus($old_status);
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 			foreach ($ticket_field_defs as $f) {
@@ -162,9 +172,13 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->em->persist($ticket_del);
 
 			$this->em->persist($this->ticket);
+
+			App::getDb()->delete('tickets_search_active', array('id' => $this->other_ticket->getId()));
+			App::getDb()->delete('tickets_search_message_active', array('id' => $this->other_ticket->getId()));
+			App::getDb()->delete('tickets_search_message', array('id' => $this->other_ticket->getId()));
+			App::getDb()->delete('tickets_search_subject', array('id' => $this->other_ticket->getId()));
 			$this->em->remove($this->other_ticket);
 
-			$this->other_ticket->resetTicketLogger();
 			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$this->em->flush();

@@ -357,6 +357,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
+	public $_isRemoved;
+
 	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -1983,6 +1985,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function _markRemoved()
+	{
+		$this->_isRemoved = $this->getId();
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -2009,6 +2017,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
 		$metadata->addLifecycleCallback('_saveTicketLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_saveTicketLogs', 'postUpdate');
+		$metadata->addLifecycleCallback('_markRemoved', 'preRemove');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
