@@ -229,7 +229,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 	{
 		// Flags
 		App::getDb()->executeUpdate("
-			UPDATE tickets_flagged
+			REPLACE INTO tickets_flagged
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
@@ -237,7 +237,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 		// Pending articles
 		App::getDb()->executeUpdate("
-			UPDATE article_pending_create
+			REPLACE INTO article_pending_create
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
@@ -245,7 +245,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 		// Pending articles
 		App::getDb()->executeUpdate("
-			UPDATE labels_tickets
+			REPLACE INTO labels_tickets
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
