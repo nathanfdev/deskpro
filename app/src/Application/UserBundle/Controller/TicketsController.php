@@ -105,14 +105,23 @@ class TicketsController extends AbstractController
 
 		$last_messages = array();
 		if ($tickets) {
-			$last_messages = $this->em->createQuery("
-				SELECT m, p
-				FROM DeskPRO:TicketMessage m
-				LEFT JOIN m.person p
-				WHERE m.ticket IN ($ticket_ids)
-				GROUP BY m.ticket
-				ORDER BY m.id DESC
-			")->execute();
+			$last_mesasge_ids = App::getDb()->fetchAllCol("
+				SELECT MAX(id)
+				FROM tickets_messages
+				WHERE ticket_id IN ($ticket_ids)
+				GROUP BY ticket_id
+			");
+			$last_mesasge_ids = implode(',', $last_mesasge_ids);
+			if ($last_mesasge_ids) {
+				$last_messages = $this->em->createQuery("
+					SELECT m, p
+					FROM DeskPRO:TicketMessage m
+					LEFT JOIN m.person p
+					WHERE m.id IN ($last_mesasge_ids)
+					GROUP BY m.ticket
+					ORDER BY m.id DESC
+				")->execute();
+			}
 
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
 		}

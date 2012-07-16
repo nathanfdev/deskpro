@@ -37,7 +37,7 @@
 				{% else %}
 					{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
 				{% endif %}
-				(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
+				(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c', 'UTC') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
 			</li>
 		</ul>
 	</li>
