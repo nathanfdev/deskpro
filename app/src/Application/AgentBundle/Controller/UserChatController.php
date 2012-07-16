@@ -595,7 +595,7 @@ class UserChatController extends AbstractController
 			}
 		}
 
-		$convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, null);
+		$convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, -1);
 
 		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
 			'agent' => $agent,
