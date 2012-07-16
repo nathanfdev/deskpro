@@ -435,7 +435,7 @@ class TaskController extends AbstractController
 
 		switch ($this->in->getString('action')) {
 			case 'date_due':
-				$task->setDueDate($this->in->getString('value'));
+				$task->date_due = \DateTime::createFromFormat('Y-m-d', $this->in->getString('value'));
 				break;
 
 			case 'visibility':

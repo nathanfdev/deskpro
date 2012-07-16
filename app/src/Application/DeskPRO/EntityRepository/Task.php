@@ -109,9 +109,6 @@ class Task extends EntityRepository
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->where('t.is_completed = :is_completed')
-		   ->andWhere('t.person = :person OR t.visibility = :visibility')
-		   ->setParameter('person', $person)
-		   ->setParameter('visibility', Entity\Task::PUBLIC_VISIBILITY)
 		   ->setParameter('is_completed', false);
 		$query = $qb->getQuery();
 		return $query->getSingleScalarResult();
@@ -131,10 +128,7 @@ class Task extends EntityRepository
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->where('t.is_completed = :is_completed')
-		   ->andWhere('t.person = :person OR t.visibility = :visibility')
 		   ->andWhere('t.date_due < :date_due')
-		   ->setParameter('person', $person)
-		   ->setParameter('visibility', Entity\Task::PUBLIC_VISIBILITY)
 		   ->setParameter('is_completed', false)
 		   ->setParameter('date_due', $date);
 		$query = $qb->getQuery();
@@ -157,13 +151,10 @@ class Task extends EntityRepository
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->andWhere('t.date_due >= :today AND t.date_due < :tomorrow')
-		   ->andWhere('t.person = :person OR t.visibility = :visibility')
 		   ->orWhere('t.date_due IS NULL')
 		   ->andWhere('t.is_completed = :is_completed');
 
 		$qb->setParameters(array(
-			'person' => $person,
-			'visibility' => Entity\Task::PUBLIC_VISIBILITY,
 			'is_completed' => false,
 			'today' => $today,
 			'tomorrow' => $tomorrow
@@ -188,12 +179,9 @@ class Task extends EntityRepository
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->andWhere('t.date_due > :today')
-		   ->andWhere('t.is_completed = :is_completed')
-		   ->andWhere('t.person = :person OR t.visibility = :visibility');
+		   ->andWhere('t.is_completed = :is_completed');
 
 		$qb->setParameters(array(
-			'person' => $person,
-			'visibility' => Entity\Task::PUBLIC_VISIBILITY,
 			'is_completed' => false,
 			'today' => $today,
 		));
