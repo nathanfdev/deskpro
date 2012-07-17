@@ -380,13 +380,17 @@ final class License
 		$license_code = trim($license_code);
 		$this->raw_code = $license_code;
 
+		$this->install_key  = $install_key;
+		if (preg_match('#@([A-Z0-9]{10})$#', $license_code, $m)) {
+			$this->install_key = $m[1];
+			$license_code = str_replace($m[0], '', $license_code);
+		}
+
 		$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
 		$license_code = base64_decode($license_code);
 
 		$this->license_id   = substr($license_code, 0, 14);
 		$this->license_salt = substr($license_code, 14, 20);
-		$this->install_key  = $install_key;
-
 		$enc  = substr($license_code, 34);
 		$enc = strrev($enc);
 
