@@ -44,6 +44,8 @@ View this ticket online:<br />
 
 {{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), {show_author_email: true, agent: true}) }}
 
-<br/><br/>
-{{ layout.replycode(tac.access_code) }}
+{% endblock %}
+{% block email_end %}
+	<br/><br/>
+	{{ layout.replycode(tac.access_code) }}
 {% endblock %}

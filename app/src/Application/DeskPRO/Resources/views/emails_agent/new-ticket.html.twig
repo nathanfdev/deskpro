@@ -31,7 +31,8 @@
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_ticket'), content) }}
 
-<br/><br/>
-
-{{ layout.replycode(tac.access_code) }}
+{% endblock %}
+{% block email_end %}
+	<br/><br/>
+	{{ layout.replycode(tac.access_code) }}
 {% endblock %}
