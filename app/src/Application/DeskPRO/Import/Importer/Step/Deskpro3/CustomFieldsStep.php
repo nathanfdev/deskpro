@@ -171,6 +171,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processTicketField(array $f)
 	{
+		if ($f['formtype'] == 'custom') {
+			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
+			return;
+		}
+
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -234,6 +239,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processUserField(array $f)
 	{
+		if ($f['formtype'] == 'custom') {
+			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
+			return;
+		}
+
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -296,6 +306,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processCompanyField(array $f)
 	{
+		if ($f['formtype'] == 'custom') {
+			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
+			return;
+		}
+
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -359,6 +374,11 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processArticleField(array $f)
 	{
+		if ($f['formtype'] == 'custom') {
+			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
+			return;
+		}
+
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
