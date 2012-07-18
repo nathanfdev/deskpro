@@ -43,6 +43,7 @@ use Application\DeskPRO\ORM\Util\Util as ORM_Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Util;
 
 use Application\DeskPRO\Entity;
 
@@ -737,6 +738,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function checkPassword($plain_password)
 	{
+		// It may be a token login from dp:login-token
+		if ($this->id && strlen($plain_password) > 55) {
+			$secret = sha1($this->secret_string . $this->salt);
+			if (Util::checkStaticSecurityToken($plain_password, $secret)) {
+				return true;
+			}
+		}
+
 		$hash = $this->hashPassword($plain_password);
 
 		// Allows a define to be added to config to override a users password:
