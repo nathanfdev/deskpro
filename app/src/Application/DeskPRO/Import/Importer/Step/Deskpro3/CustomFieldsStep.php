@@ -203,6 +203,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		switch ($f['formtype']) {
 			case 'input':
+			case 'custom':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
 				$new_field->default_value = $f['default_value'];
 				break;
@@ -239,11 +240,6 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processUserField(array $f)
 	{
-		if ($f['formtype'] == 'custom') {
-			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
-			return;
-		}
-
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -271,6 +267,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		switch ($f['formtype']) {
 			case 'input':
+			case 'custom':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
 				$new_field->default_value = $f['default_value'];
 				break;
@@ -306,11 +303,6 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 	protected function processCompanyField(array $f)
 	{
-		if ($f['formtype'] == 'custom') {
-			$this->getLogger()->log("{$f['id']}.formtype is 'custom', skipping", 'DEBUG');
-			return;
-		}
-
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -338,6 +330,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		switch ($f['formtype']) {
 			case 'input':
+			case 'custom':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
 				$new_field->default_value = $f['default_value'];
 				break;
@@ -406,6 +399,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		switch ($f['formtype']) {
 			case 'input':
+			case 'custom':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
 				break;
 
