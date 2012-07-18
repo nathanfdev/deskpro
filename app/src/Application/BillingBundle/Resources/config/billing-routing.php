@@ -12,4 +12,25 @@ $collection->add('billing', new Route(
 	array()
 ));
 
+$collection->add('billing_login', new Route(
+	'/login',
+	array('_controller' => 'BillingBundle:Login:index'),
+	array(),
+	array()
+));
+
+$collection->add('billing_logout', new Route(
+	'/logout/{auth}',
+	array('_controller' => 'BillingBundle:Login:logout'),
+	array(),
+	array()
+));
+
+$collection->add('billing_login_authenticate_local', new Route(
+	'/login/authenticate-password',
+	array('_controller' => 'BillingBundle:Login:authenticateLocal', 'usersource_id' => 0),
+	array(),
+	array()
+));
+
 return $collection;

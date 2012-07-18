@@ -29,78 +29,37 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage BillingBundle
+ * @subpackage UserBundle
  */
 
 namespace Application\BillingBundle\Controller;
 
+use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Controller\Helper\LoginHelper;
+
 use Application\DeskPRO\App;
 
-abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
+class LoginController extends \Application\UserBundle\Controller\LoginController
 {
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
-
-	protected function init()
-	{
-		parent::init();
-
-		$this->person = $this->session->getPerson();
-
-		if (!$this->person->id) {
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
-			$cas->process();
-		}
-	}
-
+	protected $tpl_prefix = 'BillingBundle:Login';
+	protected $route_prefix = 'billing';
 
 	/**
-	 * Force a login
+	 * Handles showing the login form, and on POST handles login credentials
+	 * through the auth adapters.
 	 */
-	public function preAction($action, $arguments = null)
+	public function indexAction()
 	{
-		if (!$this->person['id']) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'session_expired',
-					'redirect_login' => $this->generateUrl('billing_login')
-				);
-
-				return $this->createJsonResponse($data, 403);
-
-			} else {
-				if ($this->isPostRequest()) {
-					$return = $this->get('router')->generate('billing');
-				} else {
-					$return = $this->request->getRequestUri();
-				}
-
-
-				$redirect_url = $this->get('router')->generate('billing_login', array('return' => $return));
-				return $this->redirect($redirect_url);
+		$agent_session_code = $this->in->getString('dpsid-agent');
+		$agent_session = null;
+		if ($agent_session_code) {
+			$agent_session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($agent_session_code);
+			if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
+				$agent_session = null;
 			}
 		}
 
-		if (!$this->_userHasPermissions()) {
-			die('no permission');
-		}
-
-		$this->person->loadHelper('Agent');
-		$this->person->loadHelper('AgentTeam');
-		$this->person->loadHelper('AgentPermissions');
-		$this->person->loadHelper('PermissionsManager');
-		$this->person->loadHelper('HelpMessages');
-	}
-
-	protected function _userHasPermissions()
-	{
-		if ($this->person->is_agent && $this->person->can_billing) {
-			return true;
-		}
-
-		return false;
+		$url = $this->generateUrl('billing', array(), true);
+		return $this->render('BillingBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
 	}
 }
