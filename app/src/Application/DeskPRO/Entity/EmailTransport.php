@@ -163,13 +163,13 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 
 			case self::MATCH_TYPE_DOMAIN:
 				list (, $domain) = explode('@', $from_address);
-				if ($this->match_pattern == $domain) {
+				if (Strings::utf8_strtolower($this->match_pattern) == $domain) {
 					return true;
 				}
 				break;
 
 			case self::MATCH_TYPE_EXACT:
-				if ($this->match_pattern == $from_address) {
+				if (Strings::utf8_strtolower($this->match_pattern) == $from_address) {
 					return true;
 				}
 				break;
