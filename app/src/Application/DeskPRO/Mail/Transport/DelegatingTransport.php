@@ -312,6 +312,22 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$matcher = $this->getGatewayAddressMatcher();
 			$address = $matcher->getMatchingAddress($from_address);
 
+			if ($address) {
+
+				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address found, confirming transport"));
+
+				// We have an address, but that address might not have a transport. So we do this here
+				// to decide if we need to revert back to a default gateway address which is figured out next
+				$tr = $this->getTransportForFromAddress($from_address, $get_backup_transport, true);
+				if ($tr) {
+					$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Got transport"));
+					return $tr;
+				} else {
+					$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address valid, but has no transport"));
+					$address = false;
+				}
+			}
+
 			// If theres no address match, then we need to choose one
 			if (!$address) {
 
@@ -344,7 +360,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 * @param bool $get_backup_transport
 	 * @return null|\Swift_MailTransport
 	 */
-	public function getTransportForFromAddress($from_address, $get_backup_transport = false)
+	public function getTransportForFromAddress($from_address, $get_backup_transport = false, $no_default = false)
 	{
 		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage finding address: %s", $from_address));
 
@@ -360,6 +376,11 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			}
 		} else {
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
+
+			if ($no_default) {
+				return null;
+			}
+
 			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport()->getTransport();
 		}
 
