@@ -62,4 +62,17 @@ class EmailTransport extends EntityRepository
 
 		return null;
 	}
+
+	public function getDefaultTransport()
+	{
+		$transports = $this->findAll();
+
+		foreach ($transports as $tr) {
+			if ($tr->match_type == 'all') {
+				return $tr;
+			}
+		}
+
+		return null;
+	}
 }

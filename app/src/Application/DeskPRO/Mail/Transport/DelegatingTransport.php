@@ -306,7 +306,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 		if ($message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
 
-			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address"));
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address for %s", $from_address));
 
 			// Make sure a ticket always belongs to a gateway address
 			$matcher = $this->getGatewayAddressMatcher();
@@ -359,10 +359,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$tr = $from_account->getTransport();
 			}
 		} else {
-
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
-
-			$tr = new \Swift_MailTransport();
+			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport()->getTransport();
 		}
 
 		if ($tr) {
