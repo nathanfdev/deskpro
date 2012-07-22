@@ -425,7 +425,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (messageEl.hasClass('messages-wrap')) {
 			var articles = messageEl.find('article.content-message');
 		} else {
-			var articles = messageEl.find('article.content-message');
+			var articles = messageEl;
 		}
 		articles.each(function() {
 			var article = $(this);
