@@ -200,8 +200,8 @@ class EzcReader extends AbstractReader
 				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
 
 				$body = new Item\BodyHtml();
-				$body->body = $part->text;
-				$body->body_utf8 = Strings::convertToUtf8($part->text, $part->originalCharset);
+				$body->body = Strings::standardEol($part->text);
+				$body->body_utf8 = Strings::convertToUtf8(Strings::standardEol($part->text), $part->originalCharset);
 				$body->original_charset = $part->originalCharset;
 
 				return $body;

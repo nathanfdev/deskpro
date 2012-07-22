@@ -84,12 +84,12 @@ class HtmlPurifier implements CleanerPlugin
 			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 
-			$value = preg_replace('#<p[^>]*>#', '<__dp_old_p__>', $value);
-			$value = str_replace('</p>', '<__dp_old_p__>', $value);
-			$value = preg_replace('#<__dp_old_p(_s)?__>\s*<__dp_old_p__>#', '<br />', $value);
-			$value = str_replace('<__dp_old_p__>', '<br />', $value);
+			$value = preg_replace('#<p[^>]*>#', '__dp_old_p__', $value);
+			$value = str_replace('</p>', '__dp_old_p__', $value);
 			$value = str_replace('<br></br>', '<br />', $value);
 			$value = str_replace('<br>', '<br />', $value);
+			$value = preg_replace('#__dp_old_p(_s)?__\s*__dp_old_p__#', '<br /><br />', $value);
+			$value = str_replace('__dp_old_p__', '<br />', $value);
 			$value = preg_replace("#<br />\s+<br />#iu", '<br /><br />', $value);
 			$value = preg_replace('#<div[^>]*>\s*(<br>|<br />)*\s*</div>#um', '$1', $value);
 
