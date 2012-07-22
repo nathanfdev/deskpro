@@ -37,6 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -56,17 +57,49 @@ class Ticket extends AbstractEntityRepository
 			return null;
 		}
 
-		try {
-			$rec = $this->getEntityManager()->createQuery("
-				SELECT t
-				FROM DeskPRO:Ticket t
-				WHERE t.id = :ticket_id AND t.auth = :auth
-			")->setParameters($info)->setMaxResults(1)->getSingleResult();
+		$rec = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t
+			WHERE t.id = :ticket_id AND t.auth = :auth
+		")->setParameters($info)->setMaxResults(1)->getOneOrNullResult();
 
-			return $rec;
-		} catch (\Doctrine\ORM\NoResultException $e) {
+		if (!$rec) {
+			// Try to find it through merges
+			$del_ticket = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketDeleted t
+				WHERE t.ticket_id = :ticket_id AND t.old_ptac = :auth
+			")->setParameters($info)->setMaxResults(1)->getOneOrNullResult();
+
+			if ($del_ticket) {
+				$rec = $this->resolveDeletedTicket($del_ticket);
+			}
+		}
+
+		return $rec;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TicketDeleted $del_ticket
+	 */
+	public function resolveDeletedTicket(TicketDeletedEntity $del_ticket)
+	{
+		$new_delticket = $del_ticket;
+		while ($new_delticket) {
+			$del_ticket = $new_delticket;
+			$new_delticket = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketDeleted t
+				WHERE t.ticket_id = :ticket_id
+			")->setParameters(array($del_ticket->new_ticket_id))->setMaxResults(1)->getOneOrNullResult();
+		}
+
+		if (!$del_ticket) {
 			return null;
 		}
+		$ticket = $this->find($del_ticket->new_ticket_id);
+		return $ticket;
 	}
 
 
