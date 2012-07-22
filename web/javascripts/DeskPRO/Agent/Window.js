@@ -1656,7 +1656,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		};
 
-		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeout') {
+		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec') {
 			this.showAlert($('<div><strong>Network Error</strong><br />The request timed out. The server may be too busy to handle your request, or you may have been disconnected from the internet. Try again.</div>'), 'network_error');
 			this.incNetworkError();
 			return;
