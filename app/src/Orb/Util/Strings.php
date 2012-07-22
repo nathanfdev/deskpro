@@ -1244,7 +1244,7 @@ class Strings
 			return $key;
 		}, $text);
 
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk))#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]+)#i',function($m) use (&$search_replace, $attr) {
 			if ($m[2]) return $m[0];
 
 			$url = ($m[2] ? $m[2] : 'http://') . $m[3];
@@ -1272,9 +1272,13 @@ class Strings
 		libxml_use_internal_errors(true);
 
 		$dom = new \DOMDocument();
+		if (strpos($html, '<body') === false) {
+			$html = "<body>$html</body>";
+		}
 		if (strpos($html, '<?xml') === false) {
 			$html = '<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$html;
 		}
+
 		if (!$dom->loadHTML($html)) {
 			return $html;
 		}
@@ -1291,13 +1295,20 @@ class Strings
 			$newText  = self::linkify($origText, $attr);
 
 			if ($origText != $newText) {
-				$frag = $dom->createDocumentFragment();
-				$frag->appendXML(self::linkify($text->nodeValue, $attr));
-				$text->parentNode->replaceChild($frag, $text);
+				$frag = new \DOMDocument('1.0', 'UTF-8');
+				$frag->loadHTML('<dproot>' . $newText . '</dproot>');
+				foreach ($frag->childNodes as $node) {
+					$node2 = $dom->importNode($node, true);
+					if ($node2) {
+						$text->parentNode->insertBefore($node2, $text);
+					}
+				}
+				$text->parentNode->removeChild($text);
 			}
 		}
 
 		$html = $dom->saveHTML();
+		$html = str_replace(array('<dproot>', '</dproot>'), '', $html);
 		$html = Strings::extractBodyTag($html);
 
 		return $html;
