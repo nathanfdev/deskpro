@@ -286,11 +286,13 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 
 		$('#dp_header_portal_off').on('click', function() {
 			self.header.toggleClass('disabled');
+			updateHeader();
 		});
 		$('#dp_header_portal_off_drag_overlay').on('click', function() {
 			if (self.header.hasClass('disabled')) {
 				self.header.toggleClass('disabled');
 			}
+			updateHeader();
 		});
 
 		// Tabs
