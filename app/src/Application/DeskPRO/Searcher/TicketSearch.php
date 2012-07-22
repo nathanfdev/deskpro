@@ -1006,7 +1006,7 @@ class TicketSearch extends SearcherAbstract
 						$w .= ')';
 					} else {
 						$w .= '(';
-						$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+						$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
 						$w .= ')';
 					}
 					$w .= ')';
