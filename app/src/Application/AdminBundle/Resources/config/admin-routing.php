@@ -975,13 +975,6 @@ $collection->add('admin_langs_dellang', new Route(
 	array()
 ));
 
-$collection->add('admin_langs_install', new Route(
-	'/languages/install',
-	array('_controller' => 'AdminBundle:Languages:install'),
-	array(),
-	array()
-));
-
 $collection->add('admin_langs_install_pack', new Route(
 	'/languages/install-pack/{id}',
 	array('_controller' => 'AdminBundle:Languages:installPack'),

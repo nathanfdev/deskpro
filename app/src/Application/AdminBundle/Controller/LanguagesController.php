@@ -88,6 +88,15 @@ class LanguagesController extends AbstractController
 		$lang->has_admin     = $langpacks->getLangInfo($id, 'has_admin');
 		$lang->base_filepath = '%DP_ROOT%/languages/' . $id;
 
+		// Get the title from the lang itself
+		$title_file = DP_ROOT . '/languages/' . $id . '/user/lang.php';
+		if (file_exists($title_file)) {
+			$tmp = require($title_file);
+			if (isset($tmp['user.lang.lang_title'])) {
+				$lang->title = $tmp['user.lang.lang_title'];
+			}
+		}
+
 		$this->db->beginTransaction();
 		try {
 			$this->em->persist($lang);
