@@ -98,7 +98,7 @@ class ActiveDirectoryModel
 			$options['useStartTls'] = true;
 		}
 
-		$this->_usersource->options = $options;
+		$this->_usersource->setOptions($options, true);
 
 		$em->persist($this->_usersource);
 		$em->flush();

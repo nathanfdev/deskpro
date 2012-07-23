@@ -183,22 +183,24 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 				$raw_info = array_merge($raw_info, $rec->getAttributes());
 
 				if ($rec->getAttribute('givenName')) {
-					$raw_info['first_name'] = Arrays::getFirstItem($rec->getAttribute('givenName'));
+					$raw_info['first_name'] = $rec->getAttribute('givenName', 0);
 				}
-				if ($rec->getAttribute('SN')) {
-					$raw_info['last_name'] = Arrays::getFirstItem($rec->getAttribute('SN'));
+				if ($rec->getAttribute('sn')) {
+					$raw_info['last_name'] = $rec->getAttribute('sn', 0);
 				}
 
 				if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
 					$raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
 				} elseif ($rec->getAttribute('name')) {
-					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('name'));
-				} elseif ($rec->getAttribute('CN')) {
-					$raw_info['name'] = Arrays::getFirstItem($rec->getAttribute('CN'));
+					$raw_info['name'] = $rec->getAttribute('name', 0);
+				} elseif ($rec->getAttribute('cn')) {
+					$raw_info['name'] = $rec->getAttribute('cn', 0);
 				}
 
 				if ($rec->getAttribute('mail')) {
-					$raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
+					$raw_info['email_address'] = $rec->getAttribute('mail', 0);
+				} elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
+					$raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
 				}
 			}
 		} catch (\Exception $e) {}
@@ -207,7 +209,6 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 		return new Result(Result::SUCCESS, $identity);
 	}
-
 
 	/**
 	 * @param \Orb\Log\Logger $logger

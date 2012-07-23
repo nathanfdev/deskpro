@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
+use Orb\Util\Arrays;
 
 class ActiveDirectory extends AbstractAdapter
 {
@@ -60,6 +61,90 @@ class ActiveDirectory extends AbstractAdapter
 	}
 
 
+
+	/**
+	 * Find a user identity just by an email address.
+	 *
+	 * @param $email_address
+	 * @return \Orb\Auth\Identity|null
+	 */
+	public function findIdentityByInput($email_address)
+	{
+		$usersource = clone $this->usersource;
+		$usersource->setOption('bindRequiresDn', true);
+		$adapter = $usersource->getAdapter();
+
+		/** @var $zend_auth \Zend\Authentication\Adapter\Ldap */
+		$zend_auth = $adapter->getAuthAdapter()->getZendAuthAdapter();
+
+		// Bogus because zend only creates ldap obj when its needed,
+		// so this is a hack to get it to set all the correct options
+		// for us
+		try {
+			$zend_auth->setUsername('__bogus__');
+			$zend_auth->setPassword('__bogus__');
+			$zend_auth->authenticate();
+		} catch (\Exception $e) {}
+
+		/** @var $ldap \Zend\Ldap\Ldap */
+		$ldap = $zend_auth->getLdap();
+
+		$raw_info = null;
+
+		$dn = $ldap->getCanonicalAccountName($email_address, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+		$rec = $ldap->getNode($dn);
+
+		$raw_info = null;
+		if ($rec) {
+			$raw_info = array();
+
+			if ($rec->getAttribute('userPrincipalName')) {
+				$raw_info['identity'] = $rec->getAttribute('userPrincipalName', 0);
+			} elseif ($rec->getAttribute('sAMAccountName')) {
+				$raw_info['identity'] = $rec->getAttribute('sAMAccountName', 0);
+			} elseif ($rec->getAttribute('uid')) {
+				$raw_info['identity'] = $rec->getAttribute('uid', 0);
+			} else {
+				$raw_info['identity'] = $dn;
+			}
+
+			$raw_info['dn'] = $dn;
+
+			if ($rec->getAttribute('givenName')) {
+				$raw_info['first_name'] = $rec->getAttribute('givenName', 0);
+			}
+			if ($rec->getAttribute('sn')) {
+				$raw_info['last_name'] = $rec->getAttribute('sn', 0);
+			}
+
+			if ($rec->getAttribute('name')) {
+				$raw_info['name'] = $rec->getAttribute('name', 0);
+			} elseif ($rec->getAttribute('cn')) {
+				$raw_info['name'] = $rec->getAttribute('cn', 0);
+			}
+
+			if ($rec->getAttribute('mail')) {
+				$raw_info['email_address'] = $rec->getAttribute('mail', 0);
+			} elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
+				$raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
+			}
+
+			foreach ($raw_info as &$v) {
+				if (is_array($v)) {
+					$v = Arrays::getFirstItem($v);
+				}
+			}
+		}
+
+		if ($raw_info) {
+			$identity = new Identity($raw_info['identity'], $raw_info);
+			return $identity;
+		}
+
+		return null;
+	}
+
+
 	/**
 	 * @return array
 	 */
@@ -67,16 +152,7 @@ class ActiveDirectory extends AbstractAdapter
 	{
 		return array(
 			'form_login',
+			'find_identity'
 		);
-	}
-
-
-	/**
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, $this->getCapabilities());
 	}
 }

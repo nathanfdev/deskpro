@@ -151,11 +151,15 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setOptions(array $options, $reset = false)
 	{
+		$old = $this->options;
+
 		if ($reset) {
 			$this->options = $options;
 		} else {
 			$this->options = array_merge($this->options, $options);
 		}
+
+		$this->_onPropertyChanged('options', $old, $this->options);
 	}
 
 

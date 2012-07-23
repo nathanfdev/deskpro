@@ -1671,8 +1671,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function setName($name)
 	{
 		$this->setModelField('name', $name);
-		$this->setModelField('first_name', '');
-		$this->setModelField('last_name', '');
 	}
 
 

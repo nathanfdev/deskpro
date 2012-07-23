@@ -66,6 +66,18 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 
 	/**
+	 * Find a user identity just by an email address.
+	 *
+	 * @param string $input
+	 * @return \Orb\Auth\Identity|null
+	 */
+	public function findIdentityByInput($input)
+	{
+		return null;
+	}
+
+
+	/**
 	 * Given an identity returned from an auth adapter, get the mapped fields that we can apply
 	 * to a Person record. For example, email addresses or names.
 	 *
@@ -139,5 +151,15 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	public function getTypename()
 	{
 		return strtolower(Util::getBaseClassname($this));
+	}
+
+
+	/**
+	 * @param  mixed $capability
+	 * @return bool
+	 */
+	public function isCapable($capability)
+	{
+		return in_array($capability, $this->getCapabilities());
 	}
 }

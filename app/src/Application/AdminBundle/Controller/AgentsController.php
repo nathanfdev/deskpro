@@ -39,6 +39,7 @@ use Application\DeskPRO\App;
 
 use Application\AdminBundle\Form\EditAgentType;
 use Application\AdminBundle\FormModel as AdminFormModel;
+use Application\DeskPRO\Entity\Usersource;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -185,15 +186,15 @@ class AgentsController extends AbstractController
 	public function newFromUsersourceMakeAction($usersource_id)
 	{
 		$username = $this->in->getString('search_term');
+
+		/** @var $usersource \Application\DeskPRO\Entity\Usersource */
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
-		$raw_info = $this->_tryFetchUser($username, $usersource);
+		$identity = $usersource->getAdapter()->findIdentityByInput($username);
 
-		if (!$raw_info) {
+		if (!$identity) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$identity = new \Orb\Auth\Identity($raw_info['identity'], $raw_info);
 
 		$this->db->beginTransaction();
 		try {
@@ -217,9 +218,15 @@ class AgentsController extends AbstractController
 	public function newFromUsersourceSearchAction($usersource_id)
 	{
 		$username = $this->in->getString('search_term');
+
+		/** @var $usersource \Application\DeskPRO\Entity\Usersource */
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
-		$raw_info = $this->_tryFetchUser($username, $usersource);
+		$identity = $usersource->getAdapter()->findIdentityByInput($username);
+		$raw_info = null;
+		if ($identity) {
+			$raw_info = $identity->getRawData();
+		}
 
 		return $this->render('AdminBundle:Agents:add-from-usersource-result.html.twig', array(
 			'usersource' => $usersource,
@@ -227,76 +234,6 @@ class AgentsController extends AbstractController
 			'search_term' => $username,
 		));
 	}
-
-	protected function _tryFetchUser($username, $usersource)
-	{
-		$usersource->setOption('bindRequiresDn', true);
-		$adapter = $usersource->getAdapter();
-		$options = $usersource->options;
-
-		/** @var $zend_auth \Zend\Authentication\Adapter\Ldap */
-		$zend_auth = $adapter->getAuthAdapter()->getZendAuthAdapter();
-
-		// Bogus because zend only creates ldap obj when its needed,
-		// so this is a hack to get it to set all the correct options
-		// for us
-		try {
-			$zend_auth->setUsername('__bogus__');
-			$zend_auth->setPassword('__bogus__');
-			$zend_auth->authenticate();
-		} catch (\Exception $e) {}
-
-		/** @var $ldap \Zend\Ldap\Ldap */
-		$ldap = $zend_auth->getLdap();
-
-		$raw_info = null;
-
-		$dn = $ldap->getCanonicalAccountName($username, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
-		$rec = $ldap->getNode($dn);
-
-		$raw_info = null;
-		if ($rec) {
-			$raw_info = array();
-
-			if ($rec->getAttribute('userPrincipalName')) {
-				$raw_info['identity'] = $rec->getAttribute('userPrincipalName');
-			} elseif ($rec->getAttribute('sAMAccountName')) {
-				$raw_info['identity'] = $rec->getAttribute('sAMAccountName');
-			} elseif ($rec->getAttribute('uid')) {
-				$raw_info['identity'] = $rec->getAttribute('uid');
-			} else {
-				$raw_info['identity'] = $dn;
-			}
-
-			$raw_info['dn'] = $dn;
-
-			if ($rec->getAttribute('givenName')) {
-				$raw_info['first_name'] = $rec->getAttribute('givenName');
-			}
-			if ($rec->getAttribute('SN')) {
-				$raw_info['last_name'] = $rec->getAttribute('SN');
-			}
-
-			if ($rec->getAttribute('name')) {
-				$raw_info['name'] = $rec->getAttribute('name');
-			} elseif ($rec->getAttribute('CN')) {
-				$raw_info['name'] = $rec->getAttribute('CN');
-			}
-
-			if ($rec->getAttribute('mail')) {
-				$raw_info['email_address'] = $rec->getAttribute('mail');
-			}
-
-			foreach ($raw_info as &$v) {
-				if (is_array($v)) {
-					$v = Arrays::getFirstItem($v);
-				}
-			}
-		}
-
-		return $raw_info;
-	}
-
 
 	############################################################################
 	# edit-agent
