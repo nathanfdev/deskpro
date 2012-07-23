@@ -30,7 +30,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.getElById('replybox_txt').TextAreaExpander(150, 550).on('textareaexpander_expanded', function() {
 			window.setTimeout(function() {
-				self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				if (self.page) {
+					self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				}
 			}, 250);
 		});
 
