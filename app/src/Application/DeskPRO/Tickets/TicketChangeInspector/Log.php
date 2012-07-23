@@ -54,6 +54,11 @@ class Log
 	 */
 	protected $ticket;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context = -1;
+
 	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
@@ -371,7 +376,7 @@ class Log
 	protected function createNewTicketLog(LogActionInterface $action)
 	{
 		$ticket_log = new Entity\TicketLog();
-		$ticket_log['person'] = App::getCurrentPerson();
+		$ticket_log['person'] = $this->getPersonContext();
 
 		if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
 			$ticket_log['person'] = $this->ticket->person;
@@ -391,5 +396,26 @@ class Log
 		}
 
 		return null;
+	}
+
+	public function getPersonContext()
+	{
+		if ($this->person_context !== -1) {
+			return $this->person_context;
+		}
+
+		$this->person_context = App::getCurrentPerson();
+		if (!$this->person_context || !$this->person_context->getId()) {
+			// If we're in a gateway, see if we've added a reply, and the person who added the reply will be our context.
+			if (DP_INTERFACE == 'cli') {
+				if ($this->tracker->isExtraSet('ticket_created')) {
+					$this->person_context = $this->ticket->person;
+				} elseif ($this->tracker->hasNewReply()) {
+					$this->person_context = $this->tracker->getNewReply()->person;
+				}
+			}
+		}
+
+		return $this->person_context;
 	}
 }

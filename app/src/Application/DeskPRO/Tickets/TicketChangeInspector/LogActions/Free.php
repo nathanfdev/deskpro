@@ -50,7 +50,7 @@ class Free extends AbstractLogAction
 
 	public function getLogName()
 	{
-		return 'changed_department';
+		return 'free';
 	}
 
 	public function getLogDetails()

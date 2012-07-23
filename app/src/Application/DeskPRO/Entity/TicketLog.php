@@ -124,8 +124,12 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setPersonId($id)
 	{
-		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-		$this['person'] = $person;
+		if ($id) {
+			$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
+			$this['person'] = $person;
+		} else {
+			$this['person'] = null;
+		}
 	}
 
 	public function getTicketId()
