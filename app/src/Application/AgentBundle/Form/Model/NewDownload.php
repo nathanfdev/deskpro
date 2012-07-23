@@ -69,24 +69,27 @@ class NewDownload
 		$this->_em->beginTransaction();
 
 		$download = new Download();
-		$download->person = $this->_person_context;
-		$download->title = $this->title;
+		$download->person  = $this->_person_context;
+		$download->title   = $this->title;
 		$download->content = $this->content ?: '';
-		$download->slug = $this->slug;
+		$download->slug    = $this->slug;
 		$download->setStatusCode($this->status);
 
 		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
 		$download->category = $cat;
 
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-		$download->blob = $blob;
+		if ($this->attach) {
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+			$download->blob = $blob;
 
-		if (!$download->title) {
-			$download->title = $blob->filename;
+			if (!$download->title) {
+				$download->title = $blob->filename;
+			}
+
+			$blob->filename = $download->title;
+			$this->_em->persist($blob);
 		}
 
-		$blob->filename = $download->title;
-		$this->_em->persist($blob);
 		$this->_em->persist($download);
 
 		$this->_em->flush();

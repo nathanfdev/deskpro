@@ -56,6 +56,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<h4>File</h4>
 		<div id="{{baseId}}_file_section_up">
 			<input type="file" name="file-upload" multiple="multiple" />
+			<div class="error-message attach">Please upload a file</div>
 		</div>
 		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]' } %}
         <ul class="files file-list"></ul>

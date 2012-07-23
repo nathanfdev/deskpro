@@ -57,6 +57,10 @@ class NewDownloadValidator extends AbstractValidator
 			$this->addError('status.invalid');
 		}
 
+		if (!$download->attach) {
+			$this->addError('attach.invalid');
+		}
+
 		if ($this->errors) {
 			return false;
 		}
