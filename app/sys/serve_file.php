@@ -548,7 +548,7 @@ class FilestorageLoader
 		}
 
 		$content_disposition = 'attachment';
-		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isImageContentType($mimetype)) {
+		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($mimetype)) {
 			$content_disposition = 'inline';
 		}
 
@@ -675,19 +675,10 @@ class FilestorageLoader
 		header('Content-Type: ' . $blob['content_type'] . '; filename=' . $blob['filename_safe']);
 		header('Content-Length: ' . $blob['filesize']);
 
-		switch ($blob['content_type']) {
-			case 'image/jpg':
-			case 'image/jpeg':
-			case 'image/gif':
-			case 'image/png':
-				if (isset($_GET['dl'])) {
-					header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
-				} else {
-					header('Content-Disposition: inline; filename=' . $blob['filename_safe']);
-				}
-				break;
-			default:
-				header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
+		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+			header('Content-Disposition: inline; filename=' . $blob['filename_safe']);
+		} else {
+			header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
 		}
 
 		$d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);

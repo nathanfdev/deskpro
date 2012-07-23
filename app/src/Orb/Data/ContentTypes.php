@@ -113,6 +113,8 @@ class ContentTypes
 		'm14' => 'application/x-msmediaview',
 		'm3u' => 'audio/x-mpegurl',
 		'man' => 'application/x-troff-man',
+		'markdown' => 'text/x-markdown',
+		'md' => 'text/x-markdown',
 		'mdb' => 'application/x-msaccess',
 		'me' => 'application/x-troff-me',
 		'mht' => 'message/rfc822',
@@ -364,6 +366,36 @@ class ContentTypes
 	public static function isImageContentType($content_type)
 	{
 		return in_array($content_type, self::getImageContentTypes());
+	}
+
+
+	/**
+	 * @static
+	 * @param $content_type
+	 * @param bool $safe
+	 * @return bool
+	 */
+	public static function isInlineContentType($content_type, $safe = true)
+	{
+		if (self::isImageContentType($content_type)) {
+			return true;
+		}
+
+		switch ($content_type) {
+			case 'text/css':
+			case 'text/javascript':
+			case 'text/plain':
+			case 'text/x-markdown':
+				return true;
+
+			case 'text/html':
+				if ($safe) {
+					return false;
+				}
+				return true;
+		}
+
+		return false;
 	}
 
 
