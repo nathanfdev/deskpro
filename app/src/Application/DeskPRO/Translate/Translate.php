@@ -162,16 +162,8 @@ class Translate implements PersonContextInterface
 			return;
 		}
 
-		if (!$session->getPerson()->isGuest()) {
-			$this->setLanguage($session->getPerson()->getLanguage());
-			$this->setDefaultLanguage($session->getPerson()->getLanguage());
-		} elseif ($session->get('language_id')) {
-			$lang = App::getDataService('Language')->get($session->get('language_id'));
-			if ($lang) {
-				$this->setLanguage($lang);
-				$this->setDefaultLanguage($lang);
-			}
-		}
+		$this->setLanguage($session->getLanguage());
+		$this->setDefaultLanguage($session->getLanguage());
 	}
 
 
