@@ -182,6 +182,8 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 			if ($rec) {
 				$raw_info = array_merge($raw_info, $rec->getAttributes());
 
+				$raw_info['domain'] = $this->options['accountDomainName'];
+
 				if ($rec->getAttribute('givenName')) {
 					$raw_info['first_name'] = $rec->getAttribute('givenName', 0);
 				}

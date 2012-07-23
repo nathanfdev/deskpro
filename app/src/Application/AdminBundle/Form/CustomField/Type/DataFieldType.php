@@ -29,28 +29,33 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\AdminBundle\Form\CustomField\Type;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilder;
 
-class PersonFieldsManagerService
+use Application\DeskPRO\App;
+
+class DataFieldType extends CustomFieldTypeAbstract
 {
-	public static function create(DeskproContainer $container)
+	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
 	{
-		$m = new PersonFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-				'entity_name'        => 'DeskPRO:CustomDefPerson',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
-				'data_entity_name'   => 'DeskPRO:CustomDataPerson',
-			)
-		);
+		$choices = array();
+		foreach (App::getDataService('Usersource')->getAllUsersources() as $us) {
+			$choices[$us->getId()] = $us->getTitle();
+		}
 
-		return $m;
+		$builder->add('usersource_id', 'choice', array('required' => false, 'choices' => $choices));
+		$builder->add('field_name', 'text', array('required' => false));
+	}
+
+	public function getDefaultOptions(array $options)
+	{
+		return array(
+			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DataField',
+		);
 	}
 }

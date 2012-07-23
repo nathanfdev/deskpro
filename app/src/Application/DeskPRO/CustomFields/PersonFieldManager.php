@@ -29,28 +29,47 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
+use Application\DeskPRO\App;
 
-class PersonFieldsManagerService
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Doctrine\ORM\EntityManager;
+use Orb\Auth\Identity;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Person;
+
+class PersonFieldManager extends FieldManager
 {
-	public static function create(DeskproContainer $container)
+	public function copyUsersourceData(Person $person, Identity $identity, Usersource $usersource)
 	{
-		$m = new PersonFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-				'entity_name'        => 'DeskPRO:CustomDefPerson',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
-				'data_entity_name'   => 'DeskPRO:CustomDataPerson',
-			)
-		);
+		$save_data = array();
 
-		return $m;
+		foreach ($this->getFields() as $field) {
+			if ($field->handler_class != 'Application\\DeskPRO\\CustomFields\\Handler\\Data') {
+				continue;
+			}
+
+			if ($field->getOption('usersource_id') && $field->getOption('usersource_id') != $usersource->getId()) {
+				continue;
+			}
+
+			$field_name = $field->getOption('field_name');
+			$raw_data   = $identity->getRawData();
+
+			if (!$field_name || !isset($raw_data[$field_name])) {
+				print_r($raw_data);exit;
+				continue;
+			}
+
+			$save_data['field_' . $field->getId()] = $raw_data[$field_name];
+		}
+
+		if ($save_data) {
+			$this->saveFormToObject($save_data, $person, true);
+		}
 	}
 }

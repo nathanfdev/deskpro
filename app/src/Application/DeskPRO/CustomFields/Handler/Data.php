@@ -29,28 +29,56 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage CustomFields
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class PersonFieldsManagerService
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+
+/**
+ * A field that doesnt have any user-editable form field. It's used by API's or other features to store
+ * data attached to things. For example, storing data from a user source on a person.
+ */
+class Data extends HandlerAbstract
 {
-	public static function create(DeskproContainer $container)
+	public function getFormField(array $data = null)
 	{
-		$m = new PersonFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-				'entity_name'        => 'DeskPRO:CustomDefPerson',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
-				'data_entity_name'   => 'DeskPRO:CustomDataPerson',
-			)
-		);
+		$setData = null;
+		if ($data AND !empty($data['value'])) {
+			$setData = $data['value'];
+		}
 
-		return $m;
+		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array('required' => false));
+
+		return $field;
+	}
+
+	function getDataFromForm(array $form_data)
+	{
+		if (isset($form_data[$this->getFormFieldName()])) {
+			return array(
+				array($this->field_def->getId(), 'input', $form_data[$this->getFormFieldName()])
+			);
+		}
+		return array();
+	}
+
+	public function getSearchCapabilities()
+	{
+		return array('is', 'not', 'contains', 'notcontains');
+	}
+
+	public function getFilterCapabilities()
+	{
+		return array('is', 'not');
+	}
+
+	public function getSearchType()
+	{
+		return 'input';
 	}
 }

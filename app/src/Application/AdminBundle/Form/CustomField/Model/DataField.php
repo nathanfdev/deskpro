@@ -29,28 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\AdminBundle\Form\CustomField\Model;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
-
-class PersonFieldsManagerService
+class DataField extends CustomFieldAbstract
 {
-	public static function create(DeskproContainer $container)
-	{
-		$m = new PersonFieldManager(
-			$container->get('doctrine.orm.entity_manager'),
-			array(
-				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-				'entity_name'        => 'DeskPRO:CustomDefPerson',
-				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
-				'data_entity_name'   => 'DeskPRO:CustomDataPerson',
-			)
-		);
+	public $usersource_id;
+	public $field_name;
 
-		return $m;
+	public function init()
+	{
+		$this->usersource_id = $this->_field->getOption('usersource_id');
+		$this->field_name = $this->_field->getOption('field_name');
+	}
+
+	protected function setFieldProperties()
+	{
+		$field = $this->_field;
+
+		if ($this->usersource_id) {
+			$field->setOption('usersource_id', $this->usersource_id);
+		}
+		if ($this->field_name) {
+			$field->setOption('field_name', $this->field_name);
+		}
 	}
 }

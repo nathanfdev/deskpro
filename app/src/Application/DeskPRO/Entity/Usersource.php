@@ -192,4 +192,84 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
+
+	/**
+	 * @param int $display_order
+	 */
+	public function setDisplayOrder($display_order)
+	{
+		$this->display_order = $display_order;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDisplayOrder()
+	{
+		return $this->display_order;
+	}
+
+	/**
+	 * @param boolean $is_enabled
+	 */
+	public function setIsEnabled($is_enabled)
+	{
+		$this->is_enabled = $is_enabled;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getIsEnabled()
+	{
+		return $this->is_enabled;
+	}
+
+	/**
+	 * @param string $lost_password_url
+	 */
+	public function setLostPasswordUrl($lost_password_url)
+	{
+		$this->lost_password_url = $lost_password_url;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLostPasswordUrl()
+	{
+		return $this->lost_password_url;
+	}
+
+	/**
+	 * @param string $source_type
+	 */
+	public function setSourceType($source_type)
+	{
+		$this->source_type = $source_type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSourceType()
+	{
+		return $this->source_type;
+	}
+
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
 }

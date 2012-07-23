@@ -150,6 +150,13 @@ class LoginProcessor
 			$this->person = $this->assoc['person'];
 		}
 
+		// Update custom field data
+		App::getSystemService('person_fields_manager')->copyUsersourceData(
+			$this->person,
+			$this->identity,
+			$this->usersource
+		);
+
 		$this->person['is_user'] = true;
 		$this->person->setLastLoginAt();
 

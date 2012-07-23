@@ -426,7 +426,7 @@ class FieldManager
 	 * @param $object
 	 * @return void
 	 */
-	public function saveFormToObject(array $form, $object)
+	public function saveFormToObject(array $form, $object, $only_set = false)
 	{
 		$this->em->beginTransaction();
 
@@ -437,11 +437,17 @@ class FieldManager
 			// Remove whatever we have before
 			// We'll just re-insert if its still there
 			foreach ($this->getFields() as $field_def) {
+				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
+					continue;
+				}
 				$this->removeCustomDataOnObject($object, $field_def);
 			}
 			$this->em->flush();
 
 			foreach ($this->getFields() as $field_def) {
+				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
+					continue;
+				}
 				foreach ($field_def->getHandler()->getDataFromForm($form) as $info) {
 					$this->setCustomDataOnObject($object, $field_def, $info);
 				}
