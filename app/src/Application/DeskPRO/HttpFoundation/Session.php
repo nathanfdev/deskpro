@@ -79,12 +79,19 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
+				$this->person = $person;
+				App::setCurrentPerson($person);
 				if ($person->is_agent) {
 					$this->attributes['active_status'] = 'available';
 					$this->attributes['is_chat_available'] = 1;
 				}
 
 				$this->attributes['auth_person_id'] = $person->getId();
+
+				if (!isset($_SESSION['_symfony2'])) {
+					$_SESSION['_symfony2'] = array();
+				}
+				$_SESSION['_symfony2'] = array_merge($_SESSION['_symfony2'], $this->attributes);
 			}
 		}
 
