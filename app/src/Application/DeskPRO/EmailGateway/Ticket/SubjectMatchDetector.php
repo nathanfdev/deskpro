@@ -74,7 +74,7 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		// Strip off Re: prefix (and alternatives in some other langs)
 		$subject_orig = trim($subject);
 		$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject);
-		$subject_re   = trim($subject);
+		$subject_re   = trim($subject_re);
 
 		// Now lets try to find it...
 		$ticket_ids = App::getDb()->fetchAllCol("
