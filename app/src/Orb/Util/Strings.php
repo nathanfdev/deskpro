@@ -1244,7 +1244,7 @@ class Strings
 			return $key;
 		}, $text);
 
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]+)#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]*)#i',function($m) use (&$search_replace, $attr) {
 			if ($m[2]) return $m[0];
 
 			$url = ($m[2] ? $m[2] : 'http://') . $m[3];
