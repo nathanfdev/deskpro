@@ -378,10 +378,6 @@ class Log
 		$ticket_log = new Entity\TicketLog();
 		$ticket_log['person'] = $this->getPersonContext();
 
-		if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
-			$ticket_log['person'] = $this->ticket->person;
-		}
-
 		$ticket_log['ticket'] = $this->ticket;
 		$ticket_log['action_type'] = $action->getLogName();
 		$ticket_log['details'] = $action->getLogDetails();
@@ -414,6 +410,10 @@ class Log
 					$this->person_context = $this->tracker->getNewReply()->person;
 				}
 			}
+		}
+
+		if (!$this->person_context || !$this->person_context->getId()) {
+			$this->person_context = null;
 		}
 
 		return $this->person_context;

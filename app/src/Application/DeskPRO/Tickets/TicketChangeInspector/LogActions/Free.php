@@ -44,6 +44,9 @@ class Free extends AbstractLogAction
 
 	public function __construct($message, array $misc_data = array())
 	{
+		if (is_array($message)) {
+			$message = $message['message'];
+		}
 		$this->message = $message;
 		$this->data = $misc_data;
 	}

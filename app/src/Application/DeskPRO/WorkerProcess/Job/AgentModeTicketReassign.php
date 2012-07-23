@@ -73,7 +73,7 @@ class AgentModeTicketReassign extends AbstractJob
 			foreach ($tickets as $t) {
 				/** @var $t \Application\DeskPRO\Entity\Ticket */
 
-				$t->getTicketLogger()->recordMultiPropertyChanged('log_actions', new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\Free("Unassigning deactivated agent"));
+				$t->getTicketLogger()->recordMultiPropertyChanged('log_actions', null, array('type' => 'free', 'message' => 'Unassigning deactivated agent'));
 				$t->agent = null;
 
 				App::getDb()->beginTransaction();
