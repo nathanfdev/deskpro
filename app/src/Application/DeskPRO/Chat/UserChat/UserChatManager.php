@@ -157,6 +157,7 @@ class UserChatManager
 						$new_person->name = $convo->person_name;
 					}
 					$new_person->setEmail($convo->person_email);
+					$convo->person = $new_person;
 				}
 			}
 			$is_new_convo = true;
