@@ -91,7 +91,7 @@ class LdapModel
 			'username'               => $this->username,
 			'password'               => $this->password,
 			'field_username'         => $this->field_username,
-			'field_email'            => $this->field_umail,
+			'field_email'            => $this->field_email,
 			'accountFilterFormat'    => $this->accountFilterFormat
 		);
 
