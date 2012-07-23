@@ -279,6 +279,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleTicketUpdate: function(data) {
 
+		// Might be unloaded by the time this callback is called
+		if (!this.changeManager) {
+			return;
+		}
+
 		if (data.status) {
 			var statusProp = this.changeManager.getPropertyManager('status');
 			statusProp.setIncomingValue(data.status);
