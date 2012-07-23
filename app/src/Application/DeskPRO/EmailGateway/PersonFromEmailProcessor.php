@@ -37,7 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
-use
 
 /**
  * This finds a user based on the email sent, or creates a new user
