@@ -1,0 +1,10 @@
+{% set with_cutline = 1 %}
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}{{ phrase('user.email_subjects.re', {subject: subject}) }}{% endblock %}
+{% block content %}
+	{% set content %}
+    {{ phrase('user.emails.registration_closed', {name: name}) }}
+	{% endset %}
+	{{ layout.section('', content) }}
+{% endblock %}

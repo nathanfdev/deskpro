@@ -223,6 +223,22 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
 				$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			} else {
+
+				if (App::getSetting('core.user_mode') == 'closed') {
+					$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
+					$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
+
+					if (!$this->is_bounce && !$this->reader->isFromRobot()) {
+						$message = App::getMailer()->createMessage();
+						$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
+							'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+							'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+						));
+						$message->setTo($this->reader->getFromAddress()->getEmail());
+						App::getMailer()->send($message);
+					}
+				}
+
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 			}

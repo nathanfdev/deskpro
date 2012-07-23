@@ -35,4 +35,5 @@ To protect against an auto-responder loop our helpdesk will not send any more au
 Before our agents will read and reply to your message, you must validate your email address.',
 	'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
 	'user.emails.view_full_history_online'    => 'View full ticket online',
+	'user.emails.registration_closed'         => "Dear {{name}},\n\nNew tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address."
 );
