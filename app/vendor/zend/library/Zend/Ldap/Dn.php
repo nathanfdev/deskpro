@@ -754,11 +754,6 @@ class Dn implements \ArrayAccess
             return false;
         }
 
-        $startIndex = count($cdn)-count($pdn);
-        if ($startIndex<0) return false;
-        for ($i = 0; $i<count($pdn); $i++) {
-            if ($cdn[$i+$startIndex] != $pdn[$i]) return false;
-        }
         return true;
     }
 }
