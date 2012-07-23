@@ -550,7 +550,7 @@
 	'agent.general.settings'                                => 'Settings',
 	'agent.general.show'                                    => 'Show',
 	'agent.general.showing'                                 => 'Showing',
-	'agent.general.showing_results_x_of_y'                  => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
+	'agent.general.showing_results_x_of_y'                  => 'Showing results {{display_count}} of {{size}}',
 	'agent.general.skype'                                   => 'Skype',
 	'agent.general.snippet_text_placeholder'                => 'Snippet text',
 	'agent.general.snippets'                                => 'Snippets',
