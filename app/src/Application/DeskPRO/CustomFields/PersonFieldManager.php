@@ -61,7 +61,6 @@ class PersonFieldManager extends FieldManager
 			$raw_data   = $identity->getRawData();
 
 			if (!$field_name || !isset($raw_data[$field_name])) {
-				print_r($raw_data);exit;
 				continue;
 			}
 

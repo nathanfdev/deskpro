@@ -98,6 +98,8 @@ class ActiveDirectory extends AbstractAdapter
 		if ($rec) {
 			$raw_info = array();
 
+			$raw_info['domain'] = $usersource->getOption('accountDomainName');
+
 			if ($rec->getAttribute('userPrincipalName')) {
 				$raw_info['identity'] = $rec->getAttribute('userPrincipalName', 0);
 			} elseif ($rec->getAttribute('sAMAccountName')) {
