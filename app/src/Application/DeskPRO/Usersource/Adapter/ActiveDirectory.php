@@ -91,8 +91,12 @@ class ActiveDirectory extends AbstractAdapter
 
 		$raw_info = null;
 
-		$dn = $ldap->getCanonicalAccountName($email_address, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
-		$rec = $ldap->getNode($dn);
+		try {
+			$dn = $ldap->getCanonicalAccountName($email_address, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+			$rec = $ldap->getNode($dn);
+		} catch (\Exception $e) {
+			return null;
+		}
 
 		$raw_info = null;
 		if ($rec) {
