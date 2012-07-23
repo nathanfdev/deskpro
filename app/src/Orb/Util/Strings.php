@@ -1296,8 +1296,10 @@ class Strings
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
-				$frag->loadHTML('<dproot>' . $newText . '</dproot>');
-				foreach ($frag->childNodes as $node) {
+				$frag->loadHTML('<body>' . $newText . '</body>');
+				$xpath2 = new \DOMXPath($frag);
+
+				foreach ($xpath2->query('body')->item(0)->childNodes as $node) {
 					$node2 = $dom->importNode($node, true);
 					if ($node2) {
 						$text->parentNode->insertBefore($node2, $text);
@@ -1308,7 +1310,6 @@ class Strings
 		}
 
 		$html = $dom->saveHTML();
-		$html = str_replace(array('<dproot>', '</dproot>'), '', $html);
 		$html = Strings::extractBodyTag($html);
 
 		return $html;
