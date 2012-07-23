@@ -66,7 +66,7 @@ class NewReply
 	public function save()
 	{
 		$ticket_message = new TicketMessage();
-		$ticket_message['message'] = htmlspecialchars($this->message);
+		$ticket_message->setMessageText($this->message);
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 		$ticket_message->creation_system = 'web.person';
