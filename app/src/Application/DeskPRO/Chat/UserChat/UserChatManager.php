@@ -268,30 +268,30 @@ class UserChatManager
 		try {
 			$this->em->persist($convo);
 			$this->em->flush();
-
-			$this->addSystemMessage(
-				$convo,
-				'message_user-returned'
-			);
-
-			// Resend the new chat alerts to agents
-			$newchat_cm_data = $convo->getInfo();
-			$newchat_cm_data['restarted'] = true;
-
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'chat.new',
-				'data' => $newchat_cm_data,
-				'created_by_client' => $this->getCurrentClientId(),
-			));
-
-			$this->em->persist($cm);
-			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
 		}
+
+		$this->addSystemMessage(
+			$convo,
+			'message_user-returned'
+		);
+
+		// Resend the new chat alerts to agents
+		$newchat_cm_data = $convo->getInfo();
+		$newchat_cm_data['restarted'] = true;
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'chat.new',
+			'data' => $newchat_cm_data,
+			'created_by_client' => $this->getCurrentClientId(),
+		));
+
+		$this->em->persist($cm);
+		$this->em->flush();
 	}
 
 
@@ -478,30 +478,21 @@ class UserChatManager
 	 */
 	public function addUserTrack(ChatConversation $convo, $url)
 	{
-		$this->em->beginTransaction();
-		try {
-			$url_show = preg_replace('#^https?://(www\.)?#i', '', $url);
-			if (strlen($url_show) > 50) {
-				$url_show = substr($url_show, 0, 50) . '...';
-			}
-
-			$url = htmlspecialchars($url);
-			$url_show = htmlspecialchars($url_show);
-
-			$label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$url_show</a>";
-
-			$this->addSystemMessage($convo, 'msg_new_user_track', array('label' => $label), array(
-				'new_user_track' => $url,
-				'user_hidden' => true,
-				'is_html' => true,
-			));
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		$url_show = preg_replace('#^https?://(www\.)?#i', '', $url);
+		if (strlen($url_show) > 50) {
+			$url_show = substr($url_show, 0, 50) . '...';
 		}
+
+		$url = htmlspecialchars($url);
+		$url_show = htmlspecialchars($url_show);
+
+		$label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$url_show</a>";
+
+		$this->addSystemMessage($convo, 'msg_new_user_track', array('label' => $label), array(
+			'new_user_track' => $url,
+			'user_hidden' => true,
+			'is_html' => true,
+		));
 	}
 
 
@@ -523,40 +514,31 @@ class UserChatManager
 
 		$old_agent_name = $convo->agent->getDisplayName();
 
-		$this->em->beginTransaction();
-		try {
-			$convo->agent = null;
-			$this->em->persist($convo);
+		$convo->agent = null;
+		$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'message_unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
+		$this->addSystemMessage($convo, 'message_unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
 
-			// Try to reassign
-			if ($this->auto_assigner) {
-				$assign_agent = $this->auto_assigner->getAgent($convo);
-				if ($assign_agent) {
-					$this->assignAgent($convo, $assign_agent);
-				}
+		// Try to reassign
+		if ($this->auto_assigner) {
+			$assign_agent = $this->auto_assigner->getAgent($convo);
+			if ($assign_agent) {
+				$this->assignAgent($convo, $assign_agent);
 			}
+		}
 
-			$this->em->flush();
+		$this->em->flush();
 
-			// If no agent auto-assigned,
-			// need to broadcast an alert to other agents
-			if (!$convo->agent && $convo->status == 'open') {
-				$cm = new ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'chat.unassigned',
-					'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
-					'created_by_client' => $this->getCurrentClientId(),
-				));
-				$this->em->persist($cm);
-			}
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		// If no agent auto-assigned,
+		// need to broadcast an alert to other agents
+		if (!$convo->agent && $convo->status == 'open') {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => 'chat.unassigned',
+				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
+				'created_by_client' => $this->getCurrentClientId(),
+			));
+			$this->em->persist($cm);
 		}
 	}
 
@@ -649,36 +631,24 @@ class UserChatManager
 			$convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_TIMEOUT;
 		}
 
-		$this->em->beginTransaction();
-
-		try {
-			$this->em->persist($convo);
-
-			if ($convo->ended_by != 'timeout') {
-				if ($author) {
-					$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
-				} else {
-					$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
-				}
+		if ($convo->ended_by != 'timeout') {
+			if ($author) {
+				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
+			} else {
+				$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
 			}
-
-			$this->em->flush();
-
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'chat.ended',
-				'data' => $convo->getInfo(),
-				'created_by_client' => $this->getCurrentClientId(),
-			));
-
-			$this->em->persist($cm);
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
 		}
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'chat.ended',
+			'data' => $convo->getInfo(),
+			'created_by_client' => $this->getCurrentClientId(),
+		));
+
+		$this->em->persist($cm);
+
+		$this->em->flush();
 
 		$this->autoSendChatTranscript($convo);
 	}
@@ -704,30 +674,17 @@ class UserChatManager
 			$convo->ended_by = $ended_by;
 		}
 
-		$this->em->beginTransaction();
+		$this->addSystemMessage($convo, 'message_ended-by-user', array(), array('chat_ended'));
 
-		try {
-			$this->em->persist($convo);
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'chat.ended',
+			'data' => $convo->getInfo(),
+			'created_by_client' => $this->getCurrentClientId(),
+		));
 
-			$this->addSystemMessage($convo, 'message_ended-by-user', array(), array('chat_ended'));
-
-			$this->em->flush();
-
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'chat.ended',
-				'data' => $convo->getInfo(),
-				'created_by_client' => $this->getCurrentClientId(),
-			));
-
-			$this->em->persist($cm);
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
-		}
+		$this->em->persist($cm);
+		$this->em->flush();
 
 		$this->autoSendChatTranscript($convo);
 	}
@@ -865,34 +822,32 @@ class UserChatManager
 		}
 
 		$this->em->beginTransaction();
-
 		try {
 			$this->em->persist($msg);
 			$this->em->persist($convo);
-
-			$this->em->flush();
-
-			$channel = $convo->getChannelId('newmessage');
-			if ($msg->is_user_hidden) {
-				$channel = $convo->getChannelId('newmessage_hidden');
-			}
-
-			$data = $msg->getInfo();
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => $channel,
-				'data' => $data,
-				'created_by_client' => $this->getCurrentClientId()
-			));
-
-			$this->em->persist($cm);
-
 			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
 		}
+
+		$channel = $convo->getChannelId('newmessage');
+		if ($msg->is_user_hidden) {
+			$channel = $convo->getChannelId('newmessage_hidden');
+		}
+
+		$data = $msg->getInfo();
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => $channel,
+			'data' => $data,
+			'created_by_client' => $this->getCurrentClientId()
+		));
+
+		$this->em->persist($cm);
+
+		$this->em->flush();
 
 		return $msg;
 	}
@@ -932,33 +887,32 @@ class UserChatManager
 		$msg->metadata = $metadata;
 
 		$convo->addMessage($msg);
-
 		$this->em->beginTransaction();
 
 		try {
 			$this->em->persist($msg);
 			$this->em->persist($convo);
-
-			$channel = $convo->getChannelId('newmessage');
-			if ($msg->is_user_hidden) {
-				$channel = $convo->getChannelId('hidden_newmessage');
-			}
-
-			$this->em->flush();
-
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => $channel,
-				'data' => $msg->getInfo(),
-			));
-			$this->em->persist($cm);
-
-			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
 		}
+
+		$channel = $convo->getChannelId('newmessage');
+		if ($msg->is_user_hidden) {
+			$channel = $convo->getChannelId('hidden_newmessage');
+		}
+
+		$this->em->flush();
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => $channel,
+			'data' => $msg->getInfo(),
+		));
+		$this->em->persist($cm);
+
+		$this->em->flush();
 
 		return $msg;
 	}

@@ -346,11 +346,16 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param array $params
 	 * @param array $types
 	 */
-	public function executeUpdate($query, array $params = array(), array $types = array())
+	public function executeUpdate($query, array $params = array(), array $types = array(), $is_retry = 0)
 	{
 		try {
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\PDOException $e) {
+
+			if ($is_retry <= 2 && stripos($e->getMessage(), 'deadlock') !== false) {
+				return $this->executeUpdate($query, $params, $types, $is_retry+1);
+			}
+
 			$e->_dp_query = $query;
 			$e->_dp_query_params = $params;
 			throw $e;
