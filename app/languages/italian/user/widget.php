@@ -17,7 +17,6 @@
 	'user.widget.form_error_name'                                          => 'Inserisci il tuo nome',
 	'user.widget.login-connect'                                            => 'O collegati con',
 	'user.widget.name'                                                     => 'Nome',
-	'user.widget.new_phrase_test'                                          => 'Test 123',
 	'user.widget.open-new-window'                                          => 'Aprilo in una nuova finestrs',
 	'user.widget.search_back'                                              => 'Clicca qui per tornare alla ricerca',
 	'user.widget.search_button'                                            => 'Cerca',

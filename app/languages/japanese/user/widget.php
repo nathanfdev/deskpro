@@ -17,7 +17,6 @@
 	'user.widget.form_error_name'                                          => '名前を入力してください。',
 	'user.widget.login-connect'                                            => 'または次に接続',
 	'user.widget.name'                                                     => 'あなたの名前',
-	'user.widget.new_phrase_test'                                          => 'テスト123',
 	'user.widget.open-new-window'                                          => '新しいウィンドウで開く',
 	'user.widget.search_back'                                              => 'ココをクリックして検索へもどる',
 	'user.widget.search_button'                                            => '検索',

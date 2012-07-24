@@ -17,7 +17,6 @@
 	'user.widget.form_error_name'                                          => 'Lütfen adınızı girin',
 	'user.widget.login-connect'                                            => 'bağlan',
 	'user.widget.name'                                                     => 'Adınız',
-	'user.widget.new_phrase_test'                                          => 'Test ediliyor 123',
 	'user.widget.open-new-window'                                          => 'Bunu yeni pencerede aç',
 	'user.widget.search_back'                                              => 'Buraya tıklayarak arama ekranına geri dönebilirsiniz',
 	'user.widget.search_button'                                            => 'Ara',
