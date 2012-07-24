@@ -68,6 +68,27 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$search_text[] = $reader->getSubject()->subject;
 		$search_text[] = $reader->getBodyText()->getBody();
 		$search_text[] = strip_tags($reader->getBodyHtml()->getBody());
+
+		$check_headers = array();
+		if ($reader->getHeader('In-Reply-To')) {
+			foreach ($reader->getHeader('In-Reply-To')->getAllParts() as $part) {
+				$check_headers[] = $part;
+			}
+		}
+		if ($reader->getHeader('References')) {
+			foreach ($reader->getHeader('References')->getAllParts() as $part) {
+				$check_headers[] = $part;
+			}
+		}
+
+		// Add them to search text so below code will parse them out and treat them the same
+		foreach ($check_headers as $header) {
+			$m = null;
+			if (preg_match('#PTAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
+				$search_text[] = '(#' . $m[1] . ')';
+			}
+		}
+
 		$search_text = implode(' ', $search_text);
 
 		#------------------------------
