@@ -65,11 +65,11 @@
 			</header>
 			<article>
 				<ul>
-					{% for subgroup in subgroups %}
+					{% for subgroup in subgroups %}{% if subgroup != 'lang' %}
 					<li class="{% if this_page == 'phrase_group_' ~ group ~ '_' ~ subgroup %}on{% endif %}">
 						<a href="{{ path('admin_langs_editphrases', {'language_id': language.id, 'group': group ~'.'~ subgroup}) }}">{{ phrase('admin.languages.phrasegroup_' ~ group ~ '_' ~ subgroup) }}</a>
 					</li>
-					{% endfor %}
+					{% endif %}{% endfor %}
 				</ul>
 			</article>
 		</section>

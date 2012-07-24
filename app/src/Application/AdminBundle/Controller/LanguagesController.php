@@ -323,9 +323,9 @@ class LanguagesController extends AbstractController
 		$vars['group'] = $group;
 
 		$vars['lang_phrases'] = array('custom' => array(), 'original' => array());
+		$vars['lang_phrases']['custom'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
 
 		if ($group == 'CUSTOM') {
-			$vars['lang_phrases']['custom'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
 			$groups = array();
 			foreach ($vars['lang_phrases']['custom'] as $phrase) {
 				$groups[] = $phrase->groupname;
