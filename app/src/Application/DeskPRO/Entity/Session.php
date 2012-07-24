@@ -237,6 +237,8 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		if (!strpos($sess_code, '-')) return null;
 
 		list ($session_id, ) = explode('-', $sess_code, 2);
+
+		require_once(DP_ROOT.'/src/Orb/Util/Util.php');
 		$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
 		return $session_id;
