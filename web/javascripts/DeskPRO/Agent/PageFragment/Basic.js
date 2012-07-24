@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				delete this.html;
 			}
 
-			this.initPage();
+			this.initPage(wrapper);
 
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 		}, this);
