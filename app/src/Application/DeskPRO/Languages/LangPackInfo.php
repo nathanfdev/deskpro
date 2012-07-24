@@ -158,7 +158,7 @@ class LangPackInfo
 	public function getDefaultCategories($section)
 	{
 		switch ($section) {
-			case 'user':  return array('chat', 'defaults', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'general', 'knowledgebase', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
+			case 'user':  return array('chat', 'defaults', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
 			case 'agent': return array('chat', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'tasks', 'tickets', 'twitter', 'userchat');
 			case 'admin': return array('agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules');
 		}
