@@ -11,7 +11,7 @@
 	{% if is_noreply %}
 		<tr>
 			<td valign="top" style="{{ layout.standard_font() }} color:#949494; background-color: #FFFFFF; padding: 0 0 14px 0; font-size: 10px" bgcolor="#FFFFFF">
-				Please do not reply to this email. This is a machine-generated message and replies will not be read by our staff.
+				{{ phrase('user.emails.do-not-reply') }}
 			</td>
 		</tr>
 	{% endif %}
