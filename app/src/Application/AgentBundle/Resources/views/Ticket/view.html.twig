@@ -18,6 +18,10 @@ pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_i
 pageMeta.lastMessageId = {{ last_message_id|default(0) }};
 pageMeta.lastLogId = {{ last_log_id|default(0) }};
 
+pageMeta.person_id    = {{ ticket.person.id }};
+pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
+pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};
+
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
 
 {% if ticket.person.organization %}
@@ -183,7 +187,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 				<dl>
-
 					{% if ticket_perms.modify_cc or user_parts|length %}
 						<dt>
 							{{ phrase('agent.tickets.cc') }}
@@ -601,6 +604,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<button class="clean-white" id="{{baseId}}_apply_macro_btn">{{ phrase('agent.general.apply') }}</button>
 	</div>
 </div>
+
+{% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

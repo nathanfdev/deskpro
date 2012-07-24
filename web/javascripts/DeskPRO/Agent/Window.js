@@ -16,6 +16,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.onloadStack = [];
 		this.routePrefixes = {};
 
 		this.messageChanneler = null;
@@ -434,6 +435,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$('#time_outofsync').trigger('dp_open');
 			}, 1000);
 		}
+
+		var fn;
+		while (fn = this.onloadStack.shift()) {
+			fn();
+		}
+	},
+
+	addOnloadFunction: function(fn) {
+		this.onloadStack.push(fn);
 	},
 
 	loadHashPath: function(browserHash) {

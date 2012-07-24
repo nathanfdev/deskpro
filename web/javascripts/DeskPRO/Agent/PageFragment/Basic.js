@@ -86,6 +86,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
 		this.addEvent('render', this.initPage);
+		this.addEvent('render', function() {
+			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
+		}, this);
 		this.addEvent('destroy', this.destroyPage);
 
 		this.init();

@@ -153,12 +153,6 @@
 	<span class="mute-toggle tipped" id="sound_icon_in" title="{{ phrase('agent.interface.toggle_mute') }}"></span>
 </div>
 
-{% include 'AgentBundle:Main:resources.html.twig' %}
-{% include 'AgentBundle:Settings:settings-window.html.twig' %}
-{% include 'AgentBundle:MediaManager:media-window.html.twig' %}
-
-{% include 'AgentBundle:Main:page-init.html.twig' %}
-
 <div id="reload_overlay" style="display: none;">
 	<table cellspacing="0" cellpadding="0" width="100%" height="100%"><tr><td width="100%" height="100%" valign="middle" align="center" style="vertical-align: middle; text-align: center">
 		<article>
@@ -188,6 +182,13 @@
 		</footer>
 	</form>
 </div>
+
+{% include 'AgentBundle:Main:resources.html.twig' %}
+{% include 'AgentBundle:Settings:settings-window.html.twig' %}
+{% include 'AgentBundle:MediaManager:media-window.html.twig' %}
+{% include 'AgentBundle:Main:page-init.html.twig' %}
+
+{% include 'AgentBundle:Main:custom-page-init.html.twig' %}
 
 </body>
 </html>

@@ -75,7 +75,6 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		// Strip off Re: prefix (and alternatives in some other langs)
 		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
 		do {
-			error_log("!");
 			$changed = false;
 
 			$subject_orig = trim($subject_orig);
