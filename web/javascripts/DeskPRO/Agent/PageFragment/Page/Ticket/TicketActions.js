@@ -357,9 +357,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}, this);
 
 		this.changeManager.applyChanges();
-		if (this.changeManager.hasChangedProperty('reply')) {
-			this.page.replyBox.saveReply();
-		}
 
 		var self = this;
 		this.changeManager.saveChanges(null, function() {;
