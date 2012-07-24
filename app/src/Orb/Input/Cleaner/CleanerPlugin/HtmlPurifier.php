@@ -73,11 +73,10 @@ class HtmlPurifier implements CleanerPlugin
 
 		if ($type == 'html_email_preclean') {
 			for ($x = 0; $x < 10; $x++) {
-				$value = preg_replace('#<span[^>]*>(\s|&nbsp;|&\#xA0;)*</span>#u', '', $value);
-				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
-				$value = preg_replace('#<div[^>]*>(\s|&nbsp;|&\#xA0;)*</div>#u', '', $value);
-				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;|&\#xA0;)*</p>\s*#u', '', $value);
-				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;|&\#xA0;)*</o:p>\s*#u', '', $value);
+				$value = preg_replace('#<span[^>]*>(\s|&nbsp;|&\#xA0;)*</span>#i', '', $value);
+				$value = preg_replace('#<div[^>]*>(\s|&nbsp;|&\#xA0;)*</div>#i', '', $value);
+				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;|&\#xA0;)*</p>\s*#i', '', $value);
+				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;|&\#xA0;)*</o:p>\s*#i', '', $value);
 			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			return $value;
@@ -94,8 +93,7 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('<br>', '<br />', $value);
 			$value = preg_replace('#__dp_old_p(_s)?__\s*__dp_old_p__#m', '<br /><br />', $value);
 			$value = str_replace('__dp_old_p__', '<br />', $value);
-			$value = preg_replace("#<br />\s+<br />#iu", '<br /><br />', $value);
-			$value = preg_replace('#<div[^>]*>\s*(<br>|<br />)*\s*</div>#um', '$1', $value);
+			$value = preg_replace("#<br />\s+<br />#i", '<br /><br />', $value);
 
 			return $value;
 		}
