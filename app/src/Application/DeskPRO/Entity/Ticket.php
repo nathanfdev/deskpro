@@ -1605,6 +1605,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$del['ticket_id']     = $this->id;
+		$del['old_ptac']      = $this->auth;
 		$del['by_person']     = $person;
 		$del['new_ticket_id'] = 0;
 		$del['reason']        = $reason;
