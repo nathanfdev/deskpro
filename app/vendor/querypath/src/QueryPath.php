@@ -179,7 +179,7 @@ class QueryPath {
 
     $options += array(
       'ignore_parser_warnings' => TRUE,
-      'convert_to_encoding' => 'ISO-8859-1',
+      'convert_to_encoding' => 'UTF-8',
       'convert_from_encoding' => 'auto',
       //'replace_entities' => TRUE,
       'use_parser' => 'html',

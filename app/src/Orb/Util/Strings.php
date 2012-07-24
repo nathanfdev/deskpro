@@ -1271,7 +1271,7 @@ class Strings
 	{
 		libxml_use_internal_errors(true);
 
-		$dom = new \DOMDocument();
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
 		}
