@@ -448,6 +448,25 @@ class TicketChangeTracker extends ChangeTracker
 			}
 		}
 
+		foreach ($this->getAllChangedProperties() as $prop => $info) {
+			$action = null;
+			$old_val = null;
+
+			if (isset($info['old'])) $old_val = $info['old'];
+
+			switch ($prop) {
+				case 'date_agent_waiting':
+				case 'date_user_waiting':
+				case 'date_status':
+				case 'total_user_waiting':
+				case 'total_to_first_reply':
+				case 'date_closed':
+				case 'date_resolved':
+					$this->original_ticket[$prop] = $old_val;
+					break;
+			}
+		}
+
 		return $this->original_ticket;
 	}
 

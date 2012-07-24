@@ -1262,6 +1262,12 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					if ($choice) {
+
+						// Waiting time is inversed. If we want to know 'waiting time is gte 24 hours', then the date from normaliseWaitingTime
+						// is the upper limit of what we want.
+						// 'waiting time is gte 24 hours' == 'date_user_waiting lte 2012-01-02'
+						$op = $this->invertOp($op);
+
 						$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
 					}
 					break;
@@ -1435,7 +1441,7 @@ class TicketSearch extends SearcherAbstract
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	public function doesTicketMatch(Entity\Ticket $ticket, $context = null)
+	public function doesTicketMatch(Entity\Ticket $ticket, $context = null, &$failed_term = null)
 	{
 		$ignore_terms = array();
 
@@ -1446,6 +1452,8 @@ class TicketSearch extends SearcherAbstract
 				$ignore_terms[$term] = 1;
 				continue;
 			}
+
+			$failed_term = $term;
 
 			switch ($term) {
 				case self::TERM_STATUS:
@@ -1517,6 +1525,25 @@ class TicketSearch extends SearcherAbstract
 						if ($not_ids) {
 							if (!$this->_testChoiceMatch($ticket['agent_team_id'], 'not', $not_ids)) return false;
 						}
+					}
+
+					break;
+
+				case self::TERM_USER_WAITING:
+					if (!$ticket->date_user_waiting) {
+						return false;
+					}
+
+					$choice = $this->normalizeWaitingTime($choice);
+					if (is_array($choice) && isset($choice['waiting_time'])) {
+						$time = time() - $ticket->date_user_waiting->getTimestamp();
+						$secs = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
+
+						if (!$this->_testRangeMatch($time, $op, $secs)) {
+							return false;
+						}
+					} else {
+						return false;
 					}
 
 					break;
@@ -1632,6 +1659,8 @@ class TicketSearch extends SearcherAbstract
                     break;
 			}
 		}
+
+		$failed_term = null;
 
 		return true;
 	}

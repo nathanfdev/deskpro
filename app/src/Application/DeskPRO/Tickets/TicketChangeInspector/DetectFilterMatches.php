@@ -254,14 +254,17 @@ class DetectFilterMatches
 				}
 				$searcher->setPersonContext($agent);
 
+				$orig_match_failterm = null;
+				$new_match_failterm = null;
+
 				if ($this->tracker->isNewTicket()) {
 					// there is no such thing as an original match with a new ticket
 					$orig_match = false;
 				} else {
-					$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match');
+					$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
 				}
 
-				$new_match  = $searcher->doesTicketMatch($new_ticket);
+				$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
 
 				if ($orig_match) {
 					$changed[$filter->id]['orig_match'][] = $agent;
@@ -277,9 +280,16 @@ class DetectFilterMatches
 					if ($this->tracker->isNewTicket()) {
 						$orig_match = false;
 					} else {
-						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match');
+						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
 					}
-					$new_match  = $searcher->doesTicketMatch($new_ticket);
+					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+				}
+
+				if (!$orig_match) {
+					$this->logMessage("-- Orig failed term: $orig_match_failterm");
+				}
+				if (!$new_match) {
+					$this->logMessage("-- New failed term: $new_match_failterm");
 				}
 
 				if (!$orig_match AND !$new_match) {

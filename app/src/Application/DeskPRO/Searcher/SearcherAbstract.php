@@ -1028,4 +1028,27 @@ abstract class SearcherAbstract implements PersonContextInterface
 			}
 		}
 	}
+
+
+	/**
+	 * Get the oppositve op
+	 *
+	 * @param string $op
+	 * @return string
+	 */
+	public function invertOp($op)
+	{
+		switch ($op) {
+			case self::OP_GT:          return self::OP_LT;
+			case self::OP_GTE:         return self::OP_LTE;
+			case self::OP_LT:          return self::OP_GT;
+			case self::OP_LTE:         return self::OP_GTE;
+			case self::OP_NOT:         return self::OP_IS;
+			case self::OP_IS:          return self::OP_NOT;
+			case self::OP_NOTCONTAINS: return self::OP_CONTAINS;
+			case self::OP_CONTAINS:    return self::OP_NOTCONTAINS;
+		}
+
+		return null;
+	}
 }
