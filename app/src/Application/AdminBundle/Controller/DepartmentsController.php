@@ -121,8 +121,21 @@ class DepartmentsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		if ($department->is_chat_enabled != $chat) {
+			$check = App::getDb()->fetchColumn("SELECT COUNT(*) FROM departments WHERE is_chat_enabled = 1");
+			if (!$chat && $check <= 1) {
+				$chat = 1;
+			}
+		}
+		if ($department->is_tickets_enabled != $tickets) {
+			$check = App::getDb()->fetchColumn("SELECT COUNT(*) FROM departments WHERE is_tickets_enabled = 1");
+			if (!$tickets && $check <= 1) {
+				$tickets = 1;
+			}
+		}
+
 		$department->is_tickets_enabled = $tickets;
-		$department->is_chat_enabled= $chat;
+		$department->is_chat_enabled = $chat;
 
 		$this->em->transactional(function($em) use ($department) {
 			$em->persist($department);

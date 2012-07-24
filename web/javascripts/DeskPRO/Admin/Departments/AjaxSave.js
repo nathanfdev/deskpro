@@ -40,6 +40,14 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 				}
 			});
 		});
+
+		this.notDisabledOverlay = new DeskPRO.UI.Overlay({
+			contentElement: '#dep_not_disabled_overlay'
+		});
+
+		$('#dep_not_disabled_overlay').find('.overlay-close-trigger').on('click', function() {
+			self.notDisabledOverlay.close();
+		});
 	},
 
 	registerChildHandler: function(handler, handlerName, el) {
@@ -51,10 +59,36 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 	},
 
 	saveFeatureState: function(department_id) {
+
+		if (this.isChecking) return;
+		this.isChecking = true;
+
 		var tr = $('article.department-' + department_id, this.el);
 
 		var chat = $(':checkbox.set-chat-state', tr).is(':checked') ? 1 : 0;
 		var tickets = $(':checkbox.set-tickets-state', tr).is(':checked') ? 1 : 0;
+
+		var countChat    = $(':checkbox.set-chat-state').filter(':checked').length;
+		var countTickets = $(':checkbox.set-tickets-state').filter(':checked').length;
+
+		this.isChecking = false;
+
+		var showAlert = false;
+		if (!countChat) {
+			chat = 1;
+			showAlert = true;
+			$(':checkbox.set-chat-state', tr).prop('checked', true);
+		}
+		if (!countTickets) {
+			tickets = 1;
+			showAlert = true;
+			$(':checkbox.set-tickets-state', tr).prop('checked', true);
+		}
+
+		if (showAlert) {
+			this.notDisabledOverlay.open();
+			return;
+		}
 
 		if (chat) {
 			$('button.label-chat-perms', tr).show();
