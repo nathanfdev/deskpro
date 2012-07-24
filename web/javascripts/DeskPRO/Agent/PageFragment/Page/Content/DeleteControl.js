@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 					self.handleUndelete();
 				},
 				success: function(html) {
-
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_deleted.' + page.TYPENAME);
 				}
 			});
 		});

@@ -185,6 +185,10 @@ class DownloadsController extends AbstractController
 				$download['status_code'] = $this->in->getString('status');
 				break;
 
+			case 'delete':
+				$download['status_code'] = 'hidden.deleted';
+				break;
+
 			case 'title':
 				$download['title'] = $this->in->getString('title');
 

@@ -17,6 +17,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		window.setInterval(function() {
 			self.reload();
 		}, 420000); // update every 7 mins
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.content_deleted.*', function() {
+			self.reload();
+		});
 	},
 
 	reload: function() {
