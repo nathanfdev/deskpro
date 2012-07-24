@@ -382,16 +382,18 @@ class SettingsController extends AbstractController
 			if ($pass) {
 
 				if (!$this->container->getSetting('core.rewrite_urls')) {
-					$client = new \Zend\Http\Client(null, array('timeout' => 5));
-					$client->setMethod(\Zend\Http\Request::METHOD_GET);
-					$client->setUri($this->container->getSetting('core.deskpro_url') . '__checkurlrewrite/path');
-					$result = $client->send();
-					if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_okay') !== false) {
-						$this->db->replace('settings', array(
-							'name' => 'core.rewrite_urls',
-							'value' => '1',
-						));
-					}
+					try {
+						$client = new \Zend\Http\Client(null, array('timeout' => 5));
+						$client->setMethod(\Zend\Http\Request::METHOD_GET);
+						$client->setUri($this->container->getSetting('core.deskpro_url') . '__checkurlrewrite/path');
+						$result = $client->send();
+						if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_okay') !== false) {
+							$this->db->replace('settings', array(
+								'name' => 'core.rewrite_urls',
+								'value' => '1',
+							));
+						}
+					} catch (\Exception $e) {}
 				}
 
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
