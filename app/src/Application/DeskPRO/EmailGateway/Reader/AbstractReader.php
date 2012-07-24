@@ -199,7 +199,7 @@ abstract class AbstractReader
 		$auto = $this->getHeader('Auto-Submitted')->getAllParts();
 		foreach ($auto as $v) {
 			$v = strtolower($v);
-			if ($v == 'auto-replied' || $v == 'auto-notified' || $v == 'auto-generated') {
+			if (strpos($v, 'auto-replied') !== null || strpos($v, 'auto-notified') !== null || strpos($v, 'auto-generated') !== null) {
 				return true;
 			}
 		}
