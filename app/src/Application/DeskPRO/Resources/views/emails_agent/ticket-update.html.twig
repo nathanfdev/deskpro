@@ -11,7 +11,7 @@
 {% set content %}
 {{ phrase('agent.emails.reply_above_line') }}
 <br /><br />
-{% if action_performer and action_performer.getId() %}{{ action_performer.getDisplayName() }}{% else %}System{% endif %} updated the ticket "{{ ticket.subject }}"
+{% if action_performer and action_performer.getId() %}{{ action_performer.getDisplayContact() }}{% else %}System{% endif %} updated the ticket "{{ ticket.subject }}"
 
 
 {% if type_flag == 'assigned' %}and assigned it to you.

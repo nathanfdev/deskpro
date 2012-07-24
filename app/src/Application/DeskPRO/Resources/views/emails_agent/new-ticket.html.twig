@@ -23,7 +23,7 @@
 <br />
 
 {% set content %}
-	{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayName()}) }}
+	{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
 
 	<br /><br />
 

@@ -17,7 +17,7 @@
 <br />
 
 {% set content %}
-	{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayName(), 'subject':ticket.subject}) }}
+	{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
 
 	<br /><br />
 
