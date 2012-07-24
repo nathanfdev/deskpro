@@ -70,20 +70,33 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		$this->_found_person = null;
 
 		$subject = trim($reader->getSubject()->subject);
+		$subject_orig = $subject;
 
 		// Strip off Re: prefix (and alternatives in some other langs)
-		$subject_orig = trim($subject);
-		$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject);
-		$subject_re   = trim($subject_re);
+		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
+		do {
+			error_log("!");
+			$changed = false;
 
-		// Now lets try to find it...
-		$ticket_ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE (subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
-			ORDER BY id DESC
-			LIMIT 20
-		", array($subject_orig, $subject_re, $this->_time_cutoff));
+			$subject_orig = trim($subject_orig);
+			$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject_orig);
+			$subject_re   = trim($subject_re);
+
+			// Now lets try to find it...
+			$ticket_ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE (subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
+				ORDER BY id DESC
+				LIMIT 20
+			", array($subject_orig, $subject_re, $this->_time_cutoff));
+
+			if ($subject_orig != $subject_re) {
+				$changed = true;
+				$subject_orig = $subject_re;
+			}
+
+		} while (!$ticket_ids && $changed);
 
 		if (!$ticket_ids) return null;
 
