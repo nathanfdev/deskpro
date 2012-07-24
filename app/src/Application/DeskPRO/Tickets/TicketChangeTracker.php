@@ -638,9 +638,9 @@ class TicketChangeTracker extends ChangeTracker
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
 			'data' => serialize(array(
-				'ticket_id'  => $this->ticket->getId(),
+				'ticket_id'      => $this->ticket->getId(),
+				'changed_fields' => $this->getAllChangedPropertyNames()
 			)),
-			'created_by_client' => $client,
 			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 		));
 

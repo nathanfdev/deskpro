@@ -203,6 +203,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	//#########################################################################
 
 	_initFilters: function() {
+		var self = this;
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-sys-filter-counts'}],
 			'filters.counts',
@@ -229,6 +230,30 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			if (tab) {
 				tab.page.doTicketUpdate();
+			}
+
+			// And if we're viewing any groups affected by the changed field, then we need to reload the group
+			if ($('.show-hold-check', self.getSectionElement()).hasClass('checked')) {
+				var filterIds = self.archiveFilterIds;
+			} else {
+				var filterIds = self.filterTicketIds;
+			}
+
+			var refreshFilterIds = [];
+
+			$.each(filterIds, function(filterId) {
+				var grouping = self.getGroupingVar(filterId);
+				if (!grouping) {
+					return;
+				}
+
+				if (data.changed_fields.indexOf(grouping) !== -1) {
+					refreshFilterIds.push(filterId);
+				}
+			});
+
+			if (refreshFilterIds.length) {
+				self.refreshFilterGrouping(refreshFilterIds);
 			}
 		});
 
@@ -510,7 +535,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						var grouping = this.getGroupingVar(filterId);
 					}
 
+					var selectedGrouping = filterEl.find('ul.sub-group li.nav-selected').data('grouping-option');
 					this.setFilterGroupingContent(filterId, html, grouping);
+
+					if (selectedGrouping) {
+						filterEl = $('.filter-' + filterId, this.sectionEl);
+						var li = filterEl.find('li.grouping-' + selectedGrouping);
+						DeskPRO_Window.runPageRouteFromElement(li.find('.is-nav-item'));
+						li.addClass('nav-selected');
+					}
 				}, this);
 			}
 		});
