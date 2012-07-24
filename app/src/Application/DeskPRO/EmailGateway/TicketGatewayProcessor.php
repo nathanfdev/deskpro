@@ -409,6 +409,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$has_cut = false;
 
+		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 		$email_info['body_full'] = $email_info['body'];
 
 		if ($email_info['body_is_html']) {

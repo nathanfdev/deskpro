@@ -54,6 +54,7 @@ class HtmlPurifier implements CleanerPlugin
 			'simple_html',
 			'html_email',
 			'html_email_basicclean',
+			'html_email_preclean',
 			'html_fix',
 		);
 	}
@@ -70,11 +71,7 @@ class HtmlPurifier implements CleanerPlugin
 		# Basic email clean
 		#------------------------------
 
-		if ($type == 'html_email_basicclean') {
-
-			$value = Strings::extractBodyTag($value);
-			$value = Strings::decodeWhitespaceHtmlEntities($value);
-
+		if ($type == 'html_email_preclean') {
 			for ($x = 0; $x < 10; $x++) {
 				$value = preg_replace('#<span[^>]*>(\s|&nbsp;)*</span>#u', '', $value);
 				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
@@ -83,6 +80,13 @@ class HtmlPurifier implements CleanerPlugin
 				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;)*</o:p>\s*#u', '', $value);
 			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
+			return $value;
+		}
+
+		if ($type == 'html_email_basicclean') {
+
+			$value = Strings::extractBodyTag($value);
+			$value = Strings::decodeWhitespaceHtmlEntities($value);
 
 			$value = preg_replace('#<p[^>]*>#', '__dp_old_p__', $value);
 			$value = str_replace('</p>', '__dp_old_p__', $value);
