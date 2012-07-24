@@ -56,7 +56,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 			{% set phrase_part2 %}
 			<span class="results-total-count" id="{{baseId}}_total_count">{{ total }}</span>
 			{% endset %}
-			{{ phrase('agent.general.showing_results_x_of_y', {'count':total,'display_count':phrase_part1,'size':phrase_part2}) }}
+			{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}) }}
 		</div>
 		<div class="loading">
 
