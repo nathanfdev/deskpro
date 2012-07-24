@@ -7,7 +7,7 @@
 		<label><strong>{{ phrase('user.tickets.fields_priority') }}</strong></label>
 	</div>
 	<div class="dp-controls dp-fill">
-		<select name="newticket[ticket][priority_id]">
+		<select name="newticket[ticket][priority_id]" class="priority_id">
 			<option></option>
 			{% for id,pri in ticket_options.ticket_priorities %}
 				<option value="{{ id }}">{{ pri }}</option>

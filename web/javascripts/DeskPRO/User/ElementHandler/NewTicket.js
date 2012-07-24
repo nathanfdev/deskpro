@@ -78,7 +78,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initFields: function() {
-		this.depSelect = $('select.department_id', this.el);
+		this.depSelect = $('select.department_id, input.department_id', this.el).first();
 		this.departmentId = 0;
 
 		var self = this;
@@ -87,10 +87,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		});
 		this.depSelect.data('original-name', this.depSelect.attr('name'));
 
-		$('.ticket_category select, .ticket_priority select, .ticket_product select').on('change', function() {
-			if (self.depItemsWithChecked) {
-				self.runChecks();
-			}
+		$('select.category_id, select.priority_id, select.product_id').on('change', function() {
+			self.runChecks();
 		});
 
 		this.handleDepChange();
@@ -138,8 +136,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			if (!item.check) {
 				itemEl.show();
 			} else {
-				//itemEl.addClass('with-criteria');
-				//this.depItemsWithChecked = true;
+				itemEl.addClass('with-criteria');
+				this.depItemsWithChecked = true;
 			}
 		}, this);
 

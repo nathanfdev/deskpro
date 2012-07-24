@@ -8,7 +8,7 @@
 		<label><strong>{{ phrase('user.tickets.fields_category') }}</strong></label>
 	</div>
 	<div class="dp-controls dp-fill">
-		<select name="newticket[ticket][category_id]">
+		<select name="newticket[ticket][category_id]" class="category_id">
 			<option></option>
 			{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
 				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.category_id) }}

@@ -419,9 +419,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 					$('input, select, textarea', $('> .options', this)).each(function() {
 						var name = $(this).attr('name');
-						name = name.replace(/^(.*)\[(.*?)\]$/, '$2');
-
-						data.push({ name: baseKey+'[rules]['+index+'][options]['+name+']', value: $(this).val() });
+						if (name) {
+							name = name.replace(/^(.*)\[(.*?)\]$/, '$2');
+							data.push({ name: baseKey+'[rules]['+index+'][options]['+name+']', value: $(this).val() });
+						}
 					});
 				});
 			}

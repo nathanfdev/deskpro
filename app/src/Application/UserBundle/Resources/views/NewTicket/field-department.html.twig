@@ -5,7 +5,7 @@
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 {% if not app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length or app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length == 1 %}
 	{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
-		<input type="hidden" name="newticket[ticket][department_id]" value="{{ cat.id }}" />
+		<input type="hidden" name="newticket[ticket][department_id]" class="department_id" value="{{ cat.id }}" />
 	{% endfor %}
 {% else %}
 	<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %} ticket_department">
