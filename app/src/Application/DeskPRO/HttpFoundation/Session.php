@@ -249,7 +249,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		// Make sure the language is complete for the interface we're seeing
 		if (DP_INTERFACE == 'agent' && !$this->language->has_agent) {
 			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
-		} elseif (DP_INTERFACE == 'admin' && (!$this->language->has_agent || !$this->language->has_admin)) {
+		} elseif ((DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing') && (!$this->language->has_agent || !$this->language->has_admin)) {
 			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
 		}
 
