@@ -404,6 +404,8 @@ class SettingsController extends AbstractController
 		$php_path = $this->container->getPhpBinaryPath();
 		$php_path_set = dp_get_config('php_path');
 
+		$licdata_report = dp_get_config('instance_data.report');
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
@@ -418,7 +420,8 @@ class SettingsController extends AbstractController
 			'initial_pop' => $initial_pop,
 
 			'ma_server' => \DeskPRO\Kernel\License::getLicServer(),
-			'install_token' => App::getSetting('core.install_token')
+			'install_token' => App::getSetting('core.install_token'),
+			'licdata_report' => $licdata_report
 		));
 	}
 
