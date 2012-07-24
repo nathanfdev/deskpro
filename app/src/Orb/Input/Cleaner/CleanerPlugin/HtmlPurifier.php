@@ -73,11 +73,11 @@ class HtmlPurifier implements CleanerPlugin
 
 		if ($type == 'html_email_preclean') {
 			for ($x = 0; $x < 10; $x++) {
-				$value = preg_replace('#<span[^>]*>(\s|&nbsp;|&#xA0;)*</span>#u', '', $value);
+				$value = preg_replace('#<span[^>]*>(\s|&nbsp;|&\#xA0;)*</span>#u', '', $value);
 				$value = preg_replace('#<span\s*>(.*?)</span>#u', '$1', $value);
-				$value = preg_replace('#<div[^>]*>(\s|&nbsp;|&#xA0;)*</div>#u', '', $value);
-				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;|&#xA0;)*</p>\s*#u', '', $value);
-				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;|&#xA0;)*</o:p>\s*#u', '', $value);
+				$value = preg_replace('#<div[^>]*>(\s|&nbsp;|&\#xA0;)*</div>#u', '', $value);
+				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;|&\#xA0;)*</p>\s*#u', '', $value);
+				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;|&\#xA0;)*</o:p>\s*#u', '', $value);
 			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			return $value;
