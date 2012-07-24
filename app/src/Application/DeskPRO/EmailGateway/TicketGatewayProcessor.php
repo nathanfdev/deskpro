@@ -627,8 +627,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($email_info['body_is_html']) {
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
-
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
@@ -702,6 +702,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$newticket->ticket->subject = $email_info['subject'];
 		$newticket->ticket->message = $email_info['body'];
+		$newticket->ticket->message_is_html = true;
 
 		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");
 		$newticket->ticket->department_id = $dep_id;

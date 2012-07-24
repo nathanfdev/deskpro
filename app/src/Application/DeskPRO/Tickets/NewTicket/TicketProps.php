@@ -42,6 +42,7 @@ use Application\DeskPRO\App;
 class TicketProps
 {
 	public $subject = '';
+	public $message_is_html = false;
 	public $message = '';
 	public $notify_email = '';
 

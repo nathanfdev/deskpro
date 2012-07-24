@@ -238,7 +238,11 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket_message['creation_system'] = $this->creation_system;
 			$ticket_message['person']  = $person;
 			$ticket_message['ticket']  = $ticket;
-			$ticket_message->setMessageText($this->ticket->message);
+			if ($this->ticket->message_is_html) {
+				$ticket_message->setMessageHtml($this->ticket->message);
+			} else {
+				$ticket_message->setMessageText($this->ticket->message);
+			}
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
 			}

@@ -10,7 +10,7 @@
 		{% if content %}
 			<tr>
 				<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-bottom:0;">
-					{{ content }}
+					{{ content|raw }}
 				</td>
 			</tr>
 		{% endif %}
@@ -30,7 +30,7 @@
 {% endspaceless %}{% endmacro %}
 
 {% macro info_section(content, options) %}
-	<p style="{{ _self.standard_font() }} font-size: 12px; margin: 0; padding: 0;">{{ content }}</p>
+	<p style="{{ _self.standard_font() }} font-size: 12px; margin: 0; padding: 0;">{{ content|raw }}</p>
 {% endmacro %}
 
 {% macro sep() %}
@@ -49,7 +49,7 @@
 	{% if content %}
 	<tr>
 		<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
-			{{ content }}
+			{{ content|raw }}
 		</td>
 	</tr>
 	{% endif %}
