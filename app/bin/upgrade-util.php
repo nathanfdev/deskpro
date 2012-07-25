@@ -91,8 +91,8 @@ if (!defined('DP_MA_SERVER')) {
 }
 
 // Current build time
-if (file_exists(DP_ROOT.'/app/sys/config/build-time.php')) {
-	$build_file = @file_get_contents(DP_ROOT.'/app/sys/config/build-time.php');
+if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+	$build_file = @file_get_contents(DP_ROOT.'/sys/config/build-time.php');
 	if ($build_file) {
 		$m = null;
 		if (preg_match('#([0-9]{10})#', $build_file, $m)) {
@@ -221,6 +221,10 @@ class Upgrade
 			$this->runAction_installLatestFiles();
 		} elseif (in_array('--run-db-upgrade', $argv)) {
 			$this->runAction_dbUpgrade();
+		} elseif (in_array('--dev-test-log', $argv)) {
+			$this->sendLog();
+		} elseif (in_array('--dev-test-log-e', $argv)) {
+			$this->sendLog(new \Exception("Testing error"));
 		} else {
 			$this->runAction_interactive();
 		}
@@ -925,7 +929,7 @@ class Upgrade
 		$this->registerCleanupParam('unlink_scratch_dir', null);
 
 		// New build time
-		$build_file = @file_get_contents(DP_ROOT.'/app/sys/config/build-time.php');
+		$build_file = @file_get_contents(DP_ROOT.'/sys/config/build-time.php');
 		if ($build_file) {
 			$m = null;
 			if (preg_match('#([0-9]{10})#', $build_file, $m)) {
@@ -1480,6 +1484,10 @@ class Upgrade
 			'total_time'        => microtime(true) - DP_UPGRADE_STARTTIME,
 		);
 		$info['hostname'] = @gethostname();
+
+		if (defined('DP_NEW_BUILD_TIME')) {
+			$info['build'] = DP_NEW_BUILD_TIME;
+		}
 
 		if ($e) {
 			$errinfo = self::getExceptionInfo($e);
