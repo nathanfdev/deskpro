@@ -54,9 +54,21 @@ class TicketTriggers extends AbstractLogAction
 	public function getLogDetails()
 	{
 		$tr = array();
+		$tr_names = array();
+
 		foreach ($this->triggers as $t) {
 			if ($t->id) {
 				$tr[] = $t->id;
+
+				if ($tr->title) {
+					if ($tr->sys_name) {
+						$tr_names[] = App::getTranslator()->phrase($tr->getSysPhraseName()) . " ({$tr->id})";
+					} else {
+						$tr_names[] =  "{$tr->title} ({$tr->id})";
+					}
+				} else {
+					$tr_names[] = $tr->id;
+				}
 			}
 		}
 
@@ -65,7 +77,8 @@ class TicketTriggers extends AbstractLogAction
 		}
 
 		return array(
-			'trigger_ids' => implode(', ', $tr)
+			'trigger_ids'    => implode(', ', $tr),
+			'trigger_titles' => implode(', ', $tr_names)
 		);
 	}
 

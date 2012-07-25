@@ -38,7 +38,7 @@
 	<span class="old-val">ID {{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">ID {{log.details.new_person_id}} {{new_person_name}}</span>
 {% elseif log.action_type == 'executed_triggers' %}
 	<span class="type">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
-	<span class="new-val">{{ log.details.trigger_ids }}</span>
+	<span class="new-val">{{ log.details.trigger_titles }}</span>
 {% elseif log.action_type == 'message_created' %}
 	<span class="type">{{ phrase('agent.tickets.new_message') }}</span> {% if log.details.message_id %}<span class="new-val message-id-txt" data-message-id="{{ log.details.message_id }}">ID {{log.details.message_id}}</span>{% endif %}
 	{% if log.details.ip_address %}

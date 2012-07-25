@@ -41,7 +41,7 @@
 		<span style="{{ layout.actiontext_style('old-val') }}">ID {{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">ID {{log.details.new_person_id}} {{new_person_name}}</span>
 	{% elseif log.action_type == 'executed_triggers' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
-		<span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.trigger_ids }}</span>
+		<span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.trigger_titles }}</span>
 	{% elseif log.action_type == 'message_created' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.new_message') }}</span> {% if log.details.message_id %}<span style="{{ layout.actiontext_style('new-val') }}">ID {{log.details.message_id}}</span>{% endif %}
 		{% if log.details.ip_address %}

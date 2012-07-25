@@ -631,6 +631,12 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return isset($uneditable[$this->sys_name]);
 	}
 
+
+	public function getSysPhraseName()
+	{
+		return 'agent.general.triggers_' . str_replace('.', '_', $this->sys_name);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
