@@ -348,6 +348,9 @@ HTML;
 		$return = $this->in->getString('return');
 
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
 		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
 
 		#------------------------------
@@ -458,6 +461,10 @@ HTML;
 	{
 		$return = $this->in->getString('return');
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 
