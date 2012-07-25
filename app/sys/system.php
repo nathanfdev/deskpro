@@ -390,6 +390,7 @@ final class License
 		$license_code = base64_decode($license_code);
 
 		$this->license_id   = substr($license_code, 0, 14);
+		$this->license_id   = rtrim($this->license_id, '-');
 		$this->license_salt = substr($license_code, 14, 20);
 		$enc  = substr($license_code, 34);
 		$enc = strrev($enc);
