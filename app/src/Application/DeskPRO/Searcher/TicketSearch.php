@@ -1259,15 +1259,14 @@ class TicketSearch extends SearcherAbstract
 					if (is_array($choice) && isset($choice['waiting_time'])) {
 						$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+
+						// Waiting time is inversed when supplied in relative format like this.
+						// If we want to know 'waiting time is gte 24 hours', then the date from normaliseWaitingTime is the upper limit of what we want.
+						// 'waiting time is gte 24 hours' == 'date_user_waiting lte 2012-01-02'
+						$op = $this->invertOp($op);
 					}
 
 					if ($choice) {
-
-						// Waiting time is inversed. If we want to know 'waiting time is gte 24 hours', then the date from normaliseWaitingTime
-						// is the upper limit of what we want.
-						// 'waiting time is gte 24 hours' == 'date_user_waiting lte 2012-01-02'
-						$op = $this->invertOp($op);
-
 						$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
 					}
 					break;
@@ -1280,6 +1279,7 @@ class TicketSearch extends SearcherAbstract
 					if (is_array($choice) && isset($choice['waiting_time'])) {
 						$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
 						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+						$op = $this->invertOp($op);
 					}
 
 					if ($choice) {
