@@ -447,7 +447,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 
 				if (data.phrase_id) {
-					msg = DeskPRO_Window.getTranslate().phrase('agent.userchat.' + data.phrase_id, data);
+					msg = DeskPRO_Window.getTranslate().phrase('agent.userchat.' + data.phrase_id, data, true);
 				} else {
 					msg = 'unknown phrase';
 				}
