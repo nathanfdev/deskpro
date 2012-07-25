@@ -289,6 +289,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						$('input.name', userfields).val(term);
 					}
 
+					var personId = self.getEl('user_choice').find('.set_userid').val();
+
+					if (personId) {
+						self.clearErrorCode('person_id');
+						self.clearErrorCode('person_email_address');
+						self.clearErrorCode('person_no_user');
+
+						$('input.person-id', self.getEl('user_searchbox')).val(personId);
+						self.loadSnippetsViewer();
+					}
+
 					self.updateUi();
 				}
 			});
@@ -298,6 +309,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	setUser: function(person_id, session_id) {
+		var self = this;
 		$.ajax({
 			type: 'GET',
 			url: BASE_URL + 'agent/tickets/new/get-person-row/0',

@@ -6,7 +6,7 @@
 		<input type="text" name="newticket[person][email_address]" class="email" value="" />
 	{% endif %}
 </div>
-
+{% if person.id %}<input type="hidden" class="set_userid" value="{{ person.id }}" />{% endif %}
 <div class="col">
 	<h4>{{ phrase('agent.general.name') }}</h4>
 	<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" />
