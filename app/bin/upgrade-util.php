@@ -2573,6 +2573,15 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->upgrade->postUpgrade();
 
+		// New build time
+		$build_file = @file_get_contents(DP_ROOT.'/sys/config/build-time.php');
+		if ($build_file) {
+			$m = null;
+			if (preg_match('#([0-9]{10})#', $build_file, $m)) {
+				define('DP_NEW_BUILD_TIME', $m[1]);
+			}
+		}
+
 		$this->upgrade->sendLog();
 	}
 
