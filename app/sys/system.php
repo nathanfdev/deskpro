@@ -49,6 +49,7 @@ use Application\DeskPRO\App;
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
 require_once DP_ROOT.'/sys/Kernel/BaseAbstractKernel.php';
+require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 abstract class AbstractKernel extends BaseAbstractKernel
 {
@@ -114,24 +115,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		// Make sure we arent offline
 		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
 			$response = new Response();
-
-			$offline_message = null;
-			if (file_exists(dp_get_tmp_dir() . '/helpdesk-offline-message.txt')) {
-				$offline_message = file_get_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt');
-			} else {
-				try {
-					$offline_message = App::getSetting('core.helpdesk_disabled_message');
-				} catch (\Exception $e) {}
-			}
-
-			if (!$offline_message) {
-				$offline_message = 'The helpdesk is currently offline for maintenance. Please try again soon.';
-			}
-
-			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
-			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', $offline_message, $page_html);
-
-			$response->setContent($page_html);
+			$response->setContent(HelpdeskOfflineMessage::getOfflinePage());
 			return $response;
 		}
 

@@ -34,6 +34,7 @@
 namespace DeskPRO\Kernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
+require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 class KernelBooter
 {
@@ -444,12 +445,21 @@ class KernelBooter
 		$cache_dir = DP_ROOT.'/sys/cache';
 		$web_dir = realpath(DP_ROOT . '/../web');
 
+		$offline = false;
+		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+			$offline = true;
+		}
+
 		#------------------------------
 		# Prod mode: make sure built
 		#------------------------------
 
 		if ($env == 'prod' && (!is_dir($cache_dir . '/prod'))) {
 			if (php_sapi_name() == 'cli') {
+				if ($offline) {
+					echo HelpdeskOfflineMessage::getOfflineMessage();
+					exit(1);
+				}
 				echo <<<'TXT'
 DeskPRO's internal build files are missing. If you are using a pristine copy of the source code, you will need to do one of the following:
 
@@ -467,6 +477,10 @@ TXT;
 
 				exit(1);
 			} else {
+				if ($offline) {
+					echo HelpdeskOfflineMessage::getOfflinePage();
+					exit(1);
+				}
 				$html = <<<'HTML'
 <p>DeskPRO's internal build files are missing. If you are using a pristine copy of the source code, you will need to do one of the following:<br /><br /></p>
 
@@ -493,7 +507,11 @@ HTML;
 		#------------------------------
 
 		} elseif ($env == 'dev' && (!is_dir($cache_dir) || !is_writable($cache_dir))) {
-if (php_sapi_name() == 'cli') {
+			if ($offline) {
+				echo HelpdeskOfflineMessage::getOfflineMessage();
+				exit(1);
+			}
+			if (php_sapi_name() == 'cli') {
 				echo <<<TXT
 DeskPRO is currently in dev mode which requires the cache directory at $cache_dir to be writable. Please
 ensure this directory is writable and try again.
@@ -504,6 +522,10 @@ TXT;
 
 				exit(1);
 			} else {
+				if ($offline) {
+					echo HelpdeskOfflineMessage::getOfflinePage();
+					exit(1);
+				}
 				$html = <<<HTML
 <p>DeskPRO is currently in dev mode which requires the cache directory at <code>$cache_dir</code> to be writable. Please
 make this directory writable and try again.<br /><br /></p>
@@ -522,6 +544,10 @@ HTML;
 
 		} elseif ($env == 'dev' && (empty($DP_CONFIG['debug']['raw_assets']) && !is_file($web_dir.'/build/js/agent-all.js'))) {
 			if (php_sapi_name() == 'cli') {
+				if ($offline) {
+					echo HelpdeskOfflineMessage::getOfflineMessage();
+					exit(1);
+				}
 				echo <<<'TXT'
 You are running in dev mode but you have not enabled raw assets and assets have not been built yet. For pages to display properly, you will need to do one of the following:
 
@@ -537,6 +563,10 @@ TXT;
 
 				exit(1);
 			} else {
+				if ($offline) {
+					echo HelpdeskOfflineMessage::getOfflinePage();
+					exit(1);
+				}
 				$html = <<<'HTML'
 <p>You are running in dev mode but you have not enabled raw assets and assets have not been built yet. For pages to display properly, you will need to do one of the following:<br /><br /></p>
 
