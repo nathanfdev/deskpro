@@ -32,7 +32,7 @@ pageMeta.url_fragment = '{{ url_fragment('agent_orgsearch_customfilter') }}';
             {% set phrase_part2 %}
 			<span class="results-total-count" id="{{baseId}}_total_count">{{ org_ids|length }}</span>
             {% endset %}
-            {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}) }}
+            {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 		</div>
 		{% if org_ids|length > per_page %}
 			<ul class="pagenav no-prev">

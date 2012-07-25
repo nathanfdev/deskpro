@@ -56,7 +56,7 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
                 {% set phrase_part2 %}
                 <span class="results-total-count" id="{{baseId}}_total_count">{{ person_ids|length }}</span>
                 {% endset %}
-                {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}) }}
+                {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 			</div>
 			{% if person_ids|length > 50 %}
 				<ul class="pagenav no-prev">

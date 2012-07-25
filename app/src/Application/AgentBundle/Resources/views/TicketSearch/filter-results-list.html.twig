@@ -95,7 +95,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			<div class="check-count selection-bar">
-				{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
+				{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}, true) }}
 
 				<button class="clean-white perform-actions-trigger">
 					<span>{{ phrase('agent.general.perform_actions') }}</span>
@@ -115,7 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                     <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
                     {% endset %}
-                    {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}) }}
+                    {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 				</div>
 				{% if ticket_ids|length > per_page %}
 					<ul class="pagenav no-prev">

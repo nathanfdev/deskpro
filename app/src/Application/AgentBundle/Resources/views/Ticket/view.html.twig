@@ -371,9 +371,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% set waiting %}
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
 					{% endset %}
-					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {'waiting': waiting, 'total': waiting_total}) }}
+					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {'waiting': waiting, 'total': waiting_total}, true) }}
 					{% else %}
-					{{ phrase('agent.tickets.user_waiting_total_x', {'total': waiting_total}) }}
+					{{ phrase('agent.tickets.user_waiting_total_x', {'total': waiting_total}, true) }}
 					{% endif %}
 				</td>
 			</tr>

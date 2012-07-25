@@ -284,7 +284,7 @@ class TemplatingExtension extends \Twig_Extension
 			return $string;
 		}
 
-		return $urlinfo['host'];
+		return @$urlinfo['host'];
 	}
 
 	public function crc32($string)
