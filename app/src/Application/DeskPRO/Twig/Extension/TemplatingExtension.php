@@ -744,8 +744,13 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->get('deskpro.core.translate')->replaceVarsInString($phrase_name, $vars);
 	}
 
-	public function getPhrase($phrase_name, array $vars = array())
+	public function getPhrase($phrase_name, array $vars = array(), $raw = false)
 	{
+		if (!$raw) {
+			foreach ($vars as &$v) {
+				$v = htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
+			}
+		}
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
 	}
 
