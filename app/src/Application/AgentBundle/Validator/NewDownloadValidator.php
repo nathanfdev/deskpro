@@ -53,6 +53,11 @@ class NewDownloadValidator extends AbstractValidator
 			$this->addError('category_id.invalid');
 		}
 
+		$cat = App::getOrm()->find('DeskPRO:DownloadCategory', $download->category_id);
+		if (!$cat) {
+			$this->addError('category_id.invalid');
+		}
+
 		if (!$download->status) {
 			$this->addError('status.invalid');
 		}
