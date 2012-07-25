@@ -187,9 +187,7 @@ class PublishController extends AbstractController
 		$entity = $this->_getCommentEntityName($typename);
 
 		$comment = $this->em->find($entity, $comment_id);
-		$comment['status'] = 'deleted';
-
-		$this->em->persist($comment);
+		$this->em->remove($comment);
 		$this->em->flush();
 
 		$this->_sendCommentDeletedNotification($comment);

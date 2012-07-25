@@ -34,9 +34,12 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 	getCommentMenu: function() {
 		if (this._commentMenu) return this._commentMenu;
 
+		var clone = $('#comment_tools_menu').first().clone(false);
+		clone.attr('id', Orb.getUniqueId('el'));
+
 		var self = this;
 		this._commentMenu = new DeskPRO.UI.Menu({
-			menuElement: $('#comment_tools_menu'),
+			menuElement: clone,
 			onItemClicked: function(info) {
 				var commentEl = $(info.menu.getOpenTriggerElement()).parent().parent().parent();
 				var action = $(info.itemEl).data('action');
@@ -72,11 +75,14 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 	getCommentValidationMenu: function() {
 		if (this._commentValidationMenu) return this._commentValidationMenu;
 
+		var clone = $('#comment_validation_menu').first().clone(false);
+		clone.attr('id', Orb.getUniqueId('el'));
+
 		var self = this;
 		this._commentValidationMenu = new DeskPRO.UI.Menu({
-			menuElement: $('#comment_validation_menu'),
+			menuElement: clone,
 			onItemClicked: function(info) {
-				var commentEl = $(info.menu.getOpenTriggerElement()).parent().parent().parent();
+				var commentEl = $(info.menu.getOpenTriggerElement()).closest('article.content-message');
 				var action = $(info.itemEl).data('action');
 
 				switch (action) {
@@ -165,7 +171,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 				commentEl.show();
 			},
 			success: function(data) {
-				el.remove();
+				commentEl.remove();
 			}
 		});
 	},
