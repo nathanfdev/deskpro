@@ -38,6 +38,8 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
 
 use Orb\Util\Strings;
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
 
 /**
  * Detects a ticket based off of a common subject and From email address.
@@ -45,19 +47,27 @@ use Orb\Util\Strings;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class SubjectMatchDetector implements TicketDetectorInterface
+class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $_found_person = null;
 
+	/**
+	 * @var int
+	 */
 	protected $_time_cutoff = 0;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
 
 	/**
 	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
 	 */
-	public function __construct($time_cutoff = 604800 /* 7 days */)
+	public function __construct($time_cutoff = 1728000 /* 20 days */)
 	{
 		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
 	}
@@ -67,9 +77,11 @@ class SubjectMatchDetector implements TicketDetectorInterface
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
+		$this->getLogger()->logDebug("[SubjectMatchDetector] Finding ticket");
+
 		$this->_found_person = null;
 
-		$subject = trim($reader->getSubject()->subject);
+		$subject = trim($reader->getSubject()->getSubjectUtf8());
 		$subject_orig = $subject;
 
 		// Strip off Re: prefix (and alternatives in some other langs)
@@ -80,6 +92,9 @@ class SubjectMatchDetector implements TicketDetectorInterface
 			$subject_orig = trim($subject_orig);
 			$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject_orig);
 			$subject_re   = trim($subject_re);
+
+			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_orig);
+			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
 
 			// Now lets try to find it...
 			$ticket_ids = App::getDb()->fetchAllCol("
@@ -97,17 +112,25 @@ class SubjectMatchDetector implements TicketDetectorInterface
 
 		} while (!$ticket_ids && $changed);
 
-		if (!$ticket_ids) return null;
+		if (!$ticket_ids) {
+			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
+			return null;
+		}
+
+		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
 
 		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		$from = $reader->getFromAddress()->email;
+		$from = $reader->getFromAddress()->getEmail();
 
 		foreach ($tickets as $ticket) {
 			if ($p = $ticket->findUserByEmail($from)) {
+				$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id);
 				$this->_found_person = $p;
 				return $ticket;
 			}
 		}
+
+		$this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
 
 		return null;
 	}
@@ -127,10 +150,31 @@ class SubjectMatchDetector implements TicketDetectorInterface
 	/**
 	 * Unknown users cant be added based just on subject
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function canAddUnknownPerson()
 	{
 		return false;
+	}
+
+	/**
+	 * Set the logger
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new Logger();
+		}
+
+		return $this->logger;
 	}
 }

@@ -108,6 +108,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if (!$ticket) {
 			if (!$ticket) {
 				$detector = new CodeTicketDetector();
+				if ($this->logger) $detector->setLogger($this->logger);
 				$ticket = $detector->findExistingTicket($this->reader);
 
 				$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
@@ -135,6 +136,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$ticket) {
 				// Finally try subject string match
 				$detector = new SubjectMatchDetector();
+				if ($this->logger) $detector->setLogger($this->logger);
 				$ticket = $detector->findExistingTicket($this->reader);
 
 				$this->logMessage('[TicketGatewayProcessor] SubjectMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
@@ -223,7 +225,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
 				$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			} else {
-
+				$this->logMessage('[TicketGatewayProcessor] Creating new contact');
 				if (App::getSetting('core.user_mode') == 'closed') {
 					$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
 					$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
@@ -238,7 +240,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 						App::getMailer()->send($message);
 					}
 				}
-
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 			}

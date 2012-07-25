@@ -36,6 +36,8 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\Ticket;
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
 
 /**
  * Detects a ticket based off of codes in the subject or body.
@@ -45,7 +47,7 @@ use Application\DeskPRO\Entity\Ticket;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class CodeTicketDetector implements TicketDetectorInterface
+class CodeTicketDetector implements TicketDetectorInterface, Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAccessCode
@@ -58,10 +60,17 @@ class CodeTicketDetector implements TicketDetectorInterface
 	protected $_found_person = null;
 
 	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
+		$this->getLogger()->logDebug("[CodeTicketDetector] Finding ticket");
+
 		$this->_found_person = null;
 
 		$search_text = array();
@@ -85,6 +94,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 		foreach ($check_headers as $header) {
 			$m = null;
 			if (preg_match('#PTAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
+				$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: " . $m[1]);
 				$search_text[] = '(#' . $m[1] . ')';
 			}
 		}
@@ -103,12 +113,20 @@ class CodeTicketDetector implements TicketDetectorInterface
 		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $m) {
 
+				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like TAC: {$m[1]}");
+
 				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->getTacArrayFromAccessCode($m[1]);
-				if (!$tac) continue;
+				if (!$tac) {
+					$this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
+					continue;
+				}
+
+				$this->getLogger()->logDebug("[CodeTicketDetector] -- Valid code");
 
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
 				if ($ticket && !$ticket->isArchived()) {
 					$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
+					$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
 					return $ticket;
 				}
 			}
@@ -121,11 +139,19 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$matches = null;
 		if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $m) {
+
+				$this->getLogger()->logDebug("[CodeTicketDetector] Checking code that looks like PTAC: {$m[1]}");
+
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
 				if ($ticket && !$ticket->isArchived()) {
-
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+					if ($this->_found_person) {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+					} else {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
+					}
 
 					return $ticket;
 				}
@@ -155,5 +181,27 @@ class CodeTicketDetector implements TicketDetectorInterface
 	public function canAddUnknownPerson()
 	{
 		return true;
+	}
+
+
+	/**
+	 * Set the logger
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new Logger();
+		}
+
+		return $this->logger;
 	}
 }
