@@ -313,7 +313,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setDisabled($disabled)
 	{
-		$this['disabled'] = $disabled;
+		$this->setModelField('disabled', $disabled);
 		$this['generate_stats'] = $disabled;
 	}
 
@@ -585,7 +585,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			throw new \Exception("Unable to set run frequency to type $run_frequency. Supported types are " . join(", ", self::$availableRunFrequencies));
 		}
 
-		$this['run_frequency'] = $run_frequency;
+		$this->setModelField('run_frequency', $run_frequency);
 	}
 
 	public function setVariation($variaition)
@@ -594,7 +594,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			throw new \Exception("Unable to set variaition to type $variaition. Supported types are " . join(", ", self::$availableVariations));
 		}
 
-		$this['variation'] = $variaition;
+		$this->setModelField('variation', $variaition);
 	}
 
 	public function getGroupingInformation()
