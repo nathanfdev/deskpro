@@ -182,4 +182,16 @@ class GlobalVariables extends BaseGlobalVariables
 
 		return $tz;
 	}
+
+	public function getReturnUrl()
+	{
+		$request = App::getRequest();
+
+		// Cant recreate a post, so back to home
+		if ($request->getMethod() == 'POST') {
+			return App::getSetting('core.deskpro_url');
+		}
+
+		return $request->getRequestUri();
+	}
 }

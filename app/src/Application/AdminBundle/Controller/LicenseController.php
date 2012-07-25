@@ -148,7 +148,7 @@ class LicenseController extends AbstractController
 										'success' => true
 									));
 								}
-								return $this->redirectRoute('admin_license_input', array('from_demo' => 1));
+								return $this->redirectRoute('admin', array('from_demo' => 1));
 							}
 						}
 					}
@@ -205,7 +205,7 @@ class LicenseController extends AbstractController
 				));
 			}
 
-			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
+			return $this->redirectRoute('admin');
 		}
 
 		if (!$lic->isDemo()) {

@@ -316,6 +316,10 @@ HTML;
 		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $lang->getId(), 'never', true);
 		$cookie->send();
 
+		if ($return = $this->in->getString('return')) {
+			return $this->redirect($return);
+		}
+
 		return $this->redirectRoute('user');
 	}
 }

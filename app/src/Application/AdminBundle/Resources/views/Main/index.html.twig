@@ -166,8 +166,8 @@
 
 				<tr>
 					<td class="" colspan="2" style="text-align: center">
-						<a href="" class="btn">Add Agents</a>
-						<a href="{{ path('admin_license_input') }}" class="btn">Update License</a>
+						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn">Add Agents</a>
+						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn">Update License</a>
 					</td>
 				</tr>
 			{% endif %}

@@ -75,6 +75,7 @@
 		{% if app.getDataRepository('Language').isMultiLang() %}
 			<div id="dp_lang_chooser">
 				<form id="dp_lang_chooser_form" action="{{ path('user_profile_setlang') }}" method="POST">
+					<input type="hidden" name="return" value="{{ app.getReturnUrl() }}" />
 					{{ form_token('lang_chooser') }}
 					<label>{{ phrase('user.portal.language_chooser') }}</label>
 					<select name="language_id" onchange="$('#dp_lang_chooser_form').submit();">
