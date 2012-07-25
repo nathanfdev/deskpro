@@ -214,8 +214,9 @@ class LicenseController extends AbstractController
 				$client->setMethod(\Zend\Http\Request::METHOD_GET);
 				$client->setUri(License::getLicServer() . '/api/license/set-license.json');
 				$client->setParameterGet(array(
-					'license_id'  => $lic->getLicenseId(),
-					'install_key' => App::getSetting('core.install_key')
+					'license_id'    => $lic->getLicenseId(),
+					'install_key'   => App::getSetting('core.install_key'),
+					'install_token' => App::getSetting('core.install_token')
 				));
 				$client->send();
 			} catch (\Exception $e) {}
@@ -233,9 +234,10 @@ class LicenseController extends AbstractController
 
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array(
-				'success'     => true,
-				'license_id'  => $lic->getLicenseId(),
-				'install_key' => App::getSetting('core.install_key')
+				'success'       => true,
+				'license_id'    => $lic->getLicenseId(),
+				'install_key'   => App::getSetting('core.install_key'),
+				'install_token' => App::getSetting('core.install_token')
 			));
 		}
 

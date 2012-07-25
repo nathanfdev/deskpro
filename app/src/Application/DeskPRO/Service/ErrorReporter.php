@@ -318,6 +318,10 @@ class ErrorReporter
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
 
+			if (!$r->isSuccess()) {
+				error_log($r->getBody());
+			}
+
 			if (isset($data['local_hash'])) {
 				App::getDb()->replace('tmp_data', array(
 					'name'         => 'submitreport_' . $data['local_hash'],
@@ -327,7 +331,9 @@ class ErrorReporter
 					'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
 				));
 			}
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			error_log(sprintf("sendReport %s %s"), $e->getCode(), $e->getMessage());
+		}
 	}
 
 
@@ -359,7 +365,9 @@ class ErrorReporter
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
 			return $r->getBody();
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			error_log(sprintf("sendHeartbeat %s %s"), $e->getCode(), $e->getMessage());
+		}
 	}
 
 
@@ -381,7 +389,9 @@ class ErrorReporter
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			error_log(sprintf("sendInstallStatusPing %s %s"), $e->getCode(), $e->getMessage());
+		}
 	}
 
 
