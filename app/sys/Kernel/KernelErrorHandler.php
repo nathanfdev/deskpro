@@ -423,7 +423,9 @@ class KernelErrorHandler
 			'display'        => $display,
 			'build'          => DP_BUILD_TIME,
 			'process_log'    => implode("\n", self::$process_log),
-			'context_data'   => $context_data
+			'context_data'   => $context_data,
+			'error_time'     => microtime(true),
+			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0
 		);
 
 		return $errinfo;
@@ -513,6 +515,8 @@ class KernelErrorHandler
 			'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
 			'process_log'     => implode("\n", self::$process_log),
 			'context_data'    => $context_data,
+			'error_time'     => microtime(true),
+			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0
 		);
 	}
 
