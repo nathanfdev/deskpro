@@ -67,10 +67,13 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\StackedLineChart':
 			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
 			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
+
+				/** @var $chart \Application\ReportBundle\Chart\Base\SeriesChart */
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
 				$chart->setDisplayUnits($display_unit);
+				$chart->setYLabel('Tickets');
 
 				$series_set = false;
 				foreach ($data as $data_set) {
@@ -82,15 +85,19 @@ class ChartFactory
 							switch ($stat->getRunFrequency()) {
 								case 'hourly':
 									$formatted_series = date("H", strtotime($time));
+									$chart->setXLabel('Hour');
 									break;
 								case 'daily':
 									$formatted_series = date("j", strtotime($time));
+									$chart->setXLabel('Day');
 									break;
 								case 'monthly':
 									$formatted_series = date("M", strtotime($time));
+									$chart->setXLabel('Month');
 									break;
 								case 'yearly':
 									$formatted_series = date("Y", strtotime($time));
+									$chart->setXLabel('Year');
 									break;
 							}
 							$chart->addSeries($formatted_series);

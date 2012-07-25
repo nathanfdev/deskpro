@@ -95,7 +95,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return $this->view_chart_class;
 	}
-	
+
 	/**
 	 * Set the current min and max values
 	 *

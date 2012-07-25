@@ -14,7 +14,7 @@
 			<left>60</left>
 			<top>20</top>
 			<right>20</right>
-			<bottom>30</bottom>
+			<bottom>60</bottom>
 		</margins>
 	</plot_area>
 
@@ -56,9 +56,14 @@
 			<x>10</x>
 			<y>100%</y>
 			<rotate>true</rotate>
-			<width></width>
 			<align>center</align>
-			<text><![CDATA[Y label]]></text>
+			<text><![CDATA[{{ chart.yLabel }}]]></text>
+		</label>
+		<label lid="1">
+			<x>0</x>
+			<y>!25</y>
+			<align>center</align>
+			<text><![CDATA[{{ chart.xLabel|default('xxx') }}]]></text>
 		</label>
 	</labels>
 

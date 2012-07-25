@@ -60,6 +60,16 @@ abstract class SeriesChart extends AbstractChart
 	protected $labels = array();
 
 	/**
+	 * @var string
+	 */
+	protected $y_label = '';
+
+	/**
+	 * @var string
+	 */
+	protected $x_label = '';
+
+	/**
 	 * Adds a graph
 	 *
 	 * @param string $label The label
@@ -138,5 +148,37 @@ abstract class SeriesChart extends AbstractChart
 		$renderable = true;
 
 		return $renderable;
+	}
+
+	/**
+	 * @param string $y_label
+	 */
+	public function setYLabel($y_label)
+	{
+		$this->y_label = $y_label;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getYLabel()
+	{
+		return $this->y_label;
+	}
+
+	/**
+	 * @param string $x_label
+	 */
+	public function setXLabel($x_label)
+	{
+		$this->x_label = $x_label;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getXLabel()
+	{
+		return $this->x_label;
 	}
 }
