@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Session;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -246,7 +245,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      */
     public function sessionRead($id)
     {
-		$sid = Session::getIdFromCode($id);
+		$sid = self::getIdFromCode($id);
 		if ($this->session && $this->session->getSessionCode() == $id) {
 			$session = $this->session;
 		} else {
@@ -277,7 +276,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
     {
 		// Because of when the session is written, we cant use the ORM here,
 		// because the manager has lost its reference to the session state
-		$id = Session::getIdFromCode($id);
+		$id = self::getIdFromCode($id);
 
 		$save_hash = md5($id . $data);
 
@@ -420,4 +419,37 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 
         self::$sessionIdRegenerated = true;
     }
+
+
+	/**
+	 * @static
+	 * @param string $sess_code
+	 * @return int|null
+	 */
+	public static function getIdFromCode($sess_code)
+	{
+		if (!strpos($sess_code, '-')) return null;
+
+		list ($session_id, ) = explode('-', $sess_code, 2);
+
+		$alphabet = str_split('0123456789abcdefghijklmnopqrstuvwxyz');
+		$base     = sizeof($alphabet);
+		$strlen   = strlen($session_id);
+		$num = 0;
+		$idx = 0;
+
+		$s = str_split($session_id);
+		$tebahpla = array_flip($alphabet);
+
+		foreach ($s as $char) {
+			// Invalid character found in string
+			if (!isset($tebahpla[$char])) {
+				return null;
+			}
+			$power = ($strlen - ($idx + 1));
+			$num += $tebahpla[$char] * (pow($base, $power));
+			$idx += 1;
+		}
+		return $num;
+	}
 }
