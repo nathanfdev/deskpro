@@ -152,6 +152,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$queryinfo['time_end']   = microtime(true);
 		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
 		$queryinfo['time_taken_str'] = sprintf('%.2f', $queryinfo['time_taken']);
+		$queryinfo['trans_level'] = App::getDb()->getTransactionNestingLevel();
 
 		if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
 			$table = $m[2];
@@ -324,7 +325,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					$table = ' ' . $table;
 				}
 
-				$write[] = sprintf("=> Query %.4f %s$table: %s \t\t Query_Params: %s\n", $q['time_taken'], $name, $sql, implode(', ', $params));
+				$write[] = sprintf("=> Query %.4f %s$table:%s %s \t\t Query_Params: %s\n", str_repeat(' ', $q['trans_level'] * 5), $q['time_taken'], $name, $sql, implode(', ', $params));
 				if (isset($q['trace'])) {
 					$write[] = \Orb\Util\Strings::modifyLines($q['trace'], "   ", '', true);
 					$write[] = "\n";

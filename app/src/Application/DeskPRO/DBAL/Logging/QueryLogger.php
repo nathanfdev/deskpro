@@ -116,7 +116,10 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
 		$this->_last_query++;
 
+		$trans_level = App::getDb()->getTransactionNestingLevel();
+
 		$this->_queries[$this->_last_query] = array(
+			'trans_level'    => $trans_level,
 			'tag'            => $this->tag,
 			'sql'            => $sql,
 			'params'         => $params,

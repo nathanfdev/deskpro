@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DBAL;
 
 use PDO;
+use Orb\Log\Logger;
 
 /**
  * Some enhancements to Doctrine's connection class.
@@ -44,7 +45,15 @@ class Connection extends \Doctrine\DBAL\Connection
 	const EVENT_POST_COMMIT   = 'onPostCommit';
 	const EVENT_POST_ROLLBACK = 'onPostRollback';
 
+	/**
+	 * @var int
+	 */
 	protected $_max_packet_size = null;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $transaction_logger = false;
 
 	protected $running_trans_event = false;
 
@@ -79,6 +88,13 @@ class Connection extends \Doctrine\DBAL\Connection
 				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
 			}
 		});
+
+		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
+			$this->transaction_logger = new Logger();
+			$this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/db-transactions.log'));
+			$this->transaction_logger->logDebug("--- BEGIN PAGE ---");
+			$this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+		}
 	}
 
 	public function connect()
@@ -390,9 +406,22 @@ class Connection extends \Doctrine\DBAL\Connection
 		return new Statement($statement, $this);
 	}
 
+	public function beginTransaction()
+	{
+		parent::beginTransaction();
+		if ($this->transaction_logger) {
+			$level = $this->getTransactionNestingLevel();
+			$e = new \Exception();
+			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
+			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION BEGIN\n$backtrace");
+		}
+	}
 
 	public function commit()
 	{
+		$level = $this->getTransactionNestingLevel();
+
 		parent::commit();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
@@ -401,10 +430,19 @@ class Connection extends \Doctrine\DBAL\Connection
 			$this->_eventManager->dispatchEvent(self::EVENT_POST_COMMIT, $eventArgs);
 			$this->running_trans_event = false;
 		}
+
+		if ($this->transaction_logger) {
+			$e = new \Exception();
+			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
+			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
+		}
 	}
 
 	public function rollback()
 	{
+		$level = $this->getTransactionNestingLevel();
+
 		parent::rollback();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
@@ -412,6 +450,13 @@ class Connection extends \Doctrine\DBAL\Connection
 			$eventArgs = new Event\PostCommit($this);
 			$this->_eventManager->dispatchEvent(self::EVENT_POST_ROLLBACK, $eventArgs);
 			$this->running_trans_event = false;
+		}
+
+		if ($this->transaction_logger) {
+			$e = new \Exception();
+			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
+			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
 		}
 	}
 }
