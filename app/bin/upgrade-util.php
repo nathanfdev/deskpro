@@ -90,6 +90,19 @@ if (!defined('DP_MA_SERVER')) {
 	define('DP_MA_SERVER', 'http://www.deskpro.com/members');
 }
 
+// Current build time
+if (file_exists(DP_ROOT.'/app/sys/config/build-time.php')) {
+	$build_file = @file_get_contents(DP_ROOT.'/app/sys/config/build-time.php');
+	if ($build_file) {
+		$m = null;
+		if (preg_match('#([0-9]{10})#', $build_file, $m)) {
+			define('DP_ORIG_BUILD_TIME', $m[1]);
+		}
+	}
+}
+
+define('DP_UPGRADE_STARTTIME', microtime(true));
+
 ########################################################################################################################
 # Basic requirement checks
 ########################################################################################################################
@@ -1435,7 +1448,7 @@ class Upgrade
 
 	####################################################################################################################
 
-	public function sendLog()
+	public function sendLog($e = null)
 	{
 		static $has_sent = false;
 		if ($has_sent) {
@@ -1464,8 +1477,14 @@ class Upgrade
 			'php_version'       => isset($stats['php_version'])       ? $stats['php_version'] : '',
 			'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
 			'build'             => DP_BUILD_TIME,
+			'total_time'        => microtime(true) - DP_UPGRADE_STARTTIME,
 		);
 		$info['hostname'] = @gethostname();
+
+		if ($e) {
+			$errinfo = self::getExceptionInfo($e);
+			$info['error_info'] = $errinfo;
+		}
 
 		try {
 			global $DP_CONFIG;
@@ -1482,12 +1501,13 @@ class Upgrade
 				$license_code = str_replace(array("\n", "\r", " ", "\t"), "", trim($settings['core.license']));
 				$license_code = @base64_decode($license_code);
 				$info['license_id'] = substr($license_code, 0, 14);
+				$info['license_id'] = rtrim($info['license_id'], '-');
 			}
 
 		} catch (\Exception $e) {}
 
 		$info['log'] = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
-		$info['old_build'] = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
+		$info['old_build'] = defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : '0';
 		$info['new_build'] = defined('DP_NEW_BUILD_TIME') ? DP_NEW_BUILD_TIME : '0';
 
 		try {
@@ -1497,6 +1517,135 @@ class Upgrade
 			}
 		} catch (\Exception $e) {}
 	}
+
+	/**
+	 * Copy of KernelErrorHandler::getExceptionInfo
+	 */
+	public static function getExceptionInfo(\Exception $exception)
+	{
+		$errno   = $exception->getCode();
+		$errstr  = $exception->getMessage();
+		$errfile = $exception->getFile();
+		$errline = $exception->getLine();
+
+		$backtrace = $exception->getTrace();
+		$trace = self::formatBacktrace($backtrace);
+		$context_data = '';
+
+		if (isset($exception->_dp_query)) {
+			$errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
+
+			if (!empty($exception->_dp_query_params)) {
+				$context_data = self::varToString($exception->_dp_query_params);
+			}
+		}
+
+		$type = get_class($exception);
+		$summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
+
+		$display = true;
+		if (!(error_reporting() & E_ERROR)) {
+			$display = false;
+		}
+
+		$prev = $exception->getPrevious();
+		if ($prev) {
+			$previnfo = self::getExceptionInfo($prev);
+			$summary .= ", " . $previnfo['summary'];
+			$trace .= "\n\n(Alt Exception)\n" . $previnfo['trace'];
+		}
+
+		$errinfo = array(
+			'type'           => 'exception',
+			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : '',
+			'exception'      => $exception,
+			'exception_type' => get_class($exception),
+			'die'            => true,
+			'pri'            => 'ERR',
+			'trace'          => $trace,
+			'summary'        => $summary,
+			'errstr'         => $errstr,
+			'errname'        => 'EXCEPTION',
+			'errno'          => $errno,
+			'errfile'        => $errfile,
+			'errline'        => $errline,
+			'display'        => $display,
+			'build'          => defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : 0,
+			'process_log'    => '',
+			'context_data'   => $context_data
+		);
+
+		return $errinfo;
+	}
+
+	/**
+	 * Copy of KernelErrorHandler::formatBacktrace
+	 */
+	public static function formatBacktrace(array $backtrace)
+	{
+		$trace = '';
+
+		foreach($backtrace as $k=>$v){
+
+			$prefix = "#$k ";
+			$line = '';
+
+			if (!empty($v['file'])) {
+				$v['file'] = $v['file'];
+				$prefix .= "[{$v['file']}:{$v['line']}] ";
+			}
+
+			if (isset($v['object'])) {
+				$line .= get_class($v['object']) . "::";
+			} elseif (isset($v['class'])) {
+				$line .= $v['class'] . "::";
+			}
+
+			$line .= "{$v['function']}(";
+
+			if (!empty($v['args'])) {
+				$line .= self::varToString($v['args']);
+			}
+
+			$line .= ")";
+
+			$trace .= $prefix . ' ' . trim($line) . "\n";
+		}
+
+		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
+
+		return trim($trace);
+	}
+
+
+	/**
+	 * Copy of KernelErrorHandler::varToString
+	 */
+	public static function varToString($var, $_depth = 0)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+				if ($_depth > 8) {
+					$a[] = sprintf('%s => %s', $k, '(string)');
+				} else {
+					$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+				}
+            }
+            return sprintf("[array](%s)", implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+		$str = (string)$var;
+		if (strlen($str) > 1000) {
+			$str = substr($str, 0, 1000) . "...(clipped)";
+		}
+        return str_replace("\n", '', var_export($str, true));
+    }
 
 	/**
 	 * Compress a file or directory with ZIP.
@@ -2445,7 +2594,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$fileutil = new FilesystemUtil();
 		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 
-		$this->upgrade->sendLog();
+		$e = new \Exception($message);
+		$this->upgrade->sendLog($e);
+
 		exit(1);
 	}
 
