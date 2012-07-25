@@ -193,10 +193,12 @@ abstract class AbstractStat implements StatInterface
 			if ($with_grouping) {
 				$this->applyGroupByToQuery($executeQuery);
 				if ($this->logger) $this->logger->log("=> Query: " . $query->getSql(), 'DEBUG');
+				if ($this->logger) $this->logger->log("=> Params: " . \DeskPRO\Kernel\KernelErrorHandler::varToString($query->getParameters()), 'DEBUG');
 				$this->results['grouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
 			else {
 				if ($this->logger) $this->logger->log("=> Query: " . $query->getSql(), 'DEBUG');
+				if ($this->logger) $this->logger->log("=> Params: " . \DeskPRO\Kernel\KernelErrorHandler::varToString($query->getParameters()), 'DEBUG');
 				$this->results['ungrouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
 		}

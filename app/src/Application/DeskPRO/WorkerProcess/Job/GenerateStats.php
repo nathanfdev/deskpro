@@ -104,7 +104,9 @@ class GenerateStats extends AbstractJob
 
 		$stat_concept_class = $stat->getStatConceptClass();
 
+		/** @var $stat_concept \Application\ReportBundle\Stat\Base\AbstractStat */
 		$stat_concept = new $stat_concept_class($stat, $stat->getLastFullRun());
+
 		$stat_concept->setLogger($this->logger);
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats($this->date_time);

@@ -557,7 +557,8 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getLastFullRun()
 	{
-		$last = $this->last_run ? $this->last_run : new \DateTime();
+		$last = $this->last_run ? clone $this->last_run : new \DateTime();
+		$last->setTime($last->format('H'), 0, 0);
 
 		switch ($this->run_frequency) {
 			case 'hourly':
@@ -720,7 +721,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		// generated stats as far as 5 years ago
 		$values = array_fill_keys($data_points, null);
 		foreach ($stat_values as $stat_value) {
-			$values[date('Y-m-d', $stat_value['stat_unix'])] = $stat_value['value'];
+			$date = new \DateTime('@' . $stat_value['stat_unix']);
+			$date->setTime($date->format('H'), 0, 0);
+
+			$values[date('Y-m-d H:00:00', $date->getTimestamp())] = $stat_value['value'];
 			$stat_value_ids[] = $stat_value['id'];
 		}
 
@@ -809,7 +813,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		for ($i = ($data_point_count - 1); $i >= 0; $i--) {
 			switch ($this->getRunFrequency()) {
 				case 'hourly':
-					$data_point = date('Y-m-d H:i:s', strtotime("-$i hours", $unix));
+					$data_point = date('Y-m-d H:00:00', strtotime("-$i hours", $unix));
 					break;
 				case 'daily':
 					$data_point = date('Y-m-d', strtotime("-$i days", $unix)) . ' 00:00:00';
