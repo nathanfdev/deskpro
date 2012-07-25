@@ -14,19 +14,23 @@ DeskPRO.Agent.Ticket.Property.Reply = new Class({
 	},
 
 	getValue: function() {
-		return this.ticketPage.getEl('replybox_txt').val();
+		this.ticketPage.getEl('replybox_wrap').find('textarea[name="message"]').val();
 	},
 
 	highlightInterfaceElement: function() {
-		return this.ticketPage.getEl('replybox').addClass('highlight-change-on');
+		this.ticketPage.getEl('replybox_wrap').find('textarea[name="message"]').addClass('highlight-change-on');
 	},
 
 	unhighlightInterfaceElement: function() {
-		return this.ticketPage.getEl('replybox').removeClass('highlight-change-on');
+		this.ticketPage.getEl('replybox_wrap').find('textarea[name="message"]').removeClass('highlight-change-on');
 	},
 
 	setValue: function(value) {
-		this.getInterfaceElement().val(value);
+		if (value.reply_text) {
+			value = value.reply_text;
+		}
+
+		return this.ticketPage.getEl('replybox_wrap').find('textarea[name="message"]').val(value);
 	},
 
 	setIncomingValue: function(value) {
@@ -34,6 +38,6 @@ DeskPRO.Agent.Ticket.Property.Reply = new Class({
 	},
 
 	getInterfaceElement: function() {
-		return this.ticketPage.getEl('replybox_txt');
+		return this.ticketPage.getEl('replybox_wrap').find('textarea[name="message"]');
 	}
 });

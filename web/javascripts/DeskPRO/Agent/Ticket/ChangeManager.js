@@ -245,6 +245,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		var saving_classes = [];
 
+		var saveReply = false;
+
 		Object.each(this.changes, function (change) {
 			var property = change[0];
 			var name = property.getName();
@@ -252,6 +254,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			// Reply is made through the ReplyBox helper instead
 			if (name == 'reply') {
 				property.unhighlightInterfaceElement();
+				saveReply = true;
 				return;
 			}
 
@@ -292,6 +295,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 							var property = this.getPropertyManager(type);
 							property.setIncomingValue(returnValue);
 						}, this);
+					}
+
+					if (saveReply) {
+						this.ticketPage.getEl('replybox_wrap').find('.ticket-reply-form').first().data('handler').getElById('send_btn').click();
 					}
 
 					if (callback) {
