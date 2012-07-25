@@ -26,9 +26,16 @@
 			diff += Math.abs(now.getHours() - DESKPRO_PERSON_HOUR) * 60 * 60;
 			diff += Math.abs(now.getMinutes() - DESKPRO_PERSON_MINUTE) * 60;
 
+			var ignoreTime = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }});
+
 			if (diff > 1200) {
 				DESKPRO_TIME_OUT_OF_SYNC = diff;
 				console.log("Time is off by %s seconds", diff);
+
+				if (ignoreTime && Math.abs(diff - ignoreTime) < 480) {
+					DESKPRO_TIME_OUT_OF_SYNC = null;
+					console.log("Time offset is ignored");
+				}
 			}
 		})();
 	</script>

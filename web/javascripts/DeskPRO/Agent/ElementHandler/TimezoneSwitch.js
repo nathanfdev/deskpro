@@ -16,6 +16,18 @@ DeskPRO.Agent.ElementHandler.TimezoneSwitch = new Orb.Class({
 		if (this._hasInit) return;
 		this._hasInit = true;
 
+		var now = new Date();
+		var hour = now.getHours();
+		var ampm = 'am';
+		if (hour > 12) {
+			hour -= 12;
+			ampm = 'pm';
+		}
+		var min = now.getMinutes();
+		var time = hour + ':' + min + ' ' + ampm;
+
+		this.el.find('.js_time').text(time);
+
 		this.el.detach().hide().appendTo('body');
 
 		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
@@ -35,7 +47,19 @@ DeskPRO.Agent.ElementHandler.TimezoneSwitch = new Orb.Class({
 		var tzField = $('select.timezone', this.el);
 		DP.select(tzField);
 
-		$('button.continue-trigger').on('click', function() {
+		this.el.find('button.dismiss-trigger').on('click', function() {
+			$.ajax({
+				url:  BASE_URL + 'agent/misc/ajax-save-prefs',
+				type: 'POST',
+				dataType: 'json',
+				data: [{ name: 'prefs[agent.ui.tz_detect_dismiss]', value: DESKPRO_TIME_OUT_OF_SYNC }]
+			});
+
+			self.close();
+			return;
+		});
+
+		this.el.find('button.continue-trigger').on('click', function() {
 			var tz = tzField.find('option:selected').val();
 
 			if (!tz) {

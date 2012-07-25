@@ -558,26 +558,35 @@
 	</footer>
 </section>
 
-<section class="dp-overlay" id="time_outofsync" data-element-handler="DeskPRO.Agent.ElementHandler.TimezoneSwitch" style="z-index: 99999; width: 450px; height: 200px;">
+<section class="dp-overlay" id="time_outofsync" data-element-handler="DeskPRO.Agent.ElementHandler.TimezoneSwitch" style="z-index: 99999; width: 450px; height: 300px;">
 	<header>
 		<span class="close close-trigger"></span>
-		<h1>Update Timezone</h1>
+		<h1>Update Timezone Region</h1>
 	</header>
 	<article style="padding: 10px;">
 		<p>
-			The timezone saved in your profile appears to differ from the time on your computer.
-			Do you want to update your timezone now?
+			The timezone region saved in your profile appears to differ from the region reported by your computer.
+		</p>
+		<br />
+		<p>
+			The current time according to your profile: {{ 'now'|date('time') }}.<br />
+			The current time according to your computer: <span class="js_time"></span>.
+		</p>
+		<br />
+		<p>
+			Do you want to update your region now?
 		</p>
 		<br />
 		<select name="timezone" class="timezone" style="width: 300px">
 			<option value="">Select your region</option>
 			{% for title,tz in app.getTimezoneList() %}
-				<option value="{{ tz }}">{{ title }}</option>
+				<option value="{{ tz }}" {% if tz == app.user.timezone %}selected="selected"{% endif %}>{{ title }}</option>
 			{% endfor %}
 		</select>
 	</article>
 	<footer>
-		<button class="continue-trigger clean-white">Update Timezone</button>
+		<button class="continue-trigger clean-white">Update Timezone Region</button>
+		<button class="dismiss-trigger clean-white">Dismiss</button>
 	</footer>
 </section>
 

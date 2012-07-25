@@ -6,6 +6,7 @@
 	var DESKPRO_TEAM_IDS = {{ app.user.getAgent.getTeamIds()|json_encode }};
 	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
+	var DESKPRO_PERSON_TZ = '{{ app.user.timezone }}';
 	{# {% if app.user.is_admin %} #}
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}
