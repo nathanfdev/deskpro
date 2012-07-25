@@ -138,13 +138,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$vis['date_last'] = new \DateTime();
 
 		App::getOrm()->persist($vis);
+		App::getOrm()->flush();
 
 		if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
 			$this->getEntity()->visitor = $vis;
 			App::getOrm()->persist($this->getEntity());
+			App::getOrm()->flush();
 		}
-
-		App::getOrm()->flush();
 
 		$this->visitor = $vis;
 
