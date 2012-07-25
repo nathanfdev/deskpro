@@ -645,10 +645,10 @@ class TicketChangeTracker extends ChangeTracker
 		$person_activity->run();
 
 		// Broadcast a change event
-		$client = 'sys';
+		$person_id = 0;
 		try {
 			if (App::has('session')) {
-				$client = App::get('session')->getEntity()->getId();
+				$person_id = App::get('session')->getEntity()->person->getId();
 			}
 		} catch (\Exception $e) {}
 
@@ -658,7 +658,8 @@ class TicketChangeTracker extends ChangeTracker
 			'date_created' => date('Y-m-d H:i:s'),
 			'data' => serialize(array(
 				'ticket_id'      => $this->ticket->getId(),
-				'changed_fields' => $this->getAllChangedPropertyNames()
+				'changed_fields' => $this->getAllChangedPropertyNames(),
+				'via_person'     => $person_id
 			)),
 			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 		));
