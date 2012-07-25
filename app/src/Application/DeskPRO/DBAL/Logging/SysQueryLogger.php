@@ -110,7 +110,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			'params'         => $params,
 			'time_start'     => microtime(true),
 			'time_end'       => 0,
-			'time_taken'     => 0
+			'time_taken'     => 0,
+			'trans_level'    => 0
 		);
 
 		if ($this->log_trace) {
@@ -325,7 +326,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					$table = ' ' . $table;
 				}
 
-				$write[] = sprintf("=> Query %.4f %s$table:%s %s \t\t Query_Params: %s\n", str_repeat(' ', $q['trans_level'] * 5), $q['time_taken'], $name, $sql, implode(', ', $params));
+				if (!isset($q['trans_level'])) {
+					$q['trans_level'] = 0;
+				}
+				$write[] = sprintf("%s> Query %.4f %s$table: %s \t\t Query_Params: %s\n", str_repeat('=', $q['trans_level']+1), $q['time_taken'], $name, $sql, implode(', ', $params));
 				if (isset($q['trace'])) {
 					$write[] = \Orb\Util\Strings::modifyLines($q['trace'], "   ", '', true);
 					$write[] = "\n";
