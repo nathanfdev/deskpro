@@ -416,7 +416,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				}
 
 				if (data.phrase_id) {
-					message = DeskPRO_Window.getTranslate().phrase('user.chat.' + data.phrase_id, data);
+					message = DeskPRO_Window.getTranslate().phrase('user.chat.' + data.phrase_id, data, true);
 				} else {
 					message = 'unknown phrase';
 				}
