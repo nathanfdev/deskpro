@@ -28,7 +28,7 @@
 					{%- set phrase_link -%}
 						<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
 					{%- endset -%}
-					{{ phrase('user.profile.login_if_registered', {'link': phrase_link}) }}
+					{{ phrase('user.profile.login_if_registered', {'link': phrase_link}, true) }}
 				</div>
 				<div class="dp-help-inline dp-error-explain">
 					{{ phrase('user.general.form_fix_email') }}
