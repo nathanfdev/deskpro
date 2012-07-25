@@ -35,7 +35,18 @@
 					},
 					success: function(data) {
 						if (data.success) {
-							window.location.reload(false);
+							$.ajax({
+								url: '{{ lic_set_callback }}',
+								data: {
+									license_id: data.license_id,
+									install_key: data.install_key
+								},
+								dataType: 'jsonp',
+								timeout: 10000,
+								complete: function() {
+									window.location.reload(false);
+								}
+							});
 						} else {
 							$('#editlic_err').show().find('.lic-err-code').text(data.error_code);
 							$('#editlic_showloading').hide();

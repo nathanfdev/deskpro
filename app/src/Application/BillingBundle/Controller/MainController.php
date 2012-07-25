@@ -51,9 +51,10 @@ class MainController extends AbstractController
 		}
 
 		return $this->render('BillingBundle:Main:index.html.twig', array(
-			'lic' => $lic,
-			'is_expired' => $is_expired,
-			'expire_in_days' => $expire_in_days
+			'lic'              => $lic,
+			'is_expired'       => $is_expired,
+			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
+			'expire_in_days'   => $expire_in_days
 		));
     }
 }

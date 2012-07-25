@@ -208,6 +208,19 @@ class LicenseController extends AbstractController
 			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
 		}
 
+		if (!$lic->isDemo()) {
+			try {
+				$client = new \Zend\Http\Client(null, array('timeout' => 8));
+				$client->setMethod(\Zend\Http\Request::METHOD_GET);
+				$client->setUri(License::getLicServer() . '/api/license/set-license.json');
+				$client->setParameterGet(array(
+					'license_id'  => $lic->getLicenseId(),
+					'install_key' => App::getSetting('core.install_key')
+				));
+				$client->send();
+			} catch (\Exception $e) {}
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {
@@ -220,7 +233,9 @@ class LicenseController extends AbstractController
 
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array(
-				'success' => true
+				'success'     => true,
+				'license_id'  => $lic->getLicenseId(),
+				'install_key' => App::getSetting('core.install_key')
 			));
 		}
 
