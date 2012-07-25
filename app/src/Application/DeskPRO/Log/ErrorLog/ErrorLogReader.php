@@ -99,6 +99,8 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 			return $id == $find_id;
 		};
 
+		$this->setFilter($filter);
+
 		return $filter;
 	}
 
