@@ -332,7 +332,7 @@ class ErrorReporter
 				));
 			}
 		} catch (\Exception $e) {
-			error_log(sprintf("sendReport %s %s"), $e->getCode(), $e->getMessage());
+			error_log(sprintf("sendReport %s %s", $e->getCode(), $e->getMessage()));
 		}
 	}
 
@@ -366,7 +366,7 @@ class ErrorReporter
 			$r = $client->send();
 			return $r->getBody();
 		} catch (\Exception $e) {
-			error_log(sprintf("sendHeartbeat %s %s"), $e->getCode(), $e->getMessage());
+			error_log(sprintf("sendHeartbeat %s %s", $e->getCode(), $e->getMessage()));
 		}
 	}
 
@@ -390,7 +390,7 @@ class ErrorReporter
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
 		} catch (\Exception $e) {
-			error_log(sprintf("sendInstallStatusPing %s %s"), $e->getCode(), $e->getMessage());
+			error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
 		}
 	}
 
