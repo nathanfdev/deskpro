@@ -2556,11 +2556,14 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		ob_start();
 		passthru($cmd, $ret);
+		$out = ob_get_contents();
 		chdir(DP_START_DIR);
 
 		if ($ret) {
 			$this->upgrade->outAndLog("Upgrade returned erorr status $ret");
+			$this->upgrade->outAndLog("Upgrade output: $out");
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
