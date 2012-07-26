@@ -149,9 +149,9 @@ pageMeta.baseId = '{{ baseId }}';
 								<div class="message">
 									{% if message.metadata.phrase_id %}
 										{% if message.is_html %}
-											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata) }}
+											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata, true) }}
 										{% else %}
-											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata)|e }}
+											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata) }}
 										{% endif %}
 									{% elseif message.is_html %}
 										{{message.content|raw}}
