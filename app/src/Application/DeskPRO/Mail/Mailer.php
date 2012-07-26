@@ -62,7 +62,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 	/**
 	 * @var array
 	 */
-	protected $queued;
+	protected $queued = array();
 
 	protected $messagesLog = 0;
 
