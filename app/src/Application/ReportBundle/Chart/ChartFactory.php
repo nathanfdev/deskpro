@@ -33,6 +33,7 @@
 
 namespace Application\ReportBundle\Chart;
 
+use Orb\Util\Arrays;
 use Application\DeskPRO\Entity\Stat;
 
 class ChartFactory
@@ -169,14 +170,7 @@ class ChartFactory
 				$chart->setDisplayUnits($display_unit);
 
 				foreach ($data as $data_set) {
-					if ('time_formatter' === $chart->getFormatterIdentifier()) {
-						// Time data needs to be divided by the number of points
-						$value_sum = (count($data_set['values']) != 0) ? array_sum($data_set['values']) / count($data_set['values']) : 0;
-					}
-					else {
-						$value_sum = array_sum($data_set['values']);
-					}
-
+					$value_sum = (count($data_set['values']) != 0) ? Arrays::getLastItem($data_set['values']) / count($data_set['values']) : 0;
 					$chart->addRow($data_set['label'], $data_set['values'], $value_sum);
 				}
 
@@ -199,14 +193,7 @@ class ChartFactory
 				$chart->setDifferenceDirection($stat->getVariation());
 
 				foreach ($data as $data_set) {
-					if ('time_formatter' === $chart->getFormatterIdentifier()) {
-						// Time data needs to be divided by the number of points
-						$value_sum = (count($data_set['values']) != 0) ? array_sum($data_set['values']) / count($data_set['values']) : 0;
-					}
-					else {
-						$value_sum = array_sum($data_set['values']);
-					}
-
+					$value_sum = (count($data_set['values']) != 0) ? Arrays::getLastItem($data_set['values']) / count($data_set['values']) : 0;
 					$chart->addRow($data_set['label'], $data_set['values'], $value_sum);
 				}
 
