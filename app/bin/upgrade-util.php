@@ -754,14 +754,8 @@ class Upgrade
 
 		$write_status("updating_db_start");
 		chdir(DP_ROOT);
-		if ($is_quiet) {
-			$cmd = "$php_path cmd.php dp:upgrade 2>&1";
-			exec($cmd, $out, $ret);
-		} else {
-			$cmd = "$php_path cmd.php dp:upgrade 2>&1";
-			$out = '';
-			passthru($cmd, $ret);
-		}
+		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		exec($cmd, $out, $ret);
 		chdir(DP_START_DIR);
 		$write_status("updating_db_end");
 
