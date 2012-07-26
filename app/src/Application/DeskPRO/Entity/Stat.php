@@ -217,10 +217,11 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$stat->stat_concept_class = 'Application\\ReportBundle\\Stat\\DeskPRO\\' . $stat_type;
 
 		switch ($stat_type) {
-			case 'TicketsOpened':
+			case 'TicketsNew':
 				$stat->grouping_ref = 'tickets.date_created';
 				break;
 
+			case 'TicketsOpen':
 			case 'TicketsAwaitingAgent':
 			case 'RateOfTicketsProcessed':
 			case 'ReopenedTickets':

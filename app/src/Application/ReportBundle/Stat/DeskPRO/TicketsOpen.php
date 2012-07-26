@@ -36,9 +36,9 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets opended in a period
+ * Get the number of open (awaiting_agent/awaiting_user) tickets
  */
-class TicketsOpened extends AbstractTicket
+class TicketsOpen extends AbstractTicket
 {
 	public function init()
 	{
@@ -50,22 +50,21 @@ class TicketsOpened extends AbstractTicket
 		// timestamp_opened < x < NOW
 		$query = $this->createQuery()
 		      ->select('COUNT(tickets.id) AS ticket_count')
-		      ->where('UNIX_TIMESTAMP(tickets.date_created) > :date_created')
-		      ->setParameter(':date_created', $this->last_stat_date->format('U'));
+		      ->where('tickets.status IN (\'awaiting_agent\', \'awaiting_user\')');
 
-		$this->addQuery('tickets_opened', $query);
+		$this->addQuery('tickets_open', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return $result['tickets_opened'][0]['ticket_count'];
+		return $result['tickets_open'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)
 	{
 		$processedResults = array();
 
-		foreach ($results['tickets_opened'] as $result) {
+		foreach ($results['tickets_open'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
 				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
