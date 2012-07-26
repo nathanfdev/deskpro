@@ -54,6 +54,11 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	protected $difference_direction = 'neutral';
 
+	/**
+	 * @var string hourly, daily, monthly, yearly
+	 */
+	protected $date_mode = null;
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -180,7 +185,13 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 
 		$series = array();
 		foreach (array_keys($values) as $time) {
-			$series[] = date('M j', strtotime($time));
+			switch ($this->date_mode) {
+				case 'hourly':   $series[] = date('ga', strtotime($time)); break;
+				case 'daily':    $series[] = date('jS', strtotime($time)); break;
+				case 'monthly':  $series[] = date('M', strtotime($time));  break;
+				case 'yearly':   $series[] = date('Y', strtotime($time));  break;
+				default:         $series[] = date('jS', strtotime($time)); break;
+			}
 		}
 
 		return $series;
@@ -215,5 +226,21 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	public function getDifferenceDirection()
 	{
 		return $this->difference_direction;
+	}
+
+	/**
+	 * @param string $date_mode
+	 */
+	public function setDateMode($date_mode)
+	{
+		$this->date_mode = $date_mode;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDateMode()
+	{
+		return $this->date_mode;
 	}
 }

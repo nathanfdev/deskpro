@@ -188,7 +188,9 @@ class ChartFactory
 			 * DeskPRO - Detailed Drilldown Chart
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
-				$chart = new $chart_class;
+				$chart = new \Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart();
+
+				$chart->setDateMode($stat->run_frequency);
 
 				$chart->setFormatter($stat->getFormatter());
 				$chart->setDataLabel($stat->getGroupingName());
