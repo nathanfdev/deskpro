@@ -56,8 +56,7 @@ class TicketFirstResponseTime extends AbstractTicket
 		// Get the total time for first response
 		$query = $this->createQuery()
 		      ->select('SUM(tickets.total_to_first_reply) AS first_response_total')
-		      ->where("tickets.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(tickets.date_first_agent_reply) > :date_first_agent_reply')
+		      ->andWhere('tickets.date_first_agent_reply IS NOT NULL AND UNIX_TIMESTAMP(tickets.date_first_agent_reply) > :date_first_agent_reply')
 		      ->setParameter(':date_first_agent_reply', $this->last_stat_date->format('U'));
 		$this->addQuery('ticket_first_response_time', $query);
 
