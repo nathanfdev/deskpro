@@ -588,11 +588,12 @@ class OrganizationController extends AbstractController
 
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
 
-		if ($orgdomain) {
-			$domain = $this->in->getString('domain');
-		}
-
+		$domain = $this->in->getString('domain');
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		if (!$orgdomain) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		$count = $org_domain_manager->moveOtherCompanyUsers($orgdomain);
 
