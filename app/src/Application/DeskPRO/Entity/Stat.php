@@ -790,7 +790,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					);
 				}
 
-				$data[$raw_row['grouping_ref']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
+				$data[$raw_row['grouping_ref']]['values'][date('Y-m-d H:00:00', $raw_row['stat_unix'])] = $raw_row['value'];
 			}
 		}
 
