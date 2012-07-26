@@ -111,23 +111,27 @@ class NewReply
 			}
 		}
 
-		$this->ticket->addMessage($ticket_message);
+		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+			$ticket_message = $dupe_message;
+		} else {
+			$this->ticket->addMessage($ticket_message);
 
-		if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-			$this->ticket_message = $dupe_message;
-			return;
+			if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+				$this->ticket_message = $dupe_message;
+				return;
+			}
+
+			// If status is pending, we'll switch it to open so agents will see it
+			if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER) {
+				$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+			}
+
+			App::getOrm()->beginTransaction();
+			App::getOrm()->persist($ticket_message);
+			App::getOrm()->persist($this->ticket);
+			App::getOrm()->flush();
+			App::getOrm()->commit();
 		}
-
-		// If status is pending, we'll switch it to open so agents will see it
-		if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER) {
-			$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
-		}
-
-		App::getOrm()->beginTransaction();
-		App::getOrm()->persist($ticket_message);
-		App::getOrm()->persist($this->ticket);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
 	}
 
 	public function getNewMessage()
