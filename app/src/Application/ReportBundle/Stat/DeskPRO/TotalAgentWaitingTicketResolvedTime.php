@@ -65,7 +65,6 @@ class TotalAgentWaitingTicketResolvedTime extends AbstractTicket
 		// Get the number of tickets resolved
 		$query = $this->createQuery()
 		      ->select('COUNT(tickets.id) as ticket_count')
-		      ->where("tickets.date_resolved IS NOT NULL")
 		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 

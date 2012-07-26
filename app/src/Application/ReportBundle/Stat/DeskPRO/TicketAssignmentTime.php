@@ -36,10 +36,15 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets reopened
+ * Get the amount of time a ticket is waiting its first response
  */
-class ReopenedTickets extends AbstractTicket
+class TicketAssignmentTime extends AbstractTicket
 {
+	public static function getLabelName()
+	{
+		return 'Time';
+	}
+
 	public function init()
 	{
 		parent::init();
@@ -47,32 +52,65 @@ class ReopenedTickets extends AbstractTicket
 
 	public function buildConceptQueries()
 	{
-		// Need to query the ticket log for this
-		$query = $this->createQuery();
+		$query = $this->createQuery()
+		      ->select('SUM(UNIX_TIMESTAMP(tickets.date_first_agent_assign) - UNIX_TIMESTAMP(tickets.date_created)) AS assign_time')
+		      ->andWhere('tickets.date_first_agent_reply IS NOT NULL AND UNIX_TIMESTAMP(tickets.date_first_agent_reply) > :date_first_agent_assign')
+		      ->setParameter(':date_first_agent_assign', $this->last_stat_date->format('U'));
+		$this->addQuery('assign_time', $query);
 
-		$this->addQuery($query);
+		$query = $this->createQuery()
+		      ->select('COUNT(tickets.id) as ticket_count')
+		      ->where("tickets.date_first_agent_assign IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_first_agent_assign) > :date_first_agent_assign')
+		      ->setParameter(':date_first_agent_assign', $this->last_stat_date->format('U'));
+		$this->addQuery('assign_count', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
+		$waitingTime = $result['assign_time'][0]['assign_time'];
+		$replied 	 = $result['assign_count'][0]['ticket_count'];
 
+		return ($replied != 0) ? $waitingTime / $replied : 0;
 	}
 
 	public function processGroupedResults($results)
 	{
+		// Get the Ids and result of the replied to tickets, we use this
+		// array as a lookup based on the grouping_id
+		$resultsRepliedTo = array();
+		foreach ($results['assign_count'] as $result) {
+			$resultsRepliedTo[$result[str_replace('.', '_', $this->grouping[0])]] = $result['ticket_count'];
+		}
+
 		$processedResults = array();
+
+		foreach ($results['assign_time'] as $result) {
+			$groupingId = $result[str_replace('.', '_', $this->grouping[0])];
+
+			// Check to see if any tickets were replied to for this grouping_id
+			$repliedCount = 0;
+			if (isset($resultsRepliedTo[$groupingId])) {
+				$repliedCount = $resultsRepliedTo[$groupingId];
+			}
+
+			$processedResults[] = array(
+				'value'       => ($repliedCount != 0) ? $result['assign_time'] / $repliedCount : 0,
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
+			);
+		}
 
 		return $processedResults;
 	}
 
 	/**
-	 * Get the formatter
+	 * Get the data formatter
 	 *
 	 * @return FormatterInterface
 	 */
 	public static function getFormatter()
 	{
-		$class = new \Application\ReportBundle\Stat\Formatter\IntegerFormatter();
+		$class = new \Application\ReportBundle\Stat\Formatter\TimeFormatter();
 
 		return $class;
 	}

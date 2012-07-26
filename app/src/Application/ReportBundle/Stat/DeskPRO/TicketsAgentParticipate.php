@@ -50,15 +50,15 @@ class TicketsAgentParticipate extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		$query = $this->createQuery()
-		      ->select('COUNT(tickets_messages.id) AS message_count')
+		      ->select('COUNT(DISTINCT tickets_messages.ticket_id) AS ticket_count')
 		      ->innerJoin('tickets', 'tickets_messages', 'tickets_messages', 'tickets_messages.ticket_id = tickets.id');
 
-		$this->addQuery('ticket_messages', $query);
+		$this->addQuery('ticket_count', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return $result['ticket_messages'][0]['message_count'];
+		return $result['ticket_count'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)

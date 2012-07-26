@@ -55,7 +55,7 @@ class TotalUserWaitingTicketResolvedTime extends AbstractTicket
 		// AVG time
 		// Get the total time a user was waiting before resolution
 		$query = $this->createQuery()
-		      ->select('SUM(tickets.total_user_waiting) AS user_waiting')
+		      ->select('SUM(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created) - tickets.total_user_waiting) AS user_waiting')
 		      ->where("tickets.date_resolved IS NOT NULL")
 		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
