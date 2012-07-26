@@ -211,7 +211,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::setCurrentPerson($person);
 
-			if ($person['is_agent']) {
+			if ($person['is_agent'] && strpos($this->reader->getBodyHtml()->getBodyUtf8(), 'DP_USER_EMAIL') === false) {
 				$this->logMessage('[TicketGatewayProcessor] runNewAgentReply');
 				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
@@ -265,8 +265,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		return $ret;
 	}
 
-	protected function doNewReply($ticket, $person)
+	protected function doNewReply($ticket, $person, $context)
 	{
+		$this->logMessage("doNewRelpy context $context");
 		$this->processBlobs();
 
 		$email_info = array();
@@ -340,7 +341,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if (!$this->is_bounce) {
-			if ($person['is_agent']) {
+			if ($person['is_agent'] && $context == 'agent') {
 				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
 				$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
 			} else {
@@ -567,7 +568,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewAgentReply(Entity\Ticket $ticket, Entity\Person $person)
 	{
-		$message = $this->doNewReply($ticket, $person);
+		$message = $this->doNewReply($ticket, $person, 'agent');
 		return $message;
 	}
 
@@ -578,7 +579,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewUserReply(Entity\Ticket $ticket, Entity\Person $person)
 	{
-		$message = $this->doNewReply($ticket, $person);
+		$message = $this->doNewReply($ticket, $person, 'user');
 		return $message;
 	}
 

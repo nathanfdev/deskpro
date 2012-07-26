@@ -3,10 +3,10 @@
 {% block email_body %}
 <html>
 <body>
-<a name="DP_TOP_MARK"></a>
-<table class="DP_TOP_MARK" id="DP_TOP_MARK" alt="DP_TOP_MARK" name="DP_TOP_MARK" width="100%" border="0" cellpadding="0" cellspacing="0" style="{{ layout.standard_font() }}"><tr><td>
+<a name="DP_TOP_MARK {{with_cutmark}}"></a>
+<table class="DP_TOP_MARK {{with_cutmark}}" id="DP_TOP_MARK" alt="DP_TOP_MARK {{with_cutmark}}" name="DP_TOP_MARK {{with_cutmark}}" width="100%" border="0" cellpadding="0" cellspacing="0" style="{{ layout.standard_font() }}"><tr><td>
 
-<!--DP_TOP_MARK-->
+<!--DP_TOP_MARK-->{% if with_cutmark %}<!-- {{with_cutmark}} -->{% endif %}
 <table border="0" width="100%" border="0" cellpadding="0" cellspacing="0" style="{{ layout.standard_font() }}">
 	{% if is_noreply %}
 		<tr>

@@ -1,4 +1,4 @@
-{% set with_cutline = 1 %}
+{% set with_cutmark = 'DP_USER_EMAIL' %}
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}{{ phrase('user.email_subjects.re', {subject: subject}) }}{% endblock %}
