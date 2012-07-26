@@ -28,12 +28,12 @@
 				<!-- PERMISSION:agent_tickets.create -->{{ col.perm_col(phrase('admin.agents.create_tickets'), usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_mass -->{{ col.perm_col(phrase('admin.agents.widget_use_mass_actions_to_reply'), usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_perm_close_tickets') }}"></span>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ col.perm_col(phrase('admin.agents.widget_close_unclose_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ col.perm_col(phrase('admin.agents.widget_close_unclose_tickets', {'subphrase':phrase_part}, true), usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.reply_own -->{{ col.perm_col(phrase('agent.general.reply_to_own_tickets'), usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
                 {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_own"></i>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_own -->{{ col.perm_col(phrase('admin.agents.widget_modify_own_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_own', 'agent_tickets_use', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_own -->{{ col.perm_col(phrase('admin.agents.widget_modify_own_tickets', {'subphrase':phrase_part}, true), usergroup_values, 'agent_tickets', 'modify_own', 'agent_tickets_use', 'parentperm') }}
 				<!-- PERMISSION:agent_tickets.modify_department_own -->{{ col.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
 				<!-- PERMISSION:agent_tickets.modify_fields_own -->{{ col.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
 				<!-- PERMISSION:agent_tickets.modify_assign_agent_own -->{{ col.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
@@ -52,7 +52,7 @@
             <tbody>
             <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ col.perm_col(phrase('admin.agents.reply_to_followed_tickets'), usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
             {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_followed"></i>{% endset %}
-            <!-- PERMISSION:agent_tickets.modify_followed -->{{ col.perm_col(phrase('admin.agents.widget_modify_followed_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.modify_followed -->{{ col.perm_col(phrase('admin.agents.widget_modify_followed_tickets', {'subphrase':phrase_part}, true), usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
             <!-- PERMISSION:agent_tickets.modify_department_followed -->{{ col.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
             <!-- PERMISSION:agent_tickets.modify_fields_followed -->{{ col.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
             <!-- PERMISSION:agent_tickets.modify_assign_agent_followed -->{{ col.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
@@ -72,7 +72,7 @@
 				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ col.perm_col(phrase('admin.agents.view_unassigned_tickets'), usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_unassigned -->{{ col.perm_col(phrase('admin.agents.reply_to_unassigned_tickets'), usergroup_values, 'agent_tickets', 'reply_unassigned', 'agent_tickets_view_unassigned') }}
                 {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_unassigned"></i>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ col.perm_col(phrase('admin.agents.widget_modify_unassigned_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ col.perm_col(phrase('admin.agents.widget_modify_unassigned_tickets', {'subphrase':phrase_part}, true), usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
 				<!-- PERMISSION:agent_tickets.modify_department_unassigned -->{{ col.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_fields_unassigned -->{{ col.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_assign_agent_unassigned -->{{ col.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
@@ -92,7 +92,7 @@
 				<!-- PERMISSION:agent_tickets.view_others -->{{ col.perm_col(phrase('admin.agents.view_others_tickets'), usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_others -->{{ col.perm_col(phrase('admin.agents.reply_to_others_tickets'), usergroup_values, 'agent_tickets', 'reply_others', 'agent_tickets_use') }}
                 {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_others"></i>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_others -->{{ col.perm_col(phrase('admin.agents.widget_modify_others_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_others -->{{ col.perm_col(phrase('admin.agents.widget_modify_others_tickets', {'subphrase':phrase_part}, true), usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
 				<!-- PERMISSION:agent_tickets.modify_department_others -->{{ col.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_fields_others -->{{ col.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_assign_agent_others -->{{ col.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
@@ -128,9 +128,9 @@
 				<!-- PERMISSION:agent_people.edit -->{{ col.perm_col(phrase('admin.agents.edit_people'), usergroup_values, 'agent_people', 'edit') }}
 				<!-- PERMISSION:agent_people.validate -->{{ col.perm_col(phrase('admin.agents.validate_users_and_emails'), usergroup_values, 'agent_people', 'validate', 'agent_people_edit') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_manage_email_secure') }}"></span>{% endset %}
-				<!-- PERMISSION:agent_people.manage_emails -->{{ col.perm_col(phrase('admin.agents.widget_edit_email_addresses', {'subphrase':phrase_part}), usergroup_values, 'agent_people', 'manage_emails', 'agent_people_edit') }}
+				<!-- PERMISSION:agent_people.manage_emails -->{{ col.perm_col(phrase('admin.agents.widget_edit_email_addresses', {'subphrase':phrase_part}, true), usergroup_values, 'agent_people', 'manage_emails', 'agent_people_edit') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_reset_user_secure') }}"></span>{% endset %}
-				<!-- PERMISSION:agent_people.reset_password -->{{ col.perm_col(phrase('admin.agents.widget_reset_passwords', {'subphrase':phrase_part}), usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
+				<!-- PERMISSION:agent_people.reset_password -->{{ col.perm_col(phrase('admin.agents.widget_reset_passwords', {'subphrase':phrase_part}, true), usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
 				<!-- PERMISSION:agent_people.notes -->{{ col.perm_col(phrase('admin.agents.add_notes'), usergroup_values, 'agent_people', 'notes') }}
 				<!-- PERMISSION:agent_people.delete -->{{ col.perm_col(phrase('admin.agents.delete_people'), usergroup_values, 'agent_people', 'delete') }}
 			</tbody>
@@ -181,7 +181,7 @@
 				<!-- PERMISSION:agent_publish.delete -->{{ col.perm_col(phrase('agent.general.delete_content'), usergroup_values, 'agent_publish', 'delete') }}
 				<!-- PERMISSION:agent_publish.edit -->{{ col.perm_col(phrase('admin.agents.edit_content'), usergroup_values, 'agent_publish', 'edit') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.notice_agent_without_permission') }}"></span>{% endset %}
-				<!-- PERMISSION:agent_publish.validate -->{{ col.perm_col(phrase('admin.agents.widget_validate_content_and_comments', {'subphrase':phrase_part}), usergroup_values, 'agent_publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.validate -->{{ col.perm_col(phrase('admin.agents.widget_validate_content_and_comments', {'subphrase':phrase_part}, true), usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

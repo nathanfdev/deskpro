@@ -56,7 +56,7 @@
                         {% else %}
                             {% set phrase_part = phrase('admin.server.fs_to_db') %}
                         {% endif %}
-                        {{ phrase('admin.server.currently_transferring', {'subphrase':phrase_part}) }}
+                        {{ phrase('admin.server.currently_transferring', {'subphrase':phrase_part}, true) }}
                         {{ phrase('admin.server.files_have_been_processed', {'count_done':count_done, 'count_todo':count_todo, 'percent':count_perc}) }}
 					</td>
 				</tr>
@@ -201,7 +201,7 @@
 		<form action="{{ path('admin_server_attach_switch') }}">
 			{{ form_token() }}
             {% if use_fs %}{% set phrase_part = phrase('admin.server.db') %}{% else %}{% set phrase_part = phrase('admin.server.fs') %}{% endif %}
-			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}) }}</button>
+			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}, true) }}</button>
 		</form>
 	</div>
 </div>

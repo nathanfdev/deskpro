@@ -75,7 +75,7 @@
 		<form action="{{ path('admin_agents_teams_del', {'team_id': team.id, 'security_token': security_token('delete_team')}) }}" method="get">
 			<button class="clean-white">
 			{% set phrase_part %}<span class="agent-name">{{ team.name }}</span></button>{% endset %}
-            {{ phrase('admin.agents.delete_name', {'name':phrase_part}) }}
+            {{ phrase('admin.agents.delete_name', {'name':phrase_part}, true) }}
 		</form>
 	</div>
 </div>

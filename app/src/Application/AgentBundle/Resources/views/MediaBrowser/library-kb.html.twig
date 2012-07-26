@@ -22,7 +22,7 @@
                     <a class="with-route" data-route="{{ path('agent_kb_view', {'article_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
                     {% endset %}
 				{% endif %}
-                {{ phrase('agent.media.file_attached_to_thing', {'filename':blob_object.blob.filename,'subphrase':phrase_part,'link':phrase_link}) }}
+                {{ phrase('agent.media.file_attached_to_thing', {'filename':blob_object.blob.filename,'subphrase':phrase_part,'link':phrase_link}, true) }}
 			</td>
 			<td>
 				{{ blob_object.blob.date_created|date('day') }}

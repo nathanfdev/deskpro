@@ -105,7 +105,7 @@
         {% set phrase_part %}
             <span class="new-val expand" data-set=".set-cced">{{ phrase('agent.tickets.count_users', {'count':log.details.who_cced|length}) }}</span>
         {% endset %}
-        {{ phrase('agent.tickets.and_count_were_cced', {'display_count':phrase_part,'count':log.details.who_cced|length}) }}
+        {{ phrase('agent.tickets.and_count_were_cced', {'display_count':phrase_part,'count':log.details.who_cced|length}, true) }}
 	{% endif %}
 
 	<div class="expand-set set-emailed" style="display: none">

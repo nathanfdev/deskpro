@@ -168,7 +168,7 @@ function _page_exec() {
             {% set phrase_part2 %}
                 <span class="ruletype">{{ phrase('agent.general.all') }}</span>
             {% endset %}
-            {{ phrase('admin.designer.initial_status', {'option':phrase_part1,'all':phrase_part2}) }}
+            {{ phrase('admin.designer.initial_status', {'option':phrase_part1,'all':phrase_part2}, true) }}
 			<div class="septop">
 				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> {{ phrase('admin.designer.only_show_for_agents') }}
 			</div>
@@ -180,7 +180,7 @@ function _page_exec() {
             {{ set phrase_part }}
                 <span class="ruletype">{{ phrase('agent.general.any') }}</span>
             {{ endset }}
-			{{ phrase('admin.designer.and_when_any_match', {'any':phrase_part}) }}
+			{{ phrase('admin.designer.and_when_any_match', {'any':phrase_part}, true) }}
 			<div class="search-form ruletype-any">
 				<div class="rule-list"></div>
 				<div class="term"><span class="add-term">+</span> {{ phrase('admin.designer.add_new_rule') }}</div>

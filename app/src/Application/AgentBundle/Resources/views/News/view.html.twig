@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part %}
                     <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count': news.num_ratings}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
+                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}, true) }}<br />
                     <small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
 				</dd>
 

@@ -493,7 +493,7 @@
                     {% set phrase_part %}
                         <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
                     {% endset %}
-                    {{ phrase('agent.interface.error_report_disclaimer', {'email':phrase_part}) }}
+                    {{ phrase('agent.interface.error_report_disclaimer', {'email':phrase_part}, true) }}
 				</p>
 			</div>
 		</div>

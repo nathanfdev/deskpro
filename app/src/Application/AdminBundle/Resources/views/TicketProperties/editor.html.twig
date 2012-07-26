@@ -126,7 +126,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
         {% else %}
         	{% set phrase_part = phrase('admin.tickets.modify_ticket_form') %}
         {% endif %}
-        {{ phrase('admin.tickets.enable_alternative_for_x', {'subphrase':phrase_part}) }}
+        {{ phrase('admin.tickets.enable_alternative_for_x', {'subphrase':phrase_part}, true) }}
 	</div>
 
 	<section>
@@ -184,7 +184,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
                                     <option value="any">{{ phrase('agent.general.any') }}</option>
                                 </select>
                                 {% endset %}
-                                {{ phrase('admin.tickets.show_field_when_choice', {'choice':phrase_part}) }}
+                                {{ phrase('admin.tickets.show_field_when_choice', {'choice':phrase_part}, true) }}
                             </label>
 						</div>
 						<div class="dp-form-input">

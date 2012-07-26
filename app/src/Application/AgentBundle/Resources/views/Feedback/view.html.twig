@@ -82,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part %}
                     <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
                     {% endset %}
-                    {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}) }}
+                    {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}, true) }}
                 </span>
 				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="{{ phrase('agent.feedback.vote_for_this_feedback') }}" id="{{baseId}}_my_vote">+1</button>
 			</dd>
@@ -95,7 +95,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {% if not loop.last %}, {% endif %}
                     {% endfor %}
                 {% endset %}
-                {{ phrase('agent.feedback.by_people_on_date', {'people':phrase_part,'date':feedback.date_created|date('day')}) }}
+                {{ phrase('agent.feedback.by_people_on_date', {'people':phrase_part,'date':feedback.date_created|date('day')}, true) }}
 			</dd>
 		</dl>
 

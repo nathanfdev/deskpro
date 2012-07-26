@@ -3,7 +3,7 @@
     {% set phrase_part %}
         <span class="selected-count">0</span>
     {% endset %}
-    {{ phrase('agent.general.display_count_selected', {'display_count':phrase_part}) }}
+    {{ phrase('agent.general.display_count_selected', {'display_count':phrase_part}, true) }}
 	<a class="perform-action perform-actions-trigger disabled menu-fitted">
 		<span>{{ phrase('agent.general.perform_actions') }}</span>
 	</a>

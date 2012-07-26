@@ -83,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
                 {% set phrase_part %}
                     <span class="results-showing-count"></span>
                 {% endset %}
-                {{ phrase('agent.search.showing_x_of_y_people', {'display_count':phrase_part,'count':person_ids|length}) }}
+                {{ phrase('agent.search.showing_x_of_y_people', {'display_count':phrase_part,'count':person_ids|length}, true) }}
 			</div>
 			<div class="more-btn">
 				<button class="clean-white show-more is-not-loading">{{ phrase('agent.general.more') }}</button>

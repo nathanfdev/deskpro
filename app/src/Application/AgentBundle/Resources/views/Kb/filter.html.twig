@@ -32,7 +32,7 @@ pageMeta.baseId = '{{ baseId }}';
                 {% set phrase_part %}
                 <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span>
                 {% endset %}
-                {{ phrase('agent.publish.showing_count_articles', {'display_count':phrase_part,'count':results|length}) }}
+                {{ phrase('agent.publish.showing_count_articles', {'display_count':phrase_part,'count':results|length}, true) }}
             </div>
 		</footer>
 	{% endif %}
