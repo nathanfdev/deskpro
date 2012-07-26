@@ -56,6 +56,11 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	protected $difference_direction = 'neutral';
 
+	/**
+	 * @var array
+	 */
+	protected $date_mode = 'day';
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -86,6 +91,22 @@ class SimpleVariationChart extends BaseAbstractChart
 
 		$this->setMinMaxValues(max($data_points));
 		$this->setMinMaxValues(min($data_points));
+
+		$first_key  = \Orb\Util\Arrays::getNthKey($this->data_points, 0);
+		$second_key = \Orb\Util\Arrays::getNthKey($this->data_points, 1);
+		$diff = abs($second_key - $first_key);
+
+		if ($diff >= 2592000) {
+			$this->date_mode = 'month';
+		} elseif ($diff >= 86400) {
+			$this->date_mode = 'day';
+		} else {
+			if (count($data_points) >= 24) {
+				$this->date_mode = 'day_hour';
+			} else {
+				$this->date_mode = 'hour';
+			}
+		}
 	}
 
 	/**
@@ -142,9 +163,15 @@ class SimpleVariationChart extends BaseAbstractChart
 
 		if ($value) {
 			return $point[key($point)];
-		}
-		else {
-			return date("F j", strtotime(key($point)));
+		} else {
+			$time = strtotime(key($point));
+			switch ($this->date_mode) {
+				case 'month': return date('F', $time);
+				case 'day': return date('F jS', $time);
+				case 'day_hour': return date('jS ga', $time);
+				case 'hour': return date('ga', $time);
+			}
+			return '';
 		}
 	}
 
