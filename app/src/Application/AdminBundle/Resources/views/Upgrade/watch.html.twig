@@ -57,6 +57,14 @@
 						You will need to locate the executable and then supply its path in config.php.
 					</p>
 				</div>
+				<div style="display:none" class="error_php_binary_failcheck">
+					<h3>Could not verify the path to 'php'</h3>
+					<p>
+						The upgrade utility requires the path to the PHP executable but the one defined is invalid
+						or does not meet server requirements (<span class="place-message"></span>). You must edit
+						your config.php to specify the path to a correct PHP binary.
+					</p>
+				</div>
 				<div style="display:none" class="error_mysqldump_path">
 					<h3>Could not find the path to 'mysqldump'</h3>
 					<p>

@@ -2113,9 +2113,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Check requirements
 		#------------------------------
 
-		$php_path        = $this->upgrade->getPhpBinaryPath();
-		$mysql_dump_path = $this->upgrade->getMysqldumpBinaryPath();
-		$mysql_path      = $this->upgrade->getMysqlBinaryPath();
+		$php_path        = dp_get_php_path(true);
+		$mysql_dump_path = dp_get_mysqldump_path(true);
+		$mysql_path      = dp_get_mysql_path(true);
 
 		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
 
@@ -2139,6 +2139,28 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out("Edit your config.php file to learn more about locating these utilities and setting their paths.");
 
 			exit(10);
+		}
+
+		$cmd = sprintf(
+			"%s %s",
+			dp_get_php_path(),
+			escapeshellarg(DP_ROOT.'/bin/check-req.php')
+		);
+
+		$ret = null;
+		$out = null;
+		exec($cmd, $out, $ret);
+
+		if (!$out) $out = array();
+
+		$out = implode("\n", $out);
+
+		if ($ret || strpos($out, 'OKAY') === false) {
+			$this->out("<error>Error: We could not verify the path to your PHP binary</error>");
+			$this->out("You have configured DeskPRO to use the PHP binary at " . $php_path . " but it does not meet server requirements.\n\nSince you are running this command fine, that means you have a PHP binary that is suitable but you need to edit config.php and to correct the `php_path` value.\n");
+			$this->out($out);
+
+			exit(11);
 		}
 
 		#------------------------------

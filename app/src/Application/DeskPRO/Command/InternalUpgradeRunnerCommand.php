@@ -158,6 +158,31 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		}
 
 		#-------------------------
+		# Make sure PHP we have passes requirements
+		#-------------------------
+
+		$cmd = sprintf(
+			"%s %s",
+			dp_get_php_path(),
+			escapeshellarg(DP_ROOT.'/bin/check-req.php')
+		);
+
+		$ret = null;
+		$out = null;
+		exec($cmd, $out, $ret);
+
+		if (!$out) $out = array();
+
+		$out = implode("\n", $out);
+
+		if ($ret || strpos($out, 'OKAY') === false) {
+			$write_status("error_php_binary_failcheck");
+			$write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
+			$output->write('<error>PHP binary fails server checks: ' . $out . '</error>');
+			return 1;
+		}
+
+		#-------------------------
 		# Exec upgrade command
 		#-------------------------
 

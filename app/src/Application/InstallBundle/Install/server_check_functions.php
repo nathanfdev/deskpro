@@ -53,8 +53,12 @@ function deskpro_install_check_reqs()
 		$errors['memory_limit'] = 'fatal';
 	}
 
-	if (!deskpro_install_check_data_writable(dp_get_data_dir())) {
-		$errors['data_write'] = 'fatal';
+	// Only do data dir ceck if we've got an environment loaded,
+	// the simple check file doesnt load up anything besides this
+	if (function_exists('dp_get_data_dir')) {
+		if (!deskpro_install_check_data_writable(dp_get_data_dir())) {
+			$errors['data_write'] = 'fatal';
+		}
 	}
 
 	return $errors;
