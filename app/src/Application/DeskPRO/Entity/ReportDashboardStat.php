@@ -204,6 +204,9 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getDisplayTitle()
 	{
 		$title = $this->getTitle();
+		if ($title) {
+			return $title;
+		}
 
 		if (strlen($title) === 0) {
 			$title = $this->getDefaultTitle();
@@ -220,20 +223,6 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 		// Add the update period
 		$title .= ' - Last ' . $data_points . ' ';
-		switch (strtolower($this->getStat()->getPeriod())) {
-			case 'hourly':
-				$title .= ' ' . (($data_points > 1) ? 'Hourly' : 'Hour');
-				break;
-			case 'daily':
-				$title .= ' ' . (($data_points > 1) ? 'Days' : 'Day');
-				break;
-			case 'monthly':
-				$title .= ' ' . (($data_points > 1) ? 'Months' : 'Month');
-				break;
-			case 'yearly':
-				$title .= ' ' . (($data_points > 1) ? 'Years' : 'Year');
-				break;
-		}
 
 		return $title;
 	}

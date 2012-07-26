@@ -41,6 +41,11 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class TotalUserWaitingResponseTime extends AbstractTicket
 {
+	public static function getLabelName()
+	{
+		return 'Time';
+	}
+
 	public function init()
 	{
 		parent::init();

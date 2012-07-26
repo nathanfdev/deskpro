@@ -71,7 +71,7 @@ class Stat extends EntityRepository
 		}
 
 		$db    = App::getDb();
-		$query = $this->getAllIdsRequiringUpdateQuery('daily');
+		$query = $this->getAllIdsRequiringUpdateQuery('hourly');
 		$query .= " AND s.last_run < " . $date->format('U');
 
 		return $db->fetchAllCol($query);
@@ -91,7 +91,7 @@ class Stat extends EntityRepository
 		}
 
 		$db    = App::getDb();
-		$query = $this->getAllIdsRequiringUpdateQuery('hourly');
+		$query = $this->getAllIdsRequiringUpdateQuery('daily');
 		$query .= " AND DATE_FORMAT(s.last_run, '%Y-%m-%d') < '" . $date->format('Y-m-d') . "'";
 
 		return $db->fetchAllCol($query);

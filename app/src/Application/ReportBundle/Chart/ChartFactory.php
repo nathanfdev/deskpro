@@ -56,6 +56,9 @@ class ChartFactory
 			$display_unit 	= $normalized_result['unit'];
 		}
 
+		$concept_class = $stat->stat_concept_class;
+		$label_name = $concept_class::getLabelName();
+
 		switch ($chart_class) {
 			/**
 			 * AmChart - Line Chart
@@ -73,7 +76,8 @@ class ChartFactory
 
 				$chart->setFormatter($stat->getFormatter());
 				$chart->setDisplayUnits($display_unit);
-				$chart->setYLabel('Tickets');
+
+				$chart->setYLabel($label_name);
 
 				$series_set = false;
 				foreach ($data as $data_set) {

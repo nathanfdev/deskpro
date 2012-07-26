@@ -40,6 +40,11 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 class TotalTicketMessages extends AbstractTicket
 {
+	public static function getLabelName()
+	{
+		return 'Messages';
+	}
+
 	public function init()
 	{
 		parent::init();

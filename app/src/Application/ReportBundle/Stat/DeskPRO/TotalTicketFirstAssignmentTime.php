@@ -40,6 +40,11 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 class TotalTicketFirstAssignmentTime extends AbstractTicket
 {
+	public static function getLabelName()
+	{
+		return 'Time';
+	}
+
 	public function init()
 	{
 		parent::init();

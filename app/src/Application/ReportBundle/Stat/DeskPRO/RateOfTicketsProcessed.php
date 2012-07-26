@@ -41,6 +41,11 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 class RateOfTicketsProcessed extends AbstractTicket
 {
+	public static function getLabelName()
+	{
+		return 'Rate';
+	}
+
 	public function init()
 	{
 		parent::init();
