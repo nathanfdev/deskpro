@@ -187,7 +187,7 @@ class EmailTransportsController extends AbstractController
 			$message->setForceTransport($tr);
 
 			$failed = array();
-			$this->container->getMailer()->send($message, $failed);
+			$this->container->getMailer()->sendNow($message, $failed);
 
 			if ($failed) {
 				return $this->createJsonResponse(array(

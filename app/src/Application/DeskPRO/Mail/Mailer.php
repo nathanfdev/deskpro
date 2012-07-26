@@ -59,6 +59,11 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	protected $logger;
 
+	/**
+	 * @var array
+	 */
+	protected $queued;
+
 	protected $messagesLog = 0;
 
 	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
@@ -130,6 +135,9 @@ class Mailer extends \Swift_Mailer implements Loggable
 				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name));
 			}
 		} catch (\Exception $e) {}
+
+		\DpShutdown::add(array($this, 'sendQueued'), null, 'db_done_trans');
+		\DpShutdown::add(array($this, 'sendQueued'), null, 'shutdown', 1000);
 	}
 
 	/**
@@ -195,5 +203,22 @@ class Mailer extends \Swift_Mailer implements Loggable
 		}
 
 		return parent::createMessage($service);
+	}
+
+	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
+	{
+		$this->queued[] = $message;
+	}
+
+	public function sendQueued()
+	{
+		while ($message = array_shift($this->queued)) {
+			$this->sendNow($message);
+		}
+	}
+
+	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
+	{
+		return parent::send($message, $failedRecipients);
 	}
 }

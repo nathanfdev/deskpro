@@ -39,9 +39,9 @@ class DpShutdown
 	private static $inst;
 
 	/**
-	 * @var \SplPriorityQueue
+	 * @var \SplPriorityQueue[]
 	 */
-	private static $stack;
+	private static $stack = null;
 
 	/**
 	 * @var array
@@ -52,11 +52,6 @@ class DpShutdown
 	 * @var array
 	 */
 	private static $callbacks;
-
-	/**
-	 * @var array
-	 */
-	private static $tagmap;
 
 	/**
 	 * Inits the queue
@@ -73,9 +68,8 @@ class DpShutdown
 			register_shutdown_function(array('DpShutdown', 'run'));
 		}
 
-		self::$stack = new \SplPriorityQueue();
+		self::$stack = array();
 		self::$callbacks = array();
-		self::$tagmap = array();
 	}
 
 
@@ -86,22 +80,20 @@ class DpShutdown
 	 * @param int $priority
 	 * @param string $tag
 	 */
-	public static function add($callback, array $params = null, $priority = 0, $tag = null)
+	public static function add($callback, array $params = null, $tag = null, $priority = 0)
 	{
 		self::_init();
+		if ($tag === null) $tag	= 'shutdown';
 
 		static $gen_id = 0;
 		$gen_id++;
 
-		self::$stack->insert($gen_id, $priority);
-		self::$callbacks[$gen_id] = array($callback, $params, $priority, $tag);
-
-		if ($tag) {
-			if (!isset(self::$tagmap[$tag])) {
-				self::$tagmap[$tag] = array();
-			}
-			self::$tagmap[$tag][] = $gen_id;
+		if (!isset(self::$stack[$tag])) {
+			self::$stack[$tag] = new \SplPriorityQueue();
 		}
+
+		self::$stack[$tag]->insert('cb'.$gen_id, $priority);
+		self::$callbacks['cb'.$gen_id] = array($callback, $params, $priority, $tag);
 	}
 
 
@@ -109,15 +101,10 @@ class DpShutdown
 	 * @param string $tag
 	 * @return bool
 	 */
-	public static function hasTag($tag)
+	public static function hasTag($tag = null)
 	{
-		if (!self::$stack) {
-			return false;
-		}
-
-		self::_init();
-
-		return isset(self::$tagmap[$tag]);
+		if ($tag === null) $tag	= 'shutdown';
+		return isset(self::$stack[$tag]);
 	}
 
 
@@ -138,14 +125,20 @@ class DpShutdown
 	/**
 	 * Run all shutdown functions
 	 */
-	public static function run()
+	public static function run($tag = null)
 	{
-		if (!self::$stack) {
+		if ($tag === null) $tag	= 'shutdown';
+
+		if (!isset(self::$stack[$tag])) {
 			return;
 		}
 
-		foreach (self::$stack as $id) {
+		$proc_stack = self::$stack[$tag];
+		unset(self::$stack[$tag]);
+
+		foreach ($proc_stack as $id) {
 			$info = self::$callbacks[$id];
+			unset(self::$callbacks[$id]);
 			$callback = $info[0];
 
 			$pass_params = self::$params;
@@ -155,9 +148,5 @@ class DpShutdown
 
 			call_user_func($callback, $pass_params);
 		}
-
-		self::$stack = null;
-		self::$callbacks = null;
-		self::$tagmap = null;
 	}
 }

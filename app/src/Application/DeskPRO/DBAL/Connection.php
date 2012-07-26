@@ -410,7 +410,6 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		parent::beginTransaction();
 		if ($this->transaction_logger) {
-			$level = $this->getTransactionNestingLevel();
 			$e = new \Exception();
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
 			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
@@ -420,9 +419,8 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function commit()
 	{
-		$level = $this->getTransactionNestingLevel();
-
 		parent::commit();
+		$level = $this->getTransactionNestingLevel();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
 			$this->running_trans_event = true;
@@ -437,13 +435,16 @@ class Connection extends \Doctrine\DBAL\Connection
 			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
 			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
 		}
+
+		if (!$level) {
+			\DpShutdown::run('db_done_trans');
+		}
 	}
 
 	public function rollback()
 	{
-		$level = $this->getTransactionNestingLevel();
-
 		parent::rollback();
+		$level = $this->getTransactionNestingLevel();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
 			$this->running_trans_event = true;
@@ -457,6 +458,10 @@ class Connection extends \Doctrine\DBAL\Connection
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
 			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
 			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
+		}
+
+		if (!$level) {
+			\DpShutdown::run('db_done_trans');
 		}
 	}
 }
