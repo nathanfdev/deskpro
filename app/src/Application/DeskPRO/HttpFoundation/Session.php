@@ -164,6 +164,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$this->set('dpvid', $vis['id']);
 		$this->set('dplast', time());
 		$_SESSION['_symfony2']['dplast'] = time();
+
+		$me = $this;
+		\DpShutdown::add(function() use ($me) {
+			$me->save();
+		});
 	}
 
 
@@ -345,4 +350,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	{
 		return $this->has($offset);
 	}
+
+	public function __destruct()
+    {
+		// We save on our own shutdown caller set up in the constructor,
+		// rather than destruct where other objects might've been cleaned up already
+    }
 }
