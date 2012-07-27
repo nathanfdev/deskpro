@@ -513,6 +513,25 @@ class ServerChecks
 		}
 
 		#------------------------------
+		# dom_ext
+		#------------------------------
+
+		if ($type == 'dom_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking dom is installed", Logger::DEBUG);
+			if (extension_loaded('dom')) {
+				$this->getLogger()->log("[OK] dom is installed", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$msg = "You must install and enabled the dom extension";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['dom_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
 		# memory_limit
 		#------------------------------
 

@@ -12,6 +12,7 @@
 	'dp.kb.install.error_json_ext'        => 'http://support.deskpro.com/',
 	'dp.kb.install.error_session_ext'     => 'http://support.deskpro.com/',
 	'dp.kb.install.error_ctype_ext'       => 'http://support.deskpro.com/',
+	'dp.kb.install.error_dom_ext'         => 'http://support.deskpro.com/',
 	'dp.kb.install.error_image_manip'     => 'http://support.deskpro.com/',
 	'dp.kb.install.error_memory_limit'    => 'http://support.deskpro.com/',
 	'dp.kb.install.error_data_dir'        => 'http://support.deskpro.com/',

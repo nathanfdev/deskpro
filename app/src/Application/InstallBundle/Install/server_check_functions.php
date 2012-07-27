@@ -15,6 +15,10 @@ function deskpro_install_check_reqs()
 		$errors['session_ext'] = 'fatal';
 	}
 
+	if (extension_loaded('dom')) {
+		$errors['dom_ext'] = 'fatal';
+	}
+
 	if (!deskpro_install_check_image_manip()) {
 		$errors['image_manip'] = 'fatal';
 	}
