@@ -46,4 +46,6 @@
 	'agent.report.updates'                                        => 'Updates',
 	'agent.report.view_chart'                                     => 'View Chart',
 	'agent.report.x'                                              => '[x]',
+	'agent.report.stat_title_ticketsopen'                         => 'Open Tickets',
+	'agent.report.stat_title_ticketsnew'                          => 'New Tickets',
 );
