@@ -150,6 +150,19 @@ function deskpro_install_simple_data_submit($log)
 	@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
 	@setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'), '/', null, false, true);
 
+	if (!defined('DP_BUILD_TIME')) {
+		if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+			require_once(DP_ROOT.'/sys/config/build-time.php');
+		}
+	}
+
+	$url = 'http://';
+	if (isset($_SERVER['HOST'])) $url .= $_SERVER['HOST'];
+	elseif (isset($_SERVER['SERVER_NAME'])) $url .= $_SERVER['SERVER_NAME'];
+	elseif (isset($_SERVER['SERVER_ADDR'])) $url .= $_SERVER['SERVER_ADDR'];
+	if (isset($_SERVER['REQUEST_URI'])) $url .= $_SERVER['REQUEST_URI'];
+	elseif (isset($_SERVER['PHP_SELF'])) $url .= $_SERVER['PHP_SELF'];
+
 	$data = array(
 		'source_type' => 'install.web',
 		'log' => $log,
@@ -169,6 +182,7 @@ function deskpro_install_simple_data_submit($log)
 		'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 		'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
 		'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0',
+		'url'               => $url
 	);
 
 	$data['php_version'] = phpversion();

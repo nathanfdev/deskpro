@@ -881,13 +881,26 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$install_time = 0.0;
 		}
 
+		if (!defined('DP_BUILD_TIME')) {
+			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+				require_once(DP_ROOT.'/sys/config/build-time.php');
+			}
+		}
+		if (!defined('DP_BUILD_NUM')) {
+			if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
+				require(DP_ROOT.'/sys/config/build-num.php');
+			}
+		}
+
 		$data = array(
-			'source_type' => 'install.web',
-			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
-			'errinfo' => $errinfo,
-			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-			'nostats' => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
-			'total_time' => $install_time
+			'source_type'     => 'install.web',
+			'log'             => @file_get_contents($this->container->getLogDir() . '/install.log'),
+			'errinfo'         => $errinfo,
+			'install_token'   => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+			'nostats'         => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+			'total_time'      => $install_time,
+			'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+			'build_num'       => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0
 		);
 
 		if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {

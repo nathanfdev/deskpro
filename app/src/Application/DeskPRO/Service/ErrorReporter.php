@@ -309,7 +309,7 @@ class ErrorReporter
 	 */
 	public static function sendReport($service, array $data = array(), $timeout = 5)
 	{
-		$data = array_merge($data, self::getBasicData());
+		$data = array_merge(self::getBasicData(), $data);
 
 		try {
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
