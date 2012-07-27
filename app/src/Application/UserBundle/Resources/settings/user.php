@@ -14,5 +14,5 @@
 	'user.show_ratings' => true,
 	'user.show_ratings_min_votes' => 1,
 	'user.show_num_votes' => false,
-
+	'user.publish_captcha' => true,
 );

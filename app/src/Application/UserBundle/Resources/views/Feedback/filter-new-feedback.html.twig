@@ -150,6 +150,21 @@
 						</div>
 					{% endif %}
 
+					<div class="dp-control-group {% if error_fields['captcha'] %}dp-error dp-error-static{% endif %}"">
+						<div class="dp-control-label">
+							<label><strong>{{ phrase('user.tickets.form_error_captcha') }}</strong></label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{{ captcha_html|raw }}
+							{% if error_fields['captcha'] %}
+								<div class="dp-help-inline dp-error-explain">
+									{{ phrase('user.tickets.form_error_captcha_invalid') }}
+								</div>
+							{% endif %}
+						</div>
+					</div>
+
+
 					<br />
 					<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.feedback.form_new_button-submit') }}" />
 				</fieldset>

@@ -114,6 +114,13 @@ class FeedbackController extends AbstractController
 			$category_path = array();
 		}
 
+		$captcha = null;
+		$captcha_html = '';
+		if ($this->container->getSetting('user.publish_captcha')) {
+			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
+			$captcha_html = $captcha->getHtml();
+		}
+
 		$feedback_cats  = $structure->getFeedbackRootCategories();
 		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
@@ -212,6 +219,10 @@ class FeedbackController extends AbstractController
 			$is_submitted = true;
 			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
+			if ($captcha) {
+				$validator->setCaptcha($captcha);
+			}
+
 			$newfeedback->custom_fields = $this->in->getRaw('feedback.custom_fields');
 			$form->bindRequest($this->get('request'));
 
@@ -240,34 +251,35 @@ class FeedbackController extends AbstractController
 		$display = $feedback_collection->getDisplayArray();
 
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
-			'display'            => $display,
-			'feedback_cats'      => $feedback_cats,
-			'active_status_cats' => $active_status_cats,
-			'closed_status_cats' => $closed_status_cats,
-			'status_subcats'     => $status_subcats,
-			'sub_status_id'      => $sub_status_id,
-			'category'           => $category,
-			'cat_id'             => 0,
-			'category_path'      => $category_path,
-			'category_counts'    => $category_counts,
-			'status_counts'      => $status_counts,
-			'status'             => $status,
-			'parent_status'      => $parent_status,
-			'feedback'           => $feedback,
-			'comment_counts'     => $comment_counts,
-			'pageinfo'           => $pageinfo,
-			'num_results'        => $total,
-			'search_options'     => $search_options,
-			'has_voted_ids'      => $has_voted_ids,
-			'status_cat'         => $status_cat,
+			'display'               => $display,
+			'feedback_cats'         => $feedback_cats,
+			'active_status_cats'    => $active_status_cats,
+			'closed_status_cats'    => $closed_status_cats,
+			'status_subcats'        => $status_subcats,
+			'sub_status_id'         => $sub_status_id,
+			'category'              => $category,
+			'cat_id'                => 0,
+			'category_path'         => $category_path,
+			'category_counts'       => $category_counts,
+			'status_counts'         => $status_counts,
+			'status'                => $status,
+			'parent_status'         => $parent_status,
+			'feedback'              => $feedback,
+			'comment_counts'        => $comment_counts,
+			'pageinfo'              => $pageinfo,
+			'num_results'           => $total,
+			'search_options'        => $search_options,
+			'has_voted_ids'         => $has_voted_ids,
+			'status_cat'            => $status_cat,
 
-			'just_form'    => $just_form,
-			'is_submitted' => $is_submitted,
-			'newfeedback'  => $newfeedback,
+			'just_form'             => $just_form,
+			'is_submitted'          => $is_submitted,
+			'newfeedback'           => $newfeedback,
 			'newfeedback_cat_field' => $newfeedback_cat_field,
-			'form'         => $form->createView(),
-			'errors'       => $errors,
-			'error_fields' => $error_fields,
+			'captcha_html'          => $captcha_html,
+			'form'                  => $form->createView(),
+			'errors'                => $errors,
+			'error_fields'          => $error_fields,
 		));
 	}
 

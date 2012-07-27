@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
+use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
 
 class NewFeedbackValidator extends AbstractValidator
 {
@@ -46,6 +47,19 @@ class NewFeedbackValidator extends AbstractValidator
 	 * @var \Application\DeskPRO\Feedback\NewFeedback
 	 */
 	protected $newfeedback;
+
+	/**
+	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+	 */
+	protected $captca;
+
+	/**
+	 * @param CaptchaAbstract $captcha
+	 */
+	public function setCaptcha(CaptchaAbstract $captcha)
+	{
+		$this->captca = $captcha;
+	}
 
 	/**
 	 * Check $value to see if its valid.
@@ -104,6 +118,12 @@ class NewFeedbackValidator extends AbstractValidator
 			$validator = new \Orb\Validator\StringLength(array('min' => 2));
 			if (!$validator->isValid($this->newfeedback->person_name)) {
 				$this->addError('person_name.short');
+			}
+		}
+
+		if ($this->captca) {
+			if (!$this->captca->validate()) {
+				$this->addError('captcha.invalid');
 			}
 		}
 
