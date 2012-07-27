@@ -50,6 +50,7 @@ class UpdateViewCounts extends AbstractJob
 
 	public function run()
 	{
+		$time = time();
 		$last_time = App::getSetting('core.last_viewcount_update');
 		if (!$last_time) {
 			$last_time = time() - 600;
@@ -58,10 +59,9 @@ class UpdateViewCounts extends AbstractJob
 		$update_objects = App::getDb()->fetchAll("
 			SELECT object_type, object_id, COUNT(*) AS count
 			FROM page_view_log
-			WHERE date_created > '?'
+			WHERE date_created > ?
 			GROUP BY object_type, object_id
-			LIMIT 250
-		", array(date('Y-m-d', $last_time)));
+		", array(date('Y-m-d H:i:s', $last_time)));
 
 		App::getDb()->beginTransaction();
 		try {
@@ -85,12 +85,16 @@ class UpdateViewCounts extends AbstractJob
 				", array($obj['count'], $obj['object_id']));
 			}
 
-			App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', time());
-
 			App::getDb()->commit();
 		} catch (\Exception $e) {
 			App::getDb()->rollback();
 			throw $e;
 		}
+
+		if ($update_objects) {
+			$this->logStatus("Updated " . count($update_objects) . " view counts");
+		}
+
+		App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);
 	}
 }

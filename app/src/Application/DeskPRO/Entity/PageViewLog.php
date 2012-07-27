@@ -97,6 +97,11 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('person_id', $id);
 	}
 
+	public function getObjectType()
+	{
+		return self::getObjectTypeFromTypeId($this->object_type);
+	}
+
 	/**
 	 * @param string|int $type
 	 */
