@@ -10,4 +10,5 @@
 	'user.knowledgebase.title-articles-paged' => 'Showing you articles {{first}} to {{last}} of {{total}}',
 	'user.knowledgebase.title-categories'     => 'There is 1 sub-category|There are {{count}} sub-categories',
 	'user.knowledgebase.type_article'         => 'Article',
+	'user.knowledgebase.article-viewed'       => 'This article has been viewed 1 time|This article has been viewed {{count}} times',
 );

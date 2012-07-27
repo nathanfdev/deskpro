@@ -263,8 +263,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 		}
 
 		$this->getDb()->update('feedback', array(
-			'num_ratings' => $total_rating,
-			'total_rating' => $count_rating,
+			'num_ratings' => $count_rating,
+			'total_rating' => $total_rating,
 			'num_comments' => $count_comment
 		), array('id' => $new_feedback->id));
 	}

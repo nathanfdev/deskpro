@@ -97,6 +97,11 @@ pageMeta.baseId = '{{ baseId }}';
 				</dd>
 			{% endif %}
 
+			<dt>Views</dt>
+			<dd>
+                {{ article.view_count }}
+			</dd>
+
 			<dt>{{ phrase('agent.general.rating') }}</dt>
 			<dd>
                 {% set phrase_part %}
