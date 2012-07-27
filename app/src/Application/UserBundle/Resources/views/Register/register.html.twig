@@ -70,6 +70,8 @@
 			<form action="{{ path('user_login_authenticate_local') }}" class="dp-layout" method="post">
 				{% if return %}
 					<input type="hidden" name="return" value="{{return}}" />
+				{% else %}
+					<input type="hidden" name="return" value="{{ app.getReturnUrl() }}" />
 				{% endif %}
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>
