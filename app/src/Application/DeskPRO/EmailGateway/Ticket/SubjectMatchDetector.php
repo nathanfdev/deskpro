@@ -84,33 +84,35 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$subject = trim($reader->getSubject()->getSubjectUtf8());
 		$subject_orig = $subject;
 
+		if (!preg_match('#^(RE|VS|AW|SV):\s*#i', $reader->getSubject()->getSubjectUtf8())) {
+			return null;
+		}
+
 		// Strip off Re: prefix (and alternatives in some other langs)
 		// The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
-		do {
-			$changed = false;
-
-			$subject_orig = trim($subject_orig);
-			$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject_orig);
+		$last_subject = $subject_orig;
+		$ticket_ids = null;
+		while (true) {
+			$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', trim($last_subject));
 			$subject_re   = trim($subject_re);
 
-			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_orig);
+			if ($subject_re == $last_subject) {
+				break;
+			}
+
+			$last_subject = $subject_re;
+
 			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
 
 			// Now lets try to find it...
 			$ticket_ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE (subject = ? OR subject = ?) AND date_created > ? AND status != 'closed'
+				WHERE (subject = ?) AND date_created > ? AND status != 'closed'
 				ORDER BY id DESC
 				LIMIT 20
-			", array($subject_orig, $subject_re, $this->_time_cutoff));
-
-			if ($subject_orig != $subject_re) {
-				$changed = true;
-				$subject_orig = $subject_re;
-			}
-
-		} while (!$ticket_ids && $changed);
+			", array($subject_re, $this->_time_cutoff));
+		}
 
 		if (!$ticket_ids) {
 			$this->getLogger()->logDebug("[SubjectMatchDetector] -- Found nothing");
