@@ -48,6 +48,26 @@ class NewCommentValidator extends AbstractValidator
 	protected $newcomment;
 
 	/**
+	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+	 */
+	protected $captca;
+
+	public function init()
+	{
+		if (App::getSetting('user.publish_captcha')) {
+			$this->captca = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
+		}
+	}
+
+	/**
+	 * @param CaptchaAbstract $captcha
+	 */
+	public function setCaptcha(CaptchaAbstract $captcha)
+	{
+		$this->captca = $captcha;
+	}
+
+	/**
 	 * Check $value to see if its valid.
 	 *
 	 * @param \Application\DeskPRO\Comments\NewComment $newfeedback
@@ -71,6 +91,12 @@ class NewCommentValidator extends AbstractValidator
 			$validator = new \Orb\Validator\StringEmail();
 			if (!$validator->isValid($this->newcomment->email)) {
 				$this->addError('email.invalid');
+			}
+		}
+
+		if ($this->captca) {
+			if (!$this->captca->validate()) {
+				$this->addError('captcha.invalid');
 			}
 		}
 

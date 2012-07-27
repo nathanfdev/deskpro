@@ -38,6 +38,7 @@
 								{% for type,x in app.getSession().getFlash('comment_error') %}
 									{% if type == 'email.invalid' %}- {{ phrase('user.general.form_fix_email') }}<br />{% endif %}
 									{% if type == 'name.short' %}- {{ phrase('user.general.please_enter_your_name') }}{% endif %}
+									{% if type == 'captcha.invalid' %}- {{ phrase('user.tickets.form_error_captcha_invalid') }}{% endif %}
 								{% endfor %}
 							</div>
 						{% endif %}
@@ -48,6 +49,11 @@
 										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.general.comments_add-comment') }}"></textarea>
 									</div>
 									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
+									{% if app.getSetting('user.publish_captcha') %}
+										<div style="padding: 8px 0 8px 0">
+											{{ captcha_html('new_comment') }}
+										</div>
+									{% endif %}
 									<div style="padding-top: 0">
 										<button class="dp-btn dp-primary" style="margin-top: 10px;">{{ phrase('user.general.post_comment_btn') }}</button>
 									</div>

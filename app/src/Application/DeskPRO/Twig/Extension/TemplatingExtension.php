@@ -111,6 +111,7 @@ class TemplatingExtension extends \Twig_Extension
 			'is_array' => new \Twig_Function_Method($this, 'isArray'),
 			'gravatar_for_email' => new \Twig_Function_Method($this, 'gravatar'),
 			'time_group_phrase' => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
+			'captcha_html' => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html')))
         );
     }
 
@@ -813,6 +814,12 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $rgb;
+	}
+
+	public function captchaHtml($type = 'default')
+	{
+		$captcha = $this->container->getSystemObject('form_captcha', array('type' => $type));
+		return $captcha->getHtml();
 	}
 
     /**
