@@ -15,7 +15,7 @@ function deskpro_install_check_reqs()
 		$errors['session_ext'] = 'fatal';
 	}
 
-	if (extension_loaded('dom')) {
+	if (!extension_loaded('dom')) {
 		$errors['dom_ext'] = 'fatal';
 	}
 
