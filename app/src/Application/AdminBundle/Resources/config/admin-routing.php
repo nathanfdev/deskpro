@@ -1365,6 +1365,13 @@ $collection->add('admin_usergroups_delete', new Route(
 	array()
 ));
 
+$collection->add('admin_usergroups_toggle', new Route(
+	'/agents/groups/{id}/toggle',
+	array('_controller' => 'AdminBundle:Usergroups:toggleGroup'),
+	array('id' => '\\d+'),
+	array()
+));
+
 ################################################################################
 # Products
 ################################################################################

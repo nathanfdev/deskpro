@@ -26,7 +26,8 @@
 			<tbody>
 				<tr>
 					<td class="title">
-						<h4><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}">{{ sys_usergroups.everyone.title }}</a></h4>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_usergroups_toggle', {id: sys_usergroups.everyone.id}) }}';" {% if sys_usergroups.everyone.is_enabled %}checked="checked"{% endif %} />
+						<h4 style="display: inline;"><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.everyone.id}) }}">{{ sys_usergroups.everyone.title }}</a></h4>
 						{% if sys_usergroups.everyone.note %}<div style="font-size:11px;">{{ sys_usergroups.everyone.note }}</div>{% endif %}
 					</td>
 					<td class="prop r-col">
@@ -38,7 +39,8 @@
 				</tr>
 				<tr>
 					<td class="title">
-						<h4><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}">{{ sys_usergroups.registered.title }}</a></h4>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_usergroups_toggle', {id: sys_usergroups.registered.id}) }}';" {% if sys_usergroups.registered.is_enabled %}checked="checked"{% endif %} />
+						<h4 style="display: inline;"><a href="{{ path('admin_usergroups_edit', {'id': sys_usergroups.registered.id}) }}">{{ sys_usergroups.registered.title }}</a></h4>
 						{% if sys_usergroups.registered.note %}<div style="font-size:11px;">{{ sys_usergroups.registered.note }}</div>{% endif %}
 					</td>
 					<td class="prop r-col" valign="middle" style="text-align: center">
@@ -51,7 +53,8 @@
 				{% for usergroup in usergroups %}
 				<tr>
 					<td class="title">
-						<h4><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></h4>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_usergroups_toggle', {id: usergroup.id}) }}';" {% if usergroup.is_enabled %}checked="checked"{% endif %} />
+						<h4 style="display: inline;"><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></h4>
 						{% if usergroup.note %}
 						<div style="font-size: 11px; margin-left: 15px;">{{ usergroup.note }}</div>
 						{% endif %}

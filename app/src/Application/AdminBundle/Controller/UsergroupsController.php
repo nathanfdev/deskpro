@@ -236,4 +236,23 @@ class UsergroupsController extends AbstractController
 
 		return $this->redirectRoute('admin_usergroups');
 	}
+
+	############################################################################
+	# toggle
+	############################################################################
+
+	public function toggleGroupAction($id)
+	{
+		$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
+
+		if (!$usergroup) {
+			throw $this->createNotFoundException();
+		}
+
+		$usergroup->is_enabled = !$usergroup->is_enabled;
+		$this->em->persist($usergroup);
+		$this->em->flush();
+
+		return $this->redirectRoute('admin_usergroups');
+	}
 }

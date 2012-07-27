@@ -104,9 +104,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		$this->person = $person;
 
 		$this->usergroup_ids = App::getDb()->fetchAllCol("
-			SELECT usergroup_id
+			SELECT person2usergroups.usergroup_id
 			FROM person2usergroups
-			WHERE person_id = ?
+			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
+			WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
 		", array($this->person['id']));
 
 		$this->usergroup_ids[] = Usergroup::EVERYONE_ID;
@@ -115,13 +116,14 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$this->usergroup_ids[] = Usergroup::REG_ID;
 		}
 
-		// And usergroup ones...
+		// And org ones...
 		$this->org_usergroup_ids = array();
 		if ($this->person->organization) {
 			$this->org_usergroup_ids = App::getDb()->fetchAllCol("
-				SELECT usergroup_id
+				SELECT organization2usergroups.usergroup_id
 				FROM organization2usergroups
-				WHERE organization_id = ?
+				LEFT JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
+				WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
 			", array($this->person->organization['id']));
 
 			if ($this->org_usergroup_ids) {

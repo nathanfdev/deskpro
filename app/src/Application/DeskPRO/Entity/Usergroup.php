@@ -90,6 +90,13 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	protected $sys_name = null;
 
 	/**
+	 * Is the group enabled?
+	 *
+	 * @var bool
+	 */
+	protected $is_enabled = true;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -143,6 +150,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
 		$metadata->mapField(array( 'fieldName' => 'is_agent_group', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_group', ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
+		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
