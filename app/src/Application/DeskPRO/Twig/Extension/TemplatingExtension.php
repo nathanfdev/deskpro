@@ -297,13 +297,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function safeLinkUrlsHtml($text)
 	{
-		return Strings::linkifyHtml($text, 'target="_blank"');
+		return Strings::linkifyHtml($text, true);
 	}
 
 	public function safeLinkUrls($text)
 	{
 		$text = htmlspecialchars($text);
-		return Strings::linkifyHtml($text, 'target="_blank"');
+		return Strings::linkifyHtml($text, true);
 	}
 
 	public function getAssetic($name)

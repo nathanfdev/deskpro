@@ -1267,7 +1267,7 @@ class Strings
 	 * @param string $attr
 	 * @return string
 	 */
-	public static function linkifyHtml($html, $attr = '')
+	public static function linkifyHtml($html, $new_window = false)
 	{
 		libxml_use_internal_errors(true);
 
@@ -1292,7 +1292,7 @@ class Strings
 			}
 
 			$origText = $text->nodeValue;
-			$newText  = self::linkify($origText, $attr);
+			$newText  = self::linkify($origText, '');
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
@@ -1311,6 +1311,10 @@ class Strings
 
 		$html = $dom->saveHTML();
 		$html = Strings::extractBodyTag($html);
+
+		if ($new_window) {
+			$html = str_replace('<a', '<a target="_blank"', $html);
+		}
 
 		return $html;
 	}
