@@ -59,12 +59,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/test-trim2.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/jason-voice4.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
 		$body = $r->getBodyHtml()->getBodyUtf8();
+
+		echo $body; echo "\n"; exit;
 
 		$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
 		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
@@ -74,7 +76,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 		$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
 		$body = $inline_image->processTokens($body);
-		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
 		$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
 		$body = Strings::trimHtmlAdvanced($body);

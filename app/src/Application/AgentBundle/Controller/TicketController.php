@@ -1404,6 +1404,25 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function viewDecodedEmailAction($message_id)
+	{
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$r->setRawSource($message->email_source->raw_source);
+		$body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
+		$body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;
+
+		unset($r);
+
+		return $this->render('AgentBundle:Ticket:message-details-decoded-email.html.twig', array(
+			'message' => $message,
+			'ticket' => $message['ticket'],
+			'body_html' => $body_html,
+			'body_text' => $body_text,
+		));
+	}
+
 	public function ajaxGetMessageQuoteAction($message_id)
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);

@@ -1082,6 +1082,13 @@ $collection->add('agent_ticket_message_emailsource', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_emaildecoded', new Route(
+	'/tickets/{ticket_id}/message-details/{message_id}/email-decoded',
+	array('_controller' => 'AgentBundle:Ticket:viewDecodedEmail'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_message_unformatted', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/unformatted',
 	array('_controller' => 'AgentBundle:Ticket:viewUnformattedMessage'),

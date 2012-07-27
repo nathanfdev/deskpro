@@ -1,0 +1,14 @@
+{% extends 'AgentBundle:Ticket:message-details-layout.html.twig' %}
+{% block current_page "view-decoded" %}
+{% block body %}
+{% if body_html %}
+	<strong>HTML</strong><br />
+	<textarea style="font-family: 'Monaco', 'Courier New', monospace; font-size: 9pt; width: 95%; height: 250px;">{{ body_html }}</textarea>
+	<br /><br />
+{% endif %}
+{% if body_text %}
+	<strong>Text</strong><br />
+	<textarea style="font-family: 'Monaco', 'Courier New', monospace; font-size: 9pt; width: 95%; height: 250px;">{{ body_text }}</textarea>
+	<br /><br />
+{% endif %}
+{% endblock %}
