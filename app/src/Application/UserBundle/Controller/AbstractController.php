@@ -115,7 +115,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function renderLoginOrPermissionError($return_url = '')
 	{
 		if ($this->person->id) {
-			return $this->renderStandardError('@user.error.permission-denied_you');
+			return $this->renderStandardError('@user.error.permission-denied');
 		}
 
 		return $this->forward('UserBundle:Login:index', array(), array('return' => $return_url));
