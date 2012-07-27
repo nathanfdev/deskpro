@@ -143,6 +143,14 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_closed_helpdesk') }}</p>
+					<p>
+						Guests are still able to perform a number of actions defined by permissions granted by the <a href="{{ path('admin_usergroups_edit', {'id': everyone_ug.id}) }}">Everyone usergroup</a>.
+						Turning the Everyone usergroup off will require all users to log in to view anything on the helpdesk.
+					</p>
+					<p>
+						The Everyone usergroup is currently
+						<input class="onoff-slider" type="checkbox" {% if everyone_ug.is_enabled %}checked="checked"{% endif %} onclick="window.location='{{ path('admin_usergroups_toggle', {id: everyone_ug.id, userreg: 1}) }}';" />
+					</p>
 				</div>
 			</div>
 

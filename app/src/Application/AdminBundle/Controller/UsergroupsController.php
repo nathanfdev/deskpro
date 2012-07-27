@@ -253,6 +253,10 @@ class UsergroupsController extends AbstractController
 		$this->em->persist($usergroup);
 		$this->em->flush();
 
+		if ($this->in->getBool('userreg')) {
+			return $this->redirectRoute('admin_userreg_options');
+		}
+
 		return $this->redirectRoute('admin_usergroups');
 	}
 }

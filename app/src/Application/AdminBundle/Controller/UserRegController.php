@@ -56,8 +56,11 @@ class UserRegController extends AbstractController
 
 		$reg_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getSystemTriggers('email_validation');
 
+		$everyone_ug = $this->em->find('DeskPRO:Usergroup', 1);
+
 		return $this->render('AdminBundle:UserReg:options.html.twig', array(
 			'usersources'  => $usersources,
+			'everyone_ug'  => $everyone_ug,
 			'reg_triggers' => $reg_triggers,
 		));
 	}
@@ -79,9 +82,13 @@ class UserRegController extends AbstractController
 
 	public function deskproSourceToggleAction()
 	{
-		$onoff = $this->container->getSetting('core.deskpro_source_enabled');
+		$onoff = !$this->container->getSetting('core.deskpro_source_enabled');
 
-		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_source_enabled', (int)(!$onoff));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_source_enabled', (int)($onoff));
+
+		if (!$onoff) {
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.user_mode', 'closed');
+		}
 
 		return $this->redirectRoute('admin_userreg_options');
 	}
