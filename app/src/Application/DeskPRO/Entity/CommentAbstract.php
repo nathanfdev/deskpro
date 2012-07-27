@@ -254,7 +254,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getContentHtml()
 	{
-		return Strings::linkify(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8'));
+		return Strings::linkify(nl2br(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8')));
 	}
 
 
