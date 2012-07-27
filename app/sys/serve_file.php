@@ -735,7 +735,7 @@ class FilestorageLoader
 	{
 		$this->sendHeaders($blob);
 
-		$sth = $this->getPdo()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id DESC");
+		$sth = $this->getPdo()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC");
 		$sth->execute(array('blob_id' => $blob['id']));
 
 		while (($seg = $sth->fetchColumn(0)) !== false) {
