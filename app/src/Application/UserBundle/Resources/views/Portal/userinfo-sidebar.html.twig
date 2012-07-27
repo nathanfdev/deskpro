@@ -62,7 +62,7 @@
 						</dl>
 						<div class="dp-login-section">
 							<dl>
-								<dt>{{ phrase('user.profile.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em></dt>
+								<dt>{{ phrase('user.profile.password') }} {% if app.getSetting('core.deskpro_source_enabled') %}<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em>{% endif %}</dt>
 								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">

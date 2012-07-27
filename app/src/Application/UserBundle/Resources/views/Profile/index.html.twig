@@ -150,6 +150,7 @@
 	</div>
 </section>
 
+{% if app.getSetting('core.deskpro_source_enabled') %}
 <section class="dp-portal-section">
 	<header>
 		<h1>{{ phrase('user.profile.change_password') }}</h1>
@@ -211,4 +212,5 @@
 		</form>
 	</div>
 </section>
+{% endif %}
 {% endblock %}

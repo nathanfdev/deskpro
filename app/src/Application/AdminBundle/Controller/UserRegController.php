@@ -72,6 +72,10 @@ class UserRegController extends AbstractController
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.email_validation', $this->in->getBool('email_validation'));
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.existing_account_login', $this->in->getBool('existing_account_login'));
 
+		if ($this->in->getString('mode') != 'closed') {
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_source_enabled', true);
+		}
+
 		return $this->createJsonResponse(array('success'=> true));
 	}
 

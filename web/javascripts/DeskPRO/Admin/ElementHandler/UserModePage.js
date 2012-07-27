@@ -38,7 +38,7 @@ DeskPRO.Admin.ElementHandler.UserModePage = new Orb.Class({
 				data: formData,
 				type: 'POST',
 				complete: function() {
-					form.removeClass('loading');
+					window.location.reload(false);
 				},
 				success: function() {
 					$('#save_btn_wrap').hide();

@@ -110,9 +110,13 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
 		", array($this->person['id']));
 
-		$this->usergroup_ids[] = Usergroup::EVERYONE_ID;
+		if (App::getDataService('Usergroup')->find(Usergroup::EVERYONE_ID)->is_enabled) {
+			$this->usergroup_ids[] = Usergroup::EVERYONE_ID;
+		} else {
+			$this->usergroup_ids[] = 0;
+		}
 
-		if ($person->getId()) {
+		if ($person->getId() && App::getDataService('Usergroup')->find(Usergroup::REG_ID)->is_enabled) {
 			$this->usergroup_ids[] = Usergroup::REG_ID;
 		}
 
@@ -312,22 +316,20 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function hasPerm($name)
 	{
-		$is_closed = (App::getSetting('core.user_mode') == 'closed' && !$this->person->getId());
-
-		if ($name == 'articles.use' && (!App::getSetting('core.apps_kb') || $is_closed)) {
+		if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
 			return false;
 		}
-		if ($name == 'feedback.use' && (!App::getSetting('core.apps_feedback') || $is_closed)) {
+		if ($name == 'feedback.use' && !App::getSetting('core.apps_feedback')) {
 			return false;
 		}
-		if ($name == 'downloads.use' && (!App::getSetting('core.apps_downloads') || $is_closed)) {
+		if ($name == 'downloads.use' && !App::getSetting('core.apps_downloads')) {
 			return false;
 		}
-		if ($name == 'news.use' && (!App::getSetting('core.apps_news') || $is_closed)) {
+		if ($name == 'news.use' && !App::getSetting('core.apps_news')) {
 			return false;
 		}
 		if ($name == 'chat.use') {
-			if (!App::getSetting('core.apps_chat') || $is_closed) {
+			if (!App::getSetting('core.apps_chat')) {
 				return false;
 			}
 

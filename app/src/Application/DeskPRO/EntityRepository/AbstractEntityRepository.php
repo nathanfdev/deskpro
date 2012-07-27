@@ -91,6 +91,18 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 
 	/**
+	 * Alias for find
+	 *
+	 * @param int $id
+	 * @return object
+	 */
+	public function get($id)
+	{
+		return $this->find($id);
+	}
+
+
+	/**
 	 * @return int
 	 */
 	public function countAll()
