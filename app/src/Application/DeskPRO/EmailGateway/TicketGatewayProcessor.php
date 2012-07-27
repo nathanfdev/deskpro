@@ -433,7 +433,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if (!$has_cut) {
 			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+			$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+			if ($email_info['body'] != $generic_cut) {
+				$email_info['body'] = $generic_cut;
+				$has_cut = true;
+			}
+		}
+
+		if (!$has_cut) {
+			$email_info['body_full'] = '';
 		}
 
 		if ($email_info['body_is_html']) {
@@ -640,7 +648,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// Replace inline image tags with tokens
 		$email_info['body'] = $inline_images->processTokens($email_info['body']);
-		$email_info['body_full'] = $inline_images->processTokens($email_info['body']);
+		$email_info['body_full'] = '';
 
 		if ($email_info['body_is_html']) {
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
