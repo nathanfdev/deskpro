@@ -15,7 +15,7 @@
 </div>
 {% endif %}
 
-{% if item.field_type == 'ticket_subject' and ((mode == 'default' and item.id in page_data_field_ids) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
+{% if item.field_type == 'ticket_subject' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
 <div data-field-id="ticket_subject" class="ticket-display-field ticket_subject" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-subject.html.twig' %}
 </div>
@@ -23,13 +23,13 @@
 
 {% if type != 'modify' %}
 	{% if item.field_type == 'message' %}
-	<div data-field-id="message" class="ticket-display-field message" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+	<div data-field-id="message" class="ticket-display-field message" {% if (item.rules or item.id not in page_data_field_ids) %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-message.html.twig' %}
 	</div>
 	{% endif %}
 
 	{% if item.field_type == 'attachments' %}
-	<div data-field-id="attachments" class="ticket-display-field attachments" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+	<div data-field-id="attachments" class="ticket-display-field attachments" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-attachments.html.twig' %}
 	</div>
 	{% endif %}
@@ -37,7 +37,7 @@
 
 {% if ticket_options.ticket_categories_hierarchy %}
 {% if item.field_type == 'ticket_category' %}
-<div data-field-id="ticket_category" class="ticket_category ticket-display-field" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+<div data-field-id="ticket_category" class="ticket_category ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-ticket-category.html.twig' %}
 </div>
 {% endif %}
@@ -45,7 +45,7 @@
 
 {% if ticket_options.products_hierarchy %}
 {% if item.field_type == 'ticket_product' %}
-<div data-field-id="ticket_product" class="ticket_product ticket-display-field" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+<div data-field-id="ticket_product" class="ticket_product ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-product.html.twig' %}
 </div>
 {% endif %}
@@ -53,7 +53,7 @@
 
 {% if ticket_options.ticket_priorities %}
 {% if item.field_type == 'ticket_priority' %}
-<div data-field-id="ticket_priority" class="ticket_priority ticket-display-field" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+<div data-field-id="ticket_priority" class="ticket_priority ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-ticket-priority.html.twig' %}
 </div>
 {% endif %}
@@ -65,7 +65,7 @@
 
 {% for f in custom_fields %}
 {% if item.field_type == 'ticket_field' and item.field_id == f.id %}
-<div data-field-id="ticket_field[{{f.id}}]" class="dp-control-group custom-field ticket_field_{{f.id}} ticket-display-field" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+<div data-field-id="ticket_field[{{f.id}}]" class="dp-control-group custom-field ticket_field_{{f.id}} ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
 </div>
 {% endif %}

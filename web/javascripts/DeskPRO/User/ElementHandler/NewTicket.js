@@ -79,7 +79,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	_initFields: function() {
 		this.depSelect = $('select.department_id, input.department_id', this.el).first();
-		this.departmentId = 0;
+		this.departmentId = -1;
 
 		var self = this;
 		this.depSelect.on('change', function() {
