@@ -539,16 +539,28 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function handleCc($ticket, array $ccs)
 	{
+		$gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+
 		foreach ($ccs as $cc) {
+
+			$cc_email = $cc->getEmail();
+			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
+			if ($addr) {
+				$this->logMessage("Skipping cc: $cc_email (matches gateway address {$addr->id})");
+				continue;
+			}
+
 			$person_processor = new PersonFromEmailProcessor();
 
 			$cc_person = $person_processor->findPerson($cc);
 			if (!$cc_person) {
 				// Closed helpdesk and an unknown CC means we drop it
 				if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+					$this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
 					continue;
 				}
 				$cc_person = $person_processor->createPerson($cc);
+				$this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
 			}
 
 			if (!$cc_person) {
