@@ -4,4 +4,7 @@
 		DpChatWidget.isWindowChat = true;
 	<?php endif ?>
 <?php endif ?>
+<?php if ($to_login_page): ?>
+	DpChatWidget.toLoginPage = true;
+<?php endif ?>
 DpChatWidget.initWidget('<?php echo $session_id ?>');

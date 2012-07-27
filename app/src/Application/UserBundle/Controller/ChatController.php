@@ -262,10 +262,16 @@ class ChatController extends AbstractController
 			$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 		}
 
+		$to_login_page = false;
+		if ($this->container->getSetting('core.interact_require_login') && !$session || !$session->person || !$session->person->getId()) {
+			$to_login_page = true;
+		}
+
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
-			'session' => $session,
-			'session_id' => $session->getSessionCode(),
-			'conversation' => $convo,
+			'session'       => $session,
+			'session_id'    => $session->getSessionCode(),
+			'conversation'  => $convo,
+			'to_login_page' => $to_login_page,
 		));
 
 		$response->setLastModified(date_create('-1 day'));

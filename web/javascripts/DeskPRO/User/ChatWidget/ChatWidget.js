@@ -66,6 +66,12 @@ var DpChatWidget = new (function() {
 	 * Opens the overlaying iframe
 	 */
 	this.open = function(data) {
+
+		if (this.toLoginPage) {
+			window.location = options.deskproUrl + 'login';
+			return;
+		}
+
 		if (isOpen) {
 			return;
 		}

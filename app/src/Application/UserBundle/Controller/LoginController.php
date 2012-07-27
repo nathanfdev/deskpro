@@ -299,7 +299,7 @@ HTML;
 		# Auth local
 		#------------------------------
 
-		if ($this->container->getSetting('core.deskpro_source_enabled')) {
+		if ($this->container->getSetting('core.deskpro_source_enabled') || DP_INTERFACE != 'user') {
 			$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
 			$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 			$result = $adapter->authenticate();
