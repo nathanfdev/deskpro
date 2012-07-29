@@ -111,7 +111,9 @@ class TemplatingExtension extends \Twig_Extension
 			'is_array' => new \Twig_Function_Method($this, 'isArray'),
 			'gravatar_for_email' => new \Twig_Function_Method($this, 'gravatar'),
 			'time_group_phrase' => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
-			'captcha_html' => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html')))
+			'captcha_html' => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html'))),
+			'include_file' => new \Twig_Function_Method($this, 'includeFile', array('is_safe' => array('html'))),
+			'include_php_file' => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html')))
         );
     }
 
@@ -831,4 +833,38 @@ class TemplatingExtension extends \Twig_Extension
     {
         return 'deskpro_templating';
     }
+
+	public function includeFile($path)
+	{
+		if (!dp_get_config('enable_include_file')) {
+			return '';
+		}
+
+		if (!file_exists($path)) {
+			$e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+			return '';
+		}
+
+		return file_get_contents($path);
+	}
+
+	public function includePhpFile($path, array $with = null)
+	{
+		if ($with !== null) {
+			extract($with, \EXTR_SKIP);
+		}
+
+		if (!file_exists($path)) {
+			$e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+			return '';
+		}
+
+		ob_start();
+		include($path);
+		$content = ob_get_clean();
+
+		return $content;
+	}
 }
