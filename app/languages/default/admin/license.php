@@ -16,7 +16,7 @@
 	'admin.license.error_you_timed_out'             => 'Your server timed-out while trying to contact our licesing server to generate your license code.',
 	'admin.license.explain_connection_problems'     => 'A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.',
 	'admin.license.get_demo_license'                => 'Get your demo license &rarr;',
-	'admin.license.installkey'                      => 'install.key',
+	'admin.license.installkey'                      => 'deskpro-license-sign.key',
 	'admin.license.license_id'                      => 'License ID',
 	'admin.license.license_server_detected_error'   => 'Our licensing server responded with the error code "{{error}}". You should contact support@deskpro.com if the problem persists.',
 	'admin.license.license_will_expire_on'          => 'This demo will expire on {{date}}. Contact {{link}} if you need more time.',

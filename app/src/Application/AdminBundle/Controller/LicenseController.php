@@ -272,7 +272,7 @@ $install_data
 FILE;
 
 		$res = $this->createResponse($file);
-		$res->headers->set('Content-Type', 'application/octet-stream; filename=install.key');
+		$res->headers->set('Content-Type', 'application/octet-stream; filename=deskpro-license-sign.key');
 		return $res;
 	}
 }

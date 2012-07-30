@@ -124,7 +124,7 @@ $collection->add('admin_license_input_save', new Route(
 ));
 
 $collection->add('admin_license_keyfile', new Route(
-	'/license/download/install.key',
+	'/license/download/deskpro-license-sign.key',
 	array('_controller' => 'AdminBundle:License:keyFile'),
 	array(),
 	array()

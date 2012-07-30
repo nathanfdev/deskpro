@@ -158,14 +158,8 @@
 								then our agents may ask you to email a keyfile to <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
 								so your license code can be manually generated.
 								<br /><br />
-								<table cellspacing="0" cellpadding="8" border="0"><tr>
-									<td valign="middle" style="vertical-align: middle; padding: 8px 0 8px 8px;" width="32">
-										<a href="{{ path('admin_license_keyfile') }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
-									</td>
-									<td valign="middle" style="vertical-align: middle; padding: 0 8px 0 0;">
-										<a href="{{ path('admin_license_keyfile') }}">Download license.key file</a>
-									</td>
-								</tr></table>
+
+								<a class="btn" href="{{ path('admin_license_keyfile') }}">Download: deskpro-license-sign.key (500 bytes)</a>
 							</div>
 						</div>
 					</td>
