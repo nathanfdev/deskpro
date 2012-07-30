@@ -37,75 +37,58 @@ namespace Application\DeskPRO\Translate\Loader;
 use Orb\Util\Arrays;
 
 /**
- * Loads default phrases from filesystem-based lang packs
+ * Loads phrases from filesystem and then database
  */
-class SystemLoader implements LoaderInterface
+class DeskproLoader implements LoaderInterface
 {
 	/**
-	 * Array of filepath => array
-	 * @var array
+	 * @var SystemLoader
 	 */
-	protected $loaded_files = array();
+	protected $sys_loader;
 
+	/**
+	 * @var DbLoader
+	 */
+	protected $db_loader;
+
+
+	/**
+	 * @param SystemLoader $sys_loader
+	 */
+	public function setSystemLoader(SystemLoader $sys_loader)
+	{
+		$this->sys_loader = $sys_loader;
+	}
+
+
+	/**
+	 * @param DbLoader $db_loader
+	 */
+	public function setDbLoader(DbLoader $db_loader)
+	{
+		$this->db_loader = $db_loader;
+	}
+
+
+	/**
+	 * Loads phrase groups
+	 *
+	 * @param array $groups Groups to load
+	 * @param \Application\DeskPRO\Entity\Language $language
+	 * @return array
+	 */
 	public function load($groups, $language)
 	{
-		$lang_packs = array();
-
-		// Always read from the default because it has the core phrases
-		$lang_packs[] = DP_ROOT . '/languages/default';
-
-		if ($language && $language->base_filepath) {
-			$lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
-		}
-
-		$lang_packs = array_unique($lang_packs);
-		$lang_packs = Arrays::removeFalsey($lang_packs);
-
 		$phrases = array();
 
-		foreach ($lang_packs as $path) {
-			foreach ($groups as $group) {
-				$group_parts = explode('.', $group, 2);
+		if ($this->sys_loader) {
+			$phrases = $this->sys_loader->load($groups, $language);
+		}
 
-				// agent.something => agent/something.php
-				if (count($group_parts) == 2) {
-					$file = $path . '/' . $group_parts[0] . '/' . $group_parts[1] . '.php';
-				// agent => agent/agent.php
-				} else {
-					$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
-				}
-
-				$file_phrases = $this->loadFile($file);
-				if ($file_phrases) {
-					$phrases = array_merge($phrases, $file_phrases);
-				}
-			}
+		if ($this->db_loader) {
+			$phrases = array_merge($phrases, $this->db_loader->load($groups, $language));
 		}
 
 		return $phrases;
-	}
-
-	/**
-	 * @param string $file
-	 * @return array
-	 */
-	public function loadFile($file)
-	{
-		if (isset($this->loaded_files[$file])) {
-			return $this->loaded_files[$file];
-		}
-
-		if (is_file($file)) {
-			$file_phrases = include($file);
-			if ($file_phrases && is_array($file_phrases)) {
-				$this->loaded_files[$file] = $file_phrases;
-			}
-		}
-
-		if (!isset($this->loaded_files[$file])) {
-			$this->loaded_files[$file] = array();
-		}
-
-		return $this->loaded_files[$file];
 	}
 }

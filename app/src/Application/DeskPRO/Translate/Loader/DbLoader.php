@@ -41,7 +41,7 @@ class DbLoader implements LoaderInterface
 {
 	/**
 	 * Plain database connection for raw queries
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $dbconn;
 
@@ -70,7 +70,7 @@ class DbLoader implements LoaderInterface
 		// but thats expensive in the db so we load then entire thing in one query
 		// - This check prevents the query from re-running when another call is made
 		if (isset($this->loaded_langs[$language['id']])) {
-			return array();
+			return $this->loaded_langs[$language['id']];
 		}
 
 		$this->loaded_langs[$language['id']] = true;
@@ -103,7 +103,7 @@ class DbLoader implements LoaderInterface
 		}
 
 		$q = $this->dbconn->query("
-			SELECT name, phrase, original_phrase, groupname
+			SELECT name, phrase, original_phrase
 			FROM phrases
 			WHERE language_id IN ($lang_in) AND ($group_like)
 			GROUP BY name
@@ -118,10 +118,10 @@ class DbLoader implements LoaderInterface
 				$phrase_text = $r['original_phrase'];
 			}
 
-			if (!isset($phrases[$r['groupname']])) $phrases[$r['groupname']] = array();
-
-			$phrases[$r['groupname']][$r['name']] = $phrase_text;
+			$phrases[$r['name']] = $phrase_text;
 		}
+
+		$this->loaded_langs[$language['id']] = $phrases;
 
 		return $phrases;
 	}

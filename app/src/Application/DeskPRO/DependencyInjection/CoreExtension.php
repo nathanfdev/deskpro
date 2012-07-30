@@ -115,9 +115,9 @@ class CoreExtension extends Extension
 		$container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
 		// CombinationLoader
-		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
-		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_system')));
-		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_db')));
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DeskproLoader');
+		$definition->addMethodCall('setSystemLoader', array(new Reference('deskpro.core.translate_loader_system')));
+		$definition->addMethodCall('setDbLoader', array(new Reference('deskpro.core.translate_loader_db')));
 		$container->setDefinition('deskpro.core.translate_loader', $definition);
 
 		// Add the cacher to the CombinationLoader if we want
