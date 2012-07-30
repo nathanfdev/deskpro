@@ -111,7 +111,7 @@ class NewReply
 			}
 		}
 
-		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
 			$ticket_message = $dupe_message;
 		} else {
 			$this->ticket->addMessage($ticket_message);
