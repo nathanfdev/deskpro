@@ -149,6 +149,7 @@ class ChoiceField extends CustomFieldAbstract
 	{
 		$choices_structure = @json_decode($this->choices_structure, true);
 		$choices_removed   = @json_decode($this->choices_removed_structure, true);
+		if (!$choices_removed) $choices_removed = array();
 
 		$choices = array();
 		foreach ($this->_field->children as $child) {
