@@ -1170,7 +1170,7 @@ class Strings
 		$html = ob_get_clean();
 		$html = Strings::extractBodyTag($html);
 
-		// Unwrap outer divs, p's
+		// Unwrap outer divs, p's, spans
 		do {
 			$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 			$changed = false;
@@ -1179,7 +1179,7 @@ class Strings
 			if (!$div->length) {
 				$div = $qp->top()->find('body > *');
 			}
-			if ($div->length == 1 && ($div->first() && $div->tag() == 'div' || $div->tag() == 'p')) {
+			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span'))) {
 				$changed = true;
 				$html = $div->html();
 				$html = trim($html);
@@ -1187,6 +1187,9 @@ class Strings
 				if ($div->tag() == 'div') {
 					$html = preg_replace('#^<div.*?>#', '', $html);
 					$html = preg_replace('#</div>$#', '', $html);
+				} elseif ($div->tag() == 'span') {
+					$html = preg_replace('#^<span.*?>#', '', $html);
+					$html = preg_replace('#</span>$#', '', $html);
 				} else {
 					$html = preg_replace('#</p>$#', '', $html);
 					$html = preg_replace('#^<p.*?>#', '', $html);
