@@ -388,7 +388,7 @@ class FilestorageLoader
 		}
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
@@ -419,7 +419,7 @@ class FilestorageLoader
 		}
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
@@ -457,7 +457,7 @@ class FilestorageLoader
 		}
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
@@ -492,7 +492,7 @@ class FilestorageLoader
 		}
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
@@ -512,7 +512,7 @@ class FilestorageLoader
 		#------------------------------
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
@@ -576,7 +576,7 @@ class FilestorageLoader
 		$authcode = $blob_id . $authseg;
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
