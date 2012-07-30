@@ -72,29 +72,13 @@ class HtmlPurifier implements CleanerPlugin
 		#------------------------------
 
 		if ($type == 'html_email_preclean') {
-			for ($x = 0; $x < 10; $x++) {
-				$value = preg_replace('#<span[^>]*>(\s|&nbsp;|&\#xA0;)*</span>#i', '', $value);
-				$value = preg_replace('#<div[^>]*>(\s|&nbsp;|&\#xA0;)*</div>#i', '', $value);
-				$value = preg_replace('#\s*<p[^>]*>(\s|&nbsp;|&\#xA0;)*</p>\s*#i', '', $value);
-				$value = preg_replace('#\s*<o:p[^>]*>(\s|&nbsp;|&\#xA0;)*</o:p>\s*#i', '', $value);
-			}
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
+			$value = Strings::extractBodyTag($value);
+			$value = Strings::decodeWhitespaceHtmlEntities($value);
 			return $value;
 		}
 
 		if ($type == 'html_email_basicclean') {
-
-			$value = Strings::extractBodyTag($value);
-			$value = Strings::decodeWhitespaceHtmlEntities($value);
-
-			$value = preg_replace('#<p[^>]*>#', '__dp_old_p__', $value);
-			$value = str_replace('</p>', '__dp_old_p__', $value);
-			$value = str_replace('<br></br>', '<br />', $value);
-			$value = str_replace('<br>', '<br />', $value);
-			$value = preg_replace('#__dp_old_p(_s)?__\s*__dp_old_p__#m', '<br /><br />', $value);
-			$value = str_replace('__dp_old_p__', '<br />', $value);
-			$value = preg_replace("#<br />\s+<br />#i", '<br /><br />', $value);
-
 			return $value;
 		}
 
@@ -114,12 +98,15 @@ class HtmlPurifier implements CleanerPlugin
 		}
 
 		$value = $purifier->purify($value, $config);
+		$value = preg_replace('#class="([a-zA-Z0-9]*)MsoNormal([a-zA-Z0-9]*)"#i', 'class="$1MsoNormal$2" style="margin:0;"', $value);
+		$value = preg_replace_callback('#<[^>]*>#', function ($m) {
+			return preg_replace('#(.*?)style="(.*?)"(.*?)style="(.*?)"#', '$1style="$2;$3"$4', $m[0]);
+		}, $value);
 
 		if ($type == 'html_email') {
 			$value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
 			$value = Strings::trimHtml($value);
-			$value = str_replace('<br />&#xA0;<br />', '<br /><br />', $value);
 			$value = Strings::trimHtmlAdvanced($value);
 		}
 
@@ -153,7 +140,8 @@ class HtmlPurifier implements CleanerPlugin
 
 			case 'html_email':
 				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
-				$config->set('HTML.AllowedAttributes', 'a.href,*.style');
+				$config->set('HTML.AllowedAttributes', 'a.href,*.style,*.class');
+				$config->set('Attr.AllowedClasses', 'MsoNormal');
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);

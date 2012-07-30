@@ -1613,9 +1613,8 @@ class Strings
 			'&#x9;'  => "	",
 			'&#32;'  => ' ',
 			'&#x20;' => ' ',
-			'&#160;' => ' ',
-			'&#xa0;' => ' ',
-			'&nbsp;' => ' ',
+			'&#160;' => '&nbsp;',
+			'&#xa0;' => '&nbsp;',
 		);
 		$string = str_ireplace(array_keys($repl), array_values($repl), $string);
 
