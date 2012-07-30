@@ -189,13 +189,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				context: this,
 				success: function(html) {
 					self.placeUserRow(html);
-
-					if (term.indexOf('@') !== -1) {
-						$('input.email', userfields).val(data.email);
-					} else {
-						$('input.name', userfields).val(data.email);
-					}
-
 					self.updateUi();
 				}
 			});
