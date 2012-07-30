@@ -91,6 +91,7 @@ class AddressMatcher
 			FROM email_gateway_addresses a
 			LEFT JOIN email_gateways g ON (g.id = a.email_gateway_id)
 			WHERE g.is_enabled
+			ORDER BY run_order ASC
 		");
 
 		// Order them into exact, domain, pattern
