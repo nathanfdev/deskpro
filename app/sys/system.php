@@ -176,7 +176,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 					if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
 						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
 						if ($count > License::getLicense()->getMaxAgents()) {
-							die('[LIC ERR 1] Too many agents');
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('You have more agents than your license allows.', $request->getBaseUrl()));
+							return $response;
 						}
 					}
 
@@ -201,7 +202,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 						$response = new RedirectResponse($request->getBaseUrl() . '/billing');
 						return $response;
 					} else {
-						die('[LIC ERR 2] License has expired');
+						$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('Your license has expired.', $request->getBaseUrl()));
+						return $response;
 					}
 				}
 			}
@@ -427,6 +429,7 @@ final class License
 			return null;
 		}
 
+		return new \DateTime("-2 days");
 		return new \DateTime("@" . $this->data['expire']);
 	}
 

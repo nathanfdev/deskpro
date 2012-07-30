@@ -43,6 +43,15 @@ class HelpdeskOfflineMessage
 		return $page_html;
 	}
 
+	public static function getLicenseErrorPage($message, $base_url)
+	{
+		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
+		$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
+		$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
+
+		return $page_html;
+	}
+
 	public static function getOfflineMessage()
 	{
 		$offline_message = null;
