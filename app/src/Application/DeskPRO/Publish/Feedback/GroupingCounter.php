@@ -111,7 +111,7 @@ class GroupingCounter
 					$row2 = array();
 					$row2['id'] = $field2_id;
 					$row2['title'] = $field2_title;
-					$row2['total'] = $countinfo2['total'];
+					$row2['total'] = !empty($countinfo2['total']) ? $countinfo2['total'] : 0;
 
 					$row['sub'][$field2_id] = $row2;
 				}
