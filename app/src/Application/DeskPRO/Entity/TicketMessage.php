@@ -188,9 +188,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 				$url = App::getSetting('core.deskpro_url');
 				$url .= ltrim(App::get('router')->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
 
-				$replace = sprintf('<a href="%s" target="_blank"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
 			} else {
-				$replace = sprintf('<a href="%s" target="_blank">%s</a>', $download_url, $m[3]);
+				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image">%s</a>', $download_url, $m[3]);
 			}
 
 			return $replace;

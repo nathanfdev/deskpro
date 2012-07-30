@@ -44,6 +44,7 @@ class Attachment
 	public $file_contents_callback;
 	public $file_contents;
 	public $file_name;
+	public $file_name_utf8;
 	public $mime_type;
 	public $content_id;
 
@@ -61,6 +62,15 @@ class Attachment
 	public function getFileName()
 	{
 		return $this->file_name;
+	}
+
+	public function getFileNameUtf8()
+	{
+		if (!$this->file_name_utf8) {
+			return $this->getFileName();
+		}
+
+		return $this->file_name_utf8;
 	}
 
 	public function getMimeType()
