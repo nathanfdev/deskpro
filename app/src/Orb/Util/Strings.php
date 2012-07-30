@@ -1079,11 +1079,13 @@ class Strings
 			$string = preg_replace('#^\s*(<div[^>]*>)\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '$1', $string);
 
 			// Trailing whitespace in a trailing div wrapper
-			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|&nsbp;)$#i', '', $string);
 
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
+			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 		} while ($string != $old_string);
 
@@ -1101,6 +1103,7 @@ class Strings
 	public static function trimHtmlAdvanced($html)
 	{
 		$html = Strings::extractBodyTag($html);
+		$html = str_replace('<span></span>', '', $html);
 
 		// Always wrap with this, or else in an attempt to fix structure
 		// we'll end up with superfluous <p> wrappers around some top-level text nodes
