@@ -1233,14 +1233,14 @@ class Strings
 		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\.]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace, $attr) {
 			$email = $m[2] . '@' . $m[3] . '.' . $m[4];
 			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email) . '</a>';
+			$search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email, \ENT_QUOTES, 'UTF-8') . '</a>';
 			return $key;
 		}, $text);
 
 		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+)#i',function($m) use (&$search_replace, $attr) {
 			$url = $m[2];
 			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2]) . '</a>';
+			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8') . '</a>';
 			return $key;
 		}, $text);
 
@@ -1249,7 +1249,7 @@ class Strings
 
 			$url = ($m[2] ? $m[2] : 'http://') . $m[3];
 			$key = md5(mt_rand(0,9999) . microtime());
-			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[3]) . '</a>';
+			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[3], \ENT_QUOTES, 'UTF-8') . '</a>';
 			return $key;
 		}, $text);
 
@@ -1296,7 +1296,7 @@ class Strings
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
-				$frag->loadHTML('<body>' . $newText . '</body>');
+				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" standalone="yes"><body>' . $newText . '</body>');
 				$xpath2 = new \DOMXPath($frag);
 
 				foreach ($xpath2->query('body')->item(0)->childNodes as $node) {
