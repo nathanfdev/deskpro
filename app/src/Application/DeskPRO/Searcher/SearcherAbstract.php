@@ -445,7 +445,13 @@ abstract class SearcherAbstract implements PersonContextInterface
 			}
 		}
 
-		if ($op == self::OP_BETWEEN) {
+		if ($op == self::OP_IS) {
+			$summary = App::getTranslator()->phrase('agent.general.x_is_y', array(
+				'field' => $field,
+				'value1' => $range1,
+				'value2' => $range2
+			));
+		} elseif ($op == self::OP_BETWEEN) {
 			$summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
 				'field' => $field,
 				'value1' => $range1,
@@ -590,7 +596,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 			}
 		}
 
-		if ($op == self::OP_BETWEEN) {
+		if ($op == self::OP_IS) {
+			$where = "$field = $range1";
+		} elseif ($op == self::OP_BETWEEN) {
 			$where = "$field BETWEEN $range1 AND $range2";
 		} elseif ($op == self::OP_GTE) {
 			$range1 = Util::coalesce($range1, $range2);
