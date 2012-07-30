@@ -690,37 +690,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		# If the user is new with no lang, then try to guess based off the email
 		#------------------------------
 
-		$lang_codes = App::getDataService('Language')->getLangCodes();
-		if (($person->isNewPerson() || !$person->getRealLanguage()) && count($lang_codes) > 1) {
-			$l = new \Text_LanguageDetect();
-			$l->setNameMode(3);
+		if ($person->isNewPerson() || !$person->getRealLanguage()) {
 
-			$this->logMessage("Installed languages: " . implode(', ', $lang_codes));
+			/** @var $lang_detect \Application\DeskPRO\Languages\Detect */
+			$lang_detect = App::getSystemService('language_detect');
+			$this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
 
-			$set_lang_codes = array();
-			foreach ($lang_codes as $code) {
-				if ($l->languageExists($code)) {
-					$set_lang_codes[] = $code;
-				}
-			}
-
-			$this->logMessage("Detectable languages: " . implode(', ', $set_lang_codes));
-
-			if ($set_lang_codes) {
-				$l->omitLanguages($set_lang_codes, true);
-
-				$body_test = strip_tags($email_info['body']);
-				$detected_lang = $l->detectSimple($body_test);
-
-				if ($detected_lang) {
-					$lang = App::getDataService('Language')->findLangCode($detected_lang);
-
-					$this->logMessage("Detected language $detected_lang, setting {$lang->getId()}");
-
-					$person->language = $lang;
-				} else {
-					$this->logMessage("No language detected");
-				}
+			$lang = $lang_detect->detectLanguage($email_info['body']);
+			if ($lang) {
+				$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
+				$person->language = $lang;
 			}
 		}
 
