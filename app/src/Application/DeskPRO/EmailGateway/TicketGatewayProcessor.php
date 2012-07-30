@@ -686,7 +686,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		#------------------------------
 
 		$lang_codes = App::getDataService('Language')->getLangCodes();
-		if ($person->isNewPerson() && !$person->getRealLanguage() && count($lang_codes) > 1) {
+		if (($person->isNewPerson() || !$person->getRealLanguage()) && count($lang_codes) > 1) {
 			$l = new \Text_LanguageDetect();
 			$l->setNameMode(3);
 
