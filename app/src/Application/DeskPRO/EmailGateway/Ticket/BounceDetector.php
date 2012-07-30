@@ -118,6 +118,15 @@ class BounceDetector
 	 */
 	public function isBounced()
 	{
+		// A "null address" in return path means its an automated message (bound or vacation)
+		// See rfc3834
+		if ($return_path = $this->reader->getHeader('Return-Path')) {
+			if ($return_path->getHeader() == '<>') {
+				if ($this->logger) $this->logger->logDebug('Is bounce based on null address in Return-Path');
+				return true;
+			}
+		}
+
 		$failed = $this->reader->getHeader('X-Failed-Recipients');
 		if ($failed && $failed->getHeader()) {
 			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
