@@ -916,8 +916,9 @@ class Upgrade
 
 		// Copy all files over
 		$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
-			'override' => true,
-			'copy_on_windows' => true
+			'override'        => true,
+			'copy_on_windows' => true,
+			'exclude'         => array('/web.config')
 		));
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
@@ -1905,6 +1906,47 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 	public function enableDryRun()
 	{
 		$this->dry_run = true;
+	}
+
+	public function mirror($originDir, $targetDir, \Traversable $iterator = null, $options = array())
+	{
+		$copyOnWindows = false;
+		if (isset($options['copy_on_windows']) && !function_exists('symlink')) {
+			$copyOnWindows = $options['copy_on_windows'];
+		}
+
+		if (null === $iterator) {
+			$flags = $copyOnWindows ? \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS : \FilesystemIterator::SKIP_DOTS;
+			$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($originDir, $flags), \RecursiveIteratorIterator::SELF_FIRST);
+		}
+
+		if ('/' === substr($targetDir, -1) || '\\' === substr($targetDir, -1)) {
+			$targetDir = substr($targetDir, 0, -1);
+		}
+
+		if ('/' === substr($originDir, -1) || '\\' === substr($originDir, -1)) {
+			$originDir = substr($originDir, 0, -1);
+		}
+
+		foreach ($iterator as $file) {
+
+			$file_rel_path = '/' . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
+				continue;
+			}
+
+			$target = $targetDir.'/'.str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+
+			if (is_link($file)) {
+				$this->symlink($file, $target);
+			} elseif (is_dir($file)) {
+				$this->mkdir($target);
+			} elseif (is_file($file) || ($copyOnWindows && is_link($file))) {
+				$this->copy($file, $target, isset($options['override']) ? $options['override'] : false);
+			} else {
+				throw new \RuntimeException(sprintf('Unable to guess "%s" file type.', $file));
+			}
+		}
 	}
 
 	public function copy($originFile, $targetFile, $override = false)
