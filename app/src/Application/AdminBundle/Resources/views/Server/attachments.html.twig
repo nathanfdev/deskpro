@@ -22,10 +22,8 @@
 						<div style="font-size: 11px">
 
 							{{ phrase('admin.server.notice_most_efficient_storage') }}
-                            {% set phrase_link %}
-                            <a class="switch-trigger">{{ phrase('admin.server.switch_to_database_storage') }}</a>
-                            {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.note_recommended_link', {'link':phrase_link}) }}{% endif %}
+                            {% set phrase_link %}<a class="switch-trigger">{{ phrase('admin.server.switch_to_database_storage') }}</a>{% endset %}
+                            {% if not moving_id %}{{ phrase('admin.server.note_recommended_link', {'link':phrase_link}, true) }}{% endif %}
 						</div>
 					</td>
 				</tr>
