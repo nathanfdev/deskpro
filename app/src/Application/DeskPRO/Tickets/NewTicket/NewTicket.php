@@ -325,11 +325,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 
-			//if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
-			//	App::getOrm()->rollback();
-			//	return $dupe_ticket;
-			//}
-
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 

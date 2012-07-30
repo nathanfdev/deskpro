@@ -334,6 +334,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message->addAttachment($attach);
 		}
 
+		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+			return $dupe_message;
+		}
+
 		$ticket->addMessage($message);
 
 		if ($this->reader->getCcAddresses()) {
@@ -745,6 +750,25 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] Could not find ticket email!');
 		}
+
+		#------------------------------
+		# Check for dupe first
+		#------------------------------
+
+		if ($person && !$person->isNewPerson()) {
+			$ticket_message = new Entity\TicketMessage();
+			$ticket_message['person']  = $person;
+			$ticket_message->setMessageHtml($email_info['body']);
+
+			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
+				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
+				return $dupe_message;
+			}
+		}
+
+		#------------------------------
+		# Process new ticket
+		#------------------------------
 
 		App::getOrm()->beginTransaction();
 
