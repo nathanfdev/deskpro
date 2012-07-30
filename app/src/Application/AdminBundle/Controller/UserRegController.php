@@ -346,6 +346,12 @@ class UserRegController extends AbstractController
 		$formtype  = new $type_class();
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
 
+		if ($formtype instanceof \Application\AdminBundle\Form\Usersource\Type\ActiveDirectoryType || $formtype instanceof \Application\AdminBundle\Form\Usersource\Type\LdapType) {
+			if (!extension_loaded('ldap')) {
+				return $this->render('AdminBundle:UserReg:usersource-require-ldap.html.twig');
+			}
+		}
+
 		if ($this->request->isPost() && $this->in->getBool('process')) {
 			$this->em->getConnection()->beginTransaction();
 
