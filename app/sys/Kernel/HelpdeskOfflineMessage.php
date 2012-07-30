@@ -35,19 +35,42 @@ namespace DeskPRO\Kernel;
 
 class HelpdeskOfflineMessage
 {
-	public static function getOfflinePage()
+	public static function getOfflinePage($message = null)
 	{
 		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
-		$page_html = str_replace('{{ OFFLINE_MESSAGE }}', self::getOfflineMessage(), $page_html);
+
+		if ($message === null) {
+			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', self::getOfflineMessage(), $page_html);
+		} else {
+			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', $message, $page_html);
+		}
 
 		return $page_html;
 	}
 
-	public static function getLicenseErrorPage($message, $base_url)
+	public static function getLicenseErrorPage($type, $base_url)
 	{
-		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
-		$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
-		$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
+		switch ($type) {
+			case 'agents':
+				if (DP_INTERFACE == 'user') $message = 'Our helpdesk is currently offline for maintenance. (L01)';
+				else $message = 'You have more agents than your license allows.';
+				break;
+
+			case 'expired':
+				if (DP_INTERFACE == 'user') $message = 'Our helpdesk is currently offline for maintenance. (L02)';
+				else $message = 'Your license has expired.';
+				break;
+
+			default: trigger_error('getLicenseErrorPage called with bad $type', E_USER_ERROR); return '';
+		}
+
+		if (DP_INTERFACE == 'user') {
+			$page_html = self::getOfflinePage($message);
+		} else {
+			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
+			$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
+			$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
+		}
 
 		return $page_html;
 	}
