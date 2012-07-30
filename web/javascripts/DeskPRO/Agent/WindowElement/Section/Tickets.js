@@ -540,7 +540,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					var selectedGrouping = filterEl.find('ul.sub-group li.nav-selected').data('grouping-option');
 					this.setFilterGroupingContent(filterId, html, grouping);
 
-					if (selectedGrouping) {
+					if (selectedGrouping != 'undefined') {
 						filterEl = $('.filter-' + filterId, this.sectionEl);
 						var li = filterEl.find('li.grouping-' + selectedGrouping);
 						DeskPRO_Window.runPageRouteFromElement(li.find('.is-nav-item'));
