@@ -249,8 +249,11 @@ class Feedback extends ContentAbstract
 			case self::STATUS_ACTIVE:
 			case self::STATUS_CLOSED:
 				$this['status'] = $status;
-				$status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
-				$this->setModelField('status_category', $status_cat);
+				if ($sub_status) {
+					$status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
+					$this->setModelField('status_category', $status_cat);
+				}
+				$this->setModelField('status_category', null);
 				break;
 
 			case self::STATUS_HIDDEN:
