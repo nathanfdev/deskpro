@@ -194,6 +194,22 @@ class EzcReader extends AbstractReader
 			$attachments[] = $attach;
 		}
 
+		foreach ($this->mail->fetchParts(array('ezcMailRfc822Digest')) as $part) {
+			if ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment') {
+				$attach = new Item\Attachment();
+
+				// Save it to a tmpfile
+				$tmpfile = tempnam(dp_get_tmp_dir(), 'eml');
+				file_put_contents($tmpfile, $part->generate());
+
+				$attach->tmp_file = $tmpfile;
+				$attach->file_name = 'email.txt';
+				$attach->mime_type = 'text/plain';
+
+				$attachments[] = $attach;
+			}
+		}
+
 		return $attachments;
 	}
 
