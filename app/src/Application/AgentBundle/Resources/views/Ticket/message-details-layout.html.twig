@@ -7,7 +7,7 @@
 		<li {% if current_page == 'view-unformatted' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.view_unformatted') }}</a></li>
 		{% if message.email_source %}
 			<li {% if current_page == 'email-source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emailsource', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.view_email_source') }}</a></li>
-			<li {% if current_page == 'email-source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaildecoded', {'ticket_id': ticket.id, 'message_id': message.id}) }}">View Decoded Email</a></li>
+			<li {% if current_page == 'view-decoded' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaildecoded', {'ticket_id': ticket.id, 'message_id': message.id}) }}">View Decoded Email</a></li>
 		{% endif %}
 	</ul>
 </nav>
