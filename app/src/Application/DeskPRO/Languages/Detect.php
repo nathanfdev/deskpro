@@ -54,6 +54,21 @@ class Detect
 	protected $detectable_langs;
 
 	/**
+	 * @var bool
+	 */
+	protected $has_jpn = false;
+
+	/**
+	 * @var array
+	 */
+	protected $jpn_data;
+
+	/**
+	 * @var int
+	 */
+	protected $jpn_common_word_threshold = 1;
+
+	/**
 	 * @param \Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService $lang_data
 	 */
 	public function __construct(LanguageDataService $lang_data)
@@ -75,7 +90,28 @@ class Detect
 		}
 
 		$string = strip_tags($string);
-		$detected_code = $d->detectSimple($string);
+		$detected_code = null;
+
+		if (!$detected_code && $this->has_jpn) {
+			$count = 0;
+			foreach ($this->getCommonJapaneseWords() as $word) {
+				if (strpos($string, $word) !== false) {
+					$count++;
+
+					if ($count >= $this->jpn_common_word_threshold) {
+						break;
+					}
+				}
+			}
+
+			if ($count >= $this->jpn_common_word_threshold) {
+				$detected_code = 'jpn';
+			}
+		}
+
+		if (!$detected_code) {
+			$detected_code = $d->detectSimple($string);
+		}
 
 		return $detected_code ? $detected_code : null;
 	}
@@ -114,6 +150,8 @@ class Detect
 		foreach ($this->lang_data->getLangCodes() as $code) {
 			if ($this->lang_detect->languageExists($code)) {
 				$this->detectable_langs[] = $code;
+			} elseif ($code == 'jpn') {
+				$this->has_jpn = true;
 			}
 		}
 
@@ -129,6 +167,34 @@ class Detect
 	public function getDetectableLanguages()
 	{
 		$this->getLanguageDetect();
+
+		if ($this->has_jpn) {
+			return array_merge($this->detectable_langs, array('jpn'));
+		}
+
 		return $this->detectable_langs;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getCommonJapaneseWords()
+	{
+		if ($this->jpn_data) {
+			return $this->jpn_data;
+		}
+
+		$this->jpn_data = require(__DIR__.'/data/japanese-common-words.php');
+		return $this->jpn_data;
+	}
+
+
+	/**
+	 * @param int $threshold
+	 */
+	public function setCommonJapaneseWordThreshold($threshold = 3)
+	{
+		$this->jpn_common_word_threshold = $threshold;
 	}
 }

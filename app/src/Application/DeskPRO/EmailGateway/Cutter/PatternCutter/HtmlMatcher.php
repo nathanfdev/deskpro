@@ -206,6 +206,9 @@ class HtmlMatcher
 			return $this->body;
 		}
 
+		// Working with DOMDocument will have encoded things as HTML entities, convert back
+		$this->marked_body = \Orb\Util\Strings::decodeHtmlEntities($this->marked_body);
+
 		return $this->marked_body;
 	}
 

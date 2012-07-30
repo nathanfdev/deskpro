@@ -1220,6 +1220,9 @@ class Strings
 			$html = $html_before;
 		}
 
+		// Working with DOMDocument will have encoded things as HTML entities, convert back
+		$html = \Orb\Util\Strings::decodeHtmlEntities($html);
+
 		return $html;
 	}
 
@@ -1622,6 +1625,48 @@ class Strings
 		$string = str_ireplace(array_keys($repl), array_values($repl), $string);
 
 		return $string;
+	}
+
+
+	/**
+	 * Just like html_entity_decode but decodes UTF-8 entities too.s
+	 *
+	 * @param string $html
+	 * @return mixed
+	 */
+	public static function decodeHtmlEntities($html)
+	{
+		$html = preg_replace_callback('/&#([0-9]+);/', function($m) {
+			return Strings::chrUni($m[1]);
+		}, $html);
+
+		$html = preg_replace_callback('/&#x([0-9A-F]+);/', function($m) {
+			$int = hexdec($m[1]);
+			return Strings::chrUni($int);
+		}, $html);
+
+		return $html;
+	}
+
+
+	/**
+	 * Like chr() but works with UTF-8 codepoints
+	 *
+	 * @param string $val
+	 * @return string
+	 */
+	public static function chrUni($val)
+	{
+		$val = intval($val);
+		switch ($val) {
+			case 0: return chr(0);
+			case ($val & 0x7F): return chr($val);
+			case ($val & 0x7FF): return chr(0xC0 | (($val >> 6) & 0x1F)) . chr(0x80 | ($val & 0x3F));
+			case ($val & 0xFFFF): return chr(0xE0 | (($val >> 12) & 0x0F)) . chr(0x80 | (($val >> 6) & 0x3F)) . chr (0x80 | ($val & 0x3F));
+			case ($val & 0x1FFFFF): return chr(0xF0 | ($val >> 18)) . chr(0x80 | (($val >> 12) & 0x3F)) . chr(0x80 | (($val >> 6) & 0x3F)) . chr(0x80 | ($val & 0x3F));
+		}
+
+		return '';
 	}
 
 

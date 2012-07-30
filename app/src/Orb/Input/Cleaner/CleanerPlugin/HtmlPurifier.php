@@ -121,6 +121,7 @@ class HtmlPurifier implements CleanerPlugin
 	{
 		$config = \HTMLPurifier_Config::createDefault();
 		$config->set('Cache.DefinitionImpl', null);
+		$config->set('Core.Encoding', 'UTF-8');
 
 		switch ($type) {
 			case 'html':
