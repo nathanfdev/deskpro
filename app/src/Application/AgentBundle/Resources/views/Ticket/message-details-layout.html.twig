@@ -5,6 +5,11 @@
 	<ul>
 		<li {% if current_page == 'details' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_details', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.detail') }}</a></li>
 		<li {% if current_page == 'view-unformatted' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.view_unformatted') }}</a></li>
+		{% if message.message_raw %}
+			<li>
+				<a href="{{ path('agent_ticket_message_raw', {ticket_id: message.ticket.id, message_id: message.id}) }}" target="_blank">View raw HTML message in a new window</a>
+			</li>
+		{% endif %}
 		{% if message.email_source %}
 			<li {% if current_page == 'email-source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emailsource', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.view_email_source') }}</a></li>
 			<li {% if current_page == 'view-decoded' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaildecoded', {'ticket_id': ticket.id, 'message_id': message.id}) }}">View Decoded Email</a></li>

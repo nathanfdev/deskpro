@@ -1647,6 +1647,39 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# view-raw-message
+	############################################################################
+
+	public function viewRawMessageAction($ticket_id, $message_id)
+	{
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+
+		$message_raw = $message->message_raw ?: '';
+
+		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+
+		if (!$this->in->getBool('raw')) {
+
+			$note = '<div style="font-family: sans-serif; font-size: 11px;border-bottom: 1px solid #C5C5C5; margin-bottom: 3px; padding-bottom: 3px;">This is a safe version of the raw HTML message. <a href="' . $this->generateUrl('agent_ticket_message_raw', array('ticket_id' => $ticket_id, 'message_id' => $message_id, 'raw' => 1)) . '">Click here to view the original message with no modifications</a>. Note that a malicious user may have injected harmful HTML into the message and viewing the original message may result in harmful code being executed.</div>';
+
+			$purifier = new \HTMLPurifier();
+			$config = \HTMLPurifier_Config::createDefault();
+			$config->set('Cache.DefinitionImpl', null);
+			$config->set('Core.Encoding', 'UTF-8');
+			$config->set('HTML.TidyLevel', 'none');
+			// Everything but script/iframe/applet/object
+			$config->set('HTML.Allowed', 'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var');
+			$config->set('HTML.AllowedAttributes', 'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src');
+			$config->set('URI.DisableExternalResources', true);
+
+			$message_raw = $note . $purifier->purify($message_raw, $config);
+		}
+
+		$res = new Response($message_raw);
+		return $res;
+	}
+
+	############################################################################
 	# new
 	############################################################################
 
