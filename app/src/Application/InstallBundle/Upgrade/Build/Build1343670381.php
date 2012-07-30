@@ -29,39 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage UserBundle
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\NewTicket;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-/**
- * This wraps up the 'ticket' data of a newticket
- */
-class TicketProps
+class Build1343670381 extends AbstractBuild
 {
-	public $subject = '';
-	public $message_is_html = false;
-	public $message = '';
-	public $message_raw = null;
-	public $notify_email = '';
-
-	/**
-	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
-	 */
-	public $new_upload = null;
-
-	public $attach_ids = array();
-	public $attach_ids_authed = false;
-
-	public $department_id = 0;
-	public $category_id   = 0;
-	public $priority_id   = 0;
-	public $product_id    = 0;
-
-	public function __construct()
+	public function run()
 	{
-
+		$this->out("Add tickets_messages.message_raw");
+		$this->execMutateSql("ALTER TABLE tickets_messages ADD message_raw LONGTEXT DEFAULT NULL");
 	}
 }

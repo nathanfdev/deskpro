@@ -416,6 +416,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$has_cut = false;
 
+		$email_info['body_raw'] = $email_info['body'];
 		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 		$email_info['body_full'] = $email_info['body'];
 
@@ -504,6 +505,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = $inline_images->processTokens($email_info['body']);
 		}
 
+		$email_info['body_raw'] = $email_info['body'];
 		$email_info['body_full'] = $email_info['body'];
 
 		$agent_pos_1 = strpos($email_info['body'], '=== Enter your reply below this line ===');
@@ -659,6 +661,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		// Replace inline image tags with tokens
+		$email_info['body_raw'] = $email_info['body'];
 		$email_info['body'] = $inline_images->processTokens($email_info['body']);
 		$email_info['body_full'] = '';
 
@@ -718,6 +721,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$newticket->ticket->subject = $email_info['subject'];
 		$newticket->ticket->message = $email_info['body'];
+		$newticket->ticket->message_raw = $email_info['body_raw'];
 		$newticket->ticket->message_is_html = true;
 
 		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");

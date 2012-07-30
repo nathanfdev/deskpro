@@ -129,6 +129,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $message_full = null;
 
 	/**
+	 * This is the full raw message content. It has not been passed through
+	 * any HTML cleaning process.s
+	 *
+	 * @var string
+	 */
+	protected $message_raw = null;
+
+	/**
 	 * A hint to say if we should show message_full by default. We do this when
 	 * we detect that the user has replied to a message inline rather than above the cut line.
 	 *
@@ -365,6 +373,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
 		$metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_full', ));
+		$metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_raw', ));
 		$metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'show_full_hint', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

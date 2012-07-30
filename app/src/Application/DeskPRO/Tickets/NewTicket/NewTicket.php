@@ -247,6 +247,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket_message['message'] = '(no message)';
 			}
 
+			if ($this->ticket->message_raw) {
+				$ticket_message['message_raw'] = $this->ticket->message_raw;
+			}
+
 			$attach = null;
 			if ($this->ticket->new_upload) {
 				$desc = App::getApi('filestorage')->createRandomPath();
