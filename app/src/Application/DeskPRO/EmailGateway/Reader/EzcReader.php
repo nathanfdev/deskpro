@@ -203,8 +203,8 @@ class EzcReader extends AbstractReader
 				file_put_contents($tmpfile, $part->generate());
 
 				$attach->tmp_file = $tmpfile;
-				$attach->file_name = 'email.txt';
-				$attach->mime_type = 'text/plain';
+				$attach->file_name = 'email.eml';
+				$attach->mime_type = 'message/rfc822';
 
 				$attachments[] = $attach;
 			}
