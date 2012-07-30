@@ -551,7 +551,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	{
 		$gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
 
+		$count = 0;
 		foreach ($ccs as $cc) {
+
+			// Max 10 CC's to prevent mass spamming
+			if ($count >= 10) {
+				break;
+			}
 
 			$cc_email = $cc->getEmail();
 			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
@@ -579,6 +585,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if (!$ticket->hasParticipantPerson($cc_person)) {
 				$ticket->addParticipantPerson($cc_person);
+				$count++;
 			}
 		}
 	}
