@@ -1079,8 +1079,8 @@ class Strings
 			$string = preg_replace('#^\s*(<div[^>]*>)\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '$1', $string);
 
 			// Trailing whitespace in a trailing div wrapper
-			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
-			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|&nsbp;)$#i', '', $string);
+			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
 
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
@@ -1116,7 +1116,7 @@ class Strings
 			$changed = false;
 			foreach ($qp as $span) {
 				$text = $span->text();
-				$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
+				$text = str_replace(array('&nbsp;', '&#xA0;', Strings::chrUni(160)), ' ', $text);
 				$text = trim($text);
 
 				if (!$text) {
@@ -1135,7 +1135,7 @@ class Strings
 			$changed = false;
 			foreach ($qp as $p) {
 				$text = $p->text();
-				$text = str_replace(array('&nbsp;', '&#xA0;'), ' ', $text);
+				$text = str_replace(array('&nbsp;', '&#xA0;', Strings::chrUni(160)), ' ', $text);
 				$text = trim($text);
 
 				if (!$text) {
