@@ -99,7 +99,7 @@ class TicketViewController extends AbstractController
 						if ($ticket && $this->person->isGuest()) {
 							$this->session->set('ticket_from_ptac_register', $ticket->id);
 							$this->session->save();
-							return $this->redirectRoute('user_register');
+							return $this->renderLoginOrPermissionError();
 						}
 
 						// If they came here through the access code but arent on the ticket,
