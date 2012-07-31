@@ -266,6 +266,7 @@ class TicketViewController extends AbstractController
 				'custom_fields' => $custom_fields,
 				'errors' => $errors,
 				'error_fields' => $error_fields,
+				'ticket_display_js' => $ticket_display_js,
 			));
 
 			$tpl = 'UserBundle:TicketView:view-modify.html.twig';

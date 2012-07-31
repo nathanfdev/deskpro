@@ -10,10 +10,70 @@
 {% block page_title %}
 	{{ ticket.subject }} - {{ phrase('user.tickets.your_tickets') }}
 {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{ asset('/javascripts/DeskPRO/User/ElementHandler/EditTicket.js') }}"></script>
+<script type="text/javascript">
+var ticketReader = {
+	getCategoryId: function() {
+		var cat = $('select.category_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-category_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getPriorityId: function() {
+		var cat = $('select.priority_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-priority_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getProductId: function() {
+		var cat = $('select.product_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-product_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getOrganizationId: function() {
+		return {{ app.user.organization.id|default(0) }};
+	},
+	getWorkflow: function() {
+		return 0;
+	}
+};
+</script>
+<script type="text/javascript">
+{{ ticket_display_js|raw }}
+</script>
+<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/vendor/jquery-ui/portal-theme/jquery-ui.css') }}" />
+{% endblock %}
 {% block content %}
 <section class="dp-portal-section dp-new-ticket-section">
 	<article>
-		<form action="{{ path('user_tickets_view', {ticket_ref: ticket.getPublicId(), edit: 1}) }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+		<form
+			action="{{ path('user_tickets_view', {ticket_ref: ticket.getPublicId(), edit: 1}) }}"
+			method="post"
+			id="dp_newticket_form"
+			enctype="multipart/form-data"
+			class="with-form-validator with-handler"
+			data-element-handler="DeskPRO.User.ElementHandler.EditTicket"
+		>
 			<input type="hidden" name="process" value="1" />
 
 			{#--- FIELDS CONTAINER ---#}
