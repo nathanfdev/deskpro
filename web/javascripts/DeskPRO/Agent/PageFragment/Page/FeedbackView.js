@@ -176,7 +176,6 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			}
 		});
 		this.getEl('editname_start').on('click', startEditable);
-
 		this.getEl('editname_end').on('click', stopEditable);
 	},
 

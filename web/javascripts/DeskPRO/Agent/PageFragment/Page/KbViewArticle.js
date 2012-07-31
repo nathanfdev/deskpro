@@ -157,21 +157,60 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				DeskPRO_Window.removePage(self);
 			});
 
-			// Name is editable
-			var name = $('h3.title.editable:first', this.wrapper);
-			if (!name.attr('id')) {
-				name.attr('id', Orb.getUniqueId());
-			}
+			var namef       = this.getEl('showname');
+			var editName    = this.getEl('editname');
+			var startBtn    = this.getEl('editname_start');
+			var stopBtn     = this.getEl('editname_end');
 
-			var editable = new DeskPRO.Form.InlineEdit({
-				baseElement: this.wrapper,
-				ajax: {
-					url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			var startEditable = function() {
+				namef.hide();
+				editName.show();
+				startBtn.hide();
+				stopBtn.show();
+			};
+
+			var stopEditable = function() {
+				var nametxt = editName.find('input').first();
+				var setName = nametxt.val().trim();
+
+				if(!setName) {
+					return;
+				}
+
+				editName.hide();
+				startBtn.show();
+				namef.show();
+				stopBtn.hide();
+				namef.text(setName);
+
+				var postData = [];
+				postData.push({
+					name: 'action',
+					value: 'title'
+				});
+				postData.push({
+					name: 'title',
+					value: setName
+				});
+
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: postData,
 					success: function(data) {
 						self.handleUnloadRevisions(data.revision_id);
 					}
+				});
+			};
+
+			namef.on('dblclick', startEditable).on('keypress', function(ev) {
+				if (ev.keyCode == 13 /* enter key */) {
+					ev.preventDefault();
+					stopEditable();
 				}
 			});
+			this.getEl('editname_start').on('click', startEditable);
+			this.getEl('editname_end').on('click', stopEditable);
 		}
 
 		// Tabs
