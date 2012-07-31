@@ -59,8 +59,8 @@ $container->setDefinition('deskpro.service_urls', $definition);
 $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(DP_ROOT . '/languages')));
 $container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
-$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
-$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_system')));
+$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DeskproLoader');
+$definition->addMethodCall('setSystemLoader', array(new Reference('deskpro.core.translate_loader_system')));
 $container->setDefinition('deskpro.core.translate_loader', $definition);
 
 // Now create the translate object
