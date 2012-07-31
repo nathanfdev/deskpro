@@ -1795,6 +1795,31 @@ $collection->add('admin_emailgateways_testaccount', new Route(
 ));
 
 ################################################################################
+# Ticket message templates
+################################################################################
+
+$collection->add('admin_ticket_msgtpl', new Route(
+	'/tickets/message-templates',
+	array('_controller' => 'AdminBundle:TicketMessageTemplates:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticket_msgtpl_new', new Route(
+	'/tickets/message-templates/new',
+	array('_controller' => 'AdminBundle:TicketMessageTemplates:edit', 'id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticket_msgtpl_edit', new Route(
+	'/tickets/message-templates/{id}',
+	array('_controller' => 'AdminBundle:TicketMessageTemplates:edit'),
+	array(),
+	array()
+));
+
+################################################################################
 # Email Transports
 ################################################################################
 

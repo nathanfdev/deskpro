@@ -1,0 +1,81 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <ul>
+          <li><a href="{{ path('admin_ticket_msgtpl') }}">Ticket Message Templates</a></li>
+          <li>New Message Template</li>
+     </ul>
+{% endblock %}
+{% block html_head %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		DP.select($('#variables'));
+
+		$('#insert_variable').on('click', function(ev) {
+			ev.preventDefault();
+			var varname = $('#variables').val();
+
+			$('#ticket_message_template_message').insertAtCaret('{{ '{{' }} ' + varname + ' {{ '}}' }}');
+		});
+	});
+</script>
+{% endblock %}
+{% block page %}
+<form action="{{ path('admin_ticket_msgtpl_edit', {'id': message_template.id|default(0)}) }}" method="post">
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>{{ phrase('agent.general.title') }}</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Message Template</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.message, {attr: {style: 'width: 100%; height: 140px;'}}) }}
+
+			<div style="float: right; padding-top: 3px; vertical-align: top">
+				<select id="variables">
+					<optgroup label="Ticket">
+						<option value="ticket.subject">Subject</option>
+						<option value="ticket.department">Department</option>
+						<option value="ticket.product">Product</option>
+						<option value="ticket.category">Category</option>
+						<option value="ticket.workflow">Workflow</option>
+						<option value="ticket.priority">Priority</option>
+						<option value="ticket.agent">Agent Name</option>
+						<option value="ticket.agent_email">Agent Email Address</option>
+						<option value="ticket.agent">Agent Team</option>
+						<option value="ticket.date_created">Date Created</option>
+						<option value="ticket.time_created">Time Created</option>
+						{% for field in app.getCustomFieldManager('tickets').getFields() %}
+							<option value="ticket.field{{ field.id }}">{{ field.title }}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="User">
+						<option value="user.name">Name</option>
+						<option value="user.email">Email Address</option>
+						<option value="user.organization_position">Position in Organisation</option>
+						{% for field in app.getCustomFieldManager('people').getFields() %}
+							<option value="user.field{{ field.id }}">{{ field.title }}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="Organisation">
+						<option value="org.name">Name</option>
+					</optgroup>
+				</select> <button id="insert_variable" class="clean-white" style="vertical-align: top; position:relative; top: 3px;">Insert Variable</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
+
+</form>
+{% endblock %}
