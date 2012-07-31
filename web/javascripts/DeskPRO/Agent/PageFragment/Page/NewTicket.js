@@ -39,6 +39,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.addEvent('deactivate', function() {
 			this._resetForX();
 		}, this);
+
+		var messageEl = this.getEl('message');
+		this.getEl('message_template').on('change', function() {
+			var id = $(this).val();
+
+			if (!id) {
+				return;
+			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/get-message-template/'+id+'.json',
+				type: 'GET',
+				cache: false,
+				dataType: 'json',
+				success: function(data) {
+					messageEl.insertAtCaret(data.message);
+				}
+			});
+		});
 	},
 
 	markForReload: function() {

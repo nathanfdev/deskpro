@@ -180,7 +180,13 @@ class NewTicket
 		$message = new TicketMessage();
 		$message->person = $this->_person_context;
 		$message->setVisitorFromRequest();
-		$message->setMessageText($this->message);
+
+		$message_text = $this->message;
+		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
+		$snip->snippet = $message_text;
+		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
+
+		$message->setMessageText($message_text);
 
 		// Message Attachments
 		foreach ($this->attach as $blob_id) {

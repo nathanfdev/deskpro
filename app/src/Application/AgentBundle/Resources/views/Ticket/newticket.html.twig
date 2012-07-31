@@ -195,7 +195,17 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="section message-section" id="{{baseId}}_message_section">
 	<div class="content">
-		<h4>{{ phrase('agent.general.message') }}</h4>
+		<div style="width:80%">
+			{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
+				<select id="{{baseId}}_message_template" name="using_template" style="float:right;">
+					<option value="">Blank Message</option>
+					{% for id,title in app.getDataRepository('TicketMessageTemplate').getTitles() %}
+						<option value="{{ id }}">{{ title }}</option>
+					{% endfor %}
+				</select>
+			{% endif %}
+			<h4>{{ phrase('agent.general.message') }}</h4>
+		</div>
 		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
 		<div class="error-message message">{{ phrase('agent.tickets.please_enter_a_message') }}</div>
 	</div>

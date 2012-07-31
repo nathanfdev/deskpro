@@ -893,6 +893,13 @@ $collection->add('agent_ticket_new_getpersonrow', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_getmessagetpl', new Route(
+	'/tickets/get-message-template/{id}.json',
+	array('_controller' => 'AgentBundle:Ticket:getTicketMessageTemplate'),
+	array(),
+	array()
+));
+
 $collection->add('agent_people_new_ajaxsave', new Route(
 	'/tickets/new-ajax-save',
 	array('_controller' => 'AgentBundle:Ticket:newAjaxSave'),
