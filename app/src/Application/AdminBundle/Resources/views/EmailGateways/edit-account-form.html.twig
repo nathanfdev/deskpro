@@ -52,6 +52,17 @@
 				<label>{{ phrase('admin.gateway.account_information') }}</label>
 			</div>
 			<div class="dp-form-input">
+
+				{% if errors %}
+				<div class="alert-message block-message error">
+					<ul>
+						{% for m in errors %}
+							<li>{{ m }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+				{% endif %}
+
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
@@ -148,7 +159,7 @@
 						{% set phrase_link %}
 							<a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>.
 						{% endset %}
-						{{ phrase('admin.gateway.using_the', {'link':phrase_link}) }}
+						{{ phrase('admin.gateway.using_the', {'link':phrase_link}, true) }}
 					{% endif %}
                 </span>
 				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.gateway.use_google_for_outgoing') }}</span>
@@ -238,7 +249,7 @@
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
 							{{ phrase('admin.general.google_apps') }}
 						</label>
-						<div class="dp-group-options" style="display: none">
+						<div class="dp-group-options" {% if transport.transport_type != 'gmail' %}style="display: none"{% endif %}>
 							<table cellspacing="0" cellpadding="0" width="100%">
 								<tr>
 									<td class="title" width="120">{{ phrase('admin.general.full_email_address') }}:</td>

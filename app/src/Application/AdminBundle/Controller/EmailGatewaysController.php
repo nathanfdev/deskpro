@@ -160,6 +160,11 @@ class EmailGatewaysController extends AbstractController
 					$address->match_pattern = $editgateway->address;
 
 					$new_addresses[] = $address;
+
+					if (count($gateway->addresses) == 1) {
+						$this->em->remove($gateway->addresses->get(0));
+						$gateway->addresses->remove(0);
+					}
 				}
 
 				// Remove addresses
