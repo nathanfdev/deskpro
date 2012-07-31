@@ -543,8 +543,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					if (selectedGrouping != 'undefined') {
 						filterEl = $('.filter-' + filterId, this.sectionEl);
 						var li = filterEl.find('li.grouping-' + selectedGrouping);
-						DeskPRO_Window.runPageRouteFromElement(li.find('.is-nav-item'));
-						li.addClass('nav-selected');
+						if (li[0]) {
+							DeskPRO_Window.runPageRouteFromElement(li.find('.is-nav-item'));
+							li.addClass('nav-selected');
+						}
 					}
 				}, this);
 			}

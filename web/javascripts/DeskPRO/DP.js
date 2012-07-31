@@ -6,14 +6,15 @@ var DP = {
 		log: function() {},
 		warn: function() {},
 		info: function() {},
-		debug: function() {}
+		debug: function() {},
+		trace: function() {}
 	},
 
 	init: function() {
 		if (typeof window.console != 'undefined') {
 			DP.console = window.console;
 		}
-		['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
+		['error', 'log', 'warn', 'info', 'debug', 'trace'].each(function(v) {
 			if (!DP.console[v]) {
 				DP.console[v] = function() {};
 			}

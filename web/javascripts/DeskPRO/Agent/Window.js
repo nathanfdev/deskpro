@@ -1111,6 +1111,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (!el.data('route')) {
 			DP.console.error('Element has no route: %o', el);
+			DP.console.trace();
 			return;
 		}
 
