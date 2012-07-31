@@ -72,7 +72,7 @@
 {% block page %}
 <form action="{{ path('admin_userreg_options_save') }}" method="POST" id="mode_form">
 
-{% macro options_table(reg_triggers, show_everyone) %}
+{% macro options_table(reg_triggers, everyone_ug) %}
 	<section class="sunken">
 		{% if reg_triggers %}
 			<div class="sunken-row">
@@ -90,7 +90,7 @@
 				If a user uses an email address that already exists, force them to log in before their form is accepted
 			</div>
 		{% endif %}
-		{% if show_everyone %}
+		{% if everyone_ug %}
 			<div class="sunken-row">
 				Guests are still able to perform a number of actions defined by permissions granted by the <a href="{{ path('admin_usergroups_edit', {'id': everyone_ug.id}) }}">Everyone usergroup</a>.
 				Turning the Everyone usergroup off will require all users to log in to view anything on the helpdesk.
@@ -139,7 +139,7 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_like_request_registration') }}</p>
-					{{ _self.options_table(reg_triggers, true) }}
+					{{ _self.options_table(reg_triggers, everyone_ug) }}
 				</div>
 			</div>
 
@@ -151,7 +151,7 @@
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_closed_helpdesk') }}</p>
 					<section class="sunken">
-						{{ _self.options_table(false, true) }}
+						{{ _self.options_table(false, everyone_ug) }}
 					</section>
 				</div>
 			</div>
