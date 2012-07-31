@@ -699,7 +699,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var li = $(this);
 
 			var inputEl = $('<input type="text" />');
-			inputEl.val($('a', li).text().trim());
+			inputEl.val($('.title .flag', li).text().trim());
 
 			var enterCloseFn = function(ev) {
 				if (ev.keyCode == 13 && !ev.metaKey) {
@@ -719,7 +719,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						}]
 					});
 
-					$('a', li).text(newTitle);
+					$('.title .flag', li).text(newTitle);
 				}
 
 				backdrop.remove();
