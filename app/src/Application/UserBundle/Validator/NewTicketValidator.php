@@ -66,6 +66,11 @@ class NewTicketValidator extends AbstractValidator
 	protected $captca;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	protected $mock_ticket;
+
+	/**
 	 * @param array $page_data
 	 */
 	public function setPageData($page_data)
@@ -97,6 +102,18 @@ class NewTicketValidator extends AbstractValidator
 		}
 
 		$this->newticket = $newticket;
+
+		$this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
+		$this->mock_ticket->setDepartmentId($newticket->ticket->department_id);
+		if ($newticket->ticket->category_id) {
+			$this->mock_ticket->setCategoryId($newticket->ticket->category_id);
+		}
+		if ($newticket->ticket->product_id) {
+			$this->mock_ticket->setProductId($newticket->ticket->product_id);
+		}
+		if ($newticket->ticket->priority_id) {
+			$this->mock_ticket->setPriorityId($newticket->ticket->priority_id);
+		}
 
 		#------------------------------
 		# Validate the department,
@@ -215,6 +232,19 @@ class NewTicketValidator extends AbstractValidator
 
 	protected function _validateItem($item)
 	{
+		if (!empty($item['rules'])) {
+			$terms = new \Application\DeskPRO\Tickets\TicketTerms($item['rules']);
+			if ($item['rule_match_type'] == 'any') {
+				if (!$terms->doesTicketMatchAny($this->mock_ticket)) {
+					return;
+				}
+			} else {
+				if (!$terms->doesTicketMatch($this->mock_ticket)) {
+					return;
+				}
+			}
+		}
+		
 		switch ($item['field_type']) {
 			case 'ticket_product':
 
