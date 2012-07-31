@@ -87,7 +87,7 @@ class FilterAccessResolver
 		$hidden_filters_data = $this->db->fetchAll("
 			SELECT person_id, name
 			FROM people_prefs
-			WHERE name LIKE 'agent.ui.filter-visibility.%' AND (value_str IS NULL OR value_str = '' OR value_str = '0')
+			WHERE name LIKE 'agent.ui.filter-visibility.%' AND (value_str = '0')
 		");
 
 		$hidden_prefs = array();
