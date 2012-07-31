@@ -81,7 +81,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 	/**
 	 * Initialized loaders
-	 * @var \Application\DeskPRO\People\PermissionLoader[]
+	 * @var \Application\DeskPRO\People\PermissionLoader\AbstractLoader[]
 	 */
 	protected $loaders = array();
 
@@ -116,7 +116,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$this->usergroup_ids[] = 0;
 		}
 
-		if ($person->getId() && App::getDataService('Usergroup')->find(Usergroup::REG_ID)->is_enabled) {
+		if ($person->getId() && $person->is_agent_confirmed && App::getDataService('Usergroup')->find(Usergroup::REG_ID)->is_enabled) {
 			$this->usergroup_ids[] = Usergroup::REG_ID;
 		}
 
