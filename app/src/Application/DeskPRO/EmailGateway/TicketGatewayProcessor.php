@@ -392,6 +392,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info = array();
 
 		$inline_images = new InlineImageTokens($this->reader);
+		$inline_images2 = new InlineImageTokens($this->reader);
 
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
@@ -453,7 +454,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($email_info['body_is_html']) {
 			// Replace inline image tags with tokens
 			$email_info['body'] = $inline_images->processTokens($email_info['body']);
-			$email_info['body_full'] = $inline_images->processTokens($email_info['body_full']);
+			$email_info['body_full'] = $inline_images2->processTokens($email_info['body_full']);
 
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
@@ -469,7 +470,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
-		$email_info['body_full'] = $this->replaceInlineAttachTokens($email_info['body_full'], $inline_images);
+		$email_info['body_full'] = $this->replaceInlineAttachTokens($email_info['body_full'], $inline_images2);
 
 		return $email_info;
 	}
