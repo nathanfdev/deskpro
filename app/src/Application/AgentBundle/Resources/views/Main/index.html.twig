@@ -21,6 +21,19 @@
 
 	<script type="text/javascript">
 		(function() {
+			var lastTime = (new Date()).getTime();
+
+			setInterval(function() {
+				var currentTime = (new Date()).getTime();
+				if (currentTime > (lastTime + 360000)) {
+					// Probably just woke up from sleep
+					window.location.reload(false);
+				}
+				lastTime = currentTime;
+			}, 240000);
+		})();
+
+		(function() {
 			var diff = 0;
 			var now = new Date();
 			diff += Math.abs(now.getHours() - DESKPRO_PERSON_HOUR) * 60 * 60;
