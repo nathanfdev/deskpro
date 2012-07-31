@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 
 use Application\UserBundle\Form\RegisterType;
 
-class RegisterController extends AbstractController
+class RegisterController extends \Application\DeskPRO\Controller\AbstractController
 {
 	public function registerAction()
 	{
