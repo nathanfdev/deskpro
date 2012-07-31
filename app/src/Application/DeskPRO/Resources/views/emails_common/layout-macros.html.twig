@@ -60,9 +60,9 @@
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">
 			{% if options.show_author_email or options.person_id == message.person.id or not message.person.is_agent %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.getDisplayContact()|e }) }}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e ~ ' <' ~ message.person.primary_email_address ~ '>' }, true) }}
 			{% else %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e }) }}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e }, true) }}
 			{% endif %}
 		</td></tr>
 		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
