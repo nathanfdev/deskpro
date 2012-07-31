@@ -2587,9 +2587,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					$.ajax(this);
 					return;
 				}
-				var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
-				self._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 				delete self.loadingSections[section_id];
+				DeskPRO_Window._globalHandleAjaxError(null, xhr, this, errorThrown);
 			}
 		});
 	},
