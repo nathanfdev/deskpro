@@ -830,69 +830,67 @@ class Structure implements PersonContextInterface
 		# Category data: This is un-permissioned data
 		#------------------------------
 
-		if (!isset($this->category_data[$ent])) {
-			if ($this->cache instanceof PreloadedMysqlCache) {
-				$this->cache->preloadPrefix('categories');
-			}
-
-			$cats = $this->em->createQuery("
-				SELECT cat
-				FROM $ent cat INDEX BY cat.id
-				ORDER BY cat.display_order ASC
-			")->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
-			  ->execute();
-
-			foreach ($cats as $c) {
-				$c->structure_helper = $this;
-			}
-
-			$this->category_data[$ent] = array();
-			$this->category_data[$ent]['all'] = $cats;
-			$this->category_data[$ent]['ids'] = array_keys($cats);
-
-			$maps = $this->cache->fetch('categories.maps.' . $ent);
-			if (!$maps) {
-				$parent_map = $this->em->getConnection()->fetchAll("
-					SELECT id, COALESCE(parent_id, 0) AS parent_id
-					FROM " . $this->em->getRepository($ent)->getTableName() . "
-					ORDER BY display_order ASC
-				");
-				$parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
-
-				$child_map = array(0 => array());
-				foreach ($parent_map as $parent_id => $child_id) {
-					if ($parent_id == 0) {
-						$child_map[0][] = $child_id;
-					}
-				}
-
-				foreach ($parent_map as $child_id => $parent_id) {
-					if (!isset($child_map[$parent_id])) {
-						$child_map[$parent_id] = array();
-					}
-					$child_map[$parent_id][] = $child_id;
-				}
-
-				$maps = array('parent_map' => $parent_map, 'child_map' => $child_map);
-				$this->cache->save('categories.maps.' . $ent, $maps);
-			}
-
-			$this->category_data[$ent]['parent_map'] = $parent_map = $maps['parent_map'];
-			$this->category_data[$ent]['child_map'] =  $child_map  = $maps['child_map'];
-
-			// Getting hierarchy is easy because they already have parent/children,
-			// hierarchy then is simply getting the root nodes from our collection
-			$this->category_data[$ent]['hierarchy'] = array();
-
-			foreach ($child_map[0] as $cat_id) {
-				$this->category_data[$ent]['hierarchy'][$cat_id] = $cats[$cat_id];
-			}
-
-			$h = new \Orb\Util\HierarchyStructure($cats);
-			$h->parent_map = $this->category_data[$ent]['parent_map'];
-			$h->child_map = $this->category_data[$ent]['child_map'];
-			$this->category_data[$ent]['helper'] = $h;
+		if ($this->cache instanceof PreloadedMysqlCache) {
+			$this->cache->preloadPrefix('categories');
 		}
+
+		$cats = $this->em->createQuery("
+			SELECT cat
+			FROM $ent cat INDEX BY cat.id
+			ORDER BY cat.display_order ASC
+		")->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
+		  ->execute();
+
+		foreach ($cats as $c) {
+			$c->structure_helper = $this;
+		}
+
+		$this->category_data[$ent] = array();
+		$this->category_data[$ent]['all'] = $cats;
+		$this->category_data[$ent]['ids'] = array_keys($cats);
+
+		$maps = $this->cache->fetch('categories.maps.' . $ent);
+		if (!$maps) {
+			$parent_map = $this->em->getConnection()->fetchAll("
+				SELECT id, COALESCE(parent_id, 0) AS parent_id
+				FROM " . $this->em->getRepository($ent)->getTableName() . "
+				ORDER BY display_order ASC
+			");
+			$parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
+
+			$child_map = array(0 => array());
+			foreach ($parent_map as $parent_id => $child_id) {
+				if ($parent_id == 0) {
+					$child_map[0][] = $child_id;
+				}
+			}
+
+			foreach ($parent_map as $child_id => $parent_id) {
+				if (!isset($child_map[$parent_id])) {
+					$child_map[$parent_id] = array();
+				}
+				$child_map[$parent_id][] = $child_id;
+			}
+
+			$maps = array('parent_map' => $parent_map, 'child_map' => $child_map);
+			$this->cache->save('categories.maps.' . $ent, $maps);
+		}
+
+		$this->category_data[$ent]['parent_map'] = $parent_map = $maps['parent_map'];
+		$this->category_data[$ent]['child_map'] =  $child_map  = $maps['child_map'];
+
+		// Getting hierarchy is easy because they already have parent/children,
+		// hierarchy then is simply getting the root nodes from our collection
+		$this->category_data[$ent]['hierarchy'] = array();
+
+		foreach ($child_map[0] as $cat_id) {
+			$this->category_data[$ent]['hierarchy'][$cat_id] = $cats[$cat_id];
+		}
+
+		$h = new \Orb\Util\HierarchyStructure($cats);
+		$h->parent_map = $this->category_data[$ent]['parent_map'];
+		$h->child_map = $this->category_data[$ent]['child_map'];
+		$this->category_data[$ent]['helper'] = $h;
 
 		#------------------------------
 		# Categories viewable by the user
