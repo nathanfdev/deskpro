@@ -72,28 +72,35 @@
 {% block page %}
 <form action="{{ path('admin_userreg_options_save') }}" method="POST" id="mode_form">
 
-{% macro options_table(reg_triggers) %}
-	<table cellspacing="0" cellpadding="0" width="100%" style="margin-left: 8px; margin-right: 6px;">
-		<tr>
-			<td width="10"><input type="checkbox" class="onoff-slider" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
-			<td>
-				<h3>{{ phrase('agent.general.force_email_validation') }}</h3>
-                {{ phrase('admin.user_registration.notice_force_validate_email', {'path':path('admin_tickettriggers')}) }}
-                <br />
-				{% if reg_triggers['email_validation.web'] %}   <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_web_tickets') }}<br />{% endif %}
-				{% if reg_triggers['email_validation.email'] %} <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.email'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.email'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_email_tickets') }}<br />{% endif %}
-				{% if reg_triggers['email_validation.widget'] %}<input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.widget'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.widget'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_widget_tickets') }}<br />{% endif %}
-				<br />
-			</td>
-		</tr>
-		<tr>
-			<td width="10"><input type="checkbox" class="onoff-slider" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
-			<td>
-				<h3>{{ phrase('admin.user_registration.force_registered_login') }}</h3>
-				{{ phrase('admin.user_registration.notice_when_email_exists') }}
-			</td>
-		</tr>
-	</table>
+{% macro options_table(reg_triggers, show_everyone) %}
+	<section class="sunken">
+		{% if reg_triggers %}
+			<div class="sunken-row">
+				<input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} />
+				Enable email validation for new feedback or comments on feedback, articles, news or downloads
+			</div>
+			<div class="sunken-row">
+				Enable email validation for new tickets submitted via
+					{% if reg_triggers['email_validation.web'] %}<input class="trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> Web {% endif %}
+					{% if reg_triggers['email_validation.email'] %} <input class="trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.email'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.email'].is_enabled %}checked="checked"{% endif %} /> Email{% endif %}
+					{% if reg_triggers['email_validation.widget'] %}<input class="trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.widget'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.widget'].is_enabled %}checked="checked"{% endif %} /> Website Widget{% endif %}
+			</div>
+			<div class="sunken-row">
+				<input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} />
+				If a user uses an email address that already exists, force them to log in before their form is accepted
+			</div>
+		{% endif %}
+		{% if show_everyone %}
+			<div class="sunken-row">
+				Guests are still able to perform a number of actions defined by permissions granted by the <a href="{{ path('admin_usergroups_edit', {'id': everyone_ug.id}) }}">Everyone usergroup</a>.
+				Turning the Everyone usergroup off will require all users to log in to view anything on the helpdesk.
+				<div style="padding-top: 4px;">
+					The Everyone usergroup is currently
+					<input class="onoff-slider" type="checkbox" {% if everyone_ug.is_enabled %}checked="checked"{% endif %} onclick="window.location='{{ path('admin_usergroups_toggle', {id: everyone_ug.id, userreg: 1}) }}';" />
+				</div>
+			</div>
+		{% endif %}
+	</section>
 {% endmacro %}
 
 <div class="dp-form">
@@ -121,7 +128,7 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.explain_must_login_mode') }}</p>
-					{{ _self.options_table(reg_triggers) }}
+					{{ _self.options_table(reg_triggers, true) }}
 				</div>
 			</div>
 
@@ -132,25 +139,20 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_like_request_registration') }}</p>
-					{{ _self.options_table(reg_triggers) }}
+					{{ _self.options_table(reg_triggers, true) }}
 				</div>
 			</div>
 
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="closed" {% if app.getSetting('core.user_mode') == 'closed' %}checked="checked"{% endif %}>
-					{{ phrase('agent.tickets.status_closed') }}
+					No Registration
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_closed_helpdesk') }}</p>
-					<p>
-						Guests are still able to perform a number of actions defined by permissions granted by the <a href="{{ path('admin_usergroups_edit', {'id': everyone_ug.id}) }}">Everyone usergroup</a>.
-						Turning the Everyone usergroup off will require all users to log in to view anything on the helpdesk.
-					</p>
-					<p>
-						The Everyone usergroup is currently
-						<input class="onoff-slider" type="checkbox" {% if everyone_ug.is_enabled %}checked="checked"{% endif %} onclick="window.location='{{ path('admin_usergroups_toggle', {id: everyone_ug.id, userreg: 1}) }}';" />
-					</p>
+					<section class="sunken">
+						{{ _self.options_table(false, true) }}
+					</section>
 				</div>
 			</div>
 

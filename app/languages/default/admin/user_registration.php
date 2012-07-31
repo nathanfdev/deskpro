@@ -42,7 +42,7 @@
 	'admin.user_registration.explain_default_filter'                => 'By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder.',
 	'admin.user_registration.explain_lost_password'                 => 'When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password.',
 	'admin.user_registration.explain_must_login_mode'               => 'With this mode, the helpdesk is readable by everyone but users must register or log in to submit content such as new tickets, new feedback, or new comments.',
-	'admin.user_registration.explain_open_helpdesk'                 => 'With an open helpdesk, anyone can use the helpdesk and anyone can register and log in. New profiles are created for users automatically when they submit new content.',
+	'admin.user_registration.explain_open_helpdesk'                 => 'With an open helpdesk, anyone can use the helpdesk. New profiles are created for users automatically when they submit new content.',
 	'admin.user_registration.explain_user_source'                   => 'A user source is any database that DeskPRO will use to authenticate users when they want to log in.',
 	'admin.user_registration.ez_publish'                            => 'eZ Publish',
 	'admin.user_registration.facebook_setup'                        => 'Facebook Setup',
