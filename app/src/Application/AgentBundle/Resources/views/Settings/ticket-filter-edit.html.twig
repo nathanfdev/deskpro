@@ -12,7 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
 	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('agent.general.new_filter') }}{% endif %}</h1>
 </header>
-<article class="padded" data-width="600" data-height="400">
+<article class="padded" data-width="1100" data-height="400">
 	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketfilters_edit_save', { 'filter_id': filter.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
 	<div class="dp-form">

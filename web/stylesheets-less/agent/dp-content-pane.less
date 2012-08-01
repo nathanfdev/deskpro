@@ -4008,10 +4008,10 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 }
 
 .static-list .search-form {
-	.controls {
+	.builder-controls {
 		margin-left: 0;
 	}
-	.options .options {
+	.builder-options .builder-options {
 		background: #F0F1F3;
 		padding: 1px;
 		.rounded(4px);
@@ -4019,16 +4019,16 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	}
 }
 
-.search-form .controls {
+.search-form .builder-controls {
     margin-left: 16px;
 }
 
-.search-form .term .type, .search-form .term .op, .search-form .term .options {
+.search-form .term .builder-type, .search-form .builder-term .op, .search-form .builder-term .builder-options {
 	display: inline;
 	line-height: 100%;
 }
 
-.search-form .term .type {
+.search-form .term .builder-type {
 	cursor: pointer;
 }
 
@@ -4044,7 +4044,7 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	}
 }
 
-.search-form .op .menu-trigger {
+.search-form .builder-op .menu-trigger {
 	background: transparent;
 	padding-right: 0;
 	margin-right: 5px;
@@ -4055,14 +4055,23 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	}
 }
 
-.search-form .term .remove {
+.search-form .builder-remove {
 	width: 11px;
 	background: transparent url("../../images/agent/icons/close-small-dark.png") no-repeat center center;
 	text-indent: -1000px;
 	overflow: hidden;
 	cursor: pointer;
-	float: left;
 	.opacity(65);
+	display: block;
+}
+
+.search-form .builder-type-choice {
+	padding-left: 4px
+}
+
+.search-form .builder-op {
+	padding-left: 7px;
+	padding-right: 7px;
 }
 
 .search-form .add-term {

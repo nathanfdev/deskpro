@@ -55,8 +55,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var groups = {};
 
-		var html = ['<ul class="menu" style="display:none">'];
-		$('> .type', this.ruleTpl).each(function(i,el) {
+		var html = ['<select>'];
+		$('.builder-type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
 			var title = $(el).attr('title');
 			var subgroup = $(el).data('rule-group');
@@ -67,44 +67,39 @@ DeskPRO.Form.RuleBuilder = new Class({
 				var id = Orb.uuid();
 				if (!groups[subgroup]) {
 					groups[subgroup] = {'id': id, types: []};
-					html.push('<li>' + subgroup + '<ul class="submenu '+id+'"></ul></li>');
+					html.push('<optgroup label="'+subgroup+'" class="'+id+'"></optgroup>');
 				}
 
 				groups[subgroup]['types'].push([type, title]);
 			} else {
-				html.push('<li data-value="' + type + '">' + title + '</li>');
+				html.push('<option value="' + type + '">' + title + '</option>');
 			}
 		});
-		html.push('</ul>');
+		html.push('</select>');
 		html = html.join('');
 
-		var menuEl = $(html);
+		var typeSel = $(html);
 
 		Object.each(groups, function(info, group) {
-			var ul = $('ul.' + info.id, menuEl);
+			var ul = $('optgroup.' + info.id, typeSel);
 			var lis = [];
 			Array.each(info.types, function(type) {
-				lis.push('<li data-prefix="' + group + ': " data-value="' + type[0] + '">' + type[1] + '</li>');
+				lis.push('<option value="' + type[0] + '">' + type[1] + '</option>');
 			});
 
 			var lis = $(lis.join(''));
 			ul.append(lis);
 		});
 
-		this.menu = new DeskPRO.UI.Menu({
-			menuElement: menuEl,
-			onItemClicked: function(info) {
-				var trigger = $(info.menu.getOpenTriggerElement());
-				var type = $(info.itemEl).data('value');
-
-				var typeInput = $('input', trigger.parent());
-				typeInput.val(type);
-				typeInput.change();
-
-				var label = $('.current-value', trigger.parent());
-				label.text(self.types[type]);
-			}
+		this.typeSel = typeSel;
+		this.typeSel.css({
+			position: 'absolute',
+			bottom: 0,
+			left: 0,
+			visibility: 'hidden'
 		});
+		this.typeSel.appendTo('body');
+		this.typeSel.css('width', this.typeSel.width() + 35);
 	},
 
 	destroy: function() {
@@ -118,7 +113,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 			});
 		});
 
-		this.menu.destroy();
+		this.typeSel.remove();
 	},
 
 	/**
@@ -137,19 +132,21 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var rowId = Orb.uuid();
 
-		var new_row = $('> .row', this.ruleTpl).children().clone();
+		var new_row = $('.row', this.ruleTpl).children().clone();
 		new_row.data('row-id', rowId);
 
 		// Add select
-		$('.type:first', new_row).html('<span class="current-value menu-trigger">Choose...</span><input type="hidden" class="type" name="type" value="" />');
-		var select = $('input.type:first', new_row);
+		var select = this.typeSel.clone();
+		select.css({
+			position: 'static',
+			left: '',
+			bottom: ''
+		});
+		$('.builder-type-choice', new_row).append(select);
 
 		var self = this;
-		var typeTrigger = $('.type .current-value', new_row).on('click', function(ev) {
-			self.menu.openMenu(ev);
-		});
 
-		$('.remove', new_row).on('click', function() {
+		$('.builder-remove', new_row).on('click', function() {
 			self.removeRow(new_row);
 		});
 
@@ -164,11 +161,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 			select.val(existing.type).change();
 
-			var label = $('.type:first .current-value', new_row);
+			var label = $('.builder-type .current-value', new_row);
 			label.text(this.types[existing.type]);
 
 			this.handleSelectChange(new_row);
-			$('.op:first select', new_row).val(existing.op).addClass('op').change();
+			$('.builder-op select', new_row).val(existing.op).addClass('op').change();
 
 			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
@@ -213,6 +210,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		$(addToEl).append(new_row);
 
+		DP.select(select);
+
 		this.fireEvent('newRow', [new_row, addToEl, existing]);
 
 		return new_row;
@@ -233,28 +232,24 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var rowId = row.data('row-id');
 		var rowDestroy = [];
 
-		var type = $('.type:first > input.type', row).val();
+		var type = $('.builder-type-choice select', row).val();
 
-		var rule_tpl = $('> .type[data-rule-type="'+type+'"]', this.ruleTpl);
+		var rule_tpl = $('.builder-type[data-rule-type="'+type+'"]', this.ruleTpl);
 
-		var op = $('> .op:first', rule_tpl).children().clone();
+		var op = $('div.builder-op', rule_tpl).children().clone();
 
-		var rule_options_tpl = $('> .options:first', rule_tpl);
+		var rule_options_tpl = $('.builder-options', rule_tpl);
 		var choice = rule_options_tpl.clone();
 		if (!rule_options_tpl.hasClass('newline')) {
 			choice.css('display', 'inline');
 		}
 
-		$('.op:first', row).empty().append(op);
-		$('.options:first', row).empty().append(choice);
+		$('.builder-op', row).empty().append(op);
+		$('.builder-op', row).find('select').addClass('op');
+		$('.builder-options', row).empty().append(choice);
 
-		var opMenu = null;
-		if (op.is('select')) {
-			var opMenu = new DeskPRO.UI.Menu({
-				menuElement: op
-			});
-			rowDestroy.push(opMenu);
-		}
+		row.find('select.op').css('visibility', 'hidden');
+		DP.select(row.find('select.op'));
 
 		var ruleHandlerName = rule_tpl.data('rule-handler');
 		var ruleHandler = null;
@@ -264,7 +259,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 				ruleBuilder: this,
 				rowEl: row,
 				rowId: rowId,
-				opMenu: opMenu
+				opMenu: row.find('select.op')
 			});
 
 			rowDestroy.push(ruleHandler);
@@ -273,12 +268,12 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var numChilds = choice.children().length;
 
 		if (numChilds == 1) {
-			var choiceSel = $('select:not(.no-auto):not([multiple])', choice);
+			var choiceSel = row.find('.builder-options').find('select:not(.no-auto)');
 			if (choiceSel.length) {
-				row.addClass('with-select2');
-				window.setTimeout(function() {
-					DP.select(choiceSel);
-				}, 150);
+				choiceSel.css('visibility', 'hidden');
+				choiceSel.each(function() {
+					DP.select($(this));
+				});
 			} else {
 				var inputEl = $('input[type="text"]:not(.no-auto), textarea:not(.no-auto)', choice);
 				if (inputEl.length) {
@@ -327,8 +322,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 		}
 
 		if (row.data('form-base-name')) {
-			this.updateFormName($('.op:first', row), row.data('form-base-name'));
-			this.updateFormName($('.options:first', row), row.data('form-base-name'));
+			this.updateFormName($('.builder-op', row), row.data('form-base-name'));
+			this.updateFormName($('.builder-options', row), row.data('form-base-name'));
 		}
 
 		if (ruleHandler) {

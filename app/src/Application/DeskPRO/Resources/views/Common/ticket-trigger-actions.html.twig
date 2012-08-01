@@ -1,47 +1,52 @@
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
-	<div class="row">
+		<div class="row">
 		<div class="term">
-			<div class="remove">-</div>
-			<div class="controls">
-				<div class="type"></div>
-				<div class="options"></div>
-			</div>
+			<table cellpadding="0" cellspacing="0" width="100%" border="0" class="term-table"><tbody><tr>
+				<td style="vertical-align: middle; text-align: center;" width="11"><div class="builder-remove">-</div></td>
+				<td class="builder-controls" style="vertical-align: middle;">
+					<table cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr>
+						<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-type-choice"></div></td>
+						<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-op"></div></td>
+						<td style="vertical-align: middle;"><div class="builder-options"></div></td>
+					</tr></tbody></table>
+				</td>
+			</tr></tbody></table>
 		</div>
 	</div>
 
-	<div class="type" title="{{ phrase('agent.general.set_notifs_from_address') }}" data-rule-type="set_from_address">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }}" data-rule-type="set_from_address">
+		<div class="builder-options">
 			<input type="text" name="email_address" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.set_notifs_from_name') }}" data-rule-type="set_from_name">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }}" data-rule-type="set_from_name">
+		<div class="builder-options">
 			<input type="text" name="name" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
+		<div class="builder-options">
 			<input type="hidden" name="stop_actions" value="1" />
 		</div>
 	</div>
 
 	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
-		<div class="type" title="{{ phrase('agent.general.email_user_auto_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_user_auto_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.general.email_user_validation_alert') }}" data-rule-type="set_email_template_user_new_ticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_user_validation_alert') }}" data-rule-type="set_email_template_user_new_ticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_validate" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket"></span>
@@ -49,15 +54,15 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_ticket.agent'] %}
-		<div class="type" title="{{ phrase('agent.general.email_user_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_user_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket"></span>
@@ -65,15 +70,15 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.web_person', 'new_reply.gateway_person'] %}
-		<div class="type" title="{{ phrase('agent.general.email_user_auto_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_user_auto_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-user"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.general.email_agent_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-reply-user"></span>
@@ -81,15 +86,15 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.agent'] %}
-		<div class="type" title="{{ phrase('agent.general.email_user_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_user_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.general.email_agent_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options newline" style="display: block">
+		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="builder-options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="email_agent" data-tplprefix="new-reply-agent"></span>
@@ -98,15 +103,15 @@
 	{% endif %}
 
 	{% if 'new_ticket' in event_group %}
-	<div class="type" title="{{ phrase('agent.general.force_email_validation') }}" data-rule-type="force_email_validation">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.force_email_validation') }}" data-rule-type="force_email_validation">
+		<div class="builder-options">
 			<input type="hidden" name="force_email_validation" value="1" />
 		</div>
 	</div>
 	{% endif %}
 
-	<div class="type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent">
+		<div class="builder-options">
 			<select name="agent">
 				{% for id,title in term_options.agents %}
 					<option value="{{id}}">{{title}}</option>
@@ -115,8 +120,8 @@
 		</div>
 	</div>
 	{% if term_options.agent_teams %}
-	<div class="type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team">
+		<div class="builder-options">
 			<select name="agent_team">
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
@@ -125,8 +130,8 @@
 		</div>
 	</div>
 	{% endif %}
-	<div class="type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status">
+		<div class="builder-options">
 			<select name="status">
 				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
@@ -134,13 +139,13 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete">
+		<div class="builder-options">
 			<input type="hidden" name="delete_ticket" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department">
+		<div class="builder-options">
 			<select name="department">
 				{% for id,title in term_options.departments %}
 					<option value="{{id}}">{{title}}</option>
@@ -149,8 +154,8 @@
 		</div>
 	</div>
 	{% if term_options.ticket_categories %}
-		<div class="type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category">
-			<div class="options">
+		<div class="builder-type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category">
+			<div class="builder-options">
 				<select name="category">
 					{% for id,label in term_options.ticket_categories %}
 						<option value="{{id}}">{{label}}</option>
@@ -160,8 +165,8 @@
 		</div>
 	{% endif %}
 	{% if term_options.products %}
-	<div class="type" title="{{ phrase('agent.general.set_product') }}" data-rule-type="product">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_product') }}" data-rule-type="product">
+		<div class="builder-options">
 			<select name="product">
 				{% for id,title in term_options.products %}
 					<option value="{{id}}">{{title}}</option>
@@ -171,8 +176,8 @@
 	</div>
 	{% endif %}
 	{% if term_options.priorities %}
-	<div class="type" title="{{ phrase('agent.general.set_priority') }}" data-rule-type="priority">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_priority') }}" data-rule-type="priority">
+		<div class="builder-options">
 			<select name="priority">
 				{% for id,title in term_options.priorities %}
 					<option value="{{id}}">{{title}}</option>
@@ -182,8 +187,8 @@
 	</div>
 	{% endif %}
 	{% if term_options.ticket_workflows%}
-	<div class="type" title="{{ phrase('agent.general.set_workflow') }}" data-rule-type="workflow">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_workflow') }}" data-rule-type="workflow">
+		<div class="builder-options">
 			<select name="workflow">
 				{% for id,title in term_options.ticket_workflows %}
 					<option value="{{id}}">{{title}}</option>
@@ -192,18 +197,18 @@
 		</div>
 	</div>
 	{% endif %}
-	<div class="type" title="{{ phrase('agent.general.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
+		<div class="builder-options">
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
+		<div class="builder-options">
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.set_flag') }}" data-rule-type="flag">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_flag') }}" data-rule-type="flag">
+		<div class="builder-options">
 			<select name="flag">
 				<option value="blue">{{ phrase('agent.general.flag_blue') }}</option>
 				<option value="green">{{ phrase('agent.general.flag_green') }}</option>
@@ -215,13 +220,13 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.increase_decrease_urgency') }}" data-rule-type="urgency">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.increase_decrease_urgency') }}" data-rule-type="urgency">
+		<div class="builder-options">
 			<input type="text" name="num" /><small>{{ phrase('agent.general.urgency_enter_negative_number') }}</small>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.set_urgency') }}" data-rule-type="urgency_set">
-		<div class="options">
+	<div class="builder-type" title="{{ phrase('agent.general.set_urgency') }}" data-rule-type="urgency_set">
+		<div class="builder-options">
 			<input type="text" name="num" style="width: 50px" />
 			{% if event_trigger != 'new_ticket' %}
 			<select name="allow_lower">
@@ -231,33 +236,33 @@
 			{% endif %}
 		</div>
 	</div>
-	<div class="type" title="Send the user an email message relating to the ticket" data-rule-type="send_ticket_email">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="Send the user an email message relating to the ticket" data-rule-type="send_ticket_email">
+		<div class="builder-options" style="display:block">
 			<textarea name="message" cols="80" rows="4"></textarea>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply">
+		<div class="builder-options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.disable_all_notifications') }}" data-rule-type="disable_notifications">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="{{ phrase('agent.general.disable_all_notifications') }}" data-rule-type="disable_notifications">
+		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
+		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_user_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.disable_agent_notifications') }}" data-rule-type="disable_agent_notifications">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="{{ phrase('agent.general.disable_agent_notifications') }}" data-rule-type="disable_agent_notifications">
+		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_agent_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.general.always_notify_agents') }}" data-rule-type="add_agent_notify">
-		<div class="options" style="display:block">
+	<div class="builder-type" title="{{ phrase('agent.general.always_notify_agents') }}" data-rule-type="add_agent_notify">
+		<div class="builder-options" style="display:block">
 			<select name="codes[]" multiple="multiple" style="display: block">
 				<optgroup label="Agents">
 					<option value="assigned_agent">{{ phrase('agent.general.assigned_agent') }}</option>
@@ -278,8 +283,8 @@
 	{% if term_options.custom_ticket_fields %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.isFormField() %}
-			<div class="type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
-				<div class="options">
+			<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
+				<div class="builder-options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
@@ -289,8 +294,8 @@
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
 			{% if field.field_def.isFormField() %}
-			<div class="type" title="{{ phrase('agent.general.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
-				<div class="options">
+			<div class="builder-type" title="{{ phrase('agent.general.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
+				<div class="builder-options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
