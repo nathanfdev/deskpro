@@ -705,7 +705,14 @@ class TemplatingExtension extends \Twig_Extension
 		// So we use this for when we need to generate a helpdesk URL based on the setting
 
 		$url = $this->container->get('router')->getGenerator()->generatePath($name, $parameters, false);
-		return rtrim(App::getSetting('core.deskpro_url'), '/') . $url;
+
+		// Make sure index.php is in links
+		$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+		if (!App::getSetting('core.rewrite_urls') && !preg_match('#index\.php$#', $deskpro_url)) {
+			$deskpro_url .= '/index.php';
+		}
+
+		return $deskpro_url . $url;
 	}
 
 	public function helpdeskUrl($path)
