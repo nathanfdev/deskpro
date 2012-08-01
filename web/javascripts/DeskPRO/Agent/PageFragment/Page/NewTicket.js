@@ -63,6 +63,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.wrapper.find('select').each(function() {
 				DP.select($(this));
 			});
+			self.updateUi();
 		}, 300);
 
 		var depSel = this.getEl('dep');
@@ -105,6 +106,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					$('.' + classname, self.wrapper).show();
 				});
 			});
+
+			self.updateUi();
 		};
 
 		depSel.on('change', function(ev) {
