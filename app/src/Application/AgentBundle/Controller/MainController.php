@@ -337,7 +337,7 @@ class MainController extends AbstractController
 						$results['person'][] = $p;
 
 						if ($p->organization) {
-							$results['organization'][] = $p;
+							$results['organization'][] = $p->organization;
 						}
 					}
 
@@ -351,7 +351,7 @@ class MainController extends AbstractController
 						$results['person'][] = $p;
 
 						if ($p->organization) {
-							$results['organization'][] = $p;
+							$results['organization'][] = $p->organization;
 						}
 					}
 				}
