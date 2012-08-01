@@ -334,9 +334,18 @@ class OrganizationController extends AbstractController
 
 		$org = $this->getOrgOr404($organization_id);
 
-		$this->em->beginTransaction();
+		// Build contact_data before modifying collection,
+		// adding to the collection causes dupe values to be added (doctrine bug w/ add() on collection indexed by id?)
+		$contact_data_array = array();
+		foreach ($org->contact_data as $cd) {
+			if (!isset($contact_data_array[$cd->contact_type])) {
+				$contact_data_array[$cd->contact_type] = array();
+			}
+			$contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
+		}
 
 		// Adding contact data
+		$added = array();
 		foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
 			foreach ($inputs as $input) {
 				try {
@@ -348,6 +357,8 @@ class OrganizationController extends AbstractController
 
 					$this->em->persist($contact_data);
 					$org->contact_data->add($contact_data);
+
+					$added[] = $contact_data;
 				} catch (\Exception $e) {
 					throw $e;
 				}
@@ -387,33 +398,38 @@ class OrganizationController extends AbstractController
 		// Removing values
 		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
 			if (isset($org->contact_data[$id])) {
+				$cd = $org->contact_data[$id];
 				$this->em->remove($org->contact_data[$id]);
 				$org->contact_data->remove($id);
+
+				if (isset($contact_data_array[$cd->contact_type][$cd->id])) {
+					unset($contact_data_array[$cd->contact_type][$cd->id]);
+				}
 			}
 		}
 
+		$this->em->beginTransaction();
 		$this->em->flush();
 		$this->em->commit();
 
-		$org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
-
-		$contact_data = array();
-		foreach ($org->contact_data as $cd) {
-			if (!isset($contact_data[$cd->contact_type])) {
-				$contact_data[$cd->contact_type] = array();
+		foreach ($added as $cd) {
+			if (!isset($contact_data_array[$cd->contact_type])) {
+				$contact_data_array[$cd->contact_type] = array();
 			}
-			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+			$contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
 		}
+
+		$org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
 
 		$display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', array(
 			'org_email_domains' => $org_email_domains,
 			'org' => $org,
-			'contact_data' => $contact_data,
+			'contact_data' => $contact_data_array,
 		));
 		$editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', array(
 			'org_email_domains' => $org_email_domains,
 			'org' => $org,
-			'contact_data' => $contact_data,
+			'contact_data' => $contact_data_array,
 		));
 
 		return $this->createJsonResponse(array(

@@ -665,6 +665,15 @@ class PersonController extends AbstractController
 
 		$changed_primary_email = false;
 
+		$contact_data_array = array();
+		foreach ($person->contact_data as $cd) {
+			if (!isset($contact_data_array[$cd->contact_type])) {
+				$contact_data_array[$cd->contact_type] = array();
+			}
+			$contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
+		}
+		$added = array();
+
 		try {
 
 			if ($this->person->hasPerm('agent_people.manage_emails')) {
@@ -737,6 +746,8 @@ class PersonController extends AbstractController
 
 					$this->em->persist($contact_data);
 					$person->contact_data->add($contact_data);
+
+					$added[] = $contact_data;
 				}
 			}
 
@@ -753,8 +764,13 @@ class PersonController extends AbstractController
 			// Removing values
 			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
 				if (isset($person->contact_data[$id])) {
+					$cd = $person->contact_data[$id];
 					$this->em->remove($person->contact_data[$id]);
 					$person->contact_data->remove($id);
+
+					if (isset($contact_data_array[$cd->contact_type][$cd->id])) {
+						unset($contact_data_array[$cd->contact_type][$cd->id]);
+					}
 				}
 			}
 
@@ -765,12 +781,11 @@ class PersonController extends AbstractController
 			throw $e;
 		}
 
-		$contact_data = array();
-		foreach ($person->contact_data as $cd) {
-			if (!isset($contact_data[$cd->contact_type])) {
-				$contact_data[$cd->contact_type] = array();
+		foreach ($added as $cd) {
+			if (!isset($contact_data_array[$cd->contact_type])) {
+				$contact_data_array[$cd->contact_type] = array();
 			}
-			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+			$contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
 		}
 
 		$is_editable = $this->isPersonEditable($person);
@@ -785,12 +800,12 @@ class PersonController extends AbstractController
 
 		$display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
 			'person' => $person,
-			'contact_data' => $contact_data,
+			'contact_data' => $contact_data_array,
 			'perms' => $perms,
 		));
 		$editor_overlay_html = $this->renderView('AgentBundle:Person:contact-overlay.html.twig', array(
 			'person' => $person,
-			'contact_data' => $contact_data,
+			'contact_data' => $contact_data_array,
 			'perms' => $perms,
 		));
 
