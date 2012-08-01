@@ -48,6 +48,11 @@ class TicketMessageTemplate extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Department
+	 */
+	protected $department = null;
+
+	/**
 	 * @var string
 	 */
 	protected $title;
@@ -65,6 +70,25 @@ class TicketMessageTemplate extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this['date_created'] = new \DateTime();
+	}
+
+	public function getDepartmentId()
+	{
+		if ($this->department) {
+			return $this->department->getId();
+		}
+
+		return 0;
+	}
+
+	public function setDepartmentId($id)
+	{
+		if ($id) {
+			$dep = \Application\DeskPRO\App::getOrm()->find('DeskPRO:Department', $id);
+		} else {
+			$dep = null;
+		}
+		$this['department'] = $dep;
 	}
 
 	/**
@@ -89,6 +113,7 @@ class TicketMessageTemplate extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

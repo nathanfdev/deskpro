@@ -29,29 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
-use \Doctrine\ORM\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class TicketMessageTemplate extends EntityRepository
+class Build1343807531 extends AbstractBuild
 {
-	public function getTitles()
+	public function run()
 	{
-		return $this->_em->getConnection()->fetchAllKeyValue("
-			SELECT id, title
-			FROM ticket_message_templates
-			ORDER BY title ASC
-		");
-	}
-
-	public function getAll()
-	{
-		return $this->_em->createQuery("
-			SELECT t
-			FROM DeskPRO:TIcketMessageTemplate t
-			ORDER BY t.title ASC
-		")->execute();
+		$this->out("Add ticket_message_templates.department_id");
+		$this->execMutateSql("ALTER TABLE ticket_message_templates ADD department_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE ticket_message_templates ADD CONSTRAINT FK_8C28E2ECAE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_8C28E2ECAE80F5DF ON ticket_message_templates (department_id)");
 	}
 }

@@ -39,10 +39,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		}, this);
 
 		var messageEl = this.getEl('message');
+		messageEl.on('keydown', function() {
+			messageEl.addClass('editted');
+		});
 		this.getEl('message_template').on('change', function() {
 			var id = $(this).val();
 
 			if (!id) {
+				if (!messageEl.hasClass('editted')) {
+					messageEl.val('');
+				}
 				return;
 			}
 
@@ -52,7 +58,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				cache: false,
 				dataType: 'json',
 				success: function(data) {
-					messageEl.insertAtCaret(data.message);
+					if (messageEl.hasClass('editted')) {
+						messageEl.insertAtCaret(data.message);
+					} else {
+						messageEl.val(data.message);
+					}
 				}
 			});
 		});
@@ -90,6 +100,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
+		var tplHolder = this.getEl('message_template_holder');
+		var tplSel = this.getEl('message_template');
+		var tplSelOrig = this.getEl('message_template_orig');
+
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader);
 		function updateFields() {
 			$('.ticket-field', self.wrapper).hide();
@@ -106,6 +120,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					$('.' + classname, self.wrapper).show();
 				});
 			});
+
+			var depId = depSel.val();
+			var opts = tplSelOrig.find('option.department_' + depId +', option.department_0').clone();
+			if (opts[0]) {
+				tplSel.empty();
+				tplSel.append('<option value="0">Blank</option>');
+				tplSel.append(opts);
+				tplHolder.show();
+
+				if (opts.length == 1) {
+					tplSel.select2('val', tplSel.find('option').eq(1).val());
+					tplSel.trigger('change');
+				}
+			} else {
+				tplSel.empty();
+				tplHolder.hide();
+			}
 
 			self.updateUi();
 		};

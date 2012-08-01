@@ -46,6 +46,7 @@ class TicketMessageTemplateType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
+		$builder->add('department_id', 'text', array('required' => false));
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('message', 'textarea', array('required' => true));
 	}

@@ -221,12 +221,18 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<div style="width:80%">
 			{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
-				<select id="{{baseId}}_message_template" name="using_template" style="float:right;">
-					<option value="">Blank Message</option>
-					{% for id,title in app.getDataRepository('TicketMessageTemplate').getTitles() %}
-						<option value="{{ id }}">{{ title }}</option>
-					{% endfor %}
-				</select>
+				<div id="{{baseId}}_message_template_holder" style="float:right;display: none;">
+					<div style="display: none">
+						<select id="{{baseId}}_message_template_orig">
+							<option value="0">Blank Message</option>
+							{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+								<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<select id="{{baseId}}_message_template" name="using_template">
+					</select>
+				</div>
 			{% endif %}
 			<h4>{{ phrase('agent.general.message') }}</h4>
 		</div>

@@ -24,6 +24,30 @@
 <form action="{{ path('admin_ticket_msgtpl_edit', {'id': message_template.id|default(0)}) }}" method="post">
 
 <div class="dp-form">
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Apply to department</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="ticket_message_template[department_id]">
+				<option value="">All departments</option>
+				{% for dep in app.getDataRepository('Department').getRootNodes() %}
+					{% set children = app.getDataRepository('Department').getChildren(dep) %}
+					{% if children|length %}
+						<optgroup label="{{ dep.title }}">
+							{% for subdep in children %}
+								<option value="{{ subdep.id }}" {% if message_template.department_id == subdep.id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{ dep.id }}" {% if message_template.department_id == dep.id %}selected="selected"{% endif %}>{{ dep.title }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>{{ phrase('agent.general.title') }}</label>
