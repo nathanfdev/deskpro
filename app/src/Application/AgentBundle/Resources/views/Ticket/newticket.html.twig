@@ -221,7 +221,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<div style="width:80%">
 			{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
-				<div id="{{baseId}}_message_template_holder" style="float:right;display: none;">
+				<div id="{{baseId}}_message_template_holder" style="float:right;visibility: hidden;"> {# hidden and not display:none so we can get the proper width of the select box in NewTicket.js #}
 					<div style="display: none">
 						<select id="{{baseId}}_message_template_orig">
 							<option value="0">Blank Message</option>
@@ -231,6 +231,10 @@ pageMeta.baseId = '{{ baseId }}';
 						</select>
 					</div>
 					<select id="{{baseId}}_message_template" name="using_template">
+						<option value="0">Blank Message</option>
+						{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+							<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+						{% endfor %}
 					</select>
 				</div>
 			{% endif %}

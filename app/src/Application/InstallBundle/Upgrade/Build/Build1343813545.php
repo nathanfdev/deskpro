@@ -29,31 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
+ * @subpackage
  */
 
-namespace Application\AdminBundle\Form;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class TicketMessageTemplateType extends AbstractType
+class Build1343813545 extends AbstractBuild
 {
-	public function buildForm(FormBuilder $builder, array $options)
+	public function run()
 	{
-		$builder->add('department_id', 'text', array('required' => false));
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add('subject', 'text', array('required' => false));
-		$builder->add('message', 'textarea', array('required' => true));
-	}
-
-	public function getName()
-	{
-		return 'ticket_message_template';
+		$this->out("Add ticket_message_templates.subject");
+		$this->execMutateSql("ALTER TABLE ticket_message_templates ADD subject LONGTEXT NOT NULL");
 	}
 }

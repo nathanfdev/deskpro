@@ -1982,7 +1982,8 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'id' => $message_template->getId(),
-			'message' => $message_template->message
+			'message' => $message_template->message,
+			'subject' => $message_template->subject
 		));
 	}
 

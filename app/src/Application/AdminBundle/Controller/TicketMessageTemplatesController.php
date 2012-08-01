@@ -46,7 +46,7 @@ class TicketMessageTemplatesController extends AbstractController
 
 	public function indexAction()
 	{
-		$message_templates = $this->container->getDataService('TicketMessageTemplate')->getTitles();
+		$message_templates = $this->container->getDataService('TicketMessageTemplate')->getAll();
 
 		return $this->render('AdminBundle:TicketMessageTemplates:index.html.twig', array(
 			'message_templates' => $message_templates

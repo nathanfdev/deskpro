@@ -18,14 +18,23 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">Message Template</th>
+					<th class="single-title" width="100%">Title</th>
+					<th class="single-title" width="10">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
-				{% for id,title in message_templates %}
+				{% for msgtpl in message_templates %}
 					<tr>
-						<td class="title">
-							<a href="{{ path('admin_ticket_msgtpl_edit', {id: id}) }}">{{ title }}</a>
+						<td class="title" valign="middle" style="vertical-align: middle;">
+							<strong><a href="{{ path('admin_ticket_msgtpl_edit', {id: msgtpl.id}) }}">{{ msgtpl.title }}</a></strong>
+							{% if msgtpl.department.full_title %}
+								<div style="font-size: 11px; padding-top: 2px;">
+									Department: {{ msgtpl.department.full_title }}
+								</div>
+							{% endif %}
+						</td>
+						<td valign="middle" style="vertical-align: middle;">
+							<a href="{{ path('admin_ticket_msgtpl_edit', {id: msgtpl.id}) }}"><span class="btn-edit-gear"></span></a>
 						</td>
 					</tr>
 				{% else %}

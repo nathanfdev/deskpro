@@ -59,10 +59,19 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
+			<label>Subject</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.subject, {attr: {placeholder: 'Optionally enter the ticket subject'}}) }}
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
 			<label>Message Template</label>
 		</div>
 		<div class="dp-form-input">
-			{{ form_widget(form.message, {attr: {style: 'width: 100%; height: 140px;'}}) }}
+			{{ form_widget(form.message, {attr: {style: 'width: 100%; height: 140px;', placeholder: 'Enter the ticket message'}}) }}
 
 			<div style="float: right; padding-top: 3px; vertical-align: top">
 				<select id="variables">
