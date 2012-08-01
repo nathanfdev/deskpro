@@ -16,7 +16,7 @@
 		</header>
 		<section>
 			<input type="hidden" name="action" value="set-summary" />
-			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
+			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
 		</section>
 	</div>
 {% endif %}
