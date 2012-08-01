@@ -116,7 +116,7 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
 		// Ticket display elements
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('agent');
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 

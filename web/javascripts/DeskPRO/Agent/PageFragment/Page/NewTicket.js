@@ -21,8 +21,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		this._initUserSection();
-		this._initDepartmentSection();
-		this._initSubjectSection();
 		this._initMessageSection();
 		this._initOtherSection();
 		this._initCcSelection();
@@ -58,6 +56,66 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			});
 		});
+
+		window.setTimeout(function() {
+			if (self.OBJ_DESTROYED) return;
+
+			self.wrapper.find('select').each(function() {
+				DP.select($(this));
+			});
+		}, 300);
+
+		var depSel = this.getEl('dep');
+
+		var ticketReader = {
+			getCategoryId: function() {
+				var catId = self.getEl('cat').val();
+				return parseInt(catId) || 0;
+			},
+			getPriorityId: function() {
+				var catId = self.getEl('pri').val();
+				return parseInt(catId) || 0;
+			},
+			getProductId: function() {
+				var cat = self.getEl('prod');
+				return parseInt(catId) || 0;
+			},
+			getOrganizationId: function() {
+				return 0;
+			},
+			getWorkflow: function() {
+				var catId = self.getEl('work').val();
+				return parseInt(catId) || 0;
+			}
+		};
+
+		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader);
+		function updateFields() {
+			$('.ticket-field', self.wrapper).hide();
+			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
+
+			Object.each(fieldDisplay, function(fields, section) {
+				Array.each(fields, function(f) {
+					if (f.field_type == 'ticket_field') {
+						var classname = 'ticket-field-' + f.field_id;
+					} else {
+						var classname = f.field_type;
+					}
+
+					$('.' + classname, self.wrapper).show();
+				});
+			});
+		};
+
+		depSel.on('change', function(ev) {
+			updateFields();
+		});
+
+		$('.ticket-field select', this.wrapper).on('change', function() {
+			updateFields();
+		});
+
+		updateFields();
 	},
 
 	markForReload: function() {
@@ -425,137 +483,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	//#########################################################################
-	//# Department Section
-	//#########################################################################
-
-	_initDepartmentSection: function() {
-
-		//------------------------------
-		// Assign ...
-		//------------------------------
-
-		var obEl = this.getEl('agent_selector');
-		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
-			element: obEl,
-			trigger: this.getEl('assign_btn'),
-			onClose: function(ob) {
-				var selections = ob.getAllSelected();
-
-				// Agent
-				var agent_id = parseInt(selections.agents || 0);
-				self.getEl('agent_id').val(agent_id);
-				var label = $('.agent-label-' + agent_id, obEl).text().trim();
-				self.getEl('agent_label').text(label);
-
-				// Agent Team
-				var agent_team_id = parseInt(selections.teams || 0);
-				self.getEl('agent_team_id').val(agent_team_id);
-				var label = $('.agent-team-label-' + agent_team_id, obEl).text().trim();
-				self.getEl('agent_team_label').text(label);
-
-				self.updateUi();
-			}
-		});
-
-		var self = this;
-		this.getEl('dep').on('change', function() {
-			if (parseInt($(this).val())) {
-				self.getEl('dep_section').addClass('done');
-			} else {
-				self.getEl('dep_section').removeClass('done');
-			}
-
-			self.updateUi();
-		});
-	},
-
-	//#########################################################################
-	//# Subject Section
-	//#########################################################################
-
-	_initSubjectSection: function() {
-		var self = this;
-		var fn = function() {
-			if ($(this).val().trim() == '') {
-				self.getEl('subject_section').removeClass('done');
-			} else {
-				self.clearErrorCode('subject');
-				self.getEl('subject_section').addClass('done');
-			}
-		};
-
-		this.getEl('subject').on('change', fn).on('blur', fn).on('keypress', fn);
-	},
-
-	//#########################################################################
 	//# Message Section
 	//#########################################################################
 
 	_initMessageSection: function() {
 		var self = this;
-		var fn = function() {
-			if ($(this).val().trim() == '') {
-				self.getEl('message_section').removeClass('done');
-			} else {
-				self.clearErrorCode('message');
-				self.getEl('message_section').addClass('done');
-			}
-		};
-
-		this.getEl('message').on('change', fn).on('blur', fn).on('keypress', fn);
 		this.getEl('text_snippets_btn').on('click', function(ev) {
 			ev.preventDefault();
 			self.openSnippetsViewer();
-		});
-
-		/*
-		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay();
-		function updateFields() {
-			$('.fieldprop', self.wrapper).hide();
-			var fieldDisplay = fieldDisplayFetch.getFields($('select.department_id', self.wrapper).val());
-
-			Object.each(fieldDisplay, function(fields, section) {
-				DP.console.log(fields);
-				Array.each(fields, function(f) {
-					DP.console.log(f);
-					if (f.item_type == 'ticket_field') {
-						var classname = 'ticket-field-' + f.item_id;
-					} else {
-						var classname = f.item_type;
-					}
-
-					$('.' + classname, self.wrapper).show();
-				});
-			});
-		};
-		*/
-
-		this.wrapper.find('.fieldprop select').each(function() {
-			var el = $(this);
-			if (el.is('.has-init')) return;
-
-			var ob = new DeskPRO.UI.OptionBoxBuilder({
-				values: el,
-				noValText: 'None',
-				selectDefault: true,
-				title: 'Choose an option'
-			});
-			el.addClass('has-init');
-		});
-
-		var depOb = new DeskPRO.UI.OptionBoxBuilder({
-			values: this.getEl('dep'),
-			noValText: 'None',
-			title: 'Department',
-			selectDefault: true,
-			onClose: function() {
-				//updateFields();
-			}
-		});
-
-		var statusMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('status'),
-			title: 'Status'
 		});
 
 		this.loadSnippetsViewer();
@@ -676,12 +611,3 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 	}
 });
-
-
-
-
-
-
-
-
-

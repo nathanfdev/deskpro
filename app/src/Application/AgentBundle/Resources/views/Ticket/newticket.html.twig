@@ -109,79 +109,103 @@ pageMeta.baseId = '{{ baseId }}';
 			</select>
 		</div>
 		<div class="col">
-			<h4>{{ phrase('agent.general.assignment') }}</h4>
+			<h4>Agent</h4>
 			{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
 			{% else %}{% set agent_id = ticket.agent %}{% endif %}
 
-			<input type="hidden" name="newticket[agent_id]" value="{{ agent_id }}" id="{{baseId}}_agent_id" />
-			<input type="hidden" name="newticket[agent_team_id]" value="{{ ticket.agent_team.id }}" id="{{baseId}}_agent_team_id" />
-			<span id="{{baseId}}_assign_btn" class="menu-trigger">
-				<span id="{{baseId}}_agent_label">{{ phrase('agent.general.me') }}</span>
-				{% if app.getSetting('core.use_agent_team') %}{{ phrase('agent.general.and') }} <span id="{{baseId}}_agent_team_label">{{ phrase('agent.general.category') }}</span>{% endif %}
-			</span>
+			<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+				{% for agent in agents %}
+					<option {% if agent.id == agent_id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+				{% endfor %}
+			</select>
 		</div>
-		{% if app.getSetting('core.use_ticket_category') %}
-			<div class="col fieldprop ticket_category">
-				<h4>{{ phrase('agent.general.category') }}</h4>
-				{% include 'AgentBundle:Common:select-category.html.twig' with {
-					'name': "newticket[category_id]",
-					'id': baseId ~ '_cat',
-					'categories': ticket_options.ticket_categories_hierarchy,
-					'with_blank': true
-				} %}
-			</div>
-		{% endif %}
+		{% if app.getSetting('core.use_agent_team') %}
+			<div class="col">
+				<h4>Team</h4>
+				{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
+				{% else %}{% set agent_id = ticket.agent %}{% endif %}
 
-		{% if app.getSetting('core.use_ticket_priority') %}
-			<div class="col fieldprop ticket_priority">
-				<h4>{{ phrase('agent.general.priority') }}</h4>
-					{% include 'AgentBundle:Common:select-priority.html.twig' with {
-						'name': "newticket[priority_id]",
-						'id': baseId ~ '_pri',
-						'add_classname': 'ticket_priority',
-						'priorities': ticket_options.ticket_priorities,
-						'with_blank': true
-					} %}
-			</div>
-		{% endif %}
+				<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+					<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+					{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+					<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+						{% for team in app.user.getAgent().getTeams() %}
+							<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+						{% endfor %}
+					</optgroup>
+					{% endif %}
 
-		{% if app.getSetting('core.use_ticket_workflow') %}
-			<div class="col fieldprop ticket_workflow">
-				<h4>{{ phrase('agent.general.workflow') }}</h4>
-					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-						'name': "newticket[workflow_id]",
-						'id': baseId ~ '_work',
-						'add_classname': 'ticket_workflow',
-						'workflows': ticket_options.ticket_workflows,
-						'with_blank': true
-					} %}
+					{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
+						<option value="{{ id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ name }}</option>
+					{% endfor %}
+				</select>
 			</div>
-		{% endif %}
-
-		{% if app.getSetting('core.use_product') %}
-			<div class="col fieldprop ticket_product">
-				<h4>{{ phrase('agent.general.product') }}</h4>
-					{% include 'AgentBundle:Common:select-product.html.twig' with {
-						'name': "newticket[product_id]",
-						'id': baseId ~ '_prod',
-						'add_classname': 'ticket_product',
-						'products': ticket_options.products_hierarchy,
-						'with_blank': true
-					} %}
-			</div>
-		{% endif %}
-
-		{% if custom_fields %}
-			{% for f in custom_fields %}
-				<br class="clear" />
-				<div class="col fieldprop ticket-field ticket-field-{{f.field_def.id}} inline-field">
-					<h4>{{f.title}}</h4>
-					{{ render_custom_field_form(f) }}
-				</div>
-			{% endfor %}
 		{% endif %}
 
 		<br class="clear" />
+
+		<div id="{{baseId}}_fields_container">
+
+			{% if app.getSetting('core.use_ticket_category') %}
+				<div class="col fieldprop ticket-field ticket_category inline-field" style="clear:both;display: none;">
+					<h4>{{ phrase('agent.general.category') }}</h4>
+					{% include 'AgentBundle:Common:select-category.html.twig' with {
+						'name': "newticket[category_id]",
+						'id': baseId ~ '_cat',
+						'categories': ticket_options.ticket_categories_hierarchy,
+						'with_blank': true
+					} %}
+				</div>
+			{% endif %}
+
+			{% if app.getSetting('core.use_ticket_priority') %}
+				<div class="col fieldprop ticket-field ticket_priority inline-field" style="clear:both;display: none;">
+					<h4>{{ phrase('agent.general.priority') }}</h4>
+						{% include 'AgentBundle:Common:select-priority.html.twig' with {
+							'name': "newticket[priority_id]",
+							'id': baseId ~ '_pri',
+							'add_classname': 'ticket_priority',
+							'priorities': ticket_options.ticket_priorities,
+							'with_blank': true
+						} %}
+				</div>
+			{% endif %}
+
+			{% if app.getSetting('core.use_ticket_workflow') %}
+				<div class="col fieldprop ticket-field ticket_workflow inline-field" style="clear:both;display: none;">
+					<h4>{{ phrase('agent.general.workflow') }}</h4>
+						{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+							'name': "newticket[workflow_id]",
+							'id': baseId ~ '_work',
+							'add_classname': 'ticket_workflow',
+							'workflows': ticket_options.ticket_workflows,
+							'with_blank': true
+						} %}
+				</div>
+			{% endif %}
+
+			{% if app.getSetting('core.use_product') %}
+				<div class="col fieldprop ticket-field ticket_product inline-field" style="clear:both;display: none;">
+					<h4>{{ phrase('agent.general.product') }}</h4>
+						{% include 'AgentBundle:Common:select-product.html.twig' with {
+							'name': "newticket[product_id]",
+							'id': baseId ~ '_prod',
+							'add_classname': 'ticket_product',
+							'products': ticket_options.products_hierarchy,
+							'with_blank': true
+						} %}
+				</div>
+			{% endif %}
+
+			{% if custom_fields %}
+				{% for f in custom_fields %}
+					<div class="col fieldprop ticket-field ticket-field-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
+						<h4>{{f.title}}</h4>
+						{{ render_custom_field_form(f) }}
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
 	</div>
 </div>
 
@@ -288,73 +312,6 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		{# /Tab Container #}
 	</div>
-</div>
-
-<div class="optionbox reply-agent-team-ob newticket" id="{{baseId}}_agent_selector">
-	<div class="col">
-		<section data-section-name="agents">
-			<header>
-				<h3>{{ phrase('agent.general.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
-					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
-				</li>
-
-				<li>
-					<input type="radio" name="{{baseId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">{{ phrase('agent.general.unassigned') }}</span></label>
-				</li>
-
-				{% for agent in agents %}
-					{% if agent.id != app.user.id %}
-						<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
-							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
-							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	{% if app.getSetting('core.use_agent_team') %}
-		<div class="col">
-			<section data-section-name="teams">
-				<header>
-					<h3>{{ phrase('agent.general.teams') }}</h3>
-					<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-				</header>
-				<ul>
-					{% for team in app.user.getAgent().getTeams() %}
-						<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
-							<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
-							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endfor %}
-
-					<li class="{% if not ticket.agent_team %}on{% endif %}">
-						<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-						<label><span class="agent-team-label-0">{{ phrase('agent.general.no_team') }}</span></label>
-					</li>
-
-					{% for team in agent_teams %}
-						{% if team.id not in app.user.getAgent().getTeamIds() %}
-							<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
-								<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
-								<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-								<div class="bound-fade"></div>
-							</li>
-						{% endif %}
-					{% endfor %}
-				</ul>
-			</section>
-		</div>
-	{% endif %}
-	<br class="clear" />
 </div>
 
 <footer class="pop-footer">

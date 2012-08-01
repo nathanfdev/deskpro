@@ -13,16 +13,13 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		department_id = parseInt(department_id);
 		DP.console.log('[TicketFieldDisplay] department %i', department_id);
 
-		if (!window.DESKPRO_TICKET_DISPLAY || !window.DESKPRO_TICKET_DISPLAY[department_id]) {
-			// The department is empty of fields
-			// (Rare, because we'll at least have category and such usually)
-			return [];
+		if (typeof window.DESKPRO_TICKET_DISPLAY[department_id] == 'undefined') {
+			var depItems = window.DESKPRO_TICKET_DISPLAY[0] || [];
+		} else {
+			var depItems = window.DESKPRO_TICKET_DISPLAY[department_id] || [];
 		}
 
-		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
 		DP.console.log('[TicketFieldDisplay] depItems %o', depItems);
-
-		//depItems = this.runRules(depItems);
 
 		var items = this.runRules(depItems);
 		DP.console.log('[TicketFieldDisplay] items %o', items);
@@ -65,27 +62,16 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 	/**
 	 * Runs the check function for an item to get its visibility.
 	 *
-	 * Returns array of:
-	 * 0: The item ID
-	 * 1: The items visibility
-	 *
 	 * @param item
 	 */
 	runCheckForItem: function(item) {
-		return true;
-
-		var itemId = this.getItemId(item);
-		if (item.initial_display == 'visible') {
-			var visible = true;
-		} else {
-			var visible = false;
-		}
+		var visible = true;
 
 		// If the check function passes, then inverse visibility
-		if (item.check && item.check(this.ticketReader)) {
-			visible = !visible;
+		if (item.check && !item.check(this.ticketReader)) {
+			visible = false;
 		}
 
-		return [itemId, visible];
+		return visible;
 	}
 });
