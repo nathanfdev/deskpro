@@ -18,6 +18,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
 		}, this);
 
+		this.runningRefreshFilterGrouping = [];
+		this.rerunRefreshFilterGrouping = [];
+
 		this.lastArchiveUpdate = new Date();
 	},
 
@@ -435,6 +438,22 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var els = [];
 
+		if (this.runningRefreshFilterGrouping && this.runningRefreshFilterGrouping.length) {
+			var setFilterIds = [];
+			Array.each(filterIds, function(filterId) {
+				if (this.runningRefreshFilterGrouping.indexOf(filterId) !== -1) {
+					this.rerunRefreshFilterGrouping.include(filterId);
+				} else {
+					setFilterIds.push(filterId);
+				}
+			}, this);
+
+			filterIds = setFilterIds;
+			if (!filterIds || !filterIds.length) {
+				return;
+			}
+		}
+
 		Array.each(filterIds, function(filterId) {
 			filterId = parseInt(filterId);
 			var filterEl = $('li.filter-' + filterId, this.sectionEl);
@@ -514,6 +533,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var countEls = $('.list-counter', $(els)).first();
 		countEls.addClass('loading');
 
+		this.runningRefreshFilterGrouping = filterIds;
+
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/group-tickets.json',
 			type: 'POST',
@@ -549,6 +570,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						}
 					}
 				}, this);
+
+				this.runningRefreshFilterGrouping = [];
+				if (this.rerunRefreshFilterGrouping && this.rerunRefreshFilterGrouping.length) {
+					var refreshIds = this.rerunRefreshFilterGrouping;
+					this.rerunRefreshFilterGrouping = [];
+					this.refreshFilterGrouping(refreshIds);
+				}
 			}
 		});
 	},
