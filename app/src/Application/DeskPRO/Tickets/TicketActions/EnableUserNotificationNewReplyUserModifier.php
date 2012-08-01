@@ -34,80 +34,20 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
-class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
+class EnableUserNotificationNewReplyUserModifier implements CollectionModifierInterface
 {
-	/**
-	 * @var bool
-	 */
-	protected $enabled = false;
-
-	/**
-	 * Enable the auto-reply notification
-	 */
-	public function enable()
+	public function __construct()
 	{
-		$this->enabled = true;
+
 	}
 
-
-	/**
-	 * Disable the auto-reply notification
-	 */
-	public function disable()
+	public function modifyCollection(ActionsCollection $collection)
 	{
-		$this->enabled = false;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isEnabled()
-	{
-		return $this->enabled = true;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if (!$this->isEnabled()) {
-			return;
+		if ($collection->hasActionType('UserNotificationNewReplyUserAction')) {
+			$collection->getActionType('UserNotificationNewReplyUserAction')->enable();
 		}
-
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
-		}
-
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newreply',
-			'emailed' => array(),
-			'cced' => array()
-		);
-
-		$vars = array(
-			'action' => 'new_user_reply',
-		);
-
-		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-user.html.twig');
-		$this->doSend($tpl, $vars, $ticket, $change_info);
-
-		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
 	/**
@@ -115,6 +55,7 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		return '';
+		$tr = App::getTranslator();
+		return 'Send user auto-response confirmation';
 	}
 }

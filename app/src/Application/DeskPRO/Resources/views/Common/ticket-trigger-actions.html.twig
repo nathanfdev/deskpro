@@ -251,6 +251,13 @@
 			<input type="hidden" name="disable_notifications" value="1" />
 		</div>
 	</div>
+	{% if event_group in ['new_reply', 'new_reply.web_person', 'new_reply.gateway_person'] %}
+	<div class="builder-type" title="Enable auto-response email confirmation" data-rule-type="enable_user_notification_new_reply_user">
+		<div class="builder-options" style="display:block">
+			<input type="hidden" name="enablde" value="1" />
+		</div>
+	</div>
+	{% endif %}
 	<div class="builder-type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
 		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_user_notifications" value="1" />

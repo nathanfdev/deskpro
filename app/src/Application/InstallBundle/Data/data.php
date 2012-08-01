@@ -808,11 +808,11 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_trigger.disable_autoreply_gateway##
+##BEGIN:create_trigger.enable_autoreply_gateway##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Disable auto-response confirmation';
+$q->title = 'Enable auto-response confirmation';
 $q->event_trigger = 'new_reply';
-$q->is_enabled = 1;
+$q->is_enabled = 0;
 $q->terms = array(
 	array(
 		'type' => 'creation_system',
@@ -822,8 +822,8 @@ $q->terms = array(
 );
 $q->actions = array(
 	array(
-		'type' => 'disable_user_notifications',
-		'options' => array ('disable_user_notifications' => '1')
+		'type' => 'enable_user_notification_new_reply_user',
+		'options' => array ('enable' => '1')
 	)
 );
 
