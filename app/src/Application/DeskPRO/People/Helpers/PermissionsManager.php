@@ -110,13 +110,15 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
 		", array($this->person['id']));
 
-		if (App::getDataService('Usergroup')->find(Usergroup::EVERYONE_ID)->is_enabled) {
+		$everyone_ug = App::getDataService('Usergroup')->find(Usergroup::EVERYONE_ID);
+		if ($everyone_ug && $everyone_ug->is_enabled) {
 			$this->usergroup_ids[] = Usergroup::EVERYONE_ID;
 		} else {
 			$this->usergroup_ids[] = 0;
 		}
 
-		if ($person->getId() && $person->is_agent_confirmed && App::getDataService('Usergroup')->find(Usergroup::REG_ID)->is_enabled) {
+		$reg_ug = App::getDataService('Usergroup')->find(Usergroup::REG_ID);
+		if ($person->getId() && $person->is_agent_confirmed && $reg_ug->is_enabled) {
 			$this->usergroup_ids[] = Usergroup::REG_ID;
 		}
 
