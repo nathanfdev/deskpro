@@ -32,7 +32,7 @@
 </tr>
 {% endmacro %}
 
-{% macro render_editor_overlay(id) %}
+{% macro render_editor_overlay(id, with_subject) %}
 	<div id="{{id|default('edittpl_overlay')}}" class="deskpro-overlay-outer" style="display: none;">
 		<div class="deskpro-overlay">
 			<div class="overlay-title">
@@ -40,6 +40,14 @@
 				<h4 class="template-title"></h4>
 			</div>
 			<div class="overlay-content">
+				{% if with_subject %}
+					<div class="subject-field" style="display: none;">
+						<strong>Subject:</strong><br />
+						<textarea class="template-subject-code" spellcheck="false" style="height: 85px;"></textarea>
+						<br />
+						<strong>Email Content:</strong>
+					</div>
+				{% endif %}
 				<textarea class="template-code" spellcheck="false"></textarea>
 			</div>
 			<div class="overlay-footer">

@@ -23,6 +23,7 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 		});
 
 		this.overlayEl = null;
+		this.withSubject = false;
 		this.overlayBack = null;
 		this.editingTemplate = null;
 	},
@@ -76,6 +77,12 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 		if (!this.overlayEl) {
 			this.overlayBack = $('<div class="backdrop fade" />').hide().appendTo('body').on('click', this.closeTemplateEditor.bind(this));
 			this.overlayEl = $('#edittpl_overlay').detach().appendTo('body');
+
+			this.withSubject = this.overlayEl.find('.subject-field');
+			if (!this.withSubject[0]) {
+				this.withSubject = null;
+			}
+
 			this.overlayEl.find('.close-overlay').on('click', this.closeTemplateEditor.bind(this));
 			this.overlayEl.find('.save-trigger').on('click', this.saveTemplateEditor.bind(this));
 			this.overlayEl.find('.revert-trigger').on('click', this.revertTemplateEditor.bind(this));
@@ -88,6 +95,10 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 		this.overlayEl.fadeIn('fast');
 
 		this.overlayEl.find('.overlay-footer').removeClass('loading');
+		if (this.withSubject) {
+			this.withSubject.hide().find('textarea.template-subject-code').val('');
+			this.overlayEl.find('textarea.template-code').css('height', '98%');
+		}
 
 		$.ajax({
 			url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name + '&info=1',
@@ -105,7 +116,19 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 					this.overlayEl.find('.revert-trigger').hide();
 				}
 
-				this.overlayEl.find('textarea.template-code').val(data.code).removeClass('loading');
+				var code = data.code;
+				if (this.withSubject) {
+					var m = code.match(/\s*<dp:subject>([^]*)<\/dp:subject>\s*/);
+					if (m) {
+						this.withSubject.find('textarea.template-subject-code').val($.trim(m[1]));
+
+						code = $.trim(code.replace(m[0], "\n"));
+						this.withSubject.show();
+						this.overlayEl.find('textarea.template-code').css('height', '79%');
+					}
+				}
+
+				this.overlayEl.find('textarea.template-code').val(code).removeClass('loading');
 			}
 		});
 	},
@@ -125,9 +148,15 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 	saveTemplateEditor: function() {
 		this.overlayEl.find('.overlay-footer').addClass('loading');
 
+		var code = this.overlayEl.find('textarea.template-code').val();
+
+		if (this.withSubject) {
+			code = '<dp:subject>' + this.withSubject.find('textarea.template-subject-code').val() + "</dp:subject>\n" + code;
+		}
+
 		var postData = {
 			name: this.editingTemplate,
-			code: this.overlayEl.find('textarea').val()
+			code: code
 		};
 
 		$.ajax({
