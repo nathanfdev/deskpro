@@ -171,20 +171,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             DeskPRO_Window.sections.agent_chat_section.newChatWindow([$(this).data('agent-id')]);
         });
 
-		this.rescanMessageTypes = function() {
-			if ($('.attachment-list', msgWrap).length) {
-				self.getEl('msgcheck_attach').show();
-			} else {
-				self.getEl('msgcheck_attach').hide();
-			}
-
-			if ($('article.note-message', msgWrap).length) {
-				self.getEl('msgcheck_notes').show();
-			} else {
-				self.getEl('msgcheck_notes').hide();
-			}
-		};
 		this.rescanMessageTypes();
+	},
+
+	rescanMessageTypes: function() {
+		var msgWrap = this.getEl('messages_wrap');
+		if ($('.attachment-list', msgWrap).length) {
+			this.getEl('msgcheck_attach').show();
+		} else {
+			this.getEl('msgcheck_attach').hide();
+		}
+
+		if ($('article.note-message', msgWrap).length) {
+			this.getEl('msgcheck_notes').show();
+		} else {
+			this.getEl('msgcheck_notes').hide();
+		}
 	},
 
 	handleReplySave: function(ev, formData, handler) {
