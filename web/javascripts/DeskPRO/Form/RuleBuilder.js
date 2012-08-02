@@ -55,7 +55,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var groups = {};
 
-		var html = ['<select name="type">'];
+		var html = ['<select name="type"><option>&nbsp;</option>'];
 		$('.builder-type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
 			var title = $(el).attr('title');
@@ -274,50 +274,6 @@ DeskPRO.Form.RuleBuilder = new Class({
 				choiceSel.each(function() {
 					DP.select($(this));
 				});
-			} else {
-				var inputEl = $('input[type="text"]:not(.no-auto), textarea:not(.no-auto)', choice);
-				if (inputEl.length) {
-
-					var spanEl = $('<span class="menu-trigger">(click to set value)</span>');
-					spanEl.appendTo(choice);
-					spanEl.on('click', function() {
-						var enterCloseFn = function(ev) {
-							if (ev.keyCode == 13 && !ev.metaKey) {
-								inputEl.blur();
-								closeFn();
-							}
-						}
-						var closeFn = function() {
-							backdrop.remove();
-							inputEl.detach().unbind('keypress', enterCloseFn).css('display', 'none').appendTo(choice);
-							wrapper.remove();
-						};
-
-						var backdrop = $('<div class="backdrop"></div>');
-						backdrop.appendTo('body');
-						backdrop.on('click', closeFn);
-
-						var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
-						inputEl.detach().css('display', 'block').appendTo(wrapper);
-						wrapper.css({
-							left: spanEl.offset().left,
-							top: spanEl.offset().top
-						});
-						wrapper.appendTo('body').show();
-						backdrop.css('z-index', parseInt(wrapper.css('z-index')) - 1);
-						inputEl.on('keypress', enterCloseFn).focus();
-
-						$('.close-trigger', wrapper).on('click', closeFn);
-					});
-
-					inputEl.css('display', 'none');
-					inputEl.on('change', function() {
-						var text = inputEl.val().trim();
-						if (!text) text = '(click to set value)';
-
-						spanEl.text(text);
-					});
-				}
 			}
 		}
 
