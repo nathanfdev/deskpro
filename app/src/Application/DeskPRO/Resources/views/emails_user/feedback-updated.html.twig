@@ -1,13 +1,7 @@
-{##
- # Sent to a user when their feedback status has been updated
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.feedback_updated') }}
-{% endblock %}
-{% block content %}
-	<p>
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.feedback_updated') }}</dp:subject>
+<dp:body>
+	<dp:section>
 		{% if show == 'validated' %}
 	        {{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
 		{% elseif show == 'closed' %}
@@ -15,11 +9,12 @@
         {% elseif show == 'closed' %}
             {{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
         {% endif %}
-	</p>
-	<p>
+
+		<br /><br />
+
         {{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
-	</p>
-{% endblock %}
+	</dp:section>
+</dp:body>

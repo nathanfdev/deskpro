@@ -1,45 +1,43 @@
-{% set with_cutline = 1 %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}
-	{% if new_message.is_agent_note %}{{ phrase('agent.emails.new_note_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
-	{% else %}{{ phrase('agent.emails.new_agent_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}{% endif %}
-{% endblock %}
-{% block content %}
-
-{% set content %}
+<dp:subject>
+	{% if new_message.is_agent_note %}
+		{{ phrase('agent.emails.new_note_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+	{% else %}
+		{{ phrase('agent.emails.new_agent_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+	{% endif %}
+</dp:subject>
+<dp:top>
 	{{ phrase('agent.emails.reply_above_line') }}
-	<br /><br />
-	{{ layout.render_top_message(messages|first) }}
-{% endset %}
-{{ layout.section('', content) }}
+</dp:top>
+<dp:body>
+	<dp:section>
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
+	</dp:section>
 
-<br/>
+	<dp:section>
+		<dp:section-header>Ticket</dp:section-header>
 
-{% set content %}
-	{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
+		{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
 
-	<br /><br />
+		<br /><br />
 
-	{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
-{% endset %}
-{{ layout.section(phrase('agent.emails.section_ticket'), content) }}
+		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
+	</dp:section>
 
-<br/><br/>
+	<dp:section>
+		<dp:section-header>Ticket Changes</dp:section-header>
+		{% for log in ticket_logs %}
+			{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
+		{% endfor %}
+	</dp:section>
 
-{% set content %}
-	{% for log in ticket_logs %}
-		{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
-	{% endfor %}
-{% endset %}
-{{ layout.section('Ticket Changes', content) }}
-
-<br/><br/>
-
-{{ layout.render_ticket_messages(messages, phrase('agent.general.message_history'), { ticketdisplay: ticketdisplay, show_author_email: true, skip_top: true, agent: true }) }}
-
-{% endblock %}
-{% block email_end %}
-	<br/><br/>
-	{{ layout.replycode(tac.access_code) }}
-{% endblock %}
+	<dp:section>
+		<dp:section-header>{{ phrase('agent.general.message_history') }}</dp:section-header>
+		{% for message in messages|slice(1) %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				show_author_email: true
+			} %}
+			<dp:spacer />
+		{% endfor %}
+	</dp:section>
+</dp:body>

@@ -1,14 +1,11 @@
-{##
- # Sent to a user after they've posted new feedback
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.feedback_new-disapproved') }}
-{% endblock %}
-{% block content %}
-	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
-	<p>
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.feedback_new-disapproved') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+
+		<br /><br />
+
 		{% if reason %}
 			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name}) }}
 			<br /><br />
@@ -16,5 +13,5 @@
 		{% else %}
 			{{ phrase('user.emails.feedback_disapproved') }}
 		{% endif %}
-	</p>
-{% endblock %}
+	</dp:section>
+</dp:body>

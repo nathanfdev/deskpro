@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,47 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Twig\PostRenderFilter;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+abstract class AbstractPostRenderFilter
 {
-	protected function configure()
-	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$view = 'DeskPRO:emails_agent:new-reply-user.html.twig';
-		$parameters = array(
-
-		);
-
-		$source = $this->getContainer()->get('templating')->render($view, $parameters);
-
-		echo $source;
-		echo "\n";
-	}
+	/**
+	 * @abstract
+	 * @param string $name
+	 * @param string $code
+	 * @return string
+	 */
+	abstract public function process($name, $code);
 }

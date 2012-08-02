@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,47 +25,55 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\DeskPRO\Twig\PostRenderFilter;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+use \DOMDocument, \DOMXPath;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class EmailPostRenderFilter extends AbstractPostRenderFilter
 {
-	protected function configure()
+	public function process($name, $code)
 	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
+		$m = null;
+		if (!preg_match_all('#<style[^>]*>(.*?)</style>#s', $code, $m, \PREG_PATTERN_ORDER)) {
+			return $code;
+		}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$view = 'DeskPRO:emails_agent:new-reply-user.html.twig';
-		$parameters = array(
+		$orig_code = $code;
 
-		);
+		// Separate out subject
+		$parts = explode('___DP___SUBJECT___SEP___', $code, 2);
+		$subj = null;
+		if (count($parts) == 2) {
+			$subj = trim($parts[0]);
+			$code = trim($parts[1]);
+		}
 
-		$source = $this->getContainer()->get('templating')->render($view, $parameters);
+		$css = implode("\n", $m[1]);
+		foreach ($m[0] as $find) {
+			$code = str_replace($find, '', $code);
+		}
 
-		echo $source;
-		echo "\n";
+		$emog = new \Emogrifier($code, $css);
+		$code = $emog->emogrify();
+
+		if (!$code) {
+			return $orig_code;
+		}
+
+		if ($subj) {
+			$code = $subj . '___DP___SUBJECT___SEP___' . $code;
+		}
+
+		if (strpos($name,'DeskPRO:emails_user:') === 0) {
+			$code = str_replace('DP_TOP_MARK', 'DP_TOP_MARK DP_USER_EMAIL', $code);
+		}
+
+		return $code;
 	}
 }

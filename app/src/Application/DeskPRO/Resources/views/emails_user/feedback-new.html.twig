@@ -1,22 +1,26 @@
-{##
- # Sent to a user after they've posted new feedback
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
+<dp:is-noreply />
+<dp:subject>
 	{% if validating == 'existing' or validating == 'new' %}
 		{{ phrase('user.email_subjects.feedback_new-confirm') }}
 	{% else %}
 		{{ phrase('user.email_subjects.feedback_new') }}
 	{% endif %}
-{% endblock %}
-{% block content %}
-	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
-	{% if feedback.status_code == 'hidden.validating' %}
-		<p>{{ phrase('user.emails.feedback_agent-validation') }}</p>
-	{% endif %}
-	{% if validating %}
-		{{ phrase('user.emails.feedback_validate-email') }}
-		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
-	{% endif %}
-{% endblock %}
+</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+
+		<br /><br />
+
+		{% if feedback.status_code == 'hidden.validating' %}
+			{{ phrase('user.emails.feedback_agent-validation') }}
+
+			<br /><br />
+		{% endif %}
+
+		{% if validating %}
+			{{ phrase('user.emails.feedback_validate-email') }}
+			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+		{% endif %}
+	</dp:section>
+</dp:body>

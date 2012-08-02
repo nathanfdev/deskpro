@@ -1,8 +1,7 @@
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.emails.ticket_no-autoresponse') }}
-{% endblock %}
-{% block content %}
-    {{ phrase('user.emails.ticket_flood') }}
-{% endblock %}
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.emails.ticket_no-autoresponse') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.ticket_flood') }}
+	</dp:section>
+</dp:body>

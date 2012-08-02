@@ -133,7 +133,14 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 			", array($this->style_template_info[$name]['id']));
 		}
 
-		return parent::getSource($name);
+		$source = file_get_contents($this->findTemplate($name));
+
+		if (strpos($name, 'DeskPRO:emails_') !== false) {
+			$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+			$source = $proc->process($source);
+		}
+
+		return $source;
     }
 
 	protected function findTemplate($template)

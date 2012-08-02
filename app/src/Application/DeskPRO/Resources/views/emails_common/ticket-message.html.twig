@@ -1,0 +1,13 @@
+<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
+{{ message.message_html|raw }}
+<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
+{% if options.ticketdisplay.getMessageAttachments(message) %}
+	<div style="font-size:11px">
+		<br />
+		<strong>Attachments</strong>
+		{% for attach in options.ticketdisplay.getMessageAttachments(message) %}
+			<br />
+			&bull; <a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.getReadableFilesize() }})
+		{% endfor %}
+	</div>
+{% endif %}

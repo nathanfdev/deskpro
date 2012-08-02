@@ -1,29 +1,16 @@
-{% set with_cutmark = 'DP_USER_EMAIL' %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}
-    {{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}
-{% endblock %}
-{% block content %}
-	{% set content %}
-		{{ layout.greeting(person) }}
-		{{ phrase('user.emails.ticket_received') }}
-	{% endset %}
-	{{ layout.section('', content) }}
-
-	<br />
-	{{ layout.render_ticket_messages(messages, '', { skip_top: 0, ticketdisplay: ticketdisplay, person_id: ticket.person.id }) }}
-{% endblock %}
-{% block footer_content %}
-	{% set content %}
-        {{ phrase('user.emails.ticket_access_ticket_online') }}
-		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
-			{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
-		</a>
-	{% endset %}
-	{{ layout.info_section(content, {center: 1}) }}
-{% endblock %}
-{% block email_end %}
-	<br/><br/>
-	{{ layout.replycode(ticket.access_code) }}
-{% endblock %}
+<dp:subject>{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}</dp:subject>
+<dp:top>
+	{{ layout.greeting(person) }}
+	{{ phrase('user.emails.ticket_received') }}
+</dp:top>
+<dp:body>
+	<dp:section>
+		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {message: messages|first} %}
+	</dp:section>
+</dp:body>
+<dp:bottom>
+	{{ phrase('user.emails.ticket_access_ticket_online') }}
+	<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
+		{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
+	</a>
+</dp:bottom>

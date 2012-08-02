@@ -1,16 +1,15 @@
-{##
- # Sent to a user after they've posted a comment
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.comment-confirmation') }}
-{% endblock %}
-{% block content %}
-	{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
-	<p>{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}</p>
-	{% if validating %}
-		{{ phrase('user.emails.comment_validate-email') }}
-		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
-	{% endif %}
-{% endblock %}
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.comment-confirmation') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
+		{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}
+
+		<br /><br />
+
+		{% if validating %}
+			{{ phrase('user.emails.comment_validate-email') }}
+			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+		{% endif %}
+	</dp:section>
+</dp:body>

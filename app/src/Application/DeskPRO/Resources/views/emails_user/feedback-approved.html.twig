@@ -1,17 +1,18 @@
-{##
- # Sent to a user after they've posted new feedback
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.feedback_new-approved') }}
-{% endblock %}
-{% block content %}
-	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
-	<p>{{ phrase('user.emails.feedback_approved') }}</p>
-	<br /><br />
-	{{ phrase('user.emails.label_view-online') }}:
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.feedback_new-approved') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+
+		<br /><br />
+
+		{{ phrase('user.emails.feedback_approved') }}
+
+		<br /><br />
+
+		{{ phrase('user.emails.label_view-online') }}:
 		<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}" style="{{ layout.info_link_style() }}">
 			{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
-{% endblock %}
+	</dp:section>
+</dp:body>

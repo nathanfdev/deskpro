@@ -1,12 +1,11 @@
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.validate-email') }}
-{% endblock %}
-{% block content %}
-	{{ phrase('user.emails.register-confirm') }}:
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.validate-email') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.register-confirm') }}:
 
-	<br /><br />
+		<br /><br />
 
-	<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}</a>
-{% endblock %}
+		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}</a>
+	</dp:section>
+</dp:body>

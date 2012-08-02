@@ -1,14 +1,13 @@
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}
+<dp:is-noreply />
+<dp:subject>
 	{% if success %}
 		{{ phrase('agent.emails.alert_successful_login') }}
 	{% else %}
 		{{ phrase('agent.emails.alert_failed_login') }}
 	{% endif %}
-{% endblock %}
-{% block content %}
-	{% set content %}
+</dp:subject>
+<dp:body>
+	<dp:section>
 		{% if success %}
 			{{ phrase('agent.emails.notice_account_login') }}<br />
 		{% else %}
@@ -20,10 +19,5 @@
 		{{ phrase('agent.emails.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
 		{{ phrase('agent.general.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
 		{{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
-	{% endset %}
-	{% if success %}
-		{{ layout.section(phrase('agent.emails.alert_successful_login'), content) }}
-	{% else %}
-		{{ layout.section(phrase('agent.emails.alert_failed_login'), content) }}
-	{% endif %}
-{% endblock %}
+	</dp:section>
+</dp:body>

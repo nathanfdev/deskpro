@@ -1,17 +1,13 @@
-{% set with_cutmark = 'DP_USER_EMAIL' %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.ticket_new-participant') }}
-{% endblock %}
-{% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
-	{% if is_first %}
-		<p>
-            {{ phrase('user.emails.ticket_cc-new', {'name':ticket.person.display_name}) }}
-		</p>
-	{% endif %}
+<dp:subject>{{ phrase('user.email_subjects.ticket_new-participant') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{% if is_first %}
+			{{ phrase('user.emails.ticket_cc-new', {'name':ticket.person.display_name}) }}
+			<br /><br />
+		{% endif %}
 
-	{% for message in messages %}
-		{{ message.message_html|raw }}
-	{% endfor %}
-{% endblock %}
+		{% for message in messages %}
+			{{ message.message_html|raw }}
+		{% endfor %}
+	</dp:section>
+</dp:body>

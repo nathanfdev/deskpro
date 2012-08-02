@@ -1,13 +1,10 @@
-{##
- # Sent to a user after an agent deletes their comment awaiting validation.
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.comment-deleted') }}
-{% endblock %}
-{% block content %}
-	{% set content = comment.getObject() %}{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
-	{{ phrase('user.emails.comment_thank-you', {'link': phrase_link}) }}
-	{{ phrase('user.emails.comment_deleted') }}
-{% endblock %}
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.comment-deleted') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{% set content = comment.getObject() %}
+		{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
+		{{ phrase('user.emails.comment_thank-you', {'link': phrase_link}) }}
+		{{ phrase('user.emails.comment_deleted') }}
+	</dp:section>
+</dp:body>

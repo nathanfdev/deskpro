@@ -1,30 +1,18 @@
-{##
- # Sent to users when their feedback, or feedback they've commented on, has a new comment.
- ##}
-{% set is_noreply = true %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.feedback_new-comment', {title: feedback.title}) }}
-{% endblock %}
-{% block content %}
-	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">
-			{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName()|default('Anonymous') }) }}
-		</td></tr>
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
-			<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
-				{{ comment.getContentHtml()|raw }}
-			</td></tr></table>
-		</td></tr>
-		<tr><td style="padding-bottom: 6px;"><br /></td></tr>
-	</table>
-{% endblock %}
-{% block footer_content %}
-	{% set content %}
-        {{ phrase('user.emails.label_view-online') }}:
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.feedback_new-comment', {title: feedback.title}) }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName()|default('Anonymous') }) }}
+
+		<br /><br />
+
+		{{ comment.getContentHtml()|raw }}
+
+		<br /><br />
+
+		{{ phrase('user.emails.label_view-online') }}:
 		<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}" style="{{ layout.info_link_style() }}">
 			{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
-	{% endset %}
-	{{ layout.info_section(content, {center: 1}) }}
-{% endblock %}
+	</dp:section>
+</dp:body>

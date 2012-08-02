@@ -40,7 +40,14 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
     {
 		$is_custom_template = $this->environment->isCustomTemplate($name);
 		if (!$is_custom_template) {
-			return parent::render($name, $parameters);
+			$code = parent::render($name, $parameters);
+
+			if (strpos($name, 'DeskPRO:emails_') !== false) {
+				$proc = new \Application\DeskPRO\Twig\PostRenderFilter\EmailPostRenderFilter();
+				$code = $proc->process($name, $code);
+			}
+
+			return $code;
 		} else {
 			try {
 				return parent::render($name, $parameters);

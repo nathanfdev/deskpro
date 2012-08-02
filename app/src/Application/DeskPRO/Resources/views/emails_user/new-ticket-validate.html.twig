@@ -1,17 +1,12 @@
-{% set with_cutmark = 'DP_USER_EMAIL' %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
-{% block content %}
-	{% set content %}
-    {{ phrase('user.emails.ticket_validate') }}
-	<br /><br />
-	{{ phrase('user.emails.profile_email_link-validate') }}:<br />
-	<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
-		{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
-	</a>
-	{% endset %}
-	{{ layout.section('', content) }}
-
-	{{ layout.render_ticket_messages(messages, '', { person_id: ticket.person.id }) }}
-{% endblock %}
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.email_new-confirm') }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.ticket_validate') }}
+		<br /><br />
+		{{ phrase('user.emails.profile_email_link-validate') }}:<br />
+		<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
+			{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
+		</a>
+	</dp:section>
+</dp:body>

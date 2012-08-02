@@ -1,26 +1,28 @@
-{% macro section(title, content, options) %}
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:0;margin:0;">
-		{% if title %}
-			<tr>
-				<td style="{{ _self.standard_font() }} font-size:18px; color:#242424; padding-bottom:4px;">
-					{{ title }}
-				</td>
-			</tr>
-		{% endif %}
-		{% if content %}
-			<tr>
-				<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-bottom:0;">
-					{{ content|raw }}
-				</td>
-			</tr>
-		{% endif %}
-	</table>
+{##
+# Wrapper around sections in emails
+##}
+{% macro section(content) %}
+	<div class="dp-layout-section">
+		{{content}}
+	</div>
+	<br /><br />
 {% endmacro %}
 
-{% macro standard_font() %}font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;{% endmacro %}
-{% macro link_style() %}color: #0065A3;text-decoration: underline;{% endmacro %}
-{% macro info_link_style() %}color: #949494;text-decoration: underline;{% endmacro %}
+{##
+# Wrapper around sections in emails
+##}
+{% macro sectionHeader(content) %}
+	<div class="dp-layout-section-header"><div class="dp-layout-section-header-title">{{ content }}</div></div>
+{% endmacro %}
 
+{##
+# The spacer inserts small whitespace between two elements
+##}
+{% macro spacer() %}<div class="dp-spacer">&nbsp;</div>{% endmacro %}
+
+{##
+# Styling applied to ticket log actiontext
+##}
 {% macro actiontext_style(type) %}{% spaceless %}
 	{% if type == 'row' %}padding: 5px 0 5px 0;
 	{% elseif type == 'type' %}font-weight: bold;
@@ -29,118 +31,23 @@
 	{% endif %}
 {% endspaceless %}{% endmacro %}
 
-{% macro info_section(content, options) %}
-	<p style="{{ _self.standard_font() }} font-size: 12px; margin: 0; padding: 0;">{{ content|raw }}</p>
+{##
+# A horizontal rule that is used to separate the footer
+##}
+{% macro hr() %}
+	<div class="dp-hr">&nbsp;</div>
 {% endmacro %}
 
-{% macro sep() %}
-	<div style="font-size: 12px; line-height: 100%; padding: 0; margin: 15px 0 0 0; border-top: 2px solid #C5C5C5;">&nbsp;</div>
-{% endmacro %}
-
-{% macro messages_section(title, content, options) %}
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	{% if title %}
-	<tr>
-		<td style="{{ _self.standard_font() }} font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
-			{{ title }}
-		</td>
-	</tr>
-	{% endif %}
-	{% if content %}
-	<tr>
-		<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
-			{{ content|raw }}
-		</td>
-	</tr>
-	{% endif %}
-</table>
-{% endmacro %}
-
-{% macro message(message, options) %}
-	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">
-			{% if options.show_author_email or options.person_id == message.person.id or not message.person.is_agent %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e ~ ' <' ~ message.person.primary_email_address ~ '>' }, true) }}
-			{% else %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: message.person.display_name|e }, true) }}
-			{% endif %}
-		</td></tr>
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
-			<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
-				<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
-				{{ message.message_html|raw }}
-				<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
-				{% if options.attachments %}
-					<div style="font-size:11px">
-						<br />
-						<strong>Attachments</strong>
-						{% for attach in options.attachments %}
-							<br />
-							&bull; <a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.getReadableFilesize() }})
-						{% endfor %}
-					</div>
-				{% endif %}
-			</td></tr></table>
-		</td></tr>
-		<tr><td style="padding-bottom: 6px;"><br /></td></tr>
-	</table>
-{% endmacro %}
-
-{% macro render_top_message(message, options) %}
-	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
-			<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
-			{{ message.message_html|raw }}
-			<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
-			{% if options.ticketdisplay.getMessageAttachments(message) %}
-				<div style="font-size:11px">
-					<br />
-					<strong>Attachments</strong>
-					{% for attach in options.ticketdisplay.getMessageAttachments(message) %}
-						<br />
-						&bull; <a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.getReadableFilesize() }})
-					{% endfor %}
-				</div>
-			{% endif %}
-		</td></tr>
-	</table>
-{% endmacro %}
-
-{% macro render_ticket_messages(messages, title, options) %}
-
-	{% set max = app.getSetting('core_tickets.email_history_limit') %}
-	{% if max < 1 %}{% set max = 1000 %}{% endif %}
-
-	{% if not options.skip_top or (options.skip_top and messages|length > 1) %}
-		{% set section_content %}
-			{% for message in messages %}
-				{% if loop.index <= max %}
-					{% if options.skip_top and loop.first or options.only_top and not loop.first %}
-					{% else %}
-						{{ _self.message(message, { attachments: options.ticketdisplay.getMessageAttachments(message), person_id: options.person_id, show_author_email: options.show_author_email }) }}
-					{% endif %}
-				{% endif %}
-			{% endfor %}
-		{% endset %}
-		{{ _self.messages_section(title, section_content) }}
-	{% endif %}
-
-	{% if messages|length > max %}
-		<p>
-			{{ phrase('user.emails.tickets_ommitted', {count: messages|length - max}) }}
-			{% if options.agent %}
-				&middot; <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ phrase('user.emails.view_full_history_online') }}</a>
-			{% else %}
-				&middot; <a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">{{ phrase('user.emails.view_full_history_online') }}</a>
-			{% endif %}
-		</p>
-	{% endif %}
-{% endmacro %}
-
+{##
+# Invisible code tracking that is appended to the bottom of emails
+##}
 {% macro replycode(code) %}
-	<span style="color:#E8E8E8;font-size:1px;">(#{{ code }})</span>
+	<span class="dp-replycode">(#{{ code }})</span>
 {% endmacro %}
 
+{##
+# Standard greeting text for a user
+##}
 {% macro greeting(person) %}
 	{{ phrase('user.emails.greeting', {'name': person.display_name}) }}<br /><br />
 {% endmacro %}

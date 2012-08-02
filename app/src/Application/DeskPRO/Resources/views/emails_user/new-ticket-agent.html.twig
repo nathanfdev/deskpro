@@ -1,27 +1,26 @@
-{% set with_cutmark = 'DP_USER_EMAIL' %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}
-	{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}
-{% endblock %}
-{% block content %}
-	{{ layout.render_top_message(messages|first) }}
-	{% if messages|length > 1 %}
-		<br />
-		{{ layout.render_ticket_messages(messages, '', { skip_top: 1, person_id: ticket.person.id}) }}
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}</dp:subject>
+<dp:top>
+	{{ layout.greeting(person) }}
+	{{ phrase('user.emails.ticket_reply-confirm') }}
+</dp:top>
+<dp:body>
+	<dp:section>
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
+	</dp:section>
 
-	{% endif %}
-{% endblock %}
-{% block footer_content %}
-	{% set content %}
-        {{ phrase('user.emails.ticket_access_ticket_online') }}
-		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
-			{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
-		</a>
-	{% endset %}
-	{{ layout.info_section(content, {center: 1}) }}
-{% endblock %}
-{% block email_end %}
-	<br/><br/>
-	{{ layout.replycode(ticket.access_code) }}
-{% endblock %}
+	<dp:section>
+		{% for message in messages|slice(1) %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message
+			} %}
+			<dp:spacer />
+		{% endfor %}
+	</dp:section>
+</dp:body>
+<dp:bottom>
+	{{ phrase('user.emails.ticket_access_ticket_online') }}
+	<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
+		{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
+	</a>
+</dp:bottom>

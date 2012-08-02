@@ -1,51 +1,43 @@
-{% set with_cutline = 1 %}
-{% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}
-{% if type_flag == 'assigned' %}[#{{ ticket.id }} ASSIGNED] Re: {{ ticket.subject }}
-{% elseif type_flag == 'assigned_team' %}[#{{ ticket.id }} ASSIGNED TEAM] Re: {{ ticket.subject }}
-{% elseif type_flag == 'added_part' %}[#{{ ticket.id }} FOLLOWER] Re: {{ ticket.subject }}
-{% else %}[#{{ ticket.id }} UPDATED] Re: {{ ticket.subject }}{% endif %}
-{% endblock %}
-{% block content %}
-{% set content %}
-{{ phrase('agent.emails.reply_above_line') }}
-<br /><br />
-{% if action_performer and action_performer.getId() %}{{ action_performer.getDisplayContact() }}{% else %}System{% endif %} updated the ticket "{{ ticket.subject }}"
+<dp:subject>
+	{% if type_flag == 'assigned' %}
+		{% set action = 'ASSIGNED' %}
+	{% elseif type_flag == 'assigned_team' %}
+		{% set action = 'ASSIGNED TEAM' %}
+	{% elseif type_flag == 'added_part' %}
+		{% set action = 'FOLLOWED' %}
+	{% else %}
+		{% set action = 'UPDATED' %}
+	{% endif %}
+	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}
+</dp:subject>
+<dp:top>
+	{{ phrase('agent.emails.reply_above_line') }}
+</dp:top>
+<dp:body>
+	<dp:section>
+		{% if action_performer and action_performer.getId() %}
+			{{ action_performer.getDisplayContact() }}
+		{% else %}
+			System
+		{% endif %} updated the ticket "{{ ticket.subject }}"
 
+		{% if type_flag == 'assigned' %}
+			and assigned it to you.
+		{% elseif type_flag == 'assigned_team' %}
+			and assigned it to your team "{{ ticket.agent_team.name }}".
+		{% elseif type_flag == 'added_part' %}
+			and added you as a new follower.
+		{% endif %}
+	</dp:section>
 
-{% if type_flag == 'assigned' %}and assigned it to you.
-{% elseif type_flag == 'assigned_team' %}and assigned it to your team "{{ ticket.agent_team.name }}".
-{% elseif type_flag == 'added_part' %}and added you as a new follower.
-{% endif %}
-<br /><br />
-
-View this ticket online:<br />
-<a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" style="{{ layout.link_style() }}">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
-{% endset %}
-{{ layout.section('', content) }}
-
-<br /><br />
-
-{% if type_flag == 'updated' %}
-	{% set content %}
+	<dp:section>
+		<dp:section-header>Ticket</dp:section-header>
 		{% for log in ticket_logs %}
 			{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
 		{% endfor %}
-	{% endset %}
-	{{ layout.section('Ticket Changes', content) }}
-{% else %}
-	{% set content %}
+
+		<br /><br />
+
 		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
-	{% endset %}
-	{{ layout.section('Ticket', content) }}
-{% endif %}
-<br/><br/>
-
-{{ layout.render_ticket_messages(messages, phrase('agent.general.messages'), {show_author_email: true, agent: true}) }}
-
-{% endblock %}
-{% block email_end %}
-	<br/><br/>
-	{{ layout.replycode(tac.access_code) }}
-{% endblock %}
+	</dp:section>
+</dp:body>
