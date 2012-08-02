@@ -53,6 +53,7 @@ $loader->registerClassNames(array(
 	'GoogleOpenID'                    => DP_ROOT.'/vendor/googleopenid/GoogleOpenID.php',
 	'POParser'                        => DP_ROOT.'/vendor/simplepo/POParser.php',
 	'TempPoMsgStore'                  => DP_ROOT.'/vendor/simplepo/POParser.php',
+	'Emogrifier'                      => DP_ROOT.'/vendor/emogrifier/emogrifier.php',
 
 	'Text_LanguageDetect'             => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect.php',
 	'Text_LanguageDetect_Exception'   => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',

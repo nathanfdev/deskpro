@@ -1,9 +1,0 @@
-{% macro section_start(heading, size) %}
-	{% if heading %}
-		<h{{size}}>{{heading|raw}}</h{{size}}>
-	{% endif %}
-{% endmacro %}
-
-{% macro section_end() %}
-	<br /><br />
-{% endmacro %}
