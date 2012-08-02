@@ -101,6 +101,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	 */
 	public function enableNotifications()
 	{
+		$this->tracker->logMessage("[NewTicketAction] Enable notify");
 		$this->enable_notify = true;
 	}
 
@@ -110,6 +111,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	 */
 	public function disableNotifications()
 	{
+		$this->tracker->logMessage("[NewTicketAction] Disable notify");
 		$this->enable_notify = false;
 	}
 

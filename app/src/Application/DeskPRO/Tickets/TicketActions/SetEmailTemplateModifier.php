@@ -50,10 +50,10 @@ class SetEmailTemplateModifier implements CollectionModifierInterface
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		$notify_types = array();
-		$notify_types[] = 'NewTicketAction';
-		$notify_types[] = 'UserNotificationNewReplyAction';
-		$notify_types[] = 'UserNotificationNewAgentAction';
-		$notify_types[] = 'AgentNotificationAction';
+		$notify_types[] = 'NewTicket';
+		$notify_types[] = 'UserNotificationNewReply';
+		$notify_types[] = 'UserNotificationNewAgent';
+		$notify_types[] = 'AgentNotification';
 
 		foreach ($notify_types as $type) {
 			if ($collection->hasActionType($type)) {
@@ -69,6 +69,13 @@ class SetEmailTemplateModifier implements CollectionModifierInterface
 	public function getDescription($as_html = true)
 	{
 		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.use_email_tpl_action', array('tpl' => $this->tpl));
+
+		$tpl = $this->tpl;
+		$tpl = str_replace('DeskPRO:custom_emails_user:', '', $tpl);
+		$tpl = str_replace('DeskPRO:custom_emails_agent:', '', $tpl);
+		$tpl = str_replace('DeskPRO:emails_user:', '', $tpl);
+		$tpl = str_replace('DeskPRO:emails_agent:', '', $tpl);
+
+		return $tr->phrase('agent.tickets.use_email_tpl_action', array('tpl' => $tpl));
 	}
 }

@@ -12,7 +12,7 @@
 </dp:top>
 <dp:body>
 	<dp:section>
-		{% include 'DeskPRO:emails_common:ticket-message.html.twig' %}
+		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: new_message} %}
 	</dp:section>
 
 	<dp:section>

@@ -230,12 +230,14 @@ class TemplatesController extends AbstractController
 			/** @var $twig \Application\DeskPRO\Twig\Environment */
 			$twig = $this->container->get('twig');
 
-			if (strpos($name, 'DeskPRO:emails_') !== false) {
+			$compile_code = $code;
+
+			if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
 				$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-				$code = $proc->process($code);
+				$compile_code = $proc->process($compile_code);
 			}
 
-			$compiled = $twig->compileSource($code, $name);
+			$compiled = $twig->compileSource($compile_code, $name);
 		} catch (\Twig_Error_Syntax $e) {
 			return $this->createJsonResponse(array(
 				'error' => true,

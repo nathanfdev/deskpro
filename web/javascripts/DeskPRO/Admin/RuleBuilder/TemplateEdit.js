@@ -9,15 +9,27 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 
 		this.tplInput = this.rowEl.find('input.tpl-name');
 		this.currentValue = this.rowEl.find('.status-value');
+		this.trimCurrentValue();
 		this.currentValue.on('click', this.show.bind(this));
 
 		this.tplDir    = this.currentValue.data('tpldir');
 		this.tplPrefix = this.currentValue.data('tplprefix')
 	},
 
+	trimCurrentValue: function() {
+		var text = $.trim(this.currentValue.text());
+		text = text.replace(/DeskPRO:custom_emails_user:/, '');
+		text = text.replace(/DeskPRO:custom_emails_agent:/, '');
+		text = text.replace(/DeskPRO:emails_user:/, '');
+		text = text.replace(/DeskPRO:emails_agent:/, '');
+
+		this.currentValue.text(text);
+	},
+
 	initValues: function() {
 		if (this.tplInput.val()) {
 			this.currentValue.text(this.tplInput.val());
+			this.trimCurrentValue();
 		} else {
 			this.currentValue.text('(click to change)');
 		}
@@ -106,6 +118,7 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 			if (val) {
 				self.tplInput.val(val);
 				self.currentValue.text(val);
+				this.trimCurrentValue();
 			} else {
 				self.tplInput.val('');
 				self.currentValue.text('(click to change)');
@@ -177,6 +190,11 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 			this.tplOverlayEl.find('.close-overlay').on('click', this.closeTemplateEditor.bind(this));
 			this.tplOverlayEl.find('.save-trigger').on('click', this.saveTemplateEditor.bind(this));
 			this.tplOverlayEl.find('.revert-trigger').on('click', this.revertTemplateEditor.bind(this));
+
+			this.withSubject = this.tplOverlayEl.find('.subject-field');
+			if (!this.withSubject[0]) {
+				this.withSubject = null;
+			}
 		}
 
 		this.editingTemplate = template_name;
@@ -186,6 +204,10 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 		this.tplOverlayEl.fadeIn('fast');
 
 		this.tplOverlayEl.find('.overlay-footer').removeClass('loading');
+		if (this.withSubject) {
+			this.withSubject.hide().find('textarea.template-subject-code').val('');
+			this.tplOverlayEl.find('textarea.template-code').css('height', '98%');
+		}
 
 		$.ajax({
 			url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name,
@@ -195,7 +217,21 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 			},
 			success: function(val) {
 				this.editingTemplate = template_name;
-				this.tplOverlayEl.find('textarea.template-code').val(val).removeClass('loading');
+
+				code = val;
+
+				if (this.withSubject) {
+					var m = code.match(/\s*<dp:subject>([^]*)<\/dp:subject>\s*/);
+					if (m) {
+						this.withSubject.find('textarea.template-subject-code').val($.trim(m[1]));
+
+						code = $.trim(code.replace(m[0], "\n"));
+						this.withSubject.show();
+						this.tplOverlayEl.find('textarea.template-code').css('height', '79%');
+					}
+				}
+
+				this.tplOverlayEl.find('textarea.template-code').val(code).removeClass('loading');
 			}
 		});
 	},
@@ -214,9 +250,15 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 	saveTemplateEditor: function() {
 		this.tplOverlayEl.find('.overlay-footer').addClass('loading');
 
+		var code = this.tplOverlayEl.find('textarea.template-code').val();
+
+		if (this.withSubject) {
+			code = '<dp:subject>' + this.withSubject.find('textarea.template-subject-code').val() + "</dp:subject>\n" + code;
+		}
+
 		var postData = {
 			name: this.editingTemplate,
-			code: this.tplOverlayEl.find('textarea').val()
+			code: code
 		};
 
 		$.ajax({
