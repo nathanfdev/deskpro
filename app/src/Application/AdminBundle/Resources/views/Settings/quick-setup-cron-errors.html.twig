@@ -14,6 +14,23 @@
 		{% endif%}
 	</p>
 	<hr />
+	{% if not ini_path and web_ini_path and is_zendserver and get_instance_ability('is_windows') %}
+		<div style="background-color: #FDFFC2; padding: 5px; margin: 15px;">
+			<p>
+				We have detected that you are using Zend Server. There is a known problem with Zend Server when using the php-win.exe
+				binary and where no php.ini is loaded.
+			</p>
+			<p>
+				The simplest solution is to create a new ini file at C:\WINDOWS\php.ini
+			</p>
+			{% if web_ini_path %}
+				<p>
+					The php.ini file you are currently using on the web server is located at: {{ web_ini_path }}<br />
+					You may be able to simply copy this entire file.
+				</p>
+			{% endif %}
+		</div>
+	{% endif %}
 	<ul>
 	{% for code in error_codes %}
 		<li>

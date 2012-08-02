@@ -503,10 +503,18 @@ class SettingsController extends AbstractController
 				$error_codes = $m[1];
 			}
 
+			$web_ini_path = \Orb\Util\Env::getPhpIniPath();
+			$is_zendserver = false;
+			if ($web_ini_path) {
+				$is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
+			}
+
 			$cron_errors = $this->renderView('AdminBundle:Settings:quick-setup-cron-errors.html.twig', array(
-				'error_codes' => $error_codes,
-				'ini_path' => $ini_path,
-				'data_dir' => dp_get_data_dir()
+				'error_codes'   => $error_codes,
+				'ini_path'      => $ini_path,
+				'is_zendserver' => $is_zendserver,
+				'web_ini_path'  => $web_ini_path,
+				'data_dir'      => dp_get_data_dir()
 			));
 		}
 
