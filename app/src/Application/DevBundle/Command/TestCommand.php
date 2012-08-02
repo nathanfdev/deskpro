@@ -59,14 +59,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$view = 'DeskPRO:emails_agent:new-reply-user.html.twig';
-		$parameters = array(
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/dpmail.txt');
 
-		);
+		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$r->setRawSource($source);
 
-		$source = $this->getContainer()->get('templating')->render($view, $parameters);
+		$body = $r->getBodyHtml()->getBodyUtf8();
 
-		echo $source;
+		echo $body;
 		echo "\n";
 	}
 }

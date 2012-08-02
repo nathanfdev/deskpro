@@ -10,10 +10,10 @@
 	{% endif %}
 	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}
 </dp:subject>
-<dp:top>
-	{{ phrase('agent.emails.reply_above_line') }}
-</dp:top>
 <dp:body>
+	{{ phrase('agent.emails.reply_above_line') }}
+	<br /><br />
+
 	<dp:section>
 		{% if action_performer and action_performer.getId() %}
 			{{ action_performer.getDisplayContact() }}

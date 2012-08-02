@@ -1,10 +1,10 @@
 <dp:is-noreply />
 <dp:subject>{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}</dp:subject>
-<dp:top>
+<dp:body>
 	{{ layout.greeting(person) }}
 	{{ phrase('user.emails.ticket_reply-confirm') }}
-</dp:top>
-<dp:body>
+	<br /><br />
+
 	<dp:section>
 		{% for message in messages %}
 			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {

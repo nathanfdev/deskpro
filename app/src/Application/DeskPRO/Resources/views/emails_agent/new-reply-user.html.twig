@@ -1,10 +1,10 @@
 <dp:subject>
 	{{ phrase('agent.emails.new_user_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
 </dp:subject>
-<dp:top>
-	{{ phrase('agent.emails.reply_above_line') }}
-</dp:top>
 <dp:body>
+	{{ phrase('agent.emails.reply_above_line') }}
+	<br /><br />
+
 	<dp:section>
 		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
 	</dp:section>

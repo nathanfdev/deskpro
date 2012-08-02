@@ -26,8 +26,8 @@
 			font-size:1px;
 		}
 
-		div.dp-wrap, td, p, span, div {
-			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		body, div, td, p, span {
+			font-family: Helvetica, Arial, sans-serif;
 			line-height: 125%;
 			color: #242424;
 		}
@@ -97,16 +97,6 @@
 
 <!--DP_TOP_MARK-->{% if with_cutmark %}<!-- {{with_cutmark}} -->{% endif %}
 <table border="0" width="100%" border="0" cellpadding="0" cellspacing="0">
-	{% ifblock email_header %}
-		<tr>
-			<td valign="top">
-				<div class="dp-layout-top">
-					{% block email_header %}{% block header_content %}{% endblock %}{% endblock %}
-					<br /><br />
-				</div>
-			</td>
-		</tr>
-	{% endifblock %}
 	<tr>
 		<td valign="top" class="dp-layout-content">{% block content %}{% endblock %}</td>
 	</tr>
