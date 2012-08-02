@@ -1416,6 +1416,8 @@ class Strings
 		$new = '';
 		if (function_exists('iconv')) {
 			$new = @iconv($from_charset, 'UTF-8//IGNORE//TRANSLIT', $string);
+		} elseif (function_exists('mb_convert_encoding')) {
+			$new = mb_convert_encoding($string, 'UTF-8', $from_charset);
 		} else if (strtoupper($from_charset) == 'ISO-8859-1') {
 			$new = utf8_encode($string);
 		}

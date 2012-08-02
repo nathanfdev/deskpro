@@ -103,11 +103,12 @@
 		<?php else: $failed = true; $failed_phpini = true; ?>
 		<span class="label important" style="float:right">FAIL</span>
 		<?php endif ?>
-		Check that the <a href="http://php.net/manual/en/iconv.installation.php">iconv extension</a> is installed
+		Check that the <a href="http://php.net/manual/en/iconv.installation.php">iconv</a> or
+		<a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a> extension is installed
 		<?php if ($failed): ?>
 		<div class="alert-message block-message error">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_iconv_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-			DeskPRO requires the iconv extension to be installed and enabled.
+			DeskPRO requires the iconv or mbstring extension to be installed and enabled.
 		</div>
 		<?php endif ?>
 	</td>

@@ -499,15 +499,15 @@ class ServerChecks
 
 		if ($type == 'iconv_ext' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking iconv is installed", Logger::DEBUG);
-			if (function_exists('iconv')) {
-				$this->getLogger()->log("[OK] iconv is installed", Logger::DEBUG);
+			if (function_exists('iconv') || function_exists('mb_convert_encoding')) {
+				$this->getLogger()->log("[OK] iconv or mb_convert_encoding is installed", Logger::DEBUG);
 			} else {
 				$this->has_fatal_server_errors = true;
-				$msg = "You must install and enabled the iconv extension";
+				$msg = "You must install and enabled the iconv or mb_convert_encoding extension";
 				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['iconv_ext'] = array(
 					'message' => $msg,
-					'level' => 'recommended'
+					'level' => 'fatal'
 				);
 			}
 		}

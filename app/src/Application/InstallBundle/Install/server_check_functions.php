@@ -49,8 +49,8 @@ function deskpro_install_check_reqs()
 		$errors['magic_quotes_gpc_check'] = 'recommended';
 	}
 
-	if (!function_exists('iconv')) {
-		$errors['iconv_ext'] = 'recommended';
+	if (!function_exists('iconv') && !function_exists('mb_convert_encoding')) {
+		$errors['iconv_ext'] = 'fatal';
 	}
 
 	if (!deskpro_install_check_memory_limit()) {
