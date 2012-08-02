@@ -143,16 +143,18 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			# No license
 			#------------------------------
 
-			// If we dont have a license or not completed installs, then we are allowed to view exactly four sections:
+			// If we dont have a license or not completed installs, then we are allowed to view exactly five sections:
 			// 1) /admin/login               Logging in
 			// 2) /admin/welcome             Initial config
 			// 3) /admin/setup/default-smtp  Setting up outgoing email
 			// 4) /billing                   Setting up the license
+			// 5) /admin/license             Updating license code
 
 			$is_installed = App::getSetting('core.setup_initial');
 			if (
 				(!License::getLicense()->hasLicense() || !$is_installed)
 				&& !preg_match('#^/admin/login#', $path)
+				&& !preg_match('#^/admin/license#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
 				&& !preg_match('#^/billing#', $path)
@@ -165,6 +167,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			if (
 				!preg_match('#^/admin/login#', $path)
 				&& !preg_match('#^/billing#', $path)
+				&& !preg_match('#^/admin/license#', $path)
 				&& !preg_match('#^/admin/upgrade#', $path)
 			) {
 				#------------------------------
