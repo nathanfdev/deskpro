@@ -7,6 +7,7 @@
  * - No cleaning of @import type rules
  * - Removed cache
  * - libxml_use_internal_errors(true)
+ * - always assume utf8
  */
 
 class Emogrifier {
@@ -52,9 +53,7 @@ class Emogrifier {
             $body = preg_replace("/<\/?($unprocessableHTMLTags)[^>]*>/i",'',$body);
         }
 
-        $encoding = mb_detect_encoding($body);
-        $body = mb_convert_encoding($body, 'HTML-ENTITIES', $encoding);
-
+        $encoding = "UTF-8";
 		libxml_use_internal_errors(true);
         $xmldoc = new DOMDocument;
         $xmldoc->encoding = $encoding;
@@ -130,11 +129,7 @@ class Emogrifier {
             $node->setAttribute('style', $style);
         }
 
-        if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmldoc->saveHTML(), $encoding, 'HTML-ENTITIES');
-        } else {
-            return $xmldoc->saveHTML();
-        }
+        return $xmldoc->saveHTML();
     }
 
     private function sortBySelectorPrecedence($a, $b) {
