@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Import\Importer\Deskpro3Importer;
 
 class CustomFieldsStep extends AbstractDeskpro3Step
 {
@@ -233,6 +234,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('ticket_def_name', $f['id'], $f['name']);
 
 		// For choice options, need to insert choices
+		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
 			$this->saveChoiceFields('ticket_def_choice', $new_field, $f['id'], $choice_data);
 		}
@@ -296,6 +298,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('people_def', $f['id'], $new_field->id);
 
 		// For choice options, need to insert choices
+		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
 			$this->saveChoiceFields('people_def_choice', $new_field, $f['id'], $choice_data);
 		}
@@ -360,6 +363,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('org_def', $f['id'], $new_field->id);
 
 		// For choice options, need to insert choices
+		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
 			$this->saveChoiceFields('org_def_choice', $new_field, $f['id'], $choice_data);
 		}
@@ -426,6 +430,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('kb_def', $f['id'], $new_field->id);
 
 		// For choice options, need to insert choices
+		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {
 			$this->saveChoiceFields('kb_def_choice', $new_field, $f['id'], $choice_data);
 		}
@@ -483,7 +488,13 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 	protected function transform2lvToSelect(array $f)
 	{
 		$f['formtype'] = 'select';
-		$data = unserialize($f['data']);
+		$f['data'] = Deskpro3Importer::unserialize_fix_32b_ints($f['data']);
+		$data = @unserialize($f['data']);
+
+		if (!$data) {
+			$f['data'] = serialize(array());
+			return $f;
+		}
 
 		$newdata = array();
 		foreach ($data[0] as $parent) {

@@ -463,4 +463,23 @@ class Deskpro3Importer extends AbstractImporter
 	{
 		return $this->olddb;
 	}
+
+
+	/**
+	 * Fixes big 64bit ints that appear in serialized strings, but wont work when going
+	 * back to 32bit systems. This just turns the ints into quoted strings.
+	 */
+	public static function unserialize_fix_32b_ints($str)
+	{
+		$matches = array();
+		if (!preg_match_all('#i:(\d{10,});#', $str, $matches, PREG_SET_ORDER)) {
+			return $str;
+		}
+
+		foreach ($matches as $match) {
+			$str = str_replace($match[0], 's:' . strlen($match[1]) . ':"' . $match[1] . '";', $str);
+		}
+
+		return $str;
+	}
 }
