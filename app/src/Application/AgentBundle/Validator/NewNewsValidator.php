@@ -51,11 +51,11 @@ class NewNewsValidator extends AbstractValidator
 	{
 		if (!$news->category_id) {
 			$this->addError('category_id.invalid');
-		}
-
-		$cat = App::getOrm()->find('DeskPRO:NewsCategory', $news->category_id);
-		if (!$cat) {
-			$this->addError('category_id.invalid');
+		} else {
+			$cat = App::getOrm()->find('DeskPRO:NewsCategory', $news->category_id);
+			if (!$cat) {
+				$this->addError('category_id.invalid');
+			}
 		}
 
 		if (!$news->title) {
