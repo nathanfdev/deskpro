@@ -1777,7 +1777,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->isNewPerson() && ($this->getPrimaryEmail() || $this->email_validating)) {
 			$change = false;
 
-			$email_address = $this->primary_email ? $this->getPrimaryEmail() : $this->email_validating->email;
+			$email_address = $this->primary_email ? $this->getPrimaryEmail()->email : $this->email_validating->email;
 
 			$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($email_address);
 			if ($rules) {
