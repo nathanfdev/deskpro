@@ -13,10 +13,6 @@
 			text-decoration: underline;
 		}
 
-		td.dp-layout-top {
-			font-size: 12px;
-		}
-
 		td {
 			padding: 0;
 		}
@@ -27,9 +23,10 @@
 		}
 
 		body, div, td, p, span {
-			font-family: Helvetica, Arial, sans-serif;
+			font-family: Calibri, Helvetica, Arial, sans-serif;
 			line-height: 125%;
 			color: #242424;
+			font-size: 14px;
 		}
 
 		div.dp-layout-section-header {
@@ -38,7 +35,7 @@
 
 		div.dp-layout-section-header-title {
 			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-			font-size: 14px;
+			font-size: 16px;
 			font-weight: bold;
 		}
 
@@ -68,22 +65,18 @@
 		}
 
 		table.dp-props-table td {
-			font-size: 12px;
 			padding: 6px;
 			border-top: 1px solid #BABABA;
 		}
 
 		div.dp-author-row {
 			color: #ABABAB;
-			font-size: 12px;
 			padding-bottom: 2px;
 		}
 
 		div.dp-quoted-message {
-			font-size: 12px;
 			border-left: 1px solid #00174B;
 			color: #00174B;
-			font-size:12px;
 			line-height:125%;
 			padding-left: 8px;
 			margin-left: 2px;
@@ -93,7 +86,7 @@
 <body>
 <div class="dp-wrap">
 <a name="DP_TOP_MARK {{with_cutmark}}"></a>
-<table class="DP_TOP_MARK {{with_cutmark}}" id="DP_TOP_MARK" alt="DP_TOP_MARK {{with_cutmark}}" name="DP_TOP_MARK {{with_cutmark}}" width="100%" border="0" cellpadding="0" cellspacing="0" style="{{ layout.standard_font() }}"><tr><td>
+<table class="DP_TOP_MARK {{with_cutmark}}" id="DP_TOP_MARK" alt="DP_TOP_MARK {{with_cutmark}}" name="DP_TOP_MARK {{with_cutmark}}" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
 
 <!--DP_TOP_MARK-->{% if with_cutmark %}<!-- {{with_cutmark}} -->{% endif %}
 <table border="0" width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -109,12 +102,12 @@
 					<br /><br />
 				{% endifblock %}
 				{% if app.getSetting('core.site_name') and app.getSetting('core.site_url') %}
-					<a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }}; font-size: 12px;">{{ app.getSetting('core.site_name') }}</a> &middot;
+					<a href="{{ app.getSetting('core.site_url') }}">{{ app.getSetting('core.site_name') }}</a> &middot;
 				{% elseif app.getSetting('core.site_url') %}
-					<a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.site_url') }}</a> &middot;
+					<a href="{{ app.getSetting('core.site_url') }}">{{ app.getSetting('core.site_url') }}</a> &middot;
 				{% endif %}
 
-				<a href="{{ app.getSetting('core.deskpro_url') }}" style="{{ layout.info_link_style() }} font-size: 12px;">{{ app.getSetting('core.deskpro_url') }}</a>
+				<a href="{{ app.getSetting('core.deskpro_url') }}">{{ app.getSetting('core.deskpro_url') }}</a>
 			</div>
 		</td>
 	</tr>
