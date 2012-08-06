@@ -370,7 +370,7 @@ final class License
 		$this->raw_code = $license_code;
 
 		$this->install_key  = $install_key;
-		if (preg_match('#@([A-Z0-9]{10})$#', $license_code, $m)) {
+		if (preg_match('#@([A-Z0-9\-_]+)$#', $license_code, $m)) {
 			$this->install_key = $m[1];
 			$license_code = str_replace($m[0], '', $license_code);
 		}
@@ -400,6 +400,13 @@ final class License
 			$this->data = array('no_license' => true);
 			return;
 		}
+
+		if ($this->isCloud()) {
+			$this->data['agents'] = \DPC_AGENTS;
+			if (defined('DPC_DEMO_EXPIRE') && \DPC_DEMO_EXPIRE) {
+				$this->data['expire'] = \DPC_DEMO_EXPIRE;
+			}
+		}
 	}
 
 	public function getLicenseCode()
@@ -415,6 +422,11 @@ final class License
 	public function isDemo()
 	{
 		return isset($this->data['demo']) && $this->data['demo'];
+	}
+
+	public function isCloud()
+	{
+		return isset($this->data['is_cloud']) && $this->data['is_cloud'];
 	}
 
 	public function getMaxAgents()

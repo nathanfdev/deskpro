@@ -19,7 +19,15 @@ class CloudConfig
 				array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION)
 			);
 
-			$stmt = $pdo->prepare("SELECT * FROM cloud_sites WHERE master_domain = ? OR custom_domain = ? LIMIT 1");
+			$stmt = $pdo->prepare("
+				SELECT
+					cloud_sites.*,
+					cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+				FROM cloud_sites
+				LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
+				WHERE cloud_sites.master_domain = ? OR cloud_sites.custom_domain = ?
+				LIMIT 1
+			");
 			$stmt->execute(array($_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']));
 			$site = $stmt->fetch();
 			if (!$site) {
@@ -29,6 +37,11 @@ class CloudConfig
 
 			unset($pdo);
 
+			define('DPC_IS_CLOUD',           true);
+			define('DPC_SITE_ID',            $site['id']);
+			define('DPC_ACCOUNT_ID',         $site['account_id']);
+			define('DPC_AGENTS',             $site['agents']);
+			define('DPC_DEMO_EXPIRE',        $site['is_demo'] ? $site['demo_expire_at'] : 0);
 			define('DP_DATABASE_HOST',       $site['db_host']);
 			define('DP_DATABASE_USER',       $site['db_user']);
 			define('DP_DATABASE_PASSWORD',   $site['db_password']);
@@ -43,5 +56,6 @@ class CloudConfig
 	{
 		echo "There was a server error.<br />";
 		echo $e->getMessage();
+		exit;
 	}
 }
