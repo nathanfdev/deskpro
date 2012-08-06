@@ -42,12 +42,15 @@ class MainController extends AbstractController
     {
 		$lic = License::getLicense();
 
-		$is_expired = $lic->getExpireDate()->format('U') < time();
-		if (!$is_expired) {
-			$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-			$expire_in_days = $lic_expire_parts['days'];
-		} else {
-			$expire_in_days = 0;
+		$is_expired = false;
+		$expire_in_days = 0;
+
+		if ($lic->getExpireDate()) {
+			$is_expired = $lic->getExpireDate()->format('U') < time();
+			if (!$is_expired) {
+				$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
+				$expire_in_days = $lic_expire_parts['days'];
+			}
 		}
 
 		return $this->render('BillingBundle:Main:index.html.twig', array(

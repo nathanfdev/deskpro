@@ -29,7 +29,7 @@ class CloudConfig
 				LIMIT 1
 			");
 			$stmt->execute(array($_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']));
-			$site = $stmt->fetch();
+			$site = $stmt->fetch(\PDO::FETCH_ASSOC);
 			if (!$site) {
 				header('Location: ' . DP_CLOUD_MAIN_SITE);
 				exit;
