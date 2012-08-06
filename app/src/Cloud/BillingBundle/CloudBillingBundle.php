@@ -26,49 +26,22 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace DeskPRO\Kernel;
+namespace Cloud\BillingBundle;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
-
-use Application\DeskPRO\App;
-
-class BillingKernel extends AbstractKernel
+class CloudBillingBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	protected function registerAdditionalBundles()
+	public function getNamespace()
 	{
-		if (defined('DPC_IS_CLOUD')) {
-			$bundles = array(
-				new \Cloud\BillingBundle\CloudBillingBundle(),
-			);
-		} else {
-			$bundles = array(
-				new \Application\BillingBundle\BillingBundle(),
-			);
-		}
-
-		return $bundles;
+		return __NAMESPACE__;
 	}
 
-	public function registerContainerConfiguration(LoaderInterface $loader)
+	public function getPath()
 	{
-		if (defined('DPC_IS_CLOUD')) {
-			$loader->load(DP_ROOT.'/sys/config-cloud/billing/config_'.$this->getEnvironment().'.php');
-		} else {
-			$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
-		}
+		return __DIR__;
 	}
 }

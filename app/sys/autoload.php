@@ -13,6 +13,7 @@ $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
 	'Application'                  => DP_ROOT.'/src',
+	'Cloud'                        => DP_ROOT.'/src',
     'Bundle'                       => DP_ROOT.'/src',
 	'Orb'                          => DP_ROOT.'/src',
 

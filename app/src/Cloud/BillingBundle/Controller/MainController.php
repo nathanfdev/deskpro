@@ -29,46 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage BillingBundle
  */
+namespace Cloud\BillingBundle\Controller;
 
-namespace DeskPRO\Kernel;
-
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
-
-use Application\DeskPRO\App;
-
-class BillingKernel extends AbstractKernel
+class MainController extends AbstractController
 {
-	protected function registerAdditionalBundles()
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			$bundles = array(
-				new \Cloud\BillingBundle\CloudBillingBundle(),
-			);
-		} else {
-			$bundles = array(
-				new \Application\BillingBundle\BillingBundle(),
-			);
-		}
+    public function indexAction()
+    {
+		// We just insert this marker token here and then redirect the user off to the deskpro members area site
+		$tmpdata = new \Application\DeskPRO\Entity\TmpData();
+		$tmpdata->setType('dpc_billing_access');
+		$tmpdata->setData('person_info', array(
+			'person_id' => $this->person->getId(),
+			'name'      => $this->person->getDisplayName(),
+			'email'     => $this->person->getPrimaryEmailAddress()
+		));
 
-		return $bundles;
-	}
+		$this->em->persist($tmpdata);
+		$this->em->flush();
 
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			$loader->load(DP_ROOT.'/sys/config-cloud/billing/config_'.$this->getEnvironment().'.php');
-		} else {
-			$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
-		}
-	}
+		return $this->redirect(DP_MA_SERVER . '/cloud/' . DPC_SITE_ID . '/start/' . $tmpdata->getCode());
+    }
 }

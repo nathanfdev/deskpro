@@ -29,46 +29,12 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage CloudBillingBundle
  */
 
-namespace DeskPRO\Kernel;
+namespace Cloud\BillingBundle\Controller;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
-
-use Application\DeskPRO\App;
-
-class BillingKernel extends AbstractKernel
+abstract class AbstractController extends \Application\BillingBundle\Controller\AbstractController
 {
-	protected function registerAdditionalBundles()
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			$bundles = array(
-				new \Cloud\BillingBundle\CloudBillingBundle(),
-			);
-		} else {
-			$bundles = array(
-				new \Application\BillingBundle\BillingBundle(),
-			);
-		}
 
-		return $bundles;
-	}
-
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			$loader->load(DP_ROOT.'/sys/config-cloud/billing/config_'.$this->getEnvironment().'.php');
-		} else {
-			$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
-		}
-	}
 }
