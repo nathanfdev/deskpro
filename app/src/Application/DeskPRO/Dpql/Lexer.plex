@@ -16,7 +16,8 @@ class Lexer
 		'SELECT', 'FROM', 'WHERE',
 		'GROUP', 'ORDER', 'SPLIT', 'BY',
 		'LIMIT', 'OFFSET', 'AS', 'NULL',
-		'AND', 'OR', 'NOT', 'IN', 'LIKE'
+		'AND', 'OR', 'NOT', 'IN', 'LIKE',
+		'ASC', 'DESC',
 	);
 
 	protected $_operatorMap = array(

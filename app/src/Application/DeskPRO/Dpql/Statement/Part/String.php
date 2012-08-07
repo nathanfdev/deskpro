@@ -4,17 +4,17 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 
-class Placeholder extends AbstractPart
+class String extends AbstractPart
 {
-	public $name;
+	public $string;
 
-	public function __construct($name)
+	public function __construct($string)
 	{
-		$this->name = $name;
+		$this->string = $string;
 	}
 
 	public function toSql(Display $statement, $section, array $stack)
 	{
-		return $this->escapeForSql('%' . $this->name . '%');
+		return $this->escapeForSql($this->string);
 	}
 }

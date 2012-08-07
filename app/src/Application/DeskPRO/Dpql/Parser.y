@@ -182,7 +182,7 @@ group_clause ::= .
 
 
 
-order_clause(res) ::= ORDER BY expression(A) comma_expressions_opt(B) .
+order_clause(res) ::= ORDER BY order_expression(A) comma_order_expression_opt(B) .
 {
 	res = array(A);
 	if (B) {
@@ -190,6 +190,42 @@ order_clause(res) ::= ORDER BY expression(A) comma_expressions_opt(B) .
 	}
 }
 order_clause ::= .
+
+
+
+order_expression(res) ::= expression(A) direction_opt(B) .
+{
+	if (B) {
+		res = array(A, B);
+	} else {
+		res = A;
+	}
+}
+
+
+
+direction_opt(res) ::= ASC .
+{
+	res = 'ASC';
+}
+
+direction_opt(res) ::= DESC .
+{
+	res = 'DESC';
+}
+
+direction_opt ::= .
+
+comma_order_expression_opt(res) ::= comma_order_expression_opt(A) COMMA order_expression(B) .
+{
+	if (!A) {
+		res = array();
+	} else {
+		res = A;
+	}
+	res[] = B;
+}
+comma_order_expression_opt ::= .
 
 
 
@@ -301,12 +337,12 @@ expression(res) ::= COLUMN(A) .
 
 expression(res) ::= LITERAL(A) .
 {
-	res = A;
+	res = new Statement\Part\String(A);
 }
 
 expression(res) ::= QUOTED(A) .
 {
-	res = $this->processQuoted(A);
+	res = new Statement\Part\String($this->processQuoted(A));
 }
 
 expression(res) ::= PLACEHOLDER(A) .
@@ -317,7 +353,7 @@ expression(res) ::= PLACEHOLDER(A) .
 
 expression(res) ::= NUMBER(A) .
 {
-	res = A + 0;
+	res =  new Statement\Part\Number(A + 0);
 }
 
 expression(res) ::= NULL .
