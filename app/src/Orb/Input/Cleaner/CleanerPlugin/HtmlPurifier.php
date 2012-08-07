@@ -126,7 +126,10 @@ class HtmlPurifier implements CleanerPlugin
 		switch ($type) {
 			case 'html':
 				$config->set('HTML.Allowed', 'br,div,em,strong,span,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,th,a[href],ul,li,dd,dt,dl,ol,p,pre,code,blockquote');
-				$config->set('URI.DisableExternalResources', true);
+				$config->set('HTML.AllowedAttributes', '*.style,*.class,img.src');
+				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+				$config->set('HTML.TidyLevel', 'medium');
+				$config->set('AutoFormat.RemoveEmpty', false);
 				break;
 
 			case 'html_simple':
