@@ -174,7 +174,7 @@ class NewTicketController extends AbstractController
 				// Require login means we need to ask the user to log in now
 				if ($newticket->require_login) {
 
-					$this->session->setFlash('new_ticket_login');
+					$this->session->setFlash('new_ticket_login', 1);
 					$this->session->save();
 
 					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket->id))));
