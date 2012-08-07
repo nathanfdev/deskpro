@@ -102,10 +102,11 @@ class TicketViewController extends AbstractController
 							return $this->renderLoginOrPermissionError();
 						}
 
-						// If they came here through the access code but arent on the ticket,
-						// then we need to add them so they can see it
-						if (!$ticket->hasParticipantPerson($this->person)) {
-
+						if ($ticket->person->getId() == $this->person->getId() || $ticket->hasParticipantPerson($this->person)) {
+							return $this->viewTicket($ticket, $display_data);
+						} else {
+							// If they came here through the access code but arent on the ticket,
+							// then we need to add them so they can see it
 							if ($this->in->getBool('join')) {
 								$ticket->addParticipantPerson($this->person);
 								$this->em->persist($ticket);
