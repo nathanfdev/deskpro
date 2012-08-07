@@ -825,6 +825,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('edit_btn').hide();
 		this.getEl('save_btn').show();
 		this.getEl('cancel_btn').show();
+		this.updateUi();
 	},
 
 	hideEditor: function() {
@@ -834,6 +835,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('cancel_btn').hide();
 		$('.article-editor-wrap', this.getEl('content_ed')).hide();
 		$('.article-content-wrap', this.getEl('content_ed')).show();
+		this.updateUi();
 	},
 
 	_initMediaBrowser: function() {

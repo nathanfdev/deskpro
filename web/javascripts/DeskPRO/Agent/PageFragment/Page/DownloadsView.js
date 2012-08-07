@@ -494,6 +494,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.getEl('edit_btn').hide();
 		this.getEl('save_btn').show();
 		this.getEl('cancel_btn').show();
+		this.updateUi();
 	},
 
 	hideEditor: function() {
@@ -502,5 +503,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.getEl('edit_btn').show();
 		this.getEl('save_btn').hide();
 		this.getEl('cancel_btn').hide();
+		this.updateUi();
 	}
 });
