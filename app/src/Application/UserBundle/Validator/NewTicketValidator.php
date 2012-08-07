@@ -244,7 +244,7 @@ class NewTicketValidator extends AbstractValidator
 				}
 			}
 		}
-		
+
 		switch ($item['field_type']) {
 			case 'ticket_product':
 
@@ -253,7 +253,7 @@ class NewTicketValidator extends AbstractValidator
 					'allow_none' => true
 				));
 				if (!$validator->isValid($this->newticket->ticket->product_id)) {
-					$this->addError('ticket.product_id');
+					$this->addError('ticket.product_id.invalid');
 				}
 				break;
 
@@ -263,7 +263,7 @@ class NewTicketValidator extends AbstractValidator
 					'allow_none' => true
 				));
 				if (!$validator->isValid($this->newticket->ticket->category_id)) {
-					$this->addError('ticket.category_id');
+					$this->addError('ticket.category_id.invalid');
 				}
 				break;
 
@@ -272,7 +272,7 @@ class NewTicketValidator extends AbstractValidator
 					'allow_none' => true
 				));
 				if (!$validator->isValid($this->newticket->ticket->priority_id)) {
-					$this->addError('ticket.priority_id');
+					$this->addError('ticket.priority_id.invalid');
 				}
 				break;
 

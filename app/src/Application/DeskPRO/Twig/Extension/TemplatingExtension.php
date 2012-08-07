@@ -113,7 +113,8 @@ class TemplatingExtension extends \Twig_Extension
 			'time_group_phrase' => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
 			'captcha_html' => new \Twig_Function_Method($this, 'captchaHtml', array('is_safe' => array('html'))),
 			'include_file' => new \Twig_Function_Method($this, 'includeFile', array('is_safe' => array('html'))),
-			'include_php_file' => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html')))
+			'include_php_file' => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html'))),
+			'var_dump' => new \Twig_Function_Method($this, 'dumpVar'),
         );
     }
 
@@ -873,5 +874,10 @@ class TemplatingExtension extends \Twig_Extension
 		$content = ob_get_clean();
 
 		return $content;
+	}
+
+	public function dumpVar($var)
+	{
+		return \DeskPRO\Kernel\KernelErrorHandler::varToString($var);
 	}
 }
