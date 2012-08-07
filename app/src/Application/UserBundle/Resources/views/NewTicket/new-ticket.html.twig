@@ -174,7 +174,7 @@ var ticketReader = {
 </div>
 
 {% if app.getRequest().query.has('_debug') %}
-	<textarea style="width: 400px; height: 400px;">
+	<textarea style="width: 400px; height: 400px;" id="debug_box">
 	{{ var_dump(errors) }}
 	{{ var_dump(error_fields) }}
 	</textarea>

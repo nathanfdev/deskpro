@@ -9,8 +9,18 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 
 		if (this.el.is('form')) {
 			this.el.on('submit', function(ev) {
+				$('.dp-error').removeClass('dp-error');
 				self.validateAll();
 				if (self.hasErrors()) {
+					var debugbox = $('#debug_box');
+					if (debugbox[0]) {
+						var append = ["Fields with errors:"];
+						$('.dp-error').each(function() {
+							var field = $(this).find('input, textarea, select').first();
+							append.push(field.attr('name') || field.attr('id') || field.val());
+						});
+						debugbox.text(debugbox.text() + "\n" + append.join("\n"));
+					}
 					ev.preventDefault();
 				}
 			});

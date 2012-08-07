@@ -435,7 +435,7 @@ class KbController extends AbstractController
 
 				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
-				$article['content'] = $this->in->getString('content');
+				$article['content'] = $this->in->getHtml('content');
 
 				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
 				$rev['content'] = $article['content'];
