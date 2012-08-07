@@ -56,7 +56,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="meta-line flat">
 		<div class="status the-status feedback-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
 			{% if feedback.status == 'new' %}
-				{{ phrase('agent.feedback.status_active') }}
+				{{ phrase('agent.feedback.status_new') }}
 			{% elseif feedback.status == 'active' %}
 				{{ phrase('agent.feedback.status_active') }}: {{ feedback.status_category.title }}
 			{% elseif feedback.status == 'closed' %}
