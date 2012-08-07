@@ -96,6 +96,15 @@ class TicketMessageTemplate extends \Application\DeskPRO\Domain\DomainObject
 		$this['department'] = $dep;
 	}
 
+	public function setSubject($subject)
+	{
+		if (!$subject) {
+			$subject = '';
+		}
+
+		$this->setModelField('subject', $subject);
+	}
+
 	/**
 	 * @return int
 	 */
