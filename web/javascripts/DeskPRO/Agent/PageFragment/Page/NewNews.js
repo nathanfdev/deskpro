@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		// We'll manually remove the node ourselves
 		var el = this.wrapper.find('.article-section');
 		if (el[0]) {
-			el.get(0).parentNode.removeChild(el);
+			el.get(0).parentNode.removeChild(el.get(0));
 		}
 	},
 

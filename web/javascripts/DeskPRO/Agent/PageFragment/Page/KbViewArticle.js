@@ -767,8 +767,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
-		var el = $('.article-editor-wrap', this.getEl('content_ed')).get(0);
-		el.parentNode.removeChild(el);
+		var el = $('.article-editor-wrap', this.getEl('content_ed'));
+		if (el[0]) {
+			el.get(0).parentNode.removeChild(el.get(0));
+		}
 	},
 
 	showEditor: function() {

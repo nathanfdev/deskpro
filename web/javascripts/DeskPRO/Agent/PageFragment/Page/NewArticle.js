@@ -58,8 +58,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
-		var el = this.wrapper.find('.article-section').get(0);
-		el.parentNode.removeChild(el);
+		var el = this.wrapper.find('.article-section');
+		if (el[0]) {
+			el.get(0).parentNode.removeChild(el.get(0));
+		}
 	},
 
 	submit: function() {

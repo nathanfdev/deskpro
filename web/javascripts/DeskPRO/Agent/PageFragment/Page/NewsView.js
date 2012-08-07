@@ -82,8 +82,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
-		var el = $('.news-editor-wrap', this.getEl('content_ed')).get(0);
-		el.parentNode.removeChild(el);
+		var el = $('.news-editor-wrap', this.getEl('content_ed'));
+		if (el[0]) {
+			el.get(0).parentNode.removeChild(el.get(0));
+		}
 	},
 
 	handleUnloadRevisions: function(revision_id) {
