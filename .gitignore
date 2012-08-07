@@ -18,7 +18,7 @@
 /app/sys/Resources/distro-checksums.php
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.txt
-/app\src\Application\DeskPRO\Dpql/Parser.out
+/app/src/Application/DeskPRO/Dpql/Parser.out
 
 /data/last-email_error.dat
 /data/is_installed.dat
@@ -39,7 +39,7 @@
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
-
+@
 /app/sys/config/changed-files.php
 
 # Place devs can use as scratch space
