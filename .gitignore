@@ -18,6 +18,7 @@
 /app/sys/Resources/distro-checksums.php
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.txt
+/app\src\Application\DeskPRO\Dpql/Parser.out
 
 /data/last-email_error.dat
 /data/is_installed.dat
