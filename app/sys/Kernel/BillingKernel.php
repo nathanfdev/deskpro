@@ -50,15 +50,25 @@ class BillingKernel extends AbstractKernel
 {
 	protected function registerAdditionalBundles()
 	{
-		$bundles = array(
-			new \Application\BillingBundle\BillingBundle(),
-		);
+		if (defined('DPC_IS_CLOUD')) {
+			$bundles = array(
+				new \Cloud\BillingBundle\CloudBillingBundle(),
+			);
+		} else {
+			$bundles = array(
+				new \Application\BillingBundle\BillingBundle(),
+			);
+		}
 
 		return $bundles;
 	}
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
+		if (defined('DPC_IS_CLOUD')) {
+			$loader->load(DP_ROOT.'/sys/config-cloud/billing/config_'.$this->getEnvironment().'.php');
+		} else {
+			$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
+		}
 	}
 }

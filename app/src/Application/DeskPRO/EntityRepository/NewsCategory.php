@@ -125,7 +125,7 @@ class NewsCategory extends AbstractCategoryRepository
 			$searcher = new NewsSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(NewsSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
-			$searcher->addTerm(NewsSearch::TERM_STATUS, 'is', 'published');
+			$searcher->addTerm(NewsSearch::TERM_AGENT_LIST, 'is', 'published');
 
 			$counts[$c['id']] = $searcher->getCount();
 

@@ -122,7 +122,7 @@ class DownloadCategory extends AbstractCategoryRepository
 			$searcher = new DownloadSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
-			$searcher->addTerm(DownloadSearch::TERM_STATUS, 'is', 'published');
+			$searcher->addTerm(DownloadSearch::TERM_AGENT_LIST, 'is', 'published');
 
 			$counts[$cid] = $searcher->getCount();
 		}

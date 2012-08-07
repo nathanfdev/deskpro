@@ -411,13 +411,13 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				data.push({ name: baseKey+'[rule_match_type]', value: $('select[name="term_match_type"]', optionsEl).val() });
 
 				termRows.each(function(index) {
-					var type = $('> .type > input.type', this).val();
+					var type = $('.builder-type-choice select', this).val();
 					data.push({ name: baseKey+'[rules]['+index+'][type]', value: type });
 
-					var op = $('> .op > select', this).val();
+					var op = $('.builder-op select', this).val();
 					data.push({ name: baseKey+'[rules]['+index+'][op]', value: op });
 
-					$('input, select, textarea', $('> .options', this)).each(function() {
+					$('input, select, textarea', $('.builder-options', this)).each(function() {
 						var name = $(this).attr('name');
 						if (name) {
 							name = name.replace(/^(.*)\[(.*?)\]$/, '$2');

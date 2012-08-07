@@ -51,6 +51,7 @@ class ArticleSearch extends SearcherAbstract
 	const TERM_POPULAR         = 'popular';
 	const TERM_NEW             = 'new';
 	const TERM_LABEL           = 'label';
+	const TERM_AGENT_LIST      = 'agent_list';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
@@ -401,6 +402,10 @@ class ArticleSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
 					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
+					break;
+
+				case self::TERM_AGENT_LIST:
+					$wheres[] = "(articles.status = 'published' OR articles.hidden_status IN('unpublished', 'archived'))";
 					break;
 
 				case self::TERM_LABEL:

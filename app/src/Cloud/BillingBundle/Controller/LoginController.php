@@ -29,52 +29,12 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Types
+ * @subpackage CloudBillingBundle
  */
 
-namespace Application\DeskPRO\DBAL\Types;
+namespace Cloud\BillingBundle\Controller;
 
-use Doctrine\DBAL\Types\BlobType;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-
-/**
- * Some enhancements to Doctrine's connection class.
- */
-class DpBlobType extends BlobType
+abstract class LoginController extends \Application\BillingBundle\Controller\LoginController
 {
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
-		switch ($fieldDeclaration['length']) {
-			case -1: return 'BINARY';
-			case -2: return 'TINYBLOB';
-			case -3: return 'BLOB';
-			case -4: return 'MEDIUMBLOB';
-			case -5: return 'LONGBLOB';
-		}
 
-		$type = $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
-
-		$type = str_replace(
-			array('VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'),
-			array('VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'),
-			$type
-		);
-
-		return $type;
-	}
-
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function getName()
-	{
-		return 'dpblob';
-	}
 }

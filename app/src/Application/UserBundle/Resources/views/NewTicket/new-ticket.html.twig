@@ -86,7 +86,7 @@ var ticketReader = {
 
 <section class="dp-portal-section dp-new-ticket-section">
 	<article>
-		<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+		<form action="{{ path('user_tickets_new') }}{% if app.getRequest().query.has('_debug') %}?_debug{% endif %}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
 			<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 			<input type="hidden" name="process" value="1" />
 
@@ -172,4 +172,11 @@ var ticketReader = {
 </script>
 
 </div>
+
+{% if app.getRequest().query.has('_debug') %}
+	<textarea style="width: 400px; height: 400px;">
+	{{ var_dump(errors) }}
+	{{ var_dump(error_fields) }}
+	</textarea>
+{% endif %}
 {% endblock %}

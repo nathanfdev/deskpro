@@ -48,6 +48,7 @@ class NewsSearch extends SearcherAbstract
 	const TERM_LABEL           = 'label';
 	const TERM_STATUS          = 'status';
 	const TERM_PUBLISHED          = 'published';
+	const TERM_AGENT_LIST      = 'agent_list';
 
 	const ORDER_ID       = 'id';
 	const ORDER_DATE     = 'id';
@@ -392,6 +393,10 @@ class NewsSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('news.date_created', $op, $choice);
 					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
+					break;
+
+				case self::TERM_AGENT_LIST:
+					$wheres[] = "(news.status = 'published' OR news.hidden_status IN('unpublished', 'archived'))";
 					break;
 
 				case self::TERM_LABEL:

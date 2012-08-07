@@ -26,55 +26,22 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Types
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace Application\DeskPRO\DBAL\Types;
+namespace Cloud\BillingBundle;
 
-use Doctrine\DBAL\Types\BlobType;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-
-/**
- * Some enhancements to Doctrine's connection class.
- */
-class DpBlobType extends BlobType
+class CloudBillingBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+	public function getNamespace()
 	{
-		switch ($fieldDeclaration['length']) {
-			case -1: return 'BINARY';
-			case -2: return 'TINYBLOB';
-			case -3: return 'BLOB';
-			case -4: return 'MEDIUMBLOB';
-			case -5: return 'LONGBLOB';
-		}
-
-		$type = $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
-
-		$type = str_replace(
-			array('VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'),
-			array('VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'),
-			$type
-		);
-
-		return $type;
+		return __NAMESPACE__;
 	}
 
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
+	public function getPath()
 	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function getName()
-	{
-		return 'dpblob';
+		return __DIR__;
 	}
 }

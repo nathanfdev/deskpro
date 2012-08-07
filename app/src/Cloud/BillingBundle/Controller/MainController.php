@@ -29,52 +29,37 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Types
+ * @subpackage BillingBundle
  */
+namespace Cloud\BillingBundle\Controller;
 
-namespace Application\DeskPRO\DBAL\Types;
-
-use Doctrine\DBAL\Types\BlobType;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-
-/**
- * Some enhancements to Doctrine's connection class.
- */
-class DpBlobType extends BlobType
+class MainController extends AbstractController
 {
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
-		switch ($fieldDeclaration['length']) {
-			case -1: return 'BINARY';
-			case -2: return 'TINYBLOB';
-			case -3: return 'BLOB';
-			case -4: return 'MEDIUMBLOB';
-			case -5: return 'LONGBLOB';
-		}
+    public function indexAction()
+    {
+		// We just insert this marker token here and then redirect the user off to the deskpro members area site
+		$tmpdata = new \Application\DeskPRO\Entity\TmpData();
+		$tmpdata->setType('dpc_billing_access');
+		$tmpdata->setData('person_info', array(
+			'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
+			'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
+			'person_id'        => $this->person->getId(),
+			'first_name'       => $this->person->first_name,
+			'last_name'        => $this->person->last_name,
+			'name'             => $this->person->getDisplayName(),
+			'email'            => $this->person->getPrimaryEmailAddress(),
+			'picture_url_24'   => $this->person->getPictureUrl(24),
+			'can_admin'        => $this->person->can_admin,
+			'can_agent'        => $this->person->can_agent,
+			'can_billing'      => $this->person->can_billing,
+			'can_reports'      => $this->person->can_reports,
+			'can_portal'       => $this->container->getSetting('user.portal_enabled'),
+		));
+		$tmpdata->date_expire = new \DateTime('+1 hour');
 
-		$type = $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+		$this->em->persist($tmpdata);
+		$this->em->flush();
 
-		$type = str_replace(
-			array('VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'),
-			array('VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'),
-			$type
-		);
-
-		return $type;
-	}
-
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function getName()
-	{
-		return 'dpblob';
-	}
+		return $this->redirect(DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode());
+    }
 }
