@@ -50,6 +50,7 @@ class DownloadSearch extends SearcherAbstract
 	const TERM_NEW             = 'new';
 	const TERM_LABEL           = 'label';
 	const TERM_STATUS          = 'status';
+	const TERM_AGENT_LIST      = 'agent_list';
 
 	const ORDER_ID       = 'id';
 	const ORDER_DATE     = 'id';
@@ -396,6 +397,10 @@ class DownloadSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('downloads.date_created', $op, $choice);
 					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
+					break;
+
+				case self::TERM_AGENT_LIST:
+					$wheres[] = "(downloads.status = 'published' OR downloads.hidden_status IN('unpublished', 'archived'))";
 					break;
 
 				case self::TERM_LABEL:

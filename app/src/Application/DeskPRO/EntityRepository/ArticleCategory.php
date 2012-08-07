@@ -133,7 +133,7 @@ class ArticleCategory extends AbstractCategoryRepository
 			$searcher = new ArticleSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
-			$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
+			$searcher->addTerm(ArticleSearch::TERM_AGENT_LIST, 'is', 1);
 			$counts[$cid] = $searcher->getCount();
 		}
 
@@ -145,7 +145,7 @@ class ArticleCategory extends AbstractCategoryRepository
 
 		$searcher = new ArticleSearch();
 		$searcher->setPersonContext($person_context);
-		$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
+		$searcher->addTerm(ArticleSearch::TERM_AGENT_LIST, 'is', 1);
 		$counts['0_total'] = $searcher->getCount();
 
 		return $counts;
