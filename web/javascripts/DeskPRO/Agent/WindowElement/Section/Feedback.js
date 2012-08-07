@@ -13,9 +13,19 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-feedback', this.reload, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.feedback-status-update', this.reload, this);
+
+		this.currentNavSelection = null;
 	},
 
 	reload: function() {
+		if (this.contentEl) {
+			// ID'ing based off the ID of the counter, the actual nav row doesnt have any id
+			var selectedNav = this.contentEl.find('.nav-selected').find('.list-counter');
+			if (selectedNav[0]) {
+				this.currentNavSelection = selectedNav.attr('id');
+			}
+		}
 		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
 	},
 
@@ -35,6 +45,11 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		});
 
 		this.recountBadge();
+
+		if (this.currentNavSelection) {
+			$('#' + this.currentNavSelection).closest('.is-nav-item').addClass('nav-selected');
+		}
+		this.currentNavSelection = null;
 
 		this.fireEvent('sectionInit');
 	},

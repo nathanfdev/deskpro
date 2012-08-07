@@ -187,7 +187,13 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 					type: 'POST',
 					data: {action: 'status', status: catId},
 					context: self,
-					dataType: 'json'
+					dataType: 'json',
+					success: function() {
+						DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.feedback-status-update', {
+							feedback_id: self.feedback_id,
+							new_status: catId
+						});
+					}
 				});
 			});
 		} else {
