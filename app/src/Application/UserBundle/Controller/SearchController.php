@@ -191,10 +191,30 @@ class SearchController extends AbstractController
 		$result_set = $search->getContentSearcher()->omnisearch($query);
 		$results = $search->getResultSetObjects($result_set, true);
 
-		return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-			'results' => $results,
-			'query'   => $query,
-		));
+		$format = $this->in->getString('format');
+
+		if ($format == 'json') {
+			$data = array('results' => array());
+
+			foreach ($results as $res) {
+				$item = $res['object'];
+				$data['results'][] = array(
+					'url' => $item->getLink(),
+					'title' => $item->getTitle()
+				);
+			}
+
+			if ($this->in->getString('callback')) {
+				return $this->createJsonpResponse($data);
+			} else {
+				return $this->createJsonResponse($data);
+			}
+		} else {
+			return $this->render('UserBundle:Search:omnisearch.html.twig', array(
+				'results' => $results,
+				'query'   => $query,
+			));
+		}
 	}
 
 	public function similarToAction($content_type)
