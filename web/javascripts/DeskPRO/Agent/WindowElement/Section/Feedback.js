@@ -16,6 +16,7 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.feedback-status-update', this.reload, this);
 
 		this.currentNavSelection = null;
+		this.currentNavSelectionOldCount = null;
 	},
 
 	reload: function() {
@@ -24,6 +25,7 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 			var selectedNav = this.contentEl.find('.nav-selected').find('.list-counter');
 			if (selectedNav[0]) {
 				this.currentNavSelection = selectedNav.attr('id');
+				this.currentNavSelectionOldCount = parseInt(selectedNav.text());
 			}
 		}
 		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
@@ -47,9 +49,20 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		this.recountBadge();
 
 		if (this.currentNavSelection) {
-			$('#' + this.currentNavSelection).closest('.is-nav-item').addClass('nav-selected');
+			var el = $('#' + this.currentNavSelection).parent();
+			if (el[0]) {
+				var count = parseInt($('#' + this.currentNavSelection).text());
+				// If the count is different, then the one we're viewing in the pane is updated
+				// so we need to refresh that too
+				if (count != this.currentNavSelectionOldCount) {
+					DeskPRO_Window.runPageRouteFromElement(el);
+				}
+
+				el.addClass('nav-selected');
+			}
 		}
 		this.currentNavSelection = null;
+		this.currentNavSelectionOldCount = null;
 
 		this.fireEvent('sectionInit');
 	},
