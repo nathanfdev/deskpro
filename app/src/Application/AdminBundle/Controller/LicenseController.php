@@ -171,18 +171,11 @@ class LicenseController extends AbstractController
 					}
 				}
 			}
-
-			if ($this->request->isXmlHttpRequest()) {
-				return $this->createJsonResponse(array(
-					'error' => true,
-					'error_codes' => $errors,
-				));
-			}
 		}
 
-		return $this->render('AdminBundle:License:request-demo.html.twig', array(
-			'errors' => $errors,
-			'email_address' => $email_address,
+		return $this->createJsonResponse(array(
+			'error' => true,
+			'error_codes' => $errors,
 		));
 	}
 
