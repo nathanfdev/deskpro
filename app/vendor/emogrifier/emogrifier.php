@@ -59,7 +59,7 @@ class Emogrifier {
         $xmldoc->encoding = $encoding;
         $xmldoc->strictErrorChecking = false;
         $xmldoc->formatOutput = true;
-        $xmldoc->loadHTML($body);
+        $xmldoc->loadHTML('<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$body);
         $xmldoc->normalizeDocument();
 
         $xpath = new DOMXPath($xmldoc);
@@ -129,7 +129,10 @@ class Emogrifier {
             $node->setAttribute('style', $style);
         }
 
-        return $xmldoc->saveHTML();
+		$html = $xmldoc->saveHTML();
+		$html = str_replace('<?xml encoding="UTF-8" version="1.0" standalone="yes">', '', $html);
+
+        return $html;
     }
 
     private function sortBySelectorPrecedence($a, $b) {
