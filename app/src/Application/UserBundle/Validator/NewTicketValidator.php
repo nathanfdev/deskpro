@@ -169,11 +169,6 @@ class NewTicketValidator extends AbstractValidator
 		#------------------------------
 
 		if (!$edit_mode) {
-			$validator = new \Orb\Validator\StringLength(array('min' => 2));
-			if (!$validator->isValid($this->newticket->person->name)) {
-				$this->addError('person.name.short');
-			}
-
 			// Guest
 			if (!$this->newticket->person->person_obj) {
 				$validator = new \Orb\Validator\StringEmail();
