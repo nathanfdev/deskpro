@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 
 class String extends AbstractPart
 {
@@ -13,7 +14,9 @@ class String extends AbstractPart
 		$this->string = $string;
 	}
 
-	public function toSql(Display $statement, $section, array $stack)
+	public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
 	{
 		return $this->escapeForSql($this->string);
 	}

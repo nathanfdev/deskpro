@@ -5,14 +5,12 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 
-class Alias extends AbstractPart
+class AliasRef extends AbstractPart
 {
-	public $value;
 	public $alias;
 
-	public function __construct(AbstractPart $value, $alias)
+	public function __construct($alias)
 	{
-		$this->value = $value;
 		$this->alias = $alias;
 	}
 
@@ -20,6 +18,7 @@ class Alias extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		throw new \Exception('Alias prepare should not be called');
+		$fieldId = $statement->getSqlSelectFieldId($this->alias);
+		return ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
 	}
 }

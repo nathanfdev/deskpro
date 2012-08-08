@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 
 class Column extends AbstractPart
 {
@@ -15,7 +16,9 @@ class Column extends AbstractPart
 		$this->field = $field;
 	}
 
-	public function toSql(Display $statement, $section, array $stack)
+	public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
 	{
 		return "`$this->table`.`$this->field`";
 	}

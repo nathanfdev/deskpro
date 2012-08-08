@@ -73,6 +73,7 @@ whitespace { return false; }
 "(" { $this->token = Parser::T_LEFT_PAREN; }
 ")" { $this->token = Parser::T_RIGHT_PAREN; }
 ";" { $this->token = Parser::T_SEMICOLON; }
+"@" { $this->token = Parser::T_AT; }
 
 quoted_string { $this->token = Parser::T_QUOTED; }
 number { $this->token = Parser::T_NUMBER; }

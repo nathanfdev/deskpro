@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
 
 class BinaryComparison extends AbstractPart
@@ -31,12 +32,14 @@ class BinaryComparison extends AbstractPart
 		$this->rhs = $rhs;
 	}
 
-	public function toSql(Display $statement, $section, array $stack)
+	public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
 	{
 		$childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs->toSql($statement, $section, $childStack);
-		$rhs = $this->rhs->toSql($statement, $section, $childStack);
+		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
+		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
 
 		return "($lhs $operator $rhs)";

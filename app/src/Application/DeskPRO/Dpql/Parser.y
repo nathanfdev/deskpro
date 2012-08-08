@@ -196,7 +196,7 @@ order_clause ::= .
 order_expression(res) ::= expression(A) direction_opt(B) .
 {
 	if (B) {
-		res = array(A, B);
+		res = new Statement\Part\OrderDir(A, B);
 	} else {
 		res = A;
 	}
@@ -349,6 +349,16 @@ expression(res) ::= PLACEHOLDER(A) .
 {
 	$value = substr(A, 1, -1);
 	res = new Statement\Part\Placeholder($value);
+}
+
+expression(res) ::= AT LITERAL(A) .
+{
+	res = new Statement\Part\AliasRef(A);
+}
+
+expression(res) ::= AT QUOTED(A) .
+{
+	res = new Statement\Part\AliasRef($this->processQuoted(A));
 }
 
 expression(res) ::= NUMBER(A) .

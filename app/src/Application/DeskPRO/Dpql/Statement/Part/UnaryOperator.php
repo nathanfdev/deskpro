@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
 
 class UnaryOperator extends AbstractPart
@@ -23,11 +24,13 @@ class UnaryOperator extends AbstractPart
 		$this->value = $value;
 	}
 
-	public function toSql(Display $statement, $section, array $stack)
+	public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
 	{
 		$childStack = $this->getChildStack($stack);
 
-		$value = $this->value->toSql($statement, $section, $childStack);
+		$value = $this->value->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
 
 		return "($operator$value)";

@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 
 class In extends AbstractPart
 {
@@ -17,16 +18,18 @@ class In extends AbstractPart
 		$this->positive = $positive;
 	}
 
-	public function toSql(Display $statement, $section, array $stack)
+	public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	)
 	{
 		$childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs->toSql($statement, $section, $childStack);
+		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
 		$not = ($this->positive ? '' : ' NOT');
 
 		$values = array();
 		foreach ($this->values AS $value) {
-			$values[] = $value->toSql($statement, $section, $childStack);
+			$values[] = $value->prepare($statement, $section, $childStack, $select, $result);
 		}
 
 		return $lhs . $not . ' IN (' . implode(', ', $values) . ')';

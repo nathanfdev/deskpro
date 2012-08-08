@@ -3,11 +3,13 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Dpql;
 
 abstract class AbstractPart
 {
-	//abstract public function validate(Display $statement, $section, array $stack);
-	abstract public function toSql(Display $statement, $section, array $stack);
+	abstract public function prepare(
+		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+	);
 
 	public function escapeForSql($value)
 	{

@@ -3,6 +3,8 @@
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
+use Application\DeskPRO\Dpql;
+use Application\DeskPRO\App;
 
 class Display
 {
@@ -17,91 +19,173 @@ class Display
 	protected $_limitAmount = null;
 	protected $_limitOffset = null;
 
-	protected $_extraSelectSql = array();
-	protected $_joins = array();
 	protected $_sql;
+	protected $_resultHandler;
+
+	protected $_fieldMap = array();
+
+	protected $_prepared = false;
 
 	public function __construct($display = null, array $select = null, $from = null)
 	{
 		if ($display !== null) $this->setDisplay($display);
 		if ($select !== null) $this->setSelect($select);
 		if ($from !== null) $this->setFrom($from);
+
+		$this->_sql = new Dpql\SqlSelect();
+		$this->_resultHandler = new Dpql\ResultHandler();
 	}
 
 	public function toSql()
 	{
-		if (!$this->_sql) {
+		if (!$this->_prepared) {
 			$this->prepare();
 		}
 
-		return $this->_sql;
+		return $this->_sql->toSql();
+	}
+
+	public function getResults()
+	{
+		return App::getDb()->executeQuery($this->toSql())->fetchAll(\PDO::FETCH_NUM);
+	}
+
+	public function getResultHandler()
+	{
+		if (!$this->_prepared) {
+			$this->prepare();
+		}
+
+		return $this->_resultHandler;
+	}
+
+	public function getRenderer($renderer, array $results = null)
+	{
+		if ($results === null) {
+			$results = $this->getResults();
+		}
+
+		$handler = $this->getResultHandler();
+
+		return new Dpql\Renderer\Html($handler, $results);
 	}
 
 	public function prepare()
 	{
-		$this->_extraSelectSql = array();
-		$this->_joins = array();
+		if ($this->_prepared) return;
+		$this->_prepared = true;
 
-		$select = array();
+		$this->_sql->setTable($this->_from);
+
+		$this->_prepareSelect();
+		$this->_prepareWhere();
+		$this->_prepareSplitBy();
+		$this->_prepareGroupBy();
+		$this->_prepareOrderBy();
+
+		$this->_sql->setLimit($this->_limitAmount, $this->_limitOffset);
+	}
+
+	protected function _prepareSelect()
+	{
+		$sql = $this->_sql;
+
 		foreach ($this->_select AS $field) {
-			$select[] = $field->toSql($this, 'select', array());
-		}
-
-		if ($this->_where) {
-			$where = $this->_where->toSql($this, 'where', array());
-		} else {
-			$where = false;
-		}
-
-		$groups = array();
-		foreach ($this->_splitBy AS $split) {
-			$groups[] = $split->toSql($this, 'split', array());
-		}
-		foreach ($this->_groupBy AS $group) {
-			$groups[] = $group->toSql($this, 'group', array());
-		}
-
-		$orders = array();
-		foreach ($this->_orderBy AS $order) {
-			if (is_array($order)) {
-				list($orderExpr, $orderDir) = $order;
+			if ($field instanceof Part\Alias) {
+				$alias = $field->alias;
+				$field = $field->value;
 			} else {
-				$orderExpr = $order;
-				$orderDir = 'ASC';
+				$alias = false;
 			}
 
-			$orders[] = $orderExpr->toSql($this, 'order', array()) . " $orderDir";
+			$select = $field->prepare($this, 'select', array(), $sql, $this->_resultHandler);
+
+			if ($this->isSqlValue($select)) {
+				$id = $this->addSqlSelectField($select, $alias);
+
+				$resultTitle = ($alias !== false ? $alias : $select);
+				$this->_resultHandler->addSelectColumn($resultTitle, $id);
+			}
+		}
+	}
+
+	protected function _prepareWhere()
+	{
+		if ($this->_where) {
+			$where = $this->_where->prepare($this, 'where', array(), $this->_sql, $this->_resultHandler);
+			if ($this->isSqlValue($where)) {
+				$this->_sql->addCondition($where);
+			}
+		}
+	}
+
+	protected function _prepareSplitBy()
+	{
+		$sql = $this->_sql;
+
+		foreach ($this->_splitBy AS $group) {
+			$groupBy = $group->prepare($this, 'split', array(), $sql, $this->_resultHandler);
+			if ($groupBy) {
+				$id = $sql->addSelectField($groupBy);
+				$sql->addGroupBy($groupBy);
+
+				$this->_resultHandler->addSplitColumn('', $id);
+			}
+		}
+	}
+
+	protected function _prepareGroupBy()
+	{
+		$sql = $this->_sql;
+
+		foreach ($this->_groupBy AS $group) {
+			$groupBy = $group->prepare($this, 'group', array(), $sql, $this->_resultHandler);
+			if ($groupBy) {
+				$id = $sql->addSelectField($groupBy);
+				$sql->addGroupBy($groupBy);
+
+				$this->_resultHandler->addGroupYColumn($groupBy, $id);
+			}
+		}
+	}
+
+	protected function _prepareOrderBy()
+	{
+		$sql = $this->_sql;
+
+		foreach ($this->_orderBy AS $order) {
+			$orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
+			if ($orderSql) {
+				$sql->addOrderBy($orderSql);
+			}
+		}
+	}
+
+	public function addSqlSelectField($select, $alias = false)
+	{
+		$selectFieldId = $this->_sql->addSelectField($select);
+
+		if ($alias !== false) {
+			$this->_fieldMap[$alias] = $selectFieldId;
 		}
 
-		if ($this->_limitAmount) {
-			$limit = $this->_limitAmount . ($this->_limitOffset ? " OFFSET " . $this->_limitOffset : '');
-		} else if ($this->_limitOffset) {
-			$limit = '999999 OFFSET ' . $this->_limitOffset;
+		return $selectFieldId;
+	}
+
+	public function getSqlSelectFieldId($key)
+	{
+		if (isset($this->_fieldMap[$key])) {
+			return $this->_fieldMap[$key];
+		} else if (isset($this->_fieldMap["alias_$key"])) {
+			return $this->_fieldMap["alias_$key"];
 		} else {
-			$limit = false;
+			return false;
 		}
-
-		if ($this->_extraSelectSql) {
-			$select = array_merge($select, $this->_extraSelectSql);
-		}
-
-		$this->_sql = 'SELECT ' . implode(', ', $select)
-			. "\nFROM `$this->_from`"
-			. ($this->_joins ? "\n" . implode("\n", $this->_joins) : '')
-			. ($where ? "\nWHERE $where" : '')
-			. ($groups ? "\nGROUP BY " . implode(', ', $groups) : '')
-			. ($orders ? "\nORDER BY " . implode(', ', $orders) : '')
-			. ($limit ? "\nLIMIT $limit" : '');
 	}
 
-	public function addExtraSelectSql($sql)
+	public function isSqlValue($input)
 	{
-		$this->_extraSelectSql[] = $sql;
-	}
-
-	public function addJoin($name, $sql)
-	{
-		$this->_joins[$name] = $sql;
+		return strval($input) !== '';
 	}
 
 	public function setDisplay($display)
