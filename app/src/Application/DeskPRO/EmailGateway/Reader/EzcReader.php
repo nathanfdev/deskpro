@@ -175,36 +175,28 @@ class EzcReader extends AbstractReader
 	{
 		$attachments = array();
 
-		foreach ($this->mail->fetchParts(array('ezcMailFile')) as $part) {
-			$attach = new Item\Attachment();
+		foreach ($this->mail->fetchParts() as $part) {
+			if ($part instanceof \ezcMailFile || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')) {
 
-			// Using displayFileName as it is a quote-decoded version of the filename
-			// that some email clients can send (erroneously, according to RFC 2184 you shouldnt send quoted names)
-			$attach->file_name  = basename($part->contentDisposition->displayFileName);
-
-			$attach->tmp_file   = $part->fileName;
-			$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($attach->file_name);
-
-			$attach->content_id = $part->getHeader('Content-ID');
-			if ($attach->content_id) {
-				// Content-ID is enclosed in brackets, remove those
-				$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
-			}
-
-			$attachments[] = $attach;
-		}
-
-		foreach ($this->mail->fetchParts(array('ezcMailRfc822Digest')) as $part) {
-			if ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment') {
 				$attach = new Item\Attachment();
 
-				// Save it to a tmpfile
-				$tmpfile = tempnam(dp_get_tmp_dir(), 'eml');
-				file_put_contents($tmpfile, $part->generate());
+				// Using displayFileName as it is a quote-decoded version of the filename
+				// that some email clients can send (erroneously, according to RFC 2184 you shouldnt send quoted names)
+				$attach->file_name  = basename($part->contentDisposition->displayFileName);
 
-				$attach->tmp_file = $tmpfile;
-				$attach->file_name = 'email.eml';
-				$attach->mime_type = 'message/rfc822';
+				if ($part instanceof \ezcMailText) {
+					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'dpm');
+					file_put_contents($attach->tmp_file, $part->text);
+				} else {
+					$attach->tmp_file   = $part->fileName;
+				}
+				$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+
+				$attach->content_id = $part->getHeader('Content-ID');
+				if ($attach->content_id) {
+					// Content-ID is enclosed in brackets, remove those
+					$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
+				}
 
 				$attachments[] = $attach;
 			}
