@@ -221,7 +221,7 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 				code = val;
 
 				if (this.withSubject) {
-					var m = code.match(/\s*<dp:subject>([^]*)<\/dp:subject>\s*/);
+					var m = code.match(/\s*<dp:subject>(.|\n)*<\/dp:subject>\s*/);
 					if (m) {
 						this.withSubject.find('textarea.template-subject-code').val($.trim(m[1]));
 
