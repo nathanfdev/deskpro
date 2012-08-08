@@ -589,7 +589,7 @@ class Structure implements PersonContextInterface
 			$counts[$cat->id] = $searcher->getCount();
 		}
 
-		$counts = $this->_getTotalCounts($counts, $this->getDownloadCategories(), $this->getDownloadCategoryHelper());
+		$counts = $this->_getTotalCounts($counts, $this->context_category_data[$ent]['all'], $this->context_category_data[$ent]['helper']);
 
 		$this->cache->save($id, $counts, time() + 3600);
 
@@ -806,6 +806,9 @@ class Structure implements PersonContextInterface
 
 		foreach ($cats as $c) {
 			$k = $c['id'] . '_total';
+			if ($c['parent_id']) {
+				continue;
+			}
 			$counts['0_total'] += isset($counts[$k]) ? $counts[$k] : 0;
 		}
 
