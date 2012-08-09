@@ -92,10 +92,9 @@ class LanguagePhrases
 	public function getMasterPhrase($phrase_id)
 	{
 		$path = DP_ROOT.'/languages/default';
-		$group_parts = explode('.', $phrase_id, 2);
-		array_pop($group_parts); // need the group name, not phrase
+		$group_parts = explode('.', $phrase_id, 3);
 
-		if (count($group_parts) == 2) {
+		if (count($group_parts) == 3) {
 			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[1] . '.php';
 		} else {
 			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
