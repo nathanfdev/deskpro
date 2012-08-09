@@ -265,10 +265,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		return $ret;
 	}
 
-	protected function doNewReply($ticket, $person, $context)
+	protected function doNewReply(Entity\Ticket $ticket, $person, $context)
 	{
 		$this->logMessage("doNewRelpy context $context");
 		$this->processBlobs();
+
+		if ($context == 'user') {
+			$ticket->getTicketLogger()->recordExtra('is_user_reply', true);
+		} else {
+			$ticket->getTicketLogger()->recordExtra('is_agent_reply', true);
+		}
 
 		$email_info = array();
 
@@ -795,7 +801,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		App::getOrm()->flush();
 
 		if ($this->charset_error) {
-			$em->getConnection()->insert('tickets_messages_raw', array(
+			App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
 				'message_id' => $message['id'],
 				'raw'        => $email_info['body'],
 				'charset'    => $this->charset_error,
