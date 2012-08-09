@@ -249,9 +249,11 @@ class AgentNotificationAction extends AbstractAction
 		foreach ($this->notify_agents as $agent_id) {
 
 			// Dont send an update notification to the agent for agent replies made by themselves
-			if ($new_message && !$this->tracker->isExtraSet('is_user_reply') && $new_message->person->getId() == $agent_id) {
-				$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id of agent message by himself");
-				continue;
+			if ($change_info['notify_type'] == 'newreply') {
+				if ($new_message && !$this->tracker->isExtraSet('is_user_reply') && $new_message->person->getId() == $agent_id) {
+					$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id of agent message by himself");
+					continue;
+				}
 			}
 
 			/** @var $agent \Application\DeskPRO\Entity\Person */
