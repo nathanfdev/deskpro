@@ -73,7 +73,7 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 	 */
 	public function isEnabled()
 	{
-		return $this->enabled = true;
+		return $this->enabled;
 	}
 
 

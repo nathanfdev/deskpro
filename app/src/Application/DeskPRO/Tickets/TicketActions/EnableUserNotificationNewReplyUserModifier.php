@@ -45,8 +45,8 @@ class EnableUserNotificationNewReplyUserModifier implements CollectionModifierIn
 
 	public function modifyCollection(ActionsCollection $collection)
 	{
-		if ($collection->hasActionType('UserNotificationNewReplyUserAction')) {
-			$collection->getActionType('UserNotificationNewReplyUserAction')->enable();
+		if ($collection->hasActionType('UserNotificationNewReplyUser')) {
+			$collection->getActionType('UserNotificationNewReplyUser')->enable();
 		}
 	}
 

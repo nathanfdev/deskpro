@@ -830,28 +830,6 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_trigger.disable_autoreply_gateway##
-$q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Disable auto-response confirmation';
-$q->event_trigger = 'new_reply';
-$q->is_enabled = 1;
-$q->terms = array(
-	array(
-		'type' => 'creation_system',
-		'op' => 'is',
-		'options' => array('creation_system' => 'web.person')
-	)
-);
-$q->actions = array(
-	array(
-		'type' => 'disable_user_notifications',
-		'options' => array ('disable_user_notifications' => '1')
-	)
-);
-
-$em->persist($q);
-$em->flush();
-
 ##BEGIN:create_style.master##
 
 $s = new \Application\DeskPRO\Entity\Style();
