@@ -187,10 +187,18 @@ class EzcReader extends AbstractReader
 				if ($part instanceof \ezcMailText) {
 					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'dpm');
 					file_put_contents($attach->tmp_file, $part->text);
+					$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+				} elseif ($part instanceof \ezcMailRfc822Digest) {
+					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
+					file_put_contents($attach->tmp_file, $part->generate());
+
+					$attach->tmp_file = $attach->tmp_file;
+					$attach->file_name = 'email.eml';
+					$attach->mime_type = 'message/rfc822';
 				} else {
 					$attach->tmp_file   = $part->fileName;
+					$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
 				}
-				$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
 
 				$attach->content_id = $part->getHeader('Content-ID');
 				if ($attach->content_id) {
