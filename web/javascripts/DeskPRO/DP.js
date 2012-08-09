@@ -157,6 +157,13 @@ var DP = {
 			options.width = '95%';
 		}
 
+		el.find('option').each(function() {
+			var opt = $(this);
+			if (!$.trim(opt.text())) {
+				opt.html('&nbsp;');
+			}
+		});
+
 		el.select2(options);
 	}
 };
