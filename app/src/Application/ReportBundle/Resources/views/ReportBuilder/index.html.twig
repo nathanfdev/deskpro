@@ -4,9 +4,41 @@
 {% endblock %}
 {% block pagebar %}
 {% endblock %}
+{% block html_head %}
+<style type="text/css">
+	.report-builder-results h3, .report-builder-results pre, .report-builder-results table { margin: 10px 0; }
+
+	.report-builder-results td,
+	.report-builder-results th {
+		padding: 2px;
+		border: 1px solid black;
+		text-align: center;
+		vertical-align: middle;
+	}
+</style>
+{% endblock %}
 {% block page %}
-	<section class="coming-soon">
-		<h3>Coming Soon</h3>
-		<h4>We are currently putting the finishing touches to the report builder. You will receive a notification when it can be installed.</h4>
-	</section>
+	{% if enable %}
+		<form action="{{ path('report_builder')}}" method="post" class="dp-form">
+			<div class="dp-form-row">
+				<div class="dp-form-label"><label>DPQL Query</label></div>
+				<div class="dp-form-input"><textarea name="query" style="height: 100px">{{ query }}</textarea></div>
+			</div>
+			<footer class="controls">
+				<button class="clean-white">Run Query</button>
+			</footer>
+		</form>
+
+		{% if renderer %}
+			<div class="report-builder-results">
+				<pre>{{ query }}</pre>
+				{{ renderer.render()|raw }}
+			</div>
+		{% endif %}
+	{% else %}
+		<section class="coming-soon">
+			<h3>Coming Soon</h3>
+			<h4>We are currently putting the finishing touches to the report builder. You will receive a notification when it can be installed.</h4>
+		</section>
+	{% endif %}
 {% endblock %}

@@ -35,12 +35,26 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Compiler;
 
 class ReportBuilderController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:ReportBuilder:index.html.twig');
-	}
+		$query = $this->in->getString('query');
+		if ($query) {
+			$compiler = new Compiler();
+			$statement = $compiler->compile($query);
+			$renderer = $statement->getRenderer('html');
+			//echo $statement->toSql();
+		} else {
+			$renderer = false;
+		}
 
+		return $this->render('ReportBundle:ReportBuilder:index.html.twig', array(
+			'enable' => App::getConfig('enable_report_builder'),
+			'query' => $query,
+			'renderer' => $renderer
+		));
+	}
 }

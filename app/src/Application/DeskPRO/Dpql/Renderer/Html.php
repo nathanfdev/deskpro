@@ -67,7 +67,7 @@ class Html
 
 	protected function _renderTableTag($inner)
 	{
-		return "<table border=1>\n$inner\n</table>\n";
+		return "<table class=\"report-builder-table\">\n$inner\n</table>\n";
 	}
 
 	protected function _renderHeader(array $rows)
@@ -285,7 +285,13 @@ class Html
 
 	protected function _renderMatrixBody(array $prepared)
 	{
-		$rowKeys = $this->_getMatrixRowGroups(array('root'), $prepared['yDistinct']);
+		if (!$prepared['yDistinct']) {
+			// no Y grouping - that means we can have one row so fake it
+			$rowKeys = array('root' => '');
+		} else {
+			$rowKeys = $this->_getMatrixRowGroups(array('root'), $prepared['yDistinct']);
+		}
+
 		$matrixPaths = $this->_getFinalMatrixPaths(array('root'), $prepared['xDistinct']);
 		$lookup = $prepared['lookup'];
 
