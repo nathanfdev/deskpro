@@ -694,6 +694,11 @@ class Upgrade
 				$this->log('file backup skipped');
 			}
 			$write_status("file_backup_done");
+
+			if ($this->file_backup) {
+				$write_status("file_backup_loc", $this->file_backup);
+			}
+
 		} catch (\Exception $e) {
 			$write_status("error_backup_files", $e->getMessage());
 			$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
@@ -716,6 +721,10 @@ class Upgrade
 				$this->log('database backup skipped');
 			}
 			$write_status("database_backup_end");
+
+			if ($this->db_backup) {
+				$write_status("database_backup_loc", $this->db_backup);
+			}
 
 		} catch (\Exception $e) {
 			$write_status("error_backup_db", $e->getMessage());

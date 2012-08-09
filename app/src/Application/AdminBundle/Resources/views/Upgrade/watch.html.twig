@@ -26,11 +26,11 @@
 			<li class="step-checks"><span>Basic Checks</span></li>
 			<li class="step-download"><span>Download latest version</span></li>
 			{% if app.getSetting('core.upgrade_backup_files') %}
-				<li class="step-backup-files"><span>Backing up files to (<em class="step-backup-files-copy">Copying</em>, <em class="step-backup-files-zip">Zipping</em>, <em class="step-backup-files-cleanup">Cleanup</em>)<i id="backup_path" style="display: none">. Backed up to: {{backup_path}}</i></span></li>
+				<li class="step-backup-files"><span>Backing up files (<em class="step-backup-files-copy">Copying</em>, <em class="step-backup-files-zip">Zipping</em>, <em class="step-backup-files-cleanup">Cleanup</em>)<i id="backup_path" style="display: none">&nbsp;&nbsp; Backed up to: <em></em></i></span></li>
 			{% endif %}
 			<li class="step-disable-hd"><span>Disabling helpdesk</span></li>
 			{% if app.getSetting('core.upgrade_backup_db') %}
-				<li class="step-backup-db"><span>Backing up database<i id="backup_path2" style="display: none">. Backed up to: {{backup_path}}</i></span></li>
+				<li class="step-backup-db"><span>Backing up database<i id="backup_path2" style="display: none">&nbsp;&nbsp; Backed up to: <em></em></i></span></li>
 			{% endif %}
 			<li class="step-install-files"><span>Installing files</span></li>
 			<li class="step-install-db"><span>Installing database updates</span></li>
@@ -210,6 +210,18 @@
 		<div id="done" style="display: none">
 			<strong>Done!</strong><br />
 			Your helpdesk has been upgraded successfully.
+
+			{% if app.getSetting('core.upgrade_backup_files') or app.getSetting('core.upgrade_backup_db') %}
+				<div style="padding-top: 10px;">
+					You should download and verify the integrity of your backups:<br />
+					{% if app.getSetting('core.upgrade_backup_files') %}
+						&bull; Your file backup was made to: <span id="file_backup_loc"></span>
+					{% endif %}
+					{% if app.getSetting('core.upgrade_backup_db') %}
+						&bull; Your database backup was made to: <span id="db_backup_loc"></span>
+					{% endif %}
+				</div>
+			{% endif %}
 		</div>
 	</div>
 </div>
