@@ -35,7 +35,7 @@
 	{% endif %}
 {% endif %}
 
-{% if app.getDataRepository('TicketCategory').getRootNodes()|length %}
+{% if app.getSetting('core.use_ticket_category') %}
 {% if item.field_type == 'ticket_category' %}
 <div data-field-id="ticket_category" class="ticket_category ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-ticket-category.html.twig' %}
@@ -43,7 +43,7 @@
 {% endif %}
 {% endif %}
 
-{% if app.getDataRepository('Product').getRootNodes()|length %}
+{% if app.getSetting('core.use_product') %}
 {% if item.field_type == 'ticket_product' %}
 <div data-field-id="ticket_product" class="ticket_product ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-product.html.twig' %}
@@ -51,7 +51,7 @@
 {% endif %}
 {% endif %}
 
-{% if app.getDataRepository('TicketPriority').getNames()|length %}
+{% if app.getSetting('core.use_ticket_priority') %}
 {% if item.field_type == 'ticket_priority' %}
 <div data-field-id="ticket_priority" class="ticket_priority ticket-display-field" {% if item.rules or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-ticket-priority.html.twig' %}

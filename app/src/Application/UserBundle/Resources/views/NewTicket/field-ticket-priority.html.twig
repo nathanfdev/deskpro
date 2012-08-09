@@ -9,7 +9,7 @@
 	<div class="dp-controls dp-fill">
 		<select name="newticket[ticket][priority_id]" class="priority_id">
 			<option></option>
-			{% for id,pri in ticket_options.ticket_priorities %}
+			{% for id,pri in app.getDataRepository('TicketPriority').getNames() %}
 				<option value="{{ id }}">{{ pri }}</option>
 			{% endfor %}
 		</select>
