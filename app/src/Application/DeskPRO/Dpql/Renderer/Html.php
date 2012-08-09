@@ -17,15 +17,55 @@ class Html
 
 	public function render()
 	{
+		$splitColumns = $this->_handler->getSplitColumns();
+
+		if ($splitColumns) {
+			return $this->renderSplitTable($splitColumns);
+		} else {
+			return $this->renderTable($this->_results);
+		}
+	}
+
+	public function renderSplitTable(array $splitColumns)
+	{
+		$splitResults = array();
+
+		foreach ($this->_results AS $key => $row) {
+			$splitId = array();
+			foreach ($splitColumns AS $column) {
+				$splitId[] = $this->renderCell($row, $column);
+			}
+			$splitResults[implode(' / ', $splitId)][$key] = $row;
+		}
+
+		$output = '';
+		foreach ($splitResults AS $splitTitle => $splitResult) {
+			$output .= $this->renderSplitHeader($splitTitle)
+				. "\n" . $this->renderTable($splitResult);
+		}
+
+		return $output;
+	}
+
+	public function renderSplitHeader($title)
+	{
+		return '<h3>' . $title . '</h3>';
+	}
+
+	public function renderTable(array $rows)
+	{
 		return '<table border=1>'
 			. $this->renderHeader()
-			. $this->renderBody()
+			. $this->renderBody($rows)
 			. '</table>';
 	}
 
 	public function renderHeader()
 	{
 		$columnHtml = array();
+		foreach ($this->_handler->getGroupYColumns() AS $column) {
+			$columnHtml[] = '<th>' . htmlspecialchars($column['title']) . '</th>';
+		}
 		foreach ($this->_handler->getSelectColumns() AS $column) {
 			$columnHtml[] = '<th>' . htmlspecialchars($column['title']) . '</th>';
 		}
@@ -33,25 +73,28 @@ class Html
 		return '<tr>' . implode("\n\t", $columnHtml) . '</tr>';
 	}
 
-	public function renderBody()
+	public function renderBody(array $rows)
 	{
-		$rows = array();
-		foreach ($this->_results AS $row) {
-			$rows[] = $this->renderRow($row);
+		$rowsHtml = array();
+		foreach ($rows AS $row) {
+			$rowsHtml[] = $this->renderRow($row);
 		}
 
-		return implode("\n", $rows);
+		return implode("\n", $rowsHtml);
 	}
 
 	public function renderRow(array $row)
 	{
 		$cells = array();
+		foreach ($this->_handler->getGroupYColumns() AS $column) {
+			$cells[] = '<td>' . $this->renderCell($row, $column) . '</td>';
+		}
 		foreach ($this->_handler->getSelectColumns() AS $column) {
-			$cells[] = $this->renderCell($row, $column);
+			$cells[] = '<td>' . $this->renderCell($row, $column) . '</td>';
 		}
 
 		if ($cells) {
-			return '<tr><td>' . implode("</td>\n\t<td>", $cells) . '</td></tr>';
+			return '<tr>' . implode("\n\t", $cells) . '</tr>';
 		} else {
 			return '';
 		}

@@ -30,6 +30,11 @@ class ResultHandler
 		);
 	}
 
+	public function getGroupYColumns()
+	{
+		return $this->_groupYColumns;
+	}
+
 	public function addGroupXColumn($title, $render)
 	{
 		$this->_groupXColumns[] = array(
@@ -38,11 +43,21 @@ class ResultHandler
 		);
 	}
 
+	public function getGroupXColumns()
+	{
+		return $this->_groupXColumns;
+	}
+
 	public function addSplitColumn($title, $render)
 	{
 		$this->_splitColumns[] = array(
 			'title' => $title,
 			'render' => $render
 		);
+	}
+
+	public function getSplitColumns()
+	{
+		return $this->_splitColumns;
 	}
 }
