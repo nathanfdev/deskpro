@@ -9,11 +9,12 @@ class ResultHandler
 	protected $_groupYColumns = array();
 	protected $_splitColumns = array();
 
-	public function addSelectColumn($title, $render)
+	public function addSelectColumn($title, $resultId, $renderer = null)
 	{
 		$this->_columns[] = array(
 			'title' => $title,
-			'render' => $render
+			'resultId' => $resultId,
+			'renderer' => $renderer
 		);
 	}
 
@@ -22,11 +23,12 @@ class ResultHandler
 		return $this->_columns;
 	}
 
-	public function addGroupYColumn($title, $render)
+	public function addGroupYColumn($title, $resultId, $renderer = null)
 	{
 		$this->_groupYColumns[] = array(
 			'title' => $title,
-			'render' => $render
+			'resultId' => $resultId,
+			'renderer' => $renderer
 		);
 	}
 
@@ -35,11 +37,12 @@ class ResultHandler
 		return $this->_groupYColumns;
 	}
 
-	public function addGroupXColumn($title, $render)
+	public function addGroupXColumn($title, $resultId, $renderer = null)
 	{
 		$this->_groupXColumns[] = array(
 			'title' => $title,
-			'render' => $render
+			'resultId' => $resultId,
+			'renderer' => $renderer
 		);
 	}
 
@@ -48,11 +51,11 @@ class ResultHandler
 		return $this->_groupXColumns;
 	}
 
-	public function addSplitColumn($title, $render)
+	public function addSplitColumn($resultId, $renderer = null)
 	{
 		$this->_splitColumns[] = array(
-			'title' => $title,
-			'render' => $render
+			'resultId' => $resultId,
+			'renderer' => $renderer
 		);
 	}
 

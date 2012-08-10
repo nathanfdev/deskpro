@@ -158,12 +158,15 @@ class Html
 
 	protected function _renderCellValue(array $row, array $column)
 	{
-		$renderer = $column['render'];
+		$renderer = $column['renderer'];
+		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
-		if (is_int($renderer)) {
-			return htmlspecialchars($row[$renderer - 1]);
+		if (!$renderer) {
+			return htmlspecialchars($value);
+		} else if ($renderer instanceof \Closure) {
+			return $renderer('html', $value);
 		} else {
-			return $renderer;
+			return htmlspecialchars($renderer);
 		}
 	}
 

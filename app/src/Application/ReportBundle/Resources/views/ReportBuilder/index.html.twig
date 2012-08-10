@@ -22,7 +22,7 @@
 		<form action="{{ path('report_builder')}}" method="post" class="dp-form">
 			<div class="dp-form-row">
 				<div class="dp-form-label"><label>DPQL Query</label></div>
-				<div class="dp-form-input"><textarea name="query" style="height: 100px">{{ query }}</textarea></div>
+				<div class="dp-form-input"><textarea name="query" style="height: 130px">{{ query }}</textarea></div>
 			</div>
 			<footer class="controls">
 				<button class="clean-white">Run Query</button>
@@ -31,7 +31,10 @@
 
 		{% if renderer %}
 			<div class="report-builder-results">
-				<pre>{{ query }}</pre>
+				<div style="overflow: hidden; zoom: 1">
+					<pre style="width: 49%; float: left; overflow: auto">{{ query }}</pre>
+					<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
+				</div>
 				{{ renderer.render()|raw }}
 			</div>
 		{% endif %}

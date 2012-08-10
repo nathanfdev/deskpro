@@ -48,13 +48,15 @@ class ReportBuilderController extends AbstractController
 			$renderer = $statement->getRenderer('html');
 			//echo '<pre>' . $statement->toSql() . '</pre>';
 		} else {
+			$statement = false;
 			$renderer = false;
 		}
 
 		return $this->render('ReportBundle:ReportBuilder:index.html.twig', array(
 			'enable' => App::getConfig('enable_report_builder'),
 			'query' => $query,
-			'renderer' => $renderer
+			'renderer' => $renderer,
+			'statement' => $statement
 		));
 	}
 }

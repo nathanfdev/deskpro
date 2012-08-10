@@ -30,6 +30,7 @@ class Column extends AbstractPart
 		}
 
 		$sql = false;
+		$name = false;
 
 		end($parts);
 		$lastPartKey = key($parts);
@@ -43,6 +44,7 @@ class Column extends AbstractPart
 			foreach ($repository->getFieldMappings() AS $key => $field) {
 				if (strtolower($key) == $part) {
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
+					$name = $part;
 					break 2; // break $parts loop
 				}
 			}
@@ -57,6 +59,7 @@ class Column extends AbstractPart
 					// are we referencing a field that is only listed in an association?
 					if (strtolower($joinColumn['name']) == $part) {
 						$sql = '`' . $sqlTable . '`.`' . $joinColumn['name'] . '`';
+						$name = $part;
 						break 3; // break $parts loop
 					}
 				}
@@ -67,7 +70,7 @@ class Column extends AbstractPart
 					$childRepository = $target::getRepository();
 
 					$childSqlTable = $childRepository->getTableName();
-					$joinAlias = "{$sqlTable}_{$childSqlTable}";
+					$joinAlias = "{$sqlTable}_{$association['fieldName']}";
 
 					$joinConditions = array();
 					foreach ($association['joinColumns'] AS $joinColumn) {
@@ -84,7 +87,7 @@ class Column extends AbstractPart
 					$repository = $childRepository; // now references come from this table
 					$sqlTable = $joinAlias;
 
-					continue 2; // continue parts
+					continue 2; // continue $parts loop
 				}
 			}
 
@@ -98,6 +101,6 @@ class Column extends AbstractPart
 			throw new \Exception('Did not get SQL from column reference. Just referencing association.');
 		}
 
-		return $sql;
+		return new Prepared($sql, $name);
 	}
 }

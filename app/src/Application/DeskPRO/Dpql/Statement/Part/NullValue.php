@@ -11,6 +11,6 @@ class NullValue extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		return 'NULL';
+		return new Prepared('NULL', 'NULL');
 	}
 }

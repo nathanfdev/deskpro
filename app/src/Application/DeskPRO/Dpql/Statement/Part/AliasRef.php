@@ -19,6 +19,8 @@ class AliasRef extends AbstractPart
 	)
 	{
 		$fieldId = $statement->getSqlSelectFieldId($this->alias);
-		return ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
+		$sql = ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
+
+		return new Prepared($sql, $this->alias);
 	}
 }

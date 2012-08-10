@@ -110,11 +110,11 @@ class Display
 
 			$select = $field->prepare($this, 'select', array(), $sql, $this->_resultHandler);
 
-			if ($this->isSqlValue($select)) {
-				$id = $this->addSqlSelectField($select, $alias);
+			if ($select->hasValue()) {
+				$id = $this->addSqlSelectField($select->printed(), $alias);
 
-				$resultTitle = ($alias !== false ? $alias : $select);
-				$this->_resultHandler->addSelectColumn($resultTitle, $id);
+				$resultTitle = ($alias !== false ? $alias : $select->name());
+				$this->_resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
 			}
 		}
 	}
@@ -123,8 +123,8 @@ class Display
 	{
 		if ($this->_where) {
 			$where = $this->_where->prepare($this, 'where', array(), $this->_sql, $this->_resultHandler);
-			if ($this->isSqlValue($where)) {
-				$this->_sql->addCondition($where);
+			if ($where->hasValue()) {
+				$this->_sql->addCondition($where->sql());
 			}
 		}
 	}
@@ -135,11 +135,11 @@ class Display
 
 		foreach ($this->_splitBy AS $group) {
 			$groupBy = $group->prepare($this, 'split', array(), $sql, $this->_resultHandler);
-			if ($groupBy) {
-				$id = $sql->addSelectField($groupBy);
-				$sql->addGroupBy($groupBy);
+			if ($groupBy->hasValue()) {
+				$id = $sql->addSelectField($groupBy->printed());
+				$sql->addGroupBy($groupBy->sql());
 
-				$this->_resultHandler->addSplitColumn('', $id);
+				$this->_resultHandler->addSplitColumn($id, $groupBy->renderer());
 			}
 		}
 	}
@@ -150,11 +150,11 @@ class Display
 
 		foreach ($this->_groupBy AS $group) {
 			$groupBy = $group->prepare($this, 'group', array(), $sql, $this->_resultHandler);
-			if ($groupBy) {
-				$id = $sql->addSelectField($groupBy);
-				$sql->addGroupBy($groupBy);
+			if ($groupBy->hasValue()) {
+				$id = $sql->addSelectField($groupBy->printed());
+				$sql->addGroupBy($groupBy->sql());
 
-				$this->_resultHandler->addGroupYColumn($groupBy, $id);
+				$this->_resultHandler->addGroupYColumn($groupBy->name(), $id, $groupBy->renderer());
 			}
 		}
 	}
@@ -164,9 +164,16 @@ class Display
 		$sql = $this->_sql;
 
 		foreach ($this->_orderBy AS $order) {
+			if ($order instanceof Part\OrderDir) {
+				$direction = ' ' . $order->orderDir;
+				$order = $order->order;
+			} else {
+				$direction = false;
+			}
+
 			$orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
-			if ($orderSql) {
-				$sql->addOrderBy($orderSql);
+			if ($orderSql->hasValue()) {
+				$sql->addOrderBy($orderSql->sql() . $direction);
 			}
 		}
 	}

@@ -21,6 +21,8 @@ class OrderDir extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
+		//throw new \Exception('Alias prepare should not be called');
+
 		$childStack = $this->getChildStack($stack);
 
 		$order = $this->order->prepare($statement, $section, $childStack, $select, $result);

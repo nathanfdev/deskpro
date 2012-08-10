@@ -18,6 +18,7 @@ class Placeholder extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		return $this->escapeForSql('%' . $this->name . '%');
+		$string = '%' . $this->name . '%';
+		return new Prepared($this->escapeForSql($string), $string);
 	}
 }

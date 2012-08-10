@@ -33,6 +33,6 @@ class UnaryOperator extends AbstractPart
 		$value = $this->value->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
 
-		return "($operator$value)";
+		return new Prepared("($operator{$value->sql()}", "$operator{$value->name()}");
 	}
 }

@@ -27,11 +27,15 @@ class In extends AbstractPart
 		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
 		$not = ($this->positive ? '' : ' NOT');
 
-		$values = array();
+		$valuesSql = array();
+		$valuesName = array();
 		foreach ($this->values AS $value) {
-			$values[] = $value->prepare($statement, $section, $childStack, $select, $result);
+			$prepped = $value->prepare($statement, $section, $childStack, $select, $result);
+			$valuesSql[] = $prepped->sql();
+			$valuesName[] = $prepped->name();
 		}
 
-		return $lhs . $not . ' IN (' . implode(', ', $values) . ')';
+		$sql = "{$lhs->sql()}$not IN (" . implode(', ', $valuesSql) . ')';
+		return new Prepared($sql, "{$lhs->name()}$not IN (" . implode(', ', $valuesName) . ')');
 	}
 }

@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 class X extends AbstractFunc
 {
@@ -11,16 +12,23 @@ class X extends AbstractFunc
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
+		if ($section != 'group') {
+			throw new \Exception('X() may only be used in GROUP BY.');
+		}
+		if ($stack) {
+			throw new \Exception('X() may only be used at the top-level.');
+		}
+
 		foreach ($this->_arguments AS $arg) {
 			$groupBy = $arg->prepare($statement, $section, $stack, $select, $result);
-			if ($statement->isSqlValue($groupBy)) {
-				$id = $select->addSelectField($groupBy);
-				$select->addGroupBy($groupBy);
+			if ($groupBy->hasValue()) {
+				$id = $select->addSelectField($groupBy->printed());
+				$select->addGroupBy($groupBy->sql());
 
-				$result->addGroupXColumn($groupBy, $id);
+				$result->addGroupXColumn($groupBy->name(), $id);
 			}
 		}
 
-		return false;
+		return new Prepared(false);
 	}
 }

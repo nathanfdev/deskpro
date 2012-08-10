@@ -28,6 +28,7 @@ class Like extends AbstractPart
 		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
 		$not = ($this->positive ? '' : ' NOT');
 
-		return "$lhs$not LIKE $rhs";
+		$sql = "{$lhs->sql()}$not LIKE {$rhs->sql()}";
+		return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}");
 	}
 }

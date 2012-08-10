@@ -38,6 +38,7 @@ class BinaryLogical extends AbstractPart
 		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
 
-		return "($lhs $operator $rhs)";
+		$sql = "({$lhs->sql()} $operator {$rhs->sql()})";
+		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}");
 	}
 }

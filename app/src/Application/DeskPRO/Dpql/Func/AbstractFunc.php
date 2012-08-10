@@ -10,6 +10,7 @@ abstract class AbstractFunc
 	protected static $_functionMap = array(
 		'COUNT' => 'Count',
 		'PERCENT' => 'Percent',
+		'PRINT' => 'Printable',
 		'X' => 'X',
 		'Y' => 'Y'
 	);

@@ -18,6 +18,7 @@ class Number extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		return strval($this->number + 0);
+		$value = strval($this->number + 0);
+		return new Prepared($value, $value);
 	}
 }

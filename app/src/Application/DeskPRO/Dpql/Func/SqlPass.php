@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 class SqlPass extends AbstractFunc
 {
@@ -11,11 +12,15 @@ class SqlPass extends AbstractFunc
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		$argOutput = array();
+		$valuesSql = array();
+		$valuesNames = array();
 		foreach ($this->_arguments AS $arg) {
-			$argOutput[] = $arg->prepare($statement, $section, $stack, $select, $result);
+			$prepped = $arg->prepare($statement, $section, $stack, $select, $result);
+			$valuesSql[] = $prepped->sql();
+			$valuesNames[] = $prepped->name();
 		}
 
-		return $this->_name . '(' . implode(', ', $argOutput) . ')';
+		$sql = $this->_name . '(' . implode(', ', $valuesSql) . ')';
+		return new Prepared($sql, "$this->_name(" . implode(', ', $valuesNames) . ')');
 	}
 }
