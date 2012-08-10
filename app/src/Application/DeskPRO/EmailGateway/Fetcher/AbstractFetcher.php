@@ -108,7 +108,7 @@ abstract class AbstractFetcher
 
 
 	/**
-	 * @return \Zend\Mail\Storage\AbstractStorage
+	 * @return mixed
 	 */
 	public function getStorage()
 	{

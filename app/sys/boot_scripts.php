@@ -82,4 +82,8 @@ switch ($_GET['_sys']) {
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/dev_run_migrations.php';
 		break;
+
+	case 'savemail':
+		require DP_ROOT . '/sys/scripts/savemail.php';
+		break;
 }
