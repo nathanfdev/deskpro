@@ -46,7 +46,7 @@ class ReportBuilderController extends AbstractController
 			$compiler = new Compiler();
 			$statement = $compiler->compile($query);
 			$renderer = $statement->getRenderer('html');
-			//echo $statement->toSql();
+			//echo '<pre>' . $statement->toSql() . '</pre>';
 		} else {
 			$renderer = false;
 		}

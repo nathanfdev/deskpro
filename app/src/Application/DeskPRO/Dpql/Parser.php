@@ -1248,46 +1248,45 @@ static public $yy_action = array(
 #line 1250 "Parser.php"
 #line 333 "Parser.y"
     function yy_r42(){
-	$parts = explode('.', $this->yystack[$this->yyidx + 0]->minor, 2);
-	$this->_retvalue = new Statement\Part\Column($parts[0], $parts[1]);
+	$this->_retvalue = new Statement\Part\Column(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1256 "Parser.php"
-#line 339 "Parser.y"
+#line 1255 "Parser.php"
+#line 338 "Parser.y"
     function yy_r43(){
 	$this->_retvalue = new Statement\Part\String($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1261 "Parser.php"
-#line 344 "Parser.y"
+#line 1260 "Parser.php"
+#line 343 "Parser.y"
     function yy_r44(){
 	$this->_retvalue = new Statement\Part\String($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1266 "Parser.php"
-#line 349 "Parser.y"
+#line 1265 "Parser.php"
+#line 348 "Parser.y"
     function yy_r45(){
 	$value = substr($this->yystack[$this->yyidx + 0]->minor, 1, -1);
 	$this->_retvalue = new Statement\Part\Placeholder($value);
     }
-#line 1272 "Parser.php"
-#line 355 "Parser.y"
+#line 1271 "Parser.php"
+#line 354 "Parser.y"
     function yy_r46(){
 	$this->_retvalue = new Statement\Part\AliasRef($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1277 "Parser.php"
-#line 360 "Parser.y"
+#line 1276 "Parser.php"
+#line 359 "Parser.y"
     function yy_r47(){
 	$this->_retvalue = new Statement\Part\AliasRef($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1282 "Parser.php"
-#line 365 "Parser.y"
+#line 1281 "Parser.php"
+#line 364 "Parser.y"
     function yy_r48(){
 	$this->_retvalue =  new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
     }
-#line 1287 "Parser.php"
-#line 370 "Parser.y"
+#line 1286 "Parser.php"
+#line 369 "Parser.y"
     function yy_r49(){
 	$this->_retvalue = new Statement\Part\NullValue();
     }
-#line 1292 "Parser.php"
+#line 1291 "Parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -1402,7 +1401,7 @@ static public $yy_action = array(
 #line 5 "Parser.y"
 
 	throw new \Exception('Parsing error');
-#line 1408 "Parser.php"
+#line 1407 "Parser.php"
     }
 
     /**

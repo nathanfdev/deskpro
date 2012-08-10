@@ -331,8 +331,7 @@ expression(res) ::= LITERAL(A) LEFT_PAREN func_args(B) RIGHT_PAREN .
 
 expression(res) ::= COLUMN(A) .
 {
-	$parts = explode('.', A, 2);
-	res = new Statement\Part\Column($parts[0], $parts[1]);
+	res = new Statement\Part\Column(explode('.', A));
 }
 
 expression(res) ::= LITERAL(A) .

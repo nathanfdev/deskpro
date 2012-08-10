@@ -26,11 +26,16 @@ class Display
 
 	protected $_prepared = false;
 
-	public function __construct($display = null, array $select = null, $from = null)
+	protected $_tableEntityMap = array(
+		'tickets' => 'DeskPRO:Ticket',
+		'tickets_messages' => 'DeskPRO:TicketMessage'
+	);
+
+	public function __construct($display, array $select, $from)
 	{
-		if ($display !== null) $this->setDisplay($display);
-		if ($select !== null) $this->setSelect($select);
-		if ($from !== null) $this->setFrom($from);
+		$this->setDisplay($display);
+		$this->setSelect($select);
+		$this->setFrom($from);
 
 		$this->_sql = new Dpql\SqlSelect();
 		$this->_resultHandler = new Dpql\ResultHandler();
@@ -75,7 +80,12 @@ class Display
 		if ($this->_prepared) return;
 		$this->_prepared = true;
 
-		$this->_sql->setTable($this->_from);
+		$repository = $this->getFromEntityRepository();
+		if ($repository) {
+			$this->_sql->setTable($repository->getTableName());
+		} else {
+			$this->_sql->setTable('NULL');
+		}
 
 		$this->_prepareSelect();
 		$this->_prepareWhere();
@@ -176,11 +186,19 @@ class Display
 	{
 		if (isset($this->_fieldMap[$key])) {
 			return $this->_fieldMap[$key];
-		} else if (isset($this->_fieldMap["alias_$key"])) {
-			return $this->_fieldMap["alias_$key"];
 		} else {
 			return false;
 		}
+	}
+
+	public function getFromEntityRepository()
+	{
+		$table = strtolower($this->_from);
+		if (!isset($this->_tableEntityMap[$table])) {
+			return false;
+		}
+
+		return App::getEntityRepository($this->_tableEntityMap[$table]);
 	}
 
 	public function isSqlValue($input)
