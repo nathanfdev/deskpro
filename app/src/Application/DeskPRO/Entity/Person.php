@@ -1638,42 +1638,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $keys;
 	}
 
-
-	/**
-	 * This will sync the names fields as best as we can. For example, if first/last
-	 * is set but not name, automatically set name
-	 *
-	 * If name is set but not first and last, try to smart-set first/last by splitting up
-	 * the name.
-	 *
-	 * @return void
-	 */
-	public function smartSetName()
-	{
-		if ($this->name) {
-			if (!$this->first_name AND !$this->last_name) {
-				$m = null;
-				if (preg_match('#^(?P<first_name>[A-Za-z]{3,})\s+(?P<last_name>[A-Za-z]{3,})$#', $this->name, $m)) {
-					$this->setModelField('first_name', $m['first_name']);
-					$this->setModelField('last_name', $m['last_name']);
-				}
-			}
-		} else {
-			if ($this->first_name AND $this->last_name) {
-				$old_name = $this->name;
-				$this->name = $this->first_name . ' ' . $this->last_name;
-				$this->_onPropertyChanged('name', $old_name, $this->name);
-			}
-		}
-	}
-
-
 	public function setName($name)
 	{
+		$name = preg_replace('# {2,}#', ' ', $name);
 		$this->setModelField('name', $name);
+
+		$parts = Strings::rexplode(' ', $name, 2);
+		$this->setModelField('first_name', $parts[0]);
+		$this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
 	}
 
+	public function setFirstName($name)
+	{
+		$this->setModelField('first_name', $name);
+		$this->setModelField('name', $name . ' ' . $this->last_name);
+	}
 
+	public function setLastName($name)
+	{
+		$this->setModelField('last_name', $name);
+		$this->setModelField('name', $this->first_name . ' ' . $name);
+	}
 
 	/**
 	 * Set the last time this usersource was used.
@@ -1910,9 +1895,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
-		$metadata->addLifecycleCallback('smartSetName', 'prePersist');
 		$metadata->addLifecycleCallback('_presavePerson', 'prePersist');
-		$metadata->addLifecycleCallback('smartSetName', 'preUpdate');
 		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
