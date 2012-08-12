@@ -126,6 +126,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 */
 	addNewRow: function(addToEl, formBaseName, existing) {
 
+		var isStatic = addToEl.is('.static-list');
+
 		if (existing && !this.types[existing.type]) {
 			return null;
 		}
@@ -134,6 +136,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var new_row = $('.row', this.ruleTpl).children().clone();
 		new_row.data('row-id', rowId);
+
+		if (isStatic) {
+			new_row.addClass('static-list');
+		}
 
 		// Add select
 		var select = this.typeSel.clone();
@@ -210,7 +216,13 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		$(addToEl).append(new_row);
 
-		DP.select(select);
+		if (!isStatic) {
+			DP.select(select);
+		} else {
+			var lbl = $('<span />');
+			lbl.text(select.find('option:selected').text());
+			select.hide().after(lbl);
+		}
 
 		this.fireEvent('newRow', [new_row, addToEl, existing]);
 
@@ -228,6 +240,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		// Destroy previous
 		this.destroyRow(row);
+
+		var isStatic = row.is('.static-list');
 
 		var rowId = row.data('row-id');
 		var rowDestroy = [];
@@ -249,7 +263,13 @@ DeskPRO.Form.RuleBuilder = new Class({
 		$('.builder-options', row).empty().append(choice);
 
 		row.find('select.op').css('visibility', 'hidden');
-		DP.select(row.find('select.op'));
+		if (!isStatic) {
+			DP.select(row.find('select.op'));
+		} else {
+			var lbl = $('<span />');
+			lbl.text(row.find('select.op').find('option:selected').text());
+			row.find('select.op').hide().after(lbl);
+		}
 
 		var ruleHandlerName = rule_tpl.data('rule-handler');
 		var ruleHandler = null;
@@ -268,11 +288,17 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var numChilds = choice.children().length;
 
 		if (numChilds == 1) {
-			var choiceSel = row.find('.builder-options').find('select:not(.no-auto)');
+			var choiceSel = row.find('.builder-options').find('select').not('.no-auto');
 			if (choiceSel.length) {
 				choiceSel.css('visibility', 'hidden');
 				choiceSel.each(function() {
-					DP.select($(this));
+					if (!isStatic) {
+						DP.select($(this));
+					} else {
+						var lbl = $('<span />');
+						lbl.text($(this).find('option:selected').text());
+						$(this).hide().after(lbl);
+					}
 				});
 			}
 		}

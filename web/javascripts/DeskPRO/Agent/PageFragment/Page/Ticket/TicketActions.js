@@ -294,7 +294,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				this._initMacroOverlay();
 
 				var add = $('.actions-list', this.macroOverlay.getElement()).addClass('static-list');
-				$('.search-terms', add).empty();
+				$('.search-terms', add).addClass('static-list').empty();
 
 				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
 				Array.each(data.actions_display, function(info, x) {
