@@ -214,7 +214,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setIsEnabled($is_enabled)
 	{
-		$this->is_enabled = $is_enabled;
+		$this->setModelField('is_enabled', $is_enabled);
 	}
 
 	/**

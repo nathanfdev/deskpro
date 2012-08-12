@@ -391,10 +391,10 @@ class UserRegController extends AbstractController
 	{
 		$usersource = $this->em->find('DeskPRO:Usersource', $id);
 		if (!$usersource) {
-			return $this->redirectRoute('admin_userreg_options');
+			throw $this->createNotFoundException("Unknown usersource");
 		}
 
-		$usersource->is_enabled = $usersource->is_enabled ? false : true;
+		$usersource->is_enabled = !$usersource->is_enabled;
 
 		$this->db->beginTransaction();
 		try {
