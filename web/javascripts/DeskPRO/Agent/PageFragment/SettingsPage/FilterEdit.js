@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 				return;
 			}
 
-			if (!$('input[name^="terms["]').length) {
+			if (!$('select[name^="terms["]').length) {
 				alert('Choose at least one criteria');
 				return;
 			}
