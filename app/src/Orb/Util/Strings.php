@@ -1105,9 +1105,9 @@ class Strings
 		$html = Strings::extractBodyTag($html);
 		$html = str_replace('<span></span>', '', $html);
 
-		// Always wrap with this, or else in an attempt to fix structure
+		// Always wrap with body, or else in an attempt to fix structure
 		// we'll end up with superfluous <p> wrappers around some top-level text nodes
-		$html = '<dptag>' . $html . '</dptag>';
+		$html = '<body>' . $html . '</body>';
 
 		$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 		do {
@@ -1178,10 +1178,7 @@ class Strings
 			$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
-			$div = $qp->top()->find('body > dptag > *');
-			if (!$div->length) {
-				$div = $qp->top()->find('body > *');
-			}
+			$div = $qp->top()->find('body > *');
 			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span'))) {
 				$changed = true;
 				$html = $div->html();
@@ -1198,7 +1195,8 @@ class Strings
 					$html = preg_replace('#^<p.*?>#', '', $html);
 				}
 
-				$html = '<dptag>' . $html . '</dptag>';
+				$html = Strings::extractBodyTag($html);
+				$html = '<body>' . $html . '</body>';
 			}
 
 			$qp->top();
@@ -1209,8 +1207,6 @@ class Strings
 		$html = ob_get_clean();
 
 		$html = Strings::extractBodyTag($html);
-
-		$html = str_replace(array('<dptag>', '</dptag>'), '', $html);
 		$html = str_replace('<br></br>', '<br />', $html);
 
 		$html_before = $html;
