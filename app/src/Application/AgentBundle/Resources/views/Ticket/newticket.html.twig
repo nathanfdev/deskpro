@@ -114,6 +114,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% else %}{% set agent_id = ticket.agent %}{% endif %}
 
 			<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+				<option value="0">Unassigned</option>
 				{% for agent in agents %}
 					<option {% if agent.id == agent_id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 				{% endfor %}
