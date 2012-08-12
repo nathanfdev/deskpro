@@ -427,6 +427,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 		$email_info['body_full'] = $email_info['body'];
 
+		// Always generic cut from the DP_TOP_MARK position first
+		// The PatternCutter will trim off the remaining quoted headers
+		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+		$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		if ($email_info['body'] != $generic_cut) {
+			$email_info['body'] = $generic_cut;
+			$has_cut = true;
+		}
+
 		if ($email_info['body_is_html']) {
 			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
 			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
@@ -441,15 +450,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 			} else {
 				$this->logMessage("Cutter did not match any pattern");
-			}
-		}
-
-		if (!$has_cut) {
-			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
-			if ($email_info['body'] != $generic_cut) {
-				$email_info['body'] = $generic_cut;
-				$has_cut = true;
 			}
 		}
 
