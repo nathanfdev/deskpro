@@ -11,4 +11,15 @@
 	<p>
 		This usersource requires the <a href="http://php.net/manual/en/book.ldap.php">LDAP extension</a> installed in PHP.
 	</p>
+	{% if missing_cli %}
+		<p>
+			It appears as though the LDAP extension is installed to your PHP used by the web server but not
+			the one used on the command-line. Refer to <a href="{{ path('admin_server_phpinfo') }}">PHP Info</a> to find information about
+			your CLI version of PHP.
+		</p>
+		<p>
+			Note: If you have just installed the LDAP extension, it may take up to five minutes for DeskPRO
+			to recognise the changes.
+		</p>
+	{% endif %}
 {% endblock %}

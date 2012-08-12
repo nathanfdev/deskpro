@@ -350,6 +350,14 @@ class UserRegController extends AbstractController
 			if (!extension_loaded('ldap')) {
 				return $this->render('AdminBundle:UserReg:usersource-require-ldap.html.twig');
 			}
+
+			// Make sure ldap appears in CLI phpini as well
+			if (file_exists(dp_get_data_dir() .'/cli-phpinfo.html')) {
+				$cli_phpinfo = file_get_contents(dp_get_data_dir() .'/cli-phpinfo.html');
+				if (stripos($cli_phpinfo, 'ldap') === false) {
+					return $this->render('AdminBundle:UserReg:usersource-require-ldap.html.twig', array('missing_cli' => true));
+				}
+			}
 		}
 
 		if ($this->request->isPost() && $this->in->getBool('process')) {
