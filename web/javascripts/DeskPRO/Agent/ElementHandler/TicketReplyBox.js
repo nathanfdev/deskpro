@@ -36,6 +36,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}, 250);
 		});
 
+		this.getElById('replybox_txt').on('keypress change', function() {
+			$(this).addClass('touched');
+		});
+
 		//------------------------------
 		// Expanding cc row
 		//------------------------------
