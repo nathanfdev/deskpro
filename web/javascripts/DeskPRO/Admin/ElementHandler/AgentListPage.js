@@ -30,6 +30,14 @@ DeskPRO.Admin.ElementHandler.AgentListPage = new Orb.Class({
 		$(document).on('click', '.tools-menu-icon.agent', function(ev) {
 			self.agentToolsMenu.open(ev);
 		});
+
+		var addUsTrigger = $('#add_from_us_menu_trigger a');
+		if (addUsTrigger[0]) {
+			var menu = new DeskPRO.UI.Menu({
+				triggerElement: addUsTrigger,
+				menuElement: $('#add_from_us_menu')
+			});
+		}
 	},
 
 	showAgentVacationOverlay: function(agentId, agentName) {
