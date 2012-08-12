@@ -25,7 +25,7 @@
 				$('#editlic_showloading').show();
 				$('#editlic_err').hide();
 				$.ajax({
-					url: '{{ path('admin_license_input_save') }}',
+					url: '{{ path('billing_license_input_save') }}',
 					type: 'POST',
 					data: formData,
 					dataTyoe: 'json',
@@ -159,7 +159,7 @@
 								so your license code can be manually generated.
 								<br /><br />
 
-								<a class="btn" href="{{ path('admin_license_keyfile') }}">Download: deskpro-license-sign.key (500 bytes)</a>
+								<a class="btn" href="{{ path('billing_license_keyfile') }}">Download: deskpro-license-sign.key (500 bytes)</a>
 							</div>
 					</td>
 				</tr>

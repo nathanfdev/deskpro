@@ -33,4 +33,29 @@ $collection->add('billing_login_authenticate_local', new Route(
 	array()
 ));
 
+################################################################################
+# License
+################################################################################
+
+$collection->add('billing_license_reqdemo', new Route(
+	'/license/generate-demo',
+	array('_controller' => 'BillingBundle:License:requestDemo'),
+	array(),
+	array()
+));
+
+$collection->add('billing_license_input_save', new Route(
+	'/license/input/save',
+	array('_controller' => 'BillingBundle:License:saveNewLicense'),
+	array(),
+	array()
+));
+
+$collection->add('billing_license_keyfile', new Route(
+	'/license/download/deskpro-license-sign.key',
+	array('_controller' => 'BillingBundle:License:keyFile'),
+	array(),
+	array()
+));
+
 return $collection;
