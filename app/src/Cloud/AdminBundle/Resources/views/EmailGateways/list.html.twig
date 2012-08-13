@@ -1,0 +1,121 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block html_head %}
+<script type="text/javascript">
+$(document).ready(function() {
+	var overlay = new DeskPRO.UI.Overlay({
+		triggerElement: $('#newcat_trigger'),
+		contentElement: $('#newcat_overlay')
+	});
+	$('#newcat_savebtn').on('click', function(ev) {
+		ev.preventDefault();
+		var form = $('#newcat_overlay form');
+
+		$('#newcat_err').hide();
+		$('#newcat_savebtn_wrap').hide();
+		$('#newcat_loading_wrap').show();
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serializeArray(),
+			dataType: 'json',
+			type: 'POST',
+			success: function(data) {
+				if (data.error) {
+					$('#newcat_err').find('> div').hide();
+					$('#newcat_err').show().find('.' + data.error_code).show();
+
+					$('#newcat_loading_wrap').hide();
+					$('#newcat_savebtn_wrap').show();
+					return;
+				}
+
+				window.location.reload(false);
+			}
+		});
+	});
+});
+</script>
+{% endblock %}
+{% block pagebar %}
+	<nav>
+		<ul>
+			<li class="add"><a href="#" id="newcat_trigger">{{ phrase('admin.gateway.add_email_gateway') }}</a></li>
+		</ul>
+	</nav>
+	<ul>
+		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.general.email_gateways') }}</a></li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+{{ design.helpbox() }}
+	<p>
+		An email gateway is an email address that your users send email to and their emails are processed into tickets in your helpdek.
+		You can add as many email addresses as you want.
+	</p>
+{{ design.helpbox_end() }}
+
+<div class="check-grid item-list" id="by_address">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
+				<th style="text-align:left" width="10">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for gateway in all_gateways %}
+				<tr>
+					<td>
+						<input
+							type="checkbox"
+							class="onoff-slider gateway-toggle-{{ gateway.id }}"
+							{% if gateway.is_enabled %}checked="checked"{% endif %}
+							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
+							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
+							data-state-property="is_enabled"
+						/>
+						{{ gateway.title }}
+					</td>
+					<td style="padding: 3px 3px 0 0">
+						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');"><span class="btn-remove"></span></a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<div id="newcat_overlay" style="width: 400px; height: 180px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>New Email Address</h4>
+	</div>
+	<div class="overlay-content">
+		<form class="dp-form" method="POST" action="{{ path('admin_emailgateways_newcloud') }}">
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Email Address</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="name" value="" style="width: 150px;" /><span style="font-size: 10pt; margin-left: 6px;">@{{ constant('DPC_SITE_DOMAIN') }}</span>
+					<div id="newcat_err" style="display: none; padding: 6px; color: #f00;">
+						<div class="empty_name">Please enter an email address</div>
+						<div class="dupe">You already have an email address with that name</div>
+						<div class="invalid_name">You can only enter letters, numbers, underscores and hyphens.</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="overlay-footer">
+		<div id="newcat_savebtn_wrap">
+			<button class="clean-white" id="newcat_savebtn">Create Email Address</button>
+		</div>
+		<div id="newcat_loading_wrap" style="display: none;">
+			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+		</div>
+	</div>
+</div>
+
+{% endblock %}

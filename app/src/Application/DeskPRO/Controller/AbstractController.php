@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
 
@@ -133,5 +134,45 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			echo 'invalid security token';
 			exit;
 		}
+	}
+
+
+	/**
+	 * Just enables 'smart view resoltion' when the at sign is used.
+	 *
+	 * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
+	 * @list.html.twig will get SomeBundle:MyController:list.html.
+	 *
+	 * @param string $view
+	 * @param array $parameters
+	 * @param \Symfony\Component\HttpFoundation\Response $response
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function render($view, array $parameters = array(), Response $response = null)
+	{
+		if ($view[0] == '@') {
+			$m = null;
+			if (!preg_match('#(Application|Cloud)\\\\([A-Za-z0-9_\-]+)\\\\#', get_class($this), $m)) {
+				throw new \InvalidArgumentException("Cannot resolve bundle name with @ notation in `$view`");
+			}
+
+			if ($m[1] == 'Cloud') {
+				$bundle = 'Cloud' . $m[2];
+			} else {
+				$bundle = $m[2];
+			}
+
+			$c = substr_count($view, ':');
+			if ($c == 1) {
+				$pre = "$bundle:";
+			} else {
+				$controller = \Orb\Util\Strings::extractRegexMatch('#\\\\([A-Za-z0-9_\-]+)Controller$#', get_class($this), 1);
+				$pre = "$bundle:$controller:";
+			}
+
+			$view = preg_replace('#^@#', $pre, $view);
+		}
+
+		return parent::render($view, $parameters, $response);
 	}
 }

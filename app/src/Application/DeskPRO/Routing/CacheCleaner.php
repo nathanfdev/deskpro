@@ -111,6 +111,8 @@ class CacheCleaner
 			DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
 			DP_ROOT  . '/src/Application/Billing/Resources/config/billing-routing.php',
 			DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php',
+			DP_ROOT  . '/src/Cloud/AdminBundle/Resources/config/admin-routing.php',
+			DP_ROOT  . '/src/Cloud/Billing/Resources/config/billing-routing.php',
 		);
 
 		return $this->routing_files;

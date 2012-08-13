@@ -132,6 +132,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
 		$in_files = Finder::create()->in(array(
 			DP_ROOT.'/src/Application',
+			DP_ROOT.'/src/Cloud',
 			DP_ROOT.'/sys/cache/twig-compiled'
 		))->files();
 

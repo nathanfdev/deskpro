@@ -45,9 +45,10 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
  */
 class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 {
-	const CONN_POP3  = 'pop3';
-	const CONN_GMAIL = 'gmail';
-	const CONN_IMAP  = 'imap';
+	const CONN_POP3    = 'pop3';
+	const CONN_GMAIL   = 'gmail';
+	const CONN_IMAP    = 'imap';
+	const CONN_READDIR = 'directory';
 
 	const GATEWAY_TICKETS = 'tickets';
 
@@ -195,6 +196,10 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 
 			case self::CONN_IMAP:
 				$this->_fetcher = new \Application\DeskPRO\EmailGateway\Fetcher\Imap($this);
+				break;
+
+			case self::CONN_READDIR:
+				$this->_fetcher = new \Application\DeskPRO\EmailGateway\Fetcher\PlainMailDir($this);
 				break;
 
 			default:

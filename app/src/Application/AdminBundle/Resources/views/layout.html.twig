@@ -255,13 +255,6 @@
 {% endif %}
 {% endif %}
 
-{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
-{% if pagebar|trim|length %}
-	<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
-{% endif %}
-
-{% block pagebar_after %}{% endblock %}
-
 {% if app.session.hasFlash('success_message') %}
 	<div class="alert-message success">
 		{{ app.session.getFlash('success_message') }}
@@ -282,6 +275,13 @@
 		"{{ app.session.getFlash('deleted') }}" was deleted successfully
 	</div>
 {% endif %}
+
+{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
+{% if pagebar|trim|length %}
+	<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
+{% endif %}
+
+{% block pagebar_after %}{% endblock %}
 
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}

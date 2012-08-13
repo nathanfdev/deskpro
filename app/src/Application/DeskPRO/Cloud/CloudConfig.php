@@ -39,6 +39,8 @@ class CloudConfig
 
 			define('DPC_IS_CLOUD',           true);
 			define('DPC_SITE_ID',            $site['id']);
+			define('DPC_SITE_DOMAIN',        $site['master_domain']);
+			define('DPC_SITE_DOMAIN_ALT',    $site['custom_domain']);
 			define('DPC_ACCOUNT_ID',         $site['account_id']);
 			define('DPC_AGENTS',             $site['agents']);
 			define('DPC_DEMO_EXPIRE',        $site['is_demo'] ? $site['demo_expire_at'] : 0);

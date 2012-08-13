@@ -74,7 +74,7 @@ class EmailGatewaysController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:EmailGateways:list.html.twig', array(
+		return $this->render('@list.html.twig', array(
 			'all_gateways' => $all_gateways,
 			'all_transports' => $all_transports,
 			'all_gateways_byemail' => $all_gateways_byemail
@@ -226,9 +226,9 @@ class EmailGatewaysController extends AbstractController
 			}
 		}
 
-		$tpl = 'AdminBundle:EmailGateways:edit-account.html.twig';
+		$tpl = '@edit-account.html.twig';
 		if ($this->request->isPartialRequest()) {
-			$tpl = 'AdminBundle:EmailGateways:edit-account-form.html.twig';
+			$tpl = '@edit-account-form.html.twig';
 		}
 
 		return $this->render($tpl, array(
