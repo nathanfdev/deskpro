@@ -9,5 +9,7 @@ return array(
 	'db_password' => '',
 	'db_name'     => '',
 
+	'error_contact' => 'team@deskpro.com',
+
 	'vendor_url' => 'http://www.deskpro.com/',
 );

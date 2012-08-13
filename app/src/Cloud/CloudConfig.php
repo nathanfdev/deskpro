@@ -59,6 +59,11 @@ class CloudConfig
 	 */
 	private static $vendor_url;
 
+	/**
+	 * @var string
+	 */
+	private static $error_contact;
+
 
 	/**
 	 * Fills the normal DeskPRO configuration from an incoming web request
@@ -144,10 +149,25 @@ class CloudConfig
 	public static function getVendorUrl()
 	{
 		if (!self::$vendor_url) {
-			self::$vendor_url = self::getConfig('vendor_url');
+			self::getConfig(null);
 		}
 
 		return self::$vendor_url;
+	}
+
+
+	/**
+	 * Get the email address for errors
+	 *
+	 * @return string
+	 */
+	public static function getErrorContact()
+	{
+		if (!self::$vendor_url) {
+			self::getConfig(null);
+		}
+
+		return self::$error_contact;
 	}
 
 
@@ -164,6 +184,9 @@ class CloudConfig
 
 		if (!self::$config) {
 			self::$config = require DP_ROOT.'/src/Cloud/Resources/config/config.php';
+
+			self::$vendor_url = self::$config['vendor_url'];
+			self::$error_contact = self::$config['error_contact'];
 		}
 
 		// Null key just means laod config
