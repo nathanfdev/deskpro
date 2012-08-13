@@ -158,25 +158,40 @@ class TicketMessage extends AbstractEntityRepository
 		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
 		if ($ticket) {
-			$check = $this->getEntityManager()->createQuery("
+			$check_matches = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
-				WHERE m.message_hash = ?1 AND m.date_created > ?2 AND m.ticket = ?3
-			")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip, 3=>$ticket))->getResult();
+				WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2
+			")->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
 		} else {
-			$check = $this->getEntityManager()->createQuery("
+			$check_matches = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
-				WHERE m.message_hash = ?1 AND m.date_created > ?2
-			")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getResult();
+				WHERE m.message_hash = ?0 AND m.date_created > ?1
+			")->setParameters(array($message['message_hash'], $timesnip))->getResult();
 		}
 
-		if (count($check)) {
-			$check = array_shift($check);
+		if (!$check_matches || !count($check_matches)) {
+			return false;
 		}
 
-		if ($check) {
-			return $check;
+		foreach ($check_matches as $check) {
+			$prev_message = $this->_em->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessage m
+				WHERE m.ticket = ?0 AND m.id < ?1
+				ORDER BY m.id DESC
+			")->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
+
+			// There is no previous message, so it is a dupe
+			if (!$prev_message) {
+				return $check;
+			}
+
+			// The previous message is also by us, so it is a dupe
+			if ($prev_message->person->getId() == $message->person->getId()) {
+				return $check;
+			}
 		}
 
 		return false;
