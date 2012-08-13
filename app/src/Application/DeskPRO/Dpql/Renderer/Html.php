@@ -58,6 +58,10 @@ class Html
 
 	public function renderTable(array $rows)
 	{
+		if (!$rows) {
+			return '';
+		}
+
 		if ($this->_handler->getGroupXColumns()) {
 			return $this->_renderMatrixTable($rows);
 		}

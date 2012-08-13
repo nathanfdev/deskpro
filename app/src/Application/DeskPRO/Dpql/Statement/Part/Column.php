@@ -10,6 +10,10 @@ class Column extends AbstractPart
 {
 	public $parts;
 
+	protected static $_tableResolver = array(
+		'people' => array('id', 'name')
+	);
+
 	public function __construct(array $parts)
 	{
 		$this->parts = $parts;
@@ -31,6 +35,7 @@ class Column extends AbstractPart
 		}
 
 		$sql = false;
+		$printedSql = false;
 		$name = false;
 
 		end($parts);
@@ -108,10 +113,26 @@ class Column extends AbstractPart
 		if ($partKey !== $lastPartKey) {
 			throw new \Exception('Did not get to end of column references');
 		}
+
 		if ($sql === false) {
-			throw new \Exception('Did not get SQL from column reference. Just referencing association.');
+			$assocTable = $repository->getTableName();
+			if (isset(self::$_tableResolver[$assocTable])) {
+				$resolver = self::$_tableResolver[$assocTable];
+
+				$parent = reset($stack);
+				if ($stack) {
+					// if we have a parent of any sort, act on the printed value
+					$sql = "`$sqlTable`.`$resolver[1]`";
+				} else {
+					$sql = "`$sqlTable`.`$resolver[0]`";
+				}
+
+				$printedSql = "`$sqlTable`.`$resolver[1]`";
+			} else {
+				throw new \Exception('Did not get SQL from column reference. Just referencing association.');
+			}
 		}
 
-		return new Prepared($sql, $name);
+		return new Prepared($sql, $name, $printedSql);
 	}
 }
