@@ -150,7 +150,7 @@ $st = $db->prepare("
 		cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 	FROM cloud_sites
 	LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-	WHERE cloud_sites.build_number > 0 AND cloud_sites.build_number < :build_num
+	WHERE cloud_sites.build_number > 0 AND cloud_sites.build_number < :build_num AND cloud_sites.sys_disabled IS NULL
 	ORDER BY cloud_sites.id ASC
 ");
 $st->execute(array(':build_num' => $build_num));
@@ -167,6 +167,8 @@ foreach ($sites as $siteinfo) {
 
 	$pass_args_set = "--dpc-site-id {$siteinfo['id']} --run-db-upgrade";
 
+	$db->exec("UPDATE cloud_sites SET sys_disabled = 'upgrading' WHERE id = {$siteinfo['id']}");
+
 	$cmd = "php upgrade.php $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $siteinfo['build_number']);
@@ -177,7 +179,7 @@ foreach ($sites as $siteinfo) {
 	if (!$proc->isSuccessful()) {
 		dp_log("!!! DETECTED ERROR STATUS !!!");
 	} else {
-		$db->exec("UPDATE cloud_sites SET build_number = $build_num WHERE id = {$siteinfo['id']}");
+		$db->exec("UPDATE cloud_sites SET build_number = $build_num, sys_disabled = NULL WHERE id = {$siteinfo['id']}");
 	}
 
 	dp_logf("--- END SITE %d %s (took %.4f s) ---", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);

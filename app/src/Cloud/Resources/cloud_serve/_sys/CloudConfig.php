@@ -91,7 +91,7 @@ class CloudConfig
 			$siteinfo = null;
 		}
 
-		if (!$siteinfo) {
+		if (!$siteinfo || $siteinfo['sys_disabled']) {
 			header("Location: " . self::getVendorUrl());
 			exit();
 		}
