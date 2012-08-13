@@ -156,8 +156,13 @@ class TemplatingExtension extends \Twig_Extension
 	public function getConstant($name = '')
 	{
 		static $whitelist = array(
-			'DP_BUILD_NUM',
-			'DP_BUILD_TIME',
+			'DP_BUILD_NUM'          => true,
+			'DP_BUILD_TIME'         => true,
+			'DPC_SITE_ID'           => true,
+			'DPC_SITE_DOMAIN'       => true,
+			'DPC_SITE_DOMAIN_ALT'   => true,
+			'DPC_SITE_BUILD_NUM'    => true,
+			'DPC_ACCOUNT_ID'        => true
 		);
 
 		if (!$name || !defined($name) || !isset($whitelist[$name])) {
