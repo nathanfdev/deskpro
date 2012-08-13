@@ -1007,6 +1007,21 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Returns the ISO-8601 representation of the day of the week that this
+	 * person has selected as their start of the week.
+	 *
+	 * 1 = Monday, ..., 7 = Sunday
+	 *
+	 * @return int
+	 */
+	public function getStartOfWeek()
+	{
+		return 1;
+	}
+
+
+
+	/**
 	 * Load a group of user prefs
 	 * @param string $pref_group
 	 * @return array

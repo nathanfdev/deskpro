@@ -10,12 +10,14 @@ abstract class AbstractPlaceholder
 {
 	protected static $_placeholderMap = array(
 		'LAST_MONTH' => 'LastMonth',
+		'LAST_WEEK' => 'LastWeek',
 		'LAST_YEAR' => 'LastYear',
 		'PAST_DAY' => 'PastDay',
 		'PAST_MONTH' => 'PastMonth',
 		'PAST_WEEK' => 'PastWeek',
 		'PAST_YEAR' => 'PastYear',
 		'THIS_MONTH' => 'ThisMonth',
+		'THIS_WEEK' => 'ThisWeek',
 		'THIS_YEAR' => 'ThisYear',
 		'TODAY' => 'Today',
 		'TOMORROW' => 'Tomorrow',
