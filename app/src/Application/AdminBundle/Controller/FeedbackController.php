@@ -293,6 +293,7 @@ class FeedbackController extends AbstractController
 
 		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInCategory($category);
 
+		$move_cat = null;
 		if ($count_existing) {
 			$move_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->in->getUint('move_to_cat'));
 			if (!$move_cat) {
