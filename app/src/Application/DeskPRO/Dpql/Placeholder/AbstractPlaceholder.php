@@ -9,7 +9,16 @@ use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 abstract class AbstractPlaceholder
 {
 	protected static $_placeholderMap = array(
+		'LAST_MONTH' => 'LastMonth',
+		'LAST_YEAR' => 'LastYear',
+		'PAST_DAY' => 'PastDay',
+		'PAST_MONTH' => 'PastMonth',
+		'PAST_WEEK' => 'PastWeek',
+		'PAST_YEAR' => 'PastYear',
+		'THIS_MONTH' => 'ThisMonth',
+		'THIS_YEAR' => 'ThisYear',
 		'TODAY' => 'Today',
+		'TOMORROW' => 'Tomorrow',
 		'YESTERDAY' => 'Yesterday'
 	);
 

@@ -8,15 +8,15 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
-class Yesterday extends AbstractDateRange
+class Tomorrow extends AbstractDateRange
 {
 	protected function _getDateRange()
 	{
 		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('-1 day', new \DateTimeZone($tz));
+		$date = new \DateTime('+1 day', new \DateTimeZone($tz));
 
-		$yesterday = $date->format('Y-m-d');
+		$day = $date->format('Y-m-d');
 
-		return array($yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59");
+		return array($day, "$day 00:00:00", "$day 23:59:59");
 	}
 }

@@ -8,15 +8,19 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
-class Yesterday extends AbstractDateRange
+class PastYear extends AbstractDateRange
 {
 	protected function _getDateRange()
 	{
 		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('-1 day', new \DateTimeZone($tz));
+		$date = new \DateTime('now', new \DateTimeZone($tz));
 
-		$yesterday = $date->format('Y-m-d');
+		$now = $date->format('Y-m-d H:i:s');
+		$today = $date->format('Y-m-d');
 
-		return array($yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59");
+		$date->modify('-1 year');
+		$beginning = $date->format('Y-m-d');
+
+		return array("$beginning to $today", "$beginning 00:00:00", $now);
 	}
 }
