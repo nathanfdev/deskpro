@@ -180,14 +180,22 @@ class EzcReader extends AbstractReader
 
 				$attach = new Item\Attachment();
 
-				// Using displayFileName as it is a quote-decoded version of the filename
-				// that some email clients can send (erroneously, according to RFC 2184 you shouldnt send quoted names)
-				$attach->file_name  = basename($part->contentDisposition->displayFileName);
-
 				if ($part instanceof \ezcMailText) {
 					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'dpm');
 					file_put_contents($attach->tmp_file, $part->text);
-					$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+
+					if (isset($part->contentDisposition) && isset($part->contentDisposition->displayFileName)) {
+						try {
+							$attach->file_name = basename($part->contentDisposition->displayFileName);
+							$attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+						} catch (\Exception $e) {}
+					}
+
+					if (!$attach->file_name || !$attach->mime_type) {
+						$attach->file_name = 'file.txt';
+						$attach->mime_type = 'plain/text';
+					}
+
 				} elseif ($part instanceof \ezcMailRfc822Digest) {
 					$attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
 					file_put_contents($attach->tmp_file, $part->generate());
@@ -197,7 +205,23 @@ class EzcReader extends AbstractReader
 					$attach->mime_type = 'message/rfc822';
 				} else {
 					$attach->tmp_file   = $part->fileName;
-					$attach->mime_type  = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+
+					if (isset($part->contentDisposition) && isset($part->contentDisposition->displayFileName)) {
+						try {
+							$attach->file_name = basename($part->contentDisposition->displayFileName);
+							$attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
+						} catch (\Exception $e) {}
+					} elseif (!empty($part->fileName)) {
+						try {
+							$attach->file_name = basename($part->fileName);
+							$attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->fileName);
+						} catch (\Exception $e) {}
+					}
+
+					if (!$attach->file_name || !$attach->mime_type) {
+						$attach->file_name = 'file.txt';
+						$attach->mime_type = 'plain/text';
+					}
 				}
 
 				$attach->content_id = $part->getHeader('Content-ID');
