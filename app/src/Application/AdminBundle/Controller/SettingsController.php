@@ -362,7 +362,7 @@ class SettingsController extends AbstractController
 		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
 
 		// Mark as done
-		if ($this->in->getBool('done')) {
+		if ($this->in->getBool('done') || defined('DPC_IS_CLOUD')) {
 			$pass = true;
 			if (!$default_transport) {
 				$pass = false;
@@ -375,7 +375,7 @@ class SettingsController extends AbstractController
 			}
 
 			// Offer a flag to force pass
-			if ($this->in->getBool('force')) {
+			if ($this->in->getBool('force') || defined('DPC_IS_CLOUD')) {
 				$pass = true;
 			}
 
