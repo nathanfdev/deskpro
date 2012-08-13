@@ -112,12 +112,11 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		#------------------------------
 
 		chdir(DP_ROOT);
-		$php_path = $this->getContainer()->getPhpBinaryPath();
 
 		while ($next_id = $manager->getNextBuildId()) {
 			$output->writeln("<info>Build #$next_id</info>");
 
-			$cmd = "$php_path cmd.php dp:upgrade --dobuildrun=$next_id";
+			$cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
 			passthru($cmd, $ret);
 
 			if ($ret) {

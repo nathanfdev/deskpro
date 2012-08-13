@@ -46,4 +46,5 @@
 
 # Per-site files
 /config.php
-/app/src/Cloud/Resources/config/config.php
+/app/src/Cloud/Resources/cloud_serve/_sys/config.php
+/app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php

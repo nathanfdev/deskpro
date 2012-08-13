@@ -345,11 +345,6 @@ function dp_get_php_path($test = false)
 		} else {
 			$path = escapeshellarg($path);
 		}
-
-		// There might be args we need to set, eg. specify php.ini path
-		if (defined('DP_PHP_BIN_ARGS') && DP_PHP_BIN_ARGS) {
-			$pass_test = ' ' . DP_PHP_BIN_ARGS . ' ';
-		}
 	}
 
 	static $pass_test = null;
@@ -370,6 +365,20 @@ function dp_get_php_path($test = false)
 	}
 
 	return $path;
+}
+
+/**
+ * @param string $script
+ * @param string $params
+ * @return string
+ */
+function dp_get_php_command($script, $params = '')
+{
+	$cmd = dp_get_php_path() . ' '
+		. escapeshellarg($script) . ' '
+		. (defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS . ' ' : '')
+		. $params;
+	return $cmd;
 }
 
 

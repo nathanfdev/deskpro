@@ -837,7 +837,7 @@ class Upgrade
 		}
 
 		chdir(DP_ROOT);
-		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		$cmd = dp_get_php_command('cmd.php', 'dp:upgrade');
 		passthru($cmd, $ret);
 		chdir(DP_START_DIR);
 

@@ -79,6 +79,10 @@ class CloudConfig
 	 */
 	public static function loadFromWeb()
 	{
+		if (defined('DPC_SITE_ID')) {
+			return;
+		}
+
 		self::getConfig(null);
 
 		if (!empty($_SERVER['HTTP_HOST'])) {
