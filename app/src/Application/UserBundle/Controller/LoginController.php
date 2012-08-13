@@ -606,6 +606,24 @@ HTML;
 			}
 		}
 
+		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
+		// Send an email instead
+		if (!defined('DPC_IS_CLOUD')) {
+			if ($person->can_admin) {
+				$vars = array(
+					'person' => $person,
+					'email' => $email
+				);
+
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
+				$message->setTo($email, $person->getDisplayName());
+
+				$this->container->getMailer()->send($message);
+				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
+			}
+		}
+
 		// If they're still here, then we just send them through the normal DeskPRO reset procedure
 
 		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+2 days');
