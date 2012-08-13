@@ -46,7 +46,7 @@ if (!is_dir(DP_SAVEMAIL_DIR)) {
 
 $cat = isset($_GET['cat']) ? $_GET['cat'] : 'default';
 
-if (!preg_match('#^[a-zA-Z0-9\-_][a-zA-Z0-9\-_.]*$#', $cat)) {
+if (!preg_match('#^[a-zA-Z0-9\-_][a-zA-Z0-9\-_.@]*$#', $cat)) {
 	echo "Invalid cat";
 	exit(1);
 }
