@@ -9,6 +9,9 @@ abstract class AbstractFunc
 {
 	protected static $_functionMap = array(
 		'COUNT' => 'Count',
+		'CURDATE' => 'CurDate',
+		'CURTIME' => 'CurTime',
+		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
 		'PRINT' => 'Printable',
 		'X' => 'X',
