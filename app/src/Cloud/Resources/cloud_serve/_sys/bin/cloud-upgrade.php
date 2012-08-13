@@ -176,6 +176,8 @@ foreach ($sites as $siteinfo) {
 
 	if (!$proc->isSuccessful()) {
 		dp_log("!!! DETECTED ERROR STATUS !!!");
+	} else {
+		$db->exec("UPDATE cloud_sites SET build_number = $build_num WHERE id = {$siteinfo['id']}");
 	}
 
 	dp_logf("--- END SITE %d %s (took %.4f s) ---", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);
