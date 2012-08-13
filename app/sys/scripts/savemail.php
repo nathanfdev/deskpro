@@ -73,8 +73,10 @@ $name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
 $tmp = sys_get_temp_dir() . '/dpm-' . $name;
 
 $fp = fopen($tmp, 'w');
-while (!feof(STDIN)) {
-	fwrite($fp, fread(STDIN, 2048));
+if (defined('STDIN')) {
+	while (!feof(\STDIN)) {
+		fwrite($fp, fread(\STDIN, 2048));
+	}
 }
 fclose($fp);
 

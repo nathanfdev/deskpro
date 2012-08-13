@@ -67,7 +67,7 @@ define('DP_CLOUD_MAILSTORE', __DIR__ . '/mailstore');
 /**
  * The web script to PUT the email to
  */
-define('DP_CLOUD_SAVEMAIL_URL', 'http://example.com/deskpro/index.php?_sys=savemail&auth=XXX&{PARAMS}');
+define('DP_CLOUD_SAVEMAIL_URL', 'http://{DOMAIN}/index.php?_sys=savemail&auth=XXX&{PARAMS}');
 
 /**
  * Database details for the cloud database to
@@ -259,13 +259,22 @@ class DeskPRO_Cloud_ProcMail
 	public function uploadToSite(array $siteinfo)
 	{
 		$url = str_replace('{PARAMS}', 'cat=' . urlencode($this->to_domain), DP_CLOUD_SAVEMAIL_URL);
-		$cmd = sprintf("curl -X PUT --data-binary @%s %s", $this->savepath, $url);
+		$url = str_replace('{DOMAIN}', $this->to_domain, $url);
+
+		$cmd = sprintf("curl -X POST --data-binary @%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
 
 		$ret = $out = null;
 		exec($cmd, $out, $ret);
 
+		if (!$out) {
+			$out = array();
+		}
+
+		$out = implode("\n", $out);
+
 		if (strpos($out, 'DP_MAIL_ACCEPT') === false) {
 			$this->markFailed();
+			error_log($out);
 		}
 	}
 
@@ -273,7 +282,7 @@ class DeskPRO_Cloud_ProcMail
 
 	protected function markFailed()
 	{
-		if (is_dir(DP_CLOUD_MAILSTORE . '/_failed') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
+		if (!is_dir(DP_CLOUD_MAILSTORE . '/_failed') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
 			return;
 		}
 
@@ -282,7 +291,7 @@ class DeskPRO_Cloud_ProcMail
 
 	protected function markUnknown()
 	{
-		if (is_dir(DP_CLOUD_MAILSTORE . '/_unknown') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
+		if (!is_dir(DP_CLOUD_MAILSTORE . '/_unknown') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
 			return;
 		}
 
