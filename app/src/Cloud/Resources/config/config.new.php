@@ -1,16 +1,13 @@
 <?php
+if (!defined('DP_ROOT')) exit('No access');
+if (defined('DPC_CONFIG_LOADED')) exit('Cloud config has already been loaded');
+define('DPC_CONFIG_LOADED', true);
 
-/**
- * Database details for the cloud database to
- * lookup site information.
- */
-define('DP_CLOUD_DATABASE_HOST', 'localhost');
-define('DP_CLOUD_DATABASE_USER', 'root');
-define('DP_CLOUD_DATABASE_PASSWORD', '');
-define('DP_CLOUD_DATABASE_NAME', '');
+return array(
+	'db_host'     => 'localhost',
+	'db_user'     => 'root',
+	'db_password' => '',
+	'db_name'     => '',
 
-/**
- * The main cloud website used when redirecting for domains
- * that do not exist.
- */
-define('DP_CLOUD_MAIN_SITE', 'http://www.deskpro.com/');
+	'vendor_url' => 'http://www.deskpro.com/',
+);

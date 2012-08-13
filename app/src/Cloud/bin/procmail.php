@@ -229,6 +229,25 @@ class DeskPRO_Cloud_ProcMail
 
 
 	/**
+	 * @return \PDO
+	 */
+	protected function getCloudDb()
+	{
+		static $pdo;
+
+		if (!$pdo) {
+			$pdo = new \PDO(
+				sprintf("mysql:host=%s;dbname=%s", DP_CLOUD_DATABASE_HOST, DP_CLOUD_DATABASE_NAME),
+				DP_CLOUD_DATABASE_USER,
+				DP_CLOUD_DATABASE_PASSWORD
+			);
+		}
+
+		return $pdo;
+	}
+
+
+	/**
 	 * @param array $siteinfo
 	 */
 	public function uploadToSite(array $siteinfo)

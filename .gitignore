@@ -39,7 +39,6 @@
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
-@
 /app/sys/config/changed-files.php
 
 # Place devs can use as scratch space
@@ -47,4 +46,4 @@
 
 # Per-site files
 /config.php
-/app/sys/config/dev_debug.php
+/app/src/Cloud/Resources/config/config.php
