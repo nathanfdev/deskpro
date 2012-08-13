@@ -105,8 +105,8 @@ array_shift($args); // shift off this filename
 
 $get_pass_args = array();
 
-if (($k = array_search(' -- ', $args)) !== false) {
-	$get_pass_args = array_slice($args, $k);
+if (($k = array_search('--', $args)) !== false) {
+	$get_pass_args = array_slice($args, $k+1);
 	$args = array_slice($args, 0, $k);
 }
 
@@ -116,6 +116,8 @@ $pass_args = array('--dpc-site-id', '%DPC_SITE_ID%');
 foreach ($get_pass_args as $x) {
 	$pass_args[] = escapeshellarg($x);
 }
+
+$pass_args = implode(" ", $pass_args);
 
 #------------------------------
 # Range to process
@@ -160,7 +162,7 @@ if (($k = array_search('--force', $args)) !== false) {
 # Proc file path
 #------------------------------
 
-$proc_file = realpath(DP_ROOT . '/../data/tmp/cloud-cron.%RANGE_START%.%RANGE_END%.time');
+$proc_file = DP_WEB_ROOT . '/data/tmp/cloud-cron.%RANGE_START%.%RANGE_END%.time';
 if (($k = array_search('--proc-file', $args)) !== false && isset($args[$k+1])) {
 	$proc_file = $args[$k+1];
 }
@@ -247,8 +249,8 @@ $st = $db->prepare("
 		cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 	FROM cloud_sites
 	LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-	WHERE cloud_sites.id BETWEEN :range_start AND :range_end
-	LIMIT 1
+	WHERE cloud_sites.id BETWEEN :range_start AND :range_end AND cloud_sites.build_number > 0
+	ORDER BY cloud_sites.id ASC
 ");
 $st->execute(array(':range_start' => $range_start, ':range_end' => $range_end));
 
@@ -262,11 +264,14 @@ foreach ($sites as $siteinfo) {
 	$site_time_begin = microtime(true);
 	dp_logf("--- BEGIN SITE %d %s ---", $siteinfo['id'], $siteinfo['master_domain']);
 
-	$cmd = "php cron.php --dpc-site-id {$siteinfo['id']} --verbose $pass_args";
-	dp_log("> $cmd");
+	$pass_args_set = $pass_args;
+	$pass_args_set = str_replace('%DPC_SITE_ID%', $siteinfo['id'], $pass_args_set);
+
+	$cmd = "php cron.php --verbose $pass_args_set";
+	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, DP_WEB_ROOT);
 	$proc->run(function($type, $data) {
-		dp_logf("[%s] %s", $type, $data);
+		dp_log(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))), false);
 	});
 
 	if (!$proc->isSuccessful()) {

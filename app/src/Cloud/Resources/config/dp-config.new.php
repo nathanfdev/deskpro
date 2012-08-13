@@ -10,4 +10,9 @@ $DP_CONFIG = array();
 $DP_CONFIG['debug'] = array();
 
 require DP_ROOT.'/src/Cloud/CloudConfig.php';
-\Cloud\CloudConfig::loadFromWeb();
+
+if (php_sapi_name() == 'cli') {
+	\Cloud\CloudConfig::loadFromCli();
+} else {
+	\Cloud\CloudConfig::loadFromWeb();
+}
