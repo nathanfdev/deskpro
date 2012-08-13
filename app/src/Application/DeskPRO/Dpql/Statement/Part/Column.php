@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\App;
 
 class Column extends AbstractPart
 {
@@ -44,6 +45,14 @@ class Column extends AbstractPart
 			foreach ($repository->getFieldMappings() AS $key => $field) {
 				if (strtolower($key) == $part) {
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
+
+					switch ($field['type']) {
+						case 'datetime':
+							$tzOffsetSeconds = App::getCurrentPerson()->getTimezoneOffset() * 3600;
+							$sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
+							break;
+					}
+
 					$name = $part;
 					break 2; // break $parts loop
 				}
