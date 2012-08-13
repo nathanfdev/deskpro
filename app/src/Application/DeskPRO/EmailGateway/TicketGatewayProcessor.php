@@ -341,6 +341,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
 			$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
 			return $dupe_message;
 		}
@@ -751,6 +752,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket_message->setMessageHtml($email_info['body']);
 
 			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
 				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 				return $dupe_message;
 			}
