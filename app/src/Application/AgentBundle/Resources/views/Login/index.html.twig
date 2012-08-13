@@ -32,7 +32,6 @@
 
 			$('#do_send_lost').on('click', function(ev) {
 				ev.preventDefault();
-
 				$('#normal_view').hide();
 				$('#lost_message_view').hide();
 				$('#loading_view').show();
@@ -61,6 +60,10 @@
 					}
 				});
 			});
+
+			{% if app.getRequest().query.has('lost') %}
+				$('#lost_link').trigger('click');
+			{% endif %}
 		});
 	</script>
 {% endblock %}
