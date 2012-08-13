@@ -87,11 +87,6 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport', array(
-			new Reference('swiftmailer.transport.eventdispatcher')
-		));
-		$container->setDefinition('deskpro.mail.delegating_transport', $definition);
-
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);

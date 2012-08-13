@@ -40,6 +40,7 @@ use Orb\Util\Arrays;
 use Application\AdminBundle\Controller\EmailGatewaysController as BaseEmailGatewaysController;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailTransport;
 
 class EmailGatewaysController extends BaseEmailGatewaysController
 {
@@ -59,6 +60,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 			'all_gateways' => $all_gateways,
 		));
 	}
+
 
 	############################################################################
 	# new-cloud-email
@@ -81,19 +83,29 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 			return $this->createJsonResponse(array('error' => true, 'error_code' => 'dupe'));
 		}
 
-		$address                 = new EmailGatewayAddress();
-		$address->match_type     = 'exact';
-		$address->match_pattern  = sprintf("%s@%s", $name, DPC_SITE_DOMAIN);
+		$address                     = new EmailGatewayAddress();
+		$address->match_type         = 'exact';
+		$address->match_pattern      = sprintf("%s@%s", $name, DPC_SITE_DOMAIN);
 
 		$gateway                     = new EmailGateway();
 		$gateway->title              = $address->match_pattern;
 		$gateway->connection_type    = EmailGateway::CONN_READDIR;
-		$gateway->connection_options = '%DP_DATA_DIR%/' . str_replace(array('@', '.'), '_', $address->match_pattern);
+		$gateway->connection_options = array(
+			'dir' => '%DP_DATA_DIR%/' . str_replace(array('@', '.'), '_', $address->match_pattern)
+		);
 		$gateway->gateway_type       = EmailGateway::GATEWAY_TICKETS;
 
+		$transport                   = new EmailTransport();
+		$transport->title            = $address->match_pattern;
+		$transport->match_type       = 'exact';
+		$transport->match_pattern    = $address->match_pattern;
+		$transport->transport_type   = 'mail';
+
 		$gateway->addresses->add($address);
+		$gateway->linked_transport = $transport;
 		$address->gateway = $gateway;
 
+		$this->em->persist($transport);
 		$this->em->persist($address);
 		$this->em->persist($gateway);
 
@@ -111,6 +123,29 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 			'id'      => $gateway->id,
 			'title'   => $gateway->title
 		));
+	}
+
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($id, $security_token)
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
+		$transport = null;
+		if ($gateway) {
+			$transport = $gateway->linked_transport;
+		}
+
+		$ret = parent::deleteAction($id, $security_token);
+
+		if ($transport) {
+			$this->em->remove($transport);
+			$this->em->flush();
+		}
+
+		return $ret;
 	}
 
 	####################################################################################################################

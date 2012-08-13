@@ -54,7 +54,7 @@ class EmailTransportsController extends AbstractController
 			return $this->redirectRoute('admin_emailtrans_setup');
 		}
 
-		return $this->render('AdminBundle:EmailTransports:list.html.twig', array(
+		return $this->render('@list.html.twig', array(
 			'transports' => $all_transports,
 		));
 	}
@@ -82,7 +82,7 @@ class EmailTransportsController extends AbstractController
 		$edittrans->match_pattern = '*';
 		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
 
-		return $this->render('AdminBundle:EmailTransports:setup.html.twig', array(
+		return $this->render('@setup.html.twig', array(
 			'transport' => $transport,
 			'form' => $form->createView(),
 			'edittrans' => $edittrans,
@@ -142,9 +142,9 @@ class EmailTransportsController extends AbstractController
 			}
 		}
 
-		$tpl = 'AdminBundle:EmailTransports:edit-account.html.twig';
+		$tpl = '@edit-account.html.twig';
 		if ($this->request->isPartialRequest()) {
-			$tpl = 'AdminBundle:EmailTransports:edit-account-form.html.twig';
+			$tpl = '@edit-account-form.html.twig';
 		}
 
 		$default_php_mail = $this->container->getSysConfig('instance_data.install_flags.default_php_mail');

@@ -26,35 +26,41 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * @package Orb
+ * @subpackage Mail
  */
 
-namespace Cloud\AdminBundle\Controller;
+namespace Cloud\DeskPRO\Mail\Transport;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
-use Application\AdminBundle\Controller\EmailTransportsController as BaseEmailTransportsController;
-use Application\AdminBundle\Form\EditEmailTransport as EditEmailTransportForm;
-use Application\AdminBundle\FormModel\EditEmailTransport as EditEmailTransportModel;
+use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Application\DeskPRO\Mail\Transport\DelegatingTransport as BaseDelegatingTransport;
+use Orb\Mail\Transport\QueueTransport;
+use Orb\Mail\Message;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
 
-class EmailTransportsController extends BaseEmailTransportsController
+class DelegatingTransport extends BaseDelegatingTransport
 {
-	public function editAccountAction($id)
+	/**
+	 * @param string $from_address
+	 * @param bool $get_backup_transport
+	 * @return null|\Swift_MailTransport
+	 */
+	public function getTransportForFromAddress($from_address, $get_backup_transport = false, $no_default = false)
 	{
-		// Prevent sneaky POSTs setting PHP type that doesnt exist on form
-		if ($this->in->getString('transport.transport_type') == 'mail' || $this->in->getString('transport.backup_transport_type') == 'mail') {
-			return $this->redirectRoute('admin_emailtrans_list');
+		// Always use our default transport from the @xxx.deskpro.com addresses
+		$re_domain = preg_quote(DPC_SITE_DOMAIN, '#');
+		if (preg_match("#@$re_domain$#", $from_address)) {
+			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport()->getTransport();
+			return $tr;
 		}
 
-		return parent::editAccountAction($id);
-	}
-
-	public function setupAction()
-	{
-		return $this->redirectRoute('admin_emailtrans_list');
+		return parent::getTransportForFromAddress($from_address, $get_backup_transport, $no_default);
 	}
 }
