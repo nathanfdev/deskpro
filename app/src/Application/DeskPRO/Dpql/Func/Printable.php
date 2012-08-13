@@ -20,8 +20,8 @@ class Printable extends AbstractFunc
 			throw new \Exception('PRINT() can only accept 2 arguments');
 		}
 
-		$print = reset($this->_arguments);
-		$sql = next($this->_arguments);
+		$sql = reset($this->_arguments);
+		$print = next($this->_arguments);
 
 		$printPrepped = $print->prepare($statement, $section, $stack, $select, $result);
 		$sqlPrepped = $sql->prepare($statement, $section, $stack, $select, $result);

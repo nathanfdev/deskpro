@@ -18,6 +18,6 @@ class String extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		return new Prepared($this->escapeForSql($this->string), $this->string);
+		return new Prepared($select->escapeForSql($this->string), $this->string);
 	}
 }

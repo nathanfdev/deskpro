@@ -21,6 +21,15 @@ class BinaryComparison extends AbstractPart
 		Parser::T_OP_LTEQ => '<='
 	);
 
+	protected static $_operatorOrderFlipped = array(
+		'=' => '=',
+		'<>' => '<>',
+		'>' => '<',
+		'>=' => '<=',
+		'<' => '>',
+		'<=' => '>='
+	);
+
 	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
 	{
 		if (!isset(self::$_operatorMap[$operator])) {
@@ -38,11 +47,31 @@ class BinaryComparison extends AbstractPart
 	{
 		$childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+		$lhs = $this->lhs;
+		$rhs = $this->rhs;
 		$operator = self::$_operatorMap[$this->operator];
 
-		$sql = "({$lhs->sql()} $operator {$rhs->sql()})";
-		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}");
+		if ($lhs instanceof Placeholder) {
+			// flip as placeholder comparison expects placeholder on RHS
+			$temp = $lhs;
+			$lhs = $rhs;
+			$rhs = $temp;
+			$operator = self::$_operatorOrderFlipped[$operator];
+		}
+
+		if ($rhs instanceof Placeholder) {
+			$prepared = $rhs->prepareComparison(
+				$lhs, $operator, $statement, $section, $childStack, $select, $result
+			);
+			if ($prepared) {
+				return $prepared;
+			}
+		}
+
+		$lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
+		$rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
+
+		$sql = "({$lhsRes->sql()} $operator {$rhsRes->sql()})";
+		return new Prepared($sql, "{$lhsRes->name()} $operator {$rhsRes->name()}");
 	 }
 }

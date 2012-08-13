@@ -21,14 +21,29 @@ class Prepared
 		return ($this->_sqlExpr !== '' && $this->_sqlExpr !== null && $this->_sqlExpr !== false);
 	}
 
+	public function setSql($sql)
+	{
+		$this->_sqlExpr = $sql;
+	}
+
 	public function sql()
 	{
 		return $this->_sqlExpr;
 	}
 
+	public function setPrinted($printed)
+	{
+		$this->_sqlExprPrint = $printed;
+	}
+
 	public function printed()
 	{
 		return ($this->_sqlExprPrint !== false ? $this->_sqlExprPrint : $this->_sqlExpr);
+	}
+
+	public function setName($name)
+	{
+		$this->_name = $name;
 	}
 
 	public function name()

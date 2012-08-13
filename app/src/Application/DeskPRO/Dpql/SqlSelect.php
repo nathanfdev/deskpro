@@ -123,4 +123,9 @@ class SqlSelect
 			. ($this->_orderBy ? "\nORDER BY " . implode(', ', $this->_orderBy) : '')
 			. ($limit ? "\nLIMIT $limit" : '');
 	}
+
+	public function escapeForSql($value)
+	{
+		return \Application\DeskPRO\App::getDb()->quote($value);
+	}
 }
