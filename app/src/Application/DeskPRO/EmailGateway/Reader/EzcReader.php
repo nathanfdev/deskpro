@@ -117,7 +117,7 @@ class EzcReader extends AbstractReader
 		$emails = array();
 
 		foreach ($this->mail->to as $to) {
-			if (!$to->charset) $cc->charset = 'us-ascii';
+			if (!$to->charset) $to->charset = 'us-ascii';
 
 			$email = new Item\EmailAddress();
 			$email->name = $to->name;
