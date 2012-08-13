@@ -17,7 +17,7 @@ class CurTime extends AbstractFunc
 			throw new \Exception('CURTIME() can only accept 0 arguments');
 		}
 
-		$tzOffsetSeconds = App::getCurrentPerson()->getTimezoneOffset() * 3600;
+		$tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
 		$interval = ($tzOffsetSeconds ? " + INTERVAL $tzOffsetSeconds SECOND" : '');
 
 		$sql = "TIME(UTC_TIMESTAMP()$interval)";

@@ -53,7 +53,7 @@ class Column extends AbstractPart
 
 					switch ($field['type']) {
 						case 'datetime':
-							$tzOffsetSeconds = App::getCurrentPerson()->getTimezoneOffset() * 3600;
+							$tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
 							if ($tzOffsetSeconds) {
 								$sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
 							}

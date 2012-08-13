@@ -17,7 +17,7 @@ class Now extends AbstractFunc
 			throw new \Exception('NOW() can only accept 0 arguments');
 		}
 
-		$tzOffsetSeconds = App::getCurrentPerson()->getTimezoneOffset() * 3600;
+		$tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
 		$interval = ($tzOffsetSeconds ? " + INTERVAL $tzOffsetSeconds SECOND" : '');
 
 		$sql = "(UTC_TIMESTAMP()$interval)";

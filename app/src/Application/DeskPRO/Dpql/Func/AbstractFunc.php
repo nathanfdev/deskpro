@@ -14,6 +14,8 @@ abstract class AbstractFunc
 		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
 		'PRINT' => 'Printable',
+		'TO_UTC' => 'ToUtc',
+		'UTC' => 'Utc',
 		'X' => 'X',
 		'Y' => 'Y'
 	);

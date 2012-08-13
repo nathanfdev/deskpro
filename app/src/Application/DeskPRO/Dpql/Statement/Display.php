@@ -213,6 +213,28 @@ class Display
 		return strval($input) !== '';
 	}
 
+	public function stackForcedUtc(array $stack)
+	{
+		foreach ($stack AS $element) {
+			if ($element instanceof \Application\DeskPRO\Dpql\Statement\Part\FunctionCall
+				&& strtoupper($element->name) == 'UTC'
+			) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function getTimezoneOffsetForFunction(array $stack)
+	{
+		if ($this->stackForcedUtc($stack)) {
+			return 0;
+		}
+
+		return App::getCurrentPerson()->getTimezoneOffset() * 3600;
+	}
+
 	public function setDisplay($display)
 	{
 		$this->_display = $display;
