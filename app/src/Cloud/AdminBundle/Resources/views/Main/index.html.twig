@@ -1,0 +1,109 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+<ul>
+	<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
+</ul>
+{% endblock %}
+{% block sidebar_right %}
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>Quick Stats</h4>
+			</header>
+			<article>
+				<ul>
+					<li>
+						Tickets Created Today: {{ stats.created_today }}
+					</li>
+					<li>
+						Tickets Resolved Today: {{ stats.resolved_today }}
+					</li>
+					<li>
+						Tickets Awaiting Agent: {{ stats.awaiting_agent }}
+					</li>
+				</ul>
+			</article>
+			<div style="text-align: center; padding-top: 4px;">
+				<a class="btn" href="{{ app.request.getBaseUrl() }}/reports">View more reports</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>Online Agents</h4>
+			</header>
+			<article>
+				<ul>
+					{% for agent in online_agents %}
+					<li style="line-height: 40px;">
+						<div style="background: url({{ agent.getPictureUrl(35) }}) no-repeat 0 50%; padding-left: 40px;">{{ agent.display_name }}</div>
+					</li>
+					{% endfor %}
+				</ul>
+				<div style="font-size: 11px; padding-top: 4px; text-align: right;">
+					And {{ count_online_users }} online users in the last hour.
+				</div>
+				<div style="text-align: center; padding-top: 4px;">
+					<a class="btn" href="{{ app.request.getBaseUrl() }}/reports/agent-activity">View tech activity</a>
+				</div>
+			</article>
+		</div>
+	</div>
+{% endblock %}
+{% block page %}
+
+<p>
+	Hi {{ app.user.first_name|default(app.user.display_name) }}, welcome to DeskPRO.
+	{% if last_login %}
+		You last logged in on {{ last_login.date_created|date('fulltime') }} from {{ last_login.ip_address }}{% if last_login.hostname %} ({{ last_login.hostname }}){% endif %}.
+	{% endif %}
+</p>
+<p>
+	If you need any help using DeskPRO, please contact our customer service team on our helpdesk
+	at <a href="http://support.deskpro.com/">support.deskpro.com</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+</p>
+
+<div class="content-table">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="2">
+					Your License
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if lic.isDemo() %}
+				<tr>
+					<td class="title">Demo License</td>
+					<td class="prop">
+						Expires {{ lic.getExpireDate()|date('day') }}
+						&nbsp;&nbsp;
+						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Sign Up Now</a>
+					</td>
+				</tr>
+			{% endif %}
+			<tr>
+				<td class="title">Agents</td>
+				<td class="prop">
+					{{ lic.getMaxAgents()|default('Unlimited') }}
+					&middot; <a href="{{ app.request.getBaseUrl() }}/billing/">Add or Remove Agents</a>
+				</td>
+			</tr>
+			{% if not lic.isDemo() %}
+				<tr>
+					<td class="" colspan="2" style="text-align: center">
+						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn">Manage Billing</a>
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+{% endblock %}

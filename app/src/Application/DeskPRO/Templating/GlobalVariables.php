@@ -141,6 +141,13 @@ class GlobalVariables extends BaseGlobalVariables
 			return $this->variables[$name];
 		}
 
+		if (method_exists($name, $this)) {
+			return $this->$name;
+		}
+		if (method_exists("get$name", $this)) {
+			return $this->{"get$name"};
+		}
+
 		if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
 			return App::getContainer()->getSystemService(ucfirst($ent) . 'Data');
 		}
@@ -193,5 +200,10 @@ class GlobalVariables extends BaseGlobalVariables
 		}
 
 		return $request->getRequestUri();
+	}
+
+	public function isCloud()
+	{
+		return defined('DPC_IS_CLOUD');
 	}
 }

@@ -203,10 +203,12 @@
 				<a href="{{ path('admin_portal') }}"><span class="publish">{{ phrase('admin.general.portal') }}</span></a>
 			</li>
 		</ul>
-		<div class="sep">-</div>
-		<ul>
-			<li data-menu="#server_menu"><a><span class="server">{{ phrase('admin.general.server') }}</span></a></li>
-		</ul>
+		{% if not app.isCloud %}
+			<div class="sep">-</div>
+			<ul>
+				<li data-menu="#server_menu"><a><span class="server">{{ phrase('admin.general.server') }}</span></a></li>
+			</ul>
+		{% endif %}
 		<div class="sep">-</div>
 		<ul>
 			<li>

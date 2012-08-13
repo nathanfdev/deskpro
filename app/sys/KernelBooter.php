@@ -221,6 +221,11 @@ class KernelBooter
 			define('DP_INTERFACE', 'user');
 		}
 
+		// No access to install or dev from cloud
+		if (defined('DPC_IS_CLOUD') && (DP_INTERFACE == 'dev' || DP_INTERFACE == 'install')) {
+			exit;
+		}
+
 		#------------------------------
 		# Handle request
 		#------------------------------

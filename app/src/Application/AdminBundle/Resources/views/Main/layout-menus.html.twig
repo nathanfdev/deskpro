@@ -41,46 +41,48 @@
 	 # Server Menu
 	 #############################}
 
-	<div id="server_menu">
-		<ul>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_checks') }}" data-search-keywords="server checks" data-search-name="Server &rsaquo; Check Server Requirements">{{ phrase('admin.menu.check_server_requirements') }}</a>
-				<p>{{ phrase('admin.menu.check_server_requirements_explain') }}</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_file_checks') }}" data-search-keywords="server file checks" data-search-name="Server &rsaquo; Check File Integrity">{{ phrase('admin.menu.check_file_integrity') }}</a>
-				<p>{{ phrase('admin.menu.check_file_integrity_explain') }}</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">{{ phrase('admin.general.file_uploads') }}</a>
-				<p>{{ phrase('admin.menu.manage_storage') }}</p>
-			</li>
-			<li class="link-scheduled-task">
-				<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">{{ phrase('admin.general.scheduled_tasks') }}</a>
-				<p>{{ phrase('admin.menu.manage_scheduled_tasks') }}</p>
-			</li>
-			<li class="link-database-tools">
-				<a href="{{ path('admin_server_phpinfo') }}" data-search-keywords="server php phpinfo" data-search-name="Server &rsaquo; PHP Info">{{ phrase('admin.general.php_info') }}</a>
-				<p>{{ phrase('admin.menu.view_php_installation') }}</p>
-			</li>
-			<li class="link-server-info">
-				<a href="{{ path('admin_server_mysqlinfo') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; MySQL Info">{{ phrase('admin.general.mysql_info') }}</a>
-				<p>{{ phrase('admin.menu.view_mysql_installation') }}</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_mysqlstatus') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; Logs">{{ phrase('admin.general.mysql_status') }}</a>
-				<p>{{ phrase('admin.menu.view_mysql_status') }}</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.menu.email_gateway_errors') }}</a>
-				<p>{{ phrase('admin.menu.view_logged_gateway_errors') }}</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">{{ phrase('admin.general.error_logs') }}</a>
-				<p>{{ phrase('admin.menu.view_logged_errors') }}</p>
-			</li>
-		</ul>
-	</div>
+	{% if not app.isCloud %}
+		<div id="server_menu">
+			<ul>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_checks') }}" data-search-keywords="server checks" data-search-name="Server &rsaquo; Check Server Requirements">{{ phrase('admin.menu.check_server_requirements') }}</a>
+					<p>{{ phrase('admin.menu.check_server_requirements_explain') }}</p>
+				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_file_checks') }}" data-search-keywords="server file checks" data-search-name="Server &rsaquo; Check File Integrity">{{ phrase('admin.menu.check_file_integrity') }}</a>
+					<p>{{ phrase('admin.menu.check_file_integrity_explain') }}</p>
+				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">{{ phrase('admin.general.file_uploads') }}</a>
+					<p>{{ phrase('admin.menu.manage_storage') }}</p>
+				</li>
+				<li class="link-scheduled-task">
+					<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">{{ phrase('admin.general.scheduled_tasks') }}</a>
+					<p>{{ phrase('admin.menu.manage_scheduled_tasks') }}</p>
+				</li>
+				<li class="link-database-tools">
+					<a href="{{ path('admin_server_phpinfo') }}" data-search-keywords="server php phpinfo" data-search-name="Server &rsaquo; PHP Info">{{ phrase('admin.general.php_info') }}</a>
+					<p>{{ phrase('admin.menu.view_php_installation') }}</p>
+				</li>
+				<li class="link-server-info">
+					<a href="{{ path('admin_server_mysqlinfo') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; MySQL Info">{{ phrase('admin.general.mysql_info') }}</a>
+					<p>{{ phrase('admin.menu.view_mysql_installation') }}</p>
+				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_mysqlstatus') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; Logs">{{ phrase('admin.general.mysql_status') }}</a>
+					<p>{{ phrase('admin.menu.view_mysql_status') }}</p>
+				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.menu.email_gateway_errors') }}</a>
+					<p>{{ phrase('admin.menu.view_logged_gateway_errors') }}</p>
+				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">{{ phrase('admin.general.error_logs') }}</a>
+					<p>{{ phrase('admin.menu.view_logged_errors') }}</p>
+				</li>
+			</ul>
+		</div>
+	{% endif %}
 
 
 	{#############################
@@ -180,6 +182,10 @@
 			<li class="link-email">
 				<a href="{{ path('admin_emailgateways') }}" data-search-keywords="email gateway incoming" data-search-name="Tickets &rsaquo; Email Gateways">{{ phrase('admin.general.email_gateways') }}</a>
 				<p>{{ phrase('admin.menu.manage_email_accounts') }}</p>
+			</li>
+			<li class="link-logs">
+				<a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.menu.email_gateway_errors') }}</a>
+				<p>{{ phrase('admin.menu.view_logged_gateway_errors') }}</p>
 			</li>
 			<li class="link-ticket-settings">
 				<a href="{{ path('admin_features') }}" data-search-keywords="settings features" data-search-name="Tickets &rsaquo; Settings &amp; Features">{{ phrase('admin.menu.settings_and_features') }}</a>

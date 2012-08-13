@@ -65,6 +65,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+			'constant' => new \Twig_Function_Method($this, 'getConstant', array()),
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'))),
             'phrase_object' => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'phrase_dev' => new \Twig_Function_Method($this, 'getPhraseDev'),
@@ -151,6 +152,20 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getConstant($name = '')
+	{
+		static $whitelist = array(
+			'DP_BUILD_NUM',
+			'DP_BUILD_TIME',
+		);
+
+		if (!$name || !defined($name) || !isset($whitelist[$name])) {
+			return '';
+		}
+
+		return constant($name);
+	}
 
 	public function filesizeDisplay($size)
 	{
