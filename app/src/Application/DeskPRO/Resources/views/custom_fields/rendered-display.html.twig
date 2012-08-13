@@ -1,6 +1,10 @@
 {% set field_rendered %}
 	{% block field_rendered %}
-		{{ data.value }}
+		{% if field_handler_name == 'Date' %}
+			{{ data.value|date('full') }}
+		{% else %}
+			{{ data.value }}
+		{% endif %}
 	{% endblock %}
 {% endset %}
 {% block content %}

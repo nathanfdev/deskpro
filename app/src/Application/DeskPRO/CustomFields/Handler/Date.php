@@ -43,6 +43,30 @@ use Application\DeskPRO\App;
  */
 class Date extends HandlerAbstract
 {
+	public function renderHtml(array $data = null, array $template_vars = array())
+	{
+		if ($data === null) return '';
+
+		if (!ctype_digit($data['value'])) {
+			$data['value'] = time();
+		}
+
+		$data['value'] = new \DateTime('@' . $data['value']);
+		return parent::renderText($data, $template_vars);
+	}
+
+	public function renderText(array $data = null, array $template_vars = array())
+	{
+		if ($data === null) return '';
+
+		if (!ctype_digit($data['value'])) {
+			$data['value'] = time();
+		}
+
+		$data['value'] = new \DateTime('@' . $data['value']);
+		return  parent::renderText($data, $template_vars);
+	}
+
 	function getDataFromForm(array $form_data)
 	{
 		$name = $this->getFormFieldName();
@@ -75,7 +99,7 @@ class Date extends HandlerAbstract
 			try {
 				$date = new \DateTime('@' . $data['value']);
 				$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-				$setData = $date->format('Y-m-d');
+				$setData = $date->getTimestamp();
 			} catch (\Exception $e) {
 				$setData = null;
 			}
