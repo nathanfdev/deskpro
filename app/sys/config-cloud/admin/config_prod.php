@@ -9,6 +9,6 @@ use Symfony\Component\Config\Resource\FileResource;
 $loader->import(DP_ROOT.'/sys/config/config.php');
 $container->loadFromExtension('framework', array(
 	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/config-cloud/routing.php'
+		'resource' => DP_ROOT.'/sys/config-cloud/admin/routing.php'
 	)
 ));
