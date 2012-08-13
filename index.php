@@ -10,14 +10,14 @@ ini_set('display_errors', true);
  * The path to the 'app' directory.
  * If you move the app directory, you must update this path.
  */
-define('DP_ROOT', dirname(__FILE__) . '/app');
+if (!defined('DP_ROOT')) define('DP_ROOT', dirname(__FILE__) . '/app');
 
 /**
  * The path to the config.php file.
  * You may wish to move the config file outisde of the webroot.
  * If you move the config.php file, you must update this path.
  */
-define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
+if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 
 
 #########################################################################################################
@@ -25,8 +25,8 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 #########################################################################################################
 
 error_reporting(E_ALL | E_STRICT);
-define('DP_WEB_ROOT', dirname(__FILE__));
-define('DP_START_TIME', microtime(true));
+if (!defined('DP_WEB_ROOT')) define('DP_WEB_ROOT', dirname(__FILE__));
+if (!defined('DP_START_TIME')) define('DP_START_TIME', microtime(true));
 
 if (isset($_GET['_sys'])) {
 	require_once DP_ROOT.'/sys/boot_scripts.php';

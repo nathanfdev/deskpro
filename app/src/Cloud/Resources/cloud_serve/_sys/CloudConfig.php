@@ -64,6 +64,15 @@ class CloudConfig
 	 */
 	private static $error_contact;
 
+	/**
+	 * @var array
+	 */
+	private static $builds_path;
+
+	/**
+	 * @var array
+	 */
+	private static $datastore_path;
 
 	/**
 	 * Fills the normal DeskPRO configuration from an incoming web request
@@ -135,6 +144,8 @@ class CloudConfig
 		define('DPC_SITE_ID',            $siteinfo['id']);
 		define('DPC_SITE_DOMAIN',        $siteinfo['master_domain']);
 		define('DPC_SITE_DOMAIN_ALT',    $siteinfo['custom_domain']);
+		define('DPC_SITE_DATADIR',       self::getConfig('datastore_path') . '/' . str_replace('.', '_', DPC_SITE_DOMAIN));
+		define('DPC_SITE_BUILD_NUM',     $siteinfo['build_number']);
 		define('DPC_ACCOUNT_ID',         $siteinfo['account_id']);
 		define('DPC_AGENTS',             $siteinfo['agents']);
 		define('DPC_DEMO_EXPIRE',        $siteinfo['is_demo'] ? $siteinfo['demo_expire_at'] : 0);
@@ -143,6 +154,22 @@ class CloudConfig
 		define('DP_DATABASE_PASSWORD',   $siteinfo['db_password']);
 		define('DP_DATABASE_NAME',       $siteinfo['db_name']);
 		define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
+
+		if (!is_dir(DPC_SITE_DATADIR)) {
+			mkdir(DPC_SITE_DATADIR, 0777, true);
+			mkdir(DPC_SITE_DATADIR . '/backups', 0777);
+			mkdir(DPC_SITE_DATADIR . '/debug', 0777);
+			mkdir(DPC_SITE_DATADIR . '/files', 0777);
+			mkdir(DPC_SITE_DATADIR . '/logs', 0777);
+			mkdir(DPC_SITE_DATADIR . '/tmp', 0777);
+		}
+
+		if (!defined('DP_ROOT')) {
+			define('DP_ROOT',  self::getBuildsPath() . '/' . $siteinfo['build_number'] . '/app');
+			define('DP_WEB_ROOT',  self::getBuildsPath() . '/' . $siteinfo['build_number']);
+
+			define('DP_CONFIG_FILE', __DIR__.'/dp-config.php');
+		}
 	}
 
 
@@ -177,6 +204,36 @@ class CloudConfig
 
 
 	/**
+	 * Get the email address for errors
+	 *
+	 * @return string
+	 */
+	public static function getBuildsPath()
+	{
+		if (!self::$builds_path) {
+			self::getConfig(null);
+		}
+
+		return self::$builds_path;
+	}
+
+
+	/**
+	 * Get the email address for errors
+	 *
+	 * @return string
+	 */
+	public static function getDatastorePath()
+	{
+		if (!self::$builds_path) {
+			self::getConfig(null);
+		}
+
+		return self::$datastore_path;
+	}
+
+
+	/**
 	 * @param string $key
 	 * @return mixed
 	 * @throws \Exception
@@ -188,10 +245,12 @@ class CloudConfig
 		}
 
 		if (!self::$config) {
-			self::$config = require DP_ROOT.'/src/Cloud/Resources/config/config.php';
+			self::$config = require __DIR__.'/config.php';
 
-			self::$vendor_url = self::$config['vendor_url'];
-			self::$error_contact = self::$config['error_contact'];
+			self::$vendor_url     = self::$config['vendor_url'];
+			self::$error_contact  = self::$config['error_contact'];
+			self::$builds_path    = self::$config['builds_path'];
+			self::$datastore_path = self::$config['datastore_path'];
 		}
 
 		// Null key just means laod config

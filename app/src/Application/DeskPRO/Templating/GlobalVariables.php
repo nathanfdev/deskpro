@@ -65,6 +65,11 @@ class GlobalVariables extends BaseGlobalVariables
 	public function getSettingGroup($group)
 	{
 		$group_vars = App::get('deskpro.core.settings')->getGroup($group);
+
+		if ($group == 'user_style') {
+			$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+		}
+
 		return $group_vars;
 	}
 

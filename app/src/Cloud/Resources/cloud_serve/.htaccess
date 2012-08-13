@@ -1,0 +1,37 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule "(^|/)\." - [F]
+	RewriteRule ^web/ - [NC,L]
+	RewriteRule ^admin/.*$ index.php [NC,L]
+	RewriteRule ^agent/.*$ index.php [NC,L]
+	RewriteRule ^__checkurlrewrite$ index.php?_sys=checkurl [NC,L]
+	RewriteRule ^__checkurlrewrite/path$ index.php?_sys=checkurlpath [NC,L]
+	RewriteRule ^sitemap.xml$ file.php [NC,L]
+	RewriteCond %{REQUEST_FILENAME} -f [OR]
+	RewriteCond %{REQUEST_FILENAME} -l [OR]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule ^.*$ - [NC,L]
+	RewriteRule ^auto-update-status.txt$ index.php?_sys=blank [NC,L]
+	RewriteRule ^.*$ index.php [NC,L]
+</IfModule>
+
+<Files ~ "^config\.php|config\.new\.php|cron\.php|import\.php|upgrade\.php|schedule\.bat|web\.config$">
+	Order allow,deny
+	Allow from none
+	Deny from all
+</Files>
+
+Options -Indexes
+
+DirectoryIndex index.php index.html index.htm
+
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc                 off
+	php_flag magic_quotes_sybase              off
+	php_flag register_globals                 off
+	php_flag session.auto_start               off
+	php_value mbstring.http_input             pass
+	php_value mbstring.http_output            pass
+	php_flag mbstring.encoding_translation    off
+	php_flag zend.ze1_compatibility_mode      Off
+</IfModule>
