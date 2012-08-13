@@ -69,6 +69,8 @@ class TicketViewController extends AbstractController
 			$try_order = array('id', 'ptac', 'ref');
 		}
 
+		$return = $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket_ref));
+
 		foreach ($try_order as $lookup_type) {
 			switch ($lookup_type) {
 				case 'id':
@@ -99,7 +101,7 @@ class TicketViewController extends AbstractController
 						if ($ticket && $this->person->isGuest()) {
 							$this->session->set('ticket_from_ptac_register', $ticket->id);
 							$this->session->save();
-							return $this->renderLoginOrPermissionError();
+							return $this->renderLoginOrPermissionError($return);
 						}
 
 						if ($ticket->person->getId() == $this->person->getId() || $ticket->hasParticipantPerson($this->person)) {
@@ -124,7 +126,7 @@ class TicketViewController extends AbstractController
 			}
 		}
 
-		return $this->renderLoginOrPermissionError();
+		return $this->renderLoginOrPermissionError($return);
 	}
 
 	###########################################################################
