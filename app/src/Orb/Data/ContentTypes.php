@@ -264,7 +264,7 @@ class ContentTypes
 	 */
 	public static function getContentTypeFromExtension($ext)
 	{
-		$ext = rtrim($ext, '.');
+		$ext = strtolower(rtrim($ext, '.'));
 
 		if (!isset(self::$ext_to_contenttype[$ext])) {
 			return null;
