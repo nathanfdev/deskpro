@@ -65,6 +65,13 @@ $collection->add('agent_parse_vcard', new Route(
     array()
 ));
 
+$collection->add('agent_get_server_time', new Route(
+    '/misc/get-server-time',
+    array('_controller' => 'AgentBundle:Misc:getServerTime'),
+    array(),
+    array()
+));
+
 $collection->add('agent_show_blob', new Route(
 	'/misc/show-blob/{blob_id}',
 	array('_controller' => 'AgentBundle:Misc:showBlob'),

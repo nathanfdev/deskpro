@@ -431,9 +431,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		if (DESKPRO_TIME_OUT_OF_SYNC) {
-			window.setTimeout(function() {
-				$('#time_outofsync').trigger('dp_open');
-			}, 1000);
+			$.ajax({
+				url: BASE_URL + 'agent/misc/get-server-time',
+				dataType: 'json',
+				success: function(data) {
+
+					$('#time_outofsync').find('.server_time').text(data.time_formatted);
+
+					var diff = 0;
+					var now = new Date();
+					diff += Math.abs(now.getHours() - data.time_hour) * 60 * 60;
+					diff += Math.abs(now.getMinutes() - data.time_minute) * 60;
+
+					if (diff > 1200) {
+						DESKPRO_TIME_OUT_OF_SYNC = diff;
+						console.log("(Recheck) Time is off by %s seconds", diff);
+
+						if (DESKPRO_TIME_OUT_OF_SYNC_IGNORE && Math.abs(diff - DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
+							DESKPRO_TIME_OUT_OF_SYNC = null;
+							console.log("(Recheck) Time offset is ignored");
+						}
+					}
+
+					if (DESKPRO_TIME_OUT_OF_SYNC) {
+						$('#time_outofsync').trigger('dp_open');
+					}
+				}
+			});
 		}
 
 		var fn;

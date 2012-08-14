@@ -24,6 +24,9 @@ DeskPRO.Agent.ElementHandler.TimezoneSwitch = new Orb.Class({
 			ampm = 'pm';
 		}
 		var min = now.getMinutes();
+		if (min < 10) {
+			min = '0' + min;
+		}
 		var time = hour + ':' + min + ' ' + ampm;
 
 		this.el.find('.js_time').text(time);
