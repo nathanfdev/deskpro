@@ -163,7 +163,7 @@ Orb.Util.TimeAgo = {
 			return this.getPhraseFor('sec', total_secs, ago);
 
 		// less than 120 minutes: 20 minutes
-		} else if (total_secs <= 1200) {
+		} else if (total_secs <= 7200) {
 			return this.getPhraseFor('min', info.mins, ago);
 
 		// less than 24 hours: 2 1/2 hours
@@ -188,7 +188,7 @@ Orb.Util.TimeAgo = {
 				phrase_hours += ' ' + fraction;
 			}
 
-			return this.getPhraseFor('hour', phrase_num, ago);
+			return this.getPhraseFor('hour', phrase_hours, ago);
 
 		// less than 3 days: 2 days 2 hours
 		} else if (total_secs <= 259200) {
