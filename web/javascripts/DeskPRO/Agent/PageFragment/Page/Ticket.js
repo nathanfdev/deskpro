@@ -210,6 +210,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
 		loadingEl.fadeIn();
 
+		this.getEl('replybox_wrap').find('textarea.touched').removeClass('touched');
+
 		$.ajax({
 			url: reply_form.attr('action'),
 			type: 'POST',
