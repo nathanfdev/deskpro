@@ -201,6 +201,15 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		}
 
 		DP.select(this.getEl('status'));
+
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save'
+		});
+		this.deleteHelper.undeleteBtn.on('click', function() {
+			self.getEl('status').find('option').first().prop('selected', true).trigger('change');
+			self.deleteHelper.handleUndelete();
+		});
+		this.ownObject(this.deleteHelper);
 	},
 
 	destroyPage: function() {
@@ -324,10 +333,6 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 	_initActions: function() {
 		var self = this;
 		var actions = this.getEl('action_buttons');
-
-		$('.delete', actions).on('click', function() {
-
-		});
 
 		$('.permalink', actions).on('click', function() {
 			var html = [];

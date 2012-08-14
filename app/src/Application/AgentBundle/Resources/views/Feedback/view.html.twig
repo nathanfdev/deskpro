@@ -23,7 +23,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content"related-content>
 
 <div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.record_marked_spam') }}</button>
+	This feedback has been deleted <button class="clean-gray xxx-small undelete">Undelete</button>
 </div>
 
 <div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>

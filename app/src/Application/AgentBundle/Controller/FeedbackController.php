@@ -376,7 +376,13 @@ class FeedbackController extends AbstractController
 		switch ($action) {
 
 			case 'status':
-				$feedback['status_code'] = $this->in->getString('status');
+			case 'delete':
+
+				if ($action == 'delete') {
+					$feedback['status_code'] = 'hidden.deleted';
+				} else {
+					$feedback['status_code'] = $this->in->getString('status');
+				}
 				break;
 
 			case 'title':
