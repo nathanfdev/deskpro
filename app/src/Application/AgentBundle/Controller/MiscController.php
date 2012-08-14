@@ -565,12 +565,12 @@ JS;
 
 	public function getServerTimeAction()
 	{
-		$d = new \DateTime();
-		$d->setTime($d->format('H'), $d->format('i'), '0');
+		$d = \Orb\Util\Dates::convertToUtcDateTime($this->person->getDateTime());
 
 		return $this->createJsonResponse(array(
+			'timestamp_utc' => time(),
 			'timestamp' => $d->getTimestamp(),
-			'time_formatted' => $d->format('h:i a'),
+			'time_formatted' => $d->format('g:i a'),
 			'time_hour' => (int)$d->format('H'),
 			'time_minute' => (int)$d->format('i'),
 		));

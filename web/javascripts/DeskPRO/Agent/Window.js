@@ -431,6 +431,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		if (DESKPRO_TIME_OUT_OF_SYNC) {
+			DESKPRO_TIME_OUT_OF_SYNC = false;
 			$.ajax({
 				url: BASE_URL + 'agent/misc/get-server-time',
 				dataType: 'json',
@@ -438,10 +439,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 					$('#time_outofsync').find('.server_time').text(data.time_formatted);
 
-					var diff = 0;
-					var now = new Date();
-					diff += Math.abs(now.getHours() - data.time_hour) * 60 * 60;
-					diff += Math.abs(now.getMinutes() - data.time_minute) * 60;
+					var now_ts = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
+					var diff = Math.abs(now_ts - data.timestamp);
 
 					if (diff > 1200) {
 						DESKPRO_TIME_OUT_OF_SYNC = diff;

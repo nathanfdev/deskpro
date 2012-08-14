@@ -20,10 +20,8 @@
 		]
 	};
 
-	var DESKPRO_PERSON_HOUR   = {{ person_hour }};
-	var DESKPRO_PERSON_MINUTE = {{ person_minute }};
 	var DESKPRO_TIME_OUT_OF_SYNC = false;
-	var DESKPRO_TIME_OUT_OF_SYNC_IGNORE = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }});
+	var DESKPRO_TIME_OUT_OF_SYNC_IGNORE = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }}) + 100;
 
 	var DP_SETTINGS = {
 		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow'] %}

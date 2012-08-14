@@ -34,10 +34,8 @@
 		})();
 
 		(function() {
-			var diff = 0;
-			var now = new Date();
-			diff += Math.abs(now.getHours() - DESKPRO_PERSON_HOUR) * 60 * 60;
-			diff += Math.abs(now.getMinutes() - DESKPRO_PERSON_MINUTE) * 60;
+			var now_ts = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
+			var diff = Math.abs(now_ts - {{ 'now'|date('U') }});
 
 			if (diff > 1200) {
 				DESKPRO_TIME_OUT_OF_SYNC = diff;
