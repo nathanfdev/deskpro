@@ -29,6 +29,11 @@ if (!isset($_GET['auth']) || $_GET['auth'] != DP_SAVEMAIL_AUTH) {
 	exit(1);
 }
 
+if (!isset($_FILES['mailfile']) || !empty($_FILES['mailfile']['error']) || empty($_FILES['mailfile']['tmp_name'])) {
+	echo "Invalid mailfile";
+	exit(1);
+}
+
 #------------------------------
 # Verify save directories
 #------------------------------
@@ -64,23 +69,8 @@ if (!is_dir($cat_dir)) {
 # Save input
 #------------------------------
 
-// We save to a tmpdir first until the entire file is written,
-// and then move it into place.
-// This prevents the processing job from trying to read incomplete files
-
 $name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
-
-$tmp = sys_get_temp_dir() . '/dpm-' . $name;
-
-$fp = fopen($tmp, 'w');
-if (defined('STDIN')) {
-	while (!feof(\STDIN)) {
-		fwrite($fp, fread(\STDIN, 2048));
-	}
-}
-fclose($fp);
-
-rename($tmp, $cat_dir . '/' . $name);
+move_uploaded_file($_FILES['mailfile']['tmp_name'], $cat_dir . '/' . $name);
 chmod($cat_dir . '/' . $name, 0777);
 
 echo "DP_MAIL_ACCEPT";

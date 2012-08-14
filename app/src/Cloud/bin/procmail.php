@@ -67,7 +67,7 @@ define('DP_CLOUD_MAILSTORE', __DIR__ . '/mailstore');
 /**
  * The web script to PUT the email to
  */
-define('DP_CLOUD_SAVEMAIL_URL', 'http://{DOMAIN}/index.php?_sys=savemail&auth=XXX&{PARAMS}');
+define('DP_CLOUD_SAVEMAIL_URL', 'http://{DOMAIN}/index.php?_sys=savemail&auth=dWso6yWsKDfZe5AJOFJYNTrkylLFHN&{PARAMS}');
 
 /**
  * Database details for the cloud database to
@@ -258,10 +258,10 @@ class DeskPRO_Cloud_ProcMail
 	 */
 	public function uploadToSite(array $siteinfo)
 	{
-		$url = str_replace('{PARAMS}', 'cat=' . urlencode($this->to_domain), DP_CLOUD_SAVEMAIL_URL);
+		$url = str_replace('{PARAMS}', 'cat=' . urlencode($this->to_addr), DP_CLOUD_SAVEMAIL_URL);
 		$url = str_replace('{DOMAIN}', $this->to_domain, $url);
 
-		$cmd = sprintf("curl -X POST --data-binary @%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
+		$cmd = sprintf("curl -F mailfile=@%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
 
 		$ret = $out = null;
 		exec($cmd, $out, $ret);
