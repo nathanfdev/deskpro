@@ -150,7 +150,7 @@ $st = $db->prepare("
 		cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 	FROM cloud_sites
 	LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-	WHERE cloud_sites.build_number > 0 AND cloud_sites.build_number < :build_num AND cloud_sites.sys_disabled IS NULL
+	WHERE cloud_sites.build_number > 0 AND cloud_sites.build_number < :build_num AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
 	ORDER BY cloud_sites.id ASC
 ");
 $st->execute(array(':build_num' => $build_num));
