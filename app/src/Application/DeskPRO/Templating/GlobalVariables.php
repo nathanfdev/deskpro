@@ -146,10 +146,10 @@ class GlobalVariables extends BaseGlobalVariables
 			return $this->variables[$name];
 		}
 
-		if (method_exists($name, $this)) {
+		if (method_exists($this, $name)) {
 			return $this->$name;
 		}
-		if (method_exists("get$name", $this)) {
+		if (method_exists($this, "get$name")) {
 			return $this->{"get$name"};
 		}
 
