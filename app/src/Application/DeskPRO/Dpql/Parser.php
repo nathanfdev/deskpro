@@ -1235,7 +1235,7 @@ static public $yy_action = array(
 #line 1237 "Parser.php"
 #line 320 "Parser.y"
     function yy_r40(){
-	$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
+	$this->_retvalue = new Statement\Part\Parentheses($this->yystack[$this->yyidx + -1]->minor);
     }
 #line 1242 "Parser.php"
 #line 325 "Parser.y"

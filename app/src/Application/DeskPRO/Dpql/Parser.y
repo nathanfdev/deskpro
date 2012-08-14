@@ -318,7 +318,7 @@ expression(res) ::= OP_BANG|OP_NOT(A) expression(B) .
 
 expression(res) ::= LEFT_PAREN expression(A) RIGHT_PAREN .
 {
-	res = A;
+	res = new Statement\Part\Parentheses(A);
 }
 
 expression(res) ::= LITERAL(A) LEFT_PAREN func_args(B) RIGHT_PAREN .
