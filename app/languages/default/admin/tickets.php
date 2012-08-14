@@ -1,5 +1,6 @@
 <?php return array(
-	'admin.tickets.add_a_new_action'                        => 'Add a new action',
+	'admin.tickets.add_a_new_action'                        => 'Add a new Action',
+	'admin.tickets.add_a_new_criteria'                      => 'Add a new Criteria',
 	'admin.tickets.add_new_category'                        => 'Add New Category',
 	'admin.tickets.add_new_field'                           => 'Add New Field',
 	'admin.tickets.add_new_filter'                          => 'Add New Filter',
