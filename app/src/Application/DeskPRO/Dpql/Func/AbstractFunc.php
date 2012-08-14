@@ -37,8 +37,17 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 
+/**
+ * Abstract base for all DPQL function calls.
+ */
 abstract class AbstractFunc
 {
+	/**
+	 * Maps DPQL function names (in all upper case) to class names
+	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
+	 *
+	 * @var string[string]
+	 */
 	protected static $_functionMap = array(
 		'COUNT' => 'Count',
 		'CURDATE' => 'CurDate',
@@ -52,19 +61,57 @@ abstract class AbstractFunc
 		'Y' => 'Y'
 	);
 
+	/**
+	 * Name of the function (in user-provided case).
+	 *
+	 * @var string
+	 */
 	protected $_name;
+
+	/**
+	 * List of arguments for function
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[integer]
+	 */
 	protected $_arguments;
 
+	/**
+	 * Prepares the function for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	abstract public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	);
 
+	/**
+	 * Constructor. Use the create() factory method.
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 */
 	protected function __construct($name, array $arguments = array())
 	{
 		$this->_name = $name;
 		$this->_arguments = $arguments;
 	}
 
+	/**
+	 * Creates the correct function handler object.
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 *
+	 * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
+	 */
 	public static function create($name, array $arguments = array())
 	{
 		$name = strtoupper($name);

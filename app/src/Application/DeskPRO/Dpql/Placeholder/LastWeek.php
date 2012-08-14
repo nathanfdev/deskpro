@@ -40,8 +40,16 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
+/**
+ * Place holder for the previous week based on the current person's time zone.
+ */
 class LastWeek extends AbstractDateRange
 {
+	/**
+	 * Gets the date range components (printable, start, end).
+	 *
+	 * @return string[int]
+	 */
 	protected function _getDateRange()
 	{
 		$person = App::getCurrentPerson();

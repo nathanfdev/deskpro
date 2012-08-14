@@ -39,8 +39,18 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 
+/**
+ * This is used for functions that are simply passed through to MySQL's internal behavior.
+ */
 class SqlPass extends AbstractFunc
 {
+	/**
+	 * Lists valid MySQL functions (in keys, upper case) to the number of arguments
+	 * they can take. If it's an integer, it must take exactly that many args.
+	 * If it's an array, that range will be accepted; -1 represents infinity.
+	 *
+	 * @var mixed[string]
+	 */
 	protected static $_functions = array(
 		'ABS' => 1,
 		'AVG' => 1,
@@ -106,6 +116,19 @@ class SqlPass extends AbstractFunc
 		'YEAR' => 1
 	);
 
+	/**
+	 * Prepares the function for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)

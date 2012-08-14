@@ -39,12 +39,37 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Exception;
 
+/**
+ * Represents a binary comparison (=, >, <=, etc).
+ */
 class BinaryComparison extends AbstractPart
 {
+	/**
+	 * Token ID of the operator
+	 *
+	 * @var integer
+	 */
 	public $operator;
+
+	/**
+	 * Left hand side of comparison
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+	 */
 	public $lhs;
+
+	/**
+	 * Right hand side of comparison
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+	 */
 	public $rhs;
 
+	/**
+	 * Maps from token IDs to printable/usable operators
+	 *
+	 * @var array
+	 */
 	protected static $_operatorMap = array(
 		Parser::T_OP_EQ => '=',
 		Parser::T_OP_NE => '<>',
@@ -54,6 +79,13 @@ class BinaryComparison extends AbstractPart
 		Parser::T_OP_LTEQ => '<='
 	);
 
+	/**
+	 * This is used when a comparison needs to be flipped (for placeholders, for example).
+	 * Maps from the original operator string to the equivalent when the
+	 * comparison's LHS and RHS are swapped.
+	 *
+	 * @var array
+	 */
 	protected static $_operatorOrderFlipped = array(
 		'=' => '=',
 		'<>' => '<>',
@@ -63,6 +95,13 @@ class BinaryComparison extends AbstractPart
 		'<=' => '>='
 	);
 
+	/**
+	 * @param integer $operator
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 */
 	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
 	{
 		if (!isset(self::$_operatorMap[$operator])) {
@@ -74,6 +113,19 @@ class BinaryComparison extends AbstractPart
 		$this->rhs = $rhs;
 	}
 
+	/**
+	 * Prepares a part for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
@@ -108,6 +160,15 @@ class BinaryComparison extends AbstractPart
 		return new Prepared($sql, "{$lhsRes->name()} $operator {$rhsRes->name()}");
 	 }
 
+	/**
+	 * Renders a part back to DPQL.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+	 *
+	 * @return string
+	 */
 	public function toDpql(Display $statement, $section, array $stack)
 	{
 		return $this->lhs->toDpql($statement, $section, $stack)

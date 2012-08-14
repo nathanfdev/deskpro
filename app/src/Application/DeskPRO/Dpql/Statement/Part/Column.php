@@ -40,10 +40,26 @@ use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Dpql\Exception;
 
+/**
+ * Represents a reference to a column or association.
+ */
 class Column extends AbstractPart
 {
+	/**
+	 * List of parts in the reference
+	 *
+	 * @var array
+	 */
 	public $parts;
 
+	/**
+	 * This is used when resolving direct association references to specific columns.
+	 * Maps a table name to 2 values:
+	 *  - 0: the unique ID field (usually a number)
+	 *  - 1: the printable field (name, subject, etc)
+	 *
+	 * @var array
+	 */
 	protected static $_tableResolver = array(
 		'agent_teams' => array('id', 'name'),
 		'departments' => array('id', 'title'),
@@ -55,11 +71,27 @@ class Column extends AbstractPart
 		'ticket_priorities' => array('id',' title')
 	);
 
+	/**
+	 * @param array $parts
+	 */
 	public function __construct(array $parts)
 	{
 		$this->parts = $parts;
 	}
 
+	/**
+	 * Prepares a part for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
@@ -217,11 +249,28 @@ class Column extends AbstractPart
 		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql);
 	}
 
+	/**
+	 * Renders a part back to DPQL.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+	 *
+	 * @return string
+	 */
 	public function toDpql(Display $statement, $section, array $stack)
 	{
 		return implode('.', $this->parts);
 	}
 
+	/**
+	 * Turns a column reference (such as ticket_id) into a nicer looking,
+	 * printable version (Ticket ID).
+	 *
+	 * @param string $name
+	 *
+	 * @return string
+	 */
 	protected function _prettifyColumnName($name)
 	{
 		$name = str_replace('_', ' ', $name);

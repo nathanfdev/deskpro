@@ -38,11 +38,28 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
 
+/**
+ * Represents a unary operator (-, NOT, !)
+ */
 class UnaryOperator extends AbstractPart
 {
+	/**
+	 * Token ID of the operator
+	 *
+	 * @var integer
+	 */
 	public $operator;
+
+	/**
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+	 */
 	public $value;
 
+	/**
+	 * Maps from token IDs to printable/usable operators
+	 *
+	 * @var array
+	 */
 	protected static $_operatorMap = array(
 		Parser::T_OP_BANG => '!',
 		Parser::T_OP_U_MINUS => '-',
@@ -50,12 +67,29 @@ class UnaryOperator extends AbstractPart
 		Parser::T_OP_NOT => 'NOT ', // space after is important
 	);
 
+	/**
+	 * @param integer $operator
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $value
+	 */
 	public function __construct($operator, AbstractPart $value)
 	{
 		$this->operator = $operator;
 		$this->value = $value;
 	}
 
+	/**
+	 * Prepares a part for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
@@ -68,6 +102,15 @@ class UnaryOperator extends AbstractPart
 		return new Prepared("($operator{$value->sql()})", "$operator{$value->name()}");
 	}
 
+	/**
+	 * Renders a part back to DPQL.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+	 *
+	 * @return string
+	 */
 	public function toDpql(Display $statement, $section, array $stack)
 	{
 		return self::$_operatorMap[$this->operator]

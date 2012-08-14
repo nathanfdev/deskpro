@@ -40,8 +40,16 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
+/**
+ * Place holder for the past month (today - 1 month), based on the current person's time zone.
+ */
 class PastMonth extends AbstractDateRange
 {
+	/**
+	 * Gets the date range components (printable, start, end).
+	 *
+	 * @return string[int]
+	 */
 	protected function _getDateRange()
 	{
 		$tz = App::getCurrentPerson()->getTimezone();
@@ -53,6 +61,6 @@ class PastMonth extends AbstractDateRange
 		$date->modify('-1 month');
 		$beginning = $date->format('Y-m-d');
 
-		return array("$begining to $today", "$beginning 00:00:00", $now);
+		return array("$beginning to $today", "$beginning 00:00:00", $now);
 	}
 }

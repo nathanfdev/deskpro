@@ -36,20 +36,57 @@ namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\Dpql\ResultHandler;
 
+/**
+ * Renders DPQL results to HTML.
+ */
 class Html
 {
+	/**
+	 * Result handler that stores all the bits that will be displayed/formatted.
+	 *
+	 * @var \Application\DeskPRO\Dpql\ResultHandler
+	 */
 	protected $_handler;
+
+	/**
+	 * Results to render. First dimension is rows, second dimension are columns
+	 * in the row (with numbered, 1-based keys).
+	 *
+	 * @var mixed[mixed][int]
+	 */
 	protected $_results;
 
+	/**
+	 * Internal handler used when rendering to count how many rows
+	 * row spans need to be used for.
+	 *
+	 * @var array
+	 */
 	protected $_rowSpans = array();
+
+	/**
+	 * Internal handler used when rendering to determine which row groups
+	 * have been "hit" and printed.
+	 *
+	 * @var array
+	 */
 	protected $_rowGroupHit = array();
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
+	 * @param mixed[mixed][int] $results
+	 */
 	public function __construct(ResultHandler $resultHandler, array $results)
 	{
 		$this->_handler = $resultHandler;
 		$this->_results = $results;
 	}
 
+	/**
+	 * Render to the specified format (in this case HTML)
+	 *
+	 * @return string
+	 */
 	public function render()
 	{
 		$splitColumns = $this->_handler->getSplitColumns();
@@ -61,6 +98,14 @@ class Html
 		}
 	}
 
+	/**
+	 * Renders results with a SPLIT clause into however many tables
+	 * are needed.
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return string
+	 */
 	public function renderSplitTable(array $rows)
 	{
 		$splitColumns = $this->_handler->getSplitColumns();
@@ -83,11 +128,25 @@ class Html
 		return $output;
 	}
 
+	/**
+	 * Renders the header of a split table
+	 *
+	 * @param string $title
+	 *
+	 * @return string
+	 */
 	public function renderSplitHeader($title)
 	{
 		return '<h3>' . $title . '</h3>';
 	}
 
+	/**
+	 * Renders a table with the specified rows/data.
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return string
+	 */
 	public function renderTable(array $rows)
 	{
 		if (!$rows) {
@@ -101,11 +160,25 @@ class Html
 		return $this->_renderTableTag($this->_renderHeader($rows) . $this->_renderBody($rows));
 	}
 
+	/**
+	 * Renders the outer table tag.
+	 *
+	 * @param string $inner HTML inside table
+	 *
+	 * @return string
+	 */
 	protected function _renderTableTag($inner)
 	{
 		return "<table class=\"report-builder-table\">\n$inner\n</table>\n";
 	}
 
+	/**
+	 * Renders the header row (for a simple table).
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return string
+	 */
 	protected function _renderHeader(array $rows)
 	{
 		$columnHtml = array();
@@ -119,6 +192,13 @@ class Html
 		return '<tr>' . implode("\n\t", $columnHtml) . '</tr>';
 	}
 
+	/**
+	 * Renders the body of a "simple" table.
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return string
+	 */
 	protected function _renderBody(array $rows)
 	{
 		$this->_analyzeRows($rows);
@@ -131,6 +211,11 @@ class Html
 		return implode("\n", $rowsHtml);
 	}
 
+	/**
+	 * Analyzes the rows of a "simple" table to determine row spans.
+	 *
+	 * @param mixed[mixed][int] $rows
+	 */
 	protected function _analyzeRows(array $rows)
 	{
 		$this->_rowSpans = array();
@@ -158,6 +243,13 @@ class Html
 		}
 	}
 
+	/**
+	 * Renders the given row for a "simple" table.
+	 *
+	 * @param mixed[int] $row
+	 *
+	 * @return string
+	 */
 	protected function _renderRow(array $row)
 	{
 		$groupParts = array();
@@ -192,6 +284,14 @@ class Html
 		}
 	}
 
+	/**
+	 * Renders the value for a specific cell.
+	 *
+	 * @param mixed[int] $row
+	 * @param array $column
+	 *
+	 * @return string
+	 */
 	protected function _renderCellValue(array $row, array $column)
 	{
 		$renderer = $column['renderer'];
@@ -206,6 +306,13 @@ class Html
 		}
 	}
 
+	/**
+	 * Renders a matrix table (with X and Y grouping).
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return string
+	 */
 	protected function _renderMatrixTable(array $rows)
 	{
 		$prepared = $this->_prepareMatrixTable($rows);
@@ -216,6 +323,18 @@ class Html
 		);
 	}
 
+	/**
+	 * Prepares data for a matrix table.
+	 *
+	 * Returns array with:
+	 *  - xDistinct[pathString][renderedValue] = true -- used to find distinct values over X grouping
+	 *  - yDistinct[pathString][renderedValue] = true -- used to find distinct values over Y grouping
+	 *  - lookup[yPath][xPath] = cell value -- value for cell at the y/x position specified
+	 *
+	 * @param mixed[mixed][int] $rows
+	 *
+	 * @return array
+	 */
 	protected function _prepareMatrixTable(array $rows)
 	{
 		$groupXColumns = $this->_handler->getGroupXColumns();
@@ -258,6 +377,13 @@ class Html
 		);
 	}
 
+	/**
+	 * Renders the header rows of a matrix table.
+	 *
+	 * @param array $prepared Prepared matrix data (see _prepareMatrixTable).
+	 *
+	 * @return string
+	 */
 	protected function _renderMatrixHeader(array $prepared)
 	{
 		$rowSkipCount = count($this->_handler->getGroupXColumns());
@@ -280,6 +406,19 @@ class Html
 		return implode("\n\t", $output);
 	}
 
+	/**
+	 * Internal helper to render matrix table header rows.
+	 *
+	 * Returns array with keys:
+	 *  - colSpan -- number of columns spanned by children
+	 *  - depth -- array of HTML for each depth below this one
+	 *
+	 * @param array $path Grouping path
+	 * @param array $distinctValues
+	 * @param int $depth
+	 *
+	 * @return array
+	 */
 	protected function _renderMatrixHeaderRecur(array $path, array $distinctValues, $depth = 0)
 	{
 		$pathLookup = $this->_getGroupPathKey($path);
@@ -322,6 +461,13 @@ class Html
 		);
 	}
 
+	/**
+	 * Renders the body of a matrix table.
+	 *
+	 * @param array $prepared Prepared matrix data
+	 *
+	 * @return string
+	 */
 	protected function _renderMatrixBody(array $prepared)
 	{
 		if (!$prepared['yDistinct']) {
@@ -352,6 +498,15 @@ class Html
 		return implode("\n\t", $rows);
 	}
 
+	/**
+	 * Gets the groupings that will represent rows in a matrix tables, including
+	 * ultimate Y paths.
+	 *
+	 * @param array $path Grouping path to this point
+	 * @param array $yDistinct Distinct values in the Y direction
+	 *
+	 * @return array[string] HTML for each unique row of Y grouping columns
+	 */
 	protected function _getMatrixRowGroups(array $path, array $yDistinct)
 	{
 		$pathString = $this->_getGroupPathKey($path);
@@ -383,6 +538,14 @@ class Html
 		return $output;
 	}
 
+	/**
+	 * Gets the final path keys to a set of distinct values in a matrix table.
+	 *
+	 * @param array $path Grouping paths
+	 * @param array $distinct Distinct values
+	 *
+	 * @return array List of path keys
+	 */
 	protected function _getFinalMatrixPaths(array $path, array $distinct)
 	{
 		$pathString = $this->_getGroupPathKey($path);
@@ -406,6 +569,14 @@ class Html
 		return $output;
 	}
 
+	/**
+	 * Renders a matrix cell.
+	 *
+	 * @param array $row
+	 * @param array $selectColumns
+	 *
+	 * @return string
+	 */
 	protected function _renderMatrixCell(array $row, array $selectColumns)
 	{
 		$values = array();
@@ -416,6 +587,13 @@ class Html
 		return implode(' / ', $values);
 	}
 
+	/**
+	 * Gets the string key to identify a path to a value based on parts.
+	 *
+	 * @param array $groupParts
+	 *
+	 * @return string
+	 */
 	protected function _getGroupPathKey(array $groupParts)
 	{
 		return implode('|', $groupParts);

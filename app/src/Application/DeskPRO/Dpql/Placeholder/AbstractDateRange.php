@@ -40,18 +40,58 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
+/**
+ * Abstract base for a date range placeholder (such as %TODAY% or %THIS_YEAR%).
+ */
 abstract class AbstractDateRange extends AbstractPlaceholder
 {
+	/**
+	 * Gets the date range that this covers. It must have 3 parts:
+	 *  - 0: printable version of range
+	 *  - 1: start of range
+	 *  - 2: end of range
+	 *
+	 * @return string[int]
+	 */
 	abstract protected function _getDateRange();
 
+	/**
+	 * Prepares the placeholder for use, including validating that the usage is valid.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
 		$range = $this->_getDateRange();
-		return new Prepared($select->escapeForSql($range[0]));
+		return new Prepared($select->quoteForSql($range[0]));
 	}
 
+	/**
+	 * Prepares the placeholder when it's called in a binary comparison context.
+	 * The placeholder is always the right hand side of the comparison.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs The left hand side of the comparison
+	 * @param string $comparison The comparison operator
+	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
+	 * @param string $section Name of the section usage is in (select, where, split, group, order)
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
+	 * @param \Application\DeskPRO\Dpql\SqlSelect $select
+	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false the default behavior should be called
+	 */
 	public function prepareComparison(
 		AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
 		Dpql\SqlSelect $select, Dpql\ResultHandler $result

@@ -39,26 +39,105 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
 
+/**
+ * Object for a DISPLAY statement in DPQL.
+ */
 class Display
 {
+	/**
+	 * Type of display (only table supported now).
+	 *
+	 * @var string
+	 */
 	protected $_display = 'table';
+
+	/**
+	 * List of expressions in SELECT clause
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	protected $_select = array();
+
+	/**
+	 * Name of table to select from
+	 *
+	 * @var string
+	 */
 	protected $_from;
-	protected $_where;
+
+	/**
+	 * WHERE clause.
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart|null
+	 */
+	protected $_where = null;
+
+	/**
+	 * SPLIT BY clause expressions
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	protected $_splitBy = array();
+
+	/**
+	 * GROUP BY clause expressions
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	protected $_groupBy = array();
+
+	/**
+	 * ORDER BY clause expressions
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	protected $_orderBy = array();
 
+	/**
+	 * Number of rows to limit to. 0 or null for unlimited.
+	 *
+	 * @var integer|null
+	 */
 	protected $_limitAmount = null;
+
+	/**
+	 * Number of rows to offset results by. 0 or null for no offset.
+	 *
+	 * @var integer|null
+	 */
 	protected $_limitOffset = null;
 
+	/**
+	 * SQL select object
+	 *
+	 * @var \Application\DeskPRO\Dpql\SqlSelect
+	 */
 	protected $_sql;
+
+	/**
+	 * @var \Application\DeskPRO\Dpql\ResultHandler
+	 */
 	protected $_resultHandler;
 
+	/**
+	 * Maps aliases (keys) to select field IDs (in the SQL).
+	 *
+	 * @var array
+	 */
 	protected $_fieldMap = array();
 
+	/**
+	 * Has this been prepared yet?
+	 *
+	 * @var bool
+	 */
 	protected $_prepared = false;
 
+	/**
+	 * Maps available tables (keys) to Doctrine entity names (values).
+	 *
+	 * @var array
+	 */
 	protected $_tableEntityMap = array(
 		'articles' => 'DeskPRO:Article',
 		//'article_attachments' => 'DeskPRO:ArticleAttachment',
@@ -92,6 +171,11 @@ class Display
 		'tickets_messages' => 'DeskPRO:TicketMessage',
 	);
 
+	/**
+	 * @param string $display Type of display
+	 * @param array $select Fields to select
+	 * @param string $from Table to select from
+	 */
 	public function __construct($display, array $select, $from)
 	{
 		$this->setDisplay($display);
@@ -102,6 +186,11 @@ class Display
 		$this->_resultHandler = new Dpql\ResultHandler();
 	}
 
+	/**
+	 * Returns statement as SQL.
+	 *
+	 * @return string
+	 */
 	public function toSql()
 	{
 		if (!$this->_prepared) {
@@ -111,6 +200,13 @@ class Display
 		return $this->_sql->toSql();
 	}
 
+	/**
+	 * Gets the results from the database that match.
+	 *
+	 * @return array
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 */
 	public function getResults()
 	{
 		try {
@@ -122,6 +218,9 @@ class Display
 		return $query->fetchAll(\PDO::FETCH_NUM);
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\ResultHandler
+	 */
 	public function getResultHandler()
 	{
 		if (!$this->_prepared) {
@@ -131,7 +230,15 @@ class Display
 		return $this->_resultHandler;
 	}
 
-	public function getRenderer($renderer, array $results = null)
+	/**
+	 * Gets the specified renderer object.
+	 *
+	 * @param string $rendererType Type of renderer needed
+	 * @param array|null $results If null, gets results
+	 *
+	 * @return \Application\DeskPRO\Dpql\Renderer\Html
+	 */
+	public function getRenderer($rendererType, array $results = null)
 	{
 		if ($results === null) {
 			$results = $this->getResults();
@@ -142,6 +249,12 @@ class Display
 		return new Dpql\Renderer\Html($handler, $results);
 	}
 
+	/**
+	 * Gets the statement back as a string of DPQL parts. Keys are:
+	 * DISPLAY, SELECT, FROM, WHERE, SPLIT, GROUP, ORDER, LIMIT, OFFSET
+	 *
+	 * @return array
+	 */
 	public function getDpqlParts()
 	{
 		$selectFields = array();
@@ -177,6 +290,11 @@ class Display
 		);
 	}
 
+	/**
+	 * Prepares the statement for use.
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 */
 	public function prepare()
 	{
 		if ($this->_prepared) return;
@@ -198,6 +316,9 @@ class Display
 		$this->_sql->setLimit($this->_limitAmount, $this->_limitOffset);
 	}
 
+	/**
+	 * Prepares the SELECT clause.
+	 */
 	protected function _prepareSelect()
 	{
 		$sql = $this->_sql;
@@ -221,6 +342,9 @@ class Display
 		}
 	}
 
+	/**
+	 * Prepares the WHERE clause.
+	 */
 	protected function _prepareWhere()
 	{
 		if ($this->_where) {
@@ -231,6 +355,9 @@ class Display
 		}
 	}
 
+	/**
+	 * Prepares the SPLIT BY clause.
+	 */
 	protected function _prepareSplitBy()
 	{
 		$sql = $this->_sql;
@@ -246,6 +373,9 @@ class Display
 		}
 	}
 
+	/**
+	 * Prepares the GROUP BY clause.
+	 */
 	protected function _prepareGroupBy()
 	{
 		$sql = $this->_sql;
@@ -261,6 +391,9 @@ class Display
 		}
 	}
 
+	/**
+	 * Prepares the ORDER BY clause.
+	 */
 	protected function _prepareOrderBy()
 	{
 		$sql = $this->_sql;
@@ -280,6 +413,14 @@ class Display
 		}
 	}
 
+	/**
+	 * Adds a select field to the SQL result
+	 *
+	 * @param string $select
+	 * @param string|bool $alias If available, the name this column is aliased under
+	 *
+	 * @return int
+	 */
 	public function addSqlSelectField($select, $alias = false)
 	{
 		$selectFieldId = $this->_sql->addSelectField($select);
@@ -291,6 +432,13 @@ class Display
 		return $selectFieldId;
 	}
 
+	/**
+	 * Gets the SQL select field ID for the specified key. Used for alias lookup.
+	 *
+	 * @param string $key
+	 *
+	 * @return bool|integer
+	 */
 	public function getSqlSelectFieldId($key)
 	{
 		if (isset($this->_fieldMap[$key])) {
@@ -300,6 +448,13 @@ class Display
 		}
 	}
 
+	/**
+	 * Gets the entity repository for the from table.
+	 *
+	 * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 */
 	public function getFromEntityRepository()
 	{
 		$table = strtolower($this->_from);
@@ -317,11 +472,25 @@ class Display
 		}
 	}
 
+	/**
+	 * Returns true if the value is non-empty (represents something printable to SQL)
+	 *
+	 * @param string $input
+	 *
+	 * @return bool
+	 */
 	public function isSqlValue($input)
 	{
 		return strval($input) !== '';
 	}
 
+	/**
+	 * Returns true if the stack of parent parts has forced date calculations to UTC
+	 *
+	 * @param array $stack
+	 *
+	 * @return bool
+	 */
 	public function stackForcedUtc(array $stack)
 	{
 		foreach ($stack AS $element) {
@@ -335,6 +504,13 @@ class Display
 		return false;
 	}
 
+	/**
+	 * Get the timezone offset for a function/column reference.
+	 *
+	 * @param array $stack
+	 *
+	 * @return int
+	 */
 	public function getTimezoneOffsetForFunction(array $stack)
 	{
 		if ($this->stackForcedUtc($stack)) {
@@ -344,102 +520,166 @@ class Display
 		return App::getCurrentPerson()->getTimezoneOffset() * 3600;
 	}
 
+	/**
+	 * Quotes a string as a DPQL literal.
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
 	public function quoteDpqlString($string)
 	{
 		$string = strtr($string, array("\\" => "\\\\", "'" => "\\'"));
 		return "'$string'";
 	}
 
+	/**
+	 * @param string $display
+	 */
 	public function setDisplay($display)
 	{
 		$this->_display = $display;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDisplay()
 	{
 		return $this->_display;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $select
+	 */
 	public function setSelect(array $select)
 	{
 		$this->_select = $select;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $select
+	 */
 	public function addSelect(AbstractPart $select)
 	{
 		$this->_select[] = $select;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	public function getSelect()
 	{
 		return $this->_select;
 	}
 
+	/**
+	 * @param string $from
+	 */
 	public function setFrom($from)
 	{
 		$this->_from = $from;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFrom()
 	{
 		return $this->_from;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart|null $where
+	 */
 	public function setWhere(AbstractPart $where = null)
 	{
 		$this->_where = $where;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\AbstractPart|null
+	 */
 	public function getWhere()
 	{
 		return $this->_where;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $splitBy
+	 */
 	public function setSplitBy(array $splitBy)
 	{
 		$this->_splitBy = $splitBy;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	public function getSplitBy()
 	{
 		return $this->_splitBy;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $groupBy
+	 */
 	public function setGroupBy(array $groupBy)
 	{
 		$this->_groupBy = $groupBy;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	public function getGroupBy()
 	{
 		return $this->_groupBy;
 	}
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $orderBy
+	 */
 	public function setOrderBy(array $orderBy)
 	{
 		$this->_orderBy = $orderBy;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
+	 */
 	public function getOrderBy()
 	{
 		return $this->_orderBy;
 	}
 
+	/**
+	 * @param int|null $amount
+	 */
 	public function setLimitAmount($amount)
 	{
 		$this->_limitAmount = $amount;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function getLimitAmount()
 	{
 		return $this->_limitAmount;
 	}
 
+	/**
+	 * @param int|null $offset
+	 */
 	public function setLimitOffset($offset)
 	{
 		$this->_limitOffset = $offset;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function getLimitOffset()
 	{
 		return $this->_limitOffset;

@@ -40,12 +40,22 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
+/**
+ * Place holder for the previous month based on the current person's time zone.
+ */
 class LastMonth extends AbstractDateRange
 {
+	/**
+	 * Gets the date range components (printable, start, end).
+	 *
+	 * @return string[int]
+	 */
 	protected function _getDateRange()
 	{
 		$tz = new \DateTimeZone(App::getCurrentPerson()->getTimezone());
+
 		$date = new \DateTime('now', $tz);
+		$thisMonth = $date->format('Y-m');
 
 		$endDate = new \DateTime("$thisMonth-01", $tz);
 		$endDate->modify('-1 day');

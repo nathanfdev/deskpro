@@ -40,8 +40,16 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
+/**
+ * Place holder for the previous year based on the current person's time zone.
+ */
 class LastYear extends AbstractDateRange
 {
+	/**
+	 * Gets the date range components (printable, start, end).
+	 *
+	 * @return string[int]
+	 */
 	protected function _getDateRange()
 	{
 		$tz = App::getCurrentPerson()->getTimezone();

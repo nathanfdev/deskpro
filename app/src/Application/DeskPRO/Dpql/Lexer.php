@@ -34,15 +34,53 @@
 
 namespace Application\DeskPRO\Dpql;
 
+/**
+ * Lexer for DPQL. To be used in conjunction with the parser.
+ */
 class Lexer
 {
+	/**
+	 * Internal lexer positioning counter.
+	 *
+	 * @var integer
+	 */
 	protected $_counter = 0;
+
+	/**
+	 * String to be tokenized.
+	 *
+	 * @var string
+	 */
 	protected $_input;
 
+	/**
+	 * ID of token that is being emitted. Tokens are defined in the parser.
+	 *
+	 * @var integer
+	 */
 	public $token = null;
+
+	/**
+	 * Value for the token that is being emitted.
+	 *
+	 * @var string
+	 */
 	public $value = null;
+
+	/**
+	 * Line number currently being tokenized. This can be used to detect the
+	 * line an error is occurring on.
+	 *
+	 * @var integer
+	 */
 	public $line = 1;
 
+	/**
+	 * List of reserved keywords. These will be emitted with tokens that match
+	 * the name of the reserved word.
+	 *
+	 * @var array
+	 */
 	protected $_reserved = array(
 		'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE',
 		'SELECT', 'FROM', 'WHERE',
@@ -52,6 +90,12 @@ class Lexer
 		'ASC', 'DESC',
 	);
 
+	/**
+	 * Maps an operator string to a token name (T_OP_<value>).
+	 * Operator strings must be listed in the operator regex.
+	 *
+	 * @var array
+	 */
 	protected $_operatorMap = array(
 		'+' => 'PLUS',
 		'-' => 'MINUS',
@@ -74,6 +118,11 @@ class Lexer
 		'LIKE' => 'LIKE',
 	);
 
+	/**
+	 * Sets the input and resets the lexer state.
+	 *
+	 * @param string $input
+	 */
 	public function setInput($input) {
 		$this->_input = $input;
 		$this->_counter = 0;

@@ -34,60 +34,124 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+/**
+ * Represents a result of calling "prepare" on a DPQL part. This can define
+ * things like the SQL returned, how it should be represented as a column
+ * name, or the SQL expression if we're trying to print the result.
+ */
 class Prepared
 {
+	/**
+	 * The SQL expression this DPQL part prepared to.
+	 *
+	 * @var string
+	 */
 	protected $_sqlExpr = 'NULL';
-	protected $_name = false;
+
+	/**
+	 * The name of the DPQL part for use in a column header.
+	 *
+	 * @var string
+	 */
+	protected $_name = '';
+
+	/**
+	 * The SQL expression that should be used if this DPQL part is in a printable context.
+	 *
+	 * @var string|bool
+	 */
 	protected $_sqlExprPrint = false;
+
+	/**
+	 * A custom renderer that should be used to render this DPQL part
+	 *
+	 * @var callable|null
+	 */
 	protected $_renderer = null;
 
-	public function __construct($sqlExpr = 'NULL', $name = false, $sqlExprPrint = false)
+	/**
+	 * @param string $sqlExpr SQL expression
+	 * @param string $name Name of column header
+	 * @param string|bool $sqlExprPrint SQL expression if in printable context
+	 */
+	public function __construct($sqlExpr = 'NULL', $name = '', $sqlExprPrint = false)
 	{
 		$this->_sqlExpr = $sqlExpr;
 		$this->_name = $name;
 		$this->_sqlExprPrint = $sqlExprPrint;
 	}
 
+	/**
+	 * Determines if the SQL expression has a value (outputs something).
+	 *
+	 * @return bool
+	 */
 	public function hasValue()
 	{
 		return ($this->_sqlExpr !== '' && $this->_sqlExpr !== null && $this->_sqlExpr !== false);
 	}
 
+	/**
+	 * @param string $sql
+	 */
 	public function setSql($sql)
 	{
 		$this->_sqlExpr = $sql;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function sql()
 	{
 		return $this->_sqlExpr;
 	}
 
+	/**
+	 * @param string|bool $printed
+	 */
 	public function setPrinted($printed)
 	{
 		$this->_sqlExprPrint = $printed;
 	}
 
+	/**
+	 * Returns the printable SQL expression. Returns the gen
+	 *
+	 * @return string
+	 */
 	public function printed()
 	{
 		return ($this->_sqlExprPrint !== false ? $this->_sqlExprPrint : $this->_sqlExpr);
 	}
 
+	/**
+	 * @param string $name
+	 */
 	public function setName($name)
 	{
 		$this->_name = $name;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function name()
 	{
 		return $this->_name;
 	}
 
+	/**
+	 * @param callable $renderer
+	 */
 	public function setRenderer(\Closure $renderer = null)
 	{
 		$this->_renderer = $renderer;
 	}
 
+	/**
+	 * @return callable|null
+	 */
 	public function renderer()
 	{
 		return $this->_renderer;

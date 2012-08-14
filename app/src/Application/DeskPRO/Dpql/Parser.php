@@ -138,14 +138,38 @@ class Parser#line 102 "Parser.php"
 ** in the input file. */
 #line 10 "Parser.y"
 
+	/**
+	 * Line number currently being parsed. This comes from the lexer.
+	 *
+	 * @var integer
+	 */
 	public $line = 1;
+
+	/**
+	 * The output of parsing. When parsing has run, this will be a statement object.
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Display|null
+	 */
 	protected $_result = null;
 
+	/**
+	 * Gets the result object.
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Display|null
+	 */
 	public function getResult()
 	{
 		return $this->_result;
 	}
 
+	/**
+	 * Processes a quoted string, by removing the quotes and un-escaping
+	 * backslashes.
+	 *
+	 * @param string $string Quoted string
+	 *
+	 * @return string String with quotes/escaping removed.
+	 */
 	public function processQuoted($string)
 	{
 		if (!strlen($string)) {
@@ -172,7 +196,7 @@ class Parser#line 102 "Parser.php"
 
 		return $string;
 	}
-#line 143 "Parser.php"
+#line 167 "Parser.php"
 
 /* Next is all token values, as class constants
 */
@@ -1106,7 +1130,7 @@ static public $yy_action = array(
     **   function yy_r0($yymsp){ ... }           // User supplied code
     **  #line <lineno> <thisfile>
     */
-#line 70 "Parser.y"
+#line 94 "Parser.y"
     function yy_r3(){
 	$res = new Statement\Display($this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor);
 
@@ -1131,21 +1155,21 @@ static public $yy_action = array(
 
 	$this->_result = $res;
     }
-#line 1104 "Parser.php"
-#line 98 "Parser.y"
+#line 1128 "Parser.php"
+#line 122 "Parser.y"
     function yy_r4(){
 	$this->_retvalue = 'table';
     }
-#line 1109 "Parser.php"
-#line 105 "Parser.y"
+#line 1133 "Parser.php"
+#line 129 "Parser.y"
     function yy_r5(){
 	$this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
 	if ($this->yystack[$this->yyidx + 0]->minor) {
 		$this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
 	}
     }
-#line 1117 "Parser.php"
-#line 114 "Parser.y"
+#line 1141 "Parser.php"
+#line 138 "Parser.y"
     function yy_r6(){
 	if (!$this->yystack[$this->yyidx + -2]->minor) {
 		$this->_retvalue = array();
@@ -1154,8 +1178,8 @@ static public $yy_action = array(
 	}
 	$this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
     }
-#line 1127 "Parser.php"
-#line 127 "Parser.y"
+#line 1151 "Parser.php"
+#line 151 "Parser.y"
     function yy_r8(){
 	if ($this->yystack[$this->yyidx + 0]->minor) {
 		$this->_retvalue = new Statement\Part\Alias($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
@@ -1163,18 +1187,18 @@ static public $yy_action = array(
 		$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
 	}
     }
-#line 1136 "Parser.php"
-#line 138 "Parser.y"
+#line 1160 "Parser.php"
+#line 162 "Parser.y"
     function yy_r9(){
 	$this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
     }
-#line 1141 "Parser.php"
-#line 142 "Parser.y"
+#line 1165 "Parser.php"
+#line 166 "Parser.y"
     function yy_r10(){
 	$this->_retvalue = $this->processQuoted($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1146 "Parser.php"
-#line 198 "Parser.y"
+#line 1170 "Parser.php"
+#line 222 "Parser.y"
     function yy_r21(){
 	if ($this->yystack[$this->yyidx + 0]->minor) {
 		$this->_retvalue = new Statement\Part\OrderDir($this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
@@ -1182,65 +1206,65 @@ static public $yy_action = array(
 		$this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
 	}
     }
-#line 1155 "Parser.php"
-#line 209 "Parser.y"
+#line 1179 "Parser.php"
+#line 233 "Parser.y"
     function yy_r22(){
 	$this->_retvalue = 'ASC';
     }
-#line 1160 "Parser.php"
-#line 214 "Parser.y"
+#line 1184 "Parser.php"
+#line 238 "Parser.y"
     function yy_r23(){
 	$this->_retvalue = 'DESC';
     }
-#line 1165 "Parser.php"
-#line 234 "Parser.y"
+#line 1189 "Parser.php"
+#line 258 "Parser.y"
     function yy_r27(){
 	$this->_retvalue = array('limit' => intval($this->yystack[$this->yyidx + -1]->minor));
 	if ($this->yystack[$this->yyidx + 0]->minor) {
 		$this->_retvalue['offset'] = $this->yystack[$this->yyidx + 0]->minor;
 	}
     }
-#line 1173 "Parser.php"
-#line 245 "Parser.y"
+#line 1197 "Parser.php"
+#line 269 "Parser.y"
     function yy_r29(){
 	$this->_retvalue = intval($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1178 "Parser.php"
-#line 253 "Parser.y"
+#line 1202 "Parser.php"
+#line 277 "Parser.y"
     function yy_r31(){
 	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
 	$token = $this->yystack[$this->yyidx + -1]->major;
 
 	$this->_retvalue = new Statement\Part\BinaryComparison($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1186 "Parser.php"
-#line 261 "Parser.y"
+#line 1210 "Parser.php"
+#line 285 "Parser.y"
     function yy_r32(){
 	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
 	$token = $this->yystack[$this->yyidx + -1]->major;
 
 	$this->_retvalue = new Statement\Part\BinaryLogical($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1194 "Parser.php"
-#line 269 "Parser.y"
+#line 1218 "Parser.php"
+#line 293 "Parser.y"
     function yy_r33(){
 	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
 	$token = $this->yystack[$this->yyidx + -1]->major;
 
 	$this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1202 "Parser.php"
-#line 277 "Parser.y"
+#line 1226 "Parser.php"
+#line 301 "Parser.y"
     function yy_r34(){
 	$this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1207 "Parser.php"
-#line 282 "Parser.y"
+#line 1231 "Parser.php"
+#line 306 "Parser.y"
     function yy_r35(){
 	$this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
     }
-#line 1212 "Parser.php"
-#line 287 "Parser.y"
+#line 1236 "Parser.php"
+#line 311 "Parser.y"
     function yy_r36(){
 	$values = array($this->yystack[$this->yyidx + -2]->minor);
 	if ($this->yystack[$this->yyidx + -1]->minor) {
@@ -1248,8 +1272,8 @@ static public $yy_action = array(
 	}
 	$this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -5]->minor, $values);
     }
-#line 1221 "Parser.php"
-#line 296 "Parser.y"
+#line 1245 "Parser.php"
+#line 320 "Parser.y"
     function yy_r37(){
 	$values = array($this->yystack[$this->yyidx + -2]->minor);
 	if ($this->yystack[$this->yyidx + -1]->minor) {
@@ -1257,69 +1281,69 @@ static public $yy_action = array(
 	}
 	$this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -6]->minor, $values);
     }
-#line 1230 "Parser.php"
-#line 305 "Parser.y"
+#line 1254 "Parser.php"
+#line 329 "Parser.y"
     function yy_r38(){
 	// this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
 	$token = $this->yystack[$this->yyidx + -1]->major;
 
 	$this->_retvalue = new Statement\Part\UnaryOperator($token, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1238 "Parser.php"
-#line 321 "Parser.y"
+#line 1262 "Parser.php"
+#line 345 "Parser.y"
     function yy_r40(){
 	$this->_retvalue = new Statement\Part\Parentheses($this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1243 "Parser.php"
-#line 326 "Parser.y"
+#line 1267 "Parser.php"
+#line 350 "Parser.y"
     function yy_r41(){
 	if (!$this->yystack[$this->yyidx + -1]->minor) {
 		$this->yystack[$this->yyidx + -1]->minor = array();
 	}
 	$this->_retvalue = new Statement\Part\FunctionCall($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1251 "Parser.php"
-#line 334 "Parser.y"
+#line 1275 "Parser.php"
+#line 358 "Parser.y"
     function yy_r42(){
 	$this->_retvalue = new Statement\Part\Column(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1256 "Parser.php"
-#line 339 "Parser.y"
+#line 1280 "Parser.php"
+#line 363 "Parser.y"
     function yy_r43(){
 	$this->_retvalue = new Statement\Part\String($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1261 "Parser.php"
-#line 344 "Parser.y"
+#line 1285 "Parser.php"
+#line 368 "Parser.y"
     function yy_r44(){
 	$this->_retvalue = new Statement\Part\String($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1266 "Parser.php"
-#line 349 "Parser.y"
+#line 1290 "Parser.php"
+#line 373 "Parser.y"
     function yy_r45(){
 	$value = substr($this->yystack[$this->yyidx + 0]->minor, 1, -1);
 	$this->_retvalue = new Statement\Part\Placeholder($value);
     }
-#line 1272 "Parser.php"
-#line 355 "Parser.y"
+#line 1296 "Parser.php"
+#line 379 "Parser.y"
     function yy_r46(){
 	$this->_retvalue = new Statement\Part\AliasRef($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1277 "Parser.php"
-#line 360 "Parser.y"
+#line 1301 "Parser.php"
+#line 384 "Parser.y"
     function yy_r47(){
 	$this->_retvalue = new Statement\Part\AliasRef($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1282 "Parser.php"
-#line 365 "Parser.y"
+#line 1306 "Parser.php"
+#line 389 "Parser.y"
     function yy_r48(){
 	$this->_retvalue =  new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
     }
-#line 1287 "Parser.php"
-#line 370 "Parser.y"
+#line 1311 "Parser.php"
+#line 394 "Parser.y"
     function yy_r49(){
 	$this->_retvalue = new Statement\Part\NullValue();
     }
-#line 1292 "Parser.php"
+#line 1316 "Parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -1434,7 +1458,7 @@ static public $yy_action = array(
 #line 5 "Parser.y"
 
 	throw new Exception("Error parsing DPQL statement at line $this->line");
-#line 1408 "Parser.php"
+#line 1432 "Parser.php"
     }
 
     /**

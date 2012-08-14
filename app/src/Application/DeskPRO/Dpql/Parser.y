@@ -8,14 +8,38 @@
 
 %include_class
 {
+	/**
+	 * Line number currently being parsed. This comes from the lexer.
+	 *
+	 * @var integer
+	 */
 	public $line = 1;
+
+	/**
+	 * The output of parsing. When parsing has run, this will be a statement object.
+	 *
+	 * @var \Application\DeskPRO\Dpql\Statement\Display|null
+	 */
 	protected $_result = null;
 
+	/**
+	 * Gets the result object.
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Display|null
+	 */
 	public function getResult()
 	{
 		return $this->_result;
 	}
 
+	/**
+	 * Processes a quoted string, by removing the quotes and un-escaping
+	 * backslashes.
+	 *
+	 * @param string $string Quoted string
+	 *
+	 * @return string String with quotes/escaping removed.
+	 */
 	public function processQuoted($string)
 	{
 		if (!strlen($string)) {

@@ -34,11 +34,25 @@
 
 namespace Application\DeskPRO\Dpql;
 
+/**
+ * Compiles a DPQL string statement into a statement object.
+ */
 class Compiler
 {
+	/**
+	 * @var \Application\DeskPRO\Dpql\Lexer|null
+	 */
 	protected $_lexer;
+
+	/**
+	 * @var \Application\DeskPRO\Dpql\Parser|null
+	 */
 	protected $_parser;
 
+	/**
+	 * @param \Application\DeskPRO\Dpql\Lexer|null $lexer
+	 * @param \Application\DeskPRO\Dpql\Parser|null $parser
+	 */
 	public function __construct(Lexer $lexer = null, Parser $parser = null)
 	{
 		if (!$lexer) $lexer = new Lexer();
@@ -48,6 +62,13 @@ class Compiler
 		$this->_parser = $parser;
 	}
 
+	/**
+	 * Compiles the given DPQL string to a statement object
+	 *
+	 * @param string $input
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Display
+	 */
 	public function compile($input)
 	{
 		$this->_lexer->setInput($input);
