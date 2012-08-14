@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.Page.Content.StickyWords = new Orb.Class({
 		}
 
 		this.termsInput = new DeskPRO.UI.LabelsInput({
-			textarea: this.options.element,
+			input: this.options.element,
 			placeholder: 'Enter a search word...'
 		});
 		this.termsInput.addEvent('change', function() {

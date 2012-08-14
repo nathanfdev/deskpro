@@ -1,5 +1,5 @@
 {% if rated_searches.helpful or rated_searches.unhelpful %}
-<div class="pad">
+<div style="padding: 0 15px 15px 15px;">
 
 {% if rated_searches.helpful %}
 <h5>{{ phrase('agent.publish.searches_helpful') }}</h5>
@@ -8,7 +8,7 @@
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
 				<td>{{ phrase('agent.general.search_terms') }}</td>
-				<td>{{ phrase('agent.general.frequency') }}</td>
+				<td width="80">{{ phrase('agent.general.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -33,7 +33,7 @@
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
 				<td>{{ phrase('agent.general.search_terms') }}</td>
-				<td>{{ phrase('agent.general.frequency') }}</td>
+				<td width="80">{{ phrase('agent.general.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>
