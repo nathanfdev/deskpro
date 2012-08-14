@@ -75,11 +75,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		$this->person = $this->session->getPerson();
 
-		if (!$this->person->id) {
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
-			$cas->process();
-		}
-
 		$this->person->loadHelper('FeedbackVotes', array(
 			'visitor' => $this->session->getVisitor()
 		));
