@@ -55,7 +55,7 @@ class DataInitializer
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $admin_user;
+	public $admin_user;
 
 	public function __construct(DeskproContainer $container)
 	{

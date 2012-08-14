@@ -183,12 +183,42 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 				}
 				$this->getOrm()->flush();
 			}
+
+			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+			$data_init->admin_user = $agent;
+			$data_init->run();
+			App::getDb()->replace('settings', array(
+				'name' => 'core.done_data_initializer',
+				'value' => 1,
+			));
 		}
 
 		App::getDb()->replace('install_data', array(
 			'build' => 'default',
 			'name' => 'install_build',
 			'data' => DP_BUILD_TIME
+		));
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core.deskpro_build_num',
+			'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+		));
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core.install_timestamp',
+			'value' => time(),
+		));
+		App::getDb()->replace('settings', array(
+			'name' => 'core.install_build',
+			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+		));
+		App::getDb()->replace('settings', array(
+			'name' => 'core.install_key',
+			'value' => Strings::random(20, Strings::CHARS_KEY),
+		));
+		App::getDb()->replace('settings', array(
+			'name' => 'core.deskpro_version',
+			'value' => date('YmdHis'),
 		));
 
 		App::getDb()->replace('settings', array(
