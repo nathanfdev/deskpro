@@ -119,17 +119,6 @@ class EmailGatewaysController extends AbstractController
 
 			$editgateway->apply();
 
-			try {
-				$conn = $gateway->getFetcher();
-				$conn->test();
-			} catch (\Exception $e) {
-				if ($this->request->isXmlHttpRequest()) {
-					return $this->createJsonResponse(array('error' => true, 'error_code' => 'connect_error', 'error_message' => $e->getMessage()));
-				} else {
-					$errors = array('message' => $e->getMessage());
-				}
-			}
-
 			if (!$errors && $form->isValid()) {
 
 				$editgateway->define_transport = $this->in->getBool('gateway.define_transport');

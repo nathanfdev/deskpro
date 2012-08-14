@@ -24,49 +24,12 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 					$(this).hide();
 					el.find('.error-msg').show();
 				});
-
-				var postData = $('#gateway_form').serializeArray();
-				self.testPostData = postData;
 			},
 			onOverlayOpened: function() {
-				$('button.test-trigger', '#test_gateway_settings_overlay').click();
-			}
-		});
-
-		$('button.test-trigger', '#test_gateway_settings_overlay').on('click', function() {
-			var el = $('#test_gateway_settings_overlay');
-			$('.result', el).show().addClass('loading');
-
-			var postData = self.testPostData;
-
-			$.ajax({
-				url: $(this).data('url'),
-				type: 'POST',
-				data: postData,
-				dataType: 'json',
-				complete: function() {
-					$('.result', el).removeClass('loading');
-				},
-				success: function(data) {
-					if (data.success) {
-						$('.success', el).show().find('.placeholder-num').text(data.count+'');
-					} else {
-						$('.success', el).hide();
-						$('.error', el).show();
-						$('.error-explain', el).text(data.error_explain);
-						$('.error-msg', el).hide();
-						$('.show-error-message', el).show();
-						$('.error-msg .error-msg-text', el).text(data.error_code + ' ' + data.error_message);
-						$('.error-msg .error-msg-log', el).text(data.log);
-
-						if (data.error_code == '0') {
-							$('.show-error-message', el).hide();
-						} else {
-							$('.show-error-message', el).show();
-						}
-					}
+				if (!waitingSend) {
+					$('button.test-trigger', '#test_gateway_settings_overlay').click();
 				}
-			});
+			}
 		});
 
 		$('#add_addr_link').on('click', function(ev) {
@@ -124,6 +87,88 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 				}
 			});
 		}
+
+		var waitingSend = false;
+		var passTest = false;
+
+		$('#gateway_form').on('submit', function(ev) {
+			if (passTest) {
+				return;
+			}
+
+			ev.preventDefault();
+			$('#gateway_form').addClass('loading');
+			waitingSend = true;
+			$('button.test-trigger', '#test_gateway_settings_overlay').trigger('click');
+		});
+
+		$('button.test-trigger', '#test_gateway_settings_overlay').on('click', function() {
+			var el = $('#test_gateway_settings_overlay');
+			$('.result', el).show().addClass('loading');
+
+			var postData = $('#gateway_form').serializeArray();
+
+			$.ajax({
+				url: $(this).data('url'),
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				complete: function() {
+					$('.result', el).removeClass('loading');
+				},
+				error: function() {
+					$('#gateway_form').removeClass('loading');
+					$('.result', el).removeClass('loading');
+					passTest = false;
+					waitingSend = false;
+					self.overlay.open();
+
+					$('.success', el).hide();
+					$('.error', el).show();
+					$('.error-explain', el).text('Could not connect');
+					$('.error-msg', el).hide();
+					$('.show-error-message', el).show();
+					$('.error-msg .error-msg-text', el).text('Could not connect');
+					$('.error-msg .error-msg-log', el).text('Could not connect');
+
+					if (data.error_code == '0') {
+						$('.show-error-message', el).hide();
+					} else {
+						$('.show-error-message', el).show();
+					}
+				},
+				success: function(data) {
+					if (data.success) {
+						passTest = true;
+						if (waitingSend) {
+							waitingSend = false;
+							$('#gateway_form').submit();
+						}
+						$('.success', el).show().find('.placeholder-num').text(data.count+'');
+					} else {
+						$('.result', el).removeClass('loading');
+						$('#gateway_form').removeClass('loading');
+						passTest = false;
+						waitingSend = false;
+						self.overlay.open();
+
+						$('.success', el).hide();
+						$('.error', el).show();
+						$('.error-explain', el).text(data.error_explain);
+						$('.error-msg', el).hide();
+						$('.show-error-message', el).show();
+						$('.error-msg .error-msg-text', el).text(data.error_code + ' ' + data.error_message);
+						$('.error-msg .error-msg-log', el).text(data.log);
+
+						if (data.error_code == '0') {
+							$('.show-error-message', el).hide();
+						} else {
+							$('.show-error-message', el).show();
+						}
+					}
+				}
+			});
+		});
 	},
 
 	_initAddresses: function() {

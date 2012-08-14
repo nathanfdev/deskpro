@@ -44,11 +44,63 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3
 	 */
 	protected $logger;
 
-	public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null)
+	/**
+	 * @var int
+	 */
+	protected $connect_timeout = 8;
+
+	/**
+	 * @var int
+	 */
+	protected $stream_timeout = 15;
+
+	public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null, $connect_timeout = 8, $stream_timeout = 15)
 	{
 		$this->logger = $logger;
+		$this->connect_timeout = $connect_timeout;
+		$this->stream_timeout = $stream_timeout;
 		parent::__construct($host, $port, $ssl);
 	}
+
+	public function connect($host, $port = null, $ssl = false)
+    {
+        if ($ssl == 'SSL') {
+            $host = 'ssl://' . $host;
+        }
+
+        if ($port === null) {
+            $port = $ssl == 'SSL' ? 995 : 110;
+        }
+
+        $errno  =  0;
+        $errstr = '';
+        $this->_socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
+        if (!$this->_socket) {
+			error_log('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
+            throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
+        }
+		stream_set_timeout($this->_socket, $this->stream_timeout);
+
+        $welcome = $this->readResponse();
+
+        strtok($welcome, '<');
+        $this->_timestamp = strtok('>');
+        if (!strpos($this->_timestamp, '@')) {
+            $this->_timestamp = null;
+        } else {
+            $this->_timestamp = '<' . $this->_timestamp . '>';
+        }
+
+        if ($ssl === 'TLS') {
+            $this->request('STLS');
+            $result = stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            if (!$result) {
+                throw new Exception\RuntimeException('cannot enable TLS');
+            }
+        }
+
+        return $welcome;
+    }
 
 	public function setLogger(Logger $logger = null)
 	{
