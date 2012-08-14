@@ -206,7 +206,7 @@
 	</div>
 	{% endif %}
 
-	{% if options.agent_teams and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+	{% if app.getDataRepository('AgentTeam').getTeamNames() and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 		<div class="builder-type" title="{{ phrase('agent.general.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="builder-op">
 				<select name="op" class="op">
@@ -225,7 +225,7 @@
 				<select name="agent_team">
 					<option value="0">{{ phrase('agent.general.no_team') }}</option>
 					<option value="-1">{{ phrase('agent.general.any_of_current_agents_teams') }}</option>
-					{% for id,title in term_options.agent_teams %}
+					{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
 						<option value="{{id}}">{{title}}</option>
 					{% endfor %}
 				</select>
@@ -296,10 +296,14 @@
 				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-
 				{% if search_context != 'filter' %}
 					<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>
-					<option value="hidden">{{ phrase('agent.general.hidden_awaiting_validating_spam') }}</option>
+					<optgroup label="Hidden Tickets">
+						<option value="hidden">Any Hidden Ticket</option>
+						<option value="hidden.deleted">Deleted</option>
+						<option value="hidden.spam">Spam</option>
+						<option value="hidden.validating">Validating</option>
+					</optgroup>
 				{% endif %}
 			</select>
 		</div>
