@@ -11,7 +11,11 @@ class Column extends AbstractPart
 	public $parts;
 
 	protected static $_tableResolver = array(
-		'people' => array('id', 'name')
+		'agent_teams' => array('id', 'name'),
+		'departments' => array('id', 'title'),
+		'organizations' => array('id', 'name'),
+		'people' => array('id', 'name'),
+		'tickets' => array('id', 'subject')
 	);
 
 	public function __construct(array $parts)
@@ -45,10 +49,19 @@ class Column extends AbstractPart
 		$repository = $statement->getFromEntityRepository();
 		$sqlTable = $repository->getTableName();
 
+		$partsSoFar = array($table);
+
 		foreach ($parts AS $partKey => $part) {
+			$partsSoFar[] = $part;
+			$partsString = implode('.', $partsSoFar);
+
 			// are we referencing a field?
 			foreach ($repository->getFieldMappings() AS $key => $field) {
 				if (strtolower($key) == $part) {
+					if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
+						throw new \Exception("$partsString cannot be accessed via DPQL.");
+					}
+
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
 
 					switch ($field['type']) {
@@ -85,6 +98,12 @@ class Column extends AbstractPart
 					$target = $association['targetEntity'];
 					$childRepository = $target::getRepository();
 
+					if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
+						|| !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
+					) {
+						throw new \Exception("$partsString cannot be accessed via DPQL.");
+					}
+
 					$childSqlTable = $childRepository->getTableName();
 					$joinAlias = "{$sqlTable}_{$association['fieldName']}";
 
@@ -107,7 +126,7 @@ class Column extends AbstractPart
 				}
 			}
 
-			throw new \Exception("Unknown column reference $part");
+			throw new \Exception("Unknown column reference $partsString");
 		}
 
 		if ($partKey !== $lastPartKey) {

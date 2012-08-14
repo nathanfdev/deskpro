@@ -27,8 +27,36 @@ class Display
 	protected $_prepared = false;
 
 	protected $_tableEntityMap = array(
+		'articles' => 'DeskPRO:Article',
+		//'article_attachments' => 'DeskPRO:ArticleAttachment',
+		//'article_comments' => 'DeskPRO:ArticleComment',
+		//'blobs' => 'DeskPRO:Blob',
+		'chat_conversations' => 'DeskPRO:ChatConversation',
+		//'chat_messages' => 'DeskPRO:ChatMessage', <-- there is no entity repository for this
+		'downloads' => 'DeskPRO:Downloads',
+		//'download_comments' => 'DeskPRO:DownloadComment',
+		'feedback' => 'DeskPRO:Feedback',
+		//'feedback_attachments' => 'DeskPRO:FeedbackAttachment',
+		//'feedback_comments' => 'DeskPRO:FeedbackComment',
+		/*'labels_articles' => 'DeskPRO:LabelArticle',
+		'labels_blobs' => 'DeskPRO:LabelBlob',
+		'labels_downloads' => 'DeskPRO:LabelDownload',
+		'labels_feedback' => 'DeskPRO:LabelFeedback',
+		'labels_news' => 'DeskPRO:LabelNews',
+		'labels_organizations' => 'DeskPRO:LabelOrganization',
+		'labels_people' => 'DeskPRO:LabelPerson',
+		'labels_tasks' => 'DeskPRO:LabelTask',
+		'labels_tickets' => 'DeskPRO:LabelTicket',*/
+		'news' => 'DeskPRO:News',
+		//'news_comments' => 'DeskPRO:NewsComment',
+		'organizations' => 'DeskPRO:Organizations',
+		'people' => 'DeskPRO:Person',
+		//'tasks' => 'DeskPRO:Task',
+		//'task_comments' => 'DeskPRO:TaskComment',
 		'tickets' => 'DeskPRO:Ticket',
-		'tickets_messages' => 'DeskPRO:TicketMessage'
+		//'ticket_attachments' => 'DeskPRO:TicketAttachment',
+		//'ticket_feedback' => 'DeskPRO:TicketFeedback',
+		'tickets_messages' => 'DeskPRO:TicketMessage',
 	);
 
 	public function __construct($display, array $select, $from)
@@ -84,7 +112,7 @@ class Display
 		if ($repository) {
 			$this->_sql->setTable($repository->getTableName());
 		} else {
-			$this->_sql->setTable('NULL');
+			throw new \Exception("Unknown table $this->_from in FROM clause.");
 		}
 
 		$this->_prepareSelect();
@@ -205,7 +233,14 @@ class Display
 			return false;
 		}
 
-		return App::getEntityRepository($this->_tableEntityMap[$table]);
+		$repositoryName = $this->_tableEntityMap[$table];
+		$repository = App::getEntityRepository($repositoryName);
+
+		if (!method_exists($repository, 'getTableName')) {
+			throw new \Exception("$repositoryName does not extend AbstractEntityRepository so cannot be queried.");
+		} else {
+			return $repository;
+		}
 	}
 
 	public function isSqlValue($input)
