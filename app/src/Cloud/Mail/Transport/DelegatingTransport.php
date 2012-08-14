@@ -32,7 +32,7 @@
  * @subpackage Mail
  */
 
-namespace Cloud\DeskPRO\Mail\Transport;
+namespace Cloud\Mail\Transport;
 
 use Application\DeskPRO\App;
 
