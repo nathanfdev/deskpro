@@ -140,7 +140,7 @@ if (!deskpro_install_check_pcre()) {
 }
 
 if (!deskpro_install_check_safemode()) {
-	$errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
+	$errors[] = "PHP currently has safe_mode enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
 	$errors_codes[] = 'safe_mode';
 }
 

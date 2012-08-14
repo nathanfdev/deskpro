@@ -87,7 +87,7 @@ function deskpro_install_check_pcre()
 function deskpro_install_check_safemode()
 {
 	$v = ini_get('safe_mode');
-	if (!$v || $v != 'Off' || $v != 'false') {
+	if (!$v || $v == 'Off' || $v == 'false') {
 		return true;
 	}
 
