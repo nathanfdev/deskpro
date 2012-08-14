@@ -765,7 +765,6 @@ class Upgrade
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		exec($cmd, $out, $ret);
-		chdir(DP_START_DIR);
 		$write_status("updating_db_end");
 
 		if ($ret) {
@@ -838,9 +837,8 @@ class Upgrade
 
 		chdir(DP_ROOT);
 		$cmd = dp_get_php_command('cmd.php', 'dp:upgrade');
-		echo "> $cmd";
+		echo "> $cmd\n";
 		passthru($cmd, $ret);
-		chdir(DP_START_DIR);
 
 		return $ret;
 	}
@@ -1717,7 +1715,6 @@ class Upgrade
 		$ret = 0;
 		exec($command, $out, $ret);
 
-		chdir(DP_START_DIR);
 		@set_time_limit(0);
 
 		$this->log(sprintf("execCommand: -> result: %d", $ret));
@@ -2505,7 +2502,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		passthru($cmd, $ret);
-		chdir(DP_START_DIR);
 
 		if ($ret) {
 			$this->upgrade->outAndLog("Upgrade returned erorr status $ret");
@@ -2627,7 +2623,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		ob_start();
 		passthru($cmd, $ret);
 		$out = ob_get_contents();
-		chdir(DP_START_DIR);
 
 		if ($ret) {
 			$this->upgrade->outAndLog("Upgrade returned erorr status $ret");
