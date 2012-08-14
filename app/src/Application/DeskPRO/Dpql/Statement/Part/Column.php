@@ -13,9 +13,12 @@ class Column extends AbstractPart
 	protected static $_tableResolver = array(
 		'agent_teams' => array('id', 'name'),
 		'departments' => array('id', 'title'),
+		'languages' => array('id', 'name'),
 		'organizations' => array('id', 'name'),
 		'people' => array('id', 'name'),
-		'tickets' => array('id', 'subject')
+		'tickets' => array('id', 'subject'),
+		'ticket_categories' => array('id', 'title'),
+		'ticket_priorities' => array('id',' title')
 	);
 
 	public function __construct(array $parts)
@@ -135,6 +138,7 @@ class Column extends AbstractPart
 
 		if ($sql === false) {
 			$assocTable = $repository->getTableName();
+			$name = $part;
 			if (isset(self::$_tableResolver[$assocTable])) {
 				$resolver = self::$_tableResolver[$assocTable];
 
@@ -148,10 +152,19 @@ class Column extends AbstractPart
 
 				$printedSql = "`$sqlTable`.`$resolver[1]`";
 			} else {
-				throw new \Exception('Did not get SQL from column reference. Just referencing association.');
+				throw new \Exception("$partsString cannot be referenced directly. Please reference a specific column.");
 			}
 		}
 
-		return new Prepared($sql, $name, $printedSql);
+		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql);
+	}
+
+	protected function _prettifyColumnName($name)
+	{
+		$name = str_replace('_', ' ', $name);
+		$name = ucwords($name);
+		$name = str_replace('Id', 'ID', $name);
+
+		return $name;
 	}
 }
