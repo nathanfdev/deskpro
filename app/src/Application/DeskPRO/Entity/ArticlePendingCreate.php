@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -88,6 +90,21 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function _sendUpdates()
+	{
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'agent.ui.new-pending',
+			'data' => array(
+				'id' => $this->id,
+				'ticket_id' => $this->ticket ? $this->ticket->getId() : 0
+			),
+		));
+
+		App::getOrm()->persist($cm);
+		App::getOrm()->flush();
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -98,6 +115,7 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticlePendingCreate';
 		$metadata->setPrimaryTable(array( 'name' => 'article_pending_create', ));
+		$metadata->addLifecycleCallback('_sendUpdates', 'postPersist');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));

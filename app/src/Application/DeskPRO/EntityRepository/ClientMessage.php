@@ -272,6 +272,7 @@ class ClientMessage extends EntityRepository
 			$channels[] = 'agent-notify.tickets';
 			$channels[] = 'agent.ticket-updated';
 			$channels[] = 'agent.ui.new-feedback';
+			$channels[] = 'agent.ui.new-pending';
 
 			$channels[] = 'agent.filter-update';
 			$channels[] = 'chat.new';
