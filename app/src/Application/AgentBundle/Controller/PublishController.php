@@ -785,6 +785,8 @@ class PublishController extends AbstractController
 				$this->in->getCleanValueArray('structure', 'uint', 'uint'),
 				$this->in->getCleanValueArray('structure_check', 'uint', 'uint')
 			);
+
+			PublishCategoryEdit::updateOrders($type, $this->in->getCleanValueArray('orders', 'uint', 'discard'));
 		} catch (\OutOfBoundsException $e) {
 			return $this->createJsonResponse(array(
 				'error' => true

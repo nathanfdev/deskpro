@@ -200,6 +200,10 @@ class CategoryEdit
 		$ids = array_unique($ids);
 		$ids = Arrays::castToType($ids, 'integer');
 
+		if (!$ids) {
+			return;
+		}
+
 		$cats = App::getOrm()->createQuery("
 			SELECT c
 			FROM $entity c INDEX BY c.id
