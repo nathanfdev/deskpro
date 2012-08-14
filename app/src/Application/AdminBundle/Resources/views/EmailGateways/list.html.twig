@@ -69,13 +69,13 @@
                     {% set phrase_link %}
                     <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.gateway.all_email_is_being_sent_via', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.all_email_is_being_sent_via', {'link':phrase_link}, true) }}
 				</p>
 				<p>
                     {% set phrase_link %}
                     <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.gateway.add_new_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.gateway.explain_different_servers', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.explain_different_servers', {'link':phrase_link}, true) }}
 				</p>
 			{% endif %}
 		</article>
