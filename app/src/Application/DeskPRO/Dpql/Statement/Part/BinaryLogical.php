@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
+use Application\DeskPRO\Dpql\Exception;
 
 class BinaryLogical extends AbstractPart
 {
@@ -20,7 +21,7 @@ class BinaryLogical extends AbstractPart
 	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
 	{
 		if (!isset(self::$_operatorMap[$operator])) {
-			throw new \Exception("Invalid logical operator (token ID: $operator)");
+			throw new Exception("Invalid logical operator (token ID: $operator)");
 		}
 
 		$this->operator = $operator;

@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Parser;
+use Application\DeskPRO\Dpql\Exception;
 
 class BinaryMath extends AbstractPart
 {
@@ -22,7 +23,7 @@ class BinaryMath extends AbstractPart
 	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
 	{
 		if (!isset(self::$_operatorMap[$operator])) {
-			throw new \Exception("Invalid math operator (token ID: $operator)");
+			throw new Exception("Invalid math operator (token ID: $operator)");
 		}
 
 		$this->operator = $operator;

@@ -10,7 +10,7 @@ require_once 'PHP/LexerGenerator.php';
 $a = new PHP_LexerGenerator('Lexer.plex');
 
 $contents = file_get_contents('Lexer.php');
-$contents = preg_replace('#(throw new\s+)(Exception)#i', '$1\\\\$2', $contents);
+//$contents = preg_replace('#(throw new\s+)(Exception)#i', '$1\\\\$2', $contents);
 $contents = preg_replace_callback(
 	'#(' . preg_quote('$yy_global_pattern = \'') . ')(.*)' . '(\';)#siU',
 	function($match) {

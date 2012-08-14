@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Placeholder;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
+use Application\DeskPRO\Dpql\Exception;
 
 abstract class AbstractPlaceholder
 {
@@ -55,7 +56,7 @@ abstract class AbstractPlaceholder
 			$map = __NAMESPACE__ . '\\' . self::$_placeholderMap[$name];
 			return new $map($name);
 		} else {
-			throw new \Exception("Unknown placeholder $name specified.");
+			throw new Exception("Unknown placeholder $name specified.");
 		}
 	}
 }

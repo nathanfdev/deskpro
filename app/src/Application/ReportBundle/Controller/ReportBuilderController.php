@@ -41,22 +41,26 @@ class ReportBuilderController extends AbstractController
 {
 	public function indexAction()
 	{
+		$statement = false;
+		$rendered = false;
+		$error = false;
+
 		$query = $this->in->getString('query');
 		if ($query) {
 			$compiler = new Compiler();
-			$statement = $compiler->compile($query);
-			$renderer = $statement->getRenderer('html');
-			//echo '<pre>' . $statement->toSql() . '</pre>';
-			print_r($statement->getDpqlParts());
-		} else {
-			$statement = false;
-			$renderer = false;
+			try {
+				$statement = $compiler->compile($query);
+				$rendered = $statement->getRenderer('html')->render();
+			} catch (\Application\DeskPRO\Dpql\Exception $e) {
+				$error = $e->getMessage();
+			}
 		}
 
 		return $this->render('ReportBundle:ReportBuilder:index.html.twig', array(
 			'enable' => App::getConfig('enable_report_builder'),
 			'query' => $query,
-			'renderer' => $renderer,
+			'error' => $error,
+			'rendered' => $rendered,
 			'statement' => $statement
 		));
 	}

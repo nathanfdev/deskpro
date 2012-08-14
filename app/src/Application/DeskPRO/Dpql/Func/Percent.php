@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 class Percent extends AbstractFunc
 {
@@ -13,11 +14,11 @@ class Percent extends AbstractFunc
 	)
 	{
 		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
-			throw new \Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
+			throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
 		}
 
 		if (count($this->_arguments) != 1) {
-			throw new \Exception('PERCENT() can only accept 1 argument');
+			throw new Exception('PERCENT() can only accept 1 argument');
 		}
 
 		$condition = reset($this->_arguments);

@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 class X extends AbstractFunc
 {
@@ -13,11 +14,11 @@ class X extends AbstractFunc
 	)
 	{
 		if ($section != 'group') {
-			throw new \Exception('X() may only be used in GROUP BY.');
+			throw new Exception('X() may only be used in GROUP BY.');
 		}
 		if (count($stack) > 1) {
 			// note: the top of the stack is this function
-			throw new \Exception('X() may only be used at the top-level.');
+			throw new Exception('X() may only be used at the top-level.');
 		}
 
 		$childStack = $stack;

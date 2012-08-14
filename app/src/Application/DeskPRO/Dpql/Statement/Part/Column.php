@@ -6,6 +6,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\Dpql\Exception;
 
 class Column extends AbstractPart
 {
@@ -35,11 +36,11 @@ class Column extends AbstractPart
 		$table = array_shift($parts);
 
 		if (strtolower($table) != strtolower($statement->getFrom())) {
-			throw new \Exception('Invalid table name in column reference.');
+			throw new Exception('Invalid table name in column reference.');
 		}
 
 		if (!$parts) {
-			throw new \Exception('Missing column/join name in column reference.');
+			throw new Exception('Missing column/join name in column reference.');
 		}
 
 		$sql = false;
@@ -63,7 +64,7 @@ class Column extends AbstractPart
 			foreach ($repository->getFieldMappings() AS $key => $field) {
 				if (strtolower($key) == $part) {
 					if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
-						throw new \Exception("$partsString cannot be accessed via DPQL.");
+						throw new Exception("$partsString cannot be accessed via DPQL.");
 					}
 
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
@@ -108,7 +109,7 @@ class Column extends AbstractPart
 						|| !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
 						|| $association['type'] == ClassMetadataInfo::MANY_TO_MANY
 					) {
-						throw new \Exception("$partsString cannot be accessed via DPQL.");
+						throw new Exception("$partsString cannot be accessed via DPQL.");
 					}
 
 					$childSqlTable = $childRepository->getTableName();
@@ -132,7 +133,7 @@ class Column extends AbstractPart
 					}
 
 					if (!$joinColumns) {
-						throw new \Exception("$partsString cannot be accessed via DPQL.");
+						throw new Exception("$partsString cannot be accessed via DPQL.");
 					}
 
 					$joinConditions = array();
@@ -154,11 +155,11 @@ class Column extends AbstractPart
 				}
 			}
 
-			throw new \Exception("Unknown column reference $partsString");
+			throw new Exception("Unknown column reference $partsString");
 		}
 
 		if ($partKey !== $lastPartKey) {
-			throw new \Exception('Did not get to end of column references');
+			throw new Exception('Did not get to end of column references');
 		}
 
 		if ($sql === false) {
@@ -177,7 +178,7 @@ class Column extends AbstractPart
 
 				$printedSql = "`$sqlTable`.`$resolver[1]`";
 			} else {
-				throw new \Exception("$partsString cannot be referenced directly. Please reference a specific column.");
+				throw new Exception("$partsString cannot be referenced directly. Please reference a specific column.");
 			}
 		}
 

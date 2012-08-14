@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 class Printable extends AbstractFunc
 {
@@ -13,11 +14,11 @@ class Printable extends AbstractFunc
 	)
 	{
 		if (!in_array($section, array('split', 'group'))) {
-			throw new \Exception('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
+			throw new Exception('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
 		}
 
 		if (count($this->_arguments) != 2) {
-			throw new \Exception('PRINT() can only accept 2 arguments');
+			throw new Exception('PRINT() can only accept 2 arguments');
 		}
 
 		$sql = reset($this->_arguments);

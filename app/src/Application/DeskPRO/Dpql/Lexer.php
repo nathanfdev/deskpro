@@ -103,7 +103,7 @@ class Lexer
                 $yysubmatches = $yymatches;
                 $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
-                    throw new \Exception('Error: lexing failed because a rule matched' .
+                    throw new Exception('Error: lexing failed because a rule matched' .
                         ' an empty string.  Input "' . substr($this->_input,
                         $this->_counter, 5) . '... state INITIAL');
                 }
@@ -154,7 +154,7 @@ class Lexer
                     // yymore is needed
                     do {
                         if (!strlen($yy_yymore_patterns[$this->token][1])) {
-                            throw new \Exception('cannot do yymore for the last token');
+                            throw new Exception('cannot do yymore for the last token');
                         }
                         $yysubmatches = array();
                         if (preg_match('/' . $yy_yymore_patterns[$this->token][1] . '/',
@@ -195,7 +195,7 @@ class Lexer
                     }
                 }
             } else {
-                throw new \Exception('Unexpected input at line' . $this->line .
+                throw new Exception('Unexpected input at line' . $this->line .
                     ': ' . $this->_input[$this->_counter]);
             }
             break;
@@ -241,7 +241,7 @@ class Lexer
 	if (isset($this->_operatorMap[$this->value])) {
 		$this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$this->value]);
 	} else {
-		throw new \Exception("Unknown operator $this->value");
+		throw new Exception("Unknown operator $this->value");
 	}
     }
     function yy_r1_15($yy_subpatterns)

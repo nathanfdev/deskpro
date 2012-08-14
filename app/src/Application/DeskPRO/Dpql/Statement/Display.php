@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Statement;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Exception;
 
 class Display
 {
@@ -80,7 +81,13 @@ class Display
 
 	public function getResults()
 	{
-		return App::getDb()->executeQuery($this->toSql())->fetchAll(\PDO::FETCH_NUM);
+		try {
+			$query = App::getDb()->executeQuery($this->toSql());
+		} catch (Exception $e) {
+			throw new Exception("This DPQL statement generated an invalid MySQL query. Please try a different query.");
+		}
+
+		return $query->fetchAll(\PDO::FETCH_NUM);
 	}
 
 	public function getResultHandler()
@@ -147,7 +154,7 @@ class Display
 		if ($repository) {
 			$this->_sql->setTable($repository->getTableName());
 		} else {
-			throw new \Exception("Unknown table $this->_from in FROM clause.");
+			throw new Exception("Unknown table $this->_from in FROM clause.");
 		}
 
 		$this->_prepareSelect();
@@ -272,7 +279,7 @@ class Display
 		$repository = App::getEntityRepository($repositoryName);
 
 		if (!method_exists($repository, 'getTableName')) {
-			throw new \Exception("$repositoryName does not extend AbstractEntityRepository so cannot be queried.");
+			throw new Exception("$repositoryName does not extend AbstractEntityRepository so cannot be queried.");
 		} else {
 			return $repository;
 		}

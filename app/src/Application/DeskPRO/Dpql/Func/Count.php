@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 class Count extends AbstractFunc
 {
@@ -13,14 +14,14 @@ class Count extends AbstractFunc
 	)
 	{
 		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
-			throw new \Exception('COUNT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
+			throw new Exception('COUNT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
 		}
 
 		if (!$this->_arguments) {
 			$res = new Prepared('COUNT(*)', 'COUNT()');
 		} else {
 			if (count($this->_arguments) > 1) {
-				throw new \Exception('COUNT() can only accept 0 or 1 argument');
+				throw new Exception('COUNT() can only accept 0 or 1 argument');
 			}
 
 			$condition = reset($this->_arguments);

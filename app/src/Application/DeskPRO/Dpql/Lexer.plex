@@ -86,7 +86,7 @@ operator {
 	if (isset($this->_operatorMap[$this->value])) {
 		$this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$this->value]);
 	} else {
-		throw new \Exception("Unknown operator $this->value");
+		throw new Exception("Unknown operator $this->value");
 	}
 }
 

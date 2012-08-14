@@ -3,11 +3,12 @@
 
 %syntax_error
 {
-	throw new \Exception('Parsing error');
+	throw new Exception("Error parsing DPQL statement at line $this->line");
 }
 
 %include_class
 {
+	public $line = 1;
 	protected $_result = null;
 
 	public function getResult()

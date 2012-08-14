@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Func;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 class SqlPass extends AbstractFunc
 {
@@ -81,7 +82,7 @@ class SqlPass extends AbstractFunc
 		$lookupName = strtoupper($name);
 
 		if (!isset(self::$_functions[$lookupName])) {
-			throw new \Exception("Invalid DPQL function $name.");
+			throw new Exception("Invalid DPQL function $name.");
 		}
 
 		$expectedArgs = self::$_functions[$lookupName];
@@ -90,13 +91,13 @@ class SqlPass extends AbstractFunc
 		if (is_array($expectedArgs)) {
 			list($minArgs, $maxArgs) = $expectedArgs;
 			if ($givenArgs < $minArgs) {
-				throw new \Exception("DPQL function $name expects at least $minArgs argument(s).");
+				throw new Exception("DPQL function $name expects at least $minArgs argument(s).");
 			}
 			if ($maxArgs >= 0 && $givenArgs > $maxArgs) {
-				throw new \Exception("DPQL function $name expects at least $maxArgs argument(s).");
+				throw new Exception("DPQL function $name expects at least $maxArgs argument(s).");
 			}
 		} else if ($givenArgs != $expectedArgs) {
-			throw new \Exception("DPQL function $name expects $expectedArgs argument(s).");
+			throw new Exception("DPQL function $name expects $expectedArgs argument(s).");
 		}
 
 		$valuesSql = array();

@@ -29,13 +29,21 @@
 			</footer>
 		</form>
 
-		{% if renderer %}
+		{% if query %}
 			<div class="report-builder-results">
 				<div style="overflow: hidden; zoom: 1">
 					<pre style="width: 49%; float: left; overflow: auto">{{ query }}</pre>
-					<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
+					{% if statement %}
+						<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
+					{% endif %}
 				</div>
-				{{ renderer.render()|raw }}
+				{% if error %}
+					<ul id="errors_container"><li>{{ error }}</li></ul>
+				{% elseif rendered %}
+					{{ rendered|raw }}
+				{% else %}
+					<div>No results.</div>
+				{% endif %}
 			</div>
 		{% endif %}
 	{% else %}

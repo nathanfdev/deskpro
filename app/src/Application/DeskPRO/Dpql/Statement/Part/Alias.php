@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 
 class Alias extends AbstractPart
 {
@@ -20,7 +21,7 @@ class Alias extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		throw new \Exception('Alias prepare should not be called');
+		throw new Exception('Alias prepare() cannot not be called');
 	}
 
 	public function toDpql(Display $statement, $section, array $stack)

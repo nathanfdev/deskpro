@@ -21,6 +21,7 @@ class Compiler
 		$this->_lexer->setInput($input);
 
 		while ($this->_lexer->yylex()) {
+			$this->_parser->line = $this->_lexer->line;
 			$this->_parser->doParse($this->_lexer->token, $this->_lexer->value);
 		}
 		$this->_parser->doParse(0, 0);
