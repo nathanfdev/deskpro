@@ -1071,7 +1071,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('person', $person);
 
 		if ($person->getRealLanguage()) {
-			$this->language = $person->getRealLanguage();
+			$this['language'] = $person->getRealLanguage();
+		}
+
+		if ($person->organization) {
+			$this['organization'] = $person->organization;
 		}
 	}
 
