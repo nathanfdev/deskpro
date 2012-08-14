@@ -102,6 +102,9 @@ class AgentTeam extends AbstractEntityRepository
 	public function getTeamNames($for_ids = null)
 	{
 		$ret = array();
+		if ($for_ids) {
+			$for_ids = (array)$for_ids;
+		}
 		foreach ($this->getTeams() as $team) {
 			if ($for_ids and !in_array($team->id, $for_ids)) {
 				continue;
