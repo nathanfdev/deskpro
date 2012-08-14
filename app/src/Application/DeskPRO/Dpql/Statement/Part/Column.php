@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class Column extends AbstractPart
 {
@@ -95,7 +96,9 @@ class Column extends AbstractPart
 						break 3; // break $parts loop
 					}
 				}
+			}
 
+			foreach ($repository->getAssociationMappings() AS $association) {
 				// are we referencing an association?
 				if (strtolower($association['fieldName']) == $part) {
 					$target = $association['targetEntity'];
@@ -103,6 +106,7 @@ class Column extends AbstractPart
 
 					if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
 						|| !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
+						|| $association['type'] == ClassMetadataInfo::MANY_TO_MANY
 					) {
 						throw new \Exception("$partsString cannot be accessed via DPQL.");
 					}
@@ -110,11 +114,32 @@ class Column extends AbstractPart
 					$childSqlTable = $childRepository->getTableName();
 					$joinAlias = "{$sqlTable}_{$association['fieldName']}";
 
+					if (!empty($association['joinColumns'])) {
+						// join can be resolved directly
+						$joinColumns = $association['joinColumns'];
+						$sourceTable = $sqlTable;
+						$joinTable = $joinAlias;
+					} else {
+						$childAssociations = $childRepository->getAssociationMappings();
+						if (!empty($childAssociations[$association['mappedBy']]['joinColumns'])) {
+							// join details are on the other table
+							$joinColumns = $childAssociations[$association['mappedBy']]['joinColumns'];
+							$sourceTable = $joinAlias;
+							$joinTable = $sqlTable;
+						} else {
+							$joinColumns = array();
+						}
+					}
+
+					if (!$joinColumns) {
+						throw new \Exception("$partsString cannot be accessed via DPQL.");
+					}
+
 					$joinConditions = array();
-					foreach ($association['joinColumns'] AS $joinColumn) {
+					foreach ($joinColumns AS $joinColumn) {
 						$joinConditions[] =
-							"`$sqlTable`.`$joinColumn[name]` = "
-							. "`$joinAlias`.`$joinColumn[referencedColumnName]`";
+							"`$sourceTable`.`$joinColumn[name]` = "
+							. "`$joinTable`.`$joinColumn[referencedColumnName]`";
 					}
 
 					$select->addJoin(
