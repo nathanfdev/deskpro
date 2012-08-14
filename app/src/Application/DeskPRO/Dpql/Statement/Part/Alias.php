@@ -22,4 +22,10 @@ class Alias extends AbstractPart
 	{
 		throw new \Exception('Alias prepare should not be called');
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return $this->value->toDpql($statement, $section, $stack)
+			. ' AS ' . $statement->quoteDpqlString($this->alias);
+	}
 }

@@ -20,4 +20,9 @@ class String extends AbstractPart
 	{
 		return new Prepared($select->escapeForSql($this->string), $this->string);
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return $statement->quoteDpqlString($this->string);
+	}
 }

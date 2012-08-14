@@ -27,6 +27,11 @@ class Placeholder extends AbstractPart
 		return $prepared;
 	}
 
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return '%' . $this->name . '%';
+	}
+
 	public function prepareComparison(
 		AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
 		Dpql\SqlSelect $select, Dpql\ResultHandler $result

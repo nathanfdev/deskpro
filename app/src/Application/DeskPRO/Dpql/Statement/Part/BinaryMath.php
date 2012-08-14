@@ -43,4 +43,11 @@ class BinaryMath extends AbstractPart
 		$sql = "({$lhs->sql()} $operator {$rhs->sql()})";
 		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}");
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return $this->lhs->toDpql($statement, $section, $stack)
+			. ' ' . self::$_operatorMap[$this->operator] . ' '
+			. $this->rhs->toDpql($statement, $section, $stack);
+	}
 }

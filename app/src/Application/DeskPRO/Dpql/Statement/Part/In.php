@@ -38,4 +38,16 @@ class In extends AbstractPart
 		$sql = "{$lhs->sql()}$not IN (" . implode(', ', $valuesSql) . ')';
 		return new Prepared($sql, "{$lhs->name()}$not IN (" . implode(', ', $valuesName) . ')');
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		$values = array();
+		foreach ($this->values AS $value) {
+			$values[] = $value->toDpql($statement, $section, $stack);
+		}
+
+		$not = ($this->positive ? '' : ' NOT');
+
+		return $this->name . $not . ' IN (' . implode(', ', $values) . ')';
+	}
 }

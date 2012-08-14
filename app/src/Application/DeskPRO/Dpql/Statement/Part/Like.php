@@ -31,4 +31,13 @@ class Like extends AbstractPart
 		$sql = "{$lhs->sql()}$not LIKE {$rhs->sql()}";
 		return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}");
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		$not = ($this->positive ? '' : ' NOT');
+
+		return $this->lhs->toDpql($statement, $section, $stack)
+			. $not . ' LIKE '
+			. $this->rhs->toDpql($statement, $section, $stack);
+	}
 }

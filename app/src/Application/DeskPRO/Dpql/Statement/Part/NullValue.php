@@ -13,4 +13,9 @@ class NullValue extends AbstractPart
 	{
 		return new Prepared('NULL', 'NULL');
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return 'NULL';
+	}
 }

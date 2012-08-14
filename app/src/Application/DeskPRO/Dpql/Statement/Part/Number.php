@@ -21,4 +21,9 @@ class Number extends AbstractPart
 		$value = strval($this->number + 0);
 		return new Prepared($value, $value);
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return strval($this->number + 0);
+	}
 }

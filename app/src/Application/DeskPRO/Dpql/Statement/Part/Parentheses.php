@@ -22,4 +22,9 @@ class Parentheses extends AbstractPart
 		$prepared->setName('(' . $prepared->name() . ')');
 		return $prepared;
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return '(' . $this->expression->toDpql($statement, $section, $stack) . ')';
+	}
 }

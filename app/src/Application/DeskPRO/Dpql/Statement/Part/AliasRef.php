@@ -23,4 +23,9 @@ class AliasRef extends AbstractPart
 
 		return new Prepared($sql, $this->alias);
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return '@' . $statement->quoteDpqlString($this->alias);
+	}
 }

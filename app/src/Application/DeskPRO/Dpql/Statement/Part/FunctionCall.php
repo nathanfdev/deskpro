@@ -26,4 +26,14 @@ class FunctionCall extends AbstractPart
 		$func = AbstractFunc::create($this->name, $this->arguments);
 		return $func->prepare($statement, $section, $childStack, $select, $result);
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		$arguments = array();
+		foreach ($this->arguments AS $argument) {
+			$arguments[] = $argument->toDpql($statement, $section, $stack);
+		}
+
+		return $this->name . '(' . implode(', ', $arguments) . ')';
+	}
 }

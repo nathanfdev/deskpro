@@ -184,6 +184,11 @@ class Column extends AbstractPart
 		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql);
 	}
 
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return implode('.', $this->parts);
+	}
+
 	protected function _prettifyColumnName($name)
 	{
 		$name = str_replace('_', ' ', $name);

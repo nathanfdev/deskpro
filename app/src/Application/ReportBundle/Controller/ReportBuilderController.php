@@ -47,6 +47,7 @@ class ReportBuilderController extends AbstractController
 			$statement = $compiler->compile($query);
 			$renderer = $statement->getRenderer('html');
 			//echo '<pre>' . $statement->toSql() . '</pre>';
+			print_r($statement->getDpqlParts());
 		} else {
 			$statement = false;
 			$renderer = false;

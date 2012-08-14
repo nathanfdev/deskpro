@@ -12,6 +12,8 @@ abstract class AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	);
 
+	abstract public function toDpql(Display $statement, $section, array $stack);
+
 	public function getChildStack(array $stack)
 	{
 		$childStack = $stack;

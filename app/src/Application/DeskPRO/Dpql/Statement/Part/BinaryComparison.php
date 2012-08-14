@@ -74,4 +74,11 @@ class BinaryComparison extends AbstractPart
 		$sql = "({$lhsRes->sql()} $operator {$rhsRes->sql()})";
 		return new Prepared($sql, "{$lhsRes->name()} $operator {$rhsRes->name()}");
 	 }
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return $this->lhs->toDpql($statement, $section, $stack)
+			. ' ' . self::$_operatorMap[$this->operator] . ' '
+			. $this->rhs->toDpql($statement, $section, $stack);
+	}
 }

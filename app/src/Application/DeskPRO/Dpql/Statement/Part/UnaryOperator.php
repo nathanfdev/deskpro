@@ -33,6 +33,12 @@ class UnaryOperator extends AbstractPart
 		$value = $this->value->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
 
-		return new Prepared("($operator{$value->sql()}", "$operator{$value->name()}");
+		return new Prepared("($operator{$value->sql()})", "$operator{$value->name()}");
+	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return self::$_operatorMap[$this->operator]
+			. $this->value->toDpql($statement, $section, $stack);
 	}
 }

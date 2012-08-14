@@ -25,6 +25,9 @@ class Compiler
 		}
 		$this->_parser->doParse(0, 0);
 
-		return $this->_parser->getResult();
+		$statement = $this->_parser->getResult();
+		$statement->prepare();
+
+		return $statement;
 	}
 }

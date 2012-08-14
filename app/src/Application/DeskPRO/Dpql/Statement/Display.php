@@ -103,6 +103,41 @@ class Display
 		return new Dpql\Renderer\Html($handler, $results);
 	}
 
+	public function getDpqlParts()
+	{
+		$selectFields = array();
+		foreach ($this->_select AS $field) {
+			$selectFields[] = $field->toDpql($this, 'select', array());
+		}
+
+		$splitFields = array();
+		foreach ($this->_splitBy AS $field) {
+			$splitFields[] = $field->toDpql($this, 'split', array());
+		}
+
+		$groupFields = array();
+		foreach ($this->_groupBy AS $field) {
+			$groupFields[] = $field->toDpql($this, 'group', array());
+		}
+
+		$orderFields = array();
+		foreach ($this->_orderBy AS $field) {
+			$orderFields[] = $field->toDpql($this, 'order', array());
+		}
+
+		return array(
+			'DISPLAY' => strtoupper($this->_display),
+			'SELECT' => implode(', ', $selectFields),
+			'FROM' => $this->_from,
+			'WHERE' => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
+			'SPLIT' => implode(', ', $splitFields),
+			'GROUP' => implode(', ', $groupFields),
+			'ORDER' => implode(', ', $orderFields),
+			'LIMIT' => $this->_limitAmount,
+			'OFFSET' => $this->_limitOffset
+		);
+	}
+
 	public function prepare()
 	{
 		if ($this->_prepared) return;
@@ -268,6 +303,12 @@ class Display
 		}
 
 		return App::getCurrentPerson()->getTimezoneOffset() * 3600;
+	}
+
+	public function quoteDpqlString($string)
+	{
+		$string = strtr($string, array("\\" => "\\\\", "'" => "\\'"));
+		return "'$string'";
 	}
 
 	public function setDisplay($display)

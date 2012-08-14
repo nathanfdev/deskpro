@@ -23,4 +23,9 @@ class OrderDir extends AbstractPart
 	{
 		throw new \Exception('Order direction prepare should not be called');
 	}
+
+	public function toDpql(Display $statement, $section, array $stack)
+	{
+		return $this->order->toDpql($statement, $section, $stack) . ' ' . $this->orderDir;
+	}
 }
