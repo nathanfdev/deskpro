@@ -529,6 +529,8 @@ class TicketSearchController extends AbstractController
 	public function runFilterAction($filter_id)
 	{
         $view_type = $this->in->getString('view_type');
+
+		/** @var $filter \Application\DeskPRO\Entity\TicketFilter */
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 
 		$searcher = $filter->getSearcher();

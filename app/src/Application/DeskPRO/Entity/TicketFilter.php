@@ -166,11 +166,13 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the searcher for this.
 	 *
-	 * @return Application\DeskPRO\Searcher\TicketSearch
+	 * @return \Application\DeskPRO\Searcher\TicketSearch
 	 */
 	public function getSearcher(array $force_terms = array())
 	{
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+		$searcher->enableFilterSearch();
+
 		$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 		$has_user_terms = false;
 

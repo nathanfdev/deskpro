@@ -145,6 +145,11 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $add_raw_selects = array();
 
+	/**
+	 * @var bool
+	 */
+	protected $is_filter_search = false;
+
 	public $_last_sql = null;
 
 	/**
@@ -167,6 +172,14 @@ class TicketSearch extends SearcherAbstract
 		$this->is_archive = true;
 	}
 
+
+	/**
+	 * Enables only non-hidden or closed tickets.
+	 */
+	public function enableFilterSearch()
+	{
+		$this->is_filter_search = true;
+	}
 
 
 	/**
@@ -402,6 +415,10 @@ class TicketSearch extends SearcherAbstract
 			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
 		}
 
+		if ($this->is_filter_search) {
+			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
+		}
+
 		if ($where) {
 			$sql .= " WHERE $where";
 		}
@@ -545,6 +562,10 @@ class TicketSearch extends SearcherAbstract
 
 		if ($this->add_raw_wheres) {
 			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
+		}
+
+		if ($this->is_filter_search) {
+			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
 		}
 
 		if ($where) {
