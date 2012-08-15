@@ -9,30 +9,9 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 		var form = $('#settings_form');
 
 		Array.each(['user', 'agent', 'sendemail'], function(x) {
-			if ($('#'+x+'_attach_limit_list_whitelist')[0]) {
-				if ($('#'+x+'_attach_limit_list_whitelist').val().length) {
-					var exist = $('#'+x+'_attach_limit_list_whitelist').val().split(',');
-				} else {
-					var exist = $('#'+x+'_attach_limit_list_blacklist').val().split(',');
-				}
-			} else {
-				var exist = null;
-			}
-
-			if (!exist) {
-				exist = [];
-			}
-
 			var maxSizeEl = $('#'+x+'_attach_maxsize_notice');
 			var maxSize = parseInt(maxSizeEl.data('maxsize'));
 			maxSize = (maxSize / 1024 / 1024) * 1000 * 1000; // 1000 based instead of 1024
-
-			var filetypeText = $('#'+x+'_attach_limit_input').textext({
-				plugins: 'autocomplete suggestions tags arrow prompt',
-				suggestions: 'pdf doc docx xls txt rtf html htm gif png jpg jpeg bmp zip rar tgz gz'.split(' '),
-				prompt: 'Enter a file extensions...',
-				tagsItems: exist
-			});
 
 			function formatSliderVal() {
 				var val = parseInt($('#'+x+'_attach_maxsize').val());
@@ -67,22 +46,33 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 			});
 			formatSliderVal();
 
+			var blacklistOpt = $('#'+x+'_attach_limit_type_b');
+			var whitelistOpt = $('#'+x+'_attach_limit_type_w');
+			var blacklist = $('#'+x+'_attach_limit_list_blacklist');
+			var whitelist = $('#'+x+'_attach_limit_list_whitelist');
+
+			blacklistOpt.on('click', function() {
+				blacklist.show();
+				whitelist.hide();
+			});
+
+			whitelistOpt.on('click', function() {
+				whitelist.show();
+				blacklist.hide();
+			});
+
+			if (whitelistOpt.prop('checked')) {
+				whitelistOpt.prop('checked', true);
+				whitelistOpt.trigger('click');
+			} else {
+				blacklistOpt.prop('checked', true);
+				blacklistOpt.trigger('click');
+			}
+
 			form.on('submit', function(ev) {
-				var blacklist = $('#'+x+'_attach_limit_list_blacklist');
-				var whitelist = $('#'+x+'_attach_limit_list_whitelist');
-
-				var list_json = filetypeText.textext()[0].hiddenInput().val();
-				var list = [];
-				if (list_json.length) {
-					list = $.parseJSON(list_json);
-				}
-				list = list.join(',');
-
 				if ($('#'+x+'_attach_limit_type_b').is(':checked')) {
 					whitelist.val('');
-					blacklist.val(list);
 				} else {
-					whitelist.val(list);
 					blacklist.val('');
 				}
 			});

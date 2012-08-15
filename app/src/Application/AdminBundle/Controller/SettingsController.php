@@ -48,6 +48,24 @@ class SettingsController extends AbstractController
 
 	public function settingsAction()
 	{
+		$format_exts = function($str) {
+			$str = str_replace(' ', ',', $str);
+			$parts = explode(',', $str);
+
+			$ret = array();
+			foreach ($parts as $p) {
+				$p = trim($p);
+				$p = trim($p, '.');
+
+				if ($p) {
+					$ret[] = $p;
+				}
+			}
+
+			$ret = implode(', ', $ret);
+			return $ret;
+		};
+
 		if ($this->in->getBool('process')) {
 			$update_settings = array(
 				'core.deskpro_name'            => $_POST['settings']['core.deskpro_name'],
@@ -63,12 +81,12 @@ class SettingsController extends AbstractController
 				'core.default_timezone'        => empty($_POST['settings']['core.default_timezone']) ? "UTC" : $_POST['settings']['core.default_timezone'],
 
 				'core.attach_agent_maxsize'    => (int)$_POST['settings']['core.attach_agent_maxsize'],
-				'core.attach_agent_must_exts'  => $_POST['settings']['core.attach_agent_must_exts'],
-				'core.attach_agent_not_exts'   => $_POST['settings']['core.attach_agent_not_exts'],
+				'core.attach_agent_must_exts'  => $format_exts($_POST['settings']['core.attach_agent_must_exts']),
+				'core.attach_agent_not_exts'   => $format_exts($_POST['settings']['core.attach_agent_not_exts']),
 
 				'core.attach_user_maxsize'     => (int)$_POST['settings']['core.attach_user_maxsize'],
-				'core.attach_user_must_exts'   => $_POST['settings']['core.attach_user_must_exts'],
-				'core.attach_user_not_exts'    => $_POST['settings']['core.attach_user_not_exts'],
+				'core.attach_user_must_exts'   => $format_exts($_POST['settings']['core.attach_user_must_exts']),
+				'core.attach_user_not_exts'    => $format_exts($_POST['settings']['core.attach_user_not_exts']),
 
 				'core.sendemail_attach_maxsize' => (int)$_POST['settings']['core.sendemail_attach_maxsize'],
 

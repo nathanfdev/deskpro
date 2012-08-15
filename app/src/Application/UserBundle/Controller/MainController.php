@@ -149,7 +149,15 @@ class MainController extends AbstractController
 
 		$error = $accept->getError($file, 'user');
 		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
+			switch ($error['error_code']) {
+				case 'size': $phrase_id = 'user.error.attach_size'; break;
+				case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
+				case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
+				case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+				case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
+				case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+			}
+			$error['error'] = $this->container->getTranslator()->phrase($phrase_id, $error);
 			return $this->createJsonResponse(array($error));
 		}
 
