@@ -503,7 +503,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		switch ($this->event_trigger) {
 			case self::EVENT_NEW_TICKET:
 				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
-				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : 'web.person';
+				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : null;
 
 				switch ($type) {
 					case 'web.person':
@@ -522,7 +522,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 			case self::EVENT_NEW_REPLY:
 				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
-				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : 'web.person';
+				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : null;
 
 				if ($type == 'web.person') {
 					return 'new_reply.web_person';
@@ -544,11 +544,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			case self::EVENT_PROPERTY_CHANGE:
 
 				$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
-				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
+				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : null;
 
 				if ($who_type == 'user') {
 					return 'property_change.user';
-				} else {
+				} elseif ($who_type == 'agent') {
 					return 'property_change.agent';
 				}
 

@@ -74,11 +74,14 @@ function TicketTriggerEditPage_initTerms(handler) {
 				</select>
 			{% endmacro %}
 			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}{{ phrase('admin.tickets.new_ticket_web') }}
+			{% elseif trigger.getTriggerGroup() == 'new_ticket' %}Every new ticket
 			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}{{ phrase('admin.tickets.new_ticket_gateway') }}
 			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget' %}{{ phrase('admin.tickets.new_ticket_widget') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply' %}Every new reply
 			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}{{ phrase('admin.tickets.new_reply_web') }}
 			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}{{ phrase('admin.tickets.new_reply_gateway') }}
 			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}{{ phrase('admin.tickets.new_reply_agent') }}
+			{% elseif trigger.getTriggerGroup() == 'property_change' %}Every property change
 			{% elseif trigger.getTriggerGroup() == 'property_change.user' %}{{ phrase('admin.tickets.property_change_user') }}
 			{% elseif trigger.getTriggerGroup() == 'property_change.agent' %}{{ phrase('admin.tickets.property_change_agent') }}
 			{% elseif trigger.getTriggerGroup() == 'time_open' %}{{ phrase('admin.tickets.ticket_open_for_duration') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
