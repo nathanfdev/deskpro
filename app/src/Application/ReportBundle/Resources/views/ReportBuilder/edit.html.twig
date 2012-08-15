@@ -1,0 +1,46 @@
+{% extends 'ReportBundle:ReportBuilder:layout.html.twig' %}
+{% block inner_page %}
+<form action="{{ path('report_builder_edit', {'report_builder_id': report.id|default(0)}) }}" method="post">
+
+	<div class="dp-form">
+		{% if errors %}
+			<ul id="errors_container">
+			{% for error in errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Title</label>
+			</div>
+			<div class="dp-form-input">
+				<input type="text" name="title" value="{{report.title}}" />
+			</div>
+		</div>
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Description</label>
+			</div>
+			<div class="dp-form-input">
+				<textarea name="description" rows="3">{{report.description}}</textarea>
+			</div>
+		</div>
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Query</label>
+			</div>
+			<div class="dp-form-input">
+				<textarea name="query" rows="8">{{report.query}}</textarea>
+			</div>
+		</div>
+	</div>
+
+	<button class="btn primary save-trigger">Save Report</button>
+
+	<input type="hidden" name="parent_id" value="{{report.parent ? report.parent.id : ''}}" />
+	<input type="hidden" name="process" value="1" />
+	{{ form_token() }}
+</form>
+{% endblock %}

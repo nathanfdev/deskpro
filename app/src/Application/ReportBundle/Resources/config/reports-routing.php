@@ -267,5 +267,26 @@ $collection->add('report_builder', new Route(
 	array()
 ));
 
+$collection->add('report_builder_new', new Route(
+	'/report-builder/new',
+	array('_controller' => 'ReportBundle:ReportBuilder:edit', 'report_builder_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('report_builder_report', new Route(
+	'/report-builder/{report_builder_id}/',
+	array('_controller' => 'ReportBundle:ReportBuilder:report'),
+	array('report_builder_id' => '\\d+'),
+	array()
+));
+
+$collection->add('report_builder_edit', new Route(
+	'/report-builder/{report_builder_id}/edit',
+	array('_controller' => 'ReportBundle:ReportBuilder:edit'),
+	array('report_builder_id' => '\\d+'),
+	array()
+));
+
 
 return $collection;

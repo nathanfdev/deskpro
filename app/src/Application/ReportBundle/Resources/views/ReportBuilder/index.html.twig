@@ -1,55 +1,24 @@
-{% set this_page = 'report_builder' %}
-{% extends 'ReportBundle::layout.html.twig' %}
-{% block nav_block %}
-{% endblock %}
-{% block pagebar %}
-{% endblock %}
-{% block html_head %}
-<style type="text/css">
-	.report-builder-results h3, .report-builder-results pre, .report-builder-results table { margin: 10px 0; }
+{% extends 'ReportBundle:ReportBuilder:layout.html.twig' %}
+{% block inner_page %}
+	<form action="{{ path('report_builder')}}" method="post" class="dp-form">
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>DPQL Query</label></div>
+			<div class="dp-form-input"><textarea name="query" style="height: 130px">{{ query }}</textarea></div>
+		</div>
+		<footer class="controls">
+			<button class="clean-white">Run Query</button>
+		</footer>
+	</form>
 
-	.report-builder-results td,
-	.report-builder-results th {
-		padding: 2px;
-		border: 1px solid black;
-		text-align: center;
-		vertical-align: middle;
-	}
-</style>
-{% endblock %}
-{% block page %}
-	{% if enable %}
-		<form action="{{ path('report_builder')}}" method="post" class="dp-form">
-			<div class="dp-form-row">
-				<div class="dp-form-label"><label>DPQL Query</label></div>
-				<div class="dp-form-input"><textarea name="query" style="height: 130px">{{ query }}</textarea></div>
-			</div>
-			<footer class="controls">
-				<button class="clean-white">Run Query</button>
-			</footer>
-		</form>
-
-		{% if query %}
-			<div class="report-builder-results">
-				<div style="overflow: hidden; zoom: 1">
-					<pre style="width: 49%; float: left; overflow: auto">{{ query }}</pre>
-					{% if statement %}
-						<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
-					{% endif %}
-				</div>
-				{% if error %}
-					<ul id="errors_container"><li>{{ error }}</li></ul>
-				{% elseif rendered %}
-					{{ rendered|raw }}
-				{% else %}
-					<div>No results.</div>
+	{% if query %}
+		<div class="report-builder-results">
+			<div style="overflow: hidden; zoom: 1">
+				<pre style="width: 49%; float: left; overflow: auto">{{ query }}</pre>
+				{% if statement %}
+					<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
 				{% endif %}
 			</div>
-		{% endif %}
-	{% else %}
-		<section class="coming-soon">
-			<h3>Coming Soon</h3>
-			<h4>We are currently putting the finishing touches to the report builder. You will receive a notification when it can be installed.</h4>
-		</section>
+			{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
+		</div>
 	{% endif %}
 {% endblock %}
