@@ -158,7 +158,9 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface
 			$name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($this->agent_team_id);
 			if (!$name) return '';
 
-			return $tr->phrase('agent.tickets.assign_team_action', array('name' => $name[0]));
+			$name = array_pop($name);
+
+			return $tr->phrase('agent.tickets.assign_team_action', array('name' => $name));
 		}
 	}
 }
