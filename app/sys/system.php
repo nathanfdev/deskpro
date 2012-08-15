@@ -431,7 +431,7 @@ final class License
 
 	public function getMaxAgents()
 	{
-		if (!isset($this->data['agents']) || !$this->data['agents']) {
+		if (!isset($this->data['agents']) || !$this->data['agents'] || $this->data['agents'] >= 100) {
 			return 0;
 		}
 
