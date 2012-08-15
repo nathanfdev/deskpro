@@ -216,6 +216,7 @@ class ServerController extends AbstractController
 				'is_fatal' => $is_fatal,
 				'has_db_checks' => false,
 				'ini_path' => \Orb\Util\Env::getPhpIniPathFromInfo($phpinfo),
+				'data_dir' => dp_get_data_dir()
 			);
 
 			$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $table_vars);
