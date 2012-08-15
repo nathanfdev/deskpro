@@ -18,7 +18,7 @@
 			{% else %}<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
 			{% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
-			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}"></time>
+			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>
 		</header>
 		<div class="body-text">
 			<div class="body-text-message" {% if message.show_full_hint %}style="display: none"{% endif %}>
