@@ -340,6 +340,14 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			var el = $(this);
 			if (el.is('.has-init')) return;
 
+			if (el.prop('multiple')) {
+				var td = el.closest('td.display-content');
+				if (td[0]) {
+					var cellWidth = Math.max(Math.min(td.find('> div.content').width(), 200), 350);
+					el.width(cellWidth);
+				}
+			}
+
 			DP.select(el);
 			el.addClass('has-init');
 		});

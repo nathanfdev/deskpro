@@ -317,13 +317,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$raw_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
-			foreach ($ticket_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($raw_custom_fields) as $info) {
-					$ticket->setCustomData($info[0], $info[1], $info[2]);
-					App::getOrm()->flush();
-				}
+			$field_manager = App::getSystemService('ticket_fields_manager');
+			$post_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $ticket);
 			}
 
 			App::getOrm()->persist($ticket);

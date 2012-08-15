@@ -107,6 +107,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			if (self.OBJ_DESTROYED) return;
 
 			self.wrapper.find('select').each(function() {
+				if ($(this).prop('multiple')) {
+					$(this).width(300);
+				}
 				DP.select($(this));
 			});
 			self.updateUi();
