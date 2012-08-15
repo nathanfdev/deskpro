@@ -134,7 +134,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	public function getGravatarUrl()
 	{
 		$hash = strtolower(md5($this->email));
-		$url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+		if (!empty($_SERVER['HTTPS'])) {
+			$url = 'https://secure.gravatar.com/avatar/' . $hash . '?';
+		} else {
+			$url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+		}
 
 		return $url;
 	}
