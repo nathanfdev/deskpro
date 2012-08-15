@@ -293,7 +293,12 @@ DeskPRO.Form.RuleBuilder = new Class({
 				choiceSel.css('visibility', 'hidden');
 				choiceSel.each(function() {
 					if (!isStatic) {
-						DP.select($(this));
+						var sel = $(this);
+						if (sel.attr('multiple')) {
+							var cellWidth = sel.closest('td').find('> .builder-options').width();
+							sel.width(cellWidth - 10);
+						}
+						DP.select(sel);
 					} else {
 						var lbl = $('<span />');
 						lbl.text($(this).find('option:selected').text());
