@@ -47,7 +47,54 @@ class ReportBuilder extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery('
 			SELECT rb
 			FROM DeskPRO:ReportBuilder rb
+			WHERE rb.is_custom = 1
 			ORDER BY rb.title
 		')->execute();
+	}
+
+	public function getGroupedBuiltInReports()
+	{
+		$results = $this->getEntityManager()->createQuery('
+			SELECT rb
+			FROM DeskPRO:ReportBuilder rb
+			WHERE rb.is_custom = 0
+			ORDER BY rb.title
+		')->execute();
+
+		$categories = $this->getBuiltInCategories();
+
+		$groups = array();
+		foreach ($results AS $result)
+		{
+			if (isset($categories[$result->category])) {
+				$categoryId = $result->category;
+			} else {
+				$categoryId = '';
+			}
+			$groups[$categoryId][] = $result;
+		}
+
+		$groupsOrdered = array();
+		foreach ($categories AS $categoryId => $categoryName)
+		{
+			if (isset($groups[$categoryId])) {
+				$groupsOrdered[$categoryName] = $groups[$categoryId];
+			}
+		}
+
+		return $groupsOrdered;
+	}
+
+	public function getBuiltInCategories()
+	{
+		return array(
+			'ticket' => 'Tickets',
+			'' => 'Other',
+		);
+	}
+
+	public function canManageBuiltInReports()
+	{
+		return App::getConfig('debug.dev');
 	}
 }

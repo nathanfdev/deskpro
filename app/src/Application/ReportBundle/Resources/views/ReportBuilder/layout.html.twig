@@ -26,8 +26,23 @@
 		<ul>
 			{% for report in customReports %}
 			<li><a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}"
-					>{{ report.title }}</a>
-			</li>
+				>{{ report.title }}</a></li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
+		{% if builtInReports %}
+		<h3>Built-In Reports</h3>
+		<ul>
+			{% for categoryName, reports in builtInReports %}
+				<li><h4>{{ categoryName }}</h4>
+					<ul>
+					{% for report in reports %}
+						<li><a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}"
+							>{{ report.title }}</a></li>
+					{% endfor %}
+					</ul>
+				</li>
 			{% endfor %}
 		</ul>
 		{% endif %}

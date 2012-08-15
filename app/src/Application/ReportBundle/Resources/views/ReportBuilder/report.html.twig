@@ -2,16 +2,25 @@
 {% block inner_page %}
 	<h1>{{report.title}}</h1>
 	{% if report.description %}<p>{{ report.description|nl2br }}</p>{% endif %}
-	{% if report.parent %}<p>Clone of <a href="{{ path('report_builder_report', {'report_builder_id': report.parent.id})}}"
-		>{{report.parent.title}}</a></p>{% endif %}
+	{% if report.parent %}
+		<p>Clone of <a href="{{ path('report_builder_report', {'report_builder_id': report.parent.id})}}"
+			>{{report.parent.title}}</a></p>
+	{% endif %}
 
-	{% if report.isEditable() %}<div><a href="{{ path('report_builder_edit', {'report_builder_id': report.id}) }}"
-		>Edit</a></div>{% endif %}
+	{% if report.isEditable() %}
+		<div>
+			<a href="{{ path('report_builder_edit', {'report_builder_id': report.id}) }}">Edit</a>
+			<a href="{{ path('report_builder_delete', {'report_builder_id': report.id}) }}">Delete</a>
+		</div>
+	{% endif %}
 
 	<form action="{{ path('report_builder_report', {'report_builder_id' : report.id}) }}" method="post">
 		<div>
 			<textarea name="query" rows="5" cols="50" {{ report.isEditable() ? '' : 'readonly="readonly"' }}
 			>{{ query }}</textarea>
+			{% if not report.isEditable() %}
+				<br />To customize this report, please clone it.
+			{% endif %}
 		</div>
 		<button class="btn primary" name="run" value="1">Run Report</button>
 		{% if query != report.query and error is empty and report.isEditable() %}

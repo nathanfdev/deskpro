@@ -288,5 +288,12 @@ $collection->add('report_builder_edit', new Route(
 	array()
 ));
 
+$collection->add('report_builder_delete', new Route(
+	'/report-builder/{report_builder_id}/delete',
+	array('_controller' => 'ReportBundle:ReportBuilder:delete'),
+	array('report_builder_id' => '\\d+'),
+	array()
+));
+
 
 return $collection;

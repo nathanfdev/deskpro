@@ -35,6 +35,36 @@
 				<textarea name="query" rows="8">{{report.query}}</textarea>
 			</div>
 		</div>
+
+		{% if canManageBuiltIn and report.parent is empty %}
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Unique Key</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="unique_key" value="{{report.unique_key}}" />
+					<div>If a unique key is specified, this will become a built-in report.</div>
+				</div>
+			</div>
+
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Built-in Report Category</label>
+				</div>
+				<div class="dp-form-input">
+					<select name="category">
+					{% for categoryId, categoryName in builtInCategories %}
+						<option value="{{categoryId}}"{{ categoryId == report.category ? ' selected="selected"' : '' }}
+							>{{categoryName}}</option>
+					{% endfor %}
+					</select>
+					<div>If this is a built-in report, select the category it applies to.</div>
+				</div>
+			</div>
+		{% else %}
+			<input type="hidden" name="unique_key" value="" />
+			<input type="hidden" name="category" value="" />
+		{% endif %}
 	</div>
 
 	<button class="btn primary save-trigger">Save Report</button>

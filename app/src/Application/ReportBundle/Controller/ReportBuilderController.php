@@ -48,18 +48,22 @@ class ReportBuilderController extends AbstractController
 		}
 
 		$statement = false;
-		$rendered = false;
+		$results = false;
 		$error = false;
 
 		$query = $this->in->getString('query');
 		if ($query) {
-			$rendered = $this->renderQuery($query, 'html', $error);
+			$results = $this->renderQuery($query, 'html', $error);
+			if (!$error) {
+				$compiler = new Compiler();
+				$statement = $compiler->compile($query);
+			}
 		}
 
 		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'query' => $query,
 			'error' => $error,
-			'rendered' => $rendered,
+			'results' => $results,
 			'statement' => $statement
 		)));
 	}
@@ -146,8 +150,15 @@ class ReportBuilderController extends AbstractController
 			$report->description = $this->in->getString('description');
 			$report->query = $query;
 
-			if ($title === '') {
-				$errors['title'] = 'Please enter a title for this report.';
+			$uniqueKey = $this->in->getString('unique_key');
+			if ($uniqueKey) {
+				$report->unique_key = $uniqueKey;
+				$report->is_custom = 0;
+				$report->category = $this->in->getString('category');
+			} else {
+				$report->unique_key = null;
+				$report->is_custom = 1;
+				$report->category = null;
 			}
 
 			$parentId = $this->in->getInteger('parent_id');
@@ -156,6 +167,10 @@ class ReportBuilderController extends AbstractController
 				$report->parent = $parent ?: null;
 			} else {
 				$report->parent = null;
+			}
+
+			if ($title === '') {
+				$errors['title'] = 'Please enter a title for this report.';
 			}
 
 			if ($query) {
@@ -186,11 +201,46 @@ class ReportBuilderController extends AbstractController
 		return $this->_getReportEditOutput($report, $errors);
 	}
 
+	public function deleteAction($report_builder_id)
+	{
+		$report = $this->getReportOr404($report_builder_id);
+		if (!$report->isEditable()) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(
+				"This report is not editable."
+			);
+		}
+
+		if ($this->in->getBool('process')) {
+			$this->ensureRequestToken();
+
+			$this->em->beginTransaction();
+
+			try {
+				$this->em->remove($report);
+				$this->em->flush();
+				$this->em->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+
+			return $this->redirectRoute('report_builder');
+		}
+
+		return $this->render('ReportBundle:ReportBuilder:delete.html.twig', $this->mergeReportBuilderLayoutParams(array(
+			'report' => $report
+		)));
+	}
+
 	protected function _getReportEditOutput(ReportBuilder $report, array $errors = array())
 	{
+		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
+
 		return $this->render('ReportBundle:ReportBuilder:edit.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'report' => $report,
-			'errors' => $errors
+			'errors' => $errors,
+			'canManageBuiltIn' => $rbRepository->canManageBuiltInReports(),
+			'builtInCategories' => $rbRepository->getBuiltInCategories()
 		)));
 	}
 
@@ -223,7 +273,8 @@ class ReportBuilderController extends AbstractController
 		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
 		$reportBuilderParams = array(
-			'customReports' => $rbRepository->getCustomReports()
+			'customReports' => $rbRepository->getCustomReports(),
+			'builtInReports' => $rbRepository->getGroupedBuiltInReports()
 		);
 
 		return array_merge($reportBuilderParams, $params);
