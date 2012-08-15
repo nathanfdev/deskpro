@@ -879,6 +879,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function includePhpFile($path, array $with = null)
 	{
+		if (!dp_get_config('enable_include_file')) {
+			return '';
+		}
+		
 		if ($with !== null) {
 			extract($with, \EXTR_SKIP);
 		}
