@@ -171,7 +171,7 @@ foreach ($sites as $siteinfo) {
 
 	$cmd = "php upgrade.php $pass_args_set";
 	dp_log("\tCommand: $cmd");
-	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $siteinfo['build_number']);
+	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $build_num);
 	$proc->run(function($type, $data) {
 		dp_log(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))), false);
 	});
