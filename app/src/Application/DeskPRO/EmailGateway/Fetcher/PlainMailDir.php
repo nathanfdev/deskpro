@@ -75,13 +75,19 @@ class PlainMailDir extends AbstractFetcher
 		$this->maildir = $this->gateway['connection_options']['dir'];
 		$this->maildir = str_replace('%DP_DATA_DIR%', dp_get_data_dir(), $this->maildir);
 
+		$this->logger->logDebug("Reading from: {$this->maildir}");
+
 		if (is_dir($this->maildir)) {
 			$this->dir = dir($this->maildir);
 		} else {
+			$this->logger->logDebug("Directory does not exist");
+
 			// Dir doesnt exist, but that doesnt mean error
 			// Just means no mail. Checking on dir should be a separate test at setup time
 			$this->dir = false;
 		}
+
+		return $this->dir;
 	}
 
 
@@ -97,10 +103,12 @@ class PlainMailDir extends AbstractFetcher
 		$this->message_list = array();
 
 		while (($f = $this->dir->read()) !== false) {
-			if (is_file($f)) {
+			if ($f != '.' && $f !== '..') {
 				$this->message_list[] = $f;
 			}
 		}
+
+		return $this->message_list;
 	}
 
 
