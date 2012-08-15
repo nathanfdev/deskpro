@@ -303,7 +303,7 @@ class AgentNotificationAction extends AbstractAction
 				'agent'              => $agent
 			);
 
-			if ($this->notify_info[$agent->id]) {
+			if (isset($this->notify_info[$agent->id]) && $this->notify_info[$agent->id]) {
 				$vars['notify_info'] = $this->notify_info[$agent->id];
 			}
 
