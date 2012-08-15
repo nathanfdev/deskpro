@@ -806,7 +806,7 @@ class TemplatingExtension extends \Twig_Extension
 		if (!$url) {
 			$url = App::getSetting('core.deskpro_url');
 			$url = trim(str_replace('/index.php', '', $url), '/');
-			$url .= App::getConfig('static_path') . '/' ?: '/web/';
+			$url .= (App::getConfig('static_path') ?: '/web') . '/';
 		}
 		return $url . ltrim($location, '/');
 	}
@@ -882,7 +882,7 @@ class TemplatingExtension extends \Twig_Extension
 		if (!dp_get_config('enable_include_file')) {
 			return '';
 		}
-		
+
 		if ($with !== null) {
 			extract($with, \EXTR_SKIP);
 		}
