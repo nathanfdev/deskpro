@@ -313,24 +313,25 @@ class TermSummary
 				if (!$field) break;
 
 				$search_type = $field->getHandler()->getSearchType();
+				$text = $choice['custom_fields']['field_' . $field->getId()];
 
 				switch ($search_type) {
 					case 'input':
 					case 'value':
 
 						if ($op == self::OP_IS) {
-							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
+							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
-							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
 						}
 
 						break;
 
 					case 'id':
 						if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
-							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
+							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
-							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
 						}
 						break;
 				}
@@ -341,24 +342,25 @@ class TermSummary
 				if (!$field) break;
 
 				$search_type = $field->getHandler()->getSearchType();
+				$text = $choice['custom_fields']['field_' . $field->getId()];
 
 				switch ($search_type) {
 					case 'input':
 					case 'value':
 
 						if ($op == self::OP_IS) {
-							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
+							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
-							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
 						}
 
 						break;
 
 					case 'id':
 						if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
-							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
+							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
 						} else {
-							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
 						}
 						break;
 				}
