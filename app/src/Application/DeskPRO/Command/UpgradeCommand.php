@@ -126,6 +126,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			$manager->reset();
 		}
 
+	    $manager->postUpgrade();
+
 		if (defined('DP_BUILD_TIME')) {
 			$current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
 			if ($current < DP_BUILD_TIME) {

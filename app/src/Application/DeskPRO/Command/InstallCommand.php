@@ -154,6 +154,8 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
 			$this->getOrm()->flush();
 
+			\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+
 			// For the all agent group, fetch permissions from the template
 			if ($AGENTGROUP_ALL) {
 				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();

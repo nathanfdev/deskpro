@@ -125,6 +125,15 @@ class Manager
 
 
 	/**
+	 * Any code to be run after all upgrade scripts are complete (and we're on the latest DB).
+	 */
+	public function postUpgrade()
+	{
+		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+	}
+
+
+	/**
 	 * Is there another build script to run?
 	 *
 	 * @return bool

@@ -687,6 +687,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			$this->getOrm()->flush();
 
+			\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+
 			// For the all agent group, fetch permissions from the template
 			if ($AGENTGROUP_ALL) {
 				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();

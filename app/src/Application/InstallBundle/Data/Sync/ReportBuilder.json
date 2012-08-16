@@ -1,3 +1,3 @@
 {
-
+"100-oldest-unresolved-tickets":{"category":"ticket","description":"","query":"DISPLAY TABLE\r\nSELECT tickets.id, tickets.subject\r\nFROM tickets\r\nWHERE tickets.status IN ('awaiting_user', 'awaiting_agent')\r\nORDER BY tickets.date_created\r\nLIMIT 100","title":"100 Oldest Unresolved Tickets"}
 }
