@@ -228,11 +228,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		try {
 			$e = error_reporting(E_ALL ^ E_WARNING);
 			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-				'driver'   => 'pdo_mysql',
-				'host'     => $DP_CONFIG['import']['db_host'],
-				'user'     => $DP_CONFIG['import']['db_user'],
-				'password' => $DP_CONFIG['import']['db_password'],
-				'dbname'   => $DP_CONFIG['import']['db_name']
+				'driver'        => 'pdo_mysql',
+				'host'          => $DP_CONFIG['import']['db_host'],
+				'user'          => $DP_CONFIG['import']['db_user'],
+				'password'      => $DP_CONFIG['import']['db_password'],
+				'dbname'        => $DP_CONFIG['import']['db_name'],
+				'names_charset' => 'latin1'
 			));
 			$old_db->connect();
 			error_reporting($e);

@@ -55,7 +55,15 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	protected $transaction_logger = false;
 
+	/**
+	 * @var bool
+	 */
 	protected $running_trans_event = false;
+
+	/**
+	 * @var string
+	 */
+	protected $names_charset = 'UTF8';
 
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
@@ -74,6 +82,11 @@ class Connection extends \Doctrine\DBAL\Connection
 		if (isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
 			$params['host'] = $m[1];
 			$params['port'] = $m[2];
+		}
+
+		if (isset($params['names_charset'])) {
+			$this->names_charset = $params['names_charset'];
+			unset($params['names_charset']);
 		}
 
 		parent::__construct($params, $driver, $config, $eventManager);
@@ -101,7 +114,11 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		if (parent::connect()) {
 			$this->exec("SET sql_mode=''");
-			$this->exec("SET NAMES 'UTF8'");
+
+			if ($this->names_charset) {
+				$this->exec("SET NAMES '{$this->names_charset}'");
+			}
+
 			return true;
 		}
 

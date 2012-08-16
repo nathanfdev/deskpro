@@ -412,7 +412,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$insert_message = array();
 			$insert_message['message_hash'] = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
-			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES));
+			$insert_message['message'] = $message_info['message'];
 			$insert_message['person_id'] = $pid;
 			$insert_message['ticket_id'] = $insert_ticket['id'];
 			$insert_message['creation_system'] = 'web';
@@ -437,6 +437,13 @@ class TicketsStep extends AbstractDeskpro3Step
 				$message_info['charset'] = 'ISO-8859-1';
 			}
 
+			if (function_exists('mb_detect_encoding')) {
+				$charset = mb_detect_encoding($message_info['message']);
+				if ($charset == 'UTF-8') {
+					$message_info['charset'] = 'UTF-8';
+				}
+			}
+
 			if ($message_info['charset'] && strtoupper($message_info['charset']) != 'UTF-8') {
 				$new_msg = \Orb\Util\Strings::convertToUtf8($message_info['message'], $message_info['charset']);
 				if ($new_msg) {
@@ -452,10 +459,9 @@ class TicketsStep extends AbstractDeskpro3Step
 			}
 
 			$insert_message['message'] = trim(\Orb\Util\Strings::utf8_bad_strip($insert_message['message']));
-			$insert_message['message'] = nl2br(htmlspecialchars($insert_message['message'], \ENT_QUOTES));
+			$insert_message['message'] = nl2br(htmlspecialchars($insert_message['message'], \ENT_QUOTES, 'UTF-8'));
 
 			$search_content[] = $message_info['message'];
-			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
 
 			$this->db->insert('tickets_messages', $insert_message);
 			$insert_message['id'] = $this->db->lastInsertId();
@@ -493,10 +499,11 @@ class TicketsStep extends AbstractDeskpro3Step
 		// we'll convert the subject too
 		if ($first_charset) {
 			$subject = $ticket_info['subject'];
+			error_log("Convert from $first_charset");
 			$subject = \Orb\Util\Strings::convertToUtf8($subject, $first_charset);
+			$subject = \Orb\Util\Strings::htmlEntityDecodeUtf8($subject);
 			$subject = trim(\Orb\Util\Strings::utf8_bad_strip($subject));
 			if ($subject) {
-				$subject = \Orb\Util\Strings::htmlEntityDecodeUtf8($subject);
 				$up['subject'] = $subject;
 			}
 		}
