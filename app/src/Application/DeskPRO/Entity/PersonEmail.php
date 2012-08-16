@@ -39,6 +39,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
+use Application\DeskPRO\App;
+
 /**
  * Email addresses attached to a person. This is a separate entity because emails are
  * roughly tied to identity (ie local login uses email as identity), and are integral
@@ -129,12 +131,21 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Gets the gravatar URL for this email
 	 *
+	 * @param bool $secure Use secure url? null to detect automatically based on current request
 	 * @return string
 	 */
-	public function getGravatarUrl()
+	public function getGravatarUrl($secure = null)
 	{
+		// Null means detect
+		if ($secure === null AND App::isWebRequest()) {
+			$request = App::getRequest();
+			if ($request->isSecure()) {
+				$secure = true;
+			}
+		}
+
 		$hash = strtolower(md5($this->email));
-		if (!empty($_SERVER['HTTPS'])) {
+		if ($secure) {
 			$url = 'https://secure.gravatar.com/avatar/' . $hash . '?';
 		} else {
 			$url = 'http://www.gravatar.com/avatar/' . $hash . '?';

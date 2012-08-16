@@ -1551,7 +1551,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				), true);
 
 			} elseif (App::getSetting('core.use_gravatar') && $this->primary_email && $this->primary_email->getId()) {
-				$url = $this->primary_email->getGravatarUrl();
+				$url = $this->primary_email->getGravatarUrl($secure);
 				if ($size != 80) {
 					$url .= '&s=' . $size;
 				}
