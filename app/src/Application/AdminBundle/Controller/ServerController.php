@@ -332,6 +332,16 @@ class ServerController extends AbstractController
 	public function errorLogsClearAllAction()
 	{
 		$this->ensureRequestToken('clear_error_logs', 'x');
+
+		if (!is_writable(dp_get_log_dir() . '/error.log')) {
+			return $this->renderStandardError('
+				Could not clear errors because the error log file is not writable. Make the file writable and try again.
+				You should also <a href="' . $this->generateUrl('admin_server_checks') . '">check your data directory is writable</a>.
+				<hr />
+				Error log file: ' . dp_get_log_dir() . '/error.log
+			');
+		}
+
 		@file_put_contents(dp_get_log_dir() . '/error.log', '');
 		return $this->redirectRoute('admin_server_error_logs');
 	}
