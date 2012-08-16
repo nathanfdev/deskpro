@@ -52,7 +52,7 @@ class Html
 	 * Results to render. First dimension is rows, second dimension are columns
 	 * in the row (with numbered, 1-based keys).
 	 *
-	 * @var mixed[mixed][int]
+	 * @var array
 	 */
 	protected $_results;
 
@@ -74,7 +74,7 @@ class Html
 
 	/**
 	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
-	 * @param mixed[mixed][int] $results
+	 * @param array $results
 	 */
 	public function __construct(ResultHandler $resultHandler, array $results)
 	{
@@ -102,7 +102,7 @@ class Html
 	 * Renders results with a SPLIT clause into however many tables
 	 * are needed.
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
@@ -143,7 +143,7 @@ class Html
 	/**
 	 * Renders a table with the specified rows/data.
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
@@ -175,7 +175,7 @@ class Html
 	/**
 	 * Renders the header row (for a simple table).
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
@@ -195,7 +195,7 @@ class Html
 	/**
 	 * Renders the body of a "simple" table.
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
@@ -214,7 +214,7 @@ class Html
 	/**
 	 * Analyzes the rows of a "simple" table to determine row spans.
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 */
 	protected function _analyzeRows(array $rows)
 	{
@@ -228,7 +228,7 @@ class Html
 			foreach ($rows AS $row) {
 				$groupParts = array();
 				foreach ($groupColumns AS $column) {
-					$groupParts[] = $this->_renderCellValue($row, $column);
+					$groupParts[] = $this->_getColumnValue($row, $column['groupResultId']);
 					$groupPath = $this->_getGroupPathKey($groupParts);
 
 					if (isset($rowSpans[$groupPath])) {
@@ -256,8 +256,7 @@ class Html
 		$cells = array();
 
 		foreach ($this->_handler->getGroupYColumns() AS $column) {
-			$rendered = $this->_renderCellValue($row, $column);
-			$groupParts[] = $rendered;
+			$groupParts[] = $this->_getColumnValue($row, $column['groupResultId']);
 
 			$groupPath = $this->_getGroupPathKey($groupParts);
 
@@ -269,6 +268,7 @@ class Html
 					: ''
 				);
 
+				$rendered = $this->_renderCellValue($row, $column);
 				$cells[] = "<th$rowSpan>$rendered</th>";
 			}
 		}
@@ -307,9 +307,22 @@ class Html
 	}
 
 	/**
+	 * Gets the value of a particular column for the given row.
+	 *
+	 * @param array $row
+	 * @param integer $id
+	 *
+	 * @return string
+	 */
+	protected function _getColumnValue(array $row, $id)
+	{
+		return ($id ? $row[$id - 1] : '');
+	}
+
+	/**
 	 * Renders a matrix table (with X and Y grouping).
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
@@ -331,7 +344,7 @@ class Html
 	 *  - yDistinct[pathString][renderedValue] = true -- used to find distinct values over Y grouping
 	 *  - lookup[yPath][xPath] = cell value -- value for cell at the y/x position specified
 	 *
-	 * @param mixed[mixed][int] $rows
+	 * @param array $rows
 	 *
 	 * @return array
 	 */
@@ -349,21 +362,21 @@ class Html
 			$xPath = array('root');
 			foreach ($groupXColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($xPath);
-				$rendered = $this->_renderCellValue($row, $column);
+				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
 
-				$distinctXValues[$pathString][$rendered] = true;
+				$distinctXValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
 
-				$xPath[] = $rendered;
+				$xPath[] = $groupValue;
 			}
 
 			$yPath = array('root');
 			foreach ($groupYColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($yPath);
-				$rendered = $this->_renderCellValue($row, $column);
+				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
 
-				$distinctYValues[$pathString][$rendered] = true;
+				$distinctYValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
 
-				$yPath[] = $rendered;
+				$yPath[] = $groupValue;
 			}
 
 			$lookup[$this->_getGroupPathKey($yPath)][$this->_getGroupPathKey($xPath)] =
@@ -432,9 +445,9 @@ class Html
 		$nextDepth = $depth + 1;
 		$depthHtml = array();
 
-		foreach ($distinctValues[$pathLookup] AS $value => $null) {
+		foreach ($distinctValues[$pathLookup] AS $groupValue => $printValue) {
 			$localPath = $path;
-			$localPath[] = $value;
+			$localPath[] = $groupValue;
 
 			$child = $this->_renderMatrixHeaderRecur($localPath, $distinctValues, $nextDepth);
 
@@ -448,7 +461,7 @@ class Html
 			$colSpan += max(1, $child['colSpan']);
 
 			$colSpanHtml = ($child['colSpan'] > 1 ? ' colspan="' . $child['colSpan'] . '"' : '');
-			$valueHtml = "<th$colSpanHtml>$value</th>";
+			$valueHtml = "<th$colSpanHtml>$printValue</th>";
 
 			$siblings[] = $valueHtml;
 		}
@@ -505,7 +518,7 @@ class Html
 	 * @param array $path Grouping path to this point
 	 * @param array $yDistinct Distinct values in the Y direction
 	 *
-	 * @return array[string] HTML for each unique row of Y grouping columns
+	 * @return array HTML for each unique row of Y grouping columns
 	 */
 	protected function _getMatrixRowGroups(array $path, array $yDistinct)
 	{
@@ -515,18 +528,18 @@ class Html
 		}
 
 		$output = array();
-		foreach ($yDistinct[$pathString] AS $value => $null) {
+		foreach ($yDistinct[$pathString] AS $groupValue => $printValue) {
 			$localPath = $path;
-			$localPath[] = $value;
+			$localPath[] = $groupValue;
 
 			$children = $this->_getMatrixRowGroups($localPath, $yDistinct);
 			if (!$children) {
-				$output[$this->_getGroupPathKey($localPath)] = '<th>' . htmlspecialchars($value) . '</th>';
+				$output[$this->_getGroupPathKey($localPath)] = '<th>' . $printValue . '</th>';
 			} else {
 				$rowSpan = count($children);
 				$rowSpanHtml = ($rowSpan > 1 ? " rowspan=\"$rowSpan\"" : '');
 
-				$first = '<th' . $rowSpanHtml . '>' . htmlspecialchars($value) . '</th>';
+				$first = '<th' . $rowSpanHtml . '>' . $printValue . '</th>';
 
 				foreach ($children AS $key => $child) {
 					$output[$key] = $first . $child;

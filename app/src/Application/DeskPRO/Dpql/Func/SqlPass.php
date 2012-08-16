@@ -49,7 +49,7 @@ class SqlPass extends AbstractFunc
 	 * they can take. If it's an integer, it must take exactly that many args.
 	 * If it's an array, that range will be accepted; -1 represents infinity.
 	 *
-	 * @var mixed[string]
+	 * @var array
 	 */
 	protected static $_functions = array(
 		'ABS' => 1,
@@ -57,6 +57,7 @@ class SqlPass extends AbstractFunc
 		'CEILING' => 1,
 		'CONCAT' => array(2, -1),
 		'CONCAT_WS' => array(3, -1),
+		'CHAR_LENGTH' => 1,
 		'DATE' => 1,
 		'DATEDIFF' => 2,
 		'DAY' => 1,
@@ -74,6 +75,7 @@ class SqlPass extends AbstractFunc
 		'LAST_DAY' => 1,
 		'LEAST' => array(2, -1),
 		'LEFT' => 2,
+		'LENGTH' => 1,
 		'LOCATE' => array(2, 3),
 		'LOWER' => 1,
 		'LPAD' => 3,

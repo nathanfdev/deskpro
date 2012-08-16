@@ -48,6 +48,9 @@ class ResultHandler
 	 *  - resultId: Column number from the SQL results used to display
 	 *  - renderer: Null for default behavior, or a closure to control how to render the column
 	 *
+	 * Grouping arrays need these keys as well:
+	 *  - groupResultId: Column number from SQL results that's used to group
+	 *
 	 * @var array[int]
 	 */
 	protected $_columns = array();
@@ -115,13 +118,15 @@ class ResultHandler
 	 * before the normal select columns.
 	 *
 	 * @param string $title
+	 * @param integer $groupResultId The ID of the column in the results that holds the grouping field value
 	 * @param integer $resultId
 	 * @param \Closure|null $renderer
 	 */
-	public function addGroupYColumn($title, $resultId, $renderer = null)
+	public function addGroupYColumn($title, $groupResultId, $resultId, $renderer = null)
 	{
 		$this->_groupYColumns[] = array(
 			'title' => $title,
+			'groupResultId' => $groupResultId,
 			'resultId' => $resultId,
 			'renderer' => $renderer
 		);
@@ -142,13 +147,15 @@ class ResultHandler
 	 * a matrix table.
 	 *
 	 * @param string $title
+	 * @param integer $groupResultId The ID of the column in the results that holds the grouping field value
 	 * @param integer $resultId
 	 * @param \Closure|null $renderer
 	 */
-	public function addGroupXColumn($title, $resultId, $renderer = null)
+	public function addGroupXColumn($title, $groupResultId, $resultId, $renderer = null)
 	{
 		$this->_groupXColumns[] = array(
 			'title' => $title,
+			'groupResultId' => $groupResultId,
 			'resultId' => $resultId,
 			'renderer' => $renderer
 		);

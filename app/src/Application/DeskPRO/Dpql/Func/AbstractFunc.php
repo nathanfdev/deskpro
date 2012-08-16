@@ -46,7 +46,7 @@ abstract class AbstractFunc
 	 * Maps DPQL function names (in all upper case) to class names
 	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
 	 *
-	 * @var string[string]
+	 * @var array
 	 */
 	protected static $_functionMap = array(
 		'COUNT' => 'Count',
@@ -71,7 +71,7 @@ abstract class AbstractFunc
 	/**
 	 * List of arguments for function
 	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[integer]
+	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
 	 */
 	protected $_arguments;
 

@@ -76,10 +76,16 @@ class Y extends AbstractFunc
 		foreach ($this->_arguments AS $arg) {
 			$groupBy = $arg->prepare($statement, $section, $childStack, $select, $result);
 			if ($groupBy->hasValue()) {
-				$id = $select->addSelectField($groupBy->printed());
+				$printId = $select->addSelectField($groupBy->printed());
 				$select->addGroupBy($groupBy->sql());
 
-				$result->addGroupYColumn($groupBy->name(), $id);
+				if ($groupBy->printed() === $groupBy->sql()) {
+					$groupId = $printId;
+				} else {
+					$groupId = $select->addSelectField($groupBy->sql());
+				}
+
+				$result->addGroupYColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
 			}
 		}
 

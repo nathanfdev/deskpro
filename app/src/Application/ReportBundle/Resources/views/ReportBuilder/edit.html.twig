@@ -16,7 +16,7 @@
 				<label>Title</label>
 			</div>
 			<div class="dp-form-input">
-				<input type="text" name="title" value="{{report.title}}" />
+				<input type="text" name="title" value="{{report.title}}" maxlength="255" />
 			</div>
 		</div>
 		<div class="dp-form-row">
@@ -42,7 +42,7 @@
 					<label>Unique Key</label>
 				</div>
 				<div class="dp-form-input">
-					<input type="text" name="unique_key" value="{{report.unique_key}}" />
+					<input type="text" name="unique_key" value="{{report.unique_key}}" maxlength="50" />
 					<div>If a unique key is specified, this will become a built-in report.</div>
 				</div>
 			</div>

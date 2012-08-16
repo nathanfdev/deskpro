@@ -48,7 +48,7 @@ abstract class AbstractPlaceholder
 	 * Maps placeholders from the DPQL reference (in upper case) to the name
 	 * of the class in the \Application\DeskPRO\Dpql\Placeholder namespace.
 	 *
-	 * @var string[string]
+	 * @var array
 	 */
 	protected static $_placeholderMap = array(
 		'LAST_MONTH' => 'LastMonth',

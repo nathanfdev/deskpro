@@ -383,10 +383,16 @@ class Display
 		foreach ($this->_groupBy AS $group) {
 			$groupBy = $group->prepare($this, 'group', array(), $sql, $this->_resultHandler);
 			if ($groupBy->hasValue()) {
-				$id = $sql->addSelectField($groupBy->printed());
+				$printId = $sql->addSelectField($groupBy->printed());
 				$sql->addGroupBy($groupBy->sql());
 
-				$this->_resultHandler->addGroupYColumn($groupBy->name(), $id, $groupBy->renderer());
+				if ($groupBy->printed() === $groupBy->sql()) {
+					$groupId = $printId;
+				} else {
+					$groupId = $sql->addSelectField($groupBy->sql());
+				}
+
+				$this->_resultHandler->addGroupYColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
 			}
 		}
 	}
