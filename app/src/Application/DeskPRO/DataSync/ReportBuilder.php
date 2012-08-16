@@ -25,24 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-if (php_sapi_name() !== 'cli') die('CLI only');
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Dpql
+ */
 
-ini_set('display_errors', true);
+namespace Application\DeskPRO\DataSync;
 
-chdir(__DIR__);
+use Application\DeskPRO\App;
 
-require_once 'PHP/LexerGenerator.php';
-$a = new PHP_LexerGenerator('Lexer.plex');
+/**
+ * Data sync handler for built in report builder queries.
+ */
+class ReportBuilder extends AbstractDataSync
+{
+	public function getTableName()
+	{
+		return 'report_builder';
+	}
 
-$contents = file_get_contents('Lexer.php');
-//$contents = preg_replace('#(throw new\s+)(Exception)#i', '$1\\\\$2', $contents);
-$contents = preg_replace_callback(
-	'#(' . preg_quote('$yy_global_pattern = \'') . ')(.*)' . '(\';)#siU',
-	function($match) {
-		return $match[1] . str_replace("'", "\\'", $match[2]) . $match[3];
-	},
-	$contents
-);
-file_put_contents('Lexer.php', $contents);
+	public function getKeyField()
+	{
+		return 'unique_key';
+	}
 
-echo 'Lexer build complete.' . PHP_EOL;
+	public function getSyncFields()
+	{
+		return array('title', 'description', 'query', 'category');
+	}
+
+	public function getDefaultInsertValues()
+	{
+		return array('is_custom' => 0, 'parent_id' => null);
+	}
+}
