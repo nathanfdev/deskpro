@@ -236,6 +236,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 			$ticket_message = new Entity\TicketMessage();
 			$ticket_message['creation_system'] = $this->creation_system;
+
+			if (strpos($this->creation_system, 'web.') === 0) {
+				$ticket_message->ip_address = App::getRequest()->getClientIp();
+				$ticket_message->visitor = App::getSession()->getVisitor();
+			}
+
 			$ticket_message['person']  = $person;
 			$ticket_message['ticket']  = $ticket;
 			if ($this->ticket->message_is_html) {

@@ -70,6 +70,8 @@ class NewReply
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 		$ticket_message->creation_system = 'web.person';
+		$ticket_message->ip_address = App::getRequest()->getClientIp();
+		$ticket_message->visitor = App::getSession()->getVisitor();
 
 		$attach = false;
 		if ($this->new_upload) {
