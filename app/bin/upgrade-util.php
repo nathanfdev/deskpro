@@ -2035,6 +2035,7 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 				exec($cmd, $out, $ret);
 
 				if ($ret) {
+					$out = implode("\n", $out);
 					echo $out;
 				}
 

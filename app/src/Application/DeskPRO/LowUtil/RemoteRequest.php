@@ -310,7 +310,10 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
 
 		$res = @file_get_contents($url, null, $context);
 
-		if (!$this->isSuccessResponse($http_response_header)) {
+		// $http_response_header is the magic var that'll have the headers from the above web request
+		// But if its not set, then it means the request failed
+
+		if (!isset($http_response_header) || !$this->isSuccessResponse($http_response_header)) {
 			throw new DeskPRO_LowUtil_Fetch_Exception("Server returned a non-success response code", DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
 		}
 
