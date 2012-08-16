@@ -56,6 +56,7 @@ if (!preg_match('#^[a-zA-Z0-9\-_][a-zA-Z0-9\-_.@]*$#', $cat)) {
 	exit(1);
 }
 
+$cat = strtolower($cat);
 $cat_dir = DP_SAVEMAIL_DIR . '/' . $cat;
 
 if (!is_dir($cat_dir)) {

@@ -91,7 +91,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		$gateway->title              = $address->match_pattern;
 		$gateway->connection_type    = EmailGateway::CONN_READDIR;
 		$gateway->connection_options = array(
-			'dir' => '%DP_DATA_DIR%/emailstore/' . $address->match_pattern
+			'dir' => '%DP_DATA_DIR%/emailstore/' . strtolower($address->match_pattern)
 		);
 		$gateway->gateway_type       = EmailGateway::GATEWAY_TICKETS;
 
