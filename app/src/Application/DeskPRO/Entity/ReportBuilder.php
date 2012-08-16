@@ -58,17 +58,53 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $unique_key = null;
 
+	/**
+	 * @var string
+	 */
 	protected $title = '';
+
+	/**
+	 * @var string
+	 */
 	protected $description = '';
 
+	/**
+	 * @var string
+	 */
 	protected $query = '';
 
+	/**
+	 * @var \Application\DeskPRO\Entity\ReportBuilder
+	 */
 	protected $parent = null;
 
-	protected $is_custom = 1;
+	/**
+	 * @var bool
+	 */
+	protected $is_custom = true;
 
+	/**
+	 * @var string|null
+	 */
 	protected $category = null;
 
+	/**
+	 * List of people that have favorited this.
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $favorited_by;
+
+	public function __construct()
+	{
+		$this->favorited_by = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * Gets the DPQL parts for this report's query
+	 *
+	 * @return array
+	 */
 	public function getParts()
 	{
 		$compiler = new \Application\DeskPRO\Dpql\Compiler();
@@ -77,9 +113,79 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		return $statement->getDpqlParts();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isEditable()
 	{
 		return ($this->is_custom || App::getConfig('debug.dev'));
+	}
+
+	/**
+	 * Quick lookup handler to determine if a particular user has favorited this
+	 *
+	 * @var array
+	 */
+	protected $_is_favorited = array();
+
+	/**
+	 * Returns true if the specified person has favorited this
+	 *
+	 * @param Person|null $person Defaults to current person
+	 *
+	 * @return bool
+	 */
+	public function isFavorited(Person $person = null)
+	{
+		if ($person === null) {
+			$person = App::getCurrentPerson();
+		}
+
+		$id = $person->id;
+
+		if (!isset($this->_is_favorited[$id])) {
+			$this->_is_favorited[$id] = $this->favorited_by->contains($person);
+		}
+
+		return $this->_is_favorited[$id];
+	}
+
+	/**
+	 * Sets the explicit favorited status for this report for the specified person.
+	 * This can be used to prevent separate lookup queries.
+	 *
+	 * @param Person $person
+	 * @param bool $value
+	 */
+	public function setFavoritedStatus(Person $person, $value)
+	{
+		$this->_is_favorited[$person->id] = (bool)$value;
+	}
+
+	/**
+	 * Adds a favorite for this report for the specified person
+	 *
+	 * @param Person $person
+	 *
+	 * @return bool
+	 */
+	public function addFavoritedPerson(Person $person)
+	{
+		$this->_is_favorited[$person->id] = true;
+		return $this->favorited_by->add($person);
+	}
+
+	/**
+	 * Removes the favorite status from this report for the specified person
+	 *
+	 * @param Person $person
+	 *
+	 * @return bool
+	 */
+	public function removeFavoritedPerson(Person $person)
+	{
+		$this->_is_favorited[$person->id] = false;
+		return $this->favorited_by->removeElement($person);
 	}
 
 	############################################################################
@@ -110,5 +216,6 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToMany(array( 'fieldName' => 'favorited_by', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'report_builder_favorite', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'report_builder_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }

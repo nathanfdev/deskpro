@@ -42,49 +42,86 @@ use Orb\Util\Numbers;
 
 class ReportBuilder extends AbstractEntityRepository
 {
-	public function getCustomReports()
+	/**
+	 * Gets all reports, including the favorited status for the current person
+	 *
+	 * @return \Application\DeskPRO\Entity\ReportBuilder[]
+	 */
+	public function getAllReports()
 	{
-		return $this->getEntityManager()->createQuery('
-			SELECT rb
+		$person = App::getCurrentPerson();
+
+		$results = $this->getEntityManager()->createQuery('
+			SELECT rb AS report, p.id
 			FROM DeskPRO:ReportBuilder rb
-			WHERE rb.is_custom = 1
+			LEFT JOIN rb.favorited_by p WITH p.id = :person_id
 			ORDER BY rb.title
-		')->execute();
+		')->execute(array('person_id' => $person->id));
+
+		$output = array();
+		foreach ($results AS $result) {
+			$report = $result['report'];
+			$report->setFavoritedStatus($person, $result['id'] !== null);
+
+			$output[] = $report;
+		}
+
+		return $output;
 	}
 
-	public function getGroupedBuiltInReports()
+	/**
+	 * Groups a list of reports for use in the reports list. Returns lists of
+	 * reports in these keys:
+	 *  - favorite: list of favorite reports for the current person
+	 *  - custom: list of custom reports
+	 *  - builtIn: grouped list of built-in reports. Grouped by printable name of the group.
+	 *
+	 * @param array $reports
+	 * @return array
+	 */
+	public function groupReportsList(array $reports)
 	{
-		$results = $this->getEntityManager()->createQuery('
-			SELECT rb
-			FROM DeskPRO:ReportBuilder rb
-			WHERE rb.is_custom = 0
-			ORDER BY rb.title
-		')->execute();
-
+		$favorites = array();
+		$custom = array();
+		$builtIn = array();
 		$categories = $this->getBuiltInCategories();
 
-		$groups = array();
-		foreach ($results AS $result)
-		{
-			if (isset($categories[$result->category])) {
-				$categoryId = $result->category;
-			} else {
-				$categoryId = '';
+		foreach ($reports AS $report) {
+			if ($report->isFavorited()) {
+				$favorites[] = $report;
 			}
-			$groups[$categoryId][] = $result;
+			if ($report->is_custom) {
+				$custom[] = $report;
+			} else {
+				if (isset($categories[$report->category])) {
+					$categoryId = $report->category;
+				} else {
+					$categoryId = '';
+				}
+				$builtIn[$categoryId][] = $report;
+			}
 		}
 
-		$groupsOrdered = array();
+		$builtInOrdered = array();
 		foreach ($categories AS $categoryId => $categoryName)
 		{
-			if (isset($groups[$categoryId])) {
-				$groupsOrdered[$categoryName] = $groups[$categoryId];
+			if (isset($builtIn[$categoryId])) {
+				$builtInOrdered[$categoryName] = $builtIn[$categoryId];
 			}
 		}
 
-		return $groupsOrdered;
+		return array(
+			'favorites' => $favorites,
+			'custom' => $custom,
+			'builtIn' => $builtInOrdered
+		);
 	}
 
+	/**
+	 * Gets the list of built-in report grouping categories.
+	 *
+	 * @return array
+	 */
 	public function getBuiltInCategories()
 	{
 		return array(
@@ -93,8 +130,11 @@ class ReportBuilder extends AbstractEntityRepository
 		);
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public function canManageBuiltInReports()
 	{
-		return App::getConfig('debug.dev');
+		return (bool)App::getConfig('debug.dev');
 	}
 }

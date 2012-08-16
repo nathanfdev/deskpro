@@ -295,5 +295,12 @@ $collection->add('report_builder_delete', new Route(
 	array()
 ));
 
+$collection->add('report_builder_favorite', new Route(
+	'/report-builder/{report_builder_id}/favorite',
+	array('_controller' => 'ReportBundle:ReportBuilder:favorite'),
+	array('report_builder_id' => '\\d+'),
+	array()
+));
+
 
 return $collection;

@@ -84,7 +84,7 @@ class ReportBuilderController extends AbstractController
 			$newReport->description = $report->description;
 			$newReport->query = $query;
 			$newReport->parent = $report;
-			$newReport->is_custom = 1;
+			$newReport->is_custom = true;
 
 			return $this->_getReportEditOutput($newReport);
 		}
@@ -125,6 +125,32 @@ class ReportBuilderController extends AbstractController
 		)));
 	}
 
+	public function favoriteAction($report_builder_id)
+	{
+		$report = $this->getReportOr404($report_builder_id);
+
+		$this->ensureAuthToken('report_builder_favorite', $this->in->getString('token'));
+
+		if ($this->in->getBool('favorite')) {
+			$report->addFavoritedPerson(App::getCurrentPerson());
+		} else {
+			$report->removeFavoritedPerson(App::getCurrentPerson());
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($report);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('report_builder_report', array('report_builder_id' => $report->id));
+	}
+
 	public function editAction($report_builder_id)
 	{
 		if ($report_builder_id) {
@@ -153,11 +179,11 @@ class ReportBuilderController extends AbstractController
 			$uniqueKey = $this->in->getString('unique_key');
 			if ($uniqueKey) {
 				$report->unique_key = $uniqueKey;
-				$report->is_custom = 0;
+				$report->is_custom = false;
 				$report->category = $this->in->getString('category');
 			} else {
 				$report->unique_key = null;
-				$report->is_custom = 1;
+				$report->is_custom = true;
 				$report->category = null;
 			}
 
@@ -272,9 +298,13 @@ class ReportBuilderController extends AbstractController
 	{
 		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
+		$reports = $rbRepository->getAllReports();
+		$grouped = $rbRepository->groupReportsList($reports);
+
 		$reportBuilderParams = array(
-			'customReports' => $rbRepository->getCustomReports(),
-			'builtInReports' => $rbRepository->getGroupedBuiltInReports()
+			'customReports' => $grouped['custom'],
+			'builtInReports' => $grouped['builtIn'],
+			'favoriteReports' => $grouped['favorites']
 		);
 
 		return array_merge($reportBuilderParams, $params);
