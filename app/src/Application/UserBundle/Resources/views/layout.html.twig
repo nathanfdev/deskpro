@@ -21,11 +21,11 @@
 	{% include 'UserBundle::layout-resources.html.twig' %}
 
 	{% if app.admin_portal_controls %}
-	<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
-	{{ dp_asset_html('agent_vendors') }}
-	{{ dp_asset_html('agent_common') }}
-	{{ dp_asset_html('user_portaladmin') }}
-	{{ dp_asset_html('user_portaladmin_css') }}
+		<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
+		{{ dp_asset_html('agent_vendors') }}
+		{{ dp_asset_html('agent_common') }}
+		{{ dp_asset_html('user_portaladmin') }}
+		{{ dp_asset_html('user_portaladmin_css') }}
 	{% endif %}
 
 	{% block head %}{% endblock %}
