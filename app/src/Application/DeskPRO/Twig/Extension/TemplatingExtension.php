@@ -144,6 +144,7 @@ class TemplatingExtension extends \Twig_Extension
 			'first' =>new \Twig_Filter_Method($this, 'getFirst'),
 			'last' =>new \Twig_Filter_Method($this, 'getLast'),
 			'filesize_display' =>new \Twig_Filter_Method($this, 'filesizeDisplay'),
+			'url_trim_scheme' => new \Twig_Filter_Method($this, 'urlTrimScheme'),
 
 			'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -903,5 +904,10 @@ class TemplatingExtension extends \Twig_Extension
 	public function dumpVar($var)
 	{
 		return \DeskPRO\Kernel\KernelErrorHandler::varToString($var);
+	}
+
+	public function urlTrimScheme($url)
+	{
+		return preg_replace('#^https?://#', '', $url);
 	}
 }

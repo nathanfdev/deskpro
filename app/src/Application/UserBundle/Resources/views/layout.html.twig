@@ -257,10 +257,10 @@
 	<!-- DeskPRO Chat Loader -->
 	<script type="text/javascript">
 	var DpChatWidget_Options = DpChatWidget_Options || {};
-	DpChatWidget_Options.staticUrl = '{{ asset_url('') }}';
-	DpChatWidget_Options.deskproUrl = '{{ url('user') }}';
-	DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpChatWidget_Options.currentPageUrl = window.location;
+	DpChatWidget_Options.protocol        = 'https:' == document.location.protocol ? 'https' : 'http';
+	DpChatWidget_Options.staticUrl       = DpChatWidget_Options.protocol + '://{{ asset_url('')|url_trim_scheme }}';
+	DpChatWidget_Options.deskproUrl      = DpChatWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
+	DpChatWidget_Options.currentPageUrl  = window.location;
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
 	{% if constant('DP_DEBUG') %}var DpChatWidget_EnableDebug = true;{% endif %}
 	{% if app.getSetting('user.chat_intercept_leaving_domains') %}
@@ -273,31 +273,16 @@
 
 	(function() {
 		var scr = document.createElement('script');
-		scr.src = '{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
+		scr.src = '//{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js')|url_trim_scheme }}';
 		scr.setAttribute('async', 'true');
 		document.documentElement.firstChild.appendChild(scr);
 	})();
 	</script>
 	<!-- /DeskPRO Chat Loader -->
 	{% endif %}
-
-	<!-- DeskPRO Widget -->
-	<script type="text/javascript">
-		var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
-		DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
-		DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
-		DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-		(function() {
-			var scr = document.createElement('script');
-			scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
-			scr.setAttribute('async', 'true');
-			document.documentElement.firstChild.appendChild(scr);
-		})();
-	</script>
-	<!-- /DeskPRO Widget -->
 {% endif %}
 
-{% if app.getSetting('core.show_share_widget') %}
+{% if app.getSetting('core.show_share_widget') and not app.admin_portal_controls %}
 	{% if app.getRequest().isSecure() %}
 		<script type="text/javascript" src="https://ws.sharethis.com/button/buttons.js"></script>
 	{% else %}
