@@ -34,7 +34,17 @@
 
 namespace Cloud\BillingBundle\Controller;
 
-abstract class LoginController extends \Application\BillingBundle\Controller\LoginController
+class LoginController extends \Application\BillingBundle\Controller\LoginController
 {
+	protected $tpl_prefix = 'CloudBillingBundle:Login';
 
+	/**
+	 * Handles showing the login form, and on POST handles login credentials
+	 * through the auth adapters.
+	 */
+	public function indexAction()
+	{
+		$url = $this->generateUrl('billing', array(), true);
+		return $this->render('CloudBillingBundle:Login:index.html.twig', array('return' => $url));
+	}
 }
