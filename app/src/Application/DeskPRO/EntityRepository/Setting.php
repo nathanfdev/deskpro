@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use \Doctrine\ORM\EntityRepository;
 use Orb\Util\Util;
 
-class Setting extends EntityRepository
+class Setting extends AbstractEntityRepository
 {
 	/**
 	 * Update a database setting.

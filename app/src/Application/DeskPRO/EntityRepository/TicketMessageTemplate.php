@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 use \Doctrine\ORM\EntityRepository;
 
-class TicketMessageTemplate extends EntityRepository
+class TicketMessageTemplate extends AbstractEntityRepository
 {
 	public function getTitles()
 	{

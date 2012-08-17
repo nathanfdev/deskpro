@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use \Doctrine\ORM\EntityRepository;
 use Orb\Util\Util;
 
-class Session extends EntityRepository
+class Session extends AbstractEntityRepository
 {
 	/**
 	 * Checks for active sessions (with standard chat timeout) for agents

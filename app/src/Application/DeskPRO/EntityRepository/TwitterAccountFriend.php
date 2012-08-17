@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class TwitterAccountFriend extends EntityRepository
+class TwitterAccountFriend extends AbstractEntityRepository
 {
 	/**
 	 * @param integer $accountId

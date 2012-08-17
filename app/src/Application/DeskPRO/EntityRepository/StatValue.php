@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class StatValue extends EntityRepository
+class StatValue extends AbstractEntityRepository
 {
 	/**
 	 * Get the StatValues for a Stat

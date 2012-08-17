@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
 use Orb\Util\Numbers;
 
-class OrganizationEmailDomain extends \Doctrine\ORM\EntityRepository
+class OrganizationEmailDomain extends AbstractEntityRepository
 {
 	/**
 	 * Get a org domain object by the domain

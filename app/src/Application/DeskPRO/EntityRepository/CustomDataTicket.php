@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDataTicket extends EntityRepository
+class CustomDataTicket extends AbstractEntityRepository
 {
 	public function getDataForTicket(Entity\Ticket $ticket)
 	{

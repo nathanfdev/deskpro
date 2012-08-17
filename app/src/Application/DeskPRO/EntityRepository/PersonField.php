@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class PersonField extends EntityRepository
+class PersonField extends AbstractEntityRepository
 {
 	/**
 	 * @return array

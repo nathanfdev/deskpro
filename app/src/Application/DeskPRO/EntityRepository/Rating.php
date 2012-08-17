@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
-class Rating extends \Doctrine\ORM\EntityRepository
+class Rating extends AbstractEntityRepository
 {
 	public function getRatingsFor($object_type, $object_id)
 	{

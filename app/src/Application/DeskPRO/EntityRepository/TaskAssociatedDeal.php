@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class TaskAssociatedDeal extends EntityRepository
+class TaskAssociatedDeal extends AbstractEntityRepository
 {
 
 }

@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class PersonPref extends EntityRepository
+class PersonPref extends AbstractEntityRepository
 {
 	/**
 	 * Fetch all preferences in a related group. A group is defiend by some common

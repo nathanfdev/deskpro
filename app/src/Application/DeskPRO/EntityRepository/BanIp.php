@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class BanIp extends EntityRepository
+class BanIp extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of IPs suitable for display

@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class Currency extends EntityRepository
+class Currency extends AbstractEntityRepository
 {
 
 }

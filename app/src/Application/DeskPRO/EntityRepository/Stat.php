@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class Stat extends EntityRepository
+class Stat extends AbstractEntityRepository
 {
 
 	/**
@@ -143,7 +143,7 @@ class Stat extends EntityRepository
 	 * @param array $stat_ids The Stat ids
 	 * @return ArrayCollection
 	 */
-	public function getByIds($stat_ids)
+	public function getByIds($stat_ids, $keep_order = false)
 	{
 		if (0 === count($stat_ids)) {
 			return array();

@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class PersonNote extends EntityRepository
+class PersonNote extends AbstractEntityRepository
 {
 	public function getNotesForPerson(PersonEntity $person)
 	{

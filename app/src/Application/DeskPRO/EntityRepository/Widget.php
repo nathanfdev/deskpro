@@ -39,7 +39,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class Widget extends EntityRepository
+class Widget extends AbstractEntityRepository
 {
 	public function getWidgetsForSection($section)
 	{

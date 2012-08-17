@@ -41,7 +41,7 @@ use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 
 use Doctrine\ORM\EntityRepository;
 
-class ClientMessage extends EntityRepository
+class ClientMessage extends AbstractEntityRepository
 {
 	/**
 	 * Get message data suitable to return

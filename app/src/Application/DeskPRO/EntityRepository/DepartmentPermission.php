@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
 use Orb\Util\Numbers;
 
-class DepartmentPermission extends EntityRepository
+class DepartmentPermission extends AbstractEntityRepository
 {
 	/**
 	 * Get an array of department IDs this user has permission to see

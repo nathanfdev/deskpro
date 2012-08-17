@@ -42,7 +42,7 @@ use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 //use Application\DeskPRO\Entity\Deal;
 
-class DealNote extends EntityRepository
+class DealNote extends AbstractEntityRepository
 {
         public function getNotesForDeal($deal)
 	{

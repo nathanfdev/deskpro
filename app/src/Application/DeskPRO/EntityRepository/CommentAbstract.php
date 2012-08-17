@@ -41,11 +41,11 @@ use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 use Doctrine\ORM\EntityRepository;
 
-class CommentAbstract extends EntityRepository
+class CommentAbstract extends AbstractEntityRepository
 {
 	const FIELD = '';
 
-	public function getByIds(array $ids)
+	public function getByIds(array $ids, $keep_order = false)
 	{
 		if (!$ids) return array();
 

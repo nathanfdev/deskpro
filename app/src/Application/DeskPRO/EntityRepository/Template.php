@@ -39,7 +39,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class Template extends EntityRepository
+class Template extends AbstractEntityRepository
 {
 	public function getTemplateForStyle($template_name, $style = null)
 	{

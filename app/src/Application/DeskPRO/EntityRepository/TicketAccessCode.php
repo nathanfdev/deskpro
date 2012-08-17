@@ -40,7 +40,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class TicketAccessCode extends EntityRepository
+class TicketAccessCode extends AbstractEntityRepository
 {
 	public function findByAccessCode($access_code)
 	{

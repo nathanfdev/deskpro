@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class OrganizationNote extends EntityRepository
+class OrganizationNote extends AbstractEntityRepository
 {
 	public function getNotesForOrganization(OrganizationEntity $org)
 	{

@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FeedbackStatusCategory as FeedbackStatusCategoryEntity;
 
-class FeedbackStatusCategory extends EntityRepository
+class FeedbackStatusCategory extends AbstractEntityRepository
 {
 	protected $active_cats = null;
 	protected $closed_cats = null;

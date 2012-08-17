@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class UserRule extends EntityRepository
+class UserRule extends AbstractEntityRepository
 {
 	/**
 	 * Find all matching rules on an email address

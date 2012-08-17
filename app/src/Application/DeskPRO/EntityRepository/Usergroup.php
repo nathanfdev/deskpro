@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class Usergroup extends EntityRepository
+class Usergroup extends AbstractEntityRepository
 {
 	protected $_usergroup_names = null;
 	protected $_agent_usergroup_names = null;
@@ -123,7 +123,7 @@ class Usergroup extends EntityRepository
 		return $this->_agent_usergroup_names;
 	}
 
-	public function getByIds(array $ids)
+	public function getByIds(array $ids, $keep_order = false)
 	{
 		if (!$ids) return array();
 

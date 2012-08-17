@@ -40,7 +40,7 @@ use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Orb\Util\Arrays;
 
-class TicketFilterSubscription extends EntityRepository
+class TicketFilterSubscription extends AbstractEntityRepository
 {
 	public function getForAgent(PersonEntity $person)
 	{

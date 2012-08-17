@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 
-class ArticlePendingCreate extends EntityRepository
+class ArticlePendingCreate extends AbstractEntityRepository
 {
 	public function getPendingArticles()
 	{
@@ -55,7 +55,7 @@ class ArticlePendingCreate extends EntityRepository
 	}
 
 
-	public function getByIds(array $ids)
+	public function getByIds(array $ids, $keep_order = false)
 	{
 		$ids = Arrays::castToType($ids, 'int');
 		$ids = Arrays::removeFalsey($ids);

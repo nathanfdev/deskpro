@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
-class TicketTrigger extends EntityRepository
+class TicketTrigger extends AbstractEntityRepository
 {
 	/**
 	 * Get all event-based triggers (that is, not time-based)

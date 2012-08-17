@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class DealType extends EntityRepository
+class DealType extends AbstractEntityRepository
 {
  
 }

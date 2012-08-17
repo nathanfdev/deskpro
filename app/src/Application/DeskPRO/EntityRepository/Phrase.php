@@ -39,7 +39,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class Phrase extends EntityRepository
+class Phrase extends AbstractEntityRepository
 {
 	public function getPhraseForLanguage($phrase_name, $language = null)
 	{

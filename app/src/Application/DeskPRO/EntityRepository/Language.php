@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class Language extends EntityRepository
+class Language extends AbstractEntityRepository
 {
 	protected $lang_titles = null;
 	protected $default_lang = null;

@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use Doctrine\ORM\EntityRepository;
 
-class Usersource extends EntityRepository
+class Usersource extends AbstractEntityRepository
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Usersource[]

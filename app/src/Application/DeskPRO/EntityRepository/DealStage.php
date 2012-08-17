@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class DealStage extends EntityRepository
+class DealStage extends AbstractEntityRepository
 {
     public function getDealStagesByDealType($deal_type_id)
     {

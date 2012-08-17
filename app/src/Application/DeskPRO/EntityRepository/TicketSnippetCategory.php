@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 
 use Orb\Util\Arrays;
 
-class TicketSnippetCategory extends \Doctrine\ORM\EntityRepository
+class TicketSnippetCategory extends AbstractEntityRepository
 {
 	public function getCatsForAgent(PersonEntity $agent)
 	{

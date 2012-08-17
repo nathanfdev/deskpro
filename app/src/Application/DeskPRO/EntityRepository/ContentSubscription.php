@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class ContentSubscription extends EntityRepository
+class ContentSubscription extends AbstractEntityRepository
 {
 	/**
 	 * Get a subscription for a type of content

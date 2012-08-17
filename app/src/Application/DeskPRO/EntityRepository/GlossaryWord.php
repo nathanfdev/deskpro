@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use Doctrine\ORM\EntityRepository;
 
-class GlossaryWord extends EntityRepository
+class GlossaryWord extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of all words

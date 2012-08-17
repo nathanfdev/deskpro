@@ -39,7 +39,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketPageDisplay as TicketPageDisplayEntity;
 use Doctrine\ORM\EntityRepository;
 
-class TicketPageDisplay extends EntityRepository
+class TicketPageDisplay extends AbstractEntityRepository
 {
 	public function getFromZone($zone, $department_context = null)
 	{

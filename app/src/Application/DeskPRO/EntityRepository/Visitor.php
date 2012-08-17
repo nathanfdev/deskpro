@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity;
 use \Doctrine\ORM\EntityRepository;
 use Orb\Util\Util;
 
-class Visitor extends EntityRepository
+class Visitor extends AbstractEntityRepository
 {
 	/**
 	 * @return Visitor

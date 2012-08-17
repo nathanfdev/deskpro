@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class EmailTransport extends EntityRepository
+class EmailTransport extends AbstractEntityRepository
 {
 	public function findAll()
 	{

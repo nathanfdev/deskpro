@@ -7,6 +7,6 @@ use Doctrine\ORM\EntityRepository;
 /**
  * FeedbackAttachment
  */
-class FeedbackAttachment extends EntityRepository
+class FeedbackAttachment extends AbstractEntityRepository
 {
 }

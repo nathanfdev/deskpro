@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class ClientChannelSubscription extends EntityRepository
+class ClientChannelSubscription extends AbstractEntityRepository
 {
 	public function getSubscriptionsForClient($session_id)
 	{

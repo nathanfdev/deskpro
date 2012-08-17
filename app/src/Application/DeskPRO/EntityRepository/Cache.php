@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class Cache extends EntityRepository
+class Cache extends AbstractEntityRepository
 {
 	public function load($id)
 	{

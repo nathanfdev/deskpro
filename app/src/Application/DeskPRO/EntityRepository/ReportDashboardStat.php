@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class ReportDashboardStat extends EntityRepository
+class ReportDashboardStat extends AbstractEntityRepository
 {
 	
 	/**

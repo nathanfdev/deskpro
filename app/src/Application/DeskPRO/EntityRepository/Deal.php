@@ -41,7 +41,8 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class Deal extends EntityRepository {
+class Deal extends AbstractEntityRepository
+{
 
     /**
      * Find pending tasks assigned to the person.

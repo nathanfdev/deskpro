@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use Orb\Util\Arrays;
 
-class TicketAttachment extends \Doctrine\ORM\EntityRepository
+class TicketAttachment extends AbstractEntityRepository
 {
 	/**
 	 * Get attachments for a ticket

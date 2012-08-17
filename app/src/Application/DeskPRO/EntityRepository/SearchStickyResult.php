@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class SearchStickyResult extends EntityRepository
+class SearchStickyResult extends AbstractEntityRepository
 {
 	public function getWordsForObject($object)
 	{

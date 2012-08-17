@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class LogItem extends EntityRepository
+class LogItem extends AbstractEntityRepository
 {
 	public function findBySn($log_sn)
 	{

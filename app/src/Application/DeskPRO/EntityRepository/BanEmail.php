@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class BanEmail extends EntityRepository
+class BanEmail extends AbstractEntityRepository
 {
 	/**
 	 * Get a list of emails suitable for display

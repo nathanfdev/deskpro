@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
-class PersonActivity extends \Doctrine\ORM\EntityRepository
+class PersonActivity extends AbstractEntityRepository
 {
 	public function getForPerson(PersonEntity $person, $max = 30, $offset = 0)
 	{

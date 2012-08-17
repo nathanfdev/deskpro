@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 
-class SearchLog extends EntityRepository
+class SearchLog extends AbstractEntityRepository
 {
 	public function getRatedSearchesFor($object_type, $object_id, $structure = 'all')
 	{
@@ -132,7 +132,7 @@ class SearchLog extends EntityRepository
 		");
 	}
 
-	public function getByIds(array $ids)
+	public function getByIds(array $ids, $keep_order = false)
 	{
 		$ids = Arrays::castToType($ids, 'int');
 		if (!$ids) {

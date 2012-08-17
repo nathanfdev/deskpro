@@ -44,7 +44,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 
-class TicketFeedback extends EntityRepository
+class TicketFeedback extends AbstractEntityRepository
 {
 	/**
 	 * Get a feedback object for a message by a given person.

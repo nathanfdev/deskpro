@@ -38,6 +38,6 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class TwitterAccount extends EntityRepository
+class TwitterAccount extends AbstractEntityRepository
 {
 }

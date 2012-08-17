@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class EmailGatewayAddress extends EntityRepository
+class EmailGatewayAddress extends AbstractEntityRepository
 {
 	public function getOptions()
 	{

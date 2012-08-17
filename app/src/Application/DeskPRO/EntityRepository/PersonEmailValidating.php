@@ -36,7 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-class PersonEmailValidating extends \Doctrine\ORM\EntityRepository
+class PersonEmailValidating extends AbstractEntityRepository
 {
 	public function getForPerson($person)
 	{

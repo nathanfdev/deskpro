@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class PersonUsersourceAssoc extends EntityRepository
+class PersonUsersourceAssoc extends AbstractEntityRepository
 {
 	/**
 	 * Finds the PersonUsersourceAssoc for a given identity.

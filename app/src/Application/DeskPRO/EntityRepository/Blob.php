@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class Blob extends EntityRepository
+class Blob extends AbstractEntityRepository
 {
 	/**
 	 * Get a blob by a combined ID/authcode

@@ -39,7 +39,7 @@ use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
 
-class TicketFilter extends EntityRepository
+class TicketFilter extends AbstractEntityRepository
 {
 	public function getAllForActiveAgents()
 	{

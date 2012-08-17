@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class TicketMacro extends EntityRepository
+class TicketMacro extends AbstractEntityRepository
 {
 	public function getMacrosForPerson(Entity\Person $person)
 	{

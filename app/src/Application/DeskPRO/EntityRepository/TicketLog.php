@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity;
 
 use \Doctrine\ORM\EntityRepository;
 
-class TicketLog extends EntityRepository
+class TicketLog extends AbstractEntityRepository
 {
 	public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
 	{

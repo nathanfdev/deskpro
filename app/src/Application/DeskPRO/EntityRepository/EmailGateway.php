@@ -40,7 +40,7 @@ use Application\DeskPRO\App;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
-class EmailGateway extends EntityRepository
+class EmailGateway extends AbstractEntityRepository
 {
 	protected $_gateway_names = null;
 

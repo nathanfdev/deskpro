@@ -41,7 +41,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 
-class TicketFlagged extends EntityRepository
+class TicketFlagged extends AbstractEntityRepository
 {
 	public function getFlagForTicket($ticket, Entity\Person $person)
 	{

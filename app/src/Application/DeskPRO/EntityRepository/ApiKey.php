@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 use \Doctrine\ORM\EntityRepository;
 
-class ApiKey extends EntityRepository
+class ApiKey extends AbstractEntityRepository
 {
 	/**
 	 * Find an API key based off of a key string. A key string is: "id:code"

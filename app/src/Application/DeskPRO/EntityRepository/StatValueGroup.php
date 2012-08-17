@@ -37,7 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class StatValueGroup extends EntityRepository
+class StatValueGroup extends AbstractEntityRepository
 {
 	/**
 	 * Get the references Id's for a StatValue

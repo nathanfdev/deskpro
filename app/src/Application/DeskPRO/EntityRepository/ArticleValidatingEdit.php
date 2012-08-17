@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\Article as ArticleEntity;
 
 use Doctrine\ORM\EntityRepository;
 
-class ArticleValidatingEdit extends EntityRepository
+class ArticleValidatingEdit extends AbstractEntityRepository
 {
 	public function getEditForArticle(ArticleEntity $article, PersonEntity $person = null)
 	{

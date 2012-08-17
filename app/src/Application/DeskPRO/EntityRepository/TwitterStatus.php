@@ -40,7 +40,7 @@ use \Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Numbers;
 
-class TwitterStatus extends EntityRepository
+class TwitterStatus extends AbstractEntityRepository
 {
 	/**
 	 * @param string $sortByDate (optional)
