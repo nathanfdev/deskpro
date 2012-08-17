@@ -95,11 +95,12 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	public function delete()
 	{
+		$affected_blobs = $this->db->fetchAllCol("SELECT id FROM blobs WHERE id = ? OR original_blob_id = ?", array($this->blob_id, $this->blob_id));
+
 		$this->db->beginTransaction();
 		$this->db->delete('blobs', array('id' => $this->blob_id));
 		$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
 
-		$affected_blobs = $this->db->fetchAllCol("SELECT id FROM blobs WHERE id = ? OR original_blob_id = ?", array($this->blob_id, $this->blob_id));
 		foreach ($affected_blobs as $bid) {
 			$this->db->delete('blobs', array('id' => $bid));
 			$this->db->delete('blobs_storage', array('blob_id' => $bid));
@@ -121,7 +122,17 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	public function write($data, $meta = null)
 	{
 		$this->db->beginTransaction();
+		try {
+			$this->_doWrite($data, $meta);
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+	}
 
+	protected function _doWrite($data, $meta = null)
+	{
 		if (!isset($meta[self::METADATA_FILEHASH])) {
 			$meta[self::METADATA_FILEHASH] = sha1($data);
 		}
@@ -192,8 +203,6 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			}
 		}
 		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
-
-		$this->db->commit();
 	}
 
 

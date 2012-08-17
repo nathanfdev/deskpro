@@ -157,8 +157,6 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	public function write($data, $meta = null)
 	{
-		$this->db->beginTransaction();
-
 		if (!isset($meta[self::METADATA_FILEHASH])) {
 			$meta[self::METADATA_FILEHASH] = sha1($data);
 		}
@@ -246,9 +244,8 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 				$metadata['is_temp'] = 1;
 			}
 		}
-		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
 
-		$this->db->commit();
+		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
 
 		$this->blob_info = null;
 	}

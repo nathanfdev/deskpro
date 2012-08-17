@@ -332,9 +332,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
-
 			App::getOrm()->commit();
 
 		} catch (\Exception $e) {
