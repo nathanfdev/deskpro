@@ -107,7 +107,7 @@ pageMeta.baseId = '{{ baseId }}';
 					'timeago': '<time class="timeago" datetime="' ~ download.date_created|date('c', 'UTC') ~'"></time>',
 					'name': download.person.display_name,
 					'date': '<time>' ~ download.date_created|date('fulltime') ~ '</time>'
-				}) }}
+				}, true) }}
 				</dd>
 			</dl>
 
