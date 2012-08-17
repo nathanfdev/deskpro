@@ -144,21 +144,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.bodyTabs);
 
 		if (this.meta.canEdit) {
-			// Name is editable
-			var name = $('h3.title.editable:first', this.wrapper);
-			if (!name.attr('id')) {
-				name.attr('id', Orb.getUniqueId());
-			}
-
-			var editable = new DeskPRO.Form.InlineEdit({
-				baseElement: this.wrapper,
-				ajax: {
-					url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save',
-					success: function(data) {
-						self.handleUnloadRevisions(data.revision_id);
-					}
-				}
-			});
+			var editTitle = new DeskPRO.Agent.PageFragment.Page.EditTitle(
+				this,
+				BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save'
+			);
 		}
 	},
 

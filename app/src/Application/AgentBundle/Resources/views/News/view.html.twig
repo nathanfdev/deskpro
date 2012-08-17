@@ -33,7 +33,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	<h4 class="id-number">#{{ news.id }}</h4>
-	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ news.title }}</h1>
+	<h1>
+		<span id="{{baseId}}_showname">{{ news.title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ news.title }}" /></span>
+		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
+		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+	</h1>
 	<div class="labels-line">
 		<input
 			type="hidden"
