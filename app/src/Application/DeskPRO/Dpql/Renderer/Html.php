@@ -201,87 +201,85 @@ class Html
 	 */
 	protected function _renderBody(array $rows)
 	{
-		$this->_analyzeRows($rows);
+		$groupColumns = $this->_handler->getGroupYColumns();
+		$selectColumns = $this->_handler->getSelectColumns();
+		$rows = array_values($rows); // need continuous keys
 
 		$rowsHtml = array();
-		foreach ($rows AS $row) {
-			$rowsHtml[] = $this->_renderRow($row);
+
+		$groupSkipCount = array();
+		foreach ($groupColumns AS $groupId => $groupColumn) {
+			$groupSkipCount[$groupId] = 0;
 		}
 
-		return implode("\n", $rowsHtml);
-	}
+		foreach ($rows AS $rowId => $row) {
+			$cells = array();
 
-	/**
-	 * Analyzes the rows of a "simple" table to determine row spans.
-	 *
-	 * @param array $rows
-	 */
-	protected function _analyzeRows(array $rows)
-	{
-		$this->_rowSpans = array();
-		$this->_rowGroupHit = array();
+			if ($groupColumns) {
+				$myGroupSkipCount = $groupSkipCount;
 
-		$groupColumns = $this->_handler->getGroupYColumns();
-		if ($groupColumns) {
-			$rowSpans = array();
+				$groupValues = array();
+				foreach ($groupColumns AS $groupId => $groupColumn) {
+					$groupValues[$groupId] = $this->_getColumnValue($row, $groupColumn['groupResultId']);
+				}
 
-			foreach ($rows AS $row) {
-				$groupParts = array();
-				foreach ($groupColumns AS $column) {
-					$groupParts[] = $this->_getColumnValue($row, $column['groupResultId']);
-					$groupPath = $this->_getGroupPathKey($groupParts);
+				$nextRowId = $rowId + 1;
+				if (isset($rows[$nextRowId])) {
+					$firstNonMatch = null;
+					for (; isset($rows[$nextRowId]); $nextRowId++) {
+						$nextRow = $rows[$nextRowId];
+						$matched = 0;
 
-					if (isset($rowSpans[$groupPath])) {
-						$rowSpans[$groupPath]++;
-					} else {
-						$rowSpans[$groupPath] = 1;
+						foreach ($groupColumns AS $groupId => $groupColumn) {
+							if ($firstNonMatch !== null && $firstNonMatch == $groupId) {
+								// can't go any further as this column doesn't match from before
+								break;
+							}
+
+							$groupValue = $this->_getColumnValue($nextRow, $groupColumn['groupResultId']);
+							if ($groupValues[$groupId] == $groupValue) {
+								$matched++;
+								if (!$myGroupSkipCount[$groupId]) {
+									// if there's a skip count for this, we don't need to increase it
+									// as it's already been accounted for
+									$groupSkipCount[$groupId]++;
+								}
+							} else {
+								$firstNonMatch = $groupId;
+								break;
+							}
+						}
+
+						if (!$matched) {
+							break;
+						}
 					}
+				}
+
+				foreach ($groupColumns AS $groupId => $groupColumn) {
+					if ($myGroupSkipCount[$groupId]) {
+						$groupSkipCount[$groupId]--;
+						continue;
+					}
+
+					$rowSpan = ($groupSkipCount[$groupId]
+						? ' rowspan="' . ($groupSkipCount[$groupId] + 1) . '"'
+						: ''
+					);
+					$rendered = $this->_renderCellValue($row, $groupColumn);
+
+					$cells[] = "<th$rowSpan>$rendered</th>";
 				}
 			}
 
-			$this->_rowSpans = $rowSpans;
-		}
-	}
-
-	/**
-	 * Renders the given row for a "simple" table.
-	 *
-	 * @param mixed[int] $row
-	 *
-	 * @return string
-	 */
-	protected function _renderRow(array $row)
-	{
-		$groupParts = array();
-		$cells = array();
-
-		foreach ($this->_handler->getGroupYColumns() AS $column) {
-			$groupParts[] = $this->_getColumnValue($row, $column['groupResultId']);
-
-			$groupPath = $this->_getGroupPathKey($groupParts);
-
-			if (empty($this->_rowGroupHit[$groupPath])) {
-				$this->_rowGroupHit[$groupPath] = true;
-
-				$rowSpan = ($this->_rowSpans[$groupPath] > 1
-					? ' rowspan="' . $this->_rowSpans[$groupPath] . '"'
-					: ''
-				);
-
-				$rendered = $this->_renderCellValue($row, $column);
-				$cells[] = "<th$rowSpan>$rendered</th>";
+			foreach ($selectColumns AS $column) {
+				$cells[] = '<td>' . $this->_renderCellValue($row, $column) . '</td>';
 			}
+
+			$rowsHtml[] = '<tr>' . implode("\n\t", $cells) . '</tr>';
 		}
 
-		foreach ($this->_handler->getSelectColumns() AS $column) {
-			$cells[] = '<td>' . $this->_renderCellValue($row, $column) . '</td>';
-		}
-
-		if ($cells) {
-			return '<tr>' . implode("\n\t", $cells) . '</tr>';
-		} else {
-			return '';
-		}
+		return implode("\n", $rowsHtml);
 	}
 
 	/**

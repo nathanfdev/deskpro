@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 
 /**
  * Represents a reference to an alias (@'Alias') in a DPQL statement.
@@ -72,6 +73,10 @@ class AliasRef extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
+		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
+			throw new Exception('Alias references may only be used in SPLIT BY, GROUP BY, and ORDER BY sections.');
+		}
+
 		$fieldId = $statement->getSqlSelectFieldId($this->alias);
 		$sql = ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
 
