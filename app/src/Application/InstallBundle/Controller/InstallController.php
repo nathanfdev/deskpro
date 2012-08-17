@@ -445,7 +445,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			} catch (\Exception $e) {
 				$this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
 
-				$html = deskpro_install_basic_error('There was a problem trying to create the first database table `install_data`: ' . $e->getCode() . ' ' . $e->getMessage());
+				$msg = 'There was a problem trying to create the first database table `install_data`: ' . $e->getCode() . ' ' . $e->getMessage();
+
+				if (strpos($e->getMessage(), 'access violation') !== false) {
+					$msg .= '<hr />This probably means you need to grant privileges to your MySQL user on your database with a command similar to this: ';
+					$msg .= '<pre>GRANT ALL PRIVILEGES ON `' . DP_DATABASE_NAME . '`.* TO \''.DP_DATABASE_USER.'\'@\'localhost\'</pre>';
+				}
+
+				$html = deskpro_install_basic_error($msg);
 				$res = new \Symfony\Component\HttpFoundation\Response($html);
 				$res->headers->set('Content-Type', 'text/html');
 				return $res;

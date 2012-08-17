@@ -669,14 +669,27 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if (!$tables) {
 			$logger->log(PHP_EOL . 'Welcome to the DeskPRO importer. Our first step is to install the DeskPRO v4 tables in your new database. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
 
-			$db->exec("
-				CREATE TABLE IF NOT EXISTS `install_data` (
-				  `build` varchar(30) NOT NULL,
-				  `name` varchar(75) NOT NULL DEFAULT '',
-				  `data` blob NOT NULL,
-				  PRIMARY KEY (`build`,`name`)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8
-			");
+			try {
+				$db->exec("
+					CREATE TABLE IF NOT EXISTS `install_data` (
+					  `build` varchar(30) NOT NULL,
+					  `name` varchar(75) NOT NULL DEFAULT '',
+					  `data` blob NOT NULL,
+					  PRIMARY KEY (`build`,`name`)
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8
+				");
+			} catch (\Exception $e) {
+				$logger->log('There was a problem trying to create the first database table `install_data`: ' . $e->getCode() . ' ' . $e->getMessage(), Logger::ERR);
+
+				if (strpos($e->getMessage(), 'access violation') !== false) {
+					echo "\n\n";
+					echo 'This probably means you need to grant privileges to your MySQL user on your database with a command similar to this: ';
+					echo "\n";
+					echo 'GRANT ALL PRIVILEGES ON `' . DP_DATABASE_NAME . '`.* TO \''.DP_DATABASE_USER.'\'@\'localhost\'';
+					echo "\n";
+				}
+				return 1;
+			}
 
 			$tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
 			if (stripos($tableinfo, 'innodb') === false) {
