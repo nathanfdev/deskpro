@@ -156,8 +156,17 @@ class BinaryComparison extends AbstractPart
 		$lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
 		$rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
 
-		$sql = "({$lhsRes->sql()} $operator {$rhsRes->sql()})";
-		return new Prepared($sql, "{$lhsRes->name()} $operator {$rhsRes->name()}");
+		$title = "{$lhsRes->name()} $operator {$rhsRes->name()}";
+
+		if ($rhs instanceof NullValue) {
+			if ($this->operator == Parser::T_OP_EQ) {
+				return new Prepared("({$lhsRes->sql()} IS NULL)", $title);
+			} else if ($this->operator == Parser::T_OP_NE) {
+				return new Prepared("({$lhsRes->sql()} IS NOT NULL)", $title);
+			}
+		}
+
+		return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title);
 	 }
 
 	/**

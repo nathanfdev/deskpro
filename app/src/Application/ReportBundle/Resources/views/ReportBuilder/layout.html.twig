@@ -18,7 +18,7 @@
 </style>
 {% endblock %}
 {% block page %}
-	<div style="float: left; width: 150px">
+	<div style="float: left; width: 200px">
 		<div><a href="{{ path('report_builder_new') }}">Create Report</a></div>
 
 		{% if favoriteReports %}
@@ -57,7 +57,8 @@
 		</ul>
 		{% endif %}
 	</div>
-	<div style="margin-left: 160px">
+	<div style="padding-left: 10px; overflow: auto">
 		{% block inner_page %}{% endblock %}
 	</div>
+	<div style="clear: both"></div>
 {% endblock %}

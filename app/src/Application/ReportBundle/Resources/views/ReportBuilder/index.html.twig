@@ -6,6 +6,9 @@
 			<div class="dp-form-input"><textarea name="query" style="height: 130px">{{ query }}</textarea></div>
 		</div>
 		<button class="btn primary">Run Query</button>
+		{% if statement and not errors %}
+			<button class="btn" name="save" value="1">Save as Report</button>
+		{% endif %}
 	</form>
 
 	{% if query %}

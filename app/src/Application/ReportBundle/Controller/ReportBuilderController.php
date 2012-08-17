@@ -47,11 +47,19 @@ class ReportBuilderController extends AbstractController
 			return $this->render('ReportBundle:ReportBuilder:index-disabled.html.twig', array());
 		}
 
+		$query = $this->in->getString('query');
+
+		if ($this->in->getBool('save')) {
+			$newReport = new ReportBuilder();
+			$newReport->query = $query;
+
+			return $this->_getReportEditOutput($newReport);
+		}
+
 		$statement = false;
 		$results = false;
 		$error = false;
 
-		$query = $this->in->getString('query');
 		if ($query) {
 			$results = $this->renderQuery($query, 'html', $error);
 			if (!$error) {
@@ -84,7 +92,13 @@ class ReportBuilderController extends AbstractController
 			$newReport->description = $report->description;
 			$newReport->query = $query;
 			$newReport->parent = $report;
-			$newReport->is_custom = true;
+			if ($this->em->getRepository('DeskPRO:ReportBuilder')->canManageBuiltInReports()) {
+				$newReport->is_custom = $report->is_custom;
+				$newReport->unique_key = $report->unique_key;
+				$newReport->category = $report->category;
+			} else {
+				$newReport->is_custom = true;
+			}
 
 			return $this->_getReportEditOutput($newReport);
 		}
@@ -181,18 +195,19 @@ class ReportBuilderController extends AbstractController
 				$report->unique_key = $uniqueKey;
 				$report->is_custom = false;
 				$report->category = $this->in->getString('category');
+				$report->parent = null;
 			} else {
 				$report->unique_key = null;
 				$report->is_custom = true;
 				$report->category = null;
-			}
 
-			$parentId = $this->in->getInteger('parent_id');
-			if ($parentId) {
-				$parent = $this->em->getRepository('DeskPRO:ReportBuilder')->find($parentId);
-				$report->parent = $parent ?: null;
-			} else {
-				$report->parent = null;
+				$parentId = $this->in->getInteger('parent_id');
+				if ($parentId) {
+					$parent = $this->em->getRepository('DeskPRO:ReportBuilder')->find($parentId);
+					$report->parent = $parent ?: null;
+				} else {
+					$report->parent = null;
+				}
 			}
 
 			if ($title === '') {

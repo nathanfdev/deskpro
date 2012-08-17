@@ -100,7 +100,7 @@ class Column extends AbstractPart
 		$table = array_shift($parts);
 
 		if (strtolower($table) != strtolower($statement->getFrom())) {
-			throw new Exception('Invalid table name in column reference.');
+			throw new Exception("Invalid table name in column reference (received $table, expected {$statement->getFrom()}).");
 		}
 
 		if (!$parts) {
@@ -208,7 +208,7 @@ class Column extends AbstractPart
 					}
 
 					$select->addJoin(
-						"$sqlTable|$childSqlTable",
+						"$joinAlias",
 						"LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (" . implode(' AND ', $joinConditions) . ")"
 					);
 
