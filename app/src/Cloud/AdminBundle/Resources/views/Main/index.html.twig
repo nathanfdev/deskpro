@@ -5,6 +5,17 @@
 	<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
 </ul>
 {% endblock %}
+{% block prepage %}
+	<section class="demo-notice">
+		<article>
+			Your DeskPRO helpdesk demo expires in <em class="days">{% if lic.getExpireDays() == 1 %}1 day{% else %}{{ lic.getExpireDays() }}{% endif %} days</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
+
+			<div class="enter-wrap">
+				<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
 {% block sidebar_right %}
 	<div class="dp-page-box">
 		<div class="resource-item-list">
@@ -81,8 +92,6 @@
 					<td class="title">Demo License</td>
 					<td class="prop">
 						Expires {{ lic.getExpireDate()|date('day') }}
-						&nbsp;&nbsp;
-						<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Sign Up Now</a>
 					</td>
 				</tr>
 			{% endif %}

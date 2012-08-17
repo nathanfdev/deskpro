@@ -403,6 +403,7 @@ final class License
 
 		if ($this->isCloud()) {
 			$this->data['agents'] = \DPC_AGENTS;
+			$this->data['demo'] = true;
 			if (defined('DPC_DEMO_EXPIRE') && \DPC_DEMO_EXPIRE) {
 				$this->data['expire'] = \DPC_DEMO_EXPIRE;
 			}
@@ -444,7 +445,22 @@ final class License
 			return null;
 		}
 
-		return new \DateTime("@" . $this->data['expire']);
+		static $d;
+		if (!$d) {
+			$d = new \DateTime("@" . $this->data['expire']);
+		}
+
+		return $d;
+	}
+
+	public function getExpireDays()
+	{
+		$d = $this->getExpireDate();
+		if (!$d) {
+			return null;
+		}
+
+		return $d->diff(new \DateTime())->days;
 	}
 
 	public function isPastExpireDate()
