@@ -189,6 +189,16 @@ class SqlSelect
 	}
 
 	/**
+	 * Sets all conditions
+	 *
+	 * @param array $conditions
+	 */
+	public function setConditions(array $conditions)
+	{
+		$this->_conditions = $conditions;
+	}
+
+	/**
 	 * @param string $condition
 	 */
 	public function addCondition($condition)

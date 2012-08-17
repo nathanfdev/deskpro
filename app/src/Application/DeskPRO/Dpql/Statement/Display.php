@@ -231,6 +231,7 @@ class Display
 			if ($this->_splitColumnMap) {
 				$this->_splitSql->setTable($this->_sql->getTable());
 				$this->_splitSql->setJoins($this->_sql->getJoins());
+				$this->_splitSql->setConditions($this->_sql->getConditions());
 
 				$splitResults = $db->executeQuery($this->_splitSql->toSql())->fetchAll(\PDO::FETCH_NUM);
 				foreach ($splitResults AS $splitResult)
