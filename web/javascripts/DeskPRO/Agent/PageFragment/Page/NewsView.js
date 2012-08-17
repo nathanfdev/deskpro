@@ -153,7 +153,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			var editable = new DeskPRO.Form.InlineEdit({
 				baseElement: this.wrapper,
 				ajax: {
-					url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save',
+					url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save',
 					success: function(data) {
 						self.handleUnloadRevisions(data.revision_id);
 					}
