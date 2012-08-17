@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\Dpql\ResultHandler;
+use Application\DeskPRO\Dpql\Results;
 
 /**
  * Renders DPQL results to HTML.
@@ -49,10 +50,9 @@ class Html
 	protected $_handler;
 
 	/**
-	 * Results to render. First dimension is rows, second dimension are columns
-	 * in the row (with numbered, 1-based keys).
+	 * Results to render.
 	 *
-	 * @var array
+	 * @var \Application\DeskPRO\Dpql\Results
 	 */
 	protected $_results;
 
@@ -74,9 +74,9 @@ class Html
 
 	/**
 	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
-	 * @param array $results
+	 * @param \Application\DeskPRO\Dpql\Results $results
 	 */
-	public function __construct(ResultHandler $resultHandler, array $results)
+	public function __construct(ResultHandler $resultHandler, Results $results)
 	{
 		$this->_handler = $resultHandler;
 		$this->_results = $results;
@@ -92,9 +92,17 @@ class Html
 		$splitColumns = $this->_handler->getSplitColumns();
 
 		if ($splitColumns) {
-			return $this->renderSplitTable($this->_results);
+			$output = array();
+			foreach ($this->_results->getSplitResults() AS $splitResult) {
+				$table = $this->renderSplitTable($splitResult);
+				if ($table) {
+					$output[] = $table;
+				}
+			}
+
+			return implode("\n\n", $output);
 		} else {
-			return $this->renderTable($this->_results);
+			return $this->renderTable($this->_results->getResults());
 		}
 	}
 
@@ -102,14 +110,27 @@ class Html
 	 * Renders results with a SPLIT clause into however many tables
 	 * are needed.
 	 *
-	 * @param array $rows
+	 * @param array $splitResults Key 0 is rows in table, 1 is columns in split query
 	 *
 	 * @return string
 	 */
-	public function renderSplitTable(array $rows)
+	public function renderSplitTable(array $splitResult)
 	{
 		$splitColumns = $this->_handler->getSplitColumns();
-		$splitResults = array();
+
+		$table = $this->renderTable($splitResult[0]);
+		if (!$table) {
+			return '';
+		}
+
+		$splitPrint = array();
+		foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
+			$splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
+		}
+
+		return $this->renderSplitHeader(implode(' / ', $splitPrint)) . "\n" . $table;
+
+		/*$splitResults = array();
 
 		foreach ($rows AS $key => $row) {
 			$splitId = array();
@@ -122,10 +143,10 @@ class Html
 		$output = '';
 		foreach ($splitResults AS $splitTitle => $splitResult) {
 			$output .= $this->renderSplitHeader($splitTitle)
-				. "\n" . $this->renderTable($splitResult);
+				. "\n" . $this->renderTable($splitResults[0]);
 		}
 
-		return $output;
+		return $output;*/
 	}
 
 	/**

@@ -38,6 +38,7 @@ use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Results;
 
 /**
  * Object for a DISPLAY statement in DPQL.
@@ -113,6 +114,20 @@ class Display
 	 * @var \Application\DeskPRO\Dpql\SqlSelect
 	 */
 	protected $_sql;
+
+	/**
+	 * SQL select option for splitting, if there is a split by
+	 *
+	 * @var \Application\DeskPRO\Dpql\SqlSelect|null
+	 */
+	protected $_splitSql;
+
+	/**
+	 * Maps SQL for splitting to the ID in the result set (1-based)
+	 *
+	 * @var array
+	 */
+	protected $_splitColumnMap = array();
 
 	/**
 	 * @var \Application\DeskPRO\Dpql\ResultHandler
@@ -203,19 +218,42 @@ class Display
 	/**
 	 * Gets the results from the database that match.
 	 *
-	 * @return array
+	 * @return \Application\DeskPRO\Dpql\Results
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 */
 	public function getResults()
 	{
+		$results = new Results();
+		$db = App::getDb();
+
 		try {
-			$query = App::getDb()->executeQuery($this->toSql());
+			if ($this->_splitColumnMap) {
+				$this->_splitSql->setTable($this->_sql->getTable());
+				$this->_splitSql->setJoins($this->_sql->getJoins());
+
+				$splitResults = $db->executeQuery($this->_splitSql->toSql())->fetchAll(\PDO::FETCH_NUM);
+				foreach ($splitResults AS $splitResult)
+				{
+					$sql = clone $this->_sql;
+					foreach ($this->_splitColumnMap AS $splitCondition => $splitColumn)
+					{
+						$splitValue = $splitResult[$splitColumn - 1];
+						$sql->addCondition("$splitCondition = " . $db->quote($splitValue));
+					}
+
+					$queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+					$results->addSplitResults($queryResults, $splitResult);
+				}
+			} else {
+				$queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+				$results->setResults($queryResults);
+			}
 		} catch (Exception $e) {
 			throw new Exception("This DPQL statement generated an invalid MySQL query. Please try a different query.");
 		}
 
-		return $query->fetchAll(\PDO::FETCH_NUM);
+		return $results;
 	}
 
 	/**
@@ -360,16 +398,31 @@ class Display
 	 */
 	protected function _prepareSplitBy()
 	{
-		$sql = $this->_sql;
+		if (!$this->_splitBy)
+		{
+			return;
+		}
+
+		$splitSql = new Dpql\SqlSelect();
+		$haveSplit = false;
 
 		foreach ($this->_splitBy AS $group) {
-			$groupBy = $group->prepare($this, 'split', array(), $sql, $this->_resultHandler);
+			$groupBy = $group->prepare($this, 'split', array(), $this->_sql, $this->_resultHandler);
 			if ($groupBy->hasValue()) {
-				$id = $sql->addSelectField($groupBy->printed());
-				$sql->addGroupBy($groupBy->sql());
+				$splitSql->addGroupBy($groupBy->sql());
 
+				$this->_splitColumnMap[$groupBy->sql()] = $splitSql->addSelectField($groupBy->sql());
+
+				$id = $splitSql->addSelectField($groupBy->printed());
 				$this->_resultHandler->addSplitColumn($id, $groupBy->renderer());
+
+				$haveSplit = true;
 			}
+		}
+
+		if ($this->_splitColumnMap)
+		{
+			$this->_splitSql = $splitSql;
 		}
 	}
 

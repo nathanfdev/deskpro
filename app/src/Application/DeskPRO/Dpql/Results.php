@@ -32,53 +32,82 @@
  * @subpackage Dpql
  */
 
-namespace Application\DeskPRO\Dpql\Func;
-
-use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Statement\Part\Prepared;
-use Application\DeskPRO\Dpql\Exception;
+namespace Application\DeskPRO\Dpql;
 
 /**
- * This is used in SPLIT/GROUP BY clauses to ensure that the printed value
- * can be different than the split value. For example, PRINT(tickets.subject, tickets.id).
+ * Represents the results from a DPQL query (which may span multiple MySQL queries).
  */
-class Printable extends AbstractFunc
+class Results
 {
 	/**
-	 * Prepares the function for use, including validating that the usage is valid.
+	 * List of result sets. Each element is another array with 2 elements:
+	 *  - 0: results set (multiple rows, with each row 0-base keyed)
+	 *  - 1: split results row (0-based keyed array) or null for non-split results
 	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 * @var array
 	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
+	protected $_results;
+
+	/**
+	 * Sets the results to a single result set
+	 *
+	 * @param array $results
+	 */
+	public function setResults(array $results)
 	{
-		if (!in_array($section, array('split', 'group'))) {
-			throw new Exception('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
+		$this->_results = array(0 => array($results, null));
+	}
+
+	/**
+	 * Adds a split result set
+	 *
+	 * @param array $results
+	 * @param array $split Row of data for the split header
+	 */
+	public function addSplitResults(array $results, array $split)
+	{
+		$this->_results[] = array($results, $split);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasSplitResults()
+	{
+		$total = count($this->_results);
+
+		if ($total > 1) return true;
+		if ($total < 1) return false;
+
+		return ($this->_results[0][1] !== null);
+	}
+
+	/**
+	 * Gets all split result sets
+	 *
+	 * @return array
+	 */
+	public function getSplitResults()
+	{
+		return $this->_results;
+	}
+
+	/**
+	 * Gets the single result set (errors if multiple result sets).
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function getResults()
+	{
+		if (!$this->_results) {
+			return array();
 		}
 
-		if (count($this->_arguments) != 2) {
-			throw new Exception('PRINT() can only accept 2 arguments');
+		if ($this->hasSplitResults()) {
+			throw new \Exception("Has split results but trying to get base results");
 		}
 
-		$childStack = $stack;
-		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
-
-		$sql = reset($this->_arguments);
-		$print = next($this->_arguments);
-
-		$printPrepped = $print->prepare($statement, $section, $childStack, $select, $result);
-		$sqlPrepped = $sql->prepare($statement, $section, $childStack, $select, $result);
-
-		return new Prepared($sqlPrepped->sql(), $printPrepped->name(), $printPrepped->printed());
+		return $this->_results[0][0];
 	}
 }

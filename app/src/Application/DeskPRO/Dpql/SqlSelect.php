@@ -43,7 +43,7 @@ class SqlSelect
 	/**
 	 * List of fields/expressions in the SELECT clause. Joined by commas.
 	 *
-	 * @var array[int]
+	 * @var array
 	 */
 	protected $_fields = array();
 
@@ -59,28 +59,28 @@ class SqlSelect
 	 * List of joins to add. Each join must be keyed by a unique identifier
 	 * to prevent adding duplicates.
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected $_joins = array();
 
 	/**
 	 * List of conditions for the WHERE clause. These will be joined by ANDs.
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected $_conditions = array();
 
 	/**
 	 * List of expressions/fields for the GROUP BY clause. Joined by commas.
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected $_groupBy = array();
 
 	/**
 	 * List of expressions/fields for the ORDER BY clause. Joined by commas.
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected $_orderBy = array();
 
@@ -168,6 +168,16 @@ class SqlSelect
 
 		$this->_joins[$name] = $string;
 		return true;
+	}
+
+	/**
+	 * Sets all joins
+	 *
+	 * @param array $joins
+	 */
+	public function setJoins(array $joins)
+	{
+		$this->_joins = $joins;
 	}
 
 	/**
