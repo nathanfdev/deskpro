@@ -198,7 +198,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setDisplayOrder($display_order)
 	{
-		$this->display_order = $display_order;
+		$this->setModelField('display_order', $display_order);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setLostPasswordUrl($lost_password_url)
 	{
-		$this->lost_password_url = $lost_password_url;
+		$this->setModelField('lost_password_url', $lost_password_url);
 	}
 
 	/**
@@ -246,7 +246,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setSourceType($source_type)
 	{
-		$this->source_type = $source_type;
+		$this->setModelField('source_type', $source_type);
 	}
 
 	/**
@@ -262,7 +262,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setTitle($title)
 	{
-		$this->title = $title;
+		$this->setModelField('title', $title);
 	}
 
 	/**
