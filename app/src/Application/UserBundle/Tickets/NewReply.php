@@ -124,7 +124,7 @@ class NewReply
 			}
 
 			// If status is pending, we'll switch it to open so agents will see it
-			if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER) {
+			if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER || $this->ticket['status'] == Ticket::STATUS_RESOLVED) {
 				$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
 			}
 
