@@ -259,6 +259,10 @@ class KernelBooter
 		static::ensureCli();
 		$app = static::getCliApp('cmd', $env, $debug);
 
+		if (!$app) {
+			return;
+		}
+
 		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->setAutoExit(false);
 		$return = $app->run();
@@ -392,7 +396,7 @@ class KernelBooter
 		$kernel->boot($mode);
 
 		try {
-			if ($mode == 'crom' && $kernel->isUpgradePending()) {
+			if ($mode == 'cron' && $kernel->isUpgradePending()) {
 				if (in_array('--verbose', $_SERVER['argv'])) {
 					echo "Upgrade pending\n";
 				}

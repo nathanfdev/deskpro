@@ -60,7 +60,7 @@ class CliKernel extends AgentKernel
 	{
 		parent::boot();
 
-		if ($mode == 'cron') {
+		if ($mode == 'cron' || in_array('dp:upgrade', $_SERVER['argv']) || in_array('dp:import', $_SERVER['argv'])) {
 			$this->runCronBootChecks();
 		}
 	}
