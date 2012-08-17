@@ -143,7 +143,7 @@ class Stat extends AbstractEntityRepository
 	 * @param array $stat_ids The Stat ids
 	 * @return ArrayCollection
 	 */
-	public function getByIds($stat_ids, $keep_order = false)
+	public function getByIds(array  $stat_ids, $keep_order = false)
 	{
 		if (0 === count($stat_ids)) {
 			return array();
