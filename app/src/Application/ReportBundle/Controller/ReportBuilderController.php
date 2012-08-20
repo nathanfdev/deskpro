@@ -253,6 +253,10 @@ class ReportBuilderController extends AbstractController
 			throw $e;
 		}
 
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('ok' => true));
+		}
+
 		return $this->redirectRoute('report_builder_report', array('report_builder_id' => $report->id));
 	}
 

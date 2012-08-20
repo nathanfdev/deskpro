@@ -11,40 +11,51 @@
 
 </style>
 {% endblock %}
+{% macro report_list_item(report) %}
+	<li>
+		<a href="{{ path('report_builder_favorite', {
+			'report_builder_id': report.id,
+			'favorite': report.isFavorited() ? 0 : 1,
+			'token': security_token('report_builder_favorite')}
+			) }}"
+		   class="report-favorite-toggle report-favorite {{ report.isFavorited() ? 'favorited' : '' }}"
+		   data-report-id="{{ report.id }}"
+		   title="Toggle favorite status"
+		>Toggle favorite status</a>
+		<a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}" title="{{ report.title }}">{{ report.title }}</a>
+	</li>
+{% endmacro %}
 {% block page %}
 <div class="report-container">
-	<div style="float: left; width: 200px" class="report-list">
-		<div><a href="{{ path('report_builder_new') }}">Create Report</a></div>
+	<div class="report-list">
+		<a href="{{ path('report_builder_new') }}" class="btn create-report-button">Create Report</a>
 
 		{% if favoriteReports %}
-		<h3>Favorite Reports</h3>
+		<h3>Favorite</h3>
 		<ul>
-			{% for report in favoriteReports %}
-			<li><a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}"
-					title="{{ report.title }}">{{ report.title }}</a></li>
-			{% endfor %}
+		{% for report in favoriteReports %}
+			{{ _self.report_list_item(report) }}
+		{% endfor %}
 		</ul>
 		{% endif %}
 
 		{% if customReports %}
-		<h3>Custom Reports</h3>
+		<h3>Custom</h3>
 		<ul>
-			{% for report in customReports %}
-			<li><a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}"
-				   title="{{ report.title }}">{{ report.title }}</a></li>
-			{% endfor %}
+		{% for report in customReports %}
+			{{ _self.report_list_item(report) }}
+		{% endfor %}
 		</ul>
 		{% endif %}
 
 		{% if builtInReports %}
-		<h3>Built-In Reports</h3>
+		<h3>Built-In</h3>
 		<ul>
 			{% for categoryName, reports in builtInReports %}
-				<li><h4>{{ categoryName }}</h4>
+				<li><h4 data-element-handler="DeskPRO.Report.ElementHandler.Builder.ListCollapse"><span></span>{{ categoryName }}</h4>
 					<ul>
 					{% for report in reports %}
-						<li><a href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}"
-							   title="{{ report.title }}">{{ report.title }}</a></li>
+						{{ _self.report_list_item(report) }}
 					{% endfor %}
 					</ul>
 				</li>

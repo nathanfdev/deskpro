@@ -466,6 +466,7 @@ $CONFIG['report_builder'] = array(
 	'out' 	=> 'js/report_builder.js',
 	'files'	=> array(
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/BuilderTabs.js',
+		'javascripts/DeskPRO/Report/ElementHandler/Builder/ListCollapse.js',
 	),
 );
 

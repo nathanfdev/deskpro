@@ -39,6 +39,24 @@ DeskPRO.Report.Window = new Orb.Class({
 			menuElement: '#all_trends_menu'
 		});
 
+		$(document.body).delegate('a.report-favorite-toggle', 'click', function(e) {
+			var $this = $(this), isFavorite = $this.hasClass('favorited'),
+				newValue = isFavorite ? 0 : 1,
+				url = $this.attr('href'),
+				matches = $('a.report-favorite-toggle[data-report-id="' + $this.data('report-id') + '"]');
+
+			matches.toggleClass('favorited');
+
+			$.ajax({
+				url: url,
+				type: 'POST',
+				dataType: 'json',
+				data: {favorite: newValue }
+			});
+
+			e.preventDefault();
+		});
+
 		DeskPRO.ElementHandler_Exec();
 	},
 

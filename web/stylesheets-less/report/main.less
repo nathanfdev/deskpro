@@ -943,13 +943,33 @@ section.coming-soon {
 
 .report-list {
 	float: left;
-	width: 200px;
+	width: 220px;
+
+	h3 {
+		margin-top: 10px;
+		font-size: 14pt;
+	}
+
+	h4 {
+		margin-top: 3px;
+		font-size: 11pt;
+		cursor: pointer;
+		span { display: inline-block; width: 9px; }
+	}
+
 	li {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		li {
+			margin-left: 12px;
+		}
 	}
+
+	.collapsed { display: none; }
 }
+
+.create-report-button { display: block; text-align: center; }
 
 .report-page-body {
 	padding-left: 10px;
@@ -957,17 +977,23 @@ section.coming-soon {
 	h1 {
 		font-size: 16pt;
 		.report-action { float: right; margin-left: 5px; font-size: 11px; }
-		.report-favorite {
-			float: left;
-			margin: 1px 5px;
-			background: url(../../images/user/star-off.png) no-repeat center center;
-			width: 14px; height: 14px;
-			overflow: hidden;
-			text-indent: -9999px;
-		}
-		.favorited { background: url(../../images/user/star.png) no-repeat center center; }
+	}
+	.report-favorite {
+		float: left;
+		margin: 1px 5px;
 	}
 }
+
+.report-favorite {
+	display: inline-block;
+	background: url(../../images/user/star-off.png) no-repeat center center;
+	width: 14px;
+	height: 14px;
+	overflow: hidden;
+	text-indent: -9999px;
+}
+.report-favorite.favorited { background: url(../../images/user/star.png) no-repeat center center; }
+
 
 .report-split-header {
 	margin: 10px 0;
@@ -1011,6 +1037,7 @@ section.coming-soon {
 
 .query-editor-container {
 	margin: 10px 0;
+	.tabs { padding-left: 10px; }
 }
 
 .query-editor-builder {
@@ -1019,11 +1046,11 @@ section.coming-soon {
 	}
 	dt {
 		display: inline-block;
-		width: 10%;
+		width: 100px;
 	}
 	dd {
 		display: inline-block;
-		width: 85%;
+		width: 75%;
 	}
 	.limit input { display: inline-block; width: 50px; }
 	.limit span { margin-left: 10px; }
