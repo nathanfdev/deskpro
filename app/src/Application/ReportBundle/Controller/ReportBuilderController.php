@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Entity\ReportBuilder;
 use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 class ReportBuilderController extends AbstractController
 {
@@ -48,6 +49,12 @@ class ReportBuilderController extends AbstractController
 		}
 
 		$query = $this->in->getString('query');
+		$parts = $this->in->getArrayValue('parts');
+
+		$inputType = $this->in->getString('inputType');
+		if ($inputType == 'builder') {
+			$query = Display::getQueryStringFromParts($parts);
+		}
 
 		if ($this->in->getBool('save')) {
 			$newReport = new ReportBuilder();
@@ -63,17 +70,85 @@ class ReportBuilderController extends AbstractController
 		if ($query) {
 			$results = $this->renderQuery($query, 'html', $error);
 			if (!$error) {
+
 				$compiler = new Compiler();
 				$statement = $compiler->compile($query);
+				$parts = $this->_getDpqlPartsForInput($statement);
 			}
 		}
 
 		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'query' => $query,
+			'parts' => $parts,
+			'inputType' => $inputType ?: 'builder',
 			'error' => $error,
 			'results' => $results,
 			'statement' => $statement
 		)));
+	}
+
+	public function parseAction()
+	{
+		$parts = $this->in->getArrayValue('parts');
+		$query = $this->in->getString('query');
+
+		$currentType = $this->in->getString('currentType');
+		$newType = $this->in->getString('newType');
+
+		$results = array();
+
+		if ($currentType == 'builder' && $newType == 'query') {
+			$results = array('query' => Display::getQueryStringFromParts($parts));
+		} else if ($currentType == 'query' && $newType == 'builder') {
+			if (!$query) {
+				$results = array('parts' => $this->_getDpqlPartsForInput());
+			} else {
+				try {
+					$compiler = new Compiler();
+					$statement = $compiler->compile($query);
+					$results = array('parts' => $this->_getDpqlPartsForInput($statement));
+				} catch (DpqlException $e) {
+					$results = array('error' => $e->getMessage());
+				}
+			}
+		} else {
+			$results = array(
+				'error' => 'Unknown conversion action.'
+			);
+		}
+
+		return $this->createJsonResponse($results);
+	}
+
+	protected function _getDpqlPartsForInput(Display $statement = null)
+	{
+		if (!$statement) {
+			return array(
+				'display' => 'TABLE',
+				'select' => '',
+				'from' => '',
+				'where' => '',
+				'splitBy' => '',
+				'groupBy' => '',
+				'orderBy' => '',
+				'limit' => '',
+				'offset' => ''
+			);
+		}
+
+		$parts = $statement->getDpqlParts();
+
+		return array(
+			'display' => $parts['DISPLAY'],
+			'select' => $parts['SELECT'],
+			'from' => $parts['FROM'],
+			'where' => $parts['WHERE'],
+			'splitBy' => $parts['SPLIT'],
+			'groupBy' => $parts['GROUP'],
+			'orderBy' => $parts['ORDER'],
+			'limit' => $parts['LIMIT'] ?: '',
+			'offset' => $parts['OFFSET'] ?: ''
+		);
 	}
 
 	public function reportAction($report_builder_id)
@@ -82,6 +157,12 @@ class ReportBuilderController extends AbstractController
 		$error = false;
 
 		$query = $this->in->getString('query');
+		$parts = $this->in->getArrayValue('parts');
+
+		$inputType = $this->in->getString('inputType');
+		if ($inputType == 'builder') {
+			$query = Display::getQueryStringFromParts($parts);
+		}
 		if (!$query) {
 			$query = $report->query;
 		}
@@ -125,15 +206,26 @@ class ReportBuilderController extends AbstractController
 			}
 		}
 
-		if ($this->in->getBool('run')) {
+		$run = $this->in->getBool('run');
+
+		if ($run) {
 			$results = $this->renderQuery($query, 'html', $error);
 		} else {
 			$results = '';
 		}
 
+		if (!$error) {
+			$compiler = new Compiler();
+			$statement = $compiler->compile($query);
+			$parts = $this->_getDpqlPartsForInput($statement);
+		}
+
 		return $this->render('ReportBundle:ReportBuilder:report.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'report' => $report,
+			'run' => $run,
 			'query' => $query,
+			'parts' => $parts,
+			'inputType' => $inputType ?: 'builder',
 			'error' => $error,
 			'results' => $results
 		)));
@@ -184,7 +276,17 @@ class ReportBuilderController extends AbstractController
 			$this->ensureRequestToken();
 
 			$title = $this->in->getString('title');
+
 			$query = $this->in->getString('query');
+			$parts = $this->in->getArrayValue('parts');
+
+			$inputType = $this->in->getString('inputType');
+			if ($inputType == 'builder') {
+				$query = Display::getQueryStringFromParts($parts);
+			}
+			if (!$query) {
+				$query = $report->query;
+			}
 
 			$report->title = $title;
 			$report->description = $this->in->getString('description');
@@ -275,10 +377,21 @@ class ReportBuilderController extends AbstractController
 
 	protected function _getReportEditOutput(ReportBuilder $report, array $errors = array())
 	{
+		try {
+			$compiler = new Compiler();
+			$statement = $compiler->compile($report->query);
+			$parts = $this->_getDpqlPartsForInput($statement);
+		} catch (DpqlException $e) {
+			$parts = $this->in->getArrayValue('parts');
+		}
+
 		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
 		return $this->render('ReportBundle:ReportBuilder:edit.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'report' => $report,
+			'parts' => $parts,
+			'query' => $report->query,
+			'inputType' => $this->in->getString('inputType') ?: 'builder',
 			'errors' => $errors,
 			'canManageBuiltIn' => $rbRepository->canManageBuiltInReports(),
 			'builtInCategories' => $rbRepository->getBuiltInCategories()

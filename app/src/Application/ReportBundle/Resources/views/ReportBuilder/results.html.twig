@@ -1,9 +1,12 @@
 {% if error %}
-<ul id="errors_container"><li>{{ error }}</li></ul>
-{% endif %}
-{% if results %}
+<div class="query-error">{{ error }}</div>
+{% else %}
 <div class="report-builder-results">
 	<div>Generated: {{ "now"|date('fulltime') }}</div>
-	{{ results|raw }}
+	{% if results %}
+		{{ results|raw }}
+	{% else %}
+		No results.
+	{% endif %}
 </div>
 {% endif %}

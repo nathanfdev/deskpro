@@ -69,7 +69,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		});
 
 		if (this.options.autoSelectFirst) {
-			var firstTab = this.triggerEls.filter('.on:first');
+			var firstTab = this.triggerEls.filter('.' + this.options.activeClassname + ':first');
 			if (!firstTab.length) {
 				firstTab = this.triggerEls.first();
 			}

@@ -122,6 +122,21 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Determines if the passed string is effectively different.
+	 * The string may be slightly different and still pass.
+	 *
+	 * @param string $query
+	 * 
+	 * @return bool
+	 */
+	public function isQueryDifferent($query)
+	{
+		$query = preg_replace('/\s/', '', $query);
+		$thisQuery = preg_replace('/\s/', '', $this->query);
+		return ($query != $thisQuery);
+	}
+
+	/**
 	 * Quick lookup handler to determine if a particular user has favorited this
 	 *
 	 * @var array

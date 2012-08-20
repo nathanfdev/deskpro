@@ -123,6 +123,6 @@ class In extends AbstractPart
 
 		$not = ($this->positive ? '' : ' NOT');
 
-		return $this->name . $not . ' IN (' . implode(', ', $values) . ')';
+		return $this->lhs->toDpql($statement, $section, $stack) . $not . ' IN (' . implode(', ', $values) . ')';
 	}
 }

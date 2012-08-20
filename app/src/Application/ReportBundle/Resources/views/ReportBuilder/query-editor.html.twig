@@ -1,0 +1,41 @@
+{% set readOnlyHtml = readOnly ? ' readonly="readonly"' : '' %}
+<div class="query-editor-container">
+<ul class="tabs" style="width: 75%"
+	data-element-handler="DeskPRO.Report.ElementHandler.Builder.BuilderTabs"
+	data-trigger-elements="> li"
+	data-input-type-input="#input-type-input"
+	data-query-switch-url="{{ path('report_builder_parse')}}"
+	data-query-error-container="#query-error-container"
+	data-query-error-message="#query-error-message"
+>
+	<li data-tab-for="#query-builder" data-query-type="builder" class="{{ inputType == 'builder' ? 'current' : '' }}"><a>Builder</a></li>
+	<li data-tab-for="#query-text" data-query-type="query" class="{{ inputType == 'query' ? 'current' : '' }}"><a>Query</a></li>
+</ul>
+
+<div id="query-builder" class="query-editor-builder" style="display: none">
+	<dl><dt>DISPLAY</dt> <dd><select name="parts[display]"{{readOnlyHtml|raw}}><option value="TABLE">TABLE</option></select></dd></dl>
+	<dl><dt>SELECT</dt> <dd><input name="parts[select]" type="text" value="{{parts.select}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>FROM</dt> <dd><input name="parts[from]" type="text" value="{{parts.from}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>WHERE</dt> <dd><input name="parts[where]" type="text" value="{{parts.where}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>SPLIT BY</dt> <dd><input name="parts[splitBy]" type="text" value="{{parts.splitBy}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>GROUP BY</dt> <dd><input name="parts[groupBy]" type="text" value="{{parts.groupBy}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>ORDER BY</dt> <dd><input name="parts[orderBy]" type="text" value="{{parts.orderBy}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl class="limit">
+		<dt>LIMIT</dt>
+		<dd>
+			<input name="parts[limit]" type="text" value="{{parts.limit}}" {{readOnlyHtml|raw}} />
+			<span>OFFSET</span>
+			<input name="parts[offset]" type="text" value="{{parts.offset}}" {{readOnlyHtml|raw}} />
+		</dd>
+	</dl>
+</div>
+<div class="query-editor-text" id="query-text" style="display: none">
+	<textarea name="query"{{readOnlyHtml|raw}}>{{ query }}</textarea>
+</div>
+
+<div id="query-error-container" class="query-error" style="display: none">
+	The following error occurred: <span id="query-error-message"></span>
+</div>
+
+<input type="hidden" name="inputType" id="input-type-input" value="{{ inputType }}" />
+</div>

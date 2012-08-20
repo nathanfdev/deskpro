@@ -20,20 +20,17 @@
 	</div>
 
 	<form action="{{ path('report_builder_report', {'report_builder_id' : report.id}) }}" class="dp-form" method="post">
-		<div>
-			<textarea name="query"  style="height: 130px" {{ report.isEditable() ? '' : 'readonly="readonly"' }}
-			>{{ query }}</textarea>
-			{% if not report.isEditable() %}
-				<br />To customize this report, please clone it.
-			{% endif %}
-		</div>
+		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' with {'readOnly': not report.isEditable()} %}
+
 		<button class="btn primary" name="run" value="1">Run Report</button>
 		<button class="btn" name="clone" value="1">Clone</button>
-		{% if query != report.query and error is empty and report.isEditable() %}
+		{% if error is empty and report.isEditable() and report.isQueryDifferent(query) %}
 			<button class="btn" name="save" value="1">Save Changes</button>
 		{% endif %}
 
-		{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
+		{% if run %}
+			{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
+		{% endif %}
 
 		{{ form_token() }}
 	</form>

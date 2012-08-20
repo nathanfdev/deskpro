@@ -744,4 +744,25 @@ class Display
 	{
 		return $this->_limitOffset;
 	}
+
+	public static function getQueryStringFromParts(array $parts)
+	{
+		if (empty($parts['from'])) {
+			return '';
+		} else {
+			$offset = ($parts['offset'] ? " OFFSET $parts[offset]" : '');
+			if ($parts['select'] === '') {
+				$parts['select'] = 'COUNT()';
+			}
+
+			return "DISPLAY $parts[display]"
+				. "\nSELECT $parts[select]"
+				. "\nFROM $parts[from]"
+				. ($parts['where'] ? "\nWHERE $parts[where]" :'')
+				. ($parts['splitBy'] ? "\nSPLIT BY $parts[splitBy]" :'')
+				. ($parts['groupBy'] ? "\nGROUP BY $parts[groupBy]" :'')
+				. ($parts['orderBy'] ? "\nORDER BY $parts[orderBy]" :'')
+				. ($parts['limit'] ? "\nLIMIT $parts[limit]$offset" :'');
+		}
+	}
 }

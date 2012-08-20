@@ -27,14 +27,8 @@
 				<textarea name="description" rows="3">{{report.description}}</textarea>
 			</div>
 		</div>
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>Query</label>
-			</div>
-			<div class="dp-form-input">
-				<textarea name="query" rows="8">{{report.query}}</textarea>
-			</div>
-		</div>
+
+		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' %}
 
 		{% if canManageBuiltIn %}
 			<div class="dp-form-row">

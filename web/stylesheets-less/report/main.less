@@ -184,12 +184,15 @@
 }
 
 ul.tabs {
+	height: 27px;
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 10px;
 }
 
 ul.tabs li {
 	display: inline-block;
+	background: white;
+	height: 26px;
 	margin: 0;
 	border: 1px solid #ccc;
 	border-bottom: none;
@@ -197,10 +200,12 @@ ul.tabs li {
 }
 
 ul.tabs li.current {
+	position: relative;
+	height: 27px;
 }
 
 ul.tabs a {
-	padding: 7px;
+	padding: 4px 7px;
 	display: inline-block;
 }
 
@@ -921,4 +926,38 @@ section.coming-soon {
 		font-weight: normal;
 		padding-top: 5px;
 	}
+}
+
+
+/** Report builder **/
+
+.query-error {
+	background-color: #FFD3C7;
+	border: 1px solid #FF9C8C;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+
+/** Report builder - query builder **/
+
+.query-editor-builder {
+	dl {
+		margin: 5px 0;
+	}
+	dt {
+		display: inline-block;
+		width: 10%;
+	}
+	dd {
+		display: inline-block;
+		width: 85%;
+		input, textarea { width: 100%; display: block; }
+	}
+	.limit input { display: inline-block; width: 50px; }
+	.limit span { margin-left: 10px; }
+}
+
+.query-editor-text textarea {
+	height: 130px;
 }

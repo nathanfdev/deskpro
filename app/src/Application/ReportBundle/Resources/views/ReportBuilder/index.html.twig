@@ -1,11 +1,10 @@
 {% extends 'ReportBundle:ReportBuilder:layout.html.twig' %}
 {% block inner_page %}
 	<form action="{{ path('report_builder')}}" method="post" class="dp-form">
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>DPQL Query</label></div>
-			<div class="dp-form-input"><textarea name="query" style="height: 130px">{{ query }}</textarea></div>
-		</div>
+		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' %}
+
 		<button class="btn primary">Run Query</button>
+
 		{% if statement and not errors %}
 			<button class="btn" name="save" value="1">Save as Report</button>
 		{% endif %}

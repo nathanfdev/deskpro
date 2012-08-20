@@ -38,6 +38,8 @@ DeskPRO.Report.Window = new Orb.Class({
 			triggerElement: '#all_trends_menu_trigger',
 			menuElement: '#all_trends_menu'
 		});
+
+		DeskPRO.ElementHandler_Exec();
 	},
 
 	/**
@@ -57,5 +59,5 @@ DeskPRO.Report.Window = new Orb.Class({
 		}
 
 		return url;
-	},
+	}
 });

@@ -460,6 +460,16 @@ $CONFIG['report_graphs'] = array(
 );
 
 /**
+ * Report builder specific
+ */
+$CONFIG['report_builder'] = array(
+	'out' 	=> 'js/report_builder.js',
+	'files'	=> array(
+		'javascripts/DeskPRO/Report/ElementHandler/Builder/BuilderTabs.js',
+	),
+);
+
+/**
  * Report Dashboard specific, maily files for AM Chart vendor
  */
 $CONFIG['report_dashboard'] = array(
