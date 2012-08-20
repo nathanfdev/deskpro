@@ -570,7 +570,7 @@ HTML;
 	# Resetting passwords
 	############################################################################
 
-	public function sendResetPasswordAction()
+	public function sendResetPasswordAction($_format = 'html')
 	{
 		$email = $this->in->getString('email');
 		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -619,6 +619,10 @@ HTML;
 				$message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
 				$message->setTo($email, $person->getDisplayName());
 
+				if ($_format == 'json') {
+					return $this->createJsonResponse(array('success' =>1 ));
+				}
+
 				$this->container->getMailer()->send($message);
 				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
 			}
@@ -642,7 +646,7 @@ HTML;
 
 		$this->container->getMailer()->send($message);
 
-		if ($this->request->isXmlHttpRequest()) {
+		if ($_format == 'json') {
 			return $this->createJsonResponse(array('success' =>1 ));
 		}
 

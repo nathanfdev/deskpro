@@ -294,7 +294,7 @@ $collection->add('agent_login_authenticate_local', new Route(
 
 $collection->add('agent_send_lost', new Route(
 	'/login/send-lost.json',
-	array('_controller' => 'AgentBundle:Login:sendResetPassword'),
+	array('_controller' => 'AgentBundle:Login:sendResetPassword', '_format' => 'json'),
 	array(),
 	array()
 ));
