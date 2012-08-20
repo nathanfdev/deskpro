@@ -41,16 +41,15 @@
 {% else %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>{{ phrase('user.portal.welcome-back-guest') }}</h3>
-		</header>
-		<article class="dp-written">
-			<div class="dp-summary">
+			<h3>
 				{% if app.getSetting('core.user_mode') != 'closed' %}
 					{{ phrase('user.profile.register_or_login_below', {'url': path('user_register')}) }}
 				{% else %}
 					{{ phrase('user.general.login_below') }}
 				{% endif %}
-			</div>
+			</h3>
+		</header>
+		<article class="dp-written">
 			<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
 					<div class="dp-login-box-inner">
