@@ -16,7 +16,7 @@
 	'agent.publish.changes_in_title'              => 'Changes in title',
 	'agent.publish.click_to_set_date'             => '(click to set date)',
 	'agent.publish.comments_awaiting_validation'  => 'Comments Awaiting Validation',
-	'agent.publish.comments_to_validate'          => 'Comments to review',
+	'agent.publish.comments_to_validate'          => 'Comments to Review',
 	'agent.publish.compare_newer_title'           => 'Newer',
 	'agent.publish.compare_older_title'           => 'Older',
 	'agent.publish.compare_selected'              => 'Compare Selected',
