@@ -10,10 +10,11 @@
 {{ agentui.scroll_containers('page-task-list') }}
 
 {% include 'AgentBundle:Task:task-list-bar.html.twig' %}
-
+{% set has_any = false %}
 <div id="{{baseId}}_task_list">
     {% for group in tasks_grouped %}
     	{% if group.tasks|length %}
+			{% set has_any = true %}
 			<div class="task-group">
 				<header>
 					<span class="expand-collapse"></span>
@@ -43,6 +44,14 @@
 		</section>
 	</div>
 </div>
+{% endif %}
+
+{% if not has_any and not completed_tasks|length %}
+<section class="list-listing no-results" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
+	<article class="row-item no-results">
+		<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+	</article>
+</section>
 {% endif %}
 
 <ul id="{{baseId}}_menu_vis" style="display: none">
