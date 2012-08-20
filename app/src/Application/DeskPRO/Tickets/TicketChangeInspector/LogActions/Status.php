@@ -72,4 +72,24 @@ class Status extends AbstractLogAction
 	{
 		return 'property';
 	}
+
+	public function setNewStatus($new_status)
+	{
+		$this->new_status = $new_status;
+	}
+
+	public function getNewStatus()
+	{
+		return $this->new_status;
+	}
+
+	public function setOldStatus($old_status)
+	{
+		$this->old_status = $old_status;
+	}
+
+	public function getOldStatus()
+	{
+		return $this->old_status;
+	}
 }

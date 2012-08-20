@@ -434,6 +434,10 @@ class TicketChangeTracker extends ChangeTracker
 					$this->original_ticket['status'] = $old_val;
 					break;
 
+				case 'hidden_status':
+					$this->original_ticket['hidden_status'] = $old_val;
+					break;
+
 				case 'subject':
 					$this->original_ticket['subject'] = $old_val;
 					break;

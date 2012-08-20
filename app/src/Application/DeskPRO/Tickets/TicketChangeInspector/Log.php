@@ -117,6 +117,8 @@ class Log
 			$actions[] = new LogActions\TicketTriggers($this->tracker->getExtra('trigger'));
 		}
 
+		$status_k = null;
+
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $all_info) {
 
 			if ($prop == 'messages') {
@@ -229,8 +231,36 @@ class Log
 						$action->setMetaData(array('trigger_id' => $info['trigger_id']));
 					}
 					$actions[] = $action;
+
+					if ($action instanceof LogActions\Status) {
+						$status_k = count($actions) - 1;
+					}
 				}
 			}
+		}
+
+		// Need to rewrite status log based on if hidden was changed as well
+		if ($info = $this->tracker->getChangedProperty('hidden_status')) {
+			if ($status_k) {
+				$other_action = $actions[$status_k];
+				if ($info['old']) {
+					$old = 'hidden.' . $info['old'];
+				} else {
+					$old = $other_action->getOldStatus();
+				}
+
+				if ($info['new']) {
+					$new = 'hidden.' . $info['new'];
+				} else {
+					$new = $other_action->getNewStatus();
+				}
+
+				$action = new LogActions\Status($old, $new);
+			} else {
+				$action = new LogActions\Status('hidden.'.$info['old'], 'hidden.'.$info['new']);
+			}
+
+			$actions[$status_k] = $action;
 		}
 
 		if ($this->tracker->getChangedProperty('participants')) {
