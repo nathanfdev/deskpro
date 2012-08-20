@@ -1948,7 +1948,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#volume_controls_back').show();
 			$('#volume_controls').css({
 				'top': 30,
-				'left': $('#sound_icon').offset().left - 9
+				'right': 228
 			});
 
 			$('#volume_controls').fadeIn();
@@ -2066,13 +2066,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var pos = $(this).offset();
-
 			var list = $('#interfacesToggle');
 			list.hide().detach().appendTo('body');
 			list.css({
-				top: pos.top,
-				left: pos.left
+				top: 7,
+				right: 69
 			});
 			list.show();
 
@@ -2120,13 +2118,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var pos = $(this).offset();
-
 			var list = $('#agent_status_menu');
 			list.hide().detach().appendTo('body');
 			list.css({
-				top: pos.top,
-				left: pos.left
+				top: 9,
+				right: 185
 			});
 			list.show();
 

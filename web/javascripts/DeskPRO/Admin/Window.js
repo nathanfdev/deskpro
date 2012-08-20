@@ -131,15 +131,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var pos = $(this).offset();
-			var w = $(this).outerWidth();
-			var h= $(this).outerHeight();
-
 			var list = $('#interfacesToggle');
-			list.hide().detach().appendTo('body');
+			list.hide();
 			list.css({
-				top: pos.top,
-				left: pos.left
+				top: 7,
+				left: 9
 			});
 			list.show();
 
@@ -255,14 +251,10 @@ DeskPRO.Admin.Window = new Orb.Class({
 			ev.stopPropagation();
 
 			var list = $('#userSetting');
-			list.hide().detach().appendTo('body');
-
-			var left = $('#userSetting_trigger').offset().left;
-			left -= 135;
-
+			list.hide().detach().appendTo('#dp_header');
 			list.css({
 				top: 41,
-				left: left
+				left: 3
 			});
 			list.show();
 
@@ -295,8 +287,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			var left = $('#dp_logo_wrap .button-wrap').offset().left + 51;
-			$('#dp_logo_expand_wrap').detach().appendTo('body').css('left', left).css('right', 'auto').show();
+			$('#dp_logo_expand_wrap').css('right', 0).css('top', 0).show();
 			if (!logoBackdrop) {
 				logoBackdrop = $('<div class="backdrop" />').appendTo('body');
 				logoBackdrop.click(function() { logoBackdrop.hide();$('#dp_logo_expand_wrap').hide(); });
@@ -307,32 +298,6 @@ DeskPRO.Admin.Window = new Orb.Class({
 			ev.stopPropagation();
 			$('#dp_logo_expand_wrap').hide();
 			if (logoBackdrop) logoBackdrop.hide();
-		});
-
-		// User menu
-		$('#userSetting_trigger').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#userSetting');
-			list.hide().detach().appendTo('body');
-			list.css({
-				top: 41,
-				left: $('#userSetting_trigger').offset().left + 1
-			});
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-			};
-			backdrop.on('click', close);
-			list.on('click', close);
-			$('ul', list).on('click', function(ev) {
-				ev.stopPropagation();
-			});
 		});
 
 		var newDashOverlay = new DeskPRO.UI.Overlay({
