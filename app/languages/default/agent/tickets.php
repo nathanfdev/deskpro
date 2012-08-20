@@ -91,6 +91,7 @@
 	'agent.tickets.keep_status_set'                     => 'Keep status set to {{old}}',
 	'agent.tickets.lables'                              => 'Lables',
 	'agent.tickets.lc_created'                          => 'created',
+	'agent.tickets.lc_update'                           => 'update',
 	'agent.tickets.lc_new_reply'                        => 'new reply',
 	'agent.tickets.lc_new_ticket'                       => 'new ticket',
 	'agent.tickets.lc_new_ticket_agent'                 => 'new ticket by agent',

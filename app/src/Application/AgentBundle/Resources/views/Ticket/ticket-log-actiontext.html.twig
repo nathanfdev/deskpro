@@ -76,6 +76,7 @@
 
 	{% if log.details.type == 'newticket'%}{{ phrase('agent.tickets.lc_new_ticket') }}
 	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.tickets.lc_new_reply') }}
+	{% elseif log.details.type == 'updated' %}{{ phrase('agent.tickets.lc_update') }}
 	{% else %}{{ log.details.type }}
 	{% endif %}
 
