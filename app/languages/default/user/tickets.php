@@ -45,6 +45,7 @@
 	'user.tickets.leave_feedback_title'                => 'Optionally take a moment to tell us how we did',
 	'user.tickets.list_closed'                         => 'Closed Tickets',
 	'user.tickets.list_last_activity_by_x'             => 'Last activity by {{name}}',
+	'user.tickets.list_created-date'                   => 'Created {{date}}',
 	'user.tickets.list_last_activity_by_you'           => 'Last activity by you',
 	'user.tickets.list_resolved'                       => 'Resolved Tickets',
 	'user.tickets.manage_participants'                 => 'Manage Participants',

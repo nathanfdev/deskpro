@@ -23,9 +23,6 @@
 				</h4>
 				<div class="dp-fadeaway-inner-container">
 					<div class="dp-fadeaway"></div>
-					<div class="dp-opaque-fadeaway">
-						<span class="dp-time">{{ ticket.date_created|date('full') }}</span>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -39,6 +36,7 @@
 				{% endif %}
 				(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c', 'UTC') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
 			</li>
+			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ phrase('user.tickets.list_created-date', {date: ticket.date_created|date('full')}) }}</li>
 		</ul>
 	</li>
 {% endmacro %}
