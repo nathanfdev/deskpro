@@ -142,6 +142,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			$('#dp_notify_list li.msg-row').not('.dismissAll').remove();
 			self.modCount('tickets', '=', 0);
 			self.modCount('chat', '=', 0);
+			self.modCount('feedback', '=', 0);
 			self.close();
 		});
 
