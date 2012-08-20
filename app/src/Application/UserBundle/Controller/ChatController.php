@@ -90,6 +90,11 @@ class ChatController extends AbstractController
 
 		if ($convo) {
 			$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
+			if ($user_typing = $this->in->getString('user_typing')) {
+				if ($user_typing == '__dpnone__') $user_typing = '';
+				$chat_manager->setUserTypingIndicator($convo, $user_typing);
+			}
 		}
 
 		// Not uint because -1 will be used when no messages have ever existed

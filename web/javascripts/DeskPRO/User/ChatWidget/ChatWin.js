@@ -77,7 +77,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
-		this.typingIndicatorTime = null;
+		this.sentLoadingIndicator = false;
 		this.hasStarted = false;
 		this.hasBeenAssigned = false;
 		this.sessionCode = options.sessionCode || null;
@@ -341,7 +341,6 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		console.log('ChatWin.sendMessage: %s', message);
 
 		this.hasStarted = true;
-		if (this.typingIndicatorTime) window.clearTimeout(this.typingIndicatorTime);
 
 		data = data || [];
 		data.push({
@@ -689,6 +688,21 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					name: '__sid',
 					value: self.sessionCode
 				});
+
+				var typing = $.trim($('#dp_chat_message_input').val());
+				if (typing) {
+					this.sentLoadingIndicator = true;
+					send_data.push({
+						name: 'user_typing',
+						value: typing
+					});
+				} else if (this.sentLoadingIndicator) {
+					this.sentLoadingIndicator = false;
+					send_data.push({
+						name: 'user_typing',
+						value: '__dpnone__'
+					});
+				}
 
 				//------------------------------
 				// Send data
