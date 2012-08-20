@@ -29,8 +29,6 @@ pageMeta.baseId = '{{ baseId }}';
 				'id': baseId ~ '_cat',
 				'add_classname': 'category_id',
 				'add_attr': '',
-				'with_blank': 0,
-				'blank_title': '',
 				'categories': feedback_categories,
 				'selected': state.newfeedback.category_id|default(0)
 			} %}
@@ -47,7 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="title" name="newfeedback[title]" id="{{baseId}}_title" value="{{ state.newfeedback.title }}" />
+		<input type="text" name="newfeedback[title]" id="{{baseId}}_title" value="{{ state.newfeedback.title }}" style="width: 80%;" />
 		<div class="error-message title">Please enter a title.</div>
 	</div>
 </div>

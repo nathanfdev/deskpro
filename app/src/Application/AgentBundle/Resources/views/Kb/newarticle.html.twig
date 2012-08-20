@@ -48,7 +48,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="error-message category_id">Please choose a category.</div>
 		</div>
 		<div class="col">
-			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
+			<h4>{{ phrase('agent.general.status') }}</h4>
 			<select name="newarticle[status]">
 				<option value="published">{{ phrase('agent.publish.status_published') }}</option>
 				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
@@ -65,7 +65,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" />
+		<input type="text" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" style="width: 80%;" />
 		<div class="error-message title">Please enter a title.</div>
 	</div>
 </div>

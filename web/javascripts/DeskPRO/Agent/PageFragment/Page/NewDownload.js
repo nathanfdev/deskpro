@@ -38,6 +38,18 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			listenOn: this.getEl('newdownload')
 		});
 		this.ownObject(this.stateSaver);
+
+		window.setTimeout(function() {
+			if (self.OBJ_DESTROYED) return;
+
+			self.wrapper.find('select').each(function() {
+				if ($(this).prop('multiple')) {
+					$(this).width(300);
+				}
+				DP.select($(this));
+			});
+			self.updateUi();
+		}, 300);
 	},
 
 	markForReload: function() {
