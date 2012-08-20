@@ -2,20 +2,19 @@
 <div style="padding: 0 15px 15px 15px;">
 
 {% if rated_searches.helpful %}
-<h5>{{ phrase('agent.publish.searches_helpful') }}</h5>
-<div class="inner-box-tab-content box-list">
-	<table class="list" cellspacing="0" width="100%">
-		<thead class="display-options-trigger dbl-click-trigger nosel">
+<div class="data-table-wrap">
+	<table class="data-table" cellspacing="0" width="100%">
+		<thead>
 			<tr>
-				<td>{{ phrase('agent.general.search_terms') }}</td>
-				<td width="80">{{ phrase('agent.general.frequency') }}</td>
+				<td>{{ phrase('agent.publish.searches_helpful') }}</td>
+				<td width="80" style="text-align: center">{{ phrase('agent.general.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>
 		{% for term,count in rated_searches.helpful %}
-			<tr class="line-1">
+			<tr>
 				<td>{{ term }}</td>
-				<td>{{ count }}</td>
+				<td style="text-align: center;">{{ count }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
@@ -23,24 +22,23 @@
 </div>
 
 
-<br />
+<br /><br /
 {% endif %}
 
 {% if rated_searches.unhelpful %}
-<h5>{{ phrase('agent.publish.searches_unhelpful') }}</h5>
-<div class="inner-box-tab-content box-list">
-	<table class="list" cellspacing="0" width="100%">
-		<thead class="display-options-trigger dbl-click-trigger nosel">
+<div class="data-table-wrap">
+	<table class="data-table" cellspacing="0" width="100%">
+		<thead>
 			<tr>
-				<td>{{ phrase('agent.general.search_terms') }}</td>
-				<td width="80">{{ phrase('agent.general.frequency') }}</td>
+				<td>{{ phrase('agent.publish.searches_unhelpful') }}</td>
+				<td width="80" style="text-align: center">{{ phrase('agent.general.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>
 		{% for term,count in rated_searches.unhelpful %}
-			<tr class="line-1">
+			<tr>
 				<td>{{ term }}</td>
-				<td>{{ count }}</td>
+				<td style="text-align: center;">{{ count }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
