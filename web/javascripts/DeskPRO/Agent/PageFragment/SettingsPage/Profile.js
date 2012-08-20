@@ -108,6 +108,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 					self.settingsWindow.showSavePuff();
 					startEmail = $('#settings_profile_email').val();
+					self.settingsWindow.reloadInterface = true;
+					self.settingsWindow.reloadTab('profile');
 				}
 			});
 		});
