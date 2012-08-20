@@ -158,8 +158,8 @@ Orb.Util.TimeAgo = {
 
 		var total_secs = parseInt(ms / 1000);
 
-		// less than 120 secons: 20 seconds
-		if (total_secs <= 120) {
+		// less than 60 secons: 20 seconds
+		if (total_secs < 60) {
 			return this.getPhraseFor('sec', total_secs, ago);
 
 		// less than 120 minutes: 20 minutes

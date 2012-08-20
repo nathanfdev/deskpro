@@ -67,6 +67,7 @@ class DataController extends AbstractController
 
 		$js_phrases["agent.general.reltime_less_second"]    = $tr->getPhraseText("agent.general.reltime_less_second");
 		$js_phrases["agent.general.reltimeago_less_second"] = $tr->getPhraseText("agent.general.reltime_less_second");
+		$js_phrases["agent.general.reltimeago_less_minute"] = $tr->getPhraseText("agent.general.reltimeago_less_minute");
 
 		foreach (array('reltime', 'reltimeago') as $pre) {
 			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
