@@ -212,12 +212,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('replybox_wrap').find('textarea.touched').removeClass('touched');
 
+		DeskPRO_Window.getMessageChanneler().poller.pause();
+
 		$.ajax({
 			url: reply_form.attr('action'),
 			type: 'POST',
 			dataType: 'json',
 			data: formData,
 			context: this,
+			complete: function() {
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
+			},
 			success: function(result) {
 
 				loadingEl.hide();
@@ -283,6 +288,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleTicketUpdate: function(data) {
 
+		if (data.client_messages) {
+			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
+		}
+
 		// Might be unloaded by the time this callback is called
 		if (!this.changeManager) {
 			return;
@@ -301,10 +310,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			this.getEl('replybox_wrap').find('textarea[name="message"]').val(sig);
 			return;
-		}
-
-		if (data.client_messages) {
-			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
 
 		var new_messages = null;
