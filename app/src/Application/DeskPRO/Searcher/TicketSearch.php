@@ -213,7 +213,10 @@ class TicketSearch extends SearcherAbstract
 
 		$summary = $this->summary;
 		if ($this->person_search) {
-			$summary = array_merge($summary, $this->person_search->getSummary());
+			$person_summary = $this->person_search->getSummary();
+			if ($person_summary) {
+				$summary = array_merge($summary, $this->person_search->getSummary());
+			}
 		}
 
 		return $summary;

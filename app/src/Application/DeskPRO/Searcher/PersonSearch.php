@@ -79,7 +79,7 @@ class PersonSearch extends SearcherAbstract
 	 * Summary of terms in phrases
 	 * @var array
 	 */
-	protected $summary = null;
+	protected $summary = array();
 
 	/**
 	 * @var string
