@@ -487,6 +487,10 @@ class PersonSearch extends SearcherAbstract
 
 					$search_type = $field->getHandler()->getSearchType();
 
+					if (isset($choice['custom_fields']['field_' . $term_id])) {
+						$choice = $choice['custom_fields']['field_' . $term_id];
+					}
+
 					switch ($search_type) {
 						case 'input':
 						case 'value':

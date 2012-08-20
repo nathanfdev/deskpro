@@ -275,6 +275,14 @@ class TicketTerms
 	{
 		$tracker = $this->tracker;
 
+		// $term of people_field[12] becomes $term=people_field, $term_id=12 etc
+		$m = null;
+		$term_id = null;
+		if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+			$term = $m[1];
+			$term_id = $m[2];
+		}
+
 		switch ($term) {
 
 			case 'is_new_user':
@@ -481,6 +489,103 @@ class TicketTerms
 						break;
 					case self::OP_NOTCONTAINS:
 						if (strpos(strtolower($ticket['subject']), strtolower($choice)) !== false) return false;
+						break;
+				}
+				break;
+
+			case TicketSearch::TERM_TICKET_FIELD:
+				$test = $this->testCustomField('CustomDefTicket', $term_id, $op, $choice, $ticket);
+				if (!$test && $test !== null) {
+					return false;
+				}
+				break;
+
+			case PersonSearch::TERM_PERSON_FIELD:
+				$test = $this->testCustomField('CustomDefPerson', $term_id, $op, $choice, $ticket->person);
+				if (!$test && $test !== null) {
+					return false;
+				}
+				break;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @param string  $type      The custom field type: CustomDefTicket or CustomDefPerson
+	 * @param int     $term_id   The field ID
+	 * @param string  $op        The test operation
+	 * @param mixed   $choice    The value to test against
+	 * @param mixed   $obj       The ticket or person object
+	 * @return bool|null
+	 */
+	protected function testCustomField($type, $term_id, $op, $choice, $obj)
+	{
+		$field = App::getEntityRepository('DeskPRO:'.$type)->find($term_id);
+		if (!$field) return null;
+
+		$search_type = $field->getHandler()->getSearchType();
+
+		if (!isset($choice['custom_fields']['field_' . $term_id])) {
+			return null;
+		}
+
+		$choice = $choice['custom_fields']['field_' . $term_id];
+
+		switch ($search_type) {
+			case 'input':
+			case 'value':
+
+				$set_value = $obj->getCustomDataForField($term_id);
+				if ($set_value) {
+					$set_value = $set_value->getData();
+				}
+				if (is_string($set_value)) {
+					$set_value = Strings::utf8_strtolower($set_value);
+				}
+
+				$choice = Strings::utf8_strtolower($choice);
+
+				switch ($op) {
+					case self::OP_IS:
+						if ($set_value != $choice) return false;
+						break;
+					case self::OP_NOT:
+						if ($set_value == $choice) return false;
+						break;
+					case self::OP_CONTAINS:
+						if (strpos($set_value, $choice) === false) return false;
+						break;
+					case self::OP_NOTCONTAINS:
+						if (strpos($set_value, $choice) !== false) return false;
+						break;
+				}
+				break;
+
+			case 'id':
+				$choices_in = array();
+				foreach ((array)$choice as $c) {
+					$choices_in[] = (int)$c;
+				}
+
+				$has_choices = array();
+				foreach ($choices_in as $id) {
+					$c = $obj->getCustomDataForField($id);
+					if ($c) {
+						$has_choices[$id] = $id;
+					}
+				}
+
+				switch ($op) {
+					case self::OP_CONTAINS:
+					case self::OP_IS:
+						if (!$has_choices) return false;
+						break;
+
+					case self::OP_NOTCONTAINS:
+					case self::OP_NOT:
+						if ($has_choices) return false;
 						break;
 				}
 				break;
