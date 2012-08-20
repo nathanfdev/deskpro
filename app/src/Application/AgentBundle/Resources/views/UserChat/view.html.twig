@@ -45,6 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="clear"></div>
     <div class="meta-line">
         <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
+		<div id="{{baseId}}_create_ticket_btn2" class="set-hold hold" {% if convo.status != 'ended' %}style="display: none"{% else %}style="display:block"{% endif %}><span>Create Ticket</span></div>
         <div class="clear"></div>
     </div>
 </header>

@@ -149,6 +149,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			});
 		});
 
+		this.getEl('create_ticket_btn2').on('click', function() {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle, person_id: self.meta.person_id, sesson_id: self.meta.session_id, email: self.meta.email });
+			});
+		});
+
 		var imposter = this.getEl('imposter');
 		if (imposter[0]) {
 			imposter.find('button.dismiss').on('click', function() {
@@ -323,6 +329,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.hasEnded = true;
 
 		this.getEl('replybox').hide().addClass('chat-ended');
+		this.getEl('create_ticket_btn2').css('display', 'block');
 		this.updateUi();
 	},
 
