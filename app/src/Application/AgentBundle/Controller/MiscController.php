@@ -238,6 +238,12 @@ JS;
 		$accept = $this->container->getAttachmentAccepter();
 
 		$error = $accept->getError($file, 'agent');
+		if (!$error && $this->in->getBool('is_image')) {
+			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+			$accept->addRestrictionSet('only_images', $set);
+			$error = $accept->getError($file, 'only_images');
+		}
 		if ($error) {
 			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 			return $this->createJsonResponse(array($error));

@@ -1543,7 +1543,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$url = false;
 		if ($this->hasPicture()) {
-			if ($this->picture_blob) {
+			if ($this->picture_blob && $this->picture_blob->isImage()) {
 				$url = App::get('router')->generate('serve_blob', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
 					'filename' => $this->picture_blob->filename,
