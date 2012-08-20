@@ -405,6 +405,9 @@ class ServerController extends AbstractController
 		$php_vars['memory_limit'] = \Orb\Util\Env::getMemoryLimit();
 		$php_vars['memory_limit_real'] = DP_REAL_MEMSIZE;
 
+		$effect_max_display = Numbers::getFilesizeDisplayParts($effective_max);
+		$effect_max_display = ($effect_max_display['number'] > 1 ? floor($effect_max_display['number']) : $effect_max_display['number']) . ' ' . $effect_max_display['symbol'];
+
 		return $this->render('AdminBundle:Server:attachments.html.twig', array(
 			'php_vars' => $php_vars,
 			'has_uploaded' => $has_uploaded,
@@ -412,7 +415,7 @@ class ServerController extends AbstractController
 			'failed' => $failed,
 			'php_ini' => $php_ini,
 			'effective_max' => $effective_max,
-			'effective_max_display' => Numbers::filesizeDisplay($effective_max),
+			'effective_max_display' => $effect_max_display,
 
 			'filestorage_path' => $filestorage_path,
 			'use_fs' => $use_fs,
