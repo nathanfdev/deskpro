@@ -6,19 +6,13 @@
 		<button class="btn primary">Run Query</button>
 
 		{% if statement and not errors %}
-			<button class="btn" name="save" value="1">Save as Report</button>
+			<div class="report-actions">
+				<button class="btn" name="save" value="1">Save as Report</button>
+			</div>
+		{% endif %}
+
+		{% if query %}
+			{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
 		{% endif %}
 	</form>
-
-	{% if query %}
-		<div class="report-builder-results">
-			<div style="overflow: hidden; zoom: 1">
-				<pre style="width: 49%; float: left; overflow: auto">{{ query }}</pre>
-				{% if statement %}
-					<pre style="width: 49%; float: left; overflow: auto">{{ statement.toSql() }}</pre>
-				{% endif %}
-			</div>
-			{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
-		</div>
-	{% endif %}
 {% endblock %}

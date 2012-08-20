@@ -70,7 +70,6 @@ class ReportBuilderController extends AbstractController
 		if ($query) {
 			$results = $this->renderQuery($query, 'html', $error);
 			if (!$error) {
-
 				$compiler = new Compiler();
 				$statement = $compiler->compile($query);
 				$parts = $this->_getDpqlPartsForInput($statement);

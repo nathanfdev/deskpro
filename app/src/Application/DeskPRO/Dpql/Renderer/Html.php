@@ -129,24 +129,6 @@ class Html
 		}
 
 		return $this->renderSplitHeader(implode(' / ', $splitPrint)) . "\n" . $table;
-
-		/*$splitResults = array();
-
-		foreach ($rows AS $key => $row) {
-			$splitId = array();
-			foreach ($splitColumns AS $column) {
-				$splitId[] = $this->_renderCellValue($row, $column);
-			}
-			$splitResults[implode(' / ', $splitId)][$key] = $row;
-		}
-
-		$output = '';
-		foreach ($splitResults AS $splitTitle => $splitResult) {
-			$output .= $this->renderSplitHeader($splitTitle)
-				. "\n" . $this->renderTable($splitResults[0]);
-		}
-
-		return $output;*/
 	}
 
 	/**
@@ -158,7 +140,7 @@ class Html
 	 */
 	public function renderSplitHeader($title)
 	{
-		return '<h3>' . $title . '</h3>';
+		return '<h3 class="report-split-header">' . $title . '</h3>';
 	}
 
 	/**
@@ -185,12 +167,13 @@ class Html
 	 * Renders the outer table tag.
 	 *
 	 * @param string $inner HTML inside table
+	 * @param string $extraClass Any extra classes to add (space separated)
 	 *
 	 * @return string
 	 */
-	protected function _renderTableTag($inner)
+	protected function _renderTableTag($inner, $extraClass = '')
 	{
-		return "<table class=\"report-builder-table\">\n$inner\n</table>\n";
+		return "<table class=\"report-builder-table $extraClass\">\n$inner\n</table>\n";
 	}
 
 	/**
@@ -210,7 +193,7 @@ class Html
 			$columnHtml[] = '<th>' . htmlspecialchars($column['title']) . '</th>';
 		}
 
-		return '<tr>' . implode("\n\t", $columnHtml) . '</tr>';
+		return '<thead><tr class="row-header">' . implode("\n\t", $columnHtml) . '</tr></thead>';
 	}
 
 	/**
@@ -227,6 +210,7 @@ class Html
 		$rows = array_values($rows); // need continuous keys
 
 		$rowsHtml = array();
+		$rowCount = 0;
 
 		$groupSkipCount = array();
 		foreach ($groupColumns AS $groupId => $groupColumn) {
@@ -297,10 +281,17 @@ class Html
 				$cells[] = '<td>' . $this->_renderCellValue($row, $column) . '</td>';
 			}
 
-			$rowsHtml[] = '<tr>' . implode("\n\t", $cells) . '</tr>';
+			$rowCount++;
+			$class = ($rowCount % 2 ? 'odd' : 'even');
+
+			$rowsHtml[] = '<tr class="row-body ' . $class . '">' . implode("\n\t", $cells) . '</tr>';
 		}
 
-		return implode("\n", $rowsHtml);
+		if ($rowsHtml) {
+			return '<tbody>' . implode("\n", $rowsHtml) . '</tbody>';
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -350,8 +341,8 @@ class Html
 		$prepared = $this->_prepareMatrixTable($rows);
 
 		return $this->_renderTableTag(
-			$this->_renderMatrixHeader($prepared)
-			. $this->_renderMatrixBody($prepared)
+			$this->_renderMatrixHeader($prepared) . $this->_renderMatrixBody($prepared),
+			'matrix'
 		);
 	}
 
@@ -432,10 +423,14 @@ class Html
 				$rowSpan = ($rowSkipCount > 1 ? " rowspan=\"$rowSkipCount\"" : '');
 				$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
 			}
-			$output[] = "<tr>$row</tr>";
+			$output[] = "<tr class=\"row-header\">$row</tr>";
 		}
 
-		return implode("\n\t", $output);
+		if ($output) {
+			return '<thead>' . implode("\n\t", $output) . '</thead>';
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -513,6 +508,8 @@ class Html
 		$lookup = $prepared['lookup'];
 
 		$rows = array();
+		$rowCount = 0;
+
 		foreach ($rowKeys AS $yPath => $html) {
 			$cells = array();
 			foreach ($matrixPaths AS $xPath) {
@@ -524,10 +521,17 @@ class Html
 				$cells[] = "<td>$value</td>";
 			}
 
-			$rows[] = '<tr>' . $html . implode('', $cells) . '</tr>';
+			$rowCount++;
+			$class = ($rowCount % 2 ? 'odd' : 'even');
+
+			$rows[] = '<tr class="row-body ' . $class . '">' . $html . implode('', $cells) . '</tr>';
 		}
 
-		return implode("\n\t", $rows);
+		if ($rows) {
+			return '<tbody>' . implode("\n\t", $rows) . '</tbody>';
+		} else {
+			return '';
+		}
 	}
 
 	/**

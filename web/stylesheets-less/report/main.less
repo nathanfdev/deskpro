@@ -931,6 +931,74 @@ section.coming-soon {
 
 /** Report builder **/
 
+.report-container:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+.report-container { *zoom: 1; }
+
+.report-list {
+	float: left;
+	width: 200px;
+	li {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.report-page-body {
+	padding-left: 10px;
+	overflow: auto;
+	h1 {
+		font-size: 16pt;
+		.report-action { float: right; margin-left: 5px; font-size: 11px; }
+		.report-favorite {
+			float: left;
+			margin: 1px 5px;
+			background: url(../../images/user/star-off.png) no-repeat center center;
+			width: 14px; height: 14px;
+			overflow: hidden;
+			text-indent: -9999px;
+		}
+		.favorited { background: url(../../images/user/star.png) no-repeat center center; }
+	}
+}
+
+.report-split-header {
+	margin: 10px 0;
+	font-size: 14pt;
+}
+
+.report-builder-table {
+	border: 1px solid black;
+	margin: 10px 0;
+
+	td, th {
+		padding: 3px;
+		text-align: center;
+		vertical-align: middle;
+		border: 1px solid #DDDDDD;
+	}
+
+	.row-header th, &.matrix .row-body th {
+		background: #D8D8D8;
+		border: 1px solid #AAA;
+	}
+	.odd { background: white; }
+	.even { background: #EFEFEF; }
+}
+
+.report-actions {
+	margin: 10px 0;
+	border-top: 1px solid #DEDEDE;
+	padding-top: 10px;
+}
+
 .query-error {
 	background-color: #FFD3C7;
 	border: 1px solid #FF9C8C;
@@ -940,6 +1008,10 @@ section.coming-soon {
 
 
 /** Report builder - query builder **/
+
+.query-editor-container {
+	margin: 10px 0;
+}
 
 .query-editor-builder {
 	dl {
@@ -952,7 +1024,6 @@ section.coming-soon {
 	dd {
 		display: inline-block;
 		width: 85%;
-		input, textarea { width: 100%; display: block; }
 	}
 	.limit input { display: inline-block; width: 50px; }
 	.limit span { margin-left: 10px; }
