@@ -750,6 +750,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket_message = new Entity\TicketMessage();
 			$ticket_message['person']  = $person;
 			$ticket_message->setMessageHtml($email_info['body']);
+			$ticket_message->withNewSubject = $newticket->ticket->subject;
 
 			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
 				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;

@@ -150,6 +150,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $email_reader;
 
+	/**
+	 * @var string
+	 */
+	public $withNewSubject = '';
+
 	public function __construct()
 	{
 		$this->setModelField('date_created', new \DateTime());
