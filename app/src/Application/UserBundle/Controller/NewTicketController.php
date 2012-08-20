@@ -386,6 +386,12 @@ class NewTicketController extends AbstractController
 			$preticket->object_id   = $content_id;
 		}
 
+		// Mark content as helpful while we're at it
+		try {
+			$save_rating = new \Application\DeskPRO\Publish\SaveRating($this->person);
+			$save_rating->save($content_type, $content_id, 1);
+		} catch (\Exception $e) {}
+
 		$this->em->beginTransaction();
 		$this->em->persist($preticket);
 		$this->em->flush();
