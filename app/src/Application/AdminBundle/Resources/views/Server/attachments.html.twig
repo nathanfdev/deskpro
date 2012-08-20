@@ -41,7 +41,7 @@
                             {% set phrase_link %}
                             <a class="switch-trigger">{{ phrase('admin.server.switching_to_fs_storage') }}</a>
                             {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.recommend_fs_storage', {'link':phrase_link}) }}{% endif %}
+                            {% if not moving_id %}{{ phrase('admin.server.recommend_fs_storage', {'link':phrase_link}, true) }}{% endif %}
 						</div>
 					</td>
 				</tr>
