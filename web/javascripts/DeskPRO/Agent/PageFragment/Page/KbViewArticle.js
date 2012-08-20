@@ -274,7 +274,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 					type: 'POST',
 					data: {action: 'status', status: status},
 					context: self,
-					dataType: 'json'
+					dataType: 'json',
+					success: function() {
+						DeskPRO_Window.sections.publish_section.reload();
+					}
 				});
 			}
 		});
@@ -379,7 +382,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			type: 'POST',
 			data: formData,
 			context: this,
-			dataType: 'json'
+			dataType: 'json',
+			success: function() {
+				DeskPRO_Window.sections.publish_section.reload();
+			}
 		});
 	},
 

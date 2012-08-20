@@ -176,7 +176,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 					type: 'POST',
 					data: {action: 'status', status: status},
 					context: self,
-					dataType: 'json'
+					dataType: 'json',
+					success: function() {
+						DeskPRO_Window.sections.publish_section.reload();
+					}
 				});
 			}
 		});
@@ -203,7 +206,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
 					type: 'POST',
 					data: { action: 'category', category_id: catId },
-					dataType: 'json'
+					dataType: 'json',
+					success: function() {
+						DeskPRO_Window.sections.publish_section.reload();
+					}
 				});
 			}
 		});

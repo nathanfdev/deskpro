@@ -241,7 +241,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 						url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 						type: 'POST',
 						data: { action: 'category', category_id: catId },
-						dataType: 'json'
+						dataType: 'json',
+						success: function() {
+							DeskPRO_Window.sections.publish_section.reload();
+						}
 					});
 				}
 			});
@@ -262,7 +265,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 						type: 'POST',
 						data: {action: 'status', status: status},
 						context: self,
-						dataType: 'json'
+						dataType: 'json',
+						success: function() {
+							DeskPRO_Window.sections.publish_section.reload();
+						}
 					});
 				}
 			});
