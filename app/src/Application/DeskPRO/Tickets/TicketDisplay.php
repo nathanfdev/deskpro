@@ -154,6 +154,11 @@ class TicketDisplay implements PersonContextInterface
 		$this->message_to_attach = array();
 
 		foreach ($this->attachments as $attach) {
+
+			if ($attach->is_inline) {
+				continue;
+			}
+
 			if (!isset($this->message_to_attach[$attach['message']['id']])) {
 				$this->message_to_attach[$attach['message']['id']] = array();
 			}

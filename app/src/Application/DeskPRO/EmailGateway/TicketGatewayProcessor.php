@@ -72,10 +72,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $charset_error = false;
 
+	/**
+	 * If in reply mode, this is the ticket being replied to
+	 *
+	 * @var Ticket
+	 */
+	protected $ticket;
+
 	protected $error;
 	protected $source_info;
 	protected $is_dp3_reply = false;
 	protected $is_bounce = false;
+	protected $inline_blobs = array();
+	protected $dupe_inline_blobs = array();
 
 	protected function init()
 	{
@@ -267,6 +276,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function doNewReply(Entity\Ticket $ticket, $person, $context)
 	{
+		$this->ticket = $ticket;
+
 		$this->logMessage("doNewRelpy context $context");
 		$this->processBlobs();
 
@@ -333,9 +344,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		foreach ($this->processBlobs() as $blob) {
+
+			if (isset($this->dupe_inline_blobs[$blob->getId()])) {
+				continue;
+			}
+
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $person;
+
+			if (isset($this->inline_blobs[$blob->getId()])) {
+				$attach->is_inline = true;
+			}
 
 			$message->addAttachment($attach);
 		}
@@ -932,13 +952,47 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function replaceInlineAttachTokens($body, InlineImageTokens $inline_images)
 	{
+		$exist_inline_blobs = array();
+
+		if ($this->ticket) {
+			$blob_hashes = array();
+
+			foreach ($this->processed_blobs as $blob) {
+				$blob_hashes[] = $blob->blob_hash;
+			}
+
+			if ($blob_hashes) {
+				$exist_attach = App::getOrm()->createQuery("
+					SELECT a, b
+					FROM DeskPRO:TicketAttachment a
+					LEFT JOIN a.blob b
+					WHERE a.ticket = ?0 AND b.blob_hash IN (?1)
+				")->execute(array($this->ticket, $blob_hashes));
+
+				foreach ($exist_attach as $a) {
+					$exist_inline_blobs[$a->blob->blob_hash] = $a->blob;
+				}
+			}
+		}
+
 		foreach ($inline_images->getCids() as $cid) {
 			if (!isset($this->processed_blobs_cid[$cid])) {
 				continue;
 			}
 
 			$blob = $this->processed_blobs_cid[$cid];
+
+			// If this ticket already has a blob like this,
+			// then mark it as a dupe and rewrite the inline reference
+			// to the one we've already saved
+			if (isset($exist_inline_blobs[$blob->blob_hash])) {
+				$this->logMessage(sprintf("Duplicate inline blob %s is being discarded, existing blob %s will be used", $blob->getFilenameSafe(), $blob->getId()));
+				$this->dupe_inline_blobs[$blob->getId()] = $blob;
+				$blob = $exist_inline_blobs[$blob->blob_hash];
+			}
+
 			if ($blob->isImage()) {
+				$this->inline_blobs[$blob->getId()] = $blob;
 				$replace = '[attach:image:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
 			} else {
 				$replace = '[attach:file:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
