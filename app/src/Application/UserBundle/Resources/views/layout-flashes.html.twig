@@ -12,7 +12,7 @@
 			<div class="dp-alert alert-block">{{ phrase('user.tickets.flash_new_ticket_validating_email', {email: app.session.getFlash('new_ticket_validating_email')}) }}</div>
 		{% endif %}
 		{% if app.session.getFlash('new_ticket_email') %}
-		<div class="dp-alert dp-alert-success">{{ phrase('user.tickets.new_ticket_email', {email: app.session.getFlash('new_ticket_validating_email')}) }}</div>
+		<div class="dp-alert dp-alert-success">{{ phrase('user.tickets.new_ticket_email', {email: app.session.getFlash('new_ticket_email')}) }}</div>
 		{% endif %}
 	</div>
 {% endif %}
