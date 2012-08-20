@@ -221,10 +221,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			foot.detach().appendTo($('> section', this.popoverOuter));
 		}
 
-		window.setTimeout(function() {
-			var data = self.popover.find('input, select, textarea').serializeArray();
-			self.formString = JSON.stringify(data);
-		}, 800);
+		var data = self.popover.find('input, select, textarea').serializeArray();
+		self.formString = JSON.stringify(data);
 
 		this.updatePositions();
 	},
