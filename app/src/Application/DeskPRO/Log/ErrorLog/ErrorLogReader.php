@@ -276,6 +276,9 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 	{
 		$this->_initItems();
 		$key = key($this->items);
+		if (!$key) {
+			return null;
+		}
 		return $this[$key];
 	}
 
