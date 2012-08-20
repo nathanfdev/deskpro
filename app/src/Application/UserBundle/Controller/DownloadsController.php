@@ -226,7 +226,7 @@ class DownloadsController extends AbstractController
 	 */
 	public function newCommentAction($download_id)
 	{
-		if ($this->container->getSetting('core.interact_require_login')) {
+		if ($this->container->getSetting('core.interact_require_login') && !$this->person->getId()) {
 			return $this->forward('UserBundle:Login:index');
 		}
 

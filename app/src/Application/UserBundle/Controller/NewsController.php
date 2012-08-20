@@ -236,7 +236,7 @@ class NewsController extends AbstractController
 	 */
 	public function newCommentAction($post_id)
 	{
-		if ($this->container->getSetting('core.interact_require_login')) {
+		if ($this->container->getSetting('core.interact_require_login') && !$this->person->getId()) {
 			return $this->forward('UserBundle:Login:index');
 		}
 

@@ -263,7 +263,7 @@ class ChatController extends AbstractController
 		}
 
 		$to_login_page = false;
-		if ($this->container->getSetting('core.interact_require_login') && !$session || !$session->person || !$session->person->getId()) {
+		if ($this->container->getSetting('core.interact_require_login') && (!$session || !$session->person || !$session->person->getId())) {
 			$to_login_page = true;
 		}
 
