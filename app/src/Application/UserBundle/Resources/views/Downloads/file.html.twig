@@ -41,7 +41,7 @@
 	<article id="dp_article_content" style="overflow: hidden">
 		<div class="dp-download-btn-wrap">
 			<div class="dp-download-btn">
-				<a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
+				<a class="dp-btn dp-btn-primary" href="{{ path('user_downloads_file_download', {slug: download.url_slug}) }}">
 					{{ phrase('user.downloads.button-download') }}: {{ download.filename }} <small style="color: #fff;">({{ download.readable_filesize }})</small>
 				</a>
 			</div>
@@ -56,6 +56,12 @@
 
 		{% if app.user.hasPerm('downloads.rate') %}
 			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': download} %}
+
+			{% if download.num_downloads %}
+				<div class="dp-view-wrap">
+					{{ phrase('user.downloads.downloads-count', {count: download.num_downloads}) }}
+				</div>
+			{% endif %}
 		{% endif %}
 
 		{% if app.getSetting('core.show_share_widget') %}

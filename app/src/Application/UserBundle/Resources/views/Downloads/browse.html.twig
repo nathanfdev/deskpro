@@ -77,7 +77,7 @@
 						<section class="dp-article-post dp-content-post dp-download-post">
 							<header>
 								<h3 style="margin-bottom: 0">
-									<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
+									<a href="{{ path('user_downloads_file_download', {'slug': download.url_slug}) }}">
 										{{ download.title }}
 										<em>{{ download.blob.getReadableFilesize() }}</em>
 									</a>

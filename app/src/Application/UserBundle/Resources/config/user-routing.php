@@ -428,6 +428,13 @@ $collection->add('user_downloads_file', new Route(
 	array()
 ));
 
+$collection->add('user_downloads_file_download', new Route(
+	'/downloads/files/{slug}/download',
+	array('_controller' => 'UserBundle:Downloads:downloadFile'),
+	array(),
+	array()
+));
+
 $collection->add('user_downloads_newcomment', new Route(
 	'/downloads/new-comment/{download_id}',
 	array('_controller' => 'UserBundle:Downloads:newComment'),
