@@ -6,10 +6,6 @@ Orb.createNamespace('DeskPRO');
 DeskPRO.WordHighlighter = {
 	highlight: function(node, words, excluseStopwords, onlyFirst) {
 
-		words = words.map(function(w) {
-			return w.toLowerCase();
-		});
-
 		// We need the longest words to process first or they'll be passed up in favour of shorter guys
 		words.sort(function(a, b) {
 			if (a.length > b.length) {
@@ -42,7 +38,7 @@ DeskPRO.WordHighlighter = {
 			for (i = 0; i < words.length; i++) {
 				if (onlyFirst && _doneWords[i]) continue;
 
-				var pos = node.data.toLowerCase().indexOf(words[i]);
+				var pos = node.data.toLowerCase().indexOf(words[i].toLowerCase());
 				if (pos >= 0 && !$(node.parentNode).hasClass('dp-highlight-word') && !$(node.parentNode).closest('.dp-highlight-word')[0]) {
 					_doneWords[i] = true;
 

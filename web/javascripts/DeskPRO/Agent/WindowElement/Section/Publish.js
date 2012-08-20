@@ -541,32 +541,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(data) {
-				// Update count
-				var counter = $('.counter-words', this.glossaryWrapper);
-				var cnt = parseInt(counter.html());
-				counter.html(cnt+1);
-
-				// Add the new word to the list
-				var letter = data.letter;
-				var word = data.word;
-				var word_id = data.word_id;
-
-				var li = $('<li><a class="edit-word-trigger word-'+word_id+'" data-word-id="'+word_id+'">'+word+'</a></li>');
-
-				var dt = $('dt[data-letter="' + letter + '"]:first', this.glossaryWrapper);
-				var dd = $('dd[data-letter="' + letter + '"]:first', this.glossaryWrapper);
-
-				dt.show();
-				dd.show();
-				$('ul', dd).prepend(li);
-
-				// Reset add form
-				$('input.word', this.addDlg.elements.wrapperOuter).val('');
-				$('textarea.content', this.addDlg.elements.wrapperOuter).val('');
-
-				DeskPRO_Window.util.modCountEl($('.glossary-word-count', this.getSectionElement()), '+');
-
 				this.addDlg.closeOverlay();
+				this.reload();
 			}
 		});
 	},
@@ -592,9 +568,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(counts) {
-				var wordEl = $('.word-' + word_id, this.glossaryWrapper);
-				DeskPRO_Window.util.showSavePuff(wordEl);
 				this.getGlossaryEditDlg().close();
+				this.reload();
 			}
 		});
 	},
@@ -609,14 +584,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(counts) {
-				var wordEl = $('.word-' + word_id, this.glossaryWrapper);
-				wordEl.fadeOut('fast', function() {
-					wordEl.remove();
-				});
-
-				DeskPRO_Window.util.modCountEl($('.glossary-word-count', this.getSectionElement()), '-');
-
 				this.getGlossaryEditDlg().close();
+				this.reload();
 			}
 		});
 	}
