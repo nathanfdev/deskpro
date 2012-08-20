@@ -7,6 +7,9 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
+		var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
+		var load = this.wrapper.find('.list-selection-bar .ajax-loading');
+
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			menuElement: $('ul.actions-menu:first', this.wrapper),
 			onItemClicked: function(info) {
@@ -27,6 +30,9 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 					return;
 				}
 
+				btn.hide();
+				load.show();
+
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
@@ -34,6 +40,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 					data: data,
 					type: 'POST',
 					dataType: 'json',
+					complete: function() {
+						load.hide();
+						btn.show();
+					},
 					success: function() {
 						self.selectionBar.checkNone();
 						self.updateCount('sub', lines.length);

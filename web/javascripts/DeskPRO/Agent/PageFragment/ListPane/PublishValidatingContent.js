@@ -12,6 +12,9 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 			self.listRemove(el);
 		});
 
+		var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
+		var load = this.wrapper.find('.list-selection-bar .ajax-loading');
+
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			menuElement: $('ul.actions-menu:first', this.wrapper),
 			onItemClicked: function(info) {
@@ -34,12 +37,19 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 				var action = $(info.itemEl).data('action');
 
+				btn.hide();
+				load.show();
+
 				var sendFn = function() {
 					$.ajax({
 						url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
 						data: data,
 						type: 'POST',
 						dataType: 'json',
+						complete: function() {
+							load.hide();
+							btn.show();
+						},
 						success: function() {
 							$(lines).fadeOut().each(function() {
 								self.listRemove($(this));
