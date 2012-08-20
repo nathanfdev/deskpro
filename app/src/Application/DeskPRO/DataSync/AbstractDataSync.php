@@ -117,7 +117,7 @@ abstract class AbstractDataSync
 		$this->_syncFields = $this->getSyncFields();
 		$this->_defaultFields = $this->getDefaultInsertValues();
 
-		$fileName = basename(get_class($this));
+		$fileName = basename(str_replace('\\', DIRECTORY_SEPARATOR, get_class($this)));
 		$this->_baseFile = $baseFile ?: DP_ROOT . '/src/Application/InstallBundle/Data/Sync/' . $fileName . '.json';
 
 		$this->_db = \Application\DeskPRO\App::getDb();

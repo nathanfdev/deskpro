@@ -63,8 +63,10 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
 			foreach ($classes AS $name => $class) {
 				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
 				$sync = new $class();
-				$sync->syncBaseToLive();
-				$output->writeln(sprintf("\tImported %s data.", $name));
+				$res = $sync->syncBaseToLive();
+				$output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
+					$name, $res['insert'], $res['update'], $res['delete']
+				));
 			}
 
 			$end = microtime(true);
@@ -79,8 +81,11 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
 
 				/* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
 				$sync = new $class();
-				$sync->syncBaseToLive();
-				$output->writeln(sprintf("Imported %s data.", $name));
+				$res = $sync->syncBaseToLive();
+				$output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
+					$name, $res['insert'], $res['update'], $res['delete']
+				));
+
 				return 0;
 			} else {
 				$output->writeln(sprintf("Could not find %s data.", $name));
