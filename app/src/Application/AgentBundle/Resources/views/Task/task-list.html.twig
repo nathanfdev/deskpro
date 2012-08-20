@@ -34,7 +34,7 @@
 	<div class="task-group collapsed">
 		<header>
 			<span class="expand-collapse"></span>
-			<h4>{{ completed_tasks|length }} {{ phrase('agent.tasks.completed_tasks') }}</h4>
+			<h4><span id="{{baseId}}_complete_count">{{ completed_tasks|length }}</span> {{ phrase('agent.tasks.completed_tasks') }}</h4>
 		</header>
 		<section>
 			{% for task in completed_tasks %}

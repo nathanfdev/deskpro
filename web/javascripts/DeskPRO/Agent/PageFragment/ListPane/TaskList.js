@@ -12,6 +12,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		var self = this;
 
 		var openForEl = null;
+		var completeCountEl = this.getEl('complete_count');
 
 		var updateCount = function(op, row) {
 
@@ -37,6 +38,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			}
 			els.push(document.getElementById('tasks_counter_all_total'));
 			checksub('tasks_counter_all');
+
+			DeskPRO_Window.util.modCountEl(completeCountEl, op, -1);
 
 			Array.each(els, function(el) {
 				DeskPRO_Window.util.modCountEl($(el), op);
