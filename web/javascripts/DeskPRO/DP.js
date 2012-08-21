@@ -157,6 +157,14 @@ var DP = {
 			options.width = '95%';
 		}
 
+		if (el.data('select-clear')) {
+			options.allowClear = true;
+		}
+
+		if (el.data('placeholder')) {
+			options.placeholder = el.data('placeholder');
+		}
+
 		el.find('option').each(function() {
 			var opt = $(this);
 			if (!$.trim(opt.text())) {
