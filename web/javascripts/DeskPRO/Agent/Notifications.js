@@ -46,7 +46,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		$('<em />').addClass('dismiss').appendTo(row);
 		$('<time />').addClass('timeago').appendTo(row);
-		$('<a />').text(message).appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1);
+		$('<a />').text(message).appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1).prepend('<i class="row-icon"></i>');
 
 		if (id) {
 			row.addClass('id-' + id);
