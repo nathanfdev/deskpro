@@ -78,8 +78,6 @@
 
 <section class="dp-chat-active-state" id="dp_chat_start">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.window_cancel') }}</div>
-
 		<h3>{{ phrase('user.chat.form_create_title') }}</h3>
 	</header>
 	<article>
@@ -144,7 +142,13 @@
 				</div>
 			</div>
 		{% endif %}
-		<button class="dp-btn dp-btn-success" id="dp_chat_start_go">{{ phrase('user.chat.form_create_button-submit') }}</button>
+
+		<div style="vertical-align: middle">
+			<button class="dp-btn dp-btn-success" id="dp_chat_start_go">{{ phrase('user.chat.form_create_button-submit') }}</button>
+			<div style="font-size: 11px; line-height: 25px;display: inline;">
+				or <a href="#"  id="dp_chatwin_close">{{ phrase('user.chat.window_cancel') }}</a>
+			</div>
+		</div>
 	</article>
 </section>
 

@@ -122,7 +122,7 @@ var DpChatWidget = new (function() {
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
 			css.push('top: -18px');
-			css.push('left: 10px');
+			css.push('right: 28px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
 			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
@@ -135,29 +135,34 @@ var DpChatWidget = new (function() {
 			}
 			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + phrase + '</div>').on('click', openInWindow).appendTo(chatIframeHolder);
 
-			// Close button
+			// Minmize button
 			var css = [];
 			css.push('background: #2A69A9');
 			css.push('color: #ffffff');
-			css.push('-webkit-border-radius: 20px');
-			css.push('-moz-border-radius: 20px');
-			css.push('border-radius: 20px');
+			css.push('-webkit-border-top-left-radius: 4px');
+			css.push('-webkit-border-top-right-radius: 4px');
+			css.push('-moz-border-radius-topleft: 4px');
+			css.push('-moz-border-radius-topright: 4px');
+			css.push('border-top-left-radius: 4px');
+			css.push('border-top-right-radius: 4px');
 			css.push('z-index: 90001');
-			css.push('font-size: 12px');
+			css.push('font-size: 10px');
 			css.push('line-height: 100%');
+			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
-			css.push('top: -8px');
-			css.push('right: -8px');
-			css.push('width: 15px')
-			css.push('height: 15px')
-			css.push('line-height: 15px')
-			css.push('text-align: center')
-			css.push('font-family: Arial,sans-serif');
+			css.push('top: -18px');
+			css.push('right: 2px');
+			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
-			css.push('font-weight: bold');
+			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
 			css = css.join(';');
-			$('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" style="' + css + '">–</div>').on('click', function() { self.close() }).appendTo(chatIframeHolder);
 
+			var phrase = 'Minimize';
+			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-minimize']) {
+				phrase = DESKPRO_LANG['user.chat.window_open-minimize'];
+			}
+			$('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" title="'+phrase+'" style="' + css + '">&#9660;</div>').on('click', function() { self.close() }).appendTo(chatIframeHolder);
 
 			isNew = true;
 

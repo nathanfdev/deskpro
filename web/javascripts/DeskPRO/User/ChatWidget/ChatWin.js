@@ -105,7 +105,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			self.tellParent('hide', []);
 		});
 
-		$('.dp_chatwin_close').on('click', function(ev) {
+		$('#dp_chatwin_close').on('click', function(ev) {
 			ev.preventDefault();
 			if (self.hasEnded || !self.conversationId) {
 				self.tellParent('destroy', []);
