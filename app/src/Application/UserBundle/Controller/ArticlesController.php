@@ -211,7 +211,6 @@ class ArticlesController extends AbstractController
 	 */
 	public function articleAction($slug)
 	{
-		sleep(60);
 		$article = $this->em->getRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
 			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
