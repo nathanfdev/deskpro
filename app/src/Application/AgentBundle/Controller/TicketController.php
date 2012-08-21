@@ -1423,6 +1423,16 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function viewEmailLogAction($message_id)
+	{
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		return $this->render('AgentBundle:Ticket:message-details-email-log.html.twig', array(
+			'message' => $message,
+			'ticket' => $message['ticket'],
+		));
+	}
+
 	public function ajaxGetMessageQuoteAction($message_id)
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);

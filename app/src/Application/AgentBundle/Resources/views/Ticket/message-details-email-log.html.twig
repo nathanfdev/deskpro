@@ -1,7 +1,7 @@
 {% extends 'AgentBundle:Ticket:message-details-layout.html.twig' %}
-{% block current_page "email-source" %}
+{% block current_page "email-log" %}
 {% block body %}
 <textarea style="font-family: 'Monaco', 'Courier New', monospace; font-size: 9pt;" class="fill">
-{{ message.email_source.raw_source }}
+{{ message.email_source.source_info|implode("\n") }}
 </textarea>
 {% endblock %}

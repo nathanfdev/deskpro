@@ -1110,6 +1110,13 @@ $collection->add('agent_ticket_message_emaildecoded', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_emaillog', new Route(
+	'/tickets/{ticket_id}/message-details/{message_id}/email-log',
+	array('_controller' => 'AgentBundle:Ticket:viewEmailLog'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_message_unformatted', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/unformatted',
 	array('_controller' => 'AgentBundle:Ticket:viewUnformattedMessage'),
