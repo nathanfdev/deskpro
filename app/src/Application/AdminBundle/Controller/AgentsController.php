@@ -556,6 +556,38 @@ class AgentsController extends AbstractController
 				}
 			}
 
+			// If they're new, enable notifications for them by default
+			if ($is_new) {
+				$agent_id = $agent->getId();
+				$this->db->executeUpdate("
+					INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
+					VALUES
+						(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1)
+				");
+
+				$this->db->executeUpdate("
+					INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
+					VALUES
+						($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+				");
+			}
+
 			$this->em->flush();
 			$this->em->getConnection()->commit();
 
