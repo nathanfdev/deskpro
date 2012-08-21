@@ -156,7 +156,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						var classname = f.field_type;
 					}
 
-					$('.' + classname, self.wrapper).not('.error-message').show();
+					$('.ticket-field.' + classname, self.wrapper).not('.error-message').show();
 				});
 			});
 
