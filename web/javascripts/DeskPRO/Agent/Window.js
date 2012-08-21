@@ -463,6 +463,35 @@ DeskPRO.Agent.Window = new Orb.Class({
 		while (fn = this.onloadStack.shift()) {
 			fn();
 		}
+
+		$('#user_settings_link_profile').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'profile');
+		});
+		$('#user_settings_link_ticketnotify').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'ticket-notify');
+		});
+		$('#user_settings_link_othernotify').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'notify');
+		});
+		$('#user_settings_link_macros').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'macros');
+		});
+		$('#user_settings_link_filters').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'filters');
+		});
+		$('#user_settings_link_snippets').on('click', function(ev) {
+			ev.preventDefault();
+			var snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+				viewUrl: $(this).data('snippet-viewer-url')
+			});
+
+			snippetsViewer.open();
+		});
 	},
 
 	addOnloadFunction: function(fn) {
