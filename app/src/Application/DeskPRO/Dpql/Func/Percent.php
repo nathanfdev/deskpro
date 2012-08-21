@@ -38,6 +38,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 
 /**
  * Gets the percentage of all rows in the group that match the given argument.
@@ -66,16 +67,19 @@ class Percent extends AbstractFunc
 			throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
 		}
 
-		if (count($this->_arguments) != 1) {
-			throw new Exception('PERCENT() can only accept 1 argument');
+		if (!in_array(count($this->_arguments), array(1, 2))) {
+			throw new Exception('PERCENT() can only accept 1 or 2 arguments');
 		}
 
 		$condition = reset($this->_arguments);
 		$prepped = $condition->prepare($statement, $section, $stack, $select, $result);
 
+		$decimals = next($this->_arguments);
+		$decimals = $decimals ? $this->_toLiteral($decimals) : 2;
+
 		$sql = 'IF(COUNT(*) > 0, SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*), 0)';
-		$renderer = function($type, $value) {
-			return number_format($value * 100, 2) . '%';
+		$renderer = function($type, $value, array $row, AbstractRenderer $renderer) use ($decimals) {
+			return $renderer->escapeValue(number_format($value * 100, $decimals) . '%');
 		};
 
 		return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, $renderer);

@@ -225,6 +225,10 @@ abstract class AbstractRenderer
 		$renderer = $column['renderer'];
 		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
+		if ($renderer instanceof \Closure) {
+			return $renderer($this->_typeName, $value, $row, $this);
+		}
+
 		return $this->renderValue($value, $renderer);
 	}
 
@@ -239,15 +243,22 @@ abstract class AbstractRenderer
 	 */
 	public function renderValue($value, $format)
 	{
-		if ($renderer instanceof \Closure) {
-			return $renderer($this->_typeName, $value, $row, $this);
-		}
-
 		if ($value === null) {
 			return $this->_renderNull();
 		}
 
-		switch ($format) {
+		switch (strtolower($format)) {
+			case 'number':
+				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
+					// float
+					$decimals = min(4, strlen($match[2]));
+				} else {
+					// integer
+					$decimals = 0;
+				}
+
+				return $this->escapeValue(number_format($value, $decimals));
+
 			case 'boolean':
 				return $this->_renderBoolean($value);
 
