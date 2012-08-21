@@ -385,9 +385,23 @@ class FeedbackController extends AbstractController
 			});
 		}
 
+		$cat_ids = $this->db->fetchAllCol("SELECT id FROM custom_def_feedback WHERE parent_id = 1");
+		$counts  = array();
+		if ($cat_ids) {
+			$counts = $this->container->getDb()->fetchAllKeyValue("
+				SELECT field_id, COUNT(*)
+				FROM custom_data_feedback
+				WHERE field_id IN (" . implode(',', $cat_ids) . ")
+				GROUP BY field_id
+			");
+		}
+
+		$counts = Arrays::castToType($counts, 'int', 'int');
+
 		$vars = array(
 			'field' => $field,
 			'choices_structure' => $choices_structure,
+			'cat_counts' => $counts
 		);
 
 		return $this->render('AdminBundle:Feedback:user-categories.html.twig', $vars);

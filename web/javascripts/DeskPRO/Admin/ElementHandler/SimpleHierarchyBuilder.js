@@ -52,7 +52,6 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 			list.find('i').remove();
 			resultContain.empty().append(list);
 
-			console.log(JSON.stringify(data));
 			structureHold.val(JSON.stringify(data));
 			structureDel.val(JSON.stringify(removedList));
 		};
@@ -85,6 +84,14 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 		});
 
 		if (structureHold.val()) {
+
+			var countsEl = el.find('input.choices_counts');
+			if (countsEl.val()) {
+				var counts = $.parseJSON(countsEl.val());
+			} else {
+				var counts = {};
+			}
+
 			try {
 				console.log(structureHold.val());
 				var data = eval(structureHold.val());
@@ -96,13 +103,13 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 				for (var i = 0; i < data.length; i++) {
 					var opt = data[i];
 					if (!opt.parent_id) {
-						addOption(opt.title, 0, opt.id);
+						addOption(opt.title, 0, opt.id, counts[parseInt(opt.id)]);
 					}
 				}
 				for (var i = 0; i < data.length; i++) {
 					var opt = data[i];
 					if (opt.parent_id) {
-						addOption(opt.title, opt.parent_id, opt.id);
+						addOption(opt.title, opt.parent_id, opt.id, counts[parseInt(opt.id)]);
 					}
 				}
 			}
@@ -170,7 +177,7 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 			if (isInline) exportData();
 		};
 
-		function addOption(title, parentId, id) {
+		function addOption(title, parentId, id, count) {
 			if (parentId) {
 				var parent = editorEl.find('.option-' + parentId).find('ul');
 			} else {
@@ -185,6 +192,8 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 				.addClass('option')
 				.data('option-id', id)
 				.data('option-title', title);
+
+			title += ' (' + (count||0) + ')';
 
 			var label = $('<div class="label">').text(title);
 			$('<i class="remove-trigger"></i><i class="move-grip"></i>').appendTo(label);
