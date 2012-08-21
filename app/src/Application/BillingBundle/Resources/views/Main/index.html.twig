@@ -140,7 +140,7 @@
 							<div class="alert-message block-message error errors-box" id="editlic_err" style="display: none">
 								<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
 								<ul>
-									<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':'<span class="lic-err-code"></span>'}) }}</li>
+									<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':'<span class="lic-err-code"></span>'}, true) }}</li>
 								</ul>
 							</div>
 							<textarea id="editlic_code">{{ lic.getLicenseCode() }}</textarea>
