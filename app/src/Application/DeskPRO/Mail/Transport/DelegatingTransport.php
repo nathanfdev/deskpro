@@ -296,9 +296,13 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	{
 		$from_address_model = $message->getFrom();
 		$from_address = array_keys($from_address_model);
+		$from_name = array_values($from_address_model);
 
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];
+
+		if (!$from_name) $from_name = '';
+		else $from_name = $from_name[0];
 
 		if ($message instanceof \Application\DeskPRO\Mail\Message) {
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Message context: %s", $message->getContextId()));
@@ -334,11 +338,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
 				$new_address = $matcher->getDefaultTicketAccountFrom();
 				if ($new_address) {
-					$from = $message->getFrom();
-					if (!$from) {
-						$from = array('', null);
-					}
-					$from[0] = $new_address;
+					$from = array($new_address => $from_name);
 
 					$message->setFrom($from);
 
