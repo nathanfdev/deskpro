@@ -533,6 +533,10 @@ class TicketSearchController extends AbstractController
 		/** @var $filter \Application\DeskPRO\Entity\TicketFilter */
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 
+		if (!$filter) {
+			throw $this->createNotFoundException();
+		}
+
 		$searcher = $filter->getSearcher();
 		$searcher->setPerson($this->person);
 
