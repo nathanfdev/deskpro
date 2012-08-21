@@ -102,12 +102,12 @@
 						<ul class="radio-list">
 							{% for email in app.user.emails %}
 								<li>
-									<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+									<label><input type="radio" name="dp_inline_email_choice_radio" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
 								</li>
 							{% endfor %}
 							<li>
 								<label>
-									<input type="radio" name="dp_inline_email_choice" value="NEW" />
+									<input type="radio" name="dp_inline_email_choice_radio" value="NEW" />
 									{{ phrase('user.profile.choose_email_new') }}:
 								</label>
 								<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />

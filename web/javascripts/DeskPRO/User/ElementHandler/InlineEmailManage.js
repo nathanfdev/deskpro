@@ -6,9 +6,7 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 
 	init: function() {
 		var self = this;
-		this.emailField = $('.dp-email-field', this.el).on('click', function() {
-			$(this).blur();
-		});
+		this.emailField = $('.dp-email-field', this.el);
 		this.newEmailField = $('.dp_inline_email_new', this.el);
 		this.emailList = $('.dp-email-manage-list', this.el);
 		this.controlsEl = $('.dp-email-manage-controls', this.el);
@@ -33,13 +31,24 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 			if (self.mode == 'new') {
 				self.emailField.val(self.newEmailField.val());
 			}
+			self.newEmailField.removeClass('error');
 		});
 
 		this.mode = 'normal';
 
-		if ($('input[name="dp_inline_email_choice"]:selected').val() == 'NEW') {
+		if ($('input[name="dp_inline_email_choice_radio"]:checked').val() == 'NEW') {
 			this.setNewMode();
 		}
+
+		$('input[name="dp_inline_email_choice_radio"]').not('[value="NEW"]').on('click', function() {
+			self.setNormalMode();
+			self.emailField.val($(this).val());
+		});
+
+		$('input[name="dp_inline_email_choice_radio"][value="NEW"]').on('click', function() {
+			self.emailField.val(self.newEmailField.val());
+			self.setNewMode();
+		});
 
 		var changeEmail = $('.change-email', this.el).on('click', function(ev) {
 			ev.preventDefault();
@@ -49,6 +58,14 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 		});
 		var changeEmailClose =  $('.change-email-close', this.el).on('click', function(ev) {
 			ev.preventDefault();
+			if ($('input[name="dp_inline_email_choice_radio"][value="NEW"]').is(':checked')) {
+				var email = self.newEmailField.val();
+				if (!email || email.indexOf('@') === -1) {
+					self.newEmailField.addClass('error').focus();
+					return;
+				}
+			}
+
 			self.controlsEl.slideUp('fast');
 			changeEmail.show();
 			changeEmailClose.hide();
