@@ -643,6 +643,7 @@
 	'agent.general.verified'                                => 'Verified',
 	'agent.general.view'                                    => 'View',
 	'agent.general.view_all_x_tickets'                      => 'View 1 ticket|View all {{count}} tickets',
+	'agent.general.view_all_x_chats'                        => 'View 1 chat|View all {{count}} chats',
 	'agent.general.view_email_source'                       => 'View Email Source',
 	'agent.general.view_in_user_interface'                  => 'View in user interface',
 	'agent.general.view_profile'                            => 'view profile',

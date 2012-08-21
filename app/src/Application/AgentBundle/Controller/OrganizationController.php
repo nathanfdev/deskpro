@@ -85,6 +85,9 @@ class OrganizationController extends AbstractController
 		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getRecentOrganizationTickets($org);
 		$org_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
 
+		$org_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getRecentForOrganization($org);
+		$org_chats_count = $this->em->getRepository('DeskPRO:ChatConversation')->getCountForOrganization($org);
+
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);
 
 		// Count members
@@ -119,6 +122,8 @@ class OrganizationController extends AbstractController
 			'activity_stream'    => $activity_stream,
 			'org_tickets'        => $org_tickets,
 			'org_tickets_count'  => $org_tickets_count,
+			'org_chats'          => $org_chats,
+			'org_chats_count'    => $org_chats_count,
 			'members_count'      => $members_count,
 			'custom_fields'      => $custom_fields,
 		));

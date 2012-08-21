@@ -30,6 +30,9 @@
 				{% if org_tickets_count %}
 					<li data-tab-for="#{{baseId}}_tickets_tab">{{ phrase('agent.general.tickets') }} <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
 				{% endif %}
+				{% if org_chats_count %}
+					<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count" id="{{baseId}}_chats_count">{{ org_chats_count|default(0) }}</span></li>
+				{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -117,7 +120,7 @@
 										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
 									</div>
 									<div class="line">
-										<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}">{{ticket.person.display_name}}</a>
+										<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}" style="background: url('{{ ticket.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{ticket.person.display_name}}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
@@ -130,6 +133,45 @@
 							<td colspan="100">
 								<button class="clean-white" id="{{baseId}}_tickets_viewall">
 									{{ phrase('agent.general.view_all_x_tickets', {'count':org_tickets_count}) }}
+								</button>
+							</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</article>
+		{% endif %}
+		{# /Tickets Tab #}
+
+		{# Chats Tab #}
+		{% if org_chats_count %}
+		<article id="{{baseId}}_chats_tab">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_chats_initial">
+					{% for chat in org_chats %}
+						<tr>
+							<td>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-title="@text">{{chat.subject_line}}</a>
+									</div>
+									<div class="line">
+										{% if not chat.person %}
+											Anonymous
+										{% else %}
+											<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': chat.person.id}) }}" style="background: url('{{ chat.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{chat.person.display_name}}</a>
+										{% endif %}
+									</div>
+									<div class="bound-fade"></div>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+					{% if org_chats|length < org_chats_count %}
+						<tr class="more">
+							<td colspan="100">
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">
+									{{ phrase('agent.general.view_all_x_chats', {'count':org_chats_count}) }}
 								</button>
 							</td>
 						</tr>

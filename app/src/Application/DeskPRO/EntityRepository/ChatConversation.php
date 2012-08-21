@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 
@@ -389,5 +390,31 @@ class ChatConversation extends AbstractEntityRepository
 		}
 
 		return $conversation;
+	}
+
+
+	public function getRecentForOrganization(OrganizationEntity $org)
+	{
+		$chats = $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			LEFT JOIN c.person p
+			WHERE p.organization = ?0 AND c.is_agent = false
+			ORDER BY c.id DESC
+		")->execute(array($org));
+
+		return $chats;
+	}
+
+	public function getCountForOrganization(OrganizationEntity $org)
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM chat_conversations
+			LEFT JOIN people ON chat_conversations.person_id = people.id
+			WHERE people.organization_id = ? AND chat_conversations.is_agent = 0
+		", array($org->getId()));
+
+		return $chats;
 	}
 }
