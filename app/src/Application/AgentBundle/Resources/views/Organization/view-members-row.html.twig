@@ -11,14 +11,21 @@
 			<div class="bound-fade"></div>
 		</div>
 	</td>
-	<td class="position-edit-trigger">
-		<span class="position-label single-click-activate">{{ person.organization_position }}</span>
+	<td class="position-edit-trigger" style="text-align: right;">
+		<span class="position-label single-click-activate">
+			{% if person.organization_position %}
+				{{ person.organization_position }}
+			{% else %}
+				<span style="font-size: 11px; color: #959595;">No position set</span>
+			{% endif %}
+		</span>
 		<div class="position-edit" style="display: none">
 			<input
 				type="text"
 				class="integrated inner"
 				value="{{ person.organization_position }}"
 				data-save-url="{{ path('agent_org_save_member_pos', {'organization_id': org.id, 'person_id': person.id }) }}"
+				style="text-align: right;"
 			/>
 		</div>
 	</td>

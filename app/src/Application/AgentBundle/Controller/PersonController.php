@@ -493,17 +493,10 @@ class PersonController extends AbstractController
 						ORDER BY t.id DESC
 					")->setMaxResults(250)->execute(array($person));
 
-					$this->db->beginTransaction();
-					try {
-						foreach ($tickets as $t) {
-							$t->organization = $person->organization;
-							$this->em->persist($t);
-						}
+					foreach ($tickets as $t) {
+						$t->organization = $person->organization;
+						$this->em->persist($t);
 						$this->em->flush();
-						$this->db->commit();
-					} catch (\Exception $e) {
-						$this->db->rollback();
-						throw $e;
 					}
 				} elseif ($old_org) {
 					$tickets = $this->em->createQuery("
@@ -512,18 +505,10 @@ class PersonController extends AbstractController
 						WHERE t.person = ?0 AND t.organization = ?1
 						ORDER BY t.id DESC
 					")->setMaxResults(250)->execute(array($person, $old_org));
-
-					$this->db->beginTransaction();
-					try {
-						foreach ($tickets as $t) {
-							$t->organization = null;
-							$this->em->persist($t);
-						}
+					foreach ($tickets as $t) {
+						$t->organization = null;
+						$this->em->persist($t);
 						$this->em->flush();
-						$this->db->commit();
-					} catch (\Exception $e) {
-						$this->db->rollback();
-						throw $e;
 					}
 				}
 
