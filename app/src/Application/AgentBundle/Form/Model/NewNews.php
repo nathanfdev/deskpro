@@ -72,7 +72,6 @@ class NewNews
 		$news->person = $this->_person_context;
 		$news->title = $this->title;
 		$news->content = $this->content ?: '';
-		$news->slug = $this->slug;
 		$news->setStatusCode($this->status);
 
 		$cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);

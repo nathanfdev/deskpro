@@ -50,7 +50,6 @@ class NewFeedback extends AbstractType
 
 		$builder->add('category_id', 'text');
 		$builder->add('status_code', 'text');
-		$builder->add('slug', 'text');
 
 		$builder->add('labels', 'collection', array(
 			'type' => 'hidden',

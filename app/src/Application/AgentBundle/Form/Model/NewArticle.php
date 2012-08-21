@@ -73,7 +73,6 @@ class NewArticle
 		$article->setStatusCode($this->status);
 		$article->title = $this->title;
 		$article->content = $this->content ?: '';
-		$article->slug = $this->slug;
 
 		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
 		$article->addToCategory($cat);

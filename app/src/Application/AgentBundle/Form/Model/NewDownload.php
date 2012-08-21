@@ -72,7 +72,6 @@ class NewDownload
 		$download->person  = $this->_person_context;
 		$download->title   = $this->title;
 		$download->content = $this->content ?: '';
-		$download->slug    = $this->slug;
 		$download->setStatusCode($this->status);
 
 		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);

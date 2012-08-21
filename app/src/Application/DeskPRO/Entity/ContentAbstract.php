@@ -187,6 +187,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 		if (!$this->slug) {
 			$this['slug']  = Strings::slugifyTitle($title);
+			if (!$this['slug']) {
+				$this['slug'] = 'view';
+			}
 		}
 	}
 

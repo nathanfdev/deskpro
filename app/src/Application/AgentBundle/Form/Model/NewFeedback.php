@@ -73,7 +73,6 @@ class NewFeedback
 		$feedback->setStatusCode($this->status_code);
 		$feedback->title = $this->title;
 		$feedback->content = $this->content ?: '';
-		$feedback->slug = $this->slug;
 
 		$cat = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
 		$feedback->category = $cat;
