@@ -41,107 +41,36 @@ use Application\DeskPRO\App;
 /**
  * Renders DPQL results to HTML.
  */
-class Html
+class Html extends AbstractRenderer
 {
 	/**
-	 * Result handler that stores all the bits that will be displayed/formatted.
-	 *
-	 * @var \Application\DeskPRO\Dpql\ResultHandler
-	 */
-	protected $_handler;
-
-	/**
-	 * Results to render.
-	 *
-	 * @var \Application\DeskPRO\Dpql\Results
-	 */
-	protected $_results;
-
-	/**
-	 * Internal handler used when rendering to count how many rows
-	 * row spans need to be used for.
-	 *
-	 * @var array
-	 */
-	protected $_rowSpans = array();
-
-	/**
-	 * Internal handler used when rendering to determine which row groups
-	 * have been "hit" and printed.
-	 *
-	 * @var array
-	 */
-	protected $_rowGroupHit = array();
-
-	/**
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
-	 * @param \Application\DeskPRO\Dpql\Results $results
-	 */
-	public function __construct(ResultHandler $resultHandler, Results $results)
-	{
-		$this->_handler = $resultHandler;
-		$this->_results = $results;
-	}
-
-	/**
-	 * Render to the specified format (in this case HTML)
+	 * Gets the MIME content type for this type of output.
 	 *
 	 * @return string
 	 */
-	public function render()
+	public function getContentType()
 	{
-		$splitColumns = $this->_handler->getSplitColumns();
-
-		if ($splitColumns) {
-			$output = array();
-			foreach ($this->_results->getSplitResults() AS $splitResult) {
-				$table = $this->renderSplitTable($splitResult);
-				if ($table) {
-					$output[] = $table;
-				}
-			}
-
-			return implode("\n\n", $output);
-		} else {
-			return $this->renderTable($this->_results->getResults());
-		}
+		return 'text/html';
 	}
 
 	/**
-	 * Renders results with a SPLIT clause into however many tables
-	 * are needed.
-	 *
-	 * @param array $splitResults Key 0 is rows in table, 1 is columns in split query
+	 * Gets the file extension for this type of output.
 	 *
 	 * @return string
 	 */
-	public function renderSplitTable(array $splitResult)
+	public function getExtension()
 	{
-		$splitColumns = $this->_handler->getSplitColumns();
-
-		$table = $this->renderTable($splitResult[0]);
-		if (!$table) {
-			return '';
-		}
-
-		$splitPrint = array();
-		foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
-			$splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
-		}
-
-		return $this->renderSplitHeader(implode(' / ', $splitPrint)) . "\n" . $table;
+		return 'html';
 	}
 
-	/**
-	 * Renders the header of a split table
-	 *
-	 * @param string $title
-	 *
-	 * @return string
-	 */
-	public function renderSplitHeader($title)
+	protected function _implodeSplitTables(array $tables)
 	{
-		return '<h3 class="report-split-header">' . $title . '</h3>';
+		return implode("\n\n", $tables);
+	}
+
+	public function _renderSplitTableWithHeader($header, $table)
+	{
+		return '<h3 class="report-split-header">' . $header . '</h3>' . "\n$table";
 	}
 
 	/**
@@ -151,7 +80,7 @@ class Html
 	 *
 	 * @return string
 	 */
-	public function renderTable(array $rows)
+	protected function _renderTable(array $rows)
 	{
 		if (!$rows) {
 			return '';
@@ -161,18 +90,18 @@ class Html
 			return $this->_renderMatrixTable($rows);
 		}
 
-		return $this->_renderTableTag($this->_renderHeader($rows) . $this->_renderBody($rows));
+		return $this->_renderTableWrapper($this->_renderHeader($rows) . $this->_renderBody($rows));
 	}
 
 	/**
-	 * Renders the outer table tag.
+	 * Renders the outer table wrapper.
 	 *
-	 * @param string $inner HTML inside table
+	 * @param string $inner Content inside table
 	 * @param string $extraClass Any extra classes to add (space separated)
 	 *
 	 * @return string
 	 */
-	protected function _renderTableTag($inner, $extraClass = '')
+	protected function _renderTableWrapper($inner, $extraClass = '')
 	{
 		return "<table class=\"report-builder-table $extraClass\">\n$inner\n</table>\n";
 	}
@@ -188,10 +117,10 @@ class Html
 	{
 		$columnHtml = array();
 		foreach ($this->_handler->getGroupYColumns() AS $column) {
-			$columnHtml[] = '<th>' . htmlspecialchars($column['title']) . '</th>';
+			$columnHtml[] = '<th>' . $this->escapeValue($column['title']) . '</th>';
 		}
 		foreach ($this->_handler->getSelectColumns() AS $column) {
-			$columnHtml[] = '<th>' . htmlspecialchars($column['title']) . '</th>';
+			$columnHtml[] = '<th>' . $this->escapeValue($column['title']) . '</th>';
 		}
 
 		return '<thead><tr class="row-header">' . implode("\n\t", $columnHtml) . '</tr></thead>';
@@ -296,91 +225,6 @@ class Html
 	}
 
 	/**
-	 * Renders the value for a specific cell.
-	 *
-	 * @param mixed[int] $row
-	 * @param array $column
-	 *
-	 * @return string
-	 */
-	protected function _renderCellValue(array $row, array $column)
-	{
-		$renderer = $column['renderer'];
-		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
-
-		if ($renderer instanceof \Closure) {
-			return $renderer('html', $value, $row, $this);
-		}
-
-		return $this->renderValue($value, $renderer);
-	}
-
-	public function renderValue($value, $format)
-	{
-		if ($value === null) {
-			return $this->_renderNull();
-		}
-
-		switch ($format) {
-			case 'boolean':
-				return $this->_renderBoolean($value);
-
-			case 'datetime':
-			case 'date':
-			case 'time':
-				$settingMap = array(
-					'datetime' => 'core.date_fulltime',
-					'date' => 'core.date_full',
-					'time' => 'core.date_time'
-				);
-
-				$tz = App::getCurrentPerson()->getTimezone();
-				try {
-					$date = new \DateTime($value, new \DateTimeZone($tz));
-					return $date->format(App::getSetting($settingMap[$format]));
-				} catch (\Exception $e) {
-					return $this->escapeValue($value);
-				}
-
-			case 'string':
-			default:
-				return $this->escapeValue($value);
-		}
-	}
-
-	protected function _renderNull()
-	{
-		return '<span class="null">None</span>';
-	}
-
-	protected function _renderBoolean($value)
-	{
-		if ($value) {
-			return '<span class="true">Y</span>';
-		} else {
-			return '<span class="false">N</span>';
-		}
-	}
-
-	public function escapeValue($value)
-	{
-		return htmlspecialchars($value);
-	}
-
-	/**
-	 * Gets the value of a particular column for the given row.
-	 *
-	 * @param array $row
-	 * @param integer $id
-	 *
-	 * @return string
-	 */
-	protected function _getColumnValue(array $row, $id)
-	{
-		return ($id ? $row[$id - 1] : '');
-	}
-
-	/**
 	 * Renders a matrix table (with X and Y grouping).
 	 *
 	 * @param array $rows
@@ -391,63 +235,9 @@ class Html
 	{
 		$prepared = $this->_prepareMatrixTable($rows);
 
-		return $this->_renderTableTag(
+		return $this->_renderTableWrapper(
 			$this->_renderMatrixHeader($prepared) . $this->_renderMatrixBody($prepared),
 			'matrix'
-		);
-	}
-
-	/**
-	 * Prepares data for a matrix table.
-	 *
-	 * Returns array with:
-	 *  - xDistinct[pathString][renderedValue] = true -- used to find distinct values over X grouping
-	 *  - yDistinct[pathString][renderedValue] = true -- used to find distinct values over Y grouping
-	 *  - lookup[yPath][xPath] = cell value -- value for cell at the y/x position specified
-	 *
-	 * @param array $rows
-	 *
-	 * @return array
-	 */
-	protected function _prepareMatrixTable(array $rows)
-	{
-		$groupXColumns = $this->_handler->getGroupXColumns();
-		$groupYColumns = $this->_handler->getGroupYColumns();
-		$selectColumns = $this->_handler->getSelectColumns();
-
-		$distinctXValues = array();
-		$distinctYValues = array();
-		$lookup = array();
-
-		foreach ($rows AS $row) {
-			$xPath = array('root');
-			foreach ($groupXColumns AS $column) {
-				$pathString = $this->_getGroupPathKey($xPath);
-				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
-
-				$distinctXValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
-
-				$xPath[] = $groupValue;
-			}
-
-			$yPath = array('root');
-			foreach ($groupYColumns AS $column) {
-				$pathString = $this->_getGroupPathKey($yPath);
-				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
-
-				$distinctYValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
-
-				$yPath[] = $groupValue;
-			}
-
-			$lookup[$this->_getGroupPathKey($yPath)][$this->_getGroupPathKey($xPath)] =
-				$this->_renderMatrixCell($row, $selectColumns);
-		}
-
-		return array(
-			'xDistinct' => $distinctXValues,
-			'yDistinct' => $distinctYValues,
-			'lookup' => $lookup
 		);
 	}
 
@@ -626,63 +416,40 @@ class Html
 	}
 
 	/**
-	 * Gets the final path keys to a set of distinct values in a matrix table.
-	 *
-	 * @param array $path Grouping paths
-	 * @param array $distinct Distinct values
-	 *
-	 * @return array List of path keys
-	 */
-	protected function _getFinalMatrixPaths(array $path, array $distinct)
-	{
-		$pathString = $this->_getGroupPathKey($path);
-		if (!isset($distinct[$pathString])) {
-			return array();
-		}
-
-		$output = array();
-		foreach ($distinct[$pathString] AS $value => $null) {
-			$localPath = $path;
-			$localPath[] = $value;
-
-			$children = $this->_getFinalMatrixPaths($localPath, $distinct);
-			if (!$children) {
-				$output[] = $this->_getGroupPathKey($localPath);
-			} else {
-				$output = array_merge($output, $children);
-			}
-		}
-
-		return $output;
-	}
-
-	/**
-	 * Renders a matrix cell.
-	 *
-	 * @param array $row
-	 * @param array $selectColumns
+	 * Renders a null value.
 	 *
 	 * @return string
 	 */
-	protected function _renderMatrixCell(array $row, array $selectColumns)
+	protected function _renderNull()
 	{
-		$values = array();
-		foreach ($selectColumns AS $column) {
-			$values[] = $this->_renderCellValue($row, $column);
-		}
-
-		return implode(' / ', $values);
+		return '<span class="null">None</span>';
 	}
 
 	/**
-	 * Gets the string key to identify a path to a value based on parts.
+	 * Renders a boolean value.
 	 *
-	 * @param array $groupParts
+	 * @param boolean $value
 	 *
 	 * @return string
 	 */
-	protected function _getGroupPathKey(array $groupParts)
+	protected function _renderBoolean($value)
 	{
-		return implode('|', $groupParts);
+		if ($value) {
+			return '<span class="true">Y</span>';
+		} else {
+			return '<span class="false">N</span>';
+		}
+	}
+
+	/**
+	 * Escapes the value for direct output.
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function escapeValue($value)
+	{
+		return htmlspecialchars($value);
 	}
 }

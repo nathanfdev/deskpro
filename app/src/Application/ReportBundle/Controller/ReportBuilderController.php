@@ -56,6 +56,15 @@ class ReportBuilderController extends AbstractController
 			$query = Display::getQueryStringFromParts($parts);
 		}
 
+		$output = $this->in->getString('output');
+		if ($output) {
+			try {
+				return $this->_getReportResponseForType($output, $query, 'DeskPRO Report Builder Query');
+			} catch (DpqlException $e) {
+				// fall through - an error will be triggered below
+			}
+		}
+
 		if ($this->in->getBool('save')) {
 			$newReport = new ReportBuilder();
 			$newReport->query = $query;
@@ -157,6 +166,7 @@ class ReportBuilderController extends AbstractController
 
 		$query = $this->in->getString('query');
 		$parts = $this->in->getArrayValue('parts');
+		$run = $this->in->getBool('run');
 
 		$inputType = $this->in->getString('inputType');
 		if ($inputType == 'builder') {
@@ -164,6 +174,16 @@ class ReportBuilderController extends AbstractController
 		}
 		if (!$query) {
 			$query = $report->query;
+		}
+
+		$output = $this->in->getString('output');
+		if ($output) {
+			try {
+				return $this->_getReportResponseForType($output, $query, $report->title);
+			} catch (DpqlException $e) {
+				$run = true;
+				// fall through - an error will be triggered below
+			}
 		}
 
 		if ($this->in->getBool('clone')) {
@@ -204,8 +224,6 @@ class ReportBuilderController extends AbstractController
 				return $this->redirectRoute('report_builder_report', array('report_builder_id' => $report->id));
 			}
 		}
-
-		$run = $this->in->getBool('run');
 
 		if ($run) {
 			$results = $this->renderQuery($query, 'html', $error);
@@ -399,6 +417,19 @@ class ReportBuilderController extends AbstractController
 			'canManageBuiltIn' => $rbRepository->canManageBuiltInReports(),
 			'builtInCategories' => $rbRepository->getBuiltInCategories()
 		)));
+	}
+
+	protected function _getReportResponseForType($type, $query, $title)
+	{
+		$compiler = new Compiler();
+		$renderer = $compiler->compile($query)->getRenderer($type);
+		$output = $renderer->render();
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', $renderer->getContentType());
+		$response->headers->set('Content-Disposition', 'inline; filename=' . $renderer->getFileName($title));
+		$response->setContent($output);
+		return $response;
 	}
 
 	public function renderQuery($query, $renderer, &$error = false) {

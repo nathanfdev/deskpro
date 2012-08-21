@@ -275,7 +275,7 @@ class Display
 	 * @param string $rendererType Type of renderer needed
 	 * @param array|null $results If null, gets results
 	 *
-	 * @return \Application\DeskPRO\Dpql\Renderer\Html
+	 * @return \Application\DeskPRO\Dpql\Renderer\AbstractRenderer
 	 */
 	public function getRenderer($rendererType, array $results = null)
 	{
@@ -285,7 +285,7 @@ class Display
 
 		$handler = $this->getResultHandler();
 
-		return new Dpql\Renderer\Html($handler, $results);
+		return \Application\DeskPRO\Dpql\Renderer\AbstractRenderer::create($rendererType, $handler, $results);
 	}
 
 	/**
