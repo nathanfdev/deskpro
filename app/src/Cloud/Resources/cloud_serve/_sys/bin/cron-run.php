@@ -223,7 +223,7 @@ if (file_exists($proc_file)) {
 	dp_logf("Task still running: %s", $time);
 
 	$time = (int)$time;
-	if (!$time || $time > $proc_timeout || $is_force) {
+	if (!$time || $time < (time() - $proc_timeout) || $is_force) {
 		dp_log("Task has timed out, restarting");
 		unlink($proc_file);
 
