@@ -75,6 +75,30 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			$value = Strings::extractBodyTag($value);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
+
+			// Replace Wingdings characters with UTF-8 characters
+			$map = array(
+				'J' => '☺', // Happy face,
+				'L' => '☹', // Sad face,
+				'K' => ':|',
+				'ß' => '<-',
+				'ç' => '<=',
+				'ó' => '<=>',
+				'è' => '=>',
+				'à' => '->',
+			);
+
+			$m = null;
+			if (preg_match_all('#<span style=\'font-family:Wingdings\'>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
+				foreach ($m as $match) {
+					$replace = $match[1];
+					foreach ($map as $f => $r) {
+						$replace = str_replace($f, $r, $replace);
+					}
+					$value = str_replace($m[0], $replace, $value);
+				}
+			}
+
 			return $value;
 		}
 
