@@ -63,12 +63,33 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$this->person = $person;
 	}
 
+	protected function permFilterTypes($types)
+	{
+		$limit_types = array_combine($types,$types);
+
+		if ($this->person) {
+			if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
+			if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
+			if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
+			if (!$this->person->hasPerm('download.use')) unset($limit_types['download']);
+		}
+
+		return array_values($limit_types);
+	}
+
 	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = false)
 	{
 		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
 		if (!$limit_types) {
 			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
+
+		$limit_types = $this->permFilterTypes($limit_types);
+
+		if (!$limit_types) {
+			return new ResultSet(0, array());
+		}
+
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
 		$words = explode(' ', $query_text);
@@ -139,6 +160,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if (!$limit_types) {
 			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
+
+		$limit_types = $this->permFilterTypes($limit_types);
+
+		if (!$limit_types) {
+			return new ResultSet(0, array());
+		}
+
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
 		$label_where = array();
@@ -215,6 +243,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if (!$limit_types) {
 			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
+
+		$limit_types = $this->permFilterTypes($limit_types);
+
+		if (!$limit_types) {
+			return new ResultSet(0, array());
+		}
+
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
 		$query_words = explode(' ', $query_text);

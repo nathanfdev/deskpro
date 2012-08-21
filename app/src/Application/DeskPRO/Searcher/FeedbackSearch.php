@@ -102,6 +102,10 @@ class FeedbackSearch extends SearcherAbstract
 			return '';
 		}
 
+		if (!$this->person->hasPerm('feedback.use')) {
+			return '0';
+		}
+
 		$dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
 		if (!$dis_ids) {
 			return '';

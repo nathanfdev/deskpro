@@ -48,6 +48,11 @@ use Application\UserBundle\Controller\Helper\FacebookLike;
 
 class DownloadsController extends AbstractController
 {
+	public function sectionPermissionCheck()
+	{
+		return $this->person->hasPerm('downloads.use');
+	}
+
 	public function browseAction($slug = '')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
@@ -160,6 +165,11 @@ class DownloadsController extends AbstractController
 			return $this->renderStandardError('@user.downloads.file_not_found', '@user.error.not-found', 404);
 		}
 
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewDownload($download)) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		// Auto-correct URL
 		if ($slug != $download->getUrlSlug()) {
 			return $this->redirectRoute('user_downloads_file', array('slug' => $download->getUrlSlug()), 301);
@@ -229,6 +239,11 @@ class DownloadsController extends AbstractController
 			return $this->renderStandardError('@user.downloads.file_not_found', '@user.error.not-found', 404);
 		}
 
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewDownload($download)) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		// Inc download count
 		App::getDb()->executeUpdate("UPDATE downloads SET num_downloads = num_downloads + 1 WHERE id = ?", array($download->getId()));
 
@@ -254,6 +269,11 @@ class DownloadsController extends AbstractController
 		$download = $this->em->getRepository('DeskPRO:Download')->find($download_id);
 		if (!$download) {
 			return $this->renderStandardError('@user.downloads.file_not_found', '@user.error.not-found', 404);
+		}
+
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewDownload($download)) {
+			return $this->renderLoginOrPermissionError();
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(

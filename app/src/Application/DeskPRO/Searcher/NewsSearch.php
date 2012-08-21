@@ -106,6 +106,10 @@ class NewsSearch extends SearcherAbstract
 			return '';
 		}
 
+		if (!$this->person->hasPerm('news.use')) {
+			return '0';
+		}
+
 		$dis_ids = $this->person->PermissionsManager->NewsCategories->getDisallowedCategories();
 		if (!$dis_ids) {
 			return '';

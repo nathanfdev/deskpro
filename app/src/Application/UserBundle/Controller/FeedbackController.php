@@ -52,6 +52,11 @@ use Application\DeskPRO\Feedback\FeedbackCollection;
 
 class FeedbackController extends AbstractController
 {
+	public function sectionPermissionCheck()
+	{
+		return $this->person->hasPerm('feedback.use');
+	}
+
 	/**
 	 * Main index shows initial category listing
 	 */
@@ -295,6 +300,11 @@ class FeedbackController extends AbstractController
 			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
 		}
 
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback)) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		if ($this->person['id']) {
 			$r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
 		} else {
@@ -377,6 +387,11 @@ class FeedbackController extends AbstractController
 			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
 		}
 
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback)) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		// Auto-correct URL
 		if ($slug != $feedback->getUrlSlug()) {
 			return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()), 301);
@@ -453,6 +468,11 @@ class FeedbackController extends AbstractController
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
 			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
+		}
+
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback)) {
+			return $this->renderLoginOrPermissionError();
 		}
 
 		if ($feedback->getStatus() == 'closed') {

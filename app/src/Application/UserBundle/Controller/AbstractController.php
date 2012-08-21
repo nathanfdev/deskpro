@@ -115,6 +115,26 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 			return $this->redirect($redirect_url);
 		}
+
+		static $done_pcheck;
+		if (!$done_pcheck) {
+			$done_pcheck = true;
+			if (!$this->sectionPermissionCheck()) {
+				return $this->renderLoginOrPermissionError();
+			}
+		}
+	}
+
+
+	/**
+	 * Method called after getting session. Meant to be used in controllers as a top-level check to see if they
+	 * can use a resource. Eg. can use articles.
+	 *
+	 * @return bool
+	 */
+	public function sectionPermissionCheck()
+	{
+		return true;
 	}
 
 

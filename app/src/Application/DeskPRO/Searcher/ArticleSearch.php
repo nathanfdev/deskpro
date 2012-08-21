@@ -110,6 +110,10 @@ class ArticleSearch extends SearcherAbstract
 			return '';
 		}
 
+		if (!$this->person->hasPerm('articles.use')) {
+			return '0';
+		}
+
 		$dis_ids = $this->person->PermissionsManager->ArticleCategories->getDisallowedCategories();
 		if (!$dis_ids) {
 			return '';

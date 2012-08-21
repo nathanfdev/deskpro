@@ -109,6 +109,10 @@ class DownloadSearch extends SearcherAbstract
 			return '';
 		}
 
+		if (!$this->person->hasPerm('downloads.use')) {
+			return '0';
+		}
+
 		$dis_ids = $this->person->PermissionsManager->DownloadCategories->getDisallowedCategories();
 		if (!$dis_ids) {
 			return '';

@@ -50,6 +50,11 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class NewsController extends AbstractController
 {
+	public function sectionPermissionCheck()
+	{
+		return $this->person->hasPerm('news.use');
+	}
+
 	public function browseAction($slug = '')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
@@ -166,6 +171,11 @@ class NewsController extends AbstractController
 			return $this->renderStandardError('@user.news.news_not_found', '@user.error.not-found', 404);
 		}
 
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewNews($news)) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		// Auto-correct URL
 		if ($slug != $news->getUrlSlug()) {
 			return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
@@ -247,6 +257,11 @@ class NewsController extends AbstractController
 		$post = $this->em->getRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
 			return $this->renderStandardError('@user.news.news_not_found', '@user.error.not-found', 404);
+		}
+
+		// Perm check
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewNews($post)) {
+			return $this->renderLoginOrPermissionError();
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
