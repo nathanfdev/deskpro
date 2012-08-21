@@ -262,6 +262,7 @@ class TicketSearchController extends AbstractController
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+		$ticket_display->setPersonContext($this->person);
 
 		$tpl = 'part-results-simple-ext.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
@@ -757,6 +758,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+		$ticket_display->setPersonContext($this->person);
 
 		if (!$this->container->getSetting('core.tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
 			$vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
@@ -1056,6 +1058,7 @@ class TicketSearchController extends AbstractController
 		$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay(array($ticket->id => $ticket));
+		$ticket_display->setPersonContext($this->person);
 		$vars['ticket_display'] = $ticket_display;
 
 		return $this->render($tpl, $vars);

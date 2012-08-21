@@ -23,6 +23,9 @@
 				<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
 				{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
 			</div>
+			{% if ticket_display.getFlaggedColor(ticket) %}
+				<i class="flag {{ ticket_display.getFlaggedColor(ticket) }}"></i>
+			{% endif %}
 			<br class="clear" />
 		</div>
 	</div>

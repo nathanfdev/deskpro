@@ -35,9 +35,11 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
+use Application\DeskPRO\People\PersonContextInterface;
 
-class TicketResultsDisplay
+class TicketResultsDisplay implements PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket[]
@@ -73,6 +75,21 @@ class TicketResultsDisplay
 	 * @var array
 	 */
 	protected $people;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	/**
+	 * @var array
+	 */
+	protected $person_flagged;
+
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Ticket[] $tickets
@@ -206,5 +223,29 @@ class TicketResultsDisplay
 		}
 
 		return $this->dep_names[$ticket->department->getId()];
+	}
+
+
+	/**
+	 * @param mixed $ticket
+	 * @return string
+	 */
+	public function getFlaggedColor($ticket)
+	{
+		if (!$this->person_context) {
+			return null;
+		}
+
+		if ($this->person_flagged === null) {
+			$this->person_flagged = App::getDb()->fetchAllKeyValue("
+				SELECT ticket_id, color
+				FROM tickets_flagged
+				WHERE person_id = ? AND ticket_id IN (" . implode(',',$this->ticket_ids) . ")"
+			, array($this->person_context->getId()));
+		}
+
+		$ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;
+
+		return isset($this->person_flagged[$ticket_id]) ? $this->person_flagged[$ticket_id] : null;
 	}
 }
