@@ -539,6 +539,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			});
 		}
 
+		oldlist.close();
 		this.listview.open();
 	}
 });
