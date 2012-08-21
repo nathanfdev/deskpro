@@ -621,6 +621,11 @@ class AgentsController extends AbstractController
 		$this->em->getConnection()->beginTransaction();
 
 		try {
+
+			// Remove their permissions
+			App::getDb()->delete('department_permissions', array('person_id' => $agent->getId()));
+			App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
+
 			$this->em->persist($agent);
 			$this->em->flush();
 
