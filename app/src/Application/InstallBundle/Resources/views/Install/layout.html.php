@@ -79,6 +79,11 @@
 
 		.submit-area.clicked .next-loading { display: block; }
 		.submit-area.clicked .btn { display: none; }
+
+		.alert-message {
+			clear: both;
+			margin-top: 7px;
+		}
 	</style>
 	<script type="text/javascript">
 		function sendReportError(type) {
