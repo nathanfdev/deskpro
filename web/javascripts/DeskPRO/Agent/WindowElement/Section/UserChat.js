@@ -252,6 +252,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (this.openingChatTimeout[data.conversation_id]) {
 			window.clearTimeout(this.openingChatTimeout[data.conversation_id]);
 			delete this.openingChatTimeout[data.conversation_id];
+			DeskPRO_Window.faviconBadge.disableCrazyMode();
 		}
 
 		this.handleUpdateCounts();
@@ -287,6 +288,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 					delete self.openingChatTimeout[data.conversation_id];
+					DeskPRO_Window.faviconBadge.disableCrazyMode();
 				}, 1000);
 			}
 		}
@@ -325,6 +327,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (data.old_agent_id == DESKPRO_PERSON_ID && this.openingChatTimeout[data.conversation_id]) {
 			window.clearTimeout(this.openingChatTimeout[data.conversation_id]);
 			delete this.openingChatTimeout[data.conversation_id];
+			DeskPRO_Window.faviconBadge.disableCrazyMode();
 		}
 
 		this.handleUpdateCounts();
@@ -407,6 +410,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 				delete self.openingChatTimeout[data.conversation_id];
+				DeskPRO_Window.faviconBadge.disableCrazyMode();
 			}, 1000);
 		}
 
@@ -418,6 +422,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
+
+		DeskPRO_Window.faviconBadge.enableCrazyMode();
 
 		var conversation_id = data.conversation_id;
 		var alertEl = $(data.html);
@@ -441,12 +447,15 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		};
 		var waitTimer = window.setInterval(up, 1000);
 
+		DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + alertEl.find('.label-by-name').text(), 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
+
 		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio) {
 				audio.pause();
 			}
 			alertEl.remove();
 			self.dismissedChats[data.conversation_id] = true;
+			DeskPRO_Window.faviconBadge.disableCrazyMode();
 			window.clearTimeout(waitTimer);
 		});
 		$('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {

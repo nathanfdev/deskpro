@@ -38,13 +38,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.modCount(type, '+');
 	},
 
-	addMessage: function(type, message, route) {
+	addMessage: function(type, message, route, id) {
 		var row = $('<li />');
 		row.data('type', type);
+		row.addClass(type);
+		row.data('data-route', route || '').attr('data-route', route || '');
 
 		$('<em />').addClass('dismiss').appendTo(row);
 		$('<time />').addClass('timeago').appendTo(row);
-		$('<a />').text(message).data('route', route || '').appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1);
+		$('<a />').text(message).appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1);
+
+		if (id) {
+			row.addClass('id-' + id);
+		}
 
 		this.addRow(row);
 	},
@@ -59,6 +65,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		if (!$('#dp_notify_list').find('> li.msg-row').length) {
 			this.close();
+		}
+	},
+
+	removeRowById: function(id) {
+		var row = $('#dp_notify_list').find('li.id-' + id);
+		if (row[0]) {
+			this.removeRow(row);
 		}
 	},
 

@@ -17,6 +17,8 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		this.animateTimeout = null;
 		this.animateCount = 0;
+		this.crazyMode = false;
+		this.lastNum = 0;
 	},
 
 	clearAnimate: function() {
@@ -31,6 +33,16 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		$(window).unbind('keypress.faviconbadge');
 	},
 
+	enableCrazyMode: function() {
+		this.crazyMode = true;
+		this.updateBadge(this.lastNum, true);
+	},
+
+	disableCrazyMode: function() {
+		this.crazyMode = false;
+		this.updateBadge(this.lastNum, false);
+	},
+
 	updateBadge: function(num, do_animate) {
 		var self = this;
 
@@ -42,8 +54,10 @@ DeskPRO.FaviconBadge = new Orb.Class({
 			num = 99;
 		}
 
+		this.lastNum = num;
+
 		// 0 means no number
-		if (!num) {
+		if (!num && !this.crazyMode) {
 			Notificon('');
 			return;
 		}
@@ -56,16 +70,30 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		if (do_animate) {
 			this.animateTimeout = window.setInterval(function() {
 				self.animateCount++;
-				if (self.animateCount % 2 == 0) {
-					Notificon(num+'', {
-						color: self.options.color,
-						stroke: self.options.strokeColor
-					});
+				if (self.crazyMode) {
+					if (self.animateCount % 2 == 0) {
+						Notificon('◎ ', {
+							color: '#000000',
+							stroke: '#FFFFFF'
+						});
+					} else {
+						Notificon('◉ ', {
+							color: '#FF0000',
+							stroke: '#FFFFFF'
+						});
+					}
 				} else {
-					Notificon(num+'', {
-						color: self.options.colorAlt,
-						stroke: self.options.strokeColorAlt
-					});
+					if (self.animateCount % 2 == 0) {
+						Notificon(num+'', {
+							color: self.options.color,
+							stroke: self.options.strokeColor
+						});
+					} else {
+						Notificon(num+'', {
+							color: self.options.colorAlt,
+							stroke: self.options.strokeColorAlt
+						});
+					}
 				}
 			}, 800);
 
