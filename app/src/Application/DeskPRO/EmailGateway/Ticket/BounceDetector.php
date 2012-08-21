@@ -118,6 +118,11 @@ class BounceDetector
 	 */
 	public function isBounced()
 	{
+		// Standard autoreply headers
+		if ($this->reader->isFromRobot()) {
+			return true;
+		}
+
 		// A "null address" in return path means its an automated message (bound or vacation)
 		// See rfc3834
 		if ($return_path = $this->reader->getHeader('Return-Path')) {
@@ -252,6 +257,9 @@ class BounceDetector
 		}
 
 		$this->guessed_email_addresses = array();
+
+		// The actual From address should be tried too
+		$this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();
 
 		if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
 			foreach ($failed->getAllParts() as $email) {

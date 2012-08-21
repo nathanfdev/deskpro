@@ -204,6 +204,11 @@ abstract class AbstractReader
 			}
 		}
 
+		$auto = $this->getHeader('X-Autoreply')->getAllParts();
+		if ($auto) {
+			return true;
+		}
+
 		return false;
 	}
 }

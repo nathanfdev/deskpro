@@ -75,7 +75,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	/**
 	 * If in reply mode, this is the ticket being replied to
 	 *
-	 * @var Ticket
+	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $ticket;
 
