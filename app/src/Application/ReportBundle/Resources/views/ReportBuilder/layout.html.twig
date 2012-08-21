@@ -52,8 +52,10 @@
 		<h3>Built-In</h3>
 		<ul>
 			{% for categoryName, reports in builtInReports %}
-				<li><h4 data-element-handler="DeskPRO.Report.ElementHandler.Builder.ListCollapse"><span></span>{{ categoryName }}</h4>
-					<ul>
+				<li><h4 data-element-handler="DeskPRO.Report.ElementHandler.Builder.ListCollapse"
+					data-cookie="dp_report_collapsed"
+					><span></span>{{ categoryName }}</h4>
+					<ul data-collapse-id="{{categoryName}}">
 					{% for report in reports %}
 						{{ _self.report_list_item(report) }}
 					{% endfor %}
