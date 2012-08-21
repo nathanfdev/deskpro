@@ -65,7 +65,7 @@ class Prepared
 	/**
 	 * A custom renderer that should be used to render this DPQL part
 	 *
-	 * @var callable|null
+	 * @var \Closure|string|null
 	 */
 	protected $_renderer = null;
 
@@ -73,12 +73,14 @@ class Prepared
 	 * @param string $sqlExpr SQL expression
 	 * @param string $name Name of column header
 	 * @param string|bool $sqlExprPrint SQL expression if in printable context
+	 * @param callable|string|null $renderer
 	 */
-	public function __construct($sqlExpr = 'NULL', $name = '', $sqlExprPrint = false)
+	public function __construct($sqlExpr = 'NULL', $name = '', $sqlExprPrint = false, $renderer = null)
 	{
 		$this->_sqlExpr = $sqlExpr;
 		$this->_name = $name;
 		$this->_sqlExprPrint = $sqlExprPrint;
+		$this->_renderer = $renderer;
 	}
 
 	/**
@@ -142,15 +144,15 @@ class Prepared
 	}
 
 	/**
-	 * @param callable $renderer
+	 * @param \Closure|string|null $renderer
 	 */
-	public function setRenderer(\Closure $renderer = null)
+	public function setRenderer($renderer = null)
 	{
 		$this->_renderer = $renderer;
 	}
 
 	/**
-	 * @return callable|null
+	 * @return \Closure|string|null
 	 */
 	public function renderer()
 	{

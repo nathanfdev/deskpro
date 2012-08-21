@@ -71,6 +71,6 @@ class CurDate extends AbstractFunc
 
 		$sql = "DATE(UTC_TIMESTAMP()$interval)";
 
-		return new Prepared($sql, 'CURDATE()');
+		return new Prepared($sql, 'CURDATE()', false, 'date');
 	}
 }

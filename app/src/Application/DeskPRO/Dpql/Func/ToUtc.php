@@ -73,6 +73,6 @@ class ToUtc extends AbstractFunc
 		$tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
 		$interval = ($tzOffsetSeconds ? " - INTERVAL $tzOffsetSeconds SECOND" : '');
 
-		return new Prepared("({$argPrepared->sql()}$interval)", "TO_UTC({$argPrepared->name()})");
+		return new Prepared("({$argPrepared->sql()}$interval)", "TO_UTC({$argPrepared->name()})", false, 'datetime');
 	}
 }

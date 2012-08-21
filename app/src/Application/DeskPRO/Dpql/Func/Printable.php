@@ -79,6 +79,8 @@ class Printable extends AbstractFunc
 		$printPrepped = $print->prepare($statement, $section, $childStack, $select, $result);
 		$sqlPrepped = $sql->prepare($statement, $section, $childStack, $select, $result);
 
-		return new Prepared($sqlPrepped->sql(), $printPrepped->name(), $printPrepped->printed());
+		return new Prepared(
+			$sqlPrepped->sql(), $printPrepped->name(), $printPrepped->printed(), $printPrepped->renderer()
+		);
 	}
 }

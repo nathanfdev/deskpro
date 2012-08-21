@@ -73,7 +73,7 @@ class Number extends AbstractPart
 	)
 	{
 		$value = strval($this->number + 0);
-		return new Prepared($value, $value);
+		return new Prepared($value, $value, false, 'number');
 	}
 
 	/**

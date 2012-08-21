@@ -119,7 +119,7 @@ class BinaryMath extends AbstractPart
 		$operator = self::$_operatorMap[$this->operator];
 
 		$sql = "({$lhs->sql()} $operator {$rhs->sql()})";
-		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}");
+		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}", false, 'number');
 	}
 
 	/**

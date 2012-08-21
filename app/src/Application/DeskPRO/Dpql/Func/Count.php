@@ -68,7 +68,7 @@ class Count extends AbstractFunc
 		}
 
 		if (!$this->_arguments) {
-			$res = new Prepared('COUNT(*)', 'COUNT()');
+			$res = new Prepared('COUNT(*)', 'COUNT()', false, 'number');
 		} else {
 			if (count($this->_arguments) > 1) {
 				throw new Exception('COUNT() can only accept 0 or 1 argument');
@@ -78,12 +78,8 @@ class Count extends AbstractFunc
 			$prepped = $condition->prepare($statement, $section, $stack, $select, $result);
 
 			$sql = 'SUM(IF(' . $prepped->sql() . ', 1, 0))';
-			$res = new Prepared($sql, 'COUNT(' . $prepped->name() . ')');
+			$res = new Prepared($sql, 'COUNT(' . $prepped->name() . ')', false, 'number');
 		}
-
-		$res->setRenderer(function($type, $value) {
-			return number_format($value);
-		});
 
 		return $res;
 	}

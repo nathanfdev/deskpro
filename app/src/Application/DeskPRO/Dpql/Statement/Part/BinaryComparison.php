@@ -166,7 +166,7 @@ class BinaryComparison extends AbstractPart
 			}
 		}
 
-		return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title);
+		return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
 	 }
 
 	/**

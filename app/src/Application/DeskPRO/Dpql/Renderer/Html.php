@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\Dpql\ResultHandler;
 use Application\DeskPRO\Dpql\Results;
+use Application\DeskPRO\App;
 
 /**
  * Renders DPQL results to HTML.
@@ -307,13 +308,63 @@ class Html
 		$renderer = $column['renderer'];
 		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
-		if (!$renderer) {
-			return htmlspecialchars($value);
-		} else if ($renderer instanceof \Closure) {
-			return $renderer('html', $value);
-		} else {
-			return htmlspecialchars($renderer);
+		if ($renderer instanceof \Closure) {
+			return $renderer('html', $value, $row, $this);
 		}
+
+		return $this->renderValue($value, $renderer);
+	}
+
+	public function renderValue($value, $format)
+	{
+		if ($value === null) {
+			return $this->_renderNull();
+		}
+
+		switch ($format) {
+			case 'boolean':
+				return $this->_renderBoolean($value);
+
+			case 'datetime':
+			case 'date':
+			case 'time':
+				$settingMap = array(
+					'datetime' => 'core.date_fulltime',
+					'date' => 'core.date_full',
+					'time' => 'core.date_time'
+				);
+
+				$tz = App::getCurrentPerson()->getTimezone();
+				try {
+					$date = new \DateTime($value, new \DateTimeZone($tz));
+					return $date->format(App::getSetting($settingMap[$format]));
+				} catch (\Exception $e) {
+					return $this->escapeValue($value);
+				}
+
+			case 'string':
+			default:
+				return $this->escapeValue($value);
+		}
+	}
+
+	protected function _renderNull()
+	{
+		return '<span class="null">None</span>';
+	}
+
+	protected function _renderBoolean($value)
+	{
+		if ($value) {
+			return '<span class="true">Y</span>';
+		} else {
+			return '<span class="false">N</span>';
+		}
+	}
+
+	public function escapeValue($value)
+	{
+		return htmlspecialchars($value);
 	}
 
 	/**

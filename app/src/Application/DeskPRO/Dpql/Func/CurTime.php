@@ -71,6 +71,6 @@ class CurTime extends AbstractFunc
 
 		$sql = "TIME(UTC_TIMESTAMP()$interval)";
 
-		return new Prepared($sql, 'CURTIME()');
+		return new Prepared($sql, 'CURTIME()', false, 'time');
 	}
 }

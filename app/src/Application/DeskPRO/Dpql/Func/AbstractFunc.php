@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception AS DpqlException;
 
 /**
  * Abstract base for all DPQL function calls.
@@ -52,6 +53,7 @@ abstract class AbstractFunc
 		'COUNT' => 'Count',
 		'CURDATE' => 'CurDate',
 		'CURTIME' => 'CurTime',
+		'FORMAT' => 'Format',
 		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
 		'PRINT' => 'Printable',
@@ -120,6 +122,26 @@ abstract class AbstractFunc
 			return new $map($name, $arguments);
 		} else {
 			return new SqlPass($name, $arguments);
+		}
+	}
+
+	/**
+	 * Gets a literal value for the specified part.
+	 *
+	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
+	 *
+	 * @return mixed
+	 *
+	 * @throws \Application\DeskPRO\Dpql\Exception
+	 */
+	protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
+	{
+		if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
+			return $part->string;
+		} else if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
+			return $part->number;
+		} else {
+			throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
 		}
 	}
 }

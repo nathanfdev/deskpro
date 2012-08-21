@@ -40,10 +40,9 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 
 /**
- * Gets the percentage of all rows in the group that match the given argument.
- * For example, PERCENT(table.column > 10).
+ * Formats output using the given type and options.
  */
-class Percent extends AbstractFunc
+class Format extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -62,22 +61,32 @@ class Percent extends AbstractFunc
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
-			throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
+		if (count($this->_arguments) < 2) {
+			throw new Exception('FORMAT() requires at least 2 arguments.');
 		}
 
-		if (count($this->_arguments) != 1) {
-			throw new Exception('PERCENT() can only accept 1 argument');
+		$arguments = $this->_arguments;
+		$value = array_shift($arguments);
+		$type = array_shift($arguments);
+		$typeLiteral = $this->_toLiteral($type);
+
+		$argNames = array();
+		$argLiterals = array();
+		foreach ($arguments AS $argument) {
+			$prepped = $argument->prepare($statement, $section, $stack, $select, $result);
+			$argNames[] = $prepped->name();
+			$argLiterals[] = $this->_toLiteral($argument);
 		}
 
-		$condition = reset($this->_arguments);
-		$prepped = $condition->prepare($statement, $section, $stack, $select, $result);
+		$preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
+		$preppedType = $type->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'IF(COUNT(*) > 0, SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*), 0)';
-		$renderer = function($type, $value) {
-			return number_format($value * 100, 2) . '%';
+		$name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . ')';
+
+		$renderer = function($output, $value, array $row, $renderer) use ($typeLiteral, $argLiterals) {
+			return $renderer->escapeValue($value);
 		};
 
-		return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, $renderer);
+		return new Prepared($preppedValue->sql(), $name, false, $renderer);
 	}
 }

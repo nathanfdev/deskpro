@@ -110,6 +110,7 @@ class Column extends AbstractPart
 		$sql = false;
 		$printedSql = false;
 		$name = false;
+		$dataType = null;
 
 		end($parts);
 		$lastPartKey = key($parts);
@@ -139,6 +140,33 @@ class Column extends AbstractPart
 							if ($tzOffsetSeconds) {
 								$sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
 							}
+
+							$dataType = 'datetime';
+							break;
+
+						case 'integer':
+						case 'smallint':
+						case 'bigint':
+						case 'decimal':
+						case 'float':
+							$dataType = 'number';
+							break;
+
+						case 'date':
+							$dataType = 'date';
+							break;
+
+						case 'time':
+							$dataType = 'time';
+							break;
+
+						case 'boolean':
+							$dataType = 'boolean';
+							break;
+
+						case 'string':
+						case 'text':
+							$dataType = 'string';
 							break;
 					}
 
@@ -246,7 +274,7 @@ class Column extends AbstractPart
 			}
 		}
 
-		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql);
+		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql, $dataType);
 	}
 
 	/**

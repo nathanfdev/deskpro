@@ -73,7 +73,7 @@ class AliasRef extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
+		if (!in_array($section, array('split', 'group', 'order'))) {
 			throw new Exception('Alias references may only be used in SPLIT BY, GROUP BY, and ORDER BY sections.');
 		}
 

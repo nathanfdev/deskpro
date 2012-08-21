@@ -102,7 +102,7 @@ class In extends AbstractPart
 		}
 
 		$sql = "{$lhs->sql()}$not IN (" . implode(', ', $valuesSql) . ')';
-		return new Prepared($sql, "{$lhs->name()}$not IN (" . implode(', ', $valuesName) . ')');
+		return new Prepared($sql, "{$lhs->name()}$not IN (" . implode(', ', $valuesName) . ')', false, 'boolean');
 	}
 
 	/**

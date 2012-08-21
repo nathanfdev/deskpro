@@ -95,7 +95,7 @@ class Like extends AbstractPart
 		$not = ($this->positive ? '' : ' NOT');
 
 		$sql = "{$lhs->sql()}$not LIKE {$rhs->sql()}";
-		return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}");
+		return new Prepared($sql, "{$lhs->name()}$not LIKE {$rhs->name()}", false, 'boolean');
 	}
 
 	/**

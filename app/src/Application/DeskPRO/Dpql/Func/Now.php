@@ -71,6 +71,6 @@ class Now extends AbstractFunc
 
 		$sql = "(UTC_TIMESTAMP()$interval)";
 
-		return new Prepared($sql, 'NOW()');
+		return new Prepared($sql, 'NOW()', false, 'datetime');
 	}
 }

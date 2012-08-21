@@ -67,6 +67,13 @@ class UnaryOperator extends AbstractPart
 		Parser::T_OP_NOT => 'NOT ', // space after is important
 	);
 
+	protected static $_operatorTypeMap = array(
+		Parser::T_OP_BANG => 'boolean',
+		Parser::T_OP_U_MINUS => 'number',
+		Parser::T_OP_MINUS => 'number',
+		Parser::T_OP_NOT => 'boolean',
+	);
+
 	/**
 	 * @param integer $operator
 	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $value
@@ -98,8 +105,9 @@ class UnaryOperator extends AbstractPart
 
 		$value = $this->value->prepare($statement, $section, $childStack, $select, $result);
 		$operator = self::$_operatorMap[$this->operator];
+		$operatorType = self::$_operatorTypeMap[$this->operator];
 
-		return new Prepared("($operator{$value->sql()})", "$operator{$value->name()}");
+		return new Prepared("($operator{$value->sql()})", "$operator{$value->name()}", false, $operatorType);
 	}
 
 	/**
