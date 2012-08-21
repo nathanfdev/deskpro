@@ -177,9 +177,16 @@ class TicketController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
+		#------------------------------
+		# Linked tasks
+		#------------------------------
+
+		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
+			'tasks' => $tasks,
 
             'ticket_perms' => $this->_getTicketPerms($ticket),
             'ticket' => $ticket,

@@ -171,6 +171,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             DeskPRO_Window.sections.agent_chat_section.newChatWindow([$(this).data('agent-id')]);
         });
 
+		this.getEl('newtask').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.newTaskLoader.open();
+		});
+
 		this.rescanMessageTypes();
 	},
 

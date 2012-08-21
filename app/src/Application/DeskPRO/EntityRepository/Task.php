@@ -40,6 +40,8 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class Task extends AbstractEntityRepository
 {
@@ -736,5 +738,38 @@ class Task extends AbstractEntityRepository
 
 		$query = $qb->getQuery();
 		return $query->getResult();
+	}
+
+	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context)
+	{
+		$person_context->loadHelper('Agent');
+		if ($person_context->Agent->getTeamIds()) {
+			$team_ids = $person_context->Agent->getTeamIds();
+		} else {
+			$team_ids = array();
+		}
+
+		$team_ids = implode(',', $team_ids);
+
+		$task_ids = App::getDb()->fetchAllCol("
+			SELECT tasks.id
+			FROM tasks
+			LEFT JOIN task_associations ON task_associations.task_id = tasks.id
+			WHERE
+				tasks.is_completed = 0
+				AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
+				AND task_associations.ticket_id = ?
+				ORDER BY tasks.date_due ASC
+		", array(
+			$person_context->getId(),
+			$person_context->getId(),
+			$ticket->getId()
+		));
+
+		if (!$task_ids) {
+			return array();
+		}
+
+		return $this->getByIds($task_ids, true);
 	}
 }

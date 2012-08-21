@@ -377,6 +377,22 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% endif %}
 				</td>
 			</tr>
+
+			{% if tasks %}
+				<tr>
+					<th>Tasks</th>
+					<td>
+						<ul>
+							{% for task in tasks %}
+								<li>&bull;
+									<a data-route="listpane:{{ path('agent_task_list', {search_type: 'all', search_category: 'total'}) }}">{{ task.title }}</a>
+									{% if task.date_due %}(Due: {{ task.date_due|date('day') }}){% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			{% endif %}
 		</table>
 
 		<div class="extra-info fields-show">
@@ -387,6 +403,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="controls" id="{{baseId}}_properties_controls">
 			{% if ticket_perms.modify_fields %}<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.general.edit_properties') }}</span></a>{% endif %}
 			{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
+			<a class="clean-white" id="{{baseId}}_newtask"><span>Add Task</span><em></em></a>
 			<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 			{% if ticket_perms.delete %}
 			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
