@@ -15,17 +15,20 @@
 						<a class="row-title click-through">{{ article.title }}</a>
 					</h3>
 				</div>
+				<div class="top-row-right">
+					<div class="bound-fade"></div>
+				</div>
 				<div class="top-row-right visible-content-link-control">
-					<div class="bound-faded"></div>
+					<div class="bound-fade"></div>
 					<span class="tipped insert-content-link" title="Inser a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.getTitle() }}"></span>
 				</div>
 				<div class="top-row-right visible-ticket-controls">
-					<div class="bound-faded"></div>
+					<div class="bound-fade"></div>
 					<span class="tipped kb-insert-link" title="{{ phrase('agent.general.insert_link') }}" data-article-id="{{ article.id }}"></span>
 					<span class="tipped kb-insert-content" title="{{ phrase('agent.general.insert_content') }}" data-article-id="{{ article.id }}"></span>
 				</div>
 				<div class="top-row-right visible-related-content-controls">
-					<div class="bound-faded"></div>
+					<div class="bound-fade"></div>
 					<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
 					<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
 				</div>
