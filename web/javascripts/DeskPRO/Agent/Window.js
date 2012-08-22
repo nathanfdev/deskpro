@@ -37,6 +37,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.ajaxErrorOverlay = null;
 
 		this.cancelHashLoad = 0;
+		this.activeListNav = null;
 
 		this.util = {
 			modCountEl: function(el, op, num) {

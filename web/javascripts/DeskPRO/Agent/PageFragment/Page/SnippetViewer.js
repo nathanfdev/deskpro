@@ -75,6 +75,19 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 
 		this._initEditing();
+
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this, {
+			itemSelector: 'li.snippet',
+			listSelector: '.snippet-sections > .on'
+		});
+		this.listNav.enter = function() {
+			var current = self.listNav.getCurrentSelection();
+			if (current) {
+				current.find('.snippet-trigger').trigger('click');
+			}
+		};
+
+		DeskPRO_Window.activeListNav = this.listNav;
 	},
 
 	closeSelf: function() {
@@ -87,6 +100,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	destroy: function() {
+		if (DeskPRO_Window.activeListNav == this.listNav) {
+			DeskPRO_Window.activeListNav = null;
+		}
 		if (this.newCatOverlay) this.newCatOverlay.remove();
 		if (this.newCatBackdrop) this.newCatBackdrop.remove();
 	},

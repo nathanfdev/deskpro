@@ -3,16 +3,21 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
 DeskPRO.Agent.PageHelper.ListNav = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
-	initialize: function(page) {
+	initialize: function(page, options) {
+		options = options || {};
+
 		this.page = page;
-		this.itemSelector    = 'article.row-item';
+		this.listSelector    = options.listSelector || false;
+		this.itemSelector    = options.itemSelector || 'article.row-item';
 		this.activeClass     = 'selection-on';
 		this.scrollContainer = this.page.wrapper.find('.scroll-content').first();
 		this.scrollView      = this.page.wrapper.find('.scroll-viewport').first();
 	},
 
 	getCurrentSelection: function() {
-		var el = this.page.wrapper.find(this.itemSelector).filter('.' + this.activeClass);
+		var list = this.listSelector ? this.page.wrapper.find(this.listSelector) : this.page.wrapper;
+		var el = list.find(this.itemSelector).filter('.' + this.activeClass);
+
 		if (el[0]) {
 			return el;
 		}
@@ -50,16 +55,18 @@ DeskPRO.Agent.PageHelper.ListNav = new Orb.Class({
 	},
 
 	down: function() {
+		var list = this.listSelector ? this.page.wrapper.find(this.listSelector) : this.page.wrapper;
+
 		var current = this.getCurrentSelection();
 		var next;
 		if (current) {
 			next = current.next(this.itemSelector);
-			if (!next) {
+			if (!next || !next.closest(list[0])[0]) {
 				next = current;
 			}
 			current.removeClass(this.activeClass);
 		} else {
-			next = this.page.wrapper.find(this.itemSelector).first();
+			next = list.find(this.itemSelector).first();
 		}
 
 		next.addClass(this.activeClass);
@@ -69,16 +76,18 @@ DeskPRO.Agent.PageHelper.ListNav = new Orb.Class({
 	},
 
 	up: function() {
+		var list = this.listSelector ? this.page.wrapper.find(this.listSelector) : this.page.wrapper;
+
 		var current = this.getCurrentSelection();
 		var next;
 		if (current) {
 			next = current.prev(this.itemSelector);
-			if (!next) {
+			if (!next || !next.closest(list[0])[0]) {
 				next = current;
 			}
 			current.removeClass(this.activeClass);
 		} else {
-			next = this.page.wrapper.find(this.itemSelector).first();
+			next = list.find(this.itemSelector).first();
 		}
 
 		next.addClass(this.activeClass)

@@ -9,29 +9,43 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
 		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 
+		function getActiveListNav() {
+			var listNav = null;
+			if (DeskPRO_Window.activeListNav) {
+				listNav = DeskPRO_Window.activeListNav;
+			} else {
+				var p = DeskPRO_Window.getListPage();
+				if (p && p.listNav) {
+					listNav = p.listNav;
+				}
+			}
+
+			return listNav;
+		};
+
 		// Navigating list pane
 		$(document).bind('keydown', 'down', function() {
-			var p = DeskPRO_Window.getListPage();
-			if (p && p.listNav) {
-				p.listNav.down();
+			var listNav = getActiveListNav();
+			if (listNav) {
+				listNav.down();
 			}
 		});
 		$(document).bind('keydown', 'up', function() {
-			var p = DeskPRO_Window.getListPage();
-			if (p && p.listNav) {
-				p.listNav.up();
+			var listNav = getActiveListNav();
+			if (listNav) {
+				listNav.up();
 			}
 		});
 		$(document).bind('keydown', 'return', function() {
-			var p = DeskPRO_Window.getListPage();
-			if (p && p.listNav) {
-				p.listNav.enter();
+			var listNav = getActiveListNav();
+			if (listNav) {
+				listNav.enter();
 			}
 		});
 		$(document).bind('keydown', 'space', function() {
-			var p = DeskPRO_Window.getListPage();
-			if (p && p.listNav) {
-				p.listNav.check();
+			var listNav = getActiveListNav();
+			if (listNav) {
+				listNav.check();
 			}
 		});
 
