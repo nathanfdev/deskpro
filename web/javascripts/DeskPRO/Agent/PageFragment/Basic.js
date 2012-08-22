@@ -46,6 +46,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			times: []
 		};
 
+		window.setTimeout(function() {
+			self.updateUi();
+		}, 750);
+
 		this.initializeProperties();
 
 		if (html) {
