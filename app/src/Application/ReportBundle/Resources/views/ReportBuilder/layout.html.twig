@@ -6,10 +6,6 @@
 {% endblock %}
 {% block html_head %}
 {{ dp_asset_html('report_builder') }}
-
-<style type="text/css">
-
-</style>
 {% endblock %}
 {% macro report_list_item(report) %}
 	<li>
@@ -27,8 +23,14 @@
 {% endmacro %}
 {% block page %}
 <div class="report-container">
-	<div class="report-list">
-		<a href="{{ path('report_builder_new') }}" class="btn create-report-button">Create Report</a>
+	<div class="report-list" data-element-handler="DeskPRO.Report.ElementHandler.Builder.ReportList"
+		data-cookie="dp_report_list_width"
+		data-min="120"
+		data-max="500"
+	>
+		<div style="text-align: center">
+			<a href="{{ path('report_builder_new') }}" class="btn">Create Report</a>
+		</div>
 
 		{% if favoriteReports %}
 		<h3>Favorite</h3>

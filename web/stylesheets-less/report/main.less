@@ -943,7 +943,9 @@ section.coming-soon {
 
 .report-list {
 	float: left;
-	width: 220px;
+	width: 250px;
+	padding-right: 5px;
+	margin-right: 10px;
 
 	h3 {
 		margin-top: 10px;
@@ -969,10 +971,15 @@ section.coming-soon {
 	.collapsed { display: none; }
 }
 
-.create-report-button { display: block; text-align: center; }
+.report-list-dragger {
+	position: absolute;
+	width: 8px;
+	z-index: 1000;
+	border-left: 1px solid #DEDEDE;
+	cursor: w-resize;
+}
 
 .report-page-body {
-	padding-left: 10px;
 	overflow: auto;
 	h1 {
 		font-size: 16pt;
