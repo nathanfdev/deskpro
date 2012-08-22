@@ -430,6 +430,11 @@ final class License
 		return isset($this->data['is_cloud']) && $this->data['is_cloud'];
 	}
 
+	public function isCopyfree()
+	{
+		return isset($this->data['copyfree']) && $this->data['copyfree'];
+	}
+
 	public function getMaxAgents()
 	{
 		if (!isset($this->data['agents']) || !$this->data['agents'] || $this->data['agents'] >= 100) {

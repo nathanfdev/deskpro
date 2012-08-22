@@ -116,6 +116,7 @@ class TemplatingExtension extends \Twig_Extension
 			'include_file' => new \Twig_Function_Method($this, 'includeFile', array('is_safe' => array('html'))),
 			'include_php_file' => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html'))),
 			'var_dump' => new \Twig_Function_Method($this, 'dumpVar'),
+			'dp_copyright' => new \Twig_Function_Method($this, 'getCopyright', array('is_safe' => array('html'))),
         );
     }
 
@@ -825,6 +826,18 @@ class TemplatingExtension extends \Twig_Extension
 	public function strLower($str)
 	{
 		return Strings::utf8_strtolower($str);
+	}
+
+	public function getCopyright()
+	{
+		$powered_by_deskpro = App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => App::getTranslator()->phrase('user.general.deskpro')));
+		$html = <<<STR
+<div class="dp-copy">
+	<a href="http://www.deskpro.com/">$powered_by_deskpro</a>
+</div>
+STR;
+
+		return $html;
 	}
 
 	public function hex2rgb($hex)

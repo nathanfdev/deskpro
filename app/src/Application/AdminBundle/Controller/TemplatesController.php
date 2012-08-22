@@ -254,6 +254,17 @@ class TemplatesController extends AbstractController
 			));
 		}
 
+		if ($name == 'UserBundle::layout.html.twig' && !\DeskPRO\Kernel\License::getLicense()->isCopyfree()) {
+			if (!preg_match('#\{\{\s*dp_copyright\(\)\s*\}\}#', $code)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => 'missing_copyright',
+					'error_message' => 'You cannot remove the DeskPRO copyright without purchasing copyright removal.',
+					'error_line' => 'N/A',
+				));
+			}
+		}
+
 		$template = new Template();
 		$template->style = $this->container->getSystemService('style');
 		$template->name = $name;
