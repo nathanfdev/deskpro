@@ -297,6 +297,30 @@ class TicketPageZoneCollection implements PersonContextInterface
 	public function compileJs()
 	{
 		$part = array();
+
+		$page_display = new TicketPageDisplay();
+		$page_display->zone = $this->zone;
+
+		$options = array();
+
+		// Standard fields
+		$options[] = array('id' => 'product');
+		$options[] = array('id' => 'ticket_category');
+		$options[] = array('id' => 'ticket_workflow');
+		$options[] = array('id' => 'ticket_priority');
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		foreach ($ticket_field_defs as $def) {
+			$options[] = array('id' => "ticket_field[{$def->id}]");
+		}
+
+		$page_display->setData($options);
+
+		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		$ticket_page_zone->addPageDisplays(array($page_display));
+
+		$part[] = "\"all\": " . $ticket_page_zone->compileJs();
+
 		foreach ($this->department_pages as $dep_id => $page_zone) {
 			$part[] = "$dep_id: " . $page_zone->compileJs();
 		}

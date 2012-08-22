@@ -201,6 +201,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 * so either the first time this is called or it was reset with replaceHolders().
 	 */
 	setDepartment: function(department_id, refresh) {
+
 		department_id = parseInt(department_id);
 
 		this.clearAll();
@@ -212,14 +213,27 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.departmentId = department_id;
 
+		/* Display isnt active on viewticket yet
 		if (!window.DESKPRO_TICKET_DISPLAY || (!window.DESKPRO_TICKET_DISPLAY[department_id] && !window.DESKPRO_TICKET_DISPLAY[0])) {
 			// The department is empty of fields
 			// (Rare, because we'll at least have category and such usually)
+			//this.updateSectionDisplay();
+			//return;
+		}
+
+		//var depItems = window.DESKPRO_TICKET_DISPLAY[department_id] || window.DESKPRO_TICKET_DISPLAY[0];
+		*/
+
+		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY['all']) {
+			var depItems = window.DESKPRO_TICKET_DISPLAY['all'];
+		} else {
+			var depItems = null;
+		}
+
+		if (!depItems || !depItems.length) {
 			this.updateSectionDisplay();
 			return;
 		}
-
-		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id] || window.DESKPRO_TICKET_DISPLAY[0];
 		DP.console.log('depItems %o', depItems);
 
 		//------------------------------
