@@ -73,7 +73,7 @@ class DbLoader implements LoaderInterface
 			return $this->loaded_langs[$language['id']];
 		}
 
-		$this->loaded_langs[$language['id']] = true;
+		$this->loaded_langs[$language['id']] = array();
 
 		$langs = array();
 		$langs[] = 1; // default deskpro lang
