@@ -254,7 +254,7 @@ class CustomRef implements RefGeneratorInterface
 			}
 		}
 
-		if ($count) {
+		if ($count && $this->append_count) {
 			$length = $this->append_count;
 			$ref[] = sprintf("%0{$length}d", $count);
 		}
@@ -271,15 +271,15 @@ class CustomRef implements RefGeneratorInterface
 
 			switch ($type) {
 				case 'A':
-					$regex[] = "([A-Z]\{$length\})";
+					$regex[] = "([A-Z]{{$length}})";
 					break;
 
 				case '#':
-					$regex[] = "([0-9]\{$length\})";
+					$regex[] = "([0-9]{{$length}})";
 					break;
 
 				case '?':
-					$regex[] = "([0-9A-Z]\{$length\})";
+					$regex[] = "([0-9A-Z]{{$length}})";
 					break;
 
 				case 'YEAR':
