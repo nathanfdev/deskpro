@@ -176,21 +176,43 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.newTaskLoader.open();
 		});
 
+		messageTypeTitle = this.getEl('msgtype_label');
+		var messageTypeMenu = new DeskPRO.UI.Menu({
+			triggerElement: messageTypeTitle,
+			menuElement: this.getEl('msgtype_menu'),
+			onBeforeMenuOpened: function(evDat) {
+				self.rescanMessageTypes();
+			},
+			onItemClicked: function(evData) {
+				var li = $(evData.itemEl);
+				var types = li.data('opts').split(',');
+
+				messageTypeTitle.find('> span').text(li.text());
+
+				self.getEl('msgtype_list').find(':checkbox').prop('checked', false);
+				$.each(types, function(i, type) {
+					self.getEl('msgcheck_' + type).find(':checkbox').prop('checked', true);
+				});
+
+				updateMessageTypes();
+			}
+		});
+
 		this.rescanMessageTypes();
 	},
 
 	rescanMessageTypes: function() {
 		var msgWrap = this.getEl('messages_wrap');
 		if ($('.attachment-list', msgWrap).length) {
-			this.getEl('msgcheck_attach').show();
+			this.getEl('msgtype_menu').find('li.just-attach').show();
 		} else {
-			this.getEl('msgcheck_attach').hide();
+			this.getEl('msgtype_menu').find('li.just-attach').hide();
 		}
 
 		if ($('article.note-message', msgWrap).length) {
-			this.getEl('msgcheck_notes').show();
+			this.getEl('msgtype_menu').find('li.just-notes').show();
 		} else {
-			this.getEl('msgcheck_notes').hide();
+			this.getEl('msgtype_menu').find('li.just-notes').hide();
 		}
 	},
 
