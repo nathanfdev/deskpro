@@ -1885,7 +1885,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return \Application\DeskPRO\People\PersonChangeTracker|null
+	 * @return \Application\DeskPRO\People\PersonChangeTracker
 	 */
 	public function getChangeTracker()
 	{

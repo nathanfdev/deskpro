@@ -108,24 +108,35 @@ class PersonFromEmailProcessor
 	 */
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
-		$person = Entity\Person::newContactPerson();
-		$person['name'] = $from->getName();
+		// All new users end up with a 'validating' record. If validation is off, then its turned
+		// into a real address during NewTicektAction
+		$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($from->getEmail());
+		if ($email_validating) {
+			$person = $email_validating->person;
+			$person->email_validating = $email_validating;
 
-		App::getOrm()->persist($person);
-		APp::getOrm()->flush();
+		// If we get here, then its a new user. We add the email address
+		// as a validation email address. The trigger NewTicketAction will turn it into
+		// a real email address if validation isn't required
+		} else {
+			$person = Entity\Person::newContactPerson();
+			$person->name = $from->getNameUtf8();
+			$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
 
-		$email = new Entity\PersonEmail();
-		$email['email'] = $from->getEmail();
-		$person->addEmailAddress($email);
+			$email_validating = new Entity\PersonEmailValidating();
+			$email_validating->email = $from->getEmail();
+			$email_validating->person = $person;
+			$person->email_validating = $email_validating;
+			App::getOrm()->persist($person);
+			App::getOrm()->persist($email_validating);
+		}
 
 		if ($do_validated) {
-			$email['is_validated'] = true;
 			$person['is_confirmed'] = true;
 			$person['is_agent_confirmed'] = true;
 		}
 
-		App::getOrm()->persist($email);
-		APp::getOrm()->flush();
+		App::getOrm()->flush();
 
 		return $person;
 	}

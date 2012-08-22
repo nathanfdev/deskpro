@@ -130,6 +130,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	 */
 	public function disableValidation()
 	{
+		$this->tracker->logMessage("[NewTicketAction] disabling email validation");
 		$this->enable_validation = false;
 	}
 
@@ -230,6 +231,8 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			$email->date_validated = new \DateTime();
 			$email->person = $ticket->person;
 
+			$ticket->person->is_confirmed = true;
+
 			$ticket->person->addEmailAddress($email);
 
 			App::getOrm()->persist($email);
@@ -237,6 +240,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			$ticket->person_email_validating = null;
 			$ticket->person_email = $email;
 
+			App::getOrm()->persist($ticket->person);
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 		}

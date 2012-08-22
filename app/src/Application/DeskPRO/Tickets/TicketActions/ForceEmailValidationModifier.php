@@ -45,8 +45,8 @@ class ForceEmailValidationModifier implements CollectionModifierInterface
 
 	public function modifyCollection(ActionsCollection $collection)
 	{
-		if ($collection->hasActionType('NewTicketAction')) {
-			$collection->getActionType('NewTicketAction')->enableValidation();
+		if ($collection->hasActionType('NewTicket')) {
+			$collection->getActionType('NewTicket')->enableValidation();
 		}
 	}
 

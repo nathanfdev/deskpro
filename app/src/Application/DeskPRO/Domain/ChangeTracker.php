@@ -51,7 +51,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 {
 	protected $entity;
 	protected $changes = array();
-	protected $extra = array();
+	public $extra = array();
 
 	public function __construct($entity)
 	{

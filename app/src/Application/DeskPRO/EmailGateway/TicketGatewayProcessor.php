@@ -742,6 +742,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+		$newticket->setPersonContext($person);
+
 		if ($this->logger) {
 			$newticket->logger = $this->logger;
 		}

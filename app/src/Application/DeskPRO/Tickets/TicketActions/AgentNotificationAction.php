@@ -211,6 +211,11 @@ class AgentNotificationAction extends AbstractAction
 			$tpl = $this->newticket_email_tpl;
 			$is_new_ticket = true;
 			$new_message = $this->tracker->getNewReply();
+
+			if (!$new_message) {
+				$new_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+			}
+
 			$from_name = $ticket->person->getDisplayName();
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$this->tracker->logMessage("[AgentNotificationAction] hasNewAgentReply");
