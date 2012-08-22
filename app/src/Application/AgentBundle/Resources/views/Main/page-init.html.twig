@@ -2,6 +2,13 @@
 
 	$(document).ready(function() {
 
+		if (!window.DESKPRO_DATA_REGISTRY) {
+			window.setTimeout(function() {
+				window.location.reload(false);
+			}, 1000);
+			return;
+		}
+
 		{% if not app.user.timezone or app.user.timezone == 'UTC' %}
 			{# When we have a UTC timezone and the time is wrong, then its a default and we should guess #}
 			if (DESKPRO_TIME_OUT_OF_SYNC) {
