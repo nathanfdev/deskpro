@@ -59,6 +59,7 @@ class LabelArticle extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelArticle';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_articles',
 			'indexes' => array(

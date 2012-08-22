@@ -59,6 +59,7 @@ class LabelFeedback extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelFeedback';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_feedback',
 			'indexes' => array(

@@ -59,6 +59,7 @@ class LabelOrganization extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelOrganization';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_organizations',
 			'indexes' => array(

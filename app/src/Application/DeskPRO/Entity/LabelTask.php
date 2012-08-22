@@ -60,6 +60,7 @@ class LabelTask extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelTask';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_tasks',
 			'indexes' => array(

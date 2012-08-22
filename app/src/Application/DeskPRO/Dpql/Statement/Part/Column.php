@@ -68,7 +68,7 @@ class Column extends AbstractPart
 		'people' => array('id', 'name'),
 		'tickets' => array('id', 'subject'),
 		'ticket_categories' => array('id', 'title'),
-		'ticket_priorities' => array('id',' title')
+		'ticket_priorities' => array('id', 'title')
 	);
 
 	/**

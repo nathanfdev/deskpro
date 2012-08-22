@@ -69,6 +69,7 @@ class SqlPass extends AbstractFunc
 		'DAYOFYEAR' => array('number', 1),
 		'FIELD' => array('number', 2, -1),
 		'FIND_IN_SET' => array('number', 2),
+		'FLOOR' => array('number', 1),
 		'FROM_UNIXTIME' => array('datetime', 1),
 		'GREATEST' => array('number', 2, -1),
 		'HOUR' => array('number', 1),

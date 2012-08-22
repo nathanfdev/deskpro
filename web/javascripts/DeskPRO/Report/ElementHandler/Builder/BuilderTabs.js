@@ -23,16 +23,16 @@ DeskPRO.Report.ElementHandler.Builder.BuilderTabs = new Orb.Class({
 				return;
 			}
 
-			if (event.lastTabEl === event.tabEl) {
-				return;
-			}
-
-			event.cancel = true;
-
 			var lastTabEl = event.lastTabEl,
 				tabEl = event.tabEl,
 				currentType = (lastTabEl.length ? lastTabEl.data('query-type') : inputTypeInput.val()),
 				newType = tabEl.data('query-type');
+
+			if (currentType === newType) {
+				return;
+			}
+
+			event.cancel = true;
 
 			errorContainer.fadeOut();
 			

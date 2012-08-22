@@ -59,6 +59,7 @@ class LabelPerson extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelPerson';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_people',
 			'indexes' => array(

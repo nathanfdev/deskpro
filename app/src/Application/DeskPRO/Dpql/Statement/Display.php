@@ -178,12 +178,14 @@ class Display
 		'news_comments' => 'DeskPRO:NewsComment',
 		'organizations' => 'DeskPRO:Organizations',
 		'people' => 'DeskPRO:Person',
+		'people_emails' => 'DeskPRO:PersonEmail',
 		'tasks' => 'DeskPRO:Task',
 		'task_comments' => 'DeskPRO:TaskComment',
 		'tickets' => 'DeskPRO:Ticket',
+		'tickets_log' => 'DeskPRO:TicketLog',
+		'tickets_messages' => 'DeskPRO:TicketMessage',
 		'ticket_attachments' => 'DeskPRO:TicketAttachment',
 		'ticket_feedback' => 'DeskPRO:TicketFeedback',
-		'tickets_messages' => 'DeskPRO:TicketMessage',
 	);
 
 	/**

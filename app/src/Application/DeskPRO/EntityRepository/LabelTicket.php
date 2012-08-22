@@ -30,44 +30,18 @@
  *
  * @package DeskPRO
  * @category Entities
+ * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints\DateTime;
 
-/**
- * Labels on tickets
- *
- */
-class LabelNews extends LabelAssocAbstract
+use Application\DeskPRO\App;
+use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Entity;
+
+class LabelTicket extends AbstractEntityRepository
 {
-	const LABEL_TYPENAME = 'news';
 
-	/**
-	 * @var \Application\DeskPRO\Entity\News
-	 */
-	protected $news;
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelNews';
-		$metadata->setPrimaryTable(array(
-			'name' => 'labels_news',
-			'indexes' => array(
-				'label_idx' => array('columns' => array('label'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'news', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'id' => true, 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'news_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'label', 'id' => true, ));
-	}
 }

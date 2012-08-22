@@ -59,6 +59,7 @@ class LabelDownload extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelDownload';
 		$metadata->setPrimaryTable(array(
 			'name' => 'labels_downloads',
 			'indexes' => array(
