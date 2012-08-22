@@ -220,10 +220,6 @@ class TicketFilter extends AbstractEntityRepository
 
 	public function getSystemFilters($person_id)
 	{
-		if ($person_id instanceof Person) {
-			$person_id = $person_id['id'];
-		}
-
 		$filters = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id
@@ -240,18 +236,37 @@ class TicketFilter extends AbstractEntityRepository
 	 * @param mixed $person_id
 	 * @return array
 	 */
-	public function getFiltersForPerson($person_id)
+	public function getFiltersForPerson($person)
 	{
-		if ($person_id instanceof Person) {
-			$person_id = $person_id['id'];
+		/** @var $person \Application\DeskPRO\Entity\Person */
+
+		if (!($person instanceof \Application\DeskPRO\Entity\Person)) {
+			$person = $this->getEntityManager()->find('DeskPRO:Person', $person);
 		}
 
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.person = ?1 OR q.is_global = true
-			ORDER BY q.title ASC
-		")->setParameter(1, $person_id)->execute();
+		$person_id = $person->getId();
+
+		$team_ids = array();
+		if ($person->is_agent) {
+			$person->loadHelper('Agent');
+			$team_ids = $person->getHelper('Agent')->getTeamIds();
+		}
+
+		if ($team_ids) {
+			$filters = $this->getEntityManager()->createQuery("
+				SELECT q
+				FROM DeskPRO:TicketFilter q INDEX BY q.id
+				WHERE q.person = ?1 OR q.is_global = true OR q.agent_team IN (?2)
+				ORDER BY q.title ASC
+			")->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
+		} else {
+			$filters = $this->getEntityManager()->createQuery("
+				SELECT q
+				FROM DeskPRO:TicketFilter q INDEX BY q.id
+				WHERE q.person = ?1 OR q.is_global = true
+				ORDER BY q.title ASC
+			")->setParameter(1, $person_id)->execute();
+		}
 
 		return $filters;
 	}
@@ -262,10 +277,6 @@ class TicketFilter extends AbstractEntityRepository
 	 */
 	public function getCustomFiltersForPerson($person_id)
 	{
-		if ($person_id instanceof Person) {
-			$person_id = $person_id['id'];
-		}
-
 		$filters = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id

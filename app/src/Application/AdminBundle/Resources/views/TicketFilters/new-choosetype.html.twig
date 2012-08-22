@@ -5,9 +5,22 @@
 		<li>{{ phrase('agent.general.new_filter') }}</li>
 	</ul>
 {% endblock %}
+{% block html_head %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#dp_form').on('submit', function(ev) {
+			$('.option-trigger').each(function() {
+				if (!$(this).is(':checked')) {
+					$(this).closest('.dp-input-group').find('.dp-group-options').remove();
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_tickets_filters_edit', {'filter_id': 0}) }}" class="dp-form">
+<form action="{{ path('admin_tickets_filters_edit', {'filter_id': 0}) }}" class="dp-form" id="dp_form">
 <input type="hidden" name="is_new" value="1" />
 
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
@@ -18,19 +31,19 @@
 		<div class="dp-form-input">
 			<div class="dp-input-group">
 				<label>
-					<input type="radio" name="filter_visibility" value="filter_global" checked="checked" />
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_global" checked="checked" />
 					{{ phrase('admin.tickets.explain_global_gilter') }}
 				</label>
 			</div>
 
 			<div class="dp-input-group">
 				<label>
-					<input type="radio" name="filter_visibility" value="filter_agent_team" />
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_agent_team" />
 					{{ phrase('admin.tickets.choice_specific_team_access') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
 					{{ phrase('admin.tickets.select_team_filter_access') }}: <select name="filter[agent_team_id]">
-						{% for k,v in agent_team_names %}
+						{% for k,v in app.getDataRepository('AgentTeam').getTeamNames() %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}
 					</select>
@@ -39,12 +52,12 @@
 
 			<div class="dp-input-group">
 				<label>
-					<input type="radio" name="filter_visibility" value="filter_agent_team" />
+					<input class="option-trigger" type="radio" name="filter_visibility" value="filter_agent" />
 					{{ phrase('admin.tickets.choice_specific_agent_access') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
 					{{ phrase('admin.tickets.select_agent_filter_access') }}: <select name="filter[person_id]">
-						{% for k,v in agent_names %}
+						{% for k,v in app.getDataRepository('Person').getAgentNames() %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}
 					</select>
