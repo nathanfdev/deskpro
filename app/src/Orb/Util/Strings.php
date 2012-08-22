@@ -1242,7 +1242,7 @@ class Strings
 			return $key;
 		}, $text);
 
-		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+)#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#i',function($m) use (&$search_replace, $attr) {
 			$url = $m[2];
 			$key = md5(mt_rand(0,9999) . microtime());
 			$search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8') . '</a>';
