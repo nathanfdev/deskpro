@@ -191,9 +191,13 @@ class EzcReader extends AbstractReader
 						} catch (\Exception $e) {}
 					}
 
-					if (!$attach->file_name || !$attach->mime_type) {
+					if (!$attach->file_name) {
 						$attach->file_name = 'file.txt';
 						$attach->mime_type = 'plain/text';
+					}
+
+					if (!$attach->mime_type) {
+						$attach->mime_type = 'application/octet-stream';
 					}
 
 				} elseif ($part instanceof \ezcMailRfc822Digest) {
@@ -218,9 +222,13 @@ class EzcReader extends AbstractReader
 						} catch (\Exception $e) {}
 					}
 
-					if (!$attach->file_name || !$attach->mime_type) {
+					if (!$attach->file_name) {
 						$attach->file_name = 'file.txt';
 						$attach->mime_type = 'plain/text';
+					}
+
+					if (!$attach->mime_type) {
+						$attach->mime_type = 'application/octet-stream';
 					}
 				}
 
