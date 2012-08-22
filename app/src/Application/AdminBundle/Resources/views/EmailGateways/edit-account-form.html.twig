@@ -10,42 +10,6 @@
 	<input type="hidden" name="gateway[gateway_type]" value="tickets" />
 	<input type="hidden" id="define_transport" name="gateway[define_transport]" value="{% if not editgateway.define_transport %}0{% else %}1{% endif %}" />
 
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.email_address') }}</label> <em class="desc">{{ phrase('admin.gateway.address_for_gateway') }}</em>
-		</div>
-		<div class="dp-form-input">
-			{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}<br />
-			<div id="add_addr_link" style="padding-top: 4px; width: 70%; text-align: right; {% if gateway.addresses|length > 1 %}display: none;{% endif %}">
-				{{ phrase('admin.gateway.ask_if_multiple_addresses') }} <button class="clean-white small">{{ phrase('admin.gateway.click_to_add_more') }}</button>
-			</div>
-
-			<div class="choices-builder" id="gateway_addresses" style="margin-top:5px; {% if gateway.addresses|length < 2 %}display: none;{% endif %}">
-				<header>
-					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">{{ phrase('agent.general.add') }}</button>
-				</header>
-				<div style="display: none" id="choice_extra_fields"></div>
-				<ul class="list">
-					{% for adr in gateway.addresses %}
-						{% if loop.index != 1 %}
-						<li data-address-id="{{ adr.id }}">
-							<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
-							<div class="label">{{ adr.title }}</div>
-						</li>
-						{% endif %}
-					{% endfor %}
-				</ul>
-				<script type="text/x-deskpro-plain" class="row-tpl">
-					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
-						<div class="label"></div>
-						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
-					</li>
-				</script>
-			</div>
-		</div>
-	</div>
-
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -70,6 +34,12 @@
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
+							<tr>
+								<td width="100">Email Address:</td>
+								<td>
+									{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}
+								</td>
+							</tr>
 							<tr>
 								<td width="100">{{ phrase('agent.general.host') }}:</td>
 								<td>

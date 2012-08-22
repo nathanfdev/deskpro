@@ -70,6 +70,11 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 		if (errorBox[0]) {
 			errorBox.hide();
 			$('#gateway_form').on('submit', function (ev) {
+				// GMail: Sync address they entered into the 'email address' standard field
+				if ($('#gapps_btn').is(':checked')) {
+					$('#gateway_address').val($('#gateway_gmail_options_username').val());
+				}
+
 				var errors = self.getFormErrors();
 				if (errors && errors.length) {
 
@@ -105,6 +110,11 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 		$('button.test-trigger', '#test_gateway_settings_overlay').on('click', function() {
 			var el = $('#test_gateway_settings_overlay');
 			$('.result', el).show().addClass('loading');
+
+			// GMail: Sync address they entered into the 'email address' standard field
+			if ($('#gapps_btn').is(':checked')) {
+				$('#gateway_address').val($('#gateway_gmail_options_username').val());
+			}
 
 			var postData = $('#gateway_form').serializeArray();
 
@@ -172,6 +182,7 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 	},
 
 	_initAddresses: function() {
+		return;
 		var self = this;
 
 		var el = $('#gateway_addresses');
