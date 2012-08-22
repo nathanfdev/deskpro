@@ -32,9 +32,15 @@
 			<label><input type="checkbox" name="settings[core.tickets.feedback_agents_read]" {% if app.getSetting('core.tickets.feedback_agents_read') %}checked="checked"{% endif %} />
 				{{ phrase('admin.tickets.choice_agents_read_ticket_feedback') }}</label>
 		</div>
+	</div>
+</div>
+
+<div class="setting_field_row">
+	<h4>Suggestion</h4>
+	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.show_ticket_suggestions]" {% if app.getSetting('core.show_ticket_suggestions') %}checked="checked"{% endif %} />
-				Show article suggestions on new ticket form</label>
+				Show automatic article suggestions on new ticket form</label>
 		</div>
 	</div>
 </div>
