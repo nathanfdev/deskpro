@@ -221,7 +221,7 @@ class TicketFilter extends AbstractEntityRepository
 	public function getSystemFilters($person_id)
 	{
 		if ($person_id instanceof Person) {
-			$person_id = $perosn_id['id'];
+			$person_id = $person_id['id'];
 		}
 
 		$filters = $this->getEntityManager()->createQuery("
@@ -243,7 +243,7 @@ class TicketFilter extends AbstractEntityRepository
 	public function getFiltersForPerson($person_id)
 	{
 		if ($person_id instanceof Person) {
-			$person_id = $perosn_id['id'];
+			$person_id = $person_id['id'];
 		}
 
 		$filters = $this->getEntityManager()->createQuery("
@@ -263,7 +263,7 @@ class TicketFilter extends AbstractEntityRepository
 	public function getCustomFiltersForPerson($person_id)
 	{
 		if ($person_id instanceof Person) {
-			$person_id = $perosn_id['id'];
+			$person_id = $person_id['id'];
 		}
 
 		$filters = $this->getEntityManager()->createQuery("
