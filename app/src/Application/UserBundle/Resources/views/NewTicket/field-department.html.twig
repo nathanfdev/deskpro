@@ -16,7 +16,6 @@
 			<select
 				name="newticket[ticket][department_id]"
 				class="department_id"
-				data-field-validators="DeskPRO.Form.LengthValidator"
 			>
 				<option value=""></option>
 				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}

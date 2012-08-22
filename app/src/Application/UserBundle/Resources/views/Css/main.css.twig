@@ -2135,6 +2135,22 @@ dp .dp-new-feedback td {
 }
 
 /******************************
+* Two level selects
+******************************/
+
+#dp .dp-two-select .dp-child {
+	display: none;
+	background: url({{ stylevar.static_path }}/images/user/elbow-end.gif) no-repeat 0 0;
+	padding-left: 21px;
+	margin: 3px 0 0 3px;
+}
+
+#dp .dp-two-select.dp-show-child .dp-child {
+	display: block;
+}
+
+
+/******************************
 * Rating bar
 ******************************/
 

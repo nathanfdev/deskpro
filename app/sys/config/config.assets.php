@@ -550,6 +550,7 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
+		'javascripts/DeskPRO/UI/TwoLevelSelect.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/TouchCaller.js',
