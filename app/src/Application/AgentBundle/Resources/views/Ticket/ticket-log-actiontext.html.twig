@@ -40,7 +40,14 @@
 	<span class="type">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_titles }}</span>
 {% elseif log.action_type == 'message_created' %}
-	<span class="type">{{ phrase('agent.tickets.new_message') }}</span> {% if log.details.message_id %}<span class="new-val message-id-txt" data-message-id="{{ log.details.message_id }}">ID {{log.details.message_id}}</span>{% endif %}
+	<span style="{{ layout.actiontext_style('type') }}">
+		{% if log.details.is_agent_note %}
+			{{ phrase('agent.tickets.new_note') }}
+		{% else %}
+			{{ phrase('agent.tickets.new_message') }}
+		{% endif %}
+	</span>
+	{% if log.details.message_id %}<span class="new-val message-id-txt" data-message-id="{{ log.details.message_id }}">ID {{log.details.message_id}}</span>{% endif %}
 	{% if log.details.ip_address %}
     {{ phrase('agent.tickets.from_web', {'address':log.details.ip_address}) }}
 	{% endif %}

@@ -109,6 +109,7 @@
 	'agent.tickets.name_found_this_message_x'           => '{{name}} found this message',
 	'agent.tickets.new_attachment'                      => 'New attachment',
 	'agent.tickets.new_message'                         => 'New message',
+	'agent.tickets.new_note'                            => 'New note',
 	'agent.tickets.new_snippet_category'                => 'New Snippet Category',
 	'agent.tickets.no_criteria'                         => 'No criteria',
 	'agent.tickets.no_flag'                             => 'No flag',

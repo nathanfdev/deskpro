@@ -43,6 +43,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	_initSection: function(data) {
+
+		var lastSelectedId = null;
+		if (this.contentEl) {
+			lastSelectedId = this.contentEl.find('.nav-selected').find('.list-counter').attr('id');
+		}
+
 		if(this.hasSectionInitialised) {
 			this._lastLoaded = new Date();
 			this.filterGroupEditor.destroy();
@@ -65,21 +71,25 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			controlElement: '#chat_filter_group_editor',
 			useIntId: false,
 			onGroupingChanged: function(data) {
-				self.refreshFilterGrouping(data, self);
+				self.refreshFilterGrouping(data);
 			},
 			onSetMarginTop: function(evData) {
 				evData.marginTop = $('#chats_outline_sys_filters').position().top;
 			}
 		});
 		this.filterGroupEditor._initControl();
-		this.refreshFilterGrouping(data, this);
+		this.refreshFilterGrouping(data, lastSelectedId);
 		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();
         this.handleUpdateCounts();
+
+		if (lastSelectedId) {
+			$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
+		}
 	},
 
-	refreshFilterGrouping: function(filterId) {
+	refreshFilterGrouping: function(filterId, lastSelectedId) {
 		var self = this;
 		this.groups[filterId] = this.getGroupingVar(filterId);
 
@@ -91,6 +101,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					self.updateFilterGrouping(data, self);
+
+					if (lastSelectedId) {
+						$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
+					}
 				}
 			}
 		);
@@ -123,7 +137,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	onShow: function() {
-		DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
+		var self = this;
+		window.setTimeout(function() {
+			if (!self.isVisible()) {
+				DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
+			}
+		}, 250);
 	},
 
 	onHide: function() {

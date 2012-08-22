@@ -6,7 +6,11 @@
 		{% if is_new_ticket %}
             {{ phrase('agent.chat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% elseif is_new_agent_reply %}
-            {{ phrase('agent.chat.new_agent_reply_by', {'name':performer.name}) }}
+			{% if is_new_agent_note %}
+				{{ phrase('agent.chat.new_agent_note_by', {'name':performer.name}) }}
+			{% else %}
+            	{{ phrase('agent.chat.new_agent_reply_by', {'name':performer.name}) }}
+			{% endif %}
 		{% elseif is_new_user_reply %}
             {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name}) }}
 		{% else %}

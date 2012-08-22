@@ -157,12 +157,16 @@ class AgentAlertNotificationAction extends AbstractAction
 
 		$is_new_ticket = false;
 		$is_new_agent_reply = false;
+		$is_new_agent_note = false;
 		$is_new_user_reply = false;
 		if ($this->tracker->isNewTicket()) {
 			$is_new_ticket = true;
 		}
 		if ($this->tracker->hasNewAgentReply()) {
 			$is_new_agent_reply = true;
+			if ($this->tracker->getNewAgentReply()->is_agent_note) {
+				$is_new_agent_note = true;
+			}
 		}
 		if ($this->tracker->hasNewUserReply()) {
 			$is_new_user_reply = true;
@@ -181,6 +185,7 @@ class AgentAlertNotificationAction extends AbstractAction
 				$vars = array(
 					'is_new_ticket'      => $is_new_ticket,
 					'is_new_agent_reply' => $is_new_agent_reply,
+					'is_new_agent_note'  => $is_new_agent_note,
 					'is_new_user_reply'  => $is_new_user_reply,
 					'ticket'             => $ticket,
 					'agent'              => $agent,

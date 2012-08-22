@@ -25,6 +25,7 @@
 	'agent.chat.msg_unassigned_agent'             => '{{agent_name}} was unassigned',
 	'agent.chat.my_open_chats'                    => 'My Open Chats',
 	'agent.chat.new_agent_reply_by'               => 'New agent reply by {{name}}',
+	'agent.chat.new_agent_note_by'                => 'New agent note by {{name}}',
 	'agent.chat.new_chat'                         => 'New Chat',
 	'agent.chat.new_ticket_by'                    => 'New ticket by {{name}} ({{email}})',
 	'agent.chat.new_user_reply_by'                => 'New user reply by {{name}}',

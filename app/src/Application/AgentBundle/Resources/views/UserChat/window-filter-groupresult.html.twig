@@ -4,7 +4,7 @@
 		class="is-nav-item grouping-{{ group.id }}"
 	>
 		<span class="title">
-			<span class="list-counter">
+			<span class="list-counter" id="chat_filter_count_{{ filter_id }}_{{ group_by }}_{{ group.id }}">
 				{{ group.count }}
 			</span>
 			{{ group.title }}
@@ -18,7 +18,7 @@
 					>
 					<span class="elbow">|</span>
 					<span class="title">
-						<span class="list-counter">{{ subcat.count }}</span>
+						<span class="list-counter" id="chat_filter_count_{{ filter_id }}_{{ group_by }}_{{ subcat.id }}">{{ subcat.count }}</span>
 						{{ subcat.title }}
 					</span>
 				</li>
