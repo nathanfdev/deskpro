@@ -746,7 +746,7 @@ class Task extends AbstractEntityRepository
 		if ($person_context->Agent->getTeamIds()) {
 			$team_ids = $person_context->Agent->getTeamIds();
 		} else {
-			$team_ids = array();
+			$team_ids = array(0);
 		}
 
 		$team_ids = implode(',', $team_ids);
