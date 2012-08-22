@@ -2,6 +2,7 @@
 <div class="query-error">{{ error }}</div>
 {% else %}
 <div class="report-builder-results">
+	<div class="query">{{ query }}</div>
 	<div>Generated: {{ "now"|date('fulltime') }}</div>
 	{% if results %}
 		{{ results|raw }}

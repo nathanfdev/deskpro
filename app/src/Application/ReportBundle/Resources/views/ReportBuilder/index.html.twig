@@ -3,11 +3,14 @@
 	<form action="{{ path('report_builder')}}" method="post" class="dp-form">
 		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' %}
 
-		<button class="btn primary">Run Report</button>
+		<div class="report-run">
+			<button class="btn primary">Run Report</button>
+		</div>
 
 		{% if statement and not errors %}
 			<div class="report-actions">
 				<button class="btn" name="output" value="csv">CSV</button>
+				<button class="btn" name="run" value="1" onclick="window.print(); return false;">Print</button>
 				<button class="btn" name="save" value="1">Save as Report</button>
 			</div>
 		{% endif %}

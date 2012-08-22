@@ -29,17 +29,20 @@
 	<form action="{{ path('report_builder_report', {'report_builder_id' : report.id}) }}" class="dp-form" method="post">
 		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' with {'readOnly': not report.isEditable()} %}
 
-		<button class="btn primary" name="run" value="1">Run Report</button>
-		{% if error is empty and report.isEditable() and report.isQueryDifferent(query) %}
-		<button class="btn" name="save" value="1">Save Changes</button>
-		{% endif %}
-
-		<div class="report-actions">
-			<button class="btn" name="output" value="csv">CSV</button>
-			<button class="btn" name="clone" value="1">Clone</button>
+		<div class="report-run">
+			<button class="btn primary" name="run" value="1">Run Report</button>
+			{% if error is empty and report.isEditable() and report.isQueryDifferent(query) %}
+				<button class="btn" name="save" value="1">Save Changes</button>
+			{% endif %}
 		</div>
 
 		{% if run %}
+			<div class="report-actions">
+				<button class="btn" name="output" value="csv">CSV</button>
+				<button class="btn" name="run" value="1" onclick="window.print(); return false;">Print</button>
+				<button class="btn" name="clone" value="1">Clone</button>
+			</div>
+
 			{% include 'ReportBundle:ReportBuilder:results.html.twig' %}
 		{% endif %}
 
