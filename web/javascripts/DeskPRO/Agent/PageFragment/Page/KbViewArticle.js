@@ -289,35 +289,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		this.ownObject(this.deleteHelper);
 
-		this.catOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: $('li.add', this.getEl('categories')),
-			element: this.getEl('cat_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('category');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
-
-				var li = $('<li />');
-				li.append('<span class="remove">remove</span>');
-
-				var t = $('<span />');
-				t.text(title);
-				li.append(t);
-
-				li.append('<input type="hidden" name="category_ids[]" value="' + catId + '" />');
-
-				li.insertBefore($('li.add', self.getEl('categories')));
-
-				var lis = $('li:not(.add)', self.getEl('categories'));
-				if (lis.length > 1) {
-					// make sure to show it again
-					$('.remove', lis).show();
-				}
-
-				self.sendUpdateCats();
-			}
-		});
-
 		var lis = $('li:not(.add)', self.getEl('categories'));
 		if (lis.length < 2) {
 			$('.remove', lis).hide();
@@ -367,10 +338,23 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			li.remove();
 			self.sendUpdateProds();
 		});
+
+		this.getEl('addcat_trigger').on('click', function(ev) {
+			if (!self.newCatTpl) {
+				self.newCatTpl = DeskPRO_Window.util.getPlainTpl(self.getEl('addcat_select_tpl'));
+			}
+
+			var newLi = $(self.newCatTpl);
+			self.getEl('addcat_li').before(newLi);
+
+			DP.select(newLi.find('select'));
+		});
+
+		DP.select(this.getEl('categories').find('select'));
 	},
 
 	sendUpdateCats: function() {
-		var formData = $('input', this.getEl('categories')).serializeArray();
+		var formData = $('select', this.getEl('categories')).serializeArray();
 
 		formData.push({
 			name: 'action',

@@ -68,17 +68,38 @@ pageMeta.baseId = '{{ baseId }}';
 		<dl class="info-list">
 			<dt class="">{{ phrase('agent.general.categories') }}</dt>
 			<dd>
-				<ul id="{{baseId}}_categories" class="add-remove-list">
+				<ul id="{{baseId}}_categories" class="add-remove-list with-select2">
 					{% for cat in article.categories %}
 						<li>
 							<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
-							{{ cat.full_title }}
-							<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
+							{% include 'AgentBundle:Common:select-standard.html.twig' with {
+								'name': 'category_ids[]',
+								'add_classname': 'category_id',
+								'add_attr': '',
+								'with_blank': 0,
+								'blank_title': '',
+								'categories': article_categories,
+								'selected': cat.id
+							} %}
 						</li>
 					{% endfor %}
-					<li class="add noedit-hide">
-						<span class="add"></span>
+					<li class="add noedit-hide" id="{{baseId}}_addcat_li">
+						<span class="add" id="{{baseId}}_addcat_trigger"></span>
 						{{ phrase('agent.general.add_category') }}
+						<script type="text/x-deskpro-plain" id="{{baseId}}_addcat_select_tpl">
+							<li>
+								<span class="remove noedit-hide">{{ phrase('agent.general.remove') }}</span>
+								{% include 'AgentBundle:Common:select-standard.html.twig' with {
+									'name': 'category_ids[]',
+									'add_classname': 'category_id',
+									'add_attr': '',
+									'with_blank': 0,
+									'blank_title': '',
+									'categories': article_categories,
+									'selected': 0
+								} %}
+							</li>
+						</script>
 					</li>
 				</ul>
 			</dd>
