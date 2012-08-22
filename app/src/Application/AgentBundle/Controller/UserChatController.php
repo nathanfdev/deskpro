@@ -51,8 +51,8 @@ use Orb\Util\Util;
 
 class UserChatController extends AbstractController
 {
-	protected $filters  = array('mine', 'all');
-	protected $groups = array('none', 'department', 'agent', 'date_created');
+	protected $filters  = array('mine', 'assigned', 'missed');
+	protected $groups = array('none', 'department', 'agent', 'date_created', 'total_to_ended');
 
 	public function viewAction($conversation_id)
 	{
@@ -714,6 +714,10 @@ class UserChatController extends AbstractController
 					$group_id = $this->in->getInt('group_val');
 					$searcher->addTerm(ChatConversationSearch::TERM_DEPARTMENT_ID, SearcherAbstract::OP_IS, $group_id);
 					break;
+				case 'total_to_ended':
+					$group_id = $this->in->getInt('group_val');
+					$searcher->addTerm(ChatConversationSearch::TERM_TOTAL_TO_ENDED, SearcherAbstract::OP_IS, $group_id);
+					break;
 			}
 		}
 
@@ -750,8 +754,15 @@ class UserChatController extends AbstractController
 	{
 		switch($filter) {
 			case 'mine':
-				$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID,
-					SearcherAbstract::OP_IS,$this->person['id']);
+				$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS,$this->person['id']);
+				break;
+
+			case 'assigned':
+				$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_NOT, 0);
+				break;
+
+			case 'missed':
+				$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
 				break;
 		}
 	}
@@ -776,8 +787,9 @@ class UserChatController extends AbstractController
 	{
 		$disallowed = array();
 
-		if($filter == 'mine')
+		if($filter == 'mine') {
 			$disallowed[] = 'agent';
+		}
 
 		return $disallowed;
 	}
@@ -787,7 +799,7 @@ class UserChatController extends AbstractController
 		$filters = array();
 
 		foreach($this->filters as $filter) {
-			if($filter == 'all'	&& !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
+			if($filter == 'assigned' && !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
 				continue;
 			}
 

@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-
+use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Orb\Util\Arrays;
 
 class GroupingCounter
@@ -47,7 +47,8 @@ class GroupingCounter
 		'none' => '',
 		'department' => 'department_id',
 		'agent' => 'agent_id',
-		'date_created' => 'date_created'
+		'date_created' => 'date_created',
+		'total_to_ended' => 'total_to_ended'
 	);
 
 	public function __construct($group_by)
@@ -55,10 +56,11 @@ class GroupingCounter
 		$this->group_by = $this->groups[$group_by];
 	}
 
-	public function getCounts($searcher)
+	public function getCounts(ChatConversationSearch $searcher)
 	{
-		if(empty($this->group_by))
+		if(empty($this->group_by)) {
 			return array();
+		}
 
 		$searcher->setGroupBy($this->group_by);
 		$db = App::getDb();
@@ -110,9 +112,47 @@ class GroupingCounter
 				$searcher->setColumns('DATE_FORMAT(date_created, "%c-%Y") AS id, DATE_FORMAT(date_created,"%M %Y") AS title, COUNT(*) AS count');
 				$searcher->setOrderBy('chat_conversations.date_created');
 				break;
+
+			case 'total_to_ended':
+				$searcher->setColumns($this->makeTimeFieldSelect('total_to_ended', 'grouping_var') . ',  COUNT(*) AS count');
+				$searcher->setGroupBy('grouping_var');
+				$searcher->setOrderBy('grouping_var', 'ASC');
+				break;
 		}
 
 		$counts = $db->fetchAll($searcher->getSql());
+
+		if ($this->group_by == 'total_to_ended') {
+			$titles = \Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles();
+			foreach ($counts as &$c) {
+				$c['id'] = $c['grouping_var'];
+				$c['title'] = $titles[$c['grouping_var']];
+			}
+		}
+
 		return $counts;
+	}
+
+	/**
+	 * Generates some nasty SQL to get MySQL to group on the right date range value.
+	 *
+	 * @param $field
+	 * @param $select_name
+	 * @return string
+	 */
+	public function makeTimeFieldSelect($field, $select_name)
+	{
+		$times = array_keys(\Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles());
+
+		$sql = "CASE ";
+
+		$parts = array();
+		foreach ($times as $k => $t) {
+			$parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
+		}
+
+		$sql .= implode('', $parts) . " ELSE 9000000000 END AS $select_name";
+
+		return $sql;
 	}
 }

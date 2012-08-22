@@ -1441,27 +1441,6 @@ class TicketSearch extends SearcherAbstract
 		return $this->sql_parts;
 	}
 
-	public function normalizeWaitingTime($choice)
-	{
-		if (is_array($choice)) {
-			$choice = Arrays::removeFalsey($choice);
-			if (!$choice) {
-				return 0;
-			}
-			if (isset($choice['date1']) || isset($choice['date2'])) {
-				return $choice;
-			} elseif (empty($choice['waiting_time']) || empty($choice['waiting_time_unit'])) {
-				return 0;
-			}
-		}
-
-		if (!$choice) {
-			return 0;
-		}
-
-		return $choice;
-	}
-
 
 	/**
 	 * Check a specific ticket against these terms to see if it matches.

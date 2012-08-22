@@ -265,6 +265,7 @@
 	'agent.general.gateway_is_summary'                      => 'Gateway account is {{names}}',
 	'agent.general.greater_than'                            => 'greater than',
 	'agent.general.group_agent'                             => 'Agent',
+	'agent.general.group_total_to_ended'                    => 'Total time until chat ended',
 	'agent.general.group_by'                                => 'Group By',
 	'agent.general.group_date_created'                      => 'Date Created',
 	'agent.general.group_department'                        => 'Department',

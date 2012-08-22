@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,39 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DevBundle\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class Build1345637958 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo "\n";
+		$this->out("Add chat_conversations.total_to_ended");
+		$this->execMutateSql("ALTER TABLE chat_conversations ADD total_to_ended INT NOT NULL");
+		$this->execMutateSql("UPDATE chat_conversations SET total_to_ended = UNIX_TIMESTAMP(date_ended) - UNIX_TIMESTAMP(date_created)");
 	}
 }

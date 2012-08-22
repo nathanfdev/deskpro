@@ -186,6 +186,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_ended;
 
 	/**
+	 * @var int
+	 */
+	protected $total_to_ended = 0;
+
+	/**
 	 * @var string
 	 */
 	protected $ended_by = '';
@@ -564,6 +569,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('rating_response_time', $rating);
 	}
 
+
+	/**
+	 * @param \DateTime $date
+	 */
+	public function setDateEnded(\DateTime $date)
+	{
+		$this->setModelField('date_ended', $date);
+		$this->setModelField('total_to_ended', $date->getTimestamp() - $this->date_created->getTimestamp());
+	}
+
+
 	/**
 	 * Get a basic array of information. These are generally used in templates or with
 	 * client messages to render the message.
@@ -628,6 +644,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned', ));
 		$metadata->mapField(array( 'fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message', ));
 		$metadata->mapField(array( 'fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended', ));
+		$metadata->mapField(array( 'fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
 		$metadata->mapField(array( 'fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

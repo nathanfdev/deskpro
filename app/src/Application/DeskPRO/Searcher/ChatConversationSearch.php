@@ -49,6 +49,7 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_DEPARTMENT_ID_SPECIFIC = 'department_id_specific';
 	const TERM_DATE_CREATED         = 'date_created';
 	const TERM_STATUS               = 'status';
+	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
 
 	protected $columns = 'chat_conversations.id';
 	protected $groupBy = null;
@@ -242,7 +243,11 @@ class ChatConversationSearch extends SearcherAbstract
 					$not_id = $info['not_id'];
 
 					if ($unassigned) {
-						$wheres[] = "chat_conversations.agent_id IS NULL";
+						if ($op == self::OP_IS) {
+							$wheres[] = "chat_conversations.agent_id IS NULL";
+						} else {
+							$wheres[] = "chat_conversations.agent_id IS NOT NULL";
+						}
 					} else {
 						if ($agent_ids) {
 							$wheres[] = $this->_choiceMatch("chat_conversations.agent_id", $op, $agent_ids, true);
@@ -275,6 +280,25 @@ class ChatConversationSearch extends SearcherAbstract
 
 				case self::TERM_STATUS:
 					$wheres[] = $this->_stringMatch('chat_conversations.status', $op, $choice);
+					break;
+
+				case self::TERM_TOTAL_TO_ENDED:
+
+					$times = array_keys(\Application\DeskPRO\Tickets\GroupingCounter::getTimeTitles());
+
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
+					$k = array_search($choice, $times);
+
+					if (!$k) {
+						$choice = array(0, 300);
+					} else {
+						$choice = array($times[$k-1] + 1, $choice);
+					}
+
+					$wheres[] = $this->_rangeMatch('chat_conversations.total_to_ended', self::OP_BETWEEN, $choice);
 					break;
 			}
 		}
