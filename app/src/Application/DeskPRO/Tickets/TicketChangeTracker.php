@@ -232,7 +232,7 @@ class TicketChangeTracker extends ChangeTracker
 		$status_change  = $this->getChangedProperty('status');
 		$hstatus_change = $this->getChangedProperty('hidden_status');
 
-		if ($this->isExtraSet('ticket_created') || ($this->ticket->status_code == 'awaiting_agent' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating'))) {
+		if ($this->isExtraSet('ticket_created') || ($this->ticket->status_code == 'awaiting_agent' && $status_change['old'] == 'hidden.validating')) {
 			return true;
 		}
 

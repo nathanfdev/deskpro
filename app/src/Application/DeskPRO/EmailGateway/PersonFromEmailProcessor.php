@@ -123,6 +123,10 @@ class PersonFromEmailProcessor
 			$person->name = $from->getNameUtf8();
 			$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
 
+			if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+				$person->is_agent_confirmed = false;
+			}
+
 			$email_validating = new Entity\PersonEmailValidating();
 			$email_validating->email = $from->getEmail();
 			$email_validating->person = $person;

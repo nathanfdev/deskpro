@@ -240,7 +240,7 @@ class Log
 		}
 
 		// Need to rewrite status log based on if hidden was changed as well
-		if ($info = $this->tracker->getChangedProperty('hidden_status')) {
+		if (($info = $this->tracker->getChangedProperty('hidden_status')) && $info['new']) {
 			if ($status_k) {
 				$other_action = $actions[$status_k];
 				if ($info['old']) {

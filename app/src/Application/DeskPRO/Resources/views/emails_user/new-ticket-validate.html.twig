@@ -5,8 +5,8 @@
 		{{ phrase('user.emails.ticket_validate') }}
 		<br /><br />
 		{{ phrase('user.emails.profile_email_link-validate') }}:<br />
-		<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
-			{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
+		<a href="{{ url_full('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
+			{{ url_full('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
 		</a>
 	</dp:section>
 </dp:body>
