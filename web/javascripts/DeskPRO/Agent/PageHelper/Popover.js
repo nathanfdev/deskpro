@@ -40,7 +40,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			/**
 			 * 'side' or 'over'
 			 */
-			positionMode: 'side'
+			positionMode: 'side',
+
+			/**
+			 * 'top' or 'bottom'
+			 */
+			sidePosition: 'top'
 		};
 
 		DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID] = this;
@@ -300,12 +305,21 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		// Beside
 		if (this.options.positionMode == 'side') {
+
+			if (this.options.sidePosition == 'bottom') {
+				// Only calc if we dont have a bottom calculated, else it means the thing is full height
+				if (!bottom) {
+					top = '';
+					bottom = 10;
+				}
+			}
+
 			this.popoverOuter.css({
 				'position': 'absolute',
 				'z-index': 30001,
 				'width': width+2+6, //2px for thi sborder, 6px for the popover border
 				'overflow': 'auto',
-				'top': top-3,
+				'top': top ? top-3 : '',
 				'left': 9,
 				'bottom': bottom,
 				'height': height
