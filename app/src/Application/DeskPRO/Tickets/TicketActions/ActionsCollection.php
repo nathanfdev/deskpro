@@ -155,7 +155,7 @@ class ActionsCollection
 	public function hasModifierType($name)
 	{
 		if (strpos($name, '\\') === false) {
-			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Modifier';
 		}
 
 		return isset($this->applied_modifier_types[$name]);
@@ -225,7 +225,7 @@ class ActionsCollection
 	 */
 	public function getActions()
 	{
-		return $actions;
+		return $this->actions;
 	}
 
 

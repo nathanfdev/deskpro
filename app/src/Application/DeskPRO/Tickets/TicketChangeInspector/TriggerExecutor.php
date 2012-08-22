@@ -294,7 +294,15 @@ class TriggerExecutor
 
 		$actions_collection = new ActionsCollection();
 
+		$stop_actions = false;
 		foreach ($all_triggers as $trigger) {
+
+			// Doing a check on ID because some system triggers like notifications are always run,
+			// and they are created above so arent actual records
+			if ($trigger->getId() && $stop_actions) {
+				continue;
+			}
+
 			$trigger_time = microtime(true);
 			$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
@@ -315,7 +323,8 @@ class TriggerExecutor
 			$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done trigger in %.4f seconds', microtime(true)-$trigger_time));
 
 			if ($actions_collection->hasModifierType('StopActions')) {
-				break;
+				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Got StopActions signal', microtime(true)-$trigger_time));
+				$stop_actions = true;
 			}
 		}
 

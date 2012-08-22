@@ -120,6 +120,7 @@ class BounceDetector
 	{
 		// Standard autoreply headers
 		if ($this->reader->isFromRobot()) {
+			if ($this->logger) $this->logger->logDebug('Is bounced based on isFromRobot');
 			return true;
 		}
 

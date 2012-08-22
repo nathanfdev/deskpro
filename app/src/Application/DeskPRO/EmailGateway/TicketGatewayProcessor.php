@@ -106,7 +106,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$bounce_detector->setLogger($this->logger);
 
 		if ($bounce_detector->isBounced()) {
-
+			$this->logMessage("Is bounced");
 			$ticket	= $bounce_detector->getGuessedTicket();
 			if ($ticket) {
 				$person = $ticket->person;

@@ -197,16 +197,23 @@ abstract class AbstractReader
 	public function isFromRobot()
 	{
 		$auto = $this->getHeader('Auto-Submitted')->getAllParts();
-		foreach ($auto as $v) {
-			$v = strtolower($v);
-			if (strpos($v, 'auto-replied') !== null || strpos($v, 'auto-notified') !== null || strpos($v, 'auto-generated') !== null) {
-				return true;
+		if ($auto) {
+			foreach ($auto as $v) {
+				$v = strtolower($v);
+				if (strpos($v, 'auto-replied') !== false || strpos($v, 'auto-notified') !== false || strpos($v, 'auto-generated') !== false) {
+					return true;
+				}
 			}
 		}
 
 		$auto = $this->getHeader('X-Autoreply')->getAllParts();
 		if ($auto) {
-			return true;
+			foreach ($auto as $v) {
+				$v = strtolower($v);
+				if ($v == "1" || $v == "yes") {
+					return true;
+				}
+			}
 		}
 
 		return false;
