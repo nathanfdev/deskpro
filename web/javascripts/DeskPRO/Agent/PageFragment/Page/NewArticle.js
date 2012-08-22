@@ -146,7 +146,13 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			this.setTitle(data.ticket_subject);
 		}
 		if (data.message_content_html) {
-			this.setContent(data.message_content_html, true);
+			var content = '';
+			if (data.initial_message_html) {
+				content = "<h3>Question:</h3>";
+				content += data.initial_message_html += "<br />><br /><h3>Answer:</h3>";
+			}
+			content += data.message_content_html;
+			this.setContent(content, true);
 		}
 
 		var infoWrap = $('.pending-info:first', this.wrapper);

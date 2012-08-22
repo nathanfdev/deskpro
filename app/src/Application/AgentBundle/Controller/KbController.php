@@ -606,14 +606,24 @@ class KbController extends AbstractController
 		$data['person_id'] = $pending_article->person['id'];
 		$data['person_name'] = $pending_article->person->getDisplayName();
 
+		$ticket = null;
 		if ($pending_article->ticket) {
+			$ticket = $pending_article->ticket;
 			$data['ticket_id'] = $pending_article->ticket->id;
 			$data['ticket_subject'] = $pending_article->ticket->subject;
 			$data['ticket_url'] = $this->get('router')->generate('agent_ticket_view', array('ticket_id' => $pending_article->ticket->id));
 		}
 		if ($pending_article->message) {
+			$ticket = $pending_article->message->ticket;
 			$data['message_id'] = $pending_article->message->id;
 			$data['message_content_html'] = $pending_article->message->getMessageHtml();
+		}
+
+		// First message
+		if ($ticket) {
+			$first_message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+			$data['initial_message_html'] = $first_message->getMessagePlainHtml();
+			$data['initial_message_id'] = $first_message->id;
 		}
 
 		return $this->createJsonResponse($data);
