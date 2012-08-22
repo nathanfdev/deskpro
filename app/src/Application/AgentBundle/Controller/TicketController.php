@@ -1010,18 +1010,6 @@ class TicketController extends AbstractController
 			$rem_parts[] = $id;
 		}
 
-		$got_agent_ids = $this->in->getCleanValueArray('agent_parts', 'string', 'discard');
-		foreach ($got_agent_ids as $id) {
-			$changed_parts = true;
-			$add_parts[] = $this->em->find('DeskPRO:Person', $id);
-		}
-
-		$remove_agent_ids = array_diff($current_agent_ids, $got_agent_ids);
-		foreach ($remove_agent_ids as $id) {
-			$changed_parts = true;
-			$rem_parts[] = $id;
-		}
-
 		if ($new_user_ids) {
 			$tracker = $ticket->getTicketLogger();
 			$tracker->recordExtra('enabled_cc', $new_user_ids);
