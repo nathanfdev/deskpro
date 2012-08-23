@@ -287,7 +287,9 @@ class Display
 
 		$handler = $this->getResultHandler();
 
-		return \Application\DeskPRO\Dpql\Renderer\AbstractRenderer::create($rendererType, $handler, $results);
+		return \Application\DeskPRO\Dpql\Renderer\AbstractRenderer::create(
+			$rendererType, $this->_display, $handler, $results
+		);
 	}
 
 	/**

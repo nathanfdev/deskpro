@@ -118,11 +118,23 @@ display_query ::= display_clause(A) select_clause(B) from_clause(C) where_clause
 
 
 
-display_clause(res) ::= DISPLAY TABLE .
+display_clause(res) ::= DISPLAY display_type(A) .
+{
+	res = A;
+}
+
+display_type(res) ::= TABLE .
 {
 	res = 'table';
 }
-
+display_type(res) ::= BAR .
+{
+	res = 'bar';
+}
+display_type(res) ::= LINE .
+{
+	res = 'line';
+}
 
 
 select_clause(res) ::= SELECT select_field(A) select_fields_extra(B) .

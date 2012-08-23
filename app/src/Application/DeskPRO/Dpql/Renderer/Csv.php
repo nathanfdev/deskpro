@@ -44,6 +44,16 @@ use Application\DeskPRO\App;
 class Csv extends AbstractRenderer
 {
 	/**
+	 * Get the default value renderer that should be used for this type.
+	 *
+	 * @return \Application\DeskPRO\Dpql\Renderer\Values\AbstractValues
+	 */
+	protected function _getDefaultValueRenderer()
+	{
+		return new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+	}
+
+	/**
 	 * Gets the MIME content type for this type of output.
 	 *
 	 * @return string
@@ -64,28 +74,28 @@ class Csv extends AbstractRenderer
 	}
 
 	/**
-	 * Joins the already rendered tables into one output.
+	 * Joins the already rendered output into one output.
 	 *
-	 * @param array $tables
+	 * @param array $output
 	 *
 	 * @return string
 	 */
-	protected function _implodeSplitTables(array $tables)
+	protected function _implodeSplitOutput(array $output)
 	{
-		return implode("\r\n\r\n", $tables);
+		return implode("\r\n\r\n", $output);
 	}
 
 	/**
-	 * Finalizes the rendering of a split table by rendering the body with the header.
+	 * Finalizes the rendering of a split output by rendering the body with the header.
 	 *
 	 * @param string $header
-	 * @param string $table
+	 * @param string $body
 	 *
 	 * @return string
 	 */
-	protected function _renderSplitTableWithHeader($header, $table)
+	protected function _renderSplitOutputWithHeader($header, $body)
 	{
-		return "\"$header\"\r\n$table";
+		return "\"$header\"\r\n$body";
 	}
 
 	/**
@@ -156,23 +166,29 @@ class Csv extends AbstractRenderer
 
 		$rows = array();
 
+		$rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
 		$headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
 		$headerRow = array();
-		if ($this->_handler->getGroupYColumns()) {
+		foreach ($this->_handler->getGroupYColumns() AS $rowGroupSkip) {
 			$headerRow[] = $this->wrapCell('');
 		}
-		$headerRow = array_merge($headerRow, $headerCols);
+		foreach ($headerCols AS $headerCol) {
+			$headerRow[] = $this->wrapCell(implode(' / ', $headerCol));
+		}
 		$rows[] = implode(',', $headerRow);
 
-		$rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
 		if (!$rowGroups) {
 			// need to fake it so we get a row with no Y grouping
-			$rowGroups = array('root' => '');
+			$rowGroups = array('root' => array());
 		}
 
 		foreach ($rowGroups AS $yPath => $printable) {
 			$columns = array();
+
+			foreach ($printable AS $print) {
+				$columns[] = $this->wrapCell($print);
+			}
 
 			foreach ($headerCols AS $xPath => $null) {
 				if (isset($lookup[$yPath][$xPath])) {
@@ -183,85 +199,23 @@ class Csv extends AbstractRenderer
 				$columns[] = $this->wrapCell($value);
 			}
 
-			if ($printable != '') {
-				$printable .= ',';
-			}
-			$rows[] = $printable . implode(',', $columns);
+			$rows[] = implode(',', $columns);
 		}
 
 		return implode("\r\n", $rows);
 	}
 
 	/**
-	 * Gets the final paths to a matrix row/column entry with the value being the printable
-	 * value that lead to that entry.
+	 * Charts not supported in CSV. Returns false.
 	 *
-	 * @param array $path
-	 * @param array $distinctValues
-	 * @param array $printPath
+	 * @param string $type
+	 * @param array $rows
 	 *
-	 * @return array
+	 * @return string|bool
 	 */
-	protected function _getFinalMatrixPathsWithPrintable(array $path, array $distinctValues, array $printPath = array())
+	protected function _renderChart($type, array $rows)
 	{
-		$pathLookup = $this->_getGroupPathKey($path);
-		if (!isset($distinctValues[$pathLookup])) {
-			return array();
-		}
-
-		$output = array();
-
-		foreach ($distinctValues[$pathLookup] AS $key => $value) {
-			$localPath = $path;
-			$localPath[] = $key;
-
-			$localPrintPath = $printPath;
-			$localPrintPath[] = $value;
-
-			$childOutput = $this->_getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
-			if (!$childOutput) {
-				// a leaf - responsible for output
-				$output[$this->_getGroupPathKey($localPath)] = $this->wrapCell(implode(' / ', $localPrintPath));
-			} else {
-				$output = array_merge($output, $childOutput);
-			}
-		}
-
-		return $output;
-	}
-
-	/**
-	 * Renders a null value.
-	 *
-	 * @return string
-	 */
-	protected function _renderNull()
-	{
-		return '';
-	}
-
-	/**
-	 * Renders a boolean value.
-	 *
-	 * @param boolean $value
-	 *
-	 * @return string
-	 */
-	protected function _renderBoolean($value)
-	{
-		return ($value ? 'Y' : 'N');
-	}
-
-	/**
-	 * Escapes the value for direct output.
-	 *
-	 * @param string $value
-	 *
-	 * @return string
-	 */
-	public function escapeValue($value)
-	{
-		return $value;
+		return false;
 	}
 
 	/**

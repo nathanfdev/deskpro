@@ -44,6 +44,32 @@ use Application\DeskPRO\App;
 class Html extends AbstractRenderer
 {
 	/**
+	 * Internal handler used when rendering to count how many rows
+	 * row spans need to be used for.
+	 *
+	 * @var array
+	 */
+	protected $_rowSpans = array();
+
+	/**
+	 * Internal handler used when rendering to determine which row groups
+	 * have been "hit" and printed.
+	 *
+	 * @var array
+	 */
+	protected $_rowGroupHit = array();
+
+	/**
+	 * Get the default value renderer that should be used for this type.
+	 *
+	 * @return \Application\DeskPRO\Dpql\Renderer\Values\AbstractValues
+	 */
+	protected function _getDefaultValueRenderer()
+	{
+		return new \Application\DeskPRO\Dpql\Renderer\Values\Html();
+	}
+
+	/**
 	 * Gets the MIME content type for this type of output.
 	 *
 	 * @return string
@@ -63,14 +89,29 @@ class Html extends AbstractRenderer
 		return 'html';
 	}
 
-	protected function _implodeSplitTables(array $tables)
+	/**
+	 * Joins the already rendered output into one output.
+	 *
+	 * @param array $output
+	 *
+	 * @return string
+	 */
+	protected function _implodeSplitOutput(array $output)
 	{
-		return implode("\n\n", $tables);
+		return implode("\n\n", $output);
 	}
 
-	public function _renderSplitTableWithHeader($header, $table)
+	/**
+	 * Finalizes the rendering of a split output by rendering the body with the header.
+	 *
+	 * @param string $header
+	 * @param string $body
+	 *
+	 * @return string
+	 */
+	public function _renderSplitOutputWithHeader($header, $body)
 	{
-		return '<h3 class="report-split-header">' . $header . '</h3>' . "\n$table";
+		return '<h3 class="report-split-header">' . $header . '</h3>' . "\n$body";
 	}
 
 	/**
@@ -117,10 +158,10 @@ class Html extends AbstractRenderer
 	{
 		$columnHtml = array();
 		foreach ($this->_handler->getGroupYColumns() AS $column) {
-			$columnHtml[] = '<th>' . $this->escapeValue($column['title']) . '</th>';
+			$columnHtml[] = '<th>' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
 		}
 		foreach ($this->_handler->getSelectColumns() AS $column) {
-			$columnHtml[] = '<th>' . $this->escapeValue($column['title']) . '</th>';
+			$columnHtml[] = '<th>' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
 		}
 
 		return '<thead><tr class="row-header">' . implode("\n\t", $columnHtml) . '</tr></thead>';
@@ -416,40 +457,144 @@ class Html extends AbstractRenderer
 	}
 
 	/**
-	 * Renders a null value.
+	 * Renders a chart with the specified rows/data.
 	 *
-	 * @return string
+	 * @param string $type Type of chart (bar, line, pie)
+	 * @param array $rows
+	 *
+	 * @return string|bool
 	 */
-	protected function _renderNull()
+	protected function _renderChart($type, array $rows)
 	{
-		return '<span class="null">None</span>';
-	}
-
-	/**
-	 * Renders a boolean value.
-	 *
-	 * @param boolean $value
-	 *
-	 * @return string
-	 */
-	protected function _renderBoolean($value)
-	{
-		if ($value) {
-			return '<span class="true">Y</span>';
-		} else {
-			return '<span class="false">N</span>';
+		$optionMap = array(
+			'bar' => '
+				graph.type = "column";
+				graph.fillAlphas = 1;
+			',
+			'line' => '
+				graph.type = "line";
+				graph.lineThickness = 2;
+				graph.bullet = "round";
+			',
+		);
+		if (!isset($optionMap[$type])) {
+			return false;
 		}
-	}
 
-	/**
-	 * Escapes the value for direct output.
-	 *
-	 * @param string $value
-	 *
-	 * @return string
-	 */
-	public function escapeValue($value)
-	{
-		return htmlspecialchars($value);
+		if (!$rows) {
+			return '';
+		}
+
+		$originalValueRenderer = $this->_valueRenderer;
+		$this->_valueRenderer = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+
+		$selectColumns = $this->_handler->getSelectColumns();
+		$groupYColumns = $this->_handler->getGroupYColumns();
+		$groupXColumns = $this->_handler->getGroupXColumns();
+
+		$chartData = array();
+		$graphs = array();
+
+		if ($groupXColumns) {
+			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/bar.
+			$prepared = $this->_prepareMatrixTable($rows);
+			$lookup = $prepared['lookup'];
+
+			$rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
+			if (!$rowGroups) {
+				// need to fake it so we get a row with no Y grouping
+				$rowGroups = array('root' => array());
+			}
+			$headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
+
+			foreach ($headerCols AS $xPath => $printable) {
+				$rowData = array('category' => implode(' / ', $printable));
+
+				$i = 0;
+				foreach ($rowGroups AS $yPath => $null) {
+					if (isset($lookup[$yPath][$xPath])) {
+						$value = $lookup[$yPath][$xPath];
+					} else {
+						$value = '';
+					}
+					$rowData['value' . $i] = $value;
+					$i++;
+				}
+
+				$chartData[] = $rowData;
+			}
+
+			$i = 0;
+			foreach ($rowGroups AS $printable) {
+				$graphs[] = array(
+					'title' => implode(' / ', $printable),
+					'value' => "value$i"
+				);
+				$i++;
+			}
+		} else {
+			foreach ($rows AS $row) {
+				$categories = array();
+				foreach ($groupYColumns AS $column) {
+					$categories[] = $this->_renderCellValue($row, $column);
+				}
+				$category = implode(' / ', $categories);
+
+				$rowData = array('category' => $category);
+
+				foreach ($selectColumns AS $i => $column) {
+					$rowData['value' . $i] = $this->_renderCellValue($row, $column);
+				}
+
+				$chartData[] = $rowData;
+			}
+
+			foreach ($selectColumns AS $i => $column) {
+				$graphs[] = array(
+					'title' => $column['title'],
+					'value' => "value$i"
+				);
+			}
+		}
+
+		$graphCode = array();
+		foreach ($graphs AS $graph) {
+			$title = strtr($graph['title'], array(
+				'"' => '\\"',
+				"'" => "\\'",
+				'\\' => '\\\\',
+				'</script>' => '<\\/script>'
+			));
+
+			$graphCode[] = '
+				graph = new AmCharts.AmGraph();
+				graph.valueField = "' . $graph['value'] . '";
+				graph.title = "' . $title . '";
+				graph.balloonText = "[[category]], [[title]]: [[value]]";
+				' . $optionMap[$type] . '
+				chart.addGraph(graph);
+			';
+		}
+
+		$this->_valueRenderer = $originalValueRenderer;
+
+		$id = 'report_chart_' . md5(uniqid());
+
+		return '
+			<div id="' . $id . '" class="report-chart"></div>
+			<script type="text/javascript">
+			$(function() {
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = ' . json_encode($chartData) . ';
+				chart.categoryField = "category";
+				chart.addLegend(new AmCharts.AmLegend());
+
+				var graph;
+				' . implode("\n", $graphCode) . '
+
+				chart.write("' . $id . '");
+			});
+			</script>
+		';
 	}
 }

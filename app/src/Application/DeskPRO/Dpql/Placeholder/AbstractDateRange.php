@@ -113,35 +113,29 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 		switch ($comparison) {
 			case '=':
 				$sql = "$lhsSql BETWEEN '$rangeStart' AND '$rangeEnd'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 
 			case '<>':
 				$sql = "$lhsSql NOT BETWEEN '$rangeStart' AND '$rangeEnd'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 
 			case '>':
 				$sql = "$lhsSql > '$rangeEnd'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 
 			case '>=':
 				$sql = "$lhsSql >= '$rangeStart'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 
 			case '<':
 				$sql = "$lhsSql < '$rangeStart'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 
 			case '<=':
 				$sql = "$lhsSql <= '$rangeEnd'";
-				$prepared = new Prepared($sql, $outputName);
 				break;
 		}
 
-		return $prepared;
+		return new Prepared("($sql)", $outputName);
 	}
 }

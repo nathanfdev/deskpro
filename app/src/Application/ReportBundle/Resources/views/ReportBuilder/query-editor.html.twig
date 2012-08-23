@@ -13,7 +13,11 @@
 </ul>
 
 <div id="query-builder" class="query-editor-builder" style="display: none">
-	<dl><dt>DISPLAY</dt> <dd><select name="parts[display]"{{readOnlyHtml|raw}}><option value="TABLE">TABLE</option></select></dd></dl>
+	<dl><dt>DISPLAY</dt> <dd><select name="parts[display]"{{readOnlyHtml|raw}}>
+		<option value="BAR"{{ parts.display == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
+		<option value="LINE"{{ parts.display == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
+		<option value="TABLE"{{ parts.display == 'TABLE' or parts.display is empty ? ' selected="selected"' : ''}}>TABLE</option>
+	</select></dd></dl>
 	<dl><dt>SELECT</dt> <dd><input name="parts[select]" type="text" value="{{parts.select}}"{{readOnlyHtml|raw}} /></dd></dl>
 	<dl><dt>FROM</dt> <dd><input name="parts[from]" type="text" value="{{parts.from}}"{{readOnlyHtml|raw}} /></dd></dl>
 	<dl><dt>WHERE</dt> <dd><input name="parts[where]" type="text" value="{{parts.where}}"{{readOnlyHtml|raw}} /></dd></dl>

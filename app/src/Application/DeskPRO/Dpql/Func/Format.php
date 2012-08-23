@@ -39,6 +39,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\App;
 
 /**
@@ -85,11 +86,13 @@ class Format extends AbstractFunc
 
 		$name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . ')';
 
-		$renderer = function($output, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+			use ($typeLiteral, $argLiterals)
+		{
 			switch (strtolower($typeLiteral)) {
 				case 'number':
 					if ($argLiterals) {
-						return $renderer->escapeValue(number_format($value, $argLiterals[0]));
+						return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
 					}
 					break;
 
@@ -98,19 +101,19 @@ class Format extends AbstractFunc
 						$tz = App::getCurrentPerson()->getTimezone();
 						try {
 							$date = new \DateTime($value, new \DateTimeZone($tz));
-							return $renderer->escapeValue($date->format($argLiterals[0]));
+							return $valueRenderer->escapeValue($date->format($argLiterals[0]));
 						} catch (\Exception $e) {
-							return $renderer->escapeValue($value);
+							return $valueRenderer->escapeValue($value);
 						}
 					}
 					break;
 
 				case 'percent':
 					$decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
-					return $renderer->escapeValue(number_format($value * 100, $decimals) . '%');
+					return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
 			}
 
-			return $renderer->renderValue($value, $typeLiteral);
+			return $valueRenderer->renderValue($value, $typeLiteral);
 		};
 
 		return new Prepared($preppedValue->sql(), $name, false, $renderer);

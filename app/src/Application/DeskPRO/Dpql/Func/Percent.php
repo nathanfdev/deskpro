@@ -39,6 +39,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
  * Gets the percentage of all rows in the group that match the given argument.
@@ -78,8 +79,10 @@ class Percent extends AbstractFunc
 		$decimals = $decimals ? $this->_toLiteral($decimals) : 2;
 
 		$sql = 'IF(COUNT(*) > 0, SUM(IF(' . $prepped->sql() . ', 1, 0)) / COUNT(*), 0)';
-		$renderer = function($type, $value, array $row, AbstractRenderer $renderer) use ($decimals) {
-			return $renderer->escapeValue(number_format($value * 100, $decimals) . '%');
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+			use ($decimals)
+		{
+			return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
 		};
 
 		return new Prepared($sql, 'PERCENT(' . $prepped->name() . ')', false, $renderer);

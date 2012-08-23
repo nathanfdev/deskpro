@@ -59,23 +59,34 @@ abstract class AbstractRenderer
 	 */
 	protected $_results;
 
+	/**
+	 * Name of the output type (html, csv, etc)
+	 *
+	 * @var string
+	 */
 	protected $_typeName = '';
 
 	/**
-	 * Internal handler used when rendering to count how many rows
-	 * row spans need to be used for.
+	 * Format of the output (table, bar, etc) in the specified output type.
+	 * If the type doesn't support that format, it should fallback as necessary.
 	 *
-	 * @var array
+	 * @var string
 	 */
-	protected $_rowSpans = array();
+	protected $_outputFormat = '';
 
 	/**
-	 * Internal handler used when rendering to determine which row groups
-	 * have been "hit" and printed.
+	 * The value render that should be used in this output context.
 	 *
-	 * @var array
+	 * @var \Application\DeskPRO\Dpql\Renderer\Values\AbstractValues
 	 */
-	protected $_rowGroupHit = array();
+	protected $_valueRenderer;
+
+	/**
+	 * Get the default value renderer that should be used for this type.
+	 *
+	 * @return \Application\DeskPRO\Dpql\Renderer\Values\AbstractValues
+	 */
+	abstract protected function _getDefaultValueRenderer();
 
 	/**
 	 * Gets the MIME content type for this type of output.
@@ -92,23 +103,23 @@ abstract class AbstractRenderer
 	abstract public function getExtension();
 
 	/**
-	 * Joins the already rendered tables into one output.
+	 * Joins the already rendered output into one output.
 	 *
-	 * @param array $tables
+	 * @param array $output
 	 *
 	 * @return string
 	 */
-	abstract protected function _implodeSplitTables(array $tables);
+	abstract protected function _implodeSplitOutput(array $output);
 
 	/**
-	 * Finalizes the rendering of a split table by rendering the body with the header.
+	 * Finalizes the rendering of a split output by rendering the body with the header.
 	 *
 	 * @param string $header
-	 * @param string $table
+	 * @param string $body
 	 *
 	 * @return string
 	 */
-	abstract protected function _renderSplitTableWithHeader($header, $table);
+	abstract protected function _renderSplitOutputWithHeader($header, $body);
 
 	/**
 	 * Renders a table with the specified rows/data.
@@ -119,42 +130,29 @@ abstract class AbstractRenderer
 	 */
 	abstract protected function _renderTable(array $rows);
 
-
 	/**
-	 * Renders a null value.
+	 * Renders a chart with the specified rows/data.
 	 *
-	 * @return string
+	 * @param string $type Type of chart (bar, line, pie)
+	 * @param array $rows
+	 *
+	 * @return string|bool
 	 */
-	abstract protected function _renderNull();
-
-	/**
-	 * Renders a boolean value.
-	 *
-	 * @param boolean $value
-	 *
-	 * @return string
-	 */
-	abstract protected function _renderBoolean($value);
-
-	/**
-	 * Escapes the value for direct output.
-	 *
-	 * @param string $value
-	 *
-	 * @return string
-	 */
-	abstract public function escapeValue($value);
+	abstract protected function _renderChart($type, array $rows);
 
 	/**
 	 * @param string $typeName
+	 * @param string $outputFormat
 	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
 	 * @param \Application\DeskPRO\Dpql\Results $results
 	 */
-	protected function __construct($typeName, ResultHandler $resultHandler, Results $results)
+	protected function __construct($typeName, $outputFormat, ResultHandler $resultHandler, Results $results)
 	{
 		$this->_typeName = $typeName;
+		$this->_outputFormat = $outputFormat;
 		$this->_handler = $resultHandler;
 		$this->_results = $results;
+		$this->_valueRenderer = $this->_getDefaultValueRenderer();
 	}
 
 	public function getFileName($name)
@@ -166,7 +164,7 @@ abstract class AbstractRenderer
 	}
 
 	/**
-	 * Render to the specified format
+	 * Render to the specified format and type
 	 *
 	 * @return string
 	 */
@@ -177,39 +175,50 @@ abstract class AbstractRenderer
 		if ($splitColumns) {
 			$output = array();
 			foreach ($this->_results->getSplitResults() AS $splitResult) {
-				$table = $this->_renderSplitTable($splitResult);
-				if ($table) {
-					$output[] = $table;
+				$result = $this->_render($this->_outputFormat, $splitResult[0]);
+				if ($result) {
+					$splitPrint = array();
+					foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
+						$splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
+					}
+
+					$output[] = $this->_renderSplitOutputWithHeader(implode(' / ', $splitPrint), $result);
 				}
 			}
 
-			return $this->_implodeSplitTables($output);
+			return $this->_implodeSplitOutput($output);
 		} else {
-			return $this->_renderTable($this->_results->getResults());
+			return $this->_render($this->_outputFormat, $this->_results->getResults());
 		}
 	}
 
 	/**
-	 * Renders results with a SPLIT clause into however many tables
-	 * are needed.
+	 * Renders to the specified output format.
 	 *
-	 * @param array $splitResult Key 0 is rows in table, 1 is columns in split query
+	 * @param string $format
+	 * @param array $rows
 	 *
 	 * @return string
 	 */
-	protected function _renderSplitTable(array $splitResult)
+	protected function _render($format, array $rows)
 	{
-		$table = $this->_renderTable($splitResult[0]);
-		if (!$table) {
-			return '';
+		switch ($format) {
+			case 'bar':
+			case 'line':
+			case 'pie':
+				$output = $this->_renderChart($format, $rows);
+				break;
+
+			case 'table':
+			default:
+				$output = false;
 		}
 
-		$splitPrint = array();
-		foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
-			$splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
+		if ($output === false) {
+			$output = $this->_renderTable($rows);
 		}
 
-		return $this->_renderSplitTableWithHeader(implode(' / ', $splitPrint), $table);
+		return $output;
 	}
 
 	/**
@@ -226,63 +235,11 @@ abstract class AbstractRenderer
 		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
 		if ($renderer instanceof \Closure) {
-			return $renderer($this->_typeName, $value, $row, $this);
+			/* @var $renderer \Closure */
+			return $renderer($this->_valueRenderer, $value, $row, $this);
 		}
 
-		return $this->renderValue($value, $renderer);
-	}
-
-	/**
-	 * Renders a value, ready to be output. Note that the value may still needed
-	 * to be wrapped to be valid (quotes, td html tag, etc).
-	 *
-	 * @param string $value
-	 * @param string|\Closure $format
-	 * 
-	 * @return string
-	 */
-	public function renderValue($value, $format)
-	{
-		if ($value === null) {
-			return $this->_renderNull();
-		}
-
-		switch (strtolower($format)) {
-			case 'number':
-				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
-					// float
-					$decimals = min(4, strlen($match[2]));
-				} else {
-					// integer
-					$decimals = 0;
-				}
-
-				return $this->escapeValue(number_format($value, $decimals));
-
-			case 'boolean':
-				return $this->_renderBoolean($value);
-
-			case 'datetime':
-			case 'date':
-			case 'time':
-				$settingMap = array(
-					'datetime' => 'core.date_fulltime',
-					'date' => 'core.date_full',
-					'time' => 'core.date_time'
-				);
-
-				$tz = App::getCurrentPerson()->getTimezone();
-				try {
-					$date = new \DateTime($value, new \DateTimeZone($tz));
-					return $this->escapeValue($date->format(App::getSetting($settingMap[$format])));
-				} catch (\Exception $e) {
-					return $this->escapeValue($value);
-				}
-
-			case 'string':
-			default:
-				return $this->escapeValue($value);
-		}
+		return $this->_valueRenderer->renderValue($value, $renderer);
 	}
 
 	/**
@@ -384,6 +341,44 @@ abstract class AbstractRenderer
 	}
 
 	/**
+	 * Gets the final paths to a matrix row/column entry with the value being the printable
+	 * value that lead to that entry.
+	 *
+	 * @param array $path
+	 * @param array $distinctValues
+	 * @param array $printPath
+	 *
+	 * @return array
+	 */
+	protected function _getFinalMatrixPathsWithPrintable(array $path, array $distinctValues, array $printPath = array())
+	{
+		$pathLookup = $this->_getGroupPathKey($path);
+		if (!isset($distinctValues[$pathLookup])) {
+			return array();
+		}
+
+		$output = array();
+
+		foreach ($distinctValues[$pathLookup] AS $key => $value) {
+			$localPath = $path;
+			$localPath[] = $key;
+
+			$localPrintPath = $printPath;
+			$localPrintPath[] = $value;
+
+			$childOutput = $this->_getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
+			if (!$childOutput) {
+				// a leaf - responsible for output
+				$output[$this->_getGroupPathKey($localPath)] = $localPrintPath;
+			} else {
+				$output = array_merge($output, $childOutput);
+			}
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Renders a matrix cell.
 	 *
 	 * @param array $row
@@ -401,6 +396,7 @@ abstract class AbstractRenderer
 		return implode(' / ', $values);
 	}
 
+
 	/**
 	 * Gets the string key to identify a path to a value based on parts.
 	 *
@@ -413,7 +409,7 @@ abstract class AbstractRenderer
 		return implode('|', $groupParts);
 	}
 
-	public static function create($type, ResultHandler $resultHandler, Results $results)
+	public static function create($type, $outputFormat, ResultHandler $resultHandler, Results $results)
 	{
 		$type = strtolower($type);
 		if (!isset(self::$_rendererMap[$type])) {
@@ -421,6 +417,6 @@ abstract class AbstractRenderer
 		}
 
 		$class = __NAMESPACE__ . '\\' . self::$_rendererMap[$type];
-		return new $class($type, $resultHandler, $results);
+		return new $class($type, $outputFormat, $resultHandler, $results);
 	}
 }
