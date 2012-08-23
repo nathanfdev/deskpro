@@ -213,7 +213,9 @@ abstract class AbstractDataSync
 			$output[] = "\"$uniqueKey\":" . json_encode($row);
 		}
 
-		return "{\n" . implode(",\n", $output) . "\n}";
+		$eol = PHP_EOL;
+
+		return '{' . $eol . implode(",$eol", $output) . $eol . '}';
 	}
 
 	/**
