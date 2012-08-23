@@ -138,6 +138,10 @@ display_type(res) ::= LINE .
 {
 	res = 'line';
 }
+display_type(res) ::= PIE .
+{
+	res = 'pie';
+}
 
 display_type_option(res) ::= COMMA display_type(A) .
 {

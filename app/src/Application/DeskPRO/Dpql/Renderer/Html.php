@@ -476,6 +476,7 @@ class Html extends AbstractRenderer
 				graph.lineThickness = 2;
 				graph.bullet = "round";
 			',
+			'pie' => ''
 		);
 		if (!isset($optionMap[$type])) {
 			return false;
@@ -526,7 +527,7 @@ class Html extends AbstractRenderer
 
 			$i = 0;
 			foreach ($rowGroups AS $printable) {
-				$graphs[] = array(
+				$graphs[$i] = array(
 					'title' => implode(' / ', $printable),
 					'value' => "value$i"
 				);
@@ -552,7 +553,7 @@ class Html extends AbstractRenderer
 			}
 
 			foreach ($selectColumns AS $i => $column) {
-				$graphs[] = array(
+				$graphs[$i] = array(
 					'title' => $column['title'],
 					'value' => "value$i"
 				);
@@ -561,51 +562,79 @@ class Html extends AbstractRenderer
 			$hasCategory = count($groupYColumns) > 0;
 		}
 
-		if ($hasCategory) {
-			$balloonText = '[[category]], [[title]]: [[value]]';
+		if ($type == 'pie') {
+			$output = '';
+
+			foreach ($graphs AS $i => $graph) {
+				$id = 'report_chart_' . md5(uniqid());
+
+				$output .= '
+					<div id="' . $id . '" class="report-chart"></div>
+					<script type="text/javascript">
+					$(function() {
+						var chart = new AmCharts.AmPieChart();
+						chart.dataProvider = ' . json_encode($chartData) . ';
+						chart.titleField = "category";
+						chart.valueField = "' . $graph['value'] . '";
+						chart.startDuration = 0;
+						//chart.labelsEnabled = false;
+						chart.addLegend(new AmCharts.AmLegend());
+
+						chart.write("' . $id . '");
+					});
+					</script>
+				';
+			}
 		} else {
-			$balloonText = '[[title]]: [[value]]';
-		}
+			if ($hasCategory) {
+				$balloonText = '[[category]], [[title]]: [[value]]';
+			} else {
+				$balloonText = '[[title]]: [[value]]';
+			}
 
-		$graphCode = array();
-		foreach ($graphs AS $graph) {
-			$title = strtr($graph['title'], array(
-				'"' => '\\"',
-				"'" => "\\'",
-				'\\' => '\\\\',
-				'</script>' => '<\\/script>'
-			));
+			$graphCode = array();
+			foreach ($graphs AS $graph) {
+				$graphCode[] = '
+					graph = new AmCharts.AmGraph();
+					graph.valueField = "' . $graph['value'] . '";
+					graph.title = "' . $this->_jsEscapeValue($graph['title']) . '";
+					graph.balloonText = "' . $balloonText .'";
+					' . $optionMap[$type] . '
+					chart.addGraph(graph);
+				';
+			}
 
-			$graphCode[] = '
-				graph = new AmCharts.AmGraph();
-				graph.valueField = "' . $graph['value'] . '";
-				graph.title = "' . $title . '";
-				graph.balloonText = "' . $balloonText .'";
-				' . $optionMap[$type] . '
-				chart.addGraph(graph);
+			$id = 'report_chart_' . md5(uniqid());
+			$output = '
+				<div id="' . $id . '" class="report-chart"></div>
+				<script type="text/javascript">
+				$(function() {
+					var chart = new AmCharts.AmSerialChart();
+					chart.dataProvider = ' . json_encode($chartData) . ';
+					chart.categoryField = "category";
+					chart.addLegend(new AmCharts.AmLegend());
+
+					var graph;
+					' . implode("\n", $graphCode) . '
+
+					chart.write("' . $id . '");
+				});
+				</script>
 			';
 		}
 
 		$this->_valueRenderer = $originalValueRenderer;
+		return $output;
+	}
 
-		$id = 'report_chart_' . md5(uniqid());
-
-		return '
-			<div id="' . $id . '" class="report-chart"></div>
-			<script type="text/javascript">
-			$(function() {
-				var chart = new AmCharts.AmSerialChart();
-				chart.dataProvider = ' . json_encode($chartData) . ';
-				chart.categoryField = "category";
-				chart.addLegend(new AmCharts.AmLegend());
-
-				var graph;
-				' . implode("\n", $graphCode) . '
-
-				chart.write("' . $id . '");
-			});
-			</script>
-		';
+	protected function _jsEscapeValue($value)
+	{
+		return strtr($value, array(
+			'"' => '\\"',
+			"'" => "\\'",
+			'\\' => '\\\\',
+			'</script>' => '<\\/script>'
+		));
 	}
 
 	/**

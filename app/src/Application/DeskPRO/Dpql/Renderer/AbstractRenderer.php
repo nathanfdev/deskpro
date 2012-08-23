@@ -235,6 +235,7 @@ abstract class AbstractRenderer
 		switch ($format) {
 			case 'bar':
 			case 'line':
+			case 'pie':
 				return $this->_renderChart($format, $rows);
 				break;
 
