@@ -170,7 +170,6 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
 				$config->set('HTML.AllowedAttributes', 'a.href,*.style,*.class');
 				$config->set('Attr.AllowedClasses', 'MsoNormal');
-				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);
 				$config->set('CSS.AllowedProperties', array('font-weight', 'font-style'));

@@ -1109,44 +1109,19 @@ class Strings
 		// we'll end up with superfluous <p> wrappers around some top-level text nodes
 		$html = '<body>' . $html . '</body>';
 
+		do {
+			$changed = false;
+			$newhtml = preg_replace('#<span[^>]*>( | |&nbsp;|&\#xA0;)*</span>#i', '', $html);
+			$newhtml = preg_replace('#<p[^>]*>( | |&nbsp;|&\#xA0;)*</p>#i', '<br />', $newhtml);
+			$newhtml = preg_replace('#<div[^>]*>( | |&nbsp;|&\#xA0;)*</div>#i', '', $newhtml);
+
+			if ($newhtml != $html) {
+				$changed = true;
+				$html = $newhtml;
+			}
+		} while ($changed);
+
 		$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
-		do {
-			$qp->top()->find('span');
-
-			$changed = false;
-			foreach ($qp as $span) {
-				$text = $span->text();
-				$text = str_replace(array('&nbsp;', '&#xA0;', Strings::chrUni(160)), ' ', $text);
-				$text = trim($text);
-
-				if (!$text) {
-					@$span->remove();
-					$changed = true;
-					break;
-				}
-			}
-
-			$qp->top();
-		} while ($changed);
-
-		do {
-			$qp->top()->find('p');
-
-			$changed = false;
-			foreach ($qp as $p) {
-				$text = $p->text();
-				$text = str_replace(array('&nbsp;', '&#xA0;', Strings::chrUni(160)), ' ', $text);
-				$text = trim($text);
-
-				if (!$text) {
-					@$p->replaceWith('<br />');
-					$changed = true;
-					break;
-				}
-			}
-
-			$qp->top();
-		} while ($changed);
 
 		// Unwrap divs
 		do {
