@@ -77,8 +77,6 @@ class TicketFiltersController extends AbstractController
 	{
 		if (!$filter_id) {
 			$filter = new Entity\TicketFilter();
-			$filter['person_id'] = $this->person['id'];
-
 			if ($this->in->getBool('is_new')) {
 				switch ($this->in->getString('filter_visibility')) {
 					case 'filter_agent_team':
