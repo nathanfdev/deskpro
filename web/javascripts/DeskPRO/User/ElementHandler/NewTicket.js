@@ -10,7 +10,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		this.ticketForm = $('#dp_newticket_form');
 
-		$('#dp_newticket_form').find('select').dpTwoSelect();
+		$('#dp_newticket_form').find('select').not('.no-dp-select').dpTwoSelect();
 
 		this._initSuggestionsBox();
 		this._initFields();
