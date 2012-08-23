@@ -72,6 +72,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	protected $mode = 'untrusted';
 
+	public $gateway;
+	public $gateway_address;
+
 	/**
 	 * @var
 	 */
@@ -218,6 +221,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket['validating'] = $validating;
 			$ticket['language'] = App::getSession()->getLanguage();
 			$ticket['notify_email'] = $this->ticket->notify_email;
+
+			if ($this->gateway) {
+				$ticket->email_gateway = $this->gateway;
+			}
+			if ($this->gateway_address) {
+				$ticket->email_gateway_address = $this->gateway_address;
+			}
 
 			if ($email_validating) {
 				$ticket->person_email_validating = $email_validating;

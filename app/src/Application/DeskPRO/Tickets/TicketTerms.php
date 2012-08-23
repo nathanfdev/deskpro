@@ -170,7 +170,7 @@ class TicketTerms
 			$choice = $info['options'];
 
 			if (strpos($op, 'changed') !== false) {
-				if ($tracker) {
+				if ($ticket->getTicketLogger()) {
 					if (!$this->testChangedTerm($ticket, $term, $op, $choice)) {
 						return false;
 					}

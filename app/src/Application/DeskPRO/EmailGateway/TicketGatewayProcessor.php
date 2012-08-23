@@ -760,6 +760,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$person
 		);
 		$newticket->setPersonContext($person);
+		$newticket->gateway = $this->gateway;
+		$newticket->gateway_address = $this->gateway_address;
 
 		if ($this->logger) {
 			$newticket->logger = $this->logger;
@@ -806,9 +808,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$newticket->attach_blobs = $this->processBlobs();
 		$ticket = $newticket->save();
-
-		$ticket->email_gateway = $this->gateway;
-		$ticket->email_gateway_address = $this->gateway_address;
 
 		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 
