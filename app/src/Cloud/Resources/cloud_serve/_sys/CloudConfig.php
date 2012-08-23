@@ -316,7 +316,7 @@ class CloudConfig
 				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0
+			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
 			LIMIT 1
 		");
 		$stmt->execute(array($id));
@@ -339,7 +339,7 @@ class CloudConfig
 				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-			WHERE (cloud_sites.master_domain = ? OR cloud_sites.custom_domain = ?) AND cloud_sites.build_number > 0
+			WHERE (cloud_sites.master_domain = ? OR cloud_sites.custom_domain = ?) AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
 			LIMIT 1
 		");
 		$stmt->execute(array($domain, $domain));
