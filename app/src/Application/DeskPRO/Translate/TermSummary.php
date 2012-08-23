@@ -390,7 +390,7 @@ class TermSummary
 				$summary = $tr->phrase('agent.tickets.creation_system_via') . ' ' . $vals;
 				break;
 
-			case 'email_gateway_address':
+			case 'gateway_address':
 				$summary = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
 					return $titles;

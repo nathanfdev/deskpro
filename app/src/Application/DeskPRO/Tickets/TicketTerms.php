@@ -506,6 +506,27 @@ class TicketTerms
 					return false;
 				}
 				break;
+
+			case 'gateway_account':
+				$gid = $ticket->email_gateway ? $ticket->email_gateway->getId() : 0;
+				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
+					return false;
+				}
+				break;
+
+			case 'gateway_address':
+				$gid = $ticket->email_gateway_address ? $ticket->email_gateway_address->getId() : 0;
+				if (!$this->_testChoiceMatch($gid, $op, $choice)) {
+					return false;
+				}
+				break;
+
+			default:
+				$e = new \InvalidArgumentException("Unknown trigger criteria: " . $term);
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+
+				return false;
 		}
 
 		return true;

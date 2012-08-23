@@ -637,8 +637,6 @@ class TicketChangeTracker extends ChangeTracker
 			$this->getTriggerExecutorInspector()->runPre();
 		}
 
-		$this->getListUpdater()->run();
-
 		if (!$this->isExtraSet('is_install')) {
 			$this->getTriggerExecutorInspector()->run();
 		}
@@ -669,6 +667,8 @@ class TicketChangeTracker extends ChangeTracker
 		));
 
 		$total_time = microtime(true) - $this->start_time;
+
+		$this->getListUpdater()->run();
 
 		$time = microtime(true);
 		$this->getSearchUpdater()->run();

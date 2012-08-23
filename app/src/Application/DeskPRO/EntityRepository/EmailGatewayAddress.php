@@ -41,12 +41,28 @@ use \Doctrine\ORM\EntityRepository;
 
 class EmailGatewayAddress extends AbstractEntityRepository
 {
-	public function getOptions()
+	public function getOptions($for_ids = null)
 	{
-		$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-			SELECT id, match_pattern
-			FROM email_gateway_addresses
-		");
+		if ($for_ids) {
+			$for_ids = (array)$for_ids;
+			$for_ids = Arrays::castToType($for_ids, 'int');
+			$for_ids = implode(',', $for_ids);
+
+			if (!$for_ids) {
+				return array();
+			}
+
+			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+				SELECT id, match_pattern
+				FROM email_gateway_addresses
+				WHERE id IN ($for_ids)
+			");
+		} else {
+			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+				SELECT id, match_pattern
+				FROM email_gateway_addresses
+			");
+		}
 
 		return $opts;
 	}
