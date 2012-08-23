@@ -1736,12 +1736,11 @@ dp .dp-new-feedback td {
 }
 
 #dp .dp-feedback-widget-wrap {
-	float: left;
-	padding: 0px 0 0px 10px;
+	padding: 0 10px 0 10px;
+	white-space: nowrap;
 }
 
 #dp .dp-feedback-info-wrap {
-	margin-left: 95px;
 	padding-top: 5px;
 }
 
@@ -1836,7 +1835,6 @@ dp .dp-new-feedback td {
 	font-weight: bold;
 	line-height: 14px;
 	padding: 3px 5px 3px 5px;
-	width: 63px;
 	white-space: nowrap;
 	text-align: center;
 }
@@ -1886,7 +1884,6 @@ dp .dp-new-feedback td {
 	border: 1px solid #DDDCDC;
 	{{ _self.border_radius(3) }}
 	padding: 3px 0 3px 0;
-	width: 73px;
 	font-size: 11px;
 	text-align: center;
 	margin-bottom: 6px;
@@ -1897,7 +1894,6 @@ dp .dp-new-feedback td {
 	display: block;
 	top: -1px;
 	font-style: normal;
-	width: 73px;
 	text-align: center;
 	padding-left: 1px;
 }
@@ -1905,7 +1901,7 @@ dp .dp-new-feedback td {
 #dp .dp-feedback-vote .dp-feedback-count .dp-arrow-outer {
 	display: block;
 	position: absolute;
-	left: 31px;
+	left: 50%;
 	bottom: -6px;
 
 	width: 0;
@@ -1913,17 +1909,19 @@ dp .dp-new-feedback td {
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 	border-top: 6px solid #DDDCDC;
+	margin-left: -6px;
 }
 #dp .dp-feedback-vote .dp-feedback-count .dp-arrow-inner {
 	display: block;
 	position: absolute;
-	left: 31px;
+	left: 50%;
 	bottom: -5px;
 	width: 0;
 	height: 0;
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 	border-top: 6px solid #fff;
+	margin-left: -6px;
 }
 
 /***********************************************************************************************************************
@@ -2148,7 +2146,6 @@ dp .dp-new-feedback td {
 #dp .dp-two-select.dp-show-child .dp-child {
 	display: block;
 }
-
 
 /******************************
 * Rating bar
