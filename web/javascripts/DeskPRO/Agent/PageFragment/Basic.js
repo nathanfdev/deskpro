@@ -46,9 +46,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			times: []
 		};
 
-		window.setTimeout(function() {
+		this.resizerInterval = window.setInterval(function() {
 			self.updateUi();
-		}, 750);
+		}, 1100);
 
 		this.initializeProperties();
 
@@ -98,6 +98,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.init();
 
 		this.addEvent('destroy', function() {
+			if (self.resizerInterval) {
+				window.clearInterval(self.resizerInterval);
+			}
+
 			self.wrapper.data('with-page-fragment', null);
 
 			if (self.destroyObjects) {
