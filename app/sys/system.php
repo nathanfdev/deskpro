@@ -403,9 +403,12 @@ final class License
 
 		if ($this->isCloud()) {
 			$this->data['agents'] = \DPC_AGENTS;
-			$this->data['demo'] = true;
 			if (defined('DPC_DEMO_EXPIRE') && \DPC_DEMO_EXPIRE) {
+				$this->data['demo'] = true;
 				$this->data['expire'] = \DPC_DEMO_EXPIRE;
+			} else {
+				$this->data['demo'] = false;
+				$this->data['expire'] = null;
 			}
 		}
 	}
@@ -427,7 +430,7 @@ final class License
 
 	public function isCloud()
 	{
-		return isset($this->data['is_cloud']) && $this->data['is_cloud'];
+		return defined('DPC_IS_CLOUD');
 	}
 
 	public function isCopyfree()
