@@ -142,12 +142,18 @@ abstract class AbstractRenderer
 
 	/**
 	 * @param string $typeName
-	 * @param string $outputFormat
+	 * @param array $outputFormat
 	 * @param \Application\DeskPRO\Dpql\ResultHandler $resultHandler
 	 * @param \Application\DeskPRO\Dpql\Results $results
 	 */
-	protected function __construct($typeName, $outputFormat, ResultHandler $resultHandler, Results $results)
+	protected function __construct($typeName, array $outputFormat, ResultHandler $resultHandler, Results $results)
 	{
+		if (!$outputFormat) {
+			$outputFormat = array('table');
+		} else {
+			$outputFormat = array_unique($outputFormat);
+		}
+
 		$this->_typeName = $typeName;
 		$this->_outputFormat = $outputFormat;
 		$this->_handler = $resultHandler;
@@ -175,7 +181,7 @@ abstract class AbstractRenderer
 		if ($splitColumns) {
 			$output = array();
 			foreach ($this->_results->getSplitResults() AS $splitResult) {
-				$result = $this->_render($this->_outputFormat, $splitResult[0]);
+				$result = $this->_renderFormatsWithFallback($this->_outputFormat, $splitResult[0]);
 				if ($result) {
 					$splitPrint = array();
 					foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
@@ -188,8 +194,32 @@ abstract class AbstractRenderer
 
 			return $this->_implodeSplitOutput($output);
 		} else {
-			return $this->_render($this->_outputFormat, $this->_results->getResults());
+			return $this->_renderFormatsWithFallback(
+				$this->_outputFormat, $this->_results->getResults()
+			);
 		}
+	}
+
+	protected function _renderFormatsWithFallback(array $formats, array $rows)
+	{
+		$final = array();
+		$success = false;
+
+		foreach ($formats AS $format) {
+			$result = $this->_render($format, $rows);
+			if ($result !== false) {
+				$success = true;
+			}
+			if ($result) {
+				$final[] = $result;
+			}
+		}
+
+		if (!$success) {
+			$final[] = $this->_render('table', $rows);
+		}
+
+		return implode("\n\n", $final);
 	}
 
 	/**
@@ -205,20 +235,15 @@ abstract class AbstractRenderer
 		switch ($format) {
 			case 'bar':
 			case 'line':
-			case 'pie':
-				$output = $this->_renderChart($format, $rows);
+				return $this->_renderChart($format, $rows);
 				break;
 
 			case 'table':
+				return $this->_renderTable($rows);
+
 			default:
-				$output = false;
+				return false;
 		}
-
-		if ($output === false) {
-			$output = $this->_renderTable($rows);
-		}
-
-		return $output;
 	}
 
 	/**
@@ -409,7 +434,7 @@ abstract class AbstractRenderer
 		return implode('|', $groupParts);
 	}
 
-	public static function create($type, $outputFormat, ResultHandler $resultHandler, Results $results)
+	public static function create($type, array $outputFormat, ResultHandler $resultHandler, Results $results)
 	{
 		$type = strtolower($type);
 		if (!isset(self::$_rendererMap[$type])) {

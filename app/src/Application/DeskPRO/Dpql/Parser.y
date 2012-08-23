@@ -118,9 +118,12 @@ display_query ::= display_clause(A) select_clause(B) from_clause(C) where_clause
 
 
 
-display_clause(res) ::= DISPLAY display_type(A) .
+display_clause(res) ::= DISPLAY display_type(A) display_type_option(B).
 {
-	res = A;
+	res = array(A);
+	if (B) {
+		res[] = B;
+	}
 }
 
 display_type(res) ::= TABLE .
@@ -135,6 +138,12 @@ display_type(res) ::= LINE .
 {
 	res = 'line';
 }
+
+display_type_option(res) ::= COMMA display_type(A) .
+{
+	res = A;
+}
+display_type_option ::= .
 
 
 select_clause(res) ::= SELECT select_field(A) select_fields_extra(B) .

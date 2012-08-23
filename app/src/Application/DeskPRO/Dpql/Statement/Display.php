@@ -48,9 +48,9 @@ class Display
 	/**
 	 * Type of display (only table supported now).
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $_display = 'table';
+	protected $_display = array('table');
 
 	/**
 	 * List of expressions in SELECT clause
@@ -189,11 +189,11 @@ class Display
 	);
 
 	/**
-	 * @param string $display Type of display
+	 * @param array $display Type of display (must not be empty)
 	 * @param array $select Fields to select
 	 * @param string $from Table to select from
 	 */
-	public function __construct($display, array $select, $from)
+	public function __construct(array $display, array $select, $from)
 	{
 		$this->setDisplay($display);
 		$this->setSelect($select);
@@ -320,8 +320,10 @@ class Display
 			$orderFields[] = $field->toDpql($this, 'order', array());
 		}
 
+		$display = array_map('strtoupper', $this->_display);
+
 		return array(
-			'DISPLAY' => strtoupper($this->_display),
+			'DISPLAY' => $display,
 			'SELECT' => implode(', ', $selectFields),
 			'FROM' => $this->_from,
 			'WHERE' => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
@@ -598,15 +600,19 @@ class Display
 	}
 
 	/**
-	 * @param string $display
+	 * @param array $display
 	 */
-	public function setDisplay($display)
+	public function setDisplay(array $display)
 	{
-		$this->_display = $display;
+		if (!$display) {
+			$display = array('table');
+		}
+
+		$this->_display = array_unique($display);
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
 	public function getDisplay()
 	{
@@ -749,6 +755,13 @@ class Display
 		return $this->_limitOffset;
 	}
 
+	/**
+	 * Gets a DPQL query string from a list of parts.
+	 *
+	 * @param array $parts
+	 *
+	 * @return string
+	 */
 	public static function getQueryStringFromParts(array $parts)
 	{
 		if (empty($parts['from'])) {
@@ -759,7 +772,17 @@ class Display
 				$parts['select'] = 'COUNT()';
 			}
 
-			return "DISPLAY $parts[display]"
+			if (empty($parts['display'][0])) {
+				$display = 'TABLE';
+			} else {
+				$parts['display'] = array_unique($parts['display']);
+				$display = $parts['display'][0];
+				if (!empty($parts['display'][1])) {
+					$display .= ', ' . $parts['display'][1];
+				}
+			}
+
+			return "DISPLAY $display"
 				. "\nSELECT $parts[select]"
 				. "\nFROM $parts[from]"
 				. ($parts['where'] ? "\nWHERE $parts[where]" :'')
