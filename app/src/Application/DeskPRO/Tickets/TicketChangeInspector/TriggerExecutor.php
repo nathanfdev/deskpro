@@ -242,28 +242,6 @@ class TriggerExecutor
 		}
 
 		#------------------------------
-		# Add built-in agent notifications based off prefs
-		#------------------------------
-
-		if (!$is_bounce) {
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'agent_alert_notification', 'options' => array())
-			);
-
-			array_unshift($all_triggers, $trigger);
-
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'agent_notification', 'options' => array())
-			);
-
-			array_unshift($all_triggers, $trigger);
-		}
-
-		#------------------------------
 		# Handle vacation mode agent
 		#------------------------------
 
@@ -423,6 +401,55 @@ class TriggerExecutor
 		$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done in %.4f sections', microtime(true)-$trigger_apply_time));
 
 		$this->tracker->logMessage(sprintf('[TriggerExecutor] Done all work in %.4f seconds', microtime(true)-$time));
+
+		#------------------------------
+		# Execute default notification triggers
+		#------------------------------
+
+		if (!$is_bounce) {
+			$all_triggers = array();
+
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_alert_notification', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
+
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_notification', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
+
+			$actions_collection = new ActionsCollection();
+
+			foreach ($all_triggers as $trigger) {
+				$trigger_time = microtime(true);
+				$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+				if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
+
+					$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));
+
+					foreach ($trigger['actions'] as $action_info) {
+						$action = $factory->createFromInfo($action_info);
+						if ($action) {
+							$actions_collection->add($action, array('trigger' => $trigger));
+							$this->tracker->recordExtraMulti('trigger', $trigger);
+						}
+					}
+				} else {
+					$this->tracker->logMessage(sprintf('[TriggerExecutor] -- No match', microtime(true)-$trigger_time));
+				}
+
+				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done trigger in %.4f seconds', microtime(true)-$trigger_time));
+			}
+
+			$actions_collection->apply($this->tracker, $this->tracker->getTicket(), $person, $this->tracker->getLog());
+		}
 
 		$this->is_performing = false;
 	}
