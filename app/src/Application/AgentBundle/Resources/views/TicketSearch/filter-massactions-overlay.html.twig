@@ -55,12 +55,13 @@
 						<span class="radio-title">{{ phrase('agent.general.mark_spam') }}</span>
 					</label>
 				</dd>
+			</dl>
 
-				<dt>{{ phrase('agent.general.assignments') }}</dt>
-				<dd class="assignments">
-					<table cellspacing="0" cellpadding="0" border="0"><tr>
-						<td>
-							<div style="font-size: 10px;">Agent:</div>
+			<table cellspacing="0" cellpadding="0" border="0"><tr>
+				<td>
+					<dl>
+						<dt>Agent</dt>
+						<dd>
 							<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 								<option value="-1"></option>
 								<option value="0">Unassigned</option>
@@ -69,9 +70,13 @@
 									<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</select>
-						</td>
-						<td style="padding-left: 10px;">
-							<div style="font-size: 10px;">Team:</div>
+						</dd>
+					</dl>
+				</td>
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Team</dt>
+						<dd>
 							<select name="actions[agent_team]" class="dpe_select">
 								<option value="-1"></option>
 								<option value="0">No Team</option>
@@ -80,9 +85,14 @@
 								<option value="{{ team.id }}">{{ team.name }}</option>
 								{% endfor %}
 							</select>
-						</td>
-					</tr></table>
+						</dd>
+					</dl>
+				</td>
+			</tr></table>
 
+			<dl>
+				<dt>Followers</dt>
+				<dd>
 					<select name="actions[add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="Add followers">
 						<option data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 						{% for agent in agents %}
@@ -92,12 +102,13 @@
 						{% endfor %}
 					</select>
 				</dd>
+			</dl>
 
-				<dt>{{ phrase('agent.general.change_property') }}</dt>
-				<dd>
-					<table cellspacing="0" cellpadding="0" border="0"><tr>
-						<td style="padding-left: 10px;">
-							<div style="font-size: 10px;">Department:</div>
+			<table cellspacing="0" cellpadding="0" border="0"><tr>
+				<td>
+					<dl>
+						<dt>Department</dt>
+						<dd>
 							{% include 'AgentBundle:Common:select-department.html.twig' with {
 								'name': 'actions[department]',
 								'with_blank': true,
@@ -107,69 +118,83 @@
 								'add_classname': 'dpe_select',
 								'with_blank_value': '-1'
 							} %}
-						</td>
-						{% if app.getSetting('core.use_ticket_category') %}
-							<td style="padding-left: 10px;">
-								<div style="font-size: 10px;">Category:</div>
-								{% include 'AgentBundle:Common:select-category.html.twig' with {
-									'name': 'actions[category]',
-									'with_blank': true,
-									'with_blank2': true,
-									'blank_title': '',
-									'categories': ticket_options.ticket_categories_hierarchy,
-									'add_classname': 'dpe_select',
-									'with_blank_value': '-1'
-								} %}
-							</td>
-						{% endif %}
+						</dd>
+					</dl>
+				</td>
+				{% if app.getSetting('core.use_ticket_category') %}
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Category</dt>
+						<dd>
+							{% include 'AgentBundle:Common:select-category.html.twig' with {
+								'name': 'actions[category]',
+								'with_blank': true,
+								'with_blank2': true,
+								'blank_title': '',
+								'categories': ticket_options.ticket_categories_hierarchy,
+								'add_classname': 'dpe_select',
+								'with_blank_value': '-1'
+							} %}
+						</dd>
+					</dl>
+				</td>
+				{% endif %}
+				{% if app.getSetting('core.use_product') %}
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Product</dt>
+						<dd>
+							{% include 'AgentBundle:Common:select-product.html.twig' with {
+								'name': 'actions[product]',
+								'with_blank': true,
+								'with_blank2': true,
+								'blank_title': '',
+								'products': ticket_options.products_hierarchy,
+								'add_classname': 'dpe_select',
+								'with_blank_value': '-1'
+							} %}
+						</dd>
+					</dl>
+				</td>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_priority') %}
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Priority</dt>
+						<dd>
+							{% include 'AgentBundle:Common:select-priority.html.twig' with {
+								'name': 'actions[priority]',
+								'with_blank': true,
+								'with_blank2': true,
+								'blank_title': '',
+								'priorities': ticket_options.ticket_priorities,
+								'add_classname': 'dpe_select',
+								'with_blank_value': '-1'
+							} %}
+						</dd>
+					</dl>
+				</td>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_workflow') %}
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Workflow</dt>
+						<dd>
+							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+								'name': 'actions[workflow]',
+								'with_blank': true,
+								'with_blank2': true,
+								'blank_title': '',
+								'workflows': ticket_options.ticket_workflows,
+								'add_classname': 'dpe_select',
+								'with_blank_value': '-1'
+							} %}
+						</dd>
+					</dl>
+				</td>
+				{% endif %}
+			</table>
 
-						{% if app.getSetting('core.use_product') %}
-							<td style="padding-left: 10px;">
-								<div style="font-size: 10px;">Product:</div>
-								{% include 'AgentBundle:Common:select-product.html.twig' with {
-									'name': 'actions[product]',
-									'with_blank': true,
-									'with_blank2': true,
-									'blank_title': '',
-									'products': ticket_options.products_hierarchy,
-									'add_classname': 'dpe_select',
-									'with_blank_value': '-1'
-								} %}
-							</td>
-						{% endif %}
-
-						{% if app.getSetting('core.use_ticket_priority') %}
-							<td style="padding-left: 10px;">
-								<div style="font-size: 10px;">Priority:</div>
-								{% include 'AgentBundle:Common:select-priority.html.twig' with {
-									'name': 'actions[priority]',
-									'with_blank': true,
-									'with_blank2': true,
-									'blank_title': '',
-									'priorities': ticket_options.ticket_priorities,
-									'add_classname': 'dpe_select',
-									'with_blank_value': '-1'
-								} %}
-							</td>
-						{% endif %}
-
-						{% if app.getSetting('core.use_ticket_workflow') %}
-							<td>
-								<div style="font-size: 10px;">Workflow:</div>
-								{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-									'name': 'actions[workflow]',
-									'with_blank': true,
-									'with_blank2': true,
-									'blank_title': '',
-									'workflows': ticket_options.ticket_workflows,
-									'add_classname': 'dpe_select',
-									'with_blank_value': '-1'
-								} %}
-							</td>
-						{% endif %}
-					</tr></table>
-				</dd>
-			</dl>
 			{% if app.user.hasPerm('agent_tickets.reply_mass') %}
 			<div class="profile-box-container reply-box-wrap">
 				<header>
