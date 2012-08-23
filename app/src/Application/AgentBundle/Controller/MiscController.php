@@ -81,6 +81,7 @@ class MiscController extends AbstractController
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = {};';
 		}
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.language = ' . json_encode($this->container->getDataService('Language')->getTitles()) . ';';
 
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
 			'awaiting_agent' => App::getTranslator()->phrase('agent.tickets.status_awaiting_agent'),

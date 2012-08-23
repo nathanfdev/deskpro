@@ -38,6 +38,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'product_id':
 			case 'workflow_id':
 			case 'priority_id':
+			case 'language_id':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this.ticketPage, { optionName: type });
 				break;
 			case 'agent_id':

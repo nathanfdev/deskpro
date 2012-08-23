@@ -419,6 +419,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		//------------------------------
 
 		var ticketReader = {
+			getLanguageId: function() {
+				if (this.languageId) return this.languageId;
+				this.languageId = parseInt($('input.language_id', this.wrapper).val()||0);
+				return this.languageId;
+			},
 			getCategoryId: function() {
 				if (this.categoryId) return this.categoryId;
 				this.categoryId = parseInt($('input.category_id', this.wrapper).val()||0);

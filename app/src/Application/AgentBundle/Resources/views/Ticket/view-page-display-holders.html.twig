@@ -1,4 +1,15 @@
 <div class="page-display-holders" style="display:none">
+	{% if app.getDataRepository('Language').isMultiLang() %}
+		<div class="ticket_language language_id standard-field item {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
+			<div class="title">
+				<span class="menu-trigger category_id label">Language:</span>
+			</div>
+			<div class="content">
+				<span class="prop-val menu-trigger category_id">{{ticket.language.title}}</span>
+			</div>
+		</div>
+	{% endif %}
+
 	{# Standard fields #}
 	{% if app.getSetting('core.use_ticket_category') %}
 	<div class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category">
@@ -56,6 +67,20 @@
 	{% endfor %}
 </div>
 <div class="page-display-input" style="display: none;">
+
+	{% if app.getDataRepository('Language').isMultiLang() %}
+	<div class="ticket_language language_id standard-field item" data-item-type="ticket_language">
+		<div class="title">Language:</div>
+		<div class="content">
+			<select name="ticket[language_id]" data-prop-id="language_id" class="prop-input-language_id">
+				{% for id,title in app.getDataRepository('Language').getTitles() %}
+					<option {% if ticket.language.id == id %}selected="selected"{% endif %} value="{{ id }}">{{ title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
+
 	{% if app.getSetting('core.use_ticket_category') %}
 	<div class="ticket_category category_id standard-field item" data-item-type="ticket_category">
 		<div class="title">{{ phrase('agent.general.category') }}:</div>

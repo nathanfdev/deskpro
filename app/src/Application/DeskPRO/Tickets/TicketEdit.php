@@ -98,6 +98,15 @@ class TicketEdit implements PersonContextInterface
 					$this->ticket['department_id'] = $action;
 					break;
 
+				case 'language_id':
+					if ($this->person_context) {
+						if (!$tcheck->canModify($this->ticket, 'fields')) {
+							break;
+						}
+					}
+					$this->ticket['language_id'] = $action;
+					break;
+
 				case 'category_id':
 					if ($this->person_context) {
 						if (!$tcheck->canModify($this->ticket, 'fields')) {

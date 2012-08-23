@@ -64,6 +64,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <form class="value-form" style="display:none">
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 	<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
+	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(0)}}" />
 	<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
 	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />

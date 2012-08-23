@@ -160,6 +160,7 @@
 	'agent.tickets.set_category_action'                 => 'Set category to {{category}}',
 	'agent.tickets.set_delete'                          => 'Mark For deletion',
 	'agent.tickets.set_department_action'               => 'Set department to {{department}}',
+	'agent.tickets.set_language_action'                 => 'Set language to {{language}}',
 	'agent.tickets.set_flag_to_action'                  => 'Set flag to {{flag}}',
 	'agent.tickets.set_hold'                            => 'Set on hold',
 	'agent.tickets.set_priority_action'                 => 'Set priority to {{priority}}',

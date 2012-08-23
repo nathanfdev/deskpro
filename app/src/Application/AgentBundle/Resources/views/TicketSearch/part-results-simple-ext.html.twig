@@ -70,6 +70,17 @@
 					<span class="prop-title">{{ phrase('agent.general.reference') }}:</span>
 					<span class="prop-val ref" data-prop-value="{{ticket.ref}}">{{ ticket.ref }}</span>
 				</li>
+			{% elseif field == 'language' and (ticket.language or changed_fields[ticket.id].language) %}
+				<li class="{{field}} {% if changed_fields[ticket.id].language %}changed{% endif %}">
+					<span class="prop-title">Language:</span>
+					<span class="prop-val language_id" data-prop-value="{{ticket.language.id}}">
+					{% if ticket.language %}
+						{{ticket.language.title}}
+					{% else %}
+						{{ phrase('agent.general.none') }}
+					{% endif %}
+					</span>
+				</li>
 			{% elseif field == 'category' and (ticket.category or changed_fields[ticket.id].category) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].category %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.category') }}:</span>

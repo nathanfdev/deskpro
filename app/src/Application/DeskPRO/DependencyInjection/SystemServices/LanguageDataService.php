@@ -43,12 +43,6 @@ class LanguageDataService extends BaseRepositoryService
 	protected $has_init = false;
 
 	/**
-	 * Custom langs enabled?
-	 * @var bool
-	 */
-	protected $lang_is_enabled = false;
-
-	/**
 	 * @var int
 	 */
 	protected $default_lang_id = 1;
@@ -68,7 +62,6 @@ class LanguageDataService extends BaseRepositoryService
 	{
 		if (!$options) $options = array();
 		$options['entity'] = 'Application\\DeskPRO\\Entity\\Language';
-		$options['lang_is_enabled'] = $container->getSetting('core.enable_languages');
 		$options['default_lang_id'] = $container->getSetting('core.default_language_id');
 
 		$em = $container->getEm();
@@ -78,7 +71,6 @@ class LanguageDataService extends BaseRepositoryService
 
 	public function init()
 	{
-		$this->lang_is_enabled = $this->options->get('lang_is_enabled');
 		$this->default_lang_id = $this->options->get('default_lang_id');
 	}
 
@@ -88,7 +80,7 @@ class LanguageDataService extends BaseRepositoryService
 	 */
 	public function isLangSystemEnabled()
 	{
-		return $this->lang_is_enabled;
+		return $this->isMultiLang();
 	}
 
 
@@ -101,10 +93,6 @@ class LanguageDataService extends BaseRepositoryService
 	 */
 	public function isMultiLang()
 	{
-		if (!$this->lang_is_enabled) {
-			return false;
-		}
-
 		$this->preload();
 		return $this->count > 1;
 	}
@@ -201,22 +189,13 @@ class LanguageDataService extends BaseRepositoryService
 		}
 		$this->has_init = true;
 
-		// If lang isnt enabeld, we know to just fetch the first
-		if (!$this->lang_is_enabled) {
-			$lang = $this->em->find('DeskPRO:Language', 1);
-			$this->languages[1] = $lang;
-			$this->default_lang_id = 1;
+		$this->languages = $this->em->createQuery("
+			SELECT l
+			FROM DeskPRO:Language l INDEX BY l.id
+			ORDER BY l.title ASC
+		")->execute();
 
-		// Otherwise fetch them all
-		} else {
-			$this->languages = $this->em->createQuery("
-				SELECT l
-				FROM DeskPRO:Language l INDEX BY l.id
-				ORDER BY l.title ASC
-			")->execute();
-
-			$this->count = count($this->languages);
-		}
+		$this->count = count($this->languages);
 	}
 
 

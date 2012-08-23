@@ -304,6 +304,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$options = array();
 
 		// Standard fields
+		$options[] = array('id' => 'ticket_language');
 		$options[] = array('id' => 'product');
 		$options[] = array('id' => 'ticket_category');
 		$options[] = array('id' => 'ticket_workflow');

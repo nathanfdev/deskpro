@@ -97,6 +97,9 @@ class ActionsFactory
 			case 'product':
 				$options['product'] = $value['product'];
 				break;
+			case 'language':
+				$options['language'] = $value['language'];
+				break;
 			case 'flag':
 				$options['flag'] = $value['flag'];
 				break;
@@ -207,8 +210,6 @@ class ActionsFactory
 		} else {
 			throw new \InvalidArgumentException("Unknown action or modifier `$name`");
 		}
-
-		return null;
 	}
 
 	public function createActionObject($action_class, array $options)

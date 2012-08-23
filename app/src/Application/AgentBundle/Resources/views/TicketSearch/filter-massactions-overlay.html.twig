@@ -193,6 +193,24 @@
 					</dl>
 				</td>
 				{% endif %}
+				{% if app.getDataRepository('Language').isMultiLang() %}
+				<td style="padding-left: 10px;">
+					<dl>
+						<dt>Language</dt>
+						<dd>
+							{% include 'AgentBundle:Common:select-language.html.twig' with {
+								'name': 'actions[language]',
+								'with_blank': true,
+								'with_blank2': true,
+								'blank_title': '',
+								'languages': app.getDataRepository('Language').getTitles(),
+								'add_classname': 'dpe_select',
+								'with_blank_value': '-1'
+							} %}
+						</dd>
+					</dl>
+				</td>
+				{% endif %}
 			</table>
 
 			{% if app.user.hasPerm('agent_tickets.reply_mass') %}
