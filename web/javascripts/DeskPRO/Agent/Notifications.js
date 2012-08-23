@@ -33,7 +33,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');
 
-		row.insertBefore('#dp_notify_list_dismiss');
+		$('#dp_notify_list').prepend(row);
 
 		this.modCount(type, '+');
 	},
