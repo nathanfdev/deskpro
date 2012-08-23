@@ -93,7 +93,7 @@ abstract class AbstractValues
 					$decimals = 0;
 				}
 
-				return $this->escapeValue(number_format($value, $decimals, '.', ''));
+				return $this->escapeValue(number_format($value, $decimals));
 
 			case 'boolean':
 				return $this->_renderBoolean($value);

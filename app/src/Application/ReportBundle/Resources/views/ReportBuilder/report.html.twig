@@ -29,7 +29,7 @@
 	<form action="{{ path('report_builder_report', {'report_builder_id' : report.id}) }}" class="dp-form" method="post">
 		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' with {'readOnly': not report.isEditable()} %}
 
-		<div class="report-run">
+		<div class="report-actions">
 			<button class="btn primary" name="run" value="1">Run Report</button>
 			{% if error is empty and report.isEditable() and report.isQueryDifferent(query) %}
 				<button class="btn" name="save" value="1">Save Changes</button>

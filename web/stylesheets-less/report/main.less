@@ -1063,6 +1063,10 @@ section.coming-soon {
 	.tabs { padding-left: 10px; }
 }
 
+.query-read-only {
+	input, textarea { color: #777; }
+}
+
 .query-editor-builder {
 	dl {
 		margin: 5px 0;
@@ -1070,19 +1074,26 @@ section.coming-soon {
 	dt {
 		display: inline-block;
 		*zoom: 1; *display: inline;
-		width: 100px;
+		width: 15%;
 	}
 	dd {
 		display: inline-block;
 		*zoom: 1; *display: inline;
-		width: 65%;
+		width: 80%;
+		input[type="text"] { width: 98%; }
 	}
-	.limit input { display: inline-block; width: 50px; }
+	.limit input[type] { display: inline-block; width: 50px; }
 	.limit span { margin-left: 10px; }
 }
 
 .query-editor-text textarea {
+	width: 98%;
 	height: 130px;
+}
+
+.query-read-only-notice {
+	margin-top: 10px;
+	color: #777;
 }
 
 /** Printing **/
@@ -1098,7 +1109,6 @@ section.coming-soon {
 	.query-editor-container { display: none; }
 	.report-list { display: none; }
 	.report-list-dragger { display: none; }
-	.report-run { display: none; }
 	.report-actions { display: none; }
 	.report-builder-results .query { display: block; }
 }

@@ -513,7 +513,7 @@ class Html extends AbstractRenderer
 				$i = 0;
 				foreach ($rowGroups AS $yPath => $null) {
 					if (isset($lookup[$yPath][$xPath])) {
-						$value = $lookup[$yPath][$xPath];
+						$value = $this->_filterGraphValue($lookup[$yPath][$xPath]);
 					} else {
 						$value = '';
 					}
@@ -532,6 +532,8 @@ class Html extends AbstractRenderer
 				);
 				$i++;
 			}
+
+			$hasCategory = true;
 		} else {
 			foreach ($rows AS $row) {
 				$categories = array();
@@ -543,7 +545,7 @@ class Html extends AbstractRenderer
 				$rowData = array('category' => $category);
 
 				foreach ($selectColumns AS $i => $column) {
-					$rowData['value' . $i] = $this->_renderCellValue($row, $column);
+					$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
 				}
 
 				$chartData[] = $rowData;
@@ -555,6 +557,14 @@ class Html extends AbstractRenderer
 					'value' => "value$i"
 				);
 			}
+
+			$hasCategory = count($groupYColumns) > 0;
+		}
+
+		if ($hasCategory) {
+			$balloonText = '[[category]], [[title]]: [[value]]';
+		} else {
+			$balloonText = '[[title]]: [[value]]';
 		}
 
 		$graphCode = array();
@@ -570,7 +580,7 @@ class Html extends AbstractRenderer
 				graph = new AmCharts.AmGraph();
 				graph.valueField = "' . $graph['value'] . '";
 				graph.title = "' . $title . '";
-				graph.balloonText = "[[category]], [[title]]: [[value]]";
+				graph.balloonText = "' . $balloonText .'";
 				' . $optionMap[$type] . '
 				chart.addGraph(graph);
 			';
@@ -596,5 +606,21 @@ class Html extends AbstractRenderer
 			});
 			</script>
 		';
+	}
+
+	/**
+	 * Filters a graph value that looks like a number into an actual number.
+	 *
+	 * @param string $value
+	 *
+	 * @return string|number
+	 */
+	protected function _filterGraphValue($value)
+	{
+		if (preg_match('/^((\d+,)*\d+)(\.\d+)?%?$/', $value)) {
+			return str_replace(array(',', '%'), '', $value) + 0;
+		} else {
+			return $value;
+		}
 	}
 }

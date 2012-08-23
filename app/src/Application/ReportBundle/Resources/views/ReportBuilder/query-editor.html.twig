@@ -1,5 +1,5 @@
 {% set readOnlyHtml = readOnly ? ' readonly="readonly"' : '' %}
-<div class="query-editor-container">
+<div class="query-editor-container {{ readOnly ? 'query-read-only' : '' }}">
 <ul class="tabs"
 	data-element-handler="DeskPRO.Report.ElementHandler.Builder.BuilderTabs"
 	data-trigger-elements="> li"
@@ -13,7 +13,7 @@
 </ul>
 
 <div id="query-builder" class="query-editor-builder" style="display: none">
-	<dl><dt>DISPLAY</dt> <dd><select name="parts[display]"{{readOnlyHtml|raw}}>
+	<dl><dt>DISPLAY</dt> <dd><select name="parts[display]">
 		<option value="BAR"{{ parts.display == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 		<option value="LINE"{{ parts.display == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
 		<option value="TABLE"{{ parts.display == 'TABLE' or parts.display is empty ? ' selected="selected"' : ''}}>TABLE</option>
@@ -40,6 +40,10 @@
 <div id="query-error-container" class="query-error" style="display: none">
 	The following error occurred: <span id="query-error-message"></span>
 </div>
+
+{% if readOnly %}
+	<div class="query-read-only-notice">This is a built-in query. Nothing other than the display type can be modified. To adjust this query, please clone it.</div>
+{% endif %}
 
 <input type="hidden" name="inputType" id="input-type-input" value="{{ inputType }}" />
 </div>
