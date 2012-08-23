@@ -48,7 +48,7 @@ DeskPRO.Admin.ElementHandler.EditPhrasesPage = new Orb.Class({
 
 					phraseRow.removeClass('custom');
 					var langPhrase = $('.lang_phrase', phraseRow).val();
-					if (langPhrase.length) {
+					if (langPhrase && langPhrase.length) {
 						previewInput.val(langPhrase);
 					} else {
 						previewInput.val($('.master_phrase', phraseRow).val());

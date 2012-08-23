@@ -100,6 +100,10 @@ class LanguagePhrases
 			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
 		}
 
+		if (!is_file($file)) {
+			return '';
+		}
+
 		$file_phrases = include($file);
 		return $file_phrases[$phrase_id];
 	}
