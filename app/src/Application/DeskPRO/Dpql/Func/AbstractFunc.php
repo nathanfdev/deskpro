@@ -51,6 +51,7 @@ abstract class AbstractFunc
 	 */
 	protected static $_functionMap = array(
 		'COUNT' => 'Count',
+		'COUNT_DISTINCT' => 'CountDistinct',
 		'CURDATE' => 'CurDate',
 		'CURTIME' => 'CurTime',
 		'FORMAT' => 'Format',

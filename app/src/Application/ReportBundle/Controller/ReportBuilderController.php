@@ -166,7 +166,7 @@ class ReportBuilderController extends AbstractController
 
 		$query = $this->in->getString('query');
 		$parts = $this->in->getArrayValue('parts');
-		$run = $this->in->getBool('run');
+		$run = true;
 
 		$inputType = $this->in->getString('inputType');
 		if ($inputType == 'builder') {

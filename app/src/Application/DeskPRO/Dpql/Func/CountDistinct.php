@@ -40,11 +40,9 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 
 /**
- * Handler for COUNT() DPQL function calls, which can work like COUNT(*) with
- * no arguments, but can also take an argument and only count those rows that
- * match the argument.
+ * Handler that wraps around COUNT(DISTINCT x).
  */
-class Count extends AbstractFunc
+class CountDistinct extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -64,22 +62,18 @@ class Count extends AbstractFunc
 	)
 	{
 		if (!in_array($section, array('select', 'split', 'group', 'order'))) {
-			throw new Exception('COUNT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
+			throw new Exception('COUNT_DISTINCT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
 		}
 
-		if (!$this->_arguments) {
-			$res = new Prepared('COUNT(*)', 'COUNT()', false, 'number');
-		} else {
-			if (count($this->_arguments) > 1) {
-				throw new Exception('COUNT() can only accept 0 or 1 argument');
-			}
-
-			$condition = reset($this->_arguments);
-			$prepped = $condition->prepare($statement, $section, $stack, $select, $result);
-
-			$sql = 'SUM(IF(' . $prepped->sql() . ', 1, 0))';
-			$res = new Prepared($sql, 'COUNT(' . $prepped->name() . ')', false, 'number');
+		if (count($this->_arguments) != 1) {
+			throw new Exception('COUNT_DISTINCT() can only accept 1 argument.');
 		}
+
+		$expression = reset($this->_arguments);
+		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+
+		$sql = 'COUNT(DISTINCT ' . $prepped->sql() . ')';
+		$res = new Prepared($sql, 'COUNT_DISTINCT(' . $prepped->name() . ')', false, 'number');
 
 		return $res;
 	}
