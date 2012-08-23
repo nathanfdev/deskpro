@@ -177,7 +177,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				if (License::getLicense()->getMaxAgents()) {
 					// The main interface frame is a good place to stick this check
 					if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
-						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
 						if ($count > License::getLicense()->getMaxAgents()) {
 							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('agents', $request->getBaseUrl()));
 							return $response;
@@ -187,7 +187,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 					// On every admin page, redirect them to agents management, dont let them do anything else
 					// Also let them use the license page to update the license!
 					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/billing#', $path) && !preg_match('#^/admin/login#', $path)) {
-						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
 						if ($count > License::getLicense()->getMaxAgents()) {
 							$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
 							return $response;
