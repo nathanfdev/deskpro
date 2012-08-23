@@ -478,6 +478,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = '';
 		}
 
+		// Cut down the quoted message part to 10000 chars
+		$cut_len = strlen($email_info['body']);
+		$full_len = strlen($email_info['body_full']);
+
+		if (($full_len - $cut_len) > 8000) {
+			$email_info['body_full'] = substr($email_info['body_full'], 0, 8000 + $cut_len);
+
+			// Simple way to try and handle if we cut in the middle of a tag name
+			$tag_start_pos = strrpos($email_info['body_full'], '<');
+			if ($tag_start_pos) {
+				$tag_end_pos = strrpos($email_info['body_full'], '>');
+				if ($tag_end_pos === false || $tag_end_pos < $tag_start_pos) {
+					$email_info['body_full'] = substr($email_info['body_full'], 0, $tag_start_pos);
+				}
+			}
+		}
+
 		if ($email_info['body_is_html']) {
 			// Replace inline image tags with tokens
 			$email_info['body'] = $inline_images->processTokens($email_info['body']);
