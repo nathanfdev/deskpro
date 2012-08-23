@@ -251,6 +251,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 			},
 			success: function(result) {
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
 
 				loadingEl.hide();
 

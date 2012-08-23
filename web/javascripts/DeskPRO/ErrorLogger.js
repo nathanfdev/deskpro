@@ -56,7 +56,7 @@ var DpErrorLog = {
 	}
 };
 
-if (DP_DEBUG) {
+if (DP_DEBUG && DP_DEBUG_EVENT_TIMER) {
 	var oldTrigger = jQuery.event.trigger;
 	jQuery.event.trigger = function() {
 		var begin = new Date();

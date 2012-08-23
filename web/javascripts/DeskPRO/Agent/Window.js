@@ -176,6 +176,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				options.success = function(data) {
+					DeskPRO_Window.getMessageChanneler().poller.unpause();
 					if (data.client_messages) {
 						DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 					}
