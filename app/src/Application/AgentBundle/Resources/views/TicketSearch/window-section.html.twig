@@ -19,14 +19,6 @@
 					data-filter-name="{{filter.sys_name}}"
 					{% if initial_inbox_grouping[filter.id] %}data-initial-grouping="{{ initial_inbox_grouping[filter.id] }}"{% endif %}
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
-					{% if filter.sys_name == 'agent_team' %}
-						{#{% if app.user.agent.is_single_team %}
-							data-grouping-ignore="agent,agent_team"
-						{% else %}
-							data-grouping-ignore="agent"
-						{% endif %}#}
-						data-grouping-ignore="agent"
-					{% endif %}
 					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
 				>
 					<h3 class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
