@@ -931,7 +931,7 @@ section.coming-soon {
 
 /** Report builder **/
 
-.report-container:after {
+#report-container:after {
 	visibility: hidden;
 	display: block;
 	font-size: 0;
@@ -939,9 +939,9 @@ section.coming-soon {
 	clear: both;
 	height: 0;
 }
-.report-container { *zoom: 1; }
+#report-container { *zoom: 1; }
 
-.report-list {
+#report-list {
 	float: left;
 	width: 250px;
 	padding-right: 5px;
@@ -979,7 +979,8 @@ section.coming-soon {
 	cursor: w-resize;
 }
 
-.report-page-body {
+#report-page-body {
+	position: relative;
 	overflow: auto;
 	h1 {
 		font-size: 16pt;
@@ -990,6 +991,25 @@ section.coming-soon {
 		float: left;
 		margin: 1px 5px;
 	}
+}
+
+#report-loading-block {
+	display: none;
+	position: absolute;
+	top: 175px;
+	left: 500px;
+	height: 100px;
+	width: 250px;
+	background: white;
+	border: 1px solid #AAA;
+	text-align: center;
+	line-height: 100px;
+	vertical-align: middle;
+	font-size: 14pt;
+}
+
+#report-failed-block {
+	display: none;
 }
 
 .report-favorite {

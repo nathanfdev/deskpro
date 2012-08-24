@@ -2,10 +2,10 @@
 {% block inner_page %}
 	<h1>
 		{% if report.isEditable() %}
-			<a href="{{ path('report_builder_delete', {'report_builder_id': report.id}) }}" class="report-action"
-					><img src="{{ asset('images/report/icons/close.png') }}" alt="Delete" /></a>
-			<a href="{{ path('report_builder_edit', {'report_builder_id': report.id}) }}" class="report-action"
-					><img src="{{ asset('images/report/icons/edit.png') }}" alt="Edit" /></a>
+			<a rel="report-page-body" href="{{ path('report_builder_delete', {'report_builder_id': report.id}) }}"
+			   class="report-action"><img src="{{ asset('images/report/icons/close.png') }}" alt="Delete" /></a>
+			<a rel="report-page-body" href="{{ path('report_builder_edit', {'report_builder_id': report.id}) }}"
+			   class="report-action"><img src="{{ asset('images/report/icons/edit.png') }}" alt="Edit" /></a>
 		{% endif %}
 
 		<a href="{{ path('report_builder_favorite', {
@@ -22,7 +22,7 @@
 	</h1>
 	{% if report.description %}<p>{{ report.description|nl2br }}</p>{% endif %}
 	{% if report.parent %}
-		<p>Clone of <a href="{{ path('report_builder_report', {'report_builder_id': report.parent.id})}}"
+		<p>Clone of <a rel="report-page-body" href="{{ path('report_builder_report', {'report_builder_id': report.parent.id})}}"
 			>{{report.parent.title}}</a></p>
 	{% endif %}
 
