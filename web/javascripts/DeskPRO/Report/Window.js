@@ -40,6 +40,11 @@ DeskPRO.Report.Window = new Orb.Class({
 		});
 
 		if ($('#report-container').length) {
+			var initialize = function(context) {
+				context.find('textarea.expander').TextAreaExpander().trigger('textareaexpander_fire');
+			};
+			initialize($(document));
+
 			$(document.body).delegate('a.report-favorite-toggle', 'click', function(e) {
 				var $this = $(this), isFavorite = $this.hasClass('favorited'),
 					newValue = isFavorite ? 0 : 1,
@@ -83,6 +88,7 @@ DeskPRO.Report.Window = new Orb.Class({
 					if (body.length) {
 						pageBody.html($(data).find('#report-page-body').html());
 						DeskPRO.ElementHandler_Exec();
+						initialize(pageBody);
 					} else {
 						failure();
 					}

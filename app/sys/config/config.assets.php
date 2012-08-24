@@ -469,6 +469,7 @@ $CONFIG['report_builder'] = array(
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/ListCollapse.js',
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/ReportList.js',
 		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/amcharts/javascript/amcharts.js',
 		'vendor/amcharts/javascript/amfallback.js',
 		'vendor/amcharts/javascript/raphael.js',

@@ -25,6 +25,7 @@ DeskPRO.Report.ElementHandler.Builder.BuilderTabs = new Orb.Class({
 
 			var lastTabEl = event.lastTabEl,
 				tabEl = event.tabEl,
+				tabContent = event.tabContent,
 				currentType = (lastTabEl.length ? lastTabEl.data('query-type') : inputTypeInput.val()),
 				newType = tabEl.data('query-type');
 
@@ -58,14 +59,14 @@ DeskPRO.Report.ElementHandler.Builder.BuilderTabs = new Orb.Class({
 				for (var key in data) {
 					if ($.isPlainObject(data[key])) {
 						for (var subKey in data[key]) {
-							console.log('[name="' + key + '[' + subKey + ']"] = ' + data[key][subKey]);
 							form.find('[name="' + key + '[' + subKey + ']"]').val(data[key][subKey]);
 						}
 					} else {
-						console.log('[name="' + key + '"] = ' + data[key]);
 						form.find('[name="' + key + '"]').val(data[key]);
 					}
 				}
+
+				tabContent.find('textarea.expander').trigger('textareaexpander_fire');
 			});
 		});
 

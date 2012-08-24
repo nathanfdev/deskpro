@@ -17,7 +17,7 @@
 			var max    = $elem.data('expander-max-height') || 1000;
 			var min    = $elem.data('expander-min-height') || 50;
 
-			while (element.clientHeight < element.scrollHeight) {
+			while (element.clientHeight < element.scrollHeight  || element.clientHeight < min) {
 				height += 5;
 				$elem.height(height);
 				if (height > max) {

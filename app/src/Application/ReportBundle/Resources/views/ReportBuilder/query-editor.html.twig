@@ -13,7 +13,7 @@
 </ul>
 
 <div id="query-builder" class="query-editor-builder" style="display: none">
-	<dl><dt>DISPLAY</dt> <dd>
+	<dl><dt class="no-pad">DISPLAY</dt> <dd>
 		<select name="parts[display][0]">
 			<option value="BAR"{{ parts.display.0 == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 			<option value="LINE"{{ parts.display.0 == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
@@ -28,9 +28,9 @@
 			<option value="TABLE"{{ parts.display.1 == 'TABLE' ? ' selected="selected"' : ''}}>TABLE</option>
 		</select>
 	</dd></dl>
-	<dl><dt>SELECT</dt> <dd><input name="parts[select]" type="text" value="{{parts.select}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>SELECT</dt> <dd><textarea name="parts[select]" class="expander"{{readOnlyHtml|raw}}>{{parts.select}}</textarea></dd></dl>
 	<dl><dt>FROM</dt> <dd><input name="parts[from]" type="text" value="{{parts.from}}"{{readOnlyHtml|raw}} /></dd></dl>
-	<dl><dt>WHERE</dt> <dd><input name="parts[where]" type="text" value="{{parts.where}}"{{readOnlyHtml|raw}} /></dd></dl>
+	<dl><dt>WHERE</dt> <dd><textarea name="parts[where]" class="expander"{{readOnlyHtml|raw}}>{{parts.where}}</textarea></dd></dl>
 	<dl><dt>SPLIT BY</dt> <dd><input name="parts[splitBy]" type="text" value="{{parts.splitBy}}"{{readOnlyHtml|raw}} /></dd></dl>
 	<dl><dt>GROUP BY</dt> <dd><input name="parts[groupBy]" type="text" value="{{parts.groupBy}}"{{readOnlyHtml|raw}} /></dd></dl>
 	<dl><dt>ORDER BY</dt> <dd><input name="parts[orderBy]" type="text" value="{{parts.orderBy}}"{{readOnlyHtml|raw}} /></dd></dl>
@@ -44,7 +44,7 @@
 	</dl>
 </div>
 <div class="query-editor-text" id="query-text" style="display: none">
-	<textarea name="query"{{readOnlyHtml|raw}}>{{ query }}</textarea>
+	<textarea name="query" class="expander" data-expander-min-height="100"{{readOnlyHtml|raw}}>{{ query }}</textarea>
 </div>
 
 <div id="query-error-container" class="query-error" style="display: none">
