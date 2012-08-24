@@ -202,6 +202,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				}
 			}
 
+			if ($email_validating) {
+				App::getOrm()->persist($email_validating);
+			}
+
 			App::getOrm()->flush();
 
 			#------------------------------

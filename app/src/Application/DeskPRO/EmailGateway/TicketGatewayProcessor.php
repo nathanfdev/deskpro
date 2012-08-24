@@ -804,54 +804,59 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		# Process new ticket
 		#------------------------------
 
-		App::getOrm()->beginTransaction();
+		App::getDb()->beginTransaction();
 
-		$newticket->attach_blobs = $this->processBlobs();
-		$ticket = $newticket->save();
+		try {
+			$newticket->attach_blobs = $this->processBlobs();
+			$ticket = $newticket->save();
 
-		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
+			$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 
-		$message = $newticket->new_message;
-		$message['email'] = $this->reader->getFromAddress()->getEmail();
+			$message = $newticket->new_message;
+			$message['email'] = $this->reader->getFromAddress()->getEmail();
 
-		if ($this->reader->getCcAddresses()) {
-			$this->logMessage('[TicketGatewayProcessor] Has CC');
-			$this->handleCc($ticket, $this->reader->getCcAddresses());
-		}
-
-		if ($this->reader->hasProperty('email_source')) {
-			$message['email_source'] = $this->reader->getProperty('email_source');
-		}
-
-		// Set the proper email address on the ticket from the users account
-		if ($this->reader->getFromAddress()->email != $person->getPrimaryEmailAddress()) {
-			$email_rec = $person->findEmailAddress($this->reader->getFromAddress()->getEmail());
-			if ($email_rec) {
-				$ticket->person_email = $email_rec;
+			if ($this->reader->getCcAddresses()) {
+				$this->logMessage('[TicketGatewayProcessor] Has CC');
+				$this->handleCc($ticket, $this->reader->getCcAddresses());
 			}
+
+			if ($this->reader->hasProperty('email_source')) {
+				$message['email_source'] = $this->reader->getProperty('email_source');
+			}
+
+			// Set the proper email address on the ticket from the users account
+			if ($this->reader->getFromAddress()->email != $person->getPrimaryEmailAddress()) {
+				$email_rec = $person->findEmailAddress($this->reader->getFromAddress()->getEmail());
+				if ($email_rec) {
+					$ticket->person_email = $email_rec;
+				}
+			}
+
+			$ticket->gateway = $this->getGateway();
+			$ticket->gateway_address = $this->getGatewayAddress();
+
+			$message['message'] = $email_info['body'];
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->persist($message);
+			App::getOrm()->persist($person);
+			App::getOrm()->flush();
+
+			if ($this->charset_error) {
+				App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
+					'message_id' => $message['id'],
+					'raw'        => $email_info['body'],
+					'charset'    => $this->charset_error,
+				));
+			}
+
+			$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+
+			App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
 		}
-
-		$ticket->gateway = $this->getGateway();
-		$ticket->gateway_address = $this->getGatewayAddress();
-
-		$message['message'] = $email_info['body'];
-
-		App::getOrm()->persist($ticket);
-		App::getOrm()->persist($message);
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
-
-		if ($this->charset_error) {
-			App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
-				'message_id' => $message['id'],
-				'raw'        => $email_info['body'],
-				'charset'    => $this->charset_error,
-			));
-		}
-
-		$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
-
-		App::getOrm()->commit();
 
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
