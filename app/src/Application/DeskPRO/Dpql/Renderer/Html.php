@@ -196,7 +196,7 @@ class Html extends AbstractRenderer
 
 				$groupValues = array();
 				foreach ($groupColumns AS $groupId => $groupColumn) {
-					$groupValues[$groupId] = $this->_getColumnValue($row, $groupColumn['groupResultId']);
+					$groupValues[$groupId] = $this->getColumnValue($row, $groupColumn['groupResultId']);
 				}
 
 				$nextRowId = $rowId + 1;
@@ -212,7 +212,7 @@ class Html extends AbstractRenderer
 								break;
 							}
 
-							$groupValue = $this->_getColumnValue($nextRow, $groupColumn['groupResultId']);
+							$groupValue = $this->getColumnValue($nextRow, $groupColumn['groupResultId']);
 							if ($groupValues[$groupId] == $groupValue) {
 								$matched++;
 								if (!$myGroupSkipCount[$groupId]) {

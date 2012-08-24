@@ -43,9 +43,9 @@ use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\App;
 
 /**
- * Formats output using the given type and options.
+ * Links to the specified content if possible (based on output type).
  */
-class Format extends AbstractFunc
+class Link extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -65,24 +65,24 @@ class Format extends AbstractFunc
 	)
 	{
 		if (count($this->_arguments) < 2) {
-			throw new Exception('FORMAT() requires at least 2 arguments.');
+			throw new Exception('LINK() requires at least 2 arguments.');
 		}
 
 		$arguments = $this->_arguments;
-		$value = array_shift($arguments);
-		$type = array_shift($arguments);
-		$typeLiteral = $this->_toLiteral($type);
+		$print = array_shift($arguments);
+		$format = array_shift($arguments);
+		$formatLiteral = $this->_toLiteral($format);
 
 		$argNames = array();
-		$argLiterals = array();
+		$argSelect = array();
 		foreach ($arguments AS $argument) {
 			$prepped = $argument->prepare($statement, $section, $stack, $select, $result);
 			$argNames[] = $prepped->name();
-			$argLiterals[] = $this->_toLiteral($argument);
+			$argSelect[] = $select->addSelectField($prepped->printed());
 		}
 
-		$preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
-		$preppedType = $type->prepare($statement, $section, $stack, $select, $result);
+		$preppedPrint = $print->prepare($statement, $section, $stack, $select, $result);
+		$preppedFormat = $format->prepare($statement, $section, $stack, $select, $result);
 
 		if ($argNames) {
 			$argNameOutput = ', ' . implode(', ', $argNames);
@@ -90,38 +90,36 @@ class Format extends AbstractFunc
 			$argNameOutput = '';
 		}
 
-		$name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
+		switch ($formatLiteral) {
+			case 'ticket':
+				$formatLiteral = 'agent/#app.tickets,t:%d';
+				break;
+		}
 
 		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-			use ($typeLiteral, $argLiterals)
+			use ($formatLiteral, $argSelect)
 		{
-			switch (strtolower($typeLiteral)) {
-				case 'number':
-					if ($argLiterals) {
-						return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
-					}
-					break;
+			$breakEarly = (
+				$value === null
+				|| !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
+			);
 
-				case 'date':
-					if ($argLiterals) {
-						$tz = App::getCurrentPerson()->getTimezone();
-						try {
-							$date = new \DateTime($value, new \DateTimeZone($tz));
-							return $valueRenderer->escapeValue($date->format($argLiterals[0]));
-						} catch (\Exception $e) {
-							return $valueRenderer->escapeValue($value);
-						}
-					}
-					break;
+			$value = $valueRenderer->renderValue($value, 'string');
 
-				case 'percent':
-					$decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
-					return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
+			if ($breakEarly) {
+				return $value;
 			}
 
-			return $valueRenderer->renderValue($value, $typeLiteral);
+			$argValues = array();
+			foreach ($argSelect AS $key) {
+				$argValues[] = urlencode($renderer->getColumnValue($row, $key));
+			}
+
+			$link = App::getRequest()->getBasePath() . '/' . vsprintf($formatLiteral, $argValues);
+
+			return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $value . '</a>';
 		};
 
-		return new Prepared($preppedValue->sql(), $name, false, $renderer);
+		return new Prepared($preppedPrint->sql(), $preppedPrint->name(), false, $renderer);
 	}
 }

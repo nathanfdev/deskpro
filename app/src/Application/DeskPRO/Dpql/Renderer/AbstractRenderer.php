@@ -276,7 +276,7 @@ abstract class AbstractRenderer
 	 *
 	 * @return string
 	 */
-	protected function _getColumnValue(array $row, $id)
+	public function getColumnValue(array $row, $id)
 	{
 		return ($id ? $row[$id - 1] : '');
 	}
@@ -307,7 +307,7 @@ abstract class AbstractRenderer
 			$xPath = array('root');
 			foreach ($groupXColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($xPath);
-				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
+				$groupValue = $this->getColumnValue($row, $column['groupResultId']);
 
 				$distinctXValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
 
@@ -317,7 +317,7 @@ abstract class AbstractRenderer
 			$yPath = array('root');
 			foreach ($groupYColumns AS $column) {
 				$pathString = $this->_getGroupPathKey($yPath);
-				$groupValue = $this->_getColumnValue($row, $column['groupResultId']);
+				$groupValue = $this->getColumnValue($row, $column['groupResultId']);
 
 				$distinctYValues[$pathString][$groupValue] = $this->_renderCellValue($row, $column);
 

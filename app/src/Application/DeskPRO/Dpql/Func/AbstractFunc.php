@@ -55,6 +55,7 @@ abstract class AbstractFunc
 		'CURDATE' => 'CurDate',
 		'CURTIME' => 'CurTime',
 		'FORMAT' => 'Format',
+		'LINK' => 'Link',
 		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
 		'PRINT' => 'Printable',
