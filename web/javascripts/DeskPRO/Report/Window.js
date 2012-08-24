@@ -63,10 +63,11 @@ DeskPRO.Report.Window = new Orb.Class({
 				e.preventDefault();
 			});
 
-			var pageBody = $('#report-page-body');
+			var pageBody = $('#report-page-body'), initialized = false;
 
 			$.history.init(function(hash) {
-				if (hash == '') {
+				if (hash == '' && !initialized) {
+					initialized = true;
 					return;
 				}
 
@@ -80,7 +81,7 @@ DeskPRO.Report.Window = new Orb.Class({
 				};
 
 				$.ajax({
-					url: hash,
+					url: hash || window.location.pathname + window.location.search,
 					type: 'GET',
 					dataType: 'html'
 				}).done(function(data) {
