@@ -39,6 +39,9 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Func\Link;
 
 /**
  * Represents a reference to a column or association.
@@ -65,8 +68,8 @@ class Column extends AbstractPart
 		'departments' => array('id', 'title'),
 		'languages' => array('id', 'name'),
 		'organizations' => array('id', 'name'),
-		'people' => array('id', 'name'),
-		'tickets' => array('id', 'subject'),
+		'people' => array('id', 'name', 'person'),
+		'tickets' => array('id', 'subject', 'ticket'),
 		'ticket_categories' => array('id', 'title'),
 		'ticket_priorities' => array('id', 'title')
 	);
@@ -110,7 +113,7 @@ class Column extends AbstractPart
 		$sql = false;
 		$printedSql = false;
 		$name = false;
-		$dataType = null;
+		$renderer = null;
 
 		end($parts);
 		$lastPartKey = key($parts);
@@ -141,7 +144,7 @@ class Column extends AbstractPart
 								$sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
 							}
 
-							$dataType = 'datetime';
+							$renderer = 'datetime';
 							break;
 
 						case 'integer':
@@ -149,24 +152,24 @@ class Column extends AbstractPart
 						case 'bigint':
 						case 'decimal':
 						case 'float':
-							$dataType = 'number';
+							$renderer = 'number';
 							break;
 
 						case 'date':
-							$dataType = 'date';
+							$renderer = 'date';
 							break;
 
 						case 'time':
-							$dataType = 'time';
+							$renderer = 'time';
 							break;
 
 						case 'boolean':
-							$dataType = 'boolean';
+							$renderer = 'boolean';
 							break;
 
 						case 'string':
 						case 'text':
-							$dataType = 'string';
+							$renderer = 'string';
 							break;
 					}
 
@@ -269,12 +272,26 @@ class Column extends AbstractPart
 				}
 
 				$printedSql = "`$sqlTable`.`$resolver[1]`";
+
+				if (isset($resolver[2])) {
+					if ($section == 'split') {
+						$argSelect = array($statement->getSplitSql()->addSelectField("`$sqlTable`.`$resolver[0]`"));
+					} else {
+						$argSelect = array($select->addSelectField("`$sqlTable`.`$resolver[0]`"));
+					}
+
+					$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+						use ($resolver, $argSelect)
+					{
+						return Link::formatLink($value, $resolver[2], $argSelect, $row, $valueRenderer, $renderer);
+					};
+				}
 			} else {
 				throw new Exception("$partsString cannot be referenced directly. Please reference a specific column.");
 			}
 		}
 
-		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql, $dataType);
+		return new Prepared($sql, $this->_prettifyColumnName($name), $printedSql, $renderer);
 	}
 
 	/**

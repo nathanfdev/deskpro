@@ -411,6 +411,7 @@ class Display
 		}
 
 		$splitSql = new Dpql\SqlSelect();
+		$this->_splitSql = $splitSql;
 		$haveSplit = false;
 
 		foreach ($this->_splitBy AS $group) {
@@ -427,10 +428,18 @@ class Display
 			}
 		}
 
-		if ($this->_splitColumnMap)
+		if (!$this->_splitColumnMap)
 		{
-			$this->_splitSql = $splitSql;
+			$this->_splitSql = null;
 		}
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Dpql\SqlSelect|null
+	 */
+	public function getSplitSql()
+	{
+		return $this->_splitSql;
 	}
 
 	/**

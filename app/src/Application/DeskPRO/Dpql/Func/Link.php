@@ -82,44 +82,43 @@ class Link extends AbstractFunc
 		}
 
 		$preppedPrint = $print->prepare($statement, $section, $stack, $select, $result);
-		$preppedFormat = $format->prepare($statement, $section, $stack, $select, $result);
-
-		if ($argNames) {
-			$argNameOutput = ', ' . implode(', ', $argNames);
-		} else {
-			$argNameOutput = '';
-		}
-
-		switch ($formatLiteral) {
-			case 'ticket':
-				$formatLiteral = 'agent/#app.tickets,t:%d';
-				break;
-		}
 
 		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
 			use ($formatLiteral, $argSelect)
 		{
-			$breakEarly = (
-				$value === null
-				|| !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
-			);
-
-			$value = $valueRenderer->renderValue($value, 'string');
-
-			if ($breakEarly) {
-				return $value;
-			}
-
-			$argValues = array();
-			foreach ($argSelect AS $key) {
-				$argValues[] = urlencode($renderer->getColumnValue($row, $key));
-			}
-
-			$link = App::getRequest()->getBasePath() . '/' . vsprintf($formatLiteral, $argValues);
-
-			return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $value . '</a>';
+			return Link::formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer);
 		};
 
 		return new Prepared($preppedPrint->sql(), $preppedPrint->name(), false, $renderer);
+	}
+
+	public static function formatLink($print, $format, array $argSelect, array $row,
+		AbstractValues $valueRenderer, AbstractRenderer $renderer
+	)
+	{
+		$breakEarly = (
+			$print === null
+				|| !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
+		);
+
+		$print = $valueRenderer->renderValue($print, 'string');
+
+		if ($breakEarly) {
+			return $print;
+		}
+
+		switch ($format) {
+			case 'ticket': $format = 'agent/#app.tickets,t:%d'; break;
+			case 'person': $format = 'agent/#app.people,p:%d'; break;
+		}
+
+		$argValues = array();
+		foreach ($argSelect AS $key) {
+			$argValues[] = urlencode($renderer->getColumnValue($row, $key));
+		}
+
+		$link = App::getRequest()->getBasePath() . '/' . vsprintf($format, $argValues);
+
+		return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $print . '</a>';
 	}
 }
