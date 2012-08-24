@@ -9,6 +9,9 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
+
+		window.SEND_FEEDBACK_WINDOW = this;
+
 		$('#submit_beta_feedback').on('click', function(ev) {
 			ev.preventDefault();
 			self.open();
@@ -27,7 +30,7 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: {
-					message: self.el.find('textarea').val()
+					message: $.trim(self.el.find('textarea').val() + "\n\n" + self.el.find('input[name="message_extra"]').val())
 				},
 				dataType: 'json',
 				complete: function() {
@@ -42,7 +45,16 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 		});
 	},
 
-	open: function() {
+	open: function(message, messageExtra) {
+
+		message = message || 'We want to hear about your experience with DeskPRO v4.';
+		if (typeof message === 'string') {
+			message = $('<span />').text(message);
+		}
+
+		$('#dp_submit_feedback_label').empty().append(message);
+		this.el.find('input[name="message_extra"]').val(messageExtra || '');
+
 		this.updatePositions();
 		this.el.show();
 	},

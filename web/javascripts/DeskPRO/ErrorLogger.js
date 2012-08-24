@@ -1,6 +1,7 @@
 var DpErrorLog = {
 	_origHandler: null,
 	saveUrl: null,
+	hasSentReport: false,
 	init: function() {
 		if (!this.saveUrl) {
 			return;
@@ -10,34 +11,55 @@ var DpErrorLog = {
 		if (window.onerror) {
 			this._origHandler = window.onerror;
 		}
+
+		if (window.jQuery && window.jQuery.cookie) {
+			if ($.cookie('dp_jse_report')) {
+				this.hasSentReport = true;
+			}
+		}
 	},
 
 	logError: function(message, trace, script, line) {
 
-		if (!this.saveUrl) {
-			return;
+		if (this.saveUrl) {
+
+			if (ASSETS_BASE_URL) {
+				var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
+				message = message.replace(r, '');
+			}
+
+			var data = {
+				message: message || '',
+				trace:   trace   || '',
+				script:  script  || '',
+				line:    line    || '0'
+			};
+
+			$.ajax({
+				url: this.saveUrl,
+				data: data,
+				error: function() { },// prevents DeskPRO_Window's global error handler from firing on error
+				type: 'POST'
+			});
 		}
-
-		if (ASSETS_BASE_URL) {
-			var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
-			message = message.replace(r, '');
-		}
-
-		var data = {
-			message: message || '',
-			trace:   trace   || '',
-			script:  script  || '',
-			line:    line    || '0'
-		};
-
-		$.ajax({
-			url: this.saveUrl,
-			data: data,
-			error: function() { },// prevents DeskPRO_Window's global error handler from firing on error
-			type: 'POST'
-		});
 
 		DP.console.log('[JS Error] %s', message);
+
+		if (window.SEND_FEEDBACK_WINDOW && !this.hasSentReport) {
+			this.hasSentReport = true;
+
+			if (window.jQuery && window.jQuery.cookie) {
+				$.cookie('dp_jse_report', '1', { expires: 1 });
+			}
+
+			window.SEND_FEEDBACK_WINDOW.open(
+				"We have detected a browser Javascript error that may prevent the interface from functioning properly. " +
+				"To help us identify and fix the problem, we would appreciate it if you could describe what you were viewing " +
+				"and the actions you were performing just before this notice appeared.",
+
+				"message: " + data.message + "\nscript: " + data.script + "\nline:" + data.line
+			);
+		}
 	},
 
 	handleError: function(message, script, line) {

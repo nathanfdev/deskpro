@@ -181,11 +181,12 @@
 	<em class="close-trigger"></em>
 	<form action="{{ path('agent_submit_deskpro_feedback') }}" method="post">
 		<article>
-			<p>
+			<p id="dp_submit_feedback_label">
 				We want to hear about your experience with DeskPRO v4.
 			</p>
 			<div class="text-wrapper">
 				<textarea name="message"></textarea>
+				<input type="hidden" name="message_extra" value="" />
 			</div>
 		</article>
 		<footer>
