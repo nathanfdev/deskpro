@@ -56,8 +56,16 @@ DeskPRO.Report.Window = new Orb.Class({
 				$.ajax({
 					url: url,
 					type: 'POST',
-					dataType: 'json',
+					dataType: 'html',
 					data: { favorite: newValue }
+				}).done(function(data) {
+					var favoriteContainer = $('#report-favorites');
+					favoriteContainer.find('ul:first').replaceWith(data);
+					if (favoriteContainer.find('li').length) {
+						favoriteContainer.show();
+					} else {
+						favoriteContainer.hide();
+					}
 				});
 
 				e.preventDefault();

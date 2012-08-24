@@ -1,0 +1,6 @@
+{% import 'ReportBundle:ReportBuilder:layout.html.twig' as layout %}
+<ul>
+{% for report in favorites %}
+	{{ layout.report_list_item(report) }}
+{% endfor %}
+</ul>

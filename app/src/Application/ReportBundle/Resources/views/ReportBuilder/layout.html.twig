@@ -33,14 +33,14 @@
 			<a rel="report-page-body" href="{{ path('report_builder') }}" class="btn">Run Query</a>
 		</div>
 
-		{% if favoriteReports %}
-		<h3>Favorite</h3>
-		<ul>
-		{% for report in favoriteReports %}
-			{{ _self.report_list_item(report) }}
-		{% endfor %}
-		</ul>
-		{% endif %}
+		<div id="report-favorites" {{ favoriteReports ? '' : 'style="display: none"'}}>
+			<h3>Favorite</h3>
+			<ul>
+			{% for report in favoriteReports %}
+				{{ _self.report_list_item(report) }}
+			{% endfor %}
+			</ul>
+		</div>
 
 		{% if customReports %}
 		<h3>Custom</h3>

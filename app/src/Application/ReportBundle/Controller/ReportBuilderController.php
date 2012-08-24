@@ -272,7 +272,14 @@ class ReportBuilderController extends AbstractController
 		}
 
 		if ($this->request->isXmlHttpRequest()) {
-			return $this->createJsonResponse(array('ok' => true));
+			$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
+
+			$reports = $rbRepository->getAllReports();
+			$grouped = $rbRepository->groupReportsList($reports);
+
+			return $this->render('ReportBundle:ReportBuilder:favorite-list.html.twig', array(
+				'favorites' => $grouped['favorites']
+			));
 		}
 
 		return $this->redirectRoute('report_builder_report', array('report_builder_id' => $report->id));
