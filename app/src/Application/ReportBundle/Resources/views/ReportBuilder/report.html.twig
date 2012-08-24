@@ -7,6 +7,9 @@
 			<a rel="report-page-body" href="{{ path('report_builder_edit', {'report_builder_id': report.id}) }}"
 			   class="report-action"><img src="{{ asset('images/report/icons/edit.png') }}" alt="Edit" /></a>
 		{% endif %}
+		{% if not (report.isEditable() and report.isQueryDifferent(query)) %}
+			<a class="btn small report-action report-editor-controls-show" href="javascript:" data-target="#report-editor-controls">Show Query</a>
+		{% endif %}
 
 		<a href="{{ path('report_builder_favorite', {
 			'report_builder_id': report.id,
@@ -27,13 +30,15 @@
 	{% endif %}
 
 	<form action="{{ path('report_builder_report', {'report_builder_id' : report.id}) }}" class="dp-form" method="post">
-		{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' with {'readOnly': not report.isEditable()} %}
+		<div id="report-editor-controls" class="{{ report.isEditable() and report.isQueryDifferent(query) ? '' : 'report-editor-hidden'}}">
+			{% include 'ReportBundle:ReportBuilder:query-editor.html.twig' with {'readOnly': not report.isEditable()} %}
 
-		<div class="report-actions">
-			<button class="btn primary" name="run" value="1">Run Report</button>
-			{% if report.isEditable() %}
-				<button class="btn" name="save" value="1">Save Changes</button>
-			{% endif %}
+			<div class="report-actions">
+				<button class="btn primary" name="run" value="1">Run Report</button>
+				{% if report.isEditable() %}
+					<button class="btn" name="save" value="1">Save Changes</button>
+				{% endif %}
+			</div>
 		</div>
 
 		{% if run %}

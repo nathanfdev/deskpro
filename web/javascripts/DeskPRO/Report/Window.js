@@ -42,6 +42,7 @@ DeskPRO.Report.Window = new Orb.Class({
 		if ($('#report-container').length) {
 			var initialize = function(context) {
 				context.find('textarea.expander').TextAreaExpander().trigger('textareaexpander_fire');
+				context.find('select.readonly option:not(:selected)').attr('disabled', true);
 			};
 			initialize($(document));
 
@@ -71,6 +72,14 @@ DeskPRO.Report.Window = new Orb.Class({
 				e.preventDefault();
 			});
 
+			$(document.body).delegate('.report-editor-controls-show', 'click', function(e) {
+				var $this = $(this);
+
+				e.preventDefault();
+				$($this.data('target')).show();
+				$this.hide();
+			});
+
 			var pageBody = $('#report-page-body'), initialized = false;
 
 			$.history.init(function(hash) {
@@ -83,12 +92,12 @@ DeskPRO.Report.Window = new Orb.Class({
 					left = pageBody.offset().left + pageBody.outerWidth() / 2 - loadingBlock.outerWidth() / 2;
 
 				loadingBlock.appendTo(document.body).css('left', left + 'px').show();
-	
+
 				var failure = function() {
 					pageBody.html($('#report-failed-block').html());
 				};
 
-				$.scrollTo(pageBody, 200);
+				$.scrollTo(document.body, 200);
 
 				$.ajax({
 					url: hash || window.location.pathname + window.location.search,

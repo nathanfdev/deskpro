@@ -14,13 +14,13 @@
 
 <div id="query-builder" class="query-editor-builder" style="display: none">
 	<dl><dt class="no-pad">DISPLAY</dt> <dd>
-		<select name="parts[display][0]">
+		<select name="parts[display][0]" class="{{readOnly ? 'readonly' : ''}}">
 			<option value="BAR"{{ parts.display.0 == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 			<option value="LINE"{{ parts.display.0 == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
 			<option value="PIE"{{ parts.display.0 == 'PIE' ? ' selected="selected"' : ''}}>PIE</option>
 			<option value="TABLE"{{ parts.display.0 == 'TABLE' or parts.display is empty ? ' selected="selected"' : ''}}>TABLE</option>
 		</select>
-		<select name="parts[display][1]">
+		<select name="parts[display][1]" class="{{readOnly ? 'readonly' : ''}}">
 			<option value="">&nbsp;</option>
 			<option value="BAR"{{ parts.display.1 == 'BAR' ? ' selected="selected"' : ''}}>BAR</option>
 			<option value="LINE"{{ parts.display.1 == 'LINE' ? ' selected="selected"' : ''}}>LINE</option>
@@ -52,7 +52,7 @@
 </div>
 
 {% if readOnly %}
-	<div class="query-read-only-notice">This is a built-in query. Nothing other than the display type can be modified. To adjust this query, please clone it.</div>
+	<div class="query-read-only-notice">This is a built-in query and cannot be modified. To modify this query, please clone it.</div>
 {% endif %}
 
 <input type="hidden" name="inputType" id="input-type-input" value="{{ inputType }}" />

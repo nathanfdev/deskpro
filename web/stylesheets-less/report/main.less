@@ -994,8 +994,10 @@ section.coming-soon {
 	overflow: auto;
 	h1 {
 		font-size: 16pt;
+		line-height: 100%;
 		margin-bottom: 10px;
 		.report-action { float: right; margin-left: 5px; font-size: 11px; }
+		.btn { font-weight: normal; padding: 2px 5px; }
 	}
 	.report-favorite {
 		float: left;
@@ -1095,7 +1097,7 @@ section.coming-soon {
 }
 
 .query-read-only {
-	input, textarea { color: #777; }
+	input, select, option, textarea { color: #777; }
 }
 
 .query-editor-builder {
@@ -1129,6 +1131,10 @@ section.coming-soon {
 .query-read-only-notice {
 	margin-top: 10px;
 	color: #777;
+}
+
+.report-editor-hidden {
+	display: none;
 }
 
 /** Printing **/
