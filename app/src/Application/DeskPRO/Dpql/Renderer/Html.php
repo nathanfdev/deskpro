@@ -565,11 +565,14 @@ class Html extends AbstractRenderer
 		if ($type == 'pie') {
 			$output = '';
 
+			$sliceCount = count($chartData);
+			$height = 400 + ceil($sliceCount / 4) * 20;
+
 			foreach ($graphs AS $i => $graph) {
 				$id = 'report_chart_' . md5(uniqid());
 
 				$output .= '
-					<div id="' . $id . '" class="report-chart"></div>
+					<div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
 					<script type="text/javascript">
 					$(function() {
 						var chart = new AmCharts.AmPieChart();
@@ -577,7 +580,7 @@ class Html extends AbstractRenderer
 						chart.titleField = "category";
 						chart.valueField = "' . $graph['value'] . '";
 						chart.startDuration = 0;
-						//chart.labelsEnabled = false;
+						' . ($sliceCount >= 25 ? 'chart.labelsEnabled = false;' : '') . '
 						chart.addLegend(new AmCharts.AmLegend());
 
 						chart.write("' . $id . '");
