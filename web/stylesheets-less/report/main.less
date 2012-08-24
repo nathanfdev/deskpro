@@ -949,6 +949,8 @@ section.coming-soon {
 
 	h3 {
 		margin-top: 10px;
+		padding-bottom: 2px;
+		border-bottom: 1px solid #DEDEDE;
 		font-size: 14pt;
 	}
 
@@ -956,7 +958,14 @@ section.coming-soon {
 		margin-top: 3px;
 		font-size: 11pt;
 		cursor: pointer;
-		span { display: inline-block; width: 9px; }
+		span {
+			display: inline-block;
+			width: 11px;
+			height: 11px;
+			margin-right: 3px;
+			background: url(../../images/agent/collapse.png) no-repeat;
+			&.collapsed { background-image: url(../../images/agent/expand.png); }
+		}
 	}
 
 	li {
@@ -969,7 +978,7 @@ section.coming-soon {
 		}
 	}
 
-	.collapsed { display: none; }
+	ul.collapsed { display: none; }
 }
 
 .report-list-dragger {

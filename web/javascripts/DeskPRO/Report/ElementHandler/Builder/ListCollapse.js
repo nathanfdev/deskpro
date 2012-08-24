@@ -18,9 +18,9 @@ DeskPRO.Report.ElementHandler.Builder.ListCollapse = new Orb.Class({
 
 		var updateStatusFunc = function() {
 			if (targetEl.hasClass('collapsed')) {
-				statusEl.text('+');
+				statusEl.addClass('collapsed');
 			} else {
-				statusEl.text('-');
+				statusEl.removeClass('collapsed');
 			}
 		};
 
