@@ -2,7 +2,7 @@
 <div class="query-error">{{ error }}</div>
 {% else %}
 <div class="report-builder-results">
-	<div class="query">{{ query }}</div>
+	{% if includeQuery %}<div class="query">{{ query }}</div>{% endif %}
 	<div>Generated: {{ "now"|date('fulltime') }}</div>
 	{% if results %}
 		{{ results|raw }}
