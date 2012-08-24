@@ -1005,9 +1005,8 @@ section.coming-soon {
 
 #report-loading-block {
 	display: none;
-	position: absolute;
+	position: fixed;
 	top: 175px;
-	left: 500px;
 	height: 100px;
 	width: 250px;
 	background: white;
@@ -1016,6 +1015,7 @@ section.coming-soon {
 	line-height: 100px;
 	vertical-align: middle;
 	font-size: 14pt;
+	z-index: 1000;
 }
 
 #report-failed-block {

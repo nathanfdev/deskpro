@@ -80,13 +80,15 @@ DeskPRO.Report.Window = new Orb.Class({
 				}
 
 				var loadingBlock = $('#report-loading-block'),
-					left = pageBody.position().left + pageBody.outerWidth() / 2 - loadingBlock.outerWidth() / 2;
+					left = pageBody.offset().left + pageBody.outerWidth() / 2 - loadingBlock.outerWidth() / 2;
 
-				loadingBlock.css('left', left + 'px').show();
-
+				loadingBlock.appendTo(document.body).css('left', left + 'px').show();
+	
 				var failure = function() {
 					pageBody.html($('#report-failed-block').html());
 				};
+
+				$.scrollTo(pageBody, 200);
 
 				$.ajax({
 					url: hash || window.location.pathname + window.location.search,
