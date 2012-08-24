@@ -225,24 +225,38 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 		// So we'll make it a real address right now.
 
 		if ($ticket->person_email_validating) {
-			$email = new PersonEmail();
-			$email->email = $ticket->person_email_validating->email;
-			$email->date_created = $ticket->person_email_validating->date_created;
-			$email->date_validated = new \DateTime();
-			$email->person = $ticket->person;
 
-			$ticket->person->is_confirmed = true;
+			// Make sire it doesnt already exist,
+			$found_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($ticket->person_email_validating->email);
+			if ($found_person) {
+				$ticket->person = $found_person;
+				$ticket->person->is_confirmed = true;
 
-			$ticket->person->addEmailAddress($email);
+				App::getOrm()->remove($ticket->person_email_validating);
 
-			App::getOrm()->persist($email);
+				$ticket->person_email_validating = null;
+				App::getOrm()->persist($ticket->person);
+				App::getOrm()->persist($ticket);
+			} else {
+				$email = new PersonEmail();
+				$email->email = $ticket->person_email_validating->email;
+				$email->date_created = $ticket->person_email_validating->date_created;
+				$email->date_validated = new \DateTime();
+				$email->person = $ticket->person;
 
-			$ticket->person_email_validating = null;
-			$ticket->person_email = $email;
+				$ticket->person->is_confirmed = true;
 
-			App::getOrm()->persist($ticket->person);
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
+				$ticket->person->addEmailAddress($email);
+
+				App::getOrm()->persist($email);
+
+				$ticket->person_email_validating = null;
+				$ticket->person_email = $email;
+
+				App::getOrm()->persist($ticket->person);
+				App::getOrm()->persist($ticket);
+				App::getOrm()->flush();
+			}
 		}
 
 		#------------------------------
