@@ -323,18 +323,18 @@ class TriggerExecutor
 
 				// If ticket is over antiflood, require validation
 				if ($new_ticket_count > App::getSetting('core_email.antiflood_newtickets')) {
-					$this->tracker->getLog()->logDebug('Anti-flood delete');
+					$this->tracker->logMessage('Anti-flood delete');
 					$actions_collection->add($factory->create('delete', array()));
 
 				// Lower threshold for turning off notificaiton
 				} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newtickets_warn')) {
 
-					$this->tracker->getLog()->logDebug('Anti-flood adding trigger: disable_user_notifications');
+					$this->tracker->logMessage('Anti-flood adding trigger: disable_user_notifications');
 					$actions_collection->add($factory->create('disable_user_notifications', array()));
 
 					// If it is exactly the count, then send the warning email
 					if ($new_ticket_count == App::getSetting('core_email.antiflood_newtickets_warn')) {
-						$this->tracker->getLog()->logDebug('Anti-flood adding trigger: warn_newticket_flood');
+						$this->tracker->logMessage('Anti-flood adding trigger: warn_newticket_flood');
 						$actions_collection->add($factory->create('warn_newticket_flood', array()));
 					}
 				}
@@ -355,18 +355,18 @@ class TriggerExecutor
 
 				// Dont send notifications to anyone now
 				if ($new_ticket_count > App::getSetting('core_email.antiflood_newreplies')) {
-					$this->tracker->getLog()->logDebug('Anti-flood adding trigger: disable_user_notifications');
+					$this->tracker->logMessage('Anti-flood adding trigger: disable_user_notifications');
 					$actions_collection->add($factory->create('disable_notifications', array()));
 
 				// Lower threshold for turning off user notificaiton to prevent loops
 				} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newreplies_warn')) {
 
-					$this->tracker->getLog()->logDebug('Anti-flood adding trigger: disable_user_notifications');
+					$this->tracker->logMessage('Anti-flood adding trigger: disable_user_notifications');
 					$actions_collection->add($factory->create('disable_user_notifications', array()));
 
 					// If it is exactly the count, then send the warning email
 					if ($new_ticket_count == App::getSetting('core_email.antiflood_newreplies_warn')) {
-						$this->tracker->getLog()->logDebug('Anti-flood adding trigger: warn_newticket_flood');
+						$this->tracker->logMessage('Anti-flood adding trigger: warn_newticket_flood');
 						$actions_collection->add($factory->create('warn_newticket_flood', array()));
 					}
 				}
@@ -381,7 +381,7 @@ class TriggerExecutor
 			}
 
 			if ($is_autoreply) {
-				$this->tracker->getLog()->logDebug('Is Auto-Reply, adding trigger: disable_user_notifications');
+				$this->tracker->logMessage('Is Auto-Reply, adding trigger: disable_user_notifications');
 				$actions_collection->add($factory->create('disable_user_notifications', array()));
 			}
 		}
