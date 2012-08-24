@@ -120,7 +120,7 @@ class SqlPass extends AbstractFunc
 		'VAR_SAMP' => array('number', 1),
 		'WEEKDAY' => array('number', 1),
 		'WEEKOFYEAR' => array('number', 1),
-		'YEAR' => array('number', 1)
+		'YEAR' => array('year', 1)
 	);
 
 	/**

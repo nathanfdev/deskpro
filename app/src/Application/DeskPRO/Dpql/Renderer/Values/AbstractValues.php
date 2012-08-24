@@ -83,8 +83,14 @@ abstract class AbstractValues
 			return $this->_renderNull();
 		}
 
-		switch (strtolower($format)) {
+		$format = strtolower($format);
+
+		switch ($format) {
+			case 'year':
+				return $this->escapeValue($value);
+
 			case 'number':
+			case 'numberraw';
 				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
 					// float
 					$decimals = min(4, strlen($match[2]));
@@ -93,7 +99,13 @@ abstract class AbstractValues
 					$decimals = 0;
 				}
 
-				return $this->escapeValue(number_format($value, $decimals));
+				if ($format == 'numberraw') {
+					$thousands = '';
+				} else {
+					$thousands = ',';
+				}
+
+				return $this->escapeValue(number_format($value, $decimals, '.', $thousands));
 
 			case 'boolean':
 				return $this->_renderBoolean($value);
