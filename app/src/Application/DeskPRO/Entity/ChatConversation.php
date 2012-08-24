@@ -573,10 +573,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @param \DateTime $date
 	 */
-	public function setDateEnded(\DateTime $date)
+	public function setDateEnded(\DateTime $date = null)
 	{
-		$this->setModelField('date_ended', $date);
-		$this->setModelField('total_to_ended', $date->getTimestamp() - $this->date_created->getTimestamp());
+		if ($date) {
+			$this->setModelField('date_ended', $date);
+			$this->setModelField('total_to_ended', $date->getTimestamp() - $this->date_created->getTimestamp());
+		} else {
+			$this->setModelField('date_ended', null);
+			$this->setModelField('total_to_ended', 0);
+		}
 	}
 
 
