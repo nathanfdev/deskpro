@@ -130,6 +130,9 @@ class Manager
 	public function postUpgrade()
 	{
 		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+
+		// Clear old CSS blob so it's regenerated
+		$this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL");
 	}
 
 
