@@ -31,7 +31,7 @@
 
 		<div class="report-actions">
 			<button class="btn primary" name="run" value="1">Run Report</button>
-			{% if error is empty and report.isEditable() and report.isQueryDifferent(query) %}
+			{% if report.isEditable() %}
 				<button class="btn" name="save" value="1">Save Changes</button>
 			{% endif %}
 		</div>
