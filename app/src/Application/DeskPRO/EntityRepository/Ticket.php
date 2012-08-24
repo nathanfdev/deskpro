@@ -91,7 +91,7 @@ class Ticket extends AbstractEntityRepository
 			$new_delticket = $this->getEntityManager()->createQuery("
 				SELECT t
 				FROM DeskPRO:TicketDeleted t
-				WHERE t.ticket_id = :ticket_id
+				WHERE t.ticket_id = ?0
 			")->setParameters(array($del_ticket->new_ticket_id))->setMaxResults(1)->getOneOrNullResult();
 		}
 
