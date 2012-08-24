@@ -267,6 +267,13 @@ $collection->add('report_builder', new Route(
 	array()
 ));
 
+$collection->add('report_builder_query', new Route(
+	'/report-builder/query',
+	array('_controller' => 'ReportBundle:ReportBuilder:query'),
+	array(),
+	array()
+));
+
 $collection->add('report_builder_parse', new Route(
 	'/report-builder/parse',
 	array('_controller' => 'ReportBundle:ReportBuilder:parse'),

@@ -48,6 +48,12 @@ class ReportBuilderController extends AbstractController
 			return $this->render('ReportBundle:ReportBuilder:index-disabled.html.twig', array());
 		}
 
+		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams(array(
+		)));
+	}
+
+	public function queryAction()
+	{
 		$query = $this->in->getString('query');
 		$parts = $this->in->getArrayValue('parts');
 
@@ -85,7 +91,7 @@ class ReportBuilderController extends AbstractController
 			}
 		}
 
-		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams(array(
+		return $this->render('ReportBundle:ReportBuilder:query.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'query' => $query,
 			'parts' => $parts,
 			'inputType' => $inputType ?: 'builder',
