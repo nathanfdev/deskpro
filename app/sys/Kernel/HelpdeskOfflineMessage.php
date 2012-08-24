@@ -33,6 +33,8 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
+
 class HelpdeskOfflineMessage
 {
 	public static function getOfflinePage($message = null)
@@ -80,9 +82,9 @@ class HelpdeskOfflineMessage
 		$offline_message = null;
 		if (file_exists(dp_get_tmp_dir() . '/helpdesk-offline-message.txt')) {
 			$offline_message = file_get_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt');
-		} else {
+		} elseif (class_exists('Application\DeskPRO\App', false)) {
 			try {
-				$offline_message = App::getSetting('core.helpdesk_disabled_message');
+				$offline_message = \Application\DeskPRO\App::getSetting('core.helpdesk_disabled_message');
 			} catch (\Exception $e) {}
 		}
 
