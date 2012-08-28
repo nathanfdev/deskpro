@@ -40,7 +40,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\App;
 
 /**
- * A widget is a Javascript widget added to various pages.
+ * A widget is a Javascript/HTML widget added to various pages.
  *
  */
 class Widget extends \Application\DeskPRO\Domain\DomainObject
@@ -53,99 +53,25 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
+
 	/**
-	 * The widgets name id. This is a name that identifies the specific
-	 * type of widget. The author of the widget should name it. For example,
-	 * 'com_example_getuser'
+	 * Description for this widget, reminder for admin
 	 *
 	 * @var string
 	 */
-	protected $name_id = '';
+	protected $description = '';
 
-	/**
-	 * Note/title for this widget, reminder for admin
-	 *
-	 * @var string
-	 */
-	protected $note = '';
+	protected $title = '';
 
-	/**
-	 * An array of CSS files this widget loads.
-	 *
-	 * @var array
-	 */
-	protected $assets_css = array();
+	protected $html = '';
+	protected $js = '';
+	protected $css = '';
 
-	/**
-	 * An array of JS files this widget loads.
-	 *
-	 * @var array
-	 */
-	protected $assets_js = array();
+	protected $page;
+	protected $page_location;
+	protected $insert_position;
 
-	/**
-	 * An array of other data that might be used in templates
-	 *
-	 * @var array
-	 */
-	protected $data = array();
-
-	/**
-	 * The page/section this widget should be displayed on.
-	 *
-	 * @var string
-	 */
-	protected $section;
-
-	/**
-	 * The JS classname that contains the widget handler.
-	 *
-	 * @var string
-	 */
-	protected $js_widget_class;
-
-	/**
-	 * The PHP class that handles fetch data/processing
-	 *
-	 * @var string
-	 */
-	protected $php_widget_class;
-
-	/**
-	 * The template used to render the widget HTML.
-	 *
-	 * @var string
-	 */
-	protected $template_name;
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	/**
-	 * Get the handler for this widget class.
-	 *
-	 * @return Application\DeskPRO\Widgets\HandlerInterface
-	 */
-	public function getHandler(array $options)
-	{
-		if ($this->php_widget_class) {
-			$classname = $this->php_widget_class;
-		} else {
-			$classname = 'Application\\DeskPRO\\Widgets\\WidgetHandler';
-		}
-
-		$handler = new $classname($this, $options);
-
-		return $handler;
-	}
-
-
+	protected $enabled = true;
 
 	############################################################################
 	# Doctrine Metadata
@@ -158,15 +84,15 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'widgets', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name_id', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name_id', ));
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
-		$metadata->mapField(array( 'fieldName' => 'assets_css', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'assets_css', ));
-		$metadata->mapField(array( 'fieldName' => 'assets_js', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'assets_js', ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'section', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section', ));
-		$metadata->mapField(array( 'fieldName' => 'js_widget_class', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'js_widget_class', ));
-		$metadata->mapField(array( 'fieldName' => 'php_widget_class', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'php_widget_class', ));
-		$metadata->mapField(array( 'fieldName' => 'template_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'template_name', ));
+		$metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'description', ));
+		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'html', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'html', ));
+		$metadata->mapField(array( 'fieldName' => 'js', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'js', ));
+		$metadata->mapField(array( 'fieldName' => 'css', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'css', ));
+		$metadata->mapField(array( 'fieldName' => 'page', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page', ));
+		$metadata->mapField(array( 'fieldName' => 'page_location', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_location', ));
+		$metadata->mapField(array( 'fieldName' => 'insert_position', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'insert_position', ));
+		$metadata->mapField(array( 'fieldName' => 'enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'enabled', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

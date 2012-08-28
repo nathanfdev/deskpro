@@ -4439,3 +4439,45 @@ section.demo-notice article .enter-wrap {
 	text-align: center;
 	margin-top: 15px;
 }
+
+ul.tabs {
+	height: 27px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+
+	li {
+		display: inline-block; *zoom: 1; *display: inline;
+		background: white;
+		height: 26px;
+		margin: 0;
+		border: 1px solid #ccc;
+		border-bottom: none;
+		.border-radius(5px, 5px, 0, 0);
+
+		&.on {
+			position: relative;
+			height: 27px;
+		}
+		&.margin-left {
+			margin-left: 100px;
+		}
+	}
+
+	a {
+		padding: 4px 7px;
+		display: inline-block;
+	}
+}
+
+a.delete-icon {
+	.iconbase(16px, 16px);
+	background: url(../../images/agent/icons/cross.png);
+	font: 0/0 a;
+	text-shadow: none;
+	color: transparent;
+	.opacity(50);
+
+	&:hover {
+		.opacity(100);
+	}
+}

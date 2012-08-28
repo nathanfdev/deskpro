@@ -3,36 +3,46 @@ Orb.createNamespace('DeskPRO.Admin.PageHandler');
 DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
-	widget_id: 0,
-	initialize: function(widget_id) {
-		this.widget_id = widget_id;
-	},
-
 	initPage: function() {
-		var self = this;
-		$('.save-trigger').on('click', function() {
-			$('form:first').submit();
+		var textAreas = $('textarea.expander');
+
+		textAreas.TextAreaExpander().trigger('textareaexpander_fire');
+
+		this.simpleTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('#widget-tabs > li')
 		});
-		$('.cancel-trigger').on('click', function() {
-			self.closeThisPopout();
+		this.simpleTabs.addEvent('tabSwitch', function(e) {
+			textAreas.trigger('textareaexpander_fire');
+			this.getActiveTabContent().find('textarea:first').focus();
 		});
-	},
 
-	tellParentUpdated: function() {
-		var parent_win = this.getOpenerDeskPRO('DeskPRO_Page_TicketWidgets');
-		if (!parent_win) return;
+		var pageSelect = $('#page-select'),
+			pageLocations = $('#page-location-select');
 
-		parent_win.getMessageBroker().sendMessage('widget.change', {widget_id: this.widget_id});
-	},
+		var pageChange = function() {
+			var page = pageSelect.val(), haveSelected = false, firstVisible;
+			pageLocations.find('option').each(function() {
+				var $this = $(this);
+				if ($this.data('page') == page) {
+					$this.show();
+					if (!firstVisible) {
+						firstVisible = $this;
+					}
+					if ($this.is(':selected')) {
+						haveSelected = true;
+					}
+				} else {
+					$this.hide();
+				}
+			});
 
-	updateParentListRow: function(row_html) {
-		var parent_win = this.getOpenerDeskPRO('DeskPRO_Page_TicketWidgets');
-		if (!parent_win) return;
+			if (!haveSelected && firstVisible) {
+				pageLocations.val(firstVisible.val());
+			}
+		};
 
-		var data = {};
-		data['item_selector'] = 'li.widget-' + this.widget_id;
-		data['row_html'] = row_html;
-
-		parent_win.getMessageBroker().sendMessage('list.change', data);
+		pageLocations.width(pageLocations.outerWidth());
+		pageSelect.change(pageChange);
+		pageChange();
 	}
 });

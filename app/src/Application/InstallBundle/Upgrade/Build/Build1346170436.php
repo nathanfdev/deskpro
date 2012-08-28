@@ -29,86 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-use Orb\Util\Numbers;
-
-class Widget extends AbstractEntityRepository
+class Build1346170436 extends AbstractBuild
 {
-	/**
-	 * Gets all widgets, grouped by the page they belong to
-	 *
-	 * @return array
-	 */
-	public function getPageGroupedWidgets()
+	public function run()
 	{
-		$results = $this->getEntityManager()->createQuery('
-			SELECT w
-			FROM DeskPRO:Widget w
-			ORDER BY w.page, w.description
-		')->execute();
-
-		$output = array();
-		foreach ($results AS $widget) {
-			$output[$widget->page][] = $widget;
-		}
-
-		return $output;
-	}
-
-	/**
-	 * Gets all widgets that are enabled for a particular page, grouped by location and insert position
-	 *
-	 * @param string $page
-	 *
-	 * @return array
-	 */
-	public function getEnabledPageWidgetsGrouped($page)
-	{
-		$results = $this->getEntityManager()->createQuery('
-			SELECT w
-			FROM DeskPRO:Widget w
-			WHERE w.page = :page AND w.enabled = 1
-		')->execute(array('page' => $page));
-
-		$output = array();
-		foreach ($results AS $widget) {
-			$output[$widget->page_location][$widget->insert_position][] = $widget;
-		}
-
-		return $output;
-	}
-
-	/**
-	 * Gets a list of all pages that can have widgets.
-	 *
-	 * @return array
-	 */
-	public function getPages()
-	{
-		return array(
-			'ticket' => 'Ticket Tab'
-		);
-	}
-
-	/**
-	 * Gets a list of all widget locations on each page.
-	 *
-	 * @return array
-	 */
-	public function getPageLocations()
-	{
-		return array(
-			'ticket' => array(
-				'top' => 'Top of the Page',
-				'people' => 'People'
-			)
-		);
+		$this->out("Update widget schema");
+		$this->execMutateSql("ALTER TABLE widgets ADD title VARCHAR(100) NOT NULL ADD html LONGTEXT NOT NULL, ADD js LONGTEXT NOT NULL, ADD css LONGTEXT NOT NULL, ADD page VARCHAR(50) NOT NULL, ADD page_location VARCHAR(50) NOT NULL, ADD insert_position VARCHAR(50) NOT NULL, ADD enabled TINYINT(1) NOT NULL, DROP name_id, DROP assets_css, DROP assets_js, DROP data, DROP section, DROP js_widget_class, DROP php_widget_class, DROP template_name, CHANGE note description VARCHAR(255) NOT NULL");
 	}
 }

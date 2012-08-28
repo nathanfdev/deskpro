@@ -2007,4 +2007,43 @@ $collection->add('admin_emailgateway_errors_delete', new Route(
 	array()
 ));
 
+################################################################################
+# Widgets
+################################################################################
+
+$collection->add('admin_widgets', new Route(
+	'/widgets',
+	array('_controller' => 'AdminBundle:Widgets:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_widgets_new', new Route(
+	'/widgets/new',
+	array('_controller' => 'AdminBundle:Widgets:edit', 'widget_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_widgets_edit', new Route(
+	'/widgets/{widget_id}/edit',
+	array('_controller' => 'AdminBundle:Widgets:edit'),
+	array(),
+	array()
+));
+
+$collection->add('admin_widgets_delete', new Route(
+	'/widgets/{widget_id}/delete',
+	array('_controller' => 'AdminBundle:Widgets:delete'),
+	array(),
+	array()
+));
+
+$collection->add('admin_widgets_toggle', new Route(
+	'/widgets/toggle',
+	array('_controller' => 'AdminBundle:Widgets:toggle'),
+	array(),
+	array()
+));
+
 return $collection;

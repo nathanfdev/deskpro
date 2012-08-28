@@ -1,0 +1,96 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('vendor/jquery/jquery.textarea-expander.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/WidgetEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" >
+	function _page_exec() {
+		window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.WidgetEdit();
+	}
+</script>
+{% endblock %}
+{% block pagebar %}
+<ul>
+	<li>{% if widget.id %}Edit Widget{% else %}New Widget{% endif %}</li>
+</ul>
+{% endblock %}
+{% block page %}
+<form action="{{ path('admin_widgets_edit', {'widget_id': widget.id|default(0)}) }}" method="post" class="dp-form">
+
+	{% if errors %}
+	<ul id="errors_container">
+		{% for error in errors %}
+		<li>{{ error }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Description</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="description" value="{{widget.description}}" maxlength="255" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Location</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="page" id="page-select">
+				<option value="">&nbsp;</option>
+				{% for key, text in pages %}
+					<option value="{{key}}"{{ widget.page == key ? ' selected="selected"' : ''}}>{{text}}</option>
+				{% endfor %}
+			</select>
+			<select name="insert_position">
+				<option value="above"{{ widget.insert_position == 'above' ? ' selected="selected"' : ''}}>Above</option>
+				<option value="below"{{ widget.insert_position == 'below' ? ' selected="selected"' : ''}}>Below</option>
+				<option value="tab"{{ widget.insert_position == 'tab' ? ' selected="selected"' : ''}}>New Tab Within</option>
+			</select>
+			<select name="page_location" id="page-location-select">
+				<option value="" data-page="">&nbsp;</option>
+				{% for page, pageLocations in locations %}
+					{% for key, text in pageLocations %}
+						<option value="{{key}}" data-page="{{page}}"{{ widget.page == page and widget.page_location == key ? ' selected="selected"' : ''}}>{{text}}</option>
+					{% endfor %}
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="title" value="{{widget.title}}" maxlength="100" />
+		</div>
+	</div>
+
+	<ul class="tabs" id="widget-tabs" style="width: 75%">
+		<li data-tab-for="#widget-html" class="on"><a>HTML</a></li>
+		<li data-tab-for="#widget-js"><a>JS</a></li>
+		<li data-tab-for="#widget-css"><a>CSS</a></li>
+	</ul>
+	<div id="widget-html" style="display: none">
+		<textarea name="html" class="expander" data-expander-min-height="150">{{widget.html}}</textarea>
+	</div>
+	<div id="widget-js" style="display: none">
+		<textarea name="js" class="expander" data-expander-min-height="150">{{widget.js}}</textarea>
+	</div>
+	<div id="widget-css" style="display: none">
+		<textarea name="css" class="expander" data-expander-min-height="150">{{widget.css}}</textarea>
+	</div>
+
+	<footer class="controls">
+		<button class="clean-white">Save Widget</button>
+	</footer>
+
+	{{ form_token() }}
+	<input type="hidden" name="process" value="1" />
+</form>
+{% endblock %}
