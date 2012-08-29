@@ -16,12 +16,14 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	},
 
 	updateUi: function() {
-		this.wrapper.find('.with-scroll-handler').each(function() {
-			var sh = $(this).data('scroll_handler');
-			if (sh && sh.updateSize) {
-				sh.updateSize();
-			}
-		});
+		if (this.wrapper) {
+			this.wrapper.find('.with-scroll-handler').each(function() {
+				var sh = $(this).data('scroll_handler');
+				if (sh && sh.updateSize) {
+					sh.updateSize();
+				}
+			});
+		}
 		this.fireEvent('updateUi');
 	},
 

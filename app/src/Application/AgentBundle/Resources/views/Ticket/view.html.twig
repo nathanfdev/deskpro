@@ -114,6 +114,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 {% endif %}
 
+{{ dp_widgets(baseId, 'ticket', 'header', 'above') }}
+
 <header class="page-header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box">
@@ -163,13 +165,19 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 </header>
 
+{{ dp_widgets(baseId, 'ticket', 'header', 'tab') }}
+{{ dp_widgets(baseId, 'ticket', 'header', 'below') }}
+
 <table cellspacing="0" cellpadding="0" width="100%"><tr><td class="col" valign="top" width="50%"><tr><td width="50%" valign="top">
+	{{ dp_widgets(baseId, 'ticket', 'people', 'above') }}
 	<div class="profile-box-container people-box first">
 		<header>
-			<h4>{{ phrase('agent.general.people') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'ticket', 'people', {
+				(baseId ~ '_people_box_person'): phrase('agent.general.people')
+			}) }}
 		</header>
-		<section id="{{baseId}}_people_box_person">
-			<article>
+		<section id="{{baseId}}_people_box_person_container">
+			<article id="{{baseId}}_people_box_person">
 				<dl>
 					<dt>{{ phrase('agent.general.owner') }}</dt>
 					<dd>
@@ -243,19 +251,24 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% endif %}
 				</dl>
 			</article>
+			{{ dp_widget_tabs(baseId, 'ticket', 'people') }}
 		</section>
 	</div>
+	{{ dp_widgets(baseId, 'ticket', 'people', 'below') }}
 </td><td width="50%" valign="top">
+	{{ dp_widgets(baseId, 'ticket', 'assignments', 'above') }}
 	<div class="profile-box-container people-box second">
 		<header>
 			<div class="controls" id="{{baseId}}_agent_prop_controls">
 				<span style="display:none" class="mark-loading"></span>
 				<span style="display:none" class="mark-saved">Saved</span>
 			</div>
-			<h4>{{ phrase('agent.general.assignments') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'ticket', 'assignments', {
+				(baseId ~ '_people_box_agent'): phrase('agent.general.assignments')
+			}) }}
 		</header>
-		<section id="{{baseId}}_people_box_agent">
-			<article>
+		<section id="{{baseId}}_people_box_agent_container">
+			<article id="{{baseId}}_people_box_agent">
 				<dl>
 					<dt>{{ phrase('agent.general.agent') }}</dt>
 					<dd>
@@ -310,15 +323,22 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 			</article>
+			{{ dp_widget_tabs(baseId, 'ticket', 'assignments') }}
 		</section>
 	</div>
+	{{ dp_widgets(baseId, 'ticket', 'assignments', 'below') }}
 </td></tr></table>
+
+{{ dp_widgets(baseId, 'ticket', 'properties', 'above') }}
 
 <div class="profile-box-container">
 	<header>
-		<h4>{{ phrase('agent.general.properties') }}</h4>
+		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
+			(baseId ~ '_fields_display_main_wrap'): phrase('agent.general.properties')
+		}) }}
 	</header>
-	<section class="description-area" id="{{baseId}}_fields_display_main_wrap" style="padding:0">
+	<section class="description-area" style="padding:0">
+		<article id="{{baseId}}_fields_display_main_wrap">
 		{% if app.getSetting('core.tickets.use_ref') %}
 			<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
@@ -415,15 +435,35 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
             <a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 		</div>
+		</article>
+		{{ dp_widget_tabs(baseId, 'ticket', 'properties') }}
 	</section>
 </div>
 
+{{ dp_widgets(baseId, 'ticket', 'properties', 'below') }}
+{{ dp_widgets(baseId, 'ticket', 'messages', 'above') }}
+
 <div class="profile-box-container ticket-messages">
 	<header>
+		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
+		{% if messageTabs is empty %}
 		<h4 style="cursor:pointer;" id="{{baseId}}_msgtype_label">
 			<span>Messages and Notes</span>
 			<i class="char-down">&#9660;</i>
 		</h4>
+		{% else %}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li style="cursor:pointer;" id="{{baseId}}_msgtype_label" class="on" data-tab-for="#{{baseId}}_messages_wrap">
+					<span>Messages and Notes</span>
+					<i class="char-down">&#9660;</i>
+				</li>
+			{% for widget in messageTabs %}
+				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
+			{% endfor %}
+			</ul>
+			</nav>
+		{% endif %}
 		<ul id="{{baseId}}_msgtype_menu" style="display: none;">
 			<li data-opts="message,notes,attach">Messages and Notes</li>
 			<li data-opts="message,notes,logs,attach">Messages and Notes with Ticket Log</li>
@@ -441,13 +481,18 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<section class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</section>
+	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section') }}
 </div>
+
+{{ dp_widgets(baseId, 'ticket', 'messages', 'below') }}
 
 {% if ticket_perms.reply or ticket_perms.modify_note %}
 <div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 </div>
 {% endif %}
+
+{{ dp_widgets(baseId, 'ticket', 'footer') }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">

@@ -40,6 +40,8 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 {% endif %}
 
+{{ dp_widgets(baseId, 'profile', 'header', 'above') }}
+
 <header class="page-header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box tipped" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
@@ -95,6 +97,9 @@ pageMeta.baseId = '{{ baseId }}';
 	</ul>
 </header>
 
+{{ dp_widgets(baseId, 'profile', 'header', 'tab') }}
+{{ dp_widgets(baseId, 'profile', 'header', 'below') }}
+
 <table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
 		{% include 'AgentBundle:Person:view-content-col.html.twig' %}
@@ -104,6 +109,8 @@ pageMeta.baseId = '{{ baseId }}';
 		{% include 'AgentBundle:Person:view-property-col.html.twig' %}
 	</section>
 </td></tr></table>
+
+{{ dp_widgets(baseId, 'profile', 'footer') }}
 
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
 

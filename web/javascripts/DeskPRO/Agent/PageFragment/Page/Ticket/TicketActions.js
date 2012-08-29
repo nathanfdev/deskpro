@@ -96,14 +96,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
-		var box1 = self.getEl('people_box_person');
-		var box2 = self.getEl('people_box_agent');
+		var box1 = self.getEl('people_box_person_container');
+		var box2 = self.getEl('people_box_agent_container');
 		var box1_in = $('> article', box1);
 		var box2_in = $('> article', box2);
 
 		var syncSizes = function() {
-			var h1 = box1_in.height();
-			var h2 = box2_in.height();
+			var h1 = 0;
+			var h2 = 0;
+
+			box1_in.each(function() { var thisH = $(this).height(); if (thisH > h1) { h1 = thisH; } });
+			box2_in.each(function() { var thisH = $(this).height(); if (thisH > h2) { h2 = thisH; } });
 
 			var h = (h1 > h2) ? h1 : h2;
 

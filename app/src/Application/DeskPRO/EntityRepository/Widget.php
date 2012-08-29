@@ -93,7 +93,8 @@ class Widget extends AbstractEntityRepository
 	public function getPages()
 	{
 		return array(
-			'ticket' => 'Ticket Tab'
+			'ticket' => 'Ticket View',
+			'profile' => 'Profile View',
 		);
 	}
 
@@ -106,8 +107,20 @@ class Widget extends AbstractEntityRepository
 	{
 		return array(
 			'ticket' => array(
-				'top' => 'Top of the Page',
-				'people' => 'People'
+				'header' => 'Page Header',
+				'people' => 'People',
+				'assignments' => 'Assignments',
+				'properties' => 'Properties',
+				'messages' => 'Messages and Notes',
+				'footer' => 'Page Footer',
+			),
+			'profile' => array(
+				'header' => 'Page Header',
+				'summary' => 'Summary',
+				'properties' => 'Properties',
+				'interactions' => 'Interactions',
+				'info' => 'Information',
+				'footer' => 'Page Footer'
 			)
 		);
 	}

@@ -76,6 +76,12 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 			// Check again, there might not be any tabs
 			if (firstTab.length) {
+				// need to hide all others
+				var self = this;
+				this.triggerEls.each(function() {
+					self.getContentElFromTab($(this)).hide();
+				});
+
 				this.activateTab(firstTab);
 			}
 		}
@@ -120,7 +126,6 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		}
 
 		delete eventData['cancel'];
-
 
 		if (this.lastActiveTab) {
 			this.lastActiveTab.removeClass(this.options.activeClassname);

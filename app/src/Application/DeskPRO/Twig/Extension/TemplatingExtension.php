@@ -117,6 +117,11 @@ class TemplatingExtension extends \Twig_Extension
 			'include_php_file' => new \Twig_Function_Method($this, 'includePhpFile', array('is_safe' => array('html'))),
 			'var_dump' => new \Twig_Function_Method($this, 'dumpVar'),
 			'dp_copyright' => new \Twig_Function_Method($this, 'getCopyright', array('is_safe' => array('html'))),
+	        'dp_widgets' => new \Twig_Function_Method($this, 'getWidgets', array('is_safe' => array('html'))),
+	        'dp_widgets_raw' => new \Twig_Function_Method($this, 'getWidgetsRaw'),
+	        'dp_widget_id' => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
+	        'dp_widget_tabs_header' => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
+	        'dp_widget_tabs' => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html')))
         );
     }
 
@@ -922,5 +927,118 @@ STR;
 	public function urlTrimScheme($url)
 	{
 		return preg_replace('#^https?://#', '', $url);
+	}
+
+	protected $_widgetCache = array();
+
+	public function getWidgets($baseId, $page, $location, $position = '*')
+	{
+		$widgets = $this->_getPageLocationWidgets($page, $location, $position);
+		if (!$widgets) {
+			return '';
+		}
+
+		$output = '';
+		foreach ($widgets AS $widget) {
+			$output .= $this->_insertWidget($baseId, $widget,
+				'<div class="widget-content" id="{id}" data-widget="{widget}">{html}</div>'
+			);
+		}
+
+		return $output;
+	}
+
+	public function getWidgetsRaw($page, $location, $position = '*')
+	{
+		return $this->_getPageLocationWidgets($page, $location, $position);
+	}
+
+	protected function _getPageLocationWidgets($page, $location, $position = '*')
+	{
+		if (!array_key_exists($page, $this->_widgetCache)) {
+			$this->_widgetCache[$page] = App::getEntityRepository('DeskPRO:Widget')->getEnabledPageWidgetsGrouped($page);
+		}
+
+		if (empty($this->_widgetCache[$page][$location])) {
+			return array();
+		} else {
+			if ($position === '*') {
+				$output = array();
+				foreach ($this->_widgetCache[$page][$location] AS $widgets) {
+					foreach ($widgets AS $widget) {
+						$output[] = $widget;
+					}
+				}
+				return $output;
+			} else if (!empty($this->_widgetCache[$page][$location][$position])) {
+				return $this->_widgetCache[$page][$location][$position];
+			} else {
+				return array();
+			}
+		}
+	}
+
+	public function getWidgetHtmlId($baseId, \Application\DeskPRO\Entity\Widget $widget)
+	{
+		return "{$baseId}-widget-{$widget->id}";
+	}
+
+	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper)
+	{
+		$htmlId = $this->getWidgetHtmlId($baseId, $widget);
+
+		$output = strtr($wrapper, array(
+			'{id}' => $htmlId,
+			'{widget}' => $widget->id,
+			'{html}' => $widget->html,
+			'{title}' => $widget->title
+		));
+		if ($widget->css) {
+			$output .= '<style type="text/css" data-widget="' . $widget->id . '">' . $widget->css . '</style>';
+		}
+		if ($widget->js) {
+			$output .= '<script type="text/javascript" data-widget="' . $widget->id . '" data-html-id="' . $htmlId . '">' . $widget->js . '</script>';
+		}
+
+		return $output;
+	}
+
+	public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
+	{
+		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
+			$htmlId = $this->getWidgetHtmlId($baseId, $widget);
+			$tabs[$htmlId] = $widget->title;
+		}
+
+		if (!$tabs) {
+			return '';
+		} else if (count($tabs) == 1) {
+			return '<h4>' . reset($tabs) . '</h4>';
+		} else {
+			$tabHtml = array();
+			$on = false;
+			foreach ($tabs AS $id => $title) {
+				if (!$on) {
+					$onHtml = ' class="on"';
+					$on = true;
+				} else {
+					$onHtml = '';
+				}
+				$tabHtml[] = '<li data-tab-for="#' . $id . '"' . $onHtml . '>' . $title . '</li>';
+			}
+			return '<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>' . implode('', $tabHtml) . '</ul></nav>';
+		}
+	}
+
+	public function getWidgetTabsBody($baseId, $page, $location, $wrapper = 'article')
+	{
+		$output = '';
+		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
+			$output .= $this->_insertWidget($baseId, $widget,
+				'<' . $wrapper . ' class="widget-content" id="{id}" data-widget="{widget}" style="display: none">{html}</' . $wrapper . '>'
+			);
+		}
+
+		return $output;
 	}
 }

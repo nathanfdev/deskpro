@@ -1,4 +1,6 @@
 {# Box Summary #}
+{{ dp_widgets(baseId, 'profile', 'summary', 'above') }}
+
 {% if person.summary|length or perms.edit %}
 	<div class="profile-box-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
@@ -12,17 +14,24 @@
 					<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
 				</div>
 			{% endif %}
-			<h4>{{ phrase('agent.general.summary') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'profile', 'summary', {
+				(baseId ~ '_summary_body'): phrase('agent.general.summary')
+			}) }}
 		</header>
-		<section>
+		<section id="{{baseId}}_summary_body">
 			<input type="hidden" name="action" value="set-summary" />
 			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not perms.edit %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
 		</section>
+		{{ dp_widget_tabs(baseId, 'profile', 'summary', 'section') }}
 	</div>
 {% endif %}
+
+{{ dp_widgets(baseId, 'profile', 'summary', 'below') }}
 {# /Box Summary #}
 
 {# Properties Box #}
+{{ dp_widgets(baseId, 'profile', 'properties', 'above') }}
+
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if perms.edit %}
@@ -33,9 +42,11 @@
 				<button class="save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 		{% endif %}
-		<h4>{{ phrase('agent.general.properties') }}</h4>
+		{{ dp_widget_tabs_header(baseId, 'profile', 'properties', {
+			(baseId ~ '_properties_body'): phrase('agent.general.properties')
+		}) }}
 	</header>
-	<section>
+	<section id="{{baseId}}_properties_body">
 		<div class="table-list" id="{{baseId}}_custom_fields_rendered">
 			{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
 		</div>
@@ -46,10 +57,15 @@
 		{% endif %}
 		<br class="clear" />
 	</section>
+	{{ dp_widget_tabs(baseId, 'profile', 'properties', 'section') }}
 </div>
+
+{{ dp_widgets(baseId, 'profile', 'properties', 'below') }}
 {# /Properties Box #}
 
 {# Interaction Tabs #}
+{{ dp_widgets(baseId, 'profile', 'interactions', 'above') }}
+
 {% if person_tickets_count or person_chats_count %}
 <div class="profile-box-container tabbed">
 	<header>
@@ -57,6 +73,9 @@
 			<ul>
 				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.general.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
 				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% for widget in dp_widgets_raw('profile', 'interactions', 'tab') %}
+					<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
+				{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -140,12 +159,18 @@
 			</table>
 		</article>
 		{% endif %}
+
+		{{ dp_widget_tabs(baseId, 'profile', 'interactions') }}
 	</section>
 </div>
-{# /Interaction Tabs #}
 {% endif %}
 
+{{ dp_widgets(baseId, 'profile', 'interactions', 'below') }}
+{# /Interaction Tabs #}
+
 {# Info Tabs #}
+{{ dp_widgets(baseId, 'profile', 'info', 'above') }}
+
 <div class="profile-box-container tabbed">
 	<header>
 		<nav>
@@ -153,6 +178,9 @@
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
+				{% for widget in dp_widgets_raw('profile', 'info', 'tab') %}
+					<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
+				{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -346,6 +374,10 @@
 			</table>
 		</article>
 		{# /Tracking Tab #}
+
+		{{ dp_widget_tabs(baseId, 'profile', 'info') }}
 	</section>
 </div>
+
+{{ dp_widgets(baseId, 'profile', 'info', 'below') }}
 {# /Info Tabs #}

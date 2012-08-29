@@ -127,9 +127,9 @@ class WidgetsController extends AbstractController
 
 			$widget->description = $description;
 			$widget->title = $this->in->getString('title');
-			$widget->html = $this->in->getString('html');
-			$widget->js = $this->in->getString('js');
-			$widget->css = $this->in->getString('css');
+			$widget->html = $this->in->getStrRaw('html');
+			$widget->js = $this->in->getStrRaw('js');
+			$widget->css = $this->in->getStrRaw('css');
 			$widget->page = $page;
 			$widget->page_location = $location;
 			$widget->insert_position = $insertPosition;
