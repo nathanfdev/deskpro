@@ -187,12 +187,13 @@ class DashboardController extends AbstractController
 	 */
 	public function deleteAction($dashboard_id)
 	{
+		$dashboard  = $this->getDashboard($dashboard_id);
+
 		$this->db->beginTransaction();
 		try {
-			$dashboard  = $this->getDashboard($dashboard_id);
-			$stat = $dashboard->stat;
-
-			$this->em->remove($stat);
+			foreach ($dashboard->report_dashboard_stat as $stat) {
+				$this->em->remove($stat);
+			}
 			$this->em->remove($dashboard);
 			$this->em->flush();
 
