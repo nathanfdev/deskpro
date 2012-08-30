@@ -72,6 +72,33 @@ class HtmlPurifier implements CleanerPlugin
 		#------------------------------
 
 		if ($type == 'html_email_preclean') {
+
+			// This bit normalises the HTML document. Some clients quote an original
+			// HTML email message, but add their own HTML document as well. So you end up
+			// with two <html>..</html> documents in one message. This screws up the cleaner.
+			// This just moves the tags around so the body wraps the entire document
+
+			$value = preg_replace('#<!DOCTYPE.*?>#is', '', $value);
+			if (strpos($value, '<html') !== false) {
+				$value = preg_replace('#<html[^>]*>#i', '', $value);
+				$value = "<html>$value";
+			} else {
+				$value = "<html>$value</html>";
+			}
+
+			$m = null;
+			if (preg_match('#<head[^>]*>(.*?)</head>#is', $value, $m)) {
+				$value = str_replace($m[0], '', $value);
+				$value = str_replace('<html>', '<html>' . $m[0], $value);
+			}
+
+			if (strpos($value, '<body') !== false) {
+				$value = preg_replace('#<body[^>]*>#i', '', $value);
+				$value = str_replace('</body>', '', $value);
+			}
+			$value = str_replace('</head>', '</head><body>', $value);
+			$value = str_replace('</html>', '</body></html>', $value);
+
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			$value = Strings::extractBodyTag($value);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
