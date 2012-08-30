@@ -1452,6 +1452,10 @@ class TicketSearch extends SearcherAbstract
 	{
 		$ignore_terms = array();
 
+		if ($this->is_filter_search && $ticket->hidden_status) {
+			return false;
+		}
+
 		foreach ($this->terms as $term => $info) {
 			list($op, $choice) = $info;
 
