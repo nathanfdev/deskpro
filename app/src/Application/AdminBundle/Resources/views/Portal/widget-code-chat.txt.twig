@@ -7,11 +7,14 @@
 	DpChatWidget_Options.currentPageUrl = window.location;
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
 
-	(function() {
-		var scr = document.createElement('script');
-		scr.src = '{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
-		scr.setAttribute('async', 'true');
-		document.documentElement.firstChild.appendChild(scr);
-	})();
+	if (document.getElementsByTagName) {
+		(function() {
+			var scr   = document.createElement('script');
+			scr.type  = 'text/javascript';
+			scr.async = true;
+			scr.src   = '{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+		})();
+	}
 </script>
 <!-- /DeskPRO Chat -->
