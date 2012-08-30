@@ -245,6 +245,15 @@ class DepartmentsController extends AbstractController
 
 			$this->db->batchInsert('department_permissions', $dep_perms);
 
+			// Any tickets in the parent cant be there, assign them to this level
+			if ($parent) {
+				$this->container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE department_id = ?', array($department->getId(), $parent->getId()));
+				$this->container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?', array($department->getId(), $parent->getId()));
+				$this->container->getDb()->executeUpdate('UPDATE tickets_search_message SET department_id = ? WHERE department_id = ?', array($department->getId(), $parent->getId()));
+				$this->container->getDb()->executeUpdate('UPDATE tickets_search_message_active SET department_id = ? WHERE department_id = ?', array($department->getId(), $parent->getId()));
+				$this->container->getDb()->executeUpdate('UPDATE chat_conversations SET department_id = ? WHERE department_id = ?', array($department->getId(), $parent->getId()));
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
