@@ -430,14 +430,6 @@ class TicketChangeTracker extends ChangeTracker
 					$this->original_ticket['workflow'] = $old_val;
 					break;
 
-				case 'status':
-					$this->original_ticket['status'] = $old_val;
-					break;
-
-				case 'hidden_status':
-					$this->original_ticket['hidden_status'] = $old_val;
-					break;
-
 				case 'subject':
 					$this->original_ticket['subject'] = $old_val;
 					break;
@@ -445,11 +437,24 @@ class TicketChangeTracker extends ChangeTracker
 				case 'is_hold':
 					$this->original_ticket['is_hold'] = $old_val;
 					break;
-
-				case 'hidden_status':
-					$this->original_ticket['hidden_status'] = $old_val;
-					break;
 			}
+		}
+
+		if ($this->isPropertyChanged('hidden_status')) {
+			$tmp = $this->getChangedProperty('hidden_status');
+			if ($tmp['old']) {
+				$old_status_code = 'hidden.' . $tmp['old'];
+			} else {
+				$tmp = $this->getChangedProperty('status');
+				$old_status_code = $tmp['old'];
+			}
+
+			$this->original_ticket->setStatus($old_status_code);
+		} elseif ($this->isPropertyChanged('status')) {
+			$tmp = $this->getChangedProperty('status');
+			$old_status_code = $tmp['old'];
+
+			$this->original_ticket->setStatus($old_status_code);
 		}
 
 		foreach ($this->getAllChangedProperties() as $prop => $info) {
