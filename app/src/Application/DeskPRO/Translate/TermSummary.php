@@ -280,10 +280,19 @@ class TermSummary
 				break;
 
 			case 'ticket_subject':
-				if ($op == self::OP_IS) {
-					$summary = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.x_is_not_y'), 'value' => $choice['subject']));
-				} else {
-					$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.label'), 'value' => $choice['subject']));
+				switch ($op) {
+					case self::OP_IS:
+						$summary = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+						break;
+					case self::OP_CONTAINS:
+						$summary = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+						break;
+					case self::OP_NOTCONTAINS:
+						$summary = $tr->phrase('agent.general.x_not_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+						break;
+					default:
+						$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+						break;
 				}
 				break;
 

@@ -668,7 +668,7 @@
 	'agent.general.x_is_less_than_y'                        => '{{field}} is less than {{value}}',
 	'agent.general.x_is_not_y'                              => '{{field}} is not {{value}}',
 	'agent.general.x_is_y'                                  => '{{field}} is {{value}}',
-	'agent.general.x_not_include_ y'                        => '{{field}} do not include {{value}}',
+	'agent.general.x_not_include_y'                         => '{{field}} do not include {{value}}',
 	'agent.general.x_selected'                              => '{{num_placeholder}} selected',
 	'agent.general.years'                                   => 'years',
 	'agent.general.yim'                                     => 'YIM',
