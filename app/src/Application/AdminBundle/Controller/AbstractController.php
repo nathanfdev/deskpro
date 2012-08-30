@@ -56,7 +56,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$time_since_run = time() - $last_run;
 		$is_problem = false;
-		if ($time_since_run > 301) {
+		if ($time_since_run > 301 && !defined('DPC_IS_CLOUD')) {
 			$is_problem = true;
 		}
 
