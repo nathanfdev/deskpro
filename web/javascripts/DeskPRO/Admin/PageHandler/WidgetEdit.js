@@ -17,6 +17,7 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 		});
 
 		var pageSelect = $('#page-select'),
+			pageInsert = $('#page-insert-position-select'),
 			pageLocations = $('#page-location-select');
 
 		var pageChange = function() {
@@ -39,10 +40,51 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 			if (!haveSelected && firstVisible) {
 				pageLocations.val(firstVisible.val());
 			}
+
+			locationChange();
+		};
+		var locationChange = function() {
+			var haveSelected = false,
+				firstVisible,
+				positions = pageLocations.find('option:selected:first').data('positions'),
+				positionOptions = (positions ? positions.split(',') : []);
+
+			pageInsert.find('option').each(function() {
+				var $this = $(this), visible = false;
+				if (!positionOptions.length) {
+					visible = true;
+				} else {
+					for (var i = 0; i < positionOptions.length; i++) {
+						if ($this.val() == positionOptions[i]) {
+							visible = true;
+							break;
+						}
+					}
+				}
+
+				if (visible) {
+					$this.show();
+					if (!firstVisible) {
+						firstVisible = $this;
+					}
+					if ($this.is(':selected')) {
+						haveSelected = true;
+					}
+				} else {
+					$this.hide();
+				}
+			});
+
+			if (!haveSelected && firstVisible) {
+				pageInsert.val(firstVisible.val());
+			}
 		};
 
 		pageLocations.width(pageLocations.outerWidth());
-		pageSelect.change(pageChange);
+		pageInsert.width(pageInsert.outerWidth());
 		pageChange();
+
+		pageLocations.change(locationChange);
+		pageSelect.change(pageChange);
 	}
 });

@@ -46,7 +46,7 @@
 					<option value="{{key}}"{{ widget.page == key ? ' selected="selected"' : ''}}>{{text}}</option>
 				{% endfor %}
 			</select>
-			<select name="insert_position">
+			<select name="insert_position" id="page-insert-position-select">
 				<option value="above"{{ widget.insert_position == 'above' ? ' selected="selected"' : ''}}>Above</option>
 				<option value="below"{{ widget.insert_position == 'below' ? ' selected="selected"' : ''}}>Below</option>
 				<option value="tab"{{ widget.insert_position == 'tab' ? ' selected="selected"' : ''}}>New Tab Within</option>
@@ -54,8 +54,8 @@
 			<select name="page_location" id="page-location-select">
 				<option value="" data-page="">&nbsp;</option>
 				{% for page, pageLocations in locations %}
-					{% for key, text in pageLocations %}
-						<option value="{{key}}" data-page="{{page}}"{{ widget.page == page and widget.page_location == key ? ' selected="selected"' : ''}}>{{text}}</option>
+					{% for key, location in pageLocations %}
+						<option value="{{key}}" data-page="{{page}}" data-positions="{{location.1}}"{{ widget.page == page and widget.page_location == key ? ' selected="selected"' : ''}}>{{location.0}}</option>
 					{% endfor %}
 				{% endfor %}
 			</select>

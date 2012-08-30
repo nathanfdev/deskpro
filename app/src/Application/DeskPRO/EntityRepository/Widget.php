@@ -107,24 +107,24 @@ class Widget extends AbstractEntityRepository
 	{
 		return array(
 			'ticket' => array(
-				'header' => 'Page Header',
-				'people' => 'People',
-				'assignments' => 'Assignments',
-				'properties' => 'Properties',
-				'messages' => 'Messages and Notes',
-				'footer' => 'Page Footer',
+				'header' => array('Page Header', 'above,below'),
+				'people' => array('People', ''),
+				'assignments' => array('Assignments', ''),
+				'properties' => array('Properties', ''),
+				'messages' => array('Messages and Notes', ''),
+				'footer' => array('Page Footer', 'above'),
 			),
 			'profile' => array(
-				'header' => 'Page Header',
-				'summary' => 'Summary',
-				'properties' => 'Properties',
-				'interactions' => 'Interactions',
-				'info' => 'Information',
-				'agent' => 'Agent',
-				'contact' => 'Contact Information',
-				'organization' => 'Organization',
-				'usergroups' => 'Usergroups',
-				'footer' => 'Page Footer'
+				'header' => array('Page Header', 'above,below'),
+				'summary' => array('Summary', ''),
+				'properties' => array('Properties', ''),
+				'interactions' => array('Interactions', ''),
+				'info' => array('Information', ''),
+				'agent' => array('Agent', ''),
+				'contact' => array('Contact Information', ''),
+				'organization' => array('Organization', ''),
+				'usergroups' => array('Usergroups', ''),
+				'footer' => array('Page Footer', 'above')
 			)
 		);
 	}
