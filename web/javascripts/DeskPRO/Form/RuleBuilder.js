@@ -294,11 +294,14 @@ DeskPRO.Form.RuleBuilder = new Class({
 				choiceSel.each(function() {
 					if (!isStatic) {
 						var sel = $(this);
-						if (sel.attr('multiple')) {
-							var cellWidth = sel.closest('td').find('> .builder-options').width();
-							sel.width(cellWidth - 10);
-						}
-						DP.select(sel);
+						sel.css('visibility', 'hidden');
+						window.setTimeout(function() {
+							if (sel.attr('multiple')) {
+								var cellWidth = sel.closest('td').find('> .builder-options').width();
+								sel.width(cellWidth - 10);
+							}
+							DP.select(sel);
+						}, 150);
 					} else {
 						var lbl = $('<span />');
 						lbl.text($(this).find('option:selected').text());
