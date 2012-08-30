@@ -167,6 +167,22 @@ abstract class AbstractReader
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getOriginalTo()
+	{
+		if (!($h = $this->getHeader('X-Original-To'))) {
+			return null;
+		}
+
+		if (!$h->getHeader() || !\Orb\Validator\StringEmail::isValueValid($h->getHeader())) {
+			return null;
+		}
+
+		return strtolower($h->getHeader());
+	}
+
+	/**
 	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\Header
 	 */
 	public function getHeader($header)

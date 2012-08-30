@@ -181,6 +181,13 @@ class AddressMatcher
 			}
 		}
 
+		if ($orig_address = $reader->getOriginalTo()) {
+			$matched_address = $this->getMatchingAddress($orig_address, $gateway);
+			if ($matched_address) {
+				return $matched_address;
+			}
+		}
+
 		if ($gateway && $gateway->getPrimaryEmailAddress()) {
 			return $gateway->getPrimaryEmailAddress();
 		}
