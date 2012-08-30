@@ -1210,7 +1210,7 @@ class Strings
 	{
 		$search_replace = array();
 
-		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\.]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace, $attr) {
+		$text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#i',function($m) use (&$search_replace, $attr) {
 			$email = $m[2] . '@' . $m[3] . '.' . $m[4];
 			$key = md5(mt_rand(0,9999) . microtime());
 			$search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email, \ENT_QUOTES, 'UTF-8') . '</a>';
