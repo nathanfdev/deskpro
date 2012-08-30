@@ -291,7 +291,7 @@ class DeskPRO_Cloud_ProcMail
 
 	protected function markUnknown()
 	{
-		if (!is_dir(DP_CLOUD_MAILSTORE . '/_unknown') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
+		if (!is_dir(DP_CLOUD_MAILSTORE . '/_unknown') && !mkdir(DP_CLOUD_MAILSTORE . '/_unknown', 0755, true)) {
 			return;
 		}
 
