@@ -379,7 +379,7 @@ class TicketTerms
 
 				$ccs = $ticket->email_reader->getCcAddresses();
 				foreach ($ccs as $cc) {
-					$cc = $to->getEmail();
+					$cc = $cc->getEmail();
 					$cc = strtolower($cc);
 
 					if ($check == $cc) {
@@ -397,6 +397,15 @@ class TicketTerms
 
 				if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 				break;
+
+			case TicketSearch::TERM_STATUS:
+				if (isset($choice['status'])) {
+					$choice = $choice['status'];
+				}
+
+				if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) return false;
+				break;
+
 			case TicketSearch::TERM_CATEGORY:
 				if (!$this->_testChoiceMatch($ticket['category_id'], $op, $choice)) return false;
 				break;

@@ -213,6 +213,9 @@ class TermSummary
 				break;
 
 			case 'ticket_status':
+				if (isset($choice['status'])) {
+					$choice = $choice['status'];
+				}
 				foreach ((array)$choice as $c) {
 					if (strpos($c, '.') !== false) {
 						$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
