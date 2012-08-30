@@ -120,6 +120,10 @@ class Widget extends AbstractEntityRepository
 				'properties' => 'Properties',
 				'interactions' => 'Interactions',
 				'info' => 'Information',
+				'agent' => 'Agent',
+				'contact' => 'Contact Information',
+				'organization' => 'Organization',
+				'usergroups' => 'Usergroups',
 				'footer' => 'Page Footer'
 			)
 		);

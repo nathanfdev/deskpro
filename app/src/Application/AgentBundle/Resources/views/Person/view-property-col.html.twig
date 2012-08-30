@@ -1,11 +1,27 @@
-{% if person.is_agent %}
 {# Agent Box #}
+{{ dp_widgets(baseId, 'profile', 'agent', 'above') }}
+
+{% if person.is_agent %}
 <div class="profile-box-container highlighted">
 	<header>
 		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/admin/agents/{{ person.id }}/edit" target="_blank"></a>{% endif %}
-		<h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
+		{% set agentTabs = dp_widgets_raw('profile', 'agent', 'tab') %}
+		{% if agentTabs is empty %}
+			<h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
+		{% else %}
+			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+				<ul>
+					<li class="on" data-tab-for="#{{baseId}}_agent_tab">
+						<span class="agent-icon">{{ phrase('agent.general.agent') }}</span>
+					</li>
+					{% for widget in agentTabs %}
+						<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		{% endif %}
 	</header>
-	<section>
+	<section id="{{baseId}}_agent_tab">
 		<p>{{ phrase('agent.people.user_is_agent', {'name': person.display_name}) }}</p>
 		{% if person.Agent.getTeams() %}
 			<p>{{ phrase('agent.people.member_of_teams') }}</p>
@@ -16,27 +32,39 @@
 			</ul>
 		{% endif %}
 	</section>
+	{{ dp_widget_tabs(baseId, 'profile', 'agent', 'section') }}
 </div>
-{# /Box #}
 {% endif %}
 
+{{ dp_widgets(baseId, 'profile', 'agent', 'below') }}
+{# /Box #}
+
 {# Box Contact #}
+{{ dp_widgets(baseId, 'profile', 'contact', 'above') }}
+
 <div class="profile-box-container summary">
 	<header>
 		{% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
-		<h4>{{ phrase('agent.people.contact_info') }}</h4>
+		{{ dp_widget_tabs_header(baseId, 'profile', 'contact', {
+			(baseId ~ '_contact_body'): phrase('agent.people.contact_info')
+		}) }}
 	</header>
-	<section>
+	<section id="{{baseId}}_contact_body">
 		<div class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display">
 			{% include 'AgentBundle:Person:view-contact-display.html.twig' %}
 		</div>
 	</section>
+	{{ dp_widget_tabs(baseId, 'profile', 'contact', 'section') }}
 </div>
 {# /Box Contact #}
 
 <div id="{{baseId}}_contact_outside"></div>
 
+{{ dp_widgets(baseId, 'profile', 'contact', 'below') }}
+
 {# Organization Box #}
+{{ dp_widgets(baseId, 'profile', 'organization', 'above') }}
+
 {% if person.organization or perms.edit %}
 	<div class="profile-box-container summary" id="{{baseId}}_org_box">
 		<header id="{{baseId}}_org_display_header">
@@ -51,9 +79,11 @@
 					<button class="saved" style="display: none">{{ phrase('agent.general.saved') }}</button>
 				</div>
 			{% endif %}
-			<h4>{{ phrase('agent.general.organization') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'profile', 'organization', {
+				(baseId ~ '_organization_body'): phrase('agent.general.organization')
+			}) }}
 		</header>
-		<section>
+		<section id="{{baseId}}_organization_body">
 			<div class="org-info" id="{{baseId}}_org_display_wrap">
 				{% if person.organization %}
 					{% include 'AgentBundle:Person:view-org-info.html.twig' %}
@@ -105,11 +135,16 @@
 				</div>
 			</div>
 		</section>
+		{{ dp_widget_tabs(baseId, 'profile', 'organization', 'section') }}
 	</div>
 {% endif %}
+
+{{ dp_widgets(baseId, 'profile', 'organization', 'below') }}
 {# /Organization Box #}
 
 {# Usergroup Box #}
+{{ dp_widgets(baseId, 'profile', 'usergroups', 'above') }}
+
 {% if app.getDataRepository('Usergroup').getUsergroupNames() %}
 	<div class="profile-box-container summary {% if person.getUsergroupIds()|length < 2 %}no-section{% endif %}" id="{{baseId}}_ug_box">
 		<header>
@@ -121,9 +156,11 @@
 				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 			{% endif %}
-			<h4>{{ phrase('agent.general.usergroups') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'profile', 'usergroups', {
+				(baseId ~ '_usergroups_body'): phrase('agent.general.usergroups')
+			}) }}
 		</header>
-		<section>
+		<section id="{{baseId}}_usergroups_body">
 			<div id="{{baseId}}_ug_display_box" class="contact-list">
 				<ul>
 					<li style="padding-left: 0;">{{ reg_group.title }}</li>
@@ -145,6 +182,9 @@
 				</ul>
 			</div>
 		</section>
+		{{ dp_widget_tabs(baseId, 'profile', 'usergroups', 'section') }}
 	</div>
 {% endif %}
+
+{{ dp_widgets(baseId, 'profile', 'usergroups', 'below') }}
 {# /Usergroup Box #}

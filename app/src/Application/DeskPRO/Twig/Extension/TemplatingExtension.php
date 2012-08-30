@@ -1024,7 +1024,7 @@ STR;
 				} else {
 					$onHtml = '';
 				}
-				$tabHtml[] = '<li data-tab-for="#' . $id . '"' . $onHtml . '>' . $title . '</li>';
+				$tabHtml[] = '<li data-tab-for="#' . $id . '" id="' . $id . '_tab"' . $onHtml . '>' . $title . '</li>';
 			}
 			return '<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>' . implode('', $tabHtml) . '</ul></nav>';
 		}

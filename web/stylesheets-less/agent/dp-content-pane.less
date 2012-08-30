@@ -1802,7 +1802,7 @@ header.page-header .edit-name-gear {
 
 .profile-box-container > header {
 	.gradient(#F0F1F3, #DADBDE);
-	height: 24px;
+	min-height: 24px;
 	border: 1px solid #ACB6BF;
 	position: relative;
 
@@ -1869,21 +1869,22 @@ header.page-header .edit-name-gear {
 	font-weight: bold;
 	color: #738699;
 	padding: 0px 8px;
+	height: 24px;
 	line-height: 25px;
 	text-transform: uppercase;
 	font-family: @heading-font;
+}
 
-	&.agent-icon {
-		background: url(../../images/agent/header/interface-agent-color.png) no-repeat 6px 50%;
-		padding-left: 25px;
-	}
+.profile-box-container > header .agent-icon {
+	background: url(../../images/agent/header/interface-agent-color.png) no-repeat 6px 50%;
+	padding-left: 25px;
 }
 
 .profile-box-container > header .edit-gear {
 	display: block;
 	float: right;
 	width: 11px;
-	height: 11px;
+	height: 16px;
 	overflow: hidden;
 	text-indent: -100px;
 	background-repeat: no-repeat;
