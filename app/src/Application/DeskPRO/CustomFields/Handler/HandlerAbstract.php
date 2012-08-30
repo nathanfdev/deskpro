@@ -168,7 +168,7 @@ abstract class HandlerAbstract
 		}
 
 		if (!$tpl) {
-			$tpl = $this->getDefaultRenderTemplateName();
+			$tpl = $this->getDefaultRenderTemplateName($context);
 		}
 
 		return $tpl;
@@ -278,7 +278,7 @@ abstract class HandlerAbstract
 			'field_type'    => $this->field_def->getTableName()
 		));
 
-		return $templating->render($this->getRenderTemplateName('html'), $vars);
+		return $templating->render($this->getRenderTemplateName('text'), $vars);
 	}
 
 	/**

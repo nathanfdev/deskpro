@@ -183,6 +183,18 @@ class TicketController extends AbstractController
 
 		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
 
+		$ticket_api = array();
+		foreach (array('id', 'subject', 'ref', 'status') AS $key) {
+			$ticket_api[$key] = $ticket->$key;
+		}
+		foreach ($custom_fields AS $field) {
+			$ticket_api['custom'][$field['id']] = array(
+				'id' => $field['id'],
+				'title' => $field['title'],
+				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
+			);
+		}
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
@@ -190,6 +202,7 @@ class TicketController extends AbstractController
 
             'ticket_perms' => $this->_getTicketPerms($ticket),
             'ticket' => $ticket,
+	        'ticket_api' => $ticket_api,
             'ticket_attachments' => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
 

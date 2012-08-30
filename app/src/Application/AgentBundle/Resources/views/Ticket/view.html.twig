@@ -22,6 +22,8 @@ pageMeta.person_id    = {{ ticket.person.id }};
 pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
 pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};
 
+pageMeta.ticket = {{ ticket_api|json_encode|raw }};
+
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
 
 {% if ticket.person.organization %}
