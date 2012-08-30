@@ -92,4 +92,22 @@ class TicketMessageTemplatesController extends AbstractController
 			'form' => $form->createView(),
 		));
 	}
+
+	####################################################################################################################
+	# delete
+	####################################################################################################################
+
+	public function deleteAction($id, $security_token)
+	{
+		$message_template = $this->em->find('DeskPRO:TicketMessageTemplate', $id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_message_template', $security_token)) {
+			return $this->renderStandardTokenError();
+		}
+
+		$this->em->remove($message_template);
+		$this->em->flush();
+
+		return $this->redirectRoute('admin_ticket_msgtpl');
+	}
 }

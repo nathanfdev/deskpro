@@ -1819,6 +1819,13 @@ $collection->add('admin_ticket_msgtpl_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_ticket_msgtpl_delete', new Route(
+	'/tickets/message-templates/{id}/{security_token}',
+	array('_controller' => 'AdminBundle:TicketMessageTemplates:delete'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Email Transports
 ################################################################################
