@@ -308,7 +308,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Message context: %s", $message->getContextId()));
 		}
 
-		if ($message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
+		if (!App::getSetting('core.allow_arbitrary_gateway_address') && $message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
 
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address for %s", $from_address));
 

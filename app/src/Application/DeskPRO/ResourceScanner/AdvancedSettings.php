@@ -74,6 +74,7 @@ class AdvancedSettings extends SettingFiles
 			'core_misc.cleanup_gateway_sources',
 			'core_misc.cleanup_gateway_sources_onlyclosed',
 			'core_misc.cleanup_task_logs',
+			'core.allow_arbitrary_gateway_address'
 		);
 
 		$ret = array();
