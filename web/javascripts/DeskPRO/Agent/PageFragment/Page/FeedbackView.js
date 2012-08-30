@@ -487,6 +487,15 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this._hasInitEd = false;
 		this.getEl('cancel_btn').off('click').on('click', (function() {
 			this.hideEditor();
+
+			// Cancel the edit field too, set it back to what it was
+			if (!this.wrapper.find('.revert-default')[0]) {
+				var def = this.wrapper.find('textarea.edit-content-field-default').val();
+				this.wrapper.find('textarea.edit-content-field').val(def);
+				if (this.rte) {
+					this.rte.val(def);
+				}
+			}
 		}).bind(this));
 
 		var wrap = this.wrapper;

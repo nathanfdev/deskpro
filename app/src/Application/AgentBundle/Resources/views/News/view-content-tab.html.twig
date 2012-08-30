@@ -9,10 +9,10 @@
 					{{ phrase('agent.general.unsaved_changes_were_restored') }}
 					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
-					<textarea class="edit-content-field-default" style="display: none;">{{news.content}}</textarea>
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="news[content]" rows="5" cols="50">{{ state.news.content|default(news.content) }}</textarea>
+			<textarea class="edit-content-field-default" style="display: none;">{{news.content}}</textarea>
 		</div>
 	</div>
 </div>
