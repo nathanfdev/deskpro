@@ -205,10 +205,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (!this.popover) return;
 
 		var self = this;
+		var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(this.pageSource);
 
-		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
+		this.page = DeskPRO_Window.createPageFragment(preparedOutput.html);
 		this.page.addEvent('updateUi', this.updatePositions.bind(this));
-		this.popover.html(this.pageSource);
+
+		this.popover.html(preparedOutput.html);
+
+		DeskPRO_Window.runWidgetedJs(this.page, preparedOutput.jsSource, preparedOutput.jsInline);
+
 		this.pageSource = null;
 
 		if (this.page.meta.title) {

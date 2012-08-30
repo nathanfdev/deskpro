@@ -2699,5 +2699,89 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 			}
 		});
+	},
+
+	prepareWidgetedHtml: function(html) {
+		var finalHtml = html,
+			widgetCssRegex = /<style type="text\/css" data-widget="(\d+)">([\s\S]*?)<\/style>/g,
+			widgetJsRegex = /<script type="text\/javascript"([^>]*)>([\s\S]*?)<\/script>/g,
+			cssExists = {},
+			jsSource = [],
+			jsInline = [],
+			match;
+
+		$('style[data-widget]').each(function () { cssExists[$(this).data('widget')] = true; });
+
+		while (match = widgetCssRegex.exec(html)) {
+			finalHtml = finalHtml.replace(match[0], '');
+
+			// only insert the CSS once
+			if (!cssExists[match[1]]) {
+				cssExists[match[1]] = true;
+				$('<style type="text/css" data-widget="' + match[1] + '">' + match[2] + '</style>').appendTo('head');
+			}
+		}
+
+		while (match = widgetJsRegex.exec(html)) {
+			finalHtml = finalHtml.replace(match[0], '');
+
+			if (match[1].match(/src="([^"]+)"/)) {
+				jsSource.push(RegExp.$1);
+			} else {
+				if (match[2]) {
+					jsInline.push({
+						widget: match[1].match(/data-widget="(\d+)"/) ? RegExp.$1 : false,
+						htmlId: match[1].match(/data-html-id="([^"]+)"/) ? RegExp.$1 : false,
+						code: match[2]
+					});
+				}
+			}
+		}
+
+		return {
+			html: finalHtml,
+			jsSource: jsSource,
+			jsInline: jsInline
+		};
+	},
+
+	runWidgetedJs: function(page, src, inline) {
+		var run = function() {
+			for (var i = 0; i < inline.length; i++) {
+				var code = inline[i].code,
+					context;
+
+				if (inline[i].htmlId) {
+					context = {
+						page: page,
+						meta: page.getAllMetaData(),
+						contentEl: $('#' + inline[i].htmlId)
+					};
+					eval('(function() {' + code + '}).call(context);');
+				} else {
+					$.globalEval(code);
+				}
+			}
+		};
+
+		if (!src.length) {
+			run();
+		} else {
+			var remaining = src.length, self = this;
+
+			for (var i = 0; i < src.length; i++) {
+				$.ajax({
+					url: src[i],
+					type: 'GET',
+					dataType: 'script',
+					cache: true
+				}).always(function() {
+						remaining--;
+						if (remaining == 0) {
+							run();
+						}
+					});
+			}
+		}
 	}
 });

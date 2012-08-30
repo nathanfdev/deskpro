@@ -193,46 +193,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.wrapper.css('display', 'none');
 			data.wrapper.appendTo(this.bodyPane);
 		} else {
-			var html = page.getHtml(),
-				finalHtml = html,
-				widgetCssRegex = /<style type="text\/css" data-widget="(\d+)">([\s\S]*?)<\/style>/g,
-				widgetJsRegex = /<script type="text\/javascript"([^>]*)>([\s\S]*?)<\/script>/g,
-				cssExists = {},
-				jsSource = [],
-				jsInline = [],
-				match;
+			var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(page.getHtml());
 
-			$('style[data-widget]').each(function () { cssExists[$(this).data('widget')] = true; });
+			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + preparedOutput.html + '</div>').appendTo(this.bodyPane);
 
-			while (match = widgetCssRegex.exec(html)) {
-				finalHtml = finalHtml.replace(match[0], '');
-
-				// only insert the CSS once
-				if (!cssExists[match[1]]) {
-					cssExists[match[1]] = true;
-					$('<style type="text/css" data-widget="' + match[1] + '">' + match[2] + '</style>').appendTo('head');
-				}
-			}
-
-			while (match = widgetJsRegex.exec(html)) {
-				finalHtml = finalHtml.replace(match[0], '');
-
-				if (match[1].match(/src="([^"]+)"/)) {
-					jsSource.push(RegExp.$1);
-				} else {
-					if (match[2]) {
-						jsInline.push({
-							widget: match[1].match(/data-widget="(\d+)"/) ? RegExp.$1 : false,
-							htmlId: match[1].match(/data-html-id="([^"]+)"/) ? RegExp.$1 : false,
-							code: match[2]
-						});
-					}
-				}
-			}
-
-			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + finalHtml + '</div>').appendTo(this.bodyPane);
-
-			this._loadAndRunJs(data, jsSource, jsInline);
+			DeskPRO_Window.runWidgetedJs(data.page, preparedOutput.jsSource, preparedOutput.jsInline);
 		}
 
 		//----------
@@ -672,41 +637,5 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.activateTabById(tabId);
 
 		this.cancelClickActivate = false;
-	},
-
-	_loadAndRunJs: function(data, src, inline) {
-		if (!src.length) {
-			this._runJs(data, inline);
-		} else {
-			var remaining = src.length, self = this;
-
-			for (var i = 0; i < src.length; i++) {
-				$.ajax({
-					url: src[i],
-					type: 'GET',
-					dataType: 'script',
-					cache: true
-				}).always(function() {
-					remaining--;
-					if (remaining == 0) {
-						self._runJs(data, inline);
-					}
-				});
-			}
-		}
-	},
-
-	_runJs: function(data, inline) {
-		for (var i = 0; i < inline.length; i++) {
-			var code = inline[i].code,
-				context;
-
-			if (inline[i].htmlId) {
-				context = { data: data, contentEl: $('#' + inline[i].htmlId) };
-				eval('(function() {' + code + '}).call(context);');
-			} else {
-				$.globalEval(code);
-			}
-		}
 	}
 });
