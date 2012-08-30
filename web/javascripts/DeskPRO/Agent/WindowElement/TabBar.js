@@ -232,7 +232,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + finalHtml + '</div>').appendTo(this.bodyPane);
 
-			this._loadAndRunJs(data.wrapper, jsSource, jsInline);
+			this._loadAndRunJs(data, jsSource, jsInline);
 		}
 
 		//----------
@@ -674,9 +674,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.cancelClickActivate = false;
 	},
 
-	_loadAndRunJs: function(wrapper, src, inline) {
-		if (!src) {
-			this._runJs(wrapper, inline);
+	_loadAndRunJs: function(data, src, inline) {
+		if (!src.length) {
+			this._runJs(data, inline);
 		} else {
 			var remaining = src.length, self = this;
 
@@ -689,20 +689,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				}).always(function() {
 					remaining--;
 					if (remaining == 0) {
-						self._runJs(wrapper, inline);
+						self._runJs(data, inline);
 					}
 				});
 			}
 		}
 	},
 
-	_runJs: function(wrapper, inline) {
+	_runJs: function(data, inline) {
 		for (var i = 0; i < inline.length; i++) {
 			var code = inline[i].code,
 				context;
 
 			if (inline[i].htmlId) {
-				context = { wrapper: wrapper, contentEl: $('#' + inline[i].htmlId) };
+				context = { data: data, contentEl: $('#' + inline[i].htmlId) };
 				eval('(function() {' + code + '}).call(context);');
 			} else {
 				$.globalEval(code);
