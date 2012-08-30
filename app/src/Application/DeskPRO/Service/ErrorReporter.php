@@ -311,6 +311,20 @@ class ErrorReporter
 	{
 		$data = array_merge(self::getBasicData(), $data);
 
+		if (isset($data['local_hash'])) {
+			try {
+				App::getDb()->replace('tmp_data', array(
+					'name'         => 'submitreport_' . $data['local_hash'],
+					'auth'         => substr(md5(microtime()) . mt_rand(1,999), 0, 15),
+					'data'         => serialize(array()),
+					'date_created' => date('Y-m-d H:i:s'),
+					'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
+				));
+			} catch (\Exception $e) {
+				return;
+			}
+		}
+
 		try {
 			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
@@ -320,16 +334,6 @@ class ErrorReporter
 
 			if (!$r->isSuccess()) {
 				error_log($r->getBody());
-			}
-
-			if (isset($data['local_hash'])) {
-				App::getDb()->replace('tmp_data', array(
-					'name'         => 'submitreport_' . $data['local_hash'],
-					'auth'         => substr(md5(microtime()) . mt_rand(1,999), 0, 15),
-					'data'         => serialize(array()),
-					'date_created' => date('Y-m-d H:i:s'),
-					'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
-				));
 			}
 		} catch (\Exception $e) {
 			error_log(sprintf("sendReport %s %s", $e->getCode(), $e->getMessage()));
