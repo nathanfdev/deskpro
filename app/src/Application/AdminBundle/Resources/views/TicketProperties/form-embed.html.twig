@@ -33,12 +33,15 @@ var DpNewTicket_Options = DpNewTicket_Options || {};
 DpNewTicket_Options.autoResize = true;
 DpNewTicket_Options.initialHeight = 700;
 DpNewTicket_Options.intoElement = 'dp_newticket_form';
-(function() {
-	var scr = document.createElement('script');
-	scr.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://{{ app.request.getUriForPath('')|replace({'http://': '', 'https://': ''}) }}/tickets/new-js/{{ department.id|default('0') }}.js';
-	scr.setAttribute('async', 'true');
-	document.documentElement.firstChild.appendChild(scr);
-})();
+if (document.getElementsByTagName) {
+	(function() {
+		var scr   = document.createElement('script');
+		scr.type  = 'text/javascript';
+		scr.async = true;
+		scr.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://{{ app.request.getUriForPath('')|replace({'http://': '', 'https://': ''}) }}/tickets/new-js/{{ department.id|default('0') }}.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+	})();
+}
 </script>
 <!-- /DeskPRO New Ticket -->
 {% endset %}
