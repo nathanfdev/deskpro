@@ -333,6 +333,12 @@ class CloudConfig
 	 */
 	public static function getSiteInfoFromDomain($domain)
 	{
+		$domain = strtolower($domain);
+
+		if (strpos($domain, 'www.') === 0) {
+			$domain = substr($domain, 4);
+		}
+
 		$stmt = self::getDb()->prepare("
 			SELECT
 				cloud_sites.*,
