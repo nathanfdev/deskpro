@@ -9,6 +9,10 @@ if (window.Dp_EnableDebug) {
 	DpConsole['debug'] = function(){};
 }
 
+if (!window.Dp_WaitingLibLoad) {
+	window.Dp_WaitingLibLoad = [];
+}
+
 var DpChatWidget = new (function() {
 
 	var options = {
@@ -303,27 +307,50 @@ var DpChatWidget = new (function() {
 	};
 
 	function initJquery() {
-		function jquery_loaded() {
+		window.Dp_WaitingLibLoad.push(function() {
 			DpConsole.log('DpChatWidget.init: jquery loaded');
-			$ = window.jQuery.noConflict(true);
-
+			$ = window.Dp_jQuery;
 			initSession();
-		};
+		});
 
-		var script_tag = document.createElement('script');
-		script_tag.setAttribute("type", "text/javascript");
-		script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
-		script_tag.setAttribute("async", 'true');
-		script_tag.onload = function() {
-			jquery_loaded();
-		};
-		script_tag.onreadystatechange = function () { // Same thing but for IE
-			if (this.readyState == 'complete' || this.readyState == 'loaded') {
+		if (!window.Dp_JqueryScript) {
+			window.oldJquery = window.jQuery;
+			window.old$ = window.$;
+
+			function jquery_loaded() {
+				window.Dp_jQuery = window.jQuery.noConflict(true);
+
+				window.jQuery = window.oldJquery;
+				window.$ = window.old$;
+
+				delete window.oldJquery;
+				delete window.old$;
+
+				var i;
+				for (i = 0; i < window.Dp_WaitingLibLoad.length; i++) {
+					window.Dp_WaitingLibLoad[i]();
+				}
+
+				window.Dp_WaitingLibLoad = [];
+			};
+
+			var script_tag = document.createElement('script');
+			window.Dp_JqueryScript = script_tag;
+
+			script_tag.setAttribute("type", "text/javascript");
+			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
+			script_tag.setAttribute("async", 'true');
+			script_tag.onload = function() {
 				jquery_loaded();
-			}
-		};
+			};
+			script_tag.onreadystatechange = function () { // Same thing but for IE
+				if (this.readyState == 'complete' || this.readyState == 'loaded') {
+					jquery_loaded();
+				}
+			};
 
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+		}
 	};
 
 	this.setNotAvailable = function() {
