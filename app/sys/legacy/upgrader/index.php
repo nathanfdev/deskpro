@@ -3,6 +3,7 @@ define('DP_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../../'));
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
+
 ##################################### START UP THE SYSTEM #####################################
 
 /***************
@@ -31,6 +32,7 @@ if (!in_array(php_sapi_name(), array('cgi-fcgi', 'cgi', 'cli'))) {
 @ini_set('max_execution_time', 0);
 @ini_set('memory_limit', '25M');
 @ini_set('xdebug.max_nesting_level', 10000);
+@ini_set('display_errors', true);
 
 /***********
 * Initiate System
