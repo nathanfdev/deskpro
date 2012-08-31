@@ -111,8 +111,10 @@ class WidgetsController extends AbstractController
 	{
 		if ($widget_id) {
 			$widget = $this->_getWidgetOr404($widget_id);
+			$widgetType = ($widget->page_location ? 'full' : 'js');
 		} else {
 			$widget = new Entity\Widget();
+			$widgetType = 'full';
 		}
 
 		$errors = array();
@@ -120,15 +122,25 @@ class WidgetsController extends AbstractController
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken();
 
+			$widgetType = $this->in->getString('widget_type');
+
 			$description = $this->in->getString('description');
 			$title = $this->in->getString('title');
 			$page = $this->in->getString('page');
-			$insertPosition = $this->in->getString('insert_position');
-			$location = $this->in->getString('page_location');
+
+			if ($widgetType == 'js') {
+				$insertPosition = '';
+				$location = '';
+				$html = '';
+			} else {
+				$insertPosition = $this->in->getString('insert_position');
+				$location = $this->in->getString('page_location');
+				$html = $this->in->getStrRaw('html');
+			}
 
 			$widget->description = $description;
 			$widget->title = $title;
-			$widget->html = $this->in->getStrRaw('html');
+			$widget->html = $html;
 			$widget->js = $this->in->getStrRaw('js');
 			$widget->css = $this->in->getStrRaw('css');
 			$widget->page = $page;
@@ -138,11 +150,18 @@ class WidgetsController extends AbstractController
 			if (!$description) {
 				$errors['description'] = 'Please enter a description.';
 			}
-			if (!$title) {
-				$errors['title'] = 'Please enter a block title.';
-			}
-			if (!$page || !$insertPosition || !$location) {
-				$errors['page'] = 'Please enter a complete location.';
+
+			if ($widgetType == 'js') {
+				if (!$page) {
+					$errors['page'] = 'Please enter a location.';
+				}
+			} else {
+				if (!$title) {
+					$errors['title'] = 'Please enter a block title.';
+				}
+				if (!$page || !$insertPosition || !$location) {
+					$errors['page'] = 'Please enter a complete location.';
+				}
 			}
 
 			if (!$errors) {
@@ -159,12 +178,15 @@ class WidgetsController extends AbstractController
 
 				return $this->redirectRoute('admin_widgets');
 			}
+
+			$forceSelectFull = false;
 		}
 
 		$repository = $this->_getWidgetRepository();
 
 		return $this->render('AdminBundle:Widgets:edit.html.twig', array(
 			'widget' => $widget,
+			'widgetType' => $widgetType,
 			'errors' => $errors,
 			'pages' => $repository->getPages(),
 			'locations' => $repository->getPageLocations()

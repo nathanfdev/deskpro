@@ -35,6 +35,29 @@
 		</div>
 	</div>
 
+	<div id="widget-type-input" class="dp-form-row-group"
+		 data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group"
+	>
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Widget Type</label>
+			</div>
+			<div class="dp-form-input">
+				{% set full = widgetType == 'full' %}
+				<div class="dp-input-group {% if full %}on{% endif %}">
+					<label><input type="radio" class="option-trigger" name="widget_type" value="full" {% if full %}checked="checked"{%endif%} />
+						Standard</label>
+					<p>The standard widget type automatically inserts a block of HTML at the specified location on the selected page.</p>
+				</div>
+				<div class="dp-input-group {% if not full %}on{% endif %}">
+					<label><input type="radio" class="option-trigger" name="widget_type" value="js" {% if not full %}checked="checked"{%endif%} />
+						JavaScript only</label>
+					<p>An advanced type of widget that does not insert any HTML into the page. All manipulations must be done via JavaScript.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>Location</label>
@@ -62,7 +85,7 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row">
+	<div class="dp-form-row" id="widget-block-title">
 		<div class="dp-form-label">
 			<label>Block Title</label>
 		</div>
@@ -72,9 +95,9 @@
 	</div>
 
 	<ul class="tabs" id="widget-tabs" style="width: 75%">
-		<li data-tab-for="#widget-html" class="on"><a>HTML</a></li>
-		<li data-tab-for="#widget-js"><a>JS</a></li>
-		<li data-tab-for="#widget-css"><a>CSS</a></li>
+		<li data-tab-for="#widget-html" id="widget-tab-header-html"><a>HTML</a></li>
+		<li data-tab-for="#widget-js" id="widget-tab-header-js"><a>JS</a></li>
+		<li data-tab-for="#widget-css" id="widget-tab-header-css"><a>CSS</a></li>
 	</ul>
 	<div id="widget-html" style="display: none">
 		<textarea name="html" class="expander" data-expander-min-height="150">{{widget.html}}</textarea>

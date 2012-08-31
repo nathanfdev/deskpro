@@ -8,13 +8,14 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 
 		textAreas.TextAreaExpander().trigger('textareaexpander_fire');
 
-		this.simpleTabs = new DeskPRO.UI.SimpleTabs({
+		var widgetTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('#widget-tabs > li')
 		});
-		this.simpleTabs.addEvent('tabSwitch', function(e) {
+		widgetTabs.addEvent('tabSwitch', function(e) {
 			textAreas.trigger('textareaexpander_fire');
-			this.getActiveTabContent().find('textarea:first').focus();
 		});
+
+		// ****** SETUP LOCATION SELECTS
 
 		var pageSelect = $('#page-select'),
 			pageInsert = $('#page-insert-position-select'),
@@ -86,5 +87,35 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 
 		pageLocations.change(locationChange);
 		pageSelect.change(pageChange);
+
+		// ***** SETUP WIDGET TYPE
+
+		var blockTitle = $('#widget-block-title'),
+			htmlHeader = $('#widget-tab-header-html'),
+			htmlBody = $('#widget-html');
+
+		var widgetTypeHandler = function(val) {
+			if (val == 'js') {
+				pageInsert.hide();
+				pageLocations.hide();
+				blockTitle.hide();
+				htmlHeader.hide();
+				htmlBody.hide();
+				if (widgetTabs.getActiveTab().attr('id') == htmlHeader.attr('id')) {
+					widgetTabs.activateTab($('#widget-tab-header-js'));
+				}
+			} else {
+				pageInsert.show();
+				pageLocations.show();
+				blockTitle.show();
+				htmlHeader.show();
+				// htmlBody should not be shown - shown as tab when selected
+			}
+		};
+
+		widgetTypeHandler($('#widget-type-input input[type=radio]:checked').val());
+		$('#widget-type-input input[type=radio]').change(function() {
+			widgetTypeHandler($(this).val());
+		});
 	}
 });

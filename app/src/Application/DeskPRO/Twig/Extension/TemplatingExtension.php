@@ -989,19 +989,26 @@ STR;
 
 	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper, $data = array())
 	{
-		$htmlId = $this->getWidgetHtmlId($baseId, $widget);
+		$jsOnly = !$widget->page_location;
+		$htmlId = ($jsOnly ? '' : $this->getWidgetHtmlId($baseId, $widget));
 
 		if (!is_array($data) && !($data instanceof \ArrayAccess)) {
 			$data = array();
 		}
+		$data['base_id'] = $baseId;
 		$data['html_id'] = $htmlId;
 
-		$output = strtr($wrapper, array(
-			'{id}' => $htmlId,
-			'{widget}' => $widget->id,
-			'{html}' => $this->_replaceWidgetPlaceholders($widget->html, $data, 'html'),
-			'{title}' => $widget->title
-		));
+		if ($jsOnly) {
+			$output = '';
+		} else {
+			$output = strtr($wrapper, array(
+				'{id}' => $htmlId,
+				'{widget}' => $widget->id,
+				'{html}' => $this->_replaceWidgetPlaceholders($widget->html, $data, 'html'),
+				'{title}' => $widget->title
+			));
+		}
+
 		if ($widget->css) {
 			$css = $this->_replaceWidgetPlaceholders($widget->css, $data, 'css');
 			$hash = md5($css);

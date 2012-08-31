@@ -2749,15 +2749,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var run = function() {
 			for (var i = 0; i < inline.length; i++) {
 				var code = inline[i].code,
+					htmlId = inline[i].htmlId,
 					context;
 
-				if (inline[i].htmlId) {
+				if (inline[i].widget) {
 					context = {
 						page: page,
 						meta: page.getAllMetaData(),
-						id: inline[i].htmlId,
-						containerEl: $('#' + inline[i].htmlId + '_container'),
-						contentEl: $('#' + inline[i].htmlId)
+						id: htmlId,
+						containerEl: (htmlId ? $('#' + htmlId + '_container') : false),
+						contentEl: (htmlId ? $('#' + htmlId) : false)
 					};
 					eval('(function() {' + code + '}).call(context);');
 				} else {

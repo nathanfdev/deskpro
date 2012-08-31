@@ -493,7 +493,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 {{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'footer', ticket_api) }}
+{{ dp_widgets(baseId, 'ticket', 'footer', '', ticket_api) }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
@@ -680,6 +680,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 {% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
+
+{{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

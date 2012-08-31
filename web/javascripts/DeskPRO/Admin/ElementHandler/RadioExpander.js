@@ -16,12 +16,14 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 		function switchtoradio(radio) {
 			self.el.find('.' + groupClass + '.on').removeClass('on');
 
-			if (currentGroup) {
+			if (currentGroup && expandClass) {
 				$('.' + expandClass, currentGroup).hide();
 			}
 
 			var group = radio.closest('.' + groupClass).addClass('on');
-			$('.' + expandClass, group).show();
+			if (expandClass) {
+				$('.' + expandClass, group).show();
+			}
 			currentGroup = group;
 
 			if (firstSubRadio) {
@@ -37,11 +39,17 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 			switchtoradio($(this));
 		});
 
-		this.el.on('click', '.' + groupClass + ':not(.on)', function() {
+		this.el.on('click', '.' + groupClass + ':not(.on)', function(e) {
 			var radio = $(this).find('.option-trigger');
 			if (radio.length) {
 				radio.prop('checked', 'checked');
 				switchtoradio(radio);
+
+				if (!$(e.target).is('input[type=radio]'))
+				{
+					// clicked something outside radio - need to manually fire change event
+					radio.change();
+				}
 			}
 		});
 	}
