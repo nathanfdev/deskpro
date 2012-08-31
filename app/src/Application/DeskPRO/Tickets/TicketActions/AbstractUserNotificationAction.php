@@ -66,6 +66,17 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			$from_email = $ticket->notify_email;
 		} else {
 			$from_email = App::getSetting('core.default_from_email');
+			$default_address = App::getDb()->fetchColumn("
+				SELECT match_pattern
+				FROM email_gateway_addresses
+				WHERE match_type = 'exact'
+				ORDER BY run_order ASC, id ASC
+				LIMIT 1
+			");
+
+			if ($default_address) {
+				$from_email = $default_address;
+			}
 		}
 
 		if ($ticket->notify_email_name) {

@@ -119,7 +119,20 @@ class AgentNotificationAction extends AbstractAction
 			return $ticket->notify_email;
 		}
 
-		return App::getSetting('core.default_from_email');
+		$from_email = App::getSetting('core.default_from_email');
+		$default_address = App::getDb()->fetchColumn("
+			SELECT match_pattern
+			FROM email_gateway_addresses
+			WHERE match_type = 'exact'
+			ORDER BY run_order ASC, id ASC
+			LIMIT 1
+		");
+
+		if ($default_address) {
+			$from_email = $default_address;
+		}
+
+		return $from_email;
 	}
 
 	/**
