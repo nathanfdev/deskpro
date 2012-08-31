@@ -537,17 +537,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 							escapeshellarg($f)
 						);
 
-						$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
-						$proc->setTimeout(10000);
-						$proc->run(function ($type, $buffer) {
-							if ('err' === $type) {
-								echo '[ERR] '.$buffer;
-							} else {
-								echo $buffer;
-							}
-						});
+						@set_time_limit(0);
+						chdir($this->getContainer()->getBackupDir());
+						$ret = 0;
+						passthru($cmd, $ret);
 
-						if (!$proc->isSuccessful()) {
+						if ($ret) {
 							$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
 							try {
 								$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
