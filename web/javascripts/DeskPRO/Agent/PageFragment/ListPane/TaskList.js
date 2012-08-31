@@ -44,6 +44,9 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			Array.each(els, function(el) {
 				DeskPRO_Window.util.modCountEl($(el), op);
 			});
+
+			var total = parseInt($.trim($('#tasks_counter_all_total').text()));
+			DeskPRO_Window.sections.tasks_section.modBadgeCount('=', total);
 		};
 
 		var sendUpdate = function(rowEl, prop, val, callback) {
