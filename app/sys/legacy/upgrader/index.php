@@ -1,7 +1,7 @@
 <?php
 define('DP_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../../'));
-error_reporting(E_ALL & ~E_NOTICE & ~8192);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 ##################################### START UP THE SYSTEM #####################################
 
