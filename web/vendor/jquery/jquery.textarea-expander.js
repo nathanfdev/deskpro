@@ -13,7 +13,7 @@
 
 		function update(element) {
 			var $elem  = $(element);
-			var height = $elem.height();
+			var height = $elem.height(), current = height;
 			var max    = $elem.data('expander-max-height') || 1000;
 			var min    = $elem.data('expander-min-height') || 50;
 
@@ -36,6 +36,11 @@
 			}
 
 			$elem.height(last);
+			if (height > max && current < max) {
+				$elem.css('overflow', 'auto');
+			} else if (height < max && current > max) {
+				$elem.css('overflow', 'hidden');
+			}
 		}
 
 		return this.each(function () {
