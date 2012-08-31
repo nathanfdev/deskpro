@@ -165,10 +165,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 </header>
 
-{{ dp_widgets(baseId, 'ticket', 'header', 'below') }}
+{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
 
 <table cellspacing="0" cellpadding="0" width="100%" class="people-box"><tr><td width="50%" valign="top" class="first">
-	{{ dp_widgets(baseId, 'ticket', 'people', 'above') }}
+	{{ dp_widgets(baseId, 'ticket', 'people', 'above', ticket_api) }}
 	<div class="profile-box-container">
 		<header>
 			{{ dp_widget_tabs_header(baseId, 'ticket', 'people', {
@@ -250,12 +250,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% endif %}
 				</dl>
 			</article>
-			{{ dp_widget_tabs(baseId, 'ticket', 'people') }}
+			{{ dp_widget_tabs(baseId, 'ticket', 'people', ticket_api) }}
 		</section>
 	</div>
-	{{ dp_widgets(baseId, 'ticket', 'people', 'below') }}
+	{{ dp_widgets(baseId, 'ticket', 'people', 'below', ticket_api) }}
 </td><td width="50%" valign="top" class="second">
-	{{ dp_widgets(baseId, 'ticket', 'assignments', 'above') }}
+	{{ dp_widgets(baseId, 'ticket', 'assignments', 'above', ticket_api) }}
 	<div class="profile-box-container">
 		<header>
 			<div class="controls" id="{{baseId}}_agent_prop_controls">
@@ -322,13 +322,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 			</article>
-			{{ dp_widget_tabs(baseId, 'ticket', 'assignments') }}
+			{{ dp_widget_tabs(baseId, 'ticket', 'assignments', ticket_api) }}
 		</section>
 	</div>
-	{{ dp_widgets(baseId, 'ticket', 'assignments', 'below') }}
+	{{ dp_widgets(baseId, 'ticket', 'assignments', 'below', ticket_api) }}
 </td></tr></table>
 
-{{ dp_widgets(baseId, 'ticket', 'properties', 'above') }}
+{{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
 
 <div class="profile-box-container">
 	<header>
@@ -435,12 +435,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
             <a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 		</div>
 		</article>
-		{{ dp_widget_tabs(baseId, 'ticket', 'properties') }}
+		{{ dp_widget_tabs(baseId, 'ticket', 'properties', ticket_api) }}
 	</section>
 </div>
 
-{{ dp_widgets(baseId, 'ticket', 'properties', 'below') }}
-{{ dp_widgets(baseId, 'ticket', 'messages', 'above') }}
+{{ dp_widgets(baseId, 'ticket', 'properties', 'below', ticket_api) }}
+{{ dp_widgets(baseId, 'ticket', 'messages', 'above', ticket_api) }}
 
 <div class="profile-box-container ticket-messages">
 	<header>
@@ -480,11 +480,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<section class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</section>
-	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section') }}
+	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', ticket_api) }}
 </div>
 
-{{ dp_widgets(baseId, 'ticket', 'messages', 'below') }}
-{{ dp_widgets(baseId, 'ticket', 'reply', 'above') }}
+{{ dp_widgets(baseId, 'ticket', 'messages', 'below', ticket_api) }}
+{{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
 
 {% if ticket_perms.reply or ticket_perms.modify_note %}
 <div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
@@ -492,8 +492,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'ticket', 'reply', 'below') }}
-{{ dp_widgets(baseId, 'ticket', 'footer') }}
+{{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
+{{ dp_widgets(baseId, 'ticket', 'footer', ticket_api) }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">

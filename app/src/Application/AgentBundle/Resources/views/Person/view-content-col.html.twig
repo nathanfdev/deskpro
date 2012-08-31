@@ -1,5 +1,5 @@
 {# Box Summary #}
-{{ dp_widgets(baseId, 'profile', 'summary', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'summary', 'above', person_api) }}
 
 {% if person.summary|length or perms.edit %}
 	<div class="profile-box-container summary"
@@ -22,15 +22,15 @@
 			<input type="hidden" name="action" value="set-summary" />
 			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not perms.edit %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'summary', 'section') }}
+		{{ dp_widget_tabs(baseId, 'profile', 'summary', 'section', person_api) }}
 	</div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'profile', 'summary', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'summary', 'below', person_api) }}
 {# /Box Summary #}
 
 {# Properties Box #}
-{{ dp_widgets(baseId, 'profile', 'properties', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'properties', 'above', person_api) }}
 
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
@@ -57,14 +57,14 @@
 		{% endif %}
 		<br class="clear" />
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'properties', 'section') }}
+	{{ dp_widget_tabs(baseId, 'profile', 'properties', 'section', person_api) }}
 </div>
 
-{{ dp_widgets(baseId, 'profile', 'properties', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'properties', 'below', person_api) }}
 {# /Properties Box #}
 
 {# Interaction Tabs #}
-{{ dp_widgets(baseId, 'profile', 'interactions', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'interactions', 'above', person_api) }}
 
 {% if person_tickets_count or person_chats_count %}
 <div class="profile-box-container tabbed">
@@ -160,16 +160,16 @@
 		</article>
 		{% endif %}
 
-		{{ dp_widget_tabs(baseId, 'profile', 'interactions') }}
+		{{ dp_widget_tabs(baseId, 'profile', 'interactions', person_api) }}
 	</section>
 </div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'profile', 'interactions', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'interactions', 'below', person_api) }}
 {# /Interaction Tabs #}
 
 {# Info Tabs #}
-{{ dp_widgets(baseId, 'profile', 'info', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'info', 'above', person_api) }}
 
 <div class="profile-box-container tabbed">
 	<header>
@@ -375,9 +375,9 @@
 		</article>
 		{# /Tracking Tab #}
 
-		{{ dp_widget_tabs(baseId, 'profile', 'info') }}
+		{{ dp_widget_tabs(baseId, 'profile', 'info', person_api) }}
 	</section>
 </div>
 
-{{ dp_widgets(baseId, 'profile', 'info', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'info', 'below', person_api) }}
 {# /Info Tabs #}

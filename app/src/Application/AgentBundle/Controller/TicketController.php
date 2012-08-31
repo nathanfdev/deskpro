@@ -187,6 +187,10 @@ class TicketController extends AbstractController
 		foreach (array('id', 'subject', 'ref', 'status') AS $key) {
 			$ticket_api[$key] = $ticket->$key;
 		}
+		foreach (array('id', 'name', 'first_name', 'last_name') AS $key) {
+			$ticket_api['person'][$key] = $ticket->person->$key;
+		}
+		$ticket_api['person']['email'] = $ticket->person->getPrimaryEmailAddress();
 		foreach ($custom_fields AS $field) {
 			$ticket_api['custom'][$field['id']] = array(
 				'id' => $field['id'],

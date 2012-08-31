@@ -1,5 +1,5 @@
 {# Agent Box #}
-{{ dp_widgets(baseId, 'profile', 'agent', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'agent', 'above', person_api) }}
 
 {% if person.is_agent %}
 <div class="profile-box-container highlighted">
@@ -32,15 +32,15 @@
 			</ul>
 		{% endif %}
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'agent', 'section') }}
+	{{ dp_widget_tabs(baseId, 'profile', 'agent', 'section', person_api) }}
 </div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'profile', 'agent', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'agent', 'below', person_api) }}
 {# /Box #}
 
 {# Box Contact #}
-{{ dp_widgets(baseId, 'profile', 'contact', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'contact', 'above', person_api) }}
 
 <div class="profile-box-container summary">
 	<header>
@@ -54,16 +54,16 @@
 			{% include 'AgentBundle:Person:view-contact-display.html.twig' %}
 		</div>
 	</section>
-	{{ dp_widget_tabs(baseId, 'profile', 'contact', 'section') }}
+	{{ dp_widget_tabs(baseId, 'profile', 'contact', 'section', person_api) }}
 </div>
 {# /Box Contact #}
 
 <div id="{{baseId}}_contact_outside"></div>
 
-{{ dp_widgets(baseId, 'profile', 'contact', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'contact', 'below', person_api) }}
 
 {# Organization Box #}
-{{ dp_widgets(baseId, 'profile', 'organization', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'organization', 'above', person_api) }}
 
 {% if person.organization or perms.edit %}
 	<div class="profile-box-container summary" id="{{baseId}}_org_box">
@@ -135,15 +135,15 @@
 				</div>
 			</div>
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'organization', 'section') }}
+		{{ dp_widget_tabs(baseId, 'profile', 'organization', 'section', person_api) }}
 	</div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'profile', 'organization', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'organization', 'below', person_api) }}
 {# /Organization Box #}
 
 {# Usergroup Box #}
-{{ dp_widgets(baseId, 'profile', 'usergroups', 'above') }}
+{{ dp_widgets(baseId, 'profile', 'usergroups', 'above', person_api) }}
 
 {% if app.getDataRepository('Usergroup').getUsergroupNames() %}
 	<div class="profile-box-container summary {% if person.getUsergroupIds()|length < 2 %}no-section{% endif %}" id="{{baseId}}_ug_box">
@@ -182,9 +182,9 @@
 				</ul>
 			</div>
 		</section>
-		{{ dp_widget_tabs(baseId, 'profile', 'usergroups', 'section') }}
+		{{ dp_widget_tabs(baseId, 'profile', 'usergroups', 'section', person_api) }}
 	</div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'profile', 'usergroups', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'usergroups', 'below', person_api) }}
 {# /Usergroup Box #}

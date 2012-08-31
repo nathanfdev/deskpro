@@ -97,7 +97,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</ul>
 </header>
 
-{{ dp_widgets(baseId, 'profile', 'header', 'below') }}
+{{ dp_widgets(baseId, 'profile', 'header', 'below', person_api) }}
 
 <table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
@@ -109,7 +109,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </td></tr></table>
 
-{{ dp_widgets(baseId, 'profile', 'footer') }}
+{{ dp_widgets(baseId, 'profile', 'footer', person_api) }}
 
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
 

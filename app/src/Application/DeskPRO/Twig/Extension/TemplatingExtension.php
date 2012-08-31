@@ -931,7 +931,7 @@ STR;
 
 	protected $_widgetCache = array();
 
-	public function getWidgets($baseId, $page, $location, $position = '*')
+	public function getWidgets($baseId, $page, $location, $position = '*', $data = array())
 	{
 		$widgets = $this->_getPageLocationWidgets($page, $location, $position);
 		if (!$widgets) {
@@ -941,7 +941,11 @@ STR;
 		$output = '';
 		foreach ($widgets AS $widget) {
 			$output .= $this->_insertWidget($baseId, $widget,
-				'<div class="profile-box-container" id="{id}_container"><header><h4 id="{id}_header">{title}</h4></header><section class="widget-content" id="{id}" data-widget="{widget}">{html}</section></section></div>'
+				'<div class="profile-box-container" id="{id}_container">'
+					. '<header><h4 id="{id}_header">{title}</h4></header>'
+					. '<section class="widget-content" id="{id}" data-widget="{widget}">{html}</section>'
+				. '</div>',
+				$data
 			);
 		}
 
@@ -983,25 +987,78 @@ STR;
 		return "{$baseId}-widget-{$widget->id}";
 	}
 
-	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper)
+	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper, $data = array())
 	{
 		$htmlId = $this->getWidgetHtmlId($baseId, $widget);
-		$html = $widget->html;
+
+		if (!is_array($data) && !($data instanceof \ArrayAccess)) {
+			$data = array();
+		}
+		$data['html_id'] = $htmlId;
 
 		$output = strtr($wrapper, array(
 			'{id}' => $htmlId,
 			'{widget}' => $widget->id,
-			'{html}' => $html,
+			'{html}' => $this->_replaceWidgetPlaceholders($widget->html, $data, 'html'),
 			'{title}' => $widget->title
 		));
 		if ($widget->css) {
-			$output .= '<style type="text/css" data-widget="' . $widget->id . '">' . $widget->css . '</style>';
+			$css = $this->_replaceWidgetPlaceholders($widget->css, $data, 'css');
+			$hash = md5($css);
+			$output .= '<style type="text/css" data-widget="' . $widget->id . '" data-hash="' . $hash . '">' . $css . '</style>';
 		}
 		if ($widget->js) {
-			$output .= '<script type="text/javascript" data-widget="' . $widget->id . '" data-html-id="' . $htmlId . '">' . $widget->js . '</script>';
+			$js = $this->_replaceWidgetPlaceholders($widget->js, $data, 'js');
+			$output .= '<script type="text/javascript" data-widget="' . $widget->id . '" data-html-id="' . $htmlId . '">'
+				. $js . '</script>';
 		}
 
 		return $output;
+	}
+
+	protected function _replaceWidgetPlaceholders($content, $data, $context)
+	{
+		return preg_replace_callback('/\{\{\s*([a-z0-9_.]+)\s*\}\}/i', function (array $match) use ($data, $context) {
+			$parts = explode('.', $match[1]);
+			$reference = $data;
+			foreach ($parts AS $part) {
+				if ($part == '') {
+					continue;
+				}
+
+				if (!is_array($reference) && !($reference instanceof \ArrayAccess)) {
+					$reference = '';
+					break;
+				}
+
+				if (isset($reference[$part])) {
+					$reference = $reference[$part];
+				} else {
+					$reference = '';
+					break;
+				}
+			}
+
+			$reference = strval($reference);
+
+			switch ($context) {
+				case 'html':
+					return htmlspecialchars($reference);
+
+				case 'js':
+					return strtr($reference, array(
+						'"' => '\\"',
+						"'" => "\\'",
+						"\n" => '\n',
+						"\r" => '\r',
+						'\\' => '\\\\',
+						'</script>' => '<\\/script>'
+					));
+
+				default:
+					return $reference;
+			}
+		}, $content);
 	}
 
 	public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
@@ -1031,12 +1088,13 @@ STR;
 		}
 	}
 
-	public function getWidgetTabsBody($baseId, $page, $location, $wrapper = 'article')
+	public function getWidgetTabsBody($baseId, $page, $location, $wrapper = 'article', $data = array())
 	{
 		$output = '';
 		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
 			$output .= $this->_insertWidget($baseId, $widget,
-				'<' . $wrapper . ' class="widget-content" id="{id}" data-widget="{widget}" style="display: none">{html}</' . $wrapper . '>'
+				'<' . $wrapper . ' class="widget-content" id="{id}" data-widget="{widget}" style="display: none">{html}</' . $wrapper . '>',
+				$data
 			);
 		}
 

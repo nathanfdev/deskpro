@@ -2703,22 +2703,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	prepareWidgetedHtml: function(html) {
 		var finalHtml = html,
-			widgetCssRegex = /<style type="text\/css" data-widget="(\d+)">([\s\S]*?)<\/style>/g,
+			widgetCssRegex = /<style type="text\/css" data-widget="(\d+)" data-hash="([a-zA-Z0-9]+)">([\s\S]*?)<\/style>/g,
 			widgetJsRegex = /<script type="text\/javascript"([^>]*)>([\s\S]*?)<\/script>/g,
 			cssExists = {},
 			jsSource = [],
 			jsInline = [],
 			match;
 
-		$('style[data-widget]').each(function () { cssExists[$(this).data('widget')] = true; });
+		$('style[data-widget]').each(function () { cssExists[$(this).data('widget')] = $(this).data('hash'); });
 
 		while (match = widgetCssRegex.exec(html)) {
 			finalHtml = finalHtml.replace(match[0], '');
 
 			// only insert the CSS once
-			if (!cssExists[match[1]]) {
-				cssExists[match[1]] = true;
-				$('<style type="text/css" data-widget="' + match[1] + '">' + match[2] + '</style>').appendTo('head');
+			if (cssExists[match[1]] !== match[2]) {
+				cssExists[match[1]] = match[2];
+				$(match[0]).appendTo('head');
 			}
 		}
 
