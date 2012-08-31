@@ -87,9 +87,21 @@ class UserChatController extends AbstractController
 		// For selector
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
+		$convo_api = array();
+		foreach (array('id', 'subject', 'person_name', 'person_email') AS $key) {
+			$ticket_api[$key] = $convo->$key;
+		}
+		if ($convo->person) {
+			$convo_api['person'] = $convo->person->getDataForWidget();
+		}
+		if ($convo->agent) {
+			$convo_api['agent'] = $convo->agent->getDataForWidget();
+		}
+
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
 			'convo' => $convo,
+			'convo_api' => $convo_api,
 			'session' => $session,
 			'visitor' => $visitor,
 			'other_chats' => $other_chats,

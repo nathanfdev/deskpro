@@ -177,18 +177,7 @@ class PersonController extends AbstractController
 			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
 		);
 
-		$person_api = array();
-		foreach (array('id', 'name', 'first_name', 'last_name', 'is_agent') AS $key) {
-			$person_api[$key] = $person->$key;
-		}
-		$person_api['email'] = $person->getPrimaryEmailAddress();
-		foreach ($custom_fields AS $field) {
-			$person_api['custom'][$field['id']] = array(
-				'id' => $field['id'],
-				'title' => $field['title'],
-				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
-			);
-		}
+		$person_api = $person->getDataForWidget();
 
         $is_vcf = $this->in->getBool('vcf');
 

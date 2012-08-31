@@ -566,28 +566,44 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		});
 
-		var box1 = self.getEl('people_box_person');
-		var box2 = self.getEl('people_box_agent');
+		var box1 = self.getEl('people_box_person_container');
+		var box2 = self.getEl('people_box_agent_container');
 		var box1_in = $('> article', box1);
 		var box2_in = $('> article', box2);
 
-		var chatView = this.getEl('chat_view');
+		var chatView = this.getEl('chat_view'),
+			chatPositioner = this.getEl('chat_positioner'),
+			header = self.wrapper.find('.page-header');
+
 		var syncSizes = function() {
 			var h1 = box1_in.height();
 			var h2 = box2_in.height();
+
+			/*var h = (h1 > h2) ? h1 : h2;
+
+			box2.css('min-height', h);
+			box1.css('min-height', h);*/
+
+			box1_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h1) { h1 = thisH; } });
+			box2_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h2) { h2 = thisH; } });
 
 			var h = (h1 > h2) ? h1 : h2;
 
 			box2.css('min-height', h);
 			box1.css('min-height', h);
+		};
 
-			chatView.css('top', h + 125);
+		var syncChatSize = function() {
+			chatView.css('top', chatPositioner.outerHeight() + header.outerHeight());
 		};
 
 		// TODO handle resize without element resize monitor
-		box1_in.on('resize', syncSizes);
-		box2_in.on('resize', syncSizes);
+		chatPositioner.on('resize', syncChatSize);
+		box1.on('resize', syncSizes);
+		box2.on('resize', syncSizes);
+
 		syncSizes();
+		syncChatSize();
 	},
 
 	//#################################################################

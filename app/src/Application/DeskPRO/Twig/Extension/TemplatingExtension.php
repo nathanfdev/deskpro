@@ -1095,7 +1095,7 @@ STR;
 		}
 	}
 
-	public function getWidgetTabsBody($baseId, $page, $location, $wrapper = 'article', $data = array())
+	public function getWidgetTabsBody($baseId, $page, $location, $wrapper, $data = array())
 	{
 		$output = '';
 		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {

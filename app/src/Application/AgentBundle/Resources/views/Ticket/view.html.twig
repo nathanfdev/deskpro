@@ -250,7 +250,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% endif %}
 				</dl>
 			</article>
-			{{ dp_widget_tabs(baseId, 'ticket', 'people', ticket_api) }}
+			{{ dp_widget_tabs(baseId, 'ticket', 'people', 'article', ticket_api) }}
 		</section>
 	</div>
 	{{ dp_widgets(baseId, 'ticket', 'people', 'below', ticket_api) }}
@@ -322,7 +322,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 			</article>
-			{{ dp_widget_tabs(baseId, 'ticket', 'assignments', ticket_api) }}
+			{{ dp_widget_tabs(baseId, 'ticket', 'assignments', 'article', ticket_api) }}
 		</section>
 	</div>
 	{{ dp_widgets(baseId, 'ticket', 'assignments', 'below', ticket_api) }}
@@ -435,7 +435,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
             <a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 		</div>
 		</article>
-		{{ dp_widget_tabs(baseId, 'ticket', 'properties', ticket_api) }}
+		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>
 </div>
 
@@ -480,7 +480,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<section class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</section>
-	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', ticket_api) }}
+	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
 </div>
 
 {{ dp_widgets(baseId, 'ticket', 'messages', 'below', ticket_api) }}

@@ -8,6 +8,7 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
 pageMeta.email = {{ convo.person_email|json_encode|raw }};
+pageMeta.convo = {{ convo_api|json_encode|raw }};
 
 pageMeta.session_id = {{ session.id|default(0) }};
 {% if convo.person.id %}
@@ -50,18 +51,22 @@ pageMeta.baseId = '{{ baseId }}';
     </div>
 </header>
 
-<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="col" valign="top" width="50%">
+<div id="{{baseId}}_chat_positioner">
+
+{{ dp_widgets(baseId, 'chat', 'header', 'below', convo_api) }}
+
+<table cellspacing="0" cellpadding="0" width="100%" class="people-box">
     <tr>
-        <td width="50%" valign="top">
-            <div class="profile-box-container people-box first">
+        <td width="50%" valign="top" class="first">
+			{{ dp_widgets(baseId, 'chat', 'people', 'above', convo_api) }}
+            <div class="profile-box-container">
                 <header>
-                    <h4>
-						{{ phrase('agent.general.person') }}
-						{% if not convo.person %}(Unregistered){% endif %}
-					</h4>
+ 					{{ dp_widget_tabs_header(baseId, 'chat', 'people', {
+						(baseId ~ '_people_box_person'): phrase('agent.general.person') ~ (not convo.person ? ' (Unregistered)' : '')
+					}) }}
                 </header>
-                <section id="{{baseId}}_people_box_person">
-                    <article>
+                <section id="{{baseId}}_people_box_person_container">
+                    <article id="{{baseId}}_people_box_person">
                         <dl>
                             <dt></dt>
                             <dd style="padding:4px 11px 0 10px">
@@ -93,19 +98,24 @@ pageMeta.baseId = '{{ baseId }}';
                             </dd>
                         </dl>
                     </article>
+					{{ dp_widget_tabs(baseId, 'chat', 'people', 'article', convo_api) }}
                 </section>
             </div>
+			{{ dp_widgets(baseId, 'chat', 'people', 'below', convo_api) }}
         </td>
-        <td width="50%" valign="top">
-			<div class="profile-box-container people-box second">
+        <td width="50%" valign="top" class="second">
+			{{ dp_widgets(baseId, 'chat', 'assignments', 'above', convo_api) }}
+			<div class="profile-box-container">
 				<header>
 					<div class="controls">
 						<span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
 					</div>
-					<h4>{{ phrase('agent.general.assignments') }}</h4>
+					{{ dp_widget_tabs_header(baseId, 'chat', 'assignments', {
+						(baseId ~ '_people_box_agent'): phrase('agent.general.assignments')
+					}) }}
 				</header>
-				<section id="{{baseId}}_people_box_agent">
-					<article>
+				<section id="{{baseId}}_people_box_agent_container">
+					<article id="{{baseId}}_people_box_agent">
 						<dl>
 							<dt class="agent-row">{{ phrase('agent.general.assigned_agent') }}</dt>
 							<dd class="agent-row">
@@ -129,13 +139,19 @@ pageMeta.baseId = '{{ baseId }}';
 							</dd>
 						</dl>
 					</article>
+					{{ dp_widget_tabs(baseId, 'chat', 'assignments', 'article', convo_api) }}
 				</section>
 			</div>
+			{{ dp_widgets(baseId, 'chat', 'assignments', 'below', convo_api) }}
         </td>
     </tr>
 </table>
 
-<div class="profile-box-container" id="{{ baseId }}_chat_view">
+{{ dp_widgets(baseId, 'chat', 'chat', 'above', convo_api) }}
+
+</div>
+
+<div class="profile-box-container chat-box" id="{{ baseId }}_chat_view">
 	<header>
 		<h4>{{ phrase('agent.general.chat') }}</h4>
 	</header>
@@ -321,5 +337,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<button class="clean-white end-trigger">{{ phrase('agent.chat.leave_end') }}</button>
 	</div>
 </div>
+
+{{ dp_widgets(baseId, 'chat', '', '', convo_api) }}
 
 </div>

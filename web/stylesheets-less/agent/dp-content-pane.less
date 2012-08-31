@@ -2488,7 +2488,7 @@ padding: 30px;
 	padding-bottom: 0;
 }
 
-.userchat-page .people-box > section,
+.userchat-page .people-box section,
 .page-ticket .people-box section {
 	font-size: 13px;
 }
@@ -4163,7 +4163,7 @@ ul.item-list > li {
 	clear: left;
 }
 
-.userchat-page > .profile-box-container > section > article > .messages.chat-ended  {
+.userchat-page .chat-box > section > article > .messages.chat-ended  {
 	bottom: 0;
 }
 
@@ -4470,51 +4470,51 @@ section.new-user-chat-alert footer {
 	left: 0;
 }
 
-.userchat-page > header.page-header {
+.userchat-page header.page-header {
 	background-color: #fff;
 }
 
-.userchat-page > header.page-header .meta-line span {
+.userchat-page header.page-header .meta-line span {
 	margin-left: 0;
 }
-.userchat-page > header.page-header .assigned {
+.userchat-page header.page-header .assigned {
 	clear: left;
 
 }
 
-.userchat-page > .profile-box-container {
+.userchat-page .chat-box {
     position: absolute;
 	top: 240px;
 	right: 0px;
 	bottom: 0px;
 	left: 0px;
+
+	> section, > section > article {
+		position: absolute;
+		top: 0;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+	}
+
+	> section > article.info-tab {
+		overflow: auto;
+	}
+
+	> section {
+		top: 24px;
+	}
+
+	> section > article > .messages {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 110px;
+		left: 0;
+		overflow: auto;
+	}
 }
 
-.userchat-page > .profile-box-container > section,
-.userchat-page > .profile-box-container > section > article {
-	position: absolute;
-	top: 0;
-	right: 0px;
-	bottom: 0px;
-	left: 0px;
-}
-
-.userchat-page > .profile-box-container > section > article.info-tab {
-	overflow: auto;
-}
-
-.userchat-page > .profile-box-container > section {
-	top: 24px;
-}
-
-.userchat-page > .profile-box-container > section > article > .messages {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 110px;
-	left: 0;
-	overflow: auto;
-}
 
 
 .chatreply {

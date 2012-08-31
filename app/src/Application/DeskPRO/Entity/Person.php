@@ -1893,6 +1893,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_person_logger;
 	}
 
+	public function getDataForWidget()
+	{
+		$data = array();
+		foreach (array('id', 'name', 'first_name', 'last_name') AS $key) {
+			$data[$key] = $this->$key;
+		}
+		$data['email'] = $this->getPrimaryEmailAddress();
+
+		$customFields = App::getSystemService('person_fields_manager')->getDisplayArrayForObject($this);
+		$data['custom'] = array();
+		foreach ($customFields AS $field) {
+			$data['custom'][$field['id']] = array(
+				'id' => $field['id'],
+				'title' => $field['title'],
+				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
+			);
+		}
+
+		return $data;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

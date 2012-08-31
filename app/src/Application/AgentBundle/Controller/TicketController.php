@@ -194,17 +194,9 @@ class TicketController extends AbstractController
 				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
 			);
 		}
-		foreach (array('id', 'name', 'first_name', 'last_name') AS $key) {
-			$ticket_api['person'][$key] = $ticket->person->$key;
-		}
-		$ticket_api['person']['email'] = $ticket->person->getPrimaryEmailAddress();
-		$person_custom_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArrayForObject($ticket->person);
-		foreach ($person_custom_fields AS $field) {
-			$ticket_api['person']['custom'][$field['id']] = array(
-				'id' => $field['id'],
-				'title' => $field['title'],
-				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
-			);
+		$ticket_api['person'] = $ticket->person->getDataForWidget();
+		if ($ticket->agent) {
+			$ticket_api['agent'] = $ticket->agent->getDataForWidget();
 		}
 
         $vars = array(

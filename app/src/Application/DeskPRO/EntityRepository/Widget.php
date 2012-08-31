@@ -95,6 +95,7 @@ class Widget extends AbstractEntityRepository
 		return array(
 			'ticket' => 'Ticket View',
 			'profile' => 'Profile View',
+			'chat' => 'Chat View',
 		);
 	}
 
@@ -126,6 +127,12 @@ class Widget extends AbstractEntityRepository
 				'organization' => array('Organization', ''),
 				'usergroups' => array('Usergroups', ''),
 				'footer' => array('Page Footer', 'above')
+			),
+			'chat' => array(
+				'header' => array('Page Header', 'below'),
+				'people' => array('People', ''),
+				'assignments' => array('Assignments', ''),
+				'chat' => array('Chat Box', 'above')
 			)
 		);
 	}
