@@ -1966,6 +1966,10 @@ header.page-header .edit-name-gear {
 	box-shadow: 0 1px 0 #FFFFFF, 0 1px 0 #FFFFFF inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
 
+.profile-box-container .widget-content {
+	padding: 8px;
+}
+
 .profile-box-container > section > p:first-child {
 	margin-top: 0;
 	padding-top: 6px;
@@ -2485,11 +2489,11 @@ padding: 30px;
 }
 
 .userchat-page .people-box > section,
-.page-ticket .people-box > section {
+.page-ticket .people-box section {
 	font-size: 13px;
 }
 
-.page-ticket .people-box {
+.page-ticket .people-box .profile-box-container {
 	margin-bottom: 0;
 }
 
@@ -2498,8 +2502,8 @@ padding: 30px;
 	top: 1px;
 }
 
-.page-ticket .people-box.first  { margin-right: 4px; }
-.page-ticket .people-box.second { margin-left : 4px; }
+.page-ticket .people-box .first .profile-box-container  { margin-right: 4px; }
+.page-ticket .people-box .second .profile-box-container { margin-left : 4px; }
 
 .page-ticket .people-box .col:first-child {
 	border-right: 1px solid #D7DCDE;

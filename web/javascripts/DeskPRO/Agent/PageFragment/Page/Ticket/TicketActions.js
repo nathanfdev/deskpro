@@ -105,8 +105,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			var h1 = 0;
 			var h2 = 0;
 
-			box1_in.each(function() { var thisH = $(this).height(); if (thisH > h1) { h1 = thisH; } });
-			box2_in.each(function() { var thisH = $(this).height(); if (thisH > h2) { h2 = thisH; } });
+			box1_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h1) { h1 = thisH; } });
+			box2_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h2) { h2 = thisH; } });
 
 			var h = (h1 > h2) ? h1 : h2;
 
@@ -115,8 +115,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		};
 
 		// TODO handle resize without element resize monitor
-		box1_in.on('resize', syncSizes);
-		box2_in.on('resize', syncSizes);
+		box1.on('resize', syncSizes);
+		box2.on('resize', syncSizes);
 		syncSizes();
 
 		//------------------------------

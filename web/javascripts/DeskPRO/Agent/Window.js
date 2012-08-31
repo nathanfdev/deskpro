@@ -2755,6 +2755,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					context = {
 						page: page,
 						meta: page.getAllMetaData(),
+						id: inline[i].htmlId,
+						containerEl: $('#' + inline[i].htmlId + '_container'),
 						contentEl: $('#' + inline[i].htmlId)
 					};
 					eval('(function() {' + code + '}).call(context);');

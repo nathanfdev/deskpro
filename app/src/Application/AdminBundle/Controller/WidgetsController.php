@@ -121,12 +121,13 @@ class WidgetsController extends AbstractController
 			$this->ensureRequestToken();
 
 			$description = $this->in->getString('description');
+			$title = $this->in->getString('title');
 			$page = $this->in->getString('page');
 			$insertPosition = $this->in->getString('insert_position');
 			$location = $this->in->getString('page_location');
 
 			$widget->description = $description;
-			$widget->title = $this->in->getString('title');
+			$widget->title = $title;
 			$widget->html = $this->in->getStrRaw('html');
 			$widget->js = $this->in->getStrRaw('js');
 			$widget->css = $this->in->getStrRaw('css');
@@ -136,6 +137,9 @@ class WidgetsController extends AbstractController
 
 			if (!$description) {
 				$errors['description'] = 'Please enter a description.';
+			}
+			if (!$title) {
+				$errors['title'] = 'Please enter a block title.';
 			}
 			if (!$page || !$insertPosition || !$location) {
 				$errors['page'] = 'Please enter a complete location.';

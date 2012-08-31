@@ -116,8 +116,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 {% endif %}
 
-{{ dp_widgets(baseId, 'ticket', 'header', 'above') }}
-
 <header class="page-header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box">
@@ -169,9 +167,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 {{ dp_widgets(baseId, 'ticket', 'header', 'below') }}
 
-<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="col" valign="top" width="50%"><tr><td width="50%" valign="top">
+<table cellspacing="0" cellpadding="0" width="100%" class="people-box"><tr><td width="50%" valign="top" class="first">
 	{{ dp_widgets(baseId, 'ticket', 'people', 'above') }}
-	<div class="profile-box-container people-box first">
+	<div class="profile-box-container">
 		<header>
 			{{ dp_widget_tabs_header(baseId, 'ticket', 'people', {
 				(baseId ~ '_people_box_person'): phrase('agent.general.people')
@@ -256,9 +254,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</section>
 	</div>
 	{{ dp_widgets(baseId, 'ticket', 'people', 'below') }}
-</td><td width="50%" valign="top">
+</td><td width="50%" valign="top" class="second">
 	{{ dp_widgets(baseId, 'ticket', 'assignments', 'above') }}
-	<div class="profile-box-container people-box second">
+	<div class="profile-box-container">
 		<header>
 			<div class="controls" id="{{baseId}}_agent_prop_controls">
 				<span style="display:none" class="mark-loading"></span>
@@ -486,6 +484,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 {{ dp_widgets(baseId, 'ticket', 'messages', 'below') }}
+{{ dp_widgets(baseId, 'ticket', 'reply', 'above') }}
 
 {% if ticket_perms.reply or ticket_perms.modify_note %}
 <div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
@@ -493,6 +492,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 {% endif %}
 
+{{ dp_widgets(baseId, 'ticket', 'reply', 'below') }}
 {{ dp_widgets(baseId, 'ticket', 'footer') }}
 
 {# Wrapper around fields in the properties box #}

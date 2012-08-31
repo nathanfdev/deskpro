@@ -941,7 +941,7 @@ STR;
 		$output = '';
 		foreach ($widgets AS $widget) {
 			$output .= $this->_insertWidget($baseId, $widget,
-				'<div class="widget-content" id="{id}" data-widget="{widget}">{html}</div>'
+				'<div class="profile-box-container" id="{id}_container"><header><h4 id="{id}_header">{title}</h4></header><section class="widget-content" id="{id}" data-widget="{widget}">{html}</section></section></div>'
 			);
 		}
 
@@ -986,11 +986,12 @@ STR;
 	protected function _insertWidget($baseId, \Application\DeskPRO\Entity\Widget $widget, $wrapper)
 	{
 		$htmlId = $this->getWidgetHtmlId($baseId, $widget);
+		$html = $widget->html;
 
 		$output = strtr($wrapper, array(
 			'{id}' => $htmlId,
 			'{widget}' => $widget->id,
-			'{html}' => $widget->html,
+			'{html}' => $html,
 			'{title}' => $widget->title
 		));
 		if ($widget->css) {
