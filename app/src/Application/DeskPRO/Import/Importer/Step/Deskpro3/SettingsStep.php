@@ -71,7 +71,7 @@ class SettingsStep extends AbstractDeskpro3Step
 			'core.date_time'          => $dp3_settings['date_time'],
 			'core.dp3_license'        => $dp3_settings['license'],
 			'core.dp3_install_time'   => $dp3_settings['install_timestamp'],
-			'core.reg_url'            => $dp3_settings['register_url'],
+			'core.reg_url'            => isset($dp3_settings['register_url']) ? $dp3_settings['register_url'] : '',
 			'core.default_timezone'   => $timezone,
 			'core.user_mode'          => $reg_mode,
 			'user.portal_enabled'     => 1,
