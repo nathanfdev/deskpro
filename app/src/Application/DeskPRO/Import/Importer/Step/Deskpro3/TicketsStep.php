@@ -104,6 +104,14 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_search_message_active');
 		$this->importer->removeTableIndexes('tickets_search_subject');
 
+		// Try to fix possible dupe ref's on very old db's
+		$refs = $this->olddb->fetchAllCol("SELECT id FROM ticket GROUP BY ref HAVING COUNT(*) > 1");
+		if ($refs) {
+			$refs = implode(',', $refs);
+			$this->olddb->executeUpdate("
+				UPDATE ticket SET ref = CONCAT(ref, '-D') WHERE id IN ($refs)
+			");
+		}
 	}
 
 	public function postRunAll()

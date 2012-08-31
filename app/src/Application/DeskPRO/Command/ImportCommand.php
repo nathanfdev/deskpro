@@ -570,16 +570,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$cmd = $this->getContainer()->getPhpBinaryPath() . ' index.php';
 					$dir = DP_ROOT . '/sys/legacy/upgrader';
 
-					$proc = new \Symfony\Component\Process\Process($cmd, $dir);
-					$proc->run(function ($type, $buffer) {
-						if ('err' === $type) {
-							echo '[ERR] '.$buffer;
-						} else {
-							echo $buffer;
-						}
-					});
+					chdir($dir);
 
-					if (!$proc->isSuccessful() || strpos($proc->getOutput(), 'There was an error determining which build') !== false) {
+					$cmd .= ' 2>&1';
+					$ret = 0;
+					passthru($cmd, $ret);
+
+					if ($ret) {
 						$output->writeln(PHP_EOL . 'We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.');
 						return 26;
 					}
