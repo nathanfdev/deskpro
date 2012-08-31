@@ -942,7 +942,7 @@ STR;
 		foreach ($widgets AS $widget) {
 			$output .= $this->_insertWidget($baseId, $widget,
 				'<div class="profile-box-container" id="{id}_container">'
-					. '<header><h4 id="{id}_header">{title}</h4></header>'
+					. '<header><h4 id="{id}_tab">{title}</h4></header>'
 					. '<section class="widget-content" id="{id}" data-widget="{widget}">{html}</section>'
 				. '</div>',
 				$data
