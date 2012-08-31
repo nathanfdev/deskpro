@@ -498,6 +498,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function findUserByEmail($email_address)
 	{
+		$email_address = strtolower($email_address);
+
 		// The author
 		if ($this->person->findEmailAddress($email_address)) {
 			return $this->person;

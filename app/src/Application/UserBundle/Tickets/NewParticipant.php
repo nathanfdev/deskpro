@@ -55,6 +55,11 @@ class NewParticipant
 
 	public function save()
 	{
+		// User already on the tikcet, dont do anything
+		if ($this->ticket->findUserByEmail($this->email)) {
+			return;
+		}
+
 		$ticket = $this->ticket;
 		$part_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->email);
 
@@ -64,7 +69,7 @@ class NewParticipant
 			$part_person['first_name'] = $this->first_name;
 			$part_person['last_name'] = $this->last_name;
 		}
-		
+
 		if (!$part_person['first_name'] AND $this->first_name) {
 			$part_person['first_name'] = $this->first_name;
 		}

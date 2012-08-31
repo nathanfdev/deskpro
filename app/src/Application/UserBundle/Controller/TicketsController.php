@@ -233,9 +233,9 @@ class TicketsController extends AbstractController
 
 		$ticket->removeParticipant($person_id);
 
-		$this->em->transactional(function() use ($ticket) {
-			$this->em->persist($ticket);
-			$this->em->flush();
+		$this->em->transactional(function($em) use ($ticket) {
+			$em->persist($ticket);
+			$em->flush();
 		});
 
 		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
