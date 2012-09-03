@@ -39,7 +39,7 @@
 	'user.general.upload_a_file'                                           => 'ファイルをアップロード',
 	'user.general.uploading'                                               => 'アップロード中:',
 	'user.general.you'                                                     => 'あなた',
-	'user.general.your_comment_agent_validation'                           => 'あなたのコメントは公開の前に必要なエージェントによる承認の手続き中です。',
+	'user.general.your_comment_agent_validation'                           => 'あなたのコメントは公開の前に、エージェントによる承認の手続き中です。',
 	'user.general.your_email_address'                                      => 'あなたのメールアドレス',
 	'user.general.your_name'                                               => 'あなたの名前',
 );

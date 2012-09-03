@@ -13,6 +13,7 @@
 	'user.tickets.download_pdf'                                            => 'PDFをダウンロード',
 	'user.tickets.edit'                                                    => '編集',
 	'user.tickets.email_explain'                                           => 'エージェントによる回答はこちらに送られます。',
+	'user.tickets.empty_message'                                           => '(空欄メッセージ)',
 	'user.tickets.feedback_close_btn'                                      => '回答が得られた、または対応が終わったので、リクエストを対応済みにします。',
 	'user.tickets.feedback_message_leave_comment'                          => 'オプション：コメントを残す',
 	'user.tickets.feedback_message_title'                                  => '{{name}} によるメッセージを評価する',
