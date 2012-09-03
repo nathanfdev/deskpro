@@ -119,8 +119,8 @@ $collection->add('user_login_resetpass', new Route(
 ));
 
 $collection->add('user_login_resetpass_send', new Route(
-	'/login/reset-password/send',
-	array('_controller' => 'UserBundle:Login:sendResetPassword'),
+	'/login/reset-password/send.{_format}',
+	array('_controller' => 'UserBundle:Login:sendResetPassword', '_format' => 'html'),
 	array(),
 	array()
 ));

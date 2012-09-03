@@ -591,7 +591,9 @@ HTML;
 			if ($this->request->isXmlHttpRequest()) {
 				return $this->createJsonResponse(array('error' => 'invalid_email'));
 			}
-			return $this->resetPasswordAction(true);
+
+			// Default is to just show standard message to not reveal if account exists
+			return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
 		}
 
 		// If they dont have a password, this either means they're not a user yet,
