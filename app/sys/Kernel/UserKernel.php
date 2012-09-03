@@ -87,6 +87,9 @@ class UserKernel extends AbstractKernel
 		}
 
 		$urlinfo        = parse_url(App::getSetting('core.deskpro_url'));
+		if (!$urlinfo || empty($urlinfo['host']) || empty($urlinfo['scheme'])) {
+			return null;
+		}
 		$now_host       = strtolower($urlinfo['host']);
 		$now_scheme     = strtolower($urlinfo['scheme']);
 		$correct_host   = strtolower($request->getHttpHost());
