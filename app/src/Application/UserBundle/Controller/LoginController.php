@@ -582,7 +582,7 @@ HTML;
 			// can be helpful and redirect to another source they exist in
 			$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
 			foreach ($usersources as $us) {
-				$found = $us->getUserInfoFromIdentity($email, 'email');
+				$found = $us->findIdentityByInput($email);
 				if ($found && $us->lost_password_url) {
 					return $this->redirect($us->lost_password_url);
 				}
