@@ -32,7 +32,9 @@ function dpTwoSelectInit(el, options) {
 	}, options || {});
 
 	if (options.debug) {
-		debugMessge = console.log;
+		debugMessge = function() {
+			console.log.apply(console, arguments);
+		}
 	} else {
 		debugMessge = function() {};
 	}
