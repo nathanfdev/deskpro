@@ -476,6 +476,11 @@ JS;
 	{
 		if ($this->in->getUint('snippet_id')) {
 			$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+
+			if (!$snippet) {
+				throw $this->createNotFoundException();
+			}
+
 			$category = $snippet->category;
 		} else {
 			$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
