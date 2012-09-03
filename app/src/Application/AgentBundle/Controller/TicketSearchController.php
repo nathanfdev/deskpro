@@ -1025,6 +1025,10 @@ class TicketSearchController extends AbstractController
 		$ticket_id = $this->in->getUint('ticket_id');
 		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
+		if (!$ticket) {
+			return $this->createResponse('');
+		}
+
 		$vars = array(
 			'page' => -1,
 			'tickets' => array($ticket),
