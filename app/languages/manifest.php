@@ -42,6 +42,16 @@
 		'has_admin'  => false,
 		'is_managed' => true
 	),
+	'dutch' => array(
+		'id'         => 'dutch',
+		'lang_code'  => 'dut',
+		'title'      => 'Dutch',
+		'locale'     => 'nl',
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	)
 
 	/*
 
