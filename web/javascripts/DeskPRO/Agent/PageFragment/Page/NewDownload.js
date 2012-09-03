@@ -50,6 +50,16 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			});
 			self.updateUi();
 		}, 300);
+
+		this.activate();
+	},
+
+	activate: function() {
+		var selectedCat = $('#publish_outline_downloadscat_list').find('.nav-selected').data('cat-id');
+		if (selectedCat) {
+			this.getEl('cat').find("option[value=\"" + selectedCat + "\"]").prop('selected', true);
+			this.getEl('cat').trigger('change');
+		}
 	},
 
 	markForReload: function() {

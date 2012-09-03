@@ -7,7 +7,7 @@
 		<span class="edit-cat">{{ phrase('agent.general.edit') }}</span>
 		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}></span>
 		<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
-		<span class="title is-nav-item fitted" data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">
+		<span class="title is-nav-item fitted" data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}" data-cat-id="{{ cat.id }}">
 			<span class="list-counter"
 				id="download_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"

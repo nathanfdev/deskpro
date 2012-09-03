@@ -27,8 +27,6 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
-		this._initCategorySection();
-		this._initTitleSection();
 		this._initContentSection();
 		this._initOtherSection();
 
@@ -49,6 +47,16 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			});
 			self.updateUi();
 		}, 300);
+
+		this.activate();
+	},
+
+	activate: function() {
+		var selectedCat = $('#publish_outline_articlescat_list').find('.nav-selected').data('cat-id');
+		if (selectedCat) {
+			this.getEl('cat').find("option[value=\"" + selectedCat + "\"]").prop('selected', true);
+			this.getEl('cat').trigger('change');
+		}
 	},
 
 	markForReload: function() {
@@ -171,46 +179,6 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	//#################################################################
-	//# Category section
-	//#################################################################
-
-	_initCategorySection: function() {
-		var self = this;
-
-		this.getEl('cat').on('change', function() {
-			if (parseInt($(this).val())) {
-				self.getEl('cat_section').addClass('done');
-			} else {
-				self.getEl('cat_section').removeClass('done');
-			}
-		});
-	},
-
-	//#################################################################
-	//# Title section
-	//#################################################################
-
-	_initTitleSection: function() {
-		var self = this;
-
-		var fn = function() {
-			if ($(this).val().trim() == '') {
-				self.getEl('title_section').removeClass('done');
-			} else {
-				self.getEl('title_section').addClass('done');
-			}
-		};
-
-		this.getEl('title').on('change', fn).on('keypress', fn).on('change', function() {
-			var val = $(this).val().trim().toLowerCase();
-			val = val.replace(/[^a-z0-9\-_]/g, '-');
-			val = val.replace(/-{2,}/g, '-');
-
-			self.getEl('slug').val(val);
-		});
-	},
-
-	//#################################################################
 	//# Content section
 	//#################################################################
 
@@ -227,9 +195,6 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		DP.rteTextarea(this.getEl('content'), {
 			setup: function(ed) {
-				ed.onClick.add(function() {
-					self.getEl('content_section').addClass('done');
-				});
 				ed.onKeyPress.add(function() {
 					if (self.stateSaver) {
 						self.stateSaver.triggerChange();
