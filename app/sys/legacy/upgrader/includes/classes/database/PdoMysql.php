@@ -39,6 +39,8 @@ class DB_PdoMysql extends DB_Abstract
 				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
 			));
 			$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+			$this->query_silent("SET sql_mode=''");
 		} catch (Exception $e) {
 			$this->_last_errno = $e->getCode();
 			$this->_last_error = $e->getMessage();
