@@ -483,7 +483,10 @@
 
 	<div class="builder-type" title="User Waiting Time" data-rule-type="user_waiting">
 		<div class="builder-op">
-			<input type="hidden" name="op" value="gte" />
+			<select name="op" class="op">
+				<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
+				<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
+			</select>
 		</div>
 		<div class="builder-options">
 			<input type="text" name="waiting_time" value="" style="width:50px" />
@@ -497,7 +500,10 @@
 
 	<div class="builder-type" title="User Total Waiting Time" data-rule-type="total_user_waiting">
 		<div class="builder-op">
-			<input type="hidden" name="op" value="gte" />
+			<select name="op" class="op">
+				<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
+				<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
+			</select>
 		</div>
 		<div class="builder-options">
 			<input type="text" name="waiting_time" value="" style="width:50px" />
