@@ -347,7 +347,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * When true the ticket log doesnt run in the post event
 	 * @var bool
 	 */
-	protected $_no_log = false;
+	public $_no_log = false;
 
 	/**
 	 * Parts that were originally on the ticket (before any changes)

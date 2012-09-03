@@ -607,6 +607,12 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function preDone()
 	{
+		if ($this->ticket->_isRemoved || $this->ticket->_no_log) {
+			return;
+		}
+		if (!$this->ticket['id']) {
+			return;
+		}
 		if (!$this->has_non_ignored) {
 			return;
 		}
@@ -622,6 +628,12 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function done()
 	{
+		if ($this->ticket->_isRemoved || $this->ticket->_no_log) {
+			return;
+		}
+		if (!$this->ticket['id']) {
+			return;
+		}
 		if ($this->running) {
 			$this->logMessage('[TicketChangeTracker] (running)');
 			return;
@@ -633,51 +645,54 @@ class TicketChangeTracker extends ChangeTracker
 
 		$this->running = true;
 
-		$this->logMessage('[TicketChangeTracker] done');
-
 		$this->ticket->unsetTicketLogger();
 
-		$this->getTriggerExecutorInspector();
-		if (!$this->isExtraSet('is_install')) {
-			$this->getTriggerExecutorInspector()->runPre();
-		}
-
-		if (!$this->isExtraSet('is_install')) {
-			$this->getTriggerExecutorInspector()->run();
-		}
-
-		$this->getLogInspector()->run();
-
-		$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);
-		$person_activity->run();
-
-		// Broadcast a change event
-		$person_id = 0;
-		try {
-			if (App::has('session') && App::get('session')->getEntity()->person) {
-				$person_id = App::get('session')->getEntity()->person->getId();
+		// Bare delete doesnt update any triggers, it just sends CM's.
+		// Its used in merging where we want to notify clients that the old ticket was removed from lists,
+		// but the actual messages about changing the status to deleted etc arent wanted
+		if ($this->isExtraSet('bare_delete')) {
+			$this->getTriggerExecutorInspector();
+			if (!$this->isExtraSet('is_install')) {
+				$this->getTriggerExecutorInspector()->runPre();
 			}
-		} catch (\Exception $e) {}
 
-		App::getDb()->insert('client_messages', array(
-			'channel' => 'agent.ticket-updated',
-			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
-			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize(array(
-				'ticket_id'      => $this->ticket->getId(),
-				'changed_fields' => $this->getAllChangedPropertyNames(),
-				'via_person'     => $person_id
-			)),
-			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
-		));
+			if (!$this->isExtraSet('is_install')) {
+				$this->getTriggerExecutorInspector()->run();
+			}
 
-		$total_time = microtime(true) - $this->start_time;
+			$this->getLogInspector()->run();
+
+			$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);
+			$person_activity->run();
+
+			// Broadcast a change event
+			$person_id = 0;
+			try {
+				if (App::has('session') && App::get('session')->getEntity()->person) {
+					$person_id = App::get('session')->getEntity()->person->getId();
+				}
+			} catch (\Exception $e) {}
+
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.ticket-updated',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array(
+					'ticket_id'      => $this->ticket->getId(),
+					'changed_fields' => $this->getAllChangedPropertyNames(),
+					'via_person'     => $person_id
+				)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
+		}
 
 		$this->getListUpdater()->run();
 
 		$time = microtime(true);
 		$this->getSearchUpdater()->run();
 		$this->logMessage(sprintf("[TicketChangeTracker] Search updater took %.4f seconds", microtime(true)-$time));
+
+		$total_time = microtime(true) - $this->start_time;
 
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
