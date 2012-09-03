@@ -381,14 +381,15 @@ class Runner
 			}
 
 			$this->_updateSource($source);
+			$this->log_messages->clear();
 
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
 				break;
 			}
-
-			$this->log_messages->clear();
 		}
+
+		$fetcher->close();
 
 		$end_time = microtime(true);
 		$this->logger->log(sprintf("Finished processing gateway. Took %.2f seconds.", $end_time - $start_time), 'info');

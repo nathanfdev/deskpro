@@ -121,6 +121,15 @@ abstract class AbstractFetcher
 
 
 	/**
+	 * Closes the fetcher.
+	 */
+	public function close()
+	{
+
+	}
+
+
+	/**
 	 * @param $logger \Application\DeskPRO\Log\Logger
 	 */
 	public function setLogger(Logger $logger)

@@ -74,6 +74,14 @@ class Pop3 extends AbstractFetcher
 		return $storage;
 	}
 
+	public function close()
+	{
+		if ($this->storage) {
+			$this->storage->close();
+			$this->storage = null;
+		}
+	}
+
 	/**
 	 * Get a list of message IDs
 	 */
