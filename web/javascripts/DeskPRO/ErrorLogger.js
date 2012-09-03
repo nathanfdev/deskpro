@@ -78,7 +78,7 @@ var DpErrorLog = {
 	}
 };
 
-if (DP_DEBUG && DP_DEBUG_EVENT_TIMER) {
+if (typeof DP_DEBUG != 'undefined' && typeof DP_DEBUG_EVENT_TIMER != 'undefined' && DP_DEBUG && DP_DEBUG_EVENT_TIMER) {
 	var oldTrigger = jQuery.event.trigger;
 	jQuery.event.trigger = function() {
 		var begin = new Date();

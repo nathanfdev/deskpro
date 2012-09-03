@@ -147,9 +147,11 @@ DeskPRO.User.Window = new Orb.Class({
 			updateTitle();
 		});
 
-		$('.dp-help-pop').popover({
-			placement: 'top'
-		});
+		if (typeof $.prototype.popover != 'undefined') {
+			$('.dp-help-pop').popover({
+				placement: 'top'
+			});
+		}
 	},
 
 	getHandler: function(id) {
