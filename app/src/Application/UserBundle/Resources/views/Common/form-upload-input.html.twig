@@ -12,6 +12,12 @@
 	data-security-token="{{ security_token('attach_temp') }}"
 	data-drop-document="1"
 >
+	<div class="dp-attach-limits">
+		{{ phrase('user.general.upload_maxsize', {size: app.getSetting('core.attach_user_maxsize')|filesize_display}) }}
+		{% if app.getSetting('core.attach_user_must_exts') %}
+			&middot; {{ phrase('user.general.upload_allowed_exts', {types: app.getSetting('core.attach_user_must_exts')}) }}
+		{% endif %}
+	</div>
 	<div class="dp-fallback">
 		{% for i in 0..5 %}
 			<input type="file" name="{{ field_name }}" />

@@ -37,6 +37,8 @@
 	'user.general.upload'                        => 'Upload',
 	'user.general.upload-drag'                   => 'Drop your file here to upload it',
 	'user.general.upload_a_file'                 => 'Upload a file',
+	'user.general.upload_maxsize'                => 'Maximum file size: {{size}}',
+	'user.general.upload_allowed_exts'           => 'Allowed types: {{types}}',
 	'user.general.uploading'                     => 'Uploading:',
 	'user.general.you'                           => 'You',
 	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
