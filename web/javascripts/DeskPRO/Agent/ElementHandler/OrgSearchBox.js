@@ -31,6 +31,10 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 				self.updateCaller.touch(self.getTerm(), true);
 			}
 		});
+
+		this.el.on('dp_hide', function() {
+			self.close();
+		});
 	},
 
 

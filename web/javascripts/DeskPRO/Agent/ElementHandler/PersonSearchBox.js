@@ -18,6 +18,10 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.termInput.on('focus', function() {
 			self.open();
 		});
+
+		this.el.on('dp_hide', function() {
+			self.close();
+		});
 	},
 
 

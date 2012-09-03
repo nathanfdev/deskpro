@@ -71,6 +71,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}, this);
 		this.addEvent('deactivate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
+			if (this.wrapper) {
+				this.wrapper.find('.with-handler').trigger('dp_hide');
+			}
 		}, this);
 
 		// Auto-init
