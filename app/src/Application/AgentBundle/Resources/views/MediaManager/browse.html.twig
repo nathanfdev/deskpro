@@ -1,6 +1,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Browse';
 </script>
+<div class="manager-window-content">
 {% for blob in blobs %}
 	<div class="blob-row blob-{{blob.id}} {% if blob.isImage() %}is-image{% endif %}" data-blob-id="{{ blob.id }}">
 		{% if blob.isImage() %}
@@ -25,3 +26,4 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.MediaManagerPage.Browse';
 		There have not been any uploads yet.
 	</p>
 {% endfor %}
+</div>

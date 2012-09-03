@@ -10,13 +10,16 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Upload = new Orb.Class({
 	},
 
 	initPage: function(wrapper) {
+		var self = this;
 		this.wrapper = wrapper;
 
-		DeskPRO_Window.util.fileupload(wrapper, {
-			page: this.page,
+		var el = wrapper.find('.manager-window-content');
+
+		DeskPRO_Window.util.fileupload(el, {
+			page: this,
 			saveMedia: 1,
-			uploadTemplate: $('.template-upload', wrapper),
-			downloadTemplate: $('.template-download', wrapper)
+			uploadTemplate: $('.template-upload', el),
+			downloadTemplate: $('.template-download', el)
 		}).bind('fileuploadstart', function() {
 			wrapper.find('.upload-control').hide();
 		}).bind('fileuploadadd', function(e,data) {
@@ -28,6 +31,7 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Upload = new Orb.Class({
 
 			wrapper.find('.upload-control').show();
 			wrapper.find('.files').hide();
+			self.mediaWindow.reloadTab('upload');
 		});
 
 		wrapper.on('click', '.insert-trigger', function(ev) {

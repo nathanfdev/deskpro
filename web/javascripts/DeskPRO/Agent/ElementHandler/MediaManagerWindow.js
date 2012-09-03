@@ -46,9 +46,9 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 					self._loadPageForTabTarget(wrapper);
 				} else {
 					if (wrapper.data('page-fragment').TYPENAME == 'mediawin_browse') {
-						self.reloadTab('browse');
+						self.reloadTab('browser');
 					} else {
-						wrapper.data('page-fragment').fireEvent('activate');
+						self.reloadTab('upload');
 					}
 				}
 			}
@@ -96,6 +96,7 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 		var page = target.data('page-fragment');
 		if (page) {
 			page.fireEvent('destroy');
+			page.destroy();
 		}
 
 		target.empty();
@@ -146,6 +147,8 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 		} else {
 			this.topTabs.activateTab($('#mediaswin_upload_trigger'));
 		}
+
+		this.reloadTab('upload');
 
 		this.el.show();
 		this.backdrop.show();
