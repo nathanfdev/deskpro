@@ -1,1 +1,12 @@
-{{data.value|raw}}
+{% set field_rendered %}
+	{% block field_rendered %}
+		{% if field_handler_name == 'Date' %}
+			{{ data.value|date('full') }}
+		{% else %}
+			{{ data.value }}
+		{% endif %}
+	{% endblock %}
+{% endset %}
+{% block content %}
+	{{ field_rendered }}{{ field_def.getOption('html', '')|raw }}
+{% endblock %}
