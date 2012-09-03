@@ -981,50 +981,56 @@ class TicketController extends AbstractController
 		#------------------------------
 
 		$add_parts = array();
+		$new_user_ids = array();
 		$rem_parts = array();
 		$changed_parts = false;
 
 		$email_validator = new \Orb\Validator\StringEmail();
 
-		$current_user_ids = array();
-		$current_agent_ids = array();
-		foreach ($ticket->participants as $p) {
-			if ($p->person->is_agent) {
-				$current_agent_ids[] = $p->person->id;
-			} else {
-				$current_user_ids[] = $p->person->id;
+		$del_cc_emails = $this->container->getIn()->getCleanValueArray('delcc', 'string', 'discard');
+		$del_cc_emails = array_map('strtolower', $del_cc_emails);
+
+		$add_cc_emails = $this->container->getIn()->getCleanValueArray('addcc', 'string', 'discard');
+		$add_cc_emails = array_map('strtolower', $add_cc_emails);
+
+		$add_cc_emails = array_filter($add_cc_emails, function ($v) use ($del_cc_emails) {
+			return !in_array($v, $del_cc_emails);
+		});
+
+		if ($add_cc_emails) {
+			foreach ($add_cc_emails as $email) {
+				if (!$email || !$email_validator->isValid($email)) {
+					continue;
+				}
+
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+				if ($person) {
+					$got_user_ids[] = $person->id;
+				} else {
+					$person = Person::newContactPerson(array('email' => $email));
+					$this->em->persist($person);
+					$this->em->flush();
+					$new_user_ids[] = $person->id;
+				}
+
+				$changed_parts = true;
+				$add_parts[] = $person;
 			}
 		}
 
-		// People cc emails
-		$user_parts_emails = $this->in->getString('user_parts');
-		$user_parts_emails = explode(',', $user_parts_emails);
+		if ($del_cc_emails) {
+			foreach ($del_cc_emails as $email) {
+				if (!$email || !$email_validator->isValid($email)) {
+					continue;
+				}
 
-		$got_user_ids = array();
-		$new_user_ids = array();
-		foreach ($user_parts_emails as $email) {
-			if (!$email || !$email_validator->isValid($email)) {
-				continue;
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+
+				if ($person) {
+					$changed_parts = true;
+					$rem_parts[] = $person;
+				}
 			}
-
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$got_user_ids[] = $person->id;
-			} else {
-				$person = Person::newContactPerson(array('email' => $email));
-				$this->em->persist($person);
-				$this->em->flush();
-				$new_user_ids[] = $person->id;
-			}
-
-			$changed_parts = true;
-			$add_parts[] = $person;
-		}
-
-		$remove_user_ids = array_diff($current_user_ids, $got_user_ids);
-		foreach ($remove_user_ids as $id) {
-			$changed_parts = true;
-			$rem_parts[] = $id;
 		}
 
 		if ($new_user_ids) {
@@ -1046,8 +1052,8 @@ class TicketController extends AbstractController
 				}
 			}
 			if ($rem_parts) {
-				foreach ($rem_parts as $pid) {
-					$ticket->removeParticipantPerson($pid);
+				foreach ($rem_parts as $p) {
+					$ticket->removeParticipantPerson($p);
 				}
 			}
 

@@ -80,20 +80,12 @@
 						<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
 							<label>{{ phrase('agent.tickets.cc') }}:</label>
 							<div>
-								<input
-									type="text"
-									placeholder="{{ phrase('agent.tickets.enter_an_email_address') }}"
-									name="user_parts"
-									value="{% for p in user_parts %}{{ p.person_email.email }}{% if not loop.last %},{% endif %}{% endfor %}"
-									id="{{replyBaseId}}_cc_input"
-                                    style="display:none"
-								/>
-                                <div class="user-rows">
+								<div id="{{replyBaseId}}_newcc" style="display: none;"></div>
+								<div id="{{replyBaseId}}_delcc" style="display: none;"></div>
+
+                                <div class="user-rows" id="{{replyBaseId}}_cc_user_rows">
                                     {% for p in user_parts %}
-                                        <div class="cc-user-row">
-                                            <span class="btn-small-remove remove-row-trigger"></span>
-                                            <span class="user-email">{{ p.person_email.email }}</span>
-                                        </div>
+                                        <div class="cc-user-row" data-email="{{ p.person_email.email }}"><span class="btn-small-remove remove-row-trigger"></span><span class="user-email">{{ p.person_email.email }}</span></div>
                                     {% endfor %}
                                 </div>
                                 <script class="email-row-tpl" type="text/x-deskpro-tmpl">
