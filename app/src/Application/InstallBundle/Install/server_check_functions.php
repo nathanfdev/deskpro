@@ -115,7 +115,20 @@ function deskpro_install_check_pdo()
 
 function deskpro_install_check_pdo_mysql()
 {
-	return (deskpro_install_check_pdo() && in_array('mysql', PDO::getAvailableDrivers()));
+	if (!deskpro_install_check_pdo()) {
+		return false;
+	}
+
+	$drivers = PDO::getAvailableDrivers();
+	if (!$drivers) {
+		return false;
+	}
+
+	if (!in_array('mysql', $drivers)) {
+		return false;
+	}
+
+	return true;
 }
 
 function deskpro_install_check_image_manip()
