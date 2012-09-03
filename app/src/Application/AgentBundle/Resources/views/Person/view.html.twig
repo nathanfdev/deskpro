@@ -1,6 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
-pageMeta.title = {{ person.getDisplayContact()|json_encode|raw }};
+pageMeta.title = {{ person.getDisplayName()|json_encode|raw }};
 pageMeta.person_id = {{person.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_people_view', {'person_id': person.id}) }}';
 pageMeta.pageIdentity = 'person:{{person.id}}';
@@ -51,9 +51,9 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="titlewrap">
 			<h4 class="id-number">#{{ person.id }}</h4>
 			<h1>
-				<span id="{{baseId}}_showname">{{ person.name }}</span>
-				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.name }}" /></span>
-				{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.name is empty %}auto-click{% endif %}"></span>{% endif %}
+				<span id="{{baseId}}_showname">{{ person.getDisplayName() }}</span>
+				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.getDisplayName() }}" /></span>
+				{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
 				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 			</h1>
 			<div class="labels-line">

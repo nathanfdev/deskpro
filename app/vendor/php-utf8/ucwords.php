@@ -5,6 +5,8 @@
 * @subpackage strings
 */
 
+require_once(__DIR__.'/substr_replace.php');
+
 //---------------------------------------------------------------
 /**
 * UTF-8 aware alternative to ucwords

@@ -1729,7 +1729,6 @@ class Strings
 			'utf8_trim'                        => 'trim.php',
 			'utf8_ucfirst'                     => 'ucfirst.php',
 			'utf8_ucwords'                     => 'ucwords.php',
-			'utf8_ucwords_callback'            => 'ucwords.php',
 			'utf8_is_ascii'                    => 'utils/ascii.php',
 			'utf8_is_ascii_ctrl'               => 'utils/ascii.php',
 			'utf8_strip_non_ascii'             => 'utils/ascii.php',

@@ -584,7 +584,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$name = str_replace('.', ' ', $name);
 			$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
 
-			$name = ucfirst($name);
+			$name = Strings::utf8_ucwords($name);
 
 			return $name;
 		} elseif ($id_fallback) {
