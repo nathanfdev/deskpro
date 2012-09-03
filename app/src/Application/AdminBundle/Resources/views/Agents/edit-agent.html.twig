@@ -96,6 +96,15 @@
 					<input style="width:422px;" type="text" name="agent[password]" value="{{ random_password }}" />
 				</div>
 			</div>
+		{% else %}
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Reset Password</label>
+				</div>
+				<div class="dp-form-input">
+					<input style="width:422px;" type="text" name="agent[password]" value="" placeholder="Leave blank to not reset password" />
+				</div>
+			</div>
 		{% endif %}
 
 		{% if all_teams %}
