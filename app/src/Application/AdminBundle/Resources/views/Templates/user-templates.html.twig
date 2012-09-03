@@ -30,9 +30,9 @@
 {% block page %}
 
 {% for bundle_name,dirs in list %}
-	{% for dirname,dirinfo in dirs %}
+	{% for dirname,dirinfo in dirs %}{% if dirname != 'Test' %}
 		{{ tplmacro.render_dir(bundle_name, dirname, dirinfo) }}
-	{% endfor %}
+	{% endif %}{% endfor %}
 {% endfor %}
 
 {{ tplmacro.render_editor_overlay() }}
