@@ -71,7 +71,7 @@ class TicketsController extends AbstractController
 			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
-				WHERE ticket.person = :person
+				WHERE ticket.person = :person AND ticket.status != 'hidden'
 				ORDER BY ticket.id DESC
 			")->execute(array('person' => $this->person));
 		} else {
@@ -79,7 +79,7 @@ class TicketsController extends AbstractController
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
 				LEFT JOIN ticket.participants part
-				WHERE ticket.person = :person OR part.person = :person
+				WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
 				ORDER BY ticket.id DESC
 			")->execute(array('person' => $this->person));
 		}
