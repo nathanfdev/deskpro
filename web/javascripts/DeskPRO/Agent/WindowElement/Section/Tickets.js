@@ -411,7 +411,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			if (page && ticketId) {
-				page.addTicket(ticketId);
+				page.handleAutoAdd(ticketId);
 			}
 
 		} else if (data.op == 'del') {
@@ -545,6 +545,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				countEls.removeClass('loading');
 			},
 			success: function(batches) {
+
 				Object.each(batches, function(html,filterId) {
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);
@@ -559,13 +560,32 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					}
 
 					var selectedGrouping = filterEl.find('ul.sub-group li.nav-selected').data('grouping-option');
+					var li = filterEl.find('li.grouping-' + selectedGrouping);
+
+					var count = parseInt(li.find('span.list-counter').text());
+
 					this.setFilterGroupingContent(filterId, html, grouping);
 
 					if (selectedGrouping != 'undefined') {
 						filterEl = $('.filter-' + filterId, this.sectionEl);
-						var li = filterEl.find('li.grouping-' + selectedGrouping);
+						li = filterEl.find('li.grouping-' + selectedGrouping);
 						if (li[0]) {
-							DeskPRO_Window.runPageRouteFromElement(li.find('.is-nav-item'));
+							var count2 = parseInt(li.find('span.list-counter').text());
+							if (count != count2) {
+								// See DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js
+								// Used to signify that the counts were updated, so the list might need refreshing
+								li.addClass('is-stale');
+
+								// Try to find the list
+								var listPage = DeskPRO_Window.getListPage();
+								if (listPage.meta.filter_id && listPage.meta.filter_id == parseInt(filterId) && listPage.reloadIfStale) {
+									if (li.data('route')) {
+										DeskPRO_Window.runPageRouteFromElement(li);
+									} else {
+										DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'));
+									}
+								}
+							}
 							li.addClass('nav-selected');
 						}
 					}

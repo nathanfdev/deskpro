@@ -42,26 +42,22 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			Array.each(ticket_ids, function(val) {
 				this.resultsHelper.removeResultId(val);
 				sels.push('article.ticket-' + val);
-				this.countTotal--;
 			}, this);
 
 			sels = sels.join(', ');
 
-			$(sels, this.contentWrapper).addClass('removing').fadeOut(400, function() {
+			var els = $(sels, this.contentWrapper).addClass('removing').fadeOut(400, function() {
 				$(this).remove();
 				self.updateTicketCountLabels();
 				self.updateUi();
 			});
+
+			this.countTotal -= els.length;
 		}).bind(this), null, [this.OBJ_ID])
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
 			var ticketId = info.ticket_id;
-			var row = $('article.ticket-' + ticketId, self.contentWrapper);
-			if (row[0] && row.hasClass('removing')) {
-				return;
-			}
-
-			self.addTicket(ticketId, true);
+			self.handleAutoAdd(ticketId);
 		}, null, [this.OBJ_ID]);
 
 		this.wrapper = $(el);
@@ -149,6 +145,48 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		if (this.meta.viewType != 'list') {
 			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 		}
+	},
+
+	handleAutoAdd: function(ticketId) {
+		var self = this;
+		self.reloadIfStale = false;
+		var row = $('article.ticket-' + ticketId, self.contentWrapper);
+		if (row[0] && row.hasClass('removing')) {
+			return false;
+		}
+
+		// If a ticket has been updated, it's not on our list, and we're viewing a sub-groupging,
+		// we need to reload the whole list to know if the ticket was added
+		if (self.meta.topGroupingTerm) {
+			var li = $('#system_filters_wrap').find('.nav-selected');
+			if (!li[0]) {
+				$('#tickets_outline_custom_filters').find('.nav-selected');
+			}
+
+			if (!li[0]) {
+				return false;
+			}
+
+			// See DeskPRO/Agent/WindowElement/Section/Tickets.js
+			// is-stale is added when the counts were updated, which means
+			// the list we're looking at is now out of date, meaning we need to relaod
+			if (li.hasClass('is-stale')) {
+				if (self.meta.routeData && self.meta.routeData.route) {
+					DeskPRO_Window.runPageRoute(self.meta.routeData.route);
+				}
+			}
+
+			// This might be run after is-stale (order is undefined based on event delegation),
+			// so the list needs to know if to reload too
+			self.reloadIfStale = true;
+
+			if (!row[0]) {
+				return false;
+			}
+		}
+
+		self.addTicket(ticketId, true);
+		return true;
 	},
 
 	_handleResize: function() {

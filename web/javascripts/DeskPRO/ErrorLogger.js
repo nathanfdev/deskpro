@@ -23,6 +23,8 @@ var DpErrorLog = {
 
 		if (this.saveUrl) {
 
+			message = message+'';
+
 			if (ASSETS_BASE_URL) {
 				var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
 				message = message.replace(r, '');
