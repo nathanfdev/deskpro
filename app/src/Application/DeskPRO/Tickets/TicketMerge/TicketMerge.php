@@ -125,6 +125,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 			// dont add logs for new messages etc
 			$this->ticket->resetTicketLogger();
+			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$prop_agent = new Property\Agent($this->ticket, $this->other_ticket);
 			$prop_agent->setStrategy(Property\Agent::STRATEGY_RIGHT);
@@ -179,8 +180,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			App::getDb()->delete('tickets_search_message', array('id' => $this->other_ticket->getId()));
 			App::getDb()->delete('tickets_search_subject', array('id' => $this->other_ticket->getId()));
 			$this->em->remove($this->other_ticket);
-
-			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$this->em->flush();
 			$this->em->commit();

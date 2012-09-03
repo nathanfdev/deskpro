@@ -58,6 +58,7 @@ class Merge extends AbstractLogAction
 		return array(
 			'id_before' => $this->old_ticket_id ?: null,
 			'id_after'  => $this->ticket['id'] ?: null,
+			'merged'    => 1,
 		);
 	}
 
