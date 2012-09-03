@@ -29,93 +29,44 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Addons
  */
 
-namespace Application\DeskPRO\Plugin;
-
-use Application\DeskPRO\App;
+namespace Application\DeskPRO\DataSync\Plugin;
 use Application\DeskPRO\Entity\Plugin;
-use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
 
-use Symfony\Component\Finder\Finder;
-
-/**
- * This finds plugins that exist in the DeskPRO file structure
- */
-class PluginManager
+abstract class AbstractPlugin extends \Application\DeskPRO\DataSync\AbstractDataSync
 {
-	protected $em;
-	protected $plugins;
+	protected $_plugin;
 
-	public function __construct($em)
+	public function __construct($baseFile = null, Plugin $plugin = null)
 	{
-		$this->em = $em;
+		parent::__construct($baseFile);
+
+		$this->_plugin = $plugin;
+		$this->_defaultFields['plugin_id'] = $plugin ? $plugin->id : null;
 	}
 
-	public function initialize()
+	/**
+	 * Gets any rows that contain syncable data. This data may include
+	 * data that shouldn't be synced.
+	 *
+	 * @return array
+	 */
+	public function getLiveSyncableRows()
 	{
-		$this->_initPlugins();
-	}
-
-	protected function _initPlugins()
-	{
-		if ($this->plugins !== null) return;
-		
-		$this->plugins = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:Plugin p INDEX BY p.id
-		")->execute();
-		foreach ($this->plugins AS $plugin) {
-			$this->_initializePlugin($plugin);
-		}
-	}
-
-	protected function _initializePlugin(Plugin $plugin)
-	{
-		$autoload_paths = $plugin->autoload_paths;
-		if ($autoload_paths) {
-			$autoload_paths = str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $autoload_paths);
-			App::getClassLoader()->registerNamespaces($autoload_paths);
-		}
-	}
-
-	public function addPlugin($plugin)
-	{
-		$this->_initPlugins();
-
-		if (isset($this->plugins[$plugin['id']]) && $this->plugins[$plugin['id']] === $plugin) {
-			// already added
-			return;
+		if ($this->_plugin) {
+			$condition = "`$this->_keyField` IS NOT NULL AND plugin_id = ?";
+			$params = array($this->_plugin->id);
+		} else {
+			$condition = "`$this->_keyField` IS NOT NULL AND plugin_id IS NULL";
+			$params = array();
 		}
 
-		$this->plugins[$plugin['id']] = $plugin;
-		$this->_initializePlugin($plugin);
-	}
-
-	public function hasPlugin($plugin_id)
-	{
-		$this->_initPlugins();
-		return isset($this->plugins[$plugin_id]);
-	}
-
-	public function getBundle($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return new PluginBundle($this->plugins[$plugin_id]);
-	}
-
-	public function getResourcesPath($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return $this->plugins[$plugin_id]->getCanonicalResourcesPath();
+		return $this->_db->fetchAllKeyed("
+			SELECT *
+			FROM `$this->_table`
+			WHERE $condition
+			ORDER BY `$this->_keyField`
+		", $params, $this->_keyField);
 	}
 }

@@ -29,7 +29,6 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Dpql
  */
 
 namespace Application\DeskPRO\DataSync;

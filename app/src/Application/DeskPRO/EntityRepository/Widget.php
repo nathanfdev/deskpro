@@ -136,4 +136,12 @@ class Widget extends AbstractEntityRepository
 			)
 		);
 	}
+
+	/**
+	 * @return boolean
+	 */
+	public function canEditWidgetPlugin()
+	{
+		return (bool)App::getConfig('debug.dev');
+	}
 }

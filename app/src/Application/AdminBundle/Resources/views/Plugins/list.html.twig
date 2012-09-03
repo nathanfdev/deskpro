@@ -2,24 +2,14 @@
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page_TicketWorkflows = new DeskPRO.Admin.PageHandler.GeneralList('#ticket_workflows');
-};
-</script>
-{% endblock %}
 {% block page_id "plugins" %}
-{% block content %}
+{% block page %}
 
 <h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.installed_plugins') }}</h2>
 <ul class="item-list">
 	{% for plugin in installed_plugins %}
 		<li>
-			<div style="float:right">
-				<a class="dp-button" href="{# {{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }} #}">{{ phrase('admin.plugins.uninstall') }}</a>
-			</div>
-			<strong>{{plugin.title}}</strong>
+			<strong><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.name}) }}">{{plugin.title}}</a></strong>
 			<div style="font-size: 90%">{{plugin.description|raw}}</div>
 		</li>
 	{% else %}
@@ -31,7 +21,7 @@ function _page_exec() {
 
 <h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.available_plugins') }}</h2>
 <ul class="item-list">
-	{% for plugin_info in available_plguins %}
+	{% for plugin_info in available_plugins %}
 		<li>
 			<div style="float:right">
 				<a class="dp-button" href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">{{ phrase('admin.plugins.install') }}</a>

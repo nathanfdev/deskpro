@@ -29,93 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Addons
+ * @subpackage Plugins
  */
 
-namespace Application\DeskPRO\Plugin;
+namespace Application\DeskPRO\Plugin\PluginPackage;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;
-use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
-
-use Symfony\Component\Finder\Finder;
 
 /**
- * This finds plugins that exist in the DeskPRO file structure
+ * A generic uninstaller class that you can extend and use from the PluginPackage
+ * to help uninstall the plugin.
  */
-class PluginManager
+class UninstallerSimple extends UninstallerAbstract
 {
-	protected $em;
-	protected $plugins;
-
-	public function __construct($em)
-	{
-		$this->em = $em;
-	}
-
-	public function initialize()
-	{
-		$this->_initPlugins();
-	}
-
-	protected function _initPlugins()
-	{
-		if ($this->plugins !== null) return;
-		
-		$this->plugins = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:Plugin p INDEX BY p.id
-		")->execute();
-		foreach ($this->plugins AS $plugin) {
-			$this->_initializePlugin($plugin);
-		}
-	}
-
-	protected function _initializePlugin(Plugin $plugin)
-	{
-		$autoload_paths = $plugin->autoload_paths;
-		if ($autoload_paths) {
-			$autoload_paths = str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $autoload_paths);
-			App::getClassLoader()->registerNamespaces($autoload_paths);
-		}
-	}
-
-	public function addPlugin($plugin)
-	{
-		$this->_initPlugins();
-
-		if (isset($this->plugins[$plugin['id']]) && $this->plugins[$plugin['id']] === $plugin) {
-			// already added
-			return;
-		}
-
-		$this->plugins[$plugin['id']] = $plugin;
-		$this->_initializePlugin($plugin);
-	}
-
-	public function hasPlugin($plugin_id)
-	{
-		$this->_initPlugins();
-		return isset($this->plugins[$plugin_id]);
-	}
-
-	public function getBundle($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return new PluginBundle($this->plugins[$plugin_id]);
-	}
-
-	public function getResourcesPath($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return $this->plugins[$plugin_id]->getCanonicalResourcesPath();
-	}
 }

@@ -147,6 +147,20 @@ class WidgetsController extends AbstractController
 			$widget->page_location = $location;
 			$widget->insert_position = $insertPosition;
 
+			if ($this->_getWidgetRepository()->canEditWidgetPlugin()) {
+				$pluginId = $this->in->getString('plugin_id');
+				$uniqueKey = $this->in->getString('unique_key');
+
+				$widget->plugin = ($pluginId ? $this->em->getRepository('DeskPRO:Plugin')->findOneById($pluginId) : null);
+				$widget->unique_key = ($uniqueKey === '' ? null : $uniqueKey);
+
+				if ($widget->plugin && $widget->unique_key === null) {
+					$errors['unique_key'] = 'Please enter a unique key.';
+				} else if (!$widget->plugin && $widget->unique_key !== null) {
+					$errors['unique_key'] = 'Unique keys may only be specified when a plugin is selected.';
+				}
+			}
+
 			if (!$description) {
 				$errors['description'] = 'Please enter a description.';
 			}
@@ -178,18 +192,19 @@ class WidgetsController extends AbstractController
 
 				return $this->redirectRoute('admin_widgets');
 			}
-
-			$forceSelectFull = false;
 		}
 
 		$repository = $this->_getWidgetRepository();
+		$plugins = $this->em->getRepository('DeskPRO:Plugin')->getInstalled();
 
 		return $this->render('AdminBundle:Widgets:edit.html.twig', array(
 			'widget' => $widget,
 			'widgetType' => $widgetType,
 			'errors' => $errors,
 			'pages' => $repository->getPages(),
-			'locations' => $repository->getPageLocations()
+			'locations' => $repository->getPageLocations(),
+			'canEditPlugin' => $repository->canEditWidgetPlugin(),
+			'plugins' => $plugins
 		));
 	}
 
@@ -204,12 +219,12 @@ class WidgetsController extends AbstractController
 	 */
 	protected function _getWidgetOr404($id)
 	{
-		$apikey = $this->em->getRepository('DeskPRO:Widget')->find($id);
-		if (!$apikey) {
+		$data = $this->em->getRepository('DeskPRO:Widget')->find($id);
+		if (!$data) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no widget with ID $id");
 		}
 
-		return $apikey;
+		return $data;
 	}
 
 	/**

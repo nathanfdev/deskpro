@@ -71,6 +71,11 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	protected $page_location;
 	protected $insert_position;
 
+	/**
+	 * @var string|null
+	 */
+	protected $unique_key = null;
+
 	protected $enabled = true;
 
 	############################################################################
@@ -81,7 +86,15 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Widget';
-		$metadata->setPrimaryTable(array( 'name' => 'widgets', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'widgets',
+			'indexes' => array(
+				'plugin_id_idx' => array('columns' => array('plugin_id'))
+			),
+			'uniqueConstraints' => array(
+				'unique_key_idx' => array('columns' => array('unique_key'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'description', ));
@@ -93,6 +106,10 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'page_location', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_location', ));
 		$metadata->mapField(array( 'fieldName' => 'insert_position', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'insert_position', ));
 		$metadata->mapField(array( 'fieldName' => 'enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'enabled', ));
+		$metadata->mapField(array( 'fieldName' => 'unique_key', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'unique_key', ));
+
+		$metadata->mapManyToOne(array( 'fieldName' => 'plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

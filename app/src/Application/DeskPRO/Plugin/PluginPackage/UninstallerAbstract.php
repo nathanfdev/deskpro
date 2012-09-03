@@ -109,7 +109,7 @@ abstract class UninstallerAbstract
 			$this->preUninstall();
 			$this->doUninstall();
 
-			$step_method = 'stepInstall';
+			$step_method = 'stepUninstall';
 			unset($session[$session_key]);
 
 			$ret = $this->$step_method();
@@ -140,17 +140,33 @@ abstract class UninstallerAbstract
 	 */
 	protected function doUninstall()
 	{
-		App::getDb()->executeUpdate("
-			DELETE FROM settings WHERE groupname LIKE '".$this->plugin['id']."%'
+		$plugin = $this->plugin;
+		$db = App::getDb();
+
+		$db->executeUpdate("
+			DELETE FROM settings WHERE name LIKE '".$this->plugin['id'].".%'
 		");
 
-		App::getDb()->executeUpdate("
-			DELETE FROM templates WHERE path LIKE '".$this->plugin['id'].":%'
+		/*$db->executeUpdate("
+			DELETE FROM templates WHERE name LIKE '".$this->plugin['id'].":%'
 		");
 
-		App::getDb()->executeUpdate("
-			DELETE FROM plugin_listeners WHERE plugin_id = '".$this->plugin['id']."'
-		");
+		$db->executeUpdate("
+			DELETE FROM plugin_listeners WHERE plugin_id = " . $db->quote($this->plugin['id']) . "
+		");*/
+
+		$finder = new \Symfony\Component\Finder\Finder();
+		$finder->name('*.php')->notName('*Abstract*')->in(DP_ROOT . '/src/Application/DeskPRO/DataSync/Plugin');
+
+		foreach ($finder AS $file) {
+			/** @var $file \SplFileInfo */
+			$handler = $file->getBasename('.php');
+			$class = '\Application\DeskPRO\DataSync\Plugin\\' . $handler;
+
+			/** @var $sync \Application\DeskPRO\DataSync\Plugin\AbstractPlugin */
+			$sync = new $class('', $plugin);
+			$sync->deleteLiveData();
+		}
 
 		App::getOrm()->remove($plugin);
 		App::getOrm()->flush();
@@ -163,10 +179,7 @@ abstract class UninstallerAbstract
 	 */
 	public function stepUninstall()
 	{
-		$n = $this->plugin_package_name;
-		return $this->controller->render('AdminBundle:Plugin:uninstall_done.html.twig', array(
-			'title' => $n::getTitle()
-		));
+		return $this->controller->redirectRoute('admin_plugins');
 	}
 
 
@@ -190,7 +203,7 @@ abstract class UninstallerAbstract
 	 * @param $default
 	 * @return array|null
 	 */
-	public function getInstalerPref($name, $default = null)
+	public function getInstallerPref($name, $default = null)
 	{
 		return isset($this->installer_data[$name]) ? $this->installer_data[$name] : $default;
 	}

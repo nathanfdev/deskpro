@@ -38,6 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
 
 /**
  * A plugin is a group of event listeners and other resources.
@@ -133,6 +134,51 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		return $this->package_class;
 	}
 
+	public function getCanonicalResourcesPath()
+	{
+		return str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $this->resources_path);
+	}
+
+	public function importSyncData()
+	{
+		$resourcePath = $this->getCanonicalResourcesPath();
+		if (is_dir("$resourcePath/sync")) {
+			$finder = new \Symfony\Component\Finder\Finder();
+			$finder->name('*.json')->in("$resourcePath/sync");
+
+			foreach ($finder AS $file) {
+				/** @var $file \SplFileInfo */
+				$handler = $file->getBasename('.json');
+				$class = '\Application\DeskPRO\DataSync\Plugin\\' . $handler;
+				if (class_exists($class)) {
+					/** @var $sync \Application\DeskPRO\DataSync\Plugin\AbstractPlugin */
+					$sync = new $class($file->getRealPath(), $this);
+					$sync->syncBaseToLive();
+				}
+			}
+		}
+	}
+
+	public function exportSyncData()
+	{
+		$resourcePath = $this->getCanonicalResourcesPath();
+		if (!is_dir("$resourcePath/sync")) {
+			mkdir("$resourcePath/sync");
+		}
+
+		$finder = new \Symfony\Component\Finder\Finder();
+		$finder->name('*.php')->notName('*Abstract*')->in(DP_ROOT . '/src/Application/DeskPRO/DataSync/Plugin');
+
+		foreach ($finder AS $file) {
+			/** @var $file \SplFileInfo */
+			$handler = $file->getBasename('.php');
+			$class = '\Application\DeskPRO\DataSync\Plugin\\' . $handler;
+
+			/** @var $sync \Application\DeskPRO\DataSync\Plugin\AbstractPlugin */
+			$sync = new $class("$resourcePath/sync/$handler.json", $this);
+			$sync->writeToBase();
+		}
+	}
 
 
 	############################################################################
@@ -142,6 +188,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Plugin';
 		$metadata->setPrimaryTable(array( 'name' => 'plugins', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

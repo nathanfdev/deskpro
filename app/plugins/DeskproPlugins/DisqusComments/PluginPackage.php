@@ -77,6 +77,10 @@ class PluginPackage extends AbstractPluginPackage
 		return $install_controller;
 	}
 
+	public static function isAvailable()
+	{
+		return false;
+	}
 	
 	/**
 	 * Ge tthe version

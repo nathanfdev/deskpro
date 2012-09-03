@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Plugin;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;
+use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
 
 use Symfony\Component\Finder\Finder;
 
@@ -53,10 +54,10 @@ class PluginFinder
 	public function __construct($base_path = null, $max_depth = 3)
 	{
 		if ($base_path === null) {
-			$base_path = DP_ROOT.'/plugins';
+			$base_path = AbstractPluginPackage::getBasePluginPath();
 		}
 
-		$this->base_path = $base_path;
+		$this->base_path = str_replace('/', DIRECTORY_SEPARATOR, $base_path);
 		$this->max_depth = $max_depth;
 	}
 
@@ -76,6 +77,8 @@ class PluginFinder
 			   ->name('PluginPackage.php')
 			   ->in($this->base_path);
 
+		$this->found = array();
+
 		//SplFileInfo
 		foreach ($finder as $file) {
 			require_once($file->getRealPath());
@@ -83,11 +86,12 @@ class PluginFinder
 
 			$this->found[$classname::getName()] = array(
 				'class'           => $classname,
-				'class_file'      => str_replace($this->base_path, '', $file->getRealPath()),
+				'class_file'      => str_replace($this->base_path, '%PLUGINS%', $file->getRealPath()),
 				'name'            => $classname::getName(),
 				'title'           => $classname::getTitle(),
 				'description'     => $classname::getDescription(),
-				'version'         => $classname::getVersion()
+				'version'         => $classname::getVersion(),
+				'available'       => $classname::isAvailable()
 			);
 		}
 
@@ -115,7 +119,7 @@ class PluginFinder
 	 */
 	public function getClassnameFromFile($filename)
 	{
-		$classname = str_replace($this->base_path . '/', '', $filename);
+		$classname = str_replace($this->base_path . DIRECTORY_SEPARATOR, '', $filename);
 		$classname = str_replace(DIRECTORY_SEPARATOR, '\\', $classname);
 		$classname = \preg_replace('#\.php$#', '', $classname);
 

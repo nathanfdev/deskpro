@@ -36,6 +36,7 @@
 			<th>&nbsp;</th>
 			<th style="text-align: left">Widget</th>
 			<th style="text-align: left">Page</th>
+			<th style="text-align: left">Plugin</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -52,6 +53,7 @@
 			/></td>
 			<td><a href="{{ path('admin_widgets_edit', {'widget_id': widget.id} )}}">{{widget.description}}</a></td>
 			<td>{{ pages[widget.page] }}</td>
+			<td>{% if widget.plugin %}{{widget.plugin.title}}{% else %}&nbsp;{% endif %}</td>
 			<td style="text-align: right; padding-right: 5px;"><a href="{{ path('admin_widgets_delete', {'widget_id': widget.id} )}}" class="delete-icon">Delete</a></td>
 		</tr>
 	{% endfor %}

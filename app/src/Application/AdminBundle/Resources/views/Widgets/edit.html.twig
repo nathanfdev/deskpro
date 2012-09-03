@@ -35,6 +35,32 @@
 		</div>
 	</div>
 
+	{% if canEditPlugin %}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Plugin</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="plugin_id">
+				<option value="">&nbsp;</option>
+				{% for plugin in plugins %}
+				<option value="{{plugin.id}}"{{ widget.plugin == plugin ? ' selected="selected"' : ''}}>{{plugin.title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Unique Key</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="unique_key" value="{{widget.unique_key}}" maxlength="50" />
+			<p>This must be specified if a plugin is selected.</p>
+		</div>
+	</div>
+	{% endif %}
+
 	<div id="widget-type-input" class="dp-form-row-group"
 		 data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group"
 	>

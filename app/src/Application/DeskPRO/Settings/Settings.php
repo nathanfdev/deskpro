@@ -165,7 +165,7 @@ class Settings implements \ArrayAccess
 		$group = $this->getGroupFromName($name);
 		$this->getDefaultGroup($group);
 
-		if (isset($this->default_settingsp[$group][$name])) {
+		if (isset($this->default_settings[$group][$name])) {
 			return $this->default_settings[$group][$name];
 		}
 

@@ -50,20 +50,44 @@ class PluginsController extends AbstractController
 	public function listAction()
 	{
 		$finder = new PluginFinder();
-		$available_plguins = $finder->findPlugins();
+		$available_plugins = $finder->findPlugins();
 
 		$installed_plugins_ids = $this->db->fetchAllCol("SELECT id FROM plugins");
 		$installed_plugins = array();
 
 		foreach ($installed_plugins_ids as $plugin_id) {
-			$installed_plugins[$plugin_id] = $available_plguins[$plugin_id];
-			unset($available_plguins[$plugin_id]);
+			if (isset($available_plugins[$plugin_id])) {
+				$installed_plugins[$plugin_id] = $available_plugins[$plugin_id];
+				unset($available_plugins[$plugin_id]);
+			}
+		}
+		foreach ($available_plugins AS $plugin_id => $info) {
+			if (!$info['available']) {
+				unset($available_plugins[$plugin_id]);
+			}
 		}
 
 		return $this->render('AdminBundle:Plugins:list.html.twig', array(
-			'available_plguins' => $available_plguins,
+			'available_plugins' => $available_plugins,
 			'installed_plugins' => $installed_plugins
 		));
+	}
+
+	public function configAction($plugin_id)
+	{
+		$plugin = $this->_getPluginOr404($plugin_id);
+
+		$finder = new PluginFinder();
+		$plugin_info = $finder->getPluginInfo($plugin_id);
+		$package_name = $plugin_info['class'];
+
+		if ($this->in->getBool('prcoess')) {
+			$this->ensureRequestToken();
+
+			return $this->redirectRoute('admin_plugins');
+		}
+
+		return $package_name::renderConfig($this, $plugin);
 	}
 
 
@@ -92,14 +116,6 @@ class PluginsController extends AbstractController
 
 		$this->container->get('deskpro.plugin_manager')->addPlugin($plugin);
 
-		$autoload_paths = $package_name::getAutoloadPaths();
-		if ($autoload_paths) {
-			array_walk($autoload_paths, function(&$path) {
-				$path = DP_ROOT . '/plugins' . $path;
-			});
-			App::getClassLoader()->registerNamespaces($autoload_paths);
-		}
-
 		$installer = $package_name::getInstaller($this, $plugin);
 
 		return $installer->runStep($step);
@@ -113,19 +129,38 @@ class PluginsController extends AbstractController
 	/**
 	 * Installs a plugin
 	 */
-	public function uninstallAction($plugin_id)
+	public function uninstallAction($plugin_id, $step = 1)
 	{
-		$plugin = $this->em->find('DeskPRO:Plugin', $plugin_id);
+		$plugin = $this->_getPluginOr404($plugin_id);
 		$package_class = $plugin['package_class'];
 
-		$this->em->beginTransaction();
+		$this->container->get('deskpro.plugin_manager')->initialize();
 
-		$this->em->remove($plugin);
-		$package_class::uninstall($plugin);
+		$uninstaller = $package_class::getUninstaller($this, $plugin);
 
-		$this->em->flush();
-		$this->em->commit();
+		return $uninstaller->runStep($step);
+	}
 
-		return $this->redirectRoute('admin_plugins');
+	/**
+	 * @param string $id
+	 *
+	 * @return \Application\DeskPRO\Entity\Plugin
+	 */
+	protected function _getPluginOr404($id)
+	{
+		$data = $this->em->getRepository('DeskPRO:Plugin')->find($id);
+		if (!$data) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no plugin with ID $id");
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Plugin
+	 */
+	protected function _getPluginRepository()
+	{
+		return $this->em->getRepository('DeskPRO:Plugin');
 	}
 }

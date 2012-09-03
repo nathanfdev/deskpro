@@ -29,6 +29,7 @@ $loader->registerNamespaces(array(
 	'Profiler'                       => DP_ROOT.'/vendor/profiler',
 	'Imagine'                        => DP_ROOT.'/vendor/imagine/lib',
 ));
+$loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 
 $loader->registerPrefixes(array(
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',

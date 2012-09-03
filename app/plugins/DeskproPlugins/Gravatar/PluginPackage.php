@@ -76,6 +76,10 @@ class PluginPackage extends AbstractPluginPackage
 		
 	}
 
+	public static function isAvailable()
+	{
+		return false;
+	}
 	
 	/**
 	 * Ge tthe version

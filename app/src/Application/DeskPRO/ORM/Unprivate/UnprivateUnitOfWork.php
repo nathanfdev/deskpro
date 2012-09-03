@@ -327,7 +327,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         foreach ($unwrappedValue as $key => $entry) {
             $state = $this->getEntityState($entry, self::STATE_NEW);
             $oid   = spl_object_hash($entry);
-            if (!($entry instanceof $assoc['targetEntity'])) {
+          if (!($entry instanceof $assoc['targetEntity'])) {
                 throw new ORMException(sprintf("Found entity of type %s on association %s#%s, but expecting %s",
                     get_class($entry),
                     $assoc['sourceEntity'],

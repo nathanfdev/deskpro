@@ -29,93 +29,59 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Addons
  */
 
-namespace Application\DeskPRO\Plugin;
+namespace Application\DeskPRO\Command;
+
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Plugin;
-use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
 
-use Symfony\Component\Finder\Finder;
-
-/**
- * This finds plugins that exist in the DeskPRO file structure
- */
-class PluginManager
+class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected $em;
-	protected $plugins;
-
-	public function __construct($em)
+	protected function configure()
 	{
-		$this->em = $em;
+		$this->setName('dp:plugin');
+		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
+		$this->addArgument('action', InputOption::VALUE_REQUIRED);
 	}
 
-	public function initialize()
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$this->_initPlugins();
-	}
-
-	protected function _initPlugins()
-	{
-		if ($this->plugins !== null) return;
-		
-		$this->plugins = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:Plugin p INDEX BY p.id
-		")->execute();
-		foreach ($this->plugins AS $plugin) {
-			$this->_initializePlugin($plugin);
-		}
-	}
-
-	protected function _initializePlugin(Plugin $plugin)
-	{
-		$autoload_paths = $plugin->autoload_paths;
-		if ($autoload_paths) {
-			$autoload_paths = str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $autoload_paths);
-			App::getClassLoader()->registerNamespaces($autoload_paths);
-		}
-	}
-
-	public function addPlugin($plugin)
-	{
-		$this->_initPlugins();
-
-		if (isset($this->plugins[$plugin['id']]) && $this->plugins[$plugin['id']] === $plugin) {
-			// already added
-			return;
+		$pluginId = $input->getOption('plugin');
+		if (!$pluginId) {
+			$output->writeln("--plugin option must be specified");
+			return 1;
 		}
 
-		$this->plugins[$plugin['id']] = $plugin;
-		$this->_initializePlugin($plugin);
-	}
-
-	public function hasPlugin($plugin_id)
-	{
-		$this->_initPlugins();
-		return isset($this->plugins[$plugin_id]);
-	}
-
-	public function getBundle($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
+		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
+		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
+		if (!$plugin) {
+			$output->writeln("Plugin '$pluginId'' could not be found");
+			return 1;
 		}
 
-		return new PluginBundle($this->plugins[$plugin_id]);
-	}
+		$action = $input->getArgument('action');
+		switch ($action) {
+			case 'export-sync-data':
+				$plugin->exportSyncData();
+				$output->writeln("$plugin->title sync data exported");
+				break;
 
-	public function getResourcesPath($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
+			case 'import-sync-data':
+				$plugin->importSyncData();
+				$output->writeln("$plugin->title sync data imported");
+				break;
+
+			default:
+				$output->writeln("Unknown action '$action''");
+				return 1;
 		}
 
-		return $this->plugins[$plugin_id]->getCanonicalResourcesPath();
+		return 0;
 	}
 }

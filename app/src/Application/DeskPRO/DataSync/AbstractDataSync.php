@@ -29,7 +29,6 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Dpql
  */
 
 namespace Application\DeskPRO\DataSync;
@@ -143,7 +142,7 @@ abstract class AbstractDataSync
 	 */
 	public function syncBaseToLive()
 	{
-		$live = $this->getLiveSyncableRow();
+		$live = $this->getLiveSyncableRows();
 		$base = $this->getBaseSyncableData();
 
 		$insert = 0;
@@ -181,6 +180,32 @@ abstract class AbstractDataSync
 			'update' => $update,
 			'delete' => $delete
 		);
+	}
+
+	public function deleteLiveData()
+	{
+		$live = $this->getLiveSyncableRows();
+		if (!$live) {
+			return 0;
+		}
+
+		$delete = 0;
+
+		$this->_db->beginTransaction();
+
+		try {
+			foreach ($live AS $key => $row) {
+				$this->delete($key, $row);
+				$delete++;
+			}
+
+			$this->_db->commit();
+		} catch (\Exception $e) {
+			$this->_db->rollback();
+			throw $e;
+		}
+
+		return $delete;
 	}
 
 	/**
@@ -238,7 +263,7 @@ abstract class AbstractDataSync
 	 */
 	public function getLiveSyncableData()
 	{
-		return $this->filterSyncableData($this->getLiveSyncableRow());
+		return $this->filterSyncableData($this->getLiveSyncableRows());
 	}
 
 	/**
@@ -247,7 +272,7 @@ abstract class AbstractDataSync
 	 *
 	 * @return array
 	 */
-	public function getLiveSyncableRow()
+	public function getLiveSyncableRows()
 	{
 		return $this->_db->fetchAllKeyed("
 			SELECT *

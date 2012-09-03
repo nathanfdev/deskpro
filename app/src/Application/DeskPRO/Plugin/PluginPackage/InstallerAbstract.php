@@ -147,16 +147,19 @@ abstract class InstallerAbstract
 	 */
 	protected function doInstall()
 	{
+		$plugin = $this->plugin;
+		$orm = App::getOrm();
+
+		$orm->beginTransaction();
+
+		$orm->persist($plugin);
+		$orm->flush();
+
 		foreach ($this->insert_settings as $k => $v) {
 			App::getEntityRepository('DeskPRO:Setting')->updateSetting($k, $v);
 		}
 
-		$plugin = $this->plugin;
-
-		App::getOrm()->persist($plugin);
-		App::getOrm()->flush();
-
-		$this->postInstall($plugin);
+		$plugin->importSyncData();
 
 		$plugin_listeners = $this->getPluginListeners();
 		foreach ($plugin_listeners as $plugin_listener_info) {
@@ -167,8 +170,11 @@ abstract class InstallerAbstract
 			$plugin->addPluginListener($plugin_listener);
 		}
 
-		App::getOrm()->persist($plugin);
-		App::getOrm()->flush();
+		$orm->flush();
+
+		$this->postInstall($plugin);
+
+		$orm->commit();
 
 		App::get('deskpro.plugin_manager')->addPlugin($plugin);
 
@@ -185,6 +191,8 @@ abstract class InstallerAbstract
 	 */
 	public function stepInstall($plugin)
 	{
+		return $this->controller->redirectRoute('admin_plugins');
+
 		$package_name = $this->plugin_package_name;
 		return $this->controller->render('AdminBundle:Plugins:install_done.html.twig', array(
 			'title' => $package_name::getTitle()
@@ -211,7 +219,7 @@ abstract class InstallerAbstract
 	protected function setSteps($steps)
 	{
 		if ($this->steps !== null) {
-			throw new \InvalidMethodException("Steps has already been set");
+			throw new \BadMethodCallException("Steps has already been set");
 		}
 
 		$this->steps = (int)$steps;
@@ -250,7 +258,7 @@ abstract class InstallerAbstract
 	 * @param $default
 	 * @return array|null
 	 */
-	public function getInstalerPref($name, $default = null)
+	public function getInstallerPref($name, $default = null)
 	{
 		return isset($this->installer_data[$name]) ? $this->installer_data[$name] : $default;
 	}

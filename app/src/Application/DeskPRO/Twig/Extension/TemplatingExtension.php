@@ -997,6 +997,7 @@ STR;
 		}
 		$data['base_id'] = $baseId;
 		$data['html_id'] = $htmlId;
+		$data['settings'] = App::get(App::SERVICE_SETTINGS);
 
 		if ($jsOnly) {
 			$output = '';
@@ -1028,7 +1029,7 @@ STR;
 		return preg_replace_callback('/\{\{\s*([a-z0-9_.]+)\s*\}\}/i', function (array $match) use ($data, $context) {
 			$parts = explode('.', $match[1]);
 			$reference = $data;
-			foreach ($parts AS $part) {
+			while (($part = array_shift($parts)) !== null) {
 				if ($part == '') {
 					continue;
 				}
@@ -1040,6 +1041,11 @@ STR;
 
 				if (isset($reference[$part])) {
 					$reference = $reference[$part];
+
+					if ($reference instanceof \Application\DeskPRO\Settings\Settings) {
+						$reference = ($parts ? $reference[implode('.', $parts)] : '');
+						break;
+					}
 				} else {
 					$reference = '';
 					break;

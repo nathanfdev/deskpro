@@ -46,7 +46,8 @@ abstract class AbstractPluginPackage
 	 */
 	public static function getInstaller($install_controller, Plugin $plugin)
 	{
-
+		$installer = new InstallerSimple($plugin, $install_controller);
+		return $installer;
 	}
 
 	/**
@@ -69,7 +70,24 @@ abstract class AbstractPluginPackage
 	 */
 	public static function getUninstaller($uninstall_controller, Plugin $plugin)
 	{
-		
+		$installer = new UninstallerSimple($plugin, $uninstall_controller);
+		return $installer;
+	}
+
+	public static function renderConfig($controller, Plugin $plugin)
+	{
+		if ($controller->in->getBool('prcoess')) {
+			$controller->ensureRequestToken();
+
+			return $controller->redirectRoute('admin_plugins');
+		}
+
+		return $controller->render(static::getName() . ':Admin:config.html.twig');
+	}
+
+	public static function isAvailable()
+	{
+		return true;
 	}
 
 	
@@ -83,6 +101,15 @@ abstract class AbstractPluginPackage
 		return '1';
 	}
 
+	public static function getBasePluginPath()
+	{
+		return str_replace('/', DIRECTORY_SEPARATOR, DP_WEB_ROOT) . DIRECTORY_SEPARATOR . 'plugins';
+	}
+
+	public static function getRelativePluginPath($plugin_path)
+	{
+		return str_replace(self::getBasePluginPath(), '%PLUGINS%', $plugin_path);
+	}
 	
 	/**
 	 * Get the path to the Resources directory
@@ -92,25 +119,18 @@ abstract class AbstractPluginPackage
 	public static function getResourcesPath()
 	{
 		$plugin_path = dirname(Util::getClassFilename(get_called_class()));
-		$path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
-		$path .= '/Resources/';
-
-		return $path;
+		return self::getRelativePluginPath($plugin_path) . '/Resources';
 	}
 
 
 	/**
-	 * Get paths to auto-load
+	 * Get paths to auto-load. The namespace fallbacks handle most cases.
 	 * 
 	 * @return array
 	 */
 	public static function getAutoloadPaths()
 	{
-		$plugin_namespace = Util::getClassNamespace(get_called_class());
-		$plugin_path = dirname(dirname(dirname(Util::getClassFilename(get_called_class()))));
-		$plugin_path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
-
-		return array($plugin_namespace => $plugin_path);
+		return array();
 	}
 
 	

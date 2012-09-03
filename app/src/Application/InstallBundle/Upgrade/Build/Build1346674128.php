@@ -29,93 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Addons
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Plugin;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Plugin;
-use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
-
-use Symfony\Component\Finder\Finder;
-
-/**
- * This finds plugins that exist in the DeskPRO file structure
- */
-class PluginManager
+class Build1346674128 extends AbstractBuild
 {
-	protected $em;
-	protected $plugins;
-
-	public function __construct($em)
+	public function run()
 	{
-		$this->em = $em;
-	}
+		$this->out("Extend widgets with plugin support");
 
-	public function initialize()
-	{
-		$this->_initPlugins();
-	}
+		$this->execMutateSql("ALTER TABLE widgets ADD plugin_id VARCHAR(255) DEFAULT NULL, ADD unique_key VARCHAR(50) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE widgets ADD CONSTRAINT FK_9D58E4C1EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
 
-	protected function _initPlugins()
-	{
-		if ($this->plugins !== null) return;
-		
-		$this->plugins = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:Plugin p INDEX BY p.id
-		")->execute();
-		foreach ($this->plugins AS $plugin) {
-			$this->_initializePlugin($plugin);
-		}
-	}
-
-	protected function _initializePlugin(Plugin $plugin)
-	{
-		$autoload_paths = $plugin->autoload_paths;
-		if ($autoload_paths) {
-			$autoload_paths = str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $autoload_paths);
-			App::getClassLoader()->registerNamespaces($autoload_paths);
-		}
-	}
-
-	public function addPlugin($plugin)
-	{
-		$this->_initPlugins();
-
-		if (isset($this->plugins[$plugin['id']]) && $this->plugins[$plugin['id']] === $plugin) {
-			// already added
-			return;
-		}
-
-		$this->plugins[$plugin['id']] = $plugin;
-		$this->_initializePlugin($plugin);
-	}
-
-	public function hasPlugin($plugin_id)
-	{
-		$this->_initPlugins();
-		return isset($this->plugins[$plugin_id]);
-	}
-
-	public function getBundle($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return new PluginBundle($this->plugins[$plugin_id]);
-	}
-
-	public function getResourcesPath($plugin_id)
-	{
-		$this->_initPlugins();
-		if (!isset($this->plugins[$plugin_id])) {
-			return null;
-		}
-
-		return $this->plugins[$plugin_id]->getCanonicalResourcesPath();
+		$this->execMutateSql("CREATE INDEX IDX_9D58E4C1EC942BCF ON widgets (plugin_id)");
+		$this->execMutateSql("CREATE UNIQUE INDEX unique_key_idx ON widgets (unique_key)");
 	}
 }
