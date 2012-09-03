@@ -4,21 +4,27 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function() {
+
+		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
+		var ieVer = 0;
+		if (isIE) {
+			var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+        	if (re.exec(navigator.userAgent) != null) ieVer = parseFloat(RegExp.$1);
+		}
+
 		this.comms = {
 			intervalId: null,
 			lastHash: null,
-			hasPostMessage: !!window.postMessage,
+			hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 			cacheBust: 0,
 			pollingInterval: 130,
 			recieveCallback: null,
 			send: function(message, targetUrl, target) {
-				if (!target || !targetUrl) {
-					return;
-				}
 				if (this.hasPostMessage) {
-					target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+					target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 				} else {
-					target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+					var targetLoc = target.location + '';
+					target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 				}
 			},
 			setupReciever: function(callback, sourceUrl) {
@@ -32,10 +38,10 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 				if (this.hasPostMessage) {
 					if (window.addEventListener) {
-		        		window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
-		      		} else {
-		        		window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
-		      		}
+						window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+					} else {
+						window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+					}
 				} else {
 					if (this.intervalId) {
 						window.clearInterval(this.intervalId);
@@ -45,8 +51,8 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 						var me = this;
 						this.intervalId = window.setInterval(function() {
 							var hash = document.location.hash;
-		            		var re = /^#?\d+&/;
-							if (hash !== last_hash && re.test(hash)) {
+							var re = /^#?\d+&/;
+							if (hash !== me.lastHash && re.test(hash)) {
 								me.lastHash = hash;
 								me.recieveCallback({ data: hash.replace( re, '') });
 							}

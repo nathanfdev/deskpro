@@ -323,8 +323,8 @@ var DpChatWidget = new (function() {
 				window.jQuery = window.oldJquery;
 				window.$ = window.old$;
 
-				delete window.oldJquery;
-				delete window.old$;
+				window.oldJquery = null;
+				window.old$ = null;
 
 				var i;
 				for (i = 0; i < window.Dp_WaitingLibLoad.length; i++) {
@@ -338,7 +338,7 @@ var DpChatWidget = new (function() {
 			window.Dp_JqueryScript = script_tag;
 
 			script_tag.setAttribute("type", "text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
+			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");
 			script_tag.setAttribute("async", 'true');
 			script_tag.onload = function() {
 				jquery_loaded();
@@ -538,10 +538,17 @@ var DpChatWidget = new (function() {
 		}
 	};
 
+	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
+	var ieVer = 0;
+	if (isIE) {
+		var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+		if (re.exec(navigator.userAgent) != null) ieVer = parseFloat(RegExp.$1);
+	}
+
 	var comms = {
 		intervalId: null,
 		lastHash: null,
-		hasPostMessage: window.postMessage,
+		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 		cacheBust: 0,
 		pollingInterval: 130,
 		recieveCallback: null,
@@ -549,7 +556,8 @@ var DpChatWidget = new (function() {
 			if (this.hasPostMessage) {
 				target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
 			} else {
-				target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+				var targetLoc = target.location + '';
+				target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 			}
 		},
 		setupReciever: function(callback, sourceUrl) {
@@ -577,7 +585,7 @@ var DpChatWidget = new (function() {
 					this.intervalId = window.setInterval(function() {
 						var hash = document.location.hash;
 						var re = /^#?\d+&/;
-						if (hash !== last_hash && re.test(hash)) {
+						if (hash !== me.lastHash && re.test(hash)) {
 							me.lastHash = hash;
 							me.recieveCallback({ data: hash.replace( re, '') });
 						}

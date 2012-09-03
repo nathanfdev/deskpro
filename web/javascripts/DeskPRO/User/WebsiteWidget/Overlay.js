@@ -23,6 +23,7 @@ var DpOverlayWidget = new (function() {
 		tabClass: ''
 	};
 
+	var me = this;
 	var self = this;
 
 	/**
@@ -83,10 +84,17 @@ var DpOverlayWidget = new (function() {
 	var lastWinWidth = 0;
 	var childRequestedHeight = 350;
 
+	var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
+	var ieVer = 0;
+	if (isIE) {
+		var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+		if (re.exec(navigator.userAgent) != null) ieVer = parseFloat(RegExp.$1);
+	}
+
 	var comms = {
 		intervalId: null,
 		lastHash: null,
-		hasPostMessage: window.postMessage,
+		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 		cacheBust: 0,
 		pollingInterval: 130,
 		recieveCallback: null,
@@ -94,7 +102,8 @@ var DpOverlayWidget = new (function() {
 			if (this.hasPostMessage) {
 				target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
 			} else {
-				target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+				var targetLoc = target.location + '';
+				target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 			}
 		},
 		setupReciever: function(callback, sourceUrl) {
@@ -122,7 +131,7 @@ var DpOverlayWidget = new (function() {
 					this.intervalId = window.setInterval(function() {
 						var hash = document.location.hash;
 						var re = /^#?\d+&/;
-						if (hash !== last_hash && re.test(hash)) {
+						if (hash !== me.lastHash && re.test(hash)) {
 							me.lastHash = hash;
 							me.recieveCallback({ data: hash.replace( re, '') });
 						}
@@ -146,8 +155,8 @@ var DpOverlayWidget = new (function() {
 			messageData = messageData.data;
 		}
 
-		var messageData = messageData.split(':');
-		var messageId = messageData.shift();
+		var data = messageData.split(':');
+		var messageId = data.shift();
 
 		console.log('[ChatWidget] comms received: %s %o', messageId, data);
 
@@ -163,7 +172,7 @@ var DpOverlayWidget = new (function() {
 			// When the child wants to resize to a certain height (ie to accomodate more stuff) they send this message
 			// Afterwards we pass back the height we were able to set which may be smaller than it wanted
 			case 'requestHeight':
-				var height = messageData[0];
+				var height = data[0];
 				var winMaxHeight = winHeight - 40;
 
 				if (height < 600) {
@@ -173,7 +182,7 @@ var DpOverlayWidget = new (function() {
 					height = winMaxHeight;
 				}
 
-				childRequestedHeight = messageData[0];
+				childRequestedHeight = data[0];
 				setHeight(height);
 
 				break;
@@ -181,9 +190,9 @@ var DpOverlayWidget = new (function() {
 			case 'requestChat':
 
 				var data = {
-					name: messageData[0].replace(/__DP_COL__/g, ':'),
-					email: messageData[1].replace(/__DP_COL__/g, ':'),
-					department_id: messageData[2].replace(/__DP_COL__/g, ':')
+					name: data[0].replace(/__DP_COL__/g, ':'),
+					email: data[1].replace(/__DP_COL__/g, ':'),
+					department_id: data[2].replace(/__DP_COL__/g, ':')
 				};
 				var preform = $('#dpchat_preform');
 				preform.find('input[name="name"]').val(data.name);
@@ -192,9 +201,9 @@ var DpOverlayWidget = new (function() {
 
 				if (window.DpChatWidget) {
 					DpChatWidget.open([
-						['name', messageData[0].replace(/__DP_COL__/g, ':')],
-						['email', messageData[1].replace(/__DP_COL__/g, ':')],
-						['department_id', messageData[2].replace(/__DP_COL__/g, ':')],
+						['name', data[0].replace(/__DP_COL__/g, ':')],
+						['email', data[1].replace(/__DP_COL__/g, ':')],
+						['department_id', data[2].replace(/__DP_COL__/g, ':')],
 						['auto_start', 1]
 					]);
 					self.close();
@@ -403,11 +412,11 @@ var DpOverlayWidget = new (function() {
 		src += '#' + encodeURIComponent(document.location.href);
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
-		setHeight(350);
-
-		comms.setupReciever(function(messageData) {
-			self.childListen(messageData);
+		comms.setupReciever(function(m) {
+			me.childListen(m);
 		}, src);
+		setHeight(750);
+		updatePosition();
 
 		overlayBack.fadeIn('fast');
 		overlayWrap.fadeIn();
@@ -427,8 +436,17 @@ var DpOverlayWidget = new (function() {
 		}
 
 		isOpen = false;
-		overlayBack.fadeOut('fast');
-		overlayWrap.fadeOut('fast');
+
+		if (!comms.hasPostMessage) {
+			overlayBack.hide();
+			overlayWrap.hide();
+
+			var targetLoc = window.location + '';
+			window.location = targetLoc.replace(/#.*$/, '#');
+		} else {
+			overlayBack.fadeOut('fast');
+			overlayWrap.fadeOut('fast');
+		}
 	};
 
 
@@ -482,8 +500,8 @@ var DpOverlayWidget = new (function() {
 				window.jQuery = window.oldJquery;
 				window.$ = window.old$;
 
-				delete window.oldJquery;
-				delete window.old$;
+				window.oldJquery = null;
+				window.old$ = null;
 
 				var i;
 				for (i = 0; i < window.Dp_WaitingLibLoad.length; i++) {
@@ -497,7 +515,7 @@ var DpOverlayWidget = new (function() {
 			window.Dp_JqueryScript = script_tag;
 
 			script_tag.setAttribute("type", "text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
+			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");
 			script_tag.setAttribute("async", 'true');
 			script_tag.onload = function() {
 				jquery_loaded();
