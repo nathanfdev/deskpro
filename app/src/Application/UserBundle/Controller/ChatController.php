@@ -70,6 +70,10 @@ class ChatController extends AbstractController
 	public function pollAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$session = $chat_manager->getSession();
 		$convo = $chat_manager->getChat();
 
@@ -154,6 +158,10 @@ class ChatController extends AbstractController
 	public function sendMessageAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
@@ -179,6 +187,10 @@ class ChatController extends AbstractController
 	public function sendFileAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
@@ -217,6 +229,10 @@ class ChatController extends AbstractController
 	public function userTypingAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
@@ -292,6 +308,10 @@ class ChatController extends AbstractController
 	public function chatEndedAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$convo = $chat_manager->getChat();
 		$session = $chat_manager->getSession();
 
@@ -349,6 +369,10 @@ class ChatController extends AbstractController
 	public function chatEndedFeedbackAction($session_code)
 	{
 		$chat_manager = $this->getChatManager($session_code);
+		if (!$chat_manager) {
+			return $this->createResponse('');
+		}
+
 		$convo = $chat_manager->getChat();
 		$session = $chat_manager->getSession();
 
