@@ -96,8 +96,17 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			if ($is_valid) {
 				$person = $register->save();
 
+				$this->session->setFlash('register_done', 1);
+
+				if (!$person->primary_email) {
+					$this->session->setFlash('register_done_email_validate', 1);
+				} elseif (!$person->is_agent_confirmed) {
+					$this->session->setFlash('register_done_agent_validate', 1);
+				}
+
 				// User not validating if they have an added email address already
 				if ($person->primary_email) {
+
 					$this->session->set('auth_person_id', $person->id);
 					$this->session->set('dp_interface', DP_INTERFACE);
 
