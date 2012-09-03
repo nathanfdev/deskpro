@@ -32,7 +32,6 @@
 	'agent.publish.draft_revision'                => 'Change',
 	'agent.publish.drop_file_to_add'              => 'Drop your file here to add it to this post',
 	'agent.publish.edit_new_glossary'             => 'Edit new glossary word',
-	'agent.publish.error_kb_bad_input'            => 'Bad user input, this is probably a bug.',
 	'agent.publish.error_kb_cats_same'            => 'Categories are the same.',
 	'agent.publish.error_kb_missing'              => '{{count}} article not found.|{{count}} articles not found.',
 	'agent.publish.error_kb_not_in_db'            => 'A category was not found.',

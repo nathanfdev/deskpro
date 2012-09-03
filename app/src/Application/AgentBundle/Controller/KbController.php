@@ -221,22 +221,21 @@ class KbController extends AbstractController
 			case 'move':
 				$to_category = $this->in->getInt('to_category');
 
-				if(!$from_category || !$to_category) {
-					$error = $tr->phrase('agent.publish.error_kb_bad_input');
-					$skip = true;
-					break;
-				}
-
-				if ($from_category == $to_category) {
+				if ($from_category && $from_category == $to_category) {
 					$error = $tr->phrase('agent.publish.error_kb_cats_same');
 					$skip = true;
 					break;
 				}
 
-				$from = $this->em->find('DeskPRO:ArticleCategory', $from_category);
+				if ($from_category) {
+					$from = $this->em->find('DeskPRO:ArticleCategory', $from_category);
+				} else {
+					$from = null;
+				}
+
 				$to = $this->em->find('DeskPRO:ArticleCategory', $to_category);
 
-				if(!$from || !$to) {
+				if(($from_category && $from) || !$to) {
 					$error = $tr->phrase('agent.publish.error_kb_not_in_db');
 					$skip = true;
 					break;
@@ -284,7 +283,9 @@ class KbController extends AbstractController
 							continue;
 						}
 
-						$article->removeFromCategory($from);
+						if ($from) {
+							$article->removeFromCategory($from);
+						}
 
 						if(!$article->isInCategory($to)) {
 							$article->addToCategory($to);
