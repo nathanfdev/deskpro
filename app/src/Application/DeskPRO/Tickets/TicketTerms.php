@@ -424,6 +424,21 @@ class TicketTerms
 			case TicketSearch::TERM_AGENT:
 				if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
 				break;
+			case TicketSearch::TERM_LABEL:
+				$any = false;
+				foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
+					if (strpos(strtolower($label), strtolower($choice)) !== false) {
+						$any = true;
+						if ($op == self::OP_NOTCONTAINS) {
+							return false;
+						}
+					}
+				}
+
+				if ($op == self::OP_CONTAINS AND !$any) {
+					return false;
+				}
+				break;
 			case TicketSearch::TERM_URGENCY:
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
@@ -514,6 +529,26 @@ class TicketTerms
 				if (!$test && $test !== null) {
 					return false;
 				}
+				break;
+
+			case PersonSearch::TERM_EMAIL:
+			case PersonSearch::TERM_EMAIL_DOMAIN:
+			case PersonSearch::TERM_DATE_CREATED:
+			case PersonSearch::TERM_LABEL:
+			case PersonSearch::TERM_LANGUAGE:
+			case PersonSearch::TERM_CONTACT_ADDRESS:
+			case PersonSearch::TERM_CONTACT_IM:
+			case PersonSearch::TERM_CONTACT_PHONE:
+			case PersonSearch::TERM_NAME:
+			case PersonSearch::TERM_USERGROUP:
+			case PersonSearch::TERM_ORGANIZATION:
+				$search = new PersonSearch();
+				$search->addTerm($term, $op, $choice);
+
+				if (!$search->doesPersontMatch($ticket->person)) {
+					return false;
+				}
+
 				break;
 
 			case 'gateway_account':

@@ -613,12 +613,19 @@ class PersonSearch extends SearcherAbstract
 			list($op, $choice) = $info;
 
 			switch ($term) {
+
+				case self::TERM_DATE_CREATED:
+					if (!$this->_testDateMatch($person['date_created'], $op, $choice)) return false;
+					break;
+
 				case self::TERM_ORGANIZATION:
 					if (!$this->_testChoiceMatch($person['organization_id'], $op, $choice)) return false;
 					break;
+
 				case self::TERM_LANGUAGE:
 					if (!$this->_testChoiceMatch($person['language_id'], $op, $choice)) return false;
 					break;
+
 				case self::TERM_NAME:
 					switch ($op) {
 						case self::OP_CONTAINS:
@@ -629,10 +636,67 @@ class PersonSearch extends SearcherAbstract
 							break;
 					}
 					break;
+
 				case self::TERM_EMAIL:
 					$any = false;
 					foreach ($person['emails'] as $email) {
 						if (strpos(strtolower($email['email']), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
+				case self::TERM_EMAIL_DOMAIN:
+					$any = false;
+					foreach ($person['emails'] as $email) {
+						if (strpos(strtolower($email['email_domain']), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
+				case self::TERM_USERGROUP:
+					$any = false;
+					foreach ($person->getUsergroupIds() as $ug_id) {
+						if ($this->_testChoiceMatch($ug_id, $op, $choice)) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
+				case self::TERM_ORGANIZATION:
+					$org_id = $person->getOrganizationId();
+					if (!$this->_testChoiceMatch($org_id, $op, $choice)) {
+						return false;
+					}
+
+					break;
+
+				case self::TERM_LABEL:
+					$any = false;
+					foreach ($person->getLabelManager()->getLabelsArray() as $label) {
+						if (strpos(strtolower($label), strtolower($choice)) !== false) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {
 								return false;
