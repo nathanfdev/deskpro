@@ -275,7 +275,18 @@ class Runner
 
 		$exec_start = time();
 
-		while ($source = $fetcher->readNext()) {
+		while (true) {
+
+			try {
+				$source = $fetcher->readNext();
+				if (!$source) {
+					break;
+				}
+			} catch (\Exception $e) {
+				$einfo = KernelErrorHandler::getExceptionInfo($e);
+				KernelErrorHandler::logErrorInfo($einfo);
+				break;
+			}
 
 			if (!$this->log_messages) {
 				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
