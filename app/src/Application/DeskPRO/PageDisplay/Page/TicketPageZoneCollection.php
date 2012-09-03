@@ -171,6 +171,8 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$page_display = new TicketPageDisplay();
 		$page_display->zone = 'create';
 
+		$options[] = array('id' => 'person_name');
+
 		// Standard fields
 		if (App::getSetting('core.use_product') && App::getDataService('Product')->getRootNodes()) {
 			$options[] = array('id' => 'product');

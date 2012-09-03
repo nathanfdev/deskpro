@@ -241,6 +241,14 @@ class NewTicketValidator extends AbstractValidator
 		}
 
 		switch ($item['field_type']) {
+
+			case 'person_name':
+				$validator = new \Orb\Validator\StringLength(array('min' => 2));
+				if (!$validator->isValid($this->newticket->person->name)) {
+					$this->addError('person.name.short');
+				}
+				break;
+
 			case 'ticket_product':
 
 				$validator = new \Application\DeskPRO\Validator\GenericCategory(array(

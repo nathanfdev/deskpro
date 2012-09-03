@@ -127,6 +127,11 @@ class TicketPageDisplay extends AbstractEntityRepository
 		$page_data = array();
 
 		$page_data[] = array(
+			'id' => 'person_name',
+			'field_type' => 'person_name'
+		);
+
+		$page_data[] = array(
 			'id' => 'ticket_department',
 			'field_type' => 'ticket_department'
 		);

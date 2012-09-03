@@ -32,6 +32,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					</li>
 				{% endfor %}
 				{% if section == 'create' %}
+					<li class="draggable" data-item-id="person_name"><label>Your Name</label></li>
 					<li class="draggable" data-item-id="captcha"><label>{{ phrase('admin.tickets.captcha') }}</label></li>
 				{% endif %}
 			</ul>
@@ -211,6 +212,15 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</label>
 		</div>
 		<div class="dp-form-input custom-options" style="display:none"></div>
+	</div>
+</script>
+
+{############################
+ # Person Name
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_person_name">
+	<div class="person_name">
+		<input type="text" />
 	</div>
 </script>
 

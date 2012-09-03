@@ -96,29 +96,6 @@ var ticketReader = {
 
 			{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
 
-
-			{###############
-			 # Name
-			 ###############}
-			<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}">
-				<div class="dp-control-label">
-					<label>
-						<strong>{{ phrase('user.general.your_name') }} *</strong>
-					</label>
-				</div>
-				<div class="dp-controls dp-fill-half">
-					{{ form_widget(form.person.name, {
-						'attr': {
-							'data-field-validators': 'DeskPRO.Form.LengthValidator',
-							'data-min-len': 2
-						}
-					}) }}
-					<div class="dp-help-inline dp-help-inline dp-error-explain">
-						{{ phrase('user.general.please_enter_your_name') }}
-					</div>
-				</div>
-			</div>
-
 			{#--- FIELDS CONTAINER ---#}
 			<div id="fields_container">
 				{# First time outputs items in order and visible depending on the page data #}
