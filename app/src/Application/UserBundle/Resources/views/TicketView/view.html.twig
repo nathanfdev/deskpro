@@ -54,7 +54,7 @@
 		</article>
 	{% endif %}
 
-	{% if ticket.status == 'closed' %}
+	{% if ticket.status not in ['awaiting_agent', 'awaiting_user', 'reoslved'] %}
 		<article class="dp-reply-wrap dp-well dp-newreply-wrap">
 			<header>
 				<h4>{{ phrase('user.tickets.new_reply') }}</h4>

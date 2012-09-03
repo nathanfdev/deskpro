@@ -148,7 +148,7 @@ class TicketsController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
 
-		if ($ticket->status == 'closed') {
+		if (!in_array($ticket->status, array('awaiting_agent', 'awaiting_user', 'resolved'))) {
 			return $this->renderLoginOrPermissionError();
 		}
 
