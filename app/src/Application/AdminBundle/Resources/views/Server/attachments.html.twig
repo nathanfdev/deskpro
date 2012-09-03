@@ -67,6 +67,53 @@
 	<table width="100%">
 		<thead>
 			<tr>
+				<th colspan="10">Upload Restrictions (<a href="{{ path('admin_settings') }}">edit settings</a>)</th>
+			</tr>
+			<tr>
+				<th width="180" style="text-align: left;">Setting</th>
+				<th style="text-align: left;">Users</th>
+				<th style="text-align: left;">Agents</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Max Upload Size</td>
+				<td>
+					{{ app.getSetting('core.attach_user_maxsize')|filesize_display }}
+				</td>
+				<td>
+					{{ app.getSetting('core.attach_agent_maxsize')|filesize_display }}
+				</td>
+			</tr>
+			<tr>
+				<td>File Types</td>
+				<td>
+					{% if app.getSetting('core.attach_user_not_exts') %}
+						All file types except these are allowed:<br />{{ app.getSetting('core.attach_user_must_exts') }}
+					{% elseif app.getSetting('core.attach_user_must_exts') %}
+						Only these file types allowed:<br /{{ app.getSetting('core.attach_user_must_exts') }}
+					{% else %}
+						All file types are allowed
+					{% endif %}
+				</td>
+				<td>
+					{% if app.getSetting('core.attach_agent_not_exts') %}
+						All file types except these are allowed:<br />{{ app.getSetting('core.attach_agent_must_exts') }}
+					{% elseif app.getSetting('core.attach_agent_must_exts') %}
+						Only these file types allowed:<br /{{ app.getSetting('core.attach_agent_must_exts') }}
+					{% else %}
+						All file types are allowed
+					{% endif %}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div><br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
 				<th colspan="10">{{ phrase('admin.server.test_a_file_upload') }}</th>
 			</tr>
 		</thead>
