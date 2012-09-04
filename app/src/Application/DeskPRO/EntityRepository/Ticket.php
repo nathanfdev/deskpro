@@ -256,7 +256,7 @@ class Ticket extends AbstractEntityRepository
 			", array($person->id));
 		} else {
 			$count = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
+				SELECT COUNT(DISTINCT tickets.id)
 				FROM tickets
 				LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
 				WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
