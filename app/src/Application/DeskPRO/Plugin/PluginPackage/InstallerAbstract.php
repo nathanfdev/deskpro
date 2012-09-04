@@ -75,7 +75,7 @@ abstract class InstallerAbstract
 	protected $steps = null;
 
 	
-	public final function __construct($plugin, $controller)
+	public final function __construct(Plugin $plugin, $controller)
 	{
 		$this->plugin = $plugin;
 		$this->plugin_package_name = $plugin['package_class'];
@@ -189,14 +189,9 @@ abstract class InstallerAbstract
 	 * After the plugin is installed, this method is finally run with the inserted
 	 * $plugin. You can do more work here, just return a response (ie confirmation/success page)
 	 */
-	public function stepInstall($plugin)
+	public function stepInstall(Plugin $plugin)
 	{
-		return $this->controller->redirectRoute('admin_plugins');
-
-		$package_name = $this->plugin_package_name;
-		return $this->controller->render('AdminBundle:Plugins:install_done.html.twig', array(
-			'title' => $package_name::getTitle()
-		));
+		return $this->controller->redirectRoute('admin_plugins_plugin', array('plugin_id' => $plugin->id));
 	}
 
 

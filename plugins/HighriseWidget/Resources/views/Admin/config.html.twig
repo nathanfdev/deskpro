@@ -6,13 +6,13 @@
 	<div class="setting_fields">
 		<div class="field_row">
 			<label>API URL</label>
-			<input type="text" name="settings[api_url]" value="{{ app.getSetting(plugin.id ~ '.api_url') }}" style="width: 75%" />
+			<input type="text" name="settings[api_url]" value="{{ app.getSetting(plugin.id ~ '.api_url') }}" style="width: 50%; padding: 5px" />
 			<p>This is the URL to your Highrise system, such as <i>https://example.highrisehq.com</i> .</p>
 		</div>
 
 		<div class="field_row">
 			<label>API Token</label>
-			<input type="text" name="settings[api_token]" value="{{ app.getSetting(plugin.id ~ '.api_token') }}" style="width: 75%" />
+			<input type="text" name="settings[api_token]" value="{{ app.getSetting(plugin.id ~ '.api_token') }}" style="width: 50%; padding: 5px" />
 			<p>This is the API token for your user. It can be found within Highrise under My Info &gt; API Token.</p>
 		</div>
 	</div>
