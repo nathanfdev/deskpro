@@ -128,18 +128,24 @@
 
 
 	{#############################
-	 # Integrate Menu
+	 # Apps Menu
 	 #############################}
 
-	<div id="integrate_menu">
+	<div id="apps_menu">
 		<ul>
-			<li class="link-plugins">
-				<a href="{{ path('admin_plugins') }}" data-search-keywords="plugins" data-search-name="Integrate &rsaquo; Plugins">{{ phrase('admin.menu.plugins') }}</a>
-				<p>{{ phrase('admin.menu.manage_plugins') }}</p>
+			<li class="link-apps">
+				<a href="{{ path('admin_apps') }}" data-search-keywords="apps" data-search-name="Apps &rsaquo; DeskPRO Apps">DeskPRO Apps</a>
+				<p>Enable and disable built-in DeskPRO apps.</p>
 			</li>
-			<li class="link-api">
-				<a href="{{ path('admin_api_keylist') }}" data-search-keywords="api" data-search-name="Integrate &rsaquo; API">{{ phrase('admin.menu.api') }}</a>
-				<p>{{ phrase('admin.menu.manage_api') }}</p>
+
+			<li class="link-widgets">
+				<a href="{{ path('admin_widgets') }}" data-search-keywords="widgets" data-search-name="Apps &rsaquo; Widgets">Widgets</a>
+				<p>Manage widgets that add additional functions to the agent interface.</p>
+			</li>
+
+			<li class="link-plugins">
+				<a href="{{ path('admin_plugins') }}" data-search-keywords="plugins" data-search-name="Apps &rsaquo; Plugins">{{ phrase('admin.menu.plugins') }}</a>
+				<p>{{ phrase('admin.menu.manage_plugins') }}</p>
 			</li>
 		</ul>
 	</div>
