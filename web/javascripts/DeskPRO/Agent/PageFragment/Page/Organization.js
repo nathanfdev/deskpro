@@ -110,10 +110,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		});
 
 		this.getEl('add_searchbox').bind('personsearchboxclicknew', function(ev, term, sb) {
-			DeskPRO_Window.newPersonLoader.open(function(page) {
-				page.setGuessTerm(term);
-				page.setOrganization(self.meta.org_id, self.getEl('editname').find('input[name="name"]').val());
-			});
+			if (DeskPRO_Window.newPersonLoader) {
+				DeskPRO_Window.newPersonLoader.open(function(page) {
+					page.setGuessTerm(term);
+					page.setOrganization(self.meta.org_id, self.getEl('editname').find('input[name="name"]').val());
+				});
+			} else {
+				DeskPRO_Window.showAlert('You are not allowed to create new people');
+			}
 
 			sb.close();
 			sb.reset();
