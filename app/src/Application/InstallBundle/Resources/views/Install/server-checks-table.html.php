@@ -253,7 +253,7 @@
 		<?php if ($failed): ?>
 		<div class="alert-message block-message error">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_data_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-			The data directory (<?php echo $data_dir ?>) and all sub-directories must be writable.
+			The data directory <?php if (isset($data_dir)): ?>(<?php echo $data_dir ?>)<?php endif ?> and all sub-directories must be writable.
 		</div>
 			<?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
 			<?php else: ?>
