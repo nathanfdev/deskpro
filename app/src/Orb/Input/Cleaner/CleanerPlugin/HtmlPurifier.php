@@ -99,6 +99,9 @@ class HtmlPurifier implements CleanerPlugin
 			$value = str_replace('</head>', '</head><body>', $value);
 			$value = str_replace('</html>', '</body></html>', $value);
 
+			// Remove <a name="_MailEndCompose">. HTMLPurifier will clean up the </a> automatically
+			$value = str_replace('<a name="_MailEndCompose">', '', $value);
+
 			$value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
 			$value = Strings::extractBodyTag($value);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
