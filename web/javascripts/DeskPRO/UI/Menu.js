@@ -274,7 +274,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		if (this.options.triggerElement && this.options.triggerElement[0]) {
 			var target = this.options.triggerElement;
 		} else {
-			var target = event.target;
+			if (event) {
+				var target = event.target;
+			} else {
+
+			}
 		}
 
 		if (target) {
@@ -585,7 +589,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		var subMenu = this.subMenus[subMenuId];
 		subMenu._initMenu();
-		subMenu.openMenu(this.openTriggerEvent);
+		subMenu.openMenu(this.openTriggerEvent || event);
 		this.openSubMenuId = subMenuId;
 		itemEl.addClass('hover');
 	},
