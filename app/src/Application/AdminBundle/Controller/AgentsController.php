@@ -71,7 +71,15 @@ class AgentsController extends AbstractController
 
 	public function showLicenseError()
 	{
-		return $this->render('AdminBundle:Agents:error-max-agents.html.twig');
+		$billing_admins = $this->em->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE p.can_admin = true AND p.can_billing = true
+		")->execute();
+
+		return $this->render('AdminBundle:Agents:error-max-agents.html.twig', array(
+			'billing_admins' => $billing_admins
+		));
 	}
 
 	############################################################################
