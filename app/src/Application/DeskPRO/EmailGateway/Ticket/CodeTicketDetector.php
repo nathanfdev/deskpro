@@ -76,7 +76,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		$search_text = array();
 		$search_text[] = $reader->getSubject()->subject;
 		$search_text[] = $reader->getBodyText()->getBody();
-		$search_text[] = strip_tags($reader->getBodyHtml()->getBody());
+		$search_text[] = $reader->getBodyHtml()->getBody();
 
 		$check_headers = array();
 		if ($reader->getHeader('In-Reply-To')) {
@@ -93,12 +93,18 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		// Add them to search text so below code will parse them out and treat them the same
 		foreach ($check_headers as $header) {
 			$m = null;
-			if (preg_match('#PTAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
-				$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: " . $m[1]);
+			if (preg_match('#(P?)TAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
+				if ($m[1]) {
+					$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: " . $m[2]);
+				} else {
+					$this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in headers: " . $m[2]);
+				}
+
 				$search_text[] = '(#' . $m[1] . ')';
 			}
 		}
 
+		$search_text = array_unique($search_text);
 		$search_text = implode(' ', $search_text);
 
 		#------------------------------
@@ -155,6 +161,8 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 					return $ticket;
 				}
+
+				$this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
 			}
 		}
 
