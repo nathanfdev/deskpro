@@ -331,6 +331,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		var data = this.tabs[id];
+		if (!data || !data.wrapper) {
+			this.removeTab(tab, true);
+		}
 		var wrapper = data.wrapper.show();
 
 		if (!data.isInited) {
@@ -438,14 +441,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.callback_remove_content(data, $('#' + data.wrapperId), this);
 		}
 
-		data.wrapper.remove();
-
-		if (data.page.meta.routeData && data.page.meta.routeData.xhr) {
-			data.page.meta.routeData.xhr.abort();
+		if (data.wrapper) {
+			data.wrapper.remove();
 		}
 
-		if (data.page.meta.routeData && data.page.meta.routeData.dataUnload) {
-			data.page.meta.routeData.dataUnload();
+		if (data.page) {
+			if (data.page.meta.routeData && data.page.meta.routeData.xhr) {
+				data.page.meta.routeData.xhr.abort();
+			}
+
+			if (data.page.meta.routeData && data.page.meta.routeData.dataUnload) {
+				data.page.meta.routeData.dataUnload();
+			}
 		}
 
 		if (!silent) {
