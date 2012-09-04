@@ -1596,8 +1596,15 @@ $collection->add('admin_plugins_uninstall', new Route(
 ));
 
 $collection->add('admin_plugins_plugin', new Route(
-	'/plugins/{plugin_id}/',
+	'/plugins/{plugin_id}/config',
 	array('_controller' => 'AdminBundle:Plugins:config'),
+	array(),
+	array()
+));
+
+$collection->add('admin_plugins_run', new Route(
+	'/plugins/{plugin_id}/run/{action}',
+	array('_controller' => 'AdminBundle:Plugins:run'),
 	array(),
 	array()
 ));

@@ -155,7 +155,14 @@ class Person extends AbstractResource
 		}
 
 		$response = $this->highrise->sendReadRequest($resource, $postfields);
-		return $this->highrise->xmlToArray($response->getBody());
+		$body = new \SimpleXMLElement($response->getBody());
+
+		$people = array();
+		foreach ($body AS $person) {
+			$people[] = $this->highrise->xmlToArray($person);
+		}
+
+		return $people;
 	}
 
 

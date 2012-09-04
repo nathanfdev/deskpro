@@ -2762,7 +2762,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 						meta: page.getAllMetaData(),
 						id: htmlId,
 						containerEl: (htmlId ? $('#' + htmlId + '_container') : false),
-						contentEl: (htmlId ? $('#' + htmlId) : false)
+						contentEl: (htmlId ? $('#' + htmlId) : false),
+						tabEl: (htmlId ? $('#' + htmlId + '_tab') : false)
 					};
 					eval('(function() {' + code + '}).call(context);');
 				} else {

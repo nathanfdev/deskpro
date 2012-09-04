@@ -40,7 +40,7 @@ namespace Orb\Service\Highrise;
  * classes.
  *
  * @see http://developer.37signals.com/highrise/
- * @property Orb\Service\Highrise\Resource\Person person
+ * @property \Orb\Service\Highrise\Resource\Person person
  */
 class Highrise
 {
@@ -51,8 +51,8 @@ class Highrise
 	protected $highrise_url;
 
 	/**
-	 * The authtoken for the user.
-	 * @var stirng
+	 * The auth token for the user.
+	 * @var string
 	 */
 	protected $auth_token;
 
@@ -93,8 +93,9 @@ class Highrise
 		if ($params) {
 			$http->setParameterGet($params);
 		}
+		$http->setMethod('GET');
 
-		return $http->request(\Zend\Http\Client::GET);
+		return $http->send();
 	}
 
 
@@ -116,12 +117,15 @@ class Highrise
 		if ($get_params) {
 			$http->setParameterGet($get_params);
 		}
-		$http->setRawData($postdata, 'application/xml');
+		$http->setEncType('application/xml');
+		$http->setRawBody($postdata);
 
 		if ($use_put) {
-			return $http->request(\Zend\Http\Client::PUT);
+			$http->setMethod('PUT');
+			return $http->send();
 		} else {
-			return $http->request(\Zend\Http\Client::POST);
+			$http->setMethod('POST');
+			return $http->send();
 		}
 	}
 
@@ -158,8 +162,9 @@ class Highrise
 		if ($params) {
 			$http->setParameterGet($params);
 		}
+		$http->setMethod('DELETE');
 
-		return $http->request(\Zend\Http\Client::DELETE);
+		return $http->send();
 	}
 
 
@@ -167,12 +172,12 @@ class Highrise
 	/**
 	 * Set the HTTPclient to use. If null, a default client will be set.
 	 *
-	 * @param \Zend\Http\Client $http
+	 * @param \Zend\Http\Client|null $http
 	 */
-	public function setHttpClient(\Zend\Http\Client $http)
+	public function setHttpClient(\Zend\Http\Client $http = null)
 	{
 		if ($http === null) {
-
+			$http = new \Zend\Http\Client();
 		}
 
 		$this->http = $http;
@@ -200,10 +205,10 @@ class Highrise
 	/**
 	 * Read in values from XML into a native PHP array.
 	 *
-	 * @param string $xml XML doc as as tring, or SimpleXmlElement
+	 * @param string $xml XML doc as a string, or SimpleXmlElement
 	 * @return array
 	 */
-	public static function xmlToArray($xml)
+	public function xmlToArray($xml)
 	{
 		if (is_string($xml)) {
 			$xml = new \SimpleXMLElement($xml);
@@ -233,7 +238,10 @@ class Highrise
 					$array[$nodename][] = $this->xmlToArray($subnode);
 				}
 			} else {
-				$array[$nodename] = (string)$node;
+				$text = trim((string)$node);
+				if ($text !== '') {
+					$array[$nodename] = $text;
+				}
 			}
 		}
 
@@ -276,7 +284,7 @@ class Highrise
 	 * Dynamically get resource objects.
 	 *
 	 * @param string $name
-	 * @return Orb\Service\Highrise\Resource\AbstractResource
+	 * @return \Orb\Service\Highrise\Resource\AbstractResource
 	 */
 	public function __get($name)
 	{

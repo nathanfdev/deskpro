@@ -2398,4 +2398,15 @@ $collection->add('agent_mediamanager_browse', new Route(
 	array()
 ));
 
+################################################################################
+# Plugins
+################################################################################
+
+$collection->add('agent_plugins_run', new Route(
+	'/plugins/{plugin_id}/run/{action}',
+	array('_controller' => 'AgentBundle:Plugins:run'),
+	array(),
+	array()
+));
+
 return $collection;

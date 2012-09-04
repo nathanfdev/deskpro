@@ -90,6 +90,21 @@ abstract class AbstractPluginPackage implements \ArrayAccess
 		return true;
 	}
 
+	public function runAdminAction(AbstractController $controller, $action, Plugin $plugin)
+	{
+		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown admin plugin action $action");
+	}
+
+	public function runAgentAction(AbstractController $controller, $action, Plugin $plugin)
+	{
+		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown agent plugin action $action");
+	}
+
+	public function runUserAction(AbstractController $controller, $action, Plugin $plugin)
+	{
+		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown user plugin action $action");
+	}
+
 	public function isAvailable()
 	{
 		return true;

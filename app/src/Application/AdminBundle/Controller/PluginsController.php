@@ -93,6 +93,14 @@ class PluginsController extends AbstractController
 		return $plugin_info->renderConfig($this, $plugin, $errors);
 	}
 
+	public function runAction($plugin_id, $action)
+	{
+		$plugin = $this->_getPluginOr404($plugin_id);
+		$plugin_info = $this->_getPluginInfoOr404($plugin_id);
+
+		return $plugin_info->runAdminAction($this, $action, $plugin);
+	}
+
 	public function toggleAction()
 	{
 		$this->ensureRequestToken();
@@ -174,7 +182,7 @@ class PluginsController extends AbstractController
 	 */
 	protected function _getPluginOr404($id)
 	{
-		$data = $this->em->getRepository('DeskPRO:Plugin')->find($id);
+		$data = $this->_getPluginRepository()->find($id);
 		if (!$data) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no plugin with ID $id");
 		}
