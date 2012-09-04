@@ -128,12 +128,29 @@ class LangPackInfo
 	 *
 	 * @return array
 	 */
-	public function getLangTitles()
+	public function getLangTitles($local = false)
 	{
 		$ret = array();
 
-		foreach ($this->manifest as $id => $info) {
-			$ret[$id] = $info['title'];
+		if ($local) {
+			foreach ($this->manifest as $id => $info){
+				$lang_file = $this->langs_dir . "/$id/user/lang.php";
+
+				$lang = array();
+				if (is_file($lang_file)) {
+					$lang = require($lang_file);
+				}
+
+				if (isset($lang['user.lang.lang_title'])) {
+					$ret[$id] = $lang['user.lang.lang_title'];
+				} else {
+					$ret[$id] = $info['title'];
+				}
+			}
+		} else {
+			foreach ($this->manifest as $id => $info) {
+				$ret[$id] = $info['title'];
+			}
 		}
 
 		return $ret;

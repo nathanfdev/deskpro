@@ -54,9 +54,11 @@
 							</div>
 							<h4>
 								{% if installed_packs[id] %}
-									<a href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">{{ title }}</a>
+									<a href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">
+										{{ packs_local[id] }} {% if title != packs_local[id] %}/ {{ title }}{% endif %}
+									</a>
 								{% else %}
-									{{ title }}
+									{{ packs_local[id] }} {% if title != packs_local[id] %}/ {{ title }}{% endif %}
 								{% endif %}
 							</h4>
 						</td>

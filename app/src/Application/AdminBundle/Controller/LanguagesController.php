@@ -54,6 +54,8 @@ class LanguagesController extends AbstractController
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 		$packs = $langpacks->getLangTitles();
 
+		$packs_local = $langpacks->getLangTitles(true);
+
 		$langs = $this->container->getDataService('Language')->getAll();
 		$installed_packs = array();
 		foreach ($langs as $l) {
@@ -62,6 +64,7 @@ class LanguagesController extends AbstractController
 
         return $this->render('AdminBundle:Languages:index.html.twig', array(
 			'packs' => $packs,
+			'packs_local' => $packs_local,
 			'installed_packs' => $installed_packs,
 		));
 	}
