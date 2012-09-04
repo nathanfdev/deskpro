@@ -220,9 +220,10 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 	 */
 	removeTab: function(id, silent) {
 
-		Tipped.hideAll();
+		try { Tipped.hideAll(); } catch (e) {}
+
 		(function() {
-			Tipped.hideAll();
+			try { Tipped.hideAll(); } catch (e) {}
 		}).delay(300); // incase animation is currently playing
 
 		if (this.tabs[id] == undefined) {

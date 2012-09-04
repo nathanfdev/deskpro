@@ -595,7 +595,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			return;
 		}
 
-		Tipped.remove('#' + tabData.btnId);
+		try { Tipped.hideAll(); } catch (e) {}
 		$('#' + tabData.btnId).remove();
 
 		if (tabData.page.meta.routeData && tabData.page.meta.routeData.xhr) {

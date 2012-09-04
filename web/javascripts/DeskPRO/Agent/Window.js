@@ -321,7 +321,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 
 				$(el).on('click', function() {
-					Tipped.hideAll();
+					try { Tipped.hideAll(); } catch (e) {}
 				});
 
 				return $(el).fileupload(options);
@@ -2471,27 +2471,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, 60);
 
 		window.setTimeout(function() {
-			$(context).on('mouseover', '.person-tip', function() {
-				var el = $(this);
-				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
-				el.addClass('tipped');
-				el.attr('data-tipped', tipUrl);
-				el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
-
-				el.on('click', function(ev) {
-					Tipped.toggle(this);
-				});
-
-				if (el.is('.with-route')) {
-					el.addClass('cancel-route')
-				}
-				if (el.parent().is('.with-route')) {
-					el.parent().addClass('cancel-route')
-				}
-			});
-		}, 70);
-
-		window.setTimeout(function() {
 			$(context).on('mouseover', '.tipped', function() {
 				if ($(this).is('.tipped-inited')) {
 					return;
@@ -2504,7 +2483,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
 
 				$(this).on('click', function(ev) {
-					Tipped.hideAll();
+					try { Tipped.hideAll(); } catch (e) {}
 				});
 
 				$(this).addClass('tipped-inited');

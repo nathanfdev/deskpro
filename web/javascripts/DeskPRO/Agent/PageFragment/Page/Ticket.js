@@ -77,10 +77,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$('textarea[name="message"]', self.ticketReply).focus();
 		});
 
-		$('.ticket-urgency', this.wrapper).on('mouseover', function() {
-			Tipped.show(this);
-		});
-
 		var showMessages = $('input.show-messages', this.wrapper);
 		var showAttach = $('input.show-attach', this.wrapper);
 		var showNotes = $('input.show-notes', this.wrapper);
