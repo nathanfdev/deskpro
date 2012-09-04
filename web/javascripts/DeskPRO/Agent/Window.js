@@ -391,10 +391,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initInterfaceServices();
 
-		window.setTimeout(function() {
-			notexist.method();
-		}, 3000);
-
 		$('#dp_loading').remove();
 		$('#page_loading').remove();
 		$('#loading_css').remove();
