@@ -54,25 +54,30 @@ class HelpdeskOfflineMessage
 	{
 		switch ($type) {
 			case 'agents':
-				if (DP_INTERFACE == 'user') $message = 'Our helpdesk is currently offline for maintenance. (L01)';
-				else $message = 'You have more agents than your license allows.';
+				$message = 'You have more agents than your license allows.';
 				break;
 
 			case 'expired':
-				if (DP_INTERFACE == 'user') $message = 'Our helpdesk is currently offline for maintenance. (L02)';
-				else $message = 'Your license has expired.';
+				$days = License::getLicense()->isPastExpireDate();
+				if ($days == 1) {
+					$message = 'Your license has expired 1 day ago.';
+				} else {
+					$message = 'Your license has expired ' . $days . ' days ago.';
+				}
 				break;
 
 			default: trigger_error('getLicenseErrorPage called with bad $type', E_USER_ERROR); return '';
 		}
 
-		if (DP_INTERFACE == 'user') {
-			$page_html = self::getOfflinePage($message);
-		} else {
-			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
-			$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
-			$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
-		}
+		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
+		$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
+		$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
+		$page_html = str_replace('{{ LICENSE_ID }}', License::getLicense()->getLicenseId(), $page_html);
+
+		$asset_url = $base_url;
+		$asset_url = str_replace('/index.php', '', $asset_url);
+
+		$page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
 
 		return $page_html;
 	}

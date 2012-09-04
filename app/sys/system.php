@@ -200,13 +200,12 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				#------------------------------
 
 				if (License::getLicense()->isPastExpireDate()) {
-					// On every admin page, redirect them to license management
-					if (DP_INTERFACE == 'admin' && !preg_match('#^/billing#', $path) && !preg_match('#^/billing/login#', $path)) {
-						$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-						return $response;
-					} else {
-						$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
-						return $response;
+					if (DP_INTERFACE != 'billing') {
+						// Show lic error if not user, or if its been 14 days then show it for users too
+						if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
+							return $response;
+						}
 					}
 				}
 			}
@@ -480,7 +479,11 @@ final class License
 
 		$now = new \DateTime();
 		if ($now > $date) {
-			return true;
+
+			$diff = $now->diff($date);
+			$days = max(1, $diff->d);
+
+			return $days;
 		}
 
 		return false;
