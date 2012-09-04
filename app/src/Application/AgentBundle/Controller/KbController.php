@@ -235,7 +235,7 @@ class KbController extends AbstractController
 
 				$to = $this->em->find('DeskPRO:ArticleCategory', $to_category);
 
-				if(($from_category && $from) || !$to) {
+				if(($from_category && !$from) || !$to) {
 					$error = $tr->phrase('agent.publish.error_kb_not_in_db');
 					$skip = true;
 					break;
