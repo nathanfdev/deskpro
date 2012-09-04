@@ -345,6 +345,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			var newLi = $(self.newCatTpl);
+			newLi.find('select').on('change', function() {
+				self.sendUpdateCats();
+			}).prepend('<option></option>');
+			newLi.find('select').find('option').first().prop('selected', true);
 			self.getEl('addcat_li').before(newLi);
 
 			DP.select(newLi.find('select'));
