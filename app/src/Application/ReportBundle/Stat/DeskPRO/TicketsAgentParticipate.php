@@ -65,7 +65,7 @@ class TicketsAgentParticipate extends AbstractTicket
 	{
 		$processedResults = array();
 
-		if (!$results) {
+		if (!$results || empty($results['ticket_messages'])) {
 			return array();
 		}
 
