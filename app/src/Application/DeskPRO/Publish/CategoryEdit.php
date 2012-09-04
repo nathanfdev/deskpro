@@ -260,7 +260,7 @@ class CategoryEdit
 			$accurate = true;
 			foreach ($check_map as $id => $parent_id) {
 				if (array_key_exists($parent_id, $current_tree)) {
-					$current_parent_id = $current_tree[$id];
+					$current_parent_id = isset($current_tree[$id]) ? $current_tree[$id] : null;
 					if ($current_parent_id === null) {
 						$current_parent_id = 0;
 					}
