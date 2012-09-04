@@ -144,6 +144,11 @@ class KernelErrorHandler
 			return;
 		}
 
+		// Dont log 404's
+		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+			return;
+		}
+
 		self::$is_handling_exception = true;
 
 		$errinfo = self::getExceptionInfo($exception);
