@@ -70,7 +70,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
-		'vendor/jquery/jquery.form.js',
 		'vendor/jquery/tmpl.min.js',
 
 		'vendor/jquery/jquery.localscroll.js',
@@ -79,21 +78,11 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.sizes.min.js',
 		'vendor/jquery/jquery.tinyscrollbar.js',
 		'vendor/jquery/jquery.hotkeys.js',
-		'vendor/jquery/mwheelIntent.js',
 		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
 		'vendor/jquery/token-field/jquery.token-field.js',
-
-		'vendor/jquery/jquery-textext/src/js/textext.core.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.ajax.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.arrow.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.autocomplete.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.filter.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.prompt.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.suggestions.js',
-		'vendor/jquery/jquery-textext/src/js/textext.plugin.tags.js',
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 
@@ -102,8 +91,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 		'vendor/jquery/fileupload/jquery.iframe-transport.js',
-
-		'vendor/jquery/tag-it/tag-it.js',
 
 		'vendor/jquery/tipped/js/excanvas/excanvas.js',
 		'vendor/jquery/tipped/js/spinners/spinners.js',
@@ -599,7 +586,6 @@ $CONFIG['user_vendors'] = array(
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
-		'vendor/jquery/jquery.form.js',
 		'vendor/jquery/tmpl.min.js',
 
 		'vendor/jquery/jquery.sizes.min.js',
@@ -688,20 +674,8 @@ $CONFIG['agent_vendors_css'] = array(
 		'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
 		'vendor/jquery/tipped/css/tipped.css',
 		'vendor/jquery/colorbox/colorbox.css',
-		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
 		'vendor/jquery/chosen/chosen.css',
-
-		'vendor/jquery/markitup/markitup/skins/simple/style.css',
-		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
 		'vendor/jquery/token-field/token-field.css',
-
-		'vendor/jquery/jquery-textext/src/css/textext.core.css',
-		'vendor/jquery/jquery-textext/src/css/textext.plugin.arrow.css',
-		'vendor/jquery/jquery-textext/src/css/textext.plugin.autocomplete.css',
-		'vendor/jquery/jquery-textext/src/css/textext.plugin.focus.css',
-		'vendor/jquery/jquery-textext/src/css/textext.plugin.prompt.css',
-		'vendor/jquery/jquery-textext/src/css/textext.plugin.tags.css',
-
 		'vendor/select2/select2.css'
 	)
 );
