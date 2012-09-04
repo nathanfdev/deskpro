@@ -1,3 +1,3 @@
 <?php return array(
-	'user.lang.lang_title'                                                 => 'Engels',
+	'user.lang.lang_title'                                                 => 'Nederlands',
 );
