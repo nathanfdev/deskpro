@@ -45,6 +45,10 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 {
 	public function registerAction()
 	{
+		if ($this->session->getPerson()->getId()) {
+			return $this->redirectRoute('user');
+		}
+
 		if ($this->container->getSetting('core.user_mode') == 'closed') {
 			return $this->redirectRoute('user');
 		}

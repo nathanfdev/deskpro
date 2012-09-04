@@ -74,6 +74,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
+		if ($this->session->getPerson()->getId()) {
+			if ($return) return $this->redirect($return);
+			else return $this->redirectRoute('user');
+		}
+
 		$register = new \Application\UserBundle\Form\Model\Register();
 		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
@@ -510,6 +515,10 @@ HTML;
 
 	public function resetPasswordAction($invalid_email = false, $invalid_code = false)
 	{
+		if ($this->session->getPerson()->getId()) {
+			return $this->redirectRoute('user');
+		}
+
 		$register = new \Application\UserBundle\Form\Model\Register();
 		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
