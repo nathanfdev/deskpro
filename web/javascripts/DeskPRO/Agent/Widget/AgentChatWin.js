@@ -94,6 +94,10 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		if ( this.agentIds.length == 1 || (this.agentIds.length == 2 && this.agentIds.indexOf(parseInt(DESKPRO_PERSON_ID)) != -1) ) {
 			var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[0]);
 
+			if (!agentInfo) {
+				return;
+			}
+
 			var newContainer = $.tmpl('agent_chat_conversation', {
 				local_id: this.uuid,
 				to_agent_name: agentInfo.name,
