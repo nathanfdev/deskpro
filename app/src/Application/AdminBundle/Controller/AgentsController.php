@@ -49,6 +49,31 @@ use Symfony\Component\Form;
 
 class AgentsController extends AbstractController
 {
+	protected $num_agents = 0;
+	protected $max_agents = 0;
+
+	protected function init()
+	{
+		parent::init();
+		$this->num_agents = $this->db->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
+		$this->max_agents = \DeskPRO\Kernel\License::getLicense()->getMaxAgents();
+		if (!$this->max_agents) {
+			$this->max_agents = 999999999;
+		}
+
+		$this->get('templating.globals')->setVariable('max_agents', $this->max_agents);
+	}
+
+	public function canAddAgent()
+	{
+		return $this->num_agents < $this->max_agents;
+	}
+
+	public function showLicenseError()
+	{
+		return $this->render('AdminBundle:Agents:error-max-agents.html.twig');
+	}
+
 	############################################################################
 	# agents
 	############################################################################
@@ -176,6 +201,8 @@ class AgentsController extends AbstractController
 
 	public function newFromUsersourceAction($usersource_id)
 	{
+		if (!$this->canAddAgent()) return $this->showLicenseError();
+
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		return $this->render('AdminBundle:Agents:add-from-usersource.html.twig', array(
@@ -185,6 +212,8 @@ class AgentsController extends AbstractController
 
 	public function newFromUsersourceMakeAction($usersource_id)
 	{
+		if (!$this->canAddAgent()) return $this->showLicenseError();
+
 		$username = $this->in->getString('search_term');
 
 		/** @var $usersource \Application\DeskPRO\Entity\Usersource */
@@ -244,6 +273,7 @@ class AgentsController extends AbstractController
 		if ($person_id) {
 			$agent = $this->getAgentOr404($person_id);
 		} else {
+			if (!$this->canAddAgent()) return $this->showLicenseError();
 			$agent = new \Application\DeskPRO\Entity\Person();
 		}
 
@@ -388,6 +418,11 @@ class AgentsController extends AbstractController
 
 			$is_new = true;
 		}
+
+		if ($is_new) {
+			if (!$this->canAddAgent()) return $this->showLicenseError();
+		}
+
 		$agent->first_name = $this->in->getString('agent.first_name');
 		$agent->last_name = $this->in->getString('agent.last_name');
 
@@ -649,6 +684,10 @@ class AgentsController extends AbstractController
 
 		$agent = $this->getAgentOr404($person_id);
 		$agent->is_deleted = $set_to;
+
+		if (!$set_to) {
+			if (!$this->canAddAgent()) return $this->showLicenseError();
+		}
 
 		$this->em->getConnection()->beginTransaction();
 
