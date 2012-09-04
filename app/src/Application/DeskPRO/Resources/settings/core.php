@@ -324,4 +324,9 @@
 	 * Max size of attachments to send in email notifications
 	 */
 	'core.sendemail_attach_maxsize' => 10485760,
+
+	/**
+	 * Automatically install new languages on upgrade
+	 */
+	'core.lang_auto_install' => false,
 );

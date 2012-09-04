@@ -182,4 +182,37 @@ class LangPackInfo
 
 		throw new \InvalidArgumentException("Invalid section $section");
 	}
+
+
+	/**
+	 * @param string $id
+	 * @return \Application\DeskPRO\Entity\Language
+	 */
+	public function newLanguageEntity($id)
+	{
+		if (!$this->hasLang($id)) {
+			throw new \InvalidArgumentException();
+		}
+
+		$lang = new \Application\DeskPRO\Entity\Language();
+		$lang->sys_name      = $this->getLangInfo($id, 'id');
+		$lang->title         = $this->getLangInfo($id, 'title');
+		$lang->lang_code     = $this->getLangInfo($id, 'lang_code');
+		$lang->locale        = $this->getLangInfo($id, 'locale');
+		$lang->has_user      = $this->getLangInfo($id, 'has_user');
+		$lang->has_agent     = $this->getLangInfo($id, 'has_agent');
+		$lang->has_admin     = $this->getLangInfo($id, 'has_admin');
+		$lang->base_filepath = '%DP_ROOT%/languages/' . $id;
+
+		// Get the title from the lang itself
+		$title_file = DP_ROOT . '/languages/' . $id . '/user/lang.php';
+		if (file_exists($title_file)) {
+			$tmp = require($title_file);
+			if (isset($tmp['user.lang.lang_title'])) {
+				$lang->title = $tmp['user.lang.lang_title'];
+			}
+		}
+
+		return $lang;
+	}
 }

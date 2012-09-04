@@ -25,9 +25,25 @@
 			{{ phrase('admin.languages.notice_default_language') }}:<br />
 			<select id="default_lang_setting">
 				{% for lang in installed_packs %}
-					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>{{lang.title}}</option>
+					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>
+						{{ packs_local[lang.sys_name] }} {% if lang.title != packs[lang.sys_name] %}/ {{ packs[lang.sys_name] }}{% endif %}
+					</option>
 				{% endfor %}
 			</select>
+		</article>
+	</div>
+</div>
+
+<div class="dp-page-box">
+	<div class="resource-item-list">
+		<header>
+			<h4>
+				Auto Install
+				<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_langs_toggle_auto') }}';" {% if app.getSetting('core.lang_auto_install') %}checked="checked"{% endif %} />
+			</h4>
+		</header>
+		<article>
+			When this option is enabled, all languages will be installed automatically as they become available.
 		</article>
 	</div>
 </div>

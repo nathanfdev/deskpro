@@ -81,24 +81,7 @@ class LanguagesController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$lang = new \Application\DeskPRO\Entity\Language();
-		$lang->sys_name      = $langpacks->getLangInfo($id, 'id');
-		$lang->title         = $langpacks->getLangInfo($id, 'title');
-		$lang->lang_code     = $langpacks->getLangInfo($id, 'lang_code');
-		$lang->locale        = $langpacks->getLangInfo($id, 'locale');
-		$lang->has_user      = $langpacks->getLangInfo($id, 'has_user');
-		$lang->has_agent     = $langpacks->getLangInfo($id, 'has_agent');
-		$lang->has_admin     = $langpacks->getLangInfo($id, 'has_admin');
-		$lang->base_filepath = '%DP_ROOT%/languages/' . $id;
-
-		// Get the title from the lang itself
-		$title_file = DP_ROOT . '/languages/' . $id . '/user/lang.php';
-		if (file_exists($title_file)) {
-			$tmp = require($title_file);
-			if (isset($tmp['user.lang.lang_title'])) {
-				$lang->title = $tmp['user.lang.lang_title'];
-			}
-		}
+		$lang = $langpacks->newLanguageEntity($id);
 
 		$this->db->beginTransaction();
 		try {
@@ -409,6 +392,28 @@ class LanguagesController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# settings
+	############################################################################
+
+	public function toggleAutoInstallAction()
+	{
+		if ($this->container->getSetting('core.lang_auto_install')) {
+			$set = false;
+		} else {
+			$set = true;
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.lang_auto_install', $set);
+
+		if ($set) {
+			$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+			$this->em->getRepository('DeskPRO:Language')->installAll($langpacks);
+		}
+
+		return $this->redirectRoute('admin_langs');
 	}
 
 	############################################################################

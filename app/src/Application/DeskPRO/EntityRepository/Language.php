@@ -37,6 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Languages\LangPackInfo;
 
 class Language extends AbstractEntityRepository
 {
@@ -88,5 +89,43 @@ class Language extends AbstractEntityRepository
 		$this->default_lang = $this->find($lang_id);
 
 		return $this->default_lang;
+	}
+
+
+	/**
+	 * Install all lang packs form $langpacks that arent already installed.
+	 *
+	 * @param \Application\DeskPRO\Languages\LangPackInfo $langpacks
+	 * @throws \Exception
+	 */
+	public function installAll(LangPackInfo $langpacks)
+	{
+		$em = $this->_em;
+		$db = $em->getConnection();
+
+		$installed = $db->fetchAllCol("
+			SELECT sys_name
+			FROM languages
+		");
+
+		$installed = array_flip($installed);
+
+		foreach ($langpacks->getLangIds() as $id) {
+			if (isset($installed[$id])) {
+				continue;
+			}
+
+			$lang = $langpacks->newLanguageEntity($id);
+			$em->persist($lang);
+		}
+
+		$db->beginTransaction();
+		try {
+			$em->flush();
+			$db->commit();
+		} catch (\Exception $e) {
+			$db->rollback();
+			throw $e;
+		}
 	}
 }

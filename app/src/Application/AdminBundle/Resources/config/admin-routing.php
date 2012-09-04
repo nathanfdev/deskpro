@@ -961,6 +961,13 @@ $collection->add('admin_langs', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_toggle_auto', new Route(
+	'/languages/settings/toggle-auto-install',
+	array('_controller' => 'AdminBundle:Languages:toggleAutoInstall'),
+	array(),
+	array()
+));
+
 $collection->add('admin_langs_editlang', new Route(
 	'/languages/{language_id}/edit',
 	array('_controller' => 'AdminBundle:Languages:editLanguage'),
