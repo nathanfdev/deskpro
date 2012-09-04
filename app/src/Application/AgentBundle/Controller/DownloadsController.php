@@ -333,6 +333,10 @@ class DownloadsController extends AbstractController
 		$results = $result_helper->getDownloadsForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
+		$total_results = count($result_helper->getDownloadIds());
+		$num_pages = ceil($total_results / 50);
+		$showing_to = min(($page) * 50, $total_results);
+
 		$display_fields = $this->person->getPref('agent.ui.download-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
@@ -349,6 +353,10 @@ class DownloadsController extends AbstractController
 			'cache'              => $result_cache,
 			'display_fields'     => $display_fields,
 			'category'           => $category,
+			'total_results' => $total_results,
+			'num_pages' => $num_pages,
+			'cur_page' => $page,
+			'showing_to' => $showing_to,
 		));
 	}
 

@@ -284,6 +284,10 @@ class NewsController extends AbstractController
 		$results = $result_helper->getNewsForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
+		$total_results = count($result_helper->getNewsIds());
+		$num_pages = ceil($total_results / 50);
+		$showing_to = min(($page) * 50, $total_results);
+
 		$display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
@@ -299,6 +303,10 @@ class NewsController extends AbstractController
 			'result_id'      => $result_cache['id'],
 			'display_fields'  => $display_fields,
 			'category'       => $category,
+			'total_results' => $total_results,
+			'num_pages' => $num_pages,
+			'cur_page' => $page,
+			'showing_to' => $showing_to,
 		));
 	}
 
