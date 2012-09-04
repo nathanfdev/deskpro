@@ -140,7 +140,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var self = this;
 		window.setTimeout(function() {
 			if (!self.isVisible()) {
-				DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
+				DeskPRO_Window.getSectionData('chat_section', self._initSection.bind(self));
 			}
 		}, 250);
 	},
