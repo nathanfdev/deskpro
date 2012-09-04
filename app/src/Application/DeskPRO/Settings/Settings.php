@@ -330,7 +330,7 @@ class Settings implements \ArrayAccess
 
 		foreach ($this->_pending_groups as $group) {
 			$path = $this->getGroupFile($group);
-			if (!$path) continue;
+			if (!$path || !file_exists($path)) continue;
 
 			$group_settings = require($path);
 			$this->settings = array_merge($group_settings, $this->settings);

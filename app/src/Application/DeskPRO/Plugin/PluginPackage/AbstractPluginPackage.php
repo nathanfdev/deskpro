@@ -36,67 +36,71 @@ namespace Application\DeskPRO\Plugin\PluginPackage;
 
 use Application\DeskPRO\Entity\Plugin;
 use Orb\Util\Util;
+use Application\DeskPRO\Controller\AbstractController;
+use Application\DeskPRO\App;
 
-abstract class AbstractPluginPackage
+abstract class AbstractPluginPackage implements \ArrayAccess
 {
+	public function initialize()
+	{
+
+	}
+
 	/**
 	 * Called the first time the plugin is installed.
 	 *
 	 * @return InstallerAbstract
 	 */
-	public static function getInstaller($install_controller, Plugin $plugin)
+	public function getInstaller($install_controller, Plugin $plugin)
 	{
-		$installer = new InstallerSimple($plugin, $install_controller);
-		return $installer;
-	}
-
-	/**
-	 * Called whent he plugin exists in the database, but the source
-	 * is a newer version.
-	 *
-	 * @param Plugin $plugin The existing plugin (ie use this to get version)
-	 * @return void
-	 */
-	public static function getUpgrader($upgrade_controller, Plugin $plugin)
-	{
-
+		return new InstallerSimple($plugin, $install_controller);
 	}
 
 	/**
 	 * Called when the plugin is removed.
 	 *
 	 * @param Plugin $plugin The existing plugin (ie use this to get version)
+	 *
 	 * @return UninstallerAbstract
 	 */
-	public static function getUninstaller($uninstall_controller, Plugin $plugin)
+	public function getUninstaller($uninstall_controller, Plugin $plugin)
 	{
-		$installer = new UninstallerSimple($plugin, $uninstall_controller);
-		return $installer;
+		return new UninstallerSimple($plugin, $uninstall_controller);
 	}
 
-	public static function renderConfig($controller, Plugin $plugin)
+	public function renderConfig(AbstractController $controller, Plugin $plugin, array $errors)
 	{
-		if ($controller->in->getBool('prcoess')) {
-			$controller->ensureRequestToken();
+		return $controller->render($this->getName() . ':Admin:config.html.twig', array(
+			'plugin' => $plugin,
+			'info' => $this,
+			'errors' => $errors
+		));
+	}
 
-			return $controller->redirectRoute('admin_plugins');
+	public function processConfig(AbstractController $controller, Plugin $plugin, array &$errors)
+	{
+		$settings = App::get(App::SERVICE_SETTINGS);
+		$prefix = $plugin->id . '.';
+
+		foreach ($controller->in->getArray('settings') AS $setting => $value)
+		{
+			$settings->setSetting("$prefix$setting", $value);
 		}
 
-		return $controller->render(static::getName() . ':Admin:config.html.twig');
-	}
-
-	public static function isAvailable()
-	{
 		return true;
 	}
 
+	public function isAvailable()
+	{
+		return true;
+	}
 	
 	/**
-	 * Ge tthe version
+	 * Ge the version
 	 *
 	 * @return mixed
 	 */
-	public static function getVersion()
+	public function getVersion()
 	{
 		return '1';
 	}
@@ -110,39 +114,30 @@ abstract class AbstractPluginPackage
 	{
 		return str_replace(self::getBasePluginPath(), '%PLUGINS%', $plugin_path);
 	}
+
+	public function getFile()
+	{
+		$plugin_path = Util::getClassFilename($this);
+		return self::getRelativePluginPath($plugin_path);
+	}
 	
 	/**
 	 * Get the path to the Resources directory
 	 *
 	 * @return string
 	 */
-	public static function getResourcesPath()
+	public function getResourcesPath()
 	{
-		$plugin_path = dirname(Util::getClassFilename(get_called_class()));
+		$plugin_path = dirname(Util::getClassFilename($this));
 		return self::getRelativePluginPath($plugin_path) . '/Resources';
 	}
-
-
-	/**
-	 * Get paths to auto-load. The namespace fallbacks handle most cases.
-	 * 
-	 * @return array
-	 */
-	public static function getAutoloadPaths()
-	{
-		return array();
-	}
-
 	
 	/**
-	 * Get the unique name for the plugin
+	 * Get the unique name for the plugin. Use a-zA-Z0-9 only (do not use underscores or settings will not be accessible).
 	 * 
 	 * @return string
 	 */
-	public static function getName()
-	{
-		return str_replace('\\', '_', Util::getClassNamespace(get_called_class()));
-	}
+	abstract public function getName();
 
 
 	/**
@@ -150,10 +145,7 @@ abstract class AbstractPluginPackage
 	 *
 	 * @return string
 	 */
-	public static function getTitle()
-	{
-		return ucwords(str_replace('\\', ' ', Util::getClassNamespace(get_called_class())));
-	}
+	abstract public function getTitle();
 
 
 	/**
@@ -161,8 +153,47 @@ abstract class AbstractPluginPackage
 	 * 
 	 * @return string
 	 */
-	public static function getDescription()
+	public function getDescription()
 	{
 		return '';
+	}
+
+	/**
+	 * Get the readable developer name for this plugin
+	 *
+	 * @return string
+	 */
+	public function getDeveloper()
+	{
+		return '';
+	}
+
+	public function offsetGet($offset)
+	{
+		switch ($offset)
+		{
+			case 'name': return $this->getName();
+			case 'title': return $this->getTitle();
+			case 'version': return $this->getVersion();
+			case 'description': return $this->getDescription();
+			case 'developer': return $this->getDeveloper();
+			case 'is_available': return $this->isAvailable();
+			default: return null;
+		}
+	}
+
+	public function offsetExists($offset)
+	{
+		return $this->offsetGet($offset) !== null;
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		throw new \BadMethodCallException('Not supported');
+	}
+
+	public function offsetUnset($offset)
+	{
+		throw new \BadMethodCallException('Not supported');
 	}
 }

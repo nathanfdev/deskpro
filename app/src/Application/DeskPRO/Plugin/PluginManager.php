@@ -46,7 +46,8 @@ use Symfony\Component\Finder\Finder;
 class PluginManager
 {
 	protected $em;
-	protected $plugins;
+	protected $plugins = null;
+	protected $packages = array();
 
 	public function __construct($em)
 	{
@@ -55,53 +56,81 @@ class PluginManager
 
 	public function initialize()
 	{
-		$this->_initPlugins();
-	}
-
-	protected function _initPlugins()
-	{
 		if ($this->plugins !== null) return;
-		
+
 		$this->plugins = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:Plugin p INDEX BY p.id
 		")->execute();
-		foreach ($this->plugins AS $plugin) {
-			$this->_initializePlugin($plugin);
+
+		foreach ($this->plugins AS $key => $plugin) {
+			$package = $this->_initializePlugin($plugin);
+			if (!$package)
+			{
+				unset($this->plugins[$key]);
+			}
 		}
 	}
 
 	protected function _initializePlugin(Plugin $plugin)
 	{
-		$autoload_paths = $plugin->autoload_paths;
-		if ($autoload_paths) {
-			$autoload_paths = str_replace('%PLUGINS%', AbstractPluginPackage::getBasePluginPath(), $autoload_paths);
-			App::getClassLoader()->registerNamespaces($autoload_paths);
+		$class = $plugin->package_class;
+
+		if (!class_exists($class, false)) {
+			$file = $plugin->getCanonicalPackageClassFile();
+			if (!file_exists($file)) {
+				return false;
+			}
+			require $file;
 		}
+
+		$package = new $class();
+		$package->initialize();
+		$this->packages[$plugin->id] = $package;
+
+		return $package;
 	}
 
 	public function addPlugin($plugin)
 	{
-		$this->_initPlugins();
+		$this->initialize();
 
 		if (isset($this->plugins[$plugin['id']]) && $this->plugins[$plugin['id']] === $plugin) {
 			// already added
-			return;
+			return $this->packages[$plugin->id];
 		}
 
-		$this->plugins[$plugin['id']] = $plugin;
-		$this->_initializePlugin($plugin);
+		$package = $this->_initializePlugin($plugin);
+		if ($package)
+		{
+			$this->plugins[$plugin['id']] = $plugin;
+			return $package;
+		} else {
+			return false;
+		}
 	}
 
 	public function hasPlugin($plugin_id)
 	{
-		$this->_initPlugins();
+		$this->initialize();
+
 		return isset($this->plugins[$plugin_id]);
+	}
+
+	public function getPlugin($id)
+	{
+		return isset($this->plugins[$id]) ? $this->plugins[$id] : false;
+	}
+
+	public function getPackage($id)
+	{
+		return isset($this->plugins[$id]) ? $this->packages[$id] : false;
 	}
 
 	public function getBundle($plugin_id)
 	{
-		$this->_initPlugins();
+		$this->initialize();
+
 		if (!isset($this->plugins[$plugin_id])) {
 			return null;
 		}
@@ -111,7 +140,8 @@ class PluginManager
 
 	public function getResourcesPath($plugin_id)
 	{
-		$this->_initPlugins();
+		$this->initialize();
+
 		if (!isset($this->plugins[$plugin_id])) {
 			return null;
 		}

@@ -1560,6 +1560,13 @@ $collection->add('admin_plugins', new Route(
 	array()
 ));
 
+$collection->add('admin_plugins_toggle', new Route(
+	'/plugins/toggle',
+	array('_controller' => 'AdminBundle:Plugins:toggle'),
+	array(),
+	array()
+));
+
 $collection->add('admin_plugins_install', new Route(
 	'/plugins/{plugin_id}/install',
 	array('_controller' => 'AdminBundle:Plugins:install'),

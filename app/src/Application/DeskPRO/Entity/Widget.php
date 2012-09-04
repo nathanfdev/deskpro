@@ -78,6 +78,11 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $enabled = true;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Plugin|null
+	 */
+	protected $plugin = null;
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

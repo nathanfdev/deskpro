@@ -1,37 +1,92 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/PluginList.js') }}"></script>
 {% endblock %}
-{% block page_id "plugins" %}
+{% block page_js_exec %}
+<script type="text/javascript" >
+	function _page_exec() {
+		window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.PluginList();
+	}
+</script>
+{% endblock %}
+{% block pagebar %}
+<ul>
+	<li>Plugins</li>
+</ul>
+{% endblock %}
 {% block page %}
 
-<h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.installed_plugins') }}</h2>
-<ul class="item-list">
+<h2>{{ phrase('admin.plugins.installed_plugins') }}</h2>
+<form action="{{ path('admin_plugins_toggle') }}" method="post" class="check-grid item-list">
+	<table width="100%">
+	<thead>
+	<tr>
+		<th>&nbsp;</th>
+		<th style="text-align: left">Name</th>
+		<th style="text-align: left">Developer</th>
+		<th style="text-align: left; width: 50%">Description</th>
+	</tr>
+	</thead>
+	<tbody>
 	{% for plugin in installed_plugins %}
-		<li>
-			<strong><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.name}) }}">{{plugin.title}}</a></strong>
-			<div style="font-size: 90%">{{plugin.description|raw}}</div>
-		</li>
+		{% set info = installed_plugin_info[plugin.id] %}
+		{% if info %}
+		<tr>
+			<td><input
+				class="onoff-slider plugin-toggle"
+				type="checkbox"
+				name="plugins[{{plugin.id}}]"
+				value="1"
+				{% if plugin.enabled %}checked="checked"{% endif %}
+			/></td>
+			<td><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.id}) }}">{{plugin.title}} {{plugin.version}}</a></td>
+			<td>{{info.developer}}</td>
+			<td>{{plugin.description|raw}}</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td>&nbsp;</td>
+			<td>{{plugin.title}} {{plugin.version}}</td>
+			<td colspan="2"><i>This plugin has been disabled as the associated files could not be found.</i></td>
+		</tr>
+		{% endif %}
 	{% else %}
-		<li>{{ phrase('admin.plugins.no_plugins_installed') }}</li>
+		<tr><td colspan="4">{{ phrase('admin.plugins.no_plugins_installed') }}</td></tr>
 	{% endfor %}
-</ul>
+	</tbody>
+	</table>
+
+	{{ form_token() }}
+</form>
 
 <br />
 
-<h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.available_plugins') }}</h2>
-<ul class="item-list">
-	{% for plugin_info in available_plugins %}
-		<li>
-			<div style="float:right">
-				<a class="dp-button" href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">{{ phrase('admin.plugins.install') }}</a>
-			</div>
-			<strong>{{plugin_info.title}}</strong>
-			<div style="font-size: 90%">{{plugin_info.description|raw}}</div>
-		</li>
+<h2>{{ phrase('admin.plugins.available_plugins') }}</h2>
+<div class="item-list check-grid">
+<table width="100%">
+	<thead>
+	<tr>
+		<th style="text-align: left">Name</th>
+		<th style="text-align: left">Developer</th>
+		<th style="text-align: left; width: 50%">Description</th>
+		<th>&nbsp;</th></th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for plugin in available_plugins %}
+	<tr>
+		<td>{{plugin.title}} {{plugin.version}}</td>
+		<td>{{plugin.developer}}</td>
+		<td>{{plugin.description|raw}}</td>
+		<td style="text-align: right">
+			<a href="{{ path('admin_plugins_install', {'plugin_id': plugin.name}) }}">{{ phrase('admin.plugins.install') }}</a>
+		</td>
+	</tr>
 	{% else %}
-		<li>{{ phrase('admin.plugins.no_plugins_available') }}</li>
+	<tr><td colspan="4">{{ phrase('admin.plugins.no_plugins_available') }}</td></tr>
 	{% endfor %}
-</ul>
+	</tbody>
+</table>
+</div>
 
 {% endblock %}

@@ -34,6 +34,7 @@
 /data/backups/*
 /data/files/*
 /data/manuals
+/plugins/*
 
 /web/build
 /web/stylesheets/agent
