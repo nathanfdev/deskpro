@@ -226,5 +226,134 @@ $collection->add('admin_server_attach_switch', new Route(
 	array()
 ));
 
+################################################################################
+# Agents
+################################################################################
+
+$collection->add('admin_agents', new Route(
+	'/agents',
+	array('_controller' => 'CloudAdminBundle:Agents:agents'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_deleted', new Route(
+	'/agents/deleted',
+	array('_controller' => 'CloudAdminBundle:Agents:deletedAgents'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new', new Route(
+	'/agents/new',
+	array('_controller' => 'CloudAdminBundle:Agents:editAgent', 'person_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new_fromusersource', new Route(
+	'/agents/new-from-usersource/{usersource_id}',
+	array('_controller' => 'CloudAdminBundle:Agents:newFromUsersource', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new_fromusersource_make', new Route(
+	'/agents/new-from-usersource/{usersource_id}/make',
+	array('_controller' => 'CloudAdminBundle:Agents:newFromUsersourceMake', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_new_fromusersource_search', new Route(
+	'/agents/new-from-usersource/{usersource_id}/search',
+	array('_controller' => 'CloudAdminBundle:Agents:newFromUsersourceSearch', 'usersource_id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_edit', new Route(
+	'/agents/{person_id}/edit',
+	array('_controller' => 'CloudAdminBundle:Agents:editAgent'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_edit_formvalidate', new Route(
+	'/agents/{person_id}/edit/validate-form.json',
+	array('_controller' => 'CloudAdminBundle:Agents:quickEditFormValidate'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_setvacation', new Route(
+	'/agents/{person_id}/set-vacation-mode/{set_to}',
+	array('_controller' => 'CloudAdminBundle:Agents:setVacationMode', 'set_to' => '0'),
+	array('person_id' => '\\d+', 'set_to' => '(1|0)'),
+	array()
+));
+
+$collection->add('admin_agents_setdeleted', new Route(
+	'/agents/{person_id}/set-deleted/{set_to}',
+	array('_controller' => 'CloudAdminBundle:Agents:setDeleted', 'set_to' => '0'),
+	array('person_id' => '\\d+', 'set_to' => '(1|0)'),
+	array()
+));
+
+$collection->add('admin_agents_getperms', new Route(
+	'/agents/{person_id}/get-perms.json',
+	array('_controller' => 'CloudAdminBundle:Agents:getAgentPermissions'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_edit_save', new Route(
+	'/agents/{person_id}/edit/save',
+	array('_controller' => 'CloudAdminBundle:Agents:editAgentSave'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_teams_edit', new Route(
+	'/agents/teams/{team_id}/edit',
+	array('_controller' => 'CloudAdminBundle:Agents:editTeam'),
+	array('team_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_teams_del', new Route(
+	'/agents/teams/{team_id}/delete/{security_token}',
+	array('_controller' => 'CloudAdminBundle:Agents:deleteTeam'),
+	array('team_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_teams_new', new Route(
+	'/agents/teams/new',
+	array('_controller' => 'CloudAdminBundle:Agents:editTeam', 'team_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_groups_edit', new Route(
+	'/agents/groups/{usergroup_id}/edit',
+	array('_controller' => 'CloudAdminBundle:Agents:editGroup'),
+	array('usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_groups_del', new Route(
+	'/agents/groups/{usergroup_id}/delete/{security_token}',
+	array('_controller' => 'CloudAdminBundle:Agents:deleteGroup'),
+	array('usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_groups_new', new Route(
+	'/agents/groups/new',
+	array('_controller' => 'CloudAdminBundle:Agents:editGroup', 'usergroup_id' => 0),
+	array(),
+	array()
+));
 
 return $collection;

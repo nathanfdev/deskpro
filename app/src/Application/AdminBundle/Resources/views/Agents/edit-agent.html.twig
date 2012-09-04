@@ -46,6 +46,8 @@
 	</div>
 {% endif %}
 
+{% block agent_page_top %}{% endblock %}
+
 <form
 	action="{{ path('admin_agents_edit_save', {'person_id': agent.id|default('0')}) }}"
 	method="POST"
@@ -277,7 +279,9 @@
 	</div>
 </div>
 
-<footer class="controls">
+{% block agent_form_bottom %}{% endblock %}
+
+<footer class="controls" id="save_control">
 	<div class="is-not-loading">
 		<button class="clean-white">{{ phrase('admin.agents.save_agent') }}</button>
 	</div>
