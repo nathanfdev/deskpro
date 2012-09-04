@@ -86,6 +86,11 @@ class TicketTriggers extends AbstractJob
 			foreach ($tickets as $ticket) {
 				$tracker = $ticket->getTicketLogger();
 
+				$d = $ticket[$trigger->getTicketTimeField()];
+				if (!$d) {
+					continue;
+				}
+
 				$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 				$factory->addGlobalOption('tracker', $tracker);
 				$factory->addGlobalOption('ticket', $ticket);
@@ -100,8 +105,6 @@ class TicketTriggers extends AbstractJob
 				}
 
 				$actions_collection->apply($ticket->getTicketLogger(), $ticket, null);
-
-				$d = $ticket[$trigger->getTicketTimeField()];
 
 				$trigger_log = array(
 					'ticket_id'     => $ticket->id,
