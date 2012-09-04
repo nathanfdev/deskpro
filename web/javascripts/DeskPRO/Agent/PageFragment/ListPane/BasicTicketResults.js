@@ -57,7 +57,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
 			var ticketId = info.ticket_id;
-			self.handleAutoAdd(ticketId);
+			self.addTicket(ticketId, true);
 		}, null, [this.OBJ_ID]);
 
 		this.wrapper = $(el);
@@ -185,7 +185,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			}
 		}
 
-		self.addTicket(ticketId, true);
+		self.addTicket(ticketId, false);
 		return true;
 	},
 
