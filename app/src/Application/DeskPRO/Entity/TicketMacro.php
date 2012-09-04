@@ -163,7 +163,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 			$person_context = App::getCurrentPerson();
 		}
 
-		$collection->apply($ticket, $person_context);
+		$collection->apply($ticket->getTicketLogger(), $ticket, $person_context);
 	}
 
 	public function performOnPerson(Entity\Person $person)

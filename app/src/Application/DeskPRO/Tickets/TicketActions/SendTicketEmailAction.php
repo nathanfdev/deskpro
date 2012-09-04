@@ -138,6 +138,19 @@ class SendTicketEmailAction extends AbstractAction
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array(
+			array('action' => 'send_ticket_email', 'message' => $this->message)
+		);
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getDescription($as_html = true)

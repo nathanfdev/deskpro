@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		var self = this;
 
+		this.macroId = null; // currently open macro id
 		this.page = page;
 		this.options = {};
 
@@ -313,6 +314,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
 				$('.remove', add).remove();
 
+				this.macroId = macroId;
 				this.macroOverlay.open();
 			}
 		});
@@ -327,6 +329,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 
 		DP.console.log('Applying macro actions: %o', this.macroActions);
+		var formData = [];
 
 		Array.each(this.macroActions, function(action_info) {
 			var type = action_info.action;
@@ -355,15 +358,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 				this.changeManager.addChange(prop, action);
 			} else {
-				DP.console.error('Unknown property `%s`. Actions: %o', type, action);
+				Object.each(action_info, function (v, k) {
+					if (k != 'action') {
+						formData.push({
+							name: 'other_actions[' + type + '][' + k + ']',
+							value: v
+						});
+					}
+				});
 			}
 		}, this);
+
+		formData.push({
+			name: 'macro_id',
+			value: this.macroId
+		})
 
 		this.changeManager.applyChanges();
 
 		var self = this;
-		this.changeManager.saveChanges(null, function() {;
-				this.macroOverlay
+		this.changeManager.saveChanges(formData, function() {;
+			this.macroOverlay
 		});
 
 		this.macroActions = null;

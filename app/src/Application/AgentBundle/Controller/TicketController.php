@@ -1264,76 +1264,57 @@ class TicketController extends AbstractController
 	public function ajaxSaveActionsAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
-		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
-
-		// If department is changed,
-		// then we re-output the holder template
-		$is_dep_changed = false;
-		$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
-			if ($propertyName == 'department') {
-				$is_dep_changed = true;
+		$macro_id = $this->in->getUint('macro_id');
+		if ($macro_id) {
+			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+			if ($macro) {
+				$macro->performOnTicket($ticket, $this->person);
 			}
-		});
-		$ticket->addPropertyChangedListener($event_listener);
+		} else {
+			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
-		$this->em->beginTransaction();
+			$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 
-		try {
-			$macro_id = $this->in->getUint('macro_id');
-			if ($macro_id) {
-				$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-				$all_macro_actions = $macro->getActionsArray($ticket);
-				$apply_macro_actions = array();
+			// If department is changed,
+			// then we re-output the holder template
+			$is_dep_changed = false;
+			$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
+				if ($propertyName == 'department') {
+					$is_dep_changed = true;
+				}
+			});
+			$ticket->addPropertyChangedListener($event_listener);
 
-				// Only ticket fields need to be applied this way,
-				// the other actions were performed on the actual ticket interface
-				// and sent in the request, and applied normally above
-				foreach ($all_macro_actions as $k => $action) {
-					if (strpos($k, 'ticket_field') === 0) {
-						$apply_macro_actions[$k] = $action;
+			$this->em->beginTransaction();
+
+			try {
+				$ticket_edit->save();
+				$this->em->flush();
+
+				$field_manager = $this->container->getSystemService('ticket_fields_manager');
+				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+
+					if (!empty($_POST['custom_fields'])) {
+						$post_custom_fields = $this->request->request->get('custom_fields', array());
+						if (!empty($post_custom_fields)) {
+							$field_manager->saveFormToObject($post_custom_fields, $ticket);
+							$this->em->persist($ticket);
+						}
+
+						$this->em->flush();
 					}
 				}
 
-				// We need to manually apply to the user since ticketedit doesnt care about that
-				$macro->performOnPerson($ticket['person']);
+				$ticket->getTicketLogger()->done();
 
-				if ($apply_macro_actions) {
-					$ticket_edit->applyActions($apply_macro_actions);
-				}
+				$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+				$this->em->commit();
+			} catch (\Exception $e) {
+				$this->em->rollback();
+				throw $e;
 			}
-
-			if ($this->in->getBool('with_set_agent_parts')) {
-				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard'));
-				$ticket->setAgentParticipants($agents);
-			}
-
-			$ticket_edit->save();
-			$this->em->flush();
-
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-
-				if (!empty($_POST['custom_fields'])) {
-					$post_custom_fields = $this->request->request->get('custom_fields', array());
-					if (!empty($post_custom_fields)) {
-						$field_manager->saveFormToObject($post_custom_fields, $ticket);
-						$this->em->persist($ticket);
-					}
-
-					$this->em->flush();
-				}
-			}
-
-			$ticket->getTicketLogger()->done();
-
-			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
-
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
 		}
 
 		$data = array('data' => array());
