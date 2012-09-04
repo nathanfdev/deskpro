@@ -2,12 +2,6 @@
 the detected path is incorrect so we have to hard-code them #}
 <script type="text/javascript">
 var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
-
-{% if constant('DP_DEBUG') %}
-	DP_DEBUG = true;
-{% else %}
-	DP_DEBUG = false;
-{% endif %}
 </script>
 
 {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}

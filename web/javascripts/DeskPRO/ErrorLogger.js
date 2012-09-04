@@ -1,16 +1,35 @@
 var DpErrorLog = {
-	_origHandler: null,
 	saveUrl: null,
 	hasSentReport: false,
+	logCount: 0,
 	init: function() {
 		if (!this.saveUrl) {
 			return;
 		}
 
-		window.onerror = this.handleError;
-		if (window.onerror) {
-			this._origHandler = window.onerror;
-		}
+		var self = this;
+
+		var gOldOnError = window.onerror;
+
+		window.onerror = function(message, script, line) {
+			self.handleError(message, script, line);
+
+			if (gOldOnError) {
+				gOldOnError(message, script, line);
+			}
+
+			if (!DP_DEBUG) {
+				if ($.browser.mozilla) {
+					// https://developer.mozilla.org/en-US/docs/DOM/window.onerror
+					// true to say error was handled
+					return true;
+				} else {
+					// (standard) http://code.google.com/p/chromium/issues/detail?id=92062
+					// false to say error was handled
+					return false;
+				}
+			}
+		};
 
 		if (window.jQuery && window.jQuery.cookie) {
 			if ($.cookie('dp_jse_report')) {
@@ -20,6 +39,19 @@ var DpErrorLog = {
 	},
 
 	logError: function(message, trace, script, line) {
+
+		if (window.console.log) {
+			window.console.log('[JS Error] %s (%s %d): %s', message, script, line, trace);
+		}
+
+		if (message = 'Script error.' && line == '0') {
+			return;
+		}
+
+		// Send max 5 per session
+		if (this.logCount++ > 5) {
+			return;
+		}
 
 		if (this.saveUrl) {
 
@@ -45,8 +77,6 @@ var DpErrorLog = {
 			});
 		}
 
-		DP.console.log('[JS Error] %s', message);
-
 		if (window.SEND_FEEDBACK_WINDOW && !this.hasSentReport) {
 			this.hasSentReport = true;
 
@@ -70,11 +100,6 @@ var DpErrorLog = {
 		}
 
 		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')', '', script, line);
-
-		if (this._origHandler) {
-			var args = Array.prototype.slice.call(arguments);
-			this._origHandler.apply(this._origHandler, args);
-		}
 
 		return true;
 	}
