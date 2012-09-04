@@ -682,6 +682,10 @@ class KbController extends AbstractController
 		$results = $result_helper->getArticlesForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
+		$total_results = count($result_helper->getArticleIds());
+		$num_pages = ceil($total_results / 50);
+		$showing_to = min(($page) * 50, $total_results);
+
 		$display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
@@ -694,12 +698,15 @@ class KbController extends AbstractController
 
 		$article_categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
 
-		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
-
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'result_id'          => $result_cache['id'],
 			'display_fields'     => $display_fields,
+
+			'total_results' => $total_results,
+			'num_pages' => $num_pages,
+			'cur_page' => $page,
+			'showing_to' => $showing_to,
 
 			'search_form'        => array('terms' => $result_cache['criteria']['terms']),
 			'cache'              => $result_cache,
