@@ -1467,20 +1467,17 @@ class Strings
 	 * Note that the string is expected to already be UTF-8 or in a charset that it doesn't matter (ie ascii).
 	 * This doesn't do actual charset conversion, it just reverses entities.
 	 *
-	 * @param $string
+	 * @param string $string
+	 * @param bool $escape_html True to pass result through htmlspecialchars again to escape HTML
+	 * @return string
 	 */
-	public static function htmlEntityDecodeUtf8($string)
+	public static function htmlEntityDecodeUtf8($string, $escape_html = false)
 	{
-		// If we have mbstring then we can use that
-		if (function_exists('mb_convert_encoding')) {
-			return mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
-		}
-
 		$fn = function($matches) {
 			if ($matches[2]) {
-				return chr_utf8(hexdec($matches[3]));
+				return Strings::chrUtf8(hexdec($matches[3]));
 			} elseif ($matches[1]) {
-				return chr_utf8($matches[3]);
+				return Strings::chrUtf8($matches[3]);
 			}
 
 			return '';
@@ -1490,7 +1487,11 @@ class Strings
 		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 
 		// Replaces the rest like &#x20AC; (euro)
-		$string = preg_replace_callback('~&(#(x?))?([^;]+);~', $fn, $string);
+		$string = preg_replace_callback('/&(#(x?))?([^;]+);/', $fn, $string);
+
+		if ($escape_html) {
+			$string = htmlspecialchars($string, \ENT_QUOTES, 'UTF-8', false);
+		}
 
 		return $string;
 	}
