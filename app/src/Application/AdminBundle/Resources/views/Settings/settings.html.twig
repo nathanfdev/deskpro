@@ -69,14 +69,16 @@
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 15px" width="50%">
 			<h6>{{ phrase('agent.general.users') }}</h6>
 
-			<div class="field_row">
-				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
-				{{ phrase('admin.settings.max_upload_size') }}: <span id="user_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
-				<div id="user_attach_maxsize_slider"></div>
-				<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-					{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+			{% block attach_user_filesize_row %}
+				<div class="field_row">
+					<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
+					{{ phrase('admin.settings.max_upload_size') }}: <span id="user_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
+					<div id="user_attach_maxsize_slider"></div>
+					<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
+						{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+					</div>
 				</div>
-			</div>
+			{% endblock %}
 
 			<div class="field_row">
 				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
@@ -87,14 +89,16 @@
 		</td><td valign="top" style="padding-left: 15px" width="50%">
 			<h6>{{ phrase('agent.general.agents') }}</h6>
 
-			<div class="field_row">
-				<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
-				{{ phrase('admin.settings.max_upload_size') }}: <span id="agent_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
-				<div id="agent_attach_maxsize_slider"></div>
-				<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-                    {{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+			{% block attach_agent_filesize_row %}
+				<div class="field_row">
+					<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
+					{{ phrase('admin.settings.max_upload_size') }}: <span id="agent_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
+					<div id="agent_attach_maxsize_slider"></div>
+					<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
+						{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a href="{{ path('admin_server_attach') }}">{{ phrase('admin.settings.link_learn_about_limit') }}</a>
+					</div>
 				</div>
-			</div>
+			{% endblock %}
 
 			<div class="field_row">
 				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
@@ -111,7 +115,7 @@
 				{{ phrase('admin.settings.max_upload_size') }}: <span id="sendemail_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="sendemail_attach_maxsize_slider"></div>
 			</div>
-		</tr></table></table>
+		</tr></table>
 	</div>
 </div>
 <div class="setting_field_row">

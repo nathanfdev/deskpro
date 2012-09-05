@@ -113,7 +113,7 @@ class SettingsController extends AbstractController
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 
-		return $this->render('AdminBundle:Settings:settings.html.twig', array(
+		return $this->render('@Settings:settings.html.twig', array(
 			'max_uploadsize' => $max_filesize,
 			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize),
 			'timezone_options' => $timezone_options,

@@ -10,3 +10,8 @@ $DP_CONFIG = array();
 $DP_CONFIG['debug'] = array();
 $DP_CONFIG['dir_data'] = DPC_SITE_DATADIR;
 $DP_CONFIG['static_path'] = '/web' . DPC_SITE_BUILD_NUM;
+
+$DP_CONFIG['SETTINGS'] = array(
+	'core.attach_agent_maxsize' => '10485760',
+	'core.attach_user_maxsize'  => '10485760',
+);

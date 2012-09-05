@@ -17,6 +17,94 @@ $collection->add('admin', new Route(
 ));
 
 ################################################################################
+# Settings
+################################################################################
+
+$collection->add('admin_settings', new Route(
+	'/settings',
+	array('_controller' => 'CloudAdminBundle:Settings:settings'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_saveform', new Route(
+	'/settings/save-settings/{type}/{auth}',
+	array('_controller' => 'CloudAdminBundle:Settings:settingsSaveForm'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_silent_settings', new Route(
+	'/settings/welcome/set-settings-silent.json',
+	array('_controller' => 'CloudAdminBundle:Settings:setSilentSettings'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_cron_check', new Route(
+	'/settings/cron/check.json',
+	array('_controller' => 'CloudAdminBundle:Settings:checkCron'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_cron', new Route(
+	'/settings/cron',
+	array('_controller' => 'CloudAdminBundle:Settings:cron'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_set', new Route(
+	'/settings/save-setting/{setting_name}/{security_token}',
+	array('_controller' => 'CloudAdminBundle:Settings:saveSingleSetting'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_adv', new Route(
+	'/settings/advanced',
+	array('_controller' => 'CloudAdminBundle:Settings:advanced'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_adv_set', new Route(
+	'/settings/advanced-set/{name}',
+	array('_controller' => 'CloudAdminBundle:Settings:advancedSet'),
+	array(),
+	array()
+));
+
+$collection->add('admin_labels', new Route(
+	'/settings/labels/{label_type}',
+	array('_controller' => 'CloudAdminBundle:Settings:labels'),
+	array('label_type' => '[a-z]+'),
+	array()
+));
+
+$collection->add('admin_labels_rename', new Route(
+	'/settings/labels/{label_type}/rename.json',
+	array('_controller' => 'CloudAdminBundle:Settings:renameLabel'),
+	array('label_type' => '[a-z]+'),
+	array()
+));
+
+$collection->add('admin_labels_new', new Route(
+	'/settings/labels/new.json',
+	array('_controller' => 'CloudAdminBundle:Settings:labelsAjaxNew'),
+	array('label_type' => '[a-z]+'),
+	array()
+));
+
+$collection->add('admin_labels_del', new Route(
+	'/settings/labels/{label_type}/delete.json',
+	array('_controller' => 'CloudAdminBundle:Settings:labelsAjaxDelete'),
+	array('label_type' => '[a-z]+'),
+	array()
+));
+
+################################################################################
 # Email Gatewayss
 ################################################################################
 
