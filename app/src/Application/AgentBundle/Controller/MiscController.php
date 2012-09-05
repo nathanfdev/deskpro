@@ -202,6 +202,82 @@ JS;
 		));
 	}
 
+	public function proxyAction()
+	{
+		$url = $this->in->getString('url');
+		$urlinfo = @parse_url($url);
+		if (!$url OR !$urlinfo OR empty($urlinfo['scheme']) OR !preg_match('#^https?#', $urlinfo['scheme'])) {
+			return $this->createResponse('Bad url', 400);
+		}
+
+		$originalMethod = $this->request->getMethod();
+		$method = $originalMethod;
+		if ($originalMethod == 'GET' || $originalMethod == 'POST') {
+			$newMethod = $this->in->getString('method');
+			if ($newMethod) {
+				$method = $newMethod;
+			}
+
+			if ($originalMethod == 'GET') {
+				$passData = $_GET;
+			} else {
+				$passData = $_POST;
+			}
+			unset($passData['url'], $passData['method']);
+		} else {
+			$passData = file_get_contents('php://input');
+		}
+
+		switch (strtolower($method)) {
+			case 'get': $method = 'GET'; break;
+			case 'post': $method = 'POST'; break;
+			case 'put': $method = 'PUT'; break;
+			case 'delete': $method = 'DELETE'; break;
+			default: $method = 'GET';
+		}
+
+		if ($method == 'GET' && is_array($passData) && $passData) {
+			$url .= (strpos($url, '?') ? '&' : '?') . http_build_query($passData);
+		}
+
+		$ch = curl_init($url);
+		if ($method != 'GET') {
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($passData) ? http_build_query($passData) : $passData);
+		}
+
+		if ($this->request->headers->get('X-DeskPRO-Proxy-Username') OR $this->request->headers->get('X-DeskPRO-Proxy-Password')) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Username','').':'.$this->request->headers->get('X-DeskPRO-Proxy-Password',''));
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
+
+		if (!empty($_SERVER['CONTENT_TYPE'])) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: ' . $_SERVER['CONTENT_TYPE']));
+		}
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'DeskPRO AJAX Proxy');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+
+		$contents = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close($ch);
+
+		$response = $this->response;
+
+		if ($info['content_type']) {
+			$response->headers->set('Content-Type', $info['content_type']);
+		}
+		if ($info['http_code']) {
+			$response->setStatusCode($info['http_code']);
+		}
+
+		$response->setContent($contents);
+
+		return $response;
+	}
+
 	public function ajaxLabelsAutocompleteAction($label_type)
 	{
 		$search = $this->in->getString('term');

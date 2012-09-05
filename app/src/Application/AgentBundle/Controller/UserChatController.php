@@ -88,8 +88,8 @@ class UserChatController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
 		$convo_api = array();
-		foreach (array('id', 'subject', 'person_name', 'person_email') AS $key) {
-			$ticket_api[$key] = $convo->$key;
+		foreach (array('id', 'subject', 'person_name', 'person_email', 'status', 'ended_by') AS $key) {
+			$convo_api[$key] = $convo->$key;
 		}
 		if ($convo->person) {
 			$convo_api['person'] = $convo->person->getDataForWidget();

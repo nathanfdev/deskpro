@@ -121,6 +121,13 @@ $collection->add('agent_set_agent_status', new Route(
 	array()
 ));
 
+$collection->add('agent_proxy', new Route(
+	'/misc/proxy',
+	array('_controller' => 'AgentBundle:Misc:proxy'),
+	array(),
+	array()
+));
+
 $collection->add('agent_redirect_out', new Route(
 	'/redirect-out/{url}',
 	array('_controller' => 'AgentBundle:Misc:redirectExternal'),
