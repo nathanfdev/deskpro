@@ -47,10 +47,10 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 		switch ($action) {
 			case 'call-api':
 				$url = App::getSetting("$plugin->id.api_url");
-				$key = App::getSetting("$plugin->id.api_key");
+				$token = App::getSetting("$plugin->id.api_token");
 
-				if (!$url || !$key) {
-					return $controller->createJsonResponse(array('error' => 'API key or URL missing.'));
+				if (!$url || !$token) {
+					return $controller->createJsonResponse(array('error' => 'API token or URL missing. Please configure the plugin.'));
 				}
 
 				$parts = parse_url($url);
@@ -60,7 +60,7 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 
 				$email = $controller->in->getString('email');
 				if ($email) {
-					$highrise = new \Orb\Service\Highrise\Highrise($url, $key);
+					$highrise = new \Orb\Service\Highrise\Highrise($url, $token);
 					$personApi = new \Orb\Service\Highrise\Resource\Person($highrise);
 					$output = $personApi->findPeopleWithCriteria(array('email' => $email));
 

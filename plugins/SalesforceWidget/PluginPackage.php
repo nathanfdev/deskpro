@@ -51,7 +51,7 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 				$token = App::getSetting("$plugin->id.api_security_token");
 
 				if (!$user || !$password || !$token) {
-					return $controller->createJsonResponse(array('error' => 'API user, password or token missing.'));
+					return $controller->createJsonResponse(array('error' => 'API user, password or token missing. Please configure the plugin.'));
 				}
 
 				$matches = array();
