@@ -134,10 +134,16 @@ class Manager
 		// Clear old CSS blob so it's regenerated
 		$this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL");
 
+		// Update lang titles
+		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+
+		foreach ($langpacks->getLangTitles(true) as $id => $title) {
+			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ?", array($title, $id));
+		}
+
 		// Auto-install any new langs
 		$auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
 		if ($auto_install) {
-			$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 			$this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
 		}
 	}
