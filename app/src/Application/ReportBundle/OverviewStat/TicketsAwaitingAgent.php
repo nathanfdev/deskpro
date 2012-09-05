@@ -83,7 +83,7 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 			SELECT {$group_field['select']}, COUNT(*)
 			FROM tickets_search_active AS tickets
 			{$group_field['join']}
-			WHERE tickets.status = 'awaiting_agent' {$group_field['where']}
+			WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
 			GROUP BY {$group_field['group_by']}
 		";
 

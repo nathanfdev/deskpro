@@ -118,7 +118,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 				SELECT {$group_field['select']}, $field, COUNT(*)
 				FROM tickets
 				{$group_field['join']}
-				WHERE tickets.status IN ('awaiting_agent') {$group_field['where']}
+				WHERE tickets.status IN ('awaiting_agent') {$group_field['where']} AND tickets.is_hold = 0
 				GROUP BY {$group_field['group_by']}, time_group
 				ORDER BY time_group ASC
 			";
@@ -144,7 +144,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 			$sql = "
 				SELECT $field, COUNT(*)
 				FROM tickets
-				WHERE tickets.status IN ('awaiting_agent')
+				WHERE tickets.status IN ('awaiting_agent') AND tickets.is_hold = 0
 				GROUP BY time_group
 			";
 
