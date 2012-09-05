@@ -39,10 +39,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function registerExtensions(ContainerBuilder $container)
-    {
+	public function build(ContainerBuilder $container)
+	{
+		parent::build($container);
+
 		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
-    }
+	}
 
 	public function getNamespace()
 	{

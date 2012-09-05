@@ -34,7 +34,7 @@
 
 namespace Application\ApiBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
@@ -45,15 +45,12 @@ use Application\DeskPRO\App;
  */
 class CoreExtension extends Extension
 {
-	public function load($config, ContainerBuilder $container)
+	public function load(array $config, ContainerBuilder $container)
     {
-		$service_name = 'deskpro.api.request_key';
-
-		$definition = new \Symfony\Component\DependencyInjection\Definition(
-			'Application\\ApiBundle\\StaticLoader\\RequestKey'
-		);
+		$definition = new Definition('Application\\ApiBundle\\StaticLoader\\RequestKey');
+	    $definition->setFactoryClass('Application\\ApiBundle\\StaticLoader\\RequestKey');
 		$definition->setFactoryMethod('getApiKeyFromRequest');
-		$container->setDefinition($service_name, $definition);
+		$container->setDefinition('deskpro.api.request_key', $definition);
     }
 
 	public function getXsdValidationBasePath()

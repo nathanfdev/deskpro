@@ -106,6 +106,7 @@ class CacheCleaner
 		$this->routing_files = array(
 			DP_ROOT  . '/src/Application/AdminBundle/Resources/config/admin-routing.php',
 			DP_ROOT  . '/src/Application/AgentBundle/Resources/config/agent-routing.php',
+			DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
 			DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',
 			DP_ROOT  . '/src/Application/ReportBundle/Resources/config/reports-routing.php',
 			DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
@@ -125,7 +126,7 @@ class CacheCleaner
 		}
 
 		$this->gen_files = array();
-		foreach (array('Admin','Agent','User','Install','Billing','Cli','Report') as $k) {
+		foreach (array('Admin','Agent','Api','User','Install','Billing','Cli','Report') as $k) {
 			$this->gen_files[] = DP_ROOT.'/sys/cache/dev/'.$k.'KerneldevUrlGenerator.php';
 			$this->gen_files[] = DP_ROOT.'/sys/cache/dev/'.$k.'KerneldevUrlMatcher.php';
 			$this->gen_files[] = DP_ROOT.'/sys/cache/prod/'.$k.'KerneldevUrlGenerator.php';

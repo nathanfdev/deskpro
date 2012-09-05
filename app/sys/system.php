@@ -225,6 +225,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 require_once DP_ROOT.'/sys/Kernel/AdminKernel.php';
 require_once DP_ROOT.'/sys/Kernel/AgentKernel.php';
+require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
 require_once DP_ROOT.'/sys/Kernel/BillingKernel.php';
 require_once DP_ROOT.'/sys/Kernel/CliKernel.php';
 require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';

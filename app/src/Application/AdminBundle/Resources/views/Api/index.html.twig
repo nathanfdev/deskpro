@@ -1,26 +1,30 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'integrations' %}
-{% block sub_section 'api' %}
-{% block content %}
-
-<div style="text-align: right">
-	<a class="dp-button green" href="{{ path('admin_api_newkey') }}">{{ phrase('admin.api.create_api_key') }}</a>
-	<br /><br />
-</div>
+{% block pagebar %}
+<nav>
+	<ul>
+		<li class="add"><a href="{{ path('admin_api_newkey') }}">{{ phrase('admin.api.create_api_key') }}</a></li>
+	</ul>
+</nav>
+<ul>
+	<li>API Keys</li>
+</ul>
+{% endblock %}
+{% block page %}
 
 <ul class="item-list">
 	{% for apikey in all_apikeys %}
 		<li>
-			<div style="float:right">
-				<ul class="controls">
-					<li class="edit"><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}">{{ phrase('admin.api.viewedit') }}</a></li>
-					<li class="delete"><a href="{{ path('admin_api_delkey', {'id': apikey.id}) }}" onclick="return confirm('{{ phrase('admin.api.are_you_sure') }}');">{{ phrase('agent.general.delete') }}</a></li>
+			<div>
+				<ul class="controls" style="float:right">
+					<li><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}" class="edit">{{ phrase('admin.api.viewedit') }}</a></li>
+					<li><a href="{{ path('admin_api_delkey', {'id': apikey.id, 'security_token': security_token('delete_api')}) }}" class="delete" onclick="return confirm('{{ phrase('admin.api.are_you_sure') }}');">{{ phrase('agent.general.delete') }}</a></li>
 				</ul>
 			</div>
 			<strong>{{apikey.person.display_name}}</strong>
 			{% if apikey.note %}<p>{{apikey.note}}</p>{% endif %}
 
-			<p>{{ phrase('admin.api.http_basic_auth') }}: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /></p>
+			<p>Key:
+				<input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 250px;" /></p>
 		</li>
 	{% else %}
 		{{ phrase('admin.api.no_api_keys_yet') }}

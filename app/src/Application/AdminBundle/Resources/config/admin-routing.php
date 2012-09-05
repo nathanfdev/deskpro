@@ -1064,7 +1064,7 @@ $collection->add('admin_api_keylist', new Route(
 ));
 
 $collection->add('admin_api_delkey', new Route(
-	'/api/key/{id}/del',
+	'/api/key/{id}/delete/{security_token}',
 	array('_controller' => 'AdminBundle:Api:delKey'),
 	array('id' => '\\d+'),
 	array()

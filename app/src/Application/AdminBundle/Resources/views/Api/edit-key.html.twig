@@ -1,49 +1,51 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'integrations' %}
-{% block sub_section 'api' %}
-{% block content %}
-
-<form action="{{ path('admin_api_editkey', {'id': apikey.id|default(0)}) }}" method="post">
-
-<table class="form">
+{% block pagebar %}
+<ul>
+	<li><a href="{{ path('admin_api_keylist') }}">API Keys</a></li>
 	{% if apikey.id %}
-	<tr>
-		<td class="label">
-			<label>{{ phrase('admin.api.key_information') }}</label>
-		</td>
-		<td>
-			{{ phrase('agent.general.id') }}: {{apikey.id}}<br />
-			{{ phrase('admin.api.key') }}: {{apikey.code}}
-			<hr />
-			{{ phrase('admin.api.http_basic_auth') }}: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /><br />
-			{{ phrase('admin.api.example_curl') }}: <input type="text" class="flat" value="curl -u {{apikey.id}}:{{apikey.code}} http://deskpro/api/test" style="width: 200px;" />
-		</td>
-	</tr>
+		<li>Edit API Key</li>
+	{% else %}
+		<li>Add API Key</li>
 	{% endif %}
-	<tr>
-		<td class="label" width="40%">
-			<label>{{ phrase('admin.api.note_or_description') }}</label>
-		</td>
-		<td>
-			<input type="text" name="api_key[note]" value="{{apikey.note}}" style="width: 90%" />
-		</td>
-	</tr>
-	<tr>
-		<td class="label">
-			<label>{{ phrase('admin.api.user_owner') }}</label>
-			<div class="info">
-				{{ phrase('admin.api.notice_api_auth') }}
-			</div>
-		</td>
-		<td>
-			<input type="text" name="person_email" value="{{apikey.person.primary_email_address}}" style="width: 300px;"/>
-		</td>
-	</tr>
-</table>
+</ul>
+{% endblock %}
+{% block page %}
 
-<div style="text-align:center">
-	<button class="dp-button" type="submit">{{ phrase('agent.general.save') }}</button>
-</div>
+<form action="{{ path('admin_api_editkey', {'id': apikey.id|default(0)}) }}" method="post" class="dp-form">
+
+	{% if errors %}
+	<ul id="errors_container">
+		{% for error in errors %}
+		<li>{{ error }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Note</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="note" value="{{apikey.note}}" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>API Person Email</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="person_email" value="{{personEmail}}" />
+			<p>Every API request is made as a person in the system. Enter the email address of the person that will be making these requests. This person must be an agent.</p>
+		</div>
+	</div>
+
+	<footer class="controls">
+		<button class="clean-white">Save API Key</button>
+	</footer>
+
+	{{ form_token() }}
+	<input type="hidden" name="process" value="1" />
 
 </form>
 

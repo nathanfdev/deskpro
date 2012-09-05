@@ -5,6 +5,10 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
+################################################################################
+# Misc
+################################################################################
+
 $collection->add('api_test', new Route(
 	'/test',
 	array('_controller' => 'ApiBundle:Test:test'),
@@ -47,6 +51,10 @@ $collection->add('api_ping_object_updated', new Route(
 	array()
 ));
 
+################################################################################
+# Ticket search
+################################################################################
+
 $collection->add('api_ticketsearch_filters_getnames', new Route(
 	'/ticket-search/get-filter-names',
 	array('_controller' => 'ApiBundle:TicketSearch:getFilterNames'),
@@ -65,6 +73,24 @@ $collection->add('api_ticketsearch_filters_getresults', new Route(
 	'/ticket-search/filters/{filter_id}/get-results',
 	array('_controller' => 'ApiBundle:TicketSearch:getFilterResults'),
 	array('_method' => 'GET', 'filter_id' => '\\d+'),
+	array()
+));
+
+################################################################################
+# Tickets
+################################################################################
+
+$collection->add('api_tickets', new Route(
+	'/tickets/',
+	array('_controller' => 'ApiBundle:Ticket:getTicket'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket', new Route(
+	'/tickets/{ticket_id}',
+	array('_controller' => 'ApiBundle:Ticket:getTicket'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
 	array()
 ));
 

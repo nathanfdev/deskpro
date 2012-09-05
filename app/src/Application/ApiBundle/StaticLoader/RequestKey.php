@@ -45,27 +45,31 @@ class RequestKey
 
 		static $api_key = null;
 
-		if ($api_key !== null) return $api_key;
+		if ($api_key !== null) {
+			return $api_key;
+		}
+
+		$headers = $request->server->getHeaders();
 
 		$key_str = false;
-		if (!empty($_SERVER['PHP_AUTH_USER']) AND !empty($_SERVER['PHP_AUTH_PW'])) {
-			$key_str = $_SERVER['PHP_AUTH_USER'].':'.$_SERVER['PHP_AUTH_PW'];
-		} else if ($request->headers->get('X-DeskPRO-API-Key', true)) {
-			$key_str = $request->headers->get('X-DeskPRO-API-Key', true);
+		if (!empty($headers['PHP_AUTH_USER']) AND !empty($headers['PHP_AUTH_PW'])) {
+			$key_str = $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
+		} else if ($request->headers->get('X-DeskPRO-API-Key', null, true)) {
+			$key_str = $request->headers->get('X-DeskPRO-API-Key', null, true);
 		} else if (!empty($_REQUEST['API-KEY'])) {
 			$key_str = $_REQUEST['API-KEY'];
 		}
 
 		if (!$key_str) {
-			$api_key = null;
-			return null;
+			$api_key = false;
+			return $api_key;
 		}
 
 		$api_key = $em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
-		if (!$api_key) $api_key = null;
-
-		if ($api_key) {
-			App::setCurrentPerson($api_key['person']);
+		if ($api_key && $api_key->person && $api_key->person->is_agent) {
+			App::setCurrentPerson($api_key->person);
+		} else {
+			$api_key = false;
 		}
 
 		return $api_key;

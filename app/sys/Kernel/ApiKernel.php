@@ -29,70 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
  */
 
-namespace Application\ApiBundle\Controller;
+namespace DeskPRO\Kernel;
+
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 use Application\DeskPRO\App;
 
-/**
- * Perform searches or get results from filters.
- */
-class TicketSearchController extends AbstractController
+class ApiKernel extends AbstractKernel
 {
-	/**
-	 * Get a map of filters.
-	 */
-	public function getFilterNamesAction()
+	protected function registerAdditionalBundles()
 	{
-		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
+		$bundles = array(
+			new \Application\ApiBundle\ApiBundle(),
+		);
 
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-names.json.jsonphp', array(
-			'filters' => $filters
-		));
+		return $bundles;
 	}
 
-
-
-	/**
-	 * Get counts for all filters
-	 */
-	public function getFilterCountsAction()
+	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$all_counts = App::getApi('tickets.filters')->getAllCountsForPersonFilters($this->person);
-
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-counts.json.jsonphp', array(
-			'counts' => $all_counts
-		));
-	}
-
-
-
-	/**
-	 * Execute a filter and return results.
-	 *
-	 * @param int $filter_id
-	 */
-	public function getFilterResultsAction($filter_id)
-	{
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
-
-		$per_page = 25;
-
-		$filter = App::getApi('tickets.filters')->getFilterFromId($filter_id);
-		$num_results = $filter->getResultsCount();
-		$num_pages = ceil($num_results / $per_page);
-
-		$tickets = App::getApi('tickets.filters')->getTicketsFromFilter($filter_id, $page, $per_page);
-
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-results.json.jsonphp', array(
-			'num_tickets' => $num_results,
-			'num_pages' => $num_pages,
-			'per_page' => $per_page,
-			'cur_page' => $page,
-			'tickets' => $tickets
-		));
+		$loader->load(DP_ROOT.'/sys/config/api/config_'.$this->getEnvironment().'.php');
 	}
 }

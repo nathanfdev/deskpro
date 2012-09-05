@@ -79,16 +79,39 @@ class ApiController extends AbstractController
 			$apikey = new Entity\ApiKey();
 		}
 
-		if ($this->isPostRequest()) {
-			$apikey['note'] = $this->in->getString('api_key.note');
-			$apikey['person'] = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('person_email'));
+		$errors = array();
 
-			$this->em->persist($apikey);
-			$this->em->flush();
+		if ($this->in->getString('process')) {
+			$this->ensureRequestToken();
+
+			$personEmail = $this->in->getString('person_email');
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($personEmail);
+			if ($person) {
+				if ($person->is_agent) {
+					$apikey['person'] = $person;
+				} else {
+					$errors['person_email'] = 'The specified person is not an agent.';
+				}
+			} else {
+				$errors['person_email'] = 'No person could be found with that email address.';
+			}
+
+			$apikey['note'] = $this->in->getString('note');
+
+			if (!$errors) {
+				$this->em->persist($apikey);
+				$this->em->flush();
+
+				return $this->redirectRoute('admin_api_keylist');
+			}
+		} else {
+			$personEmail = $apikey->person ? $apikey->person->primary_email_address : '';
 		}
 
 		return $this->render('AdminBundle:Api:edit-key.html.twig', array(
-			'apikey' => $apikey
+			'apikey' => $apikey,
+			'personEmail' => $personEmail,
+			'errors' => $errors
 		));
 	}
 
@@ -101,8 +124,10 @@ class ApiController extends AbstractController
 	/**
 	 * Delete an API Key
 	 */
-	public function delKeyAction($id)
+	public function delKeyAction($id, $security_token)
 	{
+		$this->ensureAuthToken('delete_api', $security_token);
+
 		$apikey = $this->getApiKeyOr404($id);
 
 		$this->em->remove($apikey);
@@ -116,7 +141,7 @@ class ApiController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\DeskPRO\Entity\ApiKey
+	 * @return \Application\DeskPRO\Entity\ApiKey
 	 */
 	protected function getApiKeyOr404($id)
 	{

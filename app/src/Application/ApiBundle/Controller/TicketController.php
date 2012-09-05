@@ -34,65 +34,31 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
 
-/**
- * Perform searches or get results from filters.
- */
-class TicketSearchController extends AbstractController
+class TicketController extends AbstractController
 {
-	/**
-	 * Get a map of filters.
-	 */
-	public function getFilterNamesAction()
+	public function getTicketAction($ticket_id)
 	{
-		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
+		$ticket = $this->_getTicketOr404($ticket_id);
 
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-names.json.jsonphp', array(
-			'filters' => $filters
+		return $this->renderJson('ApiBundle:Ticket:ticket.json.jsonphp', array(
+			'ticket' => $ticket
 		));
 	}
 
-
-
-	/**
-	 * Get counts for all filters
-	 */
-	public function getFilterCountsAction()
+	protected function _getTicketOr404($id)
 	{
-		$all_counts = App::getApi('tickets.filters')->getAllCountsForPersonFilters($this->person);
+		$q = $this->em->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0");
+		$q->setFetchMode('DeskPRO:Person', 'person', 'EAGER');
+		$q->setFetchMode('DeskPRO:Person', 'agent', 'EAGER');
+		$q->setParameters(array($id));
 
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-counts.json.jsonphp', array(
-			'counts' => $all_counts
-		));
-	}
+		$ticket = $q->getOneOrNullResult();
 
+		if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $id");
+		}
 
-
-	/**
-	 * Execute a filter and return results.
-	 *
-	 * @param int $filter_id
-	 */
-	public function getFilterResultsAction($filter_id)
-	{
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
-
-		$per_page = 25;
-
-		$filter = App::getApi('tickets.filters')->getFilterFromId($filter_id);
-		$num_results = $filter->getResultsCount();
-		$num_pages = ceil($num_results / $per_page);
-
-		$tickets = App::getApi('tickets.filters')->getTicketsFromFilter($filter_id, $page, $per_page);
-
-		return $this->renderJson('ApiBundle:TicketSearch:get-filter-results.json.jsonphp', array(
-			'num_tickets' => $num_results,
-			'num_pages' => $num_pages,
-			'per_page' => $per_page,
-			'cur_page' => $page,
-			'tickets' => $tickets
-		));
+		return $ticket;
 	}
 }

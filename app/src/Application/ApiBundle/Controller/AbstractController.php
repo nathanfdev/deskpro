@@ -42,54 +42,54 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * The API key making this request
 	 * 
-	 * @var Application\DeskPRO\Entity\ApiKey
+	 * @var \Application\DeskPRO\Entity\ApiKey
 	 */
 	public $apikey;
 
 	/**
 	 * The user context (user making the request, or the one the API key says to use)
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	public $user;
+	public $person;
 
 	/**
 	 * Entity manager
-	 * @var Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager
 	 */
 	public $em;
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	public $db;
 
 	/**
 	 * Input reader
-	 * @var Orb\Input\Reader\Reader
+	 * @var \Orb\Input\Reader\Reader
 	 */
 	public $in;
 
 	/**
 	 * A generic value cleaner
-	 * @var Orb\Input\Cleaner\Cleaner
+	 * @var \Orb\Input\Cleaner\Cleaner
 	 */
 	public $cleaner;
 
 	/**
 	 * Shared template vars
-	 * @var ArrayObject
+	 * @var \ArrayObject
 	 */
 	public $tplvars;
 
 	/**
-	 * @var Application\DeskPRO\Templating\Engine
+	 * @var \Application\DeskPRO\Templating\Engine
 	 */
 	public $tpl;
 
 	/**
 	 * Fetch settings
-	 * @var Application\DeskPRO\Settings\Settings
+	 * @var \Application\DeskPRO\Settings\Settings
 	 */
 	public $settings;
 
@@ -106,7 +106,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->apikey = $this->get('deskpro.api.request_key');
 
 		if ($this->apikey) {
-			$this->user = $this->apikey['person'];
+			$this->person = $this->apikey['person'];
+
+			$this->person->loadHelper('Agent');
+			$this->person->loadHelper('AgentTeam');
+			$this->person->loadHelper('AgentPermissions');
+			$this->person->loadHelper('PermissionsManager');
+			$this->person->loadHelper('HelpMessages');
+			$this->person->loadHelper('AgentPrefs');
 		}
 	}
 
@@ -117,7 +124,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if ($this->apikey === null) {
+		if (!$this->apikey) {
 			$response = $this->createResponse('', 401, array(
 				'WWW-Authenticate' => 'Basic realm="API"'
 			));
