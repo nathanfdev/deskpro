@@ -271,6 +271,7 @@ class TriggerExecutor
 		$factory->addGlobalOption('ticket', $this->tracker->getTicket());
 
 		$actions_collection = new ActionsCollection();
+		$set_modifiers = array();
 
 		$stop_actions = false;
 		foreach ($all_triggers as $trigger) {
@@ -289,6 +290,13 @@ class TriggerExecutor
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
+
+					// Saving a copy of the modifiers set so we can apply them to the secondary
+					// collection for agent notifications
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface) {
+						$set_modifiers[] = array('modifier' => $action, 'trigger' => $trigger);
+					}
+
 					if ($action) {
 						$actions_collection->add($action, array('trigger' => $trigger));
 						$this->tracker->recordExtraMulti('trigger', $trigger);
@@ -446,6 +454,12 @@ class TriggerExecutor
 				}
 
 				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done trigger in %.4f seconds', microtime(true)-$trigger_time));
+			}
+
+			foreach ($set_modifiers as $mod) {
+				$trigger = $mod['trigger'];
+				$this->tracker->logMessage("[TriggerExecutor] Applying {$trigger->id} {$trigger->event_trigger} to agent notify collections");
+				$actions_collection->add($mod['modifier'], array('trigger' => $mod['trigger']));
 			}
 
 			$actions_collection->apply($this->tracker, $this->tracker->getTicket(), $person, $this->tracker->getLog());
