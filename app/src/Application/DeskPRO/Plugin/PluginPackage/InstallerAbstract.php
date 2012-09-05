@@ -104,9 +104,7 @@ abstract class InstallerAbstract
 	{
 		$session = $this->controller->session;
 
-		$package_name = $this->plugin_package_name;
-		
-		$session_key = $package_name::getName() . '_install';
+		$session_key = $this->plugin->id . '_install';
 		if (isset($session[$session_key])) {
 			$session_data = $session[$session_key];
 			if (!empty($session_data['insert_settings'])) {

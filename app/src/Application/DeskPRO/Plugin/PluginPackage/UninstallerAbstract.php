@@ -93,8 +93,7 @@ abstract class UninstallerAbstract
 	{
 		$session = $this->controller->session;
 
-		$n = $this->plugin_package_name;
-		$name = $n::getName();
+		$name = $this->plugin->id;
 		$session_key = $name . '_uninstall';
 		if (isset($session[$session_key])) {
 			$session_data = $session[$session_key];
