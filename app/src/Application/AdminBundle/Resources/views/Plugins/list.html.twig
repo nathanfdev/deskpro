@@ -39,9 +39,9 @@
 				value="1"
 				{% if plugin.enabled %}checked="checked"{% endif %}
 			/></td>
-			<td><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.id}) }}">{{plugin.title}} {{plugin.version}}</a></td>
+			<td><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.id}) }}">{{info.title}}</a></td>
 			<td>{{info.developer}}</td>
-			<td>{{plugin.description|raw}}</td>
+			<td>{{info.description|raw}}</td>
 		</tr>
 		{% else %}
 		<tr>
@@ -75,7 +75,7 @@
 	<tbody>
 	{% for plugin in available_plugins %}
 	<tr>
-		<td>{{plugin.title}} {{plugin.version}}</td>
+		<td>{{plugin.title}}</td>
 		<td>{{plugin.developer}}</td>
 		<td>{{plugin.description|raw}}</td>
 		<td style="text-align: right">

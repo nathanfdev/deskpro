@@ -33,7 +33,7 @@
  * @package DeskPRO
  */
 
-namespace HighriseWidget;
+namespace Salesforce;
 
 use Application\DeskPRO\Entity\Plugin;
 use Application\DeskPRO\Plugin\PluginPackage as CorePluginPackage;
@@ -46,59 +46,43 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 	{
 		switch ($action) {
 			case 'call-api':
-				$url = App::getSetting("$plugin->id.api_url");
-				$token = App::getSetting("$plugin->id.api_token");
+				$user = App::getSetting("$plugin->id.api_user");
+				$password = App::getSetting("$plugin->id.api_password");
+				$token = App::getSetting("$plugin->id.api_security_token");
 
-				if (!$url || !$token) {
-					return $controller->createJsonResponse(array('error' => 'API token or URL missing. Please configure the plugin.'));
+				if (!$user || !$password || !$token) {
+					return $controller->createJsonResponse(array('error' => 'API user, password or token missing. Please configure the plugin.'));
 				}
-
-				$parts = parse_url($url);
-				$url = $parts['scheme'] . '://' . $parts['host'];
 
 				$matches = array();
 
 				$email = $controller->in->getString('email');
 				if ($email) {
-					$highrise = new \Orb\Service\Highrise\Highrise($url, $token);
-					$personApi = new \Orb\Service\Highrise\Resource\Person($highrise);
-					$output = $personApi->findPeopleWithCriteria(array('email' => $email));
+					require_once(DP_ROOT . '/vendor/salesforce/SforcePartnerClient.php');
+					$sforce = new \SforcePartnerClient();
+					$sforce->createConnection(DP_ROOT . '/vendor/salesforce/partner.wsdl.xml');
+					$sforce->login($user, $password . $token);
 
-					foreach ($output AS $person) {
-						if (isset($person['first-name'], $person['last-name'])) {
-							$name = $person['first-name'] . ' ' . $person['last-name'];
-						} else if (isset($person['first-name'])) {
-							$name = $person['first-name'];
-						} else if (isset($person['last-name'])) {
-							$name = $person['last-name'];
+					$response = $sforce->query("
+						SELECT Id, FirstName, LastName, Title, Department, Email
+						FROM Contact
+						WHERE Email = '" . addslashes($email) . "'
+					");
+					foreach ($response->records AS $record) {
+						if ($record->fields->Title && $record->fields->Department) {
+							$departmentTitle = $record->fields->Department . ', ' . $record->fields->Title;
 						} else {
-							$name = 'Unknown';
-						}
-
-						if (isset($person['contact-data']['email-addresses'][0]['address'])) {
-							$email = $person['contact-data']['email-addresses'][0]['address'];
-						} else {
-							$email = 'Unknown';
-						}
-
-						if (isset($person['title'], $person['company-name'])) {
-							$companyTitle = $person['title'] . ' @ ' . $person['company-name'];
-						} else if (isset($person['title'])) {
-							$companyTitle = $person['title'];
-						} else if (isset($person['company-name'])) {
-							$companyTitle = $person['company-name'];
-						} else {
-							$companyTitle = false;
+							$departmentTitle = $record->fields->Department . $record->fields->Title;
 						}
 
 						$matches[] = array(
-							'id' => $person['id'],
-							'name' => $name,
-							'email' => $email,
-							'title' => isset($person['title']) ? $person['title'] : false,
-							'company' => isset($person['company-name']) ? $person['company-name'] : false,
-							'companyTitle' => $companyTitle,
-							'profile' => $url . '/people/' . $person['id']
+							'id' => $record->Id,
+							'name' => $record->fields->FirstName . ' ' . $record->fields->LastName,
+							'email' => $record->fields->Email,
+							'title' => $record->fields->Title,
+							'department' => $record->fields->Department,
+							'departmentTitle' => $departmentTitle,
+							'profile' => 'https://na8.salesforce.com/' . $record->Id
 						);
 					}
 				}
@@ -127,7 +111,7 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 	 */
 	public function getName()
 	{
-		return 'HighriseWidget';
+		return 'Salesforce';
 	}
 
 
@@ -138,12 +122,12 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 	 */
 	public function getTitle()
 	{
-		return "Highrise Widget";
+		return "Salesforce";
 	}
 
 	public function getDescription()
 	{
-		return 'Integrates widgets to the ticket and profile pages in the agent interface to show information from Highrise.';
+		return 'Integrates widgets to the ticket and profile pages in the agent interface to show information from Salesforce.';
 	}
 
 	public function getDeveloper()
@@ -159,9 +143,9 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 		$showProfile = false;
 
 		foreach ($widgets AS $widget) {
-			if ($widget->unique_key == 'HighriseWidget-ticket') {
+			if ($widget->unique_key == 'Salesforce-ticket') {
 				$showTicket = $widget->enabled;
-			} else if ($widget->unique_key == 'HighriseWidget-profile') {
+			} else if ($widget->unique_key == 'Salesforce-profile') {
 				$showProfile = $widget->enabled;
 			}
 		}
@@ -184,10 +168,10 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 
 		$widgets = App::getEntityRepository('DeskPRO:Widget')->findBy(array('plugin' => $plugin));
 		foreach ($widgets AS $widget) {
-			if ($widget->unique_key == 'HighriseWidget-ticket') {
+			if ($widget->unique_key == 'Salesforce-ticket') {
 				$widget->enabled = $showTicket;
 				$orm->persist($widget);
-			} else if ($widget->unique_key == 'HighriseWidget-profile') {
+			} else if ($widget->unique_key == 'Salesforce-profile') {
 				$widget->enabled = $showProfile;
 				$orm->persist($widget);
 			}
