@@ -417,4 +417,44 @@ class Web
 
 		return $ret;
 	}
+
+
+	/**
+	 * Check if a useragent is a known bot
+	 *
+	 * @param string $useragent The user agent to check or null to use the current request
+	 * @return bool
+	 */
+	public static function isBotUseragent($useragent = null)
+	{
+		if ($useragent === null) {
+			if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+				return false;
+			}
+
+			$useragent = $_SERVER['HTTP_USER_AGENT'];
+		}
+
+		$bot_strings = array(
+			'AdsBot-Google', 'Googlebot-Image', 'Googlebot-Mobile', 'Googlebot',
+			'Yahoo! Slurp', 'Yahoo! Slurp China', 'Yahoo-MMCrawler',
+			'Openbot',
+			'msnbot', 'msnbot-NewsBlogs',
+			'ia_archiver',
+			'Lycos',
+			'Scooter',
+			'AltaVista',
+			'Ask Jeeves/Teoma', 'Teoma',
+			'Gigabot',
+			'bingbot'
+		);
+
+		foreach ($bot_strings as $bot) {
+			if (strpos($useragent, $bot) !== false) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

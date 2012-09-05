@@ -167,4 +167,20 @@ class Session extends AbstractEntityRepository
 		  ->setParameter(2, $datecut)
 		  ->getOneOrNullResult();
 	}
+
+
+	/**
+	 * Count online users
+	 *
+	 * @return int
+	 */
+	public function countOnlineUsers()
+	{
+		return $this->_em->getConnection()->fetchColumn("
+			SELECT COUNT(DISTINCT sessions.visitor_id)
+			FROM sessions
+			LEFT JOIN people ON (people.id = sessions.person_id)
+			WHERE sessions.date_last > ? AND sessions.is_helpdesk = 1 AND (people.id IS NULL OR people.is_agent = 0) AND sessions.is_bot = 0
+		", array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+	}
 }

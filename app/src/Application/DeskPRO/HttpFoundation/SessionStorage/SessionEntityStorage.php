@@ -151,6 +151,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 
 		if (!$session OR $session['date_last']->getTimestamp() < $cutoff) {
 			$session = new \Application\DeskPRO\Entity\Session();
+
+			if (\Orb\Util\Web::isBotUseragent()) {
+				$session->is_bot = true;
+			}
+
 			$this->em->persist($session);
 			$this->em->flush();
 

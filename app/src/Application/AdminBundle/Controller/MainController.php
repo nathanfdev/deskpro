@@ -52,12 +52,7 @@ class MainController extends AbstractController
 			$online_agents[] = $this->em->getRepository('DeskPRO:Person')->getAgent($aid);
 		}
 
-		$count_online_users = $this->db->fetchColumn("
-			SELECT COUNT(DISTINCT sessions.visitor_id)
-			FROM sessions
-			LEFT JOIN people ON (people.id = sessions.person_id)
-			WHERE sessions.date_last > '2012-09-04 10:45:09' AND sessions.is_helpdesk = 1 AND (people.id IS NULL OR people.is_agent = 0)
-		", array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+		$count_online_users = $this->em->getRepository('DeskPRO:Session')->countOnlineUsers();
 
 		$stats = array();
 		$today = $this->person->getDateTime();
