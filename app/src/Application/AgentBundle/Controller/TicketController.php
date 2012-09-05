@@ -1308,14 +1308,14 @@ class TicketController extends AbstractController
 
 				$ticket->getTicketLogger()->done();
 
-				$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
-
 				$this->em->commit();
 			} catch (\Exception $e) {
 				$this->em->rollback();
 				throw $e;
 			}
 		}
+
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		$data = array('data' => array());
 		if (isset($result['new_reply'])) {
