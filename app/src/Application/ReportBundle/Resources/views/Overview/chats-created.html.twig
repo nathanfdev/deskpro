@@ -40,7 +40,7 @@
 	</header>
 	<article>
 		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
-		{% if data.values[id] %}
+		{% if data.values %}
 			<table class="stat-table" width="100%">
 				{% for id, title in data.titles %}
 					{% if data.values[id] %}
