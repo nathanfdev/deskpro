@@ -152,7 +152,9 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 			}
 			foreach ($parts as $part) {
-				$message->addCc($part['email_address'], $part->person->getDisplayName());
+				if ($part['email_address']) {
+					$message->addCc($part['email_address'], $part->person->getDisplayName());
+				}
 			}
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
