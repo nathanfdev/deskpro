@@ -487,7 +487,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				this.wrapper.removeClass('loading');
 
 				this.close();
-				this.resetForm();
 
 				this.fireEvent('postApply', [this, html, formDataInfo]);
 			}
@@ -617,26 +616,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			$('.preview-edit', row).remove();
 			$('.preview-edit-hide', row).show().removeClass('preview-edit-hide');
 		}
-	},
-
-
-	/**
-	 * Resets the form back to nothing
-	 */
-	resetForm: function() {
-		$('input, select, textarea', this.wrapper).filter('[name^="actions["]').each(function() {
-			if ($(this).is(':radio, :checkbox')) {
-				$(this).attr('checked', false);
-			} else if ($(this).is('select')) {
-				$('option', this).attr('selected', false).first().selected('true');
-			} else if ($(this).is('input, textarea')) {
-				$(this).val('');
-			}
-		});
-
-		$('button.radio.on', this.wrapper).removeClass('on');
-
-		this.updatePositions();
 	},
 
 
