@@ -276,8 +276,16 @@ class Html extends AbstractRenderer
 	{
 		$prepared = $this->_prepareMatrixTable($rows);
 
+		$select = $this->_handler->getSelectColumns();
+		$first = reset($select);
+		if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
+			$totalType = $first['renderer'];
+		} else {
+			$totalType = false;
+		}
+
 		return $this->_renderTableWrapper(
-			$this->_renderMatrixHeader($prepared) . $this->_renderMatrixBody($prepared),
+			$this->_renderMatrixHeader($prepared, $totalType) . $this->_renderMatrixBody($prepared, $totalType),
 			'matrix'
 		);
 	}
@@ -286,10 +294,11 @@ class Html extends AbstractRenderer
 	 * Renders the header rows of a matrix table.
 	 *
 	 * @param array $prepared Prepared matrix data (see _prepareMatrixTable).
+	 * @param boolean|string $totalType If non empty, shows a total for each row/column
 	 *
 	 * @return string
 	 */
-	protected function _renderMatrixHeader(array $prepared)
+	protected function _renderMatrixHeader(array $prepared, $totalType = false)
 	{
 		$rowSkipCount = count($this->_handler->getGroupXColumns());
 		$colSkipCount = count($this->_handler->getGroupYColumns());
@@ -300,10 +309,16 @@ class Html extends AbstractRenderer
 
 		$output = array();
 		foreach ($rows AS $depth => $row) {
-			if ($depth === 0 && $colSkipCount) {
+			if ($depth === 0) {
 				$colSpan = ($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '');
 				$rowSpan = ($rowSkipCount > 1 ? " rowspan=\"$rowSkipCount\"" : '');
-				$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
+
+				if ($colSkipCount) {
+					$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
+				}
+				if ($totalType) {
+					$row .= "<th class=\"column-total\"$rowSpan>Total</th>";
+				}
 			}
 			$output[] = "<tr class=\"row-header\">$row</tr>";
 		}
@@ -374,10 +389,11 @@ class Html extends AbstractRenderer
 	 * Renders the body of a matrix table.
 	 *
 	 * @param array $prepared Prepared matrix data
+	 * @param boolean|string $totalType If non empty, shows a total for each row/column
 	 *
 	 * @return string
 	 */
-	protected function _renderMatrixBody(array $prepared)
+	protected function _renderMatrixBody(array $prepared, $totalType = false)
 	{
 		if (!$prepared['yDistinct']) {
 			// no Y grouping - that means we can have one row so fake it
@@ -390,10 +406,12 @@ class Html extends AbstractRenderer
 		$lookup = $prepared['lookup'];
 
 		$rows = array();
+		$columnTotals = array();
 		$rowCount = 0;
 
 		foreach ($rowKeys AS $yPath => $html) {
 			$cells = array();
+			$rowTotal = 0;
 			foreach ($matrixPaths AS $xPath) {
 				if (isset($lookup[$yPath][$xPath])) {
 					$value = $lookup[$yPath][$xPath];
@@ -401,12 +419,38 @@ class Html extends AbstractRenderer
 					$value = '';
 				}
 				$cells[] = "<td>$value</td>";
+
+				if ($totalType) {
+					$rowTotal += $value;
+					if (!isset($columnTotals[$xPath])) {
+						$columnTotals[$xPath] = 0;
+					}
+					$columnTotals[$xPath] += $value;
+				}
+			}
+
+			if ($totalType) {
+				$cells[] = '<td class="column-total">' . $this->_valueRenderer->renderValue($rowTotal, $totalType) . '</td>';
 			}
 
 			$rowCount++;
 			$class = ($rowCount % 2 ? 'odd' : 'even');
 
 			$rows[] = '<tr class="row-body ' . $class . '">' . $html . implode('', $cells) . '</tr>';
+		}
+
+		if ($totalType) {
+			$cells = array();
+			$cells[] = '<th colspan="' . count($this->_handler->getGroupYColumns()) . '">Total</th>';
+			foreach ($columnTotals AS $value) {
+				$cells[] = '<td>' . $this->_valueRenderer->renderValue($value, $totalType) . '</td>';
+			}
+			$cells[] = '<td class="column-total">' . $this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType) . '</td>';
+
+			$rowCount++;
+			$class = ($rowCount % 2 ? 'odd' : 'even');
+
+			$rows[] = '<tr class="row-body ' . $class . ' total-row">' . implode('', $cells) . '</tr>';
 		}
 
 		if ($rows) {
