@@ -125,9 +125,13 @@ class ReportBuilder extends AbstractEntityRepository
 	public function getBuiltInCategories()
 	{
 		return array(
-			'person' => 'People',
 			'ticket' => 'Tickets',
-			'' => 'Other',
+			'chat' => 'Chats',
+			'idea' => 'Ideas',
+			'person' => 'People & Organizations',
+			'kb' => 'Knowledgebase',
+			'news' => 'News',
+			'files' => 'Files',
 		);
 	}
 

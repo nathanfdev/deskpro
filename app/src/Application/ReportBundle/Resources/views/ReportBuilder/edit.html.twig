@@ -47,6 +47,7 @@
 				</div>
 				<div class="dp-form-input">
 					<select name="category">
+						<option value="">&nbsp;</option>
 					{% for categoryId, categoryName in builtInCategories %}
 						<option value="{{categoryId}}"{{ categoryId == report.category ? ' selected="selected"' : '' }}
 							>{{categoryName}}</option>
