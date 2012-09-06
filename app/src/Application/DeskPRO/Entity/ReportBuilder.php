@@ -100,6 +100,11 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		$this->favorited_by = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getTitle($groupable = true)
+	{
+		return ($groupable ? $this->title : preg_replace('/\[(.+?)\]/', '$1', $this->title));
+	}
+
 	/**
 	 * Gets the DPQL parts for this report's query
 	 *

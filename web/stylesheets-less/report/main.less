@@ -981,6 +981,13 @@ section.coming-soon,
 	}
 
 	ul.collapsed { display: none; }
+
+	.report-list-groupable .report-list-selector {
+		background: url(../../images/agent/button-downarrow.png) no-repeat 100% 50%;
+		padding-right: 10px;
+		margin-right: 2px;
+		text-decoration: underline;
+	}
 }
 
 .report-list-dragger {
@@ -989,6 +996,20 @@ section.coming-soon,
 	z-index: 1000;
 	border-left: 1px solid #DEDEDE;
 	cursor: w-resize;
+}
+
+.report-list-popup {
+	background: white;
+	border: 1px solid #DEDEDE;
+	z-index: 10000;
+	position: absolute;
+	display: none;
+
+	li {
+		padding: 3px 5px;
+		cursor: pointer;
+		&:hover { background: #EEEEEE; }
+	}
 }
 
 #report-page-body {

@@ -7,7 +7,7 @@
 {% block html_head %}
 {{ dp_asset_html('report_builder') }}
 {% endblock %}
-{% macro report_list_item(report) %}
+{% macro report_list_item(report, groupable) %}
 	<li>
 		<a href="{{ path('report_builder_favorite', {
 			'report_builder_id': report.id,
@@ -18,7 +18,7 @@
 		   data-report-id="{{ report.id }}"
 		   title="Toggle favorite status"
 		>Toggle favorite status</a>
-		<a rel="report-page-body" href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}" title="{{ report.title }}">{{ report.title }}</a>
+		<a rel="report-page-body" class="report-list-title" href="{{ path('report_builder_report', {'report_builder_id': report.id}) }}" title="{{ report.getTitle(false) }}">{{ report.getTitle(groupable) }}</a>
 	</li>
 {% endmacro %}
 {% block page %}
@@ -35,18 +35,18 @@
 
 		<div id="report-favorites" {{ favoriteReports ? '' : 'style="display: none"'}}>
 			<h3>Favorite</h3>
-			<ul>
+			<ul class="report-list-ungroupable">
 			{% for report in favoriteReports %}
-				{{ _self.report_list_item(report) }}
+				{{ _self.report_list_item(report, false) }}
 			{% endfor %}
 			</ul>
 		</div>
 
 		{% if customReports %}
 		<h3>Custom</h3>
-		<ul>
+		<ul class="report-list-groupable">
 		{% for report in customReports %}
-			{{ _self.report_list_item(report) }}
+			{{ _self.report_list_item(report, true) }}
 		{% endfor %}
 		</ul>
 		{% endif %}
@@ -58,9 +58,9 @@
 				<li><h4 data-element-handler="DeskPRO.Report.ElementHandler.Builder.ListCollapse"
 					data-cookie="dp_report_collapsed"
 					><span></span>{{ categoryName }}</h4>
-					<ul data-collapse-id="{{categoryName}}">
+					<ul data-collapse-id="{{categoryName}}" class="report-list-groupable">
 					{% for report in reports %}
-						{{ _self.report_list_item(report) }}
+						{{ _self.report_list_item(report, true) }}
 					{% endfor %}
 					</ul>
 				</li>
