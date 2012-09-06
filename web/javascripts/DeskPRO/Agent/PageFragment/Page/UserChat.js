@@ -462,8 +462,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		if (is_html) {
+			var titleMsg = 'New chat message';
 			$('.prop-msg', row).html(msg);
 		} else {
+			var titleMsg = msg;
 			msg = Orb.escapeHtml(msg);
 			msg = DeskPRO_Window.util.linkUrls(msg);
 
@@ -490,6 +492,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		if (notify) {
 			this.alertTab();
+
+			DeskPRO_Window.faviconBadge.enableCrazyMode(titleMsg);
 
 			// Add 'pop' sound if its not us
 			var alertEl = $.tmpl('user_chat_newmsg_sound');

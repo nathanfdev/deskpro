@@ -5,19 +5,27 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
+		var self = this;
 		this.options = {};
 
-		this.options.strokeColor = 'rgba(252,219,117,0.85)';
-		this.options.color = '#000000';
+		this.origWindowTitle = document.title;
 
-		this.options.strokeColorAlt = 'rgba(255,255,255,0.85)';
-		this.options.colorAlt = '#000000';
+		this.options.strokeColor = 'rgb(255,0,0)';
+		this.options.color = '#FFFFFF';
+
+		this.options.strokeColorAlt = 'rgb(255,255,255)';
+		this.options.colorAlt = '#FFFFFF';
+
+		$(document).bind('windowshow', this.disableCrazyMode.bind(this));
+		$(window).bind('mousemove', this.disableCrazyMode.bind(this));
+		$(window).bind('keypress', this.disableCrazyMode.bind(this));
 
 		this.setOptions(options);
 
 		this.animateTimeout = null;
 		this.animateCount = 0;
 		this.crazyMode = false;
+		this.crazyTitle = null;
 		this.lastNum = 0;
 	},
 
@@ -33,13 +41,21 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		$(window).unbind('keypress.faviconbadge');
 	},
 
-	enableCrazyMode: function() {
+	enableCrazyMode: function(title) {
+
+		if ($('html').hasClass('window-active')) {
+			return;
+		}
+
+		this.crazyTitle = title || null;
 		this.crazyMode = true;
 		this.updateBadge(this.lastNum, true);
 	},
 
 	disableCrazyMode: function() {
 		this.crazyMode = false;
+		this.crazyTitle = null;
+		document.title = this.origWindowTitle;
 		this.updateBadge(this.lastNum, false);
 	},
 
@@ -76,11 +92,17 @@ DeskPRO.FaviconBadge = new Orb.Class({
 							color: '#000000',
 							stroke: '#FFFFFF'
 						});
+						if (self.crazyTitle) {
+							document.title = self.origWindowTitle;
+						}
 					} else {
 						Notificon('◉ ', {
 							color: '#FF0000',
 							stroke: '#FFFFFF'
 						});
+						if (self.crazyTitle) {
+							document.title = self.crazyTitle;
+						}
 					}
 				} else {
 					if (self.animateCount % 2 == 0) {
@@ -96,10 +118,6 @@ DeskPRO.FaviconBadge = new Orb.Class({
 					}
 				}
 			}, 800);
-
-			$(document).bind('windowshow.faviconbadge', this.clearAnimate.bind(this));
-			$(window).bind('mousemove.faviconbadge', this.clearAnimate.bind(this));
-			$(window).bind('keypress.faviconbadge', this.clearAnimate.bind(this));
 		}
 	}
 });

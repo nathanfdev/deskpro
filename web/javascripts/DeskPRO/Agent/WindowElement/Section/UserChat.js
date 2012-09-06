@@ -442,12 +442,18 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
-		DeskPRO_Window.faviconBadge.enableCrazyMode();
-
 		var conversation_id = data.conversation_id;
 		var alertEl = $(data.html);
 		alertEl.appendTo('body');
 		DeskPRO_Window.handleSoundElements(alertEl);
+
+		var titles = this.getNewChatTitles();
+		if (titles.length == 1) {
+			var winTitle = 'New chat: ' + titles[0];
+		} else {
+			var winTitle = titles.length + ' New chats: ' + titles.join(', ');
+		}
+		DeskPRO_Window.faviconBadge.enableCrazyMode(winTitle);
 
 		var audio = $('audio', alertEl).get(0);
 		var self = this;
@@ -486,6 +492,15 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			alertEl.remove();
 			window.clearTimeout(waitTimer);
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+	},
+
+	getNewChatTitles: function() {
+		var titles = [];
+		$('body > section.new-user-chat-alert').each(function() {
+			titles.push($(this).find('span.label-by-name').text().trim());
+		});
+
+		return titles;
 	},
 
 	isDepAllowed: function(id) {
