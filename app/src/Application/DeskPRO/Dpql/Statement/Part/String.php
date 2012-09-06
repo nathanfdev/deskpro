@@ -72,7 +72,7 @@ class String extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		return new Prepared($select->quoteForSql($this->string), $this->string, 'string');
+		return new Prepared($select->quoteForSql($this->string), $this->string, false, 'string');
 	}
 
 	/**

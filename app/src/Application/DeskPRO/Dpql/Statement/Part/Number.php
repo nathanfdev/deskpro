@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 
 /**
  * Represents a number in DPQL.
@@ -72,6 +73,10 @@ class Number extends AbstractPart
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
+		if (!$stack && $section == 'group') {
+			throw new Exception('Numbers may not be referenced directly at the root of the GROUP BY section.');
+		}
+
 		$value = strval($this->number + 0);
 		return new Prepared($value, $value, false, 'number');
 	}
