@@ -1,11 +1,18 @@
 {% set this_page = 'report_builder' %}
 {% extends 'ReportBundle::layout.html.twig' %}
+{% block html_head %}
+{{ dp_asset_html('report_builder') }}
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" >
+	function _page_exec() {
+		window.DeskPRO_Page = new DeskPRO.Report.PageHandler.ReportBuilder();
+	}
+</script>
+{% endblock %}
 {% block nav_block %}
 {% endblock %}
 {% block pagebar %}
-{% endblock %}
-{% block html_head %}
-{{ dp_asset_html('report_builder') }}
 {% endblock %}
 {% macro report_list_item(report, groupable) %}
 	<li>
@@ -69,7 +76,9 @@
 		{% endif %}
 	</div>
 	<div id="report-page-body">
+		<!--dp:report-page-body-->
 		{% block inner_page %}{% endblock %}
+		<!--/dp:report-page-body-->
 	</div>
 	<div id="report-failed-block">
 		<div class="query-error">

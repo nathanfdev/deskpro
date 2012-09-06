@@ -455,6 +455,8 @@ $CONFIG['report_builder'] = array(
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/BuilderTabs.js',
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/ListCollapse.js',
 		'javascripts/DeskPRO/Report/ElementHandler/Builder/ReportList.js',
+		'javascripts/DeskPRO/Report/ElementHandler/Builder/ReportList.js',
+		'javascripts/DeskPRO/Report/PageHandler/ReportBuilder.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.scrollTo.js',
 		'vendor/jquery/jquery.textarea-expander.js',
