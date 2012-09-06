@@ -78,6 +78,7 @@ class X extends AbstractFunc
 			if ($groupBy->hasValue()) {
 				$printId = $select->addSelectField($groupBy->printed());
 				$select->addGroupBy($groupBy->sql());
+				$statement->addDefaultOrder($groupBy->printed());
 
 				if ($groupBy->printed() === $groupBy->sql()) {
 					$groupId = $printId;

@@ -454,6 +454,7 @@ class Display
 			if ($groupBy->hasValue()) {
 				$printId = $sql->addSelectField($groupBy->printed());
 				$sql->addGroupBy($groupBy->sql());
+				$this->addDefaultOrder($groupBy->printed());
 
 				if ($groupBy->printed() === $groupBy->sql()) {
 					$groupId = $printId;
@@ -463,6 +464,23 @@ class Display
 
 				$this->_resultHandler->addGroupYColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
 			}
+		}
+	}
+
+	/**
+	 * Adds an order condition if there are no explicitly entered orders.
+	 *
+	 * @param string $sql
+	 *
+	 * @return boolean
+	 */
+	public function addDefaultOrder($sql)
+	{
+		if (!$this->_orderBy) {
+			$this->_sql->addOrderBy($sql);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -483,7 +501,7 @@ class Display
 
 			$orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
 			if ($orderSql->hasValue()) {
-				$sql->addOrderBy($orderSql->sql() . $direction);
+				$sql->addOrderBy($orderSql->printed() . $direction);
 			}
 		}
 	}

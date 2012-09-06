@@ -60,6 +60,7 @@ class Column extends AbstractPart
 	 * Maps a table name to 2 values:
 	 *  - 0: the unique ID field (usually a number)
 	 *  - 1: the printable field (name, subject, etc)
+	 *  - 2: the type of link (if linkable)
 	 *
 	 * @var array
 	 */
@@ -260,11 +261,24 @@ class Column extends AbstractPart
 		if ($sql === false) {
 			$assocTable = $repository->getTableName();
 			$name = $part;
-			if (isset(self::$_tableResolver[$assocTable])) {
+			if ($assocTable == 'departments') {
+				$call = new FunctionCall('if', array(
+					new Column(array_merge($this->parts, array('parent', 'id'))),
+					new FunctionCall('concat', array(
+						new Column(array_merge($this->parts, array('parent', 'title'))),
+						new String(' > '),
+						new Column(array_merge($this->parts, array('title'))),
+					)),
+					new Column(array_merge($this->parts, array('title')))
+				));
+				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+				return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
+			} else if (isset(self::$_tableResolver[$assocTable])) {
 				$resolver = self::$_tableResolver[$assocTable];
 
 				$parent = reset($stack);
-				if ($stack) {
+				if ($stack || in_array($section, array('order'))) {
 					// if we have a parent of any sort, act on the printed value
 					$sql = "`$sqlTable`.`$resolver[1]`";
 				} else {

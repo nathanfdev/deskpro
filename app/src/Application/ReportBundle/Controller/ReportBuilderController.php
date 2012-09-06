@@ -48,8 +48,7 @@ class ReportBuilderController extends AbstractController
 			return $this->render('ReportBundle:ReportBuilder:index-disabled.html.twig', array());
 		}
 
-		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams(array(
-		)));
+		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams());
 	}
 
 	public function queryAction()
@@ -469,7 +468,7 @@ class ReportBuilderController extends AbstractController
 		return $report;
 	}
 
-	public function mergeReportBuilderLayoutParams(array $params)
+	public function mergeReportBuilderLayoutParams(array $params = array())
 	{
 		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
