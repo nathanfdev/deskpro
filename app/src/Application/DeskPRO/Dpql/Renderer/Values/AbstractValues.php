@@ -93,7 +93,8 @@ abstract class AbstractValues
 			case 'numberraw';
 				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
 					// float
-					$decimals = min(4, strlen($match[2]));
+					//$decimals = min(4, strlen($match[2]));
+					$decimals = 0;
 				} else {
 					// integer
 					$decimals = 0;
