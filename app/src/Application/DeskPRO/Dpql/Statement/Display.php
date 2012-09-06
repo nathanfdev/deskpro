@@ -102,6 +102,13 @@ class Display
 	protected $_limitAmount = null;
 
 	/**
+	 * An implicit limit on number of rows returned. If specified, limits over this are ignored.
+	 *
+	 * @var int
+	 */
+	protected $_implicitLimit = 2500;
+
+	/**
 	 * Number of rows to offset results by. 0 or null for no offset.
 	 *
 	 * @var integer|null
@@ -358,7 +365,20 @@ class Display
 		$this->_prepareGroupBy();
 		$this->_prepareOrderBy();
 
-		$this->_sql->setLimit($this->_limitAmount, $this->_limitOffset);
+		$this->_setSqlLimit();
+	}
+
+	/**
+	 * Sets the SQL limit based on the implicit and explicit amounts.
+	 */
+	protected function _setSqlLimit()
+	{
+		if ($this->_limitAmount) {
+			$limit = ($this->_implicitLimit ? min($this->_implicitLimit, $this->_limitAmount) : $this->_limitAmount);
+		} else {
+			$limit = $this->_implicitLimit;
+		}
+		$this->_sql->setLimit($limit, $this->_limitOffset);
 	}
 
 	/**
@@ -759,11 +779,20 @@ class Display
 	}
 
 	/**
-	 * @return int|null
+	 * @return integer|null
 	 */
 	public function getLimitAmount()
 	{
 		return $this->_limitAmount;
+	}
+
+	/**
+	 * @param integer $amount
+	 */
+	public function setImplicitLimit($amount)
+	{
+		$this->_implicitLimit = $amount;
+		$this->_setSqlLimit();
 	}
 
 	/**

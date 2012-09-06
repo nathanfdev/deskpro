@@ -434,7 +434,9 @@ class ReportBuilderController extends AbstractController
 	protected function _getReportResponseForType($type, $query, $title)
 	{
 		$compiler = new Compiler();
-		$renderer = $compiler->compile($query)->getRenderer($type);
+		$statement = $compiler->compile($query);
+		$statement->setImplicitLimit(0);
+		$renderer = $statement->getRenderer($type);
 		$output = $renderer->render();
 
 		$response = $this->response;
