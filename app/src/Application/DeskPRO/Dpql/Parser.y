@@ -221,7 +221,7 @@ split_clause ::= .
 
 
 
-group_clause(res) ::= GROUP BY expression(A) comma_expressions_opt(B) .
+group_clause(res) ::= GROUP BY group_expression(A) group_expressions_extra(B) .
 {
 	res = array(A);
 	if (B) {
@@ -229,6 +229,29 @@ group_clause(res) ::= GROUP BY expression(A) comma_expressions_opt(B) .
 	}
 }
 group_clause ::= .
+
+
+group_expressions_extra(res) ::= group_expressions_extra(A) COMMA group_expression(B) .
+{
+	if (!A) {
+		res = array();
+	} else {
+		res = A;
+	}
+	res[] = B;
+}
+group_expressions_extra ::= .
+
+
+
+group_expression(res) ::= expression(A) alias_optional(B) .
+{
+	if (B) {
+		res = new Statement\Part\Alias(A, B);
+	} else {
+		res = A;
+	}
+}
 
 
 
@@ -265,6 +288,8 @@ direction_opt(res) ::= DESC .
 }
 
 direction_opt ::= .
+
+
 
 comma_order_expression_opt(res) ::= comma_order_expression_opt(A) COMMA order_expression(B) .
 {

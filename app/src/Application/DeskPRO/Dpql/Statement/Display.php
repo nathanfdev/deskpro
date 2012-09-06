@@ -360,9 +360,9 @@ class Display
 		}
 
 		$this->_prepareSelect();
+		$this->_prepareGroupBy(); // prepare early as it may have aliases
 		$this->_prepareWhere();
 		$this->_prepareSplitBy();
-		$this->_prepareGroupBy();
 		$this->_prepareOrderBy();
 
 		$this->_setSqlLimit();
@@ -432,7 +432,6 @@ class Display
 
 		$splitSql = new Dpql\SqlSelect();
 		$this->_splitSql = $splitSql;
-		$haveSplit = false;
 
 		foreach ($this->_splitBy AS $group) {
 			$groupBy = $group->prepare($this, 'split', array(), $this->_sql, $this->_resultHandler);
@@ -443,8 +442,6 @@ class Display
 
 				$id = $splitSql->addSelectField($groupBy->printed());
 				$this->_resultHandler->addSplitColumn($id, $groupBy->renderer());
-
-				$haveSplit = true;
 			}
 		}
 
@@ -470,9 +467,16 @@ class Display
 		$sql = $this->_sql;
 
 		foreach ($this->_groupBy AS $group) {
+			if ($group instanceof Part\Alias) {
+				$alias = $group->alias;
+				$group = $group->value;
+			} else {
+				$alias = false;
+			}
+
 			$groupBy = $group->prepare($this, 'group', array(), $sql, $this->_resultHandler);
 			if ($groupBy->hasValue()) {
-				$printId = $sql->addSelectField($groupBy->printed());
+				$printId = $this->addSqlSelectField($groupBy->printed(), $alias);
 				$sql->addGroupBy($groupBy->sql());
 				$this->addDefaultOrder($groupBy->printed());
 
@@ -482,7 +486,8 @@ class Display
 					$groupId = $sql->addSelectField($groupBy->sql());
 				}
 
-				$this->_resultHandler->addGroupYColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
+				$resultTitle = ($alias !== false ? $alias : $groupBy->name());
+				$this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $groupBy->renderer());
 			}
 		}
 	}

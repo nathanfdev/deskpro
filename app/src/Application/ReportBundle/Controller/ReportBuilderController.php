@@ -242,6 +242,10 @@ class ReportBuilderController extends AbstractController
 			$parts = $this->_getDpqlPartsForInput($statement);
 		}
 
+		if (!$parts && $query) {
+			$inputType = 'query';
+		}
+
 		return $this->render('ReportBundle:ReportBuilder:report.html.twig', $this->mergeReportBuilderLayoutParams(array(
 			'report' => $report,
 			'run' => $run,
