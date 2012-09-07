@@ -171,7 +171,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader);
 		function updateFields() {
-			$('.ticket-field', self.wrapper).hide();
+			$('.ticket-field', self.getEl('fields_container')).hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
 
 			Object.each(fieldDisplay, function(fields, section) {
@@ -599,11 +599,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
-		this.getEl('message').css('height', Math.max(h - 500, 200));
+		this.getEl('message').css('height', 300);
 	},
 
 	loadSnippetsViewer: function() {
-
+		var self = this;
 		if (this.snippetsViewer) {
 			this.snippetsViewer.destroy();
 		}

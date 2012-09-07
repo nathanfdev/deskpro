@@ -103,17 +103,18 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section class="ticketreply">
 		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-				<td>
-					<label>Department</label>
-					{% include 'AgentBundle:Common:select-department.html.twig' with {
-						'name': "newticket[department_id]",
-						'id': baseId ~ '_dep',
-						'departments': ticket_options.departments_hierarchy
-					} %}
-				</td>
-				<td>
-			</table>
+			<div class="field-holders">
+				<div class="ticket-field">
+					<div class="title">Department</div>
+					<div class="content">
+						{% include 'AgentBundle:Common:select-department.html.twig' with {
+							'name': "newticket[department_id]",
+							'id': baseId ~ '_dep',
+							'departments': ticket_options.departments_hierarchy
+						} %}
+					</div>
+				</div>
+			</div>
 
 			<div id="{{baseId}}_fields_container" class="field-holders">
 				{% if app.getSetting('core.use_ticket_category') %}
