@@ -1339,13 +1339,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return false;
 		}
 
-		$lock_timeout = date_create('-' . App::getSetting('core_tickets.lock_timeout') . ' seconds');
-
-		// Timed out
-		if ($this->date_locked < $lock_timeout) {
-			return false;
-		}
-
 		if ($current_agent === null) {
 			$current_agent = App::getCurrentPerson();
 		}

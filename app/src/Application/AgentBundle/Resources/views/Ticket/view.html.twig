@@ -25,6 +25,11 @@ pageMeta.person_name  = {{ ticket.person.display_name|json_encode|raw }};
 pageMeta.ticket = {{ ticket_api|json_encode|raw }};
 
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
+{% if ticket.isLocked(app.user) %}
+	pageMeta.isLocked = true;
+{% else %}
+	pageMeta.isLocked = true;
+{% endif %}
 
 {% if ticket.person.organization %}
 	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
@@ -51,7 +56,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<button class="cancel" id="macro_cancel_btn">{{ phrase('agent.general.cancel') }}</button>
 </div>
 
-<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
@@ -143,85 +148,96 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</header>
 	<section id="{{baseId}}_headerbox_container">
 		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-				<td>
-					<label>Department</label>
-					{% include 'AgentBundle:Common:select-department.html.twig' with {
-						'name': "department_id",
-						'class': department_id,
-						'selected': ticket.department.id|default(0),
-						'id': baseId ~ '_department_id',
-						'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets')
-					} %}
-				</td>
-				<td>
-					<label>Status</label>
-					<select name="status_code" class="status_code" id="{{baseId}}_status_code">
-						<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
-						<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
-						<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
-						<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Closed</option>
-					</select>
-				</td>
-				<td>
-					<label>Urgency</label>
-					<select name="urgency" class="urgency" id="{{baseId}}_urgency">
-						{% for i in 1..10 %}
-							<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
-						{% endfor %}
-					</select>
-				</td>
-				<td>
-					<label>Your Flag</label>
-					<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons">
-						<option
-							value=""
-							data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
-						>None</option>
-						{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
-							<option
-								value="{{color}}"
-								{% if ticket_flagged == color %}selected="selected"{% endif %}
-								data-icon="{{ asset('images/agent/icons/flag-' ~ color ~ '.png' ) }}"
-							>{{ flag.flag_name(color) }}</option>
-						{% endfor %}
-					</select>
-				</td>
-				<td class="dates" nowrap="nowrap">
-					<label>Dates &amp; Times</label>
-					&middot; Created: <time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time><br />
-					{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
-						&middot; Waiting: <time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time><br />
-					{% endif %}
-					&middot; Waiting Total: <time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
-				</td>
-			</tr></table>
-			<div class="sep">-</div>
-			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-				<td>
-					<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-					<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-					{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
-					<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
-					{% if ticket_perms.delete %}
-						{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
-							<a class="clean-white arrow menu-fitted" id="{{baseId}}_remove_menu_trigger"><span>Remove</span><em></em></a>
+			<div style="position:relative;">
+				<table cellspacing="0" cellpadding="0" width="100%"><tr>
+					<td>
+						<label>Department</label>
+						{% if ticket_perms.modify_department %}
+							{% include 'AgentBundle:Common:select-department.html.twig' with {
+								'name': "department_id",
+								'class': department_id,
+								'selected': ticket.department.id|default(0),
+								'id': baseId ~ '_department_id',
+								'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets')
+							} %}
+						{% else %}
+							<input type="hidden" name="department_id" value="{{ticket.department.id|default(0) }}" />
+							{{ ticket.department.full_title|default('None') }}
 						{% endif %}
+					</td>
+					<td>
+						<label>Status</label>
+						<select name="status_code" class="status_code" id="{{baseId}}_status_code">
+							<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
+							<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
+							<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
+							<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Closed</option>
+						</select>
+					</td>
+					<td>
+						<label>Urgency</label>
+						<select name="urgency" class="urgency" id="{{baseId}}_urgency">
+							{% for i in 1..10 %}
+								<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td>
+						<label>Your Flag</label>
+						<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons">
+							<option
+								value=""
+								data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
+							>None</option>
+							{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
+								<option
+									value="{{color}}"
+									{% if ticket_flagged == color %}selected="selected"{% endif %}
+									data-icon="{{ asset('images/agent/icons/flag-' ~ color ~ '.png' ) }}"
+								>{{ flag.flag_name(color) }}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td class="dates" nowrap="nowrap">
+						<label>Dates &amp; Times</label>
+						&middot; Created: <time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time><br />
+						{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
+							&middot; Waiting: <time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time><br />
+						{% endif %}
+						&middot; Waiting Total: <time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+					</td>
+				</tr></table>
+				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			</div>
+			<div class="sep">-</div>
+			<div style="position:relative;">
+				<table cellspacing="0" cellpadding="0" width="100%"><tr>
+					<td>
+						<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
+						<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
+						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
+						<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
+						{% if ticket_perms.delete %}
+							{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
+								<a class="clean-white arrow menu-fitted" id="{{baseId}}_remove_menu_trigger"><span>Remove</span><em></em></a>
+							{% endif %}
 
-						<ul style="display:none" id="{{baseId}}_remove_menu">
-							<li data-action="spam">Set as Spam</li>
-							<li data-action="spam.ban">Set as Spam &amp; Ban User</li>
-							<li data-action="delete">Delete</li>
-							<li data-action="delete.ban">Delete &amp; Ban User</li>
-						</ul>
-					{% endif %}
-					{% if not ticket.hasLock() %}
-						<a class="clean-white" id="{{ baseId }}_lock_ticket">Lock Ticket</a>
-					{% endif %}
-					<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
-					<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
-				</td>
-			</tr></table>
+							<ul style="display:none" id="{{baseId}}_remove_menu">
+								<li data-action="spam">Set as Spam</li>
+								<li data-action="spam.ban">Set as Spam &amp; Ban User</li>
+								<li data-action="delete">Delete</li>
+								<li data-action="delete.ban">Delete &amp; Ban User</li>
+							</ul>
+						{% endif %}
+						{% if not ticket.hasLock() %}
+							<a class="clean-white" id="{{ baseId }}_lock_ticket">Lock Ticket</a>
+						{% endif %}
+						<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
+						<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
+					</td>
+				</tr></table>
+				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			</div>
 			{% if ticket.linked_chat %}
 				<div class="sep">-</div>
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
@@ -354,7 +370,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			}) }}
 		</header>
 		<section id="{{baseId}}_people_box_agent_container">
-			<article id="{{baseId}}_people_box_agent">
+			<article id="{{baseId}}_people_box_agent" style="position:relative;">
+				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 				<dl>
 					<dt>{{ phrase('agent.general.agent') }}</dt>
 					<dd>
@@ -420,7 +437,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="profile-box-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
-			<div class="controls" id="{{baseId}}_field_edit_controls">
+			<div class="controls" id="{{baseId}}_field_edit_controls" {% if ticket.isLocked(app.user) %}style="display: none"{% endif %}>
 				<div class="is-not-loading">
 					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
 					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
@@ -515,8 +532,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {{ dp_widgets(baseId, 'ticket', 'reply', 'above', ticket_api) }}
 
 {% if ticket_perms.reply or ticket_perms.modify_note %}
-<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
-	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+<div style="position:relative;">
+	{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+	<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
+		{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+	</div>
 </div>
 {% endif %}
 

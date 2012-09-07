@@ -259,7 +259,7 @@ class TicketController extends AbstractController
 		return $this->render($tpl, $vars);
 	}
 
-	protected function _getTicketPerms($ticket)
+	protected function _getTicketPerms(Entity\Ticket $ticket)
 	{
 		$ticket_perms = array();
 		$ticket_perms['delete'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);

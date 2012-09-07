@@ -195,6 +195,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.rescanMessageTypes();
 		this.ticketFields.updateDisplay();
+
+		this.wrapper.find('.lock-overlay').on('click', function(ev) {
+			ev.preventDefault();
+			self.showLockAlert();
+		});
+	},
+
+	showLockAlert: function() {
+		DeskPRO_Window.showAlert('You are not allowed to make any changes to this ticket until it has been unlocked.');
 	},
 
 	rescanMessageTypes: function() {
@@ -621,7 +630,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
 				type: 'POST',
-				dataType: 'json'
+				dataType: 'json',
+				complete: function() {
+					// Reload the ticket page
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+					self.closeSelf();
+				}
 			});
 		});
 
@@ -641,6 +655,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						DeskPRO_Window.showAlert('Someone else has already locked the ticket');
 						self.getEl('locked_message').hide();
 						self.getEl('lock_ticket').show();
+
+						// Reload the ticket page
+						DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+						self.closeSelf();
 					}
 				}
 			});
