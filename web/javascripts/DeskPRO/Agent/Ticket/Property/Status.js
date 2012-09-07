@@ -26,9 +26,6 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 
 		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved closed hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
-		$('.page-header .set-status', this.ticketPage.wrapper).hide();
-		$('.page-header .set-status.' + status_classname, this.ticketPage.wrapper).show();
-
 		$('input.status:first', this.ticketPage.valueForm).val(value);
 		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);
 
@@ -38,6 +35,12 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 			$('.set-hold.unhold', this.ticketPage.wrapper).hide();
 			$('.set-hold.hold', this.ticketPage.wrapper).css('display', '');
 		}
+
+		var scode = value;
+		if (hidden_status) {
+			value += '_' + hidden_status;
+		}
+		this.ticketPage.getEl('status_code').val(value);
 	},
 
 	getValue: function() {

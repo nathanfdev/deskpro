@@ -67,7 +67,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 	<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
 	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(0)}}" />
-	<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
 	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
@@ -168,7 +167,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				</td>
 				<td>
 					<label>Status</label>
-					<select name="status" class="status" id="{{baseId}}_status">
+					<select name="status_code" class="status_code" id="{{baseId}}_status_code">
 						<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
 						<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
 						<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
