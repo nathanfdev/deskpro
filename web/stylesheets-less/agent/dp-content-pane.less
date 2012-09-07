@@ -771,33 +771,6 @@ header.page-header .meta-line .status span {
 header.page-header .meta-line .set-hold { display: none; }
 .awaiting_agent header.page-header .meta-line .set-hold { display: block; }
 
-header.page-header .meta-line .set-hold span {
-	.border-radius(3px, 3px, 3px, 3px);
-	float: left;
-	border: 1px solid #719A5D;
-	cursor: pointer;
-	position: relative;
-
-	font-size: 11px;
-	color: #FFF !important;
-	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5) !important;
-	padding: 5px;
-
-	.gradient(#be5f5f, #b04949);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-	float: right;
-	.border-radius(3px, 3px, 3px, 3px);
-	border: 1px solid #6b4343;
-	position: relative;
-}
-
-header.page-header .meta-line .set-hold.unhold span {
-	.gradient(rgba(169,3,41,1), rgba(143,2,34,1));
-	-webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.65);
-	 -moz-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.65);
-	 box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.65);
-}
-
 .resolved, .closed, .hidden_spam, .hidden_validating, .hidden_temp, .hidden_deleted {
 	header.page-header .ticket-urgency { display: none }
 }
@@ -1782,9 +1755,43 @@ header.page-header .edit-name-gear {
 }
 
 
+.profile-box-container .headerbox td {
+	padding: 6px 10px;
+}
 
+.profile-box-container .headerbox td > label {
+	padding: 3px 0 3px 0;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: @heading-font;
+	color: #666;
+	display: block;
+}
 
+.profile-box-container .headerbox td.dates {
+	font-size: 11px;
+	white-space: nowrap;
+}
 
+.profile-box-container .headerbox div.sep {
+	border-top: 1px solid #9CA7B1;
+	height: 1px;
+	overflow: hidden;
+}
+
+.profile-box-container .headerbox .set-hold {
+	display: inline;
+}
+
+.profile-box-container .headerbox .unhold .clean-white {
+	.gradient(rgba(234,237,237,1), rgba(211,211,211,1)); /* FF3.6+ */
+
+	-webkit-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
+	-moz-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
+	box-shadow: inset 0px 0px 3px 1px #C1CBDF;
+
+	border: 1px solid #9B9FA4;
+}
 
 .profile-box-container {
 	margin:  10px;

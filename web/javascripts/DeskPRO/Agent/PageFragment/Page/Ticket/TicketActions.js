@@ -124,6 +124,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Status
 		//------------------------------
 
+		this.page.getEl('headerbox_box_props').find('select').each(function() {
+			DP.select($(this));
+		});
+
 		if (this.page.meta.ticket_perms.modify_set_resolved || this.page.meta.ticket_perms.modify_set_awaiting_agent || this.page.meta.ticket_perms.modify_set_awaiting_user) {
 			var menuEl = $('#ticket_status_menu').clone();
 			if (!this.page.meta.ticket_perms.modify_set_resolved) {
@@ -162,6 +166,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Department
 		//------------------------------
 
+		/*
 		if (this.page.meta.ticket_perms.modify_department) {
 			var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
 			this.departmentOptionBox = new DeskPRO.UI.OptionBox({
@@ -184,6 +189,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 			});
 		}
+		*/
 
 		//------------------------------
 		// Hold/unhold
