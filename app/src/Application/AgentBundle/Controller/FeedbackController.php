@@ -110,6 +110,10 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
+		if (!$feedback) {
+			throw $this->createNotFoundException();
+		}
+
 		#------------------------------
 		# Custom fields
 		#------------------------------
