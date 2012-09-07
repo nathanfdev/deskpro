@@ -1005,10 +1005,12 @@ section.coming-soon,
 	position: absolute;
 	display: none;
 
-	li {
+	li a {
+		display: block;
 		padding: 3px 5px;
 		cursor: pointer;
 		&:hover { background: #EEEEEE; }
+		&.low-affinity { color: #888888; }
 	}
 }
 

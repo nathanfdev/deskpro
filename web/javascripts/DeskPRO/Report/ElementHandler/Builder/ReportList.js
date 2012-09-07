@@ -66,7 +66,22 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 				}
 			}
 
-			var popups = {};
+			var popups = {}, visiblePopup;
+			var deleteAllPopups = function() {
+				for (var i in popups) {
+					deletePopup(i, popups[i]);
+				}
+			};
+			var deletePopup = function(popupId, popup) {
+				if (popup) {
+					popup.remove();
+					delete popups[popupId];
+				}
+				if (visiblePopup == popupId) {
+					visiblePopup = false;
+				}
+			};
+			$(document.body).click(deleteAllPopups);
 
 			$this.delegate('.report-list-selector', 'click', function(e) {
 				var $this = $(this),
@@ -80,41 +95,60 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 					shownLookup = entries[lookupKey],
 					popup;
 
-				var bodyClick = function(e) {
-					if (!popup.find(e.target).length) {
-						hidePopup();
-					}
-				};
-
-				var hidePopup = function() {
-					popup.remove();
-					delete popups[popupId];
-					$(document.body).unbind('click', bodyClick);
-				};
+				if (visiblePopup && visiblePopup != popupId) {
+					deletePopup(visiblePopup, popups[visiblePopup]);
+				}
 
 				if (!popups[popupId]) {
+					var affinities = {}, minAffinity = 0, testAffinity = shownLookup.matches.length - 1;
+					for (var i = 0; i < entries.length; i++) {
+						var entry = entries[i], affinity = 0;
+						for (j = 0; j < entry.matches.length; j++) {
+							if (shownLookup.matches[j] == entry.matches[j]) {
+								affinity++;
+							}
+						}
+
+						if (!affinities[entry.matches[matchId]] || affinity > affinities[entry.matches[matchId]].affinity) {
+							affinities[entry.matches[matchId]] = {affinity: affinity, entry: entry};
+						}
+					}
+
 					popup = $('<ul class="report-list-popup" />');
 					for (var i = 0; i < entries.length; i++) {
 						var entry = entries[i];
 
+						if (affinities[entry.matches[matchId]].affinity < minAffinity
+							|| affinities[entry.matches[matchId]].entry != entry
+						) {
+							continue;
+						}
+
 						(function(entry, i) {
-							popup.append(
-								$('<li></li>').text(entry.matches[matchId]).click(function (e) {
-									e.stopPropagation();
-									e.preventDefault();
+							var li = $('<li></li>').click(function (e) {
+								e.stopPropagation();
+								e.preventDefault();
 
-									hidePopup();
+								deleteAllPopups();
 
-									for (var j = 0; j < entries.length; j++) {
-										console.log("%i = %i", i, j);
-										if (i == j) {
-											entries[j].item.show().find('a.report-list-title').click();
-										} else {
-											entries[j].item.hide();
-										}
+								for (var j = 0; j < entries.length; j++) {
+									if (i == j) {
+										entries[j].item.show().find('a.report-list-title').click();
+									} else {
+										entries[j].item.hide();
 									}
-								})
-							);
+								}
+							});
+
+							var a = $('<a />').text(entry.matches[matchId]);
+							
+							li.append(a);
+
+							if (affinities[entry.matches[matchId]].affinity < testAffinity) {
+								a.addClass('low-affinity');
+							}
+
+							popup.append(li);
 						})(entry, i);
 					}
 					popup.css({
@@ -128,7 +162,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 				}
 
 				if (popup.is(':visible')) {
-					hidePopup();
+					deletePopup(popupId, popup);
 					// ...and follow link
 				} else {
 					e.stopPropagation();
@@ -139,7 +173,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 						left: offset.left
 					}).show();
 
-					$(document.body).click(bodyClick);
+					visiblePopup = popupId;
 				}
 			})
 		});
