@@ -639,6 +639,9 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_EMAIL:
 					$any = false;
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
 					foreach ($person['emails'] as $email) {
 						if (strpos(strtolower($email['email']), strtolower($choice)) !== false) {
 							$any = true;
@@ -655,6 +658,9 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_EMAIL_DOMAIN:
 					$any = false;
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
 					foreach ($person['emails'] as $email) {
 						if (strpos(strtolower($email['email_domain']), strtolower($choice)) !== false) {
 							$any = true;
