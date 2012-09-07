@@ -1310,11 +1310,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setLockedByAgent(Person $agent = null)
 	{
-		$this->locked_by_agent = $agent;
+		$this->setModelField('locked_by_agent', $agent);
 		if ($agent) {
-			$this->date_locked = new \DateTime();
+			$this->setModelField('date_locked', new \DateTime());
 		} else {
-			$this->date_locked = null;
+			$this->setModelField('date_locked', null);
 		}
 	}
 
@@ -1326,6 +1326,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getIsLocked()
 	{
 		return $this->isLocked();
+	}
+
+	public function hasLock()
+	{
+		return $this->locked_by_agent ? true : false;
 	}
 
 	public function isLocked(Person $current_agent = null)

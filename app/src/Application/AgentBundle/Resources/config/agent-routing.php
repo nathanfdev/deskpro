@@ -935,6 +935,20 @@ $collection->add('agent_ticket_doupdate', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_lock', new Route(
+	'/tickets/{ticket_id}/lock-ticket.json',
+	array('_controller' => 'AgentBundle:Ticket:lockTicket'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_unlock', new Route(
+	'/tickets/{ticket_id}/unlock-ticket.json',
+	array('_controller' => 'AgentBundle:Ticket:unlockTicket'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_split', new Route(
 	'/tickets/split/{message_id}',
 	array('_controller' => 'AgentBundle:Ticket:split'),

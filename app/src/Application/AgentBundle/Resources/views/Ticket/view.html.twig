@@ -52,12 +52,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 <div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
-{% if ticket.is_locked %}
-<div class="locked-bar" id="{{baseId}}_locked_bar">
-	<button class="clean-white dismiss">{{ phrase('agent.general.dismiss') }}</button>
-	{{ phrase('agent.tickets.in_use_by') }} <cite>{{ ticket.locked_by_agent }}</cite>.
-</div>
-{% endif %}
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
@@ -221,6 +215,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							<li data-action="delete.ban">Delete &amp; Ban User</li>
 						</ul>
 					{% endif %}
+					{% if not ticket.hasLock() %}
+						<a class="clean-white" id="{{ baseId }}_lock_ticket">Lock Ticket</a>
+					{% endif %}
 					<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
 					<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 				</td>
@@ -234,6 +231,22 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</td>
 				</tr></table>
 			{% endif %}
+			<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %}>
+				<div class="sep">-</div>
+				<div class="locked-message">
+					<div id="{{baseId}}_locked_message_self" {% if not (not ticket.locked_by_agent or (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id)) %}style="display: none"{% endif %}>
+						You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
+					</div>
+					{% if not (not ticket.locked_by_agent or (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id)) %}
+						<div id="{{baseId}}_locked_message_other">
+							{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
+						</div>
+					{% endif %}
+
+					<br />
+					<button class="clean-white" id="{{baseId}}_unlock_ticket">Unlock Ticket</button>
+				</div>
+			</div>
 		</article>
 		{{ dp_widget_tabs(baseId, 'ticket', 'headerbox', 'article', ticket_api) }}
 	</section>

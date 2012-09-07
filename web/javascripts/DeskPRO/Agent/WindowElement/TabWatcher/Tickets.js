@@ -37,18 +37,5 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 
 	deactivateTab: function(tab) {
 
-		// If its locked, it means its locked by someone else
-		// so we dont need to release our locks
-		if (tab.page.getMetaData('isLocked')) {
-			return;
-		}
-
-		var ticketId = tab.page.getMetaData('ticket_id');
-		this.releasing[ticketId] = $.ajax({
-			url: BASE_URL + 'agent/ticket-search/ajax-release-locks',
-			type: 'GET',
-			data: [{ name: 'ticket_ids[]', value: ticketId}],
-			dataType: 'json'
-		});
 	}
 });

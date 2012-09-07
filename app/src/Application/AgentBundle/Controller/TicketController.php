@@ -106,25 +106,6 @@ class TicketController extends AbstractController
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
 
-		// Get or update the lock on this ticket
-		if (!$ticket->isLocked()) {
-			$ticket->setLockedByAgent($this->person);
-
-			$lock_cm = new ClientMessage();
-			$lock_cm->fromArray(array(
-				'channel' => 'agent-notification.tickets.unlocked',
-				'data' => array(
-					'ticket_id' => $ticket['id'],
-					'agent_id' => $ticket['id'],
-				),
-				'created_by_client' => $this->session->getEntity()->getId(),
-			));
-
-			$this->em->persist($lock_cm);
-			$this->em->persist($ticket);
-			$this->em->flush();
-		}
-
 		$hard_delete_time = null;
 		$ticket_deleted = false;
 		if ($ticket['hidden_status'] == 'deleted') {
@@ -2014,6 +1995,36 @@ class TicketController extends AbstractController
 			'message' => $message_template->message,
 			'subject' => $message_template->subject
 		));
+	}
+
+	public function lockTicketAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if ($ticket->hasLock()) {
+			return $this->createJsonResponse(array('error' => true));
+		}
+
+		$ticket->setLockedByAgent($this->person);
+		$this->em->persist($ticket);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function unlockTicketAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if (!$ticket->hasLock()) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
+		$ticket->setLockedByAgent(null);
+		$this->em->persist($ticket);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	############################################################################

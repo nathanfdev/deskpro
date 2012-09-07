@@ -43,6 +43,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
 		this._initLabels();
+		this._initTicketLocking();
 
 		if (this.meta.ticket_perms['delete']) {
 			if (this.meta.isDeleted) {
@@ -610,6 +611,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	//#################################################################
 	//# Ticket actions menu
 	//#################################################################
+
+	_initTicketLocking: function() {
+		var self = this;
+		this.getEl('unlock_ticket').on('click', function() {
+			self.wrapper.find('.lock-overlay').remove();
+			self.getEl('locked_message').hide();
+			self.getEl('lock_ticket').show();
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
+				type: 'POST',
+				dataType: 'json'
+			});
+		});
+
+		this.getEl('lock_ticket').on('click', function() {
+			self.wrapper.find('.lock-overlay').remove();
+			self.getEl('locked_message').show();
+			self.getEl('locked_message_self').show();
+			self.getEl('locked_message_other').hide();
+			self.getEl('lock_ticket').hide();
+
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/lock-ticket.json',
+				type: 'POST',
+				dataType: 'json',
+				success: function(data) {
+					if (data.error) {
+						DeskPRO_Window.showAlert('Someone else has already locked the ticket');
+						self.getEl('locked_message').hide();
+						self.getEl('lock_ticket').show();
+					}
+				}
+			});
+		});
+	},
 
 	_initTicketActionsMenu: function() {
 		var self = this;
