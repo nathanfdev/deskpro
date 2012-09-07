@@ -1405,6 +1405,8 @@ class Strings
 	 */
 	public static function chrUtf8($code)
 	{
+		$code = (int)$code;
+
 		// Invalid code
 		if ($code < 0) {
 			return false;
