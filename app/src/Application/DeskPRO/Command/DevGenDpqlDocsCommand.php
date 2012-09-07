@@ -58,7 +58,6 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			'articles' => 'Articles and information in the knowledgebase',
 			'article_attachments' => 'Attachments to knowledgebase articles',
 			'article_comments' => 'Comments for each knowledgebase article',
-			'blobs' => 'Information about all files that have been uploaded to DeskPRO',
 			'chat_conversations' => 'Records for each chat',
 			'chat_messages' => 'Individual messages in each chat',
 			'downloads' => 'Information about each file that has been specified as a download',
@@ -208,7 +207,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		}
 
 		$html = "<table class=\"dpql-table-list\"><tr><th>Table Name</th><th>Description</th></tr>\n" . implode("\n", $tableList) . "\n</table>\n\n"
-			. "<div class=\"dpql-data-types\" style=\"display:none\"><h2>Data Types</h2>\n\n";
+			. "<div class=\"dpql-data-types\"><h2>Data Types</h2>\n\n";
 
 		foreach ($entityMap AS $info) {
 			/** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */

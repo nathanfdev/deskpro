@@ -164,7 +164,6 @@ class Display
 		'articles' => 'DeskPRO:Article',
 		'article_attachments' => 'DeskPRO:ArticleAttachment',
 		'article_comments' => 'DeskPRO:ArticleComment',
-		'blobs' => 'DeskPRO:Blob',
 		'chat_conversations' => 'DeskPRO:ChatConversation',
 		'chat_messages' => 'DeskPRO:ChatMessage',
 		'downloads' => 'DeskPRO:Download',
