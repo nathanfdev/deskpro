@@ -125,6 +125,13 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			return;
 		}
 
+		if (this.lastActiveTab && this.lastActiveTab.data('tab-on-hide')) {
+			this.lastActiveTab.data('tab-on-hide')(eventData);
+		}
+		if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-hide')) {
+			this.lastActiveTabContent.data('tab-on-hide')(eventData);
+		}
+
 		delete eventData['cancel'];
 
 		if (this.lastActiveTab) {
@@ -150,6 +157,13 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 					}
 				});
 			}
+		}
+
+		if (this.lastActiveTab && this.lastActiveTab.data('tab-on-show')) {
+			this.lastActiveTab.data('tab-on-show')(eventData);
+		}
+		if (this.lastActiveTabContent && this.lastActiveTabContent.data('tab-on-show')) {
+			this.lastActiveTabContent.data('tab-on-show')(eventData);
 		}
 
 		this.fireEvent('tabSwitch', eventData);

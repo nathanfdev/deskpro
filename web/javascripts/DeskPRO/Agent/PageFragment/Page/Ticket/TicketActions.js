@@ -152,7 +152,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		if (this.page.meta.ticket_perms.modify_department) {
-			this.page.getEl('department').on('change', function() {
+			this.page.getEl('department_id').on('change', function() {
 				var prop = self.changeManager.getPropertyManager('department_id');
 				var depId = parseInt($(this).val());
 				var currentDepId = prop.getValue();
@@ -166,6 +166,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 
 				self.changeManager.setInstantChange(prop, depId);
+				self.page.ticketFields.updateDisplay();
 			});
 		}
 

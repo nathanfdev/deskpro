@@ -1,12 +1,12 @@
-<div id="{{baseId}}_field_holders" class="field-holders">
+<div class="field-holders">
 	{% if app.getDataRepository('Language').isMultiLang() %}
 		<div class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
 			<div class="mode-display">
 				<div class="title">
-					<span class="menu-trigger category_id label">Language:</span>
+					<span class="category_id label">Language:</span>
 				</div>
 				<div class="content">
-					<span class="prop-val menu-trigger category_id">{{ticket.language.title}}</span>
+					<span class="prop-val category_id">{{ticket.language.title|default('None')}}</span>
 				</div>
 			</div>
 			<div class="mode-edit">
@@ -24,13 +24,13 @@
 
 	{# Standard fields #}
 	{% if app.getSetting('core.use_ticket_category') %}
-		<div class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category">
+		<div class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category" style="display:none">
 			<div class="mode-display">
 				<div class="title">
-					<span class="menu-trigger category_id label">{{ phrase('agent.general.category') }}:</span>
+					<span class="category_id label">{{ phrase('agent.general.category') }}:</span>
 				</div>
 				<div class="content">
-					<span class="prop-val menu-trigger category_id">{{ticket.category.full_title|default(phrase('agent.general.none'))}}</span>
+					<span class="prop-val category_id">{{ticket.category.full_title|default(phrase('agent.general.none'))}}</span>
 				</div>
 			</div>
 			<div class="mode-edit">
@@ -50,13 +50,13 @@
 		</div>
 	{% endif %}
 	{% if app.getSetting('core.use_product') %}
-		<div class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product">
+		<div class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
 			<div class="mode-display">
 				<div class="title">
-					<span class="menu-trigger product label">{{ phrase('agent.general.product') }}:</span>
+					<span class="product label">{{ phrase('agent.general.product') }}:</span>
 				</div>
 				<div class="content">
-					<span class="prop-val menu-trigger product">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
+					<span class="prop-val product">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
 				</div>
 			</div>
 			<div class="mode-edit">
@@ -76,13 +76,13 @@
 		</div>
 	{% endif %}
 	{% if app.getSetting('core.use_ticket_priority') %}
-		<div class="ticket_priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority">
+		<div class="ticket_priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority" style="display:none">
 			<div class="mode-display">
 				<div class="title">
-					<span class="menu-trigger priority_id label">{{ phrase('agent.general.priority') }}:</span>
+					<span class="priority_id label">{{ phrase('agent.general.priority') }}:</span>
 				</div>
 				<div class="content">
-					<span class="prop-val menu-trigger priority_id">{{ticket.priority.title|default(phrase('agent.general.none'))}}</span>
+					<span class="prop-val priority_id">{{ticket.priority.title|default(phrase('agent.general.none'))}}</span>
 				</div>
 			</div>
 			<div class="mode-edit">
@@ -99,13 +99,13 @@
 		</div>
 	{% endif %}
 	{% if app.getSetting('core.use_ticket_workflow') %}
-		<div class="ticket_workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow">
+		<div class="ticket_workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow" style="display:none">
 			<div class="mode-display">
 				<div class="title">
-					<span class="menu-trigger workflow_id label">{{ phrase('agent.general.workflow') }}:</span>
+					<span class="workflow_id label">{{ phrase('agent.general.workflow') }}:</span>
 				</div>
 				<div class="content">
-					<span class="prop-val menu-trigger workflow_id">{{ticket.workflow.title|default(phrase('agent.general.none'))}}</span>
+					<span class="prop-val workflow_id">{{ticket.workflow.title|default(phrase('agent.general.none'))}}</span>
 				</div>
 			</div>
 			<div class="mode-edit">
@@ -124,14 +124,18 @@
 
 	{# Custom fields#}
 	{% for f in custom_fields %}
-		<div class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+		<div class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
 			<div class="mode-display">
 				<div class="title">
 					<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 				</div>
 				<div class="content">
 					<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">
-						{{ render_custom_field(f) }}
+						{% if not ticket.hasCustomField(f.id) %}
+							None
+						{% else %}
+							{{ render_custom_field(f) }}
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -151,7 +155,11 @@
 					</div>
 					<div class="content">
 						<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">
-							{{ render_custom_field(f) }}
+							{% if not ticket.hasCustomField(f.id) %}
+								None
+							{% else %}
+								{{ render_custom_field(f) }}
+							{% endif %}
 						</div>
 					</div>
 				{% endif %}

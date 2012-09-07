@@ -399,7 +399,17 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {{ dp_widgets(baseId, 'ticket', 'properties', 'above', ticket_api) }}
 
 <div class="profile-box-container">
-	<header>
+	<header id="{{baseId}}_properties_header">
+		{% if ticket_perms.modify_fields %}
+			<div class="controls" id="{{baseId}}_field_edit_controls">
+				<div class="is-not-loading">
+					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
+					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
+					<button class="save" id="{{baseId}}_field_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
+				</div>
+				<button class="is-loading">{{ phrase('agent.general.saving') }}</button>
+			</div>
+		{% endif %}
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
 			(baseId ~ '_fields_display_main_wrap'): 'Fields',
 			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)'
@@ -407,7 +417,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</header>
 	<section class="description-area" style="padding:0">
 		<article id="{{baseId}}_fields_display_main_wrap">
-			{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+			<div id="{{baseId}}_field_holders">
+				{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+			</div>
 		</article>
 		<article id="{{baseId}}_tasks_wrap">
 			<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
