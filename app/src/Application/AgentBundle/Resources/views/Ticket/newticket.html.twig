@@ -42,13 +42,31 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="pending-info chat" style="display: none;">
-	<i class="reset"></i>
-	<h3>{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_chat_title"></span></h3>
+	<div class="profile-box-container reply-box-wrap" style="position: relative">
+		<header>
+			<h4>User</h4>
+		</header>
+		<section id="{{baseId}}_user_section" style="padding: 10px;">
+			<div style="float:right">
+				<button class="clean-white reset">Change User</button>
+			</div>
+			{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_chat_title"></span>
+		</section>
+	</div>
 </div>
 
 <div class="pending-info person" style="display: none;">
-	<i class="reset"></i>
-	<h3>{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_person_title"></span></h3>
+	<div class="profile-box-container reply-box-wrap" style="position: relative">
+		<header>
+			<h4>User</h4>
+		</header>
+		<section id="{{baseId}}_user_section" style="padding: 10px;">
+			<div style="float:right">
+				<button class="clean-white reset">Change User</button>
+			</div>
+			{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_person_title"></span>
+		</section>
+	</div>
 </div>
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
