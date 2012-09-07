@@ -180,7 +180,7 @@ class HtmlPurifier implements CleanerPlugin
 		switch ($type) {
 			case 'html':
 				$config->set('HTML.Allowed', "
-					*[style|title|class],
+					*[style|title|class|id],
 					a[rel|rev|name|href|target|title|class]
 					strong,b,em,i,strike,u,
 					p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
@@ -199,6 +199,8 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('HTML.Doctype', 'HTML 4.01 Transitional');
 				$config->set('HTML.TidyLevel', 'medium');
 				$config->set('AutoFormat.RemoveEmpty', false);
+				$config->set('Attr.EnableID', true);
+				$config->set('Attr.IDPrefix', 'dp-user-');
 				break;
 
 			case 'html_simple':

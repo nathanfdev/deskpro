@@ -160,20 +160,19 @@ class Display
 	 *
 	 * @var array
 	 */
-	protected $_tableEntityMap = array(
+	protected static $_tableEntityMap = array(
 		'articles' => 'DeskPRO:Article',
 		'article_attachments' => 'DeskPRO:ArticleAttachment',
 		'article_comments' => 'DeskPRO:ArticleComment',
 		'blobs' => 'DeskPRO:Blob',
 		'chat_conversations' => 'DeskPRO:ChatConversation',
-		//'chat_messages' => 'DeskPRO:ChatMessage', <-- there is no entity repository for this
-		'downloads' => 'DeskPRO:Downloads',
+		'chat_messages' => 'DeskPRO:ChatMessage',
+		'downloads' => 'DeskPRO:Download',
 		'download_comments' => 'DeskPRO:DownloadComment',
 		'feedback' => 'DeskPRO:Feedback',
 		'feedback_attachments' => 'DeskPRO:FeedbackAttachment',
 		'feedback_comments' => 'DeskPRO:FeedbackComment',
 		'labels_articles' => 'DeskPRO:LabelArticle',
-		'labels_blobs' => 'DeskPRO:LabelBlob',
 		'labels_downloads' => 'DeskPRO:LabelDownload',
 		'labels_feedback' => 'DeskPRO:LabelFeedback',
 		'labels_news' => 'DeskPRO:LabelNews',
@@ -580,11 +579,11 @@ class Display
 	public function getFromEntityRepository()
 	{
 		$table = strtolower($this->_from);
-		if (!isset($this->_tableEntityMap[$table])) {
+		if (!isset(self::$_tableEntityMap[$table])) {
 			return false;
 		}
 
-		$repositoryName = $this->_tableEntityMap[$table];
+		$repositoryName = self::$_tableEntityMap[$table];
 		$repository = App::getEntityRepository($repositoryName);
 
 		if (!method_exists($repository, 'getTableName')) {
@@ -856,5 +855,15 @@ class Display
 				. ($parts['orderBy'] ? "\nORDER BY $parts[orderBy]" :'')
 				. ($parts['limit'] ? "\nLIMIT $parts[limit]$offset" :'');
 		}
+	}
+
+	/**
+	 * Gets the map from tables to entities.
+	 *
+	 * @return array
+	 */
+	public static function getTableEntityList()
+	{
+		return self::$_tableEntityMap;
 	}
 }
