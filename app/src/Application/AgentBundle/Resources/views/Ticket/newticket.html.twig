@@ -35,6 +35,12 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+<div class="errors-section" id="{{baseId}}_error_section" style="display: none;">
+	<div style="display:none;" class="error-message subject">{{ phrase('agent.tickets.please_enter_subject') }}</div>
+	<div style="display:none;" class="error-message person_id person_no_user">{{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
+	<div style="display:none;" class="error-message person_email_address">{{ phrase('agent.general.please_enter_valid_email') }}</div>
+</div>
+
 <div class="pending-info chat" style="display: none;">
 	<i class="reset"></i>
 	<h3>{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_chat_title"></span></h3>
@@ -45,8 +51,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<h3>{{ phrase('agent.tickets.creating_a_ticket_for') }}: <span id="{{baseId}}_person_title"></span></h3>
 </div>
 
-<div class="section user-section first" id="{{baseId}}_user_section">
-	<div class="content">
+<div class="profile-box-container reply-box-wrap" style="position: relative">
+	<header>
+		<h4>User</h4>
+	</header>
+	<section id="{{baseId}}_user_section" style="padding: 10px;" class="user-section">
 		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.general.change_user') }}</button>
 		<div id="{{baseId}}_choose_user">
 			<div
@@ -84,255 +93,258 @@ pageMeta.baseId = '{{ baseId }}';
 		<div id="{{baseId}}_user_choice">
 
 		</div>
-		<div class="error-message person_id person_no_user">{{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
-		<div class="error-message person_email_address">{{ phrase('agent.general.please_enter_valid_email') }}</div>
 		<br class="clear" />
-	</div>
+	</section>
 </div>
 
-<div class="section department-section" id="{{baseId}}_dep_section">
-	<div class="content">
-		<div class="col">
-			<h4>{{ phrase('agent.general.department') }}</h4>
-			{% include 'AgentBundle:Common:select-department.html.twig' with {
-				'name': "newticket[department_id]",
-				'id': baseId ~ '_dep',
-				'departments': ticket_options.departments_hierarchy
-			} %}
-		</div>
-		<div class="col">
-			<h4>{{ phrase('agent.general.status') }}</h4>
-			<select name="newticket[status]" id="{{baseId}}_status">
-				<option value="awaiting_agent" selected="selected">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-			</select>
-		</div>
-		<div class="col">
-			<h4>Agent</h4>
-			{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
-			{% else %}{% set agent_id = ticket.agent %}{% endif %}
-
-			<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-				<option value="0">Unassigned</option>
-				{% for agent in agents %}
-					<option {% if agent.id == agent_id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		{% if app.getSetting('core.use_agent_team') %}
-			<div class="col">
-				<h4>Team</h4>
-				{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
-				{% else %}{% set agent_id = ticket.agent %}{% endif %}
-
-				<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
-					<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
-					{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
-					<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
-						{% for team in app.user.getAgent().getTeams() %}
-							<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
-						{% endfor %}
-					</optgroup>
-					{% endif %}
-
-					{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
-						<option value="{{ id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ name }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		{% endif %}
-
-		<br class="clear" />
-
-		<div id="{{baseId}}_fields_container">
-
-			{% if app.getSetting('core.use_ticket_category') %}
-				<div class="col fieldprop ticket-field ticket_category inline-field" style="clear:both;display: none;">
-					<h4>{{ phrase('agent.general.category') }}</h4>
-					{% include 'AgentBundle:Common:select-category.html.twig' with {
-						'name': "newticket[category_id]",
-						'id': baseId ~ '_cat',
-						'categories': ticket_options.ticket_categories_hierarchy,
-						'with_blank': true
+<div class="profile-box-container reply-box-wrap" style="position: relative">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section class="ticketreply">
+		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr>
+				<td>
+					<label>Department</label>
+					{% include 'AgentBundle:Common:select-department.html.twig' with {
+						'name': "newticket[department_id]",
+						'id': baseId ~ '_dep',
+						'departments': ticket_options.departments_hierarchy
 					} %}
-				</div>
-			{% endif %}
+				</td>
+				<td>
+			</table>
 
-			{% if app.getSetting('core.use_ticket_priority') %}
-				<div class="col fieldprop ticket-field ticket_priority inline-field" style="clear:both;display: none;">
-					<h4>{{ phrase('agent.general.priority') }}</h4>
-						{% include 'AgentBundle:Common:select-priority.html.twig' with {
-							'name': "newticket[priority_id]",
-							'id': baseId ~ '_pri',
-							'add_classname': 'ticket_priority',
-							'priorities': ticket_options.ticket_priorities,
-							'with_blank': true
-						} %}
-				</div>
-			{% endif %}
-
-			{% if app.getSetting('core.use_ticket_workflow') %}
-				<div class="col fieldprop ticket-field ticket_workflow inline-field" style="clear:both;display: none;">
-					<h4>{{ phrase('agent.general.workflow') }}</h4>
-						{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-							'name': "newticket[workflow_id]",
-							'id': baseId ~ '_work',
-							'add_classname': 'ticket_workflow',
-							'workflows': ticket_options.ticket_workflows,
-							'with_blank': true
-						} %}
-				</div>
-			{% endif %}
-
-			{% if app.getSetting('core.use_product') %}
-				<div class="col fieldprop ticket-field ticket_product inline-field" style="clear:both;display: none;">
-					<h4>{{ phrase('agent.general.product') }}</h4>
-						{% include 'AgentBundle:Common:select-product.html.twig' with {
-							'name': "newticket[product_id]",
-							'id': baseId ~ '_prod',
-							'add_classname': 'ticket_product',
-							'products': ticket_options.products_hierarchy,
-							'with_blank': true
-						} %}
-				</div>
-			{% endif %}
-
-			{% if custom_fields %}
-				{% for f in custom_fields %}
-					<div class="col fieldprop ticket-field ticket-field-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
-						<h4>{{f.title}}</h4>
-						{{ render_custom_field_form(f) }}
-					</div>
-				{% endfor %}
-			{% endif %}
-		</div>
-	</div>
-</div>
-
-<div class="section subject-section" id="{{baseId}}_subject_section">
-	<div class="content">
-		<h4>{{ phrase('agent.general.subject') }}</h4>
-		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
-		<div class="error-message subject">{{ phrase('agent.tickets.please_enter_subject') }}</div>
-	</div>
-</div>
-
-<div class="section message-section" id="{{baseId}}_message_section">
-	<div class="content">
-		<div style="width:80%">
-			{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
-				<div id="{{baseId}}_message_template_holder" style="float:right;visibility: hidden;"> {# hidden and not display:none so we can get the proper width of the select box in NewTicket.js #}
-					<div style="display: none">
-						<select id="{{baseId}}_message_template_orig">
-							<option value="0">Blank Message</option>
-							{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
-								<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<select id="{{baseId}}_message_template" name="using_template">
-						<option value="0">Blank Message</option>
-						{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
-							<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
-						{% endfor %}
-					</select>
-				</div>
-			{% endif %}
-			<h4>{{ phrase('agent.general.message') }}</h4>
-		</div>
-		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
-		<div class="error-message message">{{ phrase('agent.tickets.please_enter_a_message') }}</div>
-	</div>
-</div>
-
-<div class="section other-section" id="{{baseId}}_other_section">
-	<div class="content">
-		{# Tab Container #}
-		<div class="tab-container">
-			<nav id="{{baseId}}_other_props_tabs_wrap">
-				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-					<li data-tab-for="> .tab-cc">{{ phrase('agent.tickets.ccs') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
-				</ul>
-			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
-				{# Tab Properties #}
-				<div class="tab-properties" style="display: none">
-					<dl>
-						<dt class="prop type-labels">{{ phrase('agent.general.labels') }}:</dt>
-						<dd class="prop ticket-tags tags-wrap">
-							<input type="text" value="" />
-						</dd>
-					</dl>
-
-					<br class="clear" />
-				</div>
-				{# /Tab Properties #}
-
-				{# Tab CC #}
-				<div class="tab-cc" style="display: none">
-					<div class="cc-input">
-						<div
-							id="{{baseId}}_user_ccbox"
-							data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-							data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
-							data-highlight-term="1"
-							data-touch-focus="1"
-							data-search-param="term"
-							data-position-bound="#{{baseId}}_userccselect"
-						>
-							<input type="text" id="{{baseId}}_userccselect" class="cc-user term" placeholder="{{ phrase('agent.tickets.search_for_people_to_add') }}" />
-
-							<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-								<li>
-									<a>
-									<span class="user-name"></span>
-									<address>&lt;<span class="user-email"></span>&gt;</address>
-									<div class="bound-fade"></div>
-								</a></li>
-							</script>
-							<div class="person-search-box" style="display: none">
-								<section>
-									<ul class="results-list">
-
-									</ul>
-									<footer>
-										<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
-									</footer>
-								</section>
-							</div>
+			<div id="{{baseId}}_fields_container" class="field-holders">
+				{% if app.getSetting('core.use_ticket_category') %}
+					<div class="col fieldprop ticket-field item-on ticket_category inline-field" style="clear:both;display: none;">
+						<div class="title">{{ phrase('agent.general.category') }}</div>
+						<div class="content">
+							{% include 'AgentBundle:Common:select-category.html.twig' with {
+								'name': "newticket[category_id]",
+								'id': baseId ~ '_cat',
+								'categories': ticket_options.ticket_categories_hierarchy,
+								'with_blank': true
+							} %}
 						</div>
 					</div>
-					<ul id="{{baseId}}_cc_list" class="cc-list"></ul>
-				</div>
-				{# /Tab CC #}
+				{% endif %}
 
-				{# Tab Attach #}
-				<div class="tab-attach" style="display: none">
-					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newticket[attach][]'} %}
-					<h6>{{ phrase('agent.general.attachments') }}</h6>
-					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
+				{% if app.getSetting('core.use_ticket_priority') %}
+					<div class="col fieldprop ticket-field item-on ticket_priority inline-field" style="clear:both;display: none;">
+						<div class="title">{{ phrase('agent.general.priority') }}</div>
+						<div class="content">
+							{% include 'AgentBundle:Common:select-priority.html.twig' with {
+								'name': "newticket[priority_id]",
+								'id': baseId ~ '_pri',
+								'add_classname': 'ticket_priority',
+								'priorities': ticket_options.ticket_priorities,
+								'with_blank': true
+							} %}
+						</div>
 					</div>
-					<ul class="files file-list"></ul>
-				</div>
-				{# /Tab Attach #}
+				{% endif %}
+
+				{% if app.getSetting('core.use_ticket_workflow') %}
+					<div class="col fieldprop ticket-field item-on ticket_workflow inline-field" style="clear:both;display: none;">
+						<div class="title">{{ phrase('agent.general.workflow') }}</div>
+						<div class="content">
+							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+								'name': "newticket[workflow_id]",
+								'id': baseId ~ '_work',
+								'add_classname': 'ticket_workflow',
+								'workflows': ticket_options.ticket_workflows,
+								'with_blank': true
+							} %}
+						</div>
+					</div>
+				{% endif %}
+
+				{% if app.getSetting('core.use_product') %}
+					<div class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
+						<div class="title">{{ phrase('agent.general.product') }}</div>
+						<div class="content">
+							{% include 'AgentBundle:Common:select-product.html.twig' with {
+								'name': "newticket[product_id]",
+								'id': baseId ~ '_prod',
+								'add_classname': 'ticket_product',
+								'products': ticket_options.products_hierarchy,
+								'with_blank': true
+							} %}
+						</div>
+					</div>
+				{% endif %}
+
+				{% if custom_fields %}
+					{% for f in custom_fields %}
+						<div class="col fieldprop ticket-field item-on ticket-field item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
+							<div class="title">{{f.title}}</div>
+							<div class="content">
+								{{ render_custom_field_form(f) }}
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
 			</div>
-		</div>
-		{# /Tab Container #}
-	</div>
+		</article>
+	</section>
 </div>
 
-<footer class="pop-footer">
-	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_ticket') }} <kbd>{{ phrase('agent.tickets.kbd_alt_c') }}</kbd></button>
+<div class="profile-box-container reply-box-wrap" style="position: relative" id="{{baseId}}_message_box">
+	<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
+	<div class="ticket-sending-overlay" style="display: none">
+		<strong>Sending your message</strong>
 	</div>
-	<div class="is-loading" style="padding-top: 9px;">
-		<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-	</div>
-</footer>
+	<header>
+		<h4>Ticket</h4>
+	</header>
+	<section class="ticketreply">
+		<nav id="{{baseId}}_header_rows">
+			<ul class="option-buttons">
+				<li class="tipped attach" title="{{ phrase('agent.general.attachments') }}">
+					<input type="file" class="file" name="file-upload" />
+					<span></span>
+				</li>
+				<li class="tipped snippets" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.general.snippets') }}"><span></span></li>
+			</ul>
+		</nav>
+		<article>
+			<section>
+				<ul>
+					<li class="with-select2">
+						<label>Assign:</label>
+						<div>
+							{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
+							{% else %}{% set agent_id = ticket.agent %}{% endif %}
+
+							<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
+								<option value="0">Unassigned</option>
+								{% for agent in agents %}
+									<option {% if agent.id == agent_id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+								{% endfor %}
+							</select>
+
+							{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
+							{% else %}{% set agent_id = ticket.agent %}{% endif %}
+
+							<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+								<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+									{% for team in app.user.getAgent().getTeams() %}
+										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+									{% endfor %}
+								</optgroup>
+								{% endif %}
+
+								{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
+									<option value="{{ id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</li>
+					<li class="with-select2">
+						<label>Status</label>
+						<div>
+							<select name="newticket[status]" id="{{baseId}}_status">
+								<option value="awaiting_agent" selected="selected">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+								<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+								<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+							</select>
+						</div>
+					</li>
+					{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
+					<li class="with-select2">
+						<label>Template:</label>
+						<div id="{{baseId}}_message_template_holder" style="visibility: hidden;">
+							<div style="display: none">
+								<select id="{{baseId}}_message_template_orig">
+									<option value="0">Blank Message</option>
+									{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<select id="{{baseId}}_message_template" name="using_template">
+								<option value="0">Blank Message</option>
+								{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
+									<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</li>
+					{% endif %}
+					<li id="{{baseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
+						<label>{{ phrase('agent.tickets.cc') }}:</label>
+						<div>
+							<div id="{{baseId}}_newcc" style="display: none;"></div>
+							<div id="{{baseId}}_delcc" style="display: none;"></div>
+
+							<div class="user-rows" id="{{baseId}}_cc_user_rows">
+								{% for p in user_parts %}
+									<div class="cc-user-row" data-email="{{ p.person_email.email }}"><span class="btn-small-remove remove-row-trigger"></span><span class="user-email">{{ p.person_email.email }}</span></div>
+								{% endfor %}
+							</div>
+							<script class="email-row-tpl" type="text/x-deskpro-tmpl">
+								<div class="cc-user-row">
+									<span class="btn-small-remove remove-row-trigger"></span>
+									<span class="user-email"></span>
+								</div>
+							</script>
+							<div class="addrow noedit-hide">
+								<input type="text" class="user-part cc-people-search-trigger" />
+								<div class="person-search-box" style="display: none">
+									<section>
+										<ul class="results-list">
+
+										</ul>
+									</section>
+								</div>
+								<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
+								<script class="user-row-tpl" type="text/x-deskpro-tmpl">
+									<li>
+										<a>
+											<span class="user-name"></span>
+											<address>&lt;<span class="user-email"></span>&gt;</address>
+											<div class="bound-fade"></div>
+										</a>
+									</li>
+								</script>
+							</div>
+						</div>
+					</li>
+					<li class="subject-row">
+						<label>Subject:</label>
+						<div>
+							<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
+						</div>
+					</li>
+					<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
+						<label><span>{{ phrase('agent.general.attachments') }}</span></label>
+						<div>
+							<ul class="files"></ul>
+							<br class="clear"/>
+						</div>
+					</li>
+				</ul>
+				<div class="input-wrap">
+					<textarea placeholder="" id="{{baseId}}_message" name="newticket[message]">{% if agent_signature %}
+
+
+
+	{{ agent_signature }}{% endif %}</textarea>
+					<textarea id="{{baseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+				</div>
+			</section>
+		</article>
+	</section>
+</div>
+
+<div style="text-align: center">
+	<button class="clean-white submit-trigger">Send Ticket</button>
+</div>
+
+{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'attach'} %}
 
 </form>
 

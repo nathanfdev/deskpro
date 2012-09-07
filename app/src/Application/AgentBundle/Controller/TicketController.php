@@ -1710,6 +1710,7 @@ class TicketController extends AbstractController
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'agents' => $agents,
+			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
 			'agent_teams' => $agent_teams,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,

@@ -27,7 +27,33 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
-		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+		//------------------------------
+		// Upload handling
+		//------------------------------
+
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			uploadTemplate: $('.template-upload', this.wrapper),
+			downloadTemplate: $('.template-download', this.wrapper)
+		});
+		this.wrapper.bind('fileuploaddone', function() {
+			self.getEl('attach_row').slideDown().removeClass('is-hidden');
+		});
+		this.wrapper.bind('fileuploadstart', function() {
+			self.getEl('attach_row').slideDown().removeClass('is-hidden');;
+		});
+
+		this.wrapper.on('click', '.remove-attach-trigger', function() {
+
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getEl('attach_row'));
+				if (!rows.length) {
+					self.getEl('attach_row').slideUp().addClass('is-hidden');
+				}
+			});
+        });
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
@@ -271,6 +297,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				$('div.message-section.section', this.wrapper).addClass('error');
 				break;
 		}
+		this.getEl('error_section').show();
+		this.updateUi();
 	},
 
 	clearErrorCode: function(code) {
@@ -291,6 +319,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				break;
 		}
 
+		this.getEl('error_section').show();
 		this.updateUi();
 	},
 
