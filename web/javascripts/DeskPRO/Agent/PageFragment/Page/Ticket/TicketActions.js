@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		var wrapper = this.page.wrapper;
 		var actionsButtons = this.getEl('action_buttons');
 
-		this.page.getEl('flag', function() {
+		this.page.getEl('flag').on('change', function() {
 			var value = $(this).val();
 			var prop = self.changeManager.getPropertyManager('flag');
 			self.changeManager.setInstantChange(prop, value);

@@ -66,11 +66,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <form class="value-form" style="display:none">
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 	<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
-	<input type="hidden" name="language_id" class="language_id" value="{{ticket.language.id|default(0)}}" />
-	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
-	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
-	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
-	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
@@ -212,9 +207,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<td>
 					<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
 					<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-					{% if ticket_perms.modify_fields %}<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.general.edit_properties') }}</span></a>{% endif %}
 					{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
-					<a class="clean-white" id="{{baseId}}_newtask"><span>Add Task</span><em></em></a>
 					<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 					{% if ticket_perms.delete %}
 					{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
@@ -226,6 +219,15 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 				</td>
 			</tr></table>
+			{% if ticket.linked_chat %}
+				<div class="sep">-</div>
+				<table cellspacing="0" cellpadding="0" width="100%"><tr>
+					<td>
+						<label>{{ phrase('agent.general.linked_chat') }}</label>
+						<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
+					</td>
+				</tr></table>
+			{% endif %}
 		</article>
 		{{ dp_widget_tabs(baseId, 'ticket', 'headerbox', 'article', ticket_api) }}
 	</section>
@@ -399,42 +401,36 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="profile-box-container">
 	<header>
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
-			(baseId ~ '_fields_display_main_wrap'): phrase('agent.general.properties')
+			(baseId ~ '_fields_display_main_wrap'): 'Fields',
+			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)'
 		}) }}
 	</header>
 	<section class="description-area" style="padding:0">
 		<article id="{{baseId}}_fields_display_main_wrap">
-		<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
-			{% if ticket.linked_chat %}
-			<tr>
-				<th>{{ phrase('agent.general.linked_chat') }}:</th>
-				<td>
-					<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
-				</td>
-			</tr>
-			{% endif %}
+			{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+		</article>
+		<article id="{{baseId}}_tasks_wrap">
+			<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
+				{% if tasks %}
+					<tr>
+						<th>Tasks</th>
+						<td>
+							<ul>
+								{% for task in tasks %}
+									<li>&bull;
+										<a data-route="listpane:{{ path('agent_task_list', {search_type: 'all', search_category: 'total'}) }}">{{ task.title }}</a>
+										{% if task.date_due %}(Due: {{ task.date_due|date('day') }}){% endif %}
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				{% endif %}
+			</table>
 
-			{% if tasks %}
-				<tr>
-					<th>Tasks</th>
-					<td>
-						<ul>
-							{% for task in tasks %}
-								<li>&bull;
-									<a data-route="listpane:{{ path('agent_task_list', {search_type: 'all', search_category: 'total'}) }}">{{ task.title }}</a>
-									{% if task.date_due %}(Due: {{ task.date_due|date('day') }}){% endif %}
-								</li>
-							{% endfor %}
-						</ul>
-					</td>
-				</tr>
-			{% endif %}
-		</table>
-
-		<div class="extra-info fields-show">
-			<div class="info-list" id="{{baseId}}_fields_display_main"></div>
-		</div>
-		<div class="fields-edit" style="display: none;"></div>
+			<div style="padding: 15px;">
+				<a class="clean-white" id="{{baseId}}_newtask"><span>Add Task</span><em></em></a>
+			</div>
 		</article>
 		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>
@@ -544,8 +540,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<dd class="display-content"></dd>
 	</dl>
 </script>
-
-{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
 {% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 

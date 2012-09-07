@@ -35,10 +35,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: self.meta.ticket_id });
 		});
 
-		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
-			wrapper: el
-		});
-		this.ownObject(this.ticketDisplay);
+		this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
+		this.ownObject(this.ticketFields);
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
 
@@ -195,6 +193,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.rescanMessageTypes();
+		this.ticketFields.updateDisplay();
 	},
 
 	rescanMessageTypes: function() {
