@@ -245,7 +245,7 @@ class ErrorReporter
 	{
 		$info = array();
 
-		if ($errinfo['script'] && $errinfo['line']) {
+		if (isset($errinfo['script']) && isset($errinfo['line'])) {
 			$info['local_hash'] = md5('js' . $errinfo['script'] . $errinfo['line']);
 		} else {
 			$info['local_hash'] = md5('js' . $errinfo['message']);

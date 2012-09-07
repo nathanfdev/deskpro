@@ -140,6 +140,13 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			}
 		}
 
+		if (!$person->getPrimaryEmailAddress() && !isset($vars['validating_email'])) {
+			$vars['validating_email'] = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
+			if (!$vars['validating_email']) {
+				return;
+			}
+		}
+
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids, $attach_attachments) {
 
 			$message = App::getMailer()->createMessage();

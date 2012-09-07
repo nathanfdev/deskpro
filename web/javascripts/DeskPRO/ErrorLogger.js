@@ -44,7 +44,7 @@ var DpErrorLog = {
 			window.console.log('[JS Error] %s (%s %d): %s', message, script, line, trace);
 		}
 
-		if (!message || message == 'Script error.' && line == '0') {
+		if (!message || message == 'false' || (message == 'Script error.' && line == '0')) {
 			return;
 		}
 
