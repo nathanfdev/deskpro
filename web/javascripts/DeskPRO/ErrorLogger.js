@@ -69,6 +69,10 @@ var DpErrorLog = {
 				line:    line    || '0'
 			};
 
+			if (data.script.indexOf('#app.') !== -1) {
+				data.script = data.script.replace(/#.*$/, '');
+			}
+
 			$.ajax({
 				url: this.saveUrl,
 				data: data,
