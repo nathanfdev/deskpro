@@ -65,6 +65,7 @@ class CustomDataFeedback extends CustomDataAbstract
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'custom_data_feedback', 'indexes' => array( 'obj_id_idx' => array( 'columns' => array( 0 => 'feedback_id', ), ), 'field_id_idx' => array( 'columns' => array( 0 => 'field_id', 1 => 'feedback_id', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

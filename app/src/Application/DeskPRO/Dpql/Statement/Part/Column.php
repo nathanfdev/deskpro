@@ -274,6 +274,24 @@ class Column extends AbstractPart
 				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
 				return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
+			} else if (preg_match('/^custom_data_/', $assocTable)) {
+				$call = new FunctionCall('if', array(
+					new Column(array_merge($this->parts, array('value'))),
+					new Column(array_merge($this->parts, array('field', 'title'))),
+					new Column(array_merge($this->parts, array('input')))
+				));
+				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name));
+			} else if (preg_match('/^custom_def_/', $assocTable)) {
+				$call = new FunctionCall('if', array(
+					new Column(array_merge($this->parts, array('parent', 'id'))),
+					new Column(array_merge($this->parts, array('parent', 'title'))),
+					new Column(array_merge($this->parts, array('title')))
+				));
+				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name));
 			} else if (isset(self::$_tableResolver[$assocTable])) {
 				$resolver = self::$_tableResolver[$assocTable];
 

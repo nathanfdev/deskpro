@@ -65,6 +65,7 @@ class CustomDataTicket extends CustomDataAbstract
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataTicket';
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'custom_data_ticket', 'indexes' => array( 'obj_id_idx' => array( 'columns' => array( 0 => 'ticket_id', ), ), 'field_id_idx' => array( 'columns' => array( 0 => 'field_id', 1 => 'ticket_id', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

@@ -183,7 +183,7 @@ class Display
 		'labels_tickets' => 'DeskPRO:LabelTicket',
 		'news' => 'DeskPRO:News',
 		'news_comments' => 'DeskPRO:NewsComment',
-		'organizations' => 'DeskPRO:Organizations',
+		'organizations' => 'DeskPRO:Organization',
 		'people' => 'DeskPRO:Person',
 		'people_emails' => 'DeskPRO:PersonEmail',
 		'tasks' => 'DeskPRO:Task',
@@ -249,7 +249,11 @@ class Display
 					foreach ($this->_splitColumnMap AS $splitCondition => $splitColumn)
 					{
 						$splitValue = $splitResult[$splitColumn - 1];
-						$sql->addCondition("$splitCondition = " . $db->quote($splitValue));
+						if ($splitValue === null) {
+							$sql->addCondition("$splitCondition IS NULL");
+						} else {
+							$sql->addCondition("$splitCondition = " . $db->quote($splitValue));
+						}
 					}
 
 					$queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
