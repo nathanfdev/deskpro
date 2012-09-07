@@ -210,10 +210,16 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
 					<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 					{% if ticket_perms.delete %}
-					{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
-						<a class="clean-white nodelete-hide" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.general.ucfirst_delete') }}</span></a>
-						<a class="clean-white noedit-hide" id="{{baseId}}_spam_trigger"><span>{{ phrase('agent.general.spam') }}</span></a>
-					{% endif %}
+						{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
+							<a class="clean-white arrow menu-fitted" id="{{baseId}}_remove_menu_trigger"><span>Remove</span><em></em></a>
+						{% endif %}
+
+						<ul style="display:none" id="{{baseId}}_remove_menu">
+							<li data-action="spam">Set as Spam</li>
+							<li data-action="spam.ban">Set as Spam &amp; Ban User</li>
+							<li data-action="delete">Delete</li>
+							<li data-action="delete.ban">Delete &amp; Ban User</li>
+						</ul>
 					{% endif %}
 					<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
 					<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>

@@ -1542,6 +1542,16 @@ class TicketController extends AbstractController
 			'date_created' => date('Y-m-d H:i:s')
 		));
 
+		if ($this->in->getBool('ban')) {
+			foreach ($ticket->person->emails as $email) {
+				$email_addy = strtolower($email->email);
+				App::getDb()->replace('ban_emails', array(
+					'banned_email' => $email_addy,
+					'is_pattern' => 0
+				));
+			}
+		}
+
 		return $this->createJsonResponse(array(
 			'success' => true
 		));
@@ -1565,6 +1575,16 @@ class TicketController extends AbstractController
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;
+		}
+
+		if ($this->in->getBool('ban')) {
+			foreach ($ticket->person->emails as $email) {
+				$email_addy = strtolower($email->email);
+				App::getDb()->replace('ban_emails', array(
+					'banned_email' => $email_addy,
+					'is_pattern' => 0
+				));
+			}
 		}
 
 		return $this->createJsonResponse(array(

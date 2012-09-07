@@ -614,10 +614,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initTicketActionsMenu: function() {
 		var self = this;
 
-		if (this.meta.ticket_perms['delete']) {
-			this.getEl('delete_trigger').click(function() { self.showDeleteOverlay(); });
-			this.getEl('spam_trigger').click(function() { self.doTicketSpam(); });
-		}
+		var removeMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('remove_menu_trigger'),
+			menuElement: this.getEl('remove_menu'),
+			onItemClicked: function(info) {
+				var it = $(info.itemEl);
+				var doBan = false;
+				if (it.data('action').indexOf('.ban') !== -1) {
+					doBan = true;
+				}
+
+				switch (it.data('action')) {
+					case 'spam':
+					case 'spam.ban':
+						self.doTicketSpam(doBan);
+						break;
+
+					case 'delete':
+					case 'delete.ban':
+						self.showDeleteOverlay(doBan);
+						break;
+				}
+			}
+		});
+
 		this.getEl('print_trigger').click(function() { window.print(); });
 	},
 
@@ -636,8 +656,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}).bind(this));
 	},
 
-	showDeleteOverlay: function() {
+	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
+		this.deleteOverlay.doBan = doBan;
 		this.deleteOverlay.openOverlay();
 	},
 
@@ -651,6 +672,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			name: 'reason',
 			value: $('.delete-reason', this.deleteOverlayEl).val()
 		});
+
+		if (this.deleteOverlay.doBan) {
+			data.push({
+				name: 'ban',
+				value: 1
+			})
+		}
 
 		var self = this;
 
@@ -670,13 +698,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
-	doTicketSpam: function() {
+	doTicketSpam: function(doBan) {
 		var self = this;
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/spam',
 			type: 'POST',
 			dataType: 'json',
+			data: {
+				ban: doBan ? 1 : 0
+			},
 			success: function(data) {
 				DeskPRO_Window.removePage(self);
 
