@@ -88,7 +88,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 	getFormEl: function() {
 		if (this._formEl !== null) return this._formEl;
 
-		this._formEl = $('input.'+this.optionName+':first', this.ticketPage.valueForm);
+		this._formEl = $('[name="ticket['+this.optionName+']"]', this.ticketPage.wrapper).first();
 
 		return this._formEl;
 	}
