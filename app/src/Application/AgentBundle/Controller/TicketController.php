@@ -1246,6 +1246,8 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
 
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
@@ -1273,7 +1275,6 @@ class TicketController extends AbstractController
 				$ticket_edit->save();
 				$this->em->flush();
 
-				$field_manager = $this->container->getSystemService('ticket_fields_manager');
 				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 
 					if (!empty($_POST['custom_fields'])) {
