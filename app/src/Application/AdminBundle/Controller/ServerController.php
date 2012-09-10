@@ -444,4 +444,40 @@ class ServerController extends AbstractController
 
 		return $this->redirectRoute('admin_server_attach');
 	}
+
+	############################################################################
+	# test-email
+	############################################################################
+
+	public function testEmailAction()
+	{
+		if ($this->getRequest()->getMethod() == 'POST') {
+			$tr = $this->em->find('DeskPRO:EmailTransport', $this->in->getUint('email_transport_id'));
+			$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.default_from_email' => $this->in->getString('from')));
+
+			$message = $this->container->getMailer()->createMessage();
+			$message->setTo($this->in->getString('to'));
+			$message->setFrom($this->in->getString('from'));
+			$message->setSubject($this->in->getString('subject'));
+			$message->setBody($this->in->getString('message'));
+			$message->setForceTransport($tr->getTransport());
+
+			$failed = array();
+			$this->container->getMailer()->sendNow($message, $failed);
+
+
+			$log = implode("\n", $this->container->getMailer()->getLogMessages());
+
+			return $this->render('AdminBundle:Server:test-email-result.html.twig', array(
+				'failed' => $failed,
+				'log' => $log,
+			));
+		}
+
+		$all_transports = $this->em->getRepository('DeskPRO:EmailTransport')->findAll();
+
+		return $this->render('AdminBundle:Server:test-email.html.twig', array(
+			'all_transports' => $all_transports,
+		));
+	}
 }

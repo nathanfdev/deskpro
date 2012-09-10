@@ -1974,6 +1974,13 @@ $collection->add('admin_server_mysqlstatus', new Route(
 	array()
 ));
 
+$collection->add('admin_server_testemail', new Route(
+	'/server/test-email',
+	array('_controller' => 'AdminBundle:Server:testEmail'),
+	array(),
+	array()
+));
+
 $collection->add('admin_server_error_logs', new Route(
 	'/server/error-logs',
 	array('_controller' => 'AdminBundle:Server:errorLogs'),

@@ -1,0 +1,37 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>Test Email</li>
+	</ul>
+{% endblock %}
+{% block page %}
+	<div class="check-grid item-list">
+		<table width="100%">
+			<tbody>
+				<tr>
+					<td>Result</td>
+					<td>
+						{% if failed %}
+							Email test reported <strong style="color: #f00;">FAILURE</strong>
+						{% else %}
+							Email test reported <strong style="color: #139300;">SUCCESS</strong>.
+							<hr />
+							<div style="font-size: 11px;">
+								Note that some transports may report success even if the message failed to send.
+								You should still confirm the message arrived in your email inbox.
+							</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td>Log</td>
+					<td>
+						<textarea style="width: 98%; height: 200px; font-family: Monaco, Consolas, 'Courier New', monospace; font-size: 11px;">
+{{ log }}
+						</textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
