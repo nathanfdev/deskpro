@@ -12,6 +12,9 @@
 {% if usersource.id %}
 	<nav>
 		<ul>
+			{% if usersource.isCapable('form_login') %}
+				<li class="test" style="margin-right: 5px;"><a href="{{ path('admin_userreg_usersource_test', {id: usersource.id}) }}">Test</a></li>
+			{% endif %}
 			<li class="delete"><a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.user_registration.confirm_delete_user_source') }}');">{{ phrase('agent.general.delete') }}</a></li>
 		</ul>
 	</nav>

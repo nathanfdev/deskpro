@@ -437,4 +437,48 @@ class UserRegController extends AbstractController
 
 		return $this->redirectRoute('admin_userreg_options');
 	}
+
+	############################################################################
+	# usersource-test
+	############################################################################
+
+	public function usersourceTestAction($id)
+	{
+		/** @var $usersource \Application\DeskPRO\Entity\Usersource */
+		$usersource = $this->em->find('DeskPRO:Usersource', $id);
+		if (!$usersource || !$usersource->isCapable('form_login')) {
+			return $this->redirectRoute('admin_userreg_options');
+		}
+
+		if ($this->getRequest()->getMethod() == 'POST') {
+
+			$adapter = $usersource->getAdapter()->getAuthAdapter();
+
+			$logger = new \Orb\Log\Logger();
+			$arr_wr = new \Orb\Log\Writer\ArrayWriter();
+			$logger->addWriter($arr_wr);
+			$adapter->setLogger($logger);
+
+			/** @var $us \Application\DeskPRO\Entity\Usersource */
+
+			$adapter->setFormData(array(
+				'username' => $this->in->getString('email_address'),
+				'password' => $this->in->getString('password')
+			));
+			$result = $adapter->authenticate();
+
+			$log = implode("\n", $arr_wr->getMessages());
+
+			return $this->render('AdminBundle:UserReg:usersource-test-result.html.twig', array(
+				'usersource' => $usersource,
+				'log' => $log,
+				'result' => print_r($result, 1),
+				'is_valid' => $result->isValid()
+			));
+		}
+
+		return $this->render('AdminBundle:UserReg:usersource-test.html.twig', array(
+			'usersource' => $usersource,
+		));
+	}
 }

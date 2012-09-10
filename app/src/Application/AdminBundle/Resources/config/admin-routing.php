@@ -638,6 +638,13 @@ $collection->add('admin_userreg_usersource_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_userreg_usersource_test', new Route(
+	'/settings/usersources/test/{id}',
+	array('_controller' => 'AdminBundle:UserReg:usersourceTest'),
+	array(),
+	array()
+));
+
 $collection->add('admin_userreg_usersource_toggle', new Route(
 	'/settings/usersources/toggle/{id}',
 	array('_controller' => 'AdminBundle:UserReg:usersourceToggle'),
