@@ -12,7 +12,7 @@
             	{{ phrase('agent.chat.new_agent_reply_by', {'name':performer.name}) }}
 			{% endif %}
 		{% elseif is_new_user_reply %}
-            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name}) }}
+            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% else %}
 			{% for log in log_items %}
 				{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}
