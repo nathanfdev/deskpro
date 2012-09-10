@@ -46,7 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<header>
 			<h4>User</h4>
 		</header>
-		<section id="{{baseId}}_user_section" style="padding: 10px;">
+		<section style="padding: 10px;">
 			<div style="float:right">
 				<button class="clean-white reset">Change User</button>
 			</div>
@@ -60,7 +60,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<header>
 			<h4>User</h4>
 		</header>
-		<section id="{{baseId}}_user_section" style="padding: 10px;">
+		<section style="padding: 10px;">
 			<div style="float:right">
 				<button class="clean-white reset">Change User</button>
 			</div>
@@ -71,7 +71,10 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<header>
-		<h4>User</h4>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>
+			<li data-tab-for="#{{baseId}}_user_section">User</li>
+			<li data-tab-for="#{{baseId}}_cc_section">CC's</li>
+		</ul></nav>
 	</header>
 	<section id="{{baseId}}_user_section" style="padding: 10px;" class="user-section">
 		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.general.change_user') }}</button>
@@ -112,6 +115,41 @@ pageMeta.baseId = '{{ baseId }}';
 
 		</div>
 		<br class="clear" />
+	</section>
+	<section id="{{baseId}}_cc_section" style="padding: 10px; display: none;">
+		<div class="cc-input">
+			<div
+				id="{{baseId}}_user_ccbox"
+				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+				data-position-bound="#{{baseId}}_userccselect"
+			>
+				<input type="text" id="{{baseId}}_userccselect" class="cc-user term" placeholder="{{ phrase('agent.tickets.search_for_people_to_add') }}" />
+
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li>
+						<a>
+						<span class="user-name"></span>
+						<address>&lt;<span class="user-email"></span>&gt;</address>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+						<footer>
+							<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
+						</footer>
+					</section>
+				</div>
+			</div>
+		</div>
+		<ul id="{{baseId}}_cc_list" class="cc-list"></ul>
 	</section>
 </div>
 
@@ -335,7 +373,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<li class="subject-row">
 						<label>Subject:</label>
 						<div>
-							<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
+							<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" placeholder="Enter the ticket subject here" />
 						</div>
 					</li>
 					<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
@@ -347,7 +385,7 @@ pageMeta.baseId = '{{ baseId }}';
 					</li>
 				</ul>
 				<div class="input-wrap">
-					<textarea placeholder="" id="{{baseId}}_message" name="newticket[message]">{% if agent_signature %}
+					<textarea id="{{baseId}}_message" name="newticket[message]" placeholder="Enter your ticket message here">{% if agent_signature %}
 
 
 
