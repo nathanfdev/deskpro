@@ -5,6 +5,19 @@
 {{ form_widget(form.handler_class) }}
 
 <div class="dp-form">
+	{% if field.id %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>
+					ID
+					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the unique Field ID for use in reports or templates."></span>
+				</label>
+			</div>
+			<div class="dp-form-input">
+				{{ field.id }}
+			</div>
+		</div>
+	{% endif %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>{{ phrase('agent.general.title') }}</label>

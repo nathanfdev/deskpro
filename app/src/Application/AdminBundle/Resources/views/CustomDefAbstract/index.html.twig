@@ -11,6 +11,7 @@
 	{% for field in fields %}
 		<li class="short">
 			<header>
+				<span class="field-id tipped" data-tipped="This is the unique Field ID for use in reports or templates.">#{{ field.id }}</span>
 				<h3><a href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">{{field.title}}</a></h3>
 				<div class="check-control">
 					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />
