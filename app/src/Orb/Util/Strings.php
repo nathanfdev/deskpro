@@ -1370,6 +1370,7 @@ class Strings
 	public static function convertToUtf8($string, $from_charset)
 	{
 		if (strtoupper($from_charset) == 'UTF-8') {
+			$string = self::utf8_bad_strip($string);
 			return $string;
 		}
 
@@ -1392,6 +1393,8 @@ class Strings
 		} else if (strtoupper($from_charset) == 'ISO-8859-1') {
 			$new = utf8_encode($string);
 		}
+
+		$new = self::utf8_bad_strip($new);
 
 		return $new;
 	}
@@ -1678,7 +1681,7 @@ class Strings
 				if ( !isset($matches[2])) {
 					echo $matches[0];
 				}
-				$string = substr($str,strlen($matches[0]));
+				$string = substr($string,strlen($matches[0]));
 
 				// Going too long, the string is clearly corrupt!
 				if (time() - $time > 6) {
