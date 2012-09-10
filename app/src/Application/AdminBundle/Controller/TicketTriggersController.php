@@ -147,8 +147,8 @@ class TicketTriggersController extends AbstractController
 
 		} else {
 			$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->find($trigger_id);
-			if ($this->in->getString('trigger.event_trigger_option')) {
-				$trigger['event_trigger_option'] = $this->in->getString('trigger.event_trigger_option');
+			if ($this->in->getUint('event_trigger_time')) {
+				$trigger->event_trigger_option = $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
 			}
 
 			if (!$trigger || $trigger->isUneditable()) {
