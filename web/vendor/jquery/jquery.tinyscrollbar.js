@@ -187,8 +187,16 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					return;
 				}
 
-				oViewport[options.axis] = oViewport.obj[0]['offset'+ sSize];
-				oContent[options.axis] = oContent.obj[0]['scroll'+ sSize];
+				var newViewportS = oViewport.obj[0]['offset'+ sSize];
+				var newContentS = oContent.obj[0]['scroll'+ sSize];
+
+				// No change
+				if (newViewportS == oViewport[options.axis] && newContentS == oContent[options.axis]) {
+					return;
+				}
+
+				oViewport[options.axis] = newViewportS;
+				oContent[options.axis] = newContentS;
 				oContent.ratio = oViewport[options.axis] / oContent[options.axis];
 				if (oContent.ratio >= 1) {
 					oScrollbar.obj.addClass('disable');
