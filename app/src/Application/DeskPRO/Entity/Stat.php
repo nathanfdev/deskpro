@@ -231,6 +231,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			case 'TotalUserWaitingTicketResolvedTime':
 			case 'TicketFirstResponseTime':
 			case 'TotalTicketMessages':
+			default:
 				$stat->grouping_ref = 'tickets.agent_id';
 				break;
 		}
