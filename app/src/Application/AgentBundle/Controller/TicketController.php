@@ -761,7 +761,7 @@ class TicketController extends AbstractController
 
 		$person = null;
 		if ($this->in->getUint('person_id')) {
-			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('perosn_id'));
+			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		} elseif ($email_address = $this->in->getString('email_address')) {
 
 			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {

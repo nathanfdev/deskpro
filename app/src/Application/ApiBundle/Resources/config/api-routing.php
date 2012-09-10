@@ -80,17 +80,87 @@ $collection->add('api_ticketsearch_filters_getresults', new Route(
 # Tickets
 ################################################################################
 
-$collection->add('api_tickets', new Route(
-	'/tickets/',
+$collection->add('api_tickets_ticket', new Route(
+	'/tickets/{ticket_id}',
 	array('_controller' => 'ApiBundle:Ticket:getTicket'),
 	array('_method' => 'GET', 'ticket_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('api_tickets_ticket', new Route(
+$collection->add('api_tickets_ticket_post', new Route(
 	'/tickets/{ticket_id}',
-	array('_controller' => 'ApiBundle:Ticket:getTicket'),
+	array('_controller' => 'ApiBundle:Ticket:postTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_delete', new Route(
+	'/tickets/{ticket_id}',
+	array('_controller' => 'ApiBundle:Ticket:deleteTicket'),
+	array('_method' => 'DELETE', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_spam', new Route(
+	'/tickets/{ticket_id}/reply',
+	array('_controller' => 'ApiBundle:Ticket:replyTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_spam', new Route(
+	'/tickets/{ticket_id}/spam',
+	array('_controller' => 'ApiBundle:Ticket:spamTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_lock', new Route(
+	'/tickets/{ticket_id}/lock',
+	array('_controller' => 'ApiBundle:Ticket:postLockTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_unlock', new Route(
+	'/tickets/{ticket_id}/unlock',
+	array('_controller' => 'ApiBundle:Ticket:postUnlockTicket'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_participants', new Route(
+	'/tickets/{ticket_id}/participants',
+	array('_controller' => 'ApiBundle:Ticket:getParticipants'),
 	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_participants_post', new Route(
+	'/tickets/{ticket_id}/participants',
+	array('_controller' => 'ApiBundle:Ticket:postParticipants'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_participant_delete', new Route(
+	'/tickets/{ticket_id}/participants/{person_id}',
+	array('_controller' => 'ApiBundle:Ticket:deleteParticipant'),
+	array('_method' => 'DELETE', 'ticket_id' => '\\d+', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_labels_post', new Route(
+	'/tickets/{ticket_id}/labels',
+	array('_controller' => 'ApiBundle:Ticket:postLabels'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_label_delete', new Route(
+	'/tickets/{ticket_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Ticket:deleteLabel'),
+	array('_method' => 'DELETE', 'ticket_id' => '\\d+'),
 	array()
 ));
 

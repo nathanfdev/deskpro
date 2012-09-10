@@ -74,8 +74,9 @@ class TicketEdit implements PersonContextInterface
 
 		if ($this->person_context) {
 			$tcheck = $this->person_context->PermissionsManager->TicketChecker;
+		} else {
+			$tcheck = null;
 		}
-		$tcheck = null;
 
 		foreach ($actions as $term => $action) {
 
@@ -121,9 +122,9 @@ class TicketEdit implements PersonContextInterface
 
 					if ($this->person_context) {
 						$agent = $this->in->checkIsset('agent');
-						if ($agent == $this->person_context->id && !$tcheck->canModify($ticket, 'assign_self')) {
+						if ($agent == $this->person_context->id && !$tcheck->canModify($this->ticket, 'assign_self')) {
 							$agent = null;
-						} elseif (!$tcheck->canModify($ticket, 'assign_agent')) {
+						} elseif (!$tcheck->canModify($this->ticket, 'assign_agent')) {
 							$agent = null;
 						}
 

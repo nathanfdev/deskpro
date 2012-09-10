@@ -1,5 +1,0 @@
-<?php
-use Application\DeskPRO\Domain\DomainObject;
-
-$OUTPUT = $ticket->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
-$OUTPUT['person'] = $ticket['person']->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);

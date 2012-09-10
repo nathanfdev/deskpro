@@ -42,10 +42,16 @@ use Doctrine\Common\PropertyChangedListener;
 use Orb\Util\Util;
 
 /**
- * The basic entitiy class
+ * The basic entity class
  */
 abstract class DomainObject extends BasicDomainObject
 {
+	const API_MODE_OPT_OUT = 1;
+	const API_MODE_OPT_IN = 2;
+
+	protected $_api_mode = self::API_MODE_OPT_OUT;
+
+
 	/**
 	 * @return \Doctrine\ORM\EntityRepository
 	 */
@@ -114,5 +120,63 @@ abstract class DomainObject extends BasicDomainObject
 		$this->$field = $value;
 
 		$this->_onPropertyChanged($field, $old, $value);
+	}
+
+	public function toApiData($deep = true, array $visited = array())
+	{
+		$repository = static::getRepository();
+		if (!method_exists($repository, 'getFieldMappings')) {
+			return array();
+		}
+
+		$values = array();
+		$visited[] = $this;
+
+		foreach ($repository->getFieldMappings() AS $name => $field) {
+			if ($this->_api_mode == self::API_MODE_OPT_IN && empty($field['dpApi'])) {
+				continue;
+			} elseif ($this->_api_mode == self::API_MODE_OPT_OUT && isset($field['dpApi']) && !$field['dpApi']) {
+				continue;
+			}
+
+			$val = $this[$name];
+
+			if ($val instanceof \DateTime) {
+				$values[$name] = $val->format('Y-m-d H:i:s');
+			} else {
+				$values[$name] = $val;
+			}
+		}
+
+		if ($deep) {
+			foreach ($repository->getAssociationMappings() AS $name => $association) {
+				if (empty($association['dpApi'])) {
+					continue;
+				}
+
+				$val = $this[$name];
+
+				$subDeep = !empty($association['dpApiDeep']);
+				if (in_array($val, $visited)) {
+					$subDeep = false;
+				}
+
+				if ($val instanceof DomainObject) {
+					$values[$name] = $val->toApiData($subDeep, $visited);
+				} else if (is_array($val) || $val instanceof \Traversable) {
+					$output = array();
+
+					foreach ($val AS $key => $sub) {
+						if ($sub instanceof \Application\DeskPRO\Domain\DomainObject) {
+							$output[$key] = $sub->toApiData($subDeep, $visited);
+						}
+					}
+
+					$values[$name] = $output;
+				}
+			}
+		}
+
+		return $values;
 	}
 }

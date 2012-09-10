@@ -163,4 +163,34 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		return $this->createJsonResponse($data, $status = 200);
 	}
+
+
+
+	/**
+	 * Creates an API success response
+	 *
+	 * @return Response
+	 */
+	public function createSuccessResponse()
+	{
+		return $this->createApiResponse(array('success' => true));
+	}
+
+
+
+	public function getApiData($input, $deep = true)
+	{
+		if (is_array($input) || $input instanceof \Traversable) {
+			$output = array();
+			foreach ($input AS $key => $value) {
+				if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {
+					$output[$key] = $value->toApiData($deep);
+				}
+			}
+
+			return $output;
+		}
+
+		return false;
+	}
 }
