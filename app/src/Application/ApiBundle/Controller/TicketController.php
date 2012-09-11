@@ -35,10 +35,172 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket AS Ticket;
+use Application\DeskPRO\App;
 
 
 class TicketController extends AbstractController
 {
+	public function newTicketAction()
+	{
+		if (!$this->person->hasPerm('agent_tickets.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$errors = array();
+
+		$person = false;
+		$org = false;
+
+		if ($this->in->checkIsset('person_id')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
+			if (!$person) {
+				$errors['person_id'] = array('invalid_person', 'Invalid person ID');
+			}
+		} else if ($this->in->checkIsset('person_email')) {
+			$email = $this->in->getString('person_email');
+
+			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+				$errors['person_email'] = array('invalid_email', 'Invalid email address');
+			} else {
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+				if (!$person) {
+					$person = new \Application\DeskPRO\Entity\Person();
+					$person->setEmail($email);
+					$person->setName($this->in->getString('person_name'));
+
+					if ($this->in->checkIsset('person_organization')) {
+						$orgName = $this->in->getString('person_organization');
+
+						$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($orgName);
+						if (!$org) {
+							$org = new \Application\DeskPRO\Entity\Organization();
+							$org['name'] = $orgName;
+						}
+
+						$person->organization = $org;
+						$person->organization_position = $this->in->getString('person_organization_position');
+					}
+				}
+			}
+		} else {
+			$errors['person_id'] = array('required_field', 'person_id or person_email missing');
+		}
+
+		$subject = $this->in->getString('subject');
+		if ($subject === '') {
+			$errors['subject'] = array('required_field', 'subject missing or empty');
+		}
+
+		$messageText = $this->in->getString('message');
+		if ($messageText === '') {
+			$errors['message'] = array('required_field', 'message missing or empty');
+		}
+
+		if ($this->in->checkIsset('agent_id')) {
+			$agentId = $this->in->getUint('agent_id');
+			if ($agentId) {
+				$agent = $this->em->getRepository('DeskPRO:Person')->findOneById($agentId);
+				if (!$agent || !$agent->is_agent) {
+					$errors['agent_id'] = array('invalid_argument', 'Not an agent');
+				}
+			}
+		} else {
+			$agentId = $this->person->id;
+		}
+
+		$ticket = new Ticket();
+
+		$fields = array(
+			'department_id' => 'Uint',
+			'language_id' => 'Uint',
+			'category_id' => 'Uint',
+			'agent_team_id' => 'Uint',
+			'product_id' => 'Uint',
+			'priority_id' => 'Uint',
+			'workflow_id' => 'Uint',
+			'urgency' => 'Uint',
+		);
+
+		$editor = App::getApi('tickets')->getTicketEditor($ticket);
+		$editor->setPersonContext($this->person);
+
+		foreach ($fields AS $field => $cleanType) {
+			if ($this->in->checkIsset($field)) {
+				$value = $this->in->{'get' . $cleanType}($field);
+				try {
+					$editor->applyActions(array($field => $value));
+				} catch (\InvalidArgumentException $e) {
+					$errors[$field] = array("invalid_argument", $e->getMessage());
+				}
+			}
+		}
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
+
+		$ticket->creation_system = Ticket::CREATED_WEB_API;
+		$ticket->language = $person->getRealLanguage();
+
+		$ticket->person = $person;
+		if (!$person->id) {
+			$ticket->person_email = $person->getPrimaryEmail();
+		}
+
+		$ticket->subject = $subject;
+		$ticket->status = $this->in->getString('status') ?: 'awaiting_agent';
+		$ticket->agent_id = $agentId;
+
+		$message = new \Application\DeskPRO\Entity\TicketMessage();
+		$message->person = $this->person;
+		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
+
+		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
+		$snip->snippet = $messageText;
+		$messageText = $snip->snippetFormatted($ticket, $ticket->person);
+
+		$message->setMessageText($messageText);
+
+		$ticket->addMessage($message);
+
+		$this->db->beginTransaction();
+
+		try {
+			if (!$person->id) {
+				$this->em->persist($person);
+				$this->em->flush();
+			}
+			$this->em->persist($ticket);
+			$this->em->flush();
+			$this->em->persist($message);
+			$this->em->flush();
+
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->request->request->get('fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $ticket);
+			}
+
+			$this->em->flush();
+
+			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			if ($labels) {
+				$ticket->getLabelManager()->setLabelsArray($labels);
+				$this->em->flush();
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createApiCreateResponse(
+			array('ticket_id' => $ticket->id),
+			$this->generateUrl('api_tickets_ticket', array('ticket_id' => $ticket->id), true)
+		);
+	}
+
 	public function getTicketAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -53,29 +215,48 @@ class TicketController extends AbstractController
 		$fields = array(
 			'department_id' => 'Uint',
 			'language_id' => 'Uint',
+			'category_id' => 'Uint',
 			'agent_id' => 'Uint',
 			'agent_team_id' => 'Uint',
 			'product_id' => 'Uint',
 			'priority_id' => 'Uint',
 			'workflow_id' => 'Uint',
-			'language_id' => 'String',
-			'is_hold' => 'Boolean',
+			'status' => 'String',
+			'is_hold' => 'Bool',
 			'flag' => 'string',
 			'urgency' => 'Uint',
 		);
-		$actions = array();
-
-		foreach ($fields AS $field => $cleanType) {
-			if ($this->in->checkIsset($field)) {
-				$actions[$field] = $this->in->{'get' . $cleanType}($field);
-			}
-		}
 
 		$editor = App::getApi('tickets')->getTicketEditor($ticket);
 		$editor->setPersonContext($this->person);
-		$editor->applyActions($actions);
+
+		$errors = array();
+
+		foreach ($fields AS $field => $cleanType) {
+			if ($this->in->checkIsset($field)) {
+				$value = $this->in->{'get' . $cleanType}($field);
+				try {
+					$editor->applyActions(array($field => $value));
+				} catch (\InvalidArgumentException $e) {
+					$errors[$field] = array("invalid_argument", $e->getMessage());
+				}
+			}
+		}
+
+		if ($this->in->checkIsset('is_locked')) {
+			if ($this->in->getBool('is_locked')) {
+				$ticket->setLockedByAgent($this->person);
+			} else {
+				$ticket->setLockedByAgent(null);
+			}
+		}
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
 
 		$this->db->beginTransaction();
+
 		try {
 			$this->em->persist($ticket);
 
@@ -137,26 +318,71 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function undeleteTicketAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id, 'delete');
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$ticket->setStatus('awaiting_agent');
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getTicketMessagesAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		return $this->createApiResponse(array('messages' => $this->getApiData($ticket->messages)));
+	}
+
+	public function getTicketMessageAction($ticket_id, $message_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$message = $this->em->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			WHERE m.ticket = ?0 AND m.id = ?1
+		")->setParameters(array($ticket, $message_id))->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$message) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Message $message_id not found in $ticket_id");
+		}
+
+		return $this->createApiResponse(array('message' => $message->toApiData()));
+	}
+
 	public function replyTicketAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'reply');
+
+		if ($this->in->getString('message') === '') {
+			return $this->createApiErrorResponse('required_field', "message cannot be empty");
+		}
 
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
 		$message['ip_address'] = $this->request->getClientIp();
-		$message['creation_system'] = 'web.api';
+		$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 		$message->setMessageText($this->in->getString('message'));
 
-		if ($this->in->getBool('note')) {
+		if ($this->in->getBool('is_note')) {
 			$message['is_agent_note'] = true;
 		}
 
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createApiResponse(array(
 				'dupe_message' => true,
-				'message_id' => $dupe_message['id'],
-				'time' => $dupe_message->date_created->getTimestamp()
+				'message_id' => $dupe_message['id']
 			));
 		}
 
@@ -177,7 +403,46 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
+		return $this->createApiCreateResponse(
+			array('message_id' => $message->id),
+			$this->generateUrl('api_tickets_ticket_message', array('ticket_id' => $ticket->id, 'message_id' => $message->id), true)
+		);
+	}
+
+	public function claimTicketAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id, 'assign_self');
+
+		$ticket->agent_id = $this->person->id;
+		$this->em->persist($ticket);
+		$this->em->flush();
+
 		return $this->createSuccessResponse();
+	}
+
+	public function mergeTicketAction($ticket_id, $merge_ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id, 'modify_merge');
+		$other_ticket = $this->_getTicketOr404($merge_ticket_id, 'modify_merge');
+
+		$old_ticket_id = $other_ticket['id'];
+
+		try {
+			$this->em->beginTransaction();
+			$merge = new \Application\DeskPRO\Tickets\TicketMerge\TicketMerge($this->person, $ticket, $other_ticket);
+			$merge->merge();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $this->createApiResponse(array(
+			'success' => true,
+			'ticket_id' => $ticket['id'],
+			'old_ticket_id' => $old_ticket_id
+		));
 	}
 
 	public function spamTicketAction($ticket_id)
@@ -208,12 +473,30 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-	public function postLockAction($ticket_id)
+	public function unspamTicketAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id, 'delete');
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$ticket->setStatus('awaiting_agent');
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function lockTicketAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
 
 		if ($ticket->hasLock()) {
-			return $this->createApiErrorResponse('action.impossible', 'Ticket already locked');
+			return $this->createApiErrorResponse('action_impossible', 'Ticket already locked');
 		}
 
 		$ticket->setLockedByAgent($this->person);
@@ -223,7 +506,7 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-	public function postUnlockAction($ticket_id)
+	public function unlockTicketAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
 
@@ -250,7 +533,7 @@ class TicketController extends AbstractController
 		$person = null;
 		if ($this->in->getUint('person_id')) {
 			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
-		} elseif ($email_address = $this->in->getString('email_address')) {
+		} elseif ($email_address = $this->in->getString('email')) {
 			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
 				return $this->createApiErrorResponse('invalid_email', 'Invalid email address');
 			}
@@ -261,14 +544,16 @@ class TicketController extends AbstractController
 				$person = new \Application\DeskPRO\Entity\Person();
 				$person->setEmail($email_address);
 			}
+		} else {
+			return $this->createApiErrorResponse('required_field', 'person_id or email must be provided');
 		}
 
 		if (!$person) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			return $this->createApiErrorResponse('not_found', 'Person not found');
 		}
 
 		if ($person->id && $ticket->hasParticipantPerson($person)) {
-			return $this->createSuccessResponse();
+			return $this->createApiResponse(array('person_id' => $person->id));
 		}
 
 		$this->db->beginTransaction();
@@ -291,7 +576,10 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createSuccessResponse();
+		return $this->createApiCreateResponse(
+			array('person_id' => $part->person->id),
+			$this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $part->person->id), true)
+		);
 	}
 
 	public function deleteParticipantAction($ticket_id, $person_id)
@@ -327,6 +615,13 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getLabelsAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		return $this->createApiResponse(array('labels' => $this->getApiData($ticket->labels)));
+	}
+
 	public function postLabelsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_labels');
@@ -340,10 +635,24 @@ class TicketController extends AbstractController
 		$this->em->persist($ticket);
 		$this->em->flush();
 
-		return $this->createSuccessResponse();
+		return $this->createApiCreateResponse(
+			array('label' => $label),
+			$this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'label' => $label), true)
+		);
 	}
 
-	public function deleteLabelsAction($ticket_id, $label)
+	public function getLabelAction($ticket_id, $label)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		if ($ticket->getLabelManager()->hasLabel($label)) {
+			return $this->createApiResponse(array('exists' => true));
+		} else {
+			return $this->createApiResponse(array('exists' => false));
+		}
+	}
+
+	public function deleteLabelAction($ticket_id, $label)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_labels');
 
@@ -352,6 +661,14 @@ class TicketController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getFieldsAction()
+	{
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$fields = $field_manager->getFields();
+
+		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
 	}
 
 	/**

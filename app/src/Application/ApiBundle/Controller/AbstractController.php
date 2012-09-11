@@ -125,9 +125,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function preAction($action, $arguments = null)
 	{
 		if (!$this->apikey) {
-			$response = $this->createResponse('', 401, array(
+			$response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key', 401);
+			$response->headers->add(array(
 				'WWW-Authenticate' => 'Basic realm="API"'
 			));
+
 			return $response;
 		}
 	}
@@ -147,6 +149,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return $this->createJsonResponse(array(
 			'error_code' => $error_code,
 			'error_message' => $error_message
+		), $status);
+	}
+
+	public function createApiMultipleErrorResponse(array $errors, $status = 400)
+	{
+		return $this->createJsonResponse(array(
+			'error_code' => 'multiple',
+			'errors' => $errors
 		), $status);
 	}
 
@@ -174,6 +184,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function createSuccessResponse()
 	{
 		return $this->createApiResponse(array('success' => true));
+	}
+
+
+
+	public function createApiCreateResponse(array $data, $url)
+	{
+		$response = $this->createJsonResponse($data, $status = 200);
+		$response->headers->add(array('Location' => $url));
+
+		return $response;
 	}
 
 

@@ -77,6 +77,7 @@ class TicketEdit implements PersonContextInterface
 		} else {
 			$tcheck = null;
 		}
+		/** @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
 
 		foreach ($actions as $term => $action) {
 
@@ -121,7 +122,7 @@ class TicketEdit implements PersonContextInterface
 				case 'agent_id':
 
 					if ($this->person_context) {
-						$agent = $this->in->checkIsset('agent');
+						$agent = true;
 						if ($agent == $this->person_context->id && !$tcheck->canModify($this->ticket, 'assign_self')) {
 							$agent = null;
 						} elseif (!$tcheck->canModify($this->ticket, 'assign_agent')) {
@@ -140,10 +141,10 @@ class TicketEdit implements PersonContextInterface
 				case 'agent_team_id':
 
 					if ($this->person_context) {
-						$team = $this->in->checkIsset('agent_team');
-						if ($this->person_context->Agent->isTeamMember($team) && !$tcheck->canModify($ticket, 'assign_self')) {
+						$team = true;
+						if ($this->person_context->Agent->isTeamMember($team) && !$tcheck->canModify($this->ticket, 'assign_self')) {
 							$team = null;
-						} elseif (!$tcheck->canModify($ticket, 'assign_team')) {
+						} elseif (!$tcheck->canModify($this->ticket, 'assign_team')) {
 							$team = null;
 						}
 
@@ -184,19 +185,19 @@ class TicketEdit implements PersonContextInterface
 
 				case 'status':
 					if ($this->person_context) {
-						$status = $this->in->checkIsset('status');
+						$status = true;
 
 						// Switching to or from closed
-						if (($status == 'closed' || $ticket->status == 'closed') && !$tcheck->canSetClosed($ticket)) {
+						if (($status == 'closed' || $this->ticket->status == 'closed') && !$tcheck->canSetClosed($this->ticket)) {
 							$status = null;
 						}
-						if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
+						if ($status == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {
 							$status = null;
 						}
-						if ($status == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+						if ($status == 'awaiting_agent' && !$tcheck->canModify($this->ticket, 'set_awaiting_agent')) {
 							$status = null;
 						}
-						if ($status == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
+						if ($status == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
 							$status = null;
 						}
 						if (!$status) {

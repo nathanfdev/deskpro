@@ -47,6 +47,7 @@ use Application\DeskPRO\Markdown;
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
 	const CREATED_WEB = 'web';
+	const CREATED_WEB_API = 'web.api';
 	const CREATED_GATEWAY = 'gateway';
 
 	/**
