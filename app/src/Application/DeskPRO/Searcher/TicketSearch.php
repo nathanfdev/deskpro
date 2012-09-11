@@ -884,6 +884,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
 					break;
 				case self::TERM_DATE_CLOSED:
+					$this->enableArchiveSearch();
 					$this->affected_fields[] = 'ticket.date_closed';
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
