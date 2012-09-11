@@ -98,7 +98,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 					li.append('<ul/>');
 				}
 				if (child) {
-					li.addClass('sub-expanded').addClass('has-children').children('ul').append(ui.draggable);
+					li.addClass('has-children').children('ul').append(ui.draggable);
 				} else {
 					li.before(ui.draggable);
 				}
