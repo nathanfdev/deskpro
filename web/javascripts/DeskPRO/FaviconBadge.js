@@ -13,7 +13,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		this.options.strokeColor = 'rgb(255,0,0)';
 		this.options.color = '#FFFFFF';
 
-		this.options.strokeColorAlt = 'rgb(255,255,255)';
+		this.options.strokeColorAlt = 'rgb(0,0,0)';
 		this.options.colorAlt = '#FFFFFF';
 
 		$(document).bind('windowshow', this.disableCrazyMode.bind(this));
