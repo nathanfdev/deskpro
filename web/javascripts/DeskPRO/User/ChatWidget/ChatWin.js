@@ -422,6 +422,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					data = {};
 				}
 
+				if (data.phrase_id && data.phrase_id == 'message_assigned') {
+					return;
+				}
+
 				if (data.phrase_id) {
 					message = DeskPRO_Window.getTranslate().phrase('user.chat.' + data.phrase_id, data, true);
 				} else {
