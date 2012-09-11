@@ -54,7 +54,7 @@ class Generic implements ForwardDef, QuoteDef
 
 		foreach ($body as $ln => $l) {
 			$l = preg_replace('#^\s*>+\s*#', '', $l);
-			if (preg_match('#^(From|To|Date|Subject):(.*?)$#i', $l)) {
+			if (preg_match('#^(From|Sent|To|Date|Subject):(.*?)$#i', $l)) {
 				if (!$start_line) {
 					$start_line = $ln;
 				}
@@ -112,7 +112,7 @@ class Generic implements ForwardDef, QuoteDef
 			}
 		}
 
-		$forward_data['message_body'] = $parts[0];
+		$forward_data['message_body'] = trim($parts[0]);
 
 		#------------------------------
 		# Split the forwarded message into
@@ -140,25 +140,27 @@ class Generic implements ForwardDef, QuoteDef
 			return $forward_data;
 		}
 
-		$forward_data['fwd_message_headers'] = $fwd_parts[0];
-		$forward_data['fwd_message_body']    = $fwd_parts[1];
+		$forward_data['fwd_message_headers'] = trim($fwd_parts[0]);
+		$forward_data['fwd_message_body']    = trim($fwd_parts[1]);
 
 		#------------------------------
 		# Try to read the email address from the fwd headers
 		#------------------------------
 
 		$pos = stripos($forward_data['fwd_message_headers'], 'from');
-		if (!$pos) {
+		if ($pos === false) {
 			return $forward_data;
 		}
 
 		$from_str = substr($forward_data['fwd_message_headers'], $pos);
 		$m = null;
 
-		// From: Name <email@tdl.com>
-		if (preg_match('#From:\s*(.*?)\s*<(.*?)@(.*?)>#i', $from_str, $m)) {
+		$from_str = str_replace('mailto:', '', $from_str);
+
+		// From: Name <email@tdl.com> or Name [email@tdl.com]
+		if (preg_match('#From:\s*(.*?)\s*(<|\[)(.*?)@(.*?)(>|\])#i', $from_str, $m)) {
 			$forward_data['fwd_from_name'] = $m[1];
-			$forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
+			$forward_data['fwd_from_email'] = $m[3] . '@' . $m[4];
 
 		// From: email@tdl.com
 		} elseif (preg_match('#From:\s*<?(.*?)@(.*?)>?#i', $from_str, $m)) {

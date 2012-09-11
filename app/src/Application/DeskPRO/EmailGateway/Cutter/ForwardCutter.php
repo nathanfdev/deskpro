@@ -162,7 +162,7 @@ class ForwardCutter
 	 */
 	public function getUserEmailAddress()
 	{
-		return $This->forward_info['fwd_from_email'];
+		return $this->forward_info['fwd_from_email'];
 	}
 
 
