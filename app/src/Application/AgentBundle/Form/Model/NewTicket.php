@@ -198,6 +198,7 @@ class NewTicket
 			$attach['person'] = $this->_person_context;
 
 			$message->addAttachment($attach);
+			$ticket->addAttachment($attach);
 		}
 
 		$ticket->addMessage($message);
