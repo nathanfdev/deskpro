@@ -10,6 +10,17 @@
 		'is_managed' => false
 	),
 
+	'german' => array(
+		'id'         => 'german',
+		'lang_code'  => 'ger',
+		'title'      => 'German',
+		'locale'     => 'de',
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'italian' => array(
 		'id'         => 'italian',
 		'lang_code'  => 'ita',
@@ -52,17 +63,6 @@
 		'has_admin'  => false,
 		'is_managed' => true
 	),
-
-	'french' => array(
-		'id'         => 'french',
-		'lang_code'  => 'fre',
-		'title'      => 'French',
-		'locale'     => 'fr',
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	)
 
 	/*
 
