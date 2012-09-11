@@ -168,7 +168,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	handleNewMessageCm: function(data, name) {
 
 		// Ignore our own messages, unless its a file then we have a rendered version from the server
-		if (data.author_type && data.author_type == 'agent' && data.from_client == DESKPRO_SESSION_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
+		if (data.author_type && data.author_type == 'agent' && data.author_id && data.author_id == DESKPRO_PERSON_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
 			return;
 		}
 
