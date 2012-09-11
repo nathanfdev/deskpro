@@ -95,11 +95,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	updateDisplay: function() {
 		var fields = this.fieldDisplay.getFields(this.ticketReader.getDepartmentId());
-		if (!fields || !fields.default) {
-			fields.default = [];
+		if (!fields || !fields['default']) {
+			fields['default'] = [];
 		}
 
-		fields = fields.default;
+		fields = fields['default'];
 
 		// Check to see if the fields are the same and in the same order
 		if (fields.length == this.currentDisplay.length) {
