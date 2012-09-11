@@ -25,6 +25,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	addRow: function(html_or_el) {
 		var row = $(html_or_el);
 		row.addClass('msg-row');
+		row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
 		var type = row.data('type');
 
 		$('time.timeago', row).text('').attr('datetime', (new Date()).toUTCString());
