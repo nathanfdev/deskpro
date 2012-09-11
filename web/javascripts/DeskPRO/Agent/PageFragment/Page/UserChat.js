@@ -259,7 +259,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	userTyping: function(data) {
-		if (!data.preview || !data.preview.length) {
+		if (!data || !data.preview || !data.preview.length) {
 			this.getEl('user_typing').hide();
 			return;
 		}
@@ -386,10 +386,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
-		if (type == 'user') {
-			this.userTyping({ preview: '' });
-		}
-
 		if (type == 'sys') {
 			name = '* ';
 		} else {
@@ -403,6 +399,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		var addclass = '';
 		if (metadata && metadata.new_user_track) {
+			this.userTyping();
 			addclass = 'user-track';
 			notify = false;
 		}
@@ -412,6 +409,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			} else if (type == 'agent') {
 				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time>');
 			} else if (type == 'user') {
+				this.userTyping();
 				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
 			}
 		html.push('</div></div>');
