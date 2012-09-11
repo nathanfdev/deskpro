@@ -443,6 +443,24 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		var conversation_id = data.conversation_id;
+
+		// If we already have the chat tab open, it probably means the chat was timed out
+		// but the user came back
+		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
+		var found = false;
+		Array.each(chatTabs, function(t) {
+			if (t.meta && t.meta.conversation_id && parseInt(t.meta.conversation_id) == parseInt(conversation_id)) {
+				found = t;
+				return false;
+			}
+		});
+
+		if (found) {
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + conversation_id, {ignoreExist:true});
+			found.closeSelf();
+			return;
+		}
+
 		var alertEl = $(data.html);
 		alertEl.appendTo('body');
 		DeskPRO_Window.handleSoundElements(alertEl);
