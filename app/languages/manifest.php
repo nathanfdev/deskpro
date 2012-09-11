@@ -51,6 +51,17 @@
 		'has_agent'  => false,
 		'has_admin'  => false,
 		'is_managed' => true
+	),
+
+	'french' => array(
+		'id'         => 'french',
+		'lang_code'  => 'fre',
+		'title'      => 'French',
+		'locale'     => 'fr',
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
 	)
 
 	/*
