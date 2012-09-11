@@ -267,6 +267,27 @@ class ChatController extends AbstractController
 		$sessionObj = $this->get('session');
 		$session = $sessionObj->getEntity();
 
+		// User is blocked
+		$ip = $this->getRequest()->getClientIp();
+		$visitor_id = 0;
+		if ($session->visitor) {
+			$visitor_id = $session->visitor->getId();
+		}
+
+		$date = new \DateTime('-24 hours');
+		$blocked = $this->container->getDb()->fetchColumn("
+			SELECT id FROM chat_blocks
+			WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
+		", array($ip, $visitor_id, $date->format('Y-m-d H:i:s')));
+
+		if ($blocked) {
+			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
+			$response->setLastModified(date_create('-1 day'));
+			$response->setExpires(date_create("-1 day"));
+			$response->headers->set('Content-Type', 'text/javascript');
+			return $response;
+		}
+
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
 
 		// True to allow fetching of chats w/ timeout
