@@ -161,7 +161,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container chat-box" id="{{ baseId }}_chat_view">
 	<header>
-		<h4>{{ phrase('agent.general.chat') }}</h4>
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>
+			<li data-tab-for="#{{baseId}}_chat">{{ phrase('agent.general.chat') }}</li>
+			{% if convo.visitor %}
+				<li data-tab-for="#{{baseId}}_session">Visitor Information</li>
+			{% endif %}
+		</ul></nav>
 	</header>
 	<section>
 		<article id="{{baseId}}_chat" class="chat-tab">
@@ -254,6 +259,38 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 		</article>
+		{% if convo.visitor %}
+			<article id="{{baseId}}_session" style="direction: none;">
+				<div class="field-holders">
+					<div class="item-on first">
+						<div class="title">IP Address:</div>
+						<div class="content">
+							{{ convo.visitor.ip_address }}
+						</div>
+					</div>
+					<div class="item-on">
+						<div class="title">User Agent:</div>
+						<div class="content">
+							{{ convo.visitor.user_agent }}
+						</div>
+					</div>
+					{% if convo.visitor.landing_page %}
+					<div class="item-on">
+						<div class="title">Landing Page:</div>
+						<div class="content">
+							{{ convo.visitor.landing_page }}
+						</div>
+					</div>
+					{% endif %}
+					<div class="item-on">
+						<div class="title">First Visit Time:</div>
+						<div class="content">
+							{{ convo.visitor.date_last|date('fulltime') }}
+						</div>
+					</div>
+				</div>
+			</article>
+		{% endif %}
 	</section>
 </div>
 
