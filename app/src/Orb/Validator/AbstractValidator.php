@@ -196,7 +196,7 @@ abstract class AbstractValidator implements ValidatorInterface
 	public function getErrorsDebug()
 	{
 		$ret = array();
-		foreach ($this->errors as $errcode) {
+		foreach ($this->errors as $k => $errcode) {
 			$line = $errcode;
 			if (!empty($this->errors_info[$k])) {
 				$line .= " :: " . $this->errors_info[$k];
