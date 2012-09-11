@@ -334,7 +334,7 @@ class ChatController extends AbstractController
 
 			// The transcript is sent automatically by the chat manager,
 			// set this flag so the JS knows though
-			$sent_transcript = (($convo->person && $convo->person->getPrimaryEmailAddress()) || $convo->person_email);
+			$sent_transcript = ((($convo->person && $convo->person->getPrimaryEmailAddress()) || $convo->person_email) && $convo->date_first_agent_message);
 		}
 
 		return $this->createJsonResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));

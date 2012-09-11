@@ -729,6 +729,10 @@ class UserChatManager
 	 */
 	public function autoSendChatTranscript(ChatConversation $convo)
 	{
+		if (!$convo->date_first_agent_message) {
+			return false;
+		}
+
 		$email = '';
 		$name = '';
 		if ($convo->person && $convo->person->getPrimaryEmailAddress()) {
