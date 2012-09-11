@@ -121,23 +121,40 @@ class PersonFromEmailProcessor
 		} else {
 			$person = Entity\Person::newContactPerson();
 			$person->name = $from->getNameUtf8();
-			$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
 
-			if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
-				$person->is_agent_confirmed = false;
+			if ($do_validated) {
+				$email = new \Application\DeskPRO\Entity\PersonEmail();
+				$email->setEmail($from->getEmail());
+				$email->person = $person;
+
+				App::getOrm()->persist($person);
+				App::getOrm()->flush();
+
+				$person->addEmailAddress($email);
+				App::getOrm()->persist($person);
+				App::getOrm()->persist($email);
+
+			} else {
+				$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
+
+				if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+					$person->is_agent_confirmed = false;
+				}
+
+				$email_validating = new Entity\PersonEmailValidating();
+				$email_validating->email = $from->getEmail();
+				$email_validating->person = $person;
+				$person->email_validating = $email_validating;
+
+				App::getOrm()->persist($person);
+				App::getOrm()->persist($email_validating);
 			}
-
-			$email_validating = new Entity\PersonEmailValidating();
-			$email_validating->email = $from->getEmail();
-			$email_validating->person = $person;
-			$person->email_validating = $email_validating;
-			App::getOrm()->persist($person);
-			App::getOrm()->persist($email_validating);
 		}
 
 		if ($do_validated) {
 			$person['is_confirmed'] = true;
 			$person['is_agent_confirmed'] = true;
+			App::getOrm()->persist($person);
 		}
 
 		App::getOrm()->flush();

@@ -627,7 +627,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
 					continue;
 				}
-				$cc_person = $person_processor->createPerson($cc);
+				$cc_person = $person_processor->createPerson($cc, true);
 				$this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
 			}
 
