@@ -430,6 +430,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
+			// If the document is too complex then htmlpurifier can crash, lets use the plaintext version instead
+			if (substr_count($email_info['body'], '>') > 15000) {
+				$this->logMessage('[TicketGatewayProcessor] Document too long, using plaintext');
+				$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
+				if ($email_info['body']) {
+					$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+				} else {
+					$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBodyUtf8());
+					$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+				}
+				$email_info['body_is_html'] = false;
+			}
+
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
