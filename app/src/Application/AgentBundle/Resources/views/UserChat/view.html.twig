@@ -97,6 +97,14 @@ pageMeta.baseId = '{{ baseId }}';
                                 <div class="clear"></div>
                             </dd>
                         </dl>
+
+						{% if convo.person and convo.person.id != session.person.id %}
+							<div style="font-size: 11px; margin: 0 0 2px 13px;">
+								<strong style="color: #d00;">{{ phrase('agent.chat.warning') }}</strong>:
+								User is not logged in
+								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.chat.warning_email_address_not_unique') }}"></span>
+							</div>
+						{% endif %}
                     </article>
 					{{ dp_widget_tabs(baseId, 'chat', 'people', 'article', convo_api) }}
                 </section>
@@ -226,13 +234,6 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
 				<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
-				{% if convo.person and convo.person.id != session.person.id %}
-					<div class="impersonation-warning" id="{{baseId}}_imposter">
-						<strong>{{ phrase('agent.chat.warning') }}</strong>
-						<p>{{ phrase('agent.chat.warning_email_address_not_unique') }}</p>
-						<button class="clean-white small dismiss">{{ phrase('agent.general.dismiss') }}</button>
-					</div>
-				{% endif %}
 				<nav>
 					<ul class="option-buttons">
 						<li class="tipped attach" title="{{ phrase('agent.general.attachments') }}">
