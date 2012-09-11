@@ -65,9 +65,9 @@ class UserChatController extends AbstractController
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-		if ($convo->status == 'open') {
-			$chat_manager->personJoined($convo, $this->person);
+		$chat_manager->personJoined($convo, $this->person);
 
+		if ($convo->status == 'open') {
 			if (!$convo['agent']) {
 				$chat_manager->assignAgent($convo, $this->person);
 			}
@@ -411,14 +411,14 @@ class UserChatController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+		$chat_manager->personLeft($convo, $this->person);
+
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		if ($convo->status == 'open') {
-			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
-			$chat_manager->personLeft($convo, $this->person);
-
 			switch ($this->in->getString('action')) {
 				case 'unassign':
-					if ($convo->agent) {
+					if ($convo->agent && $convo->agent->getId() == $this->person->getId()) {
 						$chat_manager->unassignAgent($convo);
 					}
 					break;

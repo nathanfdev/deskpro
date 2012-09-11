@@ -67,7 +67,7 @@ class ChatChecker extends AbstractChecker
 		# then we know right away they can view
 		#------------------------------
 
-		if ($convo->agent && $convo->agent->id = $this->person->id) {
+		if ($convo->agent && $convo->agent->id == $this->person->id) {
 			return true;
 		}
 

@@ -298,7 +298,7 @@ class UserChatManager
 
 	/**
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
-	 * @param \Application\DeskPRO\Entity\Person $who
+	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return void
 	 */
 	public function personJoined(ChatConversation $convo, Person $person)
@@ -311,6 +311,7 @@ class UserChatManager
 		try {
 
 			$convo->addParticipant($person);
+			$this->em->persist($convo);
 
 			$this->addSystemMessage(
 				$convo,
@@ -339,6 +340,7 @@ class UserChatManager
 		try {
 
 			$convo->removeParticipant($person);
+			$this->em->persist($convo);
 
 			$this->addSystemMessage(
 				$convo,
