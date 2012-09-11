@@ -246,6 +246,12 @@ class DetectFilterMatches
 			}
 
 			foreach ($agent_scopes as $agent) {
+
+				$agent->loadHelper('Agent');
+				$agent->loadHelper('AgentTeam');
+				$agent->loadHelper('AgentPermissions');
+				$agent->loadHelper('PermissionsManager');
+
 				$reset_status = false;
 				if ($filter->sys_name) {
 					// System filters are special in that we ignore status
@@ -271,10 +277,10 @@ class DetectFilterMatches
 
 				$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
 
-				if ($orig_match) {
+				if ($orig_match && $agent->PermissionsManager->TicketChecker->canView($orig_ticket)) {
 					$changed[$filter->id]['orig_match'][] = $agent;
 				}
-				if ($new_match) {
+				if ($new_match && $agent->PermissionsManager->TicketChecker->canView($new_ticket)) {
 					$changed[$filter->id]['new_match'][] = $agent;
 				}
 
