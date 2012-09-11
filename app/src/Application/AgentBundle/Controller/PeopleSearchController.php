@@ -42,6 +42,8 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
+use Application\AgentBundle\Controller\Helper\PeopleResults;
+
 use Application\DeskPRO\UI\RuleBuilder;
 
 /**
@@ -149,7 +151,7 @@ class PeopleSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	protected function _getResponseForPeople($type, $type_id, $results_helper, array $vars = array())
+	protected function _getResponseForPeople($type, $type_id, PeopleResults $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
 		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
