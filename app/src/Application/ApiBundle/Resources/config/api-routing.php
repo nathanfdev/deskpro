@@ -52,31 +52,6 @@ $collection->add('api_ping_object_updated', new Route(
 ));
 
 ################################################################################
-# Ticket search
-################################################################################
-
-$collection->add('api_ticketsearch_filters_getnames', new Route(
-	'/ticket-search/get-filter-names',
-	array('_controller' => 'ApiBundle:TicketSearch:getFilterNames'),
-	array('_method' => 'GET'),
-	array()
-));
-
-$collection->add('api_ticketsearch_filters_getcounts', new Route(
-	'/ticket-search/get-filter-counts',
-	array('_controller' => 'ApiBundle:TicketSearch:getFilterCounts'),
-	array('_method' => 'GET'),
-	array()
-));
-
-$collection->add('api_ticketsearch_filters_getresults', new Route(
-	'/ticket-search/filters/{filter_id}/get-results',
-	array('_controller' => 'ApiBundle:TicketSearch:getFilterResults'),
-	array('_method' => 'GET', 'filter_id' => '\\d+'),
-	array()
-));
-
-################################################################################
 # Tickets
 ################################################################################
 
@@ -241,5 +216,29 @@ $collection->add('api_tickets_fields', new Route(
 	array()
 ));
 
+################################################################################
+# Ticket filters
+################################################################################
+
+$collection->add('api_tickets', new Route(
+	'/tickets',
+	array('_controller' => 'ApiBundle:TicketSearch:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_filters', new Route(
+	'/tickets/filters',
+	array('_controller' => 'ApiBundle:TicketSearch:getFilters'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_filter', new Route(
+	'/tickets/filters/{filter_id}',
+	array('_controller' => 'ApiBundle:TicketSearch:getFilter'),
+	array('_method' => 'GET', 'filter_id' => '\\d+'),
+	array()
+));
 
 return $collection;

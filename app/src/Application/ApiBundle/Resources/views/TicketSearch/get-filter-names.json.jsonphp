@@ -1,8 +1,0 @@
-<?php
-$OUTPUT['filters'] = array();
-foreach ($filters as $filter) {
-	$OUTPUT['filters'][] = array(
-		'id' => $filter['id'],
-		'title' => $filter['title']
-	);
-}
