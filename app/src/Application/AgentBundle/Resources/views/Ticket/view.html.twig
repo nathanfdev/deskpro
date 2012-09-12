@@ -153,8 +153,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					<td>
 						<label>Department</label>
 						{% if ticket_perms.modify_department %}
+							{% set blank_option = false %}
+							{% if not ticket.department %}{% set blank_option = true %}{% endif %}
 							{% include 'AgentBundle:Common:select-department.html.twig' with {
 								'name': "department_id",
+								'with_blank': blank_option,
+								'blank_title': 'None',
 								'class': department_id,
 								'selected': ticket.department.id|default(0),
 								'id': baseId ~ '_department_id',

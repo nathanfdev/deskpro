@@ -785,9 +785,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->message = $email_info['body'];
 		$newticket->ticket->message_raw = $email_info['body_raw'];
 		$newticket->ticket->message_is_html = true;
-
-		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");
-		$newticket->ticket->department_id = $dep_id;
+		$newticket->ticket->department_id = null;
 
 		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
 			$this->logMessage('[TicketGatewayProcessor] Setting ticket email: ' . $this->gateway_address->match_pattern);

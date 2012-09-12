@@ -479,10 +479,9 @@ class TicketSearch extends SearcherAbstract
 		if ($this->person AND $this->person['is_agent']) {
 
 			$where_perm = array();
-			$where = '((';
 
 			if ($this->person->getDisallowedDepartments()) {
-				$where_perm[] = "tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ")";
+				$where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL)";
 			}
 
 			if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {

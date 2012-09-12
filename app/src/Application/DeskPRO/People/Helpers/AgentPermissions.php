@@ -137,6 +137,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 				$this->_allowed_ids[$r['app']] = array();
 			}
 			$this->_allowed_ids[$r['app']][] = $r['department_id'];
+
+			$dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
+			if ($dep && $dep->parent) {
+				$this->_allowed_ids[$r['app']][] = $dep->parent->getId();
+			}
 		}
 
 		if (!isset($this->_allowed_ids[$context])) {
