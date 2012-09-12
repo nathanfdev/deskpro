@@ -637,7 +637,7 @@ class TicketController extends AbstractController
 
 		return $this->createApiCreateResponse(
 			array('label' => $label),
-			$this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'label' => $label), true)
+			$this->generateUrl('api_tickets_ticket_label', array('ticket_id' => $ticket->id, 'label' => $label), true)
 		);
 	}
 

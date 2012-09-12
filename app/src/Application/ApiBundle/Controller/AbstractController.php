@@ -179,11 +179,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * Creates an API success response
 	 *
+	 * @param array $extra
+	 * @param integer $status
+	 *
 	 * @return Response
 	 */
-	public function createSuccessResponse()
+	public function createSuccessResponse(array $extra = array(), $status = 200)
 	{
-		return $this->createApiResponse(array('success' => true));
+		return $this->createApiResponse(array('success' => true) + $extra, $status);
 	}
 
 

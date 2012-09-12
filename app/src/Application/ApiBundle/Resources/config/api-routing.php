@@ -241,4 +241,148 @@ $collection->add('api_tickets_filter', new Route(
 	array()
 ));
 
+################################################################################
+# People
+################################################################################
+
+$collection->add('api_people', new Route(
+	'/people',
+	array('_controller' => 'ApiBundle:Person:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_people_person', new Route(
+	'/people/{person_id}',
+	array('_controller' => 'ApiBundle:Person:getPerson'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_post', new Route(
+	'/people/{person_id}',
+	array('_controller' => 'ApiBundle:Person:postPerson'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_delete', new Route(
+	'/people/{person_id}',
+	array('_controller' => 'ApiBundle:Person:deletePerson'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_reset_password', new Route(
+	'/people/{person_id}/reset-password',
+	array('_controller' => 'ApiBundle:Person:resetPassword'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_notes', new Route(
+	'/people/{person_id}/notes',
+	array('_controller' => 'ApiBundle:Person:getPersonNotes'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_notes_post', new Route(
+	'/people/{person_id}/notes',
+	array('_controller' => 'ApiBundle:Person:postPersonNotes'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_notes_note', new Route(
+	'/people/{person_id}/notes/{note_id}',
+	array('_controller' => 'ApiBundle:Person:getPersonNote'),
+	array('_method' => 'GET', 'person_id' => '\\d+', 'note_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_contact_details', new Route(
+	'/people/{person_id}/contact-details',
+	array('_controller' => 'ApiBundle:Person:getPersonContactDetails'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_contact_detail', new Route(
+	'/people/{person_id}/contact-details/{contact_id}',
+	array('_controller' => 'ApiBundle:Person:getPersonContactDetail'),
+	array('_method' => 'GET', 'person_id' => '\\d+', 'contact_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_contact_detail_delete', new Route(
+	'/people/{person_id}/contact-details/{contact_id}',
+	array('_controller' => 'ApiBundle:Person:deletePersonContactDetail'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+', 'contact_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_groups', new Route(
+	'/people/{person_id}/groups',
+	array('_controller' => 'ApiBundle:Person:getPersonGroups'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_groups_post', new Route(
+	'/people/{person_id}/groups',
+	array('_controller' => 'ApiBundle:Person:postPersonGroups'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_group', new Route(
+	'/people/{person_id}/groups/{usergroup_id}',
+	array('_controller' => 'ApiBundle:Person:getPersonGroup'),
+	array('_method' => 'GET', 'person_id' => '\\d+', 'usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_group_delete', new Route(
+	'/people/{person_id}/groups/{usergroup_id}',
+	array('_controller' => 'ApiBundle:Person:deletePersonGroup'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+', 'usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_labels', new Route(
+	'/people/{person_id}/labels',
+	array('_controller' => 'ApiBundle:Person:getPersonLabels'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_labels_post', new Route(
+	'/people/{person_id}/labels',
+	array('_controller' => 'ApiBundle:Person:postPersonLabels'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_label', new Route(
+	'/people/{person_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Person:getPersonLabel'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_label_delete', new Route(
+	'/people/{person_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Person:deletePersonLabel'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_fields', new Route(
+	'/people/fields',
+	array('_controller' => 'ApiBundle:Person:getFields'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;

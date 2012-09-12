@@ -1,0 +1,555 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage ApiBundle
+ */
+
+namespace Application\ApiBundle\Controller;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Entity\Person;
+
+class PersonController extends AbstractController
+{
+	const TERM_PERSON_FIELD       = 'person_field';
+
+
+	public function searchAction()
+	{
+		$search_map = array(
+			'organization_id' => PersonSearch::TERM_ORGANIZATION,
+			'language_id' => PersonSearch::TERM_LANGUAGE,
+			'email' => PersonSearch::TERM_EMAIL,
+			'email_domain' => PersonSearch::TERM_EMAIL_DOMAIN,
+			'name' => PersonSearch::TERM_NAME,
+			'label' => PersonSearch::TERM_LABEL,
+			'usergroup_id' => PersonSearch::TERM_USERGROUP,
+			'alpha' => PersonSearch::TERM_ALPHA,
+			'phone' => PersonSearch::TERM_CONTACT_PHONE,
+			'address' => PersonSearch::TERM_CONTACT_ADDRESS,
+			'im' => PersonSearch::TERM_CONTACT_IM,
+			'agent_team' => PersonSearch::TERM_AGENT_TEAM,
+			'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED
+		);
+
+		$terms = array();
+
+		foreach ($search_map AS $input => $search_key) {
+			$value = $this->in->getCleanValueArray($input, 'raw', 'discard');
+			if ($value) {
+				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+			}
+		}
+
+		if ($this->in->getBool('is_agent')) {
+			$terms[] = array('type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'contains', 'options' => 1);
+		}
+
+		$date_created_start = $this->in->getUint('date_created_start');
+		$date_created_end = $this->in->getUint('date_created_end');
+		if ($date_created_end) {
+			$terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+				'date1' => $date_created_start,
+				'date2' => $date_created_end
+			));
+		} else if ($date_created_start) {
+			$terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+				'date1' => $date_created_start
+			));
+		}
+
+		foreach ($this->container->getSystemService('person_fields_manager')->getFields() as $field) {
+			if ($this->in->checkIsset("fields." . $field->getId())) {
+				$in_val = $this->in->getString('fields.'.$field->getId());
+				if ($in_val) {
+					$terms[] = array('type' => 'person_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
+				}
+			}
+		}
+
+		$order_by = $this->person->getPref('agent.ui.people-filter-order-by.0');
+		if (!$order_by) {
+			$order_by = 'people.id:asc';
+		}
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		if ($this->in->checkIsset('cache')) {
+			$cache = $this->in->getUint('cache');
+		} else {
+			$cache = 3600;
+		}
+
+		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
+
+		$query_params = array(
+			$this->person->id,
+			serialize($terms),
+			serialize($extra),
+			$cache_date->format('Y-m-d H:i:s')
+		);
+
+		$id = $this->db->fetchColumn('
+			SELECT id
+			FROM result_cache
+			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
+			ORDER BY date_created DESC
+			LIMIT 1
+		', $query_params);
+
+		if ($id) {
+			$result_cache = $this->em->createQuery('
+				SELECT r
+				FROM DeskPRO:ResultCache r
+				WHERE r.id = ?0
+			')->setParameters(array($id))->getOneOrNullResult();
+		} else {
+			$result_cache = null;
+		}
+
+		if (!$result_cache) {
+			$searcher = new PersonSearch();
+			$searcher->setPerson($this->person);
+			foreach ($terms AS $term) {
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+			}
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
+			$result_cache->person = $this->person;
+			$result_cache->results = $results;
+			$result_cache->criteria = $terms;
+			$result_cache->num_results = count($results);
+			$result_cache->setExtraData('order_by', $order_by);
+
+			$this->em->persist($result_cache);
+			$this->em->flush();
+		}
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$person_ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
+		$people = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($person_ids),
+			'people' => $this->getApiData($people)
+		));
+	}
+
+	public function getPersonAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array('person' => $person->toApiData()));
+	}
+
+	public function postPersonAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$name = $this->in->getString('name');
+		if ($name) {
+			$person->name = $name;
+		}
+
+		$org = null;
+
+		if ($this->in->checkIsset('organization')) {
+			$organization = $this->in->getString('organization');
+			if ($organization !== '') {
+				$org = $this->em->getRepository('DeskPRO:Organization')->getByName($organization);
+
+				if (!$org) {
+					$org = new Organization();
+					$org->name = $organization;
+				}
+
+				$person->organization = $org;
+			} else {
+				$person->organization = null;
+				$person->organization_position = '';
+			}
+		} else if ($this->in->checkIsset('organization_id')) {
+			$organization_id = $this->in->getUint('organization_id');
+			if ($organization_id) {
+				$org = $this->em->getRepository('DeskPRO:Organization')->find($organization_id);
+			}
+
+			if ($org) {
+				$person->organization = $org;
+			} else {
+				$person->organization = null;
+				$person->organization_position = '';
+			}
+		}
+
+		if ($this->in->checkIsset('organization_position') && $person->organization) {
+			$person->organization_position = $this->in->getString('organization_position');
+		}
+
+		if ($this->in->checkIsset('timezone') && in_array($this->in->getString('timezone'), \DateTimeZone::listIdentifiers())) {
+			$person->timezone = $this->in->getString('timezone');
+		}
+
+		if ($this->in->checkIsset('primary_email') && $this->person->hasPerm('agent_people.manage_emails')) {
+			$person->setEmail($this->in->getString('primary_email'));
+		}
+
+		$bulk_set = array(
+			'summary' => 'String',
+			'disable_autoresponses' => 'Bool'
+		);
+		foreach ($bulk_set AS $input => $type) {
+			if ($this->in->checkIsset($input)) {
+				$person->$input = $this->in->{'get' . $type}($input);
+			}
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			if ($org) {
+				$this->em->persist($org);
+			}
+			$this->em->persist($person);
+
+			$field_manager = $this->container->getSystemService('person_fields_manager');
+			$post_custom_fields = $this->request->request->get('fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $person, true);
+			}
+			$this->em->flush();
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deletePersonAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'delete');
+
+		$edit_manager = $this->container->getSystemService('person_edit_manager');
+		$edit_manager->setPersonContext($this->person);
+		$edit_manager->deleteUser($person);
+
+		return $this->createSuccessResponse();
+	}
+
+	public function resetPasswordAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'reset_password');
+
+		$password = $this->in->getString('password');
+		if (!$password) {
+			return $this->createApiErrorResponse('required_field', 'password field is missing or empty');
+		}
+
+		if ($this->in->checkIsset('send_email')) {
+			$send_email = $this->in->getBool('send_email');
+		} else {
+			$send_email = true;
+		}
+
+		$person->setPassword($password);
+		$this->em->persist($person);
+
+		if ($send_email) {
+			$message = $this->container->getMailer()->createMessage();
+			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+			$message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+				'person' => $person
+			));
+			$message->enableQueueHint();
+			$this->container->getMailer()->send($message);
+		}
+
+		return $this->createSuccessResponse(array('send_email' => $send_email));
+	}
+
+	public function getPersonNotesAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+		$notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+
+		return $this->createApiResponse(array('notes' => $this->getApiData($notes)));
+	}
+
+	public function postPersonNotesAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'notes');
+
+		$note_text = $this->in->getString('note');
+		if (!$note_text) {
+			return $this->createApiErrorResponse('required_field', 'note field is empty or missing');
+		}
+
+		$note = new \Application\DeskPRO\Entity\PersonNote();
+		$note['agent'] = $this->person;
+		$note['person'] = $person;
+		$note['note'] = $note_text;
+
+		$this->em->persist($note);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $note->id),
+			$this->generateUrl('api_people_person_notes_note', array('person_id' => $person->id, 'note_id' => $note->id), true)
+		);
+	}
+
+	public function getPersonContactDetailsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array('details' => $this->getApiData($person->contact_data)));
+	}
+
+	public function getPersonContactDetailAction($person_id, $contact_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		foreach ($person->contact_data AS $contact) {
+			if ($contact->id == $contact_id) {
+				return $this->createApiResponse(array('exists' => true));
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => false));
+	}
+
+	public function deletePersonContactDetailAction($person_id, $contact_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		foreach ($person->contact_data AS $key => $contact) {
+			if ($contact->id == $contact_id) {
+				unset($person->contact_data[$key]);
+				$this->em->persist($person);
+				$this->em->flush();
+				break;
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getPersonGroupsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array('groups' => $this->getApiData($person->usergroups)));
+	}
+
+	public function postPersonGroupsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$group_id = $this->in->getUint('id');
+
+		$match = $this->db->fetchColumn('
+			SELECT id
+			FROM usergroups
+			WHERE id = ?
+				AND sys_name IS NULL
+		', array($group_id));
+		if (!$match) {
+			return $this->createApiErrorResponse('required_field', 'id must be specified as a non-system group');
+		}
+
+		$exists = false;
+		foreach ($person->usergroups AS $group) {
+			if ($group->id == $group_id) {
+				$exists = true;
+			}
+		}
+
+		if (!$exists) {
+			$this->db->insert('person2usergroups', array(
+				'person_id' => $person->id,
+				'usergroup_id' => $group_id
+			));
+		}
+
+		return $this->createApiCreateResponse(
+			array('id' => $group_id),
+			$this->generateUrl('api_people_person_group', array('person_id' => $person->id, 'usergroup_id' => $group_id), true)
+		);
+	}
+
+	public function getPersonGroupAction($person_id, $usergroup_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		foreach ($person->usergroups AS $group) {
+			if ($group->id == $usergroup_id) {
+				return $this->createApiResponse(array('exists' => true));
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => false));
+	}
+
+	public function deletePersonGroupAction($person_id, $usergroup_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		foreach ($person->usergroups AS $key => $group) {
+			if ($group->id == $usergroup_id) {
+				unset($person->usergroups[$key]);
+				$this->em->persist($person);
+				$this->em->flush();
+				break;
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getPersonLabelsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array('labels' => $this->getApiData($person->labels)));
+	}
+
+	public function postPersonLabelsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+		$label = $this->in->getString('label');
+
+		if ($label === '') {
+			return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
+		}
+
+		$person->getLabelManager()->addLabel($label);
+		$this->em->persist($person);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('label' => $label),
+			$this->generateUrl('api_people_person_label', array('person_id' => $person->id, 'label' => $label), true)
+		);
+	}
+
+	public function getPersonLabelAction($person_id, $label)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		if ($person->getLabelManager()->hasLabel($label)) {
+			return $this->createApiResponse(array('exists' => true));
+		} else {
+			return $this->createApiResponse(array('exists' => false));
+		}
+	}
+
+	public function deletePersonLabelAction($person_id, $label)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$person->getLabelManager()->removeLabel($label);
+		$this->em->persist($person);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getFieldsAction()
+	{
+		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$fields = $field_manager->getFields();
+
+		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+	}
+
+	public function isPersonEditable(Person $person)
+	{
+		if ($this->person->can_admin) {
+			return true;
+		}
+
+		if ($person->is_agent && $person->getId() != $this->person->getId()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param integer $id
+	 * @return \Application\DeskPRO\Entity\Person
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	protected function _getPersonOr404($id, $check_perm = '')
+	{
+		$person = $this->em->getRepository('DeskPRO:Person')->findOneById($id);
+
+		if (!$person) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no person with ID $id");
+		}
+
+		if ($check_perm) {
+			switch ($check_perm) {
+				case 'edit':
+				case 'delete':
+				case 'reset_password':
+				case 'manage_emails':
+				case 'notes':
+					if (!$this->person->hasPerm('agent_people.' . $check_perm) || !$this->isPersonEditable($person)) {
+						throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+					}
+					break;
+
+				default:
+					throw new \Exception("Uknown perm type $check_perm");
+			}
+		}
+
+		return $person;
+	}
+}

@@ -87,7 +87,7 @@ class TicketSearchController extends AbstractController
 		$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
 
 		$extra = array();
-		if ($order_by) {
+		if ($order_by !== null) {
 			$extra['order_by'] = $order_by;
 		}
 
@@ -161,7 +161,6 @@ class TicketSearchController extends AbstractController
 			'total' => $helper->getCount(),
 			'tickets' => $this->getApiData($helper->getTicketsForPage($page, $per_page))
 		));
-		//$results = Arrays::castToType($results, 'integer');
 	}
 
 	/**
