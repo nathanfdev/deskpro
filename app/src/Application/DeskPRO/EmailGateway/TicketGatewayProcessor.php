@@ -936,7 +936,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person) {
 			$person_processor->passPerson($person_email_item, $person);
 		} else {
-			$person = $person_processor->createPerson($person_email_item, false);
+			$person = $person_processor->createPerson($person_email_item, true);
 		}
 
 		#------------------------------
@@ -948,6 +948,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$person
 		);
 		$newticket->setPersonContext($person);
+		$newticket->gateway = $this->gateway;
+		$newticket->gateway_address = $this->gateway_address;
+
+		if ($this->logger) {
+			$newticket->logger = $this->logger;
+		}
 
 		$newticket->ticket->subject = $email_info['subject'];
 
@@ -955,10 +961,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->message = $body;
 
 		App::getOrm()->beginTransaction();
-		$ticket = $newticket->save();
+		$ticket = $newticket->save(array('agent' => $agent));
 
-		$ticket['agent'] = $agent;
-		App::getOrm()->persist($ticket);
+		if ($this->reader->hasProperty('email_source')) {
+			$message = $newticket->new_message;
+			$message['email'] = $fwd_cutter->getUserEmailItem()->getEmail();
+			$message['email_source'] = $this->reader->getProperty('email_source');
+
+			App::getOrm()->persist($message);
+			App::getOrm()->flush();
+		}
 
 		App::getOrm()->commit();
 
@@ -974,9 +986,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$agent_message->person = $agent;
 			$agent_message['message'] = $agent_reply;
 
+			$ticket->setStatus('awaiting_user');
 			$ticket->addMessage($agent_message);
 
 			App::getOrm()->persist($ticket);
+			App::getOrm()->flush($ticket);
 			App::getOrm()->commit();
 		}
 

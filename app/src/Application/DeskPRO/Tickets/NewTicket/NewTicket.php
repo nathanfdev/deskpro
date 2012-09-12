@@ -110,7 +110,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		}
 	}
 
-	public function save()
+	public function save(array $set_extra = array())
 	{
 		App::getOrm()->beginTransaction();
 
@@ -338,6 +338,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 			$this->new_message = $ticket_message;
 			$ticket->addMessage($ticket_message);
+
+			foreach ($set_extra as $k => $v) {
+				$ticket[$k] = $v;
+			}
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();

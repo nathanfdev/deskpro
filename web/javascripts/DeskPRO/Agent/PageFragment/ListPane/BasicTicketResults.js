@@ -17,6 +17,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		this.autoAddAjax = {};
 
         $('.extra-fields .agent .agent_link', this.el).on('click', function(ev) {
             var agent_id = $(this).parent().data('prop-value');
@@ -200,6 +201,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			return;
 		}
 
+		var exist = self.getEl('results_wrap').find('article.ticket-' + ticket_id);
+		if (exist[0] && exist.hasClass('removing')) {
+			return;
+		}
+
 		this.resultsHelper.prependResultId(ticket_id);
 
 		if (this.resultsHelper.getCurrentPage() == 1) {
@@ -212,10 +218,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				}
 			}
 
-			$.ajax({
+			this.autoAddAjax[ticket_id] = $.ajax({
 				url: url,
 				dataType: 'html',
 				context: this,
+				complete: function() {
+					if (this.autoAddAjax[ticket_id]) delete this.autoAddAjax[ticket_id];
+				},
 				success: function(html) {
 					var el = $(html);
 					el.hide();
@@ -271,6 +280,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	delTicket: function(ticket_id) {
 		var self = this;
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
+
+		if (this.autoAddAjax[ticket_id]) {
+			this.autoAddAjax[ticket_id].abort();
+			if (this.autoAddAjax[ticket_id]) delete this.autoAddAjax[ticket_id];
+		}
+
+		if (!el[0]) {
+			return;
+		}
 
 		el.addClass('removing');
 		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
