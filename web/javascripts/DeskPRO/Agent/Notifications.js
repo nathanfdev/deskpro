@@ -56,6 +56,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.addRow(row);
 	},
 
+	findRow: function(id_class) {
+		var row = $('#dp_notify_list').find('> li.' + id_class);
+
+		if (!row[0]) {
+			return null;
+		}
+
+		return row;
+	},
+
 	removeRow: function(row) {
 		var type = row.data('type');
 		var ev = { row: row, type: type };

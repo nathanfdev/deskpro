@@ -164,6 +164,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				});
 			});
 		}
+
+		// Dismiss the notification at the same time
+		var notifRow = DeskPRO_Window.notifications.findRow('id-chat-' + this.meta.conversation_id);
+		if (notifRow) {
+			DeskPRO_Window.notifications.removeRow(notifRow);
+		}
 	},
 
 	handleNewMessageCm: function(data, name) {
