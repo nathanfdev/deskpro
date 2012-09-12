@@ -385,4 +385,155 @@ $collection->add('api_people_fields', new Route(
 	array()
 ));
 
+$collection->add('api_people_groups', new Route(
+	'/people/groups',
+	array('_controller' => 'ApiBundle:Person:getGroups'),
+	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
+# Organizations
+################################################################################
+
+$collection->add('api_organizations', new Route(
+	'/organizations',
+	array('_controller' => 'ApiBundle:Organization:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_organizations_organization', new Route(
+	'/organizations/{organization_id}',
+	array('_controller' => 'ApiBundle:Organization:getOrganization'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_post', new Route(
+	'/organizations/{organization_id}',
+	array('_controller' => 'ApiBundle:Organization:postOrganization'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_delete', new Route(
+	'/organizations/{organization_id}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganization'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
+/*$collection->add('api_organizations_organization_notes', new Route(
+	'/organizations/{organization_id}/notes',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationNotes'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_notes_post', new Route(
+	'/organizations/{organization_id}/notes',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationNotes'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_notes_note', new Route(
+	'/organizations/{organization_id}/notes/{note_id}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationNote'),
+	array('_method' => 'GET', 'organization_id' => '\\d+', 'note_id' => '\\d+'),
+	array()
+));*/
+
+$collection->add('api_organizations_organization_contact_details', new Route(
+	'/organizations/{organization_id}/contact-details',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationContactDetails'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_contact_detail', new Route(
+	'/organizations/{organization_id}/contact-details/{contact_id}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationContactDetail'),
+	array('_method' => 'GET', 'organization_id' => '\\d+', 'contact_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_contact_detail_delete', new Route(
+	'/organizations/{organization_id}/contact-details/{contact_id}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationContactDetail'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+', 'contact_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_groups', new Route(
+	'/organizations/{organization_id}/groups',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationGroups'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_groups_post', new Route(
+	'/organizations/{organization_id}/groups',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationGroups'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_group', new Route(
+	'/organizations/{organization_id}/groups/{usergroup_id}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationGroup'),
+	array('_method' => 'GET', 'organization_id' => '\\d+', 'usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_group_delete', new Route(
+	'/organizations/{organization_id}/groups/{usergroup_id}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationGroup'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+', 'usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_labels', new Route(
+	'/organizations/{organization_id}/labels',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationLabels'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_labels_post', new Route(
+	'/organizations/{organization_id}/labels',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationLabels'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_label', new Route(
+	'/organizations/{organization_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationLabel'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_label_delete', new Route(
+	'/organizations/{organization_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationLabel'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_fields', new Route(
+	'/organizations/fields',
+	array('_controller' => 'ApiBundle:Organization:getFields'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_organizations_groups', new Route(
+	'/organizations/groups',
+	array('_controller' => 'ApiBundle:Organization:getGroups'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;

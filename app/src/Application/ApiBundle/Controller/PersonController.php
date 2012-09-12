@@ -40,9 +40,6 @@ use Application\DeskPRO\Entity\Person;
 
 class PersonController extends AbstractController
 {
-	const TERM_PERSON_FIELD       = 'person_field';
-
-
 	public function searchAction()
 	{
 		$search_map = array(
@@ -397,6 +394,7 @@ class PersonController extends AbstractController
 			FROM usergroups
 			WHERE id = ?
 				AND sys_name IS NULL
+				AND is_agent_group = 0
 		', array($group_id));
 		if (!$match) {
 			return $this->createApiErrorResponse('required_field', 'id must be specified as a non-system group');
@@ -441,6 +439,9 @@ class PersonController extends AbstractController
 
 		foreach ($person->usergroups AS $key => $group) {
 			if ($group->id == $usergroup_id) {
+				if ($group->is_agent_group) {
+					return $this->createApiErrorResponse('invalid_group', 'Group is an agent group');
+				}
 				unset($person->usergroups[$key]);
 				$this->em->persist($person);
 				$this->em->flush();
@@ -505,6 +506,18 @@ class PersonController extends AbstractController
 		$fields = $field_manager->getFields();
 
 		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+	}
+
+	public function getGroupsAction()
+	{
+		$groups = $this->em->createQuery('
+			SELECT g
+			FROM DeskPRO:Usergroup g INDEX BY g.id
+			WHERE g.is_agent_group = false AND g.sys_name IS NULL
+			ORDER BY g.id
+		')->execute();
+
+		return $this->createApiResponse(array('groups' => $this->getApiData($groups)));
 	}
 
 	public function isPersonEditable(Person $person)
