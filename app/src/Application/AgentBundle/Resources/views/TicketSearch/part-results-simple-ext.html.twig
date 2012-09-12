@@ -171,6 +171,13 @@
 						{% endif %}
 					</span>
 				</li>
+			{% elseif field == 'date_created' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.date_created') }}:</span>
+					<span class="prop-val">
+						<time class="timeago timestamp" datetime="{{ ticket.date_created|date('c', 'UTC') }}"></time>
+					</span>
+				</li>
 			{% elseif field == 'date_last_agent_reply' %}
 				<li class="{{field}}">
 					<span class="prop-title">{{ phrase('agent.general.date_of_last_agent_reply') }}:</span>

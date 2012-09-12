@@ -46,6 +46,27 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 			});
 		}
 
+		this.getEl('delete_btn').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var url = $(this).data('delete-url');
+			var filterId = $(this).data('filter-id');
+
+			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this filter?', function() {
+				$.ajax({
+					url: url,
+					success: function() {
+						var ticketsSection = DeskPRO_Window.sections.tickets_section;
+						if (ticketsSection) {
+							ticketsSection.removeCustomFilter(filterId);
+						}
+						self.fragmentOverlay.close();
+					}
+				});
+			});
+		});
+
 		this.getEl('save_btn').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();

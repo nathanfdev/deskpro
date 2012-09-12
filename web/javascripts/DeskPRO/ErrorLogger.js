@@ -48,6 +48,10 @@ var DpErrorLog = {
 			return;
 		}
 
+		if (line == 1 && script.indexOf('/agent/')) {
+			return;
+		}
+
 		// Send max 5 per session
 		if (this.logCount++ > 5) {
 			return;

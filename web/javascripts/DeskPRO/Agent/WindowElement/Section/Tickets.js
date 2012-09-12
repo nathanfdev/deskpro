@@ -836,6 +836,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		if (!$('#tickets_outline_custom_filters').find('li.filter')[0]) {
 			$('#tickets_outline_custom_filters').find('li.no-data').show();
 		}
+
+		$('#customfilter_group_editor').find('.filter-' + id).remove();
 	},
 
 	updateCustomFilterTitle: function(id, title) {
