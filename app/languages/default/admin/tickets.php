@@ -168,9 +168,9 @@
 	'admin.tickets.weeks'                                   => 'Weeks',
 	'admin.tickets.widget_location'                         => 'Widget Location',
 	'admin.tickets.widget_type'                             => 'Widget Type',
-	'admin.tickets.x_since_time_agent_waiting'              => '&gt; {{time}} since status was set to awaiting agent',
+	'admin.tickets.x_since_time_agent_waiting'              => 'Agent waiting &gt; {{time}}',
 	'admin.tickets.x_since_time_open'                       => '&gt; {{time}} since ticket was opened',
 	'admin.tickets.x_since_time_resolved'                   => '&gt; {{time}} since status was set to resolved',
-	'admin.tickets.x_since_time_user_waiting'               => '&gt; {{time}} since status was set to awaiting user',
+	'admin.tickets.x_since_time_user_waiting'               => 'User waiting &gt; {{time}}',
 	'admin.tickets.x_since_total_user_waiting'              => 'User has been waiting &gt; {{time}}',
 );

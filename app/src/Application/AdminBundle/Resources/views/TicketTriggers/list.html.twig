@@ -78,7 +78,7 @@
 							<br /><em class="op">{{ phrase('agent.general.and') }}</em>
 							<span class="term">{{ desc }}</span>
 						{% else %}
-							{% if not show_reorder%}
+							{% if not show_reorder and not trigger.event_trigger_option %}
 								<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
 							{% endif %}
 						{% endfor %}
