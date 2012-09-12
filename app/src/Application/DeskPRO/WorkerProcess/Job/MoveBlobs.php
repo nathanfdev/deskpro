@@ -109,6 +109,6 @@ class MoveBlobs extends AbstractJob
 			WHERE storage_loc IS NOT NULL AND id > ?
 			ORDER BY id ASC
 			LIMIT $limit
-		", array('fs', $start_id));
+		", array($start_id));
 	}
 }
