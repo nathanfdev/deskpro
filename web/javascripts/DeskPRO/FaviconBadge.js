@@ -79,7 +79,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		// 0 means no number
 		if (!num && !this.crazyMode) {
-			Notificon('');
+			Tinycon.setBubble('');
 			return;
 		}
 
