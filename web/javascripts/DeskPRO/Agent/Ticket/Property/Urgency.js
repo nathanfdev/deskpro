@@ -8,7 +8,7 @@ DeskPRO.Agent.Ticket.Property.Urgency = new Class({
 	},
 
 	getValue: function() {
-		return this.ticketPage.getEl('urgency').data('urgency');
+		return this.ticketPage.getEl('urgency').val();
 	},
 
 	getInterfaceElement: function() {

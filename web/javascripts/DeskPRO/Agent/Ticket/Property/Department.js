@@ -6,7 +6,7 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 	optionName: 'department_id',
 
 	init: function() {
-
+		this._formEl = null;
 	},
 
 	getName: function() {
@@ -32,11 +32,11 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 		return $('.label-department-id', this.ticketPage.wrapper);
 	},
 
-	_formEl: null,
+
 	getFormEl: function() {
 		if (this._formEl !== null) return this._formEl;
 
-		this._formEl = $('input.department_id:first', this.ticketPage.valueForm);
+		this._formEl = this.ticketPage.getEl('department_id');
 
 		return this._formEl;
 	}

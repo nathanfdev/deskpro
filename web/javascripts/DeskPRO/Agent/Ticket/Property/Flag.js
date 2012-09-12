@@ -14,11 +14,11 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 	},
 
 	getValue: function() {
-		return $('li.on', this.ticketPage.getEl('flag_opt')).data('value');
+		return this.ticketPage.getEl('flag').val();
 	},
 
 	getInterfaceElement: function() {
-		return this.ticketPage.getEl('flag_opt');
+		return this.ticketPage.getEl('flag');
 	},
 
 	setValue: function(value) {

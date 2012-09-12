@@ -161,10 +161,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					return;
 				}
 
-				if (depId == parseInt(currentDepId)) {
-					return;
-				}
-
 				self.changeManager.setInstantChange(prop, depId);
 				self.page.ticketFields.updateDisplay();
 			});
