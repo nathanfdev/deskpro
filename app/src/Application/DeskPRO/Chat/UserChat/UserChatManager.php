@@ -961,6 +961,32 @@ class UserChatManager
 	}
 
 
+	/**
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param array $message_ids
+	 */
+	public function ackMessages(ChatConversation $convo, array $message_ids)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => $convo->getChannelId('ack_messages'),
+				'data' => array('message_ids' => $message_ids),
+				'created_by_client' => $this->getCurrentClientId()
+			));
+			$this->em->persist($cm);
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
 	public function getSession()
 	{
 		return $this->session;

@@ -177,10 +177,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				options.success = function(data) {
 					DeskPRO_Window.getMessageChanneler().poller.unpause();
+					if (options.execSuccessBefore) {
+						old_success(data);
+					}
 					if (data.client_messages) {
 						DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 					}
-					old_success(data);
+					if (!options.execSuccessBefore) {
+						old_success(data);
+					}
 				}
 
 				options.dataType = 'json';

@@ -4197,6 +4197,24 @@ ul.item-list > li {
     clear: both;
 }
 
+.chat-transcript .row .ack-icon {
+	display: inline-block;
+	width: 12px;
+	height: 7px;
+	position: relative;
+	top: 4px;
+	margin-left: 4px;
+	.opacity(40);
+}
+
+.chat-transcript .row.server-ack .ack-icon {
+	background: url(../../images/agent/icons/tick_small.png) no-repeat 0 50%;
+}
+
+.chat-transcript .row.server-ack.user-ack .ack-icon {
+	background: url(../../images/agent/icons/tick_small_double.png) no-repeat 0 50%;
+}
+
 .chat-transcript .row.user-typing {
 	background-color: #F0F0F0;
 }

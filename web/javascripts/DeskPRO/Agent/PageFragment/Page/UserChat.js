@@ -24,8 +24,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					return;
 				}
 
-				self.sendMessage(msg);
-				self.addMessageRow(self.meta.youName, msg, 'agent', false, null, { no_notify: true });
+				var tmp_id = Orb.uuid();
+				self.addMessageRow(self.meta.youName, msg, 'agent', false, tmp_id, { no_notify: true });
+
+				self.sendMessage(msg, function(message_id) {
+					// Sets the real message ID after we've come back from ajax
+					self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id);
+				});
 			}
 
 			messageTextarea.on('keypress', function(ev) {
@@ -71,6 +76,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ack_messages', function(data) { this.ackMessages(data); }, this, [this.OBJ_ID]);
 
 		//------------------------------
 		// Snippets Viewer
@@ -280,6 +286,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.getEl('messages_box').scrollTop(10000);
 	},
 
+	ackMessages: function(data) {
+		if (!data || !data.message_ids || !data.message_ids.length) {
+			return;
+		}
+
+		Array.each(data.message_ids, function (message_id) {
+			this.getEl('messages_box').find('.message-' + message_id).addClass('user-ack');
+		}, this);
+	},
+
 	_initMenus: function() {
 		var self = this;
 
@@ -409,12 +425,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.userTyping();
 			addclass = 'user-track';
 			notify = false;
+
+			this.getEl('messages_box').find('.row.agent').addClass('user-ack');
 		}
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {
 				html.push('<div class="message prop-msg"></div><time></time>');
 			} else if (type == 'agent') {
-				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time>');
+				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time><span class="ack-icon"></span>');
 			} else if (type == 'user') {
 				this.userTyping();
 				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
@@ -509,11 +527,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.updateUi();
 	},
 
-	sendMessage: function(msg) {
+	sendMessage: function(msg, success) {
 		DeskPRO_Window.util.ajaxWithClientMessages({
 			type: 'POST',
 			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
-			data: {content: msg}
+			data: {content: msg},
+			execSuccessBefore: true,
+			success: function(data) {
+				if (success && data.message_id) {
+					success(data.message_id);
+				}
+			}
 		});
 	},
 

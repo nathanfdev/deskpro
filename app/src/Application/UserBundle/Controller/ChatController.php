@@ -99,6 +99,10 @@ class ChatController extends AbstractController
 				if ($user_typing == '__dpnone__') $user_typing = '';
 				$chat_manager->setUserTypingIndicator($convo, $user_typing);
 			}
+
+			if ($ack_messages = $this->in->getCleanValueArray('ack_messages', 'uint', 'discard')) {
+				$chat_manager->ackMessages($convo, $ack_messages);
+			}
 		}
 
 		// Not uint because -1 will be used when no messages have ever existed

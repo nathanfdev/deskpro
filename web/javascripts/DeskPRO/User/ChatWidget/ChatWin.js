@@ -91,6 +91,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.sessionCode = options.sessionCode || null;
 		this.lastMessageId = 0;
 		this.conversationId = options.conversationId || 0;
+		this.messageAck = [];
 
 		this._initSysObjects();
 	},
@@ -497,6 +498,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			);
 		}
 
+		if (data.message_id) {
+			this.messageAck.push(data.message_id);
+		}
+
 		if (data.metadata.chat_ended) {
 			this.chatEnded();
 		}
@@ -714,6 +719,16 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 						name: 'user_typing',
 						value: '__dpnone__'
 					});
+				}
+
+				if (self.messageAck.length) {
+					for (var i = 0; i < self.messageAck.length; i++) {
+						send_data.push({
+							name: 'ack_messages[]',
+							value: self.messageAck[i]
+						});
+					}
+					self.messageAck = [];
 				}
 
 				//------------------------------

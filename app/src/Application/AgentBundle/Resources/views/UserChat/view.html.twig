@@ -176,7 +176,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
 
-					<div class="row {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
+					<div class="row server-ack user-ack {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
 							<div class="message-content">
 								<div class="message">
@@ -207,6 +207,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								</div>
 								<time>{{ message.date_created|date('time') }}</time>
+								<span class="ack-icon"></span>
 							</div>
 						{% else %}
 							<div class="message-content">
