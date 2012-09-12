@@ -564,15 +564,24 @@ class UserChatController extends AbstractController
 			$groupers[] = $grouper;
 		}
 
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('chat_conversations');
+		$index = $label_lister->getIndexList();
+
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat_conversations', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
-			'counts' => $initial_counts,
-			'dep_counts' => $dep_counts,
-			'agent_names' => $agent_names,
-			'departments' => $departments,
+			'counts'          => $initial_counts,
+			'dep_counts'      => $dep_counts,
+			'agent_names'     => $agent_names,
+			'departments'     => $departments,
 			'single_dep_mode' => $single_dep_mode,
-			'ended_filters' => $filters,
-			'ended_groups' => $groupers,
-            'agent_id' => $this->getPerson()->id,
+			'ended_filters'   => $filters,
+			'ended_groups'    => $groupers,
+            'agent_id'        => $this->getPerson()->id,
+			'labels_index'    => $index,
+			'labels_cloud'    => $cloud,
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
@@ -694,14 +703,22 @@ class UserChatController extends AbstractController
 	{
 		$filters = $this->getFilters();
 
-		if(!$filter_id || !in_array($filter_id, $filters))
-			$filter_id = $filters[0];
-
 		$searcher = new ChatConversationSearch();
 		$searcher->setPersonContext($this->person);
 		$searcher->setColumns('COUNT(*)');
-		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
-		$this->updateSearcherFilter($searcher, $filter_id);
+
+		$filter_param = $this->in->getString('filter_param');
+
+		if ($filter_id == 'label' && $filter_param) {
+			$searcher->addTerm(ChatConversationSearch::TERM_LABEL, SearcherAbstract::OP_IS, $filter_param);
+		} else {
+			if(!$filter_id || !in_array($filter_id, $filters)) {
+				$filter_id = $filters[0];
+			}
+
+			$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
+			$this->updateSearcherFilter($searcher, $filter_id);
+		}
 
 		$groups = $this->getGroups();
 		$group_by = $this->in->getString('group_var');
@@ -761,14 +778,15 @@ class UserChatController extends AbstractController
 		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
 
 		return $this->render('AgentBundle:UserChat:list.html.twig', array(
-			'chat_ids' => $chat_ids,
-			'chats' => $chats,
-			'total' => $total,
-			'page' => $page,
-			'max_page' => $max_page,
-			'filter_id' => $filter_id,
-			'group_var' => $group_by,
-			'group_val' => $group_id
+			'chat_ids'       => $chat_ids,
+			'chats'          => $chats,
+			'total'          => $total,
+			'page'           => $page,
+			'max_page'       => $max_page,
+			'filter_id'      => $filter_id,
+			'filter_param'   => $filter_param,
+			'group_var'      => $group_by,
+			'group_val'      => $group_id
 		));
 	}
 
@@ -824,6 +842,24 @@ class UserChatController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function ajaxSaveLabelsAction($conversation_id)
+	{
+		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$convo->getLabelManager()->setLabelsArray($labels);
+
+		$this->em->persist($convo);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	protected function updateSearcherFilter($searcher, $filter)

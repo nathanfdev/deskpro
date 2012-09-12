@@ -50,6 +50,7 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_DATE_CREATED         = 'date_created';
 	const TERM_STATUS               = 'status';
 	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
+	const TERM_LABEL                = 'chat_label';
 
 	protected $columns = 'chat_conversations.id';
 	protected $groupBy = null;
@@ -140,7 +141,7 @@ class ChatConversationSearch extends SearcherAbstract
 			$parts['wheres'][] = '(department_id IS NULL OR department_id NOT IN('.implode(',',$this->person->getAgentPermissions()->getDisallowedDepartments('chat')).'))';
 		}
 
-		if (!$this->person->hasPerm('agent_tickets.view_others')) {
+		if (!$this->person->hasPerm('agent_chat.view_others')) {
 			$parts['where'][] = 'agent_id = ' . $this->person['id'];
 		}
 
@@ -299,6 +300,39 @@ class ChatConversationSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_rangeMatch('chat_conversations.total_to_ended', self::OP_BETWEEN, $choice);
+					break;
+
+				case self::TERM_LABEL:
+					$this->_normalizeOpAndChoice($op, $choice);
+
+					$choices_in = array();
+					if (is_array($choice)) {
+						foreach ((array)$choice as $c) {
+							$choices_in[] = $db->quote($c);
+						}
+						$choices_in = implode(',', $choices_in);
+					}
+
+					$join_name = 'j_labels';
+					switch ($op) {
+						case self::OP_IS:
+							$joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
+							$wheres[] = "$join_name.label = " . $db->quote($choice);
+							break;
+						case self::OP_NOT:
+							$joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label = '.$db->quote($choice).')";
+							$wheres[] = "$join_name.chat_id IS NULL";
+							break;
+						case self::OP_CONTAINS:
+							$joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
+							$wheres[] = "$join_name.label IN ($choices_in)";
+							break;
+
+						case self::OP_NOTCONTAINS:
+							$joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label IN ($choices_in)";
+							$wheres[] = "$join_name.chat_id IS NULL";
+							break;
+					}
 					break;
 			}
 		}

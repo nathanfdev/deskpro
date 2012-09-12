@@ -67,6 +67,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this._initAssignControl();
 		this._initUpload();
 		this._initBlock();
+		this._initLabels();
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
@@ -711,6 +712,41 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
 				}
 			})
+		});
+	},
+
+	//#################################################################
+	//# Labels
+	//#################################################################
+
+	_initLabels: function() {
+		if (this.getEl('labels_input')[0]) {
+			this.labelsInput = new DeskPRO.UI.LabelsInput({
+				type: 'chat_conversations',
+				input: this.getEl('labels_input'),
+				onChange: this.saveLabels.bind(this)
+			});
+			this.ownObject(this.labelsInput);
+		}
+	},
+
+	saveLabels: function() {
+		if (this._saveLabelsTimeout) {
+			window.clearTimeout(this._saveLabelsTimeout);
+		}
+
+		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+	},
+
+	_doSaveLabels: function() {
+		var data = this.labelsInput.getFormData();
+
+		$.ajax({
+			url: BASE_URL + 'agent/chat/' + this.meta.conversation_id + '/ajax-save-labels',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json'
 		});
 	}
 });

@@ -92,6 +92,9 @@ class LabelManager
 		$this->entity->addLabel($labelobj);
 
 		$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+		if ($type_name == 'chatconversations') {
+			$type_name = 'chat_conversations';
+		}
 		App::getDb()->replace('label_defs', array(
 			'label_type' => $type_name,
 			'label' => $label

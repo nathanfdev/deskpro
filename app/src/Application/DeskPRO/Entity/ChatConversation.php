@@ -68,6 +68,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $department = null;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $labels;
+
+	/**
 	 * @var string
 	 */
 	protected $subject = '';
@@ -195,14 +200,47 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $ended_by = '';
 
+	/**
+	 * @var array
+	 */
 	protected $_created_messages = array();
 
+	/**
+	 * @var null
+	 */
 	protected $_user_participants = null;
+
+	/**
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
+	protected $_label_manager = null;
 
 	public function getChannelId($name = false)
 	{
 		return 'chat_convo.' . $this->id . ($name ? '.' . $name : '');
 	}
+
+	public function __construct()
+	{
+		$this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->participants   = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->messages       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->date_created   = new \DateTime();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelChatConversation');
+		}
+
+		return $this->_label_manager;
+	}
+
 
 	/**
 	 * @static
@@ -234,15 +272,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($person->getPrimaryEmailAddress()) {
 			$this->setModelField('person_email', $person->getPrimaryEmailAddress());
 		}
-	}
-
-
-	public function __construct()
-	{
-		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
-		$this['date_created'] = new \DateTime();
-
-		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -619,6 +648,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $info;
 	}
 
+	/**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\LabelChatConversation $label
+	 */
+	public function addLabel(LabelChatConversation $label)
+	{
+		$label['chat'] = $this;
+		$this->labels->add($label);
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -660,5 +698,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'chat_conversation_to_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'indexBy' => 'id' ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true ));
 	}
 }

@@ -87,6 +87,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (lastSelectedId) {
 			$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
 		}
+
+		new DeskPRO.ElementHandler.SimpleTabs($('#chat_outline_labels_switcher'));
 	},
 
 	refreshFilterGrouping: function(filterId, lastSelectedId) {

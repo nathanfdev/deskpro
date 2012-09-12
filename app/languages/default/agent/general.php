@@ -400,6 +400,7 @@
 	'agent.general.no_people_labels'                        => 'You have not labeled any people. View a person to label them.',
 	'agent.general.no_team'                                 => 'No Team',
 	'agent.general.no_ticket_labels'                        => 'You have not labeled any tickets. View a ticket to label it.',
+	'agent.general.no_chat_labels'                          => 'You have not labeled any chats. View a chat to label it.',
 	'agent.general.none'                                    => 'None',
 	'agent.general.not_changed_from'                        => 'Not changed from',
 	'agent.general.not_changed_to'                          => 'Not changed to',

@@ -45,8 +45,24 @@ pageMeta.baseId = '{{ baseId }}';
 	</tr></table>
     <div class="clear"></div>
     <div class="meta-line">
-        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
-		<div id="{{baseId}}_create_ticket_btn2" class="set-hold hold" {% if convo.status != 'ended' %}style="display: none"{% else %}style="display:block"{% endif %}><span>Create Ticket</span></div>
+		<table cellspacing="0" cellpadding="0" width="100%"><tr>
+			<td style="white-space: nowrap; vertical-align: middle;" nowrap="nowrap" width="100">
+				<div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
+				<div id="{{baseId}}_create_ticket_btn2" class="set-hold hold" {% if convo.status != 'ended' %}style="display: none"{% else %}style="display:block"{% endif %}><span>Create Ticket</span></div>
+			</td>
+			<td style="vertical-align: middle; padding-left: 8px;">
+				<div class="labels-line">
+					<input
+						type="hidden"
+						id="{{baseId}}_labels_input"
+						class="dpe_select dpe_select_noborder"
+						data-select-width="auto"
+						data-placeholder="Add a label"
+						value="{% for label in convo.labels %}{{ label.label }},{% endfor %}"
+					/>
+				</div>
+			</td>
+		</tr></table>
         <div class="clear"></div>
     </div>
 </header>

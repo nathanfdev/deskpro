@@ -1,8 +1,8 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.UserChatFilter';
-pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist', {'filter_id': filter_id}) }}';
-pageMeta.url_fragment = '{{ url_fragment('agent_userchat_filterlist', {'filter_id': filter_id}) }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist', {filter_id: filter_id, filter_param: filter_param}) }}';
+pageMeta.url_fragment = '{{ url_fragment('agent_userchat_filterlist', {filter_id: filter_id, filter_param: filter_param}) }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 

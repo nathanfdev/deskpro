@@ -90,6 +90,50 @@
 	</article>
 </section>
 
+<section class="source-section">
+	<header>
+		<h1>Labels</h1>
+	</header>
+	<article>
+		<section class="source-switcher-tabs spaced" id="chat_outline_labels_switcher" {% if not labels_index|length %}style="display: none"{% endif %} data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#userchat_labels_list" class="list on">{{ phrase('agent.general.labels_list') }}</li>
+				<li data-tab-for="#userchat_labels_cloud" class="cloud">{{ phrase('agent.general.labels_cloud') }}</li>
+			</ul>
+		</section>
+
+		<section class="source-labels-list" id="userchat_labels_list">
+			{% if labels_index|length %}
+				<dl>
+					{% for letter,labels in labels_index %}
+						<dt>{{ letter }}</dt>
+						<dd>
+							<ul>
+								{% for label in labels %}
+									<li class="nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
+								{% endfor %}
+							</ul>
+						</dd>
+					{% endfor %}
+				</dl>
+			{% else %}
+			<aside class="source-info-explain">{{ phrase('agent.general.no_chat_labels') }}</aside>
+			{% endif %}
+		</section>
+		<section class="source-labels-cloud" id="userchat_labels_cloud" style="display: none;">
+			{% if labels_cloud|length %}
+				<ul>
+					{% for label,css_class in labels_cloud %}
+						<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
+					{% endfor %}
+				</ul>
+			{% else %}
+			<aside class="source-info-explain">{{ phrase('agent.general.no_chat_labels') }}</aside>
+			{% endif %}
+		</section>
+	</article>
+</section>
+
 <section id="chat_filter_group_editor">
 	<section class="filter-group-editor">
 		<span class="close"></span>

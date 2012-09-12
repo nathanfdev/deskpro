@@ -124,6 +124,16 @@ class LabelDef extends AbstractEntityRepository
 				");
 				break;
 
+			case 'chat_conversations':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_chat_conversations
+					GROUP BY label
+					ORDER BY count DESC
+					" . ($limit ? "LIMIT $limit" : '') . "
+				");
+				break;
+
 			case 'articles':
 				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count

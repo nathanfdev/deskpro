@@ -2310,6 +2310,13 @@ $collection->add('agent_userchat_unblockuser', new Route(
 	array()
 ));
 
+$collection->add('agent_userchat_ajax_labels_save', new Route(
+	'/chat/{conversation_id}/ajax-save-labels',
+	array('_controller' => 'AgentBundle:UserChat:ajaxSaveLabels'),
+	array('conversation_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_userchat_filterlist_group_counts', new Route(
 	'/chat/group-count.json',
 	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
