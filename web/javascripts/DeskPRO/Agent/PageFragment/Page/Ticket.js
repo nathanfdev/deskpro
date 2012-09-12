@@ -632,9 +632,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				dataType: 'json',
 				complete: function() {
-					// Reload the ticket page
-					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
-					self.closeSelf();
+
 				}
 			});
 		});
