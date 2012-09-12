@@ -116,11 +116,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</div>
 	</td><td>
 		<div class="titlewrap">
-			<h4 class="id-number">
-				#{{ ticket.id }}
-				{% if app.getSetting('core.tickets.use_ref') %}
-					| Ref: {{ ticket.ref }}
-				{% endif %}
+			<h4 class="id-number" id="{{ baseId }}_idref_switch">
+				<span id="{{ baseId }}_id_num">#{{ ticket.id }}</span>
+				<span id="{{ baseId }}_ref_num" style="display: none;">Ref: {{ ticket.ref }}</span>
 			</h4>
 			<h1>{{ ticket.subject }}</h1>
 			<div class="labels-line">

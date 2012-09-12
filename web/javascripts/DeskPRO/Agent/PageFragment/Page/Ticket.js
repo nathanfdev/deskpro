@@ -200,6 +200,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			ev.preventDefault();
 			self.showLockAlert();
 		});
+
+		this.getEl('idref_switch').on('click', function() {
+			if ($(this).hasClass('refmode')) {
+				$(this).removeClass('refmode')
+				self.getEl('ref_num').hide();
+				self.getEl('id_num').show();
+			} else {
+				$(this).addClass('refmode')
+				self.getEl('id_num').hide();
+				self.getEl('ref_num').show();
+			}
+		});
 	},
 
 	showLockAlert: function() {
