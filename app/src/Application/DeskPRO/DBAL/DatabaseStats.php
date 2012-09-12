@@ -62,7 +62,7 @@ class DatabaseStats
 		$this->stats = array();
 
 		$this->stats['ticket_count']              = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets");
-		$this->stats['ticket_active_count']       = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets_search_active");
+		$this->stats['ticket_active_count']       = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status IN ('awaiting_user', 'awaiting_agent')");
 		$this->stats['ticket_message_count']      = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets_messages");
 		$this->stats['people_count']              = $this->db->fetchColumn("SELECT COUNT(*) FROM people");
 		$this->stats['people_user_count']         = $this->db->fetchColumn("SELECT COUNT(*) FROM people WHERE is_user = 1");

@@ -310,6 +310,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		var el = $('#ticket_filter_' + filter_id + '_count').html(count).data('count', count);
+		$('#ticket_filter_' + filter_id + '_count2').html(count);
 	},
 
 	setFilterCount: function(filter_id, count) {
@@ -327,12 +328,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+			$('#ticket_filter_' + filter_id + '_count2').html(count_str);
 
 			if (el.is('.is-hold-filter')) {
 				this._recountHold();
 			}
 		} else {
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+			$('#ticket_filter_' + filter_id + '_count2').html(count_str);
 		}
 	},
 

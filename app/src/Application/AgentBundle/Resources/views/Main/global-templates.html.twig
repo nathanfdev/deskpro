@@ -6,16 +6,6 @@
 
 <div id="deskpro_window_templates" style="display: none;">
 
-{# Agents Selector #}
-<ul id="agent_selector_list">
-	{% for id,title in agent_names %}
-		<li data-agent-id="{{id}}">
-			<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 30}) }}" alt="" width="30" height="30" />
-			<a>{{title}}</a>
-		</li>
-	{% endfor %}
-</ul>
-
 <div class="optionbox" id="agent_optionbox_check">
 	<section data-section-name="followers">
 		<header>
@@ -80,22 +70,6 @@
 		</ul>
 	</section>
 </div>
-
-{# Department #}
-<ul id="department_menu" data-menu-flag="copy-menu">
-	{% for dep in ticket_options.departments_hierarchy %}
-		{% if dep.children %}
-			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}" class="section-title">{{dep.title}}</li>
-			{% for subdep in dep.children %}
-				<li data-department-id="{{subdep.id}}" data-full-title="{{ dep.title }}">{{subdep.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}">{{dep.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
-	{% endfor %}
-</ul>
 
 <script type="text/x-deskpro-plain" id="department_option_box_tpl">
 	<div class="optionbox">
@@ -185,52 +159,6 @@
 	{{ optionbox.end('Apply') }}
 </script>
 
-{# Usergroups #}
-{% if titles.usergroups %}
-<ul id="usergroups_menu" data-menu-flag="copy-menu" data-menu-type="usergroups">
-	{% for id,title in titles.usergroups %}
-		<li data-usergroup-id="{{ id }}">{{ title }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-
-{# Organizations #}
-{% if titles.organizations %}
-<ul id="organizations_menu" data-menu-flag="copy-menu" data-menu-type="organizations">
-	{% for id,title in titles.organizations %}
-		<li data-organization-id="{{ id }}">{{ title }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-
-{# Organizations #}
-{% if titles.organizations %}
-	<select id="organizations_select">
-	{% for id,title in titles.organizations %}
-		<option value="{{ id }}">{{ title }}</option>
-	{% endfor %}
-	</select>
-{% endif %}
-
-{# Usergroups #}
-{% if titles.usergroups %}
-<select id="usergroups_select">
-	{% for id,title in titles.usergroups %}
-		<option value="{{ id }}">{{ title }}</option>
-	{% endfor %}
-</select>
-{% endif %}
-
-
-{# Ticket Status #}
-<ul id="ticket_status_menu">
-	<li class="section-title">{{ phrase('agent.general.status') }}</li>
-	<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>
-	<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>
-	<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>
-	<li data-status="closed">{{ phrase('agent.tickets.status_closed') }}</li>
-</ul>
-
 {# Comment Menu #}
 <ul id="comment_tools_menu" data-menu-flag="copy-menu">
 	<li data-action="edit">{{ phrase('agent.general.edit_comment') }}</li>
@@ -286,50 +214,6 @@
 			data-country-code="{{ info.country_code }}"
 			data-calling-code="{{ info.calling_code }}"
 		><span class="icon-flag icon-flag-{{info.country_code|lower}}">{{ info.calling_code }} {{ info.country_name }}</span></li>
-	{% endfor %}
-</ul>
-
-{##############################################################}
-{# Download related #}
-{##############################################################}
-
-<ul id="download_category_menu" data-menu-flag="copy-menu">
-	{% for cat in download_categories %}
-		{% if last_with_child %}
-			<li>-</li>
-		{% endif %}
-		{% if cat.children %}
-			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
-			{% for subcat in cat.children %}
-				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
-	{% endfor %}
-</ul>
-
-{##############################################################}
-{# News related #}
-{##############################################################}
-
-<ul id="news_category_menu" data-menu-flag="copy-menu">
-	{% for cat in news_categories %}
-		{% if last_with_child %}
-			<li>-</li>
-		{% endif %}
-		{% if cat.children %}
-			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
-			{% for subcat in cat.children %}
-				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
 	{% endfor %}
 </ul>
 

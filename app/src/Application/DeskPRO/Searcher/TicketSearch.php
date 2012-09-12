@@ -317,7 +317,7 @@ class TicketSearch extends SearcherAbstract
 
 		$where = '';
 
-		if ($this->isArchiveSearch()) {
+		if ($this->isArchiveSearch() || !App::getSetting('tickets_search_active')) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';
@@ -460,7 +460,7 @@ class TicketSearch extends SearcherAbstract
 
 		$where = '';
 
-		if ($this->isArchiveSearch()) {
+		if ($this->isArchiveSearch() || !App::getSetting('tickets_search_active')) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';

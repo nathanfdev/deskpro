@@ -19,10 +19,8 @@
 				<div class="dp-status active dp-status-open">{{ phrase('user.tickets.status_open') }}</div>
 				<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_resolve', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.tickets.status_resolved') }}</a>
 			</div>
-		{% elseif ticket.status == 'resolved' %}
+		{% elseif ticket.status == 'resolved' or ticket.status == 'closed' %}
 			<div class="dp-status dp-status-resolved">{{ phrase('user.tickets.status_resolved') }}</div>
-		{% elseif ticket.status == 'closed' %}
-			<div class="dp-status dp-status-closed">{{ phrase('user.tickets.status_closed') }}</div>
 		{% endif %}
 		<h3 style="margin-bottom: 0">{{ ticket.subject }}</h3>
 		<ul class="dp-post-info">

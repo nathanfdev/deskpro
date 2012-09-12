@@ -116,6 +116,13 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function postRunAll()
 	{
+		$count = $this->olddb->fetchColumn("SELECT COUNT(*) FROM ticket");
+		if ($count > 1000000) {
+			$this->db->replace('settings', array(
+				'name' => 'core_tickets.use_archive',
+				'value' => 1
+			));
+		}
 		return;
 	}
 

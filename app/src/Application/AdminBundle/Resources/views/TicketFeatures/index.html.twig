@@ -20,6 +20,8 @@
 <input type="hidden" name="set_settings_falseable[]" value="core.show_ticket_suggestions" />
 <input type="hidden" name="set_settings[]" value="core.ref_pattern" />
 <input type="hidden" name="set_settings[]" value="core.tickets.use_ref" />
+<input type="hidden" name="set_settings[]" value="core_tickets.use_archive" />
+<input type="hidden" name="set_settings[]" value="core_tickets.auto_archive_time" />
 
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.feedback') }}</h4>
@@ -101,6 +103,50 @@
 	</div>
 </div>
 
+<div class="setting_field_row">
+	<h4>Archiving</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			For very large helpdesks with millions of tickets, archiving can greatly improve performance of the agent interace and filters.
+			When an old ticket is archived it is moved out of your filters and into the 'Archived' section. You can still view archived
+			tickets and agents with permission can restore archived tickets.
+			<br />
+			<br />
+
+			<label><input id="archive_toggle" type="checkbox" name="settings[core_tickets.use_archive]" {% if app.getSetting('core_tickets.use_archive') %}checked="checked"{% endif %} value="1" />
+			Use ticket archiving
+			</label>
+
+			<div id="archive_options" {% if not app.getSetting('core_tickets.use_archive') %}style="display: none"{% endif %}>
+				<div style="padding-top: 5px; padding-bottom: 5px;">
+					How long until resolved tickets are automatically sent to the archive?
+					{% set options = {
+						86400: "1 day",
+						259200: "3 days",
+						432000: "5 days",
+						604800: "1 week",
+						172800: "2 weeks",
+						1814400: "3 weeks",
+						2419000: "1 month",
+						4838000: "2 months",
+						7257000: "3 months",
+						14514000: "6 months",
+						21771000: "9 months",
+						29028000: "1 year",
+						58056000: "2 years",
+					} %}
+					<select name="settings[core_tickets.auto_archive_time]">
+						{% for k,v in options %}
+							<option value="{{ k }}" {% if app.getSetting('core_tickets.auto_archive_time') == k %}selected="selected"{% endif %}>{{ v }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% if app.getSetting('core_tickets.use_archive') %}
 	<div class="setting_field_row">
 		<h4>Search Tables</h4>
 		<div class="setting_fields">
@@ -112,6 +158,7 @@
 			</div>
 		</div>
 	</div>
+{% endif %}
 
 <div class="setting_field_row" style="text-align: center">
 	<button class="btn primary">{{ phrase('admin.general.save_settings') }}</button>
@@ -126,6 +173,14 @@ $(document).ready(function() {
 			$('#ref_options').slideDown();
 		} else {
 			$('#ref_options').slideUp();
+		}
+	});
+
+	$('#archive_toggle').on('click', function() {
+		if ($(this).is(':checked')) {
+			$('#archive_options').slideDown();
+		} else {
+			$('#archive_options').slideUp();
 		}
 	});
 });

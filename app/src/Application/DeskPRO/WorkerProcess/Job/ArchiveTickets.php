@@ -29,66 +29,44 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage WorkerProcess
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity\Article;
 
-class TicketsAwaitingAgent extends AbstractTableOverviewStat
+/**
+ * Archives old tickets
+ */
+class ArchiveTickets extends AbstractJob
 {
-	/**
-	 * @var GroupingField
-	 */
-	protected $grouping_field;
+	const DEFAULT_INTERVAL = 14400; // 4 hours
 
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
-
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
-
-	public function __construct(GroupingField $grouping_field)
+	public function run()
 	{
-		$this->grouping_field = $grouping_field;
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
-	{
-		return $this->grouping_field->getTitles($this->getValues());
-	}
-
-
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
+		if (!App::getSetting('core_tickets.use_archive')) {
+			return;
 		}
 
-		$group_field = $this->grouping_field->getFieldInfo();
+		$datecut = new \DateTime('-' . App::getSetting('core_tickets.auto_archive_time') . ' seconds');
+		$datecut = $datecut->format('Y-m-d H:i:s');
 
-		$sql = "
-			SELECT {$group_field['select']}, COUNT(*)
-			FROM tickets AS tickets
-			{$group_field['join']}
-			WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
-			GROUP BY {$group_field['group_by']}
-		";
+		$num = App::getDb()->executeUpdate("
+			UPDATE tickets
+			SET status = 'closed'
+			WHERE status = 'resolved' AND date_resolved < ?
+		", array($datecut));
 
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		App::getDb()->executeUpdate("
+			DELETE FROM tickets_search_active
+			WHERE status = 'resolved' AND date_resolved < ?
+		");
 
-		return $this->values;
+		if ($num) {
+			$this->logStatus("$num tickets archived");
+		}
 	}
 }

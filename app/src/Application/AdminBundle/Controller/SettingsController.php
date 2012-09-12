@@ -126,6 +126,7 @@ class SettingsController extends AbstractController
 		$this->ensureAuthToken($auth_id, $auth);
 
 		$set_settings = $this->in->getCleanValueArray('settings', 'string', 'str_simple');
+		$set_settings_keys = $this->in->getCleanValueArray('set_settings', 'str_simple', 'discard');
 
 		// set_settings contains an array of names that should be set
 		// If no value, it means its a null value (aka to be unset/set to default)
@@ -134,7 +135,7 @@ class SettingsController extends AbstractController
 				$set_settings[$k] = 0;
 			}
 		}
-		foreach ($this->in->getCleanValueArray('set_settings', 'str_simple', 'discard') as $k) {
+		foreach ($set_settings_keys as $k) {
 			if (!isset($set_settings[$k])) {
 				$set_settings[$k] = null;
 			}
@@ -153,6 +154,15 @@ class SettingsController extends AbstractController
 
 		$this->session->setFlash('saved_settings', 1);
 		$this->session->save();
+
+		if (in_array('core_tickets.use_archive', $set_settings_keys)) {
+			if (isset($set_settings['core_tickets.use_archive']) && $set_settings['core_tickets.use_archive']) {
+				// Enabled
+			} else {
+				// Disabled
+				App::getDb()->executeUpdate("UPDATE tickets SET status = 'resolved' WHERE status = 'closed'");
+			}
+		}
 
 		$return = $this->in->getString('return');
 		if ($return) {

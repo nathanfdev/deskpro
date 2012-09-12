@@ -70,7 +70,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
 		$sql = "
 			SELECT tickets.status, COUNT(*)
-			FROM tickets_search_active AS tickets
+			FROM tickets AS tickets
 			GROUP BY tickets.status
 		";
 

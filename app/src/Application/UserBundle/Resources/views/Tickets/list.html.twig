@@ -78,21 +78,4 @@
 
 	<br />
 {% endif %}
-
-{% if closed_tickets|length %}
-	<section class="dp-ticketlist-section dp-portal-section">
-		<header>
-			<h1>{{ phrase('user.tickets.list_closed') }}</h1>
-		</header>
-		<div class="dp-content-block">
-			<div class="dp-content-wrapper">
-				<ul class="dp-ticket-list">
-					{% for ticket in closed_tickets %}
-						{{ _self.ticket_row(ticket, last_messages) }}
-					{% endfor %}
-				</ul>
-			</div>
-		</div>
-	</section>
-{% endif %}
 {% endblock %}

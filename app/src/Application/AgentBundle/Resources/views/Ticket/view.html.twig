@@ -172,10 +172,18 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					<td>
 						<label>Status</label>
 						<select name="status_code" class="status_code" id="{{baseId}}_status_code">
-							<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
-							<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
-							<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
-							<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Closed</option>
+							{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
+								<option value="awaiting_agent" {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>Awaiting Agent</option>
+							{% endif %}
+							{% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
+								<option value="awaiting_user" {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>Awaiting User</option>
+							{% endif %}
+							{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
+								<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>Resolved</option>
+							{% endif %}
+							{%  if ticket.status_code == 'closed' %}
+								<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>Archived</option>
+							{% endif %}
 						</select>
 					</td>
 					<td>

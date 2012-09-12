@@ -86,7 +86,6 @@ class TicketsController extends AbstractController
 
 		$active_tickets   = array();
 		$resolved_tickets = array();
-		$closed_tickets   = array();
 
 		$ticket_ids = array();
 
@@ -94,10 +93,8 @@ class TicketsController extends AbstractController
 			$ticket_ids[] = $t['id'];
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
-			} elseif ($t['status'] == 'resolved') {
-				$resolved_tickets[] = $t;
 			} else {
-				$closed_tickets[] = $t;
+				$resolved_tickets[] = $t;
 			}
 		}
 
@@ -129,7 +126,6 @@ class TicketsController extends AbstractController
         return $this->render('UserBundle:Tickets:list.html.twig', array(
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
-			'closed_tickets'   => $closed_tickets,
 			'last_messages'    => $last_messages
 		));
     }

@@ -14,4 +14,7 @@
 	'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
 	'core.allow_arbitrary_gateway_address' => 1,
+
+	'core_tickets.use_archive' => 0,
+	'core_tickets.auto_archive_time' => 2419000,
 );
