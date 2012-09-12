@@ -306,7 +306,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 		if (!$person) {
 			$person = App::getCurrentPerson();
 		}
-		$searcher->setPerson(App::getCurrentPerson());
+		$searcher->setPerson($person);
 		$this->_results = $searcher->getMatches();
 
 		return $this->_results;
