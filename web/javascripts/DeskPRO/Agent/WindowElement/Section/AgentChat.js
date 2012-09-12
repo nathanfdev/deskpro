@@ -193,7 +193,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	reflowButtons: function() {
 		$('> section.agent-chat', this.chatsWrapper).css('left', 0);
 		Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
-			chatWin.resetPosition();
+			if (chatWin) {
+				chatWin.resetPosition();
+			}
 		});
 	},
 

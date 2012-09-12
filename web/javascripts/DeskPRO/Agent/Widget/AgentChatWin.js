@@ -6,7 +6,7 @@ DeskPRO.Agent.Widget.AgentChatWin_Find = function(chatId) {
 	var found = null;
 
 	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
-		if (!found && chatWin.getConvoId() == chatId) {
+		if (chatWin && !found && chatWin.getConvoId() == chatId) {
 			found = chatWin;
 		}
 	});
@@ -24,7 +24,7 @@ DeskPRO.Agent.Widget.AgentChatWin_FindAgents = function(agent_ids) {
 	agent_ids_str = agent_ids.join(',');
 
 	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
-		if (!found && chatWin.agentIdsStr == agent_ids_str) {
+		if (chatWin && !found && chatWin.agentIdsStr == agent_ids_str) {
 			found = chatWin;
 		}
 	});
@@ -116,14 +116,18 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		newContainer.find('> .window').find('> header, > div.messages-box, > .input-message-wrap').on('click', function(ev) {
 			var count = 0;
 			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
-				win.wrapper.css('z-index', count++);
+				if (win) {
+					win.wrapper.css('z-index', count++);
+				}
 			});
 			self.wrapper.css('z-index', count+1);
 		});
 		newContainer.find('> nav').on('click', function() {
 			var count = 0;
 			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
-				win.wrapper.css('z-index', count++);
+				if (win) {
+					win.wrapper.css('z-index', count++);
+				}
 			});
 			self.wrapper.css('z-index', count+1);
 		});
@@ -320,6 +324,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			this.wrapper = null;
 		}
 
+		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = null;
 		delete DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid];
 		this.fireEvent('destroy', [this]);
 	}
