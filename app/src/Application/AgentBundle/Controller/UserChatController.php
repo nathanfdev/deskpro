@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 
@@ -98,6 +99,11 @@ class UserChatController extends AbstractController
 			$convo_api['agent'] = $convo->agent->getDataForWidget();
 		}
 
+		$block = null;
+		if ($convo->visitor) {
+			$block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);
+		}
+
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
 			'convo' => $convo,
@@ -105,7 +111,8 @@ class UserChatController extends AbstractController
 			'session' => $session,
 			'visitor' => $visitor,
 			'other_chats' => $other_chats,
-			'agents' => $agents
+			'agents' => $agents,
+			'block' => $block,
 		));
 	}
 
@@ -760,6 +767,60 @@ class UserChatController extends AbstractController
 			'group_var' => $group_by,
 			'group_val' => $group_id
 		));
+	}
+
+	public function blockUserAction($conversation_id)
+	{
+		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+
+		if ($convo->visitor) {
+			$block = new ChatBlock();
+			$block->visitor = $convo->visitor;
+			$block->by_person = $this->person;
+			$block->reason = $this->in->getString('reason');
+
+			if ($this->in->getBool('block_ip')) {
+				$block->ip_address = $convo->visitor->ip_address;
+			}
+
+			$this->em->persist($block);
+			$this->em->flush();
+		}
+
+		if ($convo->status == 'open') {
+			$chat_manager->endChat($convo, $this->person, '');
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function unblockUserAction($conversation_id)
+	{
+		$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+
+		if ($convo->visitor) {
+			$block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);
+			if ($block) {
+				$this->em->remove($block);
+				$this->em->flush();
+			}
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	protected function updateSearcherFilter($searcher, $filter)

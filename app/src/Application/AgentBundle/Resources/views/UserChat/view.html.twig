@@ -166,6 +166,9 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if convo.visitor %}
 				<li data-tab-for="#{{baseId}}_session">Visitor Information</li>
 			{% endif %}
+			{% if convo.status == 'open' or block %}
+				<li data-tab-for="#{{baseId}}_block">{% if block %}User Blocked{% else %}Block User{% endif %}</li>
+			{% endif %}
 		</ul></nav>
 	</header>
 	<section>
@@ -289,6 +292,27 @@ pageMeta.baseId = '{{ baseId }}';
 						</div>
 					</div>
 				</div>
+			</article>
+		{% endif %}
+		{% if convo.status == 'open' or block %}
+			<article id="{{baseId}}_block" style="direction: none; padding: 15px;">
+				{% if block %}
+					{{ block.by_person.display_name }} set a block on {{ block.date_created|date('fulltime') }}.
+					{% if block.reason %}<div>Reason: {{ block.reason }}</div>{% endif %}
+
+					<br /><br />
+					<button class="clean-white" id="{{baseId}}_unblock_user">Unblock</button>
+				{% else %}
+					End the chat and block this user from starting a new chat for the next 24 hours.<br />
+					Reason: <input type="text" id="{{baseId}}_block_reason" value="" style="width: 60%;" /><br />
+					<label>
+						<input type="checkbox" id="{{baseId}}_block_ip" /> Block IP address
+						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Blocking on the IP address can be more effective, but may result in other legitimate users being blocked as well if the IP address is used by many people (for example, a shared network, a public wifi etc)."></span>
+					</label>
+
+					<br /><br />
+					<button class="clean-white" id="{{baseId}}_block_user">Block User</button>
+				{% endif %}
 			</article>
 		{% endif %}
 	</section>

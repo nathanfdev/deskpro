@@ -61,6 +61,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this._initMenus();
 		this._initAssignControl();
 		this._initUpload();
+		this._initBlock();
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
@@ -637,6 +638,49 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			self.getEl('uploading_list').detach().appendTo(self.getEl('messages_box')).show();
 			self.updateUi();
 			self.getEl('messages_box').scrollTop(10000);
+		});
+	},
+
+	//#################################################################
+	//# Block controls
+	//#################################################################
+
+	_initBlock: function() {
+		var self = this;
+		this.getEl('block_user').on('click', function(ev) {
+			$(this).prop('disabled', true).html('<em>Loading</em>');
+
+			ev.preventDefault();
+
+			var postData = {
+				block_ip: self.getEl('block_ip').is(':checked') ? 1 : 0,
+				reason: self.getEl('block_reason').val()
+			};
+
+			$.ajax({
+				url: BASE_URL + 'agent/chat/block-user/' + self.meta.conversation_id,
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				complete: function() {
+					self.closeSelf();
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
+				}
+			})
+		});
+
+		this.getEl('unblock_user').on('click', function(ev) {
+			$(this).prop('disabled', true).html('<em>Loading</em>');
+			ev.preventDefault();
+			$.ajax({
+				url: BASE_URL + 'agent/chat/unblock-user/' + self.meta.conversation_id,
+				type: 'POST',
+				dataType: 'json',
+				complete: function() {
+					self.closeSelf();
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/chat/view/' + self.meta.conversation_id, {ignoreExist:true});
+				}
+			})
 		});
 	}
 });

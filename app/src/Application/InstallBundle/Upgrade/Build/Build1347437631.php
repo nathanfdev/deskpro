@@ -29,35 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
-
-/**
- * This just cleans up various records
- */
-class CleanupSessions extends AbstractJob
+class Build1347437631 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 3600;
-
 	public function run()
 	{
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
-		}
-
-		// Clean up chat blocks
-		$num = App::getOrm()->getRepository('DeskPRO:ChatBlock')->cleanupBlocks();
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale chat blocks");
-		}
+		$this->out("Recreate chat_blocks");
+		$this->execMutateSql("DROP TABLE chat_blocks");
+		$this->execMutateSql("CREATE TABLE chat_blocks (id INT AUTO_INCREMENT NOT NULL, visitor_id INT DEFAULT NULL, by_person_id INT DEFAULT NULL, ip_address VARCHAR(255) NOT NULL, reason LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_A931A25970BEE6D (visitor_id), INDEX IDX_A931A259B5BE2AA2 (by_person_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+		$this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A25970BEE6D FOREIGN KEY (visitor_id) REFERENCES visitors (id) ON DELETE SET NULL");
+		$this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A259B5BE2AA2 FOREIGN KEY (by_person_id) REFERENCES people (id) ON DELETE SET NULL");
 	}
 }

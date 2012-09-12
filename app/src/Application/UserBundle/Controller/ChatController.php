@@ -268,17 +268,7 @@ class ChatController extends AbstractController
 		$session = $sessionObj->getEntity();
 
 		// User is blocked
-		$ip = $this->getRequest()->getClientIp();
-		$visitor_id = 0;
-		if ($session->visitor) {
-			$visitor_id = $session->visitor->getId();
-		}
-
-		$date = new \DateTime('-24 hours');
-		$blocked = $this->container->getDb()->fetchColumn("
-			SELECT id FROM chat_blocks
-			WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
-		", array($ip, $visitor_id, $date->format('Y-m-d H:i:s')));
+		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked($this->getRequest()->getClientIp(), $session->visitor);
 
 		if ($blocked) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');

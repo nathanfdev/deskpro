@@ -2296,6 +2296,20 @@ $collection->add('agent_userchat_view', new Route(
 	array('fragment_name' => 'c')
 ));
 
+$collection->add('agent_userchat_blockuser', new Route(
+	'/chat/block-user/{conversation_id}',
+	array('_controller' => 'AgentBundle:UserChat:blockUser'),
+	array(),
+	array()
+));
+
+$collection->add('agent_userchat_unblockuser', new Route(
+	'/chat/unblock-user/{conversation_id}',
+	array('_controller' => 'AgentBundle:UserChat:unblockUser'),
+	array(),
+	array()
+));
+
 $collection->add('agent_userchat_filterlist_group_counts', new Route(
 	'/chat/group-count.json',
 	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
