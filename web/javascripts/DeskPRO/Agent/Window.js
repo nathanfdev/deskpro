@@ -200,8 +200,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			linkUrls: function(string) {
 				string = string||'';
-				return string
-					.replace(/(https?:\/\/[^\s]+)/gi, '<a target="_blank" href="' + BASE_URL + 'agent/redirect-out/$1">$1</a>');
+				return Orb.linkUrls(string);
 			},
 
 			dpCheckbox: function(input) {
