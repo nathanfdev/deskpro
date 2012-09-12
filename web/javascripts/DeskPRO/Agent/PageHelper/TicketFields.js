@@ -7,7 +7,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	initialize: function(page) {
 		var self = this;
 		this.page = page;
-		this.display = this.page.getEl('field_holders').find('.field-holders');
+		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 
 		this.currentDisplay = [];
 
@@ -127,7 +127,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.currentDisplay = fields;
 
-		this.display.find('div.item.item-on').hide().removeClass('item-on');
+		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
 
 		Array.each(this.currentDisplay, function(f) {
 			if (f.field_type == 'ticket_field') {
@@ -139,7 +139,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
-		var ons = this.display.find('div.item-on');
+		var ons = this.display.find('tbody.item-on');
 		if (ons[0]) {
 			ons.removeClass('first');
 			ons.first().addClass('first');
@@ -171,7 +171,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	replaceHolders: function(html) {
 		this.display.parent().html(html);
-		this.display = this.page.getEl('field_holders').find('.field-holders');
+		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 		this.currentDisplay = [];
 		this.updateDisplay();
 	}
