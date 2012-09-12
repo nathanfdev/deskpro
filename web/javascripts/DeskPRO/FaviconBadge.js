@@ -22,6 +22,11 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		this.setOptions(options);
 
+		this.tinyconOptions = {
+			font: '10px arial',
+			fallback: false
+		};
+
 		this.animateTimeout = null;
 		this.animateCount = 0;
 		this.crazyMode = false;
@@ -78,46 +83,54 @@ DeskPRO.FaviconBadge = new Orb.Class({
 			return;
 		}
 
-		Notificon(num+'', {
-			color: this.options.color,
-			stroke: this.options.strokeColor
-		});
-
 		if (do_animate) {
 			this.animateTimeout = window.setInterval(function() {
 				self.animateCount++;
 				if (self.crazyMode) {
+					self.tinyconOptions.width = 7;
+					self.tinyconOptions.height = 8;
+
 					if (self.animateCount % 2 == 0) {
-						Notificon('◎ ', {
-							color: '#000000',
-							stroke: '#FFFFFF'
-						});
+						self.tinyconOptions.colour = '#000000';
+						self.tinyconOptions.background = '#FFFFFF';
+						Tinycon.setOptions(self.tinyconOptions);
+						Tinycon.setBubble('◎');
 						if (self.crazyTitle) {
 							document.title = self.origWindowTitle;
 						}
 					} else {
-						Notificon('◉ ', {
-							color: '#FF0000',
-							stroke: '#FFFFFF'
-						});
+						self.tinyconOptions.colour = '#FF0000';
+						self.tinyconOptions.background = '#FFFFFF';
+						Tinycon.setOptions(self.tinyconOptions);
+						Tinycon.setBubble('◉');
 						if (self.crazyTitle) {
 							document.title = self.crazyTitle;
 						}
 					}
 				} else {
+					self.tinyconOptions.width = 7;
+					self.tinyconOptions.height = 9;
+
 					if (self.animateCount % 2 == 0) {
-						Notificon(num+'', {
-							color: self.options.color,
-							stroke: self.options.strokeColor
-						});
+						self.tinyconOptions.colour = self.options.color;
+						self.tinyconOptions.background = self.options.strokeColor;
+						Tinycon.setOptions(self.tinyconOptions);
+						Tinycon.setBubble(num+'');
 					} else {
-						Notificon(num+'', {
-							color: self.options.colorAlt,
-							stroke: self.options.strokeColorAlt
-						});
+						self.tinyconOptions.colour = self.options.colorAlt;
+						self.tinyconOptions.background = self.options.strokeColorAlt;
+						Tinycon.setOptions(self.tinyconOptions);
+						Tinycon.setBubble(num+'');
 					}
 				}
 			}, 800);
+		} else {
+			self.tinyconOptions.width = 7;
+			self.tinyconOptions.height = 9;
+			self.tinyconOptions.colour = self.options.color;
+			self.tinyconOptions.background = self.options.strokeColor;
+			Tinycon.setOptions(self.tinyconOptions);
+			Tinycon.setBubble(num+'');
 		}
 	}
 });
