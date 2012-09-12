@@ -264,34 +264,36 @@ pageMeta.baseId = '{{ baseId }}';
 		</article>
 		{% if convo.visitor %}
 			<article id="{{baseId}}_session" style="direction: none;">
-				<div class="field-holders">
-					<div class="item-on first">
-						<div class="title">IP Address:</div>
-						<div class="content">
-							{{ convo.visitor.ip_address }}
-						</div>
-					</div>
-					<div class="item-on">
-						<div class="title">User Agent:</div>
-						<div class="content">
-							{{ convo.visitor.user_agent }}
-						</div>
-					</div>
-					{% if convo.visitor.landing_page %}
-					<div class="item-on">
-						<div class="title">Landing Page:</div>
-						<div class="content">
-							{{ convo.visitor.landing_page }}
-						</div>
-					</div>
-					{% endif %}
-					<div class="item-on">
-						<div class="title">First Visit Time:</div>
-						<div class="content">
-							{{ convo.visitor.date_last|date('fulltime') }}
-						</div>
-					</div>
-				</div>
+				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+					<tbody>
+						<tr>
+							<th>IP Address:</th>
+							<td>
+								{{ convo.visitor.ip_address }}
+							</td>
+						</tr>
+						<tr>
+							<th>User Agent:</th>
+							<td>
+								{{ convo.visitor.user_agent }}
+							</td>
+						</tr>
+						{% if convo.visitor.landing_page %}
+						<tr>
+							<th>Landing Page:</th>
+							<td>
+								{{ convo.visitor.landing_page }}
+							</td>
+						</tr>
+						{% endif %}
+						<tr>
+							<th>First Visit Time:</th>
+							<td>
+								{{ convo.visitor.date_last|date('fulltime') }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</article>
 		{% endif %}
 		{% if convo.status == 'open' or block %}
