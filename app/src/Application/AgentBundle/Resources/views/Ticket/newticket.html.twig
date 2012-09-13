@@ -234,7 +234,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 				{% if custom_fields %}
 					{% for f in custom_fields %}
-						<div class="col fieldprop ticket-field item-on ticket-field item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
+						<div class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
 							<div class="title">{{f.title}}</div>
 							<div class="content">
 								{{ render_custom_field_form(f) }}
