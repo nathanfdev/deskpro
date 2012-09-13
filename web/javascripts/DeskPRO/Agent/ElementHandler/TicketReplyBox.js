@@ -225,6 +225,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var formData = self.el.serializeArray();
 			self.el.trigger('replyboxsubmit', [formData, self]);
 		});
+
+		this.getElById('keep_open_toggle').on('click', function(ev) {
+			ev.preventDefault();
+			$(this).toggleClass('radio-on');
+		});
 	},
 
 	getElById: function(id) {

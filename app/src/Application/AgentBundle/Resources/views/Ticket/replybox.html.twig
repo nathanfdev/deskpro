@@ -19,8 +19,13 @@
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
-	<div class="ticket-sending-overlay" style="display: none">
+	<div class="ticket-sending-overlay" style="display: none;">
 		<strong><span class="hide-note">Sending your message</span><span class="hide-reply" style="display: none">Adding your note</span></strong>
+
+		<div class="close-tab-message">
+			<em>This tab will automatically close after your message is posted.</em>
+			<button class="keep-open-toggle clean-white" id="{{ replyBaseId }}_keep_open_toggle">Click here to keep this tab open</button>
+		</div>
 	</div>
 	<header>
 		<nav>
@@ -45,10 +50,6 @@
 				<li class="tipped article toggle hide-note" title="{{ phrase('agent.general.mark_as_pending_kb') }}">
 					<span><em class="check"></em></span>
 					<input type="checkbox" name="options[do_kbpending]"/>
-				</li>
-				<li class="tipped closetab toggle hide-note" title="{{ phrase('agent.tickets.close_tab_after_reply') }}">
-					<span>{{ phrase('agent.general.close_tab') }}<em class="check"></em></span>
-					<input type="checkbox" name="options[close_tab]" />
 				</li>
 				<li class="tipped notifyuser toggle hide-note on" title="Send notification email to users about your reply">
 					<span><em class="check"></em></span>
