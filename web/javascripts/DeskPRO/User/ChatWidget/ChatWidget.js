@@ -404,64 +404,162 @@ var DpChatWidget = new (function() {
 			});
 		}
 
+		var bgColor  = 'rgb(63,63,63)';
+		var bgColorA = 'rgba(63,63,63,0.8)';
+		var border   = '2px solid #727272';
+
+		if (DpChatWidget_Options && DpChatWidget_Options.btnStyle) {
+			if (DpChatWidget_Options.btnStyle.bgColor) {
+				bgColor = DpChatWidget_Options.btnStyle.bgColor;
+			}
+			if (DpChatWidget_Options.btnStyle.bgColorA) {
+				bgColorA = DpChatWidget_Options.btnStyle.bgColorA;
+			}
+			if (DpChatWidget_Options.btnStyle.border) {
+				border = DpChatWidget_Options.btnStyle.border;
+			}
+		}
+
 		var css = [];
 		css.push('position: fixed');
 		css.push('bottom: 0');
-		css.push('right: 20px');
+		css.push('right: 120px');
 		css.push('margin: 0');
-		css.push('padding: 7px 15px 7px 15px');
+		css.push('padding: 0 15px 0 15px');
+		css.push('height: 23px');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('border: 1px solid #0665A4');
-		css.push('border-bottom: none');
-		css.push('-webkit-border-top-left-radius: 4px');
-		css.push('-webkit-border-top-right-radius: 4px');
-		css.push('-moz-border-radius-topleft: 4px');
-		css.push('-moz-border-radius-topright: 4px');
-		css.push('border-top-left-radius: 4px');
-		css.push('border-top-right-radius: 4px');
-		css.push('background: #0A69AB');
 		css.push('color: #fff');
 		css.push('font-family: Arial, sans-serif');
 		css.push('font-weight: bold');
 		css.push('font-size: 12px');
 		css.push('cursor: pointer');
-		css.push('overflow: hidden');
 		css.push('display: none');
-		css.push('background: rgb(69,84,127)');
-		css.push('background: -moz-linear-gradient(top,  rgba(69,84,127,1) 0%, rgba(6,30,86,1) 100%)');
-		css.push('background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,84,127,1)), color-stop(100%,rgba(6,30,86,1)))');
-		css.push('background: -webkit-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
-		css.push('background: -o-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
-		css.push('background: -ms-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
-		css.push('background: linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
-		css.push('filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#45547f\', endColorstr=\'#061e56\',GradientType=0 )');
-		css.push('border: 1px solid #001851');
+		css.push('background: ' + bgColor);
+		css.push('background: ' + bgColorA);
+		css.push('border: ' + border);
 		css.push('border-bottom: none');
-		css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
-		css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+		css.push('border-right: none');
+		css.push('border-top: none');
 		css.push('text-shadow: 0px 0px 2px #000000');
-		css.push('filter: dropshadow(color=#000000, offx=0, offy=0)');
 		css = css.join(';');
 
 		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
 
+		var css = [];
+		css.push('position: fixed');
+		css.push('bottom: 0');
+		css.push('right: 20px');
+		css.push('margin: 0');
+		css.push('height: 12px');
+		css.push('padding: 0');
+		css.push('line-height: 100%');
+		css.push('box-shadow: none');
+		css.push('-webkit-border-top-right-radius: 6px');
+		css.push('-moz-border-radius-topright: 6px');
+		css.push('border-top-right-radius: 6px')
+		css.push('cursor: pointer');
+		css.push('background: ' + bgColor);
+		css.push('background: ' + bgColorA);
+		css.push('border: ' + border);
+		css.push('border-bottom: none');
+		css.push('border-left: none');
+		css.push('border-left: none');
+		css = css.join(';');
+
+		$('head').append('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
+
+		var css = [];
+		css.push('position: absolute');
+		css.push('top: 0px');
+		css.push('bottom: 0');
+		css.push('right: -6px');
+		css.push('width: 6px');
+		css.push('margin: 0');
+		css.push('height: 9px');
+		css.push('padding: 0');
+		css.push('line-height: 100%');
+		css.push('box-shadow: none');
+		css.push('-webkit-border-bottom-left-radius: 6px');
+		css.push('-moz-border-radius-bottomleft: 6px');
+		css.push('border-bottom-left-radius: 6px')
+		css.push('cursor: pointer');
+		css.push('display: block');
+		css.push('background: transparent');
+		css.push('border: ' + border);
+		css.push('border-top: none');
+		css.push('border-right: none');
+		css.push('z-index: 1');
+		css = css.join(';');
+
+		$('head').append('<style type="text/css">#dpchat_btn_inner2 { '+css+ '}</style>');
+
+		var css = [];
+		css.push('position: absolute');
+		css.push('top: -11px');
+		css.push('height: 6px');
+		css.push('right: 0');
+		css.push('left: -2px');
+		css.push('height: 6px');
+		css.push('margin: 0');
+		css.push('height: 9px');
+		css.push('padding: 0');
+		css.push('line-height: 100%');
+		css.push('box-shadow: none');
+		css.push('-webkit-border-top-left-radius: 6px');
+		css.push('-webkit-border-top-right-radius: 6px');
+		css.push('-moz-border-radius-topleft: 6px');
+		css.push('-moz-border-radius-topright: 6px');
+		css.push('border-top-left-radius: 6px');
+		css.push('border-top-right-radius: 6px');
+		css.push('cursor: pointer');
+		css.push('display: block');
+		css.push('background: ' + bgColor);
+		css.push('background: ' + bgColorA);
+		css.push('border: ' + border);
+		css.push('border-bottom: none');
+		css = css.join(';');
+
+		$('head').append('<style type="text/css">#dpchat_btn_inner { '+css+ '}</style>');
+
+		var css = [];
+		css.push('position: absolute');
+		css.push('bottom: 0');
+		css.push('height: 14px');
+		css.push('width: 5px');
+		css.push('overflow: hidden');
+		css.push('left: -5px');
+		css.push('margin: 0');
+		css.push('padding: 0');
+		css.push('line-height: 100%');
+		css.push('box-shadow: none');
+		css.push('cursor: pointer');
+		css.push('display: block');
+		css.push('background: ' + bgColor);
+		css.push('background: ' + bgColorA);
+		css.push('border: none');
+		css = css.join(';');
+
+		$('head').append('<style type="text/css">#dpchat_btn_btm_shade { '+css+ '}</style>');
+
 		var phrase1 = 'Click here to chat with us';
 		var phrase2 = 'Open your chat';
-		if (typeof DESKPRO_LANG != 'undefined') {
-			if (DESKPRO_LANG['user.chat.window_start-button']) {
-				phrase1 = DESKPRO_LANG['user.chat.window_start-button'];
+		if (DpChatWidget_Options && DpChatWidget_Options.lang) {
+			if (DpChatWidget_Options.lang['user.chat.window_start-button']) {
+				phrase1 = DpChatWidget_Options.lang['user.chat.window_start-button'];
 			}
-			if (DESKPRO_LANG['user.chat.window_resume-button']) {
-				phrase2 = DESKPRO_LANG['user.chat.window_resume-button'];
+			if (DpChatWidget_Options.lang['user.chat.window_resume-button']) {
+				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
 			}
 		}
 
-		openBtn = $('<div id="dpchat_btn" class="dp-hide-print '+ (options.btnClass || '') + '"><div id="dpchat_btn_label"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div></div>');
+		openBtn = $('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
 		if (this.isWindowChat) {
 			openBtn.hide();
 		}
 		openBtn.appendTo('body');
+
+		$('#dpchat_btn_btm').width($('#dpchat_btn').width() - 52);
 
 		openBtn.on('click', function(ev) {
 			ev.stopPropagation();
