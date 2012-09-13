@@ -192,6 +192,13 @@ class TicketPropertiesController extends AbstractController
 		$enable = $this->in->getBoolInt('enable');
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', $enable);
 
+		if (!$enable) {
+			$this->container->getDb()->executeUpdate("
+				DELETE FROM ticket_page_display
+				WHERE department_id IS NOT NULL
+			");
+		}
+
 		return $this->redirectRoute('admin_tickets_editor');
 	}
 

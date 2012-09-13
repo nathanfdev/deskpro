@@ -157,6 +157,13 @@ class TicketPageDisplay extends AbstractEntityRepository
 			);
 		}
 
+		if (App::getSetting('core.use_ticket_workflow') && App::getDataService('TicketWorkflow')->getNames()) {
+			$page_data[] = array(
+				'id' => 'ticket_workflow',
+				'field_type' => 'ticket_workflow'
+			);
+		}
+
 		// Custom fields
 		$fields = App::getSystemService('ticket_fields_manager')->getFields();
 		foreach ($fields as $f) {

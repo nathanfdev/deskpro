@@ -24,6 +24,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<li class="draggable" data-item-id="attachments"><label>{{ phrase('agent.general.attachments') }}</label></li>
 				{% endif %}
 				{% if term_options.ticket_categories_full %}<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.categories') }}</label></li>{% endif %}
+				{% if term_options.ticket_workflows %}<li class="draggable" data-item-id="ticket_workflow" data-edit-title="Edit Workflows" data-edit-url="{{ path('admin_ticketworks') }}"><label>Workflows</label></li>{% endif %}
 				{% if term_options.products %}<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>{% endif %}
 				{% if term_options.priorities %}<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.tickets.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.general.priority') }}</label></li>{% endif %}
 				{% for field in custom_ticket_fields %}
@@ -286,6 +287,24 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
 			</select>
+		</div>
+	</script>
+{% endif %}
+
+{############################
+ # Workflow field
+ ############################}
+
+{% if term_options.ticket_categories_full %}
+	<script type="text/x-deskpro-plain" id="rendered_field_ticket_workflow">
+		<div class="ticket-workflow">
+			<select class="ticket-category-input field-value">
+				<option>Workflow</option>
+				{% for id,label in term_options.ticket_categories_full %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+			<div style="font-size: 10px">Note: This field is only displayed for agents</div>
 		</div>
 	</script>
 {% endif %}
