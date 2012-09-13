@@ -1,5 +1,5 @@
 {% if log.action_type != 'executed_triggers' %}
-	<div class="log-row log-{{log.id}}" data-log-id="{{ log.id }}" style="display: none;">
+	<div class="log-row log-{{log.id}}" data-log-id="{{ log.id }}">
 		<div class="info">
 			{% if log.trigger_id %}
 				<span class="trigger-id">{{ phrase('agent.general.trigger_x', {id: log.trigger_id}) }}</span>,

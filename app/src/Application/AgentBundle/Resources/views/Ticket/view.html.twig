@@ -490,33 +490,18 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="profile-box-container ticket-messages">
 	<header>
 		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
-				<li style="cursor:pointer;" id="{{baseId}}_msgtype_label" class="on" data-tab-for="#{{baseId}}_messages_wrap">
-					<span>Messages and Notes</span>
-					<i class="char-down">&#9660;</i>
-				</li>
+				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">Messages</li>
+				<li data-list-type="log" data-tab-for="#{{baseId}}_messages_wrap">Full Log</li>
 				<li data-tab-for="#{{ baseId }}_times">Dates &amp; Times</li>
 			{% for widget in messageTabs %}
 				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
 			{% endfor %}
 			</ul>
 		</nav>
-		<ul id="{{baseId}}_msgtype_menu" style="display: none;">
-			<li data-opts="message,notes,attach">Messages and Notes</li>
-			<li data-opts="message,notes,logs,attach">Messages and Notes with Ticket Log</li>
-			<li class="just-notes" data-opts="notes">Just Notes</li>
-			<li class="just-attach" data-opts="attach">Just Attachments</li>
-			<li data-opts="logs">Just Ticket Log</li>
-		</ul>
-		<ul id="{{baseId}}_msgtype_list" class="tickets-msg-controls" style="display: none;">
-			<li id="{{baseId}}_msgcheck_message"><label><input type="checkbox" class="dp-checkbox show-messages" checked="checked" />{{ phrase('agent.general.messages') }}</label></li>
-			<li id="{{baseId}}_msgcheck_attach"><label><input type="checkbox" class="dp-checkbox show-attach" checked="checked" />{{ phrase('agent.general.attachments') }}</label></li>
-			<li id="{{baseId}}_msgcheck_notes"><label><input type="checkbox" class="dp-checkbox show-notes" checked="checked" />{{ phrase('agent.general.notes') }}</label></li>
-			<li id="{{baseId}}_msgcheck_logs"><label><input type="checkbox" class="dp-checkbox show-logs" />{{ phrase('agent.tickets.ticket_log') }}</label></li>
-		</ul>
 	</header>
-	<section class="messages-wrap" id="{{baseId}}_messages_wrap">
+	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</section>
 	<section id="{{ baseId }}_times" style="display: none;">

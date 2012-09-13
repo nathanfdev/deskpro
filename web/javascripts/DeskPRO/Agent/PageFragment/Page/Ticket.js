@@ -76,58 +76,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$('textarea[name="message"]', self.ticketReply).focus();
 		});
 
-		var showMessages = $('input.show-messages', this.wrapper);
-		var showAttach = $('input.show-attach', this.wrapper);
-		var showNotes = $('input.show-notes', this.wrapper);
-		var showLogs = $('input.show-logs', this.wrapper);
-		var msgWrap = this.getEl('messages_wrap');
-
-		function updateMessageTypes() {
-			var messages = showMessages.is(':checked');
-			var notes = showNotes.is(':checked');
-			var logs = showLogs.is(':checked');
-			var attach = showAttach.is(':checked');
-
-			if (!messages && !notes && !logs && !attach) {
-				messages = true;
-				showMessages.attr('checked', true);
-			}
-
-			if (attach) {
-				$('.attachment-list', msgWrap).show();
-			} else {
-				$('.attachment-list', msgWrap).hide();
-			}
-
-			if (messages) {
-				$('article.message:not(.note-message)', msgWrap).show();
-				$('.attachment-lone', msgWrap).hide();
-			} else {
-				$('article.message:not(.note-message)', msgWrap).hide();
-				if (attach) {
-					$('.attachment-lone', msgWrap).show();
-				}
-			}
-			if (notes) {
-				$('article.note-message', msgWrap).show();
-			} else {
-				$('article.note-message', msgWrap).hide();
-			}
-			if (logs) {
-				$('div.log-row', msgWrap).show();
-				$('div.log-batch', msgWrap).show();
-			} else {
-				$('div.log-row', msgWrap).hide();
-				$('div.log-batch', msgWrap).hide();
-			}
-
-			self.updateUi();
-		};
-
-		$('.tickets-msg-controls input', this.wrapper).on('click', function() {
-			updateMessageTypes();
-		});
-
 		if (this.meta.ticket_perms.modify_merge) {
 			this.getEl('merge_trigger').on('click', function() {
 				var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
@@ -171,29 +119,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.newTaskLoader.open();
 		});
 
-		messageTypeTitle = this.getEl('msgtype_label');
-		var messageTypeMenu = new DeskPRO.UI.Menu({
-			triggerElement: messageTypeTitle,
-			menuElement: this.getEl('msgtype_menu'),
-			onBeforeMenuOpened: function(evDat) {
-				self.rescanMessageTypes();
-			},
-			onItemClicked: function(evData) {
-				var li = $(evData.itemEl);
-				var types = li.data('opts').split(',');
-
-				messageTypeTitle.find('> span').text(li.text());
-
-				self.getEl('msgtype_list').find(':checkbox').prop('checked', false);
-				$.each(types, function(i, type) {
-					self.getEl('msgcheck_' + type).find(':checkbox').prop('checked', true);
-				});
-
-				updateMessageTypes();
-			}
-		});
-
-		this.rescanMessageTypes();
 		this.ticketFields.updateDisplay();
 
 		this.wrapper.find('.lock-overlay').on('click', function(ev) {
@@ -212,25 +137,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.getEl('ref_num').show();
 			}
 		});
+
+		DeskPRO.ElementHandler_Exec(this.wrapper);
+		var messageboxTabs = this.getEl('messagebox_tabs').data('simpletabs');
+		messageboxTabs.addEvent('tabSwitch', function(evData) {
+			var type = evData.tabEl.data('list-type');
+
+			if (type == 'messages') {
+				self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
+			} else {
+				self.getEl('messages_wrap').addClass('show-log show-collapsed-messages');
+			}
+		});
 	},
 
 	showLockAlert: function() {
 		DeskPRO_Window.showAlert('You are not allowed to make any changes to this ticket until it has been unlocked.');
-	},
-
-	rescanMessageTypes: function() {
-		var msgWrap = this.getEl('messages_wrap');
-		if ($('.attachment-list', msgWrap).length) {
-			this.getEl('msgtype_menu').find('li.just-attach').show();
-		} else {
-			this.getEl('msgtype_menu').find('li.just-attach').hide();
-		}
-
-		if ($('article.note-message', msgWrap).length) {
-			this.getEl('msgtype_menu').find('li.just-notes').show();
-		} else {
-			this.getEl('msgtype_menu').find('li.just-notes').hide();
-		}
 	},
 
 	handleReplySave: function(ev, formData, handler) {
@@ -299,8 +221,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.showAlert("You have already sent that message.");
 					return;
 				}
-
-				this.rescanMessageTypes();
 
 				// Reload the message row in results
 				//addTicket
@@ -432,8 +352,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this._initMessage(new_message);
 		this.incCount('ticket-messages');
-
-		this.rescanMessageTypes();
 	},
 
 	_initMessage: function(messageEl) {
@@ -903,7 +821,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			success: function(result) {
 				this.alertTab();
 				this.handleTicketUpdate(result);
-				this.rescanMessageTypes();
 			}
 		});
 	}
