@@ -17,29 +17,58 @@
 		</div>
 		{% endif %}
 
-		<div class="fields-row">
-			<div class="txt dp-form-row-person_name">
-				<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.widget.name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
-			</div>
-			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.widget.email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
-			</div>
-		</div>
-		<div class="fields-row dp-form-row-ticket_department_id">
-			<select name="department_id">
-				<option value=""></option>
-				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
-					{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
-				{% endfor %}
-			</select>
-			<span class="tooltip-error">
-				<span>{{ phrase('user.widget.chat_form_error_department') }}</span>
-			</span>
-		</div>
+		<table class="form-table" cellspacing="0" cellpadding="0" width="100%">
+			<tbody>
+				<tr>
+					<th width="120">
+						{{ phrase('user.widget.name') }}
+					</th>
+					<td>
+						<div class="txt dp-form-row-person_name">
+							<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						</div>
+					</td>
+				</tr>
 
-		<div class="btn-holder clearfix">
-			<button type="submit" class="btn-activity">{{ phrase('user.widget.chat_form_submit') }}</button>
-		</div>
+				<tr>
+					<th>
+						{{ phrase('user.widget.email') }}
+					</th>
+					<td>
+						<div class="txt dp-form-row-person_email">
+							<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<th>
+						{{ phrase('user.widget.ticket_form_department') }}
+					</th>
+					<td>
+						<div class="fields-row dp-form-row-ticket_department_id">
+							<select name="department_id">
+								<option value=""></option>
+								{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
+									{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+								{% endfor %}
+							</select>
+							<span class="tooltip-error">
+								<span>{{ phrase('user.widget.chat_form_error_department') }}</span>
+							</span>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<th>&nbsp;</th>
+					<td>
+						<button type="submit" class="btn-activity">{{ phrase('user.widget.chat_form_submit') }}</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
 	</form>
 
 	<div class="thank-you" id="dp_newchat_done" style="display: none">

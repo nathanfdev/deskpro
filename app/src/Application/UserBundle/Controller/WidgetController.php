@@ -117,6 +117,12 @@ class WidgetController extends AbstractController
 		#------------------------------
 
 		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
+
+		$ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
+		if ($ds && $ds->getData('selections')) {
+			$latest_content->useSelections($ds->getData('selections'));
+		}
+
 		$latest_content->setMaxCount(10);
 
 		$chat_active = $this->em->getRepository('DeskPRO:Session')->hasAvailableAgents();

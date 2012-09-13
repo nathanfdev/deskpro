@@ -2306,6 +2306,7 @@ dp .dp-new-feedback td {
 	left: 0;
 	right: 0;
 	top: 20px;
+	overflow: auto;
 }
 
 #widget_deskpro .is-showing-related { display: none; }
@@ -3264,10 +3265,21 @@ dp .dp-new-feedback td {
 	top: 0;
 	left: 0;
 	right: 1px;
-	padding:20px 0 0 24px;
-	height:53px;
+	padding:14px 0 0 24px;
+	height:59px;
 	background:#dce3ff url({{ stylevar.static_path }}/images/user/widget/bg-aside-head.gif) repeat-x;
 }
+
+#dp .widget-deskpro .aside .head .helpdesk-link {
+	font-size: 11px;
+	margin-top: 5px;
+	margin-left: 3px;
+}
+
+#dp .widget-deskpro .aside .head .helpdesk-link a {
+	text-decoration: none;
+}
+
 #dp .widget-deskpro .btn{
 	position: relative;
 	border:1px solid #c2c3c8;

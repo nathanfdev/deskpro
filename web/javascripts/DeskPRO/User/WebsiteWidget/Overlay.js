@@ -295,7 +295,7 @@ var DpOverlayWidget = new (function() {
 				css.push('overflow: hidden');
 				css = css.join(';');
 
-				var url = messageData[0];
+				var url = data[0];
 				url = url.replace(/__DP_COL__/g, ':');
 				url += '#' + encodeURIComponent(document.location.href);
 				$('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
