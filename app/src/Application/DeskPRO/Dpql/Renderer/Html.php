@@ -539,6 +539,7 @@ class Html extends AbstractRenderer
 
 		$chartData = array();
 		$graphs = array();
+		$isStacked = false;
 
 		if ($groupXColumns) {
 			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/bar.
@@ -580,27 +581,78 @@ class Html extends AbstractRenderer
 
 			$hasCategory = true;
 		} else {
-			foreach ($rows AS $row) {
-				$categories = array();
-				foreach ($groupYColumns AS $column) {
-					$categories[] = $this->_renderCellValue($row, $column);
-				}
-				$category = implode(' / ', $categories);
+			if (count($groupYColumns) > 1) {
+				$rowGroups = array();
+				foreach ($rows AS $row) {
+					$categories = array();
+					$grouper = '';
+					$i = 0;
+					foreach ($groupYColumns AS $column) {
+						$i++;
+						if ($i == 1) {
+							$grouper = $this->_renderCellValue($row, $column);
+							continue;
+						} else {
+							$categories[] = $this->_renderCellValue($row, $column);
+						}
+					}
+					$category = implode(' / ', $categories);
 
-				$rowData = array('category' => $category);
+					$rowData = array();
+
+					foreach ($selectColumns AS $i => $column) {
+						$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
+					}
+
+					$rowGroups[$grouper][$category] = $rowData;
+				}
+
+				$uniqueGraphs = array();
+
+				foreach ($rowGroups AS $grouper => $values)
+				{
+					$data = array('category' => $grouper);
+					foreach ($values AS $categoryName => $groupValues) {
+						$uniqueGraphs[$categoryName] = true;
+						foreach ($groupValues AS $valueId => $value) {
+							$data["$categoryName-$valueId"] = $value;
+						}
+					}
+
+					$chartData[] = $data;
+				}
+
+				foreach ($uniqueGraphs AS $categoryName => $null) {
+					$graphs[] = array(
+						'title' => "$categoryName",
+						'value' => "$categoryName-value0"
+					);
+				}
+
+				$isStacked = ($type == 'bar');
+			} else {
+				foreach ($rows AS $row) {
+					$categories = array();
+					foreach ($groupYColumns AS $column) {
+						$categories[] = $this->_renderCellValue($row, $column);
+					}
+					$category = implode(' / ', $categories);
+
+					$rowData = array('category' => $category);
+
+					foreach ($selectColumns AS $i => $column) {
+						$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
+					}
+
+					$chartData[] = $rowData;
+				}
 
 				foreach ($selectColumns AS $i => $column) {
-					$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
+					$graphs[] = array(
+						'title' => $column['title'],
+						'value' => "value$i"
+					);
 				}
-
-				$chartData[] = $rowData;
-			}
-
-			foreach ($selectColumns AS $i => $column) {
-				$graphs[$i] = array(
-					'title' => $column['title'],
-					'value' => "value$i"
-				);
 			}
 
 			$hasCategory = count($groupYColumns) > 0;
@@ -612,7 +664,7 @@ class Html extends AbstractRenderer
 			$sliceCount = count($chartData);
 			$height = 400 + ceil($sliceCount / 4) * 20;
 
-			foreach ($graphs AS $i => $graph) {
+			foreach ($graphs AS $graph) {
 				$id = 'report_chart_' . md5(uniqid());
 
 				$output .= '
@@ -651,15 +703,29 @@ class Html extends AbstractRenderer
 				';
 			}
 
+			if ($isStacked) {
+				$stacked = 'var valueAxis = new AmCharts.ValueAxis();
+					valueAxis.stackType = "regular";
+					chart.addValueAxis(valueAxis);';
+			} else {
+				$stacked = '';
+			}
+
+			$height = 430 + ceil(count($graphs) / 2) * 20;
+
 			$id = 'report_chart_' . md5(uniqid());
 			$output = '
-				<div id="' . $id . '" class="report-chart"></div>
+				<div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
 				<script type="text/javascript">
 				$(function() {
 					var chart = new AmCharts.AmSerialChart();
 					chart.dataProvider = ' . json_encode($chartData) . ';
 					chart.categoryField = "category";
 					chart.addLegend(new AmCharts.AmLegend());
+
+					chart.categoryAxis.fontSize = 9;
+
+					' . $stacked . '
 
 					var graph;
 					' . implode("\n", $graphCode) . '
