@@ -63,6 +63,13 @@ class Prepared
 	protected $_sqlExprPrint = false;
 
 	/**
+	 * The SQL expression that should be used if this DPQL part is used in an ORDER BY.
+	 *
+	 * @var string|bool
+	 */
+	protected $_sqlExprOrder = false;
+
+	/**
 	 * A custom renderer that should be used to render this DPQL part
 	 *
 	 * @var \Closure|string|null
@@ -118,13 +125,31 @@ class Prepared
 	}
 
 	/**
-	 * Returns the printable SQL expression. Returns the gen
+	 * Returns the printable SQL expression.
 	 *
 	 * @return string
 	 */
 	public function printed()
 	{
 		return ($this->_sqlExprPrint !== false ? $this->_sqlExprPrint : $this->_sqlExpr);
+	}
+
+	/**
+	 * @param string|bool $ordered
+	 */
+	public function setOrdered($ordered)
+	{
+		$this->_sqlExprOrder = $ordered;
+	}
+
+	/**
+	 * Returns the orderable SQL expression. Returns the gen
+	 *
+	 * @return string
+	 */
+	public function ordered()
+	{
+		return ($this->_sqlExprOrder !== false ? $this->_sqlExprOrder : $this->printed());
 	}
 
 	/**

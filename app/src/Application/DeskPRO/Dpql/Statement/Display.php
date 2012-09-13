@@ -480,7 +480,7 @@ class Display
 			if ($groupBy->hasValue()) {
 				$printId = $this->addSqlSelectField($groupBy->printed(), $alias);
 				$sql->addGroupBy($groupBy->sql());
-				$this->addDefaultOrder($groupBy->printed());
+				$this->addDefaultOrder($groupBy->ordered());
 
 				if ($groupBy->printed() === $groupBy->sql()) {
 					$groupId = $printId;
@@ -528,7 +528,7 @@ class Display
 
 			$orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
 			if ($orderSql->hasValue()) {
-				$sql->addOrderBy($orderSql->printed() . $direction);
+				$sql->addOrderBy($orderSql->ordered() . $direction);
 			}
 		}
 	}

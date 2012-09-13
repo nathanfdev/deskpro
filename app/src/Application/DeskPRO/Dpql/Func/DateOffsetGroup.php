@@ -34,52 +34,17 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 /**
- * Abstract base for all DPQL function calls.
+ * Gets a human readable value for a date offset grouping (0-15 mins, 15-30 mins, etc).
  */
-abstract class AbstractFunc
+class DateOffsetGroup extends AbstractFunc
 {
-	/**
-	 * Maps DPQL function names (in all upper case) to class names
-	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
-	 *
-	 * @var array
-	 */
-	protected static $_functionMap = array(
-		'COUNT' => 'Count',
-		'COUNT_DISTINCT' => 'CountDistinct',
-		'CURDATE' => 'CurDate',
-		'CURTIME' => 'CurTime',
-		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-		'FORMAT' => 'Format',
-		'LINK' => 'Link',
-		'NOW' => 'Now',
-		'PERCENT' => 'Percent',
-		'PRINT' => 'Printable',
-		'TO_UTC' => 'ToUtc',
-		'UTC' => 'Utc',
-		'X' => 'X',
-		'Y' => 'Y'
-	);
-
-	/**
-	 * Name of the function (in user-provided case).
-	 *
-	 * @var string
-	 */
-	protected $_name;
-
-	/**
-	 * List of arguments for function
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
-	 */
-	protected $_arguments;
-
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
 	 *
@@ -93,58 +58,66 @@ abstract class AbstractFunc
 	 *
 	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
 	 */
-	abstract public function prepare(
+	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	);
-
-	/**
-	 * Constructor. Use the create() factory method.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 */
-	protected function __construct($name, array $arguments = array())
+	)
 	{
-		$this->_name = $name;
-		$this->_arguments = $arguments;
-	}
+		$argCount = count($this->_arguments);
 
-	/**
-	 * Creates the correct function handler object.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
-	 */
-	public static function create($name, array $arguments = array())
-	{
-		$name = strtoupper($name);
-		if (isset(self::$_functionMap[$name])) {
-			$map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
-			return new $map($name, $arguments);
-		} else {
-			return new SqlPass($name, $arguments);
+		if ($argCount != 1 && $argCount != 2) {
+			throw new Exception('DATE_OFFSET_GROUP() can only accept 1 or 2 arguments');
 		}
-	}
 
-	/**
-	 * Gets a literal value for the specified part.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
-	 *
-	 * @return mixed
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
-	{
-		if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
-			return $part->string;
-		} else if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
-			return $part->number;
+		if ($argCount == 1) {
+			$value = reset($this->_arguments);
+			$prepped = $value->prepare($statement, $section, $stack, $select, $result);
+
+			$name = 'DATE_OFFSET_GROUP(' . $prepped->name() . ')';
+			$ifSql = $prepped->sql();
 		} else {
-			throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
+			$valueTo = reset($this->_arguments);
+			$valueFrom = next($this->_arguments);
+
+			$toPrepped = $valueTo->prepare($statement, $section, $stack, $select, $result);
+			$fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $result);
+
+			$name = 'DATE_OFFSET_GROUP(' . $toPrepped->name() . ', ' . $fromPrepped->name() . ')';
+			$ifSql = 'UNIX_TIMESTAMP(' . $toPrepped->sql() . ') - UNIX_TIMESTAMP(' . $fromPrepped->sql() . ')';
 		}
+
+		$groups = array(
+			900 => '0-15 minutes',
+			1800 => '15-30 minutes',
+			3600 => '30-60 minutes',
+			7200 => '1-2 hours',
+			14400 => '2-4 hours',
+			43200 => '4-12 hours',
+			86400 => '12-24 hours',
+			172800 => '1-2 days',
+			345600 => '2-4 days',
+			604800 => '4-7 days',
+			1209600 => '1-2 weeks',
+			2419200 => '2-4 weeks',
+			5270400 => '1-2 months', // actually 61 days
+			7862400 => '2-3 months', // 91 days
+			15724800 => '3-6 months', // 181 days
+			31536000 => '6-12 months', // 365 days
+			63072000 => '1-2 years', // 365*2 days
+		);
+		krsort($groups);
+
+		$sql = "'2+ years'";
+		foreach ($groups AS $max => $value) {
+			$sql = "IF($ifSql < $max, '$value', $sql)";
+		}
+
+		$orderSql = "630720000"; // this value must be higher than all the group values
+		foreach ($groups AS $max => $value) {
+			$orderSql = "IF($ifSql < $max, $max, $orderSql)";
+		}
+
+		$return = new Prepared($sql, $name);
+		$return->setOrdered($orderSql);
+		return $return;
 	}
 }
