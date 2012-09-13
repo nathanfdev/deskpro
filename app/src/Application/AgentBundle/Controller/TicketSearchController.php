@@ -582,14 +582,22 @@ class TicketSearchController extends AbstractController
 		$helper = new Helper\TicketResults($this);
 		$helper->setTicketIds($results);
 
-		if ($this->in->getString('group_by')) {
-			$helper->setGroupField($this->in->getString('group_by'));
-		} elseif ($filter['group_by']) {
-			$helper->setGroupField($filter['group_by']);
-		}
-
 		// Or if the user has their own
 		$group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
+
+		if ($this->in->getString('group_by')) {
+			$group_by = $this->in->getString('group_by');
+
+			App::getEntityRepository('DeskPRO:PersonPref')->savePref(
+				$this->person,
+				'agent.ui.ticket-filter-group-by.' . $filter['id'],
+				$group_by
+			);
+
+		} elseif ($filter['group_by']) {
+			$group_by = $filter['group_by'];
+		}
+
 		if ($group_by) {
 			$helper->setGroupField($group_by);
 		}
