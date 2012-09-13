@@ -1021,7 +1021,12 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$choice_str = implode(' or ', $choice_str);
-					$this->summary[] = 'Status is ' . $choice_str;
+
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						$this->summary[] = 'Status is ' . $choice_str;
+					} else {
+						$this->summary[] = 'Status is not ' . $choice_str;
+					}
 
 					$w = '(';
 					if ($show_status) {
