@@ -205,7 +205,26 @@ class TaskController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createJsonResponse(array('success' => true));
+		$task_data = array();
+
+		foreach ($tasks as $t) {
+			$d = false;
+			if ($t->date_due) {
+				$d = clone $t->date_due;
+				$d->setTimezone($this->person->getTimezone());
+				$d = $d->format($this->container->getSetting('core.date_day'));
+			}
+			$task_data[] = array(
+				'id' => $t->getId(),
+				'title' => $t->title,
+				'date_due' => $d
+			);
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'tasks' => $task_data,
+		));
     }
 
     /**

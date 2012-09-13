@@ -192,22 +192,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							{% endfor %}
 						</select>
 					</td>
-					<td>
-						<label>Your Flag</label>
-						<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons">
-							<option
-								value=""
-								data-icon="{{ asset('images/agent/icons/flag-gray.png' ) }}"
-							>None</option>
-							{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
-								<option
-									value="{{color}}"
-									{% if ticket_flagged == color %}selected="selected"{% endif %}
-									data-icon="{{ asset('images/agent/icons/flag-' ~ color ~ '.png' ) }}"
-								>{{ flag.flag_name(color) }}</option>
-							{% endfor %}
-						</select>
-					</td>
 				</tr></table>
 				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			</div>
@@ -448,7 +432,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		{% endif %}
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
 			(baseId ~ '_fields_display_main_wrap'): 'Fields',
-			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)'
+			(baseId ~ '_tasks_wrap'): 'Tasks &amp; Flag (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>)'
 		}) }}
 	</header>
 	<section class="description-area" style="padding:0">
@@ -458,27 +442,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</div>
 		</article>
 		<article id="{{baseId}}_tasks_wrap">
-			<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
-				{% if tasks %}
-					<tr>
-						<th>Tasks</th>
-						<td>
-							<ul>
-								{% for task in tasks %}
-									<li>&bull;
-										<a data-route="listpane:{{ path('agent_task_list', {search_type: 'all', search_category: 'total'}) }}">{{ task.title }}</a>
-										{% if task.date_due %}(Due: {{ task.date_due|date('day') }}){% endif %}
-									</li>
-								{% endfor %}
-							</ul>
-						</td>
-					</tr>
-				{% endif %}
-			</table>
-
-			<div style="padding: 15px;">
-				<a class="clean-white" id="{{baseId}}_newtask"><span>Add Task</span><em></em></a>
-			</div>
+			{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
 		</article>
 		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>

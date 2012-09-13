@@ -238,6 +238,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.page.getEl('headerbox_box_props').find('select').each(function() {
 			DP.select($(this));
 		});
+
+		DP.select(this.page.getEl('flag'));
 	},
 
 	_initMacroOverlay: function() {

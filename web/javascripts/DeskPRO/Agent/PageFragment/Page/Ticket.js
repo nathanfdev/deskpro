@@ -44,6 +44,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initMessageActionsMenu();
 		this._initLabels();
 		this._initTicketLocking();
+		this._initTasks();
 
 		if (this.meta.ticket_perms['delete']) {
 			if (this.meta.isDeleted) {
@@ -822,6 +823,145 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.alertTab();
 				this.handleTicketUpdate(result);
 			}
+		});
+	},
+
+	//#################################################################
+	//# Tasks
+	//#################################################################
+
+	_initTasks: function() {
+		var self = this;
+		var openForEl = null;
+		var assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('task_assign_ob'),
+			onClose: function(ob) {
+
+				var agentId = parseInt(ob.getSelected('agents') || 0);
+				var agentTeamId = parseInt(ob.getSelected('teams') || 0);
+
+				var obel = self.getEl('task_assign_ob');
+
+				if (agentId && agentId != DESKPRO_PERSON_ID) {
+					var val = 'agent:' + agentId;
+					var text = $('.agent-label-' + agentId).first().text().trim();
+				} else if (agentTeamId) {
+					var val = 'agent_team:' + agentTeamId;
+					var text = $('.agent-team-label-' + agentTeamId).first().text().trim();
+				} else {
+					var val = '';
+					var text = 'Me';
+				}
+
+				$('input.input-agent', openForEl).val(val);
+				$('.opt-trigger.assigned_agent label', openForEl).text(text);
+			}
+		});
+
+		var statusMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('task_menu_vis'),
+			onItemClicked: function(info) {
+				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
+				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
+			}
+		});
+
+		var rowContainer = this.getEl('tasks_wrap');
+
+		var openForEl = null;
+		rowContainer.on('click', '.remove-row-trigger', function(ev) {
+			var row = $(this).closest('.task-row');
+			row.slideUp('fast', function() {
+				row.remove();
+				self.updateUi();
+			});
+		});
+		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
+			openForEl = $(this).closest('.task-row');
+			assignOptionBox.open(ev);
+		});
+		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
+			openForEl = $(this).closest('.task-row');
+			statusMenu.open(ev);
+		});
+		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
+			var label = $('label', this);
+			var row = $(this).closest('.task-row');
+			var field = $('input.input-date-due', row);
+			var date = $('input.input-date-due', row).val();
+			if (!date) {
+				date = new Date();
+			}
+
+			field.datepicker('dialog', date, function(date, inst) {
+				$('input.input-date-due', row).val(date);
+				label.text(date);
+			}, {
+				dateFormat: 'yy-mm-dd',
+				showButtonPanel: true,
+				beforeShow: function(input) {
+					setTimeout(function() {
+						var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+
+						$('button', buttonPane).remove();
+
+						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
+						btn.appendTo( buttonPane );
+
+						$(input).datepicker("widget").css('z-index', 30101);
+					},1);
+				}
+			}, ev);
+		});
+
+		this.getEl('task_save').on('click', function(ev) {
+			ev.preventDefault();
+
+			if ($(this).hasClass('saving')) {
+				return;
+			}
+
+			$(this).addClass('saving').html('<em>Saving</em>');
+			var postData = self.getEl('task_row').find('input').serializeArray();
+			postData.push({
+				name: 'from_ticket',
+				value: 1
+			})
+
+			$.ajax({
+				url: BASE_URL + 'agent/tasks/save',
+				data: postData,
+				type: 'POST',
+				dataType: 'json',
+				complete: function() {
+					$(this).removeClass('saving').text('Add');
+				},
+				success: function(data) {
+
+					self.getEl('newtask_title').val('');
+
+					if (!data.tasks || !data.tasks[0]) {
+						return;
+					}
+
+					data = data.tasks[0];
+
+					var url = BASE_URL + 'agent/tasks/list/all/total';
+					var a = $('<a data-route="listpane:'+url+'" />');
+					a.text(data.title);
+
+					var row = $('<li><span>&bull; </span></li>');
+					row.append(a);
+
+					if (data.date_due) {
+						row.append('<span>(Due: ' + data.date_due + ')</span>')
+					}
+
+					self.getEl('task_list').append(row);
+					self.getEl('task_list').find('li.none-message').remove();
+				}
+			});
 		});
 	}
 });
