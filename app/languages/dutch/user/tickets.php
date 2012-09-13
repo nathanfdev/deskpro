@@ -44,6 +44,7 @@
 	'user.tickets.lbl_what_is_your_question'                               => 'Wat is uw vraag?',
 	'user.tickets.leave_feedback_text_title'                               => 'Heeft u feedback?',
 	'user.tickets.leave_feedback_title'                                    => 'Neem een moment om ons te vertellen hoe we het hebben gedaan.',
+	'user.tickets.list_created-date'                                       => 'Gemaakt op {{date}}',
 	'user.tickets.list_last_activity_by_x'                                 => 'Laatste activiteit door {{name}}',
 	'user.tickets.list_last_activity_by_you'                               => 'Laatste activiteit door u',
 	'user.tickets.list_resolved'                                           => 'Opgeloste tickets',
