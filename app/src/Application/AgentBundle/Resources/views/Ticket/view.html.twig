@@ -256,7 +256,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 <table cellspacing="0" cellpadding="0" width="100%" class="people-box"><tr><td width="50%" valign="top" class="first">
 	{{ dp_widgets(baseId, 'ticket', 'people', 'above', ticket_api) }}
-	<div class="profile-box-container">
+	<div class="profile-box-container" style="margin-top: 0;">
 		<header>
 			{{ dp_widget_tabs_header(baseId, 'ticket', 'people', {
 				(baseId ~ '_people_box_person'): phrase('agent.general.people')
@@ -343,7 +343,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	{{ dp_widgets(baseId, 'ticket', 'people', 'below', ticket_api) }}
 </td><td width="50%" valign="top" class="second">
 	{{ dp_widgets(baseId, 'ticket', 'assignments', 'above', ticket_api) }}
-	<div class="profile-box-container">
+	<div class="profile-box-container" style="margin-top: 0;">
 		<header>
 			<div class="controls" id="{{baseId}}_agent_prop_controls">
 				<span style="display:none" class="mark-loading"></span>
