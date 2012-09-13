@@ -88,21 +88,54 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $category = null;
 
-	/**
-	 * List of people that have favorited this.
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $favorited_by;
-
 	public function __construct()
 	{
 		$this->favorited_by = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	public function getTitle($groupable = true)
+	public function getTitle($type = 'raw', $params = array())
 	{
-		return ($groupable ? $this->title : preg_replace('/\[(.+?)\]/', '$1', $this->title));
+		if ($type == 'raw') {
+			return $this->title;
+		}
+
+		$repository = $this->getRepository();
+		$dateGroups = $repository->getDateGroups();
+		$fieldGroups = $repository->getFieldGroups();
+
+		if (!is_array($params)) {
+			$newParams = array();
+			foreach ($params ? explode(',', $params) : array() AS $k => $v) {
+				$newParams[$k + 1] = $v;
+			}
+			$params = $newParams;
+		}
+
+		$title = $this->title;
+
+		if ($type != 'groupable') {
+			$title = preg_replace('/\[(.+?)\]/', '$1', $title);
+		}
+
+		$title = preg_replace_callback('/<(\d+):(date group)>/', function($match) use ($params, $dateGroups) {
+			$id = $match[1];
+			if (isset($params[$id]) && isset($dateGroups[$params[$id]])) {
+				return $dateGroups[$params[$id]][0];
+			}
+
+			return "<date>";
+		}, $title);
+		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $fieldGroups) {
+			$id = $match[1];
+			$type = $match[3];
+			if (isset($params[$id]) && isset($fieldGroups[$type][$params[$id]])) {
+				return $fieldGroups[$type][$params[$id]][0];
+			}
+
+			return "<field>";
+		}, $title);
+
+		return $title;
 	}
 
 	/**
@@ -124,6 +157,11 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	public function isEditable()
 	{
 		return ($this->is_custom || App::getConfig('debug.dev'));
+	}
+
+	public function hasPlaceholders()
+	{
+		return preg_match('/<\d+:[^>]+>/', $this->title);
 	}
 
 	/**
@@ -161,51 +199,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 			$person = App::getCurrentPerson();
 		}
 
-		$id = $person->id;
-
-		if (!isset($this->_is_favorited[$id])) {
-			$this->_is_favorited[$id] = $this->favorited_by->contains($person);
-		}
-
-		return $this->_is_favorited[$id];
-	}
-
-	/**
-	 * Sets the explicit favorited status for this report for the specified person.
-	 * This can be used to prevent separate lookup queries.
-	 *
-	 * @param Person $person
-	 * @param bool $value
-	 */
-	public function setFavoritedStatus(Person $person, $value)
-	{
-		$this->_is_favorited[$person->id] = (bool)$value;
-	}
-
-	/**
-	 * Adds a favorite for this report for the specified person
-	 *
-	 * @param Person $person
-	 *
-	 * @return bool
-	 */
-	public function addFavoritedPerson(Person $person)
-	{
-		$this->_is_favorited[$person->id] = true;
-		return $this->favorited_by->add($person);
-	}
-
-	/**
-	 * Removes the favorite status from this report for the specified person
-	 *
-	 * @param Person $person
-	 *
-	 * @return bool
-	 */
-	public function removeFavoritedPerson(Person $person)
-	{
-		$this->_is_favorited[$person->id] = false;
-		return $this->favorited_by->removeElement($person);
+		return false;
 	}
 
 	############################################################################
@@ -236,6 +230,5 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'favorited_by', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'report_builder_favorite', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'report_builder_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }

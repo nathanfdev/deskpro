@@ -108,8 +108,6 @@ class ReportBuilderController extends AbstractController
 		$currentType = $this->in->getString('currentType');
 		$newType = $this->in->getString('newType');
 
-		$results = array();
-
 		if ($currentType == 'builder' && $newType == 'query') {
 			$results = array('query' => Display::getQueryStringFromParts($parts));
 		} else if ($currentType == 'query' && $newType == 'builder') {
@@ -118,7 +116,7 @@ class ReportBuilderController extends AbstractController
 			} else {
 				try {
 					$compiler = new Compiler();
-					$statement = $compiler->compile($query);
+					$statement = $compiler->lexAndParse($query);
 					$results = array('parts' => $this->_getDpqlPartsForInput($statement));
 				} catch (DpqlException $e) {
 					$results = array('error' => $e->getMessage());
@@ -171,6 +169,7 @@ class ReportBuilderController extends AbstractController
 
 		$query = $this->in->getString('query');
 		$parts = $this->in->getArrayValue('parts');
+		$params = $this->getParamsInput('params');
 		$run = true;
 
 		$inputType = $this->in->getString('inputType');
@@ -184,7 +183,7 @@ class ReportBuilderController extends AbstractController
 		$output = $this->in->getString('output');
 		if ($output) {
 			try {
-				return $this->_getReportResponseForType($output, $query, $report->title);
+				return $this->_getReportResponseForType($output, $query, $report->title, $params);
 			} catch (DpqlException $e) {
 				$run = true;
 				// fall through - an error will be triggered below
@@ -193,7 +192,7 @@ class ReportBuilderController extends AbstractController
 
 		if ($this->in->getBool('clone')) {
 			$newReport = new ReportBuilder();
-			$newReport->title = $report->title;
+			$newReport->title = $params ? $report->getTitle(false, $params) : $report->title;
 			$newReport->description = $report->description;
 			$newReport->query = $query;
 			$newReport->parent = $report;
@@ -211,7 +210,7 @@ class ReportBuilderController extends AbstractController
 		if ($this->in->getBool('save')) {
 			$this->ensureRequestToken();
 
-			$this->renderQuery($query, 'html', $error);
+			$this->renderQuery($query, 'html', $error, $params);
 			if (!$error) {
 				$report->query = $query;
 
@@ -231,14 +230,14 @@ class ReportBuilderController extends AbstractController
 		}
 
 		if ($run) {
-			$results = $this->renderQuery($query, 'html', $error);
+			$results = $this->renderQuery($query, 'html', $error, $params);
 		} else {
 			$results = '';
 		}
 
 		if (!$error) {
 			$compiler = new Compiler();
-			$statement = $compiler->compile($query);
+			$statement = $compiler->compile($query, $params);
 			$parts = $this->_getDpqlPartsForInput($statement);
 		}
 
@@ -251,6 +250,7 @@ class ReportBuilderController extends AbstractController
 			'run' => $run,
 			'query' => $query,
 			'parts' => $parts,
+			'params' => $params,
 			'inputType' => $inputType ?: 'builder',
 			'error' => $error,
 			'results' => $results
@@ -263,31 +263,38 @@ class ReportBuilderController extends AbstractController
 
 		$this->ensureAuthToken('report_builder_favorite', $this->in->getString('token'));
 
-		if ($this->in->getBool('favorite')) {
-			$report->addFavoritedPerson(App::getCurrentPerson());
+		$params = $this->getParamsInput('params');
+
+		$existing = $this->em->getRepository('DeskPRO:ReportBuilder')->findFavorite($report, $this->person, $params);
+
+		if ($this->in->checkIsset('favorite')) {
+			$favorite = $this->in->getBool('favorite');
 		} else {
-			$report->removeFavoritedPerson(App::getCurrentPerson());
+			$favorite = empty($existing);
 		}
 
-		$this->em->getConnection()->beginTransaction();
-
-		try {
-			$this->em->persist($report);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
+		if ($favorite) {
+			if (!$existing) {
+				$fav = new \Application\DeskPRO\Entity\ReportBuilderFavorite();
+				$fav->person = $this->person;
+				$fav->report_builder = $report;
+				$fav->params = ($params ? implode(',', $params) : '');
+				$this->em->persist($fav);
+			}
+		} else if ($existing) {
+			$this->em->remove($existing);
 		}
+
+		$this->em->flush();
 
 		if ($this->request->isXmlHttpRequest()) {
 			$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
-			$reports = $rbRepository->getAllReports();
-			$grouped = $rbRepository->groupReportsList($reports);
+			$favorites = $rbRepository->getFavoritesForPerson();
 
 			return $this->render('ReportBundle:ReportBuilder:favorite-list.html.twig', array(
-				'favorites' => $grouped['favorites']
+				'favorites' => $favorites,
+				'favoritesJs' => $rbRepository->getFavoritesSimplified($favorites)
 			));
 		}
 
@@ -354,6 +361,7 @@ class ReportBuilderController extends AbstractController
 			}
 
 			if ($query) {
+				$dpqlError = false;
 				$this->renderQuery($query, 'html', $dpqlError);
 				if ($dpqlError) {
 					$errors['query'] = 'There was an error in your query: ' . $dpqlError;
@@ -416,7 +424,7 @@ class ReportBuilderController extends AbstractController
 	{
 		try {
 			$compiler = new Compiler();
-			$statement = $compiler->compile($report->query);
+			$statement = $compiler->lexAndParse($report->query);
 			$parts = $this->_getDpqlPartsForInput($statement);
 		} catch (DpqlException $e) {
 			$parts = $this->in->getArrayValue('parts');
@@ -435,10 +443,10 @@ class ReportBuilderController extends AbstractController
 		)));
 	}
 
-	protected function _getReportResponseForType($type, $query, $title)
+	protected function _getReportResponseForType($type, $query, $title, array $params = array())
 	{
 		$compiler = new Compiler();
-		$statement = $compiler->compile($query);
+		$statement = $compiler->compile($query, $params);
 		$statement->setImplicitLimit(0);
 		$renderer = $statement->getRenderer($type);
 		$output = $renderer->render();
@@ -450,11 +458,12 @@ class ReportBuilderController extends AbstractController
 		return $response;
 	}
 
-	public function renderQuery($query, $renderer, &$error = false) {
+	public function renderQuery($query, $renderer, &$error = false, array $params = array())
+	{
 		$error = false;
 		try {
 			$compiler = new Compiler();
-			$statement = $compiler->compile($query);
+			$statement = $compiler->compile($query, $params);
 			return $statement->getRenderer($renderer)->render();
 		} catch (DpqlException $e) {
 			$error = $e->getMessage();
@@ -474,17 +483,38 @@ class ReportBuilderController extends AbstractController
 		return $report;
 	}
 
+	public function getParamsInput($name = 'params')
+	{
+		$params = $this->in->getRaw($name);
+		if (is_array($params)) {
+			ksort($params);
+		} else if ($params) {
+			$newParams = array();
+			foreach (explode(',', $params) AS $k => $v) {
+				$newParams[$k + 1] = $v;
+			}
+			$params = $newParams;
+		} else {
+			$params = array();
+		}
+
+		return $params;
+	}
+
 	public function mergeReportBuilderLayoutParams(array $params = array())
 	{
 		$rbRepository = $this->em->getRepository('DeskPRO:ReportBuilder');
 
-		$reports = $rbRepository->getAllReports();
-		$grouped = $rbRepository->groupReportsList($reports);
+		$grouped = $rbRepository->groupReportsList();
+		$favorites = $rbRepository->getFavoritesForPerson();
 
 		$reportBuilderParams = array(
 			'customReports' => $grouped['custom'],
 			'builtInReports' => $grouped['builtIn'],
-			'favoriteReports' => $grouped['favorites']
+			'favoriteReports' => $favorites,
+			'favoritesJs' => $rbRepository->getFavoritesSimplified($favorites),
+			'fieldGroups' => $rbRepository->getFieldGroups(),
+			'dateGroups' => $rbRepository->getDateGroups()
 		);
 
 		return array_merge($reportBuilderParams, $params);

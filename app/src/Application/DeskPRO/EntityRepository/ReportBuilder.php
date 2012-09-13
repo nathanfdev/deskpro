@@ -43,27 +43,58 @@ use Orb\Util\Numbers;
 class ReportBuilder extends AbstractEntityRepository
 {
 	/**
-	 * Gets all reports, including the favorited status for the current person
+	 * Gets all reports
 	 *
 	 * @return \Application\DeskPRO\Entity\ReportBuilder[]
 	 */
 	public function getAllReports()
 	{
-		$person = App::getCurrentPerson();
-
-		$results = $this->getEntityManager()->createQuery('
-			SELECT rb AS report, p.id
+		return $this->getEntityManager()->createQuery('
+			SELECT rb
 			FROM DeskPRO:ReportBuilder rb
-			LEFT JOIN rb.favorited_by p WITH p.id = :person_id
 			ORDER BY rb.title
-		')->execute(array('person_id' => $person->id));
+		')->execute();
+	}
 
+	public function findFavorite(
+		\Application\DeskPRO\Entity\ReportBuilder $report,
+		\Application\DeskPRO\Entity\Person $person = null,
+		array $params = array()
+	)
+	{
+		if (!$person) {
+			$person = App::getCurrentPerson();
+		}
+
+		ksort($params);
+
+		return $this->getEntityManager()->createQuery('
+			SELECT f
+			FROM DeskPRO:ReportBuilderFavorite f
+			WHERE f.report_builder = ?0 AND f.person = ?1 AND f.params = ?2
+		')->setParameters(array($report, $person, $params ? implode(',', $params) : ''))->getOneOrNullResult();
+	}
+
+	public function getFavoritesForPerson(\Application\DeskPRO\Entity\Person $person = null)
+	{
+		if (!$person) {
+			$person = App::getCurrentPerson();
+		}
+
+		return $this->getEntityManager()->createQuery('
+			SELECT f, r
+			FROM DeskPRO:ReportBuilderFavorite f
+			JOIN f.report_builder r
+			WHERE f.person = ?0
+			ORDER BY r.title
+		')->execute(array($person));
+	}
+
+	public function getFavoritesSimplified(array $favorites)
+	{
 		$output = array();
-		foreach ($results AS $result) {
-			$report = $result['report'];
-			$report->setFavoritedStatus($person, $result['id'] !== null);
-
-			$output[] = $report;
+		foreach ($favorites AS $fav) {
+			$output[] = array('id' => $fav->report_builder->id, 'params' => $fav->params);
 		}
 
 		return $output;
@@ -72,24 +103,20 @@ class ReportBuilder extends AbstractEntityRepository
 	/**
 	 * Groups a list of reports for use in the reports list. Returns lists of
 	 * reports in these keys:
-	 *  - favorite: list of favorite reports for the current person
 	 *  - custom: list of custom reports
 	 *  - builtIn: grouped list of built-in reports. Grouped by printable name of the group.
 	 *
-	 * @param array $reports
 	 * @return array
 	 */
-	public function groupReportsList(array $reports)
+	public function groupReportsList()
 	{
-		$favorites = array();
+		$reports = $this->getAllReports();
+
 		$custom = array();
 		$builtIn = array();
 		$categories = $this->getBuiltInCategories();
 
 		foreach ($reports AS $report) {
-			if ($report->isFavorited()) {
-				$favorites[] = $report;
-			}
 			if ($report->is_custom) {
 				$custom[] = $report;
 			} else {
@@ -111,7 +138,6 @@ class ReportBuilder extends AbstractEntityRepository
 		}
 
 		return array(
-			'favorites' => $favorites,
 			'custom' => $custom,
 			'builtIn' => $builtInOrdered
 		);
@@ -141,5 +167,26 @@ class ReportBuilder extends AbstractEntityRepository
 	public function canManageBuiltInReports()
 	{
 		return (bool)App::getConfig('debug.dev');
+	}
+
+	public function getFieldGroups()
+	{
+		return array(
+			'tickets' => array(
+				'none' => array('none', 'NULL'),
+				'department' => array('department', '%s.department'),
+				'agent' => array('agent', '%s.agent'),
+			)
+		);
+	}
+
+	public function getDateGroups()
+	{
+		return array(
+			'today' => array('today', '%TODAY%'),
+			'this_week' => array('this week', '%THIS_WEEK%'),
+			'this_month' => array('this month', '%THIS_MONTH%'),
+			'this_year' => array('this year', '%THIS_YEAR%')
+		);
 	}
 }

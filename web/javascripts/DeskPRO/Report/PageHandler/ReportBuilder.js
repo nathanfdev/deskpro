@@ -8,6 +8,8 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 
 	// Init the page
 	initPage: function() {
+		var self = this;
+
 		var initialize = function(context) {
 			context.find('textarea.expander').TextAreaExpander().trigger('textareaexpander_fire');
 			context.find('select.readonly option:not(:selected)').attr('disabled', true);
@@ -18,15 +20,22 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 			var $this = $(this), isFavorite = $this.hasClass('favorited'),
 				newValue = isFavorite ? 0 : 1,
 				url = $this.attr('href'),
+				params = $this.data('report-params') || '',
 				matches = $('a.report-favorite-toggle[data-report-id="' + $this.data('report-id') + '"]');
 
-			matches.toggleClass('favorited');
+			matches.each(function() {
+				var $this = $(this);
+
+				if (($this.data('report-params') || '') === params) {
+					$this.toggleClass('favorited');
+				}
+			});
 
 			$.ajax({
 				url: url,
 				type: 'POST',
 				dataType: 'html',
-				data: { favorite: newValue }
+				data: { favorite: newValue, params: params }
 			}).done(function(data) {
 					var favoriteContainer = $('#report-favorites');
 					favoriteContainer.find('ul:first').replaceWith(data);
@@ -76,6 +85,7 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 					pageBody.html(RegExp.$1);
 					DeskPRO.ElementHandler_Exec();
 					initialize(pageBody);
+					self.updateFavorites();
 				} else {
 					failure();
 				}
@@ -85,8 +95,81 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 		}, {unescape: '/'});
 
 		$(document.body).delegate('a[rel=report-page-body]', 'click', function(e) {
+			var $this = $(this), href = $this.attr('href');
+
 			e.preventDefault();
-			$.history.load($(this).attr('href'));
+
+			if ($this.is('.report-list-title')) {
+				var data = self.updateReportParams($this);
+				if (data) {
+					href += (href.indexOf('?') >= 0 ? '&' : '?') + 'params=' + data;
+				}
+			}
+
+			$.history.load(href);
+		});
+	},
+
+	updateReportParams: function(item) {
+		var params = {}, keys = [], value;
+
+		item.find('.report-list-query-selector').each(function (){
+			var $selector = $(this),
+				id = 0,
+				selected = $selector.data('report-list-query-selected');
+
+			if ($selector.data('report-list-query').match(/^(\d+):/)) {
+				id = RegExp.$1;
+			} else {
+				return;
+			}
+
+			params[id] = selected;
+			keys.push(id);
+		});
+
+		if (keys.length) {
+			keys.sort();
+			var out = [];
+			for (var i = 0; i < keys.length; i++) {
+				out.push(params[keys[i]]);
+			}
+
+			value = out.join(',');
+		} else {
+			value = '';
+		}
+
+		item.data('report-params', value);
+		item.siblings('.report-favorite-toggle').data('report-params', value);
+
+		return value;
+	},
+
+	updateFavorites: function(update) {
+		if ($.isArray(update)) {
+			this.favorites = update;
+		}
+
+		if (!this.favorites) {
+			this.favorites = [];
+		}
+
+		var favorites = this.favorites;
+
+		$('a.report-favorite-toggle').each(function() {
+			var $this = $(this),
+				reportId = $this.data('report-id'),
+				params = $this.data('report-params') || '';
+
+			for (var i = 0; i < favorites.length; i++) {
+				if (favorites[i].id == reportId && params === favorites[i].params) {
+					$this.addClass('favorited');
+					return;
+				}
+			}
+
+			$this.removeClass('favorited');
 		});
 	}
 

@@ -223,7 +223,7 @@ split_clause ::= .
 
 group_clause(res) ::= GROUP BY group_expression(A) group_expressions_extra(B) .
 {
-	res = array(A);
+	res = (A ? array(A) : array());
 	if (B) {
 		res = array_merge(res, B);
 	}
@@ -238,7 +238,10 @@ group_expressions_extra(res) ::= group_expressions_extra(A) COMMA group_expressi
 	} else {
 		res = A;
 	}
-	res[] = B;
+
+	if (B) {
+		res[] = B;
+	}
 }
 group_expressions_extra ::= .
 
@@ -246,7 +249,9 @@ group_expressions_extra ::= .
 
 group_expression(res) ::= expression(A) alias_optional(B) .
 {
-	if (B) {
+	if (A instanceof Statement\Part\NullValue) {
+		res = false;
+	} else if (B) {
 		res = new Statement\Part\Alias(A, B);
 	} else {
 		res = A;

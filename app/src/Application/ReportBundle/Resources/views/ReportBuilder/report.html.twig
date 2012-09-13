@@ -13,15 +13,16 @@
 
 		<a href="{{ path('report_builder_favorite', {
 			'report_builder_id': report.id,
-			'favorite': report.isFavorited() ? 0 : 1,
-			'token': security_token('report_builder_favorite')}
-			) }}"
-		   class="report-favorite-toggle report-favorite {{ report.isFavorited() ? 'favorited' : '' }}"
+			'token': security_token('report_builder_favorite'),
+			'params': params
+			}) }}"
+		   class="report-favorite-toggle report-favorite"
 		   data-report-id="{{ report.id }}"
+		   data-report-params="{{ params|join(',') }}"
 		   title="Toggle favorite status"
 		>Toggle favorite status</a>
 
-		{{report.getTitle(false)}}
+		{{report.getTitle(false, params)}}
 	</h1>
 	{% if report.description %}<p>{{ report.description|nl2br }}</p>{% endif %}
 	{% if report.parent %}
@@ -35,7 +36,7 @@
 
 			<div class="report-actions">
 				<button class="btn primary" name="run" value="1">Run Report</button>
-				{% if report.isEditable() %}
+				{% if report.isEditable() and not report.hasPlaceholders() %}
 					<button class="btn" name="save" value="1">Save Changes</button>
 				{% endif %}
 			</div>
@@ -52,5 +53,9 @@
 		{% endif %}
 
 		{{ form_token() }}
+
+		{% for key, val in params %}
+			<input type="hidden" name="params[{{ key }}]" value="{{ val }}" />
+		{% endfor %}
 	</form>
 {% endblock %}

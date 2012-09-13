@@ -66,10 +66,27 @@ class Compiler
 	 * Compiles the given DPQL string to a statement object
 	 *
 	 * @param string $input
+	 * @param array $placeholders
 	 *
 	 * @return \Application\DeskPRO\Dpql\Statement\Display
 	 */
-	public function compile($input)
+	public function compile($input, array $placeholders = array())
+	{
+		$input = $this->replacePlaceholders($input, $placeholders);
+		$statement = $this->lexAndParse($input);
+		$statement->prepare();
+
+		return $statement;
+	}
+
+	/**
+	 * Lexes and parses a DPQL string. Only ensures that it's syntactically valid.
+	 *
+	 * @param string $input
+	 *
+	 * @return \Application\DeskPRO\Dpql\Statement\Display
+	 */
+	public function lexAndParse($input)
 	{
 		$this->_lexer->setInput($input);
 
@@ -79,9 +96,48 @@ class Compiler
 		}
 		$this->_parser->doParse(0, 0);
 
-		$statement = $this->_parser->getResult();
-		$statement->prepare();
+		return $this->_parser->getResult();
+	}
 
-		return $statement;
+	public function replacePlaceholders($input, array $placeholders = array())
+	{
+		$repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportBuilder');
+
+		$fieldGroups = $repository->getFieldGroups();
+		$dateGroups = $repository->getDateGroups();
+
+		$input = preg_replace_callback(
+			'/%(\d+):DATE_GROUP%/',
+			function ($match) use ($placeholders, $dateGroups) {
+				if (isset($placeholders[$match[1]])) {
+					$value = strval($placeholders[$match[1]]);
+					if (isset($dateGroups[$value])) {
+						return $dateGroups[$value][1];
+					}
+				}
+
+				return '%PAST_YEAR%';
+			},
+			$input
+		);
+
+		$input = preg_replace_callback(
+			'/%(\d+):FIELD_GROUP:([^%]+)(:([^%]+))?%/',
+			function ($match) use ($placeholders, $fieldGroups) {
+				if (isset($placeholders[$match[1]])) {
+					$value = strval($placeholders[$match[1]]);
+					$type = $match[2];
+					$table = isset($match[4]) ? $match[4] : $type;
+					if (isset($fieldGroups[$type][$value])) {
+						return sprintf($fieldGroups[$type][$value][1], $table);
+					}
+				}
+
+				return 'NULL';
+			},
+			$input
+		);
+
+		return $input;
 	}
 }

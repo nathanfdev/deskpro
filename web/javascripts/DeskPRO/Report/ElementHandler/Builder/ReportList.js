@@ -6,6 +6,8 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 	init: function() {
 		var el = this.el;
 
+		// ************************* replaceable [group] types in reports
+
 		el.find('.report-list-groupable').each(function() {
 			var $this = $(this),
 				lookup = {};
@@ -178,7 +180,131 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 			})
 		});
 
-		// draggable column
+		// ************************* replaceable <group> types in a report
+
+		var querySelectorPopup = null;
+
+		el.find('.report-list-groupable').each(function() {
+			var $this = $(this),
+				lookup = {};
+
+			$this.find('li').each(function() {
+				var $item = $(this),
+					textEl = $item.find('a.report-list-title'),
+					titleHtml = textEl.html(),
+					newTitle = titleHtml,
+					regex = /\&lt;(\d+:.+?)\&gt;/g,
+					match,
+					matched = 0;
+
+				while (match = regex.exec(titleHtml)) {
+					newTitle = newTitle.replace(match[0], '<span class="report-list-query-selector">' + match[1] + '</span>');
+					matched++;
+				}
+
+				if (matched == 0) {
+					return;
+				}
+
+				textEl.html(newTitle);
+			});
+
+			var getQueryChoices = function (input) {
+				if (input.match(/^\d+:date group$/)) {
+					return window._dpRbDateGroups;
+				} else if (input.match(/^\d+:field group:([a-zA-Z0-9_]+)$/)) {
+					var type = RegExp.$1;
+					if (typeof window._dpRbFieldGroups[type] !== 'undefined') {
+						return window._dpRbFieldGroups[type];
+					}
+				}
+
+				return {};
+			};
+
+			$this.find('.report-list-query-selector').each(function() {
+				var $selector = $(this),
+					text = $selector.text();
+
+				$selector.data('report-list-query', text);
+
+				var choices = getQueryChoices(text), i = false;
+				for (i in choices) {
+					break;
+				}
+				if (i === false) {
+					return;
+				}
+				$selector.text(choices[i][0]);
+				$selector.data('report-list-query-selected', i);
+			});
+
+			// must do set timeout as this may be loaded before the page object
+			setTimeout(function() {
+				$this.find('.report-list-title:has(.report-list-query-selector)').each(function() {
+					window.DeskPRO_Page.updateReportParams($(this));
+				});
+			}, 0);
+
+			$this.delegate('.report-list-query-selector', 'click', function(e) {
+				var $selector = $(this),
+					offset = $selector.offset(),
+					newOffset = {
+						top: offset.top + $selector.outerHeight(),
+						left: offset.left
+					},
+					qspOffset = querySelectorPopup ? querySelectorPopup.offset() : false;
+
+				if (querySelectorPopup && querySelectorPopup.is(':visible')
+					&& qspOffset.top == newOffset.top && qspOffset.left == newOffset.left) {
+					querySelectorPopup.hide();
+					return;
+				}
+
+				if (!querySelectorPopup) {
+					querySelectorPopup = $('<ul class="report-list-popup" />');
+					$(document.body).append(querySelectorPopup);
+					$(document.body).click(function() {
+						querySelectorPopup.hide();
+					})
+				}
+
+				querySelectorPopup.hide();
+				querySelectorPopup.empty();
+
+				var choices = getQueryChoices($selector.data('report-list-query'));
+				for (var i in choices) {
+					(function(i) {
+						var li = $('<li></li>').click(function (e) {
+							e.preventDefault();
+							e.stopPropagation();
+
+							$selector.data('report-list-query-selected', i);
+							$selector.text(choices[i][0]);
+							window.DeskPRO_Page.updateReportParams($selector.closest('.report-list-title'));
+							window.DeskPRO_Page.updateFavorites();
+							$selector.closest('a').click();
+						});
+
+						var a = $('<a />').text(choices[i][0]);
+
+						li.append(a);
+						querySelectorPopup.append(li);
+					})(i);
+				}
+
+				if (querySelectorPopup.find('li').length == 0) {
+					return;
+				}
+
+				querySelectorPopup.css(newOffset).show();
+
+				e.stopPropagation();
+				e.preventDefault();
+			});
+		});
+
+		// ************************* draggable column
 
 		var offset = el.offset(),
 			cookie = el.data('cookie'),
@@ -214,3 +340,5 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 		});
 	}
 });
+DeskPRO.Report.ElementHandler.Builder.ReportList.fieldGroups = {};
+DeskPRO.Report.ElementHandler.Builder.ReportList.dateGroups = {};

@@ -711,7 +711,7 @@ class Html extends AbstractRenderer
 				$stacked = '';
 			}
 
-			$height = 430 + ceil(count($graphs) / 2) * 20;
+			$height = 430 + count($graphs) * 20;
 
 			$id = 'report_chart_' . md5(uniqid());
 			$output = '
