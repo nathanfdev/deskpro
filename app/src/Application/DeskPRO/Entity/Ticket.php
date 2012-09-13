@@ -1500,6 +1500,29 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get how long, in seconds, the ticket was open for. This only applies
+	 * for tikcets that are resolved (or closed).
+	 *
+	 * @return int
+	 */
+	public function getTimeUntilResolution()
+	{
+		if (!$this->date_resolved && !$this->date_closed) {
+			return 0;
+		}
+
+		$date = $this->date_resolved;
+		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
+			$date = $this->date_closed;
+		}
+
+		$secs = $date->getTimestamp() - $this->date_created->getTimestamp();
+
+		return $secs;
+	}
+
+
 	public function setStatus($status)
 	{
 		$this['date_status'] = new \DateTime();
