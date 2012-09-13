@@ -153,11 +153,21 @@ class Numbers
 	 * Display a filesize in bytes in the smallest unit.
 	 *
 	 * @param int $bytes
+	 * @param string $mode 'auto' or 'si' (base 10) or 'iec' (base 2). Auto will try to detect the 'cleanest' number
 	 * @return string
 	 */
-	public static function filesizeDisplay($bytes)
+	public static function filesizeDisplay($bytes, $mode = 'auto')
 	{
-        $parts = self::getFilesizeDisplayParts($bytes);
+		if ($mode == 'auto') {
+			$parts = self::getFilesizeDisplayParts($bytes, 'si');
+			$parts['number'] = sprintf('%.2f', $parts['number']);
+			if (!strpos($parts['number'], '.00')) {
+				$parts = self::getFilesizeDisplayParts($bytes, 'iec');
+			}
+		} else {
+			$parts = self::getFilesizeDisplayParts($bytes, $mode);
+		}
+
 		return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
 	}
 
@@ -170,15 +180,17 @@ class Numbers
 	 * @param  $bytes
 	 * @return array
 	 */
-	public static function getFilesizeDisplayParts($bytes)
+	public static function getFilesizeDisplayParts($bytes, $mode = 'si')
 	{
 		if (!$bytes OR $bytes < 1) {
 			return array('number' => 0, 'symbol' => 'B');
 	    }
 
+		$x = $mode == 'si' ? 1000 : 1024;
+
 	    $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $exp = floor(log($bytes)/log(1024));
-        $val = $bytes/pow(1024, floor($exp));
+        $exp = floor(log($bytes)/log($x));
+        $val = $bytes/pow($x, floor($exp));
 
         $sym = '';
         if (isset($all_symbols[$exp])) {

@@ -3327,20 +3327,30 @@ dp .dp-new-feedback td {
 	color:#fff;
 	background:url({{ stylevar.static_path }}/images/user/widget/btn-hover.gif) repeat-x;
 }
+
+#dp .widget-deskpro table.form-table th {
+	font-size: 12px;
+	font-weight: normal;
+	text-align: right;
+	padding: 4px 10px 4px 2px;
+	vertical-align: middle;
+}
+
+#dp .widget-deskpro table.form-table td {
+	vertical-align: top;
+	padding: 2px 10px 2px 2px;
+}
+
 #dp .widget-deskpro .txt{
-	float:left;
 	padding:0 8px;
 	border:1px solid #d1d4d9;
-	height:33px;
+	height:24px;
 	position:relative;
-	width:225px;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	width:225px;
 	background:url({{ stylevar.static_path }}/images/user/widget/bg-txt-field.gif) repeat-x;
 }
-#dp .widget-deskpro .txt-wide{width:533px;}
 #dp .widget-deskpro .txt.correct{
 	border-color:#72b843;
 	box-shadow: 0 0 20px 1px #e0efd6;
@@ -3396,17 +3406,22 @@ dp .dp-new-feedback td {
 	color:#7a7f87;
 	height:17px;
 	width:95%;
-	padding:8px 0;
-	font:14px/17px 'Helvetica Neue',Helvetica,Arial, sans-serif;
+	padding:3px 0;
+	font:12px 'Helvetica Neue',Helvetica,Arial, sans-serif;
+	box-shadow: none;
 }
 #dp .widget-deskpro .search-form input{
 	font-size:12px;
 	width:147px;
 }
+#dp .widget-deskpro .search-form #search_box_go{
+	height: 26px;
+}
 #dp .widget-deskpro .search-form .txt{
 	padding-left:30px;
 	width:147px;
 	margin-right:9px;
+	float: left;
 }
 #dp .widget-deskpro .search-form .icon-search{
 	position:absolute;
@@ -3416,7 +3431,7 @@ dp .dp-new-feedback td {
 	height:13px;
 	width:13px;
 	left:9px;
-	top:9px;
+	top:6px;
 }
 #dp .widget-deskpro .search-form .btn{width:79px;}
 #dp .widget-deskpro .aside .area{
@@ -3431,7 +3446,6 @@ dp .dp-new-feedback td {
 #dp .widget-deskpro .files-list{
 	padding:1px 0 0;
 	margin:0 0 0 -1px;
-	width:329px;
 	float:left;
 }
 #dp .widget-deskpro .files-list ul {
@@ -3584,20 +3598,26 @@ dp .dp-new-feedback td {
 }
 
 #dp .widget-deskpro .fields-row{
-	padding:0 0 27px;
-	width:553px;
+
 }
 #dp .widget-deskpro .file-row{padding:0;}
 #dp .widget-deskpro .selector{
 	float:left;
-	background:url({{ stylevar.static_path }}/images/user/widget/bg-select.png) no-repeat;
-	height:35px;
+	background:url({{ stylevar.static_path }}/images/user/widget/bg-select.png) no-repeat 0 50%;
+	height:27px;
 	width:183px;
 	position:relative;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box;
+	border-top: 1px solid #BEC0C4;
+	border-bottom: 1px solid #BEC0C4;
 }
 #dp .widget-deskpro .selector>span{
 	display:block;
-	padding:8px 0 0 15px;
+	padding:5px 0 0 7px;
+	font-size: 12px;
 }
 div.selector select {
 	position:absolute;
@@ -3619,34 +3639,31 @@ div.selector select {
 }
 #dp .widget-deskpro .textarea{
 	border:1px solid #d1d4d9;
-	padding:8px;
+	padding: 3px 5px;
 	position:relative;
-	width:535px;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	position:relative;
-	width:535px;
 	background:#fff url({{ stylevar.static_path }}/images/user/widget/bg-txt-field.gif) repeat-x;
+	margin-bottom: 5px;
 }
 #dp .widget-deskpro .textarea textarea{
 	border:0;
 	background:none;
-	width:535px;
 	padding:0;
 	margin:0;
 	overflow:auto;
 	height:124px;
 	{{ _self.box_shadow('none') }}
+	width:98%;
+	padding:3px 0;
+	font:12px 'Helvetica Neue',Helvetica,Arial, sans-serif;
 }
 #dp .widget-deskpro .textarea textarea:focus,
 #dp .widget-deskpro input:focus{
 	outline: none;
 	{{ _self.box_shadow('none') }}
-}
-#dp .widget-deskpro .widget-content .btn-holder{
-	width:100%;
-	padding:15px 0 0;
 }
 #dp .widget-deskpro .btn-activity{
 	position:relative;
@@ -3703,13 +3720,13 @@ div.selector select {
 #dp .widget-deskpro .uploader{
 	position:relative;
 	padding:29px 0 0;
-	width:567px;
+	width:200px;
 }
 #dp .widget-deskpro .uploader input{
 	position: absolute;
 	right:458px;
 	top: 0;
-	width:408px;
+	width:200px;
 	height:29px;
 	z-index:5;
 }
@@ -3754,7 +3771,6 @@ div.selector select {
 	padding: 0;
 	background: transparent;
 	border: none;
-	width: 552px;
 }
 
 #dp .widget-deskpro .dp-new-feedback table {

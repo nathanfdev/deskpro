@@ -240,6 +240,40 @@ class PortalController extends AbstractController
 
 	public function widgetsAction()
 	{
-		return $this->render('AdminBundle:Portal:website-widgets.html.twig');
+		$articles  = App::getDb()->fetchAllKeyValue("SELECT id, title FROM articles WHERE status = 'published'");
+		$downloads = App::getDb()->fetchAllKeyValue("SELECT id, title FROM downloads WHERE status = 'published'");
+		$news      = App::getDb()->fetchAllKeyValue("SELECT id, title FROM news WHERE status = 'published'");
+
+		$article_cat_map   = App::getDb()->fetchAllGrouped("SELECT category_id, article_id FROM article_to_categories", array(), 'category_id', null, 'article_id');
+		$download_cat_map  = App::getDb()->fetchAllGrouped("SELECT category_id, id FROM downloads", array(), 'category_id', null, 'id');
+		$news_cat_map      = App::getDb()->fetchAllGrouped("SELECT category_id, id FROM news", array(), 'category_id', null, 'id');
+
+		if ($this->in->getBool('save_selections')) {
+			$set_selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
+			$ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
+			$ds->setData('selections', $set_selections);
+
+			$this->em->persist($ds);
+			$this->em->flush();
+		}
+
+		$selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
+		if ($selections) {
+			$selections = $selections->getData('selections');
+		} else {
+			$selections = array();
+		}
+
+		return $this->render('AdminBundle:Portal:website-widgets.html.twig', array(
+			'articles'  => $articles,
+			'downloads' => $downloads,
+			'news'      => $news,
+
+			'selections' => $selections,
+
+			'article_cat_map'   => $article_cat_map,
+			'download_cat_map'  => $download_cat_map,
+			'news_cat_map'      => $news_cat_map
+		));
 	}
 }

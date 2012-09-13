@@ -237,7 +237,6 @@ var DpOverlayWidget = new (function() {
 				css.push('height: ' + myHeight + 'px');
 				css.push('margin: 0');
 				css.push('padding: 0');
-				css.push('box-shadow: none');
 				css.push('top: ' + top + 'px');
 				css.push('left: ' + left + 'px');
 				css.push('-webkit-border-radius: 8px');
@@ -358,19 +357,18 @@ var DpOverlayWidget = new (function() {
 			css = [];
 			css.push('position: relative');
 			css.push('text-align: left');
-			css.push('border: 1px solid #9C9B9B');
+			css.push('border: 2px solid #B8B8B8');
 			css.push('background: #F9FAFC url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
-			css.push('width: 960px');
+			css.push('width: 890px');
 			css.push('height: 500px');
 			css.push('margin: auto');
 			css.push('padding: 0');
-			css.push('box-shadow: none');
 			css.push('-webkit-border-radius: 4px');
 			css.push('-moz-border-radius: 4px');
 			css.push('border-radius: 4px');
-			css.push('box-shadow:0 0 9px #e7e7e7');
-			css.push('-webkit-box-shadow: 0 0 9px #e7e7e7');
-			css.push('-moz-box-shadow: 0 0 9px #e7e7e7');
+			css.push('box-shadow:0 0 9px #000000');
+			css.push('-webkit-box-shadow: 0 0 9px #000000');
+			css.push('-moz-box-shadow: 0 0 9px #000000');
 			css = css.join(';');
 			overlayWrapInner = $('<div style="' + css  +'"></div>').appendTo(overlayWrap);
 
@@ -400,7 +398,7 @@ var DpOverlayWidget = new (function() {
 
 		css = [];
 		css.push('background: transparent');
-		css.push('width: 964px');
+		css.push('width: 894px');
 		css.push('height: 500px');
 		css.push('margin: 0');
 		css.push('padding: 0');
@@ -409,6 +407,11 @@ var DpOverlayWidget = new (function() {
 		css = css.join(';');
 
 		var src = options.deskproUrl + 'widget/overlay.html?h=' + winHeight;
+
+		if (DpOverlayWidget_Options && DpOverlayWidget_Options.languageId) {
+			src += '&language_id=' + DpOverlayWidget_Options.languageId;
+		}
+
 		src += '#' + encodeURIComponent(document.location.href);
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 

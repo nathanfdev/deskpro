@@ -4,7 +4,7 @@
 
 {% macro select_options_hierarchy(cat, selected, depth) %}
 	{% if not depth %}{% set depth = 0 %}{% endif %}
-	{% set indent = '&nbsp;'|repeat(depth) %}
+	{% set indent = ' '|repeat(depth) %}
 	{% if cat.children|length %}
 		<optgroup label="{{ indent|raw }}{% if cat['user_title'] is defined %}{{ phrase_object(cat, 'user') }}{% else %}{{ phrase_object(cat) }}{% endif %}">
 			{% for child in cat.children %}

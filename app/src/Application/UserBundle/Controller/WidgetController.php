@@ -55,6 +55,34 @@ class WidgetController extends AbstractController
 
 	public function overlayAction()
 	{
+		$lang_id = $this->in->getUint('language_id');
+
+		if ($lang_id && $lang = $this->container->getDataService('Language')->get($lang_id)) {
+			$this->person->language = $lang;
+
+			$this->db->beginTransaction();
+			try {
+
+				if (!$this->person->isGuest()) {
+					$this->em->persist($this->person);
+				}
+
+				$this->session->set('language_id', $lang->getId());
+				$this->session->save();
+
+				$this->em->flush();
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+
+			// Set cookie too so it lasts after session expires
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $lang->getId(), 'never', true);
+			$cookie->send();
+		}
+
+
 		#------------------------------
 		# New ticket form
 		#------------------------------

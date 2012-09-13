@@ -30,6 +30,59 @@
 					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<form action="{{ path('admin_portal_widgets') }}" method="post">
+					<input type="hidden" name="save_selections" value="1" />
+					<h1 class="noexpand">Show links to content by default</h1>
+
+					{% macro build_list(name, cats, items, map, selections, depth) %}
+						{% for cat in cats %}
+							<div style="margin-left: {{ 10 * depth }}px; margin-bottom: 6px;">
+								<strong>{{ cat.title }}</strong>
+								{% for item_id in map[cat.id] %}
+									<div style="margin-left: {{ 10 * (depth+1) }}px">
+										<label>
+											<input type="checkbox" name="selections[{{ name }}][]" value="{{ item_id }}" {% if item_id in selections %}checked="checked"{% endif %} />
+											{{ items[item_id] }}
+										</label>
+									</div>
+								{% endfor %}
+								{% if cat.children %}
+									{{ _self.build_list(name, cat.children, items, map, selections, depth + 1) }}
+								{% endif %}
+							</div>
+						{% endfor %}
+					{% endmacro %}
+					{% if articles %}
+						<div style="width:295px; float: left; overflow: auto;">
+							<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px; margin-bottom: 5px;">Articles</h3>
+							{{ _self.build_list('articles', app.getDataRepository('ArticleCategory').getRootNodes(), articles, article_cat_map, selections.articles, 0) }}
+						</div>
+					{% endif %}
+
+					{% if downloads %}
+						<div style="width:295px; float: left; overflow: auto;">
+							<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">Downloads</h3>
+							{{ _self.build_list('downloads', app.getDataRepository('DownloadCategory').getRootNodes(), downloads, download_cat_map, selections.downloads, 0) }}
+						</div>
+					{% endif %}
+
+					{% if news %}
+						<div style="width:295px; float: left; overflow: auto;">
+							<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">News</h3>
+							{{ _self.build_list('news', app.getDataRepository('NewsCategory').getRootNodes(), news, news_cat_map, selections.news, 0) }}
+						</div>
+					{% endif %}
+
+					<br style="clear:both" />
+					<br />
+
+					<button class="clean-white">Update Selections</button>
+
+					</form>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
