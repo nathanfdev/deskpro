@@ -206,10 +206,13 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		} else {
 			this.showLoading();
 
-			var data = {
-				'result_ids[]': this.getPageIds(pageNum),
-				'display_fields[]': this.displayOptions.getDisplayFields()
-			};
+			var data = [];
+			Array.each(this.getPageIds(pageNum), function(i) {
+				data.push({name: 'result_ids[]', value: i});
+			});
+			Array.each(this.displayOptions.getDisplayFields(), function(i) {
+				data.push({name: 'display_fields[]', value: i });
+			});
 
 			$.ajax({
 				url: this.page.meta.fetchResultsUrl,

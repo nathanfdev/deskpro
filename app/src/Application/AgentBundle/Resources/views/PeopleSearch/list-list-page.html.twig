@@ -49,15 +49,16 @@
 					</span>
 				</td>
 			{% else %}
-				{% for f in user_all_custom_fields[person.id] %}
-					{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
-						<td class="person-field">
-							<div class="prop-val person_fields_{{f.id}}">
-								{{ render_custom_field(f) }}
-							</div>
-						</td>
-					{% endif %}
-				{% endfor %}
+				<td class="person-field">
+					{% set custom_fields = result_display.getCustomFields(person) %}
+					{% for f in custom_fields %}
+						{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
+						<div class="prop-val person_fields_{{f.id}}">
+							{{ render_custom_field(f) }}
+						</div>
+						{% endif %}
+					{% endfor %}
+				</td>
 			{% endif %}
 		{% endfor %}
 	</tr>

@@ -190,22 +190,6 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
-		$has_u_fields = false;
-		foreach ($vars['display_fields'] as $f) {
-			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
-		}
-
-		if ($has_u_fields) {
-			$user_field_manager = $this->container->getSystemService('person_fields_manager');
-			$user_all_custom_fields = array();
-
-			foreach ($people as $p) {
-				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
-			}
-
-			$vars['user_all_custom_fields'] = $user_all_custom_fields;
-		}
-
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
 
 		$alphabet = $this->getAlphabet();
@@ -262,20 +246,12 @@ class PeopleSearchController extends AbstractController
 		$people = $this->em->getRepository('DeskPRO:Person')->getPeopleResultsFromIds($person_ids);
 		$people = Arrays::orderIdArray($person_ids, $people);
 
-		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
-
-		$has_u_fields = false;
-		foreach ($display_fields as $f) {
-			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
-		}
+		$display_fields = $this->in->getCleanValueArray('display_fields', 'string', 'discard');
+		$display_fields = Arrays::removeFalsey($display_fields);
+		$display_fields = array_unique($display_fields);
 
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
-
-		foreach ($people as $p) {
-			$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
-		}
-
-		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$person_field_defs = $user_field_manager->getFields();
 
 		$tpl = 'list-page.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
@@ -288,7 +264,6 @@ class PeopleSearchController extends AbstractController
 			'display_fields'          => $display_fields,
 			'person_field_defs'       => $person_field_defs,
 			'result_display'          => $result_display,
-			'user_all_custom_fields'  => $user_all_custom_fields,
 		));
 	}
 
