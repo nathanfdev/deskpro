@@ -273,7 +273,7 @@ class SettingsController extends AbstractController
 		$term_rules = RuleBuilder::newTermsBuilder();
 		$filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
-		$filter['is_global'] = true;
+		$filter['is_global'] = false;
 		$filter['is_enabled'] = true;
 
 		$this->em->persist($filter);
