@@ -1,6 +1,6 @@
 <ul class="source-list" style="margin-top: 4px;">
 	{% set filter = sys_filters['all'] %}
-	<li data-filter-id="{{ filter.id }}" class="filter is-archive-filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+	<li data-filter-id="{{ filter.id }}" class="filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 		<span class="title">
 			<span class="list-counter" id="ticket_filter_{{filter.id}}_count2">{{ filter_counts[filter.id]|default(0) }}</span>
 			{{ phrase('agent.tickets.status_awaiting_agent') }}
