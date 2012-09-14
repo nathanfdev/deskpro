@@ -46,7 +46,7 @@
 							{% else %}
 								{% set custom_fields = result_display.getCustomFields(person) %}
 								{% for f in custom_fields %}
-									{% if field == 'person_fields['~f.id~']' and custom_fields[f.id] %}
+									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
 									{% set has_set = true %}
 									<li>
 										<span class="prop-title">{{ f.title }}:</span>
