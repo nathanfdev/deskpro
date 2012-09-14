@@ -297,8 +297,7 @@ class TicketTerms
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
 
-				$reply = $tracker->getNewReply();
-				if ($reply) {
+				if (!$tracker->isNewTicket() && ($reply = $tracker->getNewReply())) {
 					$creation_system = $reply->creation_system;
 				} else {
 					$creation_system = $ticket->creation_system;
