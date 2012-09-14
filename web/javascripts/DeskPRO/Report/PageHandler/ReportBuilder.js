@@ -95,14 +95,14 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 		}, {unescape: '/'});
 
 		$(document.body).delegate('a[rel=report-page-body]', 'click', function(e) {
-			var $this = $(this), href = $this.attr('href');
+			var $this = $(this), href = $this.data('report-original-href') || $this.attr('href');
 
 			e.preventDefault();
 
 			if ($this.is('.report-list-title')) {
 				var data = self.updateReportParams($this);
 				if (data) {
-					href += (href.indexOf('?') >= 0 ? '&' : '?') + 'params=' + data;
+					href += (href.indexOf('?') >= 0 ? '&' : '?') + 'params=' + encodeURIComponent(data);
 				}
 			}
 
@@ -142,6 +142,18 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 
 		item.data('report-params', value);
 		item.siblings('.report-favorite-toggle').data('report-params', value);
+
+		if (item.is('.report-list-title')) {
+			var href = item.data('report-original-href');
+			if (!href) {
+				href = item.attr('href');
+				item.data('report-original-href', href);
+			}
+			if (value) {
+				href += (href.indexOf('?') >= 0 ? '&' : '?') + 'params=' + encodeURIComponent(value);
+			}
+			item.attr('href', href);
+		}
 
 		return value;
 	},
