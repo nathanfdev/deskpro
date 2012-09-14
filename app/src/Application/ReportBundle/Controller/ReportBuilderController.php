@@ -44,10 +44,6 @@ class ReportBuilderController extends AbstractController
 {
 	public function indexAction()
 	{
-		if (!App::getConfig('enable_report_builder')) {
-			return $this->render('ReportBundle:ReportBuilder:index-disabled.html.twig', array());
-		}
-
 		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams());
 	}
 

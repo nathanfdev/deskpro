@@ -96,6 +96,7 @@
 			title="Overview gives you a clear, simple, interactive dashboard into the key metrics from your helpdesk. You can modify most statistics to sub-group the data by a particular property you are interested in or change the date range a statistic is generated for."
 		><a href="{{ path('report') }}">{{ phrase('agent.report.overview') }}</a></h1></nav>
 	</section>
+	{#
 	<section class="trends {% if 'dashboard_' in this_page %}on{% endif %}">
 		<nav><h1
 			class="tipped"
@@ -103,6 +104,7 @@
 			title="Trends show data that has been generated over time. Trend data is generated every hour, day, month or year capturing the situation at that time; for example you might want to see the trend for the number of tickets with a particular label over time. Most statistics tools will only show you the current status of tickets (i.e. the number of tickets that have a label right now) trends allows you to go back in time to see important helpdesk trends.<br /><br />Due to the nature of this data, trends have to be setup first and allowed to run before they can show you data."
 		><a href="{{ path('report_trend_dashboard_index') }}">{{ phrase('agent.report.trends') }}</a></h1></nav>
 	</section>
+	#}
 	<section class="builder {% if this_page == 'report_builder' %}on{% endif %}">
 		<nav><h1
 			class="tipped"

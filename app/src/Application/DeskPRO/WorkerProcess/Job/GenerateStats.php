@@ -53,6 +53,8 @@ class GenerateStats extends AbstractJob
 
 	public function run()
 	{
+		return;
+
 		$this->date_time = new \DateTime();
 		$this->date_time = \DateTime::createFromFormat('U',  time()+self::DEFAULT_INTERVAL);
 
