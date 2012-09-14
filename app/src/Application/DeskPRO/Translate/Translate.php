@@ -760,10 +760,14 @@ class Translate implements PersonContextInterface
 
 		$ts = $date_or_ts;
 		if ($ts instanceof \DateTime) {
+			$tz_offset = $ts->format('P');
+
 			// getTimestamp will return the underlaying timestamp of the Date,
 			// it doesnt apply any timezone offsets. So we'll need to convert it now
 			$ts = \Orb\Util\Dates::convertToUtcDateTime($date_or_ts);
 			$ts = $ts->getTimestamp();
+		} else {
+			$tz_offset = '+00:00';
 		}
 
 		// D: Mon
@@ -771,11 +775,11 @@ class Translate implements PersonContextInterface
 		// F: January
 		// M: Jan
 
-		$format = preg_replace('#(?<!\\\\)([DlFM])#', '\\\\D\\\\P-\\\\$1', $format);
+		$format = preg_replace('#(?<!\\\\)([DlFMP])#', '\\\\D\\\\P-\\\\$1', $format);
 		$date = date($format, $ts);
 
 		$tr = $this;
-		$date = preg_replace_callback('#DP\-([DlFM])#', function($m) use ($prefix, $tr, $ts) {
+		$date = preg_replace_callback('#DP\-([DlFMP])#', function($m) use ($prefix, $tr, $ts, $tz_offset) {
 
 			switch ($m[1]) {
 				case 'D':
@@ -790,6 +794,8 @@ class Translate implements PersonContextInterface
 				case 'M':
 					$phrase_name = $prefix . 'short-month_' . strtolower(date('F', $ts));
 					break;
+				case 'P':
+					return $tz_offset;
 				default:
 					// never matches
 					return 'unkown segment';
