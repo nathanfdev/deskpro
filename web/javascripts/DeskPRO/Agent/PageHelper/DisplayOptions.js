@@ -70,28 +70,32 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 		var ul = $('ul.display-fields-list.on-list', this.wrapper);
 
+		var makeBogus = function(ul) {
+			// Use bogus invisible draggables so when dragging to end of the list, the dragging
+			// item is placed between one of these invisible ones. The event handlers
+			// make sure they're always at the end.
+			// - This is to fix making it too hard to position something at the end.
+			var exist = ul.find('> li.bogus').length;
+			for (var i = exist; i < 8; i++) {
+				var li = $('<li class="bogus">&nbsp;</li>');
+				li.css({
+					width: 30,
+					visibility: 'hidden'
+				});
+
+				ul.append(li);
+			}
+		};
+
 		this.wrapper = $('.display-options', this.page.wrapper).first();
 		this.optionsList = $('ul.display-fields-list.on-list', this.wrapper).sortable({
 			forceHelperSize:true,
 			opacity: 0.6,
-			change: function() {
-				ul.find('> li.bogus').detach().appendTo(ul);
+			update: function() {
+				ul.find('> li.bogus').remove();
+				makeBogus(ul);
 			}
 		});
-
-		// Use bogus invisible draggables so when dragging to end of the list, the dragging
-		// item is placed between one of these invisible ones. The event handlers
-		// make sure they're always at the end.
-		// - This is to fix making it too hard to position something at the end.
-		for (var i = 0; i < 8; i++) {
-			var li = $('<li class="bogus">&nsb;</li>');
-			li.css({
-				width: 30,
-				visibility: 'hidden'
-			});
-
-			ul.append(li);
-		}
 
 		var onList = this.optionsList;
 		var offList = $('ul.display-fields-list.off-list', this.wrapper);
@@ -110,7 +114,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				offList.show();
 			}
 
-			ul.find('> li.bogus').detach().appendTo(ul);
+			ul.find('> li.bogus').remove();
+			makeBogus(ul);
 		}).not(':checked').each(function() {
 			$(this).closest('li').detach().addClass('off').appendTo(offList);
 		});
