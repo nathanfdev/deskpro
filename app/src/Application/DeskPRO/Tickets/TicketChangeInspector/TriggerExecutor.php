@@ -119,6 +119,10 @@ class TriggerExecutor
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
 
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
+						$action->setExecutionContext('trigger');
+					}
+
 					// Custom triggers only specify modifiers so
 					// this pre action can be modified to force email validation
 					// Actual actions will be run next with the usual run()
@@ -290,6 +294,10 @@ class TriggerExecutor
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
+
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
+						$action->setExecutionContext('trigger');
+					}
 
 					// Saving a copy of the modifiers set so we can apply them to the secondary
 					// collection for agent notifications

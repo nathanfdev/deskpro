@@ -71,9 +71,14 @@ class TicketTriggers extends AbstractJob
 		$searcher = $trigger->getSearcher();
 		$searcher->addTerm('escalation_eliminator', 'is', $trigger);
 
-		$instal_timestamp = App::getSetting('core.install_timestamp') ?: time();
-		$install_date = new \DateTime('@' . $instal_timestamp);
-		$searcher->addTerm('date_created', 'gt', array('date1' => $install_date));
+		// Add this limit for imported installs
+		if (App::getSetting('core.imported_timestamp')) {
+			$instal_timestamp = App::getSetting('core.install_timestamp') ?: time();
+			$install_date = new \DateTime('@' . $instal_timestamp);
+			$install_date = $install_date->format('Y-m-d H:i:s');
+
+			$searcher->addRawWhere("tickets.date_created >= '$install_date'");
+		}
 
 		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'INFO');
 
@@ -99,6 +104,11 @@ class TicketTriggers extends AbstractJob
 				foreach ($trigger->actions as $action_info) {
 					$action = $factory->createFromInfo($action_info);
 					if ($action) {
+
+						if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
+							$action->setExecutionContext('trigger');
+						}
+
 						$actions_collection->add($action);
 						$tracker->recordExtraMulti('trigger', $trigger);
 					}
