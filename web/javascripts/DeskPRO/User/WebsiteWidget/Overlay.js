@@ -563,10 +563,6 @@ var DpOverlayWidget = new (function() {
 		css.push('box-shadow: none');
 		css.push('background: ' + bgColor);
 		css.push('border: ' + border);
-		if (!$.browser.msie) {
-			css.push('border-radius: 9px');
-			css.push('-webkit-border-radius: 9px');
-		}
 		css.push('overflow: hidden');
 		css.push('top: 200px');
 		css.push('left: 0');
@@ -586,7 +582,19 @@ var DpOverlayWidget = new (function() {
 		css.push('-moz-transform: rotate(90deg)');
 		css.push('-ms-transform: rotate(90deg)');
 		css.push('-o-transform: rotate(90deg)');
-		css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
+
+		if ($.browser.msie) {
+			if (parseInt($.browser.version.slice(0,1)) >= "9") {
+				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=4)');
+			} else {
+				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
+			}
+		} else {
+			// IE's filter to rotate the box makes the edges around
+			// the rounded corners black, so better to not use rounded corners
+			css.push('border-radius: 9px');
+			css.push('-webkit-border-radius: 9px');
+		}
 
 		if (options.tabLocation == 'left') {
 			//url += 'left.png';
