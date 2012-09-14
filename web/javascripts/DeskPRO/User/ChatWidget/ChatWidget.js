@@ -426,7 +426,7 @@ var DpChatWidget = new (function() {
 		css.push('right: 150px');
 		css.push('margin: 0');
 		css.push('padding: 0 15px 0 15px');
-		css.push('height: 23px');
+		css.push('height: 18px');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
 		css.push('color: #fff');
@@ -452,7 +452,7 @@ var DpChatWidget = new (function() {
 		css.push('bottom: 0');
 		css.push('right: 20px');
 		css.push('margin: 0');
-		css.push('height: 12px');
+		css.push('height: 7px');
 		css.push('padding: 0');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
@@ -526,7 +526,7 @@ var DpChatWidget = new (function() {
 		var css = [];
 		css.push('position: absolute');
 		css.push('bottom: 0');
-		css.push('height: 14px');
+		css.push('height: 9px');
 		css.push('width: 7px');
 		css.push('overflow: hidden');
 		css.push('left: -7px');
@@ -554,7 +554,7 @@ var DpChatWidget = new (function() {
 			}
 		}
 
-		openBtn = $('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
+		openBtn = $('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label" style="position:relative;top:-1px;"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
 		if (this.isWindowChat) {
 			openBtn.hide();
 		}
