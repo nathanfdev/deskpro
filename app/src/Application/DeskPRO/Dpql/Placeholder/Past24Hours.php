@@ -41,9 +41,9 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
- * Place holder for the past week (today - 1 year), based on the current person's time zone.
+ * Place holder for the 24 hours, based on the current person's time zone.
  */
-class PastYear extends AbstractDateRange
+class Past24Hours extends AbstractDateRange
 {
 	/**
 	 * Gets the date range components (printable, start, end).
@@ -58,7 +58,7 @@ class PastYear extends AbstractDateRange
 		$now = $date->format('Y-m-d H:i:s');
 		$today = $date->format('Y-m-d');
 
-		$date->modify('-1 year');
+		$date->modify('-1 day');
 		$beginning = $date->format('Y-m-d');
 
 		return array("$beginning to $today", "$beginning 00:00:00", $now);

@@ -36,54 +36,14 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
 
 /**
- * Abstract base for all DPQL function calls.
+ * Helper used in group by to make an X-Y matrix table if 2 valid arguments are supplied
  */
-abstract class AbstractFunc
+class Matrix extends AbstractFunc
 {
-	/**
-	 * Maps DPQL function names (in all upper case) to class names
-	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
-	 *
-	 * @var array
-	 */
-	protected static $_functionMap = array(
-		'ALIAS' => 'Alias',
-		'COUNT' => 'Count',
-		'COUNT_DISTINCT' => 'CountDistinct',
-		'CURDATE' => 'CurDate',
-		'CURTIME' => 'CurTime',
-		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-		'DAYNAME' => 'DayName',
-		'FORMAT' => 'Format',
-		'LINK' => 'Link',
-		'MATRIX' => 'Matrix',
-		'MONTHNAME' => 'MonthName',
-		'NOW' => 'Now',
-		'PERCENT' => 'Percent',
-		'PRINT' => 'Printable',
-		'TO_UTC' => 'ToUtc',
-		'UTC' => 'Utc',
-		'X' => 'X',
-		'Y' => 'Y'
-	);
-
-	/**
-	 * Name of the function (in user-provided case).
-	 *
-	 * @var string
-	 */
-	protected $_name;
-
-	/**
-	 * List of arguments for function
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
-	 */
-	protected $_arguments;
-
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
 	 *
@@ -97,58 +57,58 @@ abstract class AbstractFunc
 	 *
 	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
 	 */
-	abstract public function prepare(
+	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	);
-
-	/**
-	 * Constructor. Use the create() factory method.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 */
-	protected function __construct($name, array $arguments = array())
+	)
 	{
-		$this->_name = $name;
-		$this->_arguments = $arguments;
-	}
-
-	/**
-	 * Creates the correct function handler object.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
-	 */
-	public static function create($name, array $arguments = array())
-	{
-		$name = strtoupper($name);
-		if (isset(self::$_functionMap[$name])) {
-			$map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
-			return new $map($name, $arguments);
-		} else {
-			return new SqlPass($name, $arguments);
+		if ($section != 'group') {
+			throw new Exception('MATRIX() may only be used in GROUP BY.');
 		}
-	}
-
-	/**
-	 * Gets a literal value for the specified part.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
-	 *
-	 * @return mixed
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
-	{
-		if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
-			return $part->string;
-		} else if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
-			return $part->number;
-		} else {
-			throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
+		if (count($stack) > 1) {
+			// note: the top of the stack is this function
+			throw new Exception('MATRIX() may only be used at the top-level.');
 		}
+
+		if (count($this->_arguments) != 2) {
+			throw new Exception('MATRIX() can only accept 2 arguments.');
+		}
+
+		$childStack = $stack;
+		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
+
+		$valid = array();
+
+		foreach ($this->_arguments AS $arg) {
+			if ($arg instanceof \Application\DeskPRO\Dpql\Statement\Part\NullValue) {
+				continue;
+			}
+
+			$groupBy = $arg->prepare($statement, $section, $childStack, $select, $result);
+			if ($groupBy->hasValue()) {
+				$valid[] = $groupBy;
+			}
+		}
+
+		$isMatrix = count($valid) > 1;
+
+		foreach ($valid AS $key => $groupBy) {
+			$printId = $select->addSelectField($groupBy->printed());
+			$select->addGroupBy($groupBy->sql());
+			$statement->addDefaultOrder($groupBy->printed());
+
+			if ($groupBy->printed() === $groupBy->sql()) {
+				$groupId = $printId;
+			} else {
+				$groupId = $select->addSelectField($groupBy->sql());
+			}
+
+			if ($key == 0 && $isMatrix) {
+				$result->addGroupXColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
+			} else {
+				$result->addGroupYColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
+			}
+		}
+
+		return new Prepared(false);
 	}
 }

@@ -542,7 +542,7 @@ class Html extends AbstractRenderer
 		$isStacked = false;
 
 		if ($groupXColumns) {
-			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/bar.
+			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
 			$prepared = $this->_prepareMatrixTable($rows);
 			$lookup = $prepared['lookup'];
 
@@ -580,6 +580,7 @@ class Html extends AbstractRenderer
 			}
 
 			$hasCategory = true;
+			$isStacked = ($type == 'bar');
 		} else {
 			if (count($groupYColumns) > 1) {
 				$rowGroups = array();

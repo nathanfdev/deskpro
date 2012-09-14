@@ -213,10 +213,14 @@ class ReportBuilder extends AbstractEntityRepository
 			'orders' => array(
 				'tickets' => array(
 					// todo: number of messages
-					'date_created' => array('date created', '%s.date_created'),
-					'last_agent_reply' => array('last agent reply', '%s.date_last_agent_reply'),
-					'last_user_reply' => array('last user reply', '%s.date_last_user_reply'),
-					'total_waiting' => array('total waiting time', '%s.total_user_waiting')
+					'date_created_asc' => array('date created (ascending)', '%s.date_created ASC'),
+					'date_created_desc' => array('date created (descending)', '%s.date_created DESC'),
+					'last_agent_reply_asc' => array('last agent reply (ascending)', '%s.date_last_agent_reply ASC'),
+					'last_agent_reply_desc' => array('last agent reply (descending)', '%s.date_last_agent_reply DESC'),
+					'last_user_reply_asc' => array('last user reply (ascending)', '%s.date_last_user_reply ASC'),
+					'last_user_reply_desc' => array('last user reply (descending)', '%s.date_last_user_reply DESC'),
+					'total_waiting_asc' => array('total waiting time (ascending)', '%s.total_user_waiting ASC'),
+					'total_waiting_desc' => array('total waiting time (descending)', '%s.total_user_waiting DESC')
 				)
 			)
 		);
