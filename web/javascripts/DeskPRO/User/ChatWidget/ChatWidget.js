@@ -405,7 +405,7 @@ var DpChatWidget = new (function() {
 		}
 
 		var bgColor  = 'rgb(63,63,63)';
-		var bgColorA = 'rgba(63,63,63,0.8)';
+		var bgColorA = 'rgb(63,63,63)';
 		var border   = '2px solid #727272';
 
 		if (DpChatWidget_Options && DpChatWidget_Options.btnStyle) {
@@ -423,7 +423,7 @@ var DpChatWidget = new (function() {
 		var css = [];
 		css.push('position: fixed');
 		css.push('bottom: 0');
-		css.push('right: 120px');
+		css.push('right: 150px');
 		css.push('margin: 0');
 		css.push('padding: 0 15px 0 15px');
 		css.push('height: 23px');
@@ -442,6 +442,7 @@ var DpChatWidget = new (function() {
 		css.push('border-right: none');
 		css.push('border-top: none');
 		css.push('text-shadow: 0px 0px 2px #000000');
+		css.push('opacity: 0.85');
 		css = css.join(';');
 
 		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
@@ -455,9 +456,9 @@ var DpChatWidget = new (function() {
 		css.push('padding: 0');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('-webkit-border-top-right-radius: 6px');
-		css.push('-moz-border-radius-topright: 6px');
-		css.push('border-top-right-radius: 6px')
+		css.push('-webkit-border-top-right-radius: 9px');
+		css.push('-moz-border-radius-topright: 9px');
+		css.push('border-top-right-radius: 9px')
 		css.push('cursor: pointer');
 		css.push('background: ' + bgColor);
 		css.push('background: ' + bgColorA);
@@ -506,12 +507,12 @@ var DpChatWidget = new (function() {
 		css.push('padding: 0');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('-webkit-border-top-left-radius: 6px');
-		css.push('-webkit-border-top-right-radius: 6px');
-		css.push('-moz-border-radius-topleft: 6px');
-		css.push('-moz-border-radius-topright: 6px');
-		css.push('border-top-left-radius: 6px');
-		css.push('border-top-right-radius: 6px');
+		css.push('-webkit-border-top-left-radius: 9px');
+		css.push('-webkit-border-top-right-radius: 9px');
+		css.push('-moz-border-radius-topleft: 9px');
+		css.push('-moz-border-radius-topright: 9px');
+		css.push('border-top-left-radius: 9px');
+		css.push('border-top-right-radius: 9px');
 		css.push('cursor: pointer');
 		css.push('display: block');
 		css.push('background: ' + bgColor);
@@ -526,9 +527,9 @@ var DpChatWidget = new (function() {
 		css.push('position: absolute');
 		css.push('bottom: 0');
 		css.push('height: 14px');
-		css.push('width: 5px');
+		css.push('width: 7px');
 		css.push('overflow: hidden');
-		css.push('left: -5px');
+		css.push('left: -7px');
 		css.push('margin: 0');
 		css.push('padding: 0');
 		css.push('line-height: 100%');
@@ -542,7 +543,7 @@ var DpChatWidget = new (function() {
 
 		$('head').append('<style type="text/css">#dpchat_btn_btm_shade { '+css+ '}</style>');
 
-		var phrase1 = 'Click here to chat with us';
+		var phrase1 = 'Chat with us';
 		var phrase2 = 'Open your chat';
 		if (DpChatWidget_Options && DpChatWidget_Options.lang) {
 			if (DpChatWidget_Options.lang['user.chat.window_start-button']) {
@@ -559,7 +560,8 @@ var DpChatWidget = new (function() {
 		}
 		openBtn.appendTo('body');
 
-		$('#dpchat_btn_btm').width($('#dpchat_btn').width() - 52);
+		var w = $('#dpchat_btn').width();
+		$('#dpchat_btn_btm').width(w - 20 + 150 - w - 8);
 
 		openBtn.on('click', function(ev) {
 			ev.stopPropagation();

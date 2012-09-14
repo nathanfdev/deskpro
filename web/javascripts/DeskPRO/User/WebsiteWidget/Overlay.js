@@ -544,31 +544,69 @@ var DpOverlayWidget = new (function() {
 			options = $.extend({}, options, window.DpOverlayWidget_Options);
 		}
 
+		var bgColor  = 'rgb(63,63,63)';
+		var border   = '2px solid #727272';
+
+		if (DpOverlayWidget_Options && DpOverlayWidget_Options.btnStyle) {
+			if (DpOverlayWidget_Options.btnStyle.bgColor) {
+				bgColor = DpOverlayWidget_Options.btnStyle.bgColor;
+			}
+			if (DpOverlayWidget_Options.btnStyle.border) {
+				border = DpOverlayWidget_Options.btnStyle.border;
+			}
+		}
+
 		var css = [];
 		css.push('position: fixed');
 		css.push('display: block');
 		css.push('cursor: pointer');
 		css.push('box-shadow: none');
-		css.push('width: 29px');
-		css.push('height: 154px');
-		css.push('background-position: 0 0');
-		css.push('background-repeat: no-repeat');
+		css.push('background: ' + bgColor);
+		css.push('border: ' + border);
+		if (!$.browser.msie) {
+			css.push('border-radius: 9px');
+			css.push('-webkit-border-radius: 9px');
+		}
 		css.push('overflow: hidden');
 		css.push('top: 200px');
-
-		var url = options.staticUrl + 'images/user/widget-btn-';
+		css.push('left: 0');
+		css.push('cursor: pointer');
+		css.push('text-shadow: 0px 0px 2px #000000');
+		css.push('color: #fff');
+		css.push('font-family: Arial, sans-serif');
+		css.push('font-weight: bold');
+		css.push('font-size: 13px');
+		css.push('letter-spacing: 1px');
+		css.push('height: 34px');
+		css.push('line-height: 25px');
+		css.push('padding: 0 13px 0 13px');
+		css.push('margin: 0');
+		css.push('opacity: 0.85');
+		css.push('-webkit-transform: rotate(90deg)');
+		css.push('-moz-transform: rotate(90deg)');
+		css.push('-ms-transform: rotate(90deg)');
+		css.push('-o-transform: rotate(90deg)');
+		css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
 
 		if (options.tabLocation == 'left') {
-			url += 'left.png';
-			css.push('left: 0');
+			//url += 'left.png';
+			//css.push('left: 0');
 		} else {
 			url += 'right.png';
 			css.push('right: 0');
 		}
-
-		css.push('background-image: url(' + url + ')');
 		css = css.join(';');
-		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '"></div>').appendTo('body');
+
+		var phrase = 'Feedback &amp; Support';
+		if (DpOverlayWidget_Options && DpOverlayWidget_Options.lang) {
+			if (DpOverlayWidget_Options.lang['user.widget.btn']) {
+				phrase = DpOverlayWidget_Options.lang['user.widget.btn'];
+			}
+		}
+
+		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>').appendTo('body');
+
+		$('#dp_overlay_btn').css('left', '-' + ($('#dp_overlay_btn').width() / 2 + 6) + 'px');
 
 		$('.dp-overlay-widget-trigger').on('click', function(ev) {
 			ev.preventDefault();
