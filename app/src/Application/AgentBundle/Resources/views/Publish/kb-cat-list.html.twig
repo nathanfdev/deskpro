@@ -1,5 +1,6 @@
 {% for cat in cats %}
 	<li
+		id="pub_kbcat_{{ cat.id }}"
 		class="{% if loop.first %}auto-load-route{% endif %} kb-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}"
 		data-category-id="{{ cat.id }}"
 		data-usergroup-ids="{{ kb_cats_usergroups[cat.id]|default([])|join(',') }}"

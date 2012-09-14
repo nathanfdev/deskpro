@@ -1,5 +1,6 @@
 {% for cat in cats %}
 	<li
+		id="pub_newscat_{{ cat.id }}"
 		class="news-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}" data-category-id="{{ cat.id }}"
 		data-usergroup-ids="{{ news_cats_usergroups[cat.id]|default([])|join(',') }}"
 	>

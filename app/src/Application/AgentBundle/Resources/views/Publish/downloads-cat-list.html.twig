@@ -1,5 +1,6 @@
 {% for cat in cats %}
 	<li
+		id="pub_dlcat_{{ cat.id }}"
 		class="download-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}"
 		data-category-id="{{ cat.id }}"
 		data-usergroup-ids="{{ download_cats_usergroups[cat.id]|default([])|join(',') }}"

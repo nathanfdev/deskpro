@@ -6,6 +6,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	init: function() {
 		var self = this;
 		this.expanded_ids = [];
+		this.expanded_cats = [];
 		this.buttonEl = $('#publish_section');
 
 		this.urlFragmentName = 'publish';
@@ -28,18 +29,26 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	},
 
 	reload: function() {
-		var expanded_ids = [];
+		var expanded_ids = [], expanded_cats = [];
 
 		if (this.contentEl && this.contentEl.length) {
-			this.contentEl.find('section.group-section.open').each(function() {
+			this.contentEl.find('section.open.group-section').each(function() {
 				var id = $(this).attr('id');
 				if (id) {
 					expanded_ids.push(id);
 				}
 			});
+
+			this.contentEl.find('li.sub-expanded').each(function() {
+				var id = this.id;
+				if (id) {
+					expanded_cats.push(id);
+				}
+			});
 		}
 
 		this.expanded_ids = expanded_ids;
+		this.expanded_cats = expanded_cats;
 
 		DeskPRO_Window.getSectionData('publish_section', (function(data) {
 			this._initSection(data);
@@ -403,6 +412,15 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			Array.each(this.expanded_ids, function(id) {
 				$('#' + id).addClass('open').find('> article').show();
 			});
+			this.expanded_ids = [];
+		}
+		if (this.expanded_cats.length) {
+			this.contentEl.find('li.sub-expanded').removeClass('sub-expanded');
+			Array.each(this.expanded_cats, function(id) {
+				$('#' + id).addClass('sub-expanded');
+			});
+
+			this.expanded_cats = [];
 		}
 
 		this.fireEvent('sectionInit');
