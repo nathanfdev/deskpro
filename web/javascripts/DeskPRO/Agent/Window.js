@@ -2172,6 +2172,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#agent_status_away_overlay').on('click', close);
 		});
 
+		$('#agent_status_menu').find(':radio').on('click', function(ev) {
+			if ($(this).val() == 'away') {
+				$('#is_chat_available').prop('checked', false);
+			} else {
+				$('#is_chat_available').prop('checked', true);
+			}
+		});
+
 		$('#agent_status').data('status', 'available');
 
 		$('#dp_keyboard_shortcuts').find('.close').on('click', function() {
