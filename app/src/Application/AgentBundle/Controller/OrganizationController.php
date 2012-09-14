@@ -665,7 +665,7 @@ class OrganizationController extends AbstractController
 		$field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $field_defs);
 
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'org_custom_fields');
 		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		return $this->render('AgentBundle:Organization:neworganization.html.twig', array(

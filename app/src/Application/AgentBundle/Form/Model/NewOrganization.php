@@ -62,7 +62,7 @@ class NewOrganization
 
 	public function setCustomFieldForm(array $form)
 	{
-		$this->custom_fields = isset($form['neworg']['custom_fields']) ? $form['neworg']['custom_fields'] : array();
+		$this->custom_fields = isset($form['org_custom_fields']) ? $form['org_custom_fields'] : array();
 	}
 
 	public function save()
@@ -85,13 +85,8 @@ class NewOrganization
 		$this->_em->flush();
 
 		if ($this->custom_fields) {
-			$user_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
-			foreach ($user_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-					$d = $org->setCustomData($info[0], $info[1], $info[2]);
-					$this->_em->persist($d);
-				}
-			}
+			$field_manager = App::getSystemService('org_fields_manager');
+			$field_manager->saveFormToObject($this->custom_fields, $org);
 		}
 
 		$this->_em->flush();
