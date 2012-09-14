@@ -50,6 +50,7 @@ class MainController extends AbstractController
 			if (!$is_expired) {
 				$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
 				$expire_in_days = $lic_expire_parts['days'];
+				$expire_in_days += $lic_expire_parts['years'] * 365;
 			}
 		}
 
