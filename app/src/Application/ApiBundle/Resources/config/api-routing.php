@@ -252,6 +252,13 @@ $collection->add('api_people', new Route(
 	array()
 ));
 
+$collection->add('api_people_post', new Route(
+	'/people',
+	array('_controller' => 'ApiBundle:Person:newPerson'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('api_people_person', new Route(
 	'/people/{person_id}',
 	array('_controller' => 'ApiBundle:Person:getPerson'),

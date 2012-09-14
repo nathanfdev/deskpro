@@ -93,9 +93,13 @@ class PersonController extends AbstractController
 			}
 		}
 
-		$order_by = $this->person->getPref('agent.ui.people-filter-order-by.0');
-		if (!$order_by) {
-			$order_by = 'people.id:asc';
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = $this->person->getPref('agent.ui.people-filter-order-by.0');
+			if (!$order_by) {
+				$order_by = 'people.id:asc';
+			}
 		}
 
 		$extra = array();
@@ -109,52 +113,7 @@ class PersonController extends AbstractController
 			$cache = 3600;
 		}
 
-		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
-
-		$query_params = array(
-			$this->person->id,
-			serialize($terms),
-			serialize($extra),
-			$cache_date->format('Y-m-d H:i:s')
-		);
-
-		$id = $this->db->fetchColumn('
-			SELECT id
-			FROM result_cache
-			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
-			ORDER BY date_created DESC
-			LIMIT 1
-		', $query_params);
-
-		if ($id) {
-			$result_cache = $this->em->createQuery('
-				SELECT r
-				FROM DeskPRO:ResultCache r
-				WHERE r.id = ?0
-			')->setParameters(array($id))->getOneOrNullResult();
-		} else {
-			$result_cache = null;
-		}
-
-		if (!$result_cache) {
-			$searcher = new PersonSearch();
-			$searcher->setPerson($this->person);
-			foreach ($terms AS $term) {
-				$searcher->addTerm($term['type'], $term['op'], $term['options']);
-			}
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
-			$result_cache->person = $this->person;
-			$result_cache->results = $results;
-			$result_cache->criteria = $terms;
-			$result_cache->num_results = count($results);
-			$result_cache->setExtraData('order_by', $order_by);
-
-			$this->em->persist($result_cache);
-			$this->em->flush();
-		}
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new PersonSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -174,6 +133,82 @@ class PersonController extends AbstractController
 		));
 	}
 
+	public function newPersonAction()
+	{
+		if (!$this->person->hasPerm('agent_people.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$person = new Person();
+		$errors = array();
+
+		$name = $this->in->getString('name');
+		if (!$name) {
+			$errors['name'] = array('required_field.name', 'name is empty or missing');
+		}
+		else {
+			$person->name = $name;
+		}
+
+		$email = $this->in->getString('email');
+		if (!$email || !\Orb\Validator\StringEmail::isValueValid($email)) {
+			$errors['email'] = array('required_field.email', 'email is empty or invalid');
+		} else {
+			$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if ($check_exists) {
+				$errors['email'] = array('invalid_argument.email', 'email already exists');
+			} else {
+				$person->setEmail($email);
+			}
+		}
+
+		$updates = $this->_setBasicPersonDetailsFromInput($person);
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			foreach ($this->in->getCleanValueArray('group_ids', 'int') as $ug_id) {
+				$ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
+				if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
+					$person->usergroups->add($ug);
+				}
+			}
+
+			if ($updates['new_org']) {
+				$this->em->persist($updates['new_org']);
+			}
+
+			$this->em->persist($person);
+
+			$field_manager = $this->container->getSystemService('person_fields_manager');
+			$post_custom_fields = $this->request->request->get('fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $person, true);
+			}
+			$this->em->flush();
+
+			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			if ($labels) {
+				$person->getLabelManager()->setLabelsArray($labels);
+				$this->em->flush();
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createApiCreateResponse(
+			array('id' => $person->id),
+			$this->generateUrl('api_people_person', array('person_id' => $person->id), true)
+		);
+	}
+
 	public function getPersonAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);
@@ -190,6 +225,38 @@ class PersonController extends AbstractController
 			$person->name = $name;
 		}
 
+		$updates = $this->_setBasicPersonDetailsFromInput($person);
+
+		if ($this->in->checkIsset('primary_email') && $this->person->hasPerm('agent_people.manage_emails')) {
+			$person->setEmail($this->in->getString('primary_email'));
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			if ($updates['new_org']) {
+				$this->em->persist($updates['new_org']);
+			}
+			$this->em->persist($person);
+
+			$field_manager = $this->container->getSystemService('person_fields_manager');
+			$post_custom_fields = $this->request->request->get('fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $person, true);
+			}
+			$this->em->flush();
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	protected function _setBasicPersonDetailsFromInput(Person $person)
+	{
 		$org = null;
 
 		if ($this->in->checkIsset('organization')) {
@@ -229,10 +296,6 @@ class PersonController extends AbstractController
 			$person->timezone = $this->in->getString('timezone');
 		}
 
-		if ($this->in->checkIsset('primary_email') && $this->person->hasPerm('agent_people.manage_emails')) {
-			$person->setEmail($this->in->getString('primary_email'));
-		}
-
 		$bulk_set = array(
 			'summary' => 'String',
 			'disable_autoresponses' => 'Bool'
@@ -243,28 +306,9 @@ class PersonController extends AbstractController
 			}
 		}
 
-		$this->db->beginTransaction();
-
-		try {
-			if ($org) {
-				$this->em->persist($org);
-			}
-			$this->em->persist($person);
-
-			$field_manager = $this->container->getSystemService('person_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $person, true);
-			}
-			$this->em->flush();
-
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		return $this->createSuccessResponse();
+		return array(
+			'new_org' => $org
+		);
 	}
 
 	public function deletePersonAction($person_id)
