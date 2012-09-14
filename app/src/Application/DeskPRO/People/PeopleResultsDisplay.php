@@ -195,7 +195,7 @@ class PeopleResultsDisplay
 
 			$this->people_fields = array();
 			foreach ($person_data as $pid => $custom_data) {
-				$this->people_fields[$pid] = $this->field_manager->createFieldDataFromArray($custom_data);
+				$this->people_fields[$pid] = $this->field_manager->getDisplayArray($this->field_manager->createFieldDataFromArray($custom_data), null);
 			}
 		}
 

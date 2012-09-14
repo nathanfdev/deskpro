@@ -1201,6 +1201,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		foreach ($this->custom_data as $data) {
+			if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 

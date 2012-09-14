@@ -234,7 +234,7 @@
 					{% endif %}
 				{% endfor %}
 				{% for f in user_all_custom_fields[ticket_person.id] %}
-					{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
+					{% if field == 'person_fields['~f.id~']' and ticket_person.hasCustomField(f.id) %}
 						<li class="person-field">
 							<span class="prop-title">{{ f.title }}:</span>
 							<span class="prop-val person_fields_{{f.id}}">
