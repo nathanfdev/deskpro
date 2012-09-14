@@ -47,7 +47,6 @@ use Orb\Util\Util;
 use Orb\Util\Dates;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
-use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 
 use Application\DeskPRO\Tickets\TicketSplit;

@@ -169,7 +169,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var tplSel = this.getEl('message_template');
 		var tplSelOrig = this.getEl('message_template_orig');
 
-		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader);
+		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		function updateFields() {
 			$('.ticket-field', self.getEl('fields_container')).hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());

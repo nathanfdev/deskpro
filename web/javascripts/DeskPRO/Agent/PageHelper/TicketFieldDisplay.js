@@ -5,18 +5,22 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
  */
 DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 
-	initialize: function(ticketReader) {
+	initialize: function(ticketReader, mode) {
 		this.ticketReader = ticketReader;
+		this.mode = mode || 'create';
 	},
 
 	getFields: function(department_id) {
 		department_id = parseInt(department_id);
 		DP.console.log('[TicketFieldDisplay] department %i', department_id);
 
-		if (typeof window.DESKPRO_TICKET_DISPLAY[department_id] == 'undefined') {
-			var depItems = window.DESKPRO_TICKET_DISPLAY[0] || [];
-		} else {
-			var depItems = window.DESKPRO_TICKET_DISPLAY[department_id] || [];
+		var depItems = [];
+		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY[this.mode]) {
+			if (typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined') {
+				depItems = window.DESKPRO_TICKET_DISPLAY[[this.mode]][0] || [];
+			} else {
+				depItems = window.DESKPRO_TICKET_DISPLAY[[this.mode]][department_id] || [];
+			}
 		}
 
 		DP.console.log('[TicketFieldDisplay] depItems %o', depItems);

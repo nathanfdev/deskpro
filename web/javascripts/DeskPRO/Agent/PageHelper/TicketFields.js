@@ -37,7 +37,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		};
 
-		this.fieldDisplay = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader);
+		this.fieldDisplay = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'view');
 
 		this.page.getEl('department').on('change', function() {
 			self.updateDisplay();

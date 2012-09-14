@@ -142,6 +142,13 @@ $collection->add('admin_tickets_fields', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_editor_reset', new Route(
+	'/tickets/editor/reset-all/{security_token}',
+	array('_controller' => 'AdminBundle:TicketProperties:resetEditor'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_editor_form_embed', new Route(
 	'/tickets/editor/{department_id}/website-widget',
 	array('_controller' => 'AdminBundle:TicketProperties:formEmbed'),

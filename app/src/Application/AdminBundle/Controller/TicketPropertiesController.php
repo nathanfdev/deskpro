@@ -202,6 +202,19 @@ class TicketPropertiesController extends AbstractController
 		return $this->redirectRoute('admin_tickets_editor');
 	}
 
+	public function resetEditorAction($security_token)
+	{
+		$this->ensureAuthToken('reset_editor', $security_token);
+
+		$this->container->getDb()->executeUpdate("
+			DELETE FROM ticket_page_display
+		");
+
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', 0);
+
+		return $this->redirectRoute('admin_tickets_editor');
+	}
+
 	############################################################################
 	# form-embed
 	############################################################################

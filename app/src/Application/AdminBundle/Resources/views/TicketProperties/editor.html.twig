@@ -53,6 +53,11 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </div>
 {% endblock %}
 {% block pagebar %}
+	<nav>
+		<ul>
+			<li><a href="{{ path('admin_tickets_editor_reset', {security_token: security_token('reset_editor') }) }}" onclick="return confirm('Are you sure you want to reset all layouts? This will revert all layouts to their defaults and any customisations you have made will be lost.');">Reset All Layouts</a></li>
+		</ul>
+	</nav>
 	<ul>
 		<li>{{ phrase('admin.tickets.ticket_layout_editor') }}</li>
 		{% if department %}
