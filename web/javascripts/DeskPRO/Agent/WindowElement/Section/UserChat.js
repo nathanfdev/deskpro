@@ -444,6 +444,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
+		if (!$('#is_chat_available').is(':checked')) {
+			return;
+		}
+
 		var conversation_id = data.conversation_id;
 
 		// If we already have the chat tab open, it probably means the chat was timed out

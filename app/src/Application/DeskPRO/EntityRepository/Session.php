@@ -48,14 +48,14 @@ class Session extends AbstractEntityRepository
 	 * Checks for active sessions (with standard chat timeout) for agents
 	 * that have their status to available
 	 */
-	public function hasAvailableAgents()
+	public function hasAvailableAgents($for_chat = false)
 	{
 		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$check = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM sessions
-			WHERE date_last >= ? AND active_status = ? AND is_person = 1
+			WHERE date_last >= ? AND active_status = ? AND is_person = 1 " . ($for_chat ? " AND is_chat_available = 1 " : '') . "
 			LIMIT 1
 		", array($datecut, 'available'));
 
