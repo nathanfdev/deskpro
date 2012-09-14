@@ -68,9 +68,13 @@ class OrganizationController extends AbstractController
 			}
 		}
 
-		$order_by = $this->person->getPref('agent.ui.org-filter-order-by.0');
-		if (!$order_by) {
-			$order_by = 'organization.name:asc';
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = $this->person->getPref('agent.ui.org-filter-order-by.0');
+			if (!$order_by) {
+				$order_by = 'organization.name:asc';
+			}
 		}
 
 		$extra = array();
@@ -84,52 +88,7 @@ class OrganizationController extends AbstractController
 			$cache = 3600;
 		}
 
-		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
-
-		$query_params = array(
-			$this->person->id,
-			serialize($terms),
-			serialize($extra),
-			$cache_date->format('Y-m-d H:i:s')
-		);
-
-		$id = $this->db->fetchColumn('
-			SELECT id
-			FROM result_cache
-			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
-			ORDER BY date_created DESC
-			LIMIT 1
-		', $query_params);
-
-		if ($id) {
-			$result_cache = $this->em->createQuery('
-				SELECT r
-				FROM DeskPRO:ResultCache r
-				WHERE r.id = ?0
-			')->setParameters(array($id))->getOneOrNullResult();
-		} else {
-			$result_cache = null;
-		}
-
-		if (!$result_cache) {
-			$searcher = new OrganizationSearch();
-			$searcher->setPerson($this->person);
-			foreach ($terms AS $term) {
-				$searcher->addTerm($term['type'], $term['op'], $term['options']);
-			}
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
-			$result_cache->person = $this->person;
-			$result_cache->results = $results;
-			$result_cache->criteria = $terms;
-			$result_cache->num_results = count($results);
-			$result_cache->setExtraData('order_by', $order_by);
-
-			$this->em->persist($result_cache);
-			$this->em->flush();
-		}
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new OrganizationSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -147,6 +106,72 @@ class OrganizationController extends AbstractController
 			'total' => count($person_ids),
 			'organizations' => $this->getApiData($orgs)
 		));
+	}
+
+	public function newOrganizationAction()
+	{
+		if (!$this->person->hasPerm('agent_org.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$org = new Organization();
+		$errors = array();
+
+		$name = $this->in->getString('name');
+		if (!$name) {
+			$errors['name'] = array('required_field.name', 'name is empty or missing');
+		}
+
+		$org->name = $name;
+
+		$bulk_set = array(
+			'summary' => 'String',
+		);
+		foreach ($bulk_set AS $input => $type) {
+			if ($this->in->checkIsset($input)) {
+				$org->$input = $this->in->{'get' . $type}($input);
+			}
+		}
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			foreach ($this->in->getCleanValueArray('group_ids', 'int') as $ug_id) {
+				$ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
+				if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
+					$org->usergroups->add($ug);
+				}
+			}
+
+			$this->em->persist($org);
+
+			$field_manager = $this->container->getSystemService('org_fields_manager');
+			$post_custom_fields = $this->request->request->get('fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $org, true);
+			}
+			$this->em->flush();
+
+			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			if ($labels) {
+				$org->getLabelManager()->setLabelsArray($labels);
+				$this->em->flush();
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createApiCreateResponse(
+			array('id' => $org->id),
+			$this->generateUrl('api_organizations_organization', array('organization_id' => $org->id), true)
+		);
 	}
 
 	public function getOrganizationAction($organization_id)
@@ -211,6 +236,104 @@ class OrganizationController extends AbstractController
 		$edit_manager->deleteOrganization($org);
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getOrganizationMembersAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$terms = array(
+			array(
+				'type' => \Application\DeskPRO\Searcher\PersonSearch::TERM_ORGANIZATION,
+				'op' => 'contains',
+				'options' => array($org->id)
+			)
+		);
+
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = 'person.name:asc';
+		}
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		if ($this->in->checkIsset('cache')) {
+			$cache = $this->in->getUint('cache');
+		} else {
+			$cache = 3600;
+		}
+
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\PersonSearch());
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$person_ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
+		$people = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($person_ids),
+			'people' => $this->getApiData($people)
+		));
+	}
+
+	public function getOrganizationTicketsAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$terms = array(
+			array(
+				'type' => \Application\DeskPRO\Searcher\TicketSearch::TERM_ORGANIZATION,
+				'op' => 'contains',
+				'options' => array($org->id)
+			)
+		);
+
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = 'ticket.date_created:desc';
+		}
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		if ($this->in->checkIsset('cache')) {
+			$cache = $this->in->getUint('cache');
+		} else {
+			$cache = 3600;
+		}
+
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\TicketSearch());
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$person_ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($person_ids),
+			'tickets' => $this->getApiData($tickets)
+		));
 	}
 
 	public function getOrganizationNotesAction($organization_id)

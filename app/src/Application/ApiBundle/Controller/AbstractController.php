@@ -216,4 +216,62 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		return false;
 	}
+
+
+
+	public function getApiSearchResult(array $terms, array $extra, $cache, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
+	{
+		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
+
+		$query_params = array(
+			$this->person->id,
+			serialize($terms),
+			serialize($extra),
+			$cache_date->format('Y-m-d H:i:s')
+		);
+
+		$id = $this->db->fetchColumn('
+			SELECT id
+			FROM result_cache
+			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
+			ORDER BY date_created DESC
+			LIMIT 1
+		', $query_params);
+
+		if ($id) {
+			$result_cache = $this->em->createQuery('
+				SELECT r
+				FROM DeskPRO:ResultCache r
+				WHERE r.id = ?0
+			')->setParameters(array($id))->getOneOrNullResult();
+		} else {
+			$result_cache = null;
+		}
+
+		if (!$result_cache) {
+			$searcher->setPerson($this->person);
+			foreach ($terms AS $term) {
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+			}
+			if (isset($extra['order_by'])) {
+				$searcher->setOrderByCode($extra['order_by']);
+			}
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
+			$result_cache->person = $this->person;
+			$result_cache->results = $results;
+			$result_cache->criteria = $terms;
+			$result_cache->num_results = count($results);
+			foreach ($extra AS $key => $value) {
+				$result_cache->setExtraData($key, $value);
+			}
+
+			$this->em->persist($result_cache);
+			$this->em->flush();
+		}
+
+		return $result_cache;
+	}
 }

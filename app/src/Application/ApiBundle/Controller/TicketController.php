@@ -166,6 +166,10 @@ class TicketController extends AbstractController
 		$this->db->beginTransaction();
 
 		try {
+			if ($org && !$org->id) {
+				$this->em->persist($org);
+				$this->em->flush();
+			}
 			if (!$person->id) {
 				$this->em->persist($person);
 				$this->em->flush();
@@ -238,7 +242,7 @@ class TicketController extends AbstractController
 				try {
 					$editor->applyActions(array($field => $value));
 				} catch (\InvalidArgumentException $e) {
-					$errors[$field] = array("invalid_argument", $e->getMessage());
+					$errors[$field] = array("invalid_argument.$field", $e->getMessage());
 				}
 			}
 		}

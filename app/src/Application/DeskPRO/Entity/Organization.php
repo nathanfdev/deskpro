@@ -131,6 +131,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
+		$this->setModelField('usergroups'          , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('date_created'        , new \DateTime());
 	}
 

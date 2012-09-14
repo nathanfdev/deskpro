@@ -403,6 +403,13 @@ $collection->add('api_organizations', new Route(
 	array()
 ));
 
+$collection->add('api_organizations_post', new Route(
+	'/organizations',
+	array('_controller' => 'ApiBundle:Organization:newOrganization'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('api_organizations_organization', new Route(
 	'/organizations/{organization_id}',
 	array('_controller' => 'ApiBundle:Organization:getOrganization'),
@@ -421,6 +428,20 @@ $collection->add('api_organizations_organization_delete', new Route(
 	'/organizations/{organization_id}',
 	array('_controller' => 'ApiBundle:Organization:deleteOrganization'),
 	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_members', new Route(
+	'/organizations/{organization_id}/members',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationMembers'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_tickets', new Route(
+	'/organizations/{organization_id}/tickets',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationTickets'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
 	array()
 ));
 
