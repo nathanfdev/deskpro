@@ -210,14 +210,41 @@ where_clause ::= .
 
 
 
-split_clause(res) ::= SPLIT BY expression(A) comma_expressions_opt(B) .
+split_clause(res) ::= SPLIT BY split_expression(A) split_expressions_extra(B) .
 {
-	res = array(A);
+	res = (A ? array(A) : array());
 	if (B) {
 		res = array_merge(res, B);
 	}
 }
 split_clause ::= .
+
+
+
+split_expressions_extra(res) ::= split_expressions_extra(A) COMMA split_expression(B) .
+{
+	if (!A) {
+		res = array();
+	} else {
+		res = A;
+	}
+
+	if (B) {
+		res[] = B;
+	}
+}
+split_expressions_extra ::= .
+
+
+
+split_expression(res) ::= expression(A) .
+{
+	if (A instanceof Statement\Part\NullValue) {
+		res = false;
+	} else {
+		res = A;
+	}
+}
 
 
 
@@ -377,7 +404,7 @@ expression(res) ::= expression(A) OP_NOT OP_IN LEFT_PAREN expression(B) comma_ex
 	if (C) {
 		$values = array_merge($values, C);
 	}
-	res = new Statement\Part\In(A, $values);
+	res = new Statement\Part\In(A, $values, false);
 }
 
 expression(res) ::= OP_MINUS(A) expression(B) . [OP_U_MINUS]

@@ -50,13 +50,16 @@ abstract class AbstractFunc
 	 * @var array
 	 */
 	protected static $_functionMap = array(
+		'ALIAS' => 'Alias',
 		'COUNT' => 'Count',
 		'COUNT_DISTINCT' => 'CountDistinct',
 		'CURDATE' => 'CurDate',
 		'CURTIME' => 'CurTime',
 		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
+		'DAYNAME' => 'DayName',
 		'FORMAT' => 'Format',
 		'LINK' => 'Link',
+		'MONTHNAME' => 'MonthName',
 		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
 		'PRINT' => 'Printable',

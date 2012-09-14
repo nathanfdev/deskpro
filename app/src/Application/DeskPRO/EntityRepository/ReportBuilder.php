@@ -169,24 +169,55 @@ class ReportBuilder extends AbstractEntityRepository
 		return (bool)App::getConfig('debug.dev');
 	}
 
-	public function getFieldGroups()
+	public function getReportGroupParams()
 	{
 		return array(
-			'tickets' => array(
-				'none' => array('none', 'NULL'),
-				'department' => array('department', '%s.department'),
-				'agent' => array('agent', '%s.agent'),
+			'fields' => array(
+				'tickets' => array(
+					'none' => array('nothing', 'NULL'),
+					'department' => array('department', '%s.department'),
+					'agent' => array('agent', '%s.agent'),
+					'agent_team' => array('agent team', '%s.agent_team'),
+					'person' => array('person', '%s.person'),
+					'organization' => array('organization', '%s.organization'),
+					'language' => array('language', '%s.language'),
+					'urgency' => array('urgency', '%s.urgency'),
+					'category' => array('category', '%s.category'),
+					'priority' => array('priority', '%s.priority'),
+					'workflow' => array('workflow', '%s.workflow'),
+					// todo: ticket rating
+					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
+					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
+					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
+					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')')
+				)
+			),
+			'dates' => array(
+				'today' => array('today', '%TODAY%'),
+				'this_week' => array('this week', '%THIS_WEEK%'),
+				'this_month' => array('this month', '%THIS_MONTH%'),
+				'this_year' => array('this year', '%THIS_YEAR%'),
+				'ever' => array('ever', '%EVER%')
+			),
+			'statuses' => array(
+				'tickets' => array(
+					'awaiting_user' => array('awaiting user', '%s.status = \'awaiting_user\''),
+					'awaiting_agent' => array('awaiting agent', '%s.status = \'awaiting_agent\''),
+					'unresolved' => array('unresolved', '%s.status IN (\'awaiting_user\', \'awaiting_agent\')'),
+					'resolved' => array('resolved', '%s.status IN (\'resolved\', \'closed\')'),
+					'hidden' => array('hidden', '%s.status = \'hidden\''),
+					'any' => array('with any status', '1')
+				)
+			),
+			'orders' => array(
+				'tickets' => array(
+					// todo: number of messages
+					'last_agent_reply' => array('last agent reply', '%s.date_last_agent_reply'),
+					'last_user_reply' => array('last user reply', '%s.date_last_user_reply'),
+					'total_waiting' => array('total waiting time', '%s.total_user_waiting')
+				)
 			)
-		);
-	}
-
-	public function getDateGroups()
-	{
-		return array(
-			'today' => array('today', '%TODAY%'),
-			'this_week' => array('this week', '%THIS_WEEK%'),
-			'this_month' => array('this month', '%THIS_MONTH%'),
-			'this_year' => array('this year', '%THIS_YEAR%')
 		);
 	}
 }

@@ -231,11 +231,12 @@ class ReportBuilderController extends AbstractController
 			$results = '';
 		}
 
-		if (!$error) {
+		try {
 			$compiler = new Compiler();
-			$statement = $compiler->compile($query, $params);
+			$input = $compiler->replacePlaceholders($query, $params);
+			$statement = $compiler->lexAndParse($input);
 			$parts = $this->_getDpqlPartsForInput($statement);
-		}
+		} catch (\Exception $e) {}
 
 		if (!$parts && $query) {
 			$inputType = 'query';
@@ -439,6 +440,12 @@ class ReportBuilderController extends AbstractController
 		)));
 	}
 
+	protected function _replaceDpqlParams($query, array $params)
+	{
+		$compiler = new Compiler();
+		return $compiler->replacePlaceholders($query, $params);
+	}
+
 	protected function _getReportResponseForType($type, $query, $title, array $params = array())
 	{
 		$compiler = new Compiler();
@@ -509,8 +516,7 @@ class ReportBuilderController extends AbstractController
 			'builtInReports' => $grouped['builtIn'],
 			'favoriteReports' => $favorites,
 			'favoritesJs' => $rbRepository->getFavoritesSimplified($favorites),
-			'fieldGroups' => $rbRepository->getFieldGroups(),
-			'dateGroups' => $rbRepository->getDateGroups()
+			'reportGroupParams' => $rbRepository->getReportGroupParams()
 		);
 
 		return array_merge($reportBuilderParams, $params);

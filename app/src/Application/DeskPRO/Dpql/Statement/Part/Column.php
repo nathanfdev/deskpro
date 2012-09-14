@@ -67,12 +67,14 @@ class Column extends AbstractPart
 	protected static $_tableResolver = array(
 		'agent_teams' => array('id', 'name'),
 		'departments' => array('id', 'title'),
-		'languages' => array('id', 'name'),
+		'labels_tickets' => array('label', 'label'),
+		'languages' => array('id', 'title'),
 		'organizations' => array('id', 'name'),
 		'people' => array('id', 'name', 'person'),
 		'tickets' => array('id', 'subject', 'ticket'),
 		'ticket_categories' => array('id', 'title'),
-		'ticket_priorities' => array('id', 'title')
+		'ticket_priorities' => array('id', 'title'),
+		'ticket_workflows' => array('id', 'title')
 	);
 
 	/**

@@ -5,8 +5,7 @@
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" >
-    window._dpRbFieldGroups = {{ fieldGroups|json_encode|raw }};
-    window._dpRbDateGroups = {{ dateGroups|json_encode|raw }};
+    window._dpRbGroupParams = {{ reportGroupParams|json_encode|raw }};
 
     function _page_exec() {
 		window.DeskPRO_Page = new DeskPRO.Report.PageHandler.ReportBuilder();

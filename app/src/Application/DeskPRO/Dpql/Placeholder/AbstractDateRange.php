@@ -97,10 +97,6 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 		Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		$range = $this->_getDateRange();
-		$rangeStart = $range[1];
-		$rangeEnd = $range[2];
-
 		$lhsRes = $lhs->prepare($statement, $section, $stack, $select, $result);
 
 		$lhsSql = $lhsRes->sql();
@@ -108,7 +104,14 @@ abstract class AbstractDateRange extends AbstractPlaceholder
 		$dpql = $this->_toDpql();
 		$outputName = "$lhsName $comparison $dpql";
 
-		$prepared = false;
+		$range = $this->_getDateRange();
+		if (!isset($range[1]) && !isset($range[2])) {
+			return new Prepared('1', $outputName);
+		}
+
+		$rangeStart = $range[1];
+		$rangeEnd = $range[2];
+
 
 		switch ($comparison) {
 			case '=':

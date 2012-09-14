@@ -103,33 +103,66 @@ class Compiler
 	{
 		$repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportBuilder');
 
-		$fieldGroups = $repository->getFieldGroups();
-		$dateGroups = $repository->getDateGroups();
+		$groupParams = $repository->getReportGroupParams();
 
 		$input = preg_replace_callback(
 			'/%(\d+):DATE_GROUP%/',
-			function ($match) use ($placeholders, $dateGroups) {
+			function ($match) use ($placeholders, $groupParams) {
 				if (isset($placeholders[$match[1]])) {
 					$value = strval($placeholders[$match[1]]);
-					if (isset($dateGroups[$value])) {
-						return $dateGroups[$value][1];
+					if (isset($groupParams['dates'][$value])) {
+						return $groupParams['dates'][$value][1];
 					}
 				}
 
-				return '%PAST_YEAR%';
+				return '%EVER%';
 			},
 			$input
 		);
 
 		$input = preg_replace_callback(
-			'/%(\d+):FIELD_GROUP:([^%]+)(:([^%]+))?%/',
-			function ($match) use ($placeholders, $fieldGroups) {
+			'/%(\d+):FIELD_GROUP:([^:%]+)(:([^%]+))?%/',
+			function ($match) use ($placeholders, $groupParams) {
 				if (isset($placeholders[$match[1]])) {
 					$value = strval($placeholders[$match[1]]);
 					$type = $match[2];
 					$table = isset($match[4]) ? $match[4] : $type;
-					if (isset($fieldGroups[$type][$value])) {
-						return sprintf($fieldGroups[$type][$value][1], $table);
+					if (isset($groupParams['fields'][$type][$value])) {
+						return sprintf($groupParams['fields'][$type][$value][1], $table);
+					}
+				}
+
+				return 'NULL';
+			},
+			$input
+		);
+
+		$input = preg_replace_callback(
+			'/%(\d+):STATUS_GROUP:([^:%]+)(:([^%]+))?%/',
+			function ($match) use ($placeholders, $groupParams) {
+				if (isset($placeholders[$match[1]])) {
+					$value = strval($placeholders[$match[1]]);
+					$type = $match[2];
+					$table = isset($match[4]) ? $match[4] : $type;
+					if (isset($groupParams['statuses'][$type][$value])) {
+						return sprintf($groupParams['statuses'][$type][$value][1], $table);
+					}
+				}
+
+				return '1';
+			},
+			$input
+		);
+
+		$input = preg_replace_callback(
+			'/%(\d+):ORDER_GROUP:([^:%]+)(:([^%]+))?%/',
+			function ($match) use ($placeholders, $groupParams) {
+				if (isset($placeholders[$match[1]])) {
+					$value = strval($placeholders[$match[1]]);
+					$type = $match[2];
+					$table = isset($match[4]) ? $match[4] : $type;
+					if (isset($groupParams['orders'][$type][$value])) {
+						return sprintf($groupParams['orders'][$type][$value][1], $table);
 					}
 				}
 

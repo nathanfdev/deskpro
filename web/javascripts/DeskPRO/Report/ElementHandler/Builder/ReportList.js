@@ -211,11 +211,21 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 			var getQueryChoices = function (input) {
 				if (input.match(/^\d+:date group$/)) {
-					return window._dpRbDateGroups;
+					return window._dpRbGroupParams.dates;
 				} else if (input.match(/^\d+:field group:([a-zA-Z0-9_]+)$/)) {
 					var type = RegExp.$1;
-					if (typeof window._dpRbFieldGroups[type] !== 'undefined') {
-						return window._dpRbFieldGroups[type];
+					if (typeof window._dpRbGroupParams.fields[type] !== 'undefined') {
+						return window._dpRbGroupParams.fields[type];
+					}
+				} else if (input.match(/^\d+:status group:([a-zA-Z0-9_]+)$/)) {
+					var type = RegExp.$1;
+					if (typeof window._dpRbGroupParams.statuses[type] !== 'undefined') {
+						return window._dpRbGroupParams.statuses[type];
+					}
+				} else if (input.match(/^\d+:order group:([a-zA-Z0-9_]+)$/)) {
+					var type = RegExp.$1;
+					if (typeof window._dpRbGroupParams.orders[type] !== 'undefined') {
+						return window._dpRbGroupParams.orders[type];
 					}
 				}
 

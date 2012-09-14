@@ -51,6 +51,7 @@ abstract class AbstractPlaceholder
 	 * @var array
 	 */
 	protected static $_placeholderMap = array(
+		'EVER' => 'Ever',
 		'LAST_MONTH' => 'LastMonth',
 		'LAST_WEEK' => 'LastWeek',
 		'LAST_YEAR' => 'LastYear',

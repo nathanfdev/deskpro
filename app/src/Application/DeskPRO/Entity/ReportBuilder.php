@@ -100,8 +100,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$repository = $this->getRepository();
-		$dateGroups = $repository->getDateGroups();
-		$fieldGroups = $repository->getFieldGroups();
+		$groupParams = $repository->getReportGroupParams();
 
 		if (!is_array($params)) {
 			$newParams = array();
@@ -117,22 +116,42 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 			$title = preg_replace('/\[(.+?)\]/', '$1', $title);
 		}
 
-		$title = preg_replace_callback('/<(\d+):(date group)>/', function($match) use ($params, $dateGroups) {
+		$title = preg_replace_callback('/<(\d+):(date group)>/', function($match) use ($params, $groupParams) {
 			$id = $match[1];
-			if (isset($params[$id]) && isset($dateGroups[$params[$id]])) {
-				return $dateGroups[$params[$id]][0];
+			if (isset($params[$id]) && isset($groupParams['dates'][$params[$id]])) {
+				return $groupParams['dates'][$params[$id]][0];
 			}
 
 			return "<date>";
 		}, $title);
-		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $fieldGroups) {
+		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
 			$id = $match[1];
 			$type = $match[3];
-			if (isset($params[$id]) && isset($fieldGroups[$type][$params[$id]])) {
-				return $fieldGroups[$type][$params[$id]][0];
+			if (isset($params[$id]) && isset($groupParams['fields'][$type][$params[$id]])) {
+				return $groupParams['fields'][$type][$params[$id]][0];
 			}
 
 			return "<field>";
+		}, $title);
+
+		$title = preg_replace_callback('/<(\d+):(status group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
+			$id = $match[1];
+			$type = $match[3];
+			if (isset($params[$id]) && isset($groupParams['statuses'][$type][$params[$id]])) {
+				return $groupParams['statuses'][$type][$params[$id]][0];
+			}
+
+			return "<status>";
+		}, $title);
+
+		$title = preg_replace_callback('/<(\d+):(order group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
+			$id = $match[1];
+			$type = $match[3];
+			if (isset($params[$id]) && isset($groupParams['orders'][$type][$params[$id]])) {
+				return $groupParams['orders'][$type][$params[$id]][0];
+			}
+
+			return "<order>";
 		}, $title);
 
 		return $title;
