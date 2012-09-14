@@ -88,6 +88,12 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $category = null;
 
+	/**
+	 * @var int
+	 */
+	protected $display_order = 0;
+
+
 	public function __construct()
 	{
 		$this->favorited_by = new \Doctrine\Common\Collections\ArrayCollection();
@@ -246,6 +252,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'query', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'query', ));
 		$metadata->mapField(array( 'fieldName' => 'is_custom', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_custom', ));
 		$metadata->mapField(array( 'fieldName' => 'category', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'category', ));
+		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

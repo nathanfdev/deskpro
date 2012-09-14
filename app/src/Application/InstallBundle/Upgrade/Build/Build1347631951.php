@@ -29,34 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DataSync;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-/**
- * Data sync handler for built in report builder queries.
- */
-class ReportBuilder extends AbstractDataSync
+class Build1347631951 extends AbstractBuild
 {
-	public function getTableName()
+	public function run()
 	{
-		return 'report_builder';
-	}
-
-	public function getKeyField()
-	{
-		return 'unique_key';
-	}
-
-	public function getSyncFields()
-	{
-		return array('title', 'description', 'query', 'category', 'display_order');
-	}
-
-	public function getDefaultInsertValues()
-	{
-		return array('is_custom' => 0, 'parent_id' => null);
+		$this->out("Add report builder display order");
+		$this->execMutateSql("ALTER TABLE report_builder ADD display_order INT NOT NULL");
 	}
 }

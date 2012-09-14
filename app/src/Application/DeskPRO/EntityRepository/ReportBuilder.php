@@ -52,7 +52,7 @@ class ReportBuilder extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery('
 			SELECT rb
 			FROM DeskPRO:ReportBuilder rb
-			ORDER BY rb.title
+			ORDER BY rb.display_order, rb.title
 		')->execute();
 	}
 
@@ -198,7 +198,7 @@ class ReportBuilder extends AbstractEntityRepository
 				'this_week' => array('this week', '%THIS_WEEK%'),
 				'this_month' => array('this month', '%THIS_MONTH%'),
 				'this_year' => array('this year', '%THIS_YEAR%'),
-				'ever' => array('ever', '%EVER%')
+				'ever' => array('any time', '%EVER%')
 			),
 			'statuses' => array(
 				'tickets' => array(
@@ -213,6 +213,7 @@ class ReportBuilder extends AbstractEntityRepository
 			'orders' => array(
 				'tickets' => array(
 					// todo: number of messages
+					'date_created' => array('date created', '%s.date_created'),
 					'last_agent_reply' => array('last agent reply', '%s.date_last_agent_reply'),
 					'last_user_reply' => array('last user reply', '%s.date_last_user_reply'),
 					'total_waiting' => array('total waiting time', '%s.total_user_waiting')

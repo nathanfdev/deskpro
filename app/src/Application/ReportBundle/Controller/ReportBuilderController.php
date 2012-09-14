@@ -196,6 +196,7 @@ class ReportBuilderController extends AbstractController
 				$newReport->is_custom = $report->is_custom;
 				$newReport->unique_key = $report->unique_key;
 				$newReport->category = $report->category;
+				$newReport->display_order = $report->display_order;
 			} else {
 				$newReport->is_custom = true;
 			}
@@ -339,10 +340,12 @@ class ReportBuilderController extends AbstractController
 				$report->is_custom = false;
 				$report->category = $this->in->getString('category');
 				$report->parent = null;
+				$report->display_order = $this->in->getUint('display_order');
 			} else {
 				$report->unique_key = null;
 				$report->is_custom = true;
 				$report->category = null;
+				$report->display_order = 0;
 
 				$parentId = $this->in->getInteger('parent_id');
 				if ($parentId) {

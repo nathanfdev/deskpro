@@ -71,6 +71,10 @@ class Y extends AbstractFunc
 		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
 		foreach ($this->_arguments AS $arg) {
+			if ($arg instanceof \Application\DeskPRO\Dpql\Statement\Part\NullValue) {
+				continue;
+			}
+
 			$groupBy = $arg->prepare($statement, $section, $childStack, $select, $result);
 			if ($groupBy->hasValue()) {
 				$printId = $select->addSelectField($groupBy->printed());

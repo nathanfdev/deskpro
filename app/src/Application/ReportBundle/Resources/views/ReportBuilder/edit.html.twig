@@ -56,6 +56,15 @@
 					<div>If this is a built-in report, select the category it applies to.</div>
 				</div>
 			</div>
+
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Display Order</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="display_order" value="{{report.display_order|default(0)}}"  />
+				</div>
+			</div>
 		{% else %}
 			<input type="hidden" name="unique_key" value="" />
 			<input type="hidden" name="category" value="" />

@@ -421,11 +421,11 @@ class Html extends AbstractRenderer
 				$cells[] = "<td>$value</td>";
 
 				if ($totalType) {
-					$rowTotal += $value;
+					$rowTotal += str_replace(',', '', $value);
 					if (!isset($columnTotals[$xPath])) {
 						$columnTotals[$xPath] = 0;
 					}
-					$columnTotals[$xPath] += $value;
+					$columnTotals[$xPath] += str_replace(',', '', $value);
 				}
 			}
 
@@ -439,7 +439,7 @@ class Html extends AbstractRenderer
 			$rows[] = '<tr class="row-body ' . $class . '">' . $html . implode('', $cells) . '</tr>';
 		}
 
-		if ($totalType) {
+		if ($totalType && $this->_handler->getGroupYColumns()) {
 			$cells = array();
 			$cells[] = '<th colspan="' . count($this->_handler->getGroupYColumns()) . '">Total</th>';
 			foreach ($columnTotals AS $value) {
@@ -711,7 +711,7 @@ class Html extends AbstractRenderer
 				$stacked = '';
 			}
 
-			$height = 430 + count($graphs) * 20;
+			$height = 430 + count($graphs) * 25;
 
 			$id = 'report_chart_' . md5(uniqid());
 			$output = '
