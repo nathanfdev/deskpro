@@ -249,6 +249,17 @@ Orb.strRepeat = function(str, count) {
 	return finalStr.join('');
 };
 
+/**
+ * Check if a string ends with a string
+ *
+ * @param {String} str
+ * @param {String} suffix
+ * @return {Boolean}
+ */
+Orb.strEndsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 
 /**
  * Takes a regular expression string and escapes special characters

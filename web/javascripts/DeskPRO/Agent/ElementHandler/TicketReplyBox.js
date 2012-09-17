@@ -11,6 +11,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('div.replybox-wrap').data('page');
+		var sig = this.el.find('textarea.signature-value').val();
+		var sigTrimmed = false;
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
 			$(this).addClass('on');
@@ -18,6 +20,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-note:not(.is-hidden)', self.el).show();
 			$('.hide-reply', self.el).hide();
 			self.getElById('is_note').val('0');
+
+			if (sigTrimmed) {
+				var reply = self.getElById('replybox_txt').val();
+				self.getElById('replybox_txt').val(reply + "\n\n" + sig);
+				sigTrimmed = false;
+			}
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
@@ -26,6 +34,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-note', self.el).hide();
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
+
+			var reply = self.getElById('replybox_txt').val();
+			if (Orb.strEndsWith(reply, sig)) {
+				var pos = reply.indexOf(sig);
+				reply = $.trim(reply.substring(0, pos));
+				sigTrimmed = true;
+
+				self.getElById('replybox_txt').val(reply);
+			}
 		});
 
 		this.getElById('replybox_txt').TextAreaExpander(150, 550).on('textareaexpander_expanded', function() {
