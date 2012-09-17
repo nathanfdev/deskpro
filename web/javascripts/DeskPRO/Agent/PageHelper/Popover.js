@@ -416,6 +416,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			return;
 		}
 
+		this.formString = '';
+
 		var ev = {pop: this, cancel: false};
 		this.fireEvent('close', ev);
 		if (ev.cancel) {
