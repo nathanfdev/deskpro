@@ -211,7 +211,7 @@ class TaskController extends AbstractController
 			$d = false;
 			if ($t->date_due) {
 				$d = clone $t->date_due;
-				$d->setTimezone($this->person->getTimezone());
+				$d->setTimezone($this->person->getDateTimezone());
 				$d = $d->format($this->container->getSetting('core.date_day'));
 			}
 			$task_data[] = array(
