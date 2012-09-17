@@ -100,7 +100,7 @@ class LanguagePhrases
 			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
 		}
 
-		if (!is_file($file)) {
+		if (!is_file($file) || !isset($file_phrases[$phrase_id])) {
 			return '';
 		}
 
