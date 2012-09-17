@@ -2632,14 +2632,11 @@ padding: 30px;
 	display: block;
 }
 
-.show-type-controlled.show-collapsed-messages article.content-message .content .body-text {
-	height: 12px;
-	overflow: hidden;
-}
+.show-type-controlled.show-collapsed-messages article.content-message .content .body-text {	height: 12px; overflow: hidden; }
+.show-type-controlled.show-collapsed-messages article.content-message.message-expanded .content .body-text { height: auto; overflow: visible; }
 
-.show-type-controlled.show-collapsed-messages article.content-message .content .body-text .fade-bar {
-	display: block;
-}
+.show-type-controlled.show-collapsed-messages article.content-message .content .body-text .fade-bar { display: block; }
+.show-type-controlled.show-collapsed-messages article.content-message.message-expanded .content .body-text .fade-bar { display: none; }
 
 article.content-message .content .body-text {
 	position: relative;
