@@ -289,7 +289,7 @@ class TicketController extends AbstractController
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
-			if (!$attach['message']) continue;
+			if (!$attach['message'] || $attach['is_inline']) continue;
 			if (!isset($ticket_message_attachments[$attach['message']['id']])) {
 				$ticket_message_attachments[$attach['message']->getId()] = array();
 			}

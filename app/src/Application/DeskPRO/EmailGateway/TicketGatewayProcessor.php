@@ -839,6 +839,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		try {
 			$newticket->attach_blobs = $this->processBlobs();
+
+			$newticket->blobs_inline_ids = array();
+			foreach ($newticket->attach_blobs as $bid => $b) {
+				if (isset($this->inline_blobs[$bid])) {
+					$newticket->blobs_inline_ids[] = $bid;
+				}
+			}
+
 			$ticket = $newticket->save();
 
 			$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);

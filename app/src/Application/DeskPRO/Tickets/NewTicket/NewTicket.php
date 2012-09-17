@@ -69,6 +69,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	public $require_login = false;
 
 	public $attach_blobs = array();
+	public $blobs_inline_ids = array();
 
 	protected $mode = 'untrusted';
 
@@ -328,6 +329,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 					$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 					$attach['blob'] = $blob;
 					$attach['person'] = $person;
+
+					if (in_array($blob->getId(), $this->blobs_inline_ids)) {
+						$attach->is_inline = true;
+					}
 
 					$ticket_message->addAttachment($attach);
 

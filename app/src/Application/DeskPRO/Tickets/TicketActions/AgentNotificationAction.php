@@ -349,6 +349,10 @@ class AgentNotificationAction extends AbstractAction
 				$max = App::getSetting('core.sendemail_attach_maxsize');
 				$size = 0;
 				foreach ($new_message->attachments as $attach) {
+					if ($attach->is_inline) {
+						continue;
+					}
+
 					$size += $attach->blob->filesize;
 					if ($size > $max) {
 						break;
@@ -363,6 +367,10 @@ class AgentNotificationAction extends AbstractAction
 					$max = App::getSetting('core.sendemail_attach_maxsize');
 					$size = 0;
 					foreach ($ticketdisplay->getMessageAttachments($new_message) as $attach) {
+						if ($attach->is_inline) {
+							continue;
+						}
+
 						$size += $attach->blob->filesize;
 						if ($size > $max) {
 							break;
