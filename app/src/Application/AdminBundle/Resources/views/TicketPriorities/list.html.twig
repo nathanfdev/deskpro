@@ -104,7 +104,22 @@
 			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.general.add') }}</button>
 		</div>
 	</div>
-
 </div>
+
+{% if all_priorities %}
+<div style="padding: 0 10px 10px 15px;">
+	<form action="{{ path('admin_ticketpris_setdefault') }}" method="POST">
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default on new ticket forms."></span> Default priority:
+		<select name="default_value">
+			<option></option>
+			{% for itm in all_priorities %}
+				<option value="{{ itm.id }}" {% if app.getSetting('core.default_ticket_pri') == itm.id %}selected="selected"{% endif %}>{{ itm.title }}</option>
+			{% endfor %}
+		</select>
+		<button class="clean-white">Update</button>
+	</form>
+</div>
+{% endif %}
+
 </div>
 {% endblock %}

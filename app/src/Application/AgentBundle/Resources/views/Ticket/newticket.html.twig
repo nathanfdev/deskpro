@@ -158,6 +158,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[category_id]",
 								'id': baseId ~ '_cat',
 								'categories': ticket_options.ticket_categories_hierarchy,
+								'selected': app.getSetting('core.default_ticket_cat'),
 								'with_blank': true
 							} %}
 						</div>
@@ -172,6 +173,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
 								'add_classname': 'ticket_priority',
+								'selected': app.getSetting('core.default_ticket_pri'),
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
 							} %}
@@ -187,6 +189,7 @@ pageMeta.baseId = '{{ baseId }}';
 								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
 								'add_classname': 'ticket_workflow',
+								'selected': app.getSetting('core.default_ticket_work'),
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
 							} %}

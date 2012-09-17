@@ -62,6 +62,7 @@ class TicketProps
 
 	public function __construct()
 	{
-
+		$this->category_id = App::getSetting('core.default_ticket_cat') ?: 0;
+		$this->priority_id = App::getSetting('core.default_ticket_pri') ?: 0;
 	}
 }

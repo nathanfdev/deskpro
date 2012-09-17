@@ -85,5 +85,21 @@
 	</div>
 
 </div>
+
+{% if all_workflows %}
+<div style="padding: 0 10px 10px 15px;">
+	<form action="{{ path('admin_ticketworks_setdefault') }}" method="POST">
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default on new ticket forms."></span> Default workflow:
+		<select name="default_value">
+			<option></option>
+			{% for itm in all_workflows %}
+				<option value="{{ itm.id }}" {% if app.getSetting('core.default_ticket_work') == itm.id %}selected="selected"{% endif %}>{{ itm.title }}</option>
+			{% endfor %}
+		</select>
+		<button class="clean-white">Update</button>
+	</form>
+</div>
+{% endif %}
+
 </div>
 {% endblock %}

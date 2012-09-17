@@ -226,4 +226,24 @@ class TicketCategoriesController extends AbstractController
 
 		return $this->redirect($url);
 	}
+
+	############################################################################
+	# set-default
+	############################################################################
+
+	public function setDefaultAction()
+	{
+		$default_id = $this->in->getUint('default_value');
+
+		if ($default_id) {
+			// Verify
+			$obj = $this->em->getRepository('DeskPRO:TicketCategory')->find($default_id);
+			if (!$obj || count($obj->children)) {
+				$default_id = 0;
+			}
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.default_ticket_cat', $default_id);
+		return $this->redirectRoute('admin_ticketcats');
+	}
 }

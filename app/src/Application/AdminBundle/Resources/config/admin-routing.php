@@ -254,6 +254,13 @@ $collection->add('admin_ticketcats', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketcats_setdefault', new Route(
+	'/tickets/categories/set-default',
+	array('_controller' => 'AdminBundle:TicketCategories:setDefault'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketcats_toggle', new Route(
 	'/tickets/categories/toggle-feature/{enable}',
 	array('_controller' => 'AdminBundle:TicketCategories:toggleFeature'),
@@ -317,6 +324,13 @@ $collection->add('admin_ticketpris_savenew', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketpris_setdefault', new Route(
+	'/tickets/priorities/set-default',
+	array('_controller' => 'AdminBundle:TicketPriorities:setDefault'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketpris_savetitle', new Route(
 	'/tickets/priorities/save-title',
 	array('_controller' => 'AdminBundle:TicketPriorities:saveTitle'),
@@ -341,6 +355,13 @@ $collection->add('admin_ticketpris_dodel', new Route(
 $collection->add('admin_ticketworks', new Route(
 	'/tickets/workflows',
 	array('_controller' => 'AdminBundle:TicketWorkflows:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketworks_setdefault', new Route(
+	'/tickets/workflows/set-default',
+	array('_controller' => 'AdminBundle:TicketWorkflows:setDefault'),
 	array(),
 	array()
 ));

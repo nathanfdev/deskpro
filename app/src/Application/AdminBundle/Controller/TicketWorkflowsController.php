@@ -199,4 +199,25 @@ class TicketWorkflowsController extends AbstractController
 
 		return $this->redirect($url);
 	}
+
+
+	############################################################################
+	# set-default
+	############################################################################
+
+	public function setDefaultAction()
+	{
+		$default_id = $this->in->getUint('default_value');
+
+		if ($default_id) {
+			// Verify
+			$obj = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($default_id);
+			if (!$obj) {
+				$default_id = 0;
+			}
+		}
+
+		$this->container->getSettingsHandler()->setSetting('core.default_ticket_work', $default_id);
+		return $this->redirectRoute('admin_ticketworks');
+	}
 }
