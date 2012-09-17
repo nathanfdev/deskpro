@@ -36,6 +36,8 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 			$('.set-hold.hold', this.ticketPage.wrapper).css('display', '');
 		}
 
+		this.ticketPage.getEl('status_code').select2('val', value);
+
 		var scode = value;
 		if (hidden_status) {
 			value += '_' + hidden_status;
