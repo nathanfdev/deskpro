@@ -1,3 +1,4 @@
+{% set agent_reply_above_line = true %}
 <dp:subject>
 	{% if type_flag == 'assigned' %}
 		{% set action = 'ASSIGNED' %}
@@ -11,9 +12,6 @@
 	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}
 </dp:subject>
 <dp:body>
-	{{ phrase('agent.emails.reply_above_line') }}
-	<br /><br />
-
 	<dp:section>
 		{% if action_performer and action_performer.getId() %}
 			{{ action_performer.getDisplayContact() }}

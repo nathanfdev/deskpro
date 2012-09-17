@@ -313,6 +313,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		if ($context == 'agent' && !$email_info['found_top_marker']) {
+			// The marker is required for agent emails
+			$this->logMessage('doNewRelpy agent reply missing marker');
+			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_MISSING_MARKER;
+
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', array(
+				'ticket'  => $ticket,
+				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+			));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+			App::getMailer()->send($message);
+
+			return null;
+		}
+
 		$email_info = $ev->email_info;
 
 		if ($this->is_bounce) {
@@ -467,7 +484,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
 		if ($email_info['body'] != $generic_cut) {
 			$email_info['body'] = $generic_cut;
+			$email_info['found_top_marker'] = true;
 			$has_cut = true;
+		} else {
+			$email_info['found_top_marker'] = false;
 		}
 
 		if ($email_info['body_is_html']) {

@@ -1,3 +1,4 @@
+{% set agent_reply_above_line = true %}
 <dp:subject>
 	{% if ticket.agent.id == agent.id %}
 		{{ phrase('agent.emails.subject_new_ticket_assigned', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
@@ -8,9 +9,6 @@
 	{% endif %}
 </dp:subject>
 <dp:body>
-	{{ phrase('agent.emails.reply_above_line') }}
-	<br /><br />
-
 	<dp:section>
 		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: new_message} %}
 	</dp:section>

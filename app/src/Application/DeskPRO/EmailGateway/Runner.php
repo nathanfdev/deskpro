@@ -350,7 +350,9 @@ class Runner
 
 					} catch (\Exception $e) {
 
-						App::getOrm()->rollback();
+						if (App::getDb()->isTransactionActive()) {
+							App::getDb()->rollback();
+						}
 
 						$e->_dp_sn = KernelErrorHandler::genSessionName();
 
@@ -384,7 +386,9 @@ class Runner
 					$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 				}
 			} catch (\Exception $e) {
-				App::getOrm()->rollback();
+				if (App::getDb()->isTransactionActive()) {
+					App::getDb()->rollback();
+				}
 
 				$this->_updateSource($source);
 
