@@ -1095,7 +1095,7 @@ class TicketController extends AbstractController
 		}
 
 		$client_messages = false;
-		if ($this->in->getUint('client_messages_since')) {
+		if ($this->in->getUint('client_messages_since') > 0) {
 			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
 				$this->person,
 				$this->session,

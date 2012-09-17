@@ -200,7 +200,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (ajaxHit) {
 				hitDone();
 			}
-		}, 4000);
+		}, 3000);
 
 		function hitDone() {
 			hitRun = true;
@@ -213,8 +213,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			var result = ajaxHit;
-
-			DeskPRO_Window.getMessageChanneler().poller.unpause();
 
 			loadingEl.hide();
 
@@ -259,13 +257,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			complete: function() {
-				window.setTimeout(function() {
-					if (!hitRun) {
-						DeskPRO_Window.getMessageChanneler().poller.unpause();
-					}
-				}, 4000);
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
 			},
 			success: function(result) {
+
+				// Always perform CM processing right now
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
+
+				if (result.client_messages) {
+					DeskPRO_Window.getMessageChanneler().handleMessageAjax(result.client_messages);
+
+					// null out so handleTicketUpdate called in hitDone doesnt re-process them
+					result.client_messages = null;
+				}
 
 				ajaxHit = result;
 				if (closetabTimeoutHit) {
@@ -934,7 +938,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tasks/save',
 				data: postData,
 				type: 'POST',
-				dataType: 'json',	
+				dataType: 'json',
 				complete: function() {
 					$(this).removeClass('saving').text('Add');
 				},
