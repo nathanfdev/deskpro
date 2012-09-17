@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 /**
  * Perform searches or get results from filters.
@@ -43,33 +44,30 @@ class TicketSearchController extends AbstractController
 {
 	public function searchAction()
 	{
-		$set_terms_map = array(
-			'subject'       => array('op' => 'contains', 'options' => array()),
-			'department'    => array('op' => 'contains', 'options' => array()),
-			'status'        => array('op' => 'contains', 'options' => array()),
-			'agent'         => array('op' => 'contains', 'options' => array()),
-			'agent_team'    => array('op' => 'contains', 'options' => array()),
-			'participant'   => array('op' => 'contains', 'options' => array()),
-			'category'      => array('op' => 'contains', 'options' => array()),
-			'product'       => array('op' => 'contains', 'options' => array()),
-			'priority'      => array('op' => 'contains', 'options' => array()),
-			'workflow'      => array('op' => 'contains', 'options' => array()),
-			'organization'  => array('op' => 'contains', 'options' => array()),
-			'language'      => array('op' => 'contains', 'options' => array()),
-			'label'         => array('op' => 'contains', 'options' => array()),
+		$search_map = array(
+			'agent_id'        => TicketSearch::TERM_AGENT,
+			'agent_team_id'   => TicketSearch::TERM_AGENT_TEAM,
+			'category_id'     => TicketSearch::TERM_CATEGORY,
+			'department_id'   => TicketSearch::TERM_DEPARTMENT,
+			'label'           => TicketSearch::TERM_LABEL,
+			'language_id'     => TicketSearch::TERM_LANGUAGE,
+			'organization_id' => TicketSearch::TERM_ORGANIZATION,
+			'participant'     => TicketSearch::TERM_PARTICIPANT,
+			'person_id'       => TicketSearch::TERM_PERSON,
+			'priority_id'     => TicketSearch::TERM_PRIORITY,
+			'product_id'      => TicketSearch::TERM_PRODUCT,
+			'status'          => TicketSearch::TERM_STATUS,
+			'subject'         => TicketSearch::TERM_SUBJECT,
+			'urgency'         => TicketSearch::TERM_URGENCY,
+			'workflow_id'     => TicketSearch::TERM_WORKFLOW,
 		);
 
 		$terms = array();
 
-		foreach ($set_terms_map as $name => $info) {
-			if ($this->in->checkIsset($name)) {
-				$in_val = $this->in->getCleanValueArray($name, 'raw', 'discard');
-				if ($in_val) {
-					$new_term = $info;
-					$new_term['options'] = $in_val;
-					\Orb\Util\Arrays::unshiftAssoc($new_term, 'type', $name);
-					$terms[] = $new_term;
-				}
+		foreach ($search_map AS $input => $search_key) {
+			$value = $this->in->getCleanValueArray($input, 'raw', 'discard');
+			if ($value) {
+				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
 			}
 		}
 

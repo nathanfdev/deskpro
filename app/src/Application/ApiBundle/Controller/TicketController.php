@@ -444,11 +444,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createApiResponse(array(
-			'success' => true,
-			'ticket_id' => $ticket['id'],
-			'old_ticket_id' => $old_ticket_id
-		));
+		return $this->createSuccessResponse();
 	}
 
 	public function spamTicketAction($ticket_id)
@@ -559,7 +555,10 @@ class TicketController extends AbstractController
 		}
 
 		if ($person->id && $ticket->hasParticipantPerson($person)) {
-			return $this->createApiResponse(array('person_id' => $person->id));
+			return $this->createApiCreateResponse(
+				array('person_id' => $person->id),
+				$this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $person->id), true)
+			);
 		}
 
 		$this->db->beginTransaction();
@@ -586,6 +585,28 @@ class TicketController extends AbstractController
 			array('person_id' => $part->person->id),
 			$this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $part->person->id), true)
 		);
+	}
+
+	public function getParticipantAction($ticket_id, $person_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+		$person = $this->em->find('DeskPRO:Person', $person_id);
+
+		if (!$person) {
+			return $this->createApiResponse(array('exists' => false));
+		}
+
+		$part = $this->em->createQuery("
+			SELECT part
+			FROM DeskPRO:TicketParticipant part
+			WHERE part.ticket = ?0 AND part.person = ?1
+		")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$part) {
+			return $this->createApiResponse(array('exists' => false));
+		}
+
+		return $this->createApiResponse(array('exists' => true));
 	}
 
 	public function deleteParticipantAction($ticket_id, $person_id)

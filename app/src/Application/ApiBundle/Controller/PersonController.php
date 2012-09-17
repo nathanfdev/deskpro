@@ -43,19 +43,19 @@ class PersonController extends AbstractController
 	public function searchAction()
 	{
 		$search_map = array(
-			'organization_id' => PersonSearch::TERM_ORGANIZATION,
-			'language_id' => PersonSearch::TERM_LANGUAGE,
+			'address' => PersonSearch::TERM_CONTACT_ADDRESS,
+			'agent_team_id' => PersonSearch::TERM_AGENT_TEAM,
+			'alpha' => PersonSearch::TERM_ALPHA,
 			'email' => PersonSearch::TERM_EMAIL,
 			'email_domain' => PersonSearch::TERM_EMAIL_DOMAIN,
-			'name' => PersonSearch::TERM_NAME,
-			'label' => PersonSearch::TERM_LABEL,
-			'usergroup_id' => PersonSearch::TERM_USERGROUP,
-			'alpha' => PersonSearch::TERM_ALPHA,
-			'phone' => PersonSearch::TERM_CONTACT_PHONE,
-			'address' => PersonSearch::TERM_CONTACT_ADDRESS,
 			'im' => PersonSearch::TERM_CONTACT_IM,
-			'agent_team' => PersonSearch::TERM_AGENT_TEAM,
-			'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED
+			'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED,
+			'label' => PersonSearch::TERM_LABEL,
+			'name' => PersonSearch::TERM_NAME,
+			'language_id' => PersonSearch::TERM_LANGUAGE,
+			'organization_id' => PersonSearch::TERM_ORGANIZATION,
+			'phone' => PersonSearch::TERM_CONTACT_PHONE,
+			'usergroup_id' => PersonSearch::TERM_USERGROUP,
 		);
 
 		$terms = array();
@@ -339,7 +339,7 @@ class PersonController extends AbstractController
 
 	public function getPersonTicketsAction($person_id)
 	{
-		$person = $this->_getPersonOr404($person_id, 'delete');
+		$person = $this->_getPersonOr404($person_id);
 
 		$terms = array(
 			array(
@@ -414,7 +414,7 @@ class PersonController extends AbstractController
 			$this->container->getMailer()->send($message);
 		}
 
-		return $this->createSuccessResponse(array('send_email' => $send_email));
+		return $this->createSuccessResponse();
 	}
 
 	public function getPersonNotesAction($person_id)

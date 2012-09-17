@@ -43,11 +43,11 @@ class OrganizationController extends AbstractController
 	public function searchAction()
 	{
 		$search_map = array(
-			'name' => OrganizationSearch::TERM_NAME,
-			'phone' => OrganizationSearch::TERM_CONTACT_PHONE,
 			'address' => OrganizationSearch::TERM_CONTACT_ADDRESS,
 			'im' => OrganizationSearch::TERM_CONTACT_IM,
-			'label' => OrganizationSearch::TERM_LABEL
+			'label' => OrganizationSearch::TERM_LABEL,
+			'name' => OrganizationSearch::TERM_NAME,
+			'phone' => OrganizationSearch::TERM_CONTACT_PHONE,
 		);
 
 		$terms = array();
