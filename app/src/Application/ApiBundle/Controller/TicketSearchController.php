@@ -44,6 +44,7 @@ class TicketSearchController extends AbstractController
 	public function searchAction()
 	{
 		$set_terms_map = array(
+			'subject'       => array('op' => 'contains', 'options' => array()),
 			'department'    => array('op' => 'contains', 'options' => array()),
 			'status'        => array('op' => 'contains', 'options' => array()),
 			'agent'         => array('op' => 'contains', 'options' => array()),
@@ -55,6 +56,7 @@ class TicketSearchController extends AbstractController
 			'workflow'      => array('op' => 'contains', 'options' => array()),
 			'organization'  => array('op' => 'contains', 'options' => array()),
 			'language'      => array('op' => 'contains', 'options' => array()),
+			'label'         => array('op' => 'contains', 'options' => array()),
 		);
 
 		$terms = array();
@@ -84,7 +86,14 @@ class TicketSearchController extends AbstractController
 			$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
 		}
 
-		$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
+			if (!$order_by) {
+				$order_by = 'ticket.date_created:desc';
+			}
+		}
 
 		$extra = array();
 		if ($order_by !== null) {
@@ -97,56 +106,7 @@ class TicketSearchController extends AbstractController
 			$cache = 3600;
 		}
 
-		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
-
-		$query_params = array(
-			$this->person->id,
-			serialize($terms),
-			serialize($extra),
-			$cache_date->format('Y-m-d H:i:s')
-		);
-
-		$id = $this->db->fetchColumn('
-			SELECT id
-			FROM result_cache
-			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
-			ORDER BY date_created DESC
-			LIMIT 1
-		', $query_params);
-
-		if ($id) {
-			$result_cache = $this->em->createQuery('
-				SELECT r
-				FROM DeskPRO:ResultCache r
-				WHERE r.id = ?0
-			')->setParameters(array($id))->getOneOrNullResult();
-		} else {
-			$result_cache = null;
-		}
-
-		if (!$result_cache) {
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setPerson($this->person);
-			if ($order_by) {
-				$searcher->setOrderByCode($order_by);
-			}
-
-			foreach ($terms as $term) {
-				$searcher->addTerm($term['type'], $term['op'], $term['options']);
-			}
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
-			$result_cache->person = $this->person;
-			$result_cache->results = $results;
-			$result_cache->criteria = $terms;
-			$result_cache->num_results = count($results);
-			$result_cache->setExtraData('order_by', $order_by);
-
-			$this->em->persist($result_cache);
-			$this->em->flush();
-		}
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\TicketSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;

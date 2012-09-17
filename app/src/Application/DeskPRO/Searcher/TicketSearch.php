@@ -58,6 +58,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_ORGANIZATION              = 'organization';
 	const TERM_LANGUAGE                  = 'language';
 	const TERM_PARTICIPANT               = 'participant';
+	const TERM_PERSON                    = 'person';
 	const TERM_LABEL                     = 'label';
 	const TERM_TICKET_FIELD              = 'ticket_field';
 	const TERM_DATE_CREATED              = 'date_created';
@@ -1115,6 +1116,18 @@ class TicketSearch extends SearcherAbstract
 					}, true);
 
 					$wheres[] = $this->_choiceMatch($field, $op, $choice);
+					break;
+				case self::TERM_PERSON:
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.person'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:Person')->getPersonNames((array)$choice);
+						return $titles;
+					});
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_PERSON;
+					}
+
+					$wheres[] = $this->_choiceMatch("$tickets_table.person_id", $op, $choice, true);
 					break;
 				case self::TERM_SUBJECT:
 					$this->affected_fields[] = 'ticket.subject';

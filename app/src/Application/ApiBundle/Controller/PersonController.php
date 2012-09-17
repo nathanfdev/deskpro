@@ -185,7 +185,7 @@ class PersonController extends AbstractController
 			$this->em->persist($person);
 
 			$field_manager = $this->container->getSystemService('person_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
+			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $person, true);
 			}
@@ -220,6 +220,8 @@ class PersonController extends AbstractController
 	{
 		$person = $this->_getPersonOr404($person_id, 'edit');
 
+		$errors = array();
+
 		$name = $this->in->getString('name');
 		if ($name) {
 			$person->name = $name;
@@ -228,7 +230,20 @@ class PersonController extends AbstractController
 		$updates = $this->_setBasicPersonDetailsFromInput($person);
 
 		if ($this->in->checkIsset('primary_email') && $this->person->hasPerm('agent_people.manage_emails')) {
-			$person->setEmail($this->in->getString('primary_email'));
+			$email = $this->in->getString('primary_email');
+
+			$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if ($check_exists) {
+				if ($check_exists->id != $person->id) {
+					$errors['primary_email'] = array('invalid_argument.primary_email', 'email already exists');
+				}
+			} else {
+				$person->setEmail($email);
+			}
+		}
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
 		}
 
 		$this->db->beginTransaction();
@@ -240,7 +255,7 @@ class PersonController extends AbstractController
 			$this->em->persist($person);
 
 			$field_manager = $this->container->getSystemService('person_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
+			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $person, true);
 			}
@@ -320,6 +335,55 @@ class PersonController extends AbstractController
 		$edit_manager->deleteUser($person);
 
 		return $this->createSuccessResponse();
+	}
+
+	public function getPersonTicketsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'delete');
+
+		$terms = array(
+			array(
+				'type' => \Application\DeskPRO\Searcher\TicketSearch::TERM_PERSON,
+				'op' => 'contains',
+				'options' => array($person->id)
+			)
+		);
+
+		if ($this->in->checkIsset('order')) {
+			$order_by = $this->in->getString('order');
+		} else {
+			$order_by = 'ticket.date_created:desc';
+		}
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		if ($this->in->checkIsset('cache')) {
+			$cache = $this->in->getUint('cache');
+		} else {
+			$cache = 3600;
+		}
+
+		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\TicketSearch());
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$person_ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($person_ids),
+			'tickets' => $this->getApiData($tickets)
+		));
 	}
 
 	public function resetPasswordAction($person_id)

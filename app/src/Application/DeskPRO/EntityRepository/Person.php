@@ -124,6 +124,23 @@ class Person extends AbstractEntityRepository
 		return $names;
 	}
 
+	public function getPersonNames($for_ids)
+	{
+		$for_ids = (array)$for_ids;
+		if (!$for_ids) {
+			return array();
+		}
+
+		$for_ids = array_map('intval', $for_ids);
+
+		return App::getDb()->fetchAllKeyValue('
+			SELECT id, name
+			FROM people
+			WHERE id IN (' . implode(',', $for_ids) . ')
+			ORDER BY name
+		');
+	}
+
 
 	/**
 	 * Get all online and active (not away) agents.

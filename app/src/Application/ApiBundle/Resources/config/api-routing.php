@@ -216,6 +216,41 @@ $collection->add('api_tickets_fields', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_departments', new Route(
+	'/tickets/departments',
+	array('_controller' => 'ApiBundle:Ticket:getDepartments'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_products', new Route(
+	'/tickets/products',
+	array('_controller' => 'ApiBundle:Ticket:getProducts'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_categories', new Route(
+	'/tickets/categories',
+	array('_controller' => 'ApiBundle:Ticket:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_priorities', new Route(
+	'/tickets/priorities',
+	array('_controller' => 'ApiBundle:Ticket:getPriorities'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_workflows', new Route(
+	'/tickets/workflows',
+	array('_controller' => 'ApiBundle:Ticket:getWorkflows'),
+	array('_method' => 'GET'),
+	array()
+));
+
 ################################################################################
 # Ticket filters
 ################################################################################
@@ -277,6 +312,13 @@ $collection->add('api_people_person_delete', new Route(
 	'/people/{person_id}',
 	array('_controller' => 'ApiBundle:Person:deletePerson'),
 	array('_method' => 'DELETE', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_tickets', new Route(
+	'/people/{person_id}/tickets',
+	array('_controller' => 'ApiBundle:Person:getPersonTickets'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
 	array()
 ));
 

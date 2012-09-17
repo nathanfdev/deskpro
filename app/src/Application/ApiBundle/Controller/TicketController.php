@@ -135,6 +135,10 @@ class TicketController extends AbstractController
 			}
 		}
 
+		if (!$ticket->department) {
+			$ticket->department = $this->em->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
+		}
+
 		if ($errors) {
 			return $this->createApiMultipleErrorResponse($errors);
 		}
@@ -180,7 +184,7 @@ class TicketController extends AbstractController
 			$this->em->flush();
 
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
+			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $ticket);
 			}
@@ -265,13 +269,11 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 
 			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-				if (!empty($_POST['fields'])) {
-					$post_custom_fields = $this->request->request->get('fields', array());
-					if (!empty($post_custom_fields)) {
-						$field_manager = $this->container->getSystemService('ticket_fields_manager');
-						$field_manager->saveFormToObject($post_custom_fields, $ticket, true);
-						$this->em->persist($ticket);
-					}
+				$post_custom_fields = $this->getCustomFieldInput();
+				if (!empty($post_custom_fields)) {
+					$field_manager = $this->container->getSystemService('ticket_fields_manager');
+					$field_manager->saveFormToObject($post_custom_fields, $ticket, true);
+					$this->em->persist($ticket);
 				}
 			}
 
@@ -673,6 +675,55 @@ class TicketController extends AbstractController
 		$fields = $field_manager->getFields();
 
 		return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+	}
+
+	public function getDepartmentsAction()
+	{
+		$department_list = $this->em->getRepository('DeskPRO:Department')->findAll();
+		$departments = $this->em->getRepository('DeskPRO:Department')->getFlatHierarchy();
+		foreach ($department_list AS $department) {
+			if (!$department->is_tickets_enabled) {
+				unset($departments[$department->id]);
+			}
+		}
+
+		return $this->createApiResponse(array('departments' => $departments));
+	}
+
+	public function getProductsAction()
+	{
+		$products = $this->em->getRepository('DeskPRO:Product')->getFlatHierarchy();
+
+		return $this->createApiResponse(array('products' => $products));
+	}
+
+	public function getCategoriesAction()
+	{
+		$categories = $this->em->getRepository('DeskPRO:TicketCategory')->getFlatHierarchy();
+
+		return $this->createApiResponse(array('categories' => $categories));
+	}
+
+	public function getPrioritiesAction()
+	{
+		$priorities = $this->em->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketPriority p
+			ORDER BY p.priority
+		")->execute();
+
+		return $this->createApiResponse(array('priorities' => $this->getApiData($priorities)));
+	}
+
+	public function getWorkflowsAction()
+	{
+		$workflows = $this->em->createQuery("
+			SELECT w
+			FROM DeskPRO:TicketWorkflow w
+			ORDER BY w.display_order
+		")->execute();
+
+		return $this->createApiResponse(array('workflows' => $this->getApiData($workflows)));
 	}
 
 	/**

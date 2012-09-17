@@ -150,7 +150,7 @@ class OrganizationController extends AbstractController
 			$this->em->persist($org);
 
 			$field_manager = $this->container->getSystemService('org_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
+			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $org, true);
 			}
@@ -209,7 +209,7 @@ class OrganizationController extends AbstractController
 			$this->em->persist($org);
 
 			$field_manager = $this->container->getSystemService('org_fields_manager');
-			$post_custom_fields = $this->request->request->get('fields', array());
+			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $org, true);
 			}

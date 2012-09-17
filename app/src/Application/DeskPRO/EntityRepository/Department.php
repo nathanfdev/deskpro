@@ -60,7 +60,7 @@ class Department extends AbstractCategoryRepository
 				$opt = 'core.tickets.default_department';
 				$check_field = 'is_tickets_enabled';
 				break;
-			case 'ticket':
+			case 'chat':
 				$opt = 'core.chat.default_department';
 				$check_field = 'is_chat_enabled';
 				break;
