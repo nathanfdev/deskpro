@@ -87,6 +87,7 @@ class ExceptionListener
 
 	public function _log404(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $exception)
 	{
+		return;
 		$summary = $exception->getMessage();
 
 		$trace = KernelErrorHandler::formatBacktrace($exception->getTrace());
