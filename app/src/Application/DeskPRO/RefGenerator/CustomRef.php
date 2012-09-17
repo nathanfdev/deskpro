@@ -148,6 +148,7 @@ class CustomRef implements RefGeneratorInterface
 		$field = 'ref';
 
 		$stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
+		$stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `tmp_data` WHERE `name` = ? LIMIT 1");
 
 		$attempt = 0;
 		$append_count = 0;
@@ -193,7 +194,20 @@ class CustomRef implements RefGeneratorInterface
 
 			$stmt->execute(array($ref));
 			$count = $stmt->fetchColumn();
-		} while ($count > 0);
+
+			$stmt2->execute(array("$table.ref.$ref"));
+			$count2 = $stmt2->fetchColumn();
+		} while ($count > 0 || $count2 > 0);
+
+		// Insert into tmp_data to reserve the ref,
+		// prevents most races due to the new record usually not being inserted right away
+		$this->db->insert('tmp_data', array(
+			'name'          => "$table.ref.$ref",
+			'auth'          => '000000000000000',
+			'data'          => '1',
+			'date_created'  => date('Y-m-d H:i:s'),
+			'date_expire'   => date('Y-m-d H:i:s', time() + 10),
+		));
 
 		return $ref;
 	}
