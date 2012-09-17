@@ -48,7 +48,6 @@ pageMeta.baseId = '{{ baseId }}';
 		<table cellspacing="0" cellpadding="0" width="100%"><tr>
 			<td style="white-space: nowrap; vertical-align: middle;" nowrap="nowrap" width="100">
 				<div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
-				<div id="{{baseId}}_create_ticket_btn2" class="set-hold hold" {% if convo.status != 'ended' %}style="display: none"{% else %}style="display:block"{% endif %}><span>Create Ticket</span></div>
 			</td>
 			<td style="vertical-align: middle; padding-left: 8px;">
 				<div class="labels-line">
@@ -117,10 +116,12 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if convo.person and convo.person.id != session.person.id %}
 							<div style="font-size: 11px; margin: 0 0 2px 13px;">
 								<strong style="color: #d00;">{{ phrase('agent.chat.warning') }}</strong>:
-								User is not logged in
+								Identity not confirmed, email has not been validated
 								<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.chat.warning_email_address_not_unique') }}"></span>
 							</div>
 						{% endif %}
+
+						<button id="{{baseId}}_create_ticket_btn2" class="clean-white" style="margin: 0 0 5px 11px; {% if convo.status != 'ended' %}display: none{% else %}display:block{% endif %}">Create Ticket</button>
                     </article>
 					{{ dp_widget_tabs(baseId, 'chat', 'people', 'article', convo_api) }}
                 </section>
