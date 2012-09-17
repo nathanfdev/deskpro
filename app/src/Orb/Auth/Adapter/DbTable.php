@@ -255,7 +255,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	 * @param $username
 	 * @return array
 	 */
-	protected function getUserInfoForUsername($username)
+	public function getUserInfoForUsername($username)
 	{
 		if (!$this->options[self::OPT_FIELD_USERNAME]) {
 			return null;
@@ -279,7 +279,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	 *
 	 * @return array
 	 */
-	protected function getUserInfoForEmail($email)
+	public function getUserInfoForEmail($email)
 	{
 		if (!$this->options[self::OPT_FIELD_EMAIL]) {
 			return null;
@@ -303,7 +303,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 	 *
 	 * @return array
 	 */
-	protected function getUserInfoForId($id)
+	public function getUserInfoForId($id)
 	{
 		$table = $this->options[self::OPT_TABLE];
 		$field = $this->options[self::OPT_FIELD_ID];

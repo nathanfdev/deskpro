@@ -77,6 +77,34 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 
 
 	/**
+	 * Find a user identity just by an email address.
+	 *
+	 * @param $email_address
+	 * @return \Orb\Auth\Identity|null
+	 */
+	public function findIdentityByInput($email_address)
+	{
+		/** @var $adapter \Orb\Auth\Adapter\DbTable.php */
+		$adapter = $this->getAuthAdapter();
+
+		$userinfo = null;
+		if (\Orb\Validator\StringEmail::isValueValid($email_address)) {
+			$userinfo = $adapter->getUserInfoForEmail($email_address);
+		}
+		if (!$userinfo) {
+			$userinfo = $adapter->getUserInfoForUsername($email_address);
+		}
+
+		if (!$userinfo) {
+			return null;
+		}
+
+		$identify = $adapter->getIdentityFromUserInfo($userinfo);
+		return $identify;
+	}
+
+
+	/**
 	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
@@ -92,7 +120,8 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 	{
 		return array(
 			'form_login',
-			'get_user_info'
+			'get_user_info',
+			'find_identity'
 		);
 	}
 
