@@ -120,10 +120,10 @@ class FieldManager
 			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 			foreach ($all_fields as $f) {
 
-				$this->all_fields[$f->id] = $f;
+				$this->all_fields[$f->getId()] = $f;
 
 				if (!$f->getParentId()) {
-					$this->fields[$f->id] = $f;
+					$this->fields[$f->getId()] = $f;
 				}
 
 				if ($p = $f->getParentId()) {
@@ -317,7 +317,7 @@ class FieldManager
 		// If the object has no id then it means it isnt perissted,
 		// which means we should use the default value to show on a form somewhre
 		$use_default = false;
-		if (!$object->id) {
+		if (!$object->getId()) {
 			$use_default = true;
 		}
 
@@ -342,12 +342,12 @@ class FieldManager
 		$data = array();
 
 		foreach ($objects as $object) {
-			if (!isset($field_objects[$object->id])) {
+			if (!isset($field_objects[$object->getId()])) {
 				continue;
 			}
 
-			$field_data = $this->createFieldDataFromArray($object, $field_objects[$object->id]);
-			$data[$object->id] = $this->getDisplayArray($field_data, null);
+			$field_data = $this->createFieldDataFromArray($object, $field_objects[$object->getId()]);
+			$data[$object->getId()] = $this->getDisplayArray($field_data, null);
 		}
 
 		return $data;
@@ -386,7 +386,7 @@ class FieldManager
 		// Create a map of keys
 		$data_keys = array();
 		foreach ($field_datas as $k => $v) {
-			$data_keys[$v->field->id] = $k;
+			$data_keys[$v->field->getId()] = $k;
 		}
 
 		$data = $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
@@ -482,11 +482,11 @@ class FieldManager
 				// Ex: Choice fields we save under the actual choice option
 				$set_field = null;
 
-				if ($field_def->id == $set_field_id) {
+				if ($field_def->getId() == $set_field_id) {
 					$set_field = $field_def;
 				} elseif (isset($this->field_to_children[$field_def->getId()])) {
 					foreach ($this->field_to_children[$field_def->getId()] as $c) {
-						if ($c->id == $set_field_id) {
+						if ($c->getId() == $set_field_id) {
 							$set_field = $c;
 							break;
 						}
@@ -525,11 +525,11 @@ class FieldManager
 		// Ex: Choice fields we save under the actual choice option
 		$set_field = null;
 
-		if ($field_def->id == $set_field_id) {
+		if ($field_def->getId() == $set_field_id) {
 			$set_field = $field_def;
 		} elseif (isset($this->field_to_children[$field_def->getId()])) {
 			foreach ($this->field_to_children[$field_def->getId()] as $c) {
-				if ($c->id == $set_field_id) {
+				if ($c->getId() == $set_field_id) {
 					$set_field = $c;
 					break;
 				}
@@ -573,7 +573,7 @@ class FieldManager
 		$prop = $this->options->get('custom_data_property');
 		if ($field_def->getParentId()) {
 			foreach ($object->$prop as $v) {
-				if ($v->field->id == $field_def->getParentId()) {
+				if ($v->field->getId() == $field_def->getParentId()) {
 					$this->em->remove($v);
 					$object->$prop->removeElement($v);
 				}
@@ -581,7 +581,7 @@ class FieldManager
 		}
 
 		foreach ($object->$prop as $v) {
-			if ($v->field->id == $field_def->id || ($v->field->getParentId() && $v->field->getParentId() == $field_def->id)) {
+			if ($v->field->getId() == $field_def->getId() || ($v->field->getParentId() && $v->field->getParentId()->getId() == $field_def->getId())) {
 				$object->$prop->removeElement($v);
 			}
 		}
