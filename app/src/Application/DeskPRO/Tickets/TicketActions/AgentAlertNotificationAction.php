@@ -202,7 +202,7 @@ class AgentAlertNotificationAction extends AbstractAction
 					}
 				}
 
-				if ($this->notify_info[$agent->id]) {
+				if (!empty($this->notify_info[$agent->id])) {
 					$vars['notify_info'] = $this->notify_info[$agent->id];
 				}
 
