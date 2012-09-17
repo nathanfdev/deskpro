@@ -24,11 +24,14 @@
 			<input type="text" name="name" />
 		</div>
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
-		<div class="builder-options">
-			<input type="hidden" name="stop_actions" value="1" />
+
+	{% if event_group != 'macro' %}
+		<div class="builder-type" title="{{ phrase('agent.general.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
+			<div class="builder-options">
+				<input type="hidden" name="stop_actions" value="1" />
+			</div>
 		</div>
-	</div>
+	{% endif %}
 
 	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
 		<div class="builder-type" title="{{ phrase('agent.general.email_user_auto_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
@@ -246,7 +249,7 @@
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
 		</div>
 	</div>
-	{% if 'time_' not in event_group %}
+	{% if 'time_' not in event_group and event_group != 'macro' %}
 	<div class="builder-type" title="{{ phrase('agent.general.disable_all_notifications') }}" data-rule-type="disable_notifications">
 		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_notifications" value="1" />
@@ -260,7 +263,7 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if 'time_' not in event_group %}
+	{% if 'time_' not in event_group and event_group != 'macro' %}
 	<div class="builder-type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
 		<div class="builder-options" style="display:block">
 			<input type="hidden" name="disable_user_notifications" value="1" />
