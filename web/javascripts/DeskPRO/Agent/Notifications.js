@@ -74,6 +74,14 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		row.remove();
 		this.modCount(type, '-');
 
+		if (row.data('class-id')) {
+			var related = $('#dp_notify_list').find('li.' + row.data('class-id'));
+			if (related[0]) {
+				this.modCount(type, '-', related.length);
+				related.remove();
+			}
+		}
+
 		if (!$('#dp_notify_list').find('> li.msg-row').length) {
 			this.close();
 		}
