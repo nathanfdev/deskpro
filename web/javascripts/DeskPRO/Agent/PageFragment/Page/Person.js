@@ -383,9 +383,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					url: BASE_URL + 'agent/people/validate/approve',
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
-						var route = self.meta.routeData.url;
 						DeskPRO_Window.removePage(self);
-						DeskPRO_Window.runPageRoute('page:'+route);
+						DeskPRO_Window.runPageRoute('page:'+ BASE_URL + 'agent/people/' + self.meta.person_id);
 
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: self.meta.person_id });
 					}
