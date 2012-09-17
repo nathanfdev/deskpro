@@ -96,6 +96,12 @@ class FilesystemToDatabase
 	{
 		$filepath = $this->base_path . $blob['save_path'];
 
+		// The file is invalid, so dont save the blob
+		if (!is_file($filepath)) {
+			$this->db->delete('blobs', array('id' => $blob['id']));
+			return;
+		}
+
 		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
 		$data = file_get_contents($filepath);
 		$data_len = strlen($data);
