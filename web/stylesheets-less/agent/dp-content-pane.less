@@ -1150,19 +1150,18 @@ article.content-message .content header h4 {
 	display: inline;
 }
 
-article.content-message .content header .message-counter {
-	float: right;
-	font-size: 11px;
-	margin-right: 6px;
-	line-height: 25px;
-}
-
-article.content-message .content header .message-counter.with-gear {
+article.content-message .content header .edit-gear {
+	display: block;
 	cursor: pointer;
     background-repeat: no-repeat;
-	background-position: 0 7px;
+	background-position: 0 0;
     background-image: url(../../images/agent/gear-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 7px; sprite-margin-bottom: 15px; */;
-	padding-left: 16px;
+	padding-left: 8px;
+	float: right;
+	width: 11px;
+	height: 11px;
+	position: relative;
+	top: 7px;
 }
 
 article.content-message .content header time {
@@ -1184,6 +1183,18 @@ article.content-message .content header .comment-validate-btn {
 article.content-message .content .body-text {
 	padding: 6px;
 	font-size: 13px;
+}
+
+article.content-message .content .body-text .message-counter {
+	float: right;
+	line-height: 100%;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 3px;
+	color: #BFBFBF;
+
+	text-shadow: 1px 0px 1px #ffffff;
+	filter: dropshadow(color=#ffffff, offx=1, offy=0);
 }
 
 article.content-message .content .footer-text {

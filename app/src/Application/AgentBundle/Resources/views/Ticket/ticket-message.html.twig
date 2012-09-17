@@ -13,7 +13,7 @@
 		/></div>
 	<div class="content">
 		<header>
-			<span class="message-counter message-counter-{{ message.id }} with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ message_num }}</span>
+			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% endif %}
@@ -21,6 +21,7 @@
 			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>
 		</header>
 		<div class="body-text">
+			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">{{ message_num }}</span>
 			<div class="body-text-message" {% if message.show_full_hint %}style="display: none"{% endif %}>
 				{{message.message_html|safe_link_urls_html }}
 				{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
