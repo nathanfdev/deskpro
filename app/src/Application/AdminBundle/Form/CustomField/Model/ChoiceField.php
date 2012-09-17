@@ -220,7 +220,6 @@ class ChoiceField extends CustomFieldAbstract
 		}
 
 		if ($this->default_option) {
-			dpdev_log($this->default_option);
 			if (isset($choices[$this->default_option])) {
 				$this->_field->default_value = $this->default_option;
 			} elseif (isset($new_id_map[$this->default_option])) {
