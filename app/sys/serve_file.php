@@ -776,7 +776,14 @@ class FilestorageLoader
 			exit;
 		}
 
-		$image = $container->getImagine()->load($file);
+		try {
+			$image = $container->getImagine()->load($file);
+		} catch (\Imagine\Exception\InvalidArgumentException $e) {
+			header("HTTP/1.0 500 Internal Server Error");
+			echo "Invalid image file. (invalid_image_data)";
+			exit;
+		}
+
 		$width = $image->getSize()->getWidth();
 		$height = $image->getSize()->getHeight();
 
