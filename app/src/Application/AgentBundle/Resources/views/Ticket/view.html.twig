@@ -267,7 +267,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<dl>
 					<dt>{{ phrase('agent.general.owner') }}</dt>
 					<dd>
-						<a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+						<a id="{{ baseId }}_profile_link" class="user-link clean-white as-popover preload tipped" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}" title="Click to view user profile">
 							<span style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">
 								{{ ticket.person.display_name }}
 								{% if ticket.person.organization %}

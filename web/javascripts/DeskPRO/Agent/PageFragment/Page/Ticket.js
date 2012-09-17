@@ -77,6 +77,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$('textarea[name="message"]', self.ticketReply).focus();
 		});
 
+		this.addEvent('openUserProfile', function(ev) {
+			ev.preventDefault();
+			self.getEl('profile_link').trigger('click');
+		});
+
 		if (this.meta.ticket_perms.modify_merge) {
 			this.getEl('merge_trigger').on('click', function() {
 				var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({

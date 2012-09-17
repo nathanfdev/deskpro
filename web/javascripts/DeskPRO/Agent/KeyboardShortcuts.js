@@ -62,6 +62,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		this.boundShortkuts = {};
 
 		this.addContextShortcut('ticket', 'shift+r', 'shortcutFocusReply');
+		this.addContextShortcut('ticket', 'shift+p', 'openUserProfile');
 	},
 
 
