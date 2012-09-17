@@ -468,109 +468,107 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</section>
-	<section id="{{ baseId }}_times" style="display: none;">
+	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
-			<tbody>
-				<tr>
-					<th width="200">Created</th>
+			<tbody><tr>
+				<th width="200">Created</th>
+				<td>
+					<time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time>
+					({{ ticket.date_created|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
+			<tbody><tr>
+				<th>Current user waiting time:</th>
+				<td>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
+					(since {{ ticket.date_user_waiting|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			<tbody><tr>
+				<th>Total user waiting time:</th>
+				<td>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+				</td>
+			</tr></tbody>
+			{% if ticket.total_to_first_reply %}
+				<tbody><tr>
+					<th>Waiting until first reply:</th>
 					<td>
-						<time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time>
-						({{ ticket.date_created|date('fulltime') }})
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.total_to_first_reply|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
 					</td>
-				</tr>
-				{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
-				<tr>
-					<th>Current user waiting time:</th>
-					<td>
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
-						(since {{ ticket.date_user_waiting|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-				<tr>
-					<th>Total user waiting time:</th>
-					<td>
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
-					</td>
-				</tr>
-				{% if ticket.total_to_first_reply %}
-					<tr>
-						<th>Waiting until first reply:</th>
-						<td>
-							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.total_to_first_reply|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
-						</td>
-					</tr>
-				{% endif %}
-				{% if ticket.status == 'awaiting_user' and ticket.date_agent_waiting %}
-				<tr>
-					<th>Current agent waiting time:</th>
-					<td>
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_agent_waiting|date('c', 'UTC') }}"></time>
-						(since {{ ticket.date_agent_waiting|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_resolved %}
-				<tr>
-					<th>Date resolved:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_resolved|date('c', 'UTC') }}"></time>
-						({{ ticket.date_resolved|date }})
-					</td>
-				</tr>
-				<tr>
-					<th>Time until resolution:</th>
-					<td>
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.getTimeUntilResolution()|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_closed %}
-				<tr>
-					<th>Date archived:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_closed|date('c', 'UTC') }}"></time>
-						({{ ticket.date_closed|date }})
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_first_agent_assign %}
-				<tr>
-					<th>First assignment:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_first_agent_assign|date('c', 'UTC') }}"></time>
-						({{ ticket.date_first_agent_assign|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_first_agent_reply %}
-				<tr>
-					<th>First agent reply:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_first_agent_reply|date('c', 'UTC') }}"></time>
-						({{ ticket.date_first_agent_reply|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_last_agent_reply %}
-				<tr>
-					<th>Last agent reply:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}"></time>
-						({{ ticket.date_last_agent_reply|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-				{% if ticket.date_last_user_reply %}
-				<tr>
-					<th>Last user reply:</th>
-					<td>
-						<time class="timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}"></time>
-						({{ ticket.date_last_user_reply|date('fulltime') }})
-					</td>
-				</tr>
-				{% endif %}
-			</tbody>
+				</tr></tbody>
+			{% endif %}
+			{% if ticket.status == 'awaiting_user' and ticket.date_agent_waiting %}
+			<tbody><tr>
+				<th>Current agent waiting time:</th>
+				<td>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_agent_waiting|date('c', 'UTC') }}"></time>
+					(since {{ ticket.date_agent_waiting|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_resolved %}
+			<tbody><tr>
+				<th>Date resolved:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_resolved|date('c', 'UTC') }}"></time>
+					({{ ticket.date_resolved|date }})
+				</td>
+			</tr></tbody>
+			<tbody><tr>
+				<th>Time until resolution:</th>
+				<td>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.getTimeUntilResolution()|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_closed %}
+			<tbody><tr>
+				<th>Date archived:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_closed|date('c', 'UTC') }}"></time>
+					({{ ticket.date_closed|date }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_first_agent_assign %}
+			<tbody><tr>
+				<th>First assignment:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_first_agent_assign|date('c', 'UTC') }}"></time>
+					({{ ticket.date_first_agent_assign|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_first_agent_reply %}
+			<tbody><tr>
+				<th>First agent reply:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_first_agent_reply|date('c', 'UTC') }}"></time>
+					({{ ticket.date_first_agent_reply|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_last_agent_reply %}
+			<tbody><tr>
+				<th>Last agent reply:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}"></time>
+					({{ ticket.date_last_agent_reply|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
+			{% if ticket.date_last_user_reply %}
+			<tbody><tr>
+				<th>Last user reply:</th>
+				<td>
+					<time class="timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}"></time>
+					({{ ticket.date_last_user_reply|date('fulltime') }})
+				</td>
+			</tr></tbody>
+			{% endif %}
 		</table>
 	</section>
 	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
