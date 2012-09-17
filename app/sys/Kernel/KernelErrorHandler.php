@@ -433,11 +433,32 @@ class KernelErrorHandler
 			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0
 		);
 
-		if ($exception instanceof \Zend\Mail\Protocol\Exception\RuntimeException) {
+		if (self::isNoReportException($exception)) {
 			$errinfo['no_send_error'] = true;
 		}
 
 		return $errinfo;
+	}
+
+
+	/**
+	 * @param \Exception $exception
+	 * @return bool
+	 */
+	public static function isNoReportException(\Exception $exception)
+	{
+		static $ignore = array(
+			'Swift_TransportException',
+			'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
+		);
+
+		foreach ($ignore as $cls) {
+			if ($exception instanceof $cls) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
