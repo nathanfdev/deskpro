@@ -57,6 +57,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents', function(info) {
 			$('#agent_online_list').find('li').not('.no-agents').remove();
 			$('#agent_online_list').find('li.no-agents').show();
+			$('#agent_offline_list').find('li').show();
 			self.onlineCountEl.html('0');
 
 			Array.each(info.online_agents, function(agent_id) {
