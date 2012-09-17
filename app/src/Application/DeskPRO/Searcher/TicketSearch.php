@@ -643,6 +643,19 @@ class TicketSearch extends SearcherAbstract
 				$this->order_summary = $tr->phrase('agent.general.urgency');
 				break;
 
+			case 'ticket.status':
+				$this->add_raw_selects[] = "
+					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
+					WHEN tickets.status =  'awaiting_user' THEN 2
+					WHEN tickets.status =  'resolved' THEN 3
+					WHEN tickets.status =  'closed' THEN 4
+					ELSE 3
+					END AS status_order
+				";
+
+				$order_by = "ORDER BY status_order ASC, tickets.urgency DESC";
+				break;
+
 			case 'ticket.date_created':
 				$order_by = "ORDER BY tickets.id $dir";
 				$this->order_summary = $tr->phrase('agent.general.date_opened');

@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 use Application\DeskPRO\App;
 
@@ -82,8 +83,13 @@ class OrganizationController extends AbstractController
 
 		$notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getRecentOrganizationTickets($org);
-		$org_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
+		$search = new TicketSearch();
+		$search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
+		$search->setOrderBy('ticket.status', 'DESC');
+
+		$org_tickets = $search->getMatches(array('offset' => 0, 'limit' => 30));
+		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
+		$org_tickets_count = $search->getCount(1000);
 
 		$org_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getRecentForOrganization($org);
 		$org_chats_count = $this->em->getRepository('DeskPRO:ChatConversation')->getCountForOrganization($org);
