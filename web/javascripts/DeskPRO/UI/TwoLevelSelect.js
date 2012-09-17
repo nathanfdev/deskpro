@@ -21,7 +21,7 @@ function dpTwoSelectInit(el, options) {
 		childEl;
 
 	options = $.extend({
-		debug: true,
+		debug: Dp_EnableDebug || false,
 		renderPlaceholders: function() {
 			var wrap = $('<div class="dp-two-select" />');
 			wrap.append('<div class="dp-parent"><select /></div>')
@@ -33,7 +33,9 @@ function dpTwoSelectInit(el, options) {
 
 	if (options.debug) {
 		debugMessge = function() {
-			console.log.apply(console, arguments);
+			if (console.log && console.log.apply) {
+				console.log.apply(console, arguments);
+			}
 		}
 	} else {
 		debugMessge = function() {};
