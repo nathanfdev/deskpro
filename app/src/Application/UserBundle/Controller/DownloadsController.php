@@ -235,7 +235,7 @@ class DownloadsController extends AbstractController
 	public function downloadFileAction($slug)
 	{
 		$download = $this->em->getRepository('DeskPRO:Download')->getBySlug($slug);
-		if (!$download) {
+		if (!$download || !$download->blob) {
 			return $this->renderStandardError('@user.downloads.file_not_found', '@user.error.not-found', 404);
 		}
 
