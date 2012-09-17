@@ -189,7 +189,10 @@ class Generic implements ForwardDef, QuoteDef
 		// Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
 		$pos = strpos($body, 'DP_TOP_MARK');
 		if ($pos === false) {
-			return $body;
+			$pos = strpos($body, 'DP_TOP_MARK_USER');
+			if ($pos === false) {
+				return $body;
+			}
 		}
 
 		$body = substr($body, 0, $pos);
@@ -202,6 +205,10 @@ class Generic implements ForwardDef, QuoteDef
 				$body = substr($body, 0, $pos);
 			}
 		}
+
+		// Cut off "===" that would preceded the cut marker
+		$body = preg_replace('#\s*===\s*$#s', '', $body);
+		$body = preg_replace('#\s*===\s*<[a-zA-Z0-9_\-/]+>\s*$#s', '', $body);
 
 		return $body;
 	}

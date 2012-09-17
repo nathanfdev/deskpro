@@ -8,7 +8,7 @@
 	'agent.emails.notice_account_login'            => 'Your account was used to successfully log in.',
 	'agent.emails.notice_login_attempt'            => 'Someone tried to log in using your account.',
 	'agent.emails.referring_page'                  => 'Referring Page',
-	'agent.emails.reply_above_line'                => '=== REPLY ABOVE ===',
+	'agent.emails.reply_above_line'                => 'REPLY ABOVE',
 	'agent.emails.section_title_ticket_properties' => 'Ticket Properties',
 	'agent.emails.section_ticket'                  => 'Ticket',
 	'agent.emails.subject_email_change_merge'      => 'Confirm email change and account merger',
