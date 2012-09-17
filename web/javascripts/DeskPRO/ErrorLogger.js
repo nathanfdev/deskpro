@@ -123,7 +123,7 @@ if (typeof DP_DEBUG != 'undefined' && typeof DP_DEBUG_EVENT_TIMER != 'undefined'
 
 		var time = (new Date()).getTime() - begin.getTime();
 		if (time > 150) {
-			DpErrorLog.logError("Event took "+time+"ms", printStackTrace().join("\n"));
+			DpErrorLog.logError("Event took "+time+"ms");
 		}
 	}
 }

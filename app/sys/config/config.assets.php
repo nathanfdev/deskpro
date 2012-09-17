@@ -62,8 +62,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/html5shiv.min.js',
 		'javascripts/Orb/modernizr-ext.js',
 
-		'vendor/stacktrace.js',
-		'vendor/jsdump.js',
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery.resize.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
@@ -676,7 +674,6 @@ $CONFIG['agent_vendors_css'] = array(
 		'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
 		'vendor/jquery/tipped/css/tipped.css',
 		'vendor/jquery/colorbox/colorbox.css',
-		'vendor/jquery/chosen/chosen.css',
 		'vendor/jquery/token-field/token-field.css',
 		'vendor/select2/select2.css'
 	)
