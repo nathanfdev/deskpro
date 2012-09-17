@@ -19,6 +19,10 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 		var removedList = [];
 		var addedList   = [];
 
+		var withDefaultSelect = this.el.data('with-default-select');
+		var defaultSelectWrap = this.el.find('.default-select');
+		var defaultSelect     = this.el.find('.default-select select');
+
 		var noUpdateParentSelect = true;
 		var isInline = parseInt(this.el.data('inline'));
 
@@ -32,12 +36,15 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 
 		function exportData() {
 			var data = [];
+
 			builderList.find('> li').each(function() {
 				data.push({
 					id: $(this).data('option-id'),
 					title: $(this).data('option-title'),
-					parent_id: 0
+					parent_id: 0,
+					hasChildren: false
 				});
+				var parent_idx = data.length - 1;
 				var parent_id = $(this).data('option-id');
 				$(this).find('li').each(function() {
 					data.push({
@@ -45,6 +52,7 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 						title: $(this).data('option-title'),
 						parent_id: parent_id
 					});
+					data[parent_idx].hasChildren = true;
 				});
 			});
 
@@ -54,6 +62,56 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 
 			structureHold.val(JSON.stringify(data));
 			structureDel.val(JSON.stringify(removedList));
+
+			if (withDefaultSelect) {
+				var previousDefault   = defaultSelect.find(':selected').text();
+				defaultSelect.empty();
+				defaultSelect.append('<option></option>');
+
+				Array.each(data, function(opt) {
+					if (opt.hasChildren) {
+						var og = $('<optgroup />');
+						og.attr('label', opt.title);
+
+						Array.each(data, function(sub_opt) {
+							if (sub_opt.parent_id == opt.id) {
+								var o = $('<option />');
+								o.attr('value', sub_opt.id);
+								o.text(sub_opt.title);
+
+								if (sub_opt.title == previousDefault) {
+									o.attr('selected', true);
+								}
+
+								og.append(o);
+							}
+						});
+
+						defaultSelect.append(og);
+					} else if (!opt.parent_id) {
+						var o = $('<option />');
+						o.attr('value', opt.id);
+						o.text(opt.title);
+
+						if (opt.title == previousDefault) {
+							o.attr('selected', true);
+						}
+
+						defaultSelect.append(o);
+					}
+				});
+
+				if (defaultSelect.find('option').length > 1) {
+					defaultSelectWrap.show();
+
+					if (!previousDefault && defaultSelect.data('current-default')) {
+						defaultSelect.find('option[value="' + defaultSelect.data('current-default') + '"]').prop('selected', true);
+						defaultSelect.data('current-default', null);
+					}
+				} else {
+					defaultSelectWrap.hide();
+				}
+			}
 		};
 
 		newOptTitle.on('keypress', function(ev) {
@@ -160,6 +218,8 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 
 				newOptParent.show();
 			}
+
+			exportData();
 		};
 
 		function removeRow(row) {

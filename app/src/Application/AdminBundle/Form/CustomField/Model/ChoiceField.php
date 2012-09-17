@@ -50,8 +50,14 @@ class ChoiceField extends CustomFieldAbstract
 	public $choices_structure = '';
 	public $choices_removed_structure = '';
 
+	public $default_option = '';
+
 	protected function init()
 	{
+		if ($this->_field->default_value) {
+			$this->default_option = $this->_field->default_value;
+		}
+
 		if ($this->_field->getOption('multiple')) {
 			$this->multiple = true;
 		}
@@ -143,6 +149,10 @@ class ChoiceField extends CustomFieldAbstract
 			$field->setOption('agent_min_length', null);
 			$field->setOption('agent_max_length', null);
 		}
+
+		if (!$this->default_option) {
+			$field->default_value = null;
+		}
 	}
 
 	protected function saveAdditional()
@@ -207,6 +217,19 @@ class ChoiceField extends CustomFieldAbstract
 				$new_id_map[$id] = $child->getId();
 				$choices[$child->getId()] = $child;
 			}
+		}
+
+		if ($this->default_option) {
+			dpdev_log($this->default_option);
+			if (isset($choices[$this->default_option])) {
+				$this->_field->default_value = $this->default_option;
+			} elseif (isset($new_id_map[$this->default_option])) {
+				$this->_field->default_value = $new_id_map[$this->default_option];
+			} else {
+				$this->_field->default_value = null;
+			}
+
+			$this->_em->persist($this->_field);
 		}
 
 		$this->_em->flush();

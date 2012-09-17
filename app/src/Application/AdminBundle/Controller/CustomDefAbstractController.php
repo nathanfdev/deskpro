@@ -130,6 +130,7 @@ abstract class CustomDefAbstractController extends AbstractController
 					if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
 						$editfield->choices_structure = $this->in->getString('choices_structure');
 						$editfield->choices_removed_structure = $this->in->getString('choices_removed_structure');
+						$editfield->default_option = $this->in->getString('default_option');
 					}
 
 					$form->bindRequest($this->get('request'));

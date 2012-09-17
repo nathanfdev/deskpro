@@ -215,7 +215,12 @@ class FieldManager
 		foreach ($this->getFields() as $f_def) {
 			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
 			if (!$value && $use_default && $f_def->default_value) {
-				$value = array('value' => $f_def->default_value);
+				if ($f_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+					$value = array('children' => array($f_def->default_value => array('value' => 1)));
+				} else {
+					$value = array('value' => $f_def->default_value);
+				}
+
 			}
 			if (!$f_def->isFormField()) {
 				$value = array();
