@@ -44,7 +44,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				el = $(el);
 
-				if (!num) num = 1;
+				if (!num && num !== 0) num = 1;
 
 				var count = parseInt(el.text().trim());
 

@@ -934,7 +934,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tasks/save',
 				data: postData,
 				type: 'POST',
-				dataType: 'json',
+				dataType: 'json',	
 				complete: function() {
 					$(this).removeClass('saving').text('Add');
 				},
@@ -961,6 +961,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					self.getEl('task_list').append(row);
 					self.getEl('task_list').find('li.none-message').remove();
+					DeskPRO_Window.util.modCountEl(self.getEl('task_count'), '+', 1);
 				}
 			});
 		});
