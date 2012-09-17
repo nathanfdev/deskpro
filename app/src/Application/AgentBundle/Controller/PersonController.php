@@ -537,8 +537,8 @@ class PersonController extends AbstractController
 					DELETE person2usergroups
 					FROM person2usergroups
 					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
-					WHERE usergroups.is_agent_group = 0
-				");
+					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
+				", array($person->getId()));
 
 				if ($usergroup_ids) {
 					$inserts = array();
