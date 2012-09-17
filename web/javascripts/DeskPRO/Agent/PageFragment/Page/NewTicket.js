@@ -336,6 +336,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('usersearch').val(data.email_address);
 
 		this.getEl('user_section').hide();
+		this.getEl('choose_user').hide();
 		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 
 		this.setUser(data.person_id);
@@ -359,6 +360,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.setUser(data.person_id, data.session_id);
 			this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 			this.getEl('user_section').hide();
+			this.getEl('choose_user').hide();
 		} else {
 			$.ajax({
 				type: 'GET',
@@ -389,6 +391,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	_resetForX: function() {
 		this.wrapper.find('.pending-info').hide();
 		this.getEl('user_section').show();
+		this.getEl('choose_user').show();
 
 		this.getEl('for_chat_id').val('');
 		this.getEl('for_comment_type').val('');
@@ -416,6 +419,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			userfields.empty();
 			userfields.hide();
 			searchbox.show();
+			self.getEl('choose_user').show();
 			rechooseBtn.hide();
 			self.loadSnippetsViewer();
 			self.updateUi();
@@ -503,6 +507,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		userfields.empty();
 		userfields.html(html);
 
+		self.getEl('choose_user').hide();
 		rechooseBtn.show();
 		searchbox.hide();
 		userfields.show();

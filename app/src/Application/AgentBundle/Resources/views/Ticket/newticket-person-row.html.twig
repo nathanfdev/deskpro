@@ -1,17 +1,22 @@
-<div class="col">
-	<h4>{{ phrase('agent.general.email_address') }}</h4>
-	{% if person.id and person.primary_email and person.primary_email.email %}
-		{{ person.primary_email.email }}
-	{% else %}
-		<input type="text" name="newticket[person][email_address]" class="email" value="" />
-	{% endif %}
-</div>
-{% if person.id %}<input type="hidden" class="set_userid" value="{{ person.id }}" />{% endif %}
-<div class="col">
-	<h4>{{ phrase('agent.general.name') }}</h4>
-	<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" />
-	{% if person.id %}
-		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.general.view_profile') }}</a>
-	{% endif %}
-</div>
-<br class="clear" />
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
+	<tbody>
+		<tr>
+			<th width="100">{{ phrase('agent.general.email_address') }}</th>
+			<td>
+				{% if person.id and person.primary_email and person.primary_email.email %}
+					{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">View Profile</a>
+				{% else %}
+					<input type="text" name="newticket[person][email_address]" class="email" value="" style="margin:0;" />
+				{% endif %}
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<th>{{ phrase('agent.general.name') }}</th>
+			<td>
+				<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" style="margin:0;" />
+			</td>
+		</tr>
+	</tbody>
+</table>
