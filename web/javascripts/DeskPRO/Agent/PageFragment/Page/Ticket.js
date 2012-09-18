@@ -967,6 +967,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('task_list').append(row);
 					self.getEl('task_list').find('li.none-message').remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('task_count'), '+', 1);
+					DeskPRO_Window.sections.tasks_section.refresh();
 				}
 			});
 		});
