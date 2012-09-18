@@ -48,7 +48,7 @@ var DpErrorLog = {
 			return;
 		}
 
-		if (line == 1 && script.indexOf('/agent/')) {
+		if (parseInt(line) == 1 && script.indexOf('/agent/') != -1) {
 			return;
 		}
 
@@ -97,7 +97,7 @@ var DpErrorLog = {
 				"To help us identify and fix the problem, we would appreciate it if you could describe what you were viewing " +
 				"and the actions you were performing just before this notice appeared.",
 
-				"message: " + data.message + "\nscript: " + data.script + "\nline:" + data.line
+				"Message: " + data.message + "\nScript: " + data.script + "\nLine:" + data.line + "\nUser Agent: " + navigator.userAgent
 			);
 		}
 	},
