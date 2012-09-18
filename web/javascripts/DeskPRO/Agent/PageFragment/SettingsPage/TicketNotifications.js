@@ -35,25 +35,16 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 			});
 		});
 
-		// "All" boxes need to check others
-		$('td.prop.all :checkbox', this.el).on('click', function() {
-			var row = $(this).closest('tr');
-			var checked = $(this).is(':checked');
-
-			if (checked) {
-				$(':checkbox', row).attr('checked', true);
-			}
-		});
-
-		// Toggle "All" box when selecting/unselecting others
-		$('td.prop :checkbox', this.el).on('click', function() {
-			var row = $(this).closest('tr');
-			var checks = row.find(':checkbox').not('.check-all');
-			if (checks.filter(':checked').length == checks.length) {
-				row.find(':checkbox.check-all').attr('checked', true);
-			} else {
-				row.find(':checkbox.check-all').attr('checked', false);
-			}
+		var checks = this.el.find(':checkbox');
+		Array.each(['email', 'alert'], function(type) {
+			checks.filter('[name^="filter_sub[5]['+type+'"]').each(function() {
+				$(this).on('click', function() {
+					if (this.checked) {
+						var name = $(this).attr('name').replace(/^.*?\[([a-zA-Z_]+)\]$/, '$1');
+						checks.filter('[name$="['+name+']"]').prop('checked', true);
+					}
+				});
+			});
 		});
 	}
 });
