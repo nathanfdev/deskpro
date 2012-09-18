@@ -63,7 +63,6 @@ class SqlPass extends AbstractFunc
 		'CHAR_LENGTH' => array('number', 1),
 		'DATE' => array('date', 1),
 		'DATEDIFF' => array('number', 2),
-		'DAYOFMONTH' => array('number', 1),
 		'DAYOFWEEK' => array('number', 1),
 		'DAYOFYEAR' => array('number', 1),
 		'FIELD' => array('number', 2, -1),

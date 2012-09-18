@@ -36,55 +36,16 @@ namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
-use Application\DeskPRO\Dpql\Exception AS DpqlException;
+use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
- * Abstract base for all DPQL function calls.
+ * Handler that wraps around DAYOFMONTH() to add ordinal suffixes.
  */
-abstract class AbstractFunc
+class DayOfMonth extends AbstractFunc
 {
-	/**
-	 * Maps DPQL function names (in all upper case) to class names
-	 * (in the \Application\DeskPRO\Dqpl\Func namespace).
-	 *
-	 * @var array
-	 */
-	protected static $_functionMap = array(
-		'ALIAS' => 'Alias',
-		'COUNT' => 'Count',
-		'COUNT_DISTINCT' => 'CountDistinct',
-		'CURDATE' => 'CurDate',
-		'CURTIME' => 'CurTime',
-		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-		'DAYNAME' => 'DayName',
-		'DAYOFMONTH' => 'DayOfMonth',
-		'FORMAT' => 'Format',
-		'LINK' => 'Link',
-		'MATRIX' => 'Matrix',
-		'MONTHNAME' => 'MonthName',
-		'NOW' => 'Now',
-		'PERCENT' => 'Percent',
-		'PRINT' => 'Printable',
-		'TO_UTC' => 'ToUtc',
-		'UTC' => 'Utc',
-		'X' => 'X',
-		'Y' => 'Y'
-	);
-
-	/**
-	 * Name of the function (in user-provided case).
-	 *
-	 * @var string
-	 */
-	protected $_name;
-
-	/**
-	 * List of arguments for function
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
-	 */
-	protected $_arguments;
-
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
 	 *
@@ -96,60 +57,38 @@ abstract class AbstractFunc
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|boolean Prepared results or false if there's no output
 	 */
-	abstract public function prepare(
+	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	);
-
-	/**
-	 * Constructor. Use the create() factory method.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 */
-	protected function __construct($name, array $arguments = array())
+	)
 	{
-		$this->_name = $name;
-		$this->_arguments = $arguments;
-	}
-
-	/**
-	 * Creates the correct function handler object.
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
-	 */
-	public static function create($name, array $arguments = array())
-	{
-		$name = strtoupper($name);
-		if (isset(self::$_functionMap[$name])) {
-			$map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
-			return new $map($name, $arguments);
-		} else {
-			return new SqlPass($name, $arguments);
+		if (count($this->_arguments) != 1) {
+			throw new Exception('DAYOFMONTH() can only accept 1 argument.');
 		}
-	}
 
-	/**
-	 * Gets a literal value for the specified part.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
-	 *
-	 * @return mixed
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
-	{
-		if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
-			return $part->string;
-		} else if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
-			return $part->number;
-		} else {
-			throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
-		}
+		$expression = reset($this->_arguments);
+		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+
+		$sql = 'DAYOFMONTH(' . $prepped->sql() . ')';
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+		{
+			$mod = $value % 100;
+			switch ($mod) {
+				case 11:
+				case 12:
+				case 13:
+					return $value . 'th';
+
+				default:
+					$ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+					return $value . $ends[$value % 10];
+			}
+		};
+
+		$res = new Prepared($sql, 'DAYOFMONTH(' . $prepped->name() . ')', false, $renderer);
+		$res->setOrdered('DAYOFMONTH(' . $prepped->sql() . ')');
+
+		return $res;
 	}
 }
