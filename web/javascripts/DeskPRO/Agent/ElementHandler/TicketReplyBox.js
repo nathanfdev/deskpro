@@ -15,6 +15,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var sigTrimmed = false;
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
+			self.el.removeClass('dp-note-on');
 			$(this).addClass('on');
 			self.getElById('replybox_notetab_btn').removeClass('on');
 			$('.hide-note:not(.is-hidden)', self.el).show();
@@ -29,6 +30,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
+			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
 			self.getElById('replybox_replytab_btn').removeClass('on');
 			$('.hide-note', self.el).hide();
