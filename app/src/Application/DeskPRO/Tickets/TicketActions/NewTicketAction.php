@@ -297,6 +297,18 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			));
 			$vars['messages'] = $messages;
 
+			if ($ticket->creation_system == Ticket::CREATED_WEB_AGENT) {
+				// First message is the name we'll send it from
+				$first = \Orb\Util\Arrays::getFirstItem($messages);
+
+				if ($first) {
+					$from_address = array_keys($from_address);
+					$from_address = $from_address[0];
+
+					$from_address = array($from_address => $first->person->getDisplayName());
+				}
+			}
+
 			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 				$message = App::getMailer()->createMessage();
 				$message->setContextId('ticket_gateway');
