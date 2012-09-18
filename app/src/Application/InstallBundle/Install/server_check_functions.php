@@ -333,43 +333,11 @@ if (deskpro_install_check_version()) {
 
 function deskpro_install_basic_error($message, $title = 'DeskPRO Installation')
 {
-	// We dont know the root path yet, so lets just inline the CSS
-	$css = file_get_contents(DP_WEB_ROOT.'/web/stylesheets/install/install.css');
-	$html = <<<HTML
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>DeskPRO</title>
-	<style type="text/css">
-	$css
-	</style>
-</head>
-<body>
-<div class="container">
-	<div class="page-header">
-		<h1>{$title}</h1>
-	</div>
-	<div class="alert-message block-message error">
-		{$message}
-	</div>
+	$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/preboot-error.html');
+	$page_html = str_replace('{{ TITLE }}', $title, $page_html);
+	$page_html = str_replace('{{ MESSAGE }}', $message, $page_html);
 
-	<div class="alert-message block-message warning">
-		<p>
-			<strong>Need help?</strong> If you're unsure how to resolve this error,
-			just ask one of our support agents and they'll know exactly what to do.
-		</p>
-		<div class="alert-actions">
-			<a class="btn" href="mailto:support@deskpro.com">Email support@deskpro.com</a>
-			<a class="btn" href="http://support.deskpro.com/">Visit our helpdesk</a>
-		</div>
-	</div>
-</div>
-</body>
-</html>
-HTML;
-
-	return $html;
+	return $page_html;
 }
 
 

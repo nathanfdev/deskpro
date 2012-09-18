@@ -183,7 +183,25 @@ if ($errors) {
 
 		echo $msg;
 	} else {
-		$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
+
+		if (!deskpro_install_check_version() && version_compare(phpversion(), '5.3', '<')) {
+			$v = phpversion();
+			$errors = 'DeskPRO requires PHP version v5.3.2 (or v5.4.x) to function. Your server currently has PHP v'.$v.' installed. Support for the version of PHP you have installed was ended by <a href="http://php.net/archive/2010.php">The PHP Group in 2010</a> and it is strongly recommended you upgrade.';
+
+			if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
+				if (!empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+					$errors .= '<br/><br />To continue you should install the latest version of PHP for IIS. You can do this directly <a href="http://php.iis.net/">Microsoft\'s IIS & PHP website</a>.';
+				} else {
+					$errors .= '<br/><br />To continue you should install a more recent version of PHP. You can download PHP directly from the <a href="http://windows.php.net/">PHP.net website</a>, or you might wish to install one of the following distributions which include PHP along with other server software such as MySQL and Apache: <a href="http://www.wampserver.com/en/">WampServer</a>, <a href="http://php.iis.net/">PHP on IIS</a>, <a href="http://www.easyphp.org/">EasyPHP</a> or <a href="http://www.apachefriends.org/en/xampp-windows.html">XAMPP</a>.';
+				}
+			} else {
+				$errors .= '<br /><br />To continue you should install a more recent version of PHP. You can download the PHP sources from the <a href="http://php.net/">PHP.net website</a>.';
+			}
+		} else {
+			$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
+		}
+
+
 		echo deskpro_install_basic_error($errors);
 	}
 	exit;
