@@ -96,7 +96,9 @@ class Usergroup extends AbstractEntityRepository
 
         $ret = array();
         foreach ($for_ids as $id) {
-            $ret[$id] = $this->_usergroup_names[$id];
+			if (isset($this->_usergroup_names[$id])) {
+				$ret[$id] = $this->_usergroup_names[$id];
+			}
         }
 
         return $ret;
