@@ -46,7 +46,7 @@ class Results
 	 *
 	 * @var array
 	 */
-	protected $_results;
+	protected $_results = array();
 
 	/**
 	 * Sets the results to a single result set
