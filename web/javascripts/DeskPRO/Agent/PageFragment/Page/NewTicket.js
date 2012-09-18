@@ -248,7 +248,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var formData = this.form.serializeArray();
 
 		$('div.error.section', this.wrapper).removeClass('error');
-		$('.error-message-on', this.wrapper).removeClass('error-message-on');
+		$('.error-message-on', this.wrapper).removeClass('error-message-on').hide();
+		this.getEl('error_section').hide();
 
 		this.wrapper.parent().addClass('loading');
 
@@ -291,7 +292,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	showErrorCode: function(code) {
-		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
+		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on').show();
 		switch (code) {
 			case 'person_id':
 			case 'person_no_user':
@@ -312,7 +313,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	clearErrorCode: function(code) {
-		$('.' + code + '.error-message', this.wrapper).removeClass('error-message-on');
+		$('.' + code + '.error-message', this.wrapper).removeClass('error-message-on').hide();
 		switch (code) {
 			case 'person_id':
 			case 'person_no_user':
@@ -329,7 +330,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				break;
 		}
 
-		this.getEl('error_section').show();
+		if (this.getEl('error_section').find('.error-message-on')[0]) {
+			this.getEl('error_section').show();
+		} else {
+			this.getEl('error_section').hide();
+		}
+
 		this.updateUi();
 	},
 
