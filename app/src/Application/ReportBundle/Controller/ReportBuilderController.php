@@ -185,7 +185,7 @@ class ReportBuilderController extends AbstractController
 		$output = $this->in->getString('output');
 		if ($output) {
 			try {
-				return $this->_getReportResponseForType($output, $query, $report->title, $params);
+				return $this->_getReportResponseForType($output, $query, $report->getTitle('printable', $params), $params);
 			} catch (DpqlException $e) {
 				$run = true;
 				// fall through - an error will be triggered below

@@ -169,21 +169,43 @@ class Csv extends AbstractRenderer
 		$rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
 		$headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
+		$select = $this->_handler->getSelectColumns();
+		$first = reset($select);
+		if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
+			$totalType = $first['renderer'];
+		} else {
+			$totalType = false;
+		}
+
 		$headerRow = array();
-		foreach ($this->_handler->getGroupYColumns() AS $rowGroupSkip) {
+		foreach ($this->_handler->getGroupYColumns() AS $column) {
 			$headerRow[] = $this->wrapCell('');
+		}
+		$parts = array();
+		foreach ($this->_handler->getGroupXColumns() AS $column) {
+			$parts[] = $column['title'];
+		}
+		$headerRow[] = $this->wrapCell(implode(' / ', $parts));
+		foreach ($headerCols AS $headerCol) {
+			$headerRow[] = $this->wrapCell('');
+		}
+		array_pop($headerRow);
+		if ($totalType) {
+			$headerRow[] = $this->wrapCell('');
+		}
+
+		$rows[] = implode(',', $headerRow);
+
+		$headerRow = array();
+		foreach ($this->_handler->getGroupYColumns() AS $column) {
+			$headerRow[] = $this->wrapCell($column['title']);
 		}
 		foreach ($headerCols AS $headerCol) {
 			$headerRow[] = $this->wrapCell(implode(' / ', $headerCol));
 		}
 
-		$select = $this->_handler->getSelectColumns();
-		$first = reset($select);
-		if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
-			$totalType = $first['renderer'];
+		if ($totalType) {
 			$headerRow[] = $this->wrapCell('Total');
-		} else {
-			$totalType = false;
 		}
 
 		$rows[] = implode(',', $headerRow);

@@ -308,13 +308,35 @@ class Html extends AbstractRenderer
 		ksort($rows);
 
 		$output = array();
+
+		$row = array();
+		if ($colSkipCount) {
+			$row[] = '<th' . ($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '') . '>&nbsp;</th>';
+		}
+		$parts = array();
+		foreach ($this->_handler->getGroupXColumns() AS $column) {
+			$parts[] = $column['title'];
+		}
+		$row[] = '<th colspan="' . $header['colSpan'] . '" class="label">'
+			. $this->_valueRenderer->escapeValue(implode(' / ', $parts))
+			. '</th>';
+		if ($totalType) {
+			$row[] = '<th>&nbsp;</th>';
+		}
+		$output[] = "<tr class=\"row-header\">" . implode('', $row) . "</tr>";
+
 		foreach ($rows AS $depth => $row) {
 			if ($depth === 0) {
 				$colSpan = ($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '');
 				$rowSpan = ($rowSkipCount > 1 ? " rowspan=\"$rowSkipCount\"" : '');
 
 				if ($colSkipCount) {
-					$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
+					//$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
+					$prefix = '';
+					foreach ($this->_handler->getGroupYColumns() AS $column) {
+						$prefix .= '<th' . $rowSpan . ' class="label">' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
+					}
+					$row = $prefix . $row;
 				}
 				if ($totalType) {
 					$row .= "<th class=\"column-total\"$rowSpan>Total</th>";
