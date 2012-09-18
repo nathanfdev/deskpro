@@ -185,7 +185,7 @@ function dpTwoSelectInit(el, options) {
 		parentEl.find('option.' + parentOptInfo.id).prop('selected', true);
 
 		if (parentOptInfo.isGroup) {
-			childEl.empty();
+			childEl.get(0).innerHTML = '';
 
 			if (blankOption) {
 				subBlankOption = blankOption.clone();
@@ -212,6 +212,10 @@ function dpTwoSelectInit(el, options) {
 				childEl.append(opt);
 			});
 
+			// this toggle is required for IE to update the display of the select box,
+			// or else you'll end up with a select box that looks like it has the same options
+			// even though it doesnt
+			childEl.hide().show();
 			placeholder.addClass('dp-show-child');
 		} else {
 			selectedVal = parentOptInfo.value;
