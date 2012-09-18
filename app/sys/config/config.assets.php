@@ -458,9 +458,10 @@ $CONFIG['report_builder'] = array(
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.scrollTo.js',
 		'vendor/jquery/jquery.textarea-expander.js',
-		'vendor/amcharts/javascript/amcharts.js',
-		'vendor/amcharts/javascript/amfallback.js',
-		'vendor/amcharts/javascript/raphael.js',
+		//'vendor/amcharts/javascript/amcharts.js',
+		//'vendor/amcharts/javascript/amfallback.js',
+		//'vendor/amcharts/javascript/raphael.js',
+		'vendor/amcharts/javascript/amcharts27.js',
 	),
 );
 

@@ -254,7 +254,9 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 				$selector.data('report-list-query', text);
 
-				var choices = getQueryChoices(text), i = choices.extras.default;
+				var choices = getQueryChoices(text),
+					d = 'default',
+					i = choices.extras[d];
 				if (!i || !choices.choices[i]) {
 					for (i in choices.choices) {
 						break;
@@ -351,7 +353,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 		dragger = $('<div class="report-list-dragger" />').css({
 			position: 'absolute',
-			left: (offset.left + el.outerWidth()) + 'px',
+			left: (offset.left + el.outerWidth()) + 'px'
 		}).draggable({
 			axis: 'x',
 			containment: [offset.left + minWidth + widthDiff, 0, offset.left + maxWidth + widthDiff, 0],

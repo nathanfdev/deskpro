@@ -563,6 +563,10 @@ class Html extends AbstractRenderer
 		$graphs = array();
 		$isStacked = false;
 		$maxCategoryLength = 0;
+		$categoryAxisTitle = '';
+
+		$firstSel = reset($selectColumns);
+		$valueAxisTitle = $firstSel['title'];
 
 		if ($groupXColumns) {
 			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
@@ -607,6 +611,12 @@ class Html extends AbstractRenderer
 
 			$hasCategory = true;
 			$isStacked = ($type == 'bar');
+
+			$parts = array();
+			foreach ($groupXColumns AS $column) {
+				$parts[] = $column['title'];
+			}
+			$categoryAxisTitle = implode(' / ', $parts);
 		} else {
 			if (count($groupYColumns) > 1) {
 				$rowGroups = array();
@@ -659,6 +669,9 @@ class Html extends AbstractRenderer
 				}
 
 				$isStacked = ($type == 'bar');
+
+				$firstY = reset($groupYColumns);
+				$categoryAxisTitle = $firstY['title'];
 			} else {
 				$sel = reset($selectColumns);
 
@@ -682,6 +695,12 @@ class Html extends AbstractRenderer
 					'title' => $sel['title'],
 					'value' => "value"
 				);
+
+				$parts = array();
+				foreach ($groupYColumns AS $column) {
+					$parts[] = $column['title'];
+				}
+				$categoryAxisTitle = implode(' / ', $parts);
 			}
 
 			$hasCategory = count($groupYColumns) > 0;
@@ -691,7 +710,14 @@ class Html extends AbstractRenderer
 			$output = '';
 
 			$sliceCount = count($chartData);
-			$height = 400 + ceil($sliceCount / 4) * 20;
+			if ($maxCategoryLength > 25) {
+				$divisor = 1;
+			} else if ($maxCategoryLength > 15) {
+				$divisor = 2;
+			} else {
+				$divisor = 4;
+			}
+			$height = 400 + ceil($sliceCount / $divisor) * 30;
 
 			foreach ($graphs AS $graph) {
 				$id = 'report_chart_' . md5(uniqid());
@@ -745,7 +771,7 @@ class Html extends AbstractRenderer
 				$verticalLabels = '
 					chart.categoryAxis.labelRotation = 45;
 					chart.categoryAxis.autoGridCount = false;
-					chart.categoryAxis.gridCount = ' . count($rows) . ';
+					chart.categoryAxis.gridCount = ' . min(15, count($rows)) . ';
 					chart.marginBottom = ' . $labelHeight . ';
 				';
 				$height += $labelHeight;
@@ -764,13 +790,12 @@ class Html extends AbstractRenderer
 					chart.addLegend(new AmCharts.AmLegend());
 
 					chart.categoryAxis.fontSize = 9;
-					chart.categoryAxis.title = \'Test\';
-					chart.categoryAxis.titleColor = \'#ff0000\';
+					chart.categoryAxis.title = \'' . $this->_jsEscapeValue($categoryAxisTitle) . '\';
 					' . $verticalLabels . '
 
 					chart.addValueAxis(new AmCharts.ValueAxis());
 					chart.valueAxes[0].integersOnly = true;
-					chart.valueAxes[0].title = \'Test\';
+					chart.valueAxes[0].title = \'' . $this->_jsEscapeValue($valueAxisTitle) . '\';
 					' . $stacked . '
 
 					var graph;
