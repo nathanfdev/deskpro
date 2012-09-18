@@ -1181,6 +1181,13 @@ $collection->add('admin_ticketfeatures_regensearch', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketfeatures_purgetrash', new Route(
+	'/tickets/features/purge-trash/{security_token}',
+	array('_controller' => 'AdminBundle:TicketFeatures:purgeTrash'),
+	array(),
+	array()
+));
+
 $collection->add('admin_customdeftickets', new Route(
 	'/ticket-fields',
 	array('_controller' => 'AdminBundle:CustomDefTickets:index'),

@@ -141,24 +141,90 @@
 						{% endfor %}
 					</select>
 				</div>
+
+				{% if app.getSetting('core_tickets.use_archive') %}
+					<div class="alert-message block-message" style="margin: 4px 25px 0 25px">
+						If there has been an error and the tickets you see in the agent interface do not seem to be correct,
+						there may be a problem with your search tables containing invalid records.
+						<br /><br />
+						<a class="clean-white" href="{{ path('admin_ticketfeatures_regensearch') }}">Click here to regenerate the ticket search tables</a>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>
 </div>
 
-{% if app.getSetting('core_tickets.use_archive') %}
-	<div class="setting_field_row">
-		<h4>Search Tables</h4>
-		<div class="setting_fields">
-			<div class="field_row">
-				If there has been an error and the tickets you see in the agent interface do not seem to be correct,
-				there may be a problem with your search tables containing invalid records.
+<div class="setting_field_row">
+	<h4>Recycle Bin</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			When agents delete or spam a ticket, it is sent to the Recycle Bin. Tickets in the Recycle Bin can be viewed by from the Agent Interface by clicking on the button in the Tickets section.
+
+			<br />
+			<br />
+
+			<table cellspacing="0" cellpadding="2">
+				<tr>
+					<td>How long until deleted tickets are permanently purged from the system?</td>
+					<td>
+						{% set options = {
+							86400: "1 day",
+							259200: "3 days",
+							432000: "5 days",
+							604800: "1 week",
+							172800: "2 weeks",
+							1814400: "3 weeks",
+							2419000: "1 month",
+							4838000: "2 months",
+							7257000: "3 months",
+							14514000: "6 months",
+							21771000: "9 months",
+							29028000: "1 year",
+							58056000: "2 years",
+						} %}
+						<select name="settings[core_tickets.hard_delete_time]">
+							{% for k,v in options %}
+								<option value="{{ k }}" {% if app.getSetting('core_tickets.hard_delete_time') == k %}selected="selected"{% endif %}>{{ v }}</option>
+							{% endfor %}
+						</select><br />
+					</td>
+				</tr>
+				<tr>
+					<td>How long until spammed tickets are permanently purged from the system?&nbsp;&nbsp;</td>
+					<td>
+						{% set options = {
+							86400: "1 day",
+							259200: "3 days",
+							432000: "5 days",
+							604800: "1 week",
+							172800: "2 weeks",
+							1814400: "3 weeks",
+							2419000: "1 month",
+							4838000: "2 months",
+							7257000: "3 months",
+							14514000: "6 months",
+							21771000: "9 months",
+							29028000: "1 year",
+							58056000: "2 years",
+						} %}
+						<select name="settings[core_tickets.spam_delete_time]">
+							{% for k,v in options %}
+								<option value="{{ k }}" {% if app.getSetting('core_tickets.spam_delete_time') == k %}selected="selected"{% endif %}>{{ v }}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+			</table>
+
+			<div class="alert-message block-message" style="margin: 4px 25px 0 25px">
+				Click the button below to run the cleanup now to delete everything in the Recycle Bin.
 				<br /><br />
-				<a class="clean-white" href="{{ path('admin_ticketfeatures_regensearch') }}">Click here to regenerate the ticket search tables</a>
+				<a class="clean-white" href="{{ path('admin_ticketfeatures_purgetrash', {security_token: security_token('purge_trash') }) }}">Click here to permanently purge everything in the Recycle Bin</a>
 			</div>
 		</div>
 	</div>
-{% endif %}
+</div>
 
 <div class="setting_field_row" style="text-align: center">
 	<button class="btn primary">{{ phrase('admin.general.save_settings') }}</button>

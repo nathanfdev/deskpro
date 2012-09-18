@@ -73,4 +73,55 @@ class TicketFeaturesController extends AbstractController
 
 		return new \Symfony\Component\HttpFoundation\Response($res);
 	}
+
+	############################################################################
+	# purge-trash
+	############################################################################
+
+	public function purgeTrashAction($security_token)
+	{
+		$this->ensureAuthToken('purge_trash', $security_token);
+
+		$res = '<pre>';
+		$ticket_ids = App::getDb()->fetchAllCol("
+			SELECT id
+			FROM tickets
+			WHERE status = 'hidden' AND hidden_status = 'deleted'
+		");
+
+		$deleted = 0;
+		if ($ticket_ids) {
+			$ticket_ids = implode(',', $ticket_ids);
+			$deleted = App::getDb()->executeUpdate("DELETE FROM tickets WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_active WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_message WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_message_active WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_subject WHERE id IN ($ticket_ids)");
+		}
+
+		$res .= sprintf("Deleted %d tickets\n", $deleted);
+
+		$ticket_ids = App::getDb()->fetchAllCol("
+			SELECT id
+			FROM tickets
+			WHERE status = 'hidden' AND hidden_status = 'spam'
+		");
+
+		$deleted_spam = 0;
+		if ($ticket_ids) {
+			$ticket_ids = implode(',', $ticket_ids);
+			$deleted_spam = App::getDb()->executeUpdate("DELETE FROM tickets WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_active WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_message WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_message_active WHERE id IN ($ticket_ids)");
+			App::getDb()->executeUpdate("DELETE FROM tickets_search_subject WHERE id IN ($ticket_ids)");
+		}
+
+		$res .= sprintf("Deleted %d spam tickets\n", $deleted_spam);
+
+		$res .= "Done\n";
+		$res .= '</pre>';
+
+		return new \Symfony\Component\HttpFoundation\Response($res);
+	}
 }
