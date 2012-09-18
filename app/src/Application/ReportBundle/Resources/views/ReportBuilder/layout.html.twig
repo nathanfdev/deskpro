@@ -12,6 +12,14 @@
 		window.DeskPRO_Page.updateFavorites({{ favoritesJs|json_encode|raw }});
 	}
 </script>
+<style type="text/css" media="print">
+	#report-container-inner { display: none; }
+	#report-page-body, #report-page-body-inner {
+		position: static;
+		overflow: auto;
+		border: none;
+	}
+</style>
 {% endblock %}
 {% block nav_block %}
 {% endblock %}
@@ -37,7 +45,7 @@
 	<div id="report-list" data-element-handler="DeskPRO.Report.ElementHandler.Builder.ReportList"
 		data-cookie="dp_report_list_width"
 		data-min="120"
-		data-max="500"
+		data-max="900"
 	>
 		<div id="report-container-inner">
 		<div class="top-btn">

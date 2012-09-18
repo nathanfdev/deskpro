@@ -326,16 +326,14 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 		if (cookieValue) {
 			el.css('width', Math.min(maxWidth, Math.max(minWidth, cookieValue)) + 'px');
-			$('#report-page-body').css('left', Math.min(maxWidth, Math.max(minWidth, cookieValue)) + 25);
+			$('#report-page-body').css('left', Math.min(maxWidth, Math.max(minWidth, cookieValue)) + 21);
 		} else {
-			$('#report-page-body').css('left', el.width() + 25);
+			$('#report-page-body').css('left', el.width() + 21);
 		}
 
 		dragger = $('<div class="report-list-dragger" />').css({
 			position: 'absolute',
-			height: el.outerHeight() + 'px',
 			left: (offset.left + el.outerWidth()) + 'px',
-			top: offset.top + 'px'
 		}).draggable({
 			axis: 'x',
 			containment: [offset.left + minWidth + widthDiff, 0, offset.left + maxWidth + widthDiff, 0],
@@ -345,7 +343,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 				if (cookie) {
 					$.cookie(cookie, width, {expires: 7});
 				}
-				$('#report-page-body').css('left', width + 25);
+				$('#report-page-body').css('left', width + 21);
 			}
 		}).appendTo(document.body);
 
