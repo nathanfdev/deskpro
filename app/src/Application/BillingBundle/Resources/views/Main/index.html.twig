@@ -113,7 +113,7 @@
 							Your license has expired
 						{% endif %}
 						&nbsp;&nbsp;
-						<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">Renew</a>
+						<a target="_blank" class="clean-white" href="http://www.deskpro.com/members/">{% if not is_expired %}Renew{% else %}Extend{% endif %}</a>
 					</td>
 				</tr>
 				<tr>
