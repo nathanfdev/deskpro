@@ -941,7 +941,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				dataType: 'json',
 				complete: function() {
-					$(this).removeClass('saving').text('Add');
+					self.getEl('task_save').removeClass('saving').text('Add');
 				},
 				success: function(data) {
 
