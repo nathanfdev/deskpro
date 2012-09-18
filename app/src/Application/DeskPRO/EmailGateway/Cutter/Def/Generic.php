@@ -47,10 +47,14 @@ class Generic implements ForwardDef, QuoteDef
 	public function splitFromFirstHeaderText($body)
 	{
 		$body = Strings::standardEol($body);
-		$body = explode("\n", $body);
 
 		$found = 0;
 		$start_line = null;
+
+		// Try to fix From that has [email address] on a new line after From:
+		$body = preg_replace('#^From: ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m', 'From: $1 <$3>', $body);
+
+		$body = explode("\n", $body);
 
 		foreach ($body as $ln => $l) {
 			$l = preg_replace('#^\s*>+\s*#', '', $l);

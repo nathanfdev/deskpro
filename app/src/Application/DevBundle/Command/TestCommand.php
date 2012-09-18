@@ -59,14 +59,18 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/attach01.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/big-forward.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
-		foreach ($r->getAttachments() as $attach) {
-			echo $attach->getFileNameUtf8();
-			echo "\n";
+		$body = $r->getBodyText()->getBodyUtf8();
+		$this->cutterDef = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
+		$fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($body, false, $this->cutterDef);
+		if (!$fwd_cutter->isValid()) {
+			echo "ERROR";
+		} else {
+			print_r($fwd_cutter->getData());
 		}
 
 		echo "\n";

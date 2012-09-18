@@ -43,7 +43,7 @@ use Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
 use Application\DeskPRO\EmailGateway\Ticket\Dp3Detector;
-use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
+use Application\DeskPRO\EmailGateway\Cutter\cutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor
