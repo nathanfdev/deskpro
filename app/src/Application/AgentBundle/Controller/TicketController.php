@@ -1270,6 +1270,11 @@ class TicketController extends AbstractController
 
 			$this->em->beginTransaction();
 
+			if ($this->in->getBool('with_set_agent_parts')) {
+				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard'));
+				$ticket->setAgentParticipants($agents);
+			}
+
 			try {
 				$ticket_edit->save();
 				$this->em->flush();
