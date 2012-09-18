@@ -76,5 +76,12 @@
 	<input type="hidden" name="parent_id" value="{{report.parent ? report.parent.id : ''}}" />
 	<input type="hidden" name="process" value="1" />
 	{{ form_token() }}
+
+	<p style="margin-top: 1em; padding-top: 1em; border-top: 1px solid #DEDEDE">Further information about the report builder system is available in our knowledge base:</p>
+	<ul>
+		<li><a href="http://support.deskpro.com/kb/articles/87-using-the-report-builder" target="_blank">Using the Report Builder</a></li>
+		<li><a href="http://support.deskpro.com/kb/articles/86-dpql-reference" target="_blank">DeskPRO Query Language Reference</a></li>
+		<li><a href="http://support.deskpro.com/kb/articles/85-dpql-field-reference" target="_blank">DeskPRO Query Language Field Reference</a></li>
+	</ul>
 </form>
 {% endblock %}

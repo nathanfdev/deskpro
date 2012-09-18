@@ -50,11 +50,23 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 		});
 
 		$(document.body).delegate('.report-editor-controls-show', 'click', function(e) {
-			var $this = $(this);
+			var $this = $(this), hide = $this.data('click-hide');
 
 			e.preventDefault();
-			$($this.data('target')).show();
-			$this.hide();
+
+			if (!$this.data('show-text')) {
+				$this.data('show-text', $this.text());
+			}
+
+			if (hide) {
+				$($this.data('target')).hide();
+				$this.text($this.data('show-text'));
+				$this.data('click-hide', false);
+			} else {
+				$($this.data('target')).show();
+				$this.text($this.data('hide-text'));
+				$this.data('click-hide', true);
+			}
 		});
 
 		var pageBody = $('#report-page-body'), initialized = false;

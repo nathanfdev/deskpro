@@ -540,6 +540,7 @@ class Html extends AbstractRenderer
 		$chartData = array();
 		$graphs = array();
 		$isStacked = false;
+		$maxCategoryLength = 0;
 
 		if ($groupXColumns) {
 			// matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
@@ -554,7 +555,10 @@ class Html extends AbstractRenderer
 			$headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
 			foreach ($headerCols AS $xPath => $printable) {
-				$rowData = array('category' => implode(' / ', $printable));
+				$category = implode(' / ', $printable);
+				$maxCategoryLength = max($maxCategoryLength, strlen($category));
+
+				$rowData = array('category' => $category);
 
 				$i = 0;
 				foreach ($rowGroups AS $yPath => $null) {
@@ -612,6 +616,8 @@ class Html extends AbstractRenderer
 
 				foreach ($rowGroups AS $grouper => $values)
 				{
+					$maxCategoryLength = max($maxCategoryLength, strlen($grouper));
+
 					$data = array('category' => $grouper);
 					foreach ($values AS $categoryName => $groupValues) {
 						$uniqueGraphs[$categoryName] = true;
@@ -638,6 +644,8 @@ class Html extends AbstractRenderer
 						$categories[] = $this->_renderCellValue($row, $column);
 					}
 					$category = implode(' / ', $categories);
+
+					$maxCategoryLength = max($maxCategoryLength, strlen($category));
 
 					$rowData = array('category' => $category);
 
@@ -705,14 +713,25 @@ class Html extends AbstractRenderer
 			}
 
 			if ($isStacked) {
-				$stacked = 'var valueAxis = new AmCharts.ValueAxis();
-					valueAxis.stackType = "regular";
-					chart.addValueAxis(valueAxis);';
+				$stacked = 'chart.valueAxes[0].stackType = "regular";';
 			} else {
 				$stacked = '';
 			}
 
 			$height = 430 + count($graphs) * 25;
+
+			if ($maxCategoryLength > 25) {
+				$labelHeight = $maxCategoryLength * 4;
+				$verticalLabels = '
+					chart.categoryAxis.labelRotation = 45;
+					chart.categoryAxis.autoGridCount = false;
+					chart.categoryAxis.gridCount = ' . count($rows) . ';
+					chart.marginBottom = ' . $labelHeight . ';
+				';
+				$height += $labelHeight;
+			} else {
+				$verticalLabels = '';
+			}
 
 			$id = 'report_chart_' . md5(uniqid());
 			$output = '
@@ -725,6 +744,9 @@ class Html extends AbstractRenderer
 					chart.addLegend(new AmCharts.AmLegend());
 
 					chart.categoryAxis.fontSize = 9;
+					' . $verticalLabels . '
+					chart.addValueAxis(new AmCharts.ValueAxis());
+					chart.valueAxes[0].integersOnly = true;
 
 					' . $stacked . '
 

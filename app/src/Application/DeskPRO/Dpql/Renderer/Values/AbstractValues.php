@@ -91,6 +91,7 @@ abstract class AbstractValues
 
 			case 'number':
 			case 'numberraw';
+			case 'id':
 				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
 					// float
 					//$decimals = min(4, strlen($match[2]));
@@ -100,7 +101,7 @@ abstract class AbstractValues
 					$decimals = 0;
 				}
 
-				if ($format == 'numberraw') {
+				if (in_array($format, array('numberraw', 'id'))) {
 					$thousands = '';
 				} else {
 					$thousands = ',';

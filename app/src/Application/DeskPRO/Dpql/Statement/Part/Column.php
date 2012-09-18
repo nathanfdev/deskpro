@@ -77,6 +77,10 @@ class Column extends AbstractPart
 		'ticket_workflows' => array('id', 'title')
 	);
 
+	protected static $_autoLink = array(
+		'tickets.id' => array('ticket')
+	);
+
 	/**
 	 * @param array $parts
 	 */
@@ -174,6 +178,28 @@ class Column extends AbstractPart
 						case 'text':
 							$renderer = 'string';
 							break;
+					}
+
+					if ($renderer == 'number' && !empty($field['id'])) {
+						$renderer = 'id';
+					}
+
+					$linkLookup = $repository->getTableName() . '.' . $part;
+
+					if (isset(self::$_autoLink[$linkLookup])) {
+						$lookup = self::$_autoLink[$linkLookup];
+
+						if ($section == 'split') {
+							$argSelect = array($statement->getSplitSql()->addSelectField($sql));
+						} else {
+							$argSelect = array($select->addSelectField($sql));
+						}
+
+						$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+							use ($lookup, $argSelect)
+						{
+							return Link::formatLink($value, $lookup[0], $argSelect, $row, $valueRenderer, $renderer);
+						};
 					}
 
 					$name = $part;
