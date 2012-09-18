@@ -176,6 +176,16 @@ class Csv extends AbstractRenderer
 		foreach ($headerCols AS $headerCol) {
 			$headerRow[] = $this->wrapCell(implode(' / ', $headerCol));
 		}
+
+		$select = $this->_handler->getSelectColumns();
+		$first = reset($select);
+		if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
+			$totalType = $first['renderer'];
+			$headerRow[] = $this->wrapCell('Total');
+		} else {
+			$totalType = false;
+		}
+
 		$rows[] = implode(',', $headerRow);
 
 		if (!$rowGroups) {
@@ -183,8 +193,11 @@ class Csv extends AbstractRenderer
 			$rowGroups = array('root' => array());
 		}
 
+		$columnTotals = array();
+
 		foreach ($rowGroups AS $yPath => $printable) {
 			$columns = array();
+			$rowTotal = 0;
 
 			foreach ($printable AS $print) {
 				$columns[] = $this->wrapCell($print);
@@ -197,7 +210,34 @@ class Csv extends AbstractRenderer
 					$value = '';
 				}
 				$columns[] = $this->wrapCell($value);
+
+				if ($totalType) {
+					$rowTotal += str_replace(',', '', $value);
+					if (!isset($columnTotals[$xPath])) {
+						$columnTotals[$xPath] = 0;
+					}
+					$columnTotals[$xPath] += str_replace(',', '', $value);
+				}
 			}
+
+			if ($totalType) {
+				$columns[] = $this->wrapCell($this->_valueRenderer->renderValue($rowTotal, $totalType));
+			}
+
+			$rows[] = implode(',', $columns);
+		}
+
+		if ($totalType && $this->_handler->getGroupYColumns()) {
+			$columns = array();
+			foreach ($this->_handler->getGroupYColumns() AS $rowGroupSkip) {
+				$columns[] = $this->wrapCell('');
+			}
+			array_pop($columns);
+			$columns[] = $this->wrapCell('Total');
+			foreach ($columnTotals AS $value) {
+				$columns[] = $this->wrapCell($this->_valueRenderer->renderValue($value, $totalType));
+			}
+			$columns[] = $this->wrapCell($this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType));
 
 			$rows[] = implode(',', $columns);
 		}
