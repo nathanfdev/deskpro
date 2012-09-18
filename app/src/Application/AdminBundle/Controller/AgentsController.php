@@ -759,7 +759,7 @@ class AgentsController extends AbstractController
 					$this->db->insert('agent_team_members', array('team_id' => $team->id, 'person_id' => $pid));
 				}
 
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_team', '1');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_agent_team', '1');
 
 				$this->em->getConnection()->commit();
 			} catch (\Exception $e) {
