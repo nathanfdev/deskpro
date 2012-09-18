@@ -44,7 +44,13 @@ class ReportBuilderController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams());
+		$report = $this->em->getRepository('DeskPRO:ReportBuilder')->getByUniqueKey('number-tickets-created-date-grouped-by-x-y');
+		if ($report) {
+			$_REQUEST['params'] = 'this_month,department,agent';
+			return $this->reportAction($report->id);
+		} else {
+			return $this->render('ReportBundle:ReportBuilder:index.html.twig', $this->mergeReportBuilderLayoutParams());
+		}
 	}
 
 	public function queryAction()
@@ -491,7 +497,12 @@ class ReportBuilderController extends AbstractController
 
 	public function getParamsInput($name = 'params')
 	{
-		$params = $this->in->getRaw($name);
+		if (isset($_REQUEST[$name])) {
+			$params = $_REQUEST[$name];
+		} else {
+			$params = $this->in->getRaw($name);
+		}
+		
 		if (is_array($params)) {
 			ksort($params);
 		} else if ($params) {

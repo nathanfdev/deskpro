@@ -56,6 +56,15 @@ class ReportBuilder extends AbstractEntityRepository
 		')->execute();
 	}
 
+	public function getByUniqueKey($key)
+	{
+		return $this->getEntityManager()->createQuery('
+			SELECT rb
+			FROM DeskPRO:ReportBuilder rb
+			WHERE rb.unique_key = ?0
+		')->setParameters(array($key))->getOneOrNullResult();
+	}
+
 	public function findFavorite(
 		\Application\DeskPRO\Entity\ReportBuilder $report,
 		\Application\DeskPRO\Entity\Person $person = null,
