@@ -628,6 +628,8 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function done()
 	{
+		$hstatus = $this->getChangedProperty('hidden_status');
+
 		if ($this->ticket->_isRemoved || $this->ticket->_no_log) {
 			return;
 		}
@@ -697,5 +699,33 @@ class TicketChangeTracker extends ChangeTracker
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
 		$this->running = false;
+
+		if ($hstatus) {
+			if ($hstatus['new'] == 'spam') {
+				$spamdata = $this->ticket->subject . "\n";
+
+				$msg = App::getDb()->fetchColumn("
+					SELECT message
+					FROM tickets_messages
+					WHERE ticket_id = ?
+					ORDER BY id DESC
+					LIMIT 1
+				", array($this->ticket->id));
+				if ($msg) {
+					$spamdata .= $msg;
+				}
+
+				$spamdata = strip_tags($spamdata);
+
+				App::getDb()->replace('import_datastore', array(
+					'typename' => 'dp4_ticketspam_' . $this->ticket->getId(),
+					'data' => $spamdata
+				));
+			} elseif ($hstatus['old'] == 'spam' && $hstatus['new'] != 'spam') {
+				App::getDb()->delete('import_datastore', array(
+					'typename' => 'dp4_ticketspam_' . $this->ticket->getId()
+				));
+			}
+		}
 	}
 }
