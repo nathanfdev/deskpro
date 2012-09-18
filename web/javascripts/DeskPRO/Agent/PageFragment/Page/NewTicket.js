@@ -136,10 +136,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				if ($(this).prop('multiple')) {
 					$(this).width(300);
 				}
+
 				DP.select($(this));
 			});
 			self.updateUi();
 		}, 300);
+
+		self.wrapper.find('select').each(function() {
+			var len = 0;
+			$(this).find('option').each(function() {
+				var ol = $(this).text().length;
+				if (ol > len) len = ol;
+			});
+			$(this).width((10 * len) + 25);
+		});
 
 		var depSel = this.getEl('dep');
 

@@ -136,39 +136,39 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section class="ticketreply">
 		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
-			<div class="field-holders">
-				<div class="ticket-field">
-					<div class="title">Department</div>
-					<div class="content">
+			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table" id="{{baseId}}_fields_container">
+				<tbody>
+					<th width="80">Department</th>
+					<td>
 						{% include 'AgentBundle:Common:select-department.html.twig' with {
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
 							'departments': ticket_options.departments_hierarchy
 						} %}
-					</div>
-				</div>
-			</div>
+					</td>
+				</tbody>
 
-			<div id="{{baseId}}_fields_container" class="field-holders">
 				{% if app.getSetting('core.use_ticket_category') %}
-					<div class="col fieldprop ticket-field item-on ticket_category inline-field" style="clear:both;display: none;">
-						<div class="title">{{ phrase('agent.general.category') }}</div>
-						<div class="content">
-							{% include 'AgentBundle:Common:select-category.html.twig' with {
-								'name': "newticket[category_id]",
-								'id': baseId ~ '_cat',
-								'categories': ticket_options.ticket_categories_hierarchy,
-								'selected': app.getSetting('core.default_ticket_cat'),
-								'with_blank': true
-							} %}
-						</div>
-					</div>
+					<tbody class="col fieldprop ticket-field item-on ticket_category inline-field" style="display: none;">
+						<th>{{ phrase('agent.general.category') }}</th>
+						<td>
+							<div>
+								{% include 'AgentBundle:Common:select-category.html.twig' with {
+									'name': "newticket[category_id]",
+									'id': baseId ~ '_cat',
+									'categories': ticket_options.ticket_categories_hierarchy,
+									'selected': app.getSetting('core.default_ticket_cat'),
+									'with_blank': true
+								} %}
+							</div>
+						</td>
+					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_priority') %}
-					<div class="col fieldprop ticket-field item-on ticket_priority inline-field" style="clear:both;display: none;">
-						<div class="title">{{ phrase('agent.general.priority') }}</div>
-						<div class="content">
+					<tbody class="col fieldprop ticket-field item-on ticket_priority inline-field" style="display: none;">
+						<th>{{ phrase('agent.general.priority') }}</th>
+						<td>
 							{% include 'AgentBundle:Common:select-priority.html.twig' with {
 								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
@@ -177,14 +177,14 @@ pageMeta.baseId = '{{ baseId }}';
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
 							} %}
-						</div>
-					</div>
+						</td>
+					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_workflow') %}
-					<div class="col fieldprop ticket-field item-on ticket_workflow inline-field" style="clear:both;display: none;">
-						<div class="title">{{ phrase('agent.general.workflow') }}</div>
-						<div class="content">
+					<tbody class="col fieldprop ticket-field item-on ticket_workflow inline-field" style="clear:both;display: none;">
+						<th>{{ phrase('agent.general.workflow') }}</th>
+						<td>
 							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
@@ -193,14 +193,14 @@ pageMeta.baseId = '{{ baseId }}';
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
 							} %}
-						</div>
-					</div>
+						</td>
+					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_product') %}
-					<div class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
-						<div class="title">{{ phrase('agent.general.product') }}</div>
-						<div class="content">
+					<tbody class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
+						<th class="title">{{ phrase('agent.general.product') }}</th>
+						<td class="content">
 							{% include 'AgentBundle:Common:select-product.html.twig' with {
 								'name': "newticket[product_id]",
 								'id': baseId ~ '_prod',
@@ -208,21 +208,21 @@ pageMeta.baseId = '{{ baseId }}';
 								'products': ticket_options.products_hierarchy,
 								'with_blank': true
 							} %}
-						</div>
-					</div>
+						</td>
+					</tbody>
 				{% endif %}
 
 				{% if custom_fields %}
 					{% for f in custom_fields %}
-						<div class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
-							<div class="title">{{f.title}}</div>
-							<div class="content">
+						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
+							<th>{{f.title}}</th>
+							<td>
 								{{ render_custom_field_form(f) }}
-							</div>
-						</div>
+							</td>
+						</tbody>
 					{% endfor %}
 				{% endif %}
-			</div>
+			</table>
 		</article>
 	</section>
 </div>
