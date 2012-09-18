@@ -82,6 +82,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.page.getEl('field_edit_save').show();
 		this.page.getEl('field_edit_controls').removeClass('loading');
 
+		this.display.find('select[multiple]').each(function() {
+			var min = $(this).width() + 30;
+			var parent = $(this).closest('td').find('> div').first().width();
+			if (parent) {
+				min = Math.max(min, Math.ceil(parent / 1.75));
+			}
+			$(this).width(min);
+		});
 		DP.select(this.display.find('select'));
 	},
 
