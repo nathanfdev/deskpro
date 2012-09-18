@@ -173,6 +173,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				$('.task-info', row).hide();
 				$('.task-comments', row).hide();
 				$('.new-comment', row).hide();
+				$('.task-sub-wrap', row).hide();
 				self.updateUi();
 
 			} else {
@@ -180,6 +181,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				$('.task-info', row).show();
 				$('.task-comments', row).show();
 				$('.new-comment', row).show();
+				$('.task-sub-wrap', row).show();
 				self.updateUi();
 			}
 		});
