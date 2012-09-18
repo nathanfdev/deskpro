@@ -36,8 +36,10 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;
 use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\ORM\EntityManager;
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 
-class DetectInlineReply
+class DetectInlineReply implements Loggable
 {
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
@@ -66,10 +68,33 @@ class DetectInlineReply
 	 */
 	protected $history_limit = 1;
 
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
 	public function __construct(EntityManager $em, AbstractEmailReader $reader)
 	{
 		$this->em     = $em;
 		$this->reader = $reader;
+	}
+
+
+	/**
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
 	}
 
 
@@ -110,10 +135,12 @@ class DetectInlineReply
 			return null;
 		}
 
+		if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found ' . count($message_texts) .' texts');
 		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds(array_keys($message_texts));
 
 		foreach ($message_texts as $message_id => $message_text) {
 			if (!isset($ticket_messages[$message_id])) {
+				if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Invalid message text for id ' . $message_id);
 				continue;
 			}
 
@@ -122,7 +149,9 @@ class DetectInlineReply
 			$real_message_text = $this->normalizeMessage($ticket_message->message);
 
 			$diff = $this->getMessageDifference($message_text, $real_message_text);
+			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Message diff for message ' . $message_id . ' is ' . $diff);
 			if ($diff >= $this->threshold) {
+				if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Match. Diff over threshold of ' . $this->threshold);
 				return $ticket_message;
 			}
 		}
@@ -168,11 +197,13 @@ class DetectInlineReply
 
 		$body = $this->reader->getBodyHtml()->getBodyUtf8();
 		if (!$body) {
+			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No body');
 			return $this->message_texts;
 		}
 
 		$matches = 0;
 		if (!preg_match_all('#dp_message_([0-9]+)_begin(.*?)dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
+			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No message texts');
 			return $this->message_texts;
 		}
 
@@ -180,16 +211,18 @@ class DetectInlineReply
 			$message_id = $match[1];
 			$message    = $match[2];
 
-			// Clean off the spans that contain the message wraps
-			if ($pos = strpos($message, '</a>')) {
+			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found message: ' . $message_id);
+
+			if (($pos = stripos($message, '</a>')) !== false) {
 				$message = substr($message, $pos + 4);
 			}
-			if ($pos = strrpos($message, '<a')) {
+			if (($pos = strripos($message, '<a')) !== false) {
 				$message = substr($message, 0, $pos);
 			}
 
 			// Too short to try and guess
 			if (strlen($message) < 100) {
+				if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
 				continue;
 			}
 
@@ -198,6 +231,7 @@ class DetectInlineReply
 			$this->message_texts[$message_id] = $message;
 
 			if (count($this->message_texts) >= $this->history_limit) {
+				if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Reached history limit of ' . $this->history_limit);
 				break;
 			}
 		}

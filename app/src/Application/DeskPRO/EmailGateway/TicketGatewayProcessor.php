@@ -356,6 +356,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$message['show_full_hint'] = false;
 		$inline_reply_detector = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply(App::getOrm(), $this->reader);
+		if ($this->logger) {
+			$inline_reply_detector->setLogger($this->logger);
+		}
+
 		if ($inline_reply_detector->hasDifferentMessage()) {
 			$message['show_full_hint'] = true;
 		}
