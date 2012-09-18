@@ -252,6 +252,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('error_section').hide();
 
 		this.wrapper.parent().addClass('loading');
+		this.getEl('send_btn').hide();
+		this.getEl('send_loading').show();
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
@@ -261,6 +263,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			context: this,
 			complete: function() {
 				this.wrapper.parent().removeClass('loading');
+				this.getEl('send_btn').show();
+				this.getEl('send_loading').hide();
 			},
 			success: function(data) {
 				if (data.error) {

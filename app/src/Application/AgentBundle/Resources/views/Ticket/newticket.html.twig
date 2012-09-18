@@ -378,7 +378,12 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div style="text-align: center">
-	<button class="clean-white submit-trigger">Send Ticket</button>
+	<div id="{{ baseId }}_send_btn">
+		<button class="clean-white submit-trigger">Send Ticket</button>
+	</div>
+	<div id="{{ baseId }}_send_loading" style="display: none;">
+		<span class="flat-spinner"></span>
+	</div>
 </div>
 
 {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newticket[attach][]'} %}
