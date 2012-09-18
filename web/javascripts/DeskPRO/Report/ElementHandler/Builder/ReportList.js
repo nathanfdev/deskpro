@@ -143,7 +143,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 							});
 
 							var a = $('<a />').text(entry.matches[matchId]);
-							
+
 							li.append(a);
 
 							if (affinities[entry.matches[matchId]].affinity < testAffinity) {
@@ -326,6 +326,9 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 		if (cookieValue) {
 			el.css('width', Math.min(maxWidth, Math.max(minWidth, cookieValue)) + 'px');
+			$('#report-page-body').css('left', Math.min(maxWidth, Math.max(minWidth, cookieValue)) + 25);
+		} else {
+			$('#report-page-body').css('left', el.width() + 25);
 		}
 
 		dragger = $('<div class="report-list-dragger" />').css({
@@ -342,6 +345,7 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 				if (cookie) {
 					$.cookie(cookie, width, {expires: 7});
 				}
+				$('#report-page-body').css('left', width + 25);
 			}
 		}).appendTo(document.body);
 

@@ -943,7 +943,11 @@ section.coming-soon,
 	clear: both;
 	height: 0;
 }
-#report-container { *zoom: 1; }
+#report-container {
+	*zoom: 1;
+	min-width: 900px;
+	padding: 10px;
+}
 
 #report-list {
 	float: left;
@@ -953,13 +957,19 @@ section.coming-soon,
 
 	h3 {
 		margin-top: 10px;
-		padding-bottom: 2px;
+		padding-bottom: 6px;
+		padding-left: 8px;
 		border-bottom: 1px solid #DEDEDE;
-		font-size: 14pt;
+		font-size: 13pt;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-weight: normal;
+		margin-left: -8px;
+		margin-right: -8px;
 	}
 
 	h4 {
 		margin-top: 3px;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 		font-size: 11pt;
 		cursor: pointer;
 		span {
@@ -976,10 +986,25 @@ section.coming-soon,
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		margin: 5px 0;
+		margin: 0;
+		padding: 3px 0;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
 		li {
-			margin-left: 12px;
+			padding-left: 12px;
 		}
+
+		a {
+			color: #000;
+		}
+		a.report-favorite-toggle {
+			position: relative;
+			top: 2px;
+		}
+	}
+	.report-list-groupable > li:hover,
+	.report-list-groupable > li.link-on {
+		background-color: #E1E9F4;
 	}
 
 	ul.collapsed { display: none; }
@@ -991,14 +1016,45 @@ section.coming-soon,
 		margin-right: 2px;
 		text-decoration: underline;
 	}
+
+	.top-btn {
+		background-color: #E4EBF3;
+		border-bottom: 1px solid #D0D7DE;
+		text-align: center;
+		padding: 5px;
+		margin: -7px -7px 0 -7px;
+		-webkit-border-radius: 7px 7px 0px 0px;
+        border-radius: 7px 7px 0px 0px;
+	}
+}
+
+#report-container-inner {
+	background-color: #fff;
+	padding: 8px;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border: 1px solid #BBC1C7;
+}
+
+#report-page-body-inner {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	overflow: auto;
+	padding: 8px;
 }
 
 .report-list-dragger {
 	position: absolute;
-	width: 8px;
+	width: 1px;
 	z-index: 1000;
-	border-left: 1px solid #DEDEDE;
 	cursor: w-resize;
+	border-left: 1px solid #C7CDD4;
+	background-color: #fff;
+	border-right: 3px solid #DFE5EB;
+	overflow: hidden;
 }
 
 .report-list-popup {
@@ -1018,18 +1074,30 @@ section.coming-soon,
 }
 
 #report-page-body {
-	position: relative;
-	overflow: auto;
+	position: absolute;
+	overflow: hidden;
+	top: 51px;
+	right: 10px;
+	bottom: 10px;
+	left: 300px;
+	background-color: #fff;
+	padding: 8px;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border: 1px solid #BBC1C7;
+
 	h1 {
 		font-size: 16pt;
 		line-height: 100%;
 		margin-bottom: 10px;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 11pt;
 		.report-action { float: right; margin-left: 5px; font-size: 11px; }
 		.btn { font-weight: normal; padding: 2px 5px; }
 	}
 	.report-favorite {
 		float: left;
-		margin: 3px 5px;
+		margin: 0px 5px;
 	}
 }
 
@@ -1070,24 +1138,58 @@ section.coming-soon,
 }
 
 .report-builder-table {
+	border: 1px solid #E1E3E6;
 	margin: 10px 0;
 
 	td, th {
-		padding: 3px;
+		padding: 8px;
 		vertical-align: middle;
 		text-align: left;
 		border: 1px solid #DDDDDD;
+		line-height: 100%;
 	}
 
-	.row-header th, &.matrix .row-body th {
-		background: #D8D8D8;
-		border: 1px solid #AAA;
+	.row-header th {
+		.gradient(#e6e9ec, #d8dbdf);
+		border-bottom: 1px solid #d5d5d5;
+
+		padding: 6px;
+		padding-top: 7px;
+		font-size: 13px;
+		color: #595959;
+		text-shadow: 0 1px 0 #FFFFFF;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		text-align: left;
+		line-height: 100%;
+
+		white-space: nowrap;
+		text-overflow: clipped;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
 	}
-	.odd { background: white; }
-	.even { background: #EFEFEF; }
+
+	&.matrix .row-body th {
+		background-color: #E5E8ED;
+		color: #000;
+		white-space: nowrap;
+		text-align: right;
+	}
+
+	&.matrix .row-body.even th {
+		background-color: #E5E8ED;
+	}
+
+	.odd { background: #fff; }
+	.even { background: #F2F4F8; }
 	.null { font-style: italic; }
 
-	td.column-total, tr.total-row td { background: #E8E8E8; }
+	td.column-total, tr.total-row td, tr.total-row th {
+		border-top: 1px solid #E5E8ED;
+		background: #E1E4EC;
+		font-size: 11px;
+		padding: 6px;
+	}
 }
 
 .report-chart {
@@ -1106,9 +1208,9 @@ section.coming-soon,
 }
 
 .report-actions {
-	margin: 10px 0;
+	margin: 8px -7px 0 -7px;
 	border-top: 1px solid #DEDEDE;
-	padding-top: 10px;
+	padding: 10px;
 }
 
 .query-error {

@@ -9,6 +9,7 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 	// Init the page
 	initPage: function() {
 		var self = this;
+		var onLink;
 
 		var initialize = function(context) {
 			context.find('textarea.expander').TextAreaExpander().trigger('textareaexpander_fire');
@@ -110,6 +111,14 @@ DeskPRO.Report.PageHandler.ReportBuilder = new Orb.Class({
 			var $this = $(this), href = $this.data('report-original-href') || $this.attr('href');
 
 			e.preventDefault();
+
+			if (onLink) {
+				onLink.removeClass('link-on');
+			}
+			if ($this.parent().is('li')) {
+				onLink = $this.parent();
+				onLink.addClass('link-on');
+			}
 
 			if ($this.is('.report-list-title')) {
 				var data = self.updateReportParams($this);
