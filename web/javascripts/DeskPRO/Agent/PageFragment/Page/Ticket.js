@@ -323,6 +323,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			new_messages = $(data.ticket_messages_block);
 			var self = this;
 			new_messages.appendTo($(this.getEl('messages_wrap')));
+			this._initMessage(new_messages);
 		}
 
 		if (data.updated_agent_parts_html) {
@@ -417,7 +418,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var article = $(this);
 
 			lastCount++;
-			article.find('.message-counter').text('' + lastCount);
+			article.find('.message-counter').text('#' + lastCount);
 
 			var fullEl = article.find('.body-text-full-message');
 			if (fullEl[0]) {
