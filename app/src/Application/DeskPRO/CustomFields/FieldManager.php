@@ -586,7 +586,7 @@ class FieldManager
 		}
 
 		foreach ($object->$prop as $v) {
-			if ($v->field->getId() == $field_def->getId() || ($v->field->getParentId() && $v->field->getParentId()->getId() == $field_def->getId())) {
+			if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
 				$object->$prop->removeElement($v);
 			}
 		}
