@@ -492,7 +492,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
 				</td>
 			</tr></tbody>
-			{% if ticket.total_to_first_reply %}
+			{% if ticket.total_to_first_reply and ticket.total_to_first_reply > 0 %}
 				<tbody><tr>
 					<th>Waiting until first reply:</th>
 					<td>

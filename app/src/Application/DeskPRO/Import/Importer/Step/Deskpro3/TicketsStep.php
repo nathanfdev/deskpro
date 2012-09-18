@@ -503,6 +503,9 @@ class TicketsStep extends AbstractDeskpro3Step
 		if ($first_agent_reply) {
 			$up['date_first_agent_reply'] = $first_agent_reply;
 			$up['total_to_first_reply'] = $first_agent_reply_ts - $ticket_info['timestamp_opened'];
+			if ($up['total_to_first_reply'] < 0) {
+				$up['total_to_first_reply'] = 0;
+			}
 		}
 		if ($last_agent_reply) {
 			$up['date_last_agent_reply'] = $last_agent_reply;
