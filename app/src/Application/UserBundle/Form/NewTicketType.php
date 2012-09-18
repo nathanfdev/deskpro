@@ -132,6 +132,7 @@ class NewTicketType extends AbstractType
 		$ticket_builder->add('category_id', 'hidden', array('required' => false));
 		$ticket_builder->add('product_id', 'hidden', array('required' => false));
 		$ticket_builder->add('priority_id', 'hidden', array('required' => false));
+		$ticket_builder->add('cc_emails', 'text', array('required' => false));
 
 		#------------------------------
 		# Custom fields

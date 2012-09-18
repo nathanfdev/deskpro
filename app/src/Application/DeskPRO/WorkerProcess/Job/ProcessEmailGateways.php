@@ -50,7 +50,7 @@ class ProcessEmailGateways extends AbstractJob
 
 		$runner = new \Application\DeskPRO\EmailGateway\Runner();
 		$runner->setLogger($logger);
-		$runner->setPhpTimeLimit(60);
+		$runner->setPhpTimeLimit(180);
 
 		if ($this->options->get('run_source_id')) {
 			$sid = $this->options->get('run_source_id');

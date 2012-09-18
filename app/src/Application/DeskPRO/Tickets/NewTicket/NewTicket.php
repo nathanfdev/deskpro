@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
@@ -360,6 +361,27 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 
+			if ($this->ticket->cc_emails) {
+				$ccs = explode(',', $this->ticket->cc_emails);
+
+				foreach ($ccs as &$_) {
+					$_ = trim(strtolower($_));
+					if (!\Orb\Validator\StringEmail::isValueValid($_)) {
+						$_ = null;
+					}
+				}
+
+				$ccs = array_unique($ccs);
+				$ccs = \Orb\Util\Arrays::removeFalsey($ccs);
+
+				if ($ccs) {
+					foreach ($ccs as $cc) {
+						$this->handleCc($ticket, $cc);
+					}
+					App::getOrm()->flush();
+				}
+			}
+
 			App::getOrm()->commit();
 
 		} catch (\Exception $e) {
@@ -368,5 +390,57 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		}
 
 		return $ticket;
+	}
+
+	public function handleCc(Entity\Ticket $ticket, $cc_email)
+	{
+		$gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+
+		if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
+			return null;
+		}
+
+		$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
+		if ($addr) {
+			return null;
+		}
+
+		$person_processor = new PersonFromEmailProcessor();
+
+		$cc = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
+		$cc->email = $cc_email;
+		$cc->name = '';
+		$cc->name_utf8 = '';
+
+		$cc_person = $person_processor->findPerson($cc);
+		if (!$cc_person) {
+			// Closed helpdesk and an unknown CC means we drop it
+			if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+				return null;
+			}
+
+			$cc_person = Entity\Person::newContactPerson();
+			App::getOrm()->persist($cc_person);
+
+			$cc_person_email = new \Application\DeskPRO\Entity\PersonEmail();
+			$cc_person_email->setEmail($cc_email);
+			$cc_person_email->person = $cc_person;
+			App::getOrm()->persist($cc_person_email);
+
+			$cc_person->addEmailAddress($cc_person_email);
+			App::getOrm()->persist($cc_person);
+		}
+
+		if (!$cc_person) {
+			return null;
+		}
+
+		if (!$ticket->hasParticipantPerson($cc_person)) {
+			$part = $ticket->addParticipantPerson($cc_person);
+
+			App::getOrm()->persist($part);
+		}
+
+		return $cc_person;
 	}
 }

@@ -242,6 +242,21 @@ class NewTicketValidator extends AbstractValidator
 
 		switch ($item['field_type']) {
 
+			case 'ticket_cc_emails':
+
+				if ($this->newticket->ticket->cc_emails) {
+					$cc_emails = explode(',', $this->newticket->ticket->cc_emails);
+					foreach ($cc_emails as $cc) {
+						$cc = strtolower(trim($cc));
+						if (!\Orb\Validator\StringEmail::isValueValid($cc)) {
+							$this->addError('ticket.cc_emails.invalid');
+							break;
+						}
+					}
+				}
+
+				break;
+
 			case 'person_name':
 				if ($this->newticket->person) {
 					$validator = new \Orb\Validator\StringLength(array('min' => 2));

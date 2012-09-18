@@ -46,6 +46,7 @@ class TicketProps
 	public $message = '';
 	public $message_raw = null;
 	public $notify_email = '';
+	public $cc_emails = '';
 
 	/**
 	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile

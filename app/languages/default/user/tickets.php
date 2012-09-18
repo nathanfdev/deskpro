@@ -40,6 +40,7 @@
 	'user.tickets.join_explain'                        => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
 	'user.tickets.join_ticket'                         => 'Join Ticket',
 	'user.tickets.label_cced'                          => 'CCed',
+	'user.tickets.label_cc_emails'                     => 'CC other people into this ticket',
 	'user.tickets.lbl_what_is_your_question'           => 'What is your question?',
 	'user.tickets.leave_feedback_text_title'           => 'Do you have any feedback?',
 	'user.tickets.leave_feedback_title'                => 'Optionally take a moment to tell us how we did',
