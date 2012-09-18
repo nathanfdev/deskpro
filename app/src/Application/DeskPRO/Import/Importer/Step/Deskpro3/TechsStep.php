@@ -353,18 +353,22 @@ class TechsStep extends AbstractDeskpro3Step
 				if ($tech['email_assigned']) {
 					$subs[$f_my][] = 'email_new';
 					$subs[$f_my][] = 'alert_new';
+					$subs[$f_my][] = 'email_created';
+					$subs[$f_my][] = 'alert_created';
 				}
 
 				if ($tech['email_add_participant']) {
 					$subs[$f_follow][] = 'email_new';
 					$subs[$f_follow][] = 'alert_new';
+					$subs[$f_follow][] = 'email_created';
+					$subs[$f_follow][] = 'alert_created';
 				}
 
 				if ($tech['email_new_email']) {
-					$subs[$f_all][] = 'email_new';
-					$subs[$f_all][] = 'alert_new';
-					$subs[$f_noone][] = 'email_new';
-					$subs[$f_noone][] = 'alert_new';
+					$subs[$f_all][] = 'email_created';
+					$subs[$f_all][] = 'alert_created';
+					$subs[$f_noone][] = 'email_created';
+					$subs[$f_noone][] = 'alert_created';
 				}
 				if ($tech['email_reply_email']) {
 					$subs[$f_all][] = 'email_user_activity';
@@ -402,6 +406,8 @@ class TechsStep extends AbstractDeskpro3Step
 
 				$subs[$f_team][] = 'email_new';
 				$subs[$f_team][] = 'alert_new';
+				$subs[$f_team][] = 'email_created';
+				$subs[$f_team][] = 'alert_created';
 				$subs[$f_team][] = 'email_user_activity';
 				$subs[$f_team][] = 'email_agent_activity';
 

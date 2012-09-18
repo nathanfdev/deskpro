@@ -183,13 +183,22 @@ class NotifyListBuilder
 
 				// New ticket entering a list
 				// - If its new, then we check subs for everyone
-				// - Other notify types, we have to ignore 'all' for entering a lise
+				// - Other notify types, we have to ignore 'all' for entering a list
 				if ($notify_new || $filter->sys_name != 'all') {
-					if ($sub->email_property_change || $sub->email_new) {
-						$types[] = 'email';
-					}
-					if ($sub->alert_property_change || $sub->alert_new) {
-						$types[] = 'alert';
+					if ($notify_new) {
+						if ($sub->email_created) {
+							$types[] = 'email';
+						}
+						if ($sub->alert_created) {
+							$types[] = 'alert';
+						}
+					} else {
+						if ($sub->email_property_change || $sub->email_new) {
+							$types[] = 'email';
+						}
+						if ($sub->alert_property_change || $sub->alert_new) {
+							$types[] = 'alert';
+						}
 					}
 				}
 

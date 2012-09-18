@@ -156,8 +156,8 @@ class PersonEditManager implements PersonContextInterface
 	public function saveFilterSubscriptions(Person $person, array $subs)
 	{
 		$valid_names = array(
-			'email_new', 'email_user_activity', 'email_agent_activity', 'email_property_change',
-			'alert_new', 'alert_user_activity', 'alert_agent_activity', 'alert_property_change',
+			'email_created', 'email_new', 'email_user_activity', 'email_agent_activity', 'email_property_change',
+			'alert_created', 'alert_new', 'alert_user_activity', 'alert_agent_activity', 'alert_property_change',
 		);
 
 		$filter_info = App::getApi('tickets.filters')->getGroupedFiltersForPerson($person);

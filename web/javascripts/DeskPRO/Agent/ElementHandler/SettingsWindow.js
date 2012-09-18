@@ -18,7 +18,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		this.el.css({
 			top: 42,
 			bottom: 10,
-			width: 700,
+			width: 850,
 			left: ($(window).width() - 700) / 2
 		});
 
