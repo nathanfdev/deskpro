@@ -204,9 +204,16 @@ class ReportBuilder extends AbstractEntityRepository
 			),
 			'dates' => array(
 				'today' => array('today', '%TODAY%'),
+				'yesterday' => array('yesterday', '%YESTERDAY%'),
 				'this_week' => array('this week', '%THIS_WEEK%'),
 				'this_month' => array('this month', '%THIS_MONTH%'),
 				'this_year' => array('this year', '%THIS_YEAR%'),
+				'last_week' => array('last week', '%LAST_WEEK%'),
+				'last_month' => array('last month', '%LAST_MONTH%'),
+				'last_year' => array('last year', '%LAST_YEAR%'),
+				'past_24_hours' => array('in the past 24 hours', '%PAST_24_HOURS%'),
+				'past_7_days' => array('in the past 7 days', '%PAST_7_DAYS%'),
+				'past_30_days' => array('in the past 30 days', '%PAST_30_DAYS%'),
 				'ever' => array('any time', '%EVER%')
 			),
 			'statuses' => array(
