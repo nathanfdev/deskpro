@@ -236,6 +236,9 @@ abstract class AbstractRenderer
 			case 'bar':
 			case 'line':
 			case 'pie':
+				if (count($rows) <= 1) {
+					return false;
+				}
 				return $this->_renderChart($format, $rows);
 				break;
 

@@ -94,8 +94,7 @@ abstract class AbstractValues
 			case 'id':
 				if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
 					// float
-					//$decimals = min(4, strlen($match[2]));
-					$decimals = 0;
+					$decimals = min(1, strlen($match[2]));
 				} else {
 					// integer
 					$decimals = 0;
@@ -106,6 +105,8 @@ abstract class AbstractValues
 				} else {
 					$thousands = ',';
 				}
+
+				$value = round($value, $decimals);
 
 				return $this->escapeValue(number_format($value, $decimals, '.', $thousands));
 

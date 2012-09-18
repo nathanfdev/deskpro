@@ -638,6 +638,8 @@ class Html extends AbstractRenderer
 
 				$isStacked = ($type == 'bar');
 			} else {
+				$sel = reset($selectColumns);
+
 				foreach ($rows AS $row) {
 					$categories = array();
 					foreach ($groupYColumns AS $column) {
@@ -649,19 +651,15 @@ class Html extends AbstractRenderer
 
 					$rowData = array('category' => $category);
 
-					foreach ($selectColumns AS $i => $column) {
-						$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
-					}
+					$rowData['value'] = $this->_filterGraphValue($this->_renderCellValue($row, $sel));
 
 					$chartData[] = $rowData;
 				}
 
-				foreach ($selectColumns AS $i => $column) {
-					$graphs[] = array(
-						'title' => $column['title'],
-						'value' => "value$i"
-					);
-				}
+				$graphs[] = array(
+					'title' => $sel['title'],
+					'value' => "value"
+				);
 			}
 
 			$hasCategory = count($groupYColumns) > 0;
@@ -744,10 +742,13 @@ class Html extends AbstractRenderer
 					chart.addLegend(new AmCharts.AmLegend());
 
 					chart.categoryAxis.fontSize = 9;
+					chart.categoryAxis.title = \'Test\';
+					chart.categoryAxis.titleColor = \'#ff0000\';
 					' . $verticalLabels . '
+
 					chart.addValueAxis(new AmCharts.ValueAxis());
 					chart.valueAxes[0].integersOnly = true;
-
+					chart.valueAxes[0].title = \'Test\';
 					' . $stacked . '
 
 					var graph;
