@@ -604,6 +604,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person_id = $person_or_id['id'];
 		}
 
+		// User not commited yet, so obviously they dont exist
+		if (!$person_id) {
+			return false;
+		}
+
 		foreach ($this->participants as $p) {
 			if ($p['person']['id'] == $person_id) {
 				return $p;
