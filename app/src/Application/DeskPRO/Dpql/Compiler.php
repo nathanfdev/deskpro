@@ -115,7 +115,8 @@ class Compiler
 					}
 				}
 
-				return '%EVER%';
+				$first = reset($groupParams['dates']);
+				return $first[1];
 			},
 			$input
 		);
@@ -123,13 +124,19 @@ class Compiler
 		$input = preg_replace_callback(
 			'/%(\d+):FIELD_GROUP:([^:%]+)(:([^%]+))?%/',
 			function ($match) use ($placeholders, $groupParams) {
+				$type = $match[2];
+				$table = isset($match[4]) ? $match[4] : $type;
+
 				if (isset($placeholders[$match[1]])) {
 					$value = strval($placeholders[$match[1]]);
-					$type = $match[2];
-					$table = isset($match[4]) ? $match[4] : $type;
 					if (isset($groupParams['fields'][$type][$value])) {
 						return sprintf($groupParams['fields'][$type][$value][1], $table);
 					}
+				}
+
+				if (isset($groupParams['fields'][$type])) {
+					$first = reset($groupParams['fields'][$type]);
+					return sprintf($first[1], $table);
 				}
 
 				return 'NULL';
@@ -140,13 +147,19 @@ class Compiler
 		$input = preg_replace_callback(
 			'/%(\d+):STATUS_GROUP:([^:%]+)(:([^%]+))?%/',
 			function ($match) use ($placeholders, $groupParams) {
+				$type = $match[2];
+				$table = isset($match[4]) ? $match[4] : $type;
+
 				if (isset($placeholders[$match[1]])) {
 					$value = strval($placeholders[$match[1]]);
-					$type = $match[2];
-					$table = isset($match[4]) ? $match[4] : $type;
 					if (isset($groupParams['statuses'][$type][$value])) {
 						return sprintf($groupParams['statuses'][$type][$value][1], $table);
 					}
+				}
+
+				if (isset($groupParams['statuses'][$type])) {
+					$first = reset($groupParams['statuses'][$type]);
+					return sprintf($first[1], $table);
 				}
 
 				return '1';
@@ -157,13 +170,19 @@ class Compiler
 		$input = preg_replace_callback(
 			'/%(\d+):ORDER_GROUP:([^:%]+)(:([^%]+))?%/',
 			function ($match) use ($placeholders, $groupParams) {
+				$type = $match[2];
+				$table = isset($match[4]) ? $match[4] : $type;
+
 				if (isset($placeholders[$match[1]])) {
 					$value = strval($placeholders[$match[1]]);
-					$type = $match[2];
-					$table = isset($match[4]) ? $match[4] : $type;
 					if (isset($groupParams['orders'][$type][$value])) {
 						return sprintf($groupParams['orders'][$type][$value][1], $table);
 					}
+				}
+
+				if (isset($groupParams['orders'][$type])) {
+					$first = reset($groupParams['orders'][$type]);
+					return sprintf($first[1], $table);
 				}
 
 				return 'NULL';

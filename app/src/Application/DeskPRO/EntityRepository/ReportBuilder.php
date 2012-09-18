@@ -183,7 +183,6 @@ class ReportBuilder extends AbstractEntityRepository
 		return array(
 			'fields' => array(
 				'tickets' => array(
-					'none' => array('nothing', 'NULL'),
 					'department' => array('department', '%s.department'),
 					'agent' => array('agent', '%s.agent'),
 					'agent_team' => array('agent team', '%s.agent_team'),
@@ -199,7 +198,8 @@ class ReportBuilder extends AbstractEntityRepository
 					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),
 					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
 					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
-					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')')
+					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
+					'none' => array('nothing', 'NULL'),
 				)
 			),
 			'dates' => array(

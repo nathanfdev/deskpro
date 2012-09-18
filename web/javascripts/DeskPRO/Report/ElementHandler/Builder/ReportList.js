@@ -210,26 +210,42 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 			});
 
 			var getQueryChoices = function (input) {
-				if (input.match(/^\d+:date group$/)) {
-					return window._dpRbGroupParams.dates;
-				} else if (input.match(/^\d+:field group:([a-zA-Z0-9_]+)$/)) {
+				var choices = {}, extras = {}, extrasMatch;
+
+				if (input.match(/^\d+:date group(.*)$/)) {
+					choices = window._dpRbGroupParams.dates;
+					extrasMatch = RegExp.$1;
+				} else if (input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)) {
 					var type = RegExp.$1;
 					if (typeof window._dpRbGroupParams.fields[type] !== 'undefined') {
-						return window._dpRbGroupParams.fields[type];
+						choices = window._dpRbGroupParams.fields[type];
+						extrasMatch = RegExp.$2;
 					}
-				} else if (input.match(/^\d+:status group:([a-zA-Z0-9_]+)$/)) {
+				} else if (input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)) {
 					var type = RegExp.$1;
 					if (typeof window._dpRbGroupParams.statuses[type] !== 'undefined') {
-						return window._dpRbGroupParams.statuses[type];
+						choices = window._dpRbGroupParams.statuses[type];
+						extrasMatch = RegExp.$2;
 					}
-				} else if (input.match(/^\d+:order group:([a-zA-Z0-9_]+)$/)) {
+				} else if (input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)) {
 					var type = RegExp.$1;
 					if (typeof window._dpRbGroupParams.orders[type] !== 'undefined') {
-						return window._dpRbGroupParams.orders[type];
+						choices = window._dpRbGroupParams.orders[type];
+						extrasMatch = RegExp.$2;
 					}
 				}
 
-				return {};
+				if (extrasMatch) {
+					var regex = /,([a-zA-Z0-9_ ]+):([^,]+)/g, match;
+					while (match = regex.exec(extrasMatch)) {
+						extras[$.trim(match[1])] = $.trim(match[2]);
+					}
+				}
+
+				return {
+					choices: choices,
+					extras: extras
+				};
 			};
 
 			$this.find('.report-list-query-selector').each(function() {
@@ -238,14 +254,16 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 
 				$selector.data('report-list-query', text);
 
-				var choices = getQueryChoices(text), i = false;
-				for (i in choices) {
-					break;
+				var choices = getQueryChoices(text), i = choices.extras.default;
+				if (!i || !choices.choices[i]) {
+					for (i in choices.choices) {
+						break;
+					}
+					if (!i) {
+						return;
+					}
 				}
-				if (i === false) {
-					return;
-				}
-				$selector.text(choices[i][0]);
+				$selector.text(choices.choices[i][0]);
 				$selector.data('report-list-query-selected', i);
 			});
 
@@ -283,20 +301,20 @@ DeskPRO.Report.ElementHandler.Builder.ReportList = new Orb.Class({
 				querySelectorPopup.empty();
 
 				var choices = getQueryChoices($selector.data('report-list-query'));
-				for (var i in choices) {
+				for (var i in choices.choices) {
 					(function(i) {
 						var li = $('<li></li>').click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
 
 							$selector.data('report-list-query-selected', i);
-							$selector.text(choices[i][0]);
+							$selector.text(choices.choices[i][0]);
 							window.DeskPRO_Page.updateReportParams($selector.closest('.report-list-title'));
 							window.DeskPRO_Page.updateFavorites();
 							$selector.closest('a').click();
 						});
 
-						var a = $('<a />').text(choices[i][0]);
+						var a = $('<a />').text(choices.choices[i][0]);
 
 						li.append(a);
 						querySelectorPopup.append(li);

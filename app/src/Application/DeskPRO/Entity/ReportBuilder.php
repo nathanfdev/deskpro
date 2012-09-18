@@ -122,39 +122,81 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 			$title = preg_replace('/\[(.+?)\]/', '$1', $title);
 		}
 
-		$title = preg_replace_callback('/<(\d+):(date group)>/', function($match) use ($params, $groupParams) {
+		$getDefault = function($extras, array $paramSet, $component = false) use ($type) {
+			if ($type == 'placeholder') {
+				return false;
+			}
+
+			/*if (preg_match('#,\s*default:\s*([^,]+)\s*#', $extras, $match)) {
+				if ($component) {
+					if (isset($paramSet[$component][$match[1]])) {
+						return $paramSet[$component][$match[1]];
+					}
+				} else if (isset($paramSet[$match[1]])) {
+					return $paramSet[$match[1]];
+				}
+			}*/
+
+			if ($component) {
+				return reset($paramSet[$component]);
+			} else {
+				return reset($paramSet);
+			}
+		};
+
+		$title = preg_replace_callback('/<(\d+):(date group)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			if (isset($params[$id]) && isset($groupParams['dates'][$params[$id]])) {
 				return $groupParams['dates'][$params[$id]][0];
 			}
 
+			$default = $getDefault($match[3], $groupParams['dates']);
+			if ($default) {
+				return $default[0];
+			}
+
 			return "<date>";
 		}, $title);
-		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
+		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			$type = $match[3];
 			if (isset($params[$id]) && isset($groupParams['fields'][$type][$params[$id]])) {
 				return $groupParams['fields'][$type][$params[$id]][0];
 			}
 
+			$default = $getDefault($match[4], $groupParams['fields'], $type);
+			if ($default) {
+				return $default[0];
+			}
+
 			return "<field>";
 		}, $title);
 
-		$title = preg_replace_callback('/<(\d+):(status group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
+		$title = preg_replace_callback('/<(\d+):(status group):([a-zA-Z0-9_]+)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			$type = $match[3];
 			if (isset($params[$id]) && isset($groupParams['statuses'][$type][$params[$id]])) {
 				return $groupParams['statuses'][$type][$params[$id]][0];
 			}
 
+			$default = $getDefault($match[4], $groupParams['statuses'], $type);
+			if ($default) {
+				return $default[0];
+			}
+
 			return "<status>";
 		}, $title);
 
-		$title = preg_replace_callback('/<(\d+):(order group):([a-zA-Z0-9_]+)>/', function($match) use ($params, $groupParams) {
+		$title = preg_replace_callback('/<(\d+):(order group):([a-zA-Z0-9_]+)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			$type = $match[3];
 			if (isset($params[$id]) && isset($groupParams['orders'][$type][$params[$id]])) {
 				return $groupParams['orders'][$type][$params[$id]][0];
+			}
+
+			$default = $getDefault($match[4], $groupParams['orders'], $type);
+			if ($default) {
+				return $default[0];
 			}
 
 			return "<order>";
