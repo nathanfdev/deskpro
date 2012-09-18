@@ -69,7 +69,8 @@
 	'core.helpdesk_disabled_message' => 'Our helpdesk is temporarily offline for maintenance. We will be back up in about 10 minutes.',
 
 	/**
-	 * The URL to the DeskPRO installation
+	 * The URL to the DeskPRO installation.
+	 * Should include trailing slash. Should NOT include index.php portion.
 	 */
 	'core.deskpro_url' => '',
 

@@ -69,7 +69,7 @@ class SettingsController extends AbstractController
 		if ($this->in->getBool('process')) {
 			$update_settings = array(
 				'core.deskpro_name'            => $_POST['settings']['core.deskpro_name'],
-				'core.deskpro_url'             => $_POST['settings']['core.deskpro_url'],
+				'core.deskpro_url'             => rtrim(preg_replace('#index\.php/?$#', '', $_POST['settings']['core.deskpro_url']), '/') . '/',
 				'core.site_name'               => $_POST['settings']['core.site_name'],
 				'core.site_url'                => $_POST['settings']['core.site_url'],
 				'core.helpdesk_disabled'       => empty($_POST['settings']['core.helpdesk_disabled']) ? 0 : 1,
@@ -472,7 +472,7 @@ class SettingsController extends AbstractController
 		}
 		if ($url && (!$this->container->getSetting('core.deskpro_url') || $is_import)) {
 			$url = preg_replace('#index\.php/?(.*?)$#', '', $url);
-			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', rtrim($url, '/') . '/');
+			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', rtrim(str_replace('index.php', '', $url), '/') . '/');
 		}
 
 		if ($this->container->getSetting('core.app_secret') == 'APP_SERCRET') {
