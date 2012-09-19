@@ -306,17 +306,15 @@
 	</div>
 	{% endif %}
 
-	{% if term_options.custom_ticket_fields %}
-		{% for field in term_options.custom_ticket_fields %}
-			{% if field.field_def.isFormField() %}
+	{% for field in app.getTicketFieldManager().getDisplayArray() %}
+		{% if field.field_def.isFormField() %}
 			<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="builder-options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
-			{% endif %}
-		{% endfor %}
-	{% endif %}
+		{% endif %}
+	{% endfor %}
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
 			{% if field.field_def.isFormField() %}

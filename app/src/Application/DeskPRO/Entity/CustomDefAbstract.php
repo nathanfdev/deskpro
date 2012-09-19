@@ -311,6 +311,20 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	}
 
 
+	/**
+	 * @return array
+	 */
+	public function getAllChildTitles()
+	{
+		$titles = array();
+		foreach ($this->children as $child) {
+			$titles[$child->getId()] = $child->getTitle();
+		}
+
+		return $titles;
+	}
+
+
 
 	/**
 	 * Creates a new instance of the same type and sets its parent to this object.

@@ -92,7 +92,7 @@ class TicketFieldAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$this->field_manager->saveFormToObject($this->set_value, $ticket);
+		$this->field_manager->saveFormToObject($this->set_value['custom_fields'], $ticket, true);
 	}
 
 
@@ -125,7 +125,20 @@ class TicketFieldAction extends AbstractAction
 	{
 		$tr = App::getTranslator();
 		$title = $this->field_def->title;
-		$value = $this->value;
+		$value = $this->set_value;
+
+		$value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
+		if ($this->field_def->handler_class == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+			$value_ids = $value;
+			$value = array();
+			$titles = $this->field_def->getAllChildTitles();
+			foreach ($value_ids as $id) {
+				if (isset($titles[$id])) {
+					$value[] = $titles[$id];
+				}
+			}
+			$value = implode(', ', $value);
+		}
 
 		return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
 	}
