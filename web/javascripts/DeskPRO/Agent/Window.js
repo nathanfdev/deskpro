@@ -1201,6 +1201,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.toggleOpenClass = el.data('route-openclass');
 		}
 
+		if (el.data('route-notabreload')) {
+			extraData.noToggle = true;
+		}
+
 		this.runPageRoute(el.data('route'), extraData);
 	},
 

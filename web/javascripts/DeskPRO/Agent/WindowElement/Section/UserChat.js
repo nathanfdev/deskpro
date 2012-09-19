@@ -312,6 +312,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 					DeskPRO_Window.faviconBadge.disableCrazyMode();
 				}, 1000);
 			}
+
+			DeskPRO_Window.getSectionData('chat_section', self._initSection.bind(self));
 		}
 
 		if (!data.agent_id) {

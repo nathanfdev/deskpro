@@ -263,7 +263,6 @@ class UserChatManager
 		$convo['status'] = 'open';
 		$convo['date_ended'] = null;
 		$convo['ended_by'] = '';
-		$convo['agent'] = null;
 
 		$this->em->beginTransaction();
 		try {
