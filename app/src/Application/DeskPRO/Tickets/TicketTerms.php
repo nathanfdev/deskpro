@@ -472,8 +472,21 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_PARTICIPANT:
+				$participant_ids = $ticket->getParticipantIds();
+
+				if ($ticket->part_add_ids) {
+					$participant_ids = array_merge($participant_ids, $ticket->part_add_ids);
+				}
+				if ($del_ids = $ticket->part_del_ids) {
+					$participant_ids = array_filter($participant_ids, function($id) use ($del_ids) {
+						if (in_array($id, $del_ids)) {
+							return false;
+						}
+						return true;
+					});
+				}
+
 				if (is_array($choice)) {
-					$participant_ids = $ticket->getParticipantIds();
 					$any = false;
 					foreach ($choice as $person_id) {
 						$is_in = in_array($person_id, $participant_ids);
@@ -490,7 +503,7 @@ class TicketTerms
 
 					if ($op == self::OP_CONTAINS AND !$any) return false;
 				} else {
-					if ($ticket->hasParticipant($choice)) {
+					if (in_array($choice, $participant_ids)) {
 						if ($op == self::OP_NOT) return false;
 					} else {
 						if ($op == self::OP_IS) return false;

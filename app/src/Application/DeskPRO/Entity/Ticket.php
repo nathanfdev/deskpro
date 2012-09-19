@@ -345,6 +345,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_user_participants;
 
+	public $part_add_ids = array();
+	public $part_del_ids = array();
+
 	/**
 	 * Ticket logger
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
@@ -653,6 +656,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_part['person'] = $person;
 		$ticket_part['ticket'] = $this;
 		$this->participants->add($ticket_part);
+		$this->part_add_ids[] = $person->getId();
 
 		if ($this->getTicketLogger()) {
 			$this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $person);
@@ -689,6 +693,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			if ($p['person']->getId() == $person->getId()) {
 				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $p['person'], null);
 				$this->participants->remove($k);
+				$this->part_del_ids[] = $person->getId();
 				return $p;
 			}
 		}
@@ -701,6 +706,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->getOriginalParticipantIds();
 		$part->ticket = $this;
 		$this->participants->add($part);
+		$this->part_add_ids[] = $part->person->getId();
 		if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $participants[$k]);
 	}
 

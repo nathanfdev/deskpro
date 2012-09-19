@@ -440,6 +440,14 @@ class TicketChangeTracker extends ChangeTracker
 			}
 		}
 
+		if ($this->ticket->part_del_ids) {
+			$this->original_ticket->part_add_ids = $this->ticket->part_del_ids;
+			$this->original_ticket->part_del_ids = array();
+		} elseif ($this->ticket->part_add_ids) {
+			$this->original_ticket->part_del_ids = $this->ticket->part_add_ids;
+			$this->original_ticket->part_add_ids = array();
+		}
+
 		if ($this->isPropertyChanged('hidden_status')) {
 			$tmp = $this->getChangedProperty('hidden_status');
 			if ($tmp['old']) {

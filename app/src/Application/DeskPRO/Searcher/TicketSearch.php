@@ -1607,31 +1607,44 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_PARTICIPANT:
 
 					$info = $this->_normalizeAgentChoice($choice);
-					$agent_ids = $info['agent_ids'];
+					$choice = $info['agent_ids'];
+					if (count($choice) == 1) $choice = array_pop($choice);
 
-					if ($agent_ids) {
-						$participant_ids = array();
+					$participant_ids = $ticket->getParticipantPeopleIds();
 
-						if ($context == 'new_match') {
-							foreach ($ticket->getOriginalParticipantIds() as $part) {
-								$participant_ids[] = $part;
+					if ($ticket->part_add_ids) {
+						$participant_ids = array_merge($participant_ids, $ticket->part_add_ids);
+					}
+					if ($del_ids = $ticket->part_del_ids) {
+						$participant_ids = array_filter($participant_ids, function($id) use ($del_ids) {
+							if (in_array($id, $del_ids)) {
+								return false;
 							}
-						} else {
-							foreach ($ticket->getParticipantPeopleIds() as $part) {
-								$participant_ids[] = $part;
-							}
-						}
+							return true;
+						});
+					}
 
+					if (is_array($choice)) {
 						$any = false;
-						foreach ($participant_ids as $pid) {
-							if ($this->_testChoiceMatch($pid, $op, $agent_ids, true)) {
+						foreach ($choice as $person_id) {
+							$is_in = in_array($person_id, $participant_ids);
+
+							if ($is_in) {
 								$any = true;
-								break;
+								if ($op == self::OP_CONTAINS) {
+									break;
+								} else {
+									return false;
+								}
 							}
 						}
 
-						if (!$any) {
-							return false;
+						if ($op == self::OP_CONTAINS AND !$any) return false;
+					} else {
+						if (in_array($choice, $participant_ids)) {
+							if ($op == self::OP_NOT) return false;
+						} else {
+							if ($op == self::OP_IS) return false;
 						}
 					}
 					break;
