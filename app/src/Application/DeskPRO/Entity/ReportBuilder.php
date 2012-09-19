@@ -144,6 +144,8 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 			}
 		};
 
+		$placeholderTitle = $title;
+
 		$title = preg_replace_callback('/<(\d+):(date group)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			if (isset($params[$id]) && isset($groupParams['dates'][$params[$id]])) {
@@ -157,6 +159,7 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 
 			return "<date>";
 		}, $title);
+
 		$title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)([^>]*)>/', function($match) use ($params, $groupParams, $getDefault) {
 			$id = $match[1];
 			$type = $match[3];
@@ -201,6 +204,28 @@ class ReportBuilder extends \Application\DeskPRO\Domain\DomainObject
 
 			return "<order>";
 		}, $title);
+
+		if ($placeholderTitle != $title) {
+			$title = preg_replace_callback('/(, )?(split by|grouped by) ([a-zA-Z0-9 ]+) & ([a-zA-Z0-9]+)/', function($match) {
+				$firstMatch = rtrim($match[3]);
+				$secondMatch = rtrim($match[4]);
+
+				if ($firstMatch == 'nothing' && $secondMatch == 'nothing') {
+					// double group/splt on nothing - remove whole string
+					return '';
+				} else if ($firstMatch == 'nothing') {
+					// first group is nothing, but second on something
+					return $match[1] . $match[2] . ' ' . $match[4];
+				} else if ($secondMatch == 'nothing') {
+					// first group is something, but second on nothing
+					return $match[1] . $match[2] . ' ' . $match[3];
+				}
+
+				return $match[0];
+			}, $title);
+
+			$title = preg_replace('/(, )?(split by|grouped by) nothing/', '', $title);
+		}
 
 		return $title;
 	}
