@@ -55,7 +55,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var groups = {};
 
-		var html = ['<select name="type"><option>&nbsp;</option>'];
+		var html = ['<select name="type" style="max-width: 200px;"><option>&nbsp;</option>'];
 		$('.builder-type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
 			var title = $(el).attr('title');
