@@ -172,6 +172,11 @@ class DetectInlineReply implements Loggable
 		$len1 = strlen($message1);
 		$len2 = strlen($message2);
 
+		// Prevent division by zero
+		if (!$len1 || !$len2) {
+			return 0;
+		}
+
 		if ($len1 > $len2) {
 			$diff = 1.0 - ($len2 / $len1);
 		} else {
@@ -220,13 +225,13 @@ class DetectInlineReply implements Loggable
 				$message = substr($message, 0, $pos);
 			}
 
+			$message = $this->normalizeMessage($message);
+
 			// Too short to try and guess
-			if (strlen($message) < 100) {
+			if (!$message || strlen($message) < 100) {
 				if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
 				continue;
 			}
-
-			$message = $this->normalizeMessage($message);
 
 			$this->message_texts[$message_id] = $message;
 
@@ -250,9 +255,9 @@ class DetectInlineReply implements Loggable
 	{
 		$message_text = strip_tags($message_text);
 		$message_text = html_entity_decode($message_text, \ENT_QUOTES, 'UTF-8');
-		$message_text = trim($message_text);
 		$message_text = preg_replace('#\s#', ' ', $message_text);
 		$message_text = preg_replace('# {2,}#', ' ', $message_text);
+		$message_text = trim($message_text);
 
 		return $message_text;
 	}
