@@ -14,6 +14,18 @@
 		</div>
 	</div>
 
+	{% if app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
+		<div class="builder-type" title="Set Gateway Address" data-rule-type="set_gateway_address">
+			<div class="builder-options">
+				<select name="gateway_address_id">
+					{% for addr in app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
+						<option value="{{ addr.id }}">{{ addr.match_pattern }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }}" data-rule-type="set_from_address">
 		<div class="builder-options">
 			<input type="text" name="email_address" />

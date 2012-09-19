@@ -29,57 +29,85 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\EntityRepository;
-
-use Orb\Util\Arrays;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Entity\Ticket;
 
-class EmailGatewayAddress extends AbstractEntityRepository
+/**
+ * A hidden action used with the SetFromAddress modifier that actual modified the ticket email address
+ */
+class SetGatewayAddressAction extends AbstractAction
 {
-	public function getOptions($for_ids = null)
+	/**
+	 * @var int
+	 */
+	protected $gateway_address_id;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 */
+	protected $gateway_address;
+
+	public function __construct($gateway_address_id)
 	{
-		if ($for_ids) {
-			$for_ids = (array)$for_ids;
-			$for_ids = Arrays::castToType($for_ids, 'int');
-			$for_ids = implode(',', $for_ids);
-
-			if (!$for_ids) {
-				return array();
-			}
-
-			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-				SELECT id, match_pattern
-				FROM email_gateway_addresses
-				WHERE id IN ($for_ids)
-			");
-		} else {
-			$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-				SELECT id, match_pattern
-				FROM email_gateway_addresses
-			");
+		$this->gateway_address_id = $gateway_address_id;
+		if ($gateway_address_id) {
+			$this->gateway_address = App::getOrm()->find('DeskPRO:EmailGatewayAddress', $gateway_address_id);
 		}
-
-		return $opts;
 	}
 
 
 	/**
-	 * Gets exact email addresses. That is, matches of type 'exact'
+	 * Apply the property to the ticket
 	 *
-	 * @return array
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 */
-	public function getEmailAddresses()
+	public function apply(Ticket $ticket)
 	{
-		return $this->_em->createQuery("
-			SELECT a
-			FROM DeskPRO:EmailGatewayAddress a
-			WHERE a.match_type = 'exact'
-			ORDER BY a.match_pattern ASC
-		")->execute();
+		if (!$this->gateway_address) {
+			return;
+		}
+
+		$ticket->notify_email = '';
+		$ticket->email_gateway_address = $this->gateway_address;
+		$ticket->email_gateway = $this->gateway_address->gateway;
+	}
+
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array();
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		if (!$this->gateway_address) {
+			return '';
+		}
+		return 'Set gateway address to ' . $this->gateway_address->match_pattern;
 	}
 }

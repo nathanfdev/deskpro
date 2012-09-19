@@ -155,6 +155,10 @@ class ActionsFactory
 				$options['set_value'] = $value;
 				break;
 
+		case 'set_gateway_address':
+			$options['gateway_address_id'] = $value['gateway_address_id'];
+			break;
+
 			case 'set_from_address':
 				$options['email_address'] = $value['email_address'];
 				break;
