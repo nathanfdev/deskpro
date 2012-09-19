@@ -76,6 +76,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public $gateway;
 	public $gateway_address;
+	public $sent_to;
 
 	/**
 	 * @var
@@ -227,6 +228,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket['validating'] = $validating;
 			$ticket['language'] = App::getSession()->getLanguage();
 			$ticket['notify_email'] = $this->ticket->notify_email;
+
+			if ($this->sent_to) {
+				$ticket['sent_to_address'] = $this->sent_to;
+			}
 
 			if ($this->gateway) {
 				$ticket->email_gateway = $this->gateway;

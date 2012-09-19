@@ -799,6 +799,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->setPersonContext($person);
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
+		$newticket->sent_to = $this->sent_to;
 
 		if ($this->logger) {
 			$newticket->logger = $this->logger;
@@ -990,6 +991,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->setPersonContext($person);
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
+		$newticket->sent_to	= $this->sent_to;
 
 		if ($this->logger) {
 			$newticket->logger = $this->logger;

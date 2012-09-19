@@ -146,6 +146,22 @@
 	</div>
 	{% endif %}
 
+	{% if 'sent_to_address' not in no_show_fields %}
+	<div class="builder-type" title="Ticket sent in to address" data-rule-type="sent_to_address">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="sent_to_address" value="" />
+		</div>
+	</div>
+	{% endif %}
+
 	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
 		<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="builder-op">

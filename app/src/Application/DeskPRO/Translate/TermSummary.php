@@ -299,6 +299,23 @@ class TermSummary
 				}
 				break;
 
+			case 'ticket_sent_to_address':
+				switch ($op) {
+					case self::OP_IS:
+						$summary = $tr->phrase('agent.general.x_is_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+						break;
+					case self::OP_CONTAINS:
+						$summary = $tr->phrase('agent.general.x_include_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+						break;
+					case self::OP_NOTCONTAINS:
+						$summary = $tr->phrase('agent.general.x_not_include_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+						break;
+					default:
+						$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+						break;
+				}
+				break;
+
 			case 'flagged':
 				$color = $choice;
 				if ($color == 'any') {

@@ -59,6 +59,11 @@ abstract class AbstractGatewayProcessor
 	protected $gateway_address;
 
 	/**
+	 * @var string
+	 */
+	protected $sent_to;
+
+	/**
 	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
 	 */
 	protected $event_dispatcher;
@@ -114,10 +119,20 @@ abstract class AbstractGatewayProcessor
 
 		if($this->gateway_address) {
 			$this->logMessage(sprintf("Matched address %s (%d)", $this->gateway_address->getTitle(), $this->gateway_address->id));
-		}
-		else {
+		} else {
 			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %s (%d)!', $gateway->title, $gateway->id));
 		}
+
+		$orig_to = $this->reader->getOriginalTo();
+		if ($orig_to) {
+			$this->sent_to = $orig_to;
+		} elseif ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
+			$this->sent_to = $this->gateway_address->match_pattern;
+		} else {
+			$this->sent_to = '';
+		}
+
+		$this->logMessage('sent_to: ' . $this->sent_to);
 
 		$this->init();
 	}
