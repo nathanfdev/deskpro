@@ -68,6 +68,8 @@ class ClientMessage extends AbstractEntityRepository
 			$last_id = $this->_em->getConnection()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
 			if ($last_id) {
 				$data['last_id'] = $last_id;
+			} else {
+				$data['last_id'] = 1;
 			}
 
 		} else {

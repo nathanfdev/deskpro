@@ -23,7 +23,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		});
 
 		this.poller.addData((function () {
-			if (!this.lastMessageId) return null;
+			if (this.lastMessageId === null) return null;
 			return { 'since': this.lastMessageId };
 		}).bind(this), 'since', { recurring: true });
 
@@ -60,8 +60,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			}, this);
 		}
 
-		if (data.last_id && data.last_id > this.lastMessageId) {
-			this.lastMessageId = data.last_id;
+		if (typeof data.last_id != 'undefined' && parseInt(data.last_id) > this.lastMessageId) {
+			this.lastMessageId = parseInt(data.last_id);
 		}
 	},
 
