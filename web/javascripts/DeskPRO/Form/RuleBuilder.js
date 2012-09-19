@@ -162,6 +162,21 @@ DeskPRO.Form.RuleBuilder = new Class({
 			this.updateFormName(new_row, formBaseName);
 		}
 
+		// Handle when its type is changed
+		select.on('change', (function() {
+			this.handleSelectChange(new_row);
+		}).bind(this));
+
+		$(addToEl).append(new_row);
+
+		if (!isStatic) {
+			DP.select(select);
+		} else {
+			var lbl = $('<span />');
+			lbl.text(select.find('option:selected').text());
+			select.hide().after(lbl);
+		}
+
 		var opt = false;
 		if (existing && this.types[existing.type]) {
 
@@ -207,21 +222,6 @@ DeskPRO.Form.RuleBuilder = new Class({
 			}
 		} else {
 			existing = null;
-		}
-
-		// Handle when its type is changed
-		select.on('change', (function() {
-			this.handleSelectChange(new_row);
-		}).bind(this));
-
-		$(addToEl).append(new_row);
-
-		if (!isStatic) {
-			DP.select(select);
-		} else {
-			var lbl = $('<span />');
-			lbl.text(select.find('option:selected').text());
-			select.hide().after(lbl);
 		}
 
 		this.fireEvent('newRow', [new_row, addToEl, existing]);
