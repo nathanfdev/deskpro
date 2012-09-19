@@ -491,7 +491,12 @@ class TemplatingExtension extends \Twig_Extension
 				$date = new \DateTime('@'.$date);
 				$date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 			} else {
-				$date = new \DateTime($date);
+				try {
+					$date_str = $date;
+					$date = new \DateTime($date_str);
+				} catch (\Exception $e) {
+					return "invalid_date($date_str)";
+				}
 			}
 		}
 
