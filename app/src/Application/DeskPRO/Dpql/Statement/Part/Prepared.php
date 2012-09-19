@@ -77,6 +77,13 @@ class Prepared
 	protected $_renderer = null;
 
 	/**
+	 * A callback to fill rows of the results based on values of this field (if grouping by it)
+	 *
+	 * @var \Closure|null
+	 */
+	protected $_groupFill = null;
+
+	/**
 	 * @param string $sqlExpr SQL expression
 	 * @param string $name Name of column header
 	 * @param string|bool $sqlExprPrint SQL expression if in printable context
@@ -182,5 +189,21 @@ class Prepared
 	public function renderer()
 	{
 		return $this->_renderer;
+	}
+
+	/**
+	 * @param \Closure|null $fill
+	 */
+	public function setGroupFill(\Closure $fill = null)
+	{
+		$this->_groupFill = $fill;
+	}
+
+	/**
+	 * @return \Closure|null
+	 */
+	public function groupFill()
+	{
+		return $this->_groupFill;
 	}
 }

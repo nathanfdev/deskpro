@@ -94,12 +94,22 @@ class Matrix extends AbstractFunc
 		foreach ($valid AS $key => $groupBy) {
 			$printId = $select->addSelectField($groupBy->printed());
 			$select->addGroupBy($groupBy->sql());
-			$statement->addDefaultOrder($groupBy->printed());
+			$defaultOrder = $statement->addDefaultOrder($groupBy->printed());
 
 			if ($groupBy->printed() === $groupBy->sql()) {
 				$groupId = $printId;
 			} else {
 				$groupId = $select->addSelectField($groupBy->sql());
+			}
+
+			if ($groupBy->ordered() == $groupBy->printed()) {
+				$orderId = $printId;
+			} else {
+				$orderId = $select->addSelectField($groupBy->ordered());
+			}
+
+			if ($defaultOrder && $groupBy->groupFill()) {
+				$statement->addGroupFill($groupBy->groupFill(), $printId, $groupId, $orderId);
 			}
 
 			if ($key == 0 && $isMatrix) {

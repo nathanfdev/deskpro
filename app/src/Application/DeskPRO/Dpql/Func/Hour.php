@@ -42,9 +42,9 @@ use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
- * Handler that wraps around DAYOFMONTH() to add ordinal suffixes.
+ * Handler that wraps around HOUR() to provide a group fill
  */
-class DayOfMonth extends AbstractFunc
+class Hour extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -64,33 +64,18 @@ class DayOfMonth extends AbstractFunc
 	)
 	{
 		if (count($this->_arguments) != 1) {
-			throw new Exception('DAYOFMONTH() can only accept 1 argument.');
+			throw new Exception('HOUR() can only accept 1 argument.');
 		}
 
 		$expression = reset($this->_arguments);
 		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'DAYOFMONTH(' . $prepped->sql() . ')';
-		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-		{
-			$mod = $value % 100;
-			switch ($mod) {
-				case 11:
-				case 12:
-				case 13:
-					return $value . 'th';
-
-				default:
-					$ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
-					return $value . $ends[$value % 10];
-			}
-		};
-
-		$res = new Prepared($sql, 'DAYOFMONTH(' . $prepped->name() . ')', false, $renderer);
+		$sql = 'HOUR(' . $prepped->sql() . ')';
+		$res = new Prepared($sql, 'HOUR(' . $prepped->name() . ')', false, 'numberraw');
 
 		$res->setGroupFill(function($min, $max) {
 			$fills = array();
-			for ($i = $min; $i <= $max; $i++) {
+			for ($i = 0; $i <= 23; $i++) {
 				$fills[] = array($i, $i, $i);
 			}
 

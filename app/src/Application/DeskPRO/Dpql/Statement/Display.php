@@ -156,6 +156,13 @@ class Display
 	protected $_prepared = false;
 
 	/**
+	 * List of group fill closures
+	 *
+	 * @var \Closure[]
+	 */
+	protected $_groupFills = array();
+
+	/**
 	 * Maps available tables (keys) to Doctrine entity names (values).
 	 *
 	 * @var array
@@ -255,14 +262,153 @@ class Display
 					}
 
 					$queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
-					$results->addSplitResults($queryResults, $splitResult);
+					$results->addSplitResults($this->_fillResults($queryResults), $splitResult);
 				}
 			} else {
 				$queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
-				$results->setResults($queryResults);
+				$results->setResults($this->_fillResults($queryResults));
 			}
 		} catch (Exception $e) {
 			throw new Exception("This DPQL statement generated an invalid MySQL query. Please try a different query.");
+		}
+
+		return $results;
+	}
+
+	protected function _fillResults(array $results)
+	{
+		if (!$this->_groupFills) {
+			return $results;
+		}
+
+		if (!$results) {
+			return $results;
+		}
+
+		$first = reset($results);
+		$last = end($results);
+
+		$base = array();
+		foreach ($this->_sql->getSelectFields() AS $key => $sel) {
+			$base[$key] = null;
+		}
+
+		foreach ($this->_groupFills AS $fill) {
+			$closure = $fill['fill'];
+			$print = $fill['print'] - 1;
+			$sql = $fill['sql'] - 1;
+			$order = $fill['order'] - 1;
+
+			$firstValue = $first[$order];
+			$lastValue = $last[$order];
+			$ascending = ($lastValue > $firstValue);
+			$previousValue = null;
+			$startRowValue = null;
+			$startRow = 0;
+			$rowSets = array();
+
+			foreach ($results AS $rowKey => $row) {
+				if ($previousValue !== null) {
+					if (($ascending && $row[$order] < $previousValue) ||
+						(!$ascending && $row[$order] > $previousValue)
+					) {
+						if ($rowKey - 1 > $startRow) {
+							$rowSets[] = array(
+								'start' => $startRow,
+								'end' => $rowKey - 1,
+								'startValue' => $startRowValue,
+								'endValue' => $previousValue
+							);
+						}
+						$previousValue = null;
+					} else {
+						$previousValue = $row[$order];
+					}
+				}
+
+				if ($previousValue === null) {
+					$previousValue = $row[$order];
+					$startRowValue = $row[$order];
+					$startRow = $rowKey;
+				}
+			}
+
+			if ($startRow < $rowKey) {
+				$rowSets[] = array(
+					'start' => $startRow,
+					'end' => $rowKey,
+					'startValue' => $startRowValue,
+					'endValue' => $previousValue
+				);
+			}
+
+			$newResults = array();
+			$seenRow = 0;
+			foreach ($rowSets AS $set) {
+				if ($set['start'] > $seenRow) {
+					$newResults = array_merge($newResults, array_slice($results, $seenRow, $set['start'] - $seenRow));
+				}
+
+				$rows = array_slice($results, $set['start'], $set['end'] - $set['start']);
+				$setFirst = reset($rows);
+				$setLast = end($rows);
+
+				if ($ascending) {
+					$min = $setFirst[$order];
+					$max = $setLast[$order];
+				} else {
+					$min = $setLast[$order];
+					$max = $setFirst[$order];
+				}
+
+				if ($first[$order] == $last[$order]) {
+					$newResults = array_merge($newResults, $rows);
+				} else {
+					$fills = $closure($min, $max);
+					if (!$ascending) {
+						$fills = array_reverse($fills);
+					}
+
+					if ($fills) {
+						$fillRow = array_shift($fills);
+
+						foreach ($rows AS $row) {
+							while ($fillRow && (
+								($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
+							)) {
+								$copyRow = $base;
+								$copyRow[$print] = $fillRow[0];
+								$copyRow[$sql] = $fillRow[1];
+								$copyRow[$order] = $fillRow[2];
+								$newResults[] = $copyRow;
+
+								$fillRow = array_shift($fills);
+							}
+							while ($fillRow && $fillRow[2] == $row[$print]) {
+								$fillRow = array_shift($fills);
+							}
+							$newResults[] = $row;
+						}
+
+						if ($fillRow) {
+							array_unshift($fills, $fillRow);
+						}
+						while ($fillRow = array_shift($fills)) {
+							$copyRow = $base;
+							$copyRow[$print] = $fillRow[0];
+							$copyRow[$sql] = $fillRow[1];
+							$copyRow[$order] = $fillRow[2];
+							$newResults[] = $copyRow;
+						}
+					} else {
+						$newResults = array_merge($newResults, $rows);
+					}
+				}
+
+				$seenRow = $set['end'];
+			}
+
+			$results = $newResults;
 		}
 
 		return $results;
@@ -480,12 +626,22 @@ class Display
 			if ($groupBy->hasValue()) {
 				$printId = $this->addSqlSelectField($groupBy->printed(), $alias);
 				$sql->addGroupBy($groupBy->sql());
-				$this->addDefaultOrder($groupBy->ordered());
+				$defaultOrder = $this->addDefaultOrder($groupBy->ordered());
 
 				if ($groupBy->printed() === $groupBy->sql()) {
 					$groupId = $printId;
 				} else {
 					$groupId = $sql->addSelectField($groupBy->sql());
+				}
+
+				if ($groupBy->ordered() == $groupBy->printed()) {
+					$orderId = $printId;
+				} else {
+					$orderId = $sql->addSelectField($groupBy->ordered());
+				}
+
+				if ($defaultOrder && $groupBy->groupFill()) {
+					$this->addGroupFill($groupBy->groupFill(), $printId, $groupId, $orderId);
 				}
 
 				$resultTitle = ($alias !== false ? $alias : $groupBy->name());
@@ -531,6 +687,31 @@ class Display
 				$sql->addOrderBy($orderSql->ordered() . $direction);
 			}
 		}
+	}
+
+	/**
+	 * Adds a group fill handler
+	 *
+	 * @param \Closure $fill
+	 * @param $printId
+	 * @param $sqlId
+	 *
+	 * @return boolean
+	 */
+	public function addGroupFill(\Closure $fill, $printId, $sqlId, $orderId)
+	{
+		if (count($this->_sql->getGroupBy()) > 1)
+		{
+			return false;
+		}
+
+		$this->_groupFills[] = array(
+			'fill' => $fill,
+			'print' => $printId,
+			'sql' => $sqlId,
+			'order' => $orderId
+		);
+		return true;
 	}
 
 	/**

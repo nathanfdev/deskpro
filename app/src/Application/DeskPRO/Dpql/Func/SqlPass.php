@@ -63,14 +63,12 @@ class SqlPass extends AbstractFunc
 		'CHAR_LENGTH' => array('number', 1),
 		'DATE' => array('date', 1),
 		'DATEDIFF' => array('number', 2),
-		'DAYOFWEEK' => array('number', 1),
 		'DAYOFYEAR' => array('number', 1),
 		'FIELD' => array('number', 2, -1),
 		'FIND_IN_SET' => array('number', 2),
 		'FLOOR' => array('number', 1),
 		'FROM_UNIXTIME' => array('datetime', 1),
 		'GREATEST' => array('number', 2, -1),
-		'HOUR' => array('number', 1),
 		'IF' => array('mixed', 3),
 		'IFNULL' => array('mixed', 2),
 		'ISNULL' => array('boolean', 1),
@@ -84,8 +82,6 @@ class SqlPass extends AbstractFunc
 		'LTRIM' => array('string', 1),
 		'MAX' => array('number', 1),
 		'MIN' => array('number', 1),
-		'MINUTE' => array('number', 1),
-		'MONTH' => array('number', 1),
 		'POW' => array('number', 2),
 		'QUARTER' => array('number', 1),
 		'RAND' => array('number', 0, 1),
@@ -116,8 +112,7 @@ class SqlPass extends AbstractFunc
 		'VAR_POP' => array('number', 1),
 		'VAR_SAMP' => array('number', 1),
 		'WEEKDAY' => array('number', 1),
-		'WEEKOFYEAR' => array('number', 1),
-		'YEAR' => array('year', 1)
+		'WEEKOFYEAR' => array('number', 1)
 	);
 
 	/**

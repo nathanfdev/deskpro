@@ -38,6 +38,8 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
  * Handler that wraps around MONTHNAME() to provide correct sorting if used in a group by.
@@ -68,9 +70,34 @@ class MonthName extends AbstractFunc
 		$expression = reset($this->_arguments);
 		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'MONTHNAME(' . $prepped->sql() . ')';
-		$res = new Prepared($sql, 'MONTHNAME(' . $prepped->name() . ')', false, 'string');
-		$res->setOrdered('MONTH(' . $prepped->sql() . ')');
+		$sql = 'MONTH(' . $prepped->sql() . ')';
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+		{
+			switch ($value) {
+				case 1: return 'January';
+				case 2: return 'February';
+				case 3: return 'March';
+				case 4: return 'April';
+				case 5: return 'May';
+				case 6: return 'June';
+				case 7: return 'July';
+				case 8: return 'August';
+				case 9: return 'September';
+				case 10: return 'October';
+				case 11: return 'November';
+				case 12: return 'December';
+			}
+		};
+		$res = new Prepared($sql, 'MONTHNAME(' . $prepped->name() . ')', false, $renderer);
+
+		$res->setGroupFill(function($min, $max) {
+			$fills = array();
+			for ($i = $min; $i <= $max; $i++) {
+				$fills[] = array($i, $i, $i);
+			}
+
+			return $fills;
+		});
 
 		return $res;
 	}

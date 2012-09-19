@@ -68,9 +68,30 @@ class DayName extends AbstractFunc
 		$expression = reset($this->_arguments);
 		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-		$sql = 'DAYNAME(' . $prepped->sql() . ')';
-		$res = new Prepared($sql, 'DAYNAME(' . $prepped->name() . ')', false, 'string');
-		$res->setOrdered('DAYOFWEEK(' . $prepped->sql() . ')');
+		$sql = 'DAYOFWEEK(' . $prepped->sql() . ')';
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
+		{
+			switch ($value) {
+				case 1: return 'Sunday';
+				case 2: return 'Monday';
+				case 3: return 'Tuesday';
+				case 4: return 'Wednesday';
+				case 5: return 'Thursday';
+				case 6: return 'Friday';
+				case 7: return 'Saturday';
+			}
+		};
+
+		$res = new Prepared($sql, 'DAYNAME(' . $prepped->name() . ')', false, $renderer);
+
+		$res->setGroupFill(function($min, $max) {
+			$fills = array();
+			for ($i = 1; $i <= 7; $i++) {
+				$fills[] = array($i, $i, $i);
+			}
+
+			return $fills;
+		});
 
 		return $res;
 	}

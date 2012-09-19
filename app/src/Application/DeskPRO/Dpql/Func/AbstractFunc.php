@@ -58,9 +58,13 @@ abstract class AbstractFunc
 		'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
 		'DAYNAME' => 'DayName',
 		'DAYOFMONTH' => 'DayOfMonth',
+		'DAYOFWEEK' => 'DayOfWeek',
 		'FORMAT' => 'Format',
+		'HOUR' => 'Hour',
 		'LINK' => 'Link',
 		'MATRIX' => 'Matrix',
+		'MINUTE' => 'Minute',
+		'MONTH' => 'Month',
 		'MONTHNAME' => 'MonthName',
 		'NOW' => 'Now',
 		'PERCENT' => 'Percent',
@@ -68,7 +72,8 @@ abstract class AbstractFunc
 		'TO_UTC' => 'ToUtc',
 		'UTC' => 'Utc',
 		'X' => 'X',
-		'Y' => 'Y'
+		'Y' => 'Y',
+		'YEAR' => 'Year'
 	);
 
 	/**

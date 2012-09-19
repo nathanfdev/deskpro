@@ -39,6 +39,8 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
+use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 
 /**
  * Gets a human readable value for a date offset grouping (0-15 mins, 15-30 mins, etc).
@@ -106,20 +108,37 @@ class DateOffsetGroup extends AbstractFunc
 		);
 		krsort($groups);
 
-		$sql = "'2+ years'";
-		foreach ($groups AS $max => $value) {
-			$sql = "IF($ifSql < $max, '$value', $sql)";
-		}
-		$sql = "IF($ifSql IS NULL, 'No Data', $sql)";
+		$maxSentinel = 630720000;
 
-		$orderSql = "630720000"; // this value must be higher than all the group values
+		$sql = $maxSentinel; // this value must be higher than all the group values
 		foreach ($groups AS $max => $value) {
-			$orderSql = "IF($ifSql < $max, $max, $orderSql)";
+			$sql = "IF($ifSql < $max, $max, $sql)";
 		}
-		$orderSql = "IF($ifSql IS NULL, 0, $orderSql)";
+		$sql = "IF($ifSql IS NULL, 0, $sql)";
 
-		$return = new Prepared($sql, $name);
-		$return->setOrdered($orderSql);
+		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($groups, $maxSentinel)
+		{
+			if ($value == $maxSentinel) {
+				return '2+ years';
+			} else if (isset($groups[$value])) {
+				return $groups[$value];
+			} else {
+				return $valueRenderer->renderValue(null, 'string');
+			}
+		};
+
+		$return = new Prepared($sql, $name, false, $renderer);
+
+		$return->setGroupFill(function($min, $max) use ($groups, $maxSentinel) {
+			$fills = array();
+			$fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
+			foreach ($groups AS $max => $null) {
+				$fills[] = array($max, $max, $max);
+			}
+
+			return array_reverse($fills);
+		});
+
 		return $return;
 	}
 }
