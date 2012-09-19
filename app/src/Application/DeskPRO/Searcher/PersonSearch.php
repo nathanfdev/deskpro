@@ -581,8 +581,6 @@ class PersonSearch extends SearcherAbstract
 			}
 		}
 
-		$joins = array_unique($joins);
-
 		if ($this->mode == self::MODE_AGENT) {
 			$wheres[] = "people.is_agent = 1";
 		} else {
