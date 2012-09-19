@@ -121,11 +121,26 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_last;
 
+	/**
+	 * @var bool
+	 */
+	protected $_is_new = false;
+
 	public function __construct()
 	{
 		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 		$this->setModelField('date_created', new \DateTime());
 		$this->setModelField('date_last', new \DateTime());
+		$this->_is_new = true;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function getIsNew()
+	{
+		return $this->_is_new;
 	}
 
 	/**

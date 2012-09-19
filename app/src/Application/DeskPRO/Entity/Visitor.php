@@ -96,6 +96,13 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $ref_page = '';
 
 	/**
+	 * The first page the user came to during his current session
+	 *
+	 * @var string
+	 */
+	protected $session_landing_page = '';
+
+	/**
 	 * The page the user came from
 	 *
 	 * @var string
@@ -263,6 +270,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
 		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_agent', ));
 		$metadata->mapField(array( 'fieldName' => 'ref_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref_page', ));
+		$metadata->mapField(array( 'fieldName' => 'session_landing_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'session_landing_page', ));
 		$metadata->mapField(array( 'fieldName' => 'landing_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'landing_page', ));
 		$metadata->mapField(array( 'fieldName' => 'last_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'last_page', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));

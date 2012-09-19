@@ -296,20 +296,32 @@ pageMeta.baseId = '{{ baseId }}';
 								{{ convo.visitor.user_agent }}
 							</td>
 						</tr>
+						{% if convo.session %}
+							<tr>
+								<th>Session Start Time:</th>
+								<td>{{ convo.session.date_last|date('fulltime') }}</td>
+							</tr>
+						{% endif %}
+						{% if convo.visitor.session_landing_page %}
+							<tr>
+								<th>Session Start Time:</th>
+								<td>{{ convo.visitor.session_landing_page }}</td>
+							</tr>
+						{% endif %}
+						<tr>
+							<th>Initial Visit Time:</th>
+							<td>
+								{{ convo.visitor.date_last|date('fulltime') }}
+							</td>
+						</tr>
 						{% if convo.visitor.landing_page %}
 						<tr>
-							<th>Landing Page:</th>
+							<th>Initial Landing Page:</th>
 							<td>
 								{{ convo.visitor.landing_page }}
 							</td>
 						</tr>
 						{% endif %}
-						<tr>
-							<th>First Visit Time:</th>
-							<td>
-								{{ convo.visitor.date_last|date('fulltime') }}
-							</td>
-						</tr>
 					</tbody>
 				</table>
 			</article>

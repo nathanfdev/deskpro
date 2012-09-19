@@ -126,13 +126,20 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$vis = new Entity\Visitor();
 			$vis['ip_address'] = App::getRequest()->getClientIp() ?: '';
 			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
-			$vis['landing_page'] = $current_page;
 			$vis['ref_page'] = $ref_page;
 		}
 
 		$path = App::getRequest()->getPathInfo();
 		if (!App::getRequest()->isXmlHttpRequest() && !preg_match('#^/(internal\-data/|widget/|chat/poll|chat/send\-message|download/|favicon\.ico|dp/)#', $path)) {
 			$vis['last_page'] = $current_page;
+
+			if ($this->getEntity()->getIsNew() || !$vis['session_landing_page']) {
+				$vis['session_landing_page'] = $current_page;
+			}
+
+			if (!$vis['landing_page']) {
+				$vis['landing_page'] = $current_page;
+			}
 		}
 		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
 		$vis['date_last'] = new \DateTime();
