@@ -56,6 +56,11 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$output->setVerbosity(0);
+		if ($input->getOption('verbose')) {
+			$output->setVerbosity(2);
+		}
+
 		$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
 		if ($check) {
 			$date = new \DateTime('@'.$check);
@@ -143,8 +148,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 				$check_phpinfo = implode("\n", $out);
 				$fail = !\Orb\Util\Env::isSamePhpInfo(
 					\Orb\Util\Env::getPhpInfo(),
-					$check_phpinfo,
-					$mute
+					$check_phpinfo
 				);
 			}
 
@@ -178,7 +182,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		if ($ret || strpos($out, 'OKAY') === false) {
 			$write_status("error_php_binary_failcheck");
 			$write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
-			$output->write('<error>PHP binary fails server checks: ' . $out . '</error>');
+			$output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+			$output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 			return 1;
 		}
 
