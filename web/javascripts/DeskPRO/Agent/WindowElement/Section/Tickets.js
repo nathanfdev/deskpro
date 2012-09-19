@@ -377,6 +377,17 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 	},
 
+	getUpdatedFilterCounts: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/get-filter-counts.json',
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				this.updateFilterCounts(data);
+			}
+		});
+	},
+
 	updateFilterCounts: function(counts) {
 		Object.each(counts, function (count, filter_id) {
 			if (this.archiveFilterIds.indexOf(filter_id) != -1) {

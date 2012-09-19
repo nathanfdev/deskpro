@@ -795,6 +795,13 @@ $collection->add('agent_ticketsearch_getlabelssection', new Route(
 	array()
 ));
 
+$collection->add('agent_ticketsearch_getfiltercounts', new Route(
+	'/ticket-search/get-filter-counts.json',
+	array('_controller' => 'AgentBundle:TicketSearch:getFilterCounts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticketsearch_grouptickets', new Route(
 	'/ticket-search/group-tickets.json',
 	array('_controller' => 'AgentBundle:TicketSearch:groupTickets'),

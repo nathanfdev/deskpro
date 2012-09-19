@@ -164,6 +164,13 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+	public function getFilterCountsAction()
+	{
+		$all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
+
+		return $this->createJsonResponse($all_counts);
+	}
+
 	public function getFlaggedSectionAction()
 	{
 		$flags = array('blue','green','orange','pink','purple','red','yellow');
