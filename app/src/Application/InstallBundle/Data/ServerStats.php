@@ -62,8 +62,10 @@ class ServerStats
 
 		if (function_exists('apc_cache_info')) {
 			$stats['php_has_apc'] = 1;
+			$stats['apc_version'] = phpversion('apc');
 		} else {
 			$stats['php_has_apc'] = 0;
+			$stats['apc_version'] = 0;
 		}
 
 		if (function_exists('mb_get_info')) {

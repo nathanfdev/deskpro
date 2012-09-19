@@ -72,6 +72,7 @@ class ErrorReporter
 				'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
 				'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
 				'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
+				'apc_version'       => isset($all_stats['apc_version'])   ? $all_stats['apc_version'] : '',
 				'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
 				'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
 				'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
