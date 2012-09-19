@@ -2612,23 +2612,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		var errorFn = function() {
+			this.tryCount++;
+			if (this.tryCount <= this.retryLimit) {
+				$.ajax(this);
+				return;
+			}
+			delete self.loadingSections[section_id];
+		};
+
 		$.ajax({
 			url: url,
 			timeout: 15000,
 			dataType: 'json',
 			success: function(data) {
 				delete self.loadingSections[section_id];
+
+				if (!data || !data.section_html) {
+					errorFn();
+					return;
+				}
+
 				callback(data);
 			},
 			tryCount : 0,
 		    retryLimit: 3,
 			error: function(xhr, textStatus, errorThrown) {
-				this.tryCount++;
-				if (this.tryCount <= this.retryLimit) {
-					$.ajax(this);
-					return;
-				}
-				delete self.loadingSections[section_id];
+				errorFn();
 				DeskPRO_Window._globalHandleAjaxError(null, xhr, this, errorThrown);
 			}
 		});
@@ -2680,8 +2690,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.loadingSections = {};
 
 				Object.each(data, function(sectionData, sectionId) {
-					if (sectionData === null) {
-						// Probably means an error, send it normally
+					if (sectionData === null || !sectionData.section_html) {
+						// Means an error, send it normally
 						self.getSectionData(sectionId);
 					}
 					if (callback_map[sectionId]) {
