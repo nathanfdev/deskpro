@@ -104,7 +104,7 @@ class UsersourcesStep extends AbstractDeskpro3Step
 
 			case 'Custom':
 
-				$new_usersource->source_type = 'DbTablePhpPasswordCheck';
+				$new_usersource->source_type = 'db_table_php_password_check';
 				$new_usersource->options = array(
 					'db_dsn'            => 'mysql:host=' . $usersource['config']['db_host'] . ';dbname=' . $usersource['config']['db_name'],
 					'db_username'       => $usersource['config']['db_user'],
@@ -130,7 +130,7 @@ class UsersourcesStep extends AbstractDeskpro3Step
 
 			case 'CustomMsSQL':
 
-				$new_usersource->source_type = 'DbTablePhpPasswordCheck';
+				$new_usersource->source_type = 'db_table_php_password_check';
 				$new_usersource->options = array(
 					'db_dsn'            => 'sqlsrv:Server=' . $usersource['config']['db_host'] . ';Database=' . $usersource['config']['db_name'],
 					'db_username'       => $usersource['config']['db_user'],
