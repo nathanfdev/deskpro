@@ -447,6 +447,27 @@ $collection->add('admin_portal_custom_block_delete', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_custom_sideblock_simple_get', new Route(
+	'/portal/sideblock-simple/{pid}.json',
+	array('_controller' => 'AdminBundle:Portal:getCustomBlockSimple'),
+	array(),
+	array()
+));
+
+$collection->add('admin_portal_custom_sideblock_simple_save', new Route(
+	'/portal/sideblock-simple/{pid}/save.json',
+	array('_controller' => 'AdminBundle:Portal:saveCustomBlockSimple', 'pid' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_portal_custom_sideblock_simple_delete', new Route(
+	'/portal/sideblock-simple/{pid}/delete.json',
+	array('_controller' => 'AdminBundle:Portal:deleteCustomBlockSimple'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_toggle', new Route(
 	'/portal/toggle-portal',
 	array('_controller' => 'AdminBundle:Portal:togglePortal'),

@@ -391,18 +391,37 @@ em.dp-collapse-block { display: none; }
 	.opacity(100);
 }
 
-#dp_custom_sidebar_add {
+#dp_custom_sidebar_add_simple {
     display: block;
     margin-top: 8px;
     text-align: center;
     cursor: pointer;
     background-color: #fff;
     border: 1px solid #999898;
+	border-bottom: none;
     padding: 10px;
-    .rounded(6px);
+    border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
 
     a {
         background: url(../../images/admin/icons/portal-block-on.png) no-repeat 0 50%;
         padding-left: 19px;
+    }
+}
+
+#dp_custom_sidebar_add {
+    display: block;
+    margin-top: 0;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #999898;
+    padding: 1px;
+    border-radius: 0 0 4px 4px;
+    -webkit-border-radius: 0 0 4px 4px;
+	font-size: 11px;
+
+    a {
+
     }
 }

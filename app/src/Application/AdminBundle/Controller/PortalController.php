@@ -157,6 +157,66 @@ class PortalController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function deleteCustomBlockSimpleAction($pid = 0)
+	{
+		$pd = $this->em->getRepository('DeskPRO:PortalPageDisplay')->find($pid);
+		if (!$pd || $pd->type != 'sidebar_block_simple') {
+			throw $this->createNotFoundException();
+		}
+
+		$this->em->remove($pd);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'pid'     => $pd->getId()
+		));
+	}
+
+	public function saveCustomBlockSimpleAction($pid = 0)
+	{
+		if ($pid) {
+			$pd = $this->em->getRepository('DeskPRO:PortalPageDisplay')->find($pid);
+			if (!$pd || $pd->type != 'sidebar_block_simple') {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$pd = new \Application\DeskPRO\Entity\PortalPageDisplay();
+		}
+
+		$pd->type = 'sidebar_block_simple';
+		$pd->data = array(
+			'title'   => $this->in->getString('title'),
+			'content' => $this->in->getString('content')
+		);
+		$pd->is_enabled = true;
+		$pd->section = 'sidebar';
+
+		$this->em->persist($pd);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'pid'     => $pd->getId()
+		));
+	}
+
+	public function getCustomBlockSimpleAction($pid)
+	{
+		$pd = $this->em->getRepository('DeskPRO:PortalPageDisplay')->find($pid);
+		if (!$pd || $pd->type != 'sidebar_block_simple') {
+			throw $this->createNotFoundException();
+		}
+
+		$data = $pd->data;
+
+		return $this->createJsonResponse(array(
+			'pid'      => $pid,
+			'title'    => isset($data['title'])   ? $data['title'] : '',
+			'content'  => isset($data['content']) ? $data['content'] : '',
+		));
+	}
+
 	public function togglePortalAction()
 	{
 		$enable = $this->in->getBoolInt('enable');

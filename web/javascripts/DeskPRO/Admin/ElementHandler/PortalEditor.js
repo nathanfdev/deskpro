@@ -285,6 +285,42 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				});
 				break;
 
+			case 'new_sidebar_block_simple':
+				this.showHtmlEditorSimple(0, function(action, data) {
+					switch (action) {
+						case 'update': self.tellPortal('new_sidebar_block_simple', {
+							pid: data.pid
+						});
+					}
+				});
+				break;
+
+			case 'edit_sidebar_block_simple':
+				var controller = data.controller;
+				this.showHtmlEditorSimple(data.pid, function(action, data) {
+					switch (action) {
+						case 'update': controller.update();
+						break;
+					}
+				});
+				break;
+
+			case 'delete_sidebar_block_simple':
+				var controller = data.controller;
+				var el = controller.getEl();
+				el.hide();
+
+				$.ajax({
+					url: BASE_URL + 'admin/portal/sideblock-simple/'+data.pid+'/delete.json',
+					error: function() {
+						el.show();
+					},
+					success: function() {
+						controller.remove();
+					}
+				});
+				break;
+
 			case 'delete_template_block':
 				var controller = data.controller;
 				var el = controller.getEl();
@@ -410,6 +446,73 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 							}
 						});
 					}
+				});
+			}
+		});
+		overlay.open();
+	},
+
+	/**
+	 * Shows a simple editor for title/content
+	 *
+	 * @param callback
+	 */
+	showHtmlEditorSimple: function(pid, callback) {
+		pid = parseInt(pid) || 0;
+
+		var el = $(DeskPRO_Window.util.getPlainTpl($('#admin_portal_block_simple_html_edit_tpl')));
+
+		var overlay = new DeskPRO.UI.Overlay({
+			contentElement: el,
+			destroyOnClose: true,
+			fullScreen: true,
+			onBeforeOverlayOpened: function(evData) {
+				var el = evData.overlay.elements.wrapper;
+
+				if (el.is('.has-init')) return;
+				el.addClass('has-init');
+
+				if (pid) {
+					el.find('textarea.content').val('').addClass('loading');
+
+					$.ajax({
+						url: BASE_URL + 'admin/portal/sideblock-simple/' + pid + '.json',
+						context: this,
+						dataType: 'json',
+						success: function(data) {
+							el.find('input.title').val(data.title);
+							el.find('textarea.content').val(data.content).removeClass('loading');
+						}
+					});
+				}
+
+				el.find('textarea.content').height($(window).height() - 250);
+
+				$('.save-text-trigger', el).on('click', function() {
+
+					el.find('.overlay-footer').addClass('loading');
+
+					var postData = [];
+					postData.push({
+						name: 'title',
+						value: el.find('input.title').val()
+					});
+					postData.push({
+						name: 'content',
+						value: el.find('textarea.content').val()
+					});
+
+					$.ajax({
+						url: BASE_URL + 'admin/portal/sideblock-simple/'+pid+'/save.json',
+						context: this,
+						type: 'POST',
+						data: postData,
+						success: function(data) {
+							el.find('.overlay-footer').removeClass('loading');
+							callback('update', data);
+							overlay.close();
+						}
+					});
 				});
 			}
 		});

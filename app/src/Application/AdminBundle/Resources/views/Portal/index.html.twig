@@ -61,10 +61,30 @@
 						<h4>{{ phrase('admin.portal.edit_html') }}</h4>
 					</div>
 					<div class="overlay-content">
-						<textarea style="width: 98%; height: 98%; color: #000; size: 10px; font-family: Monaco, monospace;"></textarea>
+						<textarea style="width: 98%; height: 98%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;"></textarea>
 					</div>
 					<div class="overlay-footer">
 						<button class="save-trigger clean-white">{{ phrase('agent.general.save') }}</button>
+					</div>
+				</section>
+			</script>
+
+			<script type="text/x-deskpro-tmpl" id="admin_portal_block_simple_html_edit_tpl">
+				<section class="dp-portal-simpleheader-editor">
+					<div class="overlay-title">
+						<span class="close-overlay close-trigger"></span>
+						<h4>Custom Sidebar Block</h4>
+					</div>
+					<div class="overlay-content">
+						<div class="text">
+							<div class="input-title"><input type="text" class="title" name="title" style="width: 65%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;" value="{{ title }}" placeholder="Enter a title here" /></div>
+							<div class="input-title">
+								<textarea rows="10" cols="60" style="width: 98%; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;" name="content" class="content" placeholder="Enter the block contents heres">{{ content }}</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="overlay-footer">
+						<button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
 					</div>
 				</section>
 			</script>

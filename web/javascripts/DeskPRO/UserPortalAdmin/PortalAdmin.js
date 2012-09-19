@@ -76,7 +76,7 @@ var PortalAdmin = {
 	 */
 	initBlocks: function(wrapper, blockSelector) {
 		var self = this;
-		var contentBlocks = $(blockSelector, wrapper).not('.dp-template');
+		var contentBlocks = $(blockSelector, wrapper).not('.dp-template, .dp-sidebarblocksimple');
 
 		contentBlocks.each(function() {
 			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li></div>');
@@ -142,9 +142,15 @@ var PortalAdmin = {
 		wrapper.find('.dp-p.dp-template').each(function() {
 			var controller = new PortalAdmin_TemplateBlock($(this));
 		});
+		wrapper.find('.dp-p.dp-sidebarblocksimple').each(function() {
+			var controller = new PortalAdmin_SidebarBlockSimples($(this));
+		});
 
 		$('#dp_custom_sidebar_add').on('click', function() {
 			self.tellAdmin('new_sidebar_block');
+		});
+		$('#dp_custom_sidebar_add_simple').on('click', function() {
+			self.tellAdmin('new_sidebar_block_simple');
 		});
 	},
 
@@ -209,9 +215,19 @@ var PortalAdmin = {
 				var wrapper = $('<div />');
 				wrapper.data('dp-pid', data.pid);
 				wrapper.addClass('dp-p').addClass('dp-pid-' + data.pid);
-				wrapper.insertBefore('#dp_custom_sidebar_add');
+				wrapper.insertBefore('#dp_custom_sidebar_add_simple');
 
 				var controller = new PortalAdmin_TemplateBlock(wrapper);
+				controller.update();
+				break;
+
+			case 'new_sidebar_block_simple':
+				var wrapper = $('<div />');
+				wrapper.data('dp-pid', data.pid);
+				wrapper.addClass('dp-p').addClass('dp-pid-' + data.pid);
+				wrapper.insertBefore('#dp_custom_sidebar_add_simple');
+
+				var controller = new PortalAdmin_SidebarBlockSimples(wrapper);
 				controller.update();
 				break;
 		}
@@ -398,6 +414,72 @@ var PortalAdmin_TemplateBlock = new Orb.Class({
 
 	clickEdit: function() {
 		PortalAdmin.tellAdmin('edit_template_block', {
+			pid: this.id,
+			controller: this
+		});
+	},
+
+	update: function() {
+		$.ajax({
+			url: BASE_URL + 'admin-render-template/block:' + this.id,
+			context: this,
+			success: function(content) {
+				this.setContent(content);
+			}
+		});
+	},
+
+	remove: function() {
+		this.el.remove();
+	},
+
+	setContent: function(html) {
+		this.el.empty().html(html);
+		this._initContent();
+	},
+
+	getEl: function() {
+		return this.el;
+	}
+});
+
+
+/**
+ * @type {Orb.Class}
+ */
+var PortalAdmin_SidebarBlockSimples = new Orb.Class({
+	initialize: function(el) {
+		this.el = el;
+		this.el.data('dp-controller', this);
+		this.id = el.data('dp-pid');
+
+		this._initContent();
+	},
+
+	_initContent: function() {
+		var self = this;
+
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-remove-block"><span>delete</span></li><li class="dp-edit-html"><span>edit</span></li></div>');
+		this.el.prepend(controls);
+		this.el.append('<div class="dp-drag-overlay" style="cursor: default;" />');
+
+		controls.on('click', '.dp-remove-block', function(ev) {
+			ev.preventDefault();
+			self.clickRemove();
+		});
+
+		controls.on('click', '.dp-edit-html', function(ev) {
+			ev.preventDefault();
+			self.clickEdit();
+		});
+	},
+
+	clickRemove: function() {
+		PortalAdmin.tellAdmin('delete_sidebar_block_simple', { pid: this.id, controller: this });
+	},
+
+	clickEdit: function() {
+		PortalAdmin.tellAdmin('edit_sidebar_block_simple', {
 			pid: this.id,
 			controller: this
 		});

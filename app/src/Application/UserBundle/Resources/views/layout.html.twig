@@ -42,8 +42,11 @@
 	{% block sidebar %}
 		{{ portal_section('sidebar') }}
 		{% if app.admin_portal_controls %}
-			<div id="dp_custom_sidebar_add">
+			<div id="dp_custom_sidebar_add_simple">
 				<a>Add sidebar block</a>
+			</div>
+			<div id="dp_custom_sidebar_add">
+				<a>Add sidebar HTML</a>
 			</div>
 		{% endif %}
 	{% endblock %}
