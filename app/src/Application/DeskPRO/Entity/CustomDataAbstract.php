@@ -61,6 +61,14 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
 	/**
 	 * IMPLEMENT IN CHILD CLASS
+	 * The root custom field this is attached to
+	 *
+	 * @var \Application\DeskPRO\Entity\CustomDefXXX
+	 */
+	//protected $root_field = null;
+
+	/**
+	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Application\DeskPRO\Entity\Xxx
 	 */
