@@ -1587,14 +1587,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 		html.push('>');
 
 		Array.each(files, function(f) {
-			html.push('<source src="' + f + '" />');
+			html.push('<source src="' + f.path + '" type="' + f.type + '" />');
 		});
 
 		html.push('</audio>');
 		html = html.join('');
 
 		var el = $(html);
-		el.get(0).volume = volume;
+
+		try {
+			el.get(0).volume = volume;
+		} catch (e) {}
 
 		if (options.destroyAfter) {
 			el.bind('ended', function() {
@@ -1609,7 +1612,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (options.autoplay) {
-			el.get(0).play();
+			try	{
+				el.get(0).play();
+			} catch(e) { }
 		}
 
 		return el;
@@ -1624,10 +1629,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param options
 	 */
 	playLibrarySound: function(name, options) {
-		var files = [
-			ASSETS_BASE_URL + '/sounds/' + name + '.mp3',
-			ASSETS_BASE_URL + '/sounds/' + name + '.ogg'
-		];
+		if ($.browser.msie) {
+			var files = [{path: ASSETS_BASE_URL + '/sounds/' + name + '.wav', type: 'audio/wav'}];
+		} else {
+			var files = [
+				{path: ASSETS_BASE_URL + '/sounds/' + name + '.mp3', type: 'audio/mpeg'},
+				{path: ASSETS_BASE_URL + '/sounds/' + name + '.ogg', type: 'audio/ogg'}
+			];
+		}
 
 		this.playSound(files, options);
 	},

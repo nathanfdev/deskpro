@@ -57,6 +57,13 @@ var DpErrorLog = {
 			return;
 		}
 
+		var data = {
+			message: message || '',
+			trace:   trace   || '',
+			script:  script  || '',
+			line:    line    || '0'
+		};
+
 		if (this.saveUrl) {
 
 			message = message+'';
@@ -65,13 +72,6 @@ var DpErrorLog = {
 				var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
 				message = message.replace(r, '');
 			}
-
-			var data = {
-				message: message || '',
-				trace:   trace   || '',
-				script:  script  || '',
-				line:    line    || '0'
-			};
 
 			if (data.script.indexOf('#app.') !== -1) {
 				data.script = data.script.replace(/#.*$/, '');

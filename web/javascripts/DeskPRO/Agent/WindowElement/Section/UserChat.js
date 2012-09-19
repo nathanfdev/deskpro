@@ -371,15 +371,17 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var self = this;
 
 		$('.dismiss-trigger', alertEl).on('click', function() {
-			if (audio) {
-				audio.pause();
+			if (audio && audio.pause) {
+				try {
+					audio.pause();
+				} catch(e) {}
 			}
 			alertEl.remove();
 		});
 		$('.accept-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
-			if (audio) {
+			if (audio && audio.pause) {
 				audio.pause();
 			}
 			alertEl.remove();
@@ -501,8 +503,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + alertEl.find('.label-by-name').text(), 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
 
 		$('.dismiss-trigger', alertEl).on('click', function() {
-			if (audio) {
-				audio.pause();
+			if (audio && audio.pause) {
+				try {
+					audio.pause();
+				} catch(e) {}
 			}
 			alertEl.remove();
 			self.dismissedChats[data.conversation_id] = true;
@@ -513,7 +517,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {
-				audio.pause();
+				try {
+					audio.pause();
+				} catch(e) {}
 			}
 			alertEl.remove();
 			window.clearTimeout(waitTimer);

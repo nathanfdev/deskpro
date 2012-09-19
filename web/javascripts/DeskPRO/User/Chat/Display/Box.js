@@ -180,7 +180,9 @@ var DpChat_Display = (function() {
 		});
 
 		audio.appendTo('body');
-		audio.get(0).play();
+		try {
+			audio.get(0).play();
+		} catch (e) { }
 	};
 
 	this.getMessage = function() {

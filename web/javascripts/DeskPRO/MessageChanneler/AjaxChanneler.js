@@ -52,10 +52,11 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 					this.lastMessageId = d[0];
 				}
 
+				this.sendMessage(d[1], d[2]);
 				try {
-					this.sendMessage(d[1], d[2]);
+
 				} catch (err) {
-					DpErrorLog.logError(err, '', '', '');
+					DpErrorLog.logError('[AjaxChanneler] ' + err, '', '', '');
 				}
 			}, this);
 		}
