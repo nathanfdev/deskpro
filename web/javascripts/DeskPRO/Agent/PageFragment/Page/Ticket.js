@@ -839,6 +839,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initTasks: function() {
 		var self = this;
 		var openForEl = null;
+
+		var assignOb2 = this.getEl('task_assign_ob').clone().appendTo(this.wrapper);
+		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
+
 		var assignOptionBox = new DeskPRO.UI.OptionBox({
 			element: this.getEl('task_assign_ob'),
 			onClose: function(ob) {
@@ -945,6 +949,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				},
 				success: function(data) {
 
+					updateTaskPane();
 					self.getEl('newtask_title').val('');
 
 					if (!data.tasks || !data.tasks[0]) {
@@ -952,24 +957,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 
 					data = data.tasks[0];
+					var row = $(data.row_html);
 
-					var url = BASE_URL + 'agent/tasks/list/all/total';
-					var a = $('<a data-route="listpane:'+url+'" />');
-					a.text(data.title);
+					self.getEl('task_list').show().prepend(row);
 
-					var row = $('<li><span>&bull; </span></li>');
-					row.append(a);
-
-					if (data.date_due) {
-						row.append('<span>(Due: ' + data.date_due + ')</span>')
-					}
-
-					self.getEl('task_list').append(row);
-					self.getEl('task_list').find('li.none-message').remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('task_count'), '+', 1);
 					DeskPRO_Window.sections.tasks_section.refresh();
 				}
 			});
 		});
+
+		var control = new DeskPRO.Agent.PageHelper.TaskListControl(this.wrapper, {
+			menuVis:  menuVis2,
+			assignOb: assignOb2,
+			completeCountEl: null
+		});
+
+		control.addEvent('updateUi', function() {
+			self.updateUi();
+			updateTaskPane();
+		});
+		control.addEvent('updateCount', function() {
+			updateTaskPane();
+		});
+
+		var updateTaskPane = function() {
+			if (DeskPRO_Window.sections.tasks_section) {
+				DeskPRO_Window.sections.tasks_section.markUnloadPage();
+			}
+		};
 	}
 });

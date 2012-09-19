@@ -62,17 +62,11 @@
 					<button class="clean-white" id="{{ baseId }}_task_save">Add</button>
 				</td></tr></table>
 
-				<br />
-				<ul id="{{ baseId }}_task_list">
+				<div id="{{ baseId }}_task_list" {% if not tasks|length %}style="display: none;"{% endif %}>
 					{% for task in tasks %}
-						<li>&bull;
-							<a data-route="listpane:{{ path('agent_task_list', {search_type: 'all', search_category: 'total'}) }}">{{ task.title }}</a>
-							{% if task.date_due %}(Due: {{ task.date_due|date('day') }}){% endif %}
-						</li>
-					{% else %}
-						<li class="none-message"><br /></li>
+						{% include 'AgentBundle:Task:task-list-row.html.twig' with {task: task, noShowLinked: true} %}
 					{% endfor %}
-				</ul>
+				</div>
 
 				<ul id="{{baseId}}_task_menu_vis" style="display: none">
 					<li data-vis="0">{{ phrase('agent.general.private') }}</li>

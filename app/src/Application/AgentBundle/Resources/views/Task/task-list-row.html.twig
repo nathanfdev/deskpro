@@ -34,7 +34,7 @@
 					</li>
 			</ul>
 		</div>
-		{% if task.task_associations|length %}
+		{% if not noShowLinked and task.task_associations|length %}
 			<div class="task-linked">
 				{% for assoc in task.task_associations %}
 					<span class="assoc">

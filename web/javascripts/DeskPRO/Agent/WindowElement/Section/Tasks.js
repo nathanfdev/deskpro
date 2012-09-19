@@ -14,6 +14,20 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.tasks.refresh-task-list', function() {
 			this.refresh();
 		}, this);
+
+		this.doRelaodPage = false;
+		this.addEvent('show', function() {
+			if (this.doRelaodPage) {
+				this.refreshPage();
+			}
+		}, this);
+	},
+
+	refreshPage: function() {
+		this.doRelaodPage = false;
+		if (this.listPage && this.listPage.meta.routeUrl) {
+			DeskPRO_Window.runPageRoute('listpane:' + this.listPage.meta.routeUrl);
+		}
 	},
 
 	refresh: function() {
@@ -62,6 +76,13 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 
 			}
 		}).bind(this));
+	},
+
+	markUnloadPage: function() {
+		this.doRelaodPage = true;
+		if ($('#task_outline').is('.on')) {
+			this.refreshPage();
+		}
 	},
 
 	_initSection: function(data) {

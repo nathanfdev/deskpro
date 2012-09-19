@@ -157,7 +157,8 @@ class TaskController extends AbstractController
 				$task->task_associations->add($assoc);
 			}
 
-                        if (!empty($task_data['deal_id'])) {
+			/*
+            if (!empty($task_data['deal_id'])) {
 				$deal = $this->em->find('DeskPRO:Deal', $task_data['deal_id']);
 
 				$assoc = new \Application\DeskPRO\Entity\TaskAssociatedDeal();
@@ -166,6 +167,7 @@ class TaskController extends AbstractController
 
 				$task->task_associations->add($assoc);
 			}
+			*/
 
 			$task->setVisibility($task_data['visibility']);
 			if (!empty($task_data['date_due'])) {
@@ -217,7 +219,8 @@ class TaskController extends AbstractController
 			$task_data[] = array(
 				'id' => $t->getId(),
 				'title' => $t->title,
-				'date_due' => $d
+				'date_due' => $d,
+				'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', array('task' => $t, 'noShowLinked' => true))
 			);
 		}
 
