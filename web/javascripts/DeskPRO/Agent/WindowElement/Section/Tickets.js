@@ -22,9 +22,24 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.rerunRefreshFilterGrouping = [];
 
 		this.lastArchiveUpdate = new Date();
+		this.reloadCount = 0;
 	},
 
 	_initSection: function(data) {
+
+		this.reloadCount++;
+
+		// AJAX returned, but invalid. Try reloading
+		if (!data || !data.section_html) {
+			if (this.reloadCount > 3) {
+				window.location.reload(false);
+				return;
+			}
+			DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
+			return;
+		}
+
+		this.reloadCount = 0;
 
 		this.setHasInitialLoaded();
 
