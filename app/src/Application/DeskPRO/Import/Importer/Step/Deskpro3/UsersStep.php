@@ -342,8 +342,9 @@ class UsersStep extends AbstractDeskpro3Step
 
 		foreach ($user_map as $um) {
 			if ($um['sourceid'] != 1) {
-				$new_usersource = $this->usersources[$this->getMappedNewId('usersource', $um['sourceid'])];
-				if ($new_usersource) {
+				$new_us_id = $this->getMappedNewId('usersource', $um['sourceid']);
+				if ($new_us_id && isset($this->usersources[$new_us_id])) {
+					$new_usersource = $this->usersources[$this->getMappedNewId('usersource', $um['sourceid'])];
 					$new_map = null;
 					switch ($new_usersource->source_type) {
 						case 'db_table_php_password_check':
