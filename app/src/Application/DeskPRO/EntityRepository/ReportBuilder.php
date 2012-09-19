@@ -243,8 +243,24 @@ class ReportBuilder extends AbstractEntityRepository
 		$fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefTicket')->getTopFields();
 		foreach ($fields AS $field) {
 			$escaped = addslashes($field->title);
-			$return['fields']['tickets']['field' . $field->id] = array(
+			$return['fields']['tickets']['ticketfield' . $field->id] = array(
 				$field->title, 'ALIAS(%s.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+			);
+		}
+
+		$fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefPerson')->getTopFields();
+		foreach ($fields AS $field) {
+			$escaped = addslashes($field->title);
+			$return['fields']['tickets']['personfield' . $field->id] = array(
+				"creator's " . $field->title, 'ALIAS(%s.person.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+			);
+		}
+
+		$fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefOrganization')->getTopFields();
+		foreach ($fields AS $field) {
+			$escaped = addslashes($field->title);
+			$return['fields']['tickets']['orgfield' . $field->id] = array(
+				"organizations's " . $field->title, 'ALIAS(%s.organization.custom_data[' . $field->id . '], \'' . $escaped . '\')'
 			);
 		}
 
