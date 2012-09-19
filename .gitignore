@@ -5,6 +5,7 @@
 /.settings/
 /.buildpath
 /.project
+/.tags
 *.komodoproject
 *.sublime*
 
