@@ -180,7 +180,7 @@ class ReportBuilder extends AbstractEntityRepository
 
 	public function getReportGroupParams()
 	{
-		return array(
+		$return = array(
 			'fields' => array(
 				'tickets' => array(
 					'department' => array('department', '%s.department'),
@@ -199,7 +199,6 @@ class ReportBuilder extends AbstractEntityRepository
 					'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
 					'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
 					'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
-					'none' => array('nothing', 'NULL'),
 				)
 			),
 			'dates' => array(
@@ -240,5 +239,17 @@ class ReportBuilder extends AbstractEntityRepository
 				)
 			)
 		);
+
+		$fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefTicket')->getTopFields();
+		foreach ($fields AS $field) {
+			$escaped = addslashes($field->title);
+			$return['fields']['tickets']['field' . $field->id] = array(
+				$field->title, 'ALIAS(%s.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+			);
+		}
+
+		$return['fields']['tickets']['none'] = array('nothing', 'NULL');
+
+		return $return;
 	}
 }

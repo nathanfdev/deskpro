@@ -81,6 +81,14 @@ class Column extends AbstractPart
 		'tickets.id' => array('ticket')
 	);
 
+	protected static $_conditionResolver = array(
+		'custom_data_article' => '%1$s.root_field_id = %2$s',
+		'custom_data_feedback' => '%1$s.root_field_id = %2$s',
+		'custom_data_organizations' => '%1$s.root_field_id = %2$s',
+		'custom_data_person' => '%1$s.root_field_id = %2$s',
+		'custom_data_ticket' => '%1$s.root_field_id = %2$s'
+	);
+
 	/**
 	 * @param array $parts
 	 */
@@ -130,16 +138,28 @@ class Column extends AbstractPart
 		$sqlTable = $repository->getTableName();
 
 		$partsSoFar = array($table);
+		$extraConditionValue = false;
 
 		foreach ($parts AS $partKey => $part) {
 			$partsSoFar[] = $part;
 			$partsString = implode('.', $partsSoFar);
+
+			if (preg_match('/\[(.+)\]$/', $part, $match)) {
+				$extraConditionValue = $match[1];
+				$part = substr($part, 0, -strlen($match[0]));
+			} else {
+				$extraConditionValue = false;
+			}
 
 			// are we referencing a field?
 			foreach ($repository->getFieldMappings() AS $key => $field) {
 				if (strtolower($key) == $part) {
 					if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
 						throw new Exception("$partsString cannot be accessed via DPQL.");
+					}
+
+					if ($extraConditionValue !== false) {
+						throw new Exception("$partsString contains an unexpected extra condition");
 					}
 
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
@@ -216,6 +236,10 @@ class Column extends AbstractPart
 				foreach ($association['joinColumns'] AS $joinColumn) {
 					// are we referencing a field that is only listed in an association?
 					if (strtolower($joinColumn['name']) == $part) {
+						if ($extraConditionValue !== false) {
+							throw new Exception("$partsString contains an unexpected extra condition");
+						}
+
 						$sql = '`' . $sqlTable . '`.`' . $joinColumn['name'] . '`';
 						$name = $part;
 						break 3; // break $parts loop
@@ -238,6 +262,14 @@ class Column extends AbstractPart
 
 					$childSqlTable = $childRepository->getTableName();
 					$joinAlias = "{$sqlTable}_{$association['fieldName']}";
+
+					if ($extraConditionValue !== false) {
+						if (!isset(self::$_conditionResolver[$childSqlTable])) {
+							throw new Exception("$partsString contains an unexpected extra condition");
+						}
+
+						$joinAlias .= '_' . preg_replace('/[^a-zA-Z0-9_]/', '_', $extraConditionValue);
+					}
 
 					if (!empty($association['joinColumns'])) {
 						// join can be resolved directly
@@ -265,6 +297,12 @@ class Column extends AbstractPart
 						$joinConditions[] =
 							"`$sourceTable`.`$joinColumn[name]` = "
 							. "`$joinTable`.`$joinColumn[referencedColumnName]`";
+					}
+
+					if ($extraConditionValue !== false) {
+						$joinConditions[] = sprintf(
+							self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($extraConditionValue)
+						);
 					}
 
 					$select->addJoin(
