@@ -1,0 +1,21 @@
+<!-- DeskPRO Ticket Form -->
+<div id="dp_newticket_form" style="display: none;"></div>
+<script type="text/javascript">
+	var DpNewTicket_Options = DpNewTicket_Options || {};
+	DpNewTicket_Options.staticUrl = '{{ asset_url('') }}';
+	DpNewTicket_Options.deskproUrl = '{{ url('user') }}';
+	DpNewTicket_Options.initialHeight = 700;
+	DpNewTicket_Options.containerId = 'dp_newticket_form';
+	DpNewTicket_Options.departmentId = 0;
+
+	if (document.getElementsByTagName) {
+		(function() {
+			var scr   = document.createElement('script');
+			scr.type  = 'text/javascript';
+			scr.async = true;
+			scr.src   = '{{ asset_url('javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js') }}';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+		})();
+	}
+</script>
+<!-- /DeskPRO Ticket Form -->

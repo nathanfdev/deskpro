@@ -1,30 +1,10 @@
 {% extends 'UserBundle::layout-simple-iframe.html.twig' %}
 {% block head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/TicketFormWidget/TicketFormWin.js') }}"></script>
 <script type="text/javascript">
-var DpFrameController = {
-	init: function() {
-		this.sendMessage('ready');
-		window.setInterval(this.checkHeight.bind(this), 200);
-		$('#dp_newticket_redirect_after').val(window.parent.DpNewTicket_Controller.acceptMessage('getRedirectUrl'));
-	},
-	checkHeight: function() {
-		var h = $('#deskpro').outerHeight();
-		if (!this.lastH || this.lastH != h) {
-			this.lastH = h;
-			this.sendMessage('height', h);
-		}
-	},
-	sendMessage: function(id,data) {
-		if (window.parent && window.parent != window && window.parent.DpNewTicket_Controller) {
-			window.parent.DpNewTicket_Controller.acceptMessage(id, data);
-		}
-	},
-	getHeight: function() {
-		return $(document).height();
-	}
-};
+var ticketFormWin = new DeskPRO.User.WebsiteWidget.TicketFormWin();
 $(document).ready(function() {
-	DpFrameController.init();
+	ticketFormWin.initPage();
 });
 </script>
 <script type="text/javascript">
@@ -94,63 +74,49 @@ var ticketReader = {
 		-->
 	</div>
 {% endif %}
-<form action="{{ path('user_tickets_new_simple') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator dp-form">
-<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
-<input type="hidden" name="process" value="1" />
-<input type="hidden" name="is_iframe" value="1" />
-<input type="hidden" name="redirect_after" id="dp_newticket_redirect_after" value="{{ redirect_after }}" />
+<form action="{{ path('user_tickets_new_simple', {for_department_id: set_dep_id}) }}{% if app.getRequest().query.has('_debug') %}?_debug{% endif %}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+	<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
+	<input type="hidden" name="process" value="1" />
+	<input type="hidden" name="is_iframe" value="1" />
+	<input type="hidden" name="redirect_after" id="dp_newticket_redirect_after" value="{{ redirect_after }}" />
 
-{###############
- # Email
- ###############}
+	{###############
+	 # Email
+	 ###############}
 
-<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
-	<div class="dp-control-label">
-		<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
-	</div>
-	<div class="dp-controls dp-fill">
-		<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
-		<div class="dp-help-inline dp-error-explain">
-			{{ phrase('user.general.form_fix_email') }}
+	<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+		<div class="dp-control-label">
+			<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
+		</div>
+		<div class="dp-controls dp-fill">
+			<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+			<div class="dp-help-inline dp-error-explain">
+				{{ phrase('user.general.form_fix_email') }}
+			</div>
 		</div>
 	</div>
-</div>
 
-
-{###############
- # Name
- ###############}
-<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}">
-	<div class="dp-control-label">
-		<label><strong>{{ phrase('user.general.your_name') }} *</strong></label>
+	{#--- FIELDS CONTAINER ---#}
+	<div id="fields_container">
+		{# First time outputs items in order and visible depending on the page data #}
+		{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
 	</div>
-	<div class="dp-controls dp-fill">
-		{{ form_widget(form.person.name, {
-			'attr': {
-				'data-field-validators': 'DeskPRO.Form.LengthValidator',
-				'data-min-len': 2
-			}
-		}) }}
-		<div class="dp-help-inline dp-error-explain">
-			{{ phrase('user.general.please_enter_your_name') }}
+	{#--- FIELDS CONTAINER ---#}
+
+	<div class="dp-related-search dp-well" id="dp_newticket_related_container" style="display: none">
+		<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
+		<div class="subline">{{ phrase('user.tickets.title_links_safe') }}</div>
+		<div class="dp-list results">
+		</div>
+		<div class="more-link" style="display: none;">
+			{% set phrase_part %}
+			<span class="count">0</span>
+			{% endset %}
+			<a>{{ phrase('user.tickets.view_more_results', {'part':phrase_part}) }}</a>
 		</div>
 	</div>
-</div>
 
-{#--- FIELDS CONTAINER ---#}
-<div id="fields_container">
-	{# First time outputs items in order and visible depending on the page data #}
-	{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
-
-	{# Second time outputs the remaining order invisible, JS will handle reordering when changing departments #}
-	{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'non_default', 'page_data_field_ids': page_data_field_ids }%}
-</div>
-{#--- FIELDS CONTAINER ---#}
-
-<div class="dp-footer">
-	<input class="btn primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
-</div>
-
+	<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 </form>
 
 </div>

@@ -194,7 +194,7 @@ class NewTicketController extends AbstractController
 					}
 				}
 
-				if ($this->in->getString('redirect_after') and 0) {
+				if ($this->in->getString('redirect_after')) {
 					return $this->redirect($this->in->getString('redirect_after'));
 				} elseif ($format == 'iframe') {
 					return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $ticket['public_id']));
@@ -224,9 +224,6 @@ class NewTicketController extends AbstractController
 		$redirect_after = '';
 		if ($format == 'iframe') {
 			$tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
-			$redirect_after = $this->in->getString('redirect_after');
-		} elseif ($format == 'script') {
-			$tpl = 'UserBundle:NewTicket:new-ticket-jsloader.js.twig';
 			$redirect_after = $this->in->getString('redirect_after');
 		}
 

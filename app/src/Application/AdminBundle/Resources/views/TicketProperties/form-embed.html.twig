@@ -25,26 +25,7 @@
 		<h3>{{ phrase('agent.general.website_widget') }}</h3>
 		{{ phrase('admin.tickets.embed_ticket_form_websites') }}:
 		<br />
-{% set code %}
-<!-- DeskPRO New Ticket -->
-<div id="dp_newticket_form" style="display: none"></div>
-<script type="text/javascript">
-var DpNewTicket_Options = DpNewTicket_Options || {};
-DpNewTicket_Options.autoResize = true;
-DpNewTicket_Options.initialHeight = 700;
-DpNewTicket_Options.intoElement = 'dp_newticket_form';
-if (document.getElementsByTagName) {
-	(function() {
-		var scr   = document.createElement('script');
-		scr.type  = 'text/javascript';
-		scr.async = true;
-		scr.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://{{ app.request.getUriForPath('')|replace({'http://': '', 'https://': ''}) }}/tickets/new-js/{{ department.id|default('0') }}.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
-	})();
-}
-</script>
-<!-- /DeskPRO New Ticket -->
-{% endset %}
+{% set code %}{% include 'AdminBundle:TicketProperties:form-embed-code.txt.twig' %}{% endset %}
 		<textarea style="height: 200px; width: 80%;" wrap="off">{{ code|e }}</textarea>
 	</div>
 </div>

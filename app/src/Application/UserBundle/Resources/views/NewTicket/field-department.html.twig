@@ -3,7 +3,9 @@
  ##}
 
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
-{% if not app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length or app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length == 1 %}
+{% if set_dep_id %}
+	<input type="hidden" name="newticket[ticket][department_id]" class="department_id" value="{{ set_dep_id }}" />
+{% elseif not app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length or app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length == 1 %}
 	{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
 		<input type="hidden" name="newticket[ticket][department_id]" class="department_id" value="{{ cat.id }}" />
 	{% endfor %}
