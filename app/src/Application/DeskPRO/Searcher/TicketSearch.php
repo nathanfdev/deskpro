@@ -1607,7 +1607,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_PARTICIPANT:
 
 					$info = $this->_normalizeAgentChoice($choice);
-					$choice = $info['agent_ids'];
+					$choice = (array)$info['agent_ids'];
 					if (count($choice) == 1) $choice = array_pop($choice);
 
 					$participant_ids = $ticket->getParticipantPeopleIds();
