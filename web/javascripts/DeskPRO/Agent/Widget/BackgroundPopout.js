@@ -159,7 +159,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.doReset = false;
 			}
 			this.pop.open();
-			if (callback) {
+			if (callback && this.pop.page) {
 				callback(this.pop.page);
 			}
 			return;
