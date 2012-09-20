@@ -223,12 +223,15 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		if (document.getElementById('dp_page_nav')) {
 			$('#dp_admin_page').css('min-height', $('#dp_page_nav').outerHeight() + 10);
-			if ($('#dp_page_nav').hasClass('fixed')) {
-				this.updatePageNavPos();
-			} else {
-				window.setTimeout(this.updatePageNavPos.bind(this), 30);
-				$(window).scroll(this.updatePageNavPos.bind(this));
-				$(window).on('resize', this.updatePageNavPos.bind(this));
+
+			if ($('#dp_page_nav').outerHeight() < $(window).height() - 100) {
+				if ($('#dp_page_nav').hasClass('fixed')) {
+					this.updatePageNavPos();
+				} else {
+					window.setTimeout(this.updatePageNavPos.bind(this), 30);
+					$(window).scroll(this.updatePageNavPos.bind(this));
+					$(window).on('resize', this.updatePageNavPos.bind(this));
+				}
 			}
 		}
 
