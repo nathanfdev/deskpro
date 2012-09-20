@@ -95,7 +95,6 @@ class PatternCutter implements QuoteDef
 						$pattern = str_replace($f, $r, $pattern);
 					}
 
-					dpdev_log($pattern);
 					$pattern = new HtmlPattern($pattern);
 					$this->patterns[] = $pattern;
 				}
