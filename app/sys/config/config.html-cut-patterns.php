@@ -37,7 +37,7 @@
 	'windows_live_mail_1'                => 'div b #from:#i /b /div div b #sent:#i /b /div div b #to:#i /b /div div b #subject:#i /b /div',
 
 	// X-Mailer: Microsoft Office Outlook 12.0
-	'outlook_1'                          => 'p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p',
+	'outlook_1'                          => 'lang:p b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br /span /p',
 
 	// X-Mailer: Microsoft Windows Mail 6.0.6002.18197
 	'windows_mail_1'                     => 'blockquote div #-+\soriginal\smessage\s-+#i /div div b #from:#i /b /div div b #to:#i /b /div div b #sent:#i /b /div /blockquote',
@@ -49,10 +49,10 @@
 	'lotus_notes_2'                      => 'font #From:.*?# /font font /font br /br font #To:.*?# /font font /font br /br font #Date:.*?# /font font /font br /br font #Subject:.*?# /font font /font',
 
 	// X-Mailer: Microsoft Outlook 14.0
-	'outlook_2'                          => 'p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br b #subject:#i /b /span /p',
+	'outlook_2'                          => 'lang:p b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br b #%Subject%:#i /b /span /p',
 
 	// Outlook
-	'outlook_3'                          => 'font b #From:# /b #.*?# br /br b #Sent:# /b #.*?# br /br b #To:# /b #.*?# br /br b #Subject:# /b #.*?# br /br',
+	'outlook_3'                          => 'lang:font b #%From%:# /b #.*?# br /br b #%Sent%:# /b #.*?# br /br b #%To%:# /b #.*?# br /br b #%Subject%:# /b #.*?# br /br',
 
 	// X-Mailer: iPhone Mail (9A405)
 	'iphone_1'                           => 'div br /br #on\s.*\sat\s.*#i a /a #.*wrote:#i /div div /div blockquote /blockquote',

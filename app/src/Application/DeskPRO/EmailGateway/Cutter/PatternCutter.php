@@ -49,6 +49,34 @@ class PatternCutter implements QuoteDef
 	 */
 	protected $matched_patterns;
 
+	/**
+	 * @var array
+	 */
+	protected $translate_map;
+
+
+	/**
+	 * @param array $translate_map
+	 */
+	public function setTranslateMap(array $translate_map)
+	{
+		$this->translate_map = $translate_map;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getTranslateMap()
+	{
+		if (!$this->translate_map) {
+			$this->translate_map = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns-translate');
+			$this->translate_map = $this->translate_map->all();
+		}
+
+		return $this->translate_map;
+	}
+
 
 	/**
 	 * @param \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern|string $pattern
@@ -56,10 +84,28 @@ class PatternCutter implements QuoteDef
 	public function addPattern($pattern)
 	{
 		if (is_string($pattern)) {
-			$pattern = new HtmlPattern($pattern);
-		}
+			if (strpos($pattern, 'lang:') === 0) {
+				$translate_map = $this->getTranslateMap();
 
-		$this->patterns[] = $pattern;
+				$orig_pattern = preg_replace('#^lang:\s*#', '', $pattern);
+
+				foreach ($translate_map as $set) {
+					$pattern = $orig_pattern;
+					foreach ($set as $f => $r) {
+						$pattern = str_replace($f, $r, $pattern);
+					}
+
+					dpdev_log($pattern);
+					$pattern = new HtmlPattern($pattern);
+					$this->patterns[] = $pattern;
+				}
+			} else {
+				$pattern = new HtmlPattern($pattern);
+				$this->patterns[] = $pattern;
+			}
+		} else {
+			$this->patterns[] = $pattern;
+		}
 	}
 
 
