@@ -123,14 +123,31 @@ abstract class AbstractGatewayProcessor
 			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %s (%d)!', $gateway->title, $gateway->id));
 		}
 
+		$to_addresses = array();
+
 		$orig_to = $this->reader->getOriginalTo();
 		if ($orig_to) {
-			$this->sent_to = $orig_to;
-		} elseif ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
-			$this->sent_to = $this->gateway_address->match_pattern;
-		} else {
-			$this->sent_to = '';
+			$to_addresses[] = $orig_to;
 		}
+		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
+			$to_addresses[] = $this->gateway_address->match_pattern;
+		}
+
+		$tos = $this->reader->getToAddresses();
+		if ($tos) {
+			foreach ($tos as $to) {
+				$to_addresses[] = $to->getEmail();
+			}
+		}
+
+		$ccs = $this->reader->getCcAddresses();
+		if ($ccs) {
+			foreach ($ccs as $to) {
+				$to_addresses[] = $to->getEmail();
+			}
+		}
+
+		$this->sent_to = implode(',', $to_addresses);
 
 		$this->logMessage('sent_to: ' . $this->sent_to);
 

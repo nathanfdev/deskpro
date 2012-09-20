@@ -1149,19 +1149,6 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch($field, $op, $choice);
 					break;
 
-				case self::TERM_SENT_TO_ADDRESS:
-					$this->enableArchiveSearch();
-					$this->affected_fields[] = 'ticket.sent_to_address';
-					$field = 'ticket.sent_to_address';
-
-					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-						$this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => 'sent to address', 'value' => $choice));
-					} else {
-						$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => 'sent to address', 'value' => $choice));
-					}
-					$wheres[] = $this->_stringMatch($field, $op, $choice);
-					break;
-
 				case self::TERM_FLAGGED:
 
 					$this->affected_fields[] = 'tickets_flagged';
@@ -1674,18 +1661,17 @@ class TicketSearch extends SearcherAbstract
 					$choice = (array)$choice;
 					$choice = array_pop($choice);
 
+					$choice = strtolower($choice);
+					$has = $ticket->hasSentToAddress($choice);
+
 					switch ($op) {
 						case self::OP_IS:
-							if ($ticket['sent_to_address'] != $choice) return false;
+						case self::OP_CONTAINS:
+							if (!$has) return false;
 							break;
 						case self::OP_NOT:
-							if ($ticket['sent_to_address'] == $choice) return false;
-							break;
-						case self::OP_CONTAINS:
-							if (strpos(strtolower($ticket['sent_to_address']), strtolower($choice)) === false) return false;
-							break;
 						case self::OP_NOTCONTAINS:
-							if (strpos(strtolower($ticket['sent_to_address']), strtolower($choice)) !== false) return false;
+							if ($has) return false;
 							break;
 					}
 					break;

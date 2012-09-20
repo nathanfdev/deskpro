@@ -371,6 +371,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_loaded_part_ids = array();
 
+	/**
+	 * An exploded version of sent_to_addresses
+	 *
+	 * @var array
+	 */
+	protected $_sent_to_addresses;
+
 	protected $_label_manager = null;
 
 	public $_isRemoved;
@@ -424,6 +431,58 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
 		$this->_ticket_logger = $ticket_logger;
 		$this->addPropertyChangedListener($ticket_logger);
+	}
+
+
+	/**
+	 * Get an array of addresses the ticket was sent To or CC's
+	 *
+	 * @return array
+	 */
+	public function getSentToAddresses()
+	{
+		if (!$this->sent_to_address) {
+			return array();
+		}
+
+		if ($this->_sent_to_addresses !== null) {
+			return $this->_sent_to_addresses;
+		}
+
+		$this->_sent_to_addresses = explode(',', $this->sent_to_address);
+		$this->_sent_to_addresses = array_combine($this->_sent_to_addresses, $this->_sent_to_addresses);
+		return $this->_sent_to_addresses;
+	}
+
+
+	/**
+	 * Check if an address was in To or CC
+	 *
+	 * @param $address
+	 * @return bool
+	 */
+	public function hasSentToAddress($address)
+	{
+		$address = strtolower($address);
+		$this->getSentToAddresses();
+
+		return isset($this->_sent_to_addresses[$address]);
+	}
+
+
+	/**
+	 * @param string $addresses
+	 */
+	public function setSentToAddress($addresses)
+	{
+		if (is_array($addresses)) {
+			$addresses = implode(',', $addresses);
+		}
+
+		$addresses = strtolower($addresses);
+
+		$this->setModelField('sent_to_address', $addresses);
+		$this->_sent_to_addresses = null;
 	}
 
 

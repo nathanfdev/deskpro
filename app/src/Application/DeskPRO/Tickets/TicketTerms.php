@@ -532,18 +532,18 @@ class TicketTerms
 			case TicketSearch::TERM_SENT_TO_ADDRESS:
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
+
+				$choice = strtolower($choice);
+				$has = $ticket->hasSentToAddress($choice);
+
 				switch ($op) {
 					case self::OP_IS:
-						if ($ticket['sent_to_address'] != $choice) return false;
+					case self::OP_CONTAINS:
+						if (!$has) return false;
 						break;
 					case self::OP_NOT:
-						if ($ticket['sent_to_address'] == $choice) return false;
-						break;
-					case self::OP_CONTAINS:
-						if (strpos(strtolower($ticket['sent_to_address']), strtolower($choice)) === false) return false;
-						break;
 					case self::OP_NOTCONTAINS:
-						if (strpos(strtolower($ticket['sent_to_address']), strtolower($choice)) !== false) return false;
+						if ($has) return false;
 						break;
 				}
 				break;

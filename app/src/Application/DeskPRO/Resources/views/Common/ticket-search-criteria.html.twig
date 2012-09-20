@@ -146,7 +146,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'sent_to_address' not in no_show_fields %}
+	{% if 'sent_to_address' not in no_show_fields and 'new_ticket' in event_group %}
 	<div class="builder-type" title="Ticket sent in to address" data-rule-type="sent_to_address">
 		<div class="builder-op">
 			<select name="op" class="op">
