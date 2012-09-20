@@ -142,6 +142,10 @@ class ActionsFactory
 				$field_manager = App::getSystemService('ticket_fields_manager');
 				$field = $field_manager->getFieldFromId($name_id);
 
+				if (!$field) {
+					return null;
+				}
+
 				$options['field_manager'] = $field_manager;
 				$options['field_def'] = $field;
 				$options['set_value'] = $value;
