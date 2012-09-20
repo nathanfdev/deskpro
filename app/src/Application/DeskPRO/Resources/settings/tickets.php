@@ -19,5 +19,5 @@
 	'core_tickets.auto_archive_time' => 2419000,
 
 	// True to force agent emails to have the marker line
-	'core_tickets.gateway_agent_require_marker' => true,
+	'core_tickets.gateway_agent_require_marker' => false,
 );

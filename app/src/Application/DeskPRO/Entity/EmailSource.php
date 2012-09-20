@@ -199,6 +199,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getErrorCodeTitle()
 	{
 		if (!$this->error_code) {
@@ -232,6 +235,23 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->error_code;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSourceInfoAsString()
+	{
+		if (!$this->source_info) {
+			return '';
+		}
+
+		if (isset($this->source_info[0])) {
+			return implode("\n", $this->source_info);
+		} else {
+			return print_r($this->source_info, true);
+		}
 	}
 
 

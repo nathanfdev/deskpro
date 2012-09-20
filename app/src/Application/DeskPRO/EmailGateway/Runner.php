@@ -213,7 +213,14 @@ class Runner
 					}
 
 					$source['source_info'] = $proc->getSourceInfo();
+
+					App::getOrm()->commit();
+
 				} catch (\Exception $e) {
+
+					if (App::getDb()->isTransactionActive()) {
+						App::getDb()->rollback();
+					}
 
 					$e->_dp_sn = KernelErrorHandler::genSessionName();
 
@@ -222,6 +229,13 @@ class Runner
 
 					$source['status'] = 'error';
 					$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+					foreach ($errinfo as &$_v) {
+						if (is_object($_v)) {
+							$_v = get_class($_v);
+						} elseif (is_array($_v)) {
+							$_v = KernelErrorHandler::varToString($_v);
+						}
+					}
 					$source['source_info'] = $errinfo;
 				}
 			} else {
@@ -237,7 +251,9 @@ class Runner
 				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 			}
 		} catch (\Exception $e) {
-			App::getOrm()->rollback();
+			if (App::getDb()->isTransactionActive()) {
+				App::getDb()->rollback();
+			}
 
 			$this->_updateSource($source);
 
@@ -245,7 +261,6 @@ class Runner
 		}
 
 		$this->_updateSource($source);
-		App::getOrm()->commit();
 
 		$end_time = microtime(true);
 		$this->logger->log(sprintf("Finished processing source. Took %.2f seconds.", $end_time - $start_time), 'info');

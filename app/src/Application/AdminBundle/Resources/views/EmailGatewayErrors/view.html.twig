@@ -11,43 +11,35 @@
 	<table width="100%">
 		<tbody>
 			<tr>
-				<td width="200"><strong>{{ phrase('agent.general.id') }}</strong></td>
+				<td class="title on" width="200"><strong>{{ phrase('agent.general.id') }}</strong></td>
 				<td>
-					<div style="float: right">
-						<a href="{{ path('admin_emailgateway_errors_delete', {id: source.id, security_token: security_token('delete_gateway_error')}) }}">{{ phrase('agent.general.delete') }}</a>
-					</div>
 					{{source.id}}
+					<hr />
+					<a class="clean-white tipped" title="Deletes this rejection log and the original email source." href="{{ path('admin_emailgateway_errors_delete', {id: source.id, security_token: security_token('delete_gateway_error')}) }}">{{ phrase('agent.general.delete') }}</a>
+					<a class="clean-white tipped" title="Download the raw email source" href="{{ source.blob.getDownloadUrl() }}">Download Source ({{ source.blob.getReadableFilesize() }})</a>
+					<a class="clean-white tipped" title="Attempts to reprocess the email." href="{{ path('admin_emailgateway_reprocess', {id: source.id, security_token: security_token('reprocess_gateway_error')}) }}">Reprocess Email</a>
 				</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('agent.general.date') }}</strong></td>
+				<td class="title on"><strong>{{ phrase('agent.general.date') }}</strong></td>
 				<td>{{source.date_created|date('fulltime')}}</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('admin.general.error_type') }}</strong></td>
-				<td>{{source.error_code}}</td>
+				<td class="title on"><strong>{{ phrase('admin.general.error_type') }}</strong></td>
+				<td>{{source.error_code_title}}</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('admin.general.email_headers') }}</strong></td>
-				<td><textarea style="width:98%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{ source.headers }}</textarea></td>
+				<td class="title on"><strong>{{ phrase('admin.general.email_headers') }}</strong></td>
+				<td><textarea style="width:98%; height:200px; font-size: 11px; font-family:Monaco, 'Courier New', courier, monospace;">{{ source.headers }}</textarea></td>
 			</tr>
 
-			{% if source.blob %}
-				<tr>
-					<td><strong>{{ phrase('admin.general.download_raw_source') }}</strong></td>
-					<td>
-						<a href="{{ source.blob.getDownloadUrl() }}">{{ phrase('agent.general.download_btn') }}</a>
-					</td>
-				</tr>
-			{% endif %}
-
 			<tr>
-				<td><strong>{{ phrase('admin.general.additional_data') }}</strong></td>
+				<td class="title on"><strong>{{ phrase('admin.general.additional_data') }}</strong></td>
 				<td>
-					<textarea style="width:98%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>
+					<textarea style="width:98%; height:200px; font-size: 11px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>
 				</td>
 			</tr>
 		</tbody>

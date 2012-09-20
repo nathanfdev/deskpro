@@ -2112,6 +2112,13 @@ $collection->add('admin_emailgateway_errors_delete', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateway_reprocess', new Route(
+	'/email/gateway-errors/{id}/reprocess/{security_token}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:reprocess'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Widgets
 ################################################################################

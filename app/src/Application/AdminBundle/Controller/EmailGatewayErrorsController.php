@@ -39,6 +39,7 @@ use Orb\Util\Numbers;
 
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
 class EmailGatewayErrorsController extends AbstractController
 {
@@ -83,7 +84,7 @@ class EmailGatewayErrorsController extends AbstractController
 
 		$data_structure = null;
 		if ($source->source_info) {
-			$data_structure = print_r($source->source_info, true);
+			$data_structure = $source->getSourceInfoAsString();
 		}
 
 		return $this->render('AdminBundle:EmailGatewayErrors:view.html.twig', array(
@@ -136,5 +137,30 @@ class EmailGatewayErrorsController extends AbstractController
 		}
 
 		return $this->redirectRoute('admin_emailgateway_errors');
+	}
+
+	####################################################################################################################
+	# reprocess
+	####################################################################################################################
+
+	public function reprocessAction($id, $security_token)
+	{
+		$this->ensureAuthToken('reprocess_gateway_error', $security_token);
+
+		$source = $this->em->find('DeskPRO:EmailSource', $id);
+
+		if (!$source) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$source['status'] = 'inserted';
+		$source['error_code'] = null;
+
+		$runner = new \Application\DeskPRO\EmailGateway\Runner();
+		$runner->executeSource($source);
+
+		return $this->render('AdminBundle:EmailGatewayErrors:reprocess-result.html.twig', array(
+			'source' => $source,
+		));
 	}
 }
