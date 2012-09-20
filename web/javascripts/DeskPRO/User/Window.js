@@ -149,7 +149,49 @@ DeskPRO.User.Window = new Orb.Class({
 
 		if (typeof $.prototype.popover != 'undefined') {
 			$('.dp-help-pop').popover({
-				placement: 'top'
+				placement: function (tip, element) {
+					var $element = $(element);
+					var pos = $.extend({}, $element.offset(), {
+						width: element.offsetWidth,
+						height: element.offsetHeight
+					});
+
+					var actualWidth = 355;
+					var actualHeight = 200;
+					var boundTop = $(document).scrollTop();
+					var boundLeft = $(document).scrollLeft();
+					var boundRight = boundLeft + $(window).width();
+					var boundBottom = boundTop + $(window).height();
+					var elementAbove = {
+						top: pos.top - actualHeight,
+						left: pos.left + pos.width / 2 - actualWidth / 2
+					};
+					var elementBelow = {
+						top: pos.top + pos.height,
+						left: pos.left + pos.width / 2 - actualWidth / 2
+					};
+					var elementLeft = {
+						top: pos.top + pos.height / 2 - actualHeight / 2,
+						left: pos.left - actualWidth
+					};
+					var elementRight = {
+						top: pos.top + pos.height / 2 - actualHeight / 2,
+						left: pos.left + pos.width
+					};
+					var above = isWithinBounds(elementAbove);
+					var below = isWithinBounds(elementBelow);
+					var left = isWithinBounds(elementLeft);
+					var right = isWithinBounds(elementRight);
+
+					function isWithinBounds (elementPosition) {
+						return boundTop < elementPosition.top
+						&& boundLeft < elementPosition.left
+						&& boundRight > (elementPosition.left + actualWidth)
+						&& boundBottom > (elementPosition.top + actualHeight)
+					};
+
+					return above ? 'top' : below ? 'bottom' : left ? 'left' : right ? 'right' : 'top';
+				}
 			});
 		}
 	},
