@@ -313,7 +313,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
-		if ($context == 'agent' && !$email_info['found_top_marker']) {
+		if (App::getSetting('core_tickets.gateway_agent_require_marker') && $context == 'agent' && !$email_info['found_top_marker']) {
 			// The marker is required for agent emails
 			$this->logMessage('doNewRelpy agent reply missing marker');
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_MISSING_MARKER;
