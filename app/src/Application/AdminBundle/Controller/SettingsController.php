@@ -357,6 +357,15 @@ class SettingsController extends AbstractController
 	{
 		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
 
+		$server_check = new \Application\InstallBundle\Install\ServerChecks();
+		$server_check->checkServer();
+		if ($server_check->hasFatalErrors()) {
+			return $this->render('AdminBundle:Settings:quick-server-errors.html.twig', array(
+				'errors' => $server_check->getErrors(),
+				'data_dir' => dp_get_data_dir(),
+			));
+		}
+
 		if (!$this->container->getSetting('core.done_data_initializer')) {
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
 			if ($is_import) {
