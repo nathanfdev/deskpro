@@ -20,7 +20,7 @@
 		<ul class="billing-types">
 			<li>
 				<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />Amount:</label>
-				<input type="text" name="amount" size="7" placeholder="0.00" />
+				<input type="text" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
 			</li>
 			<li>
 				<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />Time:</label>

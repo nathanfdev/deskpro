@@ -11,6 +11,7 @@
 
 	'core_tickets.enable_billing' => 0,
 	'core_tickets.billing_on_reply' => 0,
+	'core_tickets.billing_currency' => 'USD',
 
 	'core_tickets.use_ref' => false,
 

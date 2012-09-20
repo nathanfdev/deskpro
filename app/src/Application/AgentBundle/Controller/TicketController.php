@@ -957,7 +957,7 @@ class TicketController extends AbstractController
 
 		// havent persisted the messag yet, it was just for dupe checking
 
-		if (App::getSetting('core.tickets.enable_billing') && $this->in->getUint('charge_time') && !$message['is_agent_note']) {
+		if (App::getSetting('core_tickets.enable_billing') && $this->in->getUint('charge_time') && !$message['is_agent_note']) {
 			$charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
 		} else {
 			$charge = false;

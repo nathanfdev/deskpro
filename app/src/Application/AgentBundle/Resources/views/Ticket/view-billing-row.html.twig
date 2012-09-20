@@ -4,7 +4,7 @@
 			{{ charge.charge_time|time_length }}
 		{% endif %}
 		{% if charge.amount %}
-			{{ charge.amount }}
+			{{ charge.amount|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}
 		{% endif %}
 	</td>
 	<td>{{ charge.agent.name }}</td>
