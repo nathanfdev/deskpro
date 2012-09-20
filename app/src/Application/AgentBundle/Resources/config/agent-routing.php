@@ -928,6 +928,20 @@ $collection->add('agent_people_new_ajaxsave', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_getmessagetext', new Route(
+	'/tickets/messages/{message_id}/get-message-text.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxGetMessageText'),
+	array(),
+	array()
+));
+
+$collection->add('agent_ticket_savemessagetext', new Route(
+	'/tickets/messages/{message_id}/save-message-text.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxSaveMessageText'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticket_view', new Route(
 	'/tickets/{ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:view'),

@@ -793,7 +793,65 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				});
 				break;
+
+			case 'edit':
+				this.showMessageEditor(messageId);
+				break;
 		}
+	},
+
+	showMessageEditor: function(message_id) {
+		var self = this;
+		this.currentOpenMessageId = message_id;
+		if (!this.messageEditOverlay) {
+			var overlayEl = this.getEl('message_edit_overlay');
+			overlayEl.find('.save-text-trigger').on('click', function(ev) {
+				ev.preventDefault();
+
+				$(this).hide();
+				overlayEl.find('.save-text-loading').show();
+
+				var postData = {
+					message_text: overlayEl.find('textarea.message_text').val()
+				};
+
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/save-message-text.json',
+					type: 'POST',
+					data: postData,
+					dataType: 'json',
+					complete: function() {
+						overlayEl.find('.save-text-loading').hide();
+						overlayEl.find('.save-text-trigger').show();
+					},
+					success: function() {
+						self.messageEditOverlay.close();
+						var messageHtml = Orb.escapeHtml(postData.message_text);
+						messageHtml = messageHtml.replace(/\n|\r\n|\r/g, '<br />');
+
+						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text').html(messageHtml);
+					}
+				});
+			});
+
+			this.messageEditOverlay = new DeskPRO.UI.Overlay({
+				contentElement: this.getEl('message_edit_overlay'),
+				onBeforeOverlayOpened: function() {
+					overlayEl.find('input.message_id').val(self.currentOpenMessageId);
+					overlayEl.find('textarea.message_text').val('Loading...');
+
+					$.ajax({
+						url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/get-message-text.json',
+						dataType: 'json',
+						success: function(data) {
+							overlayEl.find('textarea.message_text').val(data.message_text);
+						}
+					})
+				}
+			});
+		}
+
+		this.messageEditOverlay.open();
 	},
 
 	insertTextInReply: function(text) {

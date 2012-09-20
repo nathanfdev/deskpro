@@ -142,6 +142,11 @@
 			{% endfor %}
 		</ul>
 	</div>
+{% elseif log.action_type == 'message_edit' %}
+	<span class="new-val expand" data-set=".set-orig">Message #{{ log.details.message_id }} updated</span>
+	<div class="expand-set set-orig" style="display: none">
+		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">Old message: {{ log.details.old_message|raw }}</div>
+	</div>
 {% elseif hide_unknow%}
 	{{ log.action_type }}
 {% endif %}

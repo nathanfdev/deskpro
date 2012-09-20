@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -1236,6 +1237,75 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	############################################################################
+	# ajax-get-message-text
+	############################################################################
+
+	public function ajaxGetMessageTextAction($message_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createJsonResponse(array(
+			'message_id' => $message->getId(),
+			'message_text' => $message->getMessageText()
+		));
+	}
+
+	public function ajaxSaveMessageTextAction($message_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$old_message = $message->message;
+		$old_full_message = $message->message_full;
+
+		$new_message = $this->in->getString('message_text');
+		$message->setMessageText($new_message);
+
+		$ticket_log = new TicketLog();
+		$ticket_log->ticket      = $ticket;
+		$ticket_log->person      = $this->person;
+		$ticket_log->action_type = 'message_edit';
+		$ticket_log->id_object   = $message->getId();
+		$ticket_log->details     = array(
+			'message_id'       => $message->getId(),
+			'old_message'      => $old_message,
+			'old_full_message' => $old_full_message
+		);
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($message);
+			$this->em->persist($ticket_log);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array(
+			'message_id' => $message->getId(),
+			'message_text' => $message->getMessageText()
+		));
+	}
 
 	############################################################################
 	# ajax-save-actions

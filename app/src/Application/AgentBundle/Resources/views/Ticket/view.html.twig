@@ -659,6 +659,21 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 </div>
 
+<section id="{{ baseId }}_message_edit_overlay" style="display: none; height: 325px; width: 550px;">
+	<div class="overlay-title">
+		<span class="close-overlay close-trigger"></span>
+		<h4>Edit Message</h4>
+	</div>
+	<div class="overlay-content">
+		<input type="hidden" name="message_id" class="message_id" value="0" />
+		<textarea rows="10" cols="60" style="width: 98%; height: 200px; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;" name="message_text" class="message_text"></textarea>
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
+		<span class="flat-spinner save-text-loading" style="display: none"></span>
+	</div>
+</section>
+
 {% include 'AgentBundle:Ticket:custom-view-include.html.twig' %}
 
 {{ dp_widgets(baseId, 'ticket', '', '', ticket_api) }}
