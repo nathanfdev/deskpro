@@ -170,7 +170,7 @@ class QueryPath {
 
 	  // DESKPRO CHANGE: Gets DOMDocument to read string as UTF-8
 	  if (strpos($source, '<?xml') === false) {
-		  $source = '<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$source;
+		  $source = '<?xml version="1.0" encoding="UTF-8" ?>'.$source;
 	  }
 
     // Need a way to force an HTML parse instead of an XML parse when the

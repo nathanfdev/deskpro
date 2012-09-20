@@ -59,7 +59,7 @@ class Emogrifier {
         $xmldoc->encoding = $encoding;
         $xmldoc->strictErrorChecking = false;
         $xmldoc->formatOutput = true;
-        $xmldoc->loadHTML('<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$body);
+        $xmldoc->loadHTML('<?xml version="1.0" encoding="UTF-8" ?>'.$body);
         $xmldoc->normalizeDocument();
 
         $xpath = new DOMXPath($xmldoc);
@@ -130,7 +130,7 @@ class Emogrifier {
         }
 
 		$html = $xmldoc->saveHTML();
-		$html = str_replace('<?xml encoding="UTF-8" version="1.0" standalone="yes">', '', $html);
+		$html = str_replace('<?xml version="1.0" encoding="UTF-8" ?>', '', $html);
 
         return $html;
     }

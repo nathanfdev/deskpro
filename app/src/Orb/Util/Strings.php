@@ -1251,16 +1251,18 @@ class Strings
 	{
 		libxml_use_internal_errors(true);
 
+		$orig_html = $html;
+
 		$dom = new \DOMDocument('1.0', 'UTF-8');
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
 		}
 		if (strpos($html, '<?xml') === false) {
-			$html = '<?xml encoding="UTF-8" version="1.0" standalone="yes">'.$html;
+			$html = '<?xml version="1.0" encoding="UTF-8" ?>'."\n".$html;
 		}
 
 		if (!$dom->loadHTML($html)) {
-			return $html;
+			return $orig_html;
 		}
 
 		$xpath = new \DOMXPath($dom);
@@ -1276,7 +1278,7 @@ class Strings
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
-				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" standalone="yes"><body>' . $newText . '</body>');
+				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>' . $newText . '</body>');
 				$xpath2 = new \DOMXPath($frag);
 
 				foreach ($xpath2->query('body')->item(0)->childNodes as $node) {
