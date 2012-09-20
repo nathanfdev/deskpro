@@ -44,7 +44,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 	 */
 	public function process($source)
 	{
-		if (strpos($source, '{% extends') === false) {
+		if (strpos($source, '{% extends') === false && strpos($source, '<dp:subject>') !== false) {
 			$source = $this->getPrepend() . $source;
 		} else {
 			$source = preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $source);
