@@ -817,7 +817,7 @@ $em->flush();
 
 ##BEGIN:create_jobs.archive_tickets##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'article_publish_state';
+$j['id'] = 'archive_tickets';
 $j['worker_group'] = 'archive_tickets';
 $j['title'] = 'Archive Tickets';
 $j['description'] = 'Archives old tickets';
