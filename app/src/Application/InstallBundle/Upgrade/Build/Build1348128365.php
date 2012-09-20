@@ -49,7 +49,7 @@ class Build1348128365 extends AbstractBuild
 		if ($has_custom) {
 			$this->execMutateSql("
 				REPLACE INTO settings
-				SET name = 'core_tickets.gateway_agent_require_marker', value = '1'
+				SET name = 'core_tickets.gateway_agent_require_marker', value = '0'
 			");
 		}
 	}
