@@ -39,7 +39,7 @@
 	'agent.chat.online'                           => 'Online',
 	'agent.chat.open_chat'                        => 'Open Chat',
 	'agent.chat.other_agents'                     => 'Other Agents',
-	'agent.chat.quick_replies'                    => 'Quick Replies',
+	'agent.chat.snippets'                         => 'Snippets',
 	'agent.chat.show_offline'                     => 'Show Offline',
 	'agent.chat.take_chat'                        => 'Take Chat',
 	'agent.chat.team_chats'                       => 'Team Chats',
