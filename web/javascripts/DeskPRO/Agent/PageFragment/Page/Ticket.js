@@ -1140,10 +1140,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		billingRows.append(add);
 		add.find('.timeago').timeago();
 		billingRows.closest('table').show();
-
-		this.getEl('billing_form').find('input[name=billing_amount]').val('');
-		this.billingStart = new Date();
-		this.updateBillingTimer(true);
 	},
 
 	updateBillingForm: function(reset) {
@@ -1170,7 +1166,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	resetBillingForm: function() {
 		var form = this.getEl('billing_form');
 
-		form.find('input[name=billing_amount]').val('');
+		form.find('input[name=amount]').val('');
 		form.find('input[name=billing_comment]').val('');
 
 		if (form.find('input[name=billing_type]').val() == 'time') {

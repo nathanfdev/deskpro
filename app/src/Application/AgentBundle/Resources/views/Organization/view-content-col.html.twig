@@ -33,6 +33,9 @@
 				{% if org_chats_count %}
 					<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count" id="{{baseId}}_chats_count">{{ org_chats_count|default(0) }}</span></li>
 				{% endif %}
+				{% if org_charges %}
+					<li data-tab-for="#{{baseId}}_charges_tab">Billing</li>
+				{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -180,7 +183,17 @@
 			</table>
 		</article>
 		{% endif %}
-		{# /Tickets Tab #}
+		{# /Chats Tab #}
+
+		{% if org_charges %}
+			<article id="{{baseId}}_charges_tab">
+				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				{% for charge in org_charges %}
+					{% include 'AgentBundle:Common:billing-row-simple.html.twig' %}
+				{% endfor %}
+				</table>
+			</article>
+		{% endif %}
 	</section>
 </div>
 
