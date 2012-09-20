@@ -191,7 +191,7 @@ class KernelBooter
 		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\ApiKernel';
 			define('DP_INTERFACE', 'api');
-		} elseif (preg_match('#^/dev(/|\?|$)#', $path)) {
+		} elseif (preg_match('#^/dev(/|\?|$)#', $path) && $env == 'dev') {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'dev');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
