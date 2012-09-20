@@ -9,6 +9,9 @@
 	'core_tickets.enable_feedback' => 1,
 	'core_tickets.feedback_agents_read' => 1,
 
+	'core_tickets.enable_billing' => 0,
+	'core_tickets.billing_on_reply' => 0,
+
 	'core_tickets.use_ref' => false,
 
 	'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top

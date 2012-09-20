@@ -178,6 +178,14 @@
 							</select>
 						</div>
 					</li>
+					{% if app.getSetting('core.tickets.enable_billing') and app.getSetting('core.tickets.billing_on_reply') %}
+						<li id="{{replyBaseId}}_billing_reply" class="hide-note">
+							<label>Charge:</label>
+							<div>
+								<label><input type="checkbox" name="charge_time" value="0" checked="checked" /> Charge time: <span id="{{replyBaseId}}_billing_reply_time"></span></label>
+							</div>
+						</li>
+					{% endif %}
 					<li id="{{replyBaseId}}_attach_row" class="attach-row is-hidden" style="display: none">
 						<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 						<div>

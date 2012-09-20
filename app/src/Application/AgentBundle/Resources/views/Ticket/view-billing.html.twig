@@ -1,0 +1,50 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la billing-table" {% if ticket.charges is empty %}style="display:none"{% endif %}>
+<thead>
+	<th>Charge/Time</th>
+	<th>Agent</th>
+	<th>Date</th>
+	<th>Comment</th>
+	<th width="20">&nbsp;</th>
+</thead>
+<tbody id="{{ baseId }}_billing_rows" data-delete-confirm="Are you sure you want to delete this charge?">
+{% for charge in ticket.charges %}
+	{% include 'AgentBundle:Ticket:view-billing-row.html.twig' %}
+{% endfor %}
+</tbody>
+</table>
+
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form" id="{{ baseId }}_billing_form">
+<tr>
+	<th width="80">Charge</th>
+	<td>
+		<ul class="billing-types">
+			<li>
+				<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />Amount:</label>
+				<input type="text" name="amount" size="7" placeholder="0.00" />
+			</li>
+			<li>
+				<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />Time:</label>
+				<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
+					<input type="text" name="hours" size="2" placeholder="H" />:<input type="text" name="minutes" size="2" placeholder="M" maxlength="2" />:<input type="text" name="seconds" size="2" placeholder="S" maxlength="2" />
+				</span>
+				<span class="billing-form-buttons">
+					<button class="clean-white" id="{{ baseId }}_billing_stop">Stop</button>
+					<button class="clean-white" id="{{ baseId }}_billing_reset">Reset</button>
+				</span>
+			</li>
+		</ul>
+		<input type="hidden" name="billing_type" value="time" />
+	</td>
+</tr>
+<tr>
+	<th>Comment</th>
+	<td><input type="text" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+</tr>
+<tr>
+	<th>&nbsp;</th>
+	<td>
+		<button class="clean-white" id="{{ baseId }}_billing_save" data-submit-url="{{ path('agent_ticket_addcharge', {ticket_id: ticket.id}) }}">Charge</button>
+		<img src="{{ asset('images/spinners/loading-small.gif') }}" style="display: none" id="{{ baseId }}_billing_save_progress" />
+	</td>
+</tr>
+</table>

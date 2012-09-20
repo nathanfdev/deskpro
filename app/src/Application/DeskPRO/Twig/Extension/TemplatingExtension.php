@@ -137,6 +137,7 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
+	        'time_length' => new \Twig_Filter_Method($this, 'timeLength'),
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
@@ -526,6 +527,42 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $this->container->getTranslator()->date($format, $date, $prefix);
+	}
+
+	public function timeLength($length)
+	{
+		if ($length < 1) {
+			return '';
+		}
+
+		if ($length > 3600) {
+			$hours = floor($length / 3600);
+			$length -= $hours * 3600;
+		} else {
+			$hours = 0;
+		}
+
+		if ($length > 60) {
+			$minutes = floor($length / 60);
+			$length -= $minutes * 60;
+		} else {
+			$minutes = 0;
+		}
+
+		$seconds = $length;
+
+		$parts = array();
+		if ($hours) {
+			$parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
+		}
+		if ($minutes) {
+			$parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
+		}
+		if ($seconds) {
+			$parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
+		}
+
+		return implode(', ', $parts);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
@@ -1084,6 +1121,12 @@ STR;
 		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
 			$htmlId = $this->getWidgetHtmlId($baseId, $widget);
 			$tabs[$htmlId] = $widget->title;
+		}
+
+		foreach ($tabs AS $key => $title) {
+			if ($title === false) {
+				unset($tabs[$key]);
+			}
 		}
 
 		if (!$tabs) {

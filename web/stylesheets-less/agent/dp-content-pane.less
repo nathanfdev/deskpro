@@ -3216,6 +3216,41 @@ article.content-message .content .body-text .fade-bar {
 
 
 
+.billing-table {
+	td { border-bottom: 1px solid #BBC8D4 !important; }
+	.delete {
+		text-align: right;
+		a {
+			.iconbase(16px, 16px);
+			background: url(../../images/agent/icons/cross.png);
+			text-indent: 100px;
+			cursor: pointer;
+		}
+	}
+}
+
+.billing-form {
+	.billing-types input[type=text] {
+		font-size: 11px;
+		padding: 1px 3px;
+	}
+	.billing-types li {
+		margin: 3px 0;
+	}
+	.billing-types label {
+		display: inline-block;
+		min-width: 60px;
+	}
+	.billing-form-time input {
+		width: 20px;
+		text-align: center;
+	}
+	.billing-form-buttons {
+		float: right;
+		position: relative;
+		top: -3px;
+	}
+}
 
 
 
@@ -5862,6 +5897,10 @@ table.field-holders-table tbody.item-on th {
 
 table.field-holders-table.th-ra th {
 	text-align: right;
+}
+
+table.field-holders-table.th-la th {
+  text-align: left;
 }
 
 table.field-holders-table td {

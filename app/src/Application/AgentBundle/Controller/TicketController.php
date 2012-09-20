@@ -957,6 +957,12 @@ class TicketController extends AbstractController
 
 		// havent persisted the messag yet, it was just for dupe checking
 
+		if (App::getSetting('core.tickets.enable_billing') && $this->in->getUint('charge_time') && !$message['is_agent_note']) {
+			$charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
+		} else {
+			$charge = false;
+		}
+
 		#------------------------------
 		# Handle CC'ing/parts
 		#------------------------------
@@ -1149,10 +1155,20 @@ class TicketController extends AbstractController
 			'ticket_perms' => $this->_getTicketPerms($ticket),
 		));
 
+		if ($charge) {
+			$charge_html = $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+				'ticket' => $ticket,
+				'charge' => $charge
+			));
+		} else {
+			$charge_html = false;
+		}
+
 		$data = array_merge($data, array(
 			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
 			'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
 			'replybox_html' => $replybox,
+			'charge_html' => $charge_html,
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],
@@ -1559,6 +1575,71 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', array(
 			'ticket' => $ticket,
 			'participants' => $participants
+		));
+	}
+
+	############################################################################
+	# add-charge
+	############################################################################
+
+	public function addChargeAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if ($this->in->getString('billing_type') == 'amount') {
+			$amount = $this->in->getFloat('amount');
+			$time = null;
+		} else {
+			$amount = null;
+			$time = (
+				3600 * $this->in->getUint('hours')
+				+ 60 * $this->in->getUint('minutes')
+				+ $this->in->getUint('seconds')
+			);
+		}
+
+		$comment = $this->in->getString('billing_comment');
+
+		$charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+		if ($charge) {
+			$this->em->persist($ticket);
+			$this->em->flush();
+
+			return $this->createJsonResponse(array(
+				'inserted' => true,
+				'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+					'ticket' => $ticket,
+					'charge' => $charge
+				))
+			));
+		} else {
+			return $this->createJsonResponse(array('inserted' => false));
+		}
+	}
+
+	public function deleteChargeAction($ticket_id, $charge_id, $security_token)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$this->ensureAuthToken('delete_charge', $security_token);
+
+		$charge = $this->em->createQuery('
+			SELECT c
+			FROM DeskPRO:TicketCharge c
+			WHERE c.ticket = ?0 AND c.id = ?1
+		')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+
+		if (!$charge) {
+			return $this->createJsonResponse(array(
+				'success' => false
+			));
+		}
+
+		$this->em->remove($charge);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true
 		));
 	}
 

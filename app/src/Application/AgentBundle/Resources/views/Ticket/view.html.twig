@@ -432,7 +432,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		{% endif %}
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
 			(baseId ~ '_fields_display_main_wrap'): 'Fields',
-			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>) &amp; Flag (<span id="' ~ baseId ~ '_flag_count">' ~ (ticket_flagged ? '1' : '0') ~ '</span>)'
+			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>) &amp; Flag (<span id="' ~ baseId ~ '_flag_count">' ~ (ticket_flagged ? '1' : '0') ~ '</span>)',
+			(baseId ~ '_billing_wrap'): (app.getSetting('core.tickets.enable_billing') ? 'Billing' : false)
 		}) }}
 	</header>
 	<section class="description-area" style="padding:0">
@@ -444,6 +445,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<article id="{{baseId}}_tasks_wrap">
 			{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
 		</article>
+		{% if app.getSetting('core.tickets.enable_billing') %}
+			<article id="{{baseId}}_billing_wrap">
+				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
+			</article>
+		{% endif %}
 		{{ dp_widget_tabs(baseId, 'ticket', 'properties', 'article', ticket_api) }}
 	</section>
 </div>

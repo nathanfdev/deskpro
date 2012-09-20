@@ -1194,6 +1194,20 @@ $collection->add('agent_ticket_saveuserparts', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_addcharge', new Route(
+	'/ticket/{ticket_id}/add-charge',
+	array('_controller' => 'AgentBundle:Ticket:addCharge'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_chargedelete', new Route(
+	'/ticket/{ticket_id}/charge/{charge_id}/delete/{security_token}',
+	array('_controller' => 'AgentBundle:Ticket:deleteCharge'),
+	array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_delete', new Route(
 	'/tickets/{ticket_id}/delete',
 	array('_controller' => 'AgentBundle:Ticket:delete'),

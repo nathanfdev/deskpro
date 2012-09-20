@@ -45,6 +45,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initLabels();
 		this._initTicketLocking();
 		this._initTasks();
+		this._initBilling();
 
 		if (this.meta.ticket_perms['delete']) {
 			if (this.meta.isDeleted) {
@@ -338,6 +339,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 			}
+		}
+
+		if (data.charge_html) {
+			this.addBillingRow(data.charge_html);
+			this.updateBillingForm();
+			this.resetBillingForm();
 		}
 
 		window.setTimeout(this.updateUi.bind(this), 450);
@@ -995,7 +1002,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			postData.push({
 				name: 'from_ticket',
 				value: 1
-			})
+			});
 
 			$.ajax({
 				url: BASE_URL + 'agent/tasks/save',
@@ -1044,5 +1051,199 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.sections.tasks_section.markUnloadPage();
 			}
 		};
+	},
+
+	//#################################################################
+	//# Billing
+	//#################################################################
+
+	_initBilling: function() {
+		this.billingStart = new Date();
+		this.billingTimer = null;
+
+		var self = this;
+		var wrap = this.getEl('billing_wrap');
+		var form = this.getEl('billing_form');
+		var progress = this.getEl('billing_save_progress');
+		var typeInputs = form.find('input[name=' + this.meta.baseId + '_billing_type]');
+		var billingRows = this.getEl('billing_rows');
+
+		typeInputs.change(function() { self.updateBillingForm(); });
+		this.updateBillingForm();
+
+		this.getEl('billing_stop').click(function() {
+			self.stopBillingTimer(false);
+		});
+		this.getEl('billing_reset').click(function() {
+			if (typeInputs.filter(':checked').val() == 'time') {
+				self.startBillingTimer(true);
+			} else {
+				self.stopBillingTimer(true);
+			}
+		});
+
+		this.getEl('billing_save').click(function() {
+			progress.show();
+
+			$.ajax({
+				url: $(this).data('submit-url'),
+				data: form.find('input, textarea, select').serialize(),
+				method: 'POST',
+				dataType: 'json'
+			}).done(function(json) {
+				if (json.inserted) {
+					self.addBillingRow(json.html);
+					self.resetBillingForm();
+				}
+			}).always(function() {
+				progress.hide();
+			});
+		});
+
+		wrap.on('click', 'a.billing-delete', function(e) {
+			var $this = $(this);
+
+			e.preventDefault();
+
+			if (confirm(billingRows.data('delete-confirm'))) {
+				$.ajax({
+					url: $this.attr('href'),
+					method: 'POST',
+					dataType: 'json'
+				}).done(function (json) {
+					if (json.success) {
+						var table = $this.closest('table');
+						$this.closest('tr').remove();
+						if (!table.find('tbody tr').length)
+						{
+							table.hide();
+						}
+					}
+				});
+			}
+		});
+	},
+
+	addBillingRow: function(html) {
+		var add = $(html);
+		var billingRows = this.getEl('billing_rows');
+
+		billingRows.append(add);
+		add.find('.timeago').timeago();
+		billingRows.closest('table').show();
+
+		this.getEl('billing_form').find('input[name=billing_amount]').val('');
+		this.billingStart = new Date();
+		this.updateBillingTimer(true);
+	},
+
+	updateBillingForm: function() {
+		var form = this.getEl('billing_form');
+		var typeInputs = form.find('input[name=' + this.meta.baseId + '_billing_type]');
+		var val = typeInputs.filter(':checked').val();
+
+		form.find('input[name=billing_type]').val(val);
+
+		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
+		var replyBillingRow = $('#' + replyBaseId + '_billing_reply');
+
+		if (val == 'time') {
+			this.startBillingTimer(true);
+			replyBillingRow.show();
+			replyBillingRow.find('input[type=checkbox]').attr('disabled', false);
+		} else {
+			this.stopBillingTimer(true);
+			replyBillingRow.hide();
+			replyBillingRow.find('input[type=checkbox]').attr('disabled', true);
+		}
+	},
+
+	resetBillingForm: function() {
+		var form = this.getEl('billing_form');
+
+		form.find('input[name=billing_amount]').val('');
+		form.find('input[name=billing_comment]').val('');
+
+		if (form.find('input[name=billing_type]').val() == 'time') {
+			this.startBillingTimer(true);
+		} else {
+			this.stopBillingTimer(true);
+		}
+	},
+
+	startBillingTimer: function(reset) {
+		if (reset) {
+			this.billingStart  = new Date();
+		}
+
+		clearInterval(this.billingTimer);
+		this.updateBillingTimer(true, true);
+
+		var self = this;
+		this.billingTimer = setInterval(function() { self.updateBillingTimer(); }, 1000);
+	},
+
+	stopBillingTimer: function(reset) {
+		if (reset) {
+			this.billingStart = new Date();
+		}
+
+		clearInterval(this.billingTimer);
+		this.billingTimer = false;
+		this.updateBillingTimer(true);
+	},
+
+	updateBillingTimer: function(force, showZero) {
+		var seconds = Math.floor((new Date() - this.billingStart) / 1000),
+			rawSeconds = seconds,
+			hours = 0,
+			minutes = 0;
+
+		var form = this.getEl('billing_form');
+		var timeInputs = {
+			hours: form.find('input[name=hours]'),
+			minutes: form.find('input[name=minutes]'),
+			seconds: form.find('input[name=seconds]')
+		};
+
+		if (seconds >= 3600) {
+			hours = Math.floor(seconds / 3600);
+			timeInputs.hours.val(hours);
+			seconds -= hours * 3600;
+		} else if (force) {
+			timeInputs.hours.val('');
+		}
+
+		if (seconds >= 60) {
+			minutes = Math.floor(seconds / 60);
+			timeInputs.minutes.val(minutes);
+			seconds -= minutes * 60;
+		} else if (force) {
+			timeInputs.minutes.val('');
+		}
+
+		if (seconds > 0 || minutes > 0 || hours > 0 || showZero) {
+			timeInputs.seconds.val(seconds || 0);
+		} else if (force) {
+			timeInputs.seconds.val('');
+		}
+
+		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
+		var reply = $('#' + replyBaseId + '_billing_reply');
+
+		if (reply.length) {
+			reply.find('input[type=checkbox]').val(rawSeconds);
+
+			var text = '';
+			if (hours) {
+				text += hours + (hours > 1 ? ' hours ' : ' hour ');
+			}
+			if (minutes) {
+				text += minutes + (minutes > 1 ? ' minutes ' : ' minute ');
+			}
+			text += seconds + ' seconds';
+
+			$('#' + replyBaseId + '_billing_reply_time').text(text);
+		}
 	}
 });

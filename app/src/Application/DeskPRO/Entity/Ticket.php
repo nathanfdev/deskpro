@@ -349,6 +349,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public $part_del_ids = array();
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $charges;
+
+	/**
 	 * Ticket logger
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
@@ -384,6 +389,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->charges = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
@@ -828,6 +834,39 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$this->addParticipant($part);
 			}
 		}
+	}
+
+	public function addCharge(Person $agent, $time, $amount = null, $comment = '')
+	{
+		if ($time !== null) {
+			$time = intval($time);
+			if ($time == 0) {
+				$time = null;
+			}
+		}
+		if ($amount !== null) {
+			$amount = floatval($amount);
+			if ($amount == 0) {
+				$amount = null;
+			}
+		}
+
+		if ($time === null && $amount === null) {
+			return false;
+		}
+
+		$charge = new TicketCharge();
+		$charge->charge_time = $time;
+		$charge->amount = $amount;
+		$charge->comment = $comment;
+		$charge->ticket = $this;
+		$charge->person = $this->person;
+		$charge->organization = $this->organization;
+		$charge->agent = $agent;
+
+		$this->charges->add($charge);
+
+		return $charge;
 	}
 
 
@@ -2147,5 +2186,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway_address', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_address_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'locked_by_agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'locked_by_agent', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'charges', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
 	}
 }
