@@ -511,10 +511,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
-		if (!$has_cut) {
-			$email_info['body_full'] = '';
-		}
-
 		// Cut down the quoted message part to 10000 chars
 		$cut_len = strlen($email_info['body']);
 		$full_len = strlen($email_info['body_full']);
@@ -552,6 +548,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 		$email_info['body_full'] = $this->replaceInlineAttachTokens($email_info['body_full'], $inline_images2);
+
+		// If there was no cutting, then the body is the full body
+		// Dont store the dupe content
+		if (!$has_cut) {
+			$email_info['body_full'] = '';
+		}
 
 		return $email_info;
 	}
