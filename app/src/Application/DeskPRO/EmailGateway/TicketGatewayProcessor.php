@@ -515,8 +515,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$cut_len = strlen($email_info['body']);
 		$full_len = strlen($email_info['body_full']);
 
-		if (($full_len - $cut_len) > 8000) {
-			$email_info['body_full'] = substr($email_info['body_full'], 0, 8000 + $cut_len);
+		if (($full_len - $cut_len) > 10000) {
+			$this->logMessage('body_full too long, trimming');
+			$email_info['body_full'] = substr($email_info['body_full'], 0, 10000 + $cut_len);
 
 			// Simple way to try and handle if we cut in the middle of a tag name
 			$tag_start_pos = strrpos($email_info['body_full'], '<');
@@ -526,6 +527,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_info['body_full'] = substr($email_info['body_full'], 0, $tag_start_pos);
 				}
 			}
+
+			$email_info['body_full'] .= "\n\n";
+			if ($email_info['body_is_html']) {
+				$email_info['body_full'] .= "<br /><br />";
+			}
+
+			$email_info['body_full'] .= App::getTranslator()->phrase('user.emails.message-clipped');
 		}
 
 		if ($email_info['body_is_html']) {
@@ -552,6 +560,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// If there was no cutting, then the body is the full body
 		// Dont store the dupe content
 		if (!$has_cut) {
+			$this->logMessage('no cut was made, no body_full needed');
 			$email_info['body_full'] = '';
 		}
 

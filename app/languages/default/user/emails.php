@@ -37,4 +37,5 @@ Before our agents will read and reply to your message, you must validate your em
 	'user.emails.view_full_history_online'    => 'View full ticket online',
 	'user.emails.registration_closed'         => "Dear {{name}},\n\nNew tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.",
 	'user.emails.do-not-reply'                => "Please do not reply to this email. This is a machine-generated message and replies will not be read by our staff.",
+	'user.emails.message-clipped'             => "(Message has been clipped)",
 );
