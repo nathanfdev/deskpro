@@ -199,6 +199,41 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function getErrorCodeTitle()
+	{
+		if (!$this->error_code) {
+			return '';
+		}
+
+		switch ($this->error_code) {
+			case self::ERR_SERVER_ERROR:        return 'Server Error';
+			case self::ERR_FROM_MISSING:        return 'Missing From Address';
+			case self::ERR_FROM_INVALID:        return 'Invalid From Address';
+			case self::ERR_FROM_GATEWAY:        return 'From Gateway Address';
+			case self::ERR_FROM_BANNED:         return 'Banned From Addres';
+			case self::ERR_FROM_DISABLED:       return 'From Disabled User';
+			case self::ERR_SUBJECT_MISSING:     return 'Subject Missing';
+			case self::ERR_MESSAGE_EMPTY:       return 'Empty message';
+			case self::ERR_MESSAGE_TOO_BIG:     return 'Message Too Big';
+			case self::ERR_EMPTY:               return 'Empty Source';
+			case self::ERR_DUPE:                return 'Duplicate';
+			case self::ERR_AUTORESPONDER:       return 'Auto-repsonse';
+			case self::ERR_SPAM:                return 'Spam';
+			case self::ERR_REQUIRE_REG:         return 'User Requires Registration';
+			case self::ERR_OBJ_CLOSED:          return 'Ticket Closed';
+			case self::ERR_OBJ_DELETED:         return 'Ticket Deleted';
+			case self::ERR_OBJ_UNKNOWN:         return 'Unknown Ticket';
+			case self::ERR_AUTH_INVALID:        return 'Invalid Auth Code';
+			case self::ERR_AUTH_MISSING:        return 'Missing Auth Code';
+			case self::ERR_DESKPRO_EMAIL:       return 'DeskPRO Address';
+			case self::ERR_PERM_INSUFFICIENT:   return 'Insufficient Permissions';
+			case self::ERR_INVALID_FWD:         return 'Invalid Forward';
+			case self::ERR_MISSING_MARKER:      return 'Missing Marker';
+		}
+
+		return $this->error_code;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

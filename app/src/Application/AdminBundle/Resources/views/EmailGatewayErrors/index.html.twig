@@ -14,25 +14,41 @@
 	<table width="100%">
 		<thead>
 		<tr>
-			<th style="text-align: left" width="50">{{ phrase('agent.general.id') }}</th>
+			<th style="text-align: center;" width="10">{{ phrase('agent.general.id') }}</th>
 			<th style="text-align: left;">{{ phrase('admin.general.email_info') }}</th>
 			<th style="text-align: right">{{ phrase('admin.general.error_type') }}</th>
-			<th width="10">&nbsp;</th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for source in sources %}
 			<tr>
-				<td style="text-align: left">{{ source.id }}</td>
+				<td class="title on" style="text-align: center; padding-left: 0;"><a href="{{ path('admin_emailgateway_errors_view', {id: source.id }) }}">{{ source.id }}</a></td>
 				<td>
-					<ul class="standard-list small">
-						<li>{{ phrase('admin.general.email_from') }}: {{ source.header_from }}</li>
-						<li>{{ phrase('admin.general.email_to') }}: {{ source.header_to }}</li>
-						<li>{{ phrase('admin.general.email_subject') }}: {{ source.header_subject }}</li>
-					</ul>
+					<table cellspacing="0" cellpadding="0" width="100%">
+						<tr>
+							<td nowrap="nowrap" width="50" style="text-align: right; padding-right: 8px;">{{ phrase('admin.general.email_from') }}:</td>
+							<td>{{ source.header_from }}</td>
+						</tr>
+						<tr>
+							<td nowrap="nowrap" style="text-align: right; padding-right: 8px;">{{ phrase('admin.general.email_to') }}:</td>
+							<td>{{ source.header_to }}</td>
+						</tr>
+						<tr>
+							<td nowrap="nowrap" style="text-align: right; padding-right: 8px;">{{ phrase('admin.general.email_subject') }}:</td>
+							<td>
+								<div class="table-fade-container" style="width: 650px;">
+									<div class="table-fade-text">
+										{{ source.header_subject }}
+										{{ source.header_subject }}
+										{{ source.header_subject }}
+									</div>
+									<div class="table-fade-away"></div>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</td>
-				<td style="text-align: right">{{ source.error_code }}</td>
-				<td><a href="{{ path('admin_emailgateway_errors_view', {id: source.id }) }}">{{ phrase('admin.general.view') }}</a></td>
+				<td style="text-align: right; white-space: nowrap;" nowrap="nowrap">{{ source.error_code_title }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

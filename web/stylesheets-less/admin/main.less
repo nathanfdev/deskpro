@@ -4495,3 +4495,24 @@ a.delete-icon {
 		.opacity(100);
 	}
 }
+
+.table-fade-container {
+	position: relative;
+	overflow: hidden;
+	width: 98%;
+	height: 20px;
+}
+
+.table-fade-container .table-fade-text {
+	white-space: nowrap;
+	width: 150%;
+}
+
+.table-fade-container .table-fade-away {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	.fade-away(rgba(255,255,255,0), rgba(255,255,255,1), 45px);
+	width: 50px;
+}
