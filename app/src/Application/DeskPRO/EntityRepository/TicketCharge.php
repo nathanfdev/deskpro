@@ -61,6 +61,15 @@ class TicketCharge extends AbstractEntityRepository
 		return $q->execute(array($person));
 	}
 
+	public function getTotalChargesForPerson(\Application\DeskPRO\Entity\Person $person)
+	{
+		return App::getDb()->fetchAssoc('
+			SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(charge) AS charge
+			FROM ticket_charges
+			WHERE person_id = ?
+		', array($person->id));
+	}
+
 	public function getChargesForOrganization(\Application\DeskPRO\Entity\Organization $org, $limit = null)
 	{
 		if ($limit !== null) {
@@ -82,5 +91,14 @@ class TicketCharge extends AbstractEntityRepository
 		}
 
 		return $q->execute(array($org));
+	}
+
+	public function getTotalChargesForOrganization(\Application\DeskPRO\Entity\Organization $org)
+	{
+		return App::getDb()->fetchAssoc('
+			SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(charge) AS charge
+			FROM ticket_charges
+			WHERE organization_id = ?
+		', array($org->id));
 	}
 }

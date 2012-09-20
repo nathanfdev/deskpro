@@ -34,7 +34,7 @@
 					<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count" id="{{baseId}}_chats_count">{{ org_chats_count|default(0) }}</span></li>
 				{% endif %}
 				{% if org_charges %}
-					<li data-tab-for="#{{baseId}}_charges_tab">Billing</li>
+					<li data-tab-for="#{{baseId}}_billing_tab">Billing <span class="count">{{ org_charge_totals.count }}</span></li>
 				{% endif %}
 			</ul>
 		</nav>
@@ -186,11 +186,19 @@
 		{# /Chats Tab #}
 
 		{% if org_charges %}
-			<article id="{{baseId}}_charges_tab">
+			<article id="{{baseId}}_billing_tab">
 				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				{% for charge in org_charges %}
 					{% include 'AgentBundle:Common:billing-row-simple.html.twig' %}
 				{% endfor %}
+				<tr>
+					<th colspan="2">
+						Totals:
+						{{ org_charge_totals.count }} charges &bull;
+						{% if org_charge_totals.charge_time %}{{ org_charge_totals.charge_time|time_length }}{% if org_charge_totals.charge %} &bull; {% endif %}{% endif %}
+						{% if org_charge_totals.charge %}{{ org_charge_totals.charge|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}{% endif %}
+					</th>
+				</tr>
 				</table>
 			</article>
 		{% endif %}

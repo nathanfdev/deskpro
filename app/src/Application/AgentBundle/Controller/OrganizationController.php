@@ -95,6 +95,7 @@ class OrganizationController extends AbstractController
 		$org_chats_count = $this->em->getRepository('DeskPRO:ChatConversation')->getCountForOrganization($org);
 
 		$org_charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($org, 20);
+		$org_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForOrganization($org);
 
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);
 
@@ -133,6 +134,7 @@ class OrganizationController extends AbstractController
 			'org_chats'          => $org_chats,
 			'org_chats_count'    => $org_chats_count,
 			'org_charges'        => $org_charges,
+			'org_charge_totals'  => $org_charge_totals,
 			'members_count'      => $members_count,
 			'custom_fields'      => $custom_fields,
 		));

@@ -125,6 +125,7 @@ class PersonController extends AbstractController
 		}
 
 		$person_charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, 20);
+		$person_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForPerson($person);
 
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 50);
 
@@ -286,6 +287,7 @@ class PersonController extends AbstractController
 			'person_tickets_initial' => $person_tickets_initial,
 			'person_tickets_count' => $person_tickets_count,
 			'person_charges' => $person_charges,
+			'person_charge_totals' => $person_charge_totals,
 			'org_members_count' => $org_members_count,
 			'org_contact_data' => $org_contact_data,
 			'perms' => $perms,
