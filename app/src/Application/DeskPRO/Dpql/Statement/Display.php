@@ -268,7 +268,7 @@ class Display
 				$queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
 				$results->setResults($this->_fillResults($queryResults));
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			throw new Exception("This DPQL statement generated an invalid MySQL query. Please try a different query.");
 		}
 

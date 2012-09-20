@@ -73,7 +73,7 @@
 %left OP_OR .
 %left OP_AND .
 %right OP_NOT .
-%left OP_EQ OP_NE OP_GT OP_GTEQ OP_LT OP_LTEQ OP_IN OP_LIKE .
+%left OP_EQ OP_NE OP_GT OP_GTEQ OP_LT OP_LTEQ OP_IN OP_LIKE OP_REGEXP .
 %left OP_MINUS OP_PLUS .
 %left OP_MULTIPLY OP_DIVIDE .
 %right OP_U_MINUS .
@@ -387,6 +387,16 @@ expression(res) ::= expression(A) OP_LIKE expression(B) .
 expression(res) ::= expression(A) OP_NOT OP_LIKE expression(B) .
 {
 	res = new Statement\Part\Like(A, B, false);
+}
+
+expression(res) ::= expression(A) OP_REGEXP expression(B) .
+{
+	res = new Statement\Part\RegExp(A, B);
+}
+
+expression(res) ::= expression(A) OP_NOT OP_REGEXP expression(B) .
+{
+	res = new Statement\Part\RegExp(A, B, false);
 }
 
 expression(res) ::= expression(A) OP_IN LEFT_PAREN expression(B) comma_expressions_opt(C) RIGHT_PAREN .
