@@ -26,7 +26,7 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
      *
      * @return Boolean
      */
-    static public function isSupported()
+    public static function isSupported()
     {
         return !strstr(PHP_OS, 'WIN');
     }
@@ -52,6 +52,7 @@ class FileBinaryMimeTypeGuesser implements MimeTypeGuesserInterface
         ob_start();
 
         // need to use --mime instead of -i. see #6641
+		$return = null;
         passthru(sprintf('file -b --mime %s 2>/dev/null', escapeshellarg($path)), $return);
         if ($return > 0) {
             ob_end_clean();
