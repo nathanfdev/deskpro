@@ -136,9 +136,15 @@
         _init: function() {
             var current_hash = locationWrapper.get();
             self._appState = current_hash;
-            iframeWrapper.init().put(current_hash);
-            self.callback(current_hash);
-            setInterval(self.check, 100);
+            iframeWrapper.init();
+
+			// Small delay before first check,
+			// sometimes IE needs a second for iframe to attach to dom
+			window.setTimeout(function() {
+				iframeWrapper.put(current_hash);
+				self.callback(current_hash);
+				setInterval(self.check, 100);
+			}, 180);
         },
         check: function() {
             var iframe_hash = iframeWrapper.get(),
