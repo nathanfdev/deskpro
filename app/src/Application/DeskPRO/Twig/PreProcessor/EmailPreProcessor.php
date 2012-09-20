@@ -44,9 +44,12 @@ class EmailPreProcessor extends AbstractPreProcessor
 	 */
 	public function process($source)
 	{
-		if (strpos($source, '<dp:subject>') !== false) {
+		if (strpos($source, '{% extends') === false) {
 			$source = $this->getPrepend() . $source;
+		} else {
+			$source = preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $source);
 		}
+
 		$source = $this->processIfblock($source);
 
 		$source = $this->processTagAsBlock($source, 'subject', 'email_subject');

@@ -233,6 +233,9 @@ class TemplatesController extends AbstractController
 			$compile_code = $code;
 
 			if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
+				if (strpos($code, '{% extends') !== false) {
+					$code = trim(preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $code));
+				}
 				$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
 				$compile_code = $proc->process($compile_code);
 			}
