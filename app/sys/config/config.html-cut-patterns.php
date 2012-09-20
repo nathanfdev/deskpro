@@ -52,7 +52,7 @@
 	'outlook_2'                          => 'p b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br b #subject:#i /b /span /p',
 
 	// Outlook
-	'outlook_3'                          => 'hr /hr font b #From:# /b #.*?# br /br b #Sent:# /b #.*?# br /br b #To:# /b #.*?# br /br b #Subject:# /b #.*?# br /br',
+	'outlook_3'                          => 'font b #From:# /b #.*?# br /br b #Sent:# /b #.*?# br /br b #To:# /b #.*?# br /br b #Subject:# /b #.*?# br /br',
 
 	// X-Mailer: iPhone Mail (9A405)
 	'iphone_1'                           => 'div br /br #on\s.*\sat\s.*#i a /a #.*wrote:#i /div div /div blockquote /blockquote',
