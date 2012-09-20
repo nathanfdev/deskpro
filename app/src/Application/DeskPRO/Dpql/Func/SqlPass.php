@@ -62,6 +62,7 @@ class SqlPass extends AbstractFunc
 		'CONCAT_WS' => array('string', 3, -1),
 		'CHAR_LENGTH' => array('number', 1),
 		'DATE' => array('date', 1),
+		'DATE_FORMAT' => array('string', 2),
 		'DATEDIFF' => array('number', 2),
 		'DAYOFYEAR' => array('number', 1),
 		'FIELD' => array('number', 2, -1),
