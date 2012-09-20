@@ -1156,9 +1156,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
 		var replyBillingRow = $('#' + replyBaseId + '_billing_reply');
 
-		console.log(val);
-		console.log(replyBillingRow);
-
 		if (val == 'time') {
 			this.startBillingTimer(reset);
 			replyBillingRow.show();
