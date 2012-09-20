@@ -36,17 +36,17 @@ DeskPRO.User.WebsiteWidget.TicketFormWin = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
-		this.tellParent('ready');
+		this.tellParent('dpticket_ready');
 
 		var lastHeight, currentHeight;
 		lastHeight = $('body').height();
-		self.tellParent('requestHeight', [lastHeight]);
+		self.tellParent('dpticket_requestHeight', [lastHeight]);
 
 		window.setInterval(function() {
 			currentHeight = $('body').height();
 
 			if (lastHeight != currentHeight) {
-				self.tellParent('requestHeight', [currentHeight]);
+				self.tellParent('dpticket_requestHeight', [currentHeight]);
 			}
 			lastHeight = currentHeight;
 		}, 115);

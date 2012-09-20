@@ -84,7 +84,7 @@ var TicketFormWidget = new (function() {
 		DpConsole.log('[TicketFormWidget] comms received: %s %o', messageId, data);
 
 		switch (messageId) {
-			case 'requestHeight':
+			case 'dpticket_requestHeight':
 				var height = parseInt(data[0]);
 				if (height < 300) height = 300;
 
