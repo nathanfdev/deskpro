@@ -343,8 +343,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (data.charge_html) {
 			this.addBillingRow(data.charge_html);
-			this.updateBillingForm();
+			this.updateBillingForm(true);
 			this.resetBillingForm();
+		} else if (this.hasBilling) {
+			this.updateBillingForm(false);
 		}
 
 		window.setTimeout(this.updateUi.bind(this), 450);
@@ -1063,13 +1065,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var self = this;
 		var wrap = this.getEl('billing_wrap');
+
+		this.hasBilling = (wrap.length > 0);
+
+		if (!wrap.length) {
+			return;
+		}
+
 		var form = this.getEl('billing_form');
 		var progress = this.getEl('billing_save_progress');
 		var typeInputs = form.find('input[name=' + this.meta.baseId + '_billing_type]');
 		var billingRows = this.getEl('billing_rows');
 
-		typeInputs.change(function() { self.updateBillingForm(); });
-		this.updateBillingForm();
+		typeInputs.change(function() { self.updateBillingForm(true); });
+		this.updateBillingForm(true);
 
 		this.getEl('billing_stop').click(function() {
 			self.stopBillingTimer(false);
@@ -1137,7 +1146,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.updateBillingTimer(true);
 	},
 
-	updateBillingForm: function() {
+	updateBillingForm: function(reset) {
 		var form = this.getEl('billing_form');
 		var typeInputs = form.find('input[name=' + this.meta.baseId + '_billing_type]');
 		var val = typeInputs.filter(':checked').val();
@@ -1147,12 +1156,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
 		var replyBillingRow = $('#' + replyBaseId + '_billing_reply');
 
+		console.log(val);
+		console.log(replyBillingRow);
+
 		if (val == 'time') {
-			this.startBillingTimer(true);
+			this.startBillingTimer(reset);
 			replyBillingRow.show();
 			replyBillingRow.find('input[type=checkbox]').attr('disabled', false);
 		} else {
-			this.stopBillingTimer(true);
+			this.stopBillingTimer(reset);
 			replyBillingRow.hide();
 			replyBillingRow.find('input[type=checkbox]').attr('disabled', true);
 		}
