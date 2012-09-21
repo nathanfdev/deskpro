@@ -330,11 +330,58 @@ class DepartmentsController extends AbstractController
 		$this->em->beginTransaction();
 
 		if ($has_data) {
-			$this->db->executeUpdate("
-				UPDATE tickets
-				SET department_id = ?
+
+			$ticket_ids = $this->db->fetchAllCol("
+				SELECT id FROM tickets
 				WHERE department_id IN ($tree_ids)
-			", array($move_department->id));
+			");
+
+			$ticket_ids = array_chunk($ticket_ids, 2500);
+
+			$details_arr = serialize(array(
+				'id_before' => $department->getId(),
+				'id_after'  => $move_department->getId(),
+
+				'old_department_id'    => $department->getId(),
+				'old_department_title' => $department->getTitle(),
+				'new_department_id'    => $move_department->getId(),
+				'new_department_title' => $move_department->getTitle(),
+			));
+
+			$date_created = date('Y-m-d H:i:s');
+
+			foreach ($ticket_ids as $ids) {
+				set_time_limit(100);
+
+				$ids_string = implode(',', $ids);
+
+				$this->db->beginTransaction();
+				try {
+					$this->db->executeUpdate("
+						UPDATE tickets
+						SET department_id = ?
+						WHERE id IN ($ids_string)
+					", array($move_department->id));
+
+					$batch_logs = array();
+					foreach ($ids as $id) {
+						$batch_logs[] = array(
+							'ticket_id'    => $id,
+							'action_type'  => 'changed_department',
+							'id_before'    => $department_id,
+							'id_after'     => $move_department->getId(),
+							'details'      => $details_arr,
+							'date_created' => $date_created
+						);
+					}
+
+					$this->db->batchInsert('tickets_logs', $batch_logs);
+					$this->db->commit();
+				} catch (\Exception $e) {
+					$this->db->rollback();
+					throw $e;
+				}
+			}
 
 			$this->db->executeUpdate("
 				UPDATE chat_conversations
