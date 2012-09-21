@@ -1272,7 +1272,8 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'message_id' => $message->getId(),
-			'message_text' => $message->getMessageText()
+			'message_text' => $message->getMessageText(),
+			'message_html' => $message->getMessageHtml(),
 		));
 	}
 
@@ -1292,8 +1293,8 @@ class TicketController extends AbstractController
 		$old_message = $message->message;
 		$old_full_message = $message->message_full;
 
-		$new_message = $this->in->getString('message_text');
-		$message->setMessageText($new_message);
+		$new_message = $this->in->getString('message_html');
+		$message->setMessageHtml($new_message);
 
 		$ticket_log = new TicketLog();
 		$ticket_log->ticket      = $ticket;

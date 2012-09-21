@@ -821,7 +821,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				overlayEl.find('.save-text-loading').show();
 
 				var postData = {
-					message_text: overlayEl.find('textarea.message_text').val()
+					message_html: overlayEl.find('textarea.message_text').html()
 				};
 
 				$.ajax({
@@ -845,17 +845,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			this.messageEditOverlay = new DeskPRO.UI.Overlay({
 				contentElement: this.getEl('message_edit_overlay'),
-				onBeforeOverlayOpened: function() {
+				fullScreen: true,
+				fullScreenMargin: 55,
+				onOverlayOpened: function() {
 					overlayEl.find('input.message_id').val(self.currentOpenMessageId);
-					overlayEl.find('textarea.message_text').val('Loading...');
 
+					if (!self.messageEditOverlay.hasInitRte) {
+						self.messageEditOverlay.hasInitRte = true;
+						overlayEl.find('textarea.message_text').height(overlayEl.find('.overlay-content').height() - 20);
+						DP.rteTextarea(overlayEl.find('textarea.message_text'), {});
+					}
+
+					overlayEl.find('textarea.message_text').html('Loading...');
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/get-message-text.json',
 						dataType: 'json',
 						success: function(data) {
-							overlayEl.find('textarea.message_text').val(data.message_text);
+							overlayEl.find('textarea.message_text').html(data.message_html);
 						}
-					})
+					});
 				}
 			});
 		}
