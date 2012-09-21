@@ -100,7 +100,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 
-		if (!($this instanceof LoginController) AND !$this->person->HelpdeskUser->canDoAnything()) {
+		if (
+			!($this instanceof LoginController)
+			AND !$this->person->HelpdeskUser->canDoAnything()
+		) {
+			// If they're already logged in and they cant do anything, then we have to show the generic
+			// no permission page.
+			if ($this->person->getId()) {
+				return $this->renderStandardError('@user.error.permission-denied');
+			}
+
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('user');
 			} else {
@@ -144,7 +153,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function renderLoginOrPermissionError($return_url = '')
 	{
-		if ($this->person->id) {
+		if ($this->person->getId()) {
 			return $this->renderStandardError('@user.error.permission-denied');
 		}
 
@@ -169,12 +178,37 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
 		}
 
-		return $this->forward('UserBundle:Main:standardError', array(
+		return $this->standardErrorResponse($error_message, $error_title, $code, $vars);
+	}
+
+
+	/**
+	 * @param string $error_message
+	 * @param string $error_title
+	 * @param int $code
+	 * @param array $vars
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
+		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
+
+		$tpl = $tpl_standard;
+		if (App::getTemplating()->exists($tpl_specific)) {
+			$tpl = $tpl_specific;
+		}
+
+		$vars = array_merge($vars, array(
 			'error_message' => $error_message,
-			'error_title'   => $error_title,
-			'code'          => $code,
-			'vars'          => $vars
+			'error_title'   => $error_title
 		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
 	}
 
 	/**
