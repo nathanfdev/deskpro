@@ -19,9 +19,11 @@
 	<header><h3><label><input type="radio" name="usersource[source_type]" value="ldap" /> LDAP</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
+	{% if not app.getSetting('core.usersource_db_table_disabled') %}
 	{{ design.block_sections_item() }}
 	<header><h3><label><input type="radio" name="usersource[source_type]" value="db_table_php_password_check" /> {{ phrase('admin.user_registration.custom_database') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
+	{% endif %}
 
 	{{ design.block_sections_item() }}
 	<header><h3><label><input type="radio" name="usersource[source_type]" value="vbulletin" /> {{ phrase('admin.user_registration.vbulletin_versions') }}</label></h3></header>

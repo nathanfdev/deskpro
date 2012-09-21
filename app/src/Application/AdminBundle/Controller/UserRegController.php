@@ -342,6 +342,10 @@ class UserRegController extends AbstractController
 		$model_class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $typename . 'Model';
 		$type_class  = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $typename . 'Type';
 
+		if ($typename == 'db_table_php_password_check' && App::getSetting('core.usersource_db_table_disabled')) {
+			return $this->redirectRoute('admin_userreg_usersource_choose');
+		}
+
 		$editfield = new $model_class($usersource);
 		$formtype  = new $type_class();
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
