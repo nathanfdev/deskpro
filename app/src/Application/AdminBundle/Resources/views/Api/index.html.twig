@@ -20,7 +20,7 @@
 					<li><a href="{{ path('admin_api_delkey', {'id': apikey.id, 'security_token': security_token('delete_api')}) }}" class="delete" onclick="return confirm('{{ phrase('admin.api.are_you_sure') }}');">{{ phrase('agent.general.delete') }}</a></li>
 				</ul>
 			</div>
-			<strong>{{apikey.person.display_name}}</strong>
+			<h4 style="margin-bottom: .2em">{{apikey.person.display_name}}</h4>
 			{% if apikey.note %}<p>{{apikey.note}}</p>{% endif %}
 
 			<p>Key:

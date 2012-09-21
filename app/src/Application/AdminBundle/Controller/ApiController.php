@@ -84,16 +84,16 @@ class ApiController extends AbstractController
 		if ($this->in->getString('process')) {
 			$this->ensureRequestToken();
 
-			$personEmail = $this->in->getString('person_email');
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($personEmail);
+			$agentId = $this->in->getUint('agent_id');
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($agentId);
 			if ($person) {
 				if ($person->is_agent) {
 					$apikey['person'] = $person;
 				} else {
-					$errors['person_email'] = 'The specified person is not an agent.';
+					$errors['person_email'] = 'The selected person is not an agent.';
 				}
 			} else {
-				$errors['person_email'] = 'No person could be found with that email address.';
+				$errors['person_email'] = 'No person was selected.';
 			}
 
 			$apikey['note'] = $this->in->getString('note');
@@ -105,12 +105,13 @@ class ApiController extends AbstractController
 				return $this->redirectRoute('admin_api_keylist');
 			}
 		} else {
-			$personEmail = $apikey->person ? $apikey->person->primary_email_address : '';
+			$agentId = $apikey->person ? $apikey->person->id : 0;
 		}
 
 		return $this->render('AdminBundle:Api:edit-key.html.twig', array(
 			'apikey' => $apikey,
-			'personEmail' => $personEmail,
+			'agentId' => $agentId,
+			'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
 			'errors' => $errors
 		));
 	}

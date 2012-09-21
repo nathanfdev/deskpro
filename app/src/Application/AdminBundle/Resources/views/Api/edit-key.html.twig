@@ -32,11 +32,16 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>API Person Email</label>
+			<label>API Agent</label>
 		</div>
 		<div class="dp-form-input">
-			<input type="text" name="person_email" value="{{personEmail}}" />
-			<p>Every API request is made as a person in the system. Enter the email address of the person that will be making these requests. This person must be an agent.</p>
+			<select name="agent_id">
+				<option value="0">&nbsp;</option>
+				{% for agent in agents %}
+					<option value="{{ agent.id }}" {% if agentId == agent.id %}selected="selected"{% endif %}>{{ agent.name }}</option>
+				{% endfor %}
+			</select>
+			<p>Every API request is made as an agent in the system. Select the agent that will be making these requests.</p>
 		</div>
 	</div>
 
