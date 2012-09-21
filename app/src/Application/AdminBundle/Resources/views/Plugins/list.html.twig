@@ -47,7 +47,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>{{plugin.title}} {{plugin.version}}</td>
-			<td colspan="2"><i>This plugin has been disabled as the associated files could not be found.</i></td>
+			<td colspan="2">This plugin has been disabled as the associated files could not be found. <a href="{{ path('admin_plugins_uninstall', {plugin_id: plugin.id}) }}">Uninstall now</a>.</td>
 		</tr>
 		{% endif %}
 	{% else %}

@@ -158,14 +158,21 @@ class PluginsController extends AbstractController
 	public function uninstallAction($plugin_id)
 	{
 		$plugin = $this->_getPluginOr404($plugin_id);
-		$plugin_info = $this->_getPluginInfoOr404($plugin_id);
+
+		$finder = new PluginFinder();
+		$plugin_info = $finder->getPluginInfo($plugin_id);
 
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken();
 
 			$this->container->get('deskpro.plugin_manager')->initialize();
 
-			$uninstaller = $plugin_info->getUninstaller($this, $plugin);
+			if ($plugin_info) {
+				$uninstaller = $plugin_info->getUninstaller($this, $plugin);
+			} else {
+				$uninstaller = new \Application\DeskPRO\Plugin\PluginPackage\UninstallerSimple($plugin, $this);
+			}
+
 			return $uninstaller->runStep(1);
 		}
 
