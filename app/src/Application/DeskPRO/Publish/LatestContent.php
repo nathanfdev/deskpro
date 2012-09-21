@@ -172,7 +172,7 @@ class LatestContent
 			}
 
 			if (!empty($this->use_selections['downloads'])) {
-				$res = $this->em->getRepository('DeskPRO:Downloads')->getByIds($this->use_selections['downloads']);
+				$res = $this->em->getRepository('DeskPRO:Download')->getByIds($this->use_selections['downloads']);
 				foreach ($res as $r) {
 					$results[] = array('type' => 'download', 'item' => $r);
 				}
