@@ -531,38 +531,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function timeLength($length)
 	{
-		if ($length < 1) {
-			return '';
-		}
-
-		if ($length > 3600) {
-			$hours = floor($length / 3600);
-			$length -= $hours * 3600;
-		} else {
-			$hours = 0;
-		}
-
-		if ($length > 60) {
-			$minutes = floor($length / 60);
-			$length -= $minutes * 60;
-		} else {
-			$minutes = 0;
-		}
-
-		$seconds = $length;
-
-		$parts = array();
-		if ($hours) {
-			$parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
-		}
-		if ($minutes) {
-			$parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
-		}
-		if ($seconds) {
-			$parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
-		}
-
-		return implode(', ', $parts);
+		return \Application\DeskPRO\Util::getPrintableTimeLength($length);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')

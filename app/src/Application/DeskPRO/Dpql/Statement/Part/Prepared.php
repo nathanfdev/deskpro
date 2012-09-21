@@ -84,6 +84,13 @@ class Prepared
 	protected $_groupFill = null;
 
 	/**
+	 * Controls whether a total is added for this value.
+	 *
+	 * @var bool
+	 */
+	protected $_total = false;
+
+	/**
 	 * @param string $sqlExpr SQL expression
 	 * @param string $name Name of column header
 	 * @param string|bool $sqlExprPrint SQL expression if in printable context
@@ -205,5 +212,21 @@ class Prepared
 	public function groupFill()
 	{
 		return $this->_groupFill;
+	}
+
+	/**
+	 * @param boolean $total
+	 */
+	public function setTotal($total)
+	{
+		$this->_total = (bool)$total;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function total()
+	{
+		return $this->_total;
 	}
 }

@@ -141,4 +141,41 @@ public function getPersonData(array $misc_data)
 
 		App::getDb()->commit();
 	}
+
+	public static function getPrintableTimeLength($length)
+	{
+		if ($length < 1) {
+			return '';
+		}
+
+		if ($length > 3600) {
+			$hours = floor($length / 3600);
+			$length -= $hours * 3600;
+		} else {
+			$hours = 0;
+		}
+
+		if ($length > 60) {
+			$minutes = floor($length / 60);
+			$length -= $minutes * 60;
+		} else {
+			$minutes = 0;
+		}
+
+		$seconds = $length;
+
+		// TODO: translation
+		$parts = array();
+		if ($hours) {
+			$parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
+		}
+		if ($minutes) {
+			$parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
+		}
+		if ($seconds) {
+			$parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
+		}
+
+		return implode(', ', $parts);
+	}
 }

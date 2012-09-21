@@ -29,76 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class TicketCharge extends AbstractEntityRepository
+class Build1348222417 extends AbstractBuild
 {
-	public function getChargesForPerson(\Application\DeskPRO\Entity\Person $person, $limit = null)
+	public function run()
 	{
-		if ($limit !== null) {
-			$limit = intval($limit);
-			if ($limit < 1) {
-				$limit = null;
-			}
-		}
-
-		$q = $this->getEntityManager()->createQuery('
-			SELECT tc
-			FROM DeskPRO:TicketCharge tc INDEX BY tc.id
-			WHERE tc.person = ?0
-			ORDER BY tc.id DESC
-		');
-
-		if ($limit) {
-			$q->setMaxResults($limit);
-		}
-
-		return $q->execute(array($person));
-	}
-
-	public function getTotalChargesForPerson(\Application\DeskPRO\Entity\Person $person)
-	{
-		return App::getDb()->fetchAssoc('
-			SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(amount) AS charge
-			FROM ticket_charges
-			WHERE person_id = ?
-		', array($person->id));
-	}
-
-	public function getChargesForOrganization(\Application\DeskPRO\Entity\Organization $org, $limit = null)
-	{
-		if ($limit !== null) {
-			$limit = intval($limit);
-			if ($limit < 1) {
-				$limit = null;
-			}
-		}
-
-		$q = $this->getEntityManager()->createQuery('
-			SELECT tc
-			FROM DeskPRO:TicketCharge tc INDEX BY tc.id
-			WHERE tc.organization = ?0
-			ORDER BY tc.id DESC
-		');
-
-		if ($limit) {
-			$q->setMaxResults($limit);
-		}
-
-		return $q->execute(array($org));
-	}
-
-	public function getTotalChargesForOrganization(\Application\DeskPRO\Entity\Organization $org)
-	{
-		return App::getDb()->fetchAssoc('
-			SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(amount) AS charge
-			FROM ticket_charges
-			WHERE organization_id = ?
-		', array($org->id));
+		$this->out("Update ticket charges to have correct column name");
+		$this->execMutateSql("ALTER TABLE ticket_charges CHANGE charge amount NUMERIC(10, 2) DEFAULT NULL");
 	}
 }

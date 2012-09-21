@@ -34,6 +34,7 @@
 
 	.trends a { padding-left: 22px; background: url(../../images/agent/header/interface-reports-color.png) no-repeat 0 50%; }
 	.builder a { padding-left: 22px; background: url(../../images/agent/header/gear-light.png) no-repeat 0 50%; }
+	.billing a { padding-left: 22px; background: url(../../images/agent/header/interface-billing-color.png) no-repeat 0 50%; }
 	.tech-activity a { padding-left: 22px; background: url(../../images/agent/header/interface-agent-color.png) no-repeat 0 50%; }
 	.tech-hours a { padding-left: 22px; background: url(../../images/agent/header/clock.png) no-repeat 0 50%; }
 	.publish a { padding-left: 22px; background: url(../../images/agent/icons/page.png) no-repeat 0 50%; }
@@ -1034,6 +1035,15 @@ section.coming-soon,
 	}
 }
 
+.report-container-billing {
+	#report-list h3:first-child {
+		margin-top: 0;
+	}
+	#report-list li {
+		padding-left: 5px;
+	}
+}
+
 #report-container-inner {
 	position: absolute;
 	top: 0;
@@ -1223,9 +1233,9 @@ section.coming-soon,
 }
 
 .report-actions {
-	margin: 8px -7px 0 -7px;
-	border-top: 1px solid #DEDEDE;
-	padding: 10px;
+	margin: 0 -7px 8px;
+	border-bottom: 1px solid #DEDEDE;
+	padding: 0 10px 10px;
 }
 
 .query-error {
@@ -1300,4 +1310,11 @@ section.coming-soon,
 	.report-list-dragger { display: none; }
 	.report-actions { display: none; }
 	.report-builder-results .query { display: block; }
+
+	#report-container-inner { display: none; }
+	#report-page-body, #report-page-body-inner {
+		position: static;
+		overflow: auto;
+		border: none;
+	}
 }

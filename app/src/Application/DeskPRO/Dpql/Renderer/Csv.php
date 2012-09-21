@@ -149,6 +149,50 @@ class Csv extends AbstractRenderer
 			$output[] = implode(',', $columns);
 		}
 
+		// output a row of totals if requested - only do it with grouping, as otherwise there's
+		// no real way of marking a row as the totals and that'd be confusing
+		$totalColumns = $this->_handler->getTotalColumns();
+		if (count($rows) > 1  && $totalColumns && $groupYColumns) {
+			$cells = array();
+
+			if ($groupYColumns) {
+				foreach ($groupYColumns AS $column) {
+					$cells[] = $this->wrapCell('');
+				}
+				array_pop($cells);
+				$cells[] = $this->wrapCell('Total');
+			}
+
+			$columnTotals = array();
+			foreach ($rows AS $row) {
+				foreach ($totalColumns AS $id) {
+					if ($this->getColumnValue($row, $id) === null) {
+						continue;
+					}
+
+					if (!isset($columnTotals[$id])) {
+						$columnTotals[$id] = 0;
+					}
+					$columnTotals[$id] += $this->getColumnValue($row, $id);
+				}
+			}
+
+			$firstRow = reset($rows);
+			$fakeRow = array_fill_keys(array_keys($firstRow), null);
+			foreach ($columnTotals AS $id => $value) {
+				$fakeRow[$id - 1] = $value;
+			}
+
+			foreach ($selectColumns AS $column) {
+				if (isset($columnTotals[$column['resultId']])) {
+					$cells[] = $this->wrapCell($this->_renderCellValue($fakeRow, $column));
+				} else {
+					$cells[] = $this->wrapCell('');
+				}
+			}
+			$output[] = implode(',', $cells);
+		}
+
 		return implode("\r\n", $output);
 	}
 

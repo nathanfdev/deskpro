@@ -110,6 +110,7 @@ class Link extends AbstractFunc
 		switch ($format) {
 			case 'ticket': $format = 'agent/#app.tickets,t:%d'; break;
 			case 'person': $format = 'agent/#app.people,p:%d'; break;
+			case 'organization': $format = 'agent/#app.people,o:%d'; break;
 		}
 
 		$argValues = array();

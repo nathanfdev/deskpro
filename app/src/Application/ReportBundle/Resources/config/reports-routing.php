@@ -316,5 +316,22 @@ $collection->add('report_builder_favorite', new Route(
 	array()
 ));
 
+################################################################################
+# Billing
+################################################################################
+
+$collection->add('report_billing', new Route(
+	'/billing',
+	array('_controller' => 'ReportBundle:Billing:index'),
+	array(),
+	array()
+));
+
+$collection->add('report_billing_report', new Route(
+	'/billing/{report_id}',
+	array('_controller' => 'ReportBundle:Billing:report'),
+	array(),
+	array()
+));
 
 return $collection;

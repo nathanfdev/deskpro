@@ -69,7 +69,7 @@ class Column extends AbstractPart
 		'departments' => array('id', 'title'),
 		'labels_tickets' => array('label', 'label'),
 		'languages' => array('id', 'title'),
-		'organizations' => array('id', 'name'),
+		'organizations' => array('id', 'name', 'organization'),
 		'people' => array('id', 'name', 'person'),
 		'tickets' => array('id', 'subject', 'ticket'),
 		'ticket_categories' => array('id', 'title'),

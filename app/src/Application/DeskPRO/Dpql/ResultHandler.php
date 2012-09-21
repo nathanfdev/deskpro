@@ -87,6 +87,13 @@ class ResultHandler
 	protected $_splitColumns = array();
 
 	/**
+	 * List of select column IDs that should be totaled
+	 *
+	 * @var array
+	 */
+	protected $_totalColumns = array();
+
+	/**
 	 * Adds a column that will be selected/output into the results.
 	 *
 	 * @param string $title
@@ -193,5 +200,21 @@ class ResultHandler
 	public function getSplitColumns()
 	{
 		return $this->_splitColumns;
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function addTotalColumn($id)
+	{
+		$this->_totalColumns[$id] = $id;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTotalColumns()
+	{
+		return $this->_totalColumns;
 	}
 }

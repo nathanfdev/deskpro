@@ -40,12 +40,11 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
-use Application\DeskPRO\App;
 
 /**
- * Formats output using the given type and options.
+ * Handler for TOTAL function
  */
-class Format extends AbstractFunc
+class Total extends AbstractFunc
 {
 	/**
 	 * Prepares the function for use, including validating that the usage is valid.
@@ -58,74 +57,30 @@ class Format extends AbstractFunc
 	 *
 	 * @throws \Application\DeskPRO\Dpql\Exception
 	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|boolean Prepared results or false if there's no output
 	 */
 	public function prepare(
 		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
 	)
 	{
-		if (count($this->_arguments) < 2) {
-			throw new Exception('FORMAT() requires at least 2 arguments.');
+		if ($section != 'select') {
+			throw new Exception('TOTAL() may only be used in SELECT.');
+		}
+		if (count($this->_arguments) != 1) {
+			throw new Exception('TOTAL() can only accept 1 argument.');
+		}
+		if (count($stack) > 1) {
+			// note: the top of the stack is this function
+			throw new Exception('TOTAL() may only be used at the top-level.');
 		}
 
-		$arguments = $this->_arguments;
-		$value = array_shift($arguments);
-		$type = array_shift($arguments);
-		$typeLiteral = $this->_toLiteral($type);
+		$childStack = $stack;
+		array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-		$argNames = array();
-		$argLiterals = array();
-		foreach ($arguments AS $argument) {
-			$prepped = $argument->prepare($statement, $section, $stack, $select, $result);
-			$argNames[] = $prepped->name();
-			$argLiterals[] = $this->_toLiteral($argument);
-		}
+		$expression = reset($this->_arguments);
+		$prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+		$prepped->setTotal(true);
 
-		$preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
-		$preppedType = $type->prepare($statement, $section, $stack, $select, $result);
-
-		if ($argNames) {
-			$argNameOutput = ', ' . implode(', ', $argNames);
-		} else {
-			$argNameOutput = '';
-		}
-
-		$name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
-
-		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-			use ($typeLiteral, $argLiterals)
-		{
-			if ($value === null) {
-				return $valueRenderer->renderValue(null, 'string');
-			}
-
-			switch (strtolower($typeLiteral)) {
-				case 'number':
-					if ($argLiterals) {
-						return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
-					}
-					break;
-
-				case 'date':
-					if ($argLiterals) {
-						$tz = App::getCurrentPerson()->getTimezone();
-						try {
-							$date = new \DateTime($value, new \DateTimeZone($tz));
-							return $valueRenderer->escapeValue($date->format($argLiterals[0]));
-						} catch (\Exception $e) {
-							return $valueRenderer->escapeValue($value);
-						}
-					}
-					break;
-
-				case 'percent':
-					$decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
-					return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
-			}
-
-			return $valueRenderer->renderValue($value, $typeLiteral);
-		};
-
-		return new Prepared($preppedValue->sql(), $name, false, $renderer);
+		return $prepped;
 	}
 }

@@ -131,7 +131,11 @@ class Html extends AbstractRenderer
 			return $this->_renderMatrixTable($rows);
 		}
 
-		return $this->_renderTableWrapper($this->_renderHeader($rows) . $this->_renderBody($rows));
+		return $this->_renderTableWrapper(
+			$this->_renderHeader($rows)
+			. $this->_renderBody($rows)
+			. $this->_renderFooter($rows)
+		);
 	}
 
 	/**
@@ -263,6 +267,52 @@ class Html extends AbstractRenderer
 		} else {
 			return '';
 		}
+	}
+
+	protected function _renderFooter(array $rows)
+	{
+		$totalColumns = $this->_handler->getTotalColumns();
+		if (count($rows) < 2 || !$totalColumns) {
+			return '';
+		}
+
+		$cells = array();
+		$groupYColumns = $this->_handler->getGroupYColumns();
+		$selectColumns = $this->_handler->getSelectColumns();
+
+		if ($groupYColumns) {
+			$cells[] = '<th colspan="' . count($groupYColumns) . '">Total</th>';
+		}
+
+		$columnTotals = array();
+		foreach ($rows AS $row) {
+			foreach ($totalColumns AS $id) {
+				if ($this->getColumnValue($row, $id) === null) {
+					continue;
+				}
+
+				if (!isset($columnTotals[$id])) {
+					$columnTotals[$id] = 0;
+				}
+				$columnTotals[$id] += $this->getColumnValue($row, $id);
+			}
+		}
+
+		$firstRow = reset($rows);
+		$fakeRow = array_fill_keys(array_keys($firstRow), null);
+		foreach ($columnTotals AS $id => $value) {
+			$fakeRow[$id - 1] = $value;
+		}
+
+		foreach ($selectColumns AS $column) {
+			if (isset($columnTotals[$column['resultId']])) {
+				$cells[] = '<td>' . $this->_renderCellValue($fakeRow, $column) . '</td>';
+			} else {
+				$cells[] = '<td>&nbsp;</td>';
+			}
+		}
+
+		return '<tfoot><tr class="row-body total-row">' . implode('', $cells) . '</tr></tfoot>';
 	}
 
 	/**
@@ -638,7 +688,7 @@ class Html extends AbstractRenderer
 					$rowData = array();
 
 					foreach ($selectColumns AS $i => $column) {
-						$rowData['value' . $i] = $this->_filterGraphValue($this->_renderCellValue($row, $column));
+						$rowData['value' . $i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
 					}
 
 					$rowGroups[$grouper][$category] = $rowData;
@@ -686,7 +736,7 @@ class Html extends AbstractRenderer
 
 					$rowData = array('category' => $category);
 
-					$rowData['value'] = $this->_filterGraphValue($this->_renderCellValue($row, $sel));
+					$rowData['value'] = $this->_filterGraphValue($this->getColumnValue($row, $sel));
 
 					$chartData[] = $rowData;
 				}

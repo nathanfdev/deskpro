@@ -197,6 +197,7 @@ class Display
 		'tickets_log' => 'DeskPRO:TicketLog',
 		'tickets_messages' => 'DeskPRO:TicketMessage',
 		'ticket_attachments' => 'DeskPRO:TicketAttachment',
+		'ticket_charges' => 'DeskPRO:TicketCharge',
 		'ticket_feedback' => 'DeskPRO:TicketFeedback',
 	);
 
@@ -551,6 +552,10 @@ class Display
 
 				$resultTitle = ($alias !== false ? $alias : $select->name());
 				$this->_resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
+
+				if ($select->total()) {
+					$this->_resultHandler->addTotalColumn($id);
+				}
 			}
 		}
 	}

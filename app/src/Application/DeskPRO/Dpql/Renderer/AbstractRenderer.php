@@ -260,9 +260,9 @@ abstract class AbstractRenderer
 	 */
 	protected function _renderCellValue(array $row, array $column)
 	{
-		$renderer = $column['renderer'];
 		$value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
+		$renderer = $column['renderer'];
 		if ($renderer instanceof \Closure) {
 			/* @var $renderer \Closure */
 			return $renderer($this->_valueRenderer, $value, $row, $this);
@@ -275,12 +275,15 @@ abstract class AbstractRenderer
 	 * Gets the value of a particular column for the given row.
 	 *
 	 * @param array $row
-	 * @param integer $id
+	 * @param integer|array $id
 	 *
 	 * @return string
 	 */
 	public function getColumnValue(array $row, $id)
 	{
+		if (is_array($id) && isset($id['resultId'])) {
+			$id = $id['resultId'];
+		}
 		return ($id ? $row[$id - 1] : '');
 	}
 

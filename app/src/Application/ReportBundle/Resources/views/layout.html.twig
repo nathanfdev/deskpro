@@ -111,6 +111,15 @@
 			title="Report Builder is our powerful custom statistic and graph generator. With this tool you can generate almost any statistic about your helpdesk. The tools comes with a library of pre-built statistics and an editor to allow you to create your own."
 		><a href="{{ path('report_builder') }}">{{ phrase('agent.report.report_builder') }}</a></h1></nav>
 	</section>
+	{% if app.getSetting('core_tickets.enable_billing') %}
+	<section class="billing {% if this_page == 'report_billing' %}on{% endif %}">
+		<nav><h1
+			class="tipped"
+			data-tipped-options="hook: 'topleft', maxWidth: 500, skin: 'cloud', border: 1, shadow: {opacity:  0.5}"
+			title="Billing gives you access to reports on charges that agents have made to tickets. Billing reports include lists of charges and totals for charges per person, agent and organization."
+		><a href="{{ path('report_billing') }}">Billing</a></h1></nav>
+	</section>
+	{% endif %}
 	<section class="tech-activity {% if this_page == 'agent_activity_index' %}on{% endif %}">
 		<nav><h1
 			class="tipped"
