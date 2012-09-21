@@ -253,7 +253,7 @@ class UsersourcesStep extends AbstractDeskpro3Step
 			# vBulletin => Vbulletin
 			#---
 
-			case 'phpBB3':
+			case 'vBulletin':
 
 				$new_usersource->source_type = 'vbulletin';
 				$new_usersource->options = array(

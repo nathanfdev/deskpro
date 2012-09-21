@@ -585,7 +585,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				"\n" .
 				"The import process is about to begin.\n" .
 				"The process is automatic and you will not need to do anything.\n" .
-				"It safe to leave this tool running unattended.\n"
+				"It is safe to leave this tool running unattended.\n"
 			);
 
 			if ($config['store_attachment_files']) {
