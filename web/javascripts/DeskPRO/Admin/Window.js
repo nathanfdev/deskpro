@@ -312,6 +312,26 @@ DeskPRO.Admin.Window = new Orb.Class({
 			var v = new DeskPRO.Form.FormValidator($(this));
 			$(this).data('form-validator-inst', v);
 		});
+
+		window.setTimeout(function() {
+			self.sessionPing();
+		}, 30000);
+	},
+
+	/**
+	 * Simple request to ping our session to keep it alive while on this page
+	 */
+	sessionPing: function() {
+		var self = this;
+		$.ajax({
+			url: BASE_URL + 'admin/session-ping.json',
+			cache: false,
+			complete: function() {
+				window.setTimeout(function() {
+					self.sessionPing();
+				}, 30000);
+			}
+		});
 	},
 
 	updatePageNavPos: function() {
