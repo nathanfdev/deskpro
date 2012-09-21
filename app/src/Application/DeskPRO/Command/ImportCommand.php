@@ -995,9 +995,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				));
 			}
 
-			// Clear the map tables
-			App::getDb()->exec("TRUNCATE TABLE import_map");
-
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 
