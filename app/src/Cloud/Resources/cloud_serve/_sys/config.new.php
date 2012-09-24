@@ -24,10 +24,8 @@ function dpc_create_transport($context, $transport, $type, $options)
 	}
 
 	$tr = \Swift_SmtpTransport::newInstance('smtp.sendgrid.net', 465, 'ssl');
-	if (!empty($options['username']) OR !empty($options['password'])) {
-		$tr->setUsername('xxx');
-		$tr->setPassword('xxx');
-	}
+	$tr->setUsername('xxx');
+	$tr->setPassword('xxx');
 
 	return $tr;
 }
