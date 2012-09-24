@@ -71,6 +71,16 @@ class NewTicketValidator extends AbstractValidator
 	protected $mock_ticket;
 
 	/**
+	 * @var bool
+	 */
+	protected $widget_mode = false;
+
+	public function enableWidgetMode()
+	{
+		$this->widget_mode = true;
+	}
+
+	/**
 	 * @param array $page_data
 	 */
 	public function setPageData($page_data)
@@ -130,11 +140,44 @@ class NewTicketValidator extends AbstractValidator
 			if (!$department_validator->isValid($department_id)) {
 				$this->addError('ticket.department_id.invalid');
 			} else {
-				$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-				$ticket_display->addPagesFromDb();
 
-				/** @var $ticket_page \Application\DeskPRO\PageDisplay\Page\TicketPageZone */
-				$ticket_page = $ticket_display->getPage($department_id);
+				if ($this->widget_mode) {
+					$ticket_page_display = new \Application\DeskPRO\Entity\TicketPageDisplay();
+					$ticket_page_display->zone = 'create';
+					$ticket_page_display->section = 'default';
+					$ticket_page_display->data = array(
+						array (
+							'id' => 'person_name',
+							'field_type' => 'person_name',
+						),
+						array (
+							'id' => 'ticket_department',
+							'field_type' => 'ticket_department',
+						),
+						array (
+							'id' => 'ticket_subject',
+							'field_type' => 'ticket_subject',
+						),
+						array (
+							'id' => 'message',
+							'field_type' => 'message',
+						),
+						array (
+							'id' => 'attachments',
+							'field_type' => 'attachments',
+						),
+					);
+
+					$ticket_page = new \Application\DeskPRO\PageDisplay\Page\TicketPageZone('create');
+					$ticket_page->addPageDisplay($ticket_page_display);
+
+				} else {
+					$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+					$ticket_display->addPagesFromDb();
+
+					/** @var $ticket_page \Application\DeskPRO\PageDisplay\Page\TicketPageZone */
+					$ticket_page = $ticket_display->getPage($department_id);
+				}
 
 				if ($ticket_page) {
 					/** @var $page \Application\DeskPRO\Entity\TicketPageDisplay */
@@ -192,7 +235,7 @@ class NewTicketValidator extends AbstractValidator
 					$validator = new \Orb\Validator\StringEmail();
 					if (!$validator->isValid($this->newticket->person->email)) {
 						$this->addError('person.email.invalid');
-					} else {
+					} elseif (!$this->widget_mode) {
 						// Make sure its not already in use
 						$exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->newticket->person->email);
 						if ($exists) {

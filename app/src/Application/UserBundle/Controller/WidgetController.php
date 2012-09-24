@@ -170,6 +170,7 @@ class WidgetController extends AbstractController
 		$newticket->ticket->attach_ids_authed = true;
 
 		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+		$validator->enableWidgetMode();
 
 		if ($validator->isValid($newticket)) {
 			$ticket = $newticket->save();
