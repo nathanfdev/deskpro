@@ -163,7 +163,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var cat = self.getEl('prod');
+				var catId = self.getEl('prod').val();
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
