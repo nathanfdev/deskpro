@@ -11,6 +11,28 @@
 if (defined('DPC_CONFIG_LOADED')) exit('Cloud config has already been loaded');
 define('DPC_CONFIG_LOADED', true);
 
+/**
+ * @param string $context Either 'default' or 'backup'
+ * @param \Application\DeskPRO\Entity\EmailTransport $transport
+ * @param string $type The transport type (mail, smtp, gmail)
+ * @param array $options Transport options
+ */
+function dpc_create_transport($context, $transport, $type, $options)
+{
+	if ($type !== 'mail') {
+		return null;
+	}
+
+	$tr = \Swift_SmtpTransport::newInstance('smtp.sendgrid.net', 465, 'ssl');
+	if (!empty($options['username']) OR !empty($options['password'])) {
+		$tr->setUsername('xxx');
+		$tr->setPassword('xxx');
+	}
+
+	return $tr;
+}
+define('DP_EMAIL_TRANSPORT_FACTORY', 'dpc_create_transport');
+
 return array(
 	/**
 	 * Database details for the lookup database

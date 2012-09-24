@@ -131,7 +131,15 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	public function getTransport()
 	{
 		if ($this->_transport !== null) return $this->_transport;
-		$this->_transport = self::createTransport($this->transport_type, $this->transport_options);
+
+		if (defined('DP_EMAIL_TRANSPORT_FACTORY')) {
+			$this->_transport = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'default', $this, $this->transport_type, $this->transport_options);
+		}
+
+		if (!$this->_transport) {
+			$this->_transport = self::createTransport($this->transport_type, $this->transport_options);
+		}
+
 		return $this->_transport;
 	}
 
