@@ -155,7 +155,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 			$log = file_get_contents($logpath);
 			if (filesize($logpath) > 307200) {
-				$log = substr($log, 0, 307200);
+				$log = substr($log, -307200);
 			}
 
 			$errinfo = array(
