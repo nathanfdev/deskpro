@@ -199,8 +199,8 @@ pageMeta.baseId = '{{ baseId }}';
 
 				{% if app.getSetting('core.use_product') %}
 					<tbody class="col fieldprop ticket-field item-on ticket_product inline-field" style="clear:both;display: none;">
-						<th class="title">{{ phrase('agent.general.product') }}</th>
-						<td class="content">
+						<th>{{ phrase('agent.general.product') }}</th>
+						<td>
 							{% include 'AgentBundle:Common:select-product.html.twig' with {
 								'name': "newticket[product_id]",
 								'id': baseId ~ '_prod',
