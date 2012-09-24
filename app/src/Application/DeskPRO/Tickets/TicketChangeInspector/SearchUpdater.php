@@ -99,7 +99,7 @@ class SearchUpdater
 			App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->_isRemoved));
 			App::getDb()->delete('tickets_search_message', array('id' => $this->ticket->_isRemoved));
 			App::getDb()->delete('tickets_search_subject', array('id' => $this->ticket->_isRemoved));
-		} else {
+		} elseif ($this->ticket->id) {
 			App::getDb()->replace('tickets_search_message', $this->getCloneData(true));
 			App::getDb()->replace('tickets_search_subject', array(
 				'id' => $this->ticket->id,
