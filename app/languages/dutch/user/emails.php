@@ -19,6 +19,7 @@ Dit is een automatisch verzonden bericht, e-mails naar dit adres zullen niet wor
 	'user.emails.feedback_votes'                                           => 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:|Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:',
 	'user.emails.greeting'                                                 => 'Beste {{name}},',
 	'user.emails.label_view-online'                                        => 'Bekijk online',
+	'user.emails.message-clipped'                                          => '(Bericht is geknipt)',
 	'user.emails.password_agent-reset'                                     => 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens',
 	'user.emails.password_reset'                                           => 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:',
 	'user.emails.profile_email-new-confirm'                                => 'Om de toevoeging van het tweede e-mailadres te voltooien, klikt u simpelweg op de volgende validatie link',

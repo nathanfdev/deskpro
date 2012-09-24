@@ -40,6 +40,7 @@
 	'user.tickets.i_still_want_to_email'                                   => 'Ik wil nog steeds mijn vraag indienen',
 	'user.tickets.join_explain'                                            => 'U staat op het punt om ​​deelnemer op het ticket "{{subject}}" te worden door {{name}}. <br /> <br /> U zult in staat zijn om te lezen en met het ticket te interageren, en u zal verzonden e-mailberichten ontvangen wanneer de ticket wordt bijgewerkt. Merk op dat de actie van het toevoegen van jezelf in de ticket bewaard zal worden, en uw deelname is openbaar voor andere ticket deelnemers.',
 	'user.tickets.join_ticket'                                             => 'Deelnemen met ticket',
+	'user.tickets.label_cc_emails'                                         => 'CC andere personen in de ticket',
 	'user.tickets.label_cced'                                              => 'CCed',
 	'user.tickets.lbl_what_is_your_question'                               => 'Wat is uw vraag?',
 	'user.tickets.leave_feedback_text_title'                               => 'Heeft u feedback?',

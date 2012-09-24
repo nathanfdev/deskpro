@@ -1,4 +1,5 @@
 <?php return array(
+	'user.knowledgebase.article-viewed'                                    => 'Dit artikel is 1 keer bekeken|Dit artikel is {{count}} keer bekeken',
 	'user.knowledgebase.article_not_found'                                 => 'Het artikel kan niet worden gevonden.',
 	'user.knowledgebase.category_no-articles'                              => 'Deze categorie heeft geen artikelen',
 	'user.knowledgebase.knowledgebase'                                     => 'Kennisbank',

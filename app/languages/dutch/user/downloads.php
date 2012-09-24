@@ -1,5 +1,6 @@
 <?php return array(
 	'user.downloads.button-download'                                       => 'Download',
+	'user.downloads.downloads-count'                                       => 'Dit bestand is 1 keer gedownload|Dit bestand is {{cou nt}} keer gedownload',
 	'user.downloads.file_not_found'                                        => 'Het bestand is niet gevonden',
 	'user.downloads.message_no-files'                                      => 'Er bevinden zich geen bestanden in deze map.',
 	'user.downloads.noun'                                                  => 'Bestand',

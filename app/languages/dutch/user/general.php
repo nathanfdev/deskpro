@@ -37,6 +37,8 @@
 	'user.general.upload'                                                  => 'Uploaden',
 	'user.general.upload-drag'                                             => 'Sleep het bestand hier heen om het te uploaden',
 	'user.general.upload_a_file'                                           => 'Bestand uploaden',
+	'user.general.upload_allowed_exts'                                     => 'Toegelaten types: {{types}}',
+	'user.general.upload_maxsize'                                          => 'Maximale bestandsgrootte: {{size}}',
 	'user.general.uploading'                                               => 'Uploaden:',
 	'user.general.you'                                                     => 'U',
 	'user.general.your_comment_agent_validation'                           => 'Uw reactie wacht op dit moment op validatie van een medewerker voordat het publiekelijk wordt geplaatst.',

@@ -35,4 +35,5 @@
 	'user.widget.ticket_form_subject'                                      => 'Onderwerp',
 	'user.widget.ticket_form_submit'                                       => 'Verzend e-mail',
 	'user.widget.ticket_form_upload-drag'                                  => 'Sleep uw bestand hier heen om het te uploaden',
+	'user.widget.website_link'                                             => 'Bekijk meer op {{url}}',
 );
