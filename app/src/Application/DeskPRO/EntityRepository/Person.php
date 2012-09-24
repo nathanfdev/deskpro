@@ -273,13 +273,29 @@ class Person extends AbstractEntityRepository
 	{
 		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
-		return $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			LEFT JOIN p.emails e
-			WHERE (p.name LIKE ?1) OR (p.first_name LIKE ?2) OR (p.last_name LIKE ?3) OR (e.email LIKE ?4)
-			ORDER BY p.date_last_login DESC, p.id DESC
-		")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q))->setMaxResults($limit)->execute();
+		if (App::getSystemService('usersource_manager')->getUsersources()) {
+			return $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				LEFT JOIN p.emails e
+				LEFT JOIN p.usersource_assoc a
+				WHERE
+					(p.name LIKE ?1)
+					OR (p.first_name LIKE ?2)
+					OR (p.last_name LIKE ?3)
+					OR (e.email LIKE ?4)
+					OR (a.identity_friendly LIKE ?5)
+				ORDER BY p.date_last_login DESC, p.id DESC
+			")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q, 5=>$q))->setMaxResults($limit)->execute();
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				LEFT JOIN p.emails e
+				WHERE (p.name LIKE ?1) OR (p.first_name LIKE ?2) OR (p.last_name LIKE ?3) OR (e.email LIKE ?4)
+				ORDER BY p.date_last_login DESC, p.id DESC
+			")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q))->setMaxResults($limit)->execute();
+		}
 	}
 
 
