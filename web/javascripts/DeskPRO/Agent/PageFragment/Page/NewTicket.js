@@ -657,6 +657,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 				val += info.snippet;
 				self.getEl('message').val(val);
+				self.getEl('message').trigger('textareaexpander_fire');
 			}
 		});
 	},
