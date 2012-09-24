@@ -96,9 +96,9 @@ class FilesystemToDatabase
 	{
 		$filepath = $this->base_path . $blob['save_path'];
 
-		// The file is invalid, so dont save the blob
+		// The file is invalid, so dont update the blob
+		// Not deleting the blob either in case the file can be put back in place/restored
 		if (!is_file($filepath)) {
-			$this->db->delete('blobs', array('id' => $blob['id']));
 			return;
 		}
 
