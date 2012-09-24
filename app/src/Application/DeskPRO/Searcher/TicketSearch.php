@@ -1682,7 +1682,8 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_GATEWAY_ADDRESS:
-					if (!$this->_testChoiceMatch($ticket['email_gateway_address_id'], $op, $choice. true)) return false;
+					$id = $ticket->email_gateway_address ? $ticket->email_gateway_address->getId() : 0;
+					if (!$this->_testChoiceMatch($id, $op, $choice. true)) return false;
 					break;
 
 				case self::TERM_RECEIVING_GATEWAY:
