@@ -1456,7 +1456,8 @@ class TicketSearch extends SearcherAbstract
                     break;
 
 				default:
-					throw new \InvalidArgumentException("Unknown term: $term");
+					$e = new \InvalidArgumentException("Unknown term: $term");
+					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
 					break;
 			}
 		}
