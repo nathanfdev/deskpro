@@ -28,6 +28,14 @@
 				<td class="{{field}}">
 					{{ person.organization.name }}
 				</td>
+			{% elseif field == 'person_username' %}
+				{% if result_display.getPersonUsernames(person) %}
+					<td class="{{field}}">
+						{% for u in result_display.getPersonUsernames(person) %}
+							{{ u }}
+						{% endfor %}
+					</td>
+				{% endif %}
 			{% elseif field == 'org_pos' %}
 				<td class="{{field}}">
 					{{ person.organization_position }}

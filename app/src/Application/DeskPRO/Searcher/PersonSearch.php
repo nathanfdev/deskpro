@@ -57,6 +57,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_EMAIL              = 'person_email';
 	const TERM_EMAIL_DOMAIN       = 'person_email_domain';
 	const TERM_NAME               = 'person_name';
+	const TERM_USERNAME           = 'person_username';
 	const TERM_PERSON_FIELD       = 'person_field';
 	const TERM_LABEL              = 'person_label';
 	const TERM_DATE_CREATED       = 'person_date_created';
@@ -366,6 +367,19 @@ class PersonSearch extends SearcherAbstract
 
 					$choice = implode(' or ', (array)$choice);
 					$this->summary[] = "Name is " . $choice;
+
+					break;
+
+				case self::TERM_USERNAME:
+					$choice = (array)$choice;
+					$choice = array_pop($choice);
+					$this->summary[] = "Username is " . $choice;
+
+					$joins[] = array(
+						'person_usersource_assoc',
+						"LEFT JOIN person_usersource_assoc AS $join_name ON ($join_name.person_id = people.id)"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.identity_friendly", $op, $choice, true, true);
 
 					break;
 

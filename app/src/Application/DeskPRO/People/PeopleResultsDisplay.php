@@ -90,6 +90,11 @@ class PeopleResultsDisplay
 	protected $people_fields;
 
 	/**
+	 * @var array
+	 */
+	protected $people_usernames;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\People[] $people
 	 */
 	public function __construct(array $people)
@@ -146,6 +151,29 @@ class PeopleResultsDisplay
 		", array(), 'person_id', null, 'label');
 
 		return $this->all_labels;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAllUsernames()
+	{
+		if ($this->people_usernames !== null) return $this->people_usernames;
+
+		if (!$this->people_count) {
+			$this->people_usernames = array();
+			return $this->people_usernames;
+		}
+
+		$people_ids = implode(',', $this->people_ids);
+
+		$this->people_usernames = $this->db->fetchAllGrouped("
+			SELECT person_id, identity_friendly
+			FROM person_usersource_assoc
+			WHERE person_id IN ($people_ids) AND identity_friendly != ''
+		", array(), 'person_id', null, 'identity_friendly');
+
+		return $this->people_usernames;
 	}
 
 	/**
@@ -217,6 +245,19 @@ class PeopleResultsDisplay
 	{
 		$this->getAllLabels();
 		return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
+	}
+
+
+	/**
+	 * Get an array of usernames from usersources applied to a person
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return array
+	 */
+	public function getPersonUsernames(Person $person)
+	{
+		$this->getAllUsernames();
+		return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
 	}
 
 

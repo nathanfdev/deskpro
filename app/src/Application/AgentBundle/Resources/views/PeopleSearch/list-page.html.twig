@@ -28,6 +28,15 @@
 										({{ person.organization_position }})
 									{% endif %}
 								</li>
+							{% elseif field == 'person_username' %}
+								{% if result_display.getPersonUsernames(person) %}
+									<li>
+										<span class="prop-val org">Username: </span>
+										{% for u in result_display.getPersonUsernames(person) %}
+											{{ u }}
+										{% endfor %}
+									</li>
+								{% endif %}
 							{% elseif field == 'language' %}
 								{% set has_set = true %}
 								<li><span class="prop-val email_address">{{person.language.title}}</span></li>

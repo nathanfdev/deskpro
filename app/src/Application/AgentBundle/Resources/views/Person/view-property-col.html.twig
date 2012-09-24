@@ -142,6 +142,25 @@
 {{ dp_widgets(baseId, 'profile', 'organization', 'below', person_api) }}
 {# /Organization Box #}
 
+{# Usersources Box #}
+{% if person.usersource_assoc|length %}
+	<div class="profile-box-container summary" id="{{baseId}}_us_box">
+		<header>
+			<h4>Usersources</h4>
+		</header>
+		<section id="{{baseId}}_us_body">
+			<div id="{{baseId}}_us_display_box" class="contact-list">
+				<ul>
+					{% for as in person.usersource_assoc %}
+						<li style="padding-left: 0;">{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</section>
+		{{ dp_widget_tabs(baseId, 'profile', 'usergroups', 'section', person_api) }}
+	</div>
+{% endif %}
+
 {# Usergroup Box #}
 {{ dp_widgets(baseId, 'profile', 'usergroups', 'above', person_api) }}
 

@@ -55,6 +55,21 @@
 </div>
 {% endif %}
 
+{% if 'person_username' not in no_show_fields and app.getUsersourceManager().getUsersources() %}
+<div class="builder-type" title="Username" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_username" data-term-type="GenericInputTerm" data-term-triggers="username">
+	<div class="builder-op">
+		<select name="op">
+			<option value="contains">{{ phrase('agent.general.contains') }}</option>
+			<option value="notcontains">{{ phrase('agent.general.does_not_contain') }}</option>
+			<option value="is">{{ phrase('agent.general.is_exactly') }}</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		<input type="text" name="username" value="" />
+	</div>
+</div>
+{% endif %}
+
 {% if 'person_language' not in no_show_fields and term_options.languages %}
 <div class="builder-type" title="{{ phrase('agent.general.language') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-rule-type="person_language" data-term-triggers="lang,language">
 	<div class="builder-op">
