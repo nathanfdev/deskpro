@@ -74,7 +74,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DELETED                   = 'deleted';
 	const TERM_CREATION_SYSTEM           = 'creation_system';
 	const TERM_RECEIVING_GATEWAY         = 'gateway_account';
-	const TERM_GATEWAY_ADDRESS           = 'email_gateway_address';
+	const TERM_GATEWAY_ADDRESS           = 'gateway_address';
 	const TERM_HOLD                      = 'is_hold';
 	const TERM_FLAGGED                   = 'flagged';
 	const TERM_TEXT                      = 'text';
