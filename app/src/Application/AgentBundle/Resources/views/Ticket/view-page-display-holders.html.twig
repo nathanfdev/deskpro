@@ -50,7 +50,7 @@
 		</tbody>
 	{% endif %}
 	{% if app.getSetting('core.use_product') %}
-		<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
+		<tbody class="ticket_product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
 			<tr class="mode-display">
 				<th width="80">
 					<span class="product label">{{ phrase('agent.general.product') }}:</span>
