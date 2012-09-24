@@ -13,4 +13,8 @@ $container->loadFromExtension('framework', array(
 	)
 ));
 
+$container->loadFromExtension('twig', array(
+	'exception_controller' =>'Application\\ApiBundle\\Controller\\ExceptionController::showAction'
+));
+
 $container->loadFromExtension('deskpro_api_core', array());

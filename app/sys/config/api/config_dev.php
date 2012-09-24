@@ -30,4 +30,8 @@ $container->loadFromExtension('twig', array(
 	'debug' => true
 ));
 
+$container->loadFromExtension('twig', array(
+	'exception_controller' =>'Application\\ApiBundle\\Controller\\ExceptionController::showAction'
+));
+
 $container->loadFromExtension('deskpro_api_core', array());

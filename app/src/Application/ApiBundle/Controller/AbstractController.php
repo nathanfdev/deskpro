@@ -146,7 +146,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function createApiErrorResponse($error_code, $error_message, $status = 400)
 	{
-		return $this->createJsonResponse(array(
+		return $this->createApiResponse(array(
 			'error_code' => $error_code,
 			'error_message' => $error_message
 		), $status);
@@ -154,7 +154,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	public function createApiMultipleErrorResponse(array $errors, $status = 400)
 	{
-		return $this->createJsonResponse(array(
+		return $this->createApiResponse(array(
 			'error_code' => 'multiple',
 			'errors' => $errors
 		), $status);
@@ -171,6 +171,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function createApiResponse(array $data, $status = 200)
 	{
+		$_SERVER['HTTP_ACCEPT'] = 'application/json';
+
 		return $this->createJsonResponse($data, $status = 200);
 	}
 
@@ -193,7 +195,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	public function createApiCreateResponse(array $data, $url)
 	{
-		$response = $this->createJsonResponse($data, $status = 200);
+		$response = $this->createApiResponse($data, $status = 200);
 		$response->headers->add(array('Location' => $url));
 
 		return $response;
