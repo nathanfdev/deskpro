@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright 2012 Igor Vaynberg
 
  Version: 3.2 Timestamp: Mon Sep 10 10:38:04 PDT 2012
@@ -682,6 +682,7 @@
             }
 
             opts = $.extend({}, {
+				addResultClass: '',
                 populateResults: function(container, results, query) {
                     var populate,  data, result, children, id=this.opts.id, self=this;
 
@@ -700,6 +701,7 @@
                             node.addClass(selectable ? "select2-result-selectable" : "select2-result-unselectable");
                             if (compound) { node.addClass("select2-result-with-children"); }
                             node.addClass(self.opts.formatResultCssClass(result));
+							node.addClass(self.opts.addResultClass);
 
                             label=$("<div></div>");
                             label.addClass("select2-result-label");
@@ -789,6 +791,7 @@
                             $(splitVal(element.val(), opts.separator)).each(function () {
                                 var id = this, text = this, tags=opts.tags;
                                 if ($.isFunction(tags)) tags=tags();
+								if (text == "") return;
                                 $(tags).each(function() { if (equal(this.id, id)) { text = this.text; return false; } });
                                 data.push({id: id, text: text});
                             });
@@ -1364,6 +1367,10 @@
 
             var width = resolveContainerWidth.call(this);
             if (width !== null) {
+				if (this.opts.addWidth) {
+					width = parseInt(width) + this.opts.addWidth;
+					width += 'px';
+				}
                 this.container.attr("style", "width: "+width);
             }
         }
