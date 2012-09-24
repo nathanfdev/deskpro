@@ -1,5 +1,5 @@
 /*
-Version: @@ver@@ Timestamp: @@timestamp@@
+Version: 3.2 Timestamp: Mon Sep 10 10:38:04 PDT 2012
 */
 .select2-container {
     position: relative;
@@ -7,7 +7,7 @@ Version: @@ver@@ Timestamp: @@timestamp@@
     /* inline-block for ie7 */
     zoom: 1;
     *display: inline;
-
+    vertical-align: top;
 }
 
 .select2-container,
@@ -100,6 +100,7 @@ Version: @@ver@@ Timestamp: @@timestamp@@
 
 .select2-drop {
     background: #fff;
+    color: #000;
     border: 1px solid #aaa;
     border-top: 0;
     position: absolute;
@@ -309,7 +310,9 @@ Version: @@ver@@ Timestamp: @@timestamp@@
 .select2-results .select2-highlighted em {
   background: transparent;
 }
-.select2-results .select2-no-results {
+.select2-results .select2-no-results,
+.select2-results .select2-searching,
+.select2-results .select2-selection-limit {
   background: #f4f4f4;
   display: list-item;
 }
@@ -505,4 +508,17 @@ disabled look for already selected choices in the results dropdown
 .select2-result-unselectable .select2-result-selectable .select2-match { text-decoration: underline; }
 .select2-result-unselectable .select2-match { text-decoration: none; }
 
-.select2-offscreen { position: absolute; left: -1000px; }
+.select2-offscreen { position: absolute; left: -10000px; }
+
+/* Retina-ize icons */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+	.select2-search input, .select2-search-choice-close, .select2-container .select2-choice abbr, .select2-container .select2-choice div b {
+		background-image: url(select2x2.png) !important;
+		background-repeat: no-repeat !important;
+		background-size: 60px 40px !important;
+	}
+	.select2-search input {
+		background-position: 100% -21px !important;
+	}
+}
