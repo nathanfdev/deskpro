@@ -22,7 +22,7 @@
 
 <form action="{{ path('admin_departments_dodel', {'department_id': department.id, 'security_token': security_token('delete_department')}) }}" method="post">
 
-{% if ticket_count > 0 %}
+{% if ticket_count > 0 or chat_count > 0 %}
 	<p>
         {% set phrase_params = {'tickets':phrase('admin.departments.count_tickets', {'count':ticket_count}), 'chats':phrase('admin.departments.count_chats', {'count':chat_count})} %}
         {{ phrase('admin.departments.tickets_chats_using_dept', phrase_params) }}
