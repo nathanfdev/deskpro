@@ -23,7 +23,7 @@ body {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 99999;
+	z-index: 99900;
 	display: block;
 
 	height: 59px;
@@ -47,7 +47,6 @@ body {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 99998;
 	{% endif %}
 
 	background-color: #DFE5EB;
@@ -76,6 +75,8 @@ body {
 	box-shadow: 1px 1px 6px 1px rgba(50, 50, 50, 0.6);
 
 	border: 1px solid #C3CEE1;
+	z-index: 99999;
+	position: relative;
 }
 
 #dp_login .msg {
@@ -332,11 +333,9 @@ br.clear {
 			<br class="clear" />
 		</div>
 	</div>
-	<div id="dp-logo"></div>
+	{% if not is_popup %}
+		<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
+	{% endif %}
 </div>
-
-{% if not is_popup %}
-	<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
-{% endif %}
 </body>
 </html>

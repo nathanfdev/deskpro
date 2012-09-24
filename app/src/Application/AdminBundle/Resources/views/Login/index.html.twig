@@ -24,7 +24,7 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		z-index: 99999;
+		z-index: 99900;
 		display: block;
 
 		height: 59px;
@@ -90,6 +90,8 @@
 		box-shadow: inset 0px 0px 4px 1px rgba(50, 50, 50, 0.3);
 
 		padding:  20px;
+		z-index: 99999;
+		position: relative;
 	}
 
 	#dp_login h1 {
@@ -342,11 +344,9 @@
 				<br class="clear" />
 			</div>
 		</div>
-		<div id="dp-logo"></div>
+		<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
 	</div>
 </form>
-
-<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
 
 <script type="text/javascript">
 var el = document.getElementById('email');
