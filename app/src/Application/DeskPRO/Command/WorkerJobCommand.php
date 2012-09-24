@@ -63,6 +63,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
+
 		if ($input->getOption('info')) {
 
 			$jobs = App::getOrm()->createQuery("
@@ -123,6 +125,65 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
 
 		#------------------------------
+		# Report fatal errors from logs
+		#------------------------------
+
+		$date_cut = time() - 86400;
+		$date_cut_min = time() - 172800;
+		foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
+			$logpath = dp_get_log_dir() . '/' . $logfile;
+			if (!file_exists($logpath)) {
+				continue;
+			}
+
+			$mtime = @filemtime($logpath);
+			if (!$mtime || $mtime < $date_cut_min) {
+				continue;
+			}
+
+			// One per day
+			$check = (int)App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.cron_logreport.' . $logfile));
+			if ($check && $check > $date_cut) {
+				continue;
+			}
+
+			App::getDb()->replace('settings', array('name' => 'core.cron_logreport.' . $logfile, 'value' => time()));
+
+			if ($is_verbose) {
+				$output->writeln("Submitting $logfile log");
+			}
+
+			$log = file_get_contents($logpath);
+			if (filesize($logpath) > 307200) {
+				$log = substr($log, 0, 307200);
+			}
+
+			$errinfo = array(
+				'type'            => 'error',
+				'session_name'    => '',
+				'die'             => false,
+				'pri'             => 'ERR',
+				'trace'           => $log,
+				'summary'         => 'PHP error log ('.$logfile.')',
+				'errstr'          => 'PHP error log ('.$logfile.')',
+				'errname'         => 'E_ERROR',
+				'errno'           => 1,
+				'errfile'         => $logfile,
+				'errline'         => 1,
+				'display'         => false,
+				'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+				'process_log'     => '',
+				'context_data'    => '',
+				'error_time'      => microtime(true),
+				'time_to_error'   => 1
+			);
+
+			try {
+				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
+			} catch (\Exception $e) {}
+		}
+
+		#------------------------------
 		# Run
 		#------------------------------
 
@@ -148,12 +209,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		if (!$input->getOption('ignore-interval')) {
 			$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.' . $cron_id));
 			if ($check) {
-				$date = new \DateTime('@'.$check);
-				$date_cut = new \DateTime('-15 minutes');
-				$diff = \Orb\Util\Dates::secsToReadable(time() - $date->getTimestamp(), 5);
+				$date = (int)$check;
+				$date_cut = time() - 900;
+				$diff = \Orb\Util\Dates::secsToReadable(time() - $date_cut, 5);
 
 				if ($date_cut < $date) {
-					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . $date->format('Y-m-d H:i:s') . ")"); }
+					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . date('Y-m-d H:i:s', $date) . ")"); }
 					App::getDb()->insert('log_items', array(
 						'log_name' => 'worker_job.cron_runner',
 						'session_name' => 'cron_runner.' . $time_start,
@@ -182,7 +243,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
 
-					$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . $date->format('Y-m-d H:i:s') . ").\n\n"
+					$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . date('Y-m-d H:i:s', $date) . ").\n\n"
 							. "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
 							. "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
 
