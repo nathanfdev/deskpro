@@ -46,6 +46,8 @@ class CleanupStats extends AbstractJob
 
 	public function run()
 	{
+		return;
+
 		$dashboard_stats = App::getOrm()->createQuery("
 			SELECT ds, s
 			FROM DeskPRO:ReportDashboardStat ds
