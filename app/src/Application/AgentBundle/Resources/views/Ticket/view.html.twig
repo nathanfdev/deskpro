@@ -199,8 +199,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<div style="position:relative;">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
 					<td>
-						<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
-						<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
+						<div id="{{ baseId }}_hold_container" style="{% if ticket.status != 'awaiting_agent' %}display: none{% else %}display: inline{% endif %}">
+							<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
+							<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
+						</div>
 						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
 						<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 						{% if ticket_perms.delete %}

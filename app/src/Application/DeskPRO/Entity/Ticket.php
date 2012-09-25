@@ -1667,6 +1667,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this['date_resolved'] = new \DateTime();
 		}
 
+		if ($status != 'awaiting_agent' && $this->is_hold) {
+			$this['is_hold'] = false;
+		}
+
 		$old_hstatus = $this->hidden_status;
 		$old_status_code = "$old_status.$old_hstatus";
 
