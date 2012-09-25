@@ -1930,6 +1930,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		$data['primary_email'] = $this->getPrimaryEmailAddress();
+
 		return $data;
 	}
 
