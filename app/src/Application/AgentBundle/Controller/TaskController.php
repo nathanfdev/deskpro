@@ -541,9 +541,8 @@ class TaskController extends AbstractController
 	 */
 	protected function getTaskOr404($task_id)
 	{
-		try {
-			$task = $this->em->find('DeskPRO:Task', $task_id);
-		} catch (\Doctrine\ORM\NoResultException $e) {
+		$task = $this->em->find('DeskPRO:Task', $task_id);
+		if (!$task) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no task with ID $task_id");
 		}
 
