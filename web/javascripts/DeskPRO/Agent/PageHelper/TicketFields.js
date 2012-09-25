@@ -149,8 +149,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		var ons = this.display.find('tbody.item-on');
 		if (ons[0]) {
-			ons.removeClass('first');
-			ons.first().addClass('first');
+			ons.removeClass('last');
+			ons.last().addClass('last');
 			this.page.getEl('fields_display_main_wrap_tab').show();
 		} else {
 			this.page.getEl('fields_display_main_wrap_tab').hide();

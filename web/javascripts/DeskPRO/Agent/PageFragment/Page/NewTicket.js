@@ -181,7 +181,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		function updateFields() {
-			$('.ticket-field', self.getEl('fields_container')).hide();
+			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
 
 			Object.each(fieldDisplay, function(fields, section) {
@@ -192,7 +192,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						var classname = f.field_type;
 					}
 
-					$('.ticket-field.' + classname, self.wrapper).not('.error-message').show();
+					$('.ticket-field.' + classname, self.wrapper).not('.error-message').show().addClass('item-on');
 				});
 			});
 
@@ -212,6 +212,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				tplSel.empty();
 				tplHolder.hide();
 			}
+
+			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
 
 			self.updateUi();
 		};
