@@ -442,6 +442,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$inline_images = new InlineImageTokens($this->reader);
 		$inline_images2 = new InlineImageTokens($this->reader);
 
+		$orig_text = $this->reader->getBodyText()->getBodyUtf8();
+		$did_html_trim = false;
+
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -451,17 +454,36 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
-			// If the document is too complex then htmlpurifier can crash, lets use the plaintext version instead
+			// If the document is too complex then htmlpurifier can crash.
+			// We'll try to find a cut-mark now and trim the document down to see if we can still use it
+			// (We dont alway cut first because we want an in-tact 'full body' if possible)
 			if (substr_count($email_info['body'], '>') > 15000) {
-				$this->logMessage('[TicketGatewayProcessor] Document too long, using plaintext');
-				$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
-				if ($email_info['body']) {
-					$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+				$this->logMessage('[TicketGatewayProcessor] Document too complex, pre-cut');
+
+				$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+				$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+
+				// If we had no successful cut or the body is still too complex, use the plaintext version
+				if ($email_info['body'] == $generic_cut || substr_count($email_info['body'], '>') > 15000) {
+					$this->logMessage('[TicketGatewayProcessor] Cut document still too complex, using plaintext');
+
+					$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
+					if ($email_info['body']) {
+						$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+					} else {
+						$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBodyUtf8());
+						$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+					}
+					$email_info['body_is_html'] = false;
+
+				// The trimmed document is short enough to use
 				} else {
-					$email_info['body'] = strip_tags($this->reader->getBodyHtml()->getBodyUtf8());
-					$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+					$this->logMessage('[TicketGatewayProcessor] Using cut-trimmed document');
+
+					$did_html_trim = true;
+					$email_info['body'] = $generic_cut;
+					$email_info['body_is_html'] = true;
 				}
-				$email_info['body_is_html'] = false;
 			}
 
 		} else {
@@ -480,7 +502,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body_raw'] = $email_info['body'];
 		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
-		$email_info['body_full'] = $email_info['body'];
+
+		if ($did_html_trim) {
+			// We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
+			$email_info['body_full'] = nl2br(htmlspecialchars($orig_text, \ENT_QUOTES, 'UTF-8'));
+		} else {
+			$email_info['body_full'] = $email_info['body'];
+		}
 
 		// Always generic cut from the DP_TOP_MARK position first
 		// The PatternCutter will trim off the remaining quoted headers
