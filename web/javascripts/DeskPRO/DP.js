@@ -177,6 +177,13 @@ var DP = {
 			options.addWidth = 10;
 		}
 
+		if (el.is('[multiple]')) {
+			options.addWidth = null;
+			if (!options.width) {
+				options.width = '95%';
+			}
+		}
+
 		el.select2(options);
 	}
 };
