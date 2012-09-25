@@ -179,7 +179,7 @@ class KbStep extends AbstractDeskpro3Step
 		if ($article['published']) {
 			$new_article->setStatusCode(Article::STATUS_PUBLISHED);
 		} else {
-			$new_article->setStatusCode(Article::STATUS_ARCHIVED);
+			$new_article->setStatusCode(Article::STATUS_HIDDEN . '.' . Article::HIDDEN_STATUS_UNPUBLISHED);
 		}
 		$new_article->person = $new_person;
 		$new_article->title = $article['title'] ?: 'Untitled';
