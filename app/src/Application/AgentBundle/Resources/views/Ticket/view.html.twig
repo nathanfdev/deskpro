@@ -273,7 +273,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 								{% if ticket.person.organization %}
 									|
 									{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}
-									{{ ticket.person.organization }}
+									<span id="{{ baseId }}_org_link" class="as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">{{ ticket.person.organization }}</span>
 								{% endif %}
 								<span class="email"><b class="pemail-{{ticket.person.id}}" data-hide="@parent">{{ ticket.person_email_address }}</b></span>
 							</span>

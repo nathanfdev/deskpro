@@ -419,6 +419,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				})
 			});
 		}
+
+		this.addEvent('openOrgProfile', function(ev) {
+			ev.preventDefault();
+			self.getEl('org_box').find('.org_link').trigger('click');
+		});
 	},
 
 	refreshPropBox: function() {

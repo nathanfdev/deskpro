@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'organization';
 		this.tabBtn = null;
+		this.noIgnoreForm = true;
 		this.addEvent('render', function(container, id) {
 			if (id) {
 				self.tabBtn = $('#tabbtn_' + id);

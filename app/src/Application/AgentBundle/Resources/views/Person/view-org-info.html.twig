@@ -1,7 +1,7 @@
 <div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.name }}">
 	<strong>
 		{% if person.organization_position %}{{ person.organization_position }}, {% endif %}
-		<a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a>
+		<a class="org_link as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}">{{ person.organization.name }}</a>
 	</strong>
 
 	{% set members_count_row %}

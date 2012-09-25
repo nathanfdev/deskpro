@@ -83,6 +83,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getEl('profile_link').trigger('click');
 		});
 
+		this.addEvent('openOrgProfile', function(ev) {
+			ev.preventDefault();
+			self.getEl('org_link').trigger('click');
+		});
+
 		if (this.meta.ticket_perms.modify_merge) {
 			this.getEl('merge_trigger').on('click', function() {
 				var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
