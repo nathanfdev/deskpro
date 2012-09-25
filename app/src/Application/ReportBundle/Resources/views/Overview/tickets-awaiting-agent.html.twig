@@ -1,5 +1,5 @@
 {% import 'ReportBundle:Overview:macros.html.twig' as macros %}
-<section class="report-wrapper">
+<section class="report-wrapper {% if initial_display %}initial-display{% endif %}">
 	<header>
 		<h2>
 			There are {{ data.sum }} Tickets 'Awaiting Agent'
@@ -9,7 +9,7 @@
 		</h3>
 	</header>
 	<article>
-		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
+		<div class="loading-overlay" {% if not initial_display %}style="display: none"{% endif %}><strong>Loading</strong></div>
 		{% if data.values %}
 			<table class="stat-table" width="100%">
 				{% for id, title in data.titles %}

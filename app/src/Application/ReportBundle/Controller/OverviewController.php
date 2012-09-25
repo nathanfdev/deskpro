@@ -38,9 +38,12 @@ use Orb\Util\Numbers;
 
 class OverviewController extends AbstractController
 {
+	protected $no_data_mode = false;
+
 	public function indexAction()
 	{
 		$this->person->loadPrefGroup('reports.ui.overview.options');
+		$this->no_data_mode = true;
 
 		return $this->render('ReportBundle:Overview:index.html.twig', array(
 			'tickets_status_data'            => $this->getValues('tickets_status'),
@@ -106,7 +109,7 @@ class OverviewController extends AbstractController
 					'data' => $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice))
 				));
 
-			case 'tickets_opened_hour':
+			case 'kb_views_hour':
 				return $this->render('ReportBundle:Overview:kb-views-hour.html.twig', array(
 					'data' => $this->getValues('kb_views_hour')
 				));
@@ -191,6 +194,12 @@ class OverviewController extends AbstractController
 
 				$date2 = $this->person->getDateTime();
 
+				if ($this->no_data_mode) {
+					return array(
+						'date_choice'    => $options->get('date_choice')
+					);
+				}
+
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date_group, $date, $date2);
 				$sum = array_sum($stat->getValues());
 
@@ -233,6 +242,14 @@ class OverviewController extends AbstractController
 				$date2 = $this->person->getDateTime();
 
 				$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field', 'department'));
+
+				if ($this->no_data_mode) {
+					return array(
+						'grouping_field' => $options->get('grouping_field', 'department'),
+						'date_choice'    => $options->get('date_choice'),
+					);
+				}
+
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsResolved($gf, $date, $date2);
 				$sum = array_sum($stat->getValues());
 				return array(
@@ -279,6 +296,14 @@ class OverviewController extends AbstractController
 				} else {
 					$gf = null;
 				}
+
+				if ($this->no_data_mode) {
+					return array(
+						'grouping_field' => $options->get('grouping_field'),
+						'date_choice'    => $options->get('date_choice'),
+					);
+				}
+
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsResponseTime($gf, $date, $date2);
 
 				return array(
@@ -301,6 +326,12 @@ class OverviewController extends AbstractController
 				}
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsUserWaitingTime($gf);
 
+				if ($this->no_data_mode) {
+					return array(
+						'grouping_field' => $options->get('grouping_field'),
+					);
+				}
+
 				return array(
 					'grouping_field' => $options->get('grouping_field'),
 					'group_max'      => $stat->getGroupMax(),
@@ -314,6 +345,13 @@ class OverviewController extends AbstractController
 
 			case 'tickets_awaiting_agent':
 				$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field', 'department'));
+
+				if ($this->no_data_mode) {
+					return array(
+						'grouping_field' => $options->get('grouping_field', 'department'),
+					);
+				}
+
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsAwaitingAgent($gf);
 				$sum = array_sum($stat->getValues());
 				return array(
@@ -355,6 +393,14 @@ class OverviewController extends AbstractController
 				$date2 = $this->person->getDateTime();
 
 				$gf = new \Application\ReportBundle\OverviewStat\ChatGroupingField($options->get('grouping_field', 'department'));
+
+				if ($this->no_data_mode) {
+					return array(
+						'grouping_field' => $options->get('grouping_field', 'department'),
+						'date_choice'    => $options->get('date_choice'),
+					);
+				}
+
 				$stat = new \Application\ReportBundle\OverviewStat\ChatsCreated($gf, $date, $date2);
 				$sum = array_sum($stat->getValues());
 				return array(
@@ -396,6 +442,12 @@ class OverviewController extends AbstractController
 				}
 
 				$date2 = $this->person->getDateTime();
+
+				if ($this->no_data_mode) {
+					return array(
+						'date_choice'    => $options->get('date_choice'),
+					);
+				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\KbViewsHour($date, $date2);
 				$sum = array_sum($stat->getValues());

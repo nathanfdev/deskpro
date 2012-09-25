@@ -18,12 +18,16 @@ DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup = new Orb.Class({
 			label.text(sel.find(':selected').text());
 			sel.on('change', function() {
 				label.text(sel.find('option:selected').text());
-				self.updateGrouping(sel.find('option:selected').val());
+				self.updateGrouping();
 			});
-		})
+		});
+
+		if (this.el.find('section.initial-display')[0]) {
+			this.updateGrouping();
+		}
 	},
 
-	updateGrouping: function(val) {
+	updateGrouping: function() {
 
 		var data = [];
 		this.el.find('header .drop-option select').each(function() {
