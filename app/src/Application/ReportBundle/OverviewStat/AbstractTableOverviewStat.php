@@ -34,8 +34,16 @@
 
 namespace Application\ReportBundle\OverviewStat;
 
-abstract class AbstractTableOverviewStat
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
+
+abstract class AbstractTableOverviewStat implements Loggable
 {
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
 	/**
 	 * Gets a id => array(info) array of titles. Titles can have children.
 	 *
@@ -51,6 +59,24 @@ abstract class AbstractTableOverviewStat
 	 * @return mixed
 	 */
 	abstract function getValues();
+
+
+	/**
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
+	}
 
 
 	/**

@@ -102,7 +102,10 @@ class TicketsResolved extends AbstractTableOverviewStat
 			GROUP BY {$group_field['group_by']}
 		";
 
+		$this->logger->logDebug("[TicketsResolved] $sql");
+		$this->logger->startTimer('TicketsResolved');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('TicketsResolved');
 
 		return $this->values;
 	}

@@ -47,6 +47,7 @@ DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup = new Orb.Class({
 			data: data,
 			complete: function() {
 				this.el.find('.loading-overlay').hide();
+				this.el.find('section.initial-display').removeClass('initial-display');
 			},
 			success: function(html) {
 				this.el.empty().html(html);

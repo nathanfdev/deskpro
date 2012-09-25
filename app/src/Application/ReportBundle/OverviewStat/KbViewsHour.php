@@ -105,7 +105,10 @@ class KbViewsHour extends AbstractTableOverviewStat
 			GROUP BY hour
 		";
 
+		$this->logger->logDebug("[KbViewsHour] $sql");
+		$this->logger->startTimer('KbViewsHour');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('KbViewsHour');
 
 		return $this->values;
 	}

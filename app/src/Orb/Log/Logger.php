@@ -86,6 +86,11 @@ class Logger
 	protected $_session_name = null;
 
 	/**
+	 * @var array
+	 */
+	protected $_timers = array();
+
+	/**
 	 * True to disable logger.
 	 *
 	 * Defaults to disabled with default_disabled until a writer is added.
@@ -358,5 +363,72 @@ class Logger
 		}
 
 		$this->_writer_chain->write($log_item);
+	}
+
+
+	/**
+	 * @param string $name
+	 */
+	public function startTimer($name = 'default')
+	{
+		return $this->_timers[$name] = microtime(true);
+	}
+
+
+	/**
+	 * @param $name
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
+	public function getStartTime($name)
+	{
+		if (!isset($this->_timers[$name])) {
+			throw new \InvalidArgumentException("Timer not started: $name");
+		}
+
+		return $this->_timers[$name];
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param bool $reset
+	 * @return mixed
+	 * @throws \InvalidArgumentException
+	 */
+	public function getTotalTime($name = 'default', $reset = true)
+	{
+		$name_e = $name . '__end';
+
+		if (!isset($this->_timers[$name])) {
+			throw new \InvalidArgumentException("Timer not started: $name");
+		}
+
+		if ($reset || !isset($this->_timers[$name_e])) {
+			$this->_timers[$name_e] = microtime(true) - $this->_timers[$name];
+		}
+
+		return $this->_timers[$name_e];
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param $message
+	 * @param string $level
+	 */
+	public function logToatlTime($name = 'default', $message = null, $level = 'DEBUG')
+	{
+		if (!$message) {
+			$message = "$name time: {{TIME}}";
+		}
+
+		if (strpos($message, '{{TIME}}') === false) {
+			$message .= ' {{TIME}}';
+		}
+
+		$message = str_replace('{{TIME}}', sprintf("%.5fs", $this->getTotalTime($name)), $message);
+
+		$this->log($message, $level);
 	}
 }

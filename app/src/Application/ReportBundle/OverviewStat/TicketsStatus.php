@@ -74,7 +74,10 @@ class TicketsStatus extends AbstractTableOverviewStat
 			GROUP BY tickets.status
 		";
 
+		$this->logger->logDebug("[TicketsStatus] $sql");
+		$this->logger->startTimer('TicketsStatus');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('TicketsStatus');
 
 		return $this->values;
 	}

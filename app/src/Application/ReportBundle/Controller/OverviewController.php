@@ -38,11 +38,37 @@ use Orb\Util\Numbers;
 
 class OverviewController extends AbstractController
 {
+	/**
+	 * @var bool
+	 */
 	protected $no_data_mode = false;
+
+	/**
+	 * @var \Application\DeskPRO\Log\Logger
+	 */
+	protected $logger;
+
+	public function init()
+	{
+		parent::init();
+
+		$logger = new \Application\DeskPRO\Log\Logger();
+
+		if (dp_get_config('debug.enable_reports_overview_log') && !$this->no_data_mode) {
+			$wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/reports-overview.log');
+			$wr->enableNewStreamPerWrite();
+			$logger->addWriter($wr);
+		}
+
+		$this->logger = $logger;
+	}
 
 	public function indexAction()
 	{
 		$this->person->loadPrefGroup('reports.ui.overview.options');
+
+		// First load just renders the sections, they'll
+		// be filled in with user preference with ajax
 		$this->no_data_mode = true;
 
 		return $this->render('ReportBundle:Overview:index.html.twig', array(
@@ -130,7 +156,7 @@ class OverviewController extends AbstractController
 		}
 	}
 
-	public function getValues($type, array $options = array())
+	protected function getValues($type, array $options = array())
 	{
 		$options = new \Orb\Util\OptionsArray($options);
 
@@ -152,6 +178,7 @@ class OverviewController extends AbstractController
 
 			case 'tickets_status':
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsStatus();
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 				return array(
 					'titles'         => $stat->getTitles(),
@@ -201,6 +228,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date_group, $date, $date2);
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 
 				return array(
@@ -251,6 +279,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsResolved($gf, $date, $date2);
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 				return array(
 					'grouping_field' => $options->get('grouping_field', 'department'),
@@ -305,6 +334,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsResponseTime($gf, $date, $date2);
+				$stat->setLogger($this->logger);
 
 				return array(
 					'grouping_field' => $options->get('grouping_field'),
@@ -325,6 +355,7 @@ class OverviewController extends AbstractController
 					$gf = null;
 				}
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsUserWaitingTime($gf);
+				$stat->setLogger($this->logger);
 
 				if ($this->no_data_mode) {
 					return array(
@@ -353,6 +384,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsAwaitingAgent($gf);
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 				return array(
 					'grouping_field' => $options->get('grouping_field', 'department'),
@@ -402,6 +434,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\ChatsCreated($gf, $date, $date2);
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 				return array(
 					'grouping_field' => $options->get('grouping_field', 'department'),
@@ -450,6 +483,7 @@ class OverviewController extends AbstractController
 				}
 
 				$stat = new \Application\ReportBundle\OverviewStat\KbViewsHour($date, $date2);
+				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
 
 				return array(

@@ -188,7 +188,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 			GROUP BY date_group
 		";
 
+		$this->logger->logDebug("[TicketsOpenedHour] $sql");
+		$this->logger->startTimer('TicketsOpenedHour');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('TicketsOpenedHour');
 
 		return $this->values;
 	}

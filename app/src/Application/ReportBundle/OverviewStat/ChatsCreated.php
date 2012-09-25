@@ -102,7 +102,10 @@ class ChatsCreated extends AbstractTableOverviewStat
 			GROUP BY {$group_field['group_by']}
 		";
 
+		$this->logger->logDebug("[ChatsCreated] $sql");
+		$this->logger->startTimer('ChatsCreated');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('ChatsCreated');
 
 		return $this->values;
 	}

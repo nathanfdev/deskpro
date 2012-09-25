@@ -123,7 +123,12 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 				ORDER BY time_group ASC
 			";
 
+			$this->logger->logDebug("[TicketsUserWaitingTime (Grouepd)] $sql");
+			$this->logger->startTimer('TicketsUserWaitingTime');
 			$q = App::getDb()->executeQuery($sql);
+			$this->logger->logToatlTime('TicketsUserWaitingTime');
+
+			$this->logger->startTimer('TicketsUserWaitingTime.collecting');
 
 			$this->values = array();
 			while ($row = $q->fetch(\PDO::FETCH_NUM)) {
@@ -140,6 +145,8 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 
 				$this->values[$time_group][$group_id] += $count;
 			}
+
+			$this->logger->logToatlTime('TicketsUserWaitingTime.collecting');
 		} else {
 			$sql = "
 				SELECT $field, COUNT(*)
@@ -148,7 +155,11 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 				GROUP BY time_group
 			";
 
+
+			$this->logger->logDebug("[TicketsUserWaitingTime] $sql");
+			$this->logger->startTimer('TicketsUserWaitingTime');
 			$this->values = App::getDb()->fetchAllKeyValue($sql);
+			$this->logger->logToatlTime('TicketsUserWaitingTime');
 		}
 
 		return $this->values;

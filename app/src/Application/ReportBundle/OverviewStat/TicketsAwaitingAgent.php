@@ -87,7 +87,10 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 			GROUP BY {$group_field['group_by']}
 		";
 
+		$this->logger->logDebug("[TicketsAwaitingAgent] $sql");
+		$this->logger->startTimer('TicketsAwaitingAgent');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
+		$this->logger->logToatlTime('TicketsAwaitingAgent');
 
 		return $this->values;
 	}
