@@ -121,7 +121,7 @@
 					<li class="hide-note with-select2">
 						<label>{{ phrase('agent.general.status') }}:</label>
 						<div>
-							<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]" style="min-width: 190px;">
+							<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]" style="min-width: 170px;">
 								<option value="">Do not change status</option>
 								<option value="awaiting_user" selected="selected">Awaiting User</option>
 								<option value="awaiting_agent">Awaiting Agent</option>
@@ -133,7 +133,7 @@
 						<label>{{ phrase('agent.general.assign') }}:</label>
 						<div>
 							{% set is_selected = false %}
-							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 190px;">
+							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;">
 								{% if ticket.agent %}
 									<option value="-1">Do not change agent</option>
 								{% endif %}
@@ -152,7 +152,7 @@
 							</select>
 
 							{% set is_selected = false %}
-							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 190px;">
+							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;">
 
 								{% if ticket.agent_team %}
 									<option value="-1">Do not change team</option>

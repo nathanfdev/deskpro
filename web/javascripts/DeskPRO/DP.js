@@ -173,6 +173,10 @@ var DP = {
 			}
 		});
 
+		if (!options.addWidth) {
+			options.addWidth = 10;
+		}
+
 		el.select2(options);
 	}
 };
