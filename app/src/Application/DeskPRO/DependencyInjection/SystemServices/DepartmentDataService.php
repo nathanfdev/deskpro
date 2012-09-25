@@ -148,7 +148,7 @@ class DepartmentDataService extends BaseRepositoryService
 		return $this->getByIds($ids);
 	}
 
-	public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app)
+	public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app, array $allow_ids = array())
 	{
 		$key = md5($person_context->getId() . '.' . $app);
 
@@ -156,12 +156,32 @@ class DepartmentDataService extends BaseRepositoryService
 			return $this->filtered_nodes[$key];
 		}
 
-		$filter = function ($c) use ($person_context, $app) {
+		if ($allow_ids) {
+			foreach (array_values($allow_ids) as $id) {
+				$d = $this->get($id);
+				if ($d->parent) {
+					$allow_ids[] = $d->parent->getId();
+				}
+			}
+
+			$allow_ids = array_unique($allow_ids);
+			$allow_ids = array_combine(array_values($allow_ids), array_values($allow_ids));
+		}
+
+		$filter = function ($c) use ($person_context, $app, $allow_ids) {
+			if (isset($allow_ids[$c->getId()])) {
+				return true;
+			}
 			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), $app);
 		};
 
-		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
-		return $this->filtered_nodes[$key];
+		if (!$allow_ids) {
+			$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
+			return $this->filtered_nodes[$key];
+		} else {
+			$nodes = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
+			return $nodes;
+		}
 	}
 
 	public function getRootNodes()

@@ -160,7 +160,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 								'class': department_id,
 								'selected': ticket.department.id|default(0),
 								'id': baseId ~ '_department_id',
-								'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets')
+								'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)])
 							} %}
 						{% else %}
 							<input type="hidden" name="department_id" value="{{ticket.department.id|default(0) }}" />

@@ -96,30 +96,30 @@ class TicketPageZoneCollection implements PersonContextInterface
 			return;
 		}
 
-		$deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets');
+		$deps = App::getDataService('Department')->getRootNodes();
 		foreach ($deps as $d) {
 			if (count($d->children)) {
 				foreach ($d->children as $dc) {
-					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($dc->getObject(), $this->zone);
+					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($dc, $this->zone);
 
 					$page = new TicketPageDisplay();
 					$page->zone = $this->zone;
-					$page->department = $dc->getObject();
+					$page->department = $dc;
 					$page->data = $page_data;
 
-					$ticket_page_zone = new TicketPageZone($this->zone, $dc->getObject());
+					$ticket_page_zone = new TicketPageZone($this->zone, $dc);
 					$ticket_page_zone->addPageDisplay($page);
 					$this->addPage($ticket_page_zone);
 				}
 			} else {
-				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($d->getObject(), $this->zone);
+				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($d, $this->zone);
 
 				$page = new TicketPageDisplay();
 				$page->zone = $this->zone;
-				$page->department = $d->getObject();
+				$page->department = $d;
 				$page->data = $page_data;
 
-				$ticket_page_zone = new TicketPageZone($this->zone, $d->getObject());
+				$ticket_page_zone = new TicketPageZone($this->zone, $d);
 				$ticket_page_zone->addPageDisplay($page);
 				$this->addPage($ticket_page_zone);
 			}
