@@ -147,9 +147,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					return;
 				}
 
-				iScroll = 100000;
-				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
-				iScroll + 10;
+				iScroll = oContent[options.axis] - oViewport[options.axis];
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
