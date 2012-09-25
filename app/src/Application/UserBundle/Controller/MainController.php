@@ -38,6 +38,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\People\EmailValidator;
+use Application\DeskPRO\People\AccountValidator;
 
 class MainController extends AbstractController
 {
@@ -193,6 +194,52 @@ class MainController extends AbstractController
 			} else {
 				throw $e;
 			}
+		}
+
+		return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
+			'email' => $email,
+			'person' => $validator->getPerson(),
+			'ticket_ids' => $validator->getTicketIds()
+		));
+	}
+
+	public function validateTicketEmailAction($access_code)
+	{
+		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($access_code);
+
+		if (!$ticket) {
+			return $this->renderStandardError('@user.error.invalid_email-code', '', 404);
+		}
+
+		// A new email address
+		if ($ticket->person_email_validating) {
+			$validator = new EmailValidator($ticket->person_email_validating);
+			$valdating_email = $validator->getValidatingEmail();
+
+			$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
+			if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
+
+				// Unset the email on the ticket
+				$ticket->person_email_validating = null;
+				$this->em->persist($ticket);
+				$this->em->flush();
+
+				return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
+					'email' => $email_exists,
+					'person' => $validator->getPerson(),
+					'ticket_ids' => $validator->getTicketIds()
+				));
+			}
+
+			$email = $validator->validate();
+
+		// Validating the account
+		} else {
+			$validator = new AccountValidator($ticket->person, $ticket->person_email);
+			$validator->validate();
+
+			$email = $ticket->person_email;
 		}
 
 		return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(

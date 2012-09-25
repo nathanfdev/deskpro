@@ -62,6 +62,13 @@ $collection->add('user_validate_email', new Route(
 	array()
 ));
 
+$collection->add('user_validate_ticket', new Route(
+	'/validate-ticket-email/{access_code}',
+	array('_controller' => 'UserBundle:Main:validateTicketEmail'),
+	array(),
+	array()
+));
+
 $collection->add('user_jstell_login', new Route(
 	'/login/jstell/{jstell}/{security_token}/{usersource_id}',
 	array('_controller' => 'UserBundle:Login:jstellLogin'),

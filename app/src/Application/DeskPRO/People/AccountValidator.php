@@ -36,20 +36,13 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonEmailValidating;
 
-/**
- * This works with emails waiting for validation to turn them into real
- * emails on a user, and processes other things that might need to happen
- * after that. For example, if the user has tickets awaiting validation
- * because of an email, then we need to process all of those too.
- */
-class EmailValidator
+class AccountValidator
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\PersonEmailValidating
+	 * @var \Application\DeskPRO\Entity\PersonEmail
 	 */
-	protected $validating_email;
+	protected $email;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -71,29 +64,10 @@ class EmailValidator
 	 */
 	protected $ticket_ids = array();
 
-	/**
-	 * @param int         $id        The validating email address to fetch
-	 * @param null|string $auth_code Optionally verify this ID too
-	 * @return \Application\DeskPRO\People\EmailValidator
-	 */
-	public static function createFromId($id, $auth_code = null)
+	public function __construct(Person $person, PersonEmail $email)
 	{
-		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $id);
-		if (!$validating_email) {
-			return null;
-		}
-
-		if ($auth_code !== null && $validating_email->auth != $auth_code) {
-			return null;
-		}
-
-		return new self($validating_email);
-	}
-
-	public function __construct(PersonEmailValidating $validating_email)
-	{
-		$this->validating_email = $validating_email;
-		$this->person = App::getOrm()->find('DeskPRO:Person', $validating_email->person->getId());
+		$this->person = $person;
+		$this->email  = $email;
 
 		$this->em = App::getOrm();
 		$this->db = $this->em->getConnection();
@@ -112,30 +86,16 @@ class EmailValidator
 	 */
 	public function validate()
 	{
-		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
-		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithValidatingEmail($this->validating_email);
+		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithEmail($this->email);
 
 		$this->em->getConnection()->beginTransaction();
 
 		try {
-			if (!$exist_email) {
-				$email = new PersonEmail();
-				$email->email = $this->validating_email->email;
-				$email->date_created = $this->validating_email->date_created;
-				$email->date_validated = new \DateTime();
-				$email->is_validated = true;
-				$email->person = $this->person;
-
-				$this->person->addEmailAddress($email);
-				$this->em->persist($email);
-			} else {
-				$email = $exist_email;
-			}
-
+			$this->email->is_validated = true;
 			$this->em->flush();
 
 			if (!$this->person->primary_email) {
-				$this->person->primary_email = $email;
+				$this->person->primary_email = $this->email;
 			}
 
 			$is_newly_confirmed = false;
@@ -147,7 +107,7 @@ class EmailValidator
 
 			$this->db->update('people', array(
 				'is_confirmed' => 1,
-				'primary_email_id' => $email->getId()
+				'primary_email_id' => $this->email->getId()
 			), array('id' => $this->person->getId()));
 
 			// Find tickets with this email awaiting validation
@@ -156,7 +116,7 @@ class EmailValidator
 					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
 					$ticket->person_email_validating = null;
-					$ticket->person_email = $email;
+					$ticket->person_email = $this->email;
 
 					if ($this->person->is_agent_confirmed) {
 						$ticket->setStatus('awaiting_agent');
@@ -167,68 +127,6 @@ class EmailValidator
 				}
 			}
 
-			// Validate the attached objects
-			foreach ($this->validating_email->validating_content as $validating_object) {
-				list($entity_name, $entity_id) = $validating_object;
-
-				if (strpos($entity_name, 'Application\\DeskPRO\\Entity\\') === 0) {
-					$entity_name = str_replace('Application\\DeskPRO\\Entity\\', 'DeskPRO:', $entity_name);
-				}
-
-				switch ($entity_name) {
-					case 'DeskPRO:Feedback':
-						$feedback = App::findEntity('DeskPRO:Feedback', $entity_id);
-						if (!$feedback) {
-							break;
-						}
-
-						$feedback->validating = null;
-						if ($feedback->status_code == 'hidden.user_validating') {
-							if ($this->person->is_agent_confirmed) {
-								$feedback->setStatus('new');
-							}
-						}
-
-						$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
-						$notify_send->send();
-
-						App::getOrm()->transactional(function ($em) use ($feedback) {
-							$em->persist($feedback);
-							$em->flush();
-						});
-
-						break;
-
-					case 'DeskPRO:ArticleComment':
-					case 'DeskPRO:DownloadComment':
-					case 'DeskPRO:FeedbackComment':
-					case 'DeskPRO:NewsComment':
-						$comment = App::findEntity($entity_name, $entity_id);
-						if (!$comment) {
-							break;
-						}
-
-						$comment->validating = null;
-						if ($comment->status == 'user_validating') {
-							if ($this->person->is_agent_confirmed) {
-								$comment->setStatus('visible');
-							}
-						}
-
-						App::getOrm()->transactional(function ($em) use ($comment) {
-							$em->persist($comment);
-
-							$send_notify = new \Application\DeskPRO\Notifications\NewCommentNotification($comment);
-							$send_notify->send();
-
-							$em->flush();
-						});
-				}
-			}
-
-			$this->em->remove($this->validating_email);
-			$this->em->flush();
-
 			if ($is_newly_confirmed) {
 				$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
 				$send_notify->send();
@@ -236,7 +134,7 @@ class EmailValidator
 
 			$this->em->getConnection()->commit();
 
-			return $email;
+			return $this->email;
 
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
@@ -249,8 +147,8 @@ class EmailValidator
 		return $this->ticket_ids;
 	}
 
-	public function getValidatingEmail()
+	public function getEmail()
 	{
-		return $this->validating_email;
+		return $this->email;
 	}
 }

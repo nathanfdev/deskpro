@@ -46,7 +46,13 @@ use Orb\Util\Arrays;
  * - New email addresses on an account can be be added and validated
  * - Content submissions from logged-out users that use existing email addresses
  *   will create these records and will be validated through the usual controller.
- * - New users with new email addresses will validated.
+ *
+ * A user should always have an email address on their account. If a user is a new record,
+ * then they shold have a normal PersonEmail record with is_validating instead.
+ *
+ * These PersonEmailValidating records are just a way to add an email address to an account
+ * without actually reserving the address. For example, a malicious user cant add a new address
+ * on his account such that the real user can't register.
  *
  * It's important to look-up the email address first to see if it's in use by a person. Since
  * new content generally creates new Person records, we want to make sure each validating content

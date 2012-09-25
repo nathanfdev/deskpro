@@ -108,54 +108,35 @@ class PersonFromEmailProcessor
 	 */
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
-		// All new users end up with a 'validating' record. If validation is off, then its turned
-		// into a real address during NewTicektAction
-		$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($from->getEmail());
-		if ($email_validating) {
-			$person = $email_validating->person;
-			$person->email_validating = $email_validating;
+		$person = Entity\Person::newContactPerson();
+		$person->name = $from->getNameUtf8();
 
-		// If we get here, then its a new user. We add the email address
-		// as a validation email address. The trigger NewTicketAction will turn it into
-		// a real email address if validation isn't required
+		$email = new \Application\DeskPRO\Entity\PersonEmail();
+		$email->setEmail($from->getEmail());
+		$email->person = $person;
+
+		if (!$do_validated) {
+			// If not explicitly validated, then they arent valdiated
+			// The validated flag is switched on NewTicketAction if validation
+			// is not required. Its like this so triggers can affect the validation setting.
+			$email->is_validated = false;
+			$person->is_confirmed = false;
+			$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
 		} else {
-			$person = Entity\Person::newContactPerson();
-			$person->name = $from->getNameUtf8();
-
-			if ($do_validated) {
-				$email = new \Application\DeskPRO\Entity\PersonEmail();
-				$email->setEmail($from->getEmail());
-				$email->person = $person;
-
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
-
-				$person->addEmailAddress($email);
-				App::getOrm()->persist($person);
-				App::getOrm()->persist($email);
-
-			} else {
-				$person->getChangeTracker()->recordExtra('email_validating', $from->getEmail());
-
-				if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
-					$person->is_agent_confirmed = false;
-				}
-
-				$email_validating = new Entity\PersonEmailValidating();
-				$email_validating->email = $from->getEmail();
-				$email_validating->person = $person;
-				$person->email_validating = $email_validating;
-
-				App::getOrm()->persist($person);
-				App::getOrm()->persist($email_validating);
-			}
+			$email->is_validated = true;
+			$person->is_confirmed = true;
 		}
 
-		if ($do_validated) {
-			$person['is_confirmed'] = true;
-			$person['is_agent_confirmed'] = true;
-			App::getOrm()->persist($person);
+		if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+			$person->is_agent_confirmed = false;
 		}
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$person->addEmailAddress($email);
+		App::getOrm()->persist($person);
+		App::getOrm()->persist($email);
 
 		App::getOrm()->flush();
 

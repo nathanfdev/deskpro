@@ -171,38 +171,29 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$validating = false;
-		$do_change_validating = false;
-		if ($ticket->person_email_validating) {
-
-			$do_change_validating = true;
-
-			// We always insert new addresses as validating first
-			// So if its new, then we only enable actual validation when the enable_validation
-			// flag was set
-			if ($this->enable_validation && $ticket->person_email_validating->isNewEntity()) {
-				$validating = true;
-
-			// If its an existing validating email address, then we dont change its status,
-			// its still validating no matter what the flag says
-			} elseif (!$ticket->person_email_validating->isNewEntity()) {
-				$validating = true;
-			}
-		}
-
 		$this->tracker->logMessage("[NewTicketAction] Mode: " . $this->op_mode);
 
-		$this->tracker->logMessage("[NewTicketAction] Validating: " . ($validating ? 'yes' : 'no'));
+		if ($ticket->person_email_validating) {
+			$validating = true;
+		} elseif ($ticket->person->isNewPerson()) {
+			if ($this->enable_validation) {
+				$validating = true;
+			} else {
+				$validating = false;
+			}
+		} elseif (!$ticket->person->isNewPerson() && !$ticket->person->is_confirmed) {
+			$validating = true;
+		} else {
+			$validating = false;
+		}
 
 		if ($this->op_mode == 'pre') {
 			$this->op_mode = 'run';
 
-			if ($do_change_validating) {
-				if ($validating) {
-					$ticket->setStatus('hidden.validating');
-				} else {
-					$ticket->setStatus('awaiting_agent');
-				}
+			if ($validating) {
+				$ticket->setStatus('hidden.validating');
+			} elseif ($ticket->person->is_agent_confirmed) {
+				$ticket->setStatus('awaiting_agent');
 			}
 
 			App::getOrm()->persist($ticket);
@@ -213,50 +204,6 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 		if ($validating) {
 			$this->applyValidating($ticket);
 			return;
-		}
-
-
-		#------------------------------
-		# Convert a validating email address into a real one
-		#------------------------------
-
-		// If we got here with a validating email address it means the
-		// address is new, but we dont require validation.
-		// So we'll make it a real address right now.
-
-		if ($ticket->person_email_validating) {
-
-			// Make sire it doesnt already exist,
-			$found_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($ticket->person_email_validating->email);
-			if ($found_person) {
-				$ticket->person = $found_person;
-				$ticket->person->is_confirmed = true;
-
-				App::getOrm()->remove($ticket->person_email_validating);
-
-				$ticket->person_email_validating = null;
-				App::getOrm()->persist($ticket->person);
-				App::getOrm()->persist($ticket);
-			} else {
-				$email = new PersonEmail();
-				$email->email = $ticket->person_email_validating->email;
-				$email->date_created = $ticket->person_email_validating->date_created;
-				$email->date_validated = new \DateTime();
-				$email->person = $ticket->person;
-
-				$ticket->person->is_confirmed = true;
-
-				$ticket->person->addEmailAddress($email);
-
-				App::getOrm()->persist($email);
-
-				$ticket->person_email_validating = null;
-				$ticket->person_email = $email;
-
-				App::getOrm()->persist($ticket->person);
-				App::getOrm()->persist($ticket);
-				App::getOrm()->flush();
-			}
 		}
 
 		#------------------------------
@@ -356,7 +303,12 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
 
-			$message->setTo($ticket->person_email_validating->email, $person->getDisplayName());
+			if ($ticket->person_email_validating) {
+				$message->setTo($ticket->person_email_validating->email, $person->getDisplayName());
+			} else {
+				$message->setTo($ticket->person_email->email, $person->getDisplayName());
+			}
+
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 

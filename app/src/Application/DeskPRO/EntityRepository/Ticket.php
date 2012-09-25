@@ -479,6 +479,22 @@ class Ticket extends AbstractEntityRepository
 		", array($validating_email));
 	}
 
+	public function getTicketIdsWithEmail($email)
+	{
+		if (is_object($email)) {
+			$email = $email->getId();
+		}
+
+		$email = (int)$email;
+
+		return $this->getEntityManager()->getConnection()->fetchAllCol("
+			SELECT id
+			FROM tickets
+			WHERE person_email_id = ?
+			ORDER BY id DESC
+		", array($email));
+	}
+
 
 	public function getTicketCountsForPeople(array $people)
 	{

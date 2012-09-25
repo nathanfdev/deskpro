@@ -132,7 +132,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			if ($this->person_context->isGuest()) {
 
 				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
-				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
 
 				// Email already exists on an account
 				// Means use the same person, but depending on the setting we
@@ -148,65 +147,56 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 						$person->name = $this->person->name;
 					}
 
-					$email_validating = null;
-
-				// Email doesnt exist,
-				// Might already be validating
-				} elseif ($email_validating) {
-					$validating = 'new';
-					$person = $email_validating->person;
-					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
-
 				// If we get here, then its a new user. We add the email address
-				// as a validation email address. The trigger NewTicketAction will turn it into
-				// a real email address if validation isn't required
+				// as an email address that requires validation. If validation is disabled,
+				// NewticketAction toggles it off
 				} else {
 					$person = Entity\Person::newContactPerson();
 					$person->name = $this->person->name;
 					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
+					$person->is_confirmed = false;
 
-					$email_validating = new Entity\PersonEmailValidating();
-					$email_validating->email = $this->person->email;
-					$email_validating->person = $person;
-					$person->email_validating = $email_validating;
+					if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+						$person->is_agent_confirmed = false;
+					}
+
+					$email = new \Application\DeskPRO\Entity\PersonEmail();
+					$email->setEmail($this->person->email);
+					$email->person = $person;
+					$email->setIsValidated(false);
+					$person->addEmailAddress($email);
+
 					App::getOrm()->persist($person);
-					App::getOrm()->persist($email_validating);
+					App::getOrm()->persist($email);
 				}
 
 			// Logged in user
 			} else {
 				$person = $this->person_context;
 
-				if (strpos($this->creation_system, 'gateway.') !== false) {
-					// From PersonFromEmailProcessor
-					$email_validating = $person->email_validating;
-				} else {
-					// A new email address.
-					// We know its unique since it passed the validator run before this
-					// New addresses always require validation
-					if (!$person->findEmailAddress($this->person->email)) {
+				$email = $person->findEmailAddress($this->person->email);
 
-						// Existing validating address already
-						$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
+				// A new email address.
+				// We know its unique since it passed the validator run before this
+				// New addresses always require validation
+				if (!$email) {
 
-						// Or create a new one
-						if (!$email_validating) {
-							$email_validating = new Entity\PersonEmailValidating();
-							$email_validating->email = $this->person->email;
-							$email_validating->person = $person;
-							App::getOrm()->persist($email_validating);
-						}
-					}
+					// Existing validating address already
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
 
-					if ($this->person->name) {
-						$person->name = $this->person->name;
-						App::getOrm()->persist($person);
+					// Its only valid if its ont he same person
+					if (!$email_validating || !$email_validating->person || $email_validating->person->getId() != $person->getId()) {
+						$email_validating = new Entity\PersonEmailValidating();
+						$email_validating->email = $this->person->email;
+						$email_validating->person = $person;
+						App::getOrm()->persist($email_validating);
 					}
 				}
-			}
 
-			if ($email_validating) {
-				App::getOrm()->persist($email_validating);
+				if ($this->person->name) {
+					$person->name = $this->person->name;
+					App::getOrm()->persist($person);
+				}
 			}
 
 			App::getOrm()->flush();
@@ -224,6 +214,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
+			if ($email) {
+				$ticket->person_email = $email;
+			}
 			$ticket['subject'] = $this->ticket->subject;
 			$ticket['validating'] = $validating;
 			$ticket['language'] = App::getSession()->getLanguage();
