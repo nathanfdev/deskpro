@@ -45,6 +45,16 @@ class Article extends AbstractContentType
 
 	public function objectToDocument($article)
 	{
+		if ($article->status != 'published') {
+			$data = array();
+			$data['id'] = $article['id'];
+			$data['content_type'] = 'article';
+			$data['remove'] = true;
+
+			$doc = Document::newFromArray($data);
+			return $doc;
+		}
+
 		$data = array();
 		$data['id'] = $article['id'];
 		$data['content_type'] = 'article';

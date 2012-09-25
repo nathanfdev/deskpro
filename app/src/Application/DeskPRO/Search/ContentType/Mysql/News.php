@@ -45,6 +45,16 @@ class News extends AbstractContentType
 
 	public function objectToDocument($news)
 	{
+		if ($news->status != 'published') {
+			$data = array();
+			$data['id'] = $news['id'];
+			$data['content_type'] = 'news';
+			$data['remove'] = true;
+
+			$doc = Document::newFromArray($data);
+			return $doc;
+		}
+
 		$data = array();
 		$data['id'] = $news['id'];
 		$data['content_type'] = 'news';

@@ -55,7 +55,12 @@ class Document implements DocumentInterface
 	 */
 	protected $data;
 
-	
+	/**
+	 * @var bool
+	 */
+	protected $mark_removed = false;
+
+
 	/**
 	 * @param array $info
 	 * @return \Application\DeskPRO\Search\Indexer\Document
@@ -67,7 +72,19 @@ class Document implements DocumentInterface
 
 		unset($info['id'], $info['content_type']);
 
-		return new self($id, $content_type, $info);
+		$do_remove = false;
+		if (isset($info['remove'])) {
+			$do_remove = true;
+			unset($info['remove']);
+		}
+
+		$obj = new self($id, $content_type, $info);
+
+		if ($do_remove) {
+			$obj->markRemove();
+		}
+
+		return $obj;
 	}
 
 
@@ -99,7 +116,7 @@ class Document implements DocumentInterface
 		return $this->content_type;
 	}
 
-	
+
 	/**
 	 * Get the data to index
 	 *
@@ -108,5 +125,23 @@ class Document implements DocumentInterface
 	public function getData()
 	{
 		return $this->data;
+	}
+
+
+	/**
+	 * Mark document for removal
+	 */
+	public function markRemove()
+	{
+		$this->mark_removed = true;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isMarkedRemove()
+	{
+		return $this->mark_removed;
 	}
 }

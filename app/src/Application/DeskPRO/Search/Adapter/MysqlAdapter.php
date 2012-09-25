@@ -101,6 +101,12 @@ class MysqlAdapter extends AbstractAdapter
 	public function updateDocumentsInIndex(array $documents)
 	{
 		foreach ($documents as $doc) {
+
+			if ($doc->isMarkedRemove()) {
+				$this->deleteDocumentsFromIndex(array($doc));
+				continue;
+			}
+
 			$data = $doc->getData();
 
 			App::getDb()->executeUpdate("
