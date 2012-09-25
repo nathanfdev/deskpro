@@ -30,14 +30,14 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 
-{% if not person.is_agent_confirmed %}
+{% if not person.is_agent_confirmed or not person.is_confirmed %}
 <div class="validating-bar">
 	<div class="options">
 		<div style="float:right; position:relative;top: -3px;">
 			<button class="clean-white x-small" id="{{ baseId }}_approve_user">{{ phrase('agent.general.approve') }}</button>
 			<button class="clean-white x-small" id="{{ baseId }}_delete_user">Delete</button>
 		</div>
-		This user is awaiting agent validation
+		This user is awaiting validation
 	</div>
 </div>
 {% endif %}

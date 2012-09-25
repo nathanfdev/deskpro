@@ -434,6 +434,13 @@ $collection->add('agent_settings_ticketfilters_new', new Route(
 # People and People Search
 ################################################################################
 
+$collection->add('agent_people_validate_email', new Route(
+	'/people/validate-email/{id}/{security_token}',
+	array('_controller' => 'AgentBundle:Person:validateEmailAddress'),
+	array('id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_people_view', new Route(
 	'/people/{person_id}',
 	array('_controller' => 'AgentBundle:Person:view'),

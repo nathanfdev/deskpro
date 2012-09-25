@@ -267,9 +267,12 @@ class PersonController extends AbstractController
             return $response;
         }
 
+		$validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
+			'validating_emails' => $validating_emails,
 			'person_api' => $person_api,
 			'person_usergroups_ids' => $person_usergroups_ids,
 			'person_org_usergroups_ids' => $person_org_usergroups_ids,
@@ -307,6 +310,27 @@ class PersonController extends AbstractController
 			'contact_name' => $person->getDisplayContact(),
 			'url' => $this->generateUrl('agent_people_view', array('person_id' => $person->id))
 		));
+	}
+
+	public function validateEmailAddressAction($id, $security_token)
+	{
+		$this->ensureAuthToken('validate_email', $security_token);
+
+		$email_validating = $this->em->find('DeskPRO:PersonEmailValidating', $id);
+		if (!$email_validating) {
+			throw $this->createNotFoundException();
+		}
+
+		$validator = new \Application\DeskPRO\People\EmailValidator($email_validating);
+
+		$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_validating->getEmail());
+		if ($email_exists) {
+			return $this->createJsonResponse(array('error' => true, 'message' => 'Email already exists on another account'));
+		}
+
+		$email = $validator->validate();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	############################################################################
