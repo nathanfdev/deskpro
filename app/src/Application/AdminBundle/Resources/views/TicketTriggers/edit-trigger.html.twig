@@ -1,8 +1,4 @@
-{% extends 'AdminBundle::layout.html.twig' %}
-{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersNewChoosePage' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersNewChoosePage.js') }}"></script>
-{% endblock %}
+{% extends 'AdminBundle:TicketTriggers:ticket-trigger-tpl.html.twig' %}
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
@@ -15,4 +11,22 @@
 		</li>
 	</ul>
 {% endblock %}
-{% block page %}
+{% block event_row %}
+When
+<select name="trigger[event_trigger_options][performer]">
+	<option {% if not trigger.getEventTriggerOption('performer') %}selected="selected"{% endif %} value="0">anyone</option>
+	<option {% if trigger.getEventTriggerOption('performer') == 'agent' %}selected="selected"{% endif %} value="agent">an agent</option>
+	<option {% if trigger.getEventTriggerOption('performer') == 'user' %}selected="selected"{% endif %} value="user">a user</option>
+</select>
+<select name="trigger[event_trigger]">
+	<option {% if trigger.event_trigger == 'new_ticket' %}{% endif %} value="agent">creates</option>
+	<option {% if trigger.event_trigger == 'new_reply' %}{% endif %} value="agent">replies to</option>
+	<option {% if trigger.event_trigger == 'property_change' %}{% endif %} value="agent">updates</option>
+</select>
+a ticket via
+<select name="trigger[event_trigger_options][interface]">
+	<option {% if not trigger.getEventTriggerOption('performer') %}selected="selected"{% endif %} value="0">any interface</option>
+	<option {% if trigger.getEventTriggerOption('performer') == 'email' %}selected="selected"{% endif %} value="email">email</option>
+	<option {% if trigger.getEventTriggerOption('performer') == 'web' %}selected="selected"{% endif %} value="web">web form</option>
+</select>
+{% endblock %}

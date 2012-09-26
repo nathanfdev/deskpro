@@ -1279,17 +1279,38 @@ $collection->add('admin_tickettriggers', new Route(
 	array()
 ));
 
-$collection->add('admin_tickettriggers_new_choosetype', new Route(
+$collection->add('admin_tickettriggers_new', new Route(
 	'/tickets/triggers/new-trigger',
-	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'trigger'),
+	array('_controller' => 'AdminBundle:TicketTriggers:editTrigger', 'id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketescalations_new', new Route(
+	'/tickets/escalations/new-escalation',
+	array('_controller' => 'AdminBundle:TicketTriggers:editEscalation', 'id' => '0'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_edit', new Route(
-	'/tickets/triggers/{trigger_id}/edit',
-	array('_controller' => 'AdminBundle:TicketTriggers:edit'),
-	array('trigger_id' => '\\d+'),
+	'/tickets/triggers/{id}/edit',
+	array('_controller' => 'AdminBundle:TicketTriggers:editTrigger'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketescalations_edit', new Route(
+	'/tickets/escalations/{id}/edit',
+	array('_controller' => 'AdminBundle:TicketTriggers:editEscalation'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_tickettriggers_save', new Route(
+	'/tickets/triggers/{id}/save',
+	array('_controller' => 'AdminBundle:TicketTriggers:saveTrigger'),
+	array('id' => '\\d+'),
 	array()
 ));
 

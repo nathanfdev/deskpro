@@ -1,0 +1,29 @@
+{% extends 'AdminBundle:TicketTriggers:ticket-trigger-tpl.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
+		<li>
+			{% if trigger.id %}
+				Edit Escalation
+			{% else %}
+				New Escalation
+			{% endif %}
+		</li>
+	</ul>
+{% endblock %}
+{% block event_row %}
+When a ticket
+<select name="trigger[event_trigger]">
+	<option {% if trigger.event_trigger == 'time_open' %}{% endif %} value="agent">has been open</option>
+	<option {% if trigger.event_trigger == 'time_user_waiting' %}{% endif %} value="agent">has been awaiting agent</option>
+	<option {% if trigger.event_trigger == 'time_agent_waiting' %}{% endif %} value="agent">has been awaiting user</option>
+	<option {% if trigger.event_trigger == 'time_total_user_waiting' %}{% endif %} value="agent">has a total user waiting time</option>
+</select>
+for
+	<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px; position:relative; top: 1px;" class="small" />
+	<select name="event_trigger_scale">
+		{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+			<option {% if event_trigger_scale == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
+		{% endfor %}
+	</select>
+{% endblock %}

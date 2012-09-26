@@ -40,11 +40,9 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\AdminBundle\Form\EditTicketTriggerType;
 use Application\DeskPRO\UI\RuleBuilder;
-
-use Application\AdminBundle\AutoClose\AutoCloseOptions;
-use Application\AdminBundle\Form\TicketAutoCloseOptionsType;
 
 class TicketTriggersController extends AbstractController
 {
@@ -74,88 +72,24 @@ class TicketTriggersController extends AbstractController
 	}
 
 	############################################################################
-	# edit
+	# edit trigger
 	############################################################################
 
-	public function editAction($trigger_id)
+	public function editTriggerAction($id, $type = null)
 	{
-		$from_gateway_id = $this->in->getUint('from_gateway');
-		$from_gateway = null;
-		if ($from_gateway_id) {
-			$from_gateway = $this->em->find('DeskPRO:EmailGateway', $from_gateway_id);
-		}
-
-		if (!$trigger_id) {
-			$trigger = new Entity\TicketTrigger();
-
-			$trigger_group = $this->in->getString('trigger_group');
-			if (!$trigger_group && $from_gateway) {
-				$trigger_group = 'new_ticket.gateway_person';
+		if ($id) {
+			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+			if (!$trigger) {
+				throw $this->createNotFoundException();
 			}
-
-			switch ($trigger_group) {
-				case 'new_ticket.web_person':
-					$trigger['event_trigger'] = 'new_ticket';
-					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.person')));
-					break;
-				case 'new_ticket.gateway_person':
-					$trigger['event_trigger'] = 'new_ticket';
-					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway.person')));
-					break;
-				case 'new_ticket.widget':
-					$trigger['event_trigger'] = 'new_ticket';
-					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'widget')));
-					break;
-				case 'new_ticket.agent':
-					$trigger['event_trigger'] = 'new_ticket';
-					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.agent')));
-					break;
-				case 'new_reply.agent':
-					$trigger['event_trigger'] = 'new_reply';
-					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'web.agent')));
-					break;
-				case 'new_reply.web_person':
-					$trigger['event_trigger'] = 'new_reply';
-					$trigger->terms = array(
-						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.person'))
-					);
-					break;
-				case 'new_reply.gateway_person':
-					$trigger['event_trigger'] = 'new_reply';
-					$trigger->terms = array(
-						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway.person'))
-					);
-					break;
-				case 'property_change.agent':
-					$trigger['event_trigger'] = 'property_change';
-					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'agent')));
-					break;
-				case 'property_change.user':
-					$trigger['event_trigger'] = 'property_change';
-					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')));
-					break;
-				default:
-					$trigger['event_trigger'] = $this->in->getString('trigger_group');
-					break;
-			}
-
-			if ($this->in->getUint('event_trigger_time')) {
-				$trigger->setEventTriggerOption('time', $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale'));
-			}
-
 		} else {
-			$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->find($trigger_id);
-			if ($this->in->getUint('event_trigger_time')) {
-				$trigger->setEventTriggerOption('time', $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale'));
+			$trigger = new TicketTrigger();
+
+			if ($type == null) {
+				return $this->redirectRoute('admin_tickettriggers_new', array('type' => 'new'));
 			}
 
-			if (!$trigger || $trigger->isUneditable()) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-			}
-		}
-
-		if ($trigger->getTriggerGroup() == 'other') {
-			return $this->redirectRoute('admin_tickettriggers_new_choosetype');
+			$trigger->event_trigger = $type;
 		}
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -163,48 +97,83 @@ class TicketTriggersController extends AbstractController
 		$ticket_options['people_term_options']  = array();
 		$ticket_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
 		$ticket_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
+		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
 
 		if ($this->container->getDataService('Language')->isMultiLang()) {
 			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
 		}
 
-		$form = $this->get('form.factory')->create(new EditTicketTriggerType($trigger), $trigger);
+		return $this->render('AdminBundle:TicketTriggers:edit-trigger.html.twig', array(
+			'trigger'      => $trigger,
+			'term_options' => $ticket_options,
+		));
+	}
 
-		if ($this->in->getBool('process')) {
-
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				if (!$trigger->title) {
-					$trigger->title = '';
-				}
-				$this->em->beginTransaction();
-
-				$term_rules = RuleBuilder::newTermsBuilder();
-				$trigger['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-				$action_rules = RuleBuilder::newActionsBuilder();
-				$trigger['actions'] = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
-
-				$this->em->persist($trigger);
-				$this->em->flush();
-
-				$this->em->commit();
-
-				return $this->redirectRoute('admin_tickettriggers');
+	public function editEscalationAction($id)
+	{
+		if ($id) {
+			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+			if (!$trigger) {
+				throw $this->createNotFoundException();
 			}
+		} else {
+			$trigger = new TicketTrigger();
 		}
 
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$ticket_options['people_term_options']  = array();
+		$ticket_options['people_term_options']  = array();
+		$ticket_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
+		$ticket_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
 		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
 
-		return $this->render('AdminBundle:TicketTriggers:edit.html.twig', array(
-			'trigger' => $trigger,
-			'event_trigger_time' => $trigger->getOptionTime(),
-			'event_trigger_scale' => $trigger->getOptionScale(),
-			'form'      => $form->createView(),
+		if ($this->container->getDataService('Language')->isMultiLang()) {
+			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
+		}
+
+		return $this->render('AdminBundle:TicketTriggers:edit-escalation.html.twig', array(
+			'trigger'      => $trigger,
 			'term_options' => $ticket_options,
-			'from_gateway' => $from_gateway,
 		));
+	}
+
+	public function saveEditTriggerAction($id)
+	{
+		if ($id) {
+			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+			if (!$trigger) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$trigger = new TicketTrigger();
+		}
+
+		$trigger->event_trigger = $this->in->getString('trigger.event_trigger');
+		$trigger->event_trigger_options = $this->in->getCleanValueArray('trigger.event_trigger_options', 'string', 'discard');
+
+		if ($this->in->getString('event_trigger_time')) {
+			$time = $this->in->getString('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
+			$trigger->setEventTriggerOption('time', $time);
+		}
+
+		$term_rules = RuleBuilder::newTermsBuilder();
+
+		$trigger->terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+		$trigger->terms_any = $term_rules->readForm($this->in->getCleanValueArray('terms_any', 'raw' , 'discard'));
+
+		$action_rules = RuleBuilder::newActionsBuilder();
+		$trigger->actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
+
+		$this->em->beginTransaction();
+		$this->em->persist($trigger);
+		$this->em->flush();
+		$this->em->commit();
+
+		if ($trigger->getTriggerType() == 'escalation') {
+			return $this->redirectRoute('admin_ticketescalations_edit', array('id' => $trigger->getId()));
+		} else {
+			return $this->redirectRoute('admin_tickettriggers_edit', array('id' => $trigger->getId()));
+		}
 	}
 
 	############################################################################
