@@ -60,6 +60,7 @@
 	'admin.user_registration.lbl_url_password_check'                => 'The URL to the password check service you uploaded.',
 	'admin.user_registration.lbl_user_id_field'                     => 'The field that contains a users unique ID.',
 	'admin.user_registration.lost_password_url'                     => 'Lost Password URL',
+	'admin.user_registration.magento'                               => 'Magento',
 	'admin.user_registration.ms_sql'                                => 'MS SQL',
 	'admin.user_registration.mysql'                                 => 'MySQL',
 	'admin.user_registration.new_usersource'                        => 'New Usersource',
