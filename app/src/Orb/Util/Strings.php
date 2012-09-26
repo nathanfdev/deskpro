@@ -1315,7 +1315,9 @@ class Strings
 			$pos = strpos($value, "<body");
 			if ($pos !== false) {
 				$changed = true;
-				$value = substr($value, $value + 5);
+				$value = substr($value, $pos);
+
+				// Cut out the rest of the body tag too, eg if it was <body class="abc"> we're finding the ">" part of that
 				$pos = strpos($value, ">");
 				$value = substr($value, $pos+1);
 			}
