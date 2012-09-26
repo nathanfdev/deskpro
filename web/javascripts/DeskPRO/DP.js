@@ -174,7 +174,7 @@ var DP = {
 		});
 
 		if (!options.addWidth) {
-			options.addWidth = 10;
+			options.addWidth = 18;
 		}
 
 		if (el.is('[multiple]')) {
