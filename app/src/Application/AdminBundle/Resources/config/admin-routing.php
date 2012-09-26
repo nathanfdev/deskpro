@@ -1314,20 +1314,6 @@ $collection->add('admin_tickettriggers_delete', new Route(
 	array()
 ));
 
-$collection->add('admin_ticketurgency_saveoptions', new Route(
-	'/tickets/urgency/save-options',
-	array('_controller' => 'AdminBundle:TicketTriggers:saveUrgencyOptions'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ticketautoclose_saveoptions', new Route(
-	'/tickets/auto-close/save-options',
-	array('_controller' => 'AdminBundle:TicketTriggers:saveAutoCloseOptions'),
-	array(),
-	array()
-));
-
 $collection->add('admin_customdeforganizations', new Route(
 	'/organization-fields',
 	array('_controller' => 'AdminBundle:CustomDefOrganizations:index'),

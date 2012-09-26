@@ -639,7 +639,7 @@ $em->flush();
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';
 $q->event_trigger = 'time_user_waiting';
-$q->event_trigger_option = '1 days';
+$q->setEventTriggerOption('time', '1 days');
 $q->is_enabled = 0;
 $q->terms = array();
 $q->actions = array(
@@ -658,7 +658,7 @@ $em->flush();
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';
 $q->event_trigger = 'time_user_waiting';
-$q->event_trigger_option = '2 days';
+$q->setEventTriggerOption('time', '2 days');
 $q->is_enabled = 1;
 $q->terms = array();
 $q->actions = array(
@@ -677,7 +677,7 @@ $em->flush();
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';
 $q->event_trigger = 'time_user_waiting';
-$q->event_trigger_option = '3 days';
+$q->setEventTriggerOption('time', '3 days');
 $q->is_enabled = 1;
 $q->terms = array();
 $q->actions = array(
@@ -698,7 +698,7 @@ $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.resolve_user_reply';
 $q->sys_name = 'auto_close.resolve_user_reply';
 $q->event_trigger = 'time_user_waiting';
-$q->event_trigger_option = '2 months';
+$q->setEventTriggerOption('time', '2 months');
 $q->is_enabled = 1;
 $q->terms = array(
 	array (
@@ -727,7 +727,7 @@ $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.resolve_agent_reply';
 $q->sys_name = 'auto_close.resolve_agent_reply';
 $q->event_trigger = 'time_agent_waiting';
-$q->event_trigger_option = '5 days';
+$q->setEventTriggerOption('time', '5 days');
 $q->is_enabled = 0;
 $q->terms = array(
 	array (
@@ -756,7 +756,7 @@ $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.warn_user';
 $q->sys_name = 'auto_close.warn_user';
 $q->event_trigger = 'time_agent_waiting';
-$q->event_trigger_option = '3 days';
+$q->setEventTriggerOption('time', '3 days');
 $q->is_enabled = 0;
 $q->terms = array(
 	array (

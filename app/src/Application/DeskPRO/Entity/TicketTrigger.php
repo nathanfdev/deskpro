@@ -71,13 +71,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_trigger;
 
 	/**
-	 * This is a number in seconds, or a number<space>scale.
-	 *
-	 * For example: 12 days
-	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $event_trigger_option = '';
+	protected $event_trigger_options = null;
 
 	/**
 	 * @var bool
@@ -88,6 +84,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $terms = array();
+
+	/**
+	 * @var string
+	 */
+	protected $terms_any = array();
 
 	/**
 	 * @var string
@@ -124,45 +125,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->id;
 	}
-
-	/**
-	 * Go through the actions on this trigger and find $name, and then
-	 * return its info.
-	 *
-	 * @param string $name
-	 * @return array
-	 */
-	public function getActionInfoOfType($name)
-	{
-		foreach ($this->actions as $info) {
-			if ($info['type'] == $name) {
-				unset($info['type']);
-				return $info['options'];
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Go through the terms on this trigger and find $name, and then
-	 * return its info.
-	 *
-	 * @param string $name
-	 * @return array
-	 */
-	public function getTermInfoOfType($name)
-	{
-		foreach ($this->terms as $info) {
-			if ($info['type'] == $name) {
-				unset($info['type']);
-				return array_merge(array('op' => $info['op'], $info['options']));
-			}
-		}
-
-		return null;
-	}
-
 
 	/**
 	 * Get a searcher with the criteria terms. This is used in th
@@ -278,6 +240,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_ticket_terms;
 	}
 
+
 	/**
 	 * Check to see if a ticket matches
 	 *
@@ -317,23 +280,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Run any non-editor actions now. For example, callbacks.
-	 */
-	public function performExternalActions(Ticket $ticket, array $logs = array())
-	{
-		foreach ($this->actions as $action) {
-			if ($action['type'] == 'trigger_plugin') {
-				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
-				$plugin->executePlugin(array(
-					'ticket' => $ticket,
-					'logs' => $logs
-				));
-			}
-		}
-	}
-
-
-	/**
 	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
 	 */
 	public function getTicketActionsCollection()
@@ -364,65 +310,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
-	/**
-	 * Get an array of tickets that should be escalated now based on the current
-	 * time trigger.
-	 *
-	 * @return array
-	 */
-	public function findEscaltedTickets()
-	{
-		if (strpos($this->event_trigger, 'time_') !== 0) {
-			throw new \BadMethodCallException('This method is only valid for time-based triggers');
-		}
-
-		$date = new \DateTime("-{$this->event_trigger_option} seconds");
-
-		$qb = App::getOrm()->createQueryBuilder()
-			->select('t')
-			->from('DeskPRO:Ticket', 't');
-
-		$params = array('date_cut' => $date);
-		switch ($this->event_trigger) {
-			case self::EVENT_TIME_OPEN:
-				$qb->where("t.status IN('awaiting_agent','awaiting_user') AND t.date_created < :date_cut");
-				break;
-			case self::EVENT_TIME_USER_WAITING:
-				$qb->where("t.status = 'awaiting_agent' AND t.date_user_waiting < :date_cut");
-				break;
-			case self::EVENT_TIME_AGENT_WAITING:
-				$qb->where("t.status = 'awaiting_agent' AND t.date_user_waiting < :date_cut");
-				break;
-		}
-
-		$tickets = $qb->exeute($params);
-
-		return $tickets;
-	}
-
-
-	/**
-	 */
-	public function _removeAssocPlugins()
-	{
-		App::getOrm()->beginTransaction();
-
-		foreach ($this->actions as $action) {
-			if ($action['type'] == 'trigger_plugin') {
-				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
-				if ($plugin['associated_object'] == "TicketTrigger:{$this->id}") {
-					App::getOrm()->remove($plugin);
-				}
-			}
-		}
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-	}
-
-
-
 	/**
 	 * @return string
 	 */
@@ -436,76 +323,52 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	public function getOptionTime()
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function setEventTriggerOption($name, $value)
 	{
-		if (!$this->event_trigger_option) {
-			return 0;
+		$opt = $this->event_trigger_options;
+		if (!$opt) {
+			$opt = array();
 		}
 
-		if (strpos($this->event_trigger_option, ' ') === false) {
-			return $this->event_trigger_option;
+		if ($value === null) {
+			if (isset($opt[$name])) {
+				unset($opt[$name]);
+				$this->setModelField('event_trigger_options', $opt);
+			}
+		} else {
+			$opt[$name] = $value;
+			$this->setModelField('event_trigger_options', $opt);
 		}
-
-		list ($time, ) = explode(' ', $this->event_trigger_option);
-		return $time;
-	}
-
-	public function getOptionScale()
-	{
-		if (!$this->event_trigger_option || strpos($this->event_trigger_option, ' ') === false) {
-			return 'seconds';
-		}
-
-		list (, $scale) = explode(' ', $this->event_trigger_option);
-		return $scale;
-	}
-
-	public function getOptionSeconds()
-	{
-		$time = $this->getOptionTime();
-		$scale = $this->getOptionScale();
-
-		$secs = 0;
-
-		switch ($scale) {
-
-			case 'minutes':
-				$secs = $time * Dates::SECS_MIN;
-				break;
-
-			case 'hours':
-				$secs = $time * Dates::SECS_HOUR;
-				break;
-
-			case 'days':
-				$secs = $time * Dates::SECS_DAY;
-				break;
-
-			case 'weeks':
-				$secs = $time * Dates::SECS_WEEK;
-				break;
-
-			case 'months':
-				$secs = $time * Dates::SECS_MONTH;
-				break;
-
-			default:
-				$secs = $time;
-				break;
-		}
-
-		return $secs;
-	}
-
-	public function setEventTriggerOption($opt)
-	{
-		$this->setModelField('event_trigger_option', $opt);
 
 		// For time fields, the run order is based off their time.
 		// Admins never see this num so its perfect to keep ordering queryies
 		// the same everywhere.
-		$this->setModelField('run_order', $this->getOptionSeconds());
+		if ($name == 'time') {
+
+			$this->setModelField('run_order', $this->getOptionSeconds());
+		}
 	}
+
+
+	/**
+	 * Get an event trigger option
+	 *
+	 * @param string $name
+	 * @param null $default
+	 */
+	public function getEventTriggerOption($name, $default = null)
+	{
+		if (!$this->event_trigger_options || !isset($this->event_trigger_options[$name])) {
+			return $default;
+		}
+
+		return $this->event_trigger_options;
+	}
+
 
 	/**
 	 * Gets the logical trigger group based on the event type and the criteria.
@@ -573,50 +436,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			default:
 				return $this->event_trigger;
 		}
-
-		return 'other';
-	}
-
-
-	/**
-	 * Get an array of special term types for the trigger.
-	 * For example, a 'new_ticket.web_gateway' always has the creation_system term. It's not changable.
-	 *
-	 * @return array
-	 */
-	public function getStaticTermTypes()
-	{
-		switch ($this->event_trigger) {
-			case 'new_ticket': return array('creation_system');
-			case 'new_reply': return array('creation_system', 'action_performer');
-			case 'property_change': return array('action_performer');
-		}
-
-		return array();
-	}
-
-
-	/**
-	 * Get the actual set terms of the static types
-	 *
-	 * @return array
-	 */
-	public function getStaticTerms()
-	{
-		$types = $this->getStaticTermTypes();
-		if (!$types) {
-			return array();
-		}
-
-		$ret = array();
-
-		foreach ($this->terms as $term_info) {
-			if (in_array($term_info['type'], $types)) {
-				$ret[] = $term_info;
-			}
-		}
-
-		return $ret;
 	}
 
 
@@ -630,6 +449,12 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Is the trigger un-editable? Some system triggers are referenced elsewhere
+	 * and shouldnt have additional actions appended to them.
+	 *
+	 * @return bool
+	 */
 	public function isUneditable()
 	{
 		if (!$this->sys_name) {
@@ -646,9 +471,97 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get the phrase name for the top-level type
+	 *
+	 * @return string
+	 */
 	public function getSysPhraseName()
 	{
 		return 'agent.general.triggers_' . str_replace('.', '_', $this->sys_name);
+	}
+
+
+	############################################################################
+	# Escalation-related
+	############################################################################
+
+	/**
+	 * Get the time portion of the time option. Eg: 1 days, returns 1
+	 *
+	 * @return int
+	 */
+	public function getOptionTime()
+	{
+		if (!$this->event_trigger_options || !isset($this->event_trigger_options['time'])) {
+			return 0;
+		}
+
+		if (strpos($this->event_trigger_options['time'], ' ') === false) {
+			return $this->event_trigger_options['time'];
+		}
+
+		list ($time, ) = explode(' ', $this->event_trigger_options['time']);
+		return $time;
+	}
+
+
+	/**
+	 * Get the scale portion of the time option. Eg: 1 days returns days
+	 *
+	 * @return string
+	 */
+	public function getOptionScale()
+	{
+		if (!$this->event_trigger_options['time'] || strpos($this->event_trigger_options['time'], ' ') === false) {
+			return 'seconds';
+		}
+
+		list (, $scale) = explode(' ', $this->event_trigger_options['time']);
+		return $scale;
+	}
+
+
+	/**
+	 * get the time option in seconds.
+	 *
+	 * @return int
+	 */
+	public function getOptionSeconds()
+	{
+		$time = $this->getOptionTime();
+		$scale = $this->getOptionScale();
+
+		$secs = 0;
+
+		switch ($scale) {
+
+			case 'minutes':
+				$secs = $time * Dates::SECS_MIN;
+				break;
+
+			case 'hours':
+				$secs = $time * Dates::SECS_HOUR;
+				break;
+
+			case 'days':
+				$secs = $time * Dates::SECS_DAY;
+				break;
+
+			case 'weeks':
+				$secs = $time * Dates::SECS_WEEK;
+				break;
+
+			case 'months':
+				$secs = $time * Dates::SECS_MONTH;
+				break;
+
+			default:
+				$secs = $time;
+				break;
+		}
+
+		return $secs;
 	}
 
 	############################################################################
@@ -661,13 +574,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketTrigger';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_triggers', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('_removeAssocPlugins', 'postRemove');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'event_trigger', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_trigger', ));
-		$metadata->mapField(array( 'fieldName' => 'event_trigger_option', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event_trigger_option', ));
+		$metadata->mapField(array( 'fieldName' => 'event_trigger_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'event_trigger_options', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'terms', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'terms', ));
+		$metadata->mapField(array( 'fieldName' => 'terms_any', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'terms_any', ));
 		$metadata->mapField(array( 'fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions', ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'run_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_order', ));

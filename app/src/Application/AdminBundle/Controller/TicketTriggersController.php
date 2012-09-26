@@ -43,8 +43,6 @@ use Orb\Util\Util;
 use Application\AdminBundle\Form\EditTicketTriggerType;
 use Application\DeskPRO\UI\RuleBuilder;
 
-use Application\AdminBundle\Urgency\UrgencyOptions;
-use Application\AdminBundle\Form\TicketUrgencyOptionsType;
 use Application\AdminBundle\AutoClose\AutoCloseOptions;
 use Application\AdminBundle\Form\TicketAutoCloseOptionsType;
 
@@ -142,13 +140,13 @@ class TicketTriggersController extends AbstractController
 			}
 
 			if ($this->in->getUint('event_trigger_time')) {
-				$trigger->event_trigger_option = $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
+				$trigger->setEventTriggerOption('time', $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale'));
 			}
 
 		} else {
 			$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->find($trigger_id);
 			if ($this->in->getUint('event_trigger_time')) {
-				$trigger->event_trigger_option = $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
+				$trigger->setEventTriggerOption('time', $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale'));
 			}
 
 			if (!$trigger || $trigger->isUneditable()) {

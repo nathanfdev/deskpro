@@ -135,16 +135,6 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 <button class="clean-white save-trigger">{{ phrase('agent.general.save') }}</button>
 
-<!-- These never change -->
-{% for info in trigger.getStaticTerms() %}
-	{% set static_key = 'static_' ~ loop.index %}
-	<input type="hidden" name="terms[static_{{ static_key }}][type]" value="{{ info.type }}" />
-	<input type="hidden" name="terms[static_{{ static_key }}][op]" value="{{ info.op }}" />
-	{% for k,v in info.options %}
-		<input type="hidden" name="terms[static_{{ static_key }}][{{ k }}]" value="{{ v }}" />
-	{% endfor %}
-{% endfor %}
-
 </form>
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {

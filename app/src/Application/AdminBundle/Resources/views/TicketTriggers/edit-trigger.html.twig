@@ -1,0 +1,18 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersNewChoosePage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersNewChoosePage.js') }}"></script>
+{% endblock %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
+		<li>
+			{% if trigger.id %}
+				Edit Trigger
+			{% else %}
+				New Trigger
+			{% endif %}
+		</li>
+	</ul>
+{% endblock %}
+{% block page %}
