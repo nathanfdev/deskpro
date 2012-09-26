@@ -166,8 +166,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						{% for filter in custom_filters %}
+					{% for filter in custom_filters %}
+						<tr>
 							<td class="title" style="text-align: right">{{ filter.title }}</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[{{ filter.id }}][email_created]" value="1" {% if my_subs[filter.id].email_created %}checked="checked"{% endif %} />
@@ -184,8 +184,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[{{ filter.id }}][email_property_change]" value="1" {% if my_subs[filter.id].email_property_change %}checked="checked"{% endif %} />
 							</td>
-						{% endfor %}
-					</tr>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
@@ -346,8 +346,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						{% for filter in custom_filters %}
+					{% for filter in custom_filters %}
+						<tr>
 							<td class="title" style="text-align: right">{{ filter.title }}</td>
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[{{ filter.id }}][alert_created]" value="1" {% if my_subs[filter.id].alert_created %}checked="checked"{% endif %} />
@@ -364,8 +364,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							<td class="prop">
 								<input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} />
 							</td>
-						{% endfor %}
-					</tr>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
