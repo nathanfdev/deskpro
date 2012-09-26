@@ -101,7 +101,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 		$.fn.tinyscrollbar = function(options){
 			var defaults = {
 				axis: 'y', // vertical or horizontal scrollbar? ( x || y ).
-				wheel: 40,  //how many pixels must the mouswheel scroll at a time.
+				wheel: 130,  //how many pixels must the mouswheel scroll at a time.
 				scroll: true, //enable or disable the mousewheel scrollbar
 				size: 'auto', //set the size of the scrollbar to auto or a fixed number.
 				sizethumb: 'auto' //set the size of the thumb to auto or a fixed number.
