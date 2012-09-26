@@ -135,6 +135,16 @@ class DeskPRO_Cloud_ProcMail
 	 */
 	protected $savepath;
 
+	/**
+	 * @var string
+	 */
+	protected $exit_string = '';
+
+	/**
+	 * @var int
+	 */
+	protected $exit_code = 0;
+
 	public static function exec()
 	{
 		new self();
@@ -150,6 +160,11 @@ class DeskPRO_Cloud_ProcMail
 		}
 
 		$this->run();
+
+		if ($this->exit_string) {
+			echo $this->exit_string;
+		}
+		exit($this->exit_code);
 	}
 
 	####################################################################################################################
@@ -213,9 +228,22 @@ class DeskPRO_Cloud_ProcMail
 				return;
 			}
 
+			// If the site is cancelled or demo expired, bounce
+			if ($cloudsite['is_cancelled'] || ($cloudsite['is_demo'] && $cloudsite['date_demo_expire'] < time())) {
+				$this->markFailed();
+				$this->exit_string = "Site is cancelled or demo expired";
+				$this->exit_code = 2;
+			}
+
 			$this->uploadToSite($cloudsite);
 		} catch (\Exception $e) {
-			$this->markFailed();
+
+			// If the DB failed we can still upload to remote site,
+			// The site check is just to make sure theres a real site. But
+			// if DB is down, we still want to store the record so if it comes back
+			// it'll be processed.
+			$this->uploadToSite();
+
 			throw $e; // throw up to be logged
 		}
 	}
@@ -227,7 +255,14 @@ class DeskPRO_Cloud_ProcMail
 	{
 		$pdo = $this->getCloudDb();
 
-		$q = $pdo->prepare("SELECT * FROM cloud_sites WHERE master_domain = :domain");
+		$q = $pdo->prepare("
+			SELECT
+				cloud_sites.id, cloud_sites.master_domain,
+				cloud_accounts.id AS account_id, cloud_accounts.is_cancelled, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS date_demo_expire
+			FROM cloud_sites
+				LEFT JOIN cloud_accounts ON (cloud_accounts.cloud_site_id = cloud_sites.id)
+			WHERE cloud_sites.master_domain = :domain
+		");
 		$q->execute(array(':domain' => $this->to_domain));
 
 		return $q->fetch(PDO::FETCH_ASSOC);
@@ -256,7 +291,7 @@ class DeskPRO_Cloud_ProcMail
 	/**
 	 * @param array $siteinfo
 	 */
-	public function uploadToSite(array $siteinfo)
+	public function uploadToSite(array $siteinfo = null)
 	{
 		$url = str_replace('{PARAMS}', 'cat=' . urlencode($this->to_addr), DP_CLOUD_SAVEMAIL_URL);
 		$url = str_replace('{DOMAIN}', $this->to_domain, $url);
