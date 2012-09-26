@@ -233,6 +233,7 @@ class DeskPRO_Cloud_ProcMail
 				$this->markFailed();
 				$this->exit_string = "Site is cancelled or demo expired";
 				$this->exit_code = 2;
+				return;
 			}
 
 			$this->uploadToSite($cloudsite);
