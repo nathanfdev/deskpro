@@ -67,9 +67,14 @@ class SettingsController extends AbstractController
 		};
 
 		if ($this->in->getBool('process')) {
+			$url = rtrim(preg_replace('#index\.php/?$#', '', $_POST['settings']['core.deskpro_url']), '/') . '/';
+			if (!preg_match('#^https?://#', $url)) {
+				$url = 'http://' . $url;
+			}
+
 			$update_settings = array(
 				'core.deskpro_name'            => $_POST['settings']['core.deskpro_name'],
-				'core.deskpro_url'             => rtrim(preg_replace('#index\.php/?$#', '', $_POST['settings']['core.deskpro_url']), '/') . '/',
+				'core.deskpro_url'             => $url,
 				'core.site_name'               => $_POST['settings']['core.site_name'],
 				'core.site_url'                => $_POST['settings']['core.site_url'],
 				'core.helpdesk_disabled'       => empty($_POST['settings']['core.helpdesk_disabled']) ? 0 : 1,
