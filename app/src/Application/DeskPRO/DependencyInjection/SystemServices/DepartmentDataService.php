@@ -159,7 +159,7 @@ class DepartmentDataService extends BaseRepositoryService
 		if ($allow_ids) {
 			foreach (array_values($allow_ids) as $id) {
 				$d = $this->get($id);
-				if ($d->parent) {
+				if ($d && $d->parent) {
 					$allow_ids[] = $d->parent->getId();
 				}
 			}
