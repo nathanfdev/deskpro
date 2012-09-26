@@ -197,7 +197,7 @@ class KernelBooter
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 
 			if (dp_get_config('is_installed_flag')) {
-				echo deskpro_install_basic_error("DeskPRO has already been installed. If this is a mistake, remove the data/is_installed.dat file to make the installer function again.", 'Error');
+				echo deskpro_install_basic_error("The database details in <var>config.php</var> are invalid or the database is not a valid DeskPRO database.<br/><br/>If this is a mistake and you intend to create a new installation into a new database, you must first delete the file <var>data/is_installed.dat</var> to make the installer function again.", 'Error');
 				exit;
 			}
 
@@ -402,7 +402,7 @@ class KernelBooter
 				}
 				return null;
 			}
-			if ($enforce_offline_mode || ($mode == 'cron' && !App::getSetting('core.setup_initial'))) {
+			if ($enforce_offline_mode || ($mode == 'cron' && !\Application\DeskPRO\App::getSetting('core.setup_initial'))) {
 				if ($kernel->isHelpdeskOffline()) {
 					if (in_array('--verbose', $_SERVER['argv'])) {
 						echo "Helpdesk offline\n";
