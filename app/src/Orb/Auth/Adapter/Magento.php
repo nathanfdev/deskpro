@@ -34,9 +34,11 @@
 
 namespace Orb\Auth\Adapter;
 
-class Magento extends DbTable
+class Magento extends DbTable implements CookieLoginInterface
 {
 	const OPT_TABLE_PREFIX = 'table_prefix';
+	const OPT_SSO = 'sso';
+	const OPT_MAGENTO_PATH = 'magento_path';
 
 	protected $_website_id = 1;
 
@@ -119,5 +121,55 @@ class Magento extends DbTable
 		}
 
 		return (md5($parts[1] . $password_input) === $parts[0]);
+	}
+
+	public function authenticateCookie(array $cookies)
+	{
+		if (!$this->options->get(self::OPT_SSO)) {
+			return false;
+		}
+
+		$magento_path = $this->options->get(self::OPT_MAGENTO_PATH);
+		if (!$magento_path || !is_dir($magento_path)) {
+			return false;
+		}
+
+		$cookie_name = 'frontend';
+		if (empty($cookies[$cookie_name]) && !is_string($cookies[$cookie_name])) {
+			return false;
+		}
+
+		$session_data = false;
+
+		$session = preg_replace('/[^a-z0-9_]/i', '', $cookies[$cookie_name]);
+		$session_file = $magento_path . '/var/session/sess_' . $session;
+
+		if (file_exists($session_file) && is_readable($session_file)) {
+			$session_data = file_get_contents($session_file);
+		} else {
+			$session_data = $this->db->fetchColumn('
+				SELECT session_data
+				FROM ' . $this->options->get(self::OPT_TABLE_PREFIX, '') . 'core_session
+				WHERE session_id = ?
+			', array($session));
+		}
+
+		$userinfo = false;
+
+		if ($session_data) {
+			$orig = $_SESSION;
+
+			session_decode($session_data);
+			$data = $_SESSION;
+
+			$_SESSION = $orig;
+
+			if (!empty($data['core']['visitor_data']['customer_id'])) {
+				$customer_id = intval($data['core']['visitor_data']['customer_id']);
+				$userinfo = $this->getUserInfoForId($customer_id);
+			}
+		}
+
+		return ($userinfo ?: false);
 	}
 }

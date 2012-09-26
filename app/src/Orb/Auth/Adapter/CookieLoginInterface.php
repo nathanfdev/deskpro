@@ -26,31 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @subpackage
+ * @package Orb
+ * @category Auth
  */
 
-namespace Application\AdminBundle\Form\Usersource\Model;
+namespace Orb\Auth\Adapter;
 
-class MagentoModel extends BaseDbTableModel
+/**
+ * Adapters that can authenticate via cookies to allow single sign on.
+ */
+interface CookieLoginInterface extends AdapterInterface
 {
-	public $table_prefix;
-	public $sso;
-	public $magento_path;
-
-	protected function init()
-	{
-		$this->table_prefix = $this->_usersource->getOption('table_prefix', '');
-		$this->sso = $this->_usersource->getOption('sso', 0);
-		$this->magento_path = $this->_usersource->getOption('magento_path', '');
-	}
-
-	protected function saveApply(\Application\DeskPRO\ORM\EntityManager $em)
-	{
-		$this->_usersource->setOption('table_prefix', $this->table_prefix);
-		$this->_usersource->setOption('sso', $this->sso);
-		$this->_usersource->setOption('magento_path', $this->magento_path);
-	}
+	/**
+	 * Authenticates based on data a cookie (such as a session or remember me cookie)
+	 *
+	 * @param array $cookies
+	 *
+	 * @return array|false Array of user info or false if nothing can be found
+	 */
+	public function authenticateCookie(array $cookies);
 }

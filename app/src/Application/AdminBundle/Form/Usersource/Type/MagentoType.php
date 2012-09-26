@@ -47,6 +47,8 @@ class MagentoType extends AbstractType
 		$builder->add('db_username', 'text', array('required' => false));
 		$builder->add('db_password', 'text', array('required' => false));
 		$builder->add('table_prefix', 'text', array('required' => false));
+		$builder->add('sso', 'integer', array('required' => false));
+		$builder->add('magento_path', 'text', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)

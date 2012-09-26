@@ -79,19 +79,32 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
-				$this->person = $person;
-				App::setCurrentPerson($person);
-				if ($person->is_agent) {
-					$this->attributes['active_status'] = 'available';
-					$this->attributes['is_chat_available'] = 1;
-				}
+				$this->_setCurrentPerson($person);
+			}
+		}
 
-				$this->attributes['auth_person_id'] = $person->getId();
+		if (DP_INTERFACE == 'user' && empty($_SESSION)) {
+			// user interface and a new session - we need to look through user sources for cookie handlers
+			$sources = App::getEntityRepository('DeskPRO:Usersource')->getCookieInputUsersources();
+			foreach ($sources AS $source)
+			{
+				/** @var $source \Application\DeskPRO\Entity\Usersource */
+				$adapter = $source->getAdapter()->getAuthAdapter();
 
-				if (!isset($_SESSION['_symfony2'])) {
-					$_SESSION['_symfony2'] = array();
+				if ($adapter instanceof \Orb\Auth\Adapter\CookieLoginInterface) {
+					$userinfo = $adapter->authenticateCookie($_COOKIE);
+					if (!$userinfo) {
+						continue;
+					}
+
+					$identity = $adapter->getIdentityFromUserInfo($userinfo);
+
+					$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($source, $identity);
+					$person = $login_processor->getPerson();
+
+					$this->_setCurrentPerson($person);
+					break;
 				}
-				$_SESSION['_symfony2'] = array_merge($_SESSION['_symfony2'], $this->attributes);
 			}
 		}
 
@@ -176,6 +189,24 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		\DpShutdown::add(function() use ($me) {
 			$me->save();
 		});
+	}
+
+
+	protected function _setCurrentPerson(\Application\DeskPRO\Entity\Person $person)
+	{
+		$this->person = $person;
+		App::setCurrentPerson($person);
+		if ($person->is_agent) {
+			$this->attributes['active_status'] = 'available';
+			$this->attributes['is_chat_available'] = 1;
+		}
+
+		$this->attributes['auth_person_id'] = $person->getId();
+
+		if (!isset($_SESSION['_symfony2'])) {
+			$_SESSION['_symfony2'] = array();
+		}
+		$_SESSION['_symfony2'] = array_merge($_SESSION['_symfony2'], $this->attributes);
 	}
 
 

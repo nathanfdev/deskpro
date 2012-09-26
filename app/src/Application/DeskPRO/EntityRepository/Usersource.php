@@ -96,6 +96,26 @@ class Usersource extends AbstractEntityRepository
 	}
 
 	/**
+	 * Fetch all usersources that are capable of logging in using a locally-available cookie.
+	 * This is generally only suitable for services on the same server (and domain).
+	 *
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getCookieInputUsersources()
+	{
+		$all = $this->getAllUsersources();
+
+		$ret = array();
+		foreach ($all as $us) {
+			if ($us->getAdapter()->isCapable('cookie_login')) {
+				$ret[$us->id] = $us;
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Fetch all usersources that are capable of fetching userinfo without having to
 	 * authenticate. That is, we can provide a id/username/email and get an array of
 	 * raw data back.

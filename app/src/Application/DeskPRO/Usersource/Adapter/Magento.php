@@ -45,4 +45,14 @@ class Magento extends DbTablePhpPasswordCheck
 	{
 		return new \Orb\Auth\Adapter\Magento($this->getDb(), $this->usersource->options);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		$capabilities = parent::getCapabilities();
+		$capabilities[] = 'cookie_login';
+		return $capabilities;
+	}
 }
