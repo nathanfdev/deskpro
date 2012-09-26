@@ -83,11 +83,11 @@
 		}
 
 		a.DP_TOP_MARK {
-			font-size: 2px;
+			font-size: 1px;
 			text-decoration: none;
 			color: #000;
-			line-height: 2px;
-			height: 2px;
+			line-height: 1px;
+			height: 1px;
 			overflow: hidden;
 			margin: 0;
 			padding: 0;
@@ -99,8 +99,8 @@
 </head>
 <body>
 <div class="dp-wrap">
-{% if agent_reply_above_line %}=== <a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK"></a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />{% endif %}
-{% if not agent_reply_above_line %}<!--DP_TOP_MARK-->{% endif %}
+{% if agent_reply_above_line %}=== <a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />{% endif %}
+{% if not agent_reply_above_line %}<a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>{% endif %}
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td {% if not agent_reply_above_line %}class="DP_TOP_MARK" name="DP_TOP_MARK"{% endif %}>
 
 <table border="0" width="100%" border="0" cellpadding="0" cellspacing="0">
