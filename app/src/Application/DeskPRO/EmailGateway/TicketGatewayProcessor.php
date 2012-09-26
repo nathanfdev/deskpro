@@ -444,6 +444,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$orig_text = $this->reader->getBodyText()->getBodyUtf8();
 		$did_html_trim = false;
+		$is_text = false;
+		$has_text_cut = false;
 
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
@@ -487,6 +489,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 
 		} else {
+			$is_text = true;
+
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
 			if (!$txt && $this->reader->getBodyText()->getBody()) {
@@ -494,48 +498,71 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
-			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+			$has_text_cut = true;
+			$email_info['body_raw'] = $txt;
+			$email_info['body'] = $txt;
+			$email_info['body_full'] = $txt;
+
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], false);
+
+			if ($cutter->getMatchedPatterns()) {
+				$has_text_cut = true;
+				foreach ($cutter->getMatchedPatterns() as $p) {
+					$this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+				}
+			} else {
+				$this->logMessage("Text cutter did not match any pattern");
+			}
+
+			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
+			$email_info['body_full'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body_full'], \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
 		}
 
 		$has_cut = false;
 
-		$email_info['body_raw'] = $email_info['body'];
-		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
+		if (!$is_text) {
+			$email_info['body_raw'] = $email_info['body'];
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
 
-		if ($did_html_trim) {
-			// We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
-			$email_info['body_full'] = nl2br(htmlspecialchars($orig_text, \ENT_QUOTES, 'UTF-8'));
-		} else {
-			$email_info['body_full'] = $email_info['body'];
-		}
-
-		// Always generic cut from the DP_TOP_MARK position first
-		// The PatternCutter will trim off the remaining quoted headers
-		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-		$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
-		if ($email_info['body'] != $generic_cut) {
-			$email_info['body'] = $generic_cut;
-			$email_info['found_top_marker'] = true;
-			$has_cut = true;
-		} else {
-			$email_info['found_top_marker'] = false;
-		}
-
-		if ($email_info['body_is_html']) {
-			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-			$cutter->addPatterns($pattern_config->all());
-
-			$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
-
-			if ($cutter->getMatchedPatterns()) {
-				$has_cut = true;
-				foreach ($cutter->getMatchedPatterns() as $p) {
-					$this->logMessage("Cutter matched pattern: " . $p->getPattern());
-				}
+			if ($did_html_trim) {
+				// We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
+				$email_info['body_full'] = nl2br(htmlspecialchars($orig_text, \ENT_QUOTES, 'UTF-8'));
 			} else {
-				$this->logMessage("Cutter did not match any pattern");
+				$email_info['body_full'] = $email_info['body'];
+			}
+
+			// Always generic cut from the DP_TOP_MARK position first
+			// The PatternCutter will trim off the remaining quoted headers
+			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+			$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+			if ($email_info['body'] != $generic_cut) {
+				$email_info['body'] = $generic_cut;
+				$email_info['found_top_marker'] = true;
+				$has_cut = true;
+			} else {
+				$email_info['found_top_marker'] = false;
+			}
+
+			if ($email_info['body_is_html']) {
+				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+				$cutter->addPatterns($pattern_config->all());
+
+				$email_info['body'] = $cutter->cutQuoteBlock($email_info['body'], true);
+
+				if ($cutter->getMatchedPatterns()) {
+					$has_cut = true;
+					foreach ($cutter->getMatchedPatterns() as $p) {
+						$this->logMessage("Cutter matched pattern: " . $p->getPattern());
+					}
+				} else {
+					$this->logMessage("Cutter did not match any pattern");
+				}
 			}
 		}
 
@@ -587,7 +614,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// If there was no cutting, then the body is the full body
 		// Dont store the dupe content
-		if (!$has_cut) {
+		if (!$has_cut && !$has_text_cut) {
 			$this->logMessage('no cut was made, no body_full needed');
 			$email_info['body_full'] = '';
 		}
