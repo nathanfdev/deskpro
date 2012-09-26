@@ -13,11 +13,11 @@
 		'%Subject%' => 'Subject',
 	),
 
-	'italian' => array(
-		'%From%'    => 'Da',
-		'%Sent%'    => 'Inviato',
-		'%To%'      => 'A',
-		'%Subject%' => 'Oggetto',
+	'danish' => array(
+		'%From%'    => 'Fra',
+		'%Sent%'    => 'Sendt',
+		'%To%'      => 'Til',
+		'%Subject%' => 'Emne',
 	),
 
 	'dutch' => array(
@@ -25,5 +25,12 @@
 		'%Sent%'    => 'Verzonden',
 		'%To%'      => 'Aan',
 		'%Subject%' => 'Onderwerp',
-	)
+	),
+
+	'italian' => array(
+		'%From%'    => 'Da',
+		'%Sent%'    => 'Inviato',
+		'%To%'      => 'A',
+		'%Subject%' => 'Oggetto',
+	),
 );
