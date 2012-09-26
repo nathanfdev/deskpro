@@ -43,26 +43,38 @@ if (php_sapi_name() != 'cli') {
  * Note that unlike procmail.php, this is designed to be run IN PLACE. The path to CloudConfig
  * is expected to be one dir up.
  *
- * This command should be called with a range argument like this:
- *     cron-run.php 1-10
- * This will run sites 1-10
+ * This command should be called with two arguments:
+ *   cron-run.php <batch-id>-<num-batches>
  *
- * The command is meant to be run multiple times with different ranges so multiple sites are executed
- * in parallel.
+ * <num-batches> is the number of batches being run in parallel, and <batch-id> is the ID of this batch job.
+ * (These numbers are used internally to calculate the number of sites to run per batch)
  *
- * Everything after a -- will be passed to the individual cron scripts
- *   cron-run.php 1-10 -- --verbose -f
+ * For example, four jobs in parallel would have four cron jobs:
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 1-4
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 2-4
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 3-4
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 4-4
  *
- * Note that the --dpc-site-id parameter is automatically appended when executing the individual cron scripts
+ * Everything after a -- will be passed to the individual cron scripts:
+ *   cron-run.php 1 4 -- --verbose -f
  *
- * Usage: cron-run.php <id1>-<id2> [options]
- * Options:
+ * Using the --account-type option you can define batches to run only demo or only paid. For example,
+ * to give paid sites slightly higher priority:
+ *
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 1-3 --account-type paid
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 2-3 --account-type paid
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 3-3 --account-type paid
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 1-2 --account-type demo
+ *     * * * * * www-data php /var/www/deskpro-cloud/cloud_serve/cron-run.php 2-2 --account-type demo
+ *
+ * Usage: cron-run.php batch [options]
+ * OPTIONS:
  *     --quiet               Do not output anything
  *     --force               Run even if proc-file exists and not timed out
  *     --proc-file           Path to a proc file that is used to determine if the command is still running.
  *                           By default this is placed in the data/tmp directory and named cloud-cron.XXX.time
  *     --proc-timeout        How many seconds until process is assumed crashed and the process resumes?
- *
+ *     --account-type        When fetching sites to run, only include sites of type: 'demo' or 'paid'
  *     -- <cron options>     Any options specified after the double-dash will be passed onto the individual
  *                           Cron execution.
  *
@@ -118,19 +130,15 @@ $pass_args = implode(" ", $pass_args);
 #------------------------------
 
 $range = array_shift($args);
-if (!$range) {
-	echo "This command must be called with a range of IDs: cron-run.php 1-10\n";
+if (!$range || !strpos($range, '-')) {
+	echo "This command must be called with a batch ID and num-batches: cron-run.php 1-4\n";
 	exit(1);
 }
 
-if (!strpos($range, '-')) {
-	$range_start = $range_end = $range;
-} else {
-	list ($range_start, $range_end) = explode('-', $range);
-}
+list ($range_start, $range_end) = explode('-', $range);
 
 if (!ctype_digit($range_start) || !ctype_digit($range_end)) {
-	echo "This command must be called with a range of IDs: cron-run.php 1-10\n";
+	echo "This command must be called with a batch ID and num-batches: cron-run.php 1-4\n";
 	exit(1);
 }
 
@@ -180,6 +188,20 @@ register_shutdown_function(function() use ($proc_file) {
 $proc_timeout = 900;
 if (($k = array_search('--proc-timeout', $args)) !== false && isset($args[$k+1])) {
 	$proc_timeout = $args[$k+1];
+}
+
+#------------------------------
+# Proc file timeout
+#------------------------------
+
+$account_type = null;
+if (($k = array_search('--account-type', $args)) !== false && isset($args[$k+1])) {
+	$account_type = $args[$k+1];
+}
+
+if ($account_type && $account_type != 'demo'&& $account_type != 'paid') {
+	echo "--account-type must be 'demo' or 'paid'\n";
+	exit(1);
 }
 
 ########################################################################
@@ -240,18 +262,73 @@ file_put_contents($proc_file, time());
 
 $db = CloudConfig::getDb();
 
-$st = $db->prepare("
-	SELECT
-		cloud_sites.*,
-		cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
-	FROM cloud_sites
-	LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-	WHERE cloud_sites.id BETWEEN :range_start AND :range_end AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
-	ORDER BY cloud_sites.id ASC
-");
-$st->execute(array(':range_start' => $range_start, ':range_end' => $range_end));
+if ($account_type) {
+	$st = $db->prepare("
+		SELECT COUNT(*)
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
+		WHERE " . ($account_type == 'demo' ? "is_demo = 1" : "is_demo = 0") . " AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
+	");
+	$st->execute();
+	$num_sites = $st->fetchColumn(0);
 
-$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
+	if (!$num_sites) {
+		dp_logf("No sites to process");
+		exit;
+	}
+
+	$per_run = ceil($num_sites / $range_end);
+	$limit_start = ($range_start - 1) * $per_run;
+
+	$st = $db->prepare("
+		SELECT
+			cloud_sites.*,
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
+		WHERE " . ($account_type == 'demo' ? "is_demo = 1" : "is_demo = 0") . " AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
+		ORDER BY cloud_sites.id ASC
+		LIMIT $limit_start, $per_run
+	");
+
+	$st->execute();
+	$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+} else {
+
+	$st = $db->prepare("
+		SELECT COUNT(*)
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
+		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
+	");
+	$st->execute();
+	$num_sites = $st->fetchColumn(0);
+
+	if (!$num_sites) {
+		dp_logf("No sites to process");
+		exit;
+	}
+
+	$per_run = ceil($num_sites / $range_end);
+	$limit_start = ($range_start - 1) * $per_run;
+
+	$st = $db->prepare("
+		SELECT
+			cloud_sites.*,
+			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+		FROM cloud_sites
+		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
+		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
+		ORDER BY cloud_sites.id ASC
+		LIMIT $limit_start, $per_run
+	");
+
+	$st->execute();
+	$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
+}
+
+dp_logf("Batch %d of %d running %d sites (of total %d in all batches)", $range_start, $range_end, count($sites), $num_sites);
 
 #------------------------------
 # Run sites
