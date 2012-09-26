@@ -318,13 +318,6 @@ abstract class CustomDefAbstractController extends AbstractController
 	 */
 	public function clearCacheForFieldType($field)
 	{
-		$repos = $field->getRepository();
 
-		$cache = $this->container->get('doctrine.orm.default_query_cache');
-
-		foreach (array('getfields', 'getenabledfields', 'gettopfields', 'gettopfields') as $n) {
-			$cache_name = $repos::getCacheId($n);
-			$cache->delete($cache_name);
-		}
 	}
 }
