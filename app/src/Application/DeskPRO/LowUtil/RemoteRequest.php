@@ -178,8 +178,9 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 		fclose($fp);
 
 		if (curl_error($ch)) {
-			curl_close($ch);
-			throw new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+			$e = new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+			@curl_close($ch);
+			throw $e;
 		}
 
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -225,8 +226,10 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 		$result = curl_exec($ch);
 
 		if (curl_error($ch)) {
+			$e = new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", curl_errno($ch), curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
 			@curl_close($ch);
-			throw new DeskPRO_LowUtil_Fetch_Exception(sprintf("Curl error: %s %s", @curl_errno($ch), @curl_error($ch)), DeskPRO_LowUtil_Fetch_Exception::REQUEST_FAILED);
+
+			throw $e;
 		}
 
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
