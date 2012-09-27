@@ -314,7 +314,11 @@ class UserRegController extends AbstractController
 
 	public function usersourceNewChooseAction()
 	{
-		return $this->render('AdminBundle:UserReg:usersource-new-choose.html.twig');
+		$plugin_sources = $this->em->getRepository('DeskPRO:UsersourcePlugin')->getPluginUsersources();
+
+		return $this->render('AdminBundle:UserReg:usersource-new-choose.html.twig', array(
+			'plugin_sources' => $plugin_sources
+		));
 	}
 
 
@@ -336,18 +340,21 @@ class UserRegController extends AbstractController
 			if (!$usersource->source_type) {
 				return $this->redirectRoute('admin_userreg_usersource_choose');
 			}
+
+			$source_plugin = $this->em->getRepository('DeskPRO:UsersourcePlugin')->getByUniqueKey($usersource->source_type);
+			if ($source_plugin) {
+				$usersource->usersource_plugin = $source_plugin;
+			}
 		}
 
 		$typename    = $usersource->getTypeName();
-		$model_class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $typename . 'Model';
-		$type_class  = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $typename . 'Type';
 
 		if ($typename == 'db_table_php_password_check' && App::getSetting('core.usersource_db_table_disabled')) {
 			return $this->redirectRoute('admin_userreg_usersource_choose');
 		}
 
-		$editfield = new $model_class($usersource);
-		$formtype  = new $type_class();
+		$editfield = $usersource->getFormModel();
+		$formtype = $usersource->getFormType();
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
 
 		if ($formtype instanceof \Application\AdminBundle\Form\Usersource\Type\ActiveDirectoryType || $formtype instanceof \Application\AdminBundle\Form\Usersource\Type\LdapType) {

@@ -45,6 +45,12 @@
 	<header><h3><label><input type="radio" name="usersource[source_type]" value="magento" /> {{ phrase('admin.user_registration.magento') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
+	{% for source in plugin_sources %}
+		{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="usersource[source_type]" value="{{ source.unique_key }}" /> {{ source.title }}</label></h3></header>
+		{{ design.block_sections_item_end() }}
+	{% endfor %}
+
 	<li class="footer">
 		<button class="clean-white">{{ phrase('agent.general.continue') }}</button>
 	</li>

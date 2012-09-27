@@ -94,6 +94,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\UsersourcePlugin|null
+	 */
+	protected $usersource_plugin = null;
+
+	/**
 	 * @var \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	 */
 	protected $_adapter_instance = null;
@@ -117,8 +122,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_adapter_instance;
 		}
 
-		$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
-		if (!class_exists($classname)) {
+		if (!$this->usersource_plugin) {
+			$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
+		} else {
+			$classname = $this->usersource_plugin->adapter_class;
+		}
+		if (!$classname || !class_exists($classname)) {
 			throw new \RuntimeException("Unknown usersource type `$classname`");
 		}
 
@@ -171,6 +180,41 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		return ucfirst(Strings::underscoreToCamelCase($this->source_type));
 	}
 
+	public function getFormType()
+	{
+		if (!$this->usersource_plugin) {
+			$type_name = $this->getTypeName();
+			$class = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $type_name . 'Type';
+		} else {
+			$class = $this->usersource_plugin->form_type_class;
+		}
+
+		return new $class();
+	}
+
+	public function getFormModel()
+	{
+		if (!$this->usersource_plugin) {
+			$type_name = $this->getTypeName();
+			$class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $type_name . 'Model';
+		} else {
+			$class = $this->usersource_plugin->form_model_class;
+		}
+
+		return new $class($this);
+	}
+
+	public function getFormTemplate()
+	{
+		if (!$this->usersource_plugin) {
+			$template = 'AdminBundle:UserReg:usersource-edit-' . $this->source_type . '.html.twig';
+		} else {
+			$template = $this->usersource_plugin->form_template;
+		}
+
+		return $template;
+	}
+
 
 
 	############################################################################
@@ -190,6 +234,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
+
+		$metadata->mapManyToOne(array( 'fieldName' => 'usersource_plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\UsersourcePlugin', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usersource_plugin_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 

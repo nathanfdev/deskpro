@@ -46,7 +46,10 @@
 		</small>
 	</div>
 
-	{% include 'AdminBundle:UserReg:usersource-edit-' ~ usersource.source_type ~ '.html.twig' %}
+	{% set form_template = usersource.getFormTemplate() %}
+	{% if form_template %}
+		{% include form_template %}
+	{% endif %}
 
 	<button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>
