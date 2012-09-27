@@ -565,6 +565,42 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $secs;
 	}
 
+
+	/**
+	 * Given a creation_system string, get the scoped event name
+	 * for the 'new ticket' event.
+	 *
+	 * @param string $creation_system
+	 * @return string
+	 */
+	public static function getNewTicketEventName($creation_system)
+	{
+		switch ($creation_system) {
+			case Ticket::CREATED_GATEWAY_PERSON:
+				$event = 'new.email.person';
+				break;
+			case Ticket::CREATED_WEB_PERSON_PORTAL:
+				$event = 'new.web.agent.portal';
+				break;
+			case Ticket::CREATED_WEB_PERSON_EMBED:
+				$event = 'new.web.agent.embed';
+				break;
+			case Ticket::CREATED_WEB_PERSON_WIDGET:
+				$event = 'new.web.agent.widget';
+				break;
+			case Ticket::CREATED_GATEWAY_AGENT:
+				$event = 'new.email.agent';
+				break;
+			case Ticket::CREATED_WEB_AGENT_PORTAL:
+				$event = 'new.web.agent.portal';
+				break;
+			default:
+				$event = 'new';
+		}
+
+		return $event;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

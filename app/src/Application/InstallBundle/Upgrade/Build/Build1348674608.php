@@ -40,20 +40,27 @@ class Build1348674608 extends AbstractBuild
 	{
 		$this->out("Update triggers");
 
-		$time_trigger_options = $this->container->getDb()->fetchAllKeyValue("
-			SELECT id, event_trigger_option
+		$time_trigger_options = $this->container->getDb()->fetchAll("
+			SELECT id, event_trigger, event_trigger_option
 			FROM ticket_triggers
 			WHERE event_trigger_option != ''
 		");
 
-		$this->execMutateSql("ALTER TABLE ticket_triggers ADD event_trigger_options LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)', ADD terms_any LONGBLOB NOT NULL COMMENT '(DC2Type:array)', DROP event_trigger_option");
-
 		// Restore proper time trigger option
-		foreach ($time_trigger_options as $id => $t_opt) {
-			$opt = array('time' => $t_opt);
+		foreach ($time_trigger_options as $info) {
+			$opt = array('time' => $info['event_trigger_option']);
 			$opt = serialize($opt);
 
-			$this->container->getDb()->update('ticket_triggers', array('event_trigger_options' => $opt), array('id' => $id));
+			$event = str_replace('time_', 'time.', $info['event_trigger']);
+
+			$update = array(
+				'event_trigger' => $event,
+				'time' => $opt,
+			);
+
+			$this->container->getDb()->update('ticket_triggers', $update, array('id' => $info['id']));
 		}
+
+		$this->execMutateSql("ALTER TABLE ticket_triggers ADD event_trigger_options LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)', ADD terms_any LONGBLOB NOT NULL COMMENT '(DC2Type:array)', DROP event_trigger_option");
 	}
 }

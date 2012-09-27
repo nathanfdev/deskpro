@@ -191,17 +191,29 @@ class TicketTrigger extends AbstractEntityRepository
 			return array();
 		}
 
-		$db = App::getDb();
-		$events = $db->quoteIn($events);
+		$dql = array();
+		$params = array();
+		$x = 0;
+		foreach ($events as $event) {
+			$y = $x+1;
+			$dql[] = "trig.event_trigger = ?$x OR trig.event_trigger LIKE ?$y";
+
+			$params[$x] = $event;
+			$params[$y] = $event . ".%";
+
+			$x++;
+		}
+
+		$dql = implode(" OR ", $dql);
 
 		$triggers = $this->getEntityManager()->createQuery("
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
 			WHERE
-				trig.event_trigger IN ($events)
+				$dql
 				AND trig.is_enabled = true
 			ORDER BY trig.run_order ASC
-		")->execute();
+		")->execute($params);
 
 		return $triggers;
 	}

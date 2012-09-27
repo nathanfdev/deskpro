@@ -1051,7 +1051,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		#------------------------------
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
-			Entity\Ticket::CREATED_GATEWAY_PERSON,
+			Entity\Ticket::CREATED_GATEWAY_AGENT,
 			$person
 		);
 		$newticket->setPersonContext($person);

@@ -56,8 +56,13 @@ class NewTicketController extends AbstractController
 			return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
 		}
 
+		$interface = Entity\Ticket::CREATED_WEB_PERSON_PORTAL;
+		if ($format == 'iframe') {
+			$interface = Entity\Ticket::CREATED_WEB_PERSON_EMBED;
+		}
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
-			Entity\Ticket::CREATED_WEB_PERSON,
+			$interface,
 			$this->person
 		);
 		$newticket->setPersonContext($this->person);
@@ -140,7 +145,6 @@ class NewTicketController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 			$form->bindRequest($this->get('request'));
-
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();

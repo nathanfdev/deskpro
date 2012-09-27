@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -103,7 +104,8 @@ class TriggerExecutor
 			array('type' => 'new_ticket', 'options' => array('mode' => 'pre'))
 		);
 
-		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents(array('new_ticket'));
+		$event = TicketTrigger::getNewTicketEventName($this->ticket->creation_system);
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents(array($event));
 		array_unshift($all_triggers, $ticket_created_trigger);
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
@@ -182,13 +184,46 @@ class TriggerExecutor
 		# Handle built-in events
 		#------------------------------
 
+		$is_newticket = false;
+		$is_propchange = false;
+		$is_newreply = false;
+		$performer = null;
+
 		if ($this->tracker->isExtraSet('ticket_created')) {
-			$this->event_types[] = 'new_ticket';
+			$is_newticket = true;
 		} else {
-			$this->event_types[] = 'property_change';
+			$is_propchange = true;
 
 			if ($this->tracker->isPropertyChanged('messages')) {
-				$this->event_types[] = 'new_reply';
+				$is_newreply = true;
+			}
+		}
+
+		if (DP_INTERFACE == 'agent') {
+			$performer = 'agent';
+		} elseif (DP_INTERFACE == 'user') {
+			$performer = 'user';
+		} else {
+			if ($is_newticket) {
+				if (strpos($this->ticket->creation_system, 'agent') !== false) {
+					$performer = 'agent';
+				} else {
+					$performer = 'user';
+				}
+			} elseif ($this->tracker->isExtraSet('is_agent_reply')) {
+				$performer = 'agent';
+			} else {
+				$performer = 'user';
+			}
+		}
+
+		if ($is_newticket) {
+			$this->event_types = array(TicketTrigger::getNewTicketEventName($this->ticket->creation_system));
+		} else {
+			if ($performer == 'agent') {
+				$this->event_types = array('update.agent');
+			} else {
+				$this->event_types = array('update.user');
 			}
 		}
 
@@ -329,7 +364,7 @@ class TriggerExecutor
 		if (!App::getSetting('core.disable_gateway_floodcheck')) {
 			$is_autoreply = false;
 
-			if (in_array('new_ticket', $this->event_types)) {
+			if ($is_newticket) {
 				$timesnip = date('Y-m-d H:i:s', time() - App::getSetting('core_email.antiflood_newtickets_time'));
 				$new_ticket_count = App::getDb()->fetchColumn("
 					SELECT COUNT(*)

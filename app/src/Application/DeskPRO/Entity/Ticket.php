@@ -51,11 +51,15 @@ use Orb\Util\Util;
  */
 class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
-	const CREATED_WEB_PERSON = 'web.person';
-	const CREATED_WEB_AGENT = 'web.agent';
-	const CREATED_WEB_API = 'web.api';
-	const CREATED_GATEWAY_PERSON = 'gateway.person';
-	const CREATED_GATEWAY_AGENT = 'gateway.agent';
+	const CREATED_WEB_PERSON        = 'web.person';
+	const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
+	const CREATED_WEB_PERSON_WIDGET = 'web.person.widget';
+	const CREATED_WEB_PERSON_EMBED  = 'web.person.embed';
+	const CREATED_WEB_AGENT         = 'web.agent';
+	const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
+	const CREATED_WEB_API           = 'web.api';
+	const CREATED_GATEWAY_PERSON    = 'gateway.person';
+	const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
 	const STATUS_AWAITING_USER = 'awaiting_user';
