@@ -67,7 +67,7 @@ class TicketTriggersController extends AbstractController
 				break;
 
 			case 'update':
-				$types = array('update');
+				$types = array('update.agent', 'update.user');
 				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-update.html.twig';
 				break;
 

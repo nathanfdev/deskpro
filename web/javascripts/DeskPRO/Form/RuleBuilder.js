@@ -32,32 +32,50 @@ Orb.createNamespace('DeskPRO.Form');
  *        </div>
  *    </div>
  */
-DeskPRO.Form.RuleBuilder = new Class({
-	Implements: Events,
-
-	ruleTpl: null,
-
-	/**
-	 * Select options for "rule type" we pre-built in initalize
-	 */
-	typeSelectHtml: null,
-
-	types: {},
-
-	rowDestroy: {},
+DeskPRO.Form.RuleBuilder = new Orb.Class({
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * @param {jQuery} ruleTpl This is the wrapper element that contains the templates used for each rule type
 	 */
 	initialize: function(ruleTpl) {
+		this.ruleTpl = null;
+		this.typeSelectHtml = null;
+		this.types = {};
+		this.rowDestroy = {};
+		this.enableTypes = {};
+
 		this.ruleTpl = ruleTpl;
 		var self = this;
 
+		this.genTypeSel();
+	},
+
+	enableType: function(type) {
+		this.enableTypes[type] = true;
+		this.genTypeSel();
+	},
+
+	disableType: function(type) {
+		this.enableTypes[type] = false;
+		this.genTypeSel();
+	},
+
+	genTypeSel: function() {
 		var groups = {};
+		var self = this;
+		if (this.typeSel) {
+			this.typeSel.remove();
+			this.typeSel = null;
+		}
 
 		var html = ['<select name="type" style="max-width: 320px;"><option>&nbsp;</option>'];
 		$('.builder-type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
+			if ($(el).data('type-off') && !self.enableTypes[type]) {
+				return;
+			}
+
 			var title = $(el).attr('title');
 			var subgroup = $(el).data('rule-group');
 

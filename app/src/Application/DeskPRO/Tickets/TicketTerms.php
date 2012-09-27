@@ -400,7 +400,223 @@ class TicketTerms
 				}
 
 				return false;
+				break;
 
+			case 'email_to_email':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['email_address']);
+
+				$tos = $ticket->email_reader->getToAddresses();
+				$match = false;
+				foreach ($tos as $to) {
+					$to = $to->getEmail();
+					$to = strtolower($to);
+
+					if ($this->_testStringMatch($to, $op, $check)) {
+						$match = true;
+					}
+				}
+
+				if (!$match) {
+					return false;
+				}
+				break;
+
+			case 'email_to_name':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['name']);
+
+				$tos = $ticket->email_reader->getToAddresses();
+				$match = false;
+				foreach ($tos as $to) {
+					$to = $to->getName();
+					$to = strtolower($to);
+
+					if ($this->_testStringMatch($to, $op, $check)) {
+						return true;
+					}
+				}
+
+				if (!$match) {
+					return false;
+				}
+				break;
+
+			case 'email_cc_email':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['email_address']);
+
+				$tos = $ticket->email_reader->getCcAddresses();
+				$match = false;
+				foreach ($tos as $to) {
+					$to = $to->getEmail();
+					$to = strtolower($to);
+
+					if ($this->_testStringMatch($to, $op, $check)) {
+						$match = true;
+					}
+				}
+
+				if (!$match) {
+					return false;
+				}
+				break;
+
+			case 'email_cc_name':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['name']);
+
+				$tos = $ticket->email_reader->getCcAddresses();
+				$match = false;
+				foreach ($tos as $to) {
+					$to = $to->getName();
+					$to = strtolower($to);
+
+					if ($this->_testStringMatch($to, $op, $check)) {
+						$match = true;
+						break;
+					}
+				}
+
+				if (!$match) {
+					return false;
+				}
+				break;
+
+			case 'email_from_email':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['email_address']);
+
+				$to = $ticket->email_reader->getFromAddress();
+				$to = $to->getEmail();
+				$to = strtolower($to);
+
+				if (!$this->_testStringMatch($to, $op, $check)) {
+					return false;
+				}
+				break;
+
+			case 'email_from_name':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['name']);
+
+				$to = $ticket->email_reader->getFromAddress();
+				$to = $to->getName();
+				$to = strtolower($to);
+
+				if (!$this->_testStringMatch($to, $op, $check)) {
+					return false;
+				}
+				break;
+
+			case 'email_account_bcc':
+
+				$matcher_service = App::getSystemService('GatewayAddressMatcher');
+				$found_match = $matcher_service->getMatchingAddressFromReader($ticket->email_reader);
+
+				if (!$found_match) {
+					return true;
+				}
+				return false;
+
+				break;
+
+			case 'email_subject':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+				$subject = $ticket->email_reader->getSubject()->getSubjectUtf8();
+				if (!$this->_testStringMatch($subject, $op, $choice['subject'])) {
+					return false;
+				}
+				break;
+
+			case 'email_body':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+				$body = $ticket->email_reader->getBodyText()->getBodyUtf8();
+				if (!$this->_testStringMatch($body, $op, $choice['message'])) {
+					return false;
+				}
+				break;
+
+			case 'email_header':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$header = $ticket->email_reader->getHeader('xxx');
+				if (!$header) {
+					return false;
+				}
+				$header = $header->getAllParts();
+
+				$match = false;
+				foreach ($header as $h) {
+					if ($this->_testChoiceMatch($h, $op, $choice)) {
+						$match = true;
+						break;
+					}
+				}
+				if (!$match) {
+					return false;
+				}
+
+				break;
+
+			case 'email_has_attach':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				if (!$ticket->email_reader->getAttachments()) {
+					return false;
+				}
+				break;
+
+			case 'new_reply_agent':
+				$reply = $this->tracker->getNewAgentReply();
+				if (!$reply || $reply->is_agent_note) {
+					return false;
+				}
+				break;
+
+			case 'new_reply_note':
+				$reply = $this->tracker->getNewAgentReply();
+				if (!$reply || !$reply->is_agent_note) {
+					return false;
+				}
+				break;
+
+			case 'new_reply_user':
+				if (!$this->tracker->getNewUserReply()) {
+					return false;
+				}
 				break;
 
 			case TicketSearch::TERM_DEPARTMENT:
@@ -727,6 +943,64 @@ class TicketTerms
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param mixed $value
+	 * @param string $op
+	 * @param mixed $choice
+	 * @param bool $suffix_only
+	 * @param bool $force_like
+	 * @return bool
+	 */
+	protected function _testStringMatch($value, $op, $choice, $suffix_only = false, $force_like = false)
+	{
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
+			$choices_in = (array)$choice;
+
+			$found = false;
+			foreach ($choices_in as $c) {
+				if (strpos($value, $c) === 0) {
+					$found = true;
+					break;
+				}
+			}
+
+			if ($op == self::OP_IS) {
+				return $found;
+			} else {
+				return (!$found);
+			}
+
+		} else {
+
+			$choices_in = (array)$choice;
+
+			$found = false;
+			foreach ($choices_in as $c) {
+				if ($suffix_only) {
+					if (\Orb\Util\Strings::endsWith($c, $value)) {
+						$found = true;
+						break;
+					}
+				} else {
+					if (strpos($value, $c) !== false) {
+						$found = true;
+						break;
+					}
+				}
+			}
+
+			if ($op == self::OP_CONTAINS) {
+				return $found;
+			} else {
+				return (!$found);
+			}
+		}
 	}
 
 

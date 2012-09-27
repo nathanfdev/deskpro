@@ -36,6 +36,10 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 		});
 
 		TicketTriggerEditPage_initTerms(this);
+
+		if (TicketTriggerEditPage_init) {
+			TicketTriggerEditPage_init.call(this);
+		}
 	}
 });
 
@@ -130,15 +134,13 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 </form>
 
-{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
+{% include 'AdminBundle:TicketTriggers:criteria.html.twig' with {
 	'classname': 'criteria-tpl',
-	'term_options': term_options,
-	'people_term_options': term_options.people_term_options,
-	'with_change_terms': true,
 	'event_trigger': trigger.event_trigger,
 	'event_trigger_master': trigger.getMasterEvent(),
 	'event_trigger_sub': trigger.getSubEvent(),
 } %}
+
 {% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {
 	'classname': 'actions-tpl',
 	'term_options': term_options,
