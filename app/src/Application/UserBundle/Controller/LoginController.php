@@ -375,14 +375,7 @@ HTML;
 				$this->em->persist($person);
 				$this->em->flush();
 
-				$this->session->set('auth_person_id', $person->id);
-				$this->session->set('dp_interface', DP_INTERFACE);
-				$this->session->set('auth_usersource_id', $usersource->id);
-				$this->session->set('auth_usersource_type', $usersource->source_type);
-				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
-				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
-
-				$this->session->save();
+				$this->_setupUsersourceSession($usersource, $person, $result);
 
 				if ($this->in->getString('js_tell')) {
 					$return = $this->generateUrl('user_jstell_login', array(
@@ -440,12 +433,7 @@ HTML;
 				$login_processor = new LoginProcessor($usersource, $result->getIdentity());
 				$person = $login_processor->getPerson();
 
-				$this->session->set('auth_person_id', $person['id']);
-				$this->session->set('auth_usersource_id', $usersource->id);
-				$this->session->set('auth_usersource_type', $usersource->source_type);
-				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
-				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
-				$this->session->save();
+				$this->_setupUsersourceSession($usersource, $person, $result);
 
 				$return = $this->in->getString('return');
 				if ($return) {
@@ -489,13 +477,7 @@ HTML;
 			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
 			$person = $login_processor->getPerson();
 
-			$this->session->set('auth_person_id', $person['id']);
-			$this->session->set('auth_usersource_id', $usersource->id);
-			$this->session->set('auth_usersource_type', $usersource->source_type);
-			$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
-			$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
-
-			$this->session->save();
+			$this->_setupUsersourceSession($usersource, $person, $result);
 
 			if ($this->session->get('auth_return')) {
 				$return = $this->session->get('auth_return');
@@ -762,5 +744,56 @@ HTML;
 			'person_id' => $person['id'],
 			'name' => $person['name']
 		));
+	}
+
+	############################################################################
+	# Usersource SSO
+	############################################################################
+
+	public function usersourceSsoAction($usersource_id)
+	{
+		/** @var $source \Application\DeskPRO\Entity\Usersource */
+		$source = $this->em->getRepository('DeskPRO:Usersource')->findOneById($usersource_id);
+
+		$available = ($source && $source->is_enabled);
+		if ($available) {
+			$available = $source->getAdapter()->isCapable('js_sso');
+		}
+
+		if (!$available) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$adapter = $source->getAdapter()->getAuthAdapter();
+		$result = $adapter->getSsoLoginActionResult($this);
+
+		if ($result->isValid()) {
+			$login_processor = new LoginProcessor($source, $result->getIdentity());
+			$person = $login_processor->getPerson();
+
+			$this->_setupUsersourceSession($source, $person, $result);
+		}
+
+		$return = $this->in->getString('return');
+		if ($return) {
+			return $this->redirect($return);
+		} else {
+			return $this->redirectRoute($this->route_prefix);
+		}
+	}
+
+	protected function _setupUsersourceSession(
+		\Application\DeskPRO\Entity\Usersource $usersource,
+		\Application\DeskPRO\Entity\Person $person,
+		\Orb\Auth\Result $result
+	)
+	{
+		$this->session->set('auth_person_id', $person['id']);
+		$this->session->set('dp_interface', DP_INTERFACE);
+		$this->session->set('auth_usersource_id', $usersource->id);
+		$this->session->set('auth_usersource_type', $usersource->source_type);
+		$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
+		$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
+		$this->session->save();
 	}
 }

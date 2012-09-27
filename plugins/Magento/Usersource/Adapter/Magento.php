@@ -32,25 +32,68 @@
  * @subpackage
  */
 
-namespace Application\AdminBundle\Form\Usersource\Model;
+namespace Magento\Usersource\Adapter;
 
-class MagentoModel extends BaseDbTableModel
+use Orb\Auth\Identity;
+use Orb\Auth\Result;
+use \Application\DeskPRO\App;
+
+class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
-	public $table_prefix;
-	public $sso;
-	public $magento_path;
-
-	protected function init()
+	public function getFieldsFromIdentity(Identity $identity)
 	{
-		$this->table_prefix = $this->_usersource->getOption('table_prefix', '');
-		$this->sso = $this->_usersource->getOption('sso', 0);
-		$this->magento_path = $this->_usersource->getOption('magento_path', '');
+		$info = $identity->getRawData();
+		return array(
+			'name'             => isset($info['name']) ? $info['name'] : '',
+			'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
+			'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
+			'email'            => isset($info['email_address']) ? $info['email_address'] : '',
+			'email_confirmed'  => true,
+		);
 	}
 
-	protected function saveApply(\Application\DeskPRO\ORM\EntityManager $em)
+	/**
+	 * @return \Magento\Usersource\Auth\Magento
+	 */
+	protected function _createAuthAdapterObject()
 	{
-		$this->_usersource->setOption('table_prefix', $this->table_prefix);
-		$this->_usersource->setOption('sso', $this->sso);
-		$this->_usersource->setOption('magento_path', $this->magento_path);
+		$options = $this->usersource->options;
+		$options['url'] = App::getSetting("Magento.url");
+		$options['api_user'] = App::getSetting("Magento.api_user");
+		$options['api_key'] = App::getSetting("Magento.api_key");
+
+		return new \Magento\Usersource\Auth\Magento($options);
+	}
+
+	/**
+	 * Find a user identity just by an email address.
+	 *
+	 * @param $email_address
+	 * @return \Orb\Auth\Identity|null
+	 */
+	public function findIdentityByInput($email_address)
+	{
+		$adapter = $this->getAuthAdapter();
+
+		$userinfo = $adapter->getUserInfoForEmail($email_address);
+		if (!$userinfo) {
+			return null;
+		}
+
+		return $adapter->getIdentityFromUserInfo($userinfo);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		return array(
+			'form_login',
+			'get_user_info',
+			'find_identity',
+			'cookie_login',
+			'js_sso'
+		);
 	}
 }

@@ -32,7 +32,7 @@
  * @subpackage AdminBundle
  */
 
-namespace Application\AdminBundle\Form\Usersource\Type;
+namespace Magento\Usersource\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
@@ -43,18 +43,15 @@ class MagentoType extends AbstractType
 	{
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('lost_password_url', 'text', array('required' => false));
-		$builder->add('db_dsn', 'text', array('required' => true));
-		$builder->add('db_username', 'text', array('required' => false));
-		$builder->add('db_password', 'text', array('required' => false));
-		$builder->add('table_prefix', 'text', array('required' => false));
-		$builder->add('sso', 'integer', array('required' => false));
+		$builder->add('sso_cookie', 'integer', array('required' => false));
 		$builder->add('magento_path', 'text', array('required' => false));
+		$builder->add('sso_js', 'integer', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)
 	{
 		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\MagentoModel',
+			'data_class' => 'Magento\\Usersource\\Form\\MagentoModel',
 		);
 	}
 

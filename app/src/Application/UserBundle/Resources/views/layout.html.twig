@@ -291,5 +291,9 @@
 	{% endif %}
 	<script type="text/javascript">stLight.options({publisher: "ur-b3c949e0-ec53-eea-51a4-2f4f16925438"}); </script>
 {% endif %}
+
+{% if not app.user.id %}
+	{{ dp_js_sso_loader() }}
+{% endif %}
 </body>
 </html>

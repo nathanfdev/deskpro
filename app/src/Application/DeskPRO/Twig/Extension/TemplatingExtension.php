@@ -121,7 +121,8 @@ class TemplatingExtension extends \Twig_Extension
 	        'dp_widgets_raw' => new \Twig_Function_Method($this, 'getWidgetsRaw'),
 	        'dp_widget_id' => new \Twig_Function_Method($this, 'getWidgetHtmlId'),
 	        'dp_widget_tabs_header' => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
-	        'dp_widget_tabs' => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html')))
+	        'dp_widget_tabs' => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
+	        'dp_js_sso_loader' => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
         );
     }
 
@@ -1129,5 +1130,19 @@ STR;
 		}
 
 		return $output;
+	}
+
+	public function getJsSsoLoader()
+	{
+		$person = App::getCurrentPerson();
+
+		$sources = App::getEntityRepository('DeskPRO:Usersource')->getJsSsoUsersources();
+		$output = array();
+		foreach ($sources AS $source) {
+			$adapter = $source->getAdapter()->getAuthAdapter();
+			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person);
+		}
+
+		return implode("\n\n", $output);
 	}
 }

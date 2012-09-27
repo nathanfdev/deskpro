@@ -90,6 +90,13 @@ $collection->add('user_login_inline', new Route(
 	array()
 ));
 
+$collection->add('user_login_usersource_sso', new Route(
+	'/login/usersource-sso/{usersource_id}',
+	array('_controller' => 'UserBundle:Login:usersourceSso'),
+	array('usersource_id' => '\d+'),
+	array()
+));
+
 $collection->add('user_logout', new Route(
 	'/logout/{auth}',
 	array('_controller' => 'UserBundle:Login:logout'),

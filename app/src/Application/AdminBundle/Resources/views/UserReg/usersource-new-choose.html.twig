@@ -41,10 +41,6 @@
 	<header><h3><label><input type="radio" name="usersource[source_type]" value="ez_publish" /> {{ phrase('admin.user_registration.ez_publish') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
-	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="magento" /> {{ phrase('admin.user_registration.magento') }}</label></h3></header>
-	{{ design.block_sections_item_end() }}
-
 	{% for source in plugin_sources %}
 		{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="usersource[source_type]" value="{{ source.unique_key }}" /> {{ source.title }}</label></h3></header>

@@ -26,33 +26,21 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @subpackage
+ * @package Orb
+ * @category Auth
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Orb\Auth\Adapter;
 
-use Orb\Auth\Identity;
-
-class Magento extends DbTablePhpPasswordCheck
+interface JsSsoInterface
 {
-	/**
-	 * @return \Orb\Auth\Adapter\Magento
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		return new \Orb\Auth\Adapter\Magento($this->getDb(), $this->usersource->options);
-	}
+	public function getSsoHtmlLoaderOutput(
+		\Application\DeskPRO\Entity\Usersource $source,
+		\Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
+		\Application\DeskPRO\Entity\Person $person
+	);
 
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		$capabilities = parent::getCapabilities();
-		$capabilities[] = 'cookie_login';
-		return $capabilities;
-	}
+	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
 }

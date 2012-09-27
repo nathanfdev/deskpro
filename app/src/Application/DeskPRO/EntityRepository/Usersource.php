@@ -116,6 +116,25 @@ class Usersource extends AbstractEntityRepository
 	}
 
 	/**
+	 * Fetch all usersources that are capable of logging via JS SSO checks.
+	 *
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getJsSsoUsersources()
+	{
+		$all = $this->getAllUsersources();
+
+		$ret = array();
+		foreach ($all as $us) {
+			if ($us->getAdapter()->isCapable('js_sso')) {
+				$ret[$us->id] = $us;
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Fetch all usersources that are capable of fetching userinfo without having to
 	 * authenticate. That is, we can provide a id/username/email and get an array of
 	 * raw data back.
