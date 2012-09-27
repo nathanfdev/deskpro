@@ -406,7 +406,7 @@ var DpOverlayWidget = new (function() {
 		css.push('overflow: hidden');
 		css = css.join(';');
 
-		var src = options.deskproUrl + 'widget/overlay.html?h=' + winHeight;
+		var src = options.deskproUrl + 'widget/overlay.html?h=' + winHeight + '&website_url=' + encodeURIComponent(window.location + '');
 
 		if (DpOverlayWidget_Options && DpOverlayWidget_Options.languageId) {
 			src += '&language_id=' + DpOverlayWidget_Options.languageId;

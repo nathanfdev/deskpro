@@ -4,6 +4,7 @@
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 <div id="newticket" class="tab" style="display: none;">
 	<form id="dp_newticket_form" action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator" enctype="multipart/form-data">
+		<input type="hidden" name="website_url" value="{{ website_url }}" />
 
 		{{ form_token('newticket_widget') }}
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}

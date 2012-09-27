@@ -126,6 +126,7 @@ class WidgetController extends AbstractController
 		$latest_content->setMaxCount(10);
 
 		$chat_active = $this->em->getRepository('DeskPRO:Session')->hasAvailableAgents();
+		$website_url = $this->in->getString('website_url');
 
 		$vars = array(
 			'departments' => $departments,
@@ -141,6 +142,7 @@ class WidgetController extends AbstractController
 			'chat_active' => $chat_active,
 
 			'newest_content' => $latest_content->getResults(),
+			'website_url' => $website_url,
 		);
 
 		return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
@@ -160,6 +162,11 @@ class WidgetController extends AbstractController
 			$this->person
 		);
 		$newticket->setPersonContext($this->person);
+
+		$website_url = $this->in->getString('website_url');
+		if ($website_url) {
+			$newticket->creation_system_option = $website_url;
+		}
 
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);

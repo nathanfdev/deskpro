@@ -87,6 +87,7 @@ var ticketReader = {
 <section class="dp-portal-section dp-new-ticket-section">
 	<article>
 		<form action="{{ path('user_tickets_new') }}{% if app.getRequest().query.has('_debug') %}?_debug{% endif %}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+			<input type="hidden" name="website_url" value="{{ website_url }}" />
 			<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 			<input type="hidden" name="process" value="1" />
 

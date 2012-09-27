@@ -61,11 +61,20 @@ class NewTicketController extends AbstractController
 			$interface = Entity\Ticket::CREATED_WEB_PERSON_EMBED;
 		}
 
+		$website_url = null;
+		if ($format == 'iframe') {
+			$website_url = $this->in->getString('website_url');
+		}
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			$interface,
 			$this->person
 		);
 		$newticket->setPersonContext($this->person);
+
+		if ($website_url) {
+			$newticket->creation_system_option = $website_url;
+		}
 
 		if ($this->search_query && !$this->request->isPost()) {
 			$newticket->ticket->subject = $this->search_query;
@@ -250,6 +259,7 @@ class NewTicketController extends AbstractController
 			'page_data_field_ids' => $page_data_field_ids,
 
 			'redirect_after' => $redirect_after,
+			'website_url' => $website_url,
 		));
     }
 

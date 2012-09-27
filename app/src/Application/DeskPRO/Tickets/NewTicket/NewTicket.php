@@ -66,6 +66,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	public $new_message;
 
 	public $creation_system;
+	public $creation_system_option;
 
 	public $require_login = false;
 
@@ -213,6 +214,11 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket->email_reader = $this->email_reader;
 			}
 			$ticket['creation_system']  = $this->creation_system;
+
+			if ($this->creation_system_option) {
+				$ticket['creation_system_option'] = $this->creation_system_option;
+			}
+
 			$ticket['person']  = $person;
 			if ($email) {
 				$ticket->person_email = $email;
