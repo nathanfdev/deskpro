@@ -14,7 +14,7 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 		// Criteria builder
 		this.criteriaEditor1 = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
 		this.criteriaEditor2 = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
-		this.actionsEditor2 = new DeskPRO.Form.RuleBuilder($('.actions-tpl'));
+		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-tpl'));
 
 		$('#criteria_all .add-term-row').on('click', function() {
 			var basename = 'terms['+Orb.uuid()+']';
@@ -28,19 +28,42 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 
 		$('#actions .add-term-row').on('click', function() {
 			var basename = 'actions['+Orb.uuid()+']';
-			self.criteriaEditor1.addNewRow($('#actions .terms-input'), basename);
+			self.actionsEditor.addNewRow($('#actions .terms-input'), basename);
 		});
 
 		$('#event_row').find('select').each(function() {
 			DP.select($(this));
 		});
+
+		TicketTriggerEditPage_initTerms(this);
 	}
 });
+
+function TicketTriggerEditPage_initTerms(handler) {
+	var basename;
+
+	{% for action in trigger.terms %}
+		basename = 'terms['+Orb.uuid()+']';
+		handler.criteriaEditor1.addNewRow($('#criteria_all .terms-input'), basename, { type: '{{action.type}}', op: '{{action.op}}', options: {{action.options|json_encode|raw}} });
+	{% endfor %}
+
+	{% for action in trigger.terms_any %}
+		basename = 'terms_any['+Orb.uuid()+']';
+		handler.criteriaEditor2.addNewRow($('#criteria_any .terms-input'), basename, { type: '{{action.type}}', op: '{{action.op}}', options: {{action.options|json_encode|raw}} });
+	{% endfor %}
+
+	var count = 0;
+	{% for action in trigger.actions %}
+		basename = 'actions['+Orb.uuid()+']';
+		handler.actionsEditor.addNewRow($('#actions .terms-input'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
+	{% endfor %}
+}
 </script>
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_tickettriggers_save', {'id': trigger.id|default(0)}) }}" method="post" data->
+<form action="{{ path('admin_tickettriggers_save', {'id': trigger.id|default(0)}) }}" method="post">
+<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 <input type="hidden" name="process" value="1" />
 
 <div class="dp-form row-colored">
@@ -114,14 +137,16 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 	'people_term_options': term_options.people_term_options,
 	'with_change_terms': true,
 	'event_trigger': trigger.event_trigger,
-	'event_group': trigger.getTriggerGroup()
+	'event_trigger_master': trigger.getMasterEvent(),
+	'event_trigger_sub': trigger.getSubEvent(),
 } %}
 {% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {
 	'classname': 'actions-tpl',
 	'term_options': term_options,
 	'trigger': trigger,
 	'event_trigger': trigger.event_trigger,
-	'event_group': trigger.getTriggerGroup()
+	'event_trigger_master': trigger.getMasterEvent(),
+	'event_trigger_sub': trigger.getSubEvent(),
 } %}
 
 {% endblock %}

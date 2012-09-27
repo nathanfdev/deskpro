@@ -193,9 +193,13 @@ class TicketTerms
 	 * @param TicketChangeTracker|null $tracker
 	 * @return bool
 	 */
-	public function doesTicketMatchAny(Entity\Ticket $ticket, TicketChangeTracker $tracker = null)
+	public function doesTicketMatchAny(Entity\Ticket $ticket)
 	{
-		foreach ($this->terms as $term => $info) {
+		foreach ($this->terms as $info) {
+
+			if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
+				continue;
+			}
 
 			$term = $info['type'];
 			if (!$term) continue;
@@ -203,13 +207,22 @@ class TicketTerms
 			$op = $info['op'];
 			$choice = $info['options'];
 
-			if ($this->testTerm($ticket, $term, $op, $choice)) {
-				return true;
+			if (strpos($op, 'changed') !== false) {
+				if ($ticket->getTicketLogger()) {
+					if ($this->testChangedTerm($ticket, $term, $op, $choice)) {
+						return true;
+					}
+				}
+			} else {
+				if ($this->testTerm($ticket, $term, $op, $choice)) {
+					return true;
+				}
 			}
 		}
 
 		return false;
 	}
+
 
 
 	/**

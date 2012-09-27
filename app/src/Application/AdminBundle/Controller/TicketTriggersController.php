@@ -47,35 +47,57 @@ use Application\DeskPRO\UI\RuleBuilder;
 class TicketTriggersController extends AbstractController
 {
 	############################################################################
-	# list
+	# list-triggers
 	############################################################################
 
-	public function listAction()
+	public function listTriggersAction($list_type)
 	{
-		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers();
-		$triggers = Arrays::removeFalsey($triggers);
+		switch ($list_type) {
+			case 'new':
+				$types = array('new.email.user', 'new.email.agent', 'new.web.agent', 'new.web.portal', 'new.web.widget', 'new.web.embed');
+				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-new.html.twig';
+				break;
 
-		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
-			'triggers' => $triggers,
+			case 'update':
+				$types = array('update');
+				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-update.html.twig';
+				break;
+
+			default:
+				return $this->redirectRoute('admin_tickettriggers', array('list_type' => 'new'));
+		}
+
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers($types);
+
+		return $this->render($list_tpl, array(
+			'list_type'  => $list_type,
+			'types'      => $types,
+			'triggers'   => $triggers,
 		));
 	}
 
-	############################################################################
-	# new-choose-type
-	############################################################################
-
-	public function newChooseTypeAction($trigger_type)
+	public function listEscalationsAction()
 	{
-		return $this->render('AdminBundle:TicketTriggers:edit-choosetype.html.twig', array(
-			'trigger_type' => $trigger_type
+		$types = array(
+			'time_open',
+			'time_user_waiting',
+			'time_total_user_waiting',
+			'time_agent_waiting',
+			'time_resolved',
+		);
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers($types);
+
+		return $this->render('AdminBundle:TicketTriggers:list-escalations.html.twig', array(
+			'triggers'   => $triggers,
 		));
 	}
+
 
 	############################################################################
 	# edit trigger
 	############################################################################
 
-	public function editTriggerAction($id, $type = null)
+	public function editTriggerAction($id, $trigger_type = null)
 	{
 		if ($id) {
 			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
@@ -85,11 +107,11 @@ class TicketTriggersController extends AbstractController
 		} else {
 			$trigger = new TicketTrigger();
 
-			if ($type == null) {
-				return $this->redirectRoute('admin_tickettriggers_new', array('type' => 'new'));
+			if ($trigger_type == null) {
+				return $this->redirectRoute('admin_tickettriggers_new', array('type' => 'new.email.user'));
 			}
 
-			$trigger->event_trigger = $type;
+			$trigger->event_trigger = $trigger_type;
 		}
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -109,7 +131,7 @@ class TicketTriggersController extends AbstractController
 		));
 	}
 
-	public function editEscalationAction($id)
+	public function editEscalationAction($id, $trigger_type = null)
 	{
 		if ($id) {
 			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
@@ -118,6 +140,12 @@ class TicketTriggersController extends AbstractController
 			}
 		} else {
 			$trigger = new TicketTrigger();
+
+			if ($trigger_type == null) {
+				return $this->redirectRoute('admin_ticketescalations_new', array('type' => 'time.open'));
+			}
+
+			$trigger->event_trigger = $trigger_type;
 		}
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -137,7 +165,7 @@ class TicketTriggersController extends AbstractController
 		));
 	}
 
-	public function saveEditTriggerAction($id)
+	public function saveTriggerAction($id)
 	{
 		if ($id) {
 			$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
@@ -148,6 +176,7 @@ class TicketTriggersController extends AbstractController
 			$trigger = new TicketTrigger();
 		}
 
+		$trigger->title = $this->in->getString('trigger.title');
 		$trigger->event_trigger = $this->in->getString('trigger.event_trigger');
 		$trigger->event_trigger_options = $this->in->getCleanValueArray('trigger.event_trigger_options', 'string', 'discard');
 

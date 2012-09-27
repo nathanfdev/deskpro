@@ -406,7 +406,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 						<tr>
 							<td class="title" style="text-align: right;">
 								{{ types[trigger.event_trigger] }}:
-								{% for desc in trigger.getTermDescriptions() %}
+								{% for desc in trigger.getAllTermDescriptions() %}
 									{{ desc }}
 									{% if not loop.last %}<br /><em class="op">{{ phrase('agent.general.and') }}</em>{% endif %}
 								{% endfor %}

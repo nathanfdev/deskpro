@@ -279,12 +279,17 @@
 	<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
 {% endif %}
 
+{% set pagetabs %}{% block pagetabs %}{% endblock %}{% endset %}
+{% if pagetabs|trim|length %}
+	<div id="dp_admin_pagetabs" class="dp_admin_pagetabs">{{ pagetabs|raw }}</div>
+{% endif %}
+
 {% block pagebar_after %}{% endblock %}
 
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
 {% block dp_full_page %}
-<div id="dp_admin_page" class="dp_admin_page {% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }}">
+<div id="dp_admin_page" class="dp_admin_page {% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }} {% if pagetabs|trim|length %}with-pagetabs{% endif %}">
 	{% block prepage %}{% endblock %}
 	<div id="dp_admin_page_inner" class="dp_admin_page_inner">
 		{% if sidebar|trim|length %}

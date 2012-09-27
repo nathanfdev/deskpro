@@ -83,36 +83,35 @@ class TicketTrigger extends AbstractEntityRepository
 	 *
 	 * @return array
 	 */
-	public function getGroupedTriggers()
+	public function getGroupedTriggers($type = null)
 	{
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			ORDER BY trig.run_order ASC
-		")->execute();
+		if ($type) {
+			$type = (array)$type;
+
+			$triggers = $this->getEntityManager()->createQuery("
+				SELECT trig
+				FROM DeskPRO:TicketTrigger trig
+				WHERE trig.event_trigger IN (?0)
+				ORDER BY trig.run_order ASC
+			")->execute(array($type));
+		} else {
+			$triggers = $this->getEntityManager()->createQuery("
+				SELECT trig
+				FROM DeskPRO:TicketTrigger trig
+				ORDER BY trig.run_order ASC
+			")->execute();
+		}
 
 		$grouped = array();
 
 		foreach ($triggers as $tr) {
 			$group = $tr->event_trigger;
-			$sub_group = null;
-			if (strpos($group, 'time_') === 0) {
-				$sub_group = $group;
-				$group = 'time';
-			}
 
 			if (!isset($grouped[$group])) {
 				$grouped[$group] = array();
 			}
 
-			if ($sub_group) {
-				if (!isset($grouped[$group][$sub_group])) {
-					$grouped[$group][$sub_group] = array();
-				}
-				$grouped[$group][$sub_group][] = $tr;
-			} else {
-				$grouped[$group][] = $tr;
-			}
+			$grouped[$group][] = $tr;
 		}
 
 		return $grouped;

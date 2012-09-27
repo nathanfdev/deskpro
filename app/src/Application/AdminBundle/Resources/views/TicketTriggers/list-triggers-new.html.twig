@@ -1,0 +1,290 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersPage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersPage.js') }}"></script>
+<script type="text/javascript">
+	var UPDATE_ORDER_URL = '{{ path('admin_tickettriggers_updateorder') }}';
+</script>
+{% endblock %}
+{% block pagetabs %}
+<ul>
+	<li class="on"><a href="{{ path('admin_tickettriggers', {list_type: 'new'}) }}">New Ticket Triggers</a></li>
+	<li><a href="{{ path('admin_tickettriggers', {list_type: 'update'}) }}">Ticket Updated Triggers</a></li>
+</ul>
+{% endblock %}
+{% block page %}
+
+{% macro trigger_row(index, trigger, type) %}
+	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %} orderable" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
+		<div class="dp-block-controls">
+			<ul>
+				{% if not trigger.isUneditable() %}
+					<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
+				{% endif %}
+				<li class="dp-move"><span></span></li>
+				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.on') }}</span></li>
+			</ul>
+		</div>
+		<div class="run-order"><label>{% if trigger.is_enabled %}{{ index }}{% else %}-{% endif %}</label></div>
+		<div class="contents">
+			{% if trigger.sys_name and trigger.sys_name == trigger.title %}
+				<lable><h2>{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
+			{% elseif trigger.title %}
+				<lable><h2>{{ trigger.title }}</h2></lable>
+			{% endif %}
+			<div class="trigger-desc">
+				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
+					<div class="terms">
+						{% set all_terms = trigger.getAllTermDescriptions() %}
+						{% set any_terms = trigger.getAllTermDescriptions() %}
+						{% if all_terms or any_terms %}
+							{% if all_terms %}
+								<em class="op ctrl">IF ALL:</em>
+								{% for desc in all_terms %}
+									{% if loop.index > 1 %}
+										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
+									{% endif %}
+									<span class="term">{{ desc }}</span>
+								{% endfor %}
+							{% endif %}
+
+							{% if any_terms %}
+								{% if all_terms %}<br /><em class="op ctrl">AND IF ANY:</em>
+								{% else %}<em class="op ctrl">IF ANY:</em>{% endif %}
+								{% for desc in any_terms %}
+									{% if loop.index > 1 %}
+										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
+									{% endif %}
+									<span class="term">{{ desc }}</span>
+								{% endfor %}
+							{% endif %}
+						{% else %}
+							<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
+						{% endif %}
+					</div>
+				</td><td valign="top" width="50%" style="padding-left: 15px;">
+					<div class="actions">
+						<em class="op ctrl">{{ phrase('admin.tickets.then') }}</em>
+						{% for desc in trigger.getActionDescriptions() %}
+							<span class="term">{{ desc|raw }}</span>
+							{% if not loop.last %}<br /><em class="op">{{ phrase('agent.general.and') }}</em>{% endif %}
+						{% endfor %}
+					</div>
+				</td></tr></table>
+			</div>
+		</div>
+		<br class="clear" />
+	</li>
+{% endmacro %}
+
+<div class="dp-page-section">
+	<header>New Tickets via Email</header>
+	<article>
+		<div class="content-table template-dir trigger-dir">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By a user sending an email
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.email.user'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new ticket emails sent by a user.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="content-table template-dir trigger-dir" style="margin-top: 8px;">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.agent'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By an agent forwarding a user email
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.email.agent'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new ticket emails sent by an agent.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.agent'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</article>
+</div>
+
+<br />
+
+<div class="dp-page-section">
+	<header>New Tickets via Web Form</header>
+	<article>
+		<div class="content-table template-dir trigger-dir">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.agent'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By an agent using the agent interface
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.web.agent'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new tickets made by an agent via the agent interface.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.agent'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="content-table template-dir trigger-dir" style="margin-top: 8px;">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.portal'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By a user using the helpdesk portal
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.web.portal'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new tickets created from the helpdesk portal.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.portal'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="content-table template-dir trigger-dir" style="margin-top: 8px;">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.widget'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By a user using the website widget
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.web.widget'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new tickets created from the helpdesk portal.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.widget'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="content-table template-dir trigger-dir" style="margin-top: 8px;">
+			<table width="100%" class="simple">
+				<thead>
+					<tr>
+						<th class="single-title" colspan="10">
+							<div style="float: right">
+								<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.embed'}) }}">Add New Trigger</a>
+							</div>
+							<h1 class="noexpand">
+								By a user using an embedded ticket form
+							</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<ul class="item-list trigger-set">
+								{% for trigger in triggers['new.web.embed'] %}
+									{{ _self.trigger_row(loop.index, trigger, type) }}
+								{% else %}
+									<li>
+										You have not defiend any triggers for new tickets created from the helpdesk portal.
+										<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.embed'}) }}">Create one now</a>.
+									</li>
+								{% endfor %}
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</article>
+</div>
+
+{% endblock %}

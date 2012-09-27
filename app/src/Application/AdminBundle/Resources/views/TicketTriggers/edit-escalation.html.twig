@@ -1,7 +1,7 @@
 {% extends 'AdminBundle:TicketTriggers:ticket-trigger-tpl.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
+		<li><a href="{{ path('admin_ticketescalations') }}">Escalations</a></li>
 		<li>
 			{% if trigger.id %}
 				Edit Escalation
@@ -12,14 +12,13 @@
 	</ul>
 {% endblock %}
 {% block event_row %}
-When a ticket
-<select name="trigger[event_trigger]">
-	<option {% if trigger.event_trigger == 'time_open' %}{% endif %} value="agent">has been open</option>
-	<option {% if trigger.event_trigger == 'time_user_waiting' %}{% endif %} value="agent">has been awaiting agent</option>
-	<option {% if trigger.event_trigger == 'time_agent_waiting' %}{% endif %} value="agent">has been awaiting user</option>
-	<option {% if trigger.event_trigger == 'time_total_user_waiting' %}{% endif %} value="agent">has a total user waiting time</option>
-</select>
-for
+{% if trigger.event_trigger == 'time.open' %}When a ticket has been open for
+{% elseif trigger.event_trigger == 'time.user_waiting' %}When a user has been waiting for a reply for
+{% elseif trigger.event_trigger == 'time.total_user_waiting' %}When a user has been waiting for a reply for a total of
+{% elseif trigger.event_trigger == 'time.agent_waiting' %}When an agent has been waiting for a reply for
+{% elseif trigger.event_trigger == 'time.resolved' %}When the ticket has been resolved for
+{% endif %}
+
 	<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px; position:relative; top: 1px;" class="small" />
 	<select name="event_trigger_scale">
 		{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}

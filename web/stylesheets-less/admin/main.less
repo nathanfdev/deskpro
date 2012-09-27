@@ -2914,8 +2914,51 @@ nav.admin-object-nav li:hover {
 	color: #999;
 }
 
+.dp_admin_page.with-pagetabs {
+	border-radius: 6px 6px 6px 6px;
+	-webkit-border-radius: 6px 6px 6px 6px;
+	border-top: 1px solid #CACFD6;
+}
 
+.dp_admin_pagetabs {
+	position: relative;
+	z-index: 100;
+	height: 37px;
 
+	> ul {
+		margin: 0;
+		padding: 0;
+	}
+	> ul > li {
+		padding: 0 15px;
+		font-family: Calibri,Helvetica,Arial,sans-serif;
+		font-size: 15px;
+		margin-left: 15px;
+
+		border-radius: 6px 6px 0 0;
+		-webkit-border-radius: 6px 6px 0 0;
+
+		color: #000;
+		//text-shadow: 1px 1px 0px rgba(0,0,0, 0.2);
+		float: left;
+
+		background-color: #F1F5FC;
+		border: 1px solid #C0C5CC;
+		border-bottom: none;
+		height: 36px;
+
+		a {
+			line-height: 37px;
+			color: #000;
+		}
+	}
+
+	> ul > li.on {
+		position: relative;
+		border-bottom: 1px solid #fff;
+		background-color: #fff;
+	}
+}
 
 .dp_admin_pagebar {
     margin-top: 10px;
@@ -4605,4 +4648,22 @@ a.delete-icon {
 	bottom: 0;
 	.fade-away(rgba(255,255,255,0), rgba(255,255,255,1), 45px);
 	width: 50px;
+}
+
+
+.dp-page-section {
+	border: 1px solid #D9DBDB;
+	background-color: #F1F7FE;
+	.rounded(4px);
+
+	> header {
+		font-size: 13px;
+		font-weight: bold;
+		padding: 10px;
+		padding-bottom: 0;
+	}
+
+	> article {
+		padding: 10px;
+	}
 }

@@ -12,21 +12,11 @@
 	</ul>
 {% endblock %}
 {% block event_row %}
-When
-<select name="trigger[event_trigger_options][performer]">
-	<option {% if not trigger.getEventTriggerOption('performer') %}selected="selected"{% endif %} value="0">anyone</option>
-	<option {% if trigger.getEventTriggerOption('performer') == 'agent' %}selected="selected"{% endif %} value="agent">an agent</option>
-	<option {% if trigger.getEventTriggerOption('performer') == 'user' %}selected="selected"{% endif %} value="user">a user</option>
-</select>
-<select name="trigger[event_trigger]">
-	<option {% if trigger.event_trigger == 'new_ticket' %}{% endif %} value="agent">creates</option>
-	<option {% if trigger.event_trigger == 'new_reply' %}{% endif %} value="agent">replies to</option>
-	<option {% if trigger.event_trigger == 'property_change' %}{% endif %} value="agent">updates</option>
-</select>
-a ticket via
-<select name="trigger[event_trigger_options][interface]">
-	<option {% if not trigger.getEventTriggerOption('performer') %}selected="selected"{% endif %} value="0">any interface</option>
-	<option {% if trigger.getEventTriggerOption('performer') == 'email' %}selected="selected"{% endif %} value="email">email</option>
-	<option {% if trigger.getEventTriggerOption('performer') == 'web' %}selected="selected"{% endif %} value="web">web form</option>
-</select>
+	{% if trigger.event_trigger == 'new.email.user' %}When a user creates a ticket via email
+	{% elseif trigger.event_trigger == 'new.email.agent' %}When an agent forwards a user email via email
+	{% elseif trigger.event_trigger == 'new.web.agent' %}When an agent creates a new ticket via the agent interface
+	{% elseif trigger.event_trigger == 'new.web.portal' %}When a user creates a new ticket via the helpdesk portal
+	{% elseif trigger.event_trigger == 'new.web.widget' %}When a user creates a new ticket via the website widget
+	{% elseif trigger.event_trigger == 'new.web.embed' %}When a user creates a new ticket via an embedded ticket form
+	{% endif %}
 {% endblock %}

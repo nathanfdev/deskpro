@@ -1,0 +1,258 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersPage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersPage.js') }}"></script>
+<script type="text/javascript">
+	var UPDATE_ORDER_URL = '{{ path('admin_tickettriggers_updateorder') }}';
+</script>
+{% endblock %}
+{% block pagebar %}
+	<ul>
+		<li>Tickets</li>
+		<li>Escalations</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+{% macro trigger_row(index, trigger, type) %}
+	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
+		<div class="dp-block-controls">
+			<ul>
+				{% if not trigger.isUneditable() %}
+					<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
+				{% endif %}
+				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.on') }}</span></li>
+			</ul>
+		</div>
+		<div class="contents" style="margin-left:0">
+			{% if trigger.sys_name and trigger.sys_name == trigger.title %}
+				<lable><h2>{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
+			{% elseif trigger.title %}
+				<lable><h2>{{ trigger.title }}</h2></lable>
+			{% endif %}
+			<div class="trigger-desc">
+				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
+					<div class="terms">
+						<em class="trigger-type-phrase">{{ types_phrases[trigger.event_trigger] }}</em>
+						{% if trigger.event_trigger_option %}
+							{% if trigger.getOptionScale() == 'seconds' %}
+								{{ phrase('admin.tickets.x_since_' ~ type, { time: relative_time(trigger.getOptionSeconds())}) }}
+							{% else %}
+							{{ phrase('admin.tickets.x_since_' ~ type, { time: trigger.event_trigger_option }) }}
+							{% endif %}
+						{% endif %}
+						{% set all_terms = trigger.getAllTermDescriptions() %}
+						{% set any_terms = trigger.getAllTermDescriptions() %}
+						{% if all_terms or any_terms %}
+							{% if all_terms %}
+								<em class="op ctrl">IF ALL:</em>
+								{% for desc in all_terms %}
+									{% if loop.index > 1 %}
+										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
+									{% endif %}
+									<span class="term">{{ desc }}</span>
+								{% endfor %}
+							{% endif %}
+
+							{% if any_terms %}
+								{% if all_terms %}<br /><em class="op ctrl">AND IF ANY:</em>
+								{% else %}<em class="op ctrl">IF ANY:</em>{% endif %}
+								{% for desc in any_terms %}
+									{% if loop.index > 1 %}
+										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
+									{% endif %}
+									<span class="term">{{ desc }}</span>
+								{% endfor %}
+							{% endif %}
+						{% else %}
+							<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
+						{% endif %}
+					</div>
+				</td><td valign="top" width="50%" style="padding-left: 15px;">
+					<div class="actions">
+						<em class="op ctrl">{{ phrase('admin.tickets.then') }}</em>
+						{% for desc in trigger.getActionDescriptions() %}
+							<span class="term">{{ desc|raw }}</span>
+							{% if not loop.last %}<br /><em class="op">{{ phrase('agent.general.and') }}</em>{% endif %}
+						{% endfor %}
+					</div>
+				</td></tr></table>
+			</div>
+		</div>
+		<br class="clear" />
+	</li>
+{% endmacro %}
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.open'}) }}">Add New Escalation</a>
+					</div>
+					<h1 class="noexpand">
+						Time ticket has been open for
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['time.open'] %}
+							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% else %}
+							<li>
+								You have not defiend any escalations based on the time a ticket has been open for.
+								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.open'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.user_waiting'}) }}">Add New Escalation</a>
+					</div>
+					<h1 class="noexpand">
+						Time a user has been waiting for a reply
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['time.open'] %}
+							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% else %}
+							<li>
+								You have not defiend any escalations based on the time a user has been waiting for a reply.
+								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.user_waiting'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.total_user_waiting'}) }}">Add New Escalation</a>
+					</div>
+					<h1 class="noexpand">
+						Total time the user has been waiting for replies
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['time.open'] %}
+							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% else %}
+							<li>
+								You have not defiend any escalations based on the total time a user has been waiting for replies.
+								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.total_user_waiting'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.agent_waiting'}) }}">Add New Escalation</a>
+					</div>
+					<h1 class="noexpand">
+						Time an agent has been waiting for the user to reply
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['time.open'] %}
+							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% else %}
+							<li>
+								You have not defiend any escalations based on the time an agent has been waiting for the user to reply.
+								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.agent_waiting'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.resolved'}) }}">Add New Escalation</a>
+					</div>
+					<h1 class="noexpand">
+						Time a ticket has been resolved for
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['time.open'] %}
+							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% else %}
+							<li>
+								You have not defiend any escalations based on the time a ticket has been resolved for.
+								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.resolved'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{% endblock %}

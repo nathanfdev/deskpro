@@ -46,14 +46,20 @@ use Orb\Util\Dates;
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
-	const EVENT_NEW_TICKET                 = 'new_ticket';
-	const EVENT_NEW_REPLY                  = 'new_reply';
-	const EVENT_PROPERTY_CHANGE            = 'property_change';
-	const EVENT_TIME_OPEN                  = 'time_open';
-	const EVENT_TIME_USER_WAITING          = 'time_user_waiting';
-	const EVENT_TIME_TOTAL_USER_WAITING    = 'time_total_user_waiting';
-	const EVENT_TIME_AGENT_WAITING         = 'time_agent_waiting';
-	const EVENT_TIME_RESOLVED              = 'time_resolved';
+	const EVENT_NEW_EMAIL_USER        = 'new.email.user';
+	const EVENT_NEW_EMAIL_AGENT       = 'new.email.agent';
+	const EVENT_NEW_WEB_AGENT         = 'new.web.agent';
+	const EVENT_NEW_WEB_PORTAL        = 'new.web.portal';
+	const EVENT_NEW_WEB_WIDGET        = 'new.web.widget';
+	const EVENT_NEW_WEB_FORM          = 'new.web.embed';
+	const EVENT_UPDATE_AGENT          = 'update.agent';
+	const EVENT_UPDATE_USER           = 'update.user';
+
+	const EVENT_TIME_OPEN                  = 'time.open';
+	const EVENT_TIME_USER_WAITING          = 'time.user_waiting';
+	const EVENT_TIME_TOTAL_USER_WAITING    = 'time.total_user_waiting';
+	const EVENT_TIME_AGENT_WAITING         = 'time.agent_waiting';
+	const EVENT_TIME_RESOLVED              = 'time.resolved';
 
 	/**
 	 * @var int
@@ -229,7 +235,22 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return \Application\DeskPRO\Tickets\TicketTerms
 	 */
-	public function getTicketTerms()
+	public function getAllTicketTerms()
+	{
+		if ($this->_ticket_terms) return $this->_ticket_terms;
+		$this->terms = (array)$this->terms;
+
+		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
+
+		$this->_ticket_terms = $ticket_terms;
+		return $this->_ticket_terms;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketTerms
+	 */
+	public function getAnyTicketTerms()
 	{
 		if ($this->_ticket_terms) return $this->_ticket_terms;
 		$this->terms = (array)$this->terms;
@@ -249,32 +270,43 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isTriggerMatch(Ticket $ticket, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker)
 	{
-		$ticket_terms = $this->getTicketTerms();
+		$ticket_terms = $this->getAllTicketTerms();
 		$ticket_terms->setChangeTracker($tracker);
 
 		$match = $ticket_terms->doesTicketMatch($ticket);
 
-		return $match;
+		if (!$match) {
+			return false;
+		}
+
+		if (!$this->terms_any) {
+			$any_match = true;
+		} else {
+			$any_ticket_terms = $this->getAnyTicketTerms();
+			$ticket_terms->setChangeTracker($tracker);
+			$any_match = $ticket_terms->doesTicketMatchAny($ticket);
+		}
+
+		return $match && $any_match;
 	}
 
 
 	/**
 	 * @return array
 	 */
-	public function getTermDescriptions($ignore_grouping_terms = false)
+	public function getAllTermDescriptions()
 	{
-		$descs = $this->getTicketTerms()->getDescriptions();
+		$descs = $this->getAllTicketTerms()->getDescriptions();
+		return $descs;
+	}
 
-		if ($ignore_grouping_terms) {
-			$exclude = array(
-				'creation_system' => true,
-				'action_performer' => true,
-			);
-			$descs = \Orb\Util\Arrays::filter($descs, function ($v, $k) use ($exclude) {
-				return !isset($exclude[$k]);
-			});
-		}
 
+	/**
+	 * @return array
+	 */
+	public function getAnyTermDescriptions()
+	{
+		$descs = $this->getAnyTicketTerms()->getDescriptions();
 		return $descs;
 	}
 
@@ -369,73 +401,36 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $this->event_trigger_options;
 	}
 
+	/**
+	 * @param null $idx
+	 * @return array|null
+	 */
+	public function getEventTriggerPath($idx = null)
+	{
+		$parts = explode('.', $this->event_trigger);
+		if ($idx === null) {
+			return $parts;
+		}
+
+		return isset($parts[$idx]) ? $parts[$idx] : null;
+	}
+
 
 	/**
-	 * Gets the logical trigger group based on the event type and the criteria.
-	 * For example, there is one "new ticket" type but depending on who and how the ticket created,
-	 * it might be new_ticket.user_web, new_ticket.user_email or new_ticket.agent.
+	 * @return array|null
 	 */
-	public function getTriggerGroup()
+	public function getMasterEvent()
 	{
-		switch ($this->event_trigger) {
-			case self::EVENT_NEW_TICKET:
-				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
-				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : null;
+		return $this->getEventTriggerPath(0);
+	}
 
-				switch ($type) {
-					case 'web.person':
-						return 'new_ticket.web_person';
-					case 'gateway.person':
-						return 'new_ticket.gateway_person';
-					case 'widget':
-						return 'new_ticket.widget';
-					case 'gateway.agent':
-					case 'web.agent':
-						return 'new_ticket.agent';
-					default:
-						return 'new_ticket';
-				}
-				break;
 
-			case self::EVENT_NEW_REPLY:
-				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
-				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : null;
-
-				if ($type == 'web.person') {
-					return 'new_reply.web_person';
-				} elseif ($type == 'gateway.person') {
-					return 'new_reply.gateway_person';
-				} else {
-					$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
-					$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
-
-					if ($who_type == 'agent') {
-						return 'new_reply.agent';
-					}
-				}
-
-				return 'new_reply';
-
-				break;
-
-			case self::EVENT_PROPERTY_CHANGE:
-
-				$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
-				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : null;
-
-				if ($who_type == 'user') {
-					return 'property_change.user';
-				} elseif ($who_type == 'agent') {
-					return 'property_change.agent';
-				}
-
-				return 'property_change';
-
-				break;
-
-			default:
-				return $this->event_trigger;
-		}
+	/**
+	 * @return array|null
+	 */
+	public function getSubEvent()
+	{
+		return $this->getEventTriggerPath(1);
 	}
 
 

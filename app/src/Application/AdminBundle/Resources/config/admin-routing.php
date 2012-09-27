@@ -1273,21 +1273,28 @@ $collection->add('admin_ticketwidgets_edit', new Route(
 ));
 
 $collection->add('admin_tickettriggers', new Route(
-	'/tickets/triggers',
-	array('_controller' => 'AdminBundle:TicketTriggers:list'),
+	'/tickets/triggers/{list_type}',
+	array('_controller' => 'AdminBundle:TicketTriggers:listTriggers', 'list_type' => ''),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketescalations', new Route(
+	'/tickets/escalations',
+	array('_controller' => 'AdminBundle:TicketTriggers:listEscalations'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_new', new Route(
-	'/tickets/triggers/new-trigger',
+	'/tickets/triggers/new-trigger/{trigger_type}',
 	array('_controller' => 'AdminBundle:TicketTriggers:editTrigger', 'id' => '0'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_ticketescalations_new', new Route(
-	'/tickets/escalations/new-escalation',
+	'/tickets/escalations/new-escalation/{trigger_type}',
 	array('_controller' => 'AdminBundle:TicketTriggers:editEscalation', 'id' => '0'),
 	array(),
 	array()
