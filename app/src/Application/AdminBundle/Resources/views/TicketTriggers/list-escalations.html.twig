@@ -42,7 +42,7 @@
 							{% endif %}
 						{% endif %}
 						{% set all_terms = trigger.getAllTermDescriptions() %}
-						{% set any_terms = trigger.getAllTermDescriptions() %}
+						{% set any_terms = trigger.getAnyTermDescriptions() %}
 						{% if all_terms or any_terms %}
 							{% if all_terms %}
 								<em class="op ctrl">IF ALL:</em>

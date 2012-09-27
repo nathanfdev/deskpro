@@ -46,12 +46,18 @@ use Orb\Util\Dates;
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
+	const EVENT_NEW                   = 'new';
+	const EVENT_NEW_EMAIL             = 'new.email';
 	const EVENT_NEW_EMAIL_USER        = 'new.email.user';
 	const EVENT_NEW_EMAIL_AGENT       = 'new.email.agent';
+	const EVENT_NEW_WEB               = 'new.web';
 	const EVENT_NEW_WEB_AGENT         = 'new.web.agent';
-	const EVENT_NEW_WEB_PORTAL        = 'new.web.portal';
-	const EVENT_NEW_WEB_WIDGET        = 'new.web.widget';
-	const EVENT_NEW_WEB_FORM          = 'new.web.embed';
+	const EVENT_NEW_WEB_AGENT_PORTAL  = 'new.web.agent.portal';
+	const EVENT_NEW_WEB_USER          = 'new.web.user';
+	const EVENT_NEW_WEB_USER_PORTAL   = 'new.web.user.portal';
+	const EVENT_NEW_WEB_USER_WIDGET   = 'new.web.user.widget';
+	const EVENT_NEW_WEB_USER_FORM     = 'new.web.user.embed';
+	const EVENT_UPDATE                = 'update';
 	const EVENT_UPDATE_AGENT          = 'update.agent';
 	const EVENT_UPDATE_USER           = 'update.user';
 

@@ -54,7 +54,15 @@ class TicketTriggersController extends AbstractController
 	{
 		switch ($list_type) {
 			case 'new':
-				$types = array('new.email.user', 'new.email.agent', 'new.web.agent', 'new.web.portal', 'new.web.widget', 'new.web.embed');
+				$types = array(
+					'new.email.user',
+					'new.email.agent',
+					'new.web.agent',
+					'new.web.agent.portal',
+					'new.web.user.portal',
+					'new.web.user.widget',
+					'new.web.user.embed'
+				);
 				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-new.html.twig';
 				break;
 
@@ -68,6 +76,12 @@ class TicketTriggersController extends AbstractController
 		}
 
 		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers($types);
+
+		$triggers['new.web.user_any'] = array();
+		if (!empty($triggers['new.web.user'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user']);
+		if (!empty($triggers['new.web.user.portal'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.portal']);
+		if (!empty($triggers['new.web.user.widget'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.widget']);
+		if (!empty($triggers['new.web.user.embed'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.embed']);
 
 		return $this->render($list_tpl, array(
 			'list_type'  => $list_type,

@@ -12,11 +12,20 @@
 	</ul>
 {% endblock %}
 {% block event_row %}
+	{% if 'new.web.user' not in trigger.event_trigger %}
+		<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
+	{% endif %}
+
 	{% if trigger.event_trigger == 'new.email.user' %}When a user creates a ticket via email
 	{% elseif trigger.event_trigger == 'new.email.agent' %}When an agent forwards a user email via email
-	{% elseif trigger.event_trigger == 'new.web.agent' %}When an agent creates a new ticket via the agent interface
-	{% elseif trigger.event_trigger == 'new.web.portal' %}When a user creates a new ticket via the helpdesk portal
-	{% elseif trigger.event_trigger == 'new.web.widget' %}When a user creates a new ticket via the website widget
-	{% elseif trigger.event_trigger == 'new.web.embed' %}When a user creates a new ticket via an embedded ticket form
+	{% elseif trigger.event_trigger == 'new.web.agent.portal' %}When an agent creates a new ticket via the agent interface
+	{% elseif 'new.web.user' in trigger.event_trigger %}
+		When a user creates a new ticket via
+		<select name="trigger[event_trigger]">
+			<option {% if trigger.event_trigger == 'new.web.user' %}selected="selected"{% endif %} value="new.web.user">any web form</option>
+			<option {% if trigger.event_trigger == 'new.web.user.portal' %}selected="selected"{% endif %} value="new.web.user.portal">the helpdesk portal</option>
+			<option {% if trigger.event_trigger == 'new.web.user.widget' %}selected="selected"{% endif %} value="new.web.user.widget">the website widget</option>
+			<option {% if trigger.event_trigger == 'new.web.user.embed' %}selected="selected"{% endif %} value="new.web.user.embed">the an embedded ticket form</option>
+		</select>
 	{% endif %}
 {% endblock %}

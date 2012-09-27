@@ -63,7 +63,6 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% block page %}
 
 <form action="{{ path('admin_tickettriggers_save', {'id': trigger.id|default(0)}) }}" method="post">
-<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 <input type="hidden" name="process" value="1" />
 
 <div class="dp-form row-colored">

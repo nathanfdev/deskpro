@@ -18,7 +18,7 @@
 {% elseif trigger.event_trigger == 'time.agent_waiting' %}When an agent has been waiting for a reply for
 {% elseif trigger.event_trigger == 'time.resolved' %}When the ticket has been resolved for
 {% endif %}
-
+	<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 	<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px; position:relative; top: 1px;" class="small" />
 	<select name="event_trigger_scale">
 		{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
