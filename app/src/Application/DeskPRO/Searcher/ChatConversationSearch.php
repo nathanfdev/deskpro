@@ -48,6 +48,7 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_DEPARTMENT_ID        = 'department_id';
 	const TERM_DEPARTMENT_ID_SPECIFIC = 'department_id_specific';
 	const TERM_DATE_CREATED         = 'date_created';
+	const TERM_PERSON_ID            = 'person_id';
 	const TERM_STATUS               = 'status';
 	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
 	const TERM_LABEL                = 'chat_label';
@@ -234,7 +235,7 @@ class ChatConversationSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_ID:
-					$wheres[] = $this->_choiceMatch('chat_conversations.id', $op, $children, true);
+					$wheres[] = $this->_choiceMatch('chat_conversations.id', $op, $choice, true);
 					break;
 				case self::TERM_AGENT_ID:
 
@@ -277,6 +278,10 @@ class ChatConversationSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
 					$wheres[] = $this->_dateMatch('chat_conversations.date_created', $op, $choice);
+					break;
+
+				case self::TERM_PERSON_ID:
+					$wheres[] = $this->_choiceMatch('chat_conversations.person_id', $op, $choice, true);
 					break;
 
 				case self::TERM_STATUS:

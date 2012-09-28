@@ -606,4 +606,120 @@ $collection->add('api_organizations_groups', new Route(
 	array()
 ));
 
+################################################################################
+# Chats
+################################################################################
+
+$collection->add('api_chats', new Route(
+	'/chats',
+	array('_controller' => 'ApiBundle:Chat:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_chats_chat', new Route(
+	'/chats/{chat_id}',
+	array('_controller' => 'ApiBundle:Chat:getChat'),
+	array('_method' => 'GET', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_post', new Route(
+	'/chats/{chat_id}',
+	array('_controller' => 'ApiBundle:Chat:postChat'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_leave', new Route(
+	'/chats/{chat_id}/leave',
+	array('_controller' => 'ApiBundle:Chat:leaveChat'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_end', new Route(
+	'/chats/{chat_id}/end',
+	array('_controller' => 'ApiBundle:Chat:endChat'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_messages', new Route(
+	'/chats/{chat_id}/messages',
+	array('_controller' => 'ApiBundle:Chat:getMessages'),
+	array('_method' => 'GET', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_messages_post', new Route(
+	'/chats/{chat_id}/messages',
+	array('_controller' => 'ApiBundle:Chat:newMessage'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_message', new Route(
+	'/chats/{chat_id}/messages/{message_id}',
+	array('_controller' => 'ApiBundle:Chat:getMessage'),
+	array('_method' => 'GET', 'chat_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_participants', new Route(
+	'/chats/{chat_id}/participants',
+	array('_controller' => 'ApiBundle:Chat:getParticipants'),
+	array('_method' => 'GET', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_participants_post', new Route(
+	'/chats/{chat_id}/participants',
+	array('_controller' => 'ApiBundle:Chat:postParticipants'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_participant', new Route(
+	'/chats/{chat_id}/participants/{person_id}',
+	array('_controller' => 'ApiBundle:Chat:getParticipant'),
+	array('_method' => 'GET', 'chat_id' => '\\d+', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_participant_delete', new Route(
+	'/chats/{chat_id}/participants/{person_id}',
+	array('_controller' => 'ApiBundle:Chat:deleteParticipant'),
+	array('_method' => 'DELETE', 'chat_id' => '\\d+', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_labels', new Route(
+	'/chats/{chat_id}/labels',
+	array('_controller' => 'ApiBundle:Chat:getChatLabels'),
+	array('_method' => 'GET', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_labels_post', new Route(
+	'/chats/{chat_id}/labels',
+	array('_controller' => 'ApiBundle:Chat:postChatLabels'),
+	array('_method' => 'POST', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_label', new Route(
+	'/chats/{chat_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Chat:getChatLabel'),
+	array('_method' => 'GET', 'chat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_chats_chat_label_delete', new Route(
+	'/chats/{chat_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Chat:deleteChatLabel'),
+	array('_method' => 'DELETE', 'chat_id' => '\\d+'),
+	array()
+));
+
 return $collection;
