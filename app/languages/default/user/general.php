@@ -34,6 +34,8 @@
 	'user.general.save'                          => 'Save',
 	'user.general.set_as_helpful'                => 'This page was helpful',
 	'user.general.set_as_unhelpful'              => 'This page was unhelpful',
+	'user.general.signing_in'                    => 'Signing in...',
+	'user.general.signing_in_please_wait'        => 'Signing in. Please wait.',
 	'user.general.upload'                        => 'Upload',
 	'user.general.upload-drag'                   => 'Drop your file here to upload it',
 	'user.general.upload_a_file'                 => 'Upload a file',

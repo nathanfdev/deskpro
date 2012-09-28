@@ -196,6 +196,15 @@ DeskPRO.User.Window = new Orb.Class({
 		}
 	},
 
+	showAutoSignInOverlay: function() {
+		var overlay = $('#auto-sign-in-overlay'), overlayWidth = overlay.width();
+
+
+		overlay.css({
+			left: Math.floor(($(document.body).width() - overlayWidth) / 2)
+		}).show();
+	},
+
 	getHandler: function(id) {
 		return this.handlers[id];
 	},

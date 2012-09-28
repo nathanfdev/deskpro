@@ -212,7 +212,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 		$is_first_page
 	)
 	{
-		if (!$this->options->get('sso_js') || !empty($_COOKIE['dplogout']) || $person->id || !$is_first_page) {
+		if (!$this->options->get('sso_js') || $person->id || !empty($_COOKIE['dplogout']) || !$is_first_page) {
 			return '';
 		}
 
@@ -221,6 +221,9 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 		return
 			'<script type="text/javascript">
 				window.dpMagentoLogin = function(login) {
+					if (window.DeskPRO_Window && window.DeskPRO_Window.showAutoSignInOverlay) {
+						window.DeskPRO_Window.showAutoSignInOverlay();
+					}
 					login(BASE_URL + \'login/usersource-sso/\' + ' . $source->id . '+ \'/\');
 				};
 				(function(d) {

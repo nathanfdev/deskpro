@@ -234,6 +234,15 @@
 			</ul>
 		</div>
 	</div>
+
+	<div style="display:none" id="auto-sign-in-overlay" class="dp-overlay-outer">
+		<div class="dp-overlay dp-with-title">
+			<div class="dp-title"><h3>{{ phrase('user.general.signing_in') }}</h3></div>
+			<div class="dp-content">
+				<div class="dp-loading-msg">{{ phrase('user.general.signing_in_please_wait') }}</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 {% if app.admin_portal_controls %}
