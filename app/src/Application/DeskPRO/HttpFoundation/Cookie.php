@@ -68,13 +68,13 @@ class Cookie extends BaseCookie
 			}
 		}
 
-		if ($expire == self::EXPIRE_NEVER) {
+		if ($expire === self::EXPIRE_NEVER) {
 			$expire = '+5 years';
-		} elseif ($expire == self::EXPIRE_DELETE) {
+		} elseif ($expire === self::EXPIRE_DELETE) {
 			$expire = '-1 week';
 		}
 
-		parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+	    parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly);
 	}
 
 	public function __toString()

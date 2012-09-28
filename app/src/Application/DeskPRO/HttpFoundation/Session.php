@@ -83,7 +83,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
-		if (DP_INTERFACE == 'user' && empty($_SESSION)) {
+		if (DP_INTERFACE == 'user' && empty($_SESSION) && empty($_COOKIE['dplogout'])) {
 			// user interface and a new session - we need to look through user sources for cookie handlers
 			$sources = App::getEntityRepository('DeskPRO:Usersource')->getCookieInputUsersources();
 			foreach ($sources AS $source)

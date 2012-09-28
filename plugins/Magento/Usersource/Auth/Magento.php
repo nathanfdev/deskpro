@@ -211,11 +211,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 		\Application\DeskPRO\Entity\Person $person
 	)
 	{
-		if (!$this->options->get('sso_js')) {
-			return '';
-		}
-
-		if ($person->id) {
+		if (!$this->options->get('sso_js') || !empty($_COOKIE['dplogout']) || $person->id) {
 			return '';
 		}
 

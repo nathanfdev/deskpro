@@ -123,6 +123,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
 			$cookie->send();
 		}
+
+		\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplogout', 1, 0)->send();
 	}
 
 	public function logoutAction($auth)
@@ -270,6 +272,8 @@ HTML;
 			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpreme', $person->getId() . '-' . $person->getRememberMeCookieCode(), 'never', true);
 			$cookie->send();
 		}
+
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 
 		if ($return) {
 			return $this->redirect($return);
@@ -734,6 +738,8 @@ HTML;
 		$this->em->persist($person);
 		$this->em->flush();
 
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+
 		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
 
 		return $this->createJsonResponse(array(
@@ -795,5 +801,7 @@ HTML;
 		$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 		$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 		$this->session->save();
+
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 	}
 }
