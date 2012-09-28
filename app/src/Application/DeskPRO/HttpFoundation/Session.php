@@ -64,6 +64,12 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	protected $visitor;
 
 	/**
+	 * True if this is the first page view of a session.
+	 * @var bool
+	 */
+	protected $is_first_page = false;
+
+	/**
 	 * Starts the session storage.
 	 */
 	public function start()
@@ -74,6 +80,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		parent::start();
 
+		$this->is_first_page = empty($_SESSION);
+
 		if (DP_INTERFACE != 'admin' && (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['auth_person_id']) || !$_SESSION['_symfony2']['auth_person_id'])) {
 			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
@@ -83,7 +91,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
-		if (DP_INTERFACE == 'user' && empty($_SESSION) && empty($_COOKIE['dplogout'])) {
+		if (DP_INTERFACE == 'user' && $this->is_first_page && empty($_COOKIE['dplogout'])) {
 			// user interface and a new session - we need to look through user sources for cookie handlers
 			$sources = App::getEntityRepository('DeskPRO:Usersource')->getCookieInputUsersources();
 			foreach ($sources AS $source)
@@ -297,6 +305,16 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		return $this->language;
+	}
+
+	/**
+	 * Is this the first page of the session?
+	 *
+	 * @return bool
+	 */
+	public function isFirstPage()
+	{
+		return $this->is_first_page;
 	}
 
 

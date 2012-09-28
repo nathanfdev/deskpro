@@ -1135,12 +1135,13 @@ STR;
 	public function getJsSsoLoader()
 	{
 		$person = App::getCurrentPerson();
+		$is_first_page = App::getSession()->isFirstPage();
 
 		$sources = App::getEntityRepository('DeskPRO:Usersource')->getJsSsoUsersources();
 		$output = array();
 		foreach ($sources AS $source) {
 			$adapter = $source->getAdapter()->getAuthAdapter();
-			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person);
+			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
 		}
 
 		return implode("\n\n", $output);

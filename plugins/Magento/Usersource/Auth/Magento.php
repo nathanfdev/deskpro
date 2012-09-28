@@ -208,10 +208,11 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 	public function getSsoHtmlLoaderOutput(
 		\Application\DeskPRO\Entity\Usersource $source,
 		\Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
-		\Application\DeskPRO\Entity\Person $person
+		\Application\DeskPRO\Entity\Person $person,
+		$is_first_page
 	)
 	{
-		if (!$this->options->get('sso_js') || !empty($_COOKIE['dplogout']) || $person->id) {
+		if (!$this->options->get('sso_js') || !empty($_COOKIE['dplogout']) || $person->id || !$is_first_page) {
 			return '';
 		}
 

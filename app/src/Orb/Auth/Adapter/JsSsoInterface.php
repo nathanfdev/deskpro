@@ -39,7 +39,8 @@ interface JsSsoInterface
 	public function getSsoHtmlLoaderOutput(
 		\Application\DeskPRO\Entity\Usersource $source,
 		\Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
-		\Application\DeskPRO\Entity\Person $person
+		\Application\DeskPRO\Entity\Person $person,
+		$is_first_page
 	);
 
 	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
