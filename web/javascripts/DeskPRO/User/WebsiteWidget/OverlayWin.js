@@ -115,7 +115,11 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			ev.preventDefault();
 
 			var origUrl = $(this).get(0).href;
-			var url = Orb.appendQueryData(origUrl, '_partial', 'overlayWidget');
+			if (origUrl.indexOf('gourl') !== -1) {
+				var url = origUrl + '%3F_partial=overlayWidget';
+			} else {
+				var url = Orb.appendQueryData(origUrl, '_partial', 'overlayWidget');
+			}
 			url = url.replace(/:/g, '__DP_COL__');
 
 			self.tellParent('showContentPage', [url]);
