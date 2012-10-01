@@ -37,13 +37,6 @@ $collection->add('serve_person_picture_size', new Route(
 	array()
 ));
 
-$collection->add('serve_trans_gif', new Route(
-	'/download/pixel.gif',
-	array('_controller' => 'DeskPRO:Blob:getStaticFile', 'name' => 'pixel'),
-	array(),
-	array()
-));
-
 $collection->add('serve_default_picture', new Route(
 	'/file.php/avatar/{s}/default.jpg',
 	array('_controller' => '(see: serve_file.php)', 'name' => 'default_picture', 's' => '0'),

@@ -72,13 +72,6 @@ $collection->add('agent_get_server_time', new Route(
     array()
 ));
 
-$collection->add('agent_show_blob', new Route(
-	'/misc/show-blob/{blob_id}',
-	array('_controller' => 'AgentBundle:Misc:showBlob'),
-	array(),
-	array()
-));
-
 $collection->add('agent_ajax_save_prefs', new Route(
 	'/misc/ajax-save-prefs',
 	array('_controller' => 'AgentBundle:Misc:ajaxSavePrefs'),
