@@ -49,7 +49,7 @@ class NewTicket
 	public $notify_template = '';
 	public $message;
 	public $department_id;
-	public $status = 'awaiting_agent';
+	public $status;
 	public $agent_id;
 	public $agent_team_id;
 	public $category_id = 0;
@@ -160,6 +160,10 @@ class NewTicket
 			'department_id', 'category_id', 'priority_id', 'workflow_id',
 			'product_id', 'notify_template'
 		);
+		if (!$this->status) {
+			$this->status = 'awaiting_agent';
+		}
+
 		foreach ($standard as $k) {
 			$ticket[$k] = $this->$k;
 		}

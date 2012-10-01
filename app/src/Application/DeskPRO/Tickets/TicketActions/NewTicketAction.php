@@ -192,7 +192,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			if ($validating) {
 				$ticket->setStatus('hidden.validating');
-			} elseif ($ticket->person->is_agent_confirmed) {
+			} elseif ($ticket->status == 'hidden' && $ticket->person->is_agent_confirmed) {
 				$ticket->setStatus('awaiting_agent');
 			}
 
