@@ -92,6 +92,10 @@ abstract class CustomFieldAbstract
 	{
 		$field = $this->_field;
 
+		if (!$this->title) {
+			$this->title = 'Untitled';
+		}
+
 		$field->title = $this->title;
 		$field->description = $this->description ?: '';
 		if ($this->isNewField()) {
