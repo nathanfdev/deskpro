@@ -230,7 +230,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $creation_system_option;
+	protected $creation_system_option = '';
 
 	/**
 	 * @var string
