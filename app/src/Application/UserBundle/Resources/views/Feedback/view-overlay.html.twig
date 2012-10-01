@@ -7,7 +7,12 @@
 {% block content %}
 <section class="dp-content-post dp-content-page">
 	<header>
-		<h3 class="title"><a href="{{ feedback.getLink() }}" class="full-page">{{ feedback.title }}</a></h3>
+		<table class="dp-layout" width="100%"><tr>
+			<td style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
+			<td class="dp-row-contain" width="100%">
+				<h3 class="title"><a href="{{ feedback.getLink() }}" class="full-page">{{ feedback.title }}</a></h3>
+			</td>
+		</tr></table>
 	</header>
 	<article>
 		<div class="dp-post">{{ feedback.content_html|raw }}</div>
