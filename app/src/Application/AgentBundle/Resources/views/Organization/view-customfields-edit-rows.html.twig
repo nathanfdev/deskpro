@@ -1,6 +1,6 @@
 {% for f in custom_fields %}
 	<dt class="type-labels">{{ f.title }}</dt>
-	<dd class="people-tags tags-wrap">
+	<dd>
 		{{ render_custom_field_form(f) }}
 	</dd>
 {% endfor %}
