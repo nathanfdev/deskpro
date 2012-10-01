@@ -251,7 +251,7 @@ class CategoryHierarchy
 		$ret = array();
 		foreach ($for_ids as $id) {
 			if (isset($this->_cat_names[$id])) {
-				$ret[] = $this->_cats[$id]['title'];
+				$ret[$id] = $this->_cats[$id]['title'];
 			}
 		}
 
