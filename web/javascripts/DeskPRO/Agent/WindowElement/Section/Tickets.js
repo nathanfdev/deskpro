@@ -15,6 +15,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('ticket-section.list-activated', function (info) {
+			var allId = $('#tickets_awaiting_agent_navitem').data('filter-id');
+			if (info.id == allId && $('#tickets_awaiting_agent_navitem').hasClass('nav-selected')) {
+				// Dont switch away from 'awaiting agent' under archive which is same as 'all'
+				return;
+			}
 			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
 		}, this);
 
