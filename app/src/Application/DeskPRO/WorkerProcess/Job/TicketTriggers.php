@@ -84,6 +84,7 @@ class TicketTriggers extends AbstractJob
 
 		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 100));
 
+		$this->logger->log("Found " . count($ticket_ids) . " matching", 'INFO');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
 		App::getDb()->beginTransaction();
@@ -91,7 +92,12 @@ class TicketTriggers extends AbstractJob
 			foreach ($tickets as $ticket) {
 				$tracker = $ticket->getTicketLogger();
 
-				$d = $ticket[$trigger->getTicketTimeField()];
+				$field = $trigger->getTicketTimeField();
+				if (!$field) {
+					continue;
+				}
+
+				$d = !empty($ticket[$field]) ? $ticket[$field] : null;
 				if (!$d) {
 					continue;
 				}

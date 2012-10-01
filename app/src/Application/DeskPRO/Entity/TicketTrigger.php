@@ -121,6 +121,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $run_order = 0;
 
 	/**
+	 * @var \DateTime
+	 */
+	protected $date_created;
+
+	/**
 	 * @var \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
 	 */
 	protected $_ticket_actions_coll;
@@ -134,6 +139,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Tickets\TicketTerms
 	 */
 	protected $_ticket_terms_any;
+
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
+	}
 
 	/**
 	 * @return int
@@ -169,6 +179,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$time_secs = $this->getOptionSeconds();
+
+		$searcher->addRawWhere("tickets.date_created >= '" . $this->date_created->format('Y-m-d H:i:s') . "'");
 
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_OPEN:
@@ -212,6 +224,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				$searcher->addTerm('date_resolved', 'lte', array('date1' => $date_cut));
 
 				break;
+
+			default:
+				$searcher->addRawWhere('0');
 		}
 
 		return $searcher;
@@ -626,6 +641,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions', ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'run_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_order', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
