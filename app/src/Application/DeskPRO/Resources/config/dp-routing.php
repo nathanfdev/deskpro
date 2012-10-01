@@ -18,35 +18,35 @@ $collection->add('proxy', new Route(
 
 $collection->add('serve_blob', new Route(
 	'/file.php/{blob_auth_id}/{filename}',
-	array('_controller' => 'DeskPRO:Blob:showBlob'),
+	array('_controller' => '(see: serve_file.php)'),
 	array(),
 	array()
 ));
 
 $collection->add('serve_person_picture', new Route(
 	'/file.php/avatar/{person_id}',
-	array('_controller' => 'DeskPRO:Blob:personPicture', 'size' => 0),
+	array('_controller' => '(see: serve_file.php)', 'size' => 0),
 	array('person_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('serve_person_picture_size', new Route(
 	'/file.php/avatar/{person_id}',
-	array('_controller' => 'DeskPRO:Blob:personPicture'),
+	array('_controller' => '(see: serve_file.php)'),
 	array('person_id' => '\\d+', 'size' => '\\d+'),
 	array()
 ));
 
 $collection->add('serve_trans_gif', new Route(
-	'/download/pixel',
+	'/download/pixel.gif',
 	array('_controller' => 'DeskPRO:Blob:getStaticFile', 'name' => 'pixel'),
 	array(),
 	array()
 ));
 
 $collection->add('serve_default_picture', new Route(
-	'/file.php/avatar/default',
-	array('_controller' => 'DeskPRO:Blob:getStaticFile', 'name' => 'default_picture'),
+	'/file.php/avatar/{s}/default.jpg',
+	array('_controller' => '(see: serve_file.php)', 'name' => 'default_picture', 's' => '0'),
 	array(),
 	array()
 ));
@@ -61,14 +61,14 @@ $collection->add('favicon', new Route(
 
 $collection->add('serve_org_picture_default', new Route(
 	'/file.php/o-avatar/default',
-	array('_controller' => 'DeskPRO:Blob:defaultOrgPicture'),
+	array('_controller' => '(see: serve_file.php)'),
 	array(),
 	array()
 ));
 
 $collection->add('serve_org_picture', new Route(
 	'/file.php/o-avatar/{org_id}',
-	array('_controller' => 'DeskPRO:Blob:orgPicture'),
+	array('_controller' => '(see: serve_file.php)'),
 	array('person_id' => '\\d+'),
 	array()
 ));

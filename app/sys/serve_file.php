@@ -129,9 +129,9 @@ class FilestorageLoader
 		try {
 			$pathinfo = $this->getPathInfo();
 
-			// Default avatar: /avatar/default
-			if (preg_match('#^/avatar/default#', $pathinfo)) {
-				$this->defaultAvatarAction();
+			// Default avatar: /avatar/50/default
+			if (preg_match('#^/avatar/([0-9]+)/default.jpg#', $pathinfo, $m)) {
+				$this->defaultAvatarAction($m[1]);
 
 			// Person avatar: /avatar/13
 			} elseif (preg_match('#^/avatar/([0-9]+)#', $pathinfo, $m)) {
@@ -430,7 +430,7 @@ class FilestorageLoader
 	/**
 	 * Serve the default avatar
 	 */
-	public function defaultAvatarAction()
+	public function defaultAvatarAction($s = null)
 	{
 		$name = 'picture-default';
 		if (isset($_GET['is_agent'])) {
@@ -457,7 +457,9 @@ class FilestorageLoader
 		}
 
 		$size = null;
-		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
+		if ($s !== null) {
+			$size = (int)$s;
+		} elseif (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) {
 			$size = $_GET['s'];
 		}
 
