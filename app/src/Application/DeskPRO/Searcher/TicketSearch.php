@@ -79,6 +79,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_FLAGGED                   = 'flagged';
 	const TERM_TEXT                      = 'text';
 	const TERM_SENT_TO_ADDRESS           = 'sent_to_address';
+	const TERM_DAY_CREATED               = 'day_created';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -1437,22 +1438,9 @@ class TicketSearch extends SearcherAbstract
                     $wheres[] = "TIME($term) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
                     break;
 
-                case 'day_created':
-                    switch($op) {
-                        case 'before':
-                            $operator = 'IN';
-                        case 'after':
-                            $operator = 'NOT IN';
-                            break;
-                    }
-
-                    foreach($choice as $k => $v) {
-                        $choice[$k] = "'".preg_replace('[^A-Za-z]', '', $choice[$k])."'";
-                    }
-
-                    $column = str_replace('time', 'date', $term);
-
-                    $wheres[] = "DATE_FORMAT($column, '%W') $op (".implode(',',$choices).')';
+				case self::TERM_DAY_CREATED:
+					$days = isset($choice['days']) ? $choice['days'] : array();
+					$wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
                     break;
 
 				default:

@@ -602,21 +602,30 @@
 
 	{% if search_context != 'filter' %}
     {% if 'day_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-    <div class="builder-type" title="{{ phrase('agent.general.day_created') }}" data-rule-type="day_created">
-        <div class="builder-op">
-            <select name="op" class="op">
-                <option value="is">{{ phrase('agent.general.is') }}</option>
-                <option value="not">{{ phrase('agent.general.is_not') }}</option>
-            </select>
-        </div>
-        <div class="builder-options">
-            {% set days = [phrase('agent.general.monday'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply')] %}
-            {% for day in days %}
-                <label>{{ day }}</label>
-                <input type="checkbox" value="{{ day }}" name="days[]"/>
-            {% endfor %}
-        </div>
-    </div>
+    <div class="builder-type" title="Week Day" data-rule-type="day_created">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			{% set days = {
+				1: 'Monday',
+				2: 'Tuesday',
+				3: 'Wednesday',
+				4: 'Thursday',
+				5: 'Friday',
+				6: 'Saturday',
+				0: 'Sunday'
+			} %}
+			<select name="days[]" multiple="multiple">
+				{% for day,name in days %}
+				<option value="{{ day }}">{{ name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
     {% endif %}
 	{% endif %}
 
