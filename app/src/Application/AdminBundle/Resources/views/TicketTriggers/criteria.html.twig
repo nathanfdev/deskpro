@@ -427,6 +427,7 @@
 		</div>
 	</div>
 
+	{% if event_trigger_sub == 'agent' %}
 	<div class="builder-type" title="Has new agent reply" data-rule-type="new_reply_agent" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
 			<input type="hidden" name="op" value="id" />
@@ -444,13 +445,32 @@
 			<input type="hidden" name="do" value="1" />
 		</div>
 	</div>
+	{% endif %}
 
+	{% if event_trigger_sub == 'user' %}
 	<div class="builder-type" title="Has new user reply" data-rule-type="new_reply_user" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
 			<input type="hidden" name="op" value="id" />
 		</div>
 		<div class="builder-options">
 			<input type="hidden" name="do" value="1" />
+		</div>
+	</div>
+	{% endif %}
+
+	<div class="builder-type" title="New message body" data-rule-type="message">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="message" value="" />
 		</div>
 	</div>
 
