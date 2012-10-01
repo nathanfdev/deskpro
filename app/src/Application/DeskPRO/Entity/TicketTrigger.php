@@ -580,13 +580,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				$event = 'new.email.person';
 				break;
 			case Ticket::CREATED_WEB_PERSON_PORTAL:
-				$event = 'new.web.agent.portal';
+				$event = 'new.web.user.portal';
 				break;
 			case Ticket::CREATED_WEB_PERSON_EMBED:
-				$event = 'new.web.agent.embed';
+				$event = 'new.web.user.embed';
 				break;
 			case Ticket::CREATED_WEB_PERSON_WIDGET:
-				$event = 'new.web.agent.widget';
+				$event = 'new.web.user.widget';
 				break;
 			case Ticket::CREATED_GATEWAY_AGENT:
 				$event = 'new.email.agent';

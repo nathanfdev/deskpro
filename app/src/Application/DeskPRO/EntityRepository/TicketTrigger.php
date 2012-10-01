@@ -191,10 +191,21 @@ class TicketTrigger extends AbstractEntityRepository
 			return array();
 		}
 
+		// Gets all event names from specific to most general
+		// E.g., new.web.user.portal, new.web.user, new.web and new
+		$all_events = array();
+		foreach ($events as $event) {
+			$all_events[] = $event;
+			$parts = explode('.', $event);
+			while (array_pop($parts)) {
+				$all_events[] = implode('.', $parts);
+			}
+		}
+
 		$dql = array();
 		$params = array();
 		$x = 0;
-		foreach ($events as $event) {
+		foreach ($all_events as $event) {
 			$y = $x+1;
 			$dql[] = "trig.event_trigger = ?$x OR trig.event_trigger LIKE ?$y";
 

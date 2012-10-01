@@ -602,7 +602,7 @@ class TicketTerms
 				break;
 
 			case 'message':
-				$reply = $this->tracker->getNewAgentReply();
+				$reply = $this->tracker->getNewReply();
 				if (!$reply) {
 					return false;
 				}
@@ -763,8 +763,8 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_SUBJECT:
-				$choice = (array)$choice;
-				$choice = array_pop($choice);
+				$choice = isset($choice['subject']) ? $choice['subject'] : '';
+
 				if (!$this->_testStringMatch($ticket['subject'], $op, $choice)) {
 					return false;
 				}
