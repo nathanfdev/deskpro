@@ -326,6 +326,15 @@ class TicketTerms
 				}
 				break;
 
+			case 'creation_system_option':
+				$url = isset($choice['website_url']) ? $choice['website_url'] : '';
+
+				if (!$this->_testStringMatch($ticket->creation_system_option, $op, $url)) {
+					return false;
+				}
+
+				break;
+
 			case 'action_performer':
 				$is_agent = App::getCurrentPerson()->isAgent();
 
