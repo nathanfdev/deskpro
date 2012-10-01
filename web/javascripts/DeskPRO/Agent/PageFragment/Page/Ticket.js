@@ -262,8 +262,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			dataType: 'json',
 			data: formData,
 			context: this,
+			noErrorOverride: true,
 			complete: function() {
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
+			},
+			error: function() {
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
+				var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
+				loadingEl.hide();
 			},
 			success: function(result) {
 
