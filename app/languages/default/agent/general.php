@@ -183,6 +183,8 @@
 	'agent.general.display_options'                         => 'Display Options',
 	'agent.general.does_not_contain'                        => 'does not contain',
 	'agent.general.does_not_include'                        => 'does not include',
+	'agent.general.matches_regex'                           => 'matches regex',
+	'agent.general.not_matches_regex'                       => 'does not match regex',
 	'agent.general.does_not_include_label'                  => 'does not include label',
 	'agent.general.domain_is_summary'                       => 'Email domain is {{domain}}',
 	'agent.general.done'                                    => 'Done',

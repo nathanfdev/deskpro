@@ -56,6 +56,8 @@ class TicketTerms
 	const OP_CONTAINS    = 'contains';
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_NOOP        = null;
+	const OP_IS_REGEX    = 'is_regex';
+	const OP_NOT_REGEX   = 'not_regex';
 
 	const OP_CHANGED            = 'changed';
 	const OP_CHANGED_TO         = 'changed_to';
@@ -599,6 +601,16 @@ class TicketTerms
 				}
 				break;
 
+			case 'message':
+				$reply = $this->tracker->getNewAgentReply();
+				if (!$reply) {
+					return false;
+				}
+				if (!$this->_testStringMatch($reply->getMessageText(), $op, $choice['message'])) {
+					return false;
+				}
+				break;
+
 			case 'new_reply_agent':
 				$reply = $this->tracker->getNewAgentReply();
 				if (!$reply || $reply->is_agent_note) {
@@ -753,22 +765,10 @@ class TicketTerms
 			case TicketSearch::TERM_SUBJECT:
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
-				switch ($op) {
-					case self::OP_IS:
-						if ($ticket['subject'] != $choice) return false;
-						break;
-					case self::OP_NOT:
-						if ($ticket['subject'] == $choice) return false;
-						break;
-					case self::OP_CONTAINS:
-						if (strpos(strtolower($ticket['subject']), strtolower($choice)) === false) return false;
-						break;
-					case self::OP_NOTCONTAINS:
-						if (strpos(strtolower($ticket['subject']), strtolower($choice)) !== false) return false;
-						break;
+				if (!$this->_testStringMatch($ticket['subject'], $op, $choice)) {
+					return false;
 				}
 				break;
-
 			case TicketSearch::TERM_SENT_TO_ADDRESS:
 				$choice = (array)$choice;
 				$choice = array_pop($choice);
@@ -970,7 +970,29 @@ class TicketTerms
 			$choice = Arrays::getFirstItem($choice);
 		}
 
-		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
+		if ($op == self::OP_IS_REGEX || $op	== self::OP_NOT_REGEX) {
+
+			if (is_array($choice)) {
+				$choice = array_pop($choice);
+			}
+
+			$regex = (string)$choice;
+			if ($regex) {
+				$regex = Strings::getInputRegexPattern($regex);
+			}
+
+			if (!$regex) {
+				return false;
+			}
+
+			$found = preg_match($regex, $value);
+			if ($op == self::OP_IS_REGEX) {
+				return $found;
+			} else {
+				return (!$found);
+			}
+
+		} elseif (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
 
 			$found = false;

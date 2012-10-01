@@ -840,6 +840,35 @@ class Strings
 	}
 
 
+	/**
+	 * Tries to verify and fix a regular expression, usually used to turn a regex inputted into a
+	 * form into a real regex with delims.
+	 *
+	 * @param string $input
+	 * @return string
+	 */
+	static public function getInputRegexPattern($input)
+	{
+		// Might be missing delims
+		if (@preg_match($input, 'test') === false) {
+			$input = "/" . str_replace('/', '\\/', $input) . "/";
+		}
+
+		// Check if its still invalid
+		if (@preg_match($input, 'test') === false) {
+			return false;
+		}
+
+		// Make sure there is no 'e' modifier
+		$modifiers = self::extractRegexMatch('#[^\d\w\s](.*?)$#', $input);
+		if (strpos($modifiers, 'e') !== false) {
+			return false;
+		}
+
+		return $input;
+	}
+
+
 
 	/**
 	 * Turns a string into an acceptable URL slug.

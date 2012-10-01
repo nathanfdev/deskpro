@@ -62,5 +62,19 @@ class Build1348674608 extends AbstractBuild
 		}
 
 		$this->execMutateSql("ALTER TABLE ticket_triggers ADD event_trigger_options LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)', ADD terms_any LONGBLOB NOT NULL COMMENT '(DC2Type:array)', DROP event_trigger_option");
+
+		// Rename trigger types
+		$triggers = $this->container->getDb()->fetchAll("
+			SELECT *
+			FROM ticket_triggers
+			WHERE event_trigger NOT LIKE 'time_%'
+		");
+
+		foreach ($triggers as $trig) {
+			$terms = unserialize($trig['terms']);
+			foreach ($terms as $term) {
+
+			}
+		}
 	}
 }
