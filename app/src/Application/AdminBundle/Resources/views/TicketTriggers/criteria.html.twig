@@ -631,8 +631,8 @@
 		</div>
 		<div class="builder-options">
 			<select name="usergroup">
-				{% for id,title in app.getDataRepository('Usergroup').getUserUsergroups() %}
-					<option value="{{id}}">{{title}}</option>
+				{% for ug in app.getDataRepository('Usergroup').getUserUsergroups() %}
+					<option value="{{ ug.id }}">{{ ug.title }}</option>
 				{% endfor %}
 			</select>
 		</div>
@@ -649,8 +649,8 @@
 		</div>
 		<div class="builder-options">
 			<select name="language">
-				{% for id,title in app.getDataRepository('Language').getTitles() %}
-				<option value="{{id}}">{{title}}</option>
+				{% for lang in app.getDataRepository('Language').getTitles() %}
+				<option value="{{ lang.id }}">{{ lang.title }}</option>
 				{% endfor %}
 			</select>
 		</div>
