@@ -1,45 +1,45 @@
 {% if log.action_type == 'changed_agent' %}
-	Changed agent to {{log.details.new_agent_name|default(phrase('agent.general.unassigned'))}}
+	&middot; Changed agent to {{log.details.new_agent_name|default(phrase('agent.general.unassigned'))}}
 {% elseif log.action_type == 'changed_agent_team' %}
-	Changed agent team to {{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
+	&middot; Changed agent team to {{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'participant_added' %}
-	Removed {{log.details.email}} as a participant
+	&middot; Removed {{log.details.email}} as a participant
 {% elseif log.action_type == 'participant_removed' %}
-	Added {{log.details.email}} as a participant
+	&middot; Added {{log.details.email}} as a participant
 {% elseif log.action_type == 'ticket_created' %}
-	Created ticket
+	&middot; Created ticket
 {% elseif log.action_type == 'subject' %}
-	Changed subject
+	&middot; Changed subject
 {% elseif log.action_type == 'ticket_split' %}
-    Split ticket
+    &middot; Split ticket
 {% elseif log.action_type == 'merged' %}
-	Merged ticket
+	&middot; Merged ticket
 {% elseif log.action_type == 'changed_category' %}
-	{{log.details.new_category_title|default(phrase('agent.general.none'))}}
+	&middot; {{log.details.new_category_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_department' %}
-	Changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
+	&middot; Changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_organization' %}
-	Changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
+	&middot; Changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_person' %}
-	Changed person to {{log.details.new_person_name}}
+	&middot; Changed person to {{log.details.new_person_name}}
 {% elseif log.action_type == 'message_created' %}
-	Added reply
+	&middot; Added reply
 {% elseif log.action_type == 'message_removed' %}
-	<span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">ID {{log.id_before}}</span>
+	&middot; <span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">ID {{log.id_before}}</span>
 {% elseif log.action_type == 'changed_priority' %}
-	Changed priority to {{log.details.new_priority_title|default(phrase('agent.general.none'))}}
+	&middot; Changed priority to {{log.details.new_priority_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_workflow' %}
-	Changed workflow to {{log.details.new_workflow_title|default(phrase('agent.general.none'))}}
+	&middot; Changed workflow to {{log.details.new_workflow_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_urgency' %}
-	Changed urgency to {{log.details.new_urgency}}
+	&middot; Changed urgency to {{log.details.new_urgency}}
 {% elseif log.action_type == 'changed_product' %}
-	Changed product to {{log.details.new_product_title|default(phrase('agent.general.none'))}}
+	&middot; Changed product to {{log.details.new_product_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'attach_added' %}
-	Added attachment
+	&middot; Added attachment
 {% elseif log.action_type == 'attach_removed' %}
-	Removed attachment
+	&middot; Removed attachment
 {% elseif log.action_type == 'changed_status' %}
-	Changed status to {{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}
+	&middot; Changed status to {{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}
 {% elseif log.action_type == 'changed_custom_field' %}
-	Changed {{ log.details.field_name }}
+	&middot; Changed {{ log.details.field_name }}
 {% endif %}

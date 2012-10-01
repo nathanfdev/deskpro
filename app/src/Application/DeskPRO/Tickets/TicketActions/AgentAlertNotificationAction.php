@@ -251,16 +251,7 @@ class AgentAlertNotificationAction extends AbstractAction
 
 	protected function getLogItems()
 	{
-		$log_items = array();
-
-		foreach ($this->tracker->getLogInspector()->getLogActions() as $action) {
-			$ticket_log = new \Application\DeskPRO\Entity\TicketLog();
-			$ticket_log['action_type'] = $action->getLogName();
-			$ticket_log['details'] = $action->getLogDetails();
-
-			$log_items[] = $ticket_log;
-		}
-
-		return $log_items;
+		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogs();
+		return $ticket_logs;
 	}
 }
