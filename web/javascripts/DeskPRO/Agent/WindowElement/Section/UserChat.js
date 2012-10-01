@@ -166,7 +166,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var isOpen = false;
 		Array.each(chatTabs, function(tab) {
 			if (parseInt(tab.page.meta.conversation_id) == parseInt(convoId)) {
-				isOpen = true;
+				isOpen = tab;
 				return false;
 			}
 		}, this);
@@ -287,6 +287,13 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var self = this;
 
 		if (!this.isDepAllowed(data.department_id)) {
+			return;
+		}
+
+		var openTab = this.isChatOpen(data.conversation_id);
+		if (openTab && data.restarted) {
+			openTab.page.closeSelf();
+			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 			return;
 		}
 
