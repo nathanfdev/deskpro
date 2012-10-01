@@ -15,6 +15,7 @@
 {% block page %}
 
 {% macro trigger_row(index, trigger, type) %}
+	{% set type = type|replace({'.': '_'}) %}
 	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
 		<div class="dp-block-controls">
 			<ul>
@@ -34,18 +35,19 @@
 				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
 					<div class="terms">
 						<em class="trigger-type-phrase">{{ types_phrases[trigger.event_trigger] }}</em>
-						{% if trigger.event_trigger_option %}
+						{% if trigger.getEventTriggerOption('time') %}
 							{% if trigger.getOptionScale() == 'seconds' %}
 								{{ phrase('admin.tickets.x_since_' ~ type, { time: relative_time(trigger.getOptionSeconds())}) }}
 							{% else %}
-							{{ phrase('admin.tickets.x_since_' ~ type, { time: trigger.event_trigger_option }) }}
+								{{ phrase('admin.tickets.x_since_' ~ type, { time: trigger.getEventTriggerOption('time') }) }}
+								<br />
 							{% endif %}
 						{% endif %}
 						{% set all_terms = trigger.getAllTermDescriptions() %}
 						{% set any_terms = trigger.getAnyTermDescriptions() %}
 						{% if all_terms or any_terms %}
 							{% if all_terms %}
-								<em class="op ctrl">IF ALL:</em>
+								<em class="op ctrl">AND IF ALL:</em>
 								{% for desc in all_terms %}
 									{% if loop.index > 1 %}
 										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
@@ -55,8 +57,7 @@
 							{% endif %}
 
 							{% if any_terms %}
-								{% if all_terms %}<br /><em class="op ctrl">AND IF ANY:</em>
-								{% else %}<em class="op ctrl">IF ANY:</em>{% endif %}
+								<br /><em class="op ctrl">AND IF ANY:</em>
 								{% for desc in any_terms %}
 									{% if loop.index > 1 %}
 										<br /><em class="op">{{ phrase('agent.general.and') }}</em>
@@ -64,8 +65,6 @@
 									<span class="term">{{ desc }}</span>
 								{% endfor %}
 							{% endif %}
-						{% else %}
-							<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
 						{% endif %}
 					</div>
 				</td><td valign="top" width="50%" style="padding-left: 15px;">
@@ -102,7 +101,7 @@
 				<td>
 					<ul class="item-list trigger-set">
 						{% for trigger in triggers['time.open'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+							{{ _self.trigger_row(loop.index, trigger, 'time.open') }}
 						{% else %}
 							<li>
 								You have not defiend any escalations based on the time a ticket has been open for.
@@ -136,8 +135,8 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
-						{% for trigger in triggers['time.open'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% for trigger in triggers['time.user_waiting'] %}
+							{{ _self.trigger_row(loop.index, trigger, 'time.user_waiting') }}
 						{% else %}
 							<li>
 								You have not defiend any escalations based on the time a user has been waiting for a reply.
@@ -171,8 +170,8 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
-						{% for trigger in triggers['time.open'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% for trigger in triggers['time.total_user_waiting'] %}
+							{{ _self.trigger_row(loop.index, trigger, 'time.total_user_waiting') }}
 						{% else %}
 							<li>
 								You have not defiend any escalations based on the total time a user has been waiting for replies.
@@ -206,8 +205,8 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
-						{% for trigger in triggers['time.open'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% for trigger in triggers['time.agent_waiting'] %}
+							{{ _self.trigger_row(loop.index, trigger, 'time.agent_waiting') }}
 						{% else %}
 							<li>
 								You have not defiend any escalations based on the time an agent has been waiting for the user to reply.
@@ -241,8 +240,8 @@
 			<tr>
 				<td>
 					<ul class="item-list trigger-set">
-						{% for trigger in triggers['time.open'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+						{% for trigger in triggers['time.resolved'] %}
+							{{ _self.trigger_row(loop.index, trigger, 'time.resolved') }}
 						{% else %}
 							<li>
 								You have not defiend any escalations based on the time a ticket has been resolved for.

@@ -131,6 +131,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $_ticket_terms;
 
 	/**
+	 * @var \Application\DeskPRO\Tickets\TicketTerms
+	 */
+	protected $_ticket_terms_any;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -258,13 +263,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAnyTicketTerms()
 	{
-		if ($this->_ticket_terms) return $this->_ticket_terms;
-		$this->terms = (array)$this->terms;
+		if ($this->_ticket_terms_any) return $this->_ticket_terms_any;
+		$this->terms_any = (array)$this->terms_any;
 
-		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
+		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms_any);
 
-		$this->_ticket_terms = $ticket_terms;
-		return $this->_ticket_terms;
+		$this->_ticket_terms_any = $ticket_terms;
+		return $this->_ticket_terms_any;
 	}
 
 
@@ -353,7 +358,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getTriggerType()
 	{
-		if (strpos($this->event_trigger, 'time_') === 0) {
+		if (strpos($this->event_trigger, 'time.') === 0) {
 			return 'escalation';
 		} else {
 			return 'trigger';
@@ -404,7 +409,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			return $default;
 		}
 
-		return $this->event_trigger_options;
+		return $this->event_trigger_options[$name];
 	}
 
 	/**

@@ -93,11 +93,11 @@ class TicketTriggersController extends AbstractController
 	public function listEscalationsAction()
 	{
 		$types = array(
-			'time_open',
-			'time_user_waiting',
-			'time_total_user_waiting',
-			'time_agent_waiting',
-			'time_resolved',
+			'time.open',
+			'time.user_waiting',
+			'time.total_user_waiting',
+			'time.agent_waiting',
+			'time.resolved',
 		);
 		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers($types);
 
@@ -126,6 +126,10 @@ class TicketTriggersController extends AbstractController
 			}
 
 			$trigger->event_trigger = $trigger_type;
+		}
+
+		if ($trigger->getTriggerType() == 'escalation') {
+			return $this->redirectRoute('admin_ticketescalations_edit', array('id' => $trigger->getId()));
 		}
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -271,6 +275,11 @@ class TicketTriggersController extends AbstractController
 		$this->ensureAuthToken('delete_trigger', $auth);
 
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+		if (!$trigger) {
+			throw $this->createNotFoundException();
+		}
+
+		$type = $trigger->getTriggerType();
 
 		if ($trigger) {
 			$this->db->beginTransaction();
@@ -284,6 +293,10 @@ class TicketTriggersController extends AbstractController
 			}
 		}
 
-		return $this->redirectRoute('admin_tickettriggers');
+		if ($type == 'escalation') {
+			return $this->redirectRoute('admin_ticketescalations');
+		} else {
+			return $this->redirectRoute('admin_tickettriggers');
+		}
 	}
 }
