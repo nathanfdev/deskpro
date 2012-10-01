@@ -280,6 +280,9 @@ class MainController extends AbstractController
 			foreach ($type_to_ent as $type => $ent) {
 				$obj = $this->em->find($ent, $q);
 				if ($obj) {
+					if ($obj instanceof \Application\DeskPRO\Entity\Ticket && !$this->person->PermissionsManager->TicketChecker->canView($obj)) {
+						continue;
+					}
 					$results[$type][] = $obj;
 				}
 			}
@@ -289,7 +292,7 @@ class MainController extends AbstractController
 			$ref_gen = $this->container->getSystemService('RefGenerator');
 			if ($ref_gen->isRefMatch($q)) {
 				$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($q);
-				if ($ticket) {
+				if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 					$results['ticket'][] = $ticket;
 				}
 			}
