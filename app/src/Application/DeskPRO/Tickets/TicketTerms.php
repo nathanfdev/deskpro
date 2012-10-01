@@ -619,6 +619,17 @@ class TicketTerms
 				}
 				break;
 
+			case 'day_created':
+
+				$days = isset($choice['days']) ? (array)$choice['days'] : array();
+				$day = $ticket->person->getDateForTime($ticket->date_created->getTimestamp())->format('w');
+
+				if (!in_array($day, $days)) {
+					return false;
+				}
+
+				break;
+
 			case TicketSearch::TERM_DEPARTMENT:
 				if (count($choice) == 1) $choice = array_pop($choice);
 				$choice = App::getDataService('Department')->getIdsInTree($choice, true);
