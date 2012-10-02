@@ -232,6 +232,52 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function _postPersist()
+	{
+		if (!$this->person) {
+			return;
+		}
+
+		$change = false;
+		$email_address = $this->email;
+
+		$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($email_address);
+		if ($rules) {
+			foreach ($rules as $r) {
+				if ($r->add_usergroup) {
+					$change = true;
+					$this->person->addUsergroup($r->add_usergroup);
+				}
+				if ($r->add_organization && !$this->person->organization) {
+					$change = true;
+					$this->person->setOrganization($r->add_organization);
+				}
+			}
+		}
+
+		// And check orgs with domain assocs
+		if (!$this->person->organization) {
+			$domain = $this->email_domain;
+			$orgem = App::getContainer()->getEm()->createQuery("
+				SELECT od, org
+				FROM DeskPRO:OrganizationEmailDomain od
+				LEFT JOIN od.organization org
+				WHERE od.domain = ?1
+			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
+
+			if ($orgem) {
+				$change = true;
+				$this->person->setOrganization($orgem->organization);
+			}
+
+			if ($change) {
+				App::getOrm()->persist($this->person);
+				App::getOrm()->flush();
+			}
+		}
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -251,6 +297,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 			),
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain', ));

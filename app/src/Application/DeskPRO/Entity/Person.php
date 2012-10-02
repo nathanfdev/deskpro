@@ -1770,48 +1770,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_person_logger) {
 			$this->_person_logger->done();
 			$this->_person_logger = null;
+			if ($this->_person_logger) {
+				$this->removePropertyChangedListener($this->_person_logger);
+			}
 			$this->_initPersonLogger();
 		}
 	}
 
 	public function _presavePerson()
 	{
+		$changed_emails = false;
 		if ($this->_person_logger) {
 			$this->_person_logger->preSave();
-		}
-
-		if ($this->isNewPerson() && ($this->getPrimaryEmail() || $this->email_validating)) {
-			$change = false;
-
-			$email_address = $this->primary_email ? $this->getPrimaryEmail()->email : $this->email_validating->email;
-
-			$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($email_address);
-			if ($rules) {
-				foreach ($rules as $r) {
-					if ($r->add_usergroup) {
-						$change = true;
-						$this->addUsergroup($r->add_usergroup);
-					}
-					if ($r->add_organization) {
-						$change = true;
-						$this->setOrganization($r->add_organization);
-					}
-				}
-			}
-
-			// And check orgs with domain assocs
-			$domain = $this->primary_email ? $this->getPrimaryEmail()->email_domain : $this->email_validating->getEmailDomain();
-			$orgem = App::getContainer()->getEm()->createQuery("
-				SELECT od
-				FROM DeskPRO:OrganizationEmailDomain od
-				LEFT JOIN od.organization org
-				WHERE od.domain = ?1
-			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
-
-			if ($orgem) {
-				$change = true;
-				$this->setOrganization($orgem->organization);
-			}
 		}
 	}
 

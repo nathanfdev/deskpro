@@ -206,6 +206,19 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			return;
 		}
 
+		// If we dont have validation enabled on the user and they're new,
+		// then mark them as not needing validation
+		if ($ticket->person->isNewPerson()) {
+			$ticket->person->is_confirmed = true;
+			App::getOrm()->persist($ticket->person);
+
+			$ticket->person->getPrimaryEmail()->setIsValidated(true);
+			App::getOrm()->persist($ticket->person->getPrimaryEmail());
+
+			App::getOrm()->flush($ticket->person);
+			App::getOrm()->flush($ticket->person->getPrimaryEmail());
+		}
+
 		#------------------------------
 		# If we havent disabled notifications,
 		# send the auto-reply
