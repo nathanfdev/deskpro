@@ -39,6 +39,6 @@ class Build1343757746 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Create ticket_message_templates table");
-		$this->execMutateSql("CREATE TABLE ticket_message_templates (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, message LONGTEXT NOT NULL, date_created DATETIME NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB");
+		$this->execMutateSql("CREATE TABLE ticket_message_templates (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, message LONGTEXT NOT NULL, date_created DATETIME NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 	}
 }
