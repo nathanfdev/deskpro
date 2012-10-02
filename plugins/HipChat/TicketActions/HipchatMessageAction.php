@@ -111,7 +111,7 @@ class HipchatMessageAction extends \Application\DeskPRO\Tickets\TicketActions\Ab
 			$message = trim($match[1]);
 		}
 		$message = '<a href="' . App::getSetting('core.deskpro_url') . 'agent/#app.tickets,t:' . $ticket->id . '">'
-			. htmlspecialchars($ticket->subject) . '</a> - '
+			. htmlspecialchars($ticket->subject) . ' (#' . $ticket->id . ')</a> - '
 			. $message;
 
 		try {
