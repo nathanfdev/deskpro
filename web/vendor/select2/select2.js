@@ -1901,6 +1901,7 @@
                     return;
                 }
                 this.clearPlaceholder();
+                this.resizeSearch();
                 this.open();
                 this.focusSearch();
                 e.preventDefault();
@@ -1965,7 +1966,7 @@
                 this.search.val(placeholder).addClass("select2-default");
                 // stretch the search box to full width of the container so as much of the placeholder is visible as possible
                 this.resizeSearch();
-            } else {
+            } else if (!this.isFocused()) {
                 // we set this to " " instead of "" and later clear it on focus() because there is a firefox bug
                 // that does not properly render the caret when the field starts out blank
                 this.search.val(" ").width(10);
@@ -2189,6 +2190,7 @@
             if (searchWidth < 40) {
                 searchWidth = maxWidth - sideBorderPadding;
             }
+
             this.search.width(searchWidth);
         },
 
