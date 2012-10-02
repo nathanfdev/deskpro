@@ -61,6 +61,12 @@ DeskPRO.User.Window = new Orb.Class({
 
 		this.elementHandlers = {};
 		this.initFeatures(document);
+
+		if (!$('#dp_footer .dp-copy').is(':visible')) {
+			$('#dp_footer').css({'display': 'block', 'opacity': 1});
+			$('#dp_footer div').css({'display': 'block', 'opacity': 1});
+			$('#dp_footer a').css({'display': 'block', 'opacity': 1});
+		}
 	},
 
 	initFeatures: function(contextEl) {
