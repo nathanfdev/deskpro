@@ -83,6 +83,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSession()->getVisitor();
 	}
 
+	public function getLanguage()
+	{
+		return App::getLanguage();
+	}
+
 	public function isDebug()
 	{
 		return App::isDebug();

@@ -199,6 +199,7 @@ class LangPackInfo
 		$lang->title         = $this->getLangInfo($id, 'title');
 		$lang->lang_code     = $this->getLangInfo($id, 'lang_code');
 		$lang->locale        = $this->getLangInfo($id, 'locale');
+		$lang->is_rtl        = $this->getLangInfo($id, 'is_rtl');
 		$lang->has_user      = $this->getLangInfo($id, 'has_user');
 		$lang->has_agent     = $this->getLangInfo($id, 'has_agent');
 		$lang->has_admin     = $this->getLangInfo($id, 'has_admin');

@@ -218,10 +218,13 @@ class FilestorageLoader
 	 */
 	public function userCssAction()
 	{
+		$is_rtl = !empty($_GET['rtl']);
+		$blob_column = $is_rtl ? 'css_blob_rtl_id' : 'css_blob_id';
+
 		$sth = $this->getPdo()->prepare("
 			SELECT blobs.*
 			FROM blobs
-			LEFT JOIN styles ON (styles.css_blob_id = blobs.id)
+			LEFT JOIN styles ON (styles.$blob_column = blobs.id)
 			WHERE styles.id = 1
 			LIMIT 1
 		");
@@ -241,14 +244,75 @@ class FilestorageLoader
 			$container = $this->bootFullSystem();
 			$css = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
 
+			if ($is_rtl) {
+				// filter CSS to change LTR ideas to RTL
+				preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#s', $css, $matches, PREG_SET_ORDER);
+				$replace = array();
+
+				foreach ($matches AS $key => $match) {
+					$replace[$key] = $match[1];
+					$css = str_replace($match[0], "\x1a$key\x1a", $css);
+				}
+
+				// where the value is left/right
+				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(float|clear|text-align)\s*:\s*(left|right)/i', function($match) {
+					switch (strtolower($match[2])) {
+						case 'left': $new = 'right'; break;
+						case 'right': $new = 'left'; break;
+						default: $new = $match[2];
+					}
+
+					return "$match[1]: $new";
+				}, $css);
+
+				// where the rule name contains left/right
+				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(padding|margin)-(left|right)\s*:/i', function($match) {
+					switch (strtolower($match[2])) {
+						case 'left': $new = 'right'; break;
+						case 'right': $new = 'left'; break;
+						default: $new = $match[2];
+					}
+
+					return "$match[1]-$new:";
+				}, $css);
+
+				// where the shortcut defines left/right
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])(padding|margin)\s*:\s*([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)/i',
+					function($match) {
+						return "$match[1]: $match[2] $match[5] $match[4] $match[3]";
+					}, $css
+				);
+
+				// where the rull name is left/right
+				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(left|right)\s*:/i', function($match) {
+					switch (strtolower($match[1])) {
+						case 'left': $new = 'right'; break;
+						case 'right': $new = 'left'; break;
+						default: $new = $match[1];
+					}
+
+					return "$new:";
+				}, $css);
+
+				foreach ($replace AS $key => $replace_css) {
+					$css = str_replace("\x1a$key\x1a", $replace_css, $css);
+				}
+
+				$css .= "/* RTL filter */";
+			} else {
+				$css = str_replace('/*@no_rtl*/', '', $css);
+				$css = str_replace('/*@/no_rtl*/', '', $css);
+			}
+
 			$desc = $container->getFilestorage()->createRandomPath();
 			$desc->write($css, array(
 				'content_type' => 'text/css',
-				'filename' => 'main.css'
+				'filename' => ($is_rtl ? 'main-rtl.css' : 'main.css')
 			));
 			$blob_id = $desc->getPath();
 
-			$container->getDb()->update('styles', array('css_blob_id' => $blob_id), array('id' => 1));
+			$container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
 
 			$sth = $this->getPdo()->prepare("
 				SELECT blobs.*

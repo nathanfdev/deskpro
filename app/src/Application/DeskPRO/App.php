@@ -437,6 +437,17 @@ class App
 
 
 	/**
+	 * Get the current language in use
+	 *
+	 * @return \Application\DeskPRO\Entity\Language
+	 */
+	public static function getLanguage()
+	{
+		return self::getTranslator()->getLanguage();
+	}
+
+
+	/**
 	 * Get the templating service
 	 *
 	 * @return \Symfony\Component\Templating\EngineInterface
