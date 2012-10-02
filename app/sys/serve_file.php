@@ -717,7 +717,13 @@ class FilestorageLoader
 
 			// Generate the resized blob and save it now
 			} else {
-				$blob = $this->createSizedBlob($blob, $size, $is_fit, $this->getPdo());
+				$new_blob = $this->createSizedBlob($blob, $size, $is_fit, $this->getPdo(), false);
+
+				if ($new_blob) {
+					// Possible the resize failed, in which case we'd fall back on showing the orig
+					// So only reassign blob if we know $new_blob was actually made
+					$blob = $new_blob;
+				}
 			}
 		}
 
@@ -827,7 +833,7 @@ class FilestorageLoader
 	/**
 	 * Resize a blob. This needs to load the entire environment.
 	 */
-	protected function createSizedBlob($blob_info, $size, $is_fit)
+	protected function createSizedBlob($blob_info, $size, $is_fit, $die_fail = true)
 	{
 		$container = $this->bootFullSystem();
 
@@ -843,11 +849,16 @@ class FilestorageLoader
 		}
 
 		try {
-			$image = $container->getImagine()->load($file);
+			// Imagine doesnt suppress normal errors, so in addition to exception we'll get errors logged,
+			// So @ to get rid of those exceptions
+			$image = @$container->getImagine()->load($file);
 		} catch (\Imagine\Exception\InvalidArgumentException $e) {
-			header("HTTP/1.0 500 Internal Server Error");
-			echo "Invalid image file. (invalid_image_data)";
-			exit;
+			if ($die_fail) {
+				header("HTTP/1.0 500 Internal Server Error");
+				echo "Invalid image file. (invalid_image_data)";
+				exit;
+			}
+			return null;
 		}
 
 		$width = $image->getSize()->getWidth();
