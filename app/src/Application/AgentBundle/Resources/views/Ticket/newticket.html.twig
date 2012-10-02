@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
 			>
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_ticket') }}" />
+				<input type="text" name="newticket[person_input_choice]" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_ticket') }}" />
 				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">

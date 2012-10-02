@@ -1907,6 +1907,11 @@ class TicketController extends AbstractController
 				}
 			} else {
 				$new_email = $this->in->getString('newticket.person.email_address');
+				if (!$new_email) {
+					$new_email = $this->in->getString('newticket.person_input_choice');
+					$newticket->person->email_address = $new_email;
+				}
+
 				if (!$new_email && !$this->in->getString('newticket.person.name')) {
 					$errors['person_no_user'] = true;
 				} elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
