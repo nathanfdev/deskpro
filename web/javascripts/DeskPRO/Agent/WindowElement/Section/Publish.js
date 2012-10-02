@@ -281,6 +281,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 							catTreeLoading(0);
 
 							li.data('category-id', info.id);
+							li.data('usergroup-ids', '1');
 							$('.is-nav-item', li).data('route', 'listpane:' + info.url).attr('data-route', 'listpane:' + info.url);;
 							$('.list-counter', li).attr('id', type + '_cat_count_' + info.id);
 

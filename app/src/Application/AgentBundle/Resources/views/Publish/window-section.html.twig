@@ -85,9 +85,20 @@
 	<span class="close-trigger">x</span>
 	<h5>{{ phrase('agent.general.usergroups') }}</h5>
 	<div class="list">
-		{% for ug in usergroups %}
+		{% for ug in usergroups if ug.sys_name == 'everyone' %}
 			<label>
-				<input type="checkbox" class="usergroup usergroup-{{ ug.id }} {% if ug.sys_name == 'everyone' %}everyone{% endif %}" value="{{ ug.id }}" />
+				<input type="checkbox" class="usergroup usergroup-{{ ug.id }} everyone" value="{{ ug.id }}" onclick="if (this.checked) { $('#publish_cat_editor').find(':checkbox').prop('checked', true); }" />
+				{% if ug.sys_name %}
+					{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
+				{% else %}
+					{{ ug.title }}
+				{% endif %}
+			</label>
+			<hr />
+		{% endfor %}
+		{% for ug in usergroups if ug.sys_name != 'everyone' %}
+			<label>
+				<input type="checkbox" class="usergroup usergroup-{{ ug.id }}" value="{{ ug.id }}" onclick="if (!this.checked) { $('#publish_cat_editor').find(':checkbox.everyone').prop('checked', false); }" />
 				{% if ug.sys_name %}
 					{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
 				{% else %}

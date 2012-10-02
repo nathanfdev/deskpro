@@ -354,10 +354,15 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		});
 
 		var ids = ((li.data('usergroup-ids')+'') || '').split(',');
-		$(':checkbox.usergroup', this.edit).prop('checked', false);
-		Array.each(ids, function(id) {
-			$('input.usergroup-' + id, this.edit).prop('checked', true);
-		}, this);
+		if (ids.indexOf('1') !== -1) {
+			// Everyone means all usergroups should be checked
+			$(':checkbox.usergroup', this.edit).prop('checked', true);
+		} else {
+			$(':checkbox.usergroup', this.edit).prop('checked', false);
+			Array.each(ids, function(id) {
+				$('input.usergroup-' + id, this.edit).prop('checked', true);
+			}, this);
+		}
 
 		this.editBack.show();
 		this.editTab.show();
