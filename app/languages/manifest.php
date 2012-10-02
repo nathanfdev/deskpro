@@ -58,6 +58,7 @@
 		'has_admin'  => false,
 		'is_managed' => true
 	),
+
 	'dutch' => array(
 		'id'         => 'dutch',
 		'lang_code'  => 'dut',
@@ -70,7 +71,7 @@
 		'is_managed' => true
 	),
 
-	/*'persian' => array(
+	'persian' => array(
 		'id'         => 'persian',
 		'lang_code'  => 'per',
 		'title'      => 'Persian',
@@ -80,7 +81,7 @@
 		'has_agent'  => false,
 		'has_admin'  => false,
 		'is_managed' => true
-	),*/
+	),
 
 	/*
 
