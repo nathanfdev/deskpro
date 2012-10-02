@@ -85,7 +85,7 @@
 		{% include 'UserBundle:Common:related-box.html.twig' with { object: feedback, type: 'feedback', related_content: related_content } %}
 
 		{% if app.getSetting('core.show_share_widget') %}
-			{{ social.social_block(path('user_feedback_view', {'slug': feedback.url_slug}), feedback.title) }}
+			{{ social.social_block(url('user_feedback_view', {'slug': feedback.url_slug}), feedback.title) }}
 		{% endif %}
 	</footer>
 </section>

@@ -65,7 +65,7 @@
 		{% endif %}
 
 		{% if app.getSetting('core.show_share_widget') %}
-			{{ social.social_block(path('user_downloads_file', {'slug': download.url_slug}), download.title) }}
+			{{ social.social_block(url('user_downloads_file', {'slug': download.url_slug}), download.title) }}
 		{% endif %}
 	</footer>
 </section>

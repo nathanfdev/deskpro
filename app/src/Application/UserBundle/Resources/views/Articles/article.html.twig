@@ -61,7 +61,7 @@
 		{% endif %}
 
 		{% if app.getSetting('core.show_share_widget') %}
-			{{ social.social_block(path('user_articles_article', {'slug': article.url_slug}), article.title) }}
+			{{ social.social_block(url('user_articles_article', {'slug': article.url_slug}), article.title) }}
 		{% endif %}
 	</footer>
 </section>

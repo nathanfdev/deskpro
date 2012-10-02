@@ -53,7 +53,7 @@
 		{% endif %}
 
 		{% if app.getSetting('core.show_share_widget') %}
-			{{ social.social_block(path('user_feedback_view', {'slug': news.url_slug}), news.title) }}
+			{{ social.social_block(url('user_feedback_view', {'slug': news.url_slug}), news.title) }}
 		{% endif %}
 	</footer>
 </section>

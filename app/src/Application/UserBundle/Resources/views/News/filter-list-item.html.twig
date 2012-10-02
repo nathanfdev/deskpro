@@ -22,7 +22,7 @@
 
 		{% if app.getSetting('core.show_share_widget') %}
 			<footer>
-				{{ social.social_block(path('user_news_view', {'slug': news.url_slug}), news.title) }}
+				{{ social.social_block(url('user_news_view', {'slug': news.url_slug}), news.title) }}
 			</footer>
 		{% endif %}
 	</section>
