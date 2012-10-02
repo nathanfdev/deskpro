@@ -153,6 +153,8 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 			// Basic replacements
 			$repl = array_merge(array(
+				'ticket.id'               => $ticket->id,
+				'ticket.ref'              => $ticket->ref,
 				'ticket.subject'          => $ticket->subject,
 				'ticket.department'       => $ticket->department ? $ticket->department->full_title : '',
 				'ticket.product'          => $ticket->product ? $ticket->product->full_title : '',
