@@ -69,10 +69,12 @@ class PortalController extends AbstractController
 			// If tabs are turned off, the home page changes
 			if ($this->container->getSetting('user.portal_tab_news')) {
 
-			} elseif ($this->container->getSetting('user.portal_tab_articles')) {
+			} elseif ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')) {
 				return $this->redirectRoute('user_articles');
-			} elseif ($this->container->getSetting('user.portal_tab_feedback')) {
+			} elseif ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')) {
 				return $this->redirectRoute('user_feedback');
+			} elseif ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')) {
+				return $this->redirectRoute('user_downloads_home');
 			} else {
 				return $this->redirectRoute('user_tickets_new');
 			}
