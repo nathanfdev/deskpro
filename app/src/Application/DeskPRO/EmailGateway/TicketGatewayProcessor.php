@@ -991,8 +991,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
-		if ($this->reader->getBodyText()->getBody()) {
-			$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
+		if ($email_info['body'] = $this->getBodyPlain()) {
 			$email_info['body_is_html'] = false;
 		} else {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -1177,5 +1176,36 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		return $messages;
+	}
+
+	public function getBodyPlain()
+	{
+		$plain = $this->reader->getBodyText()->getBodyUtf8();
+		if (!$plain) {
+			return false;
+		}
+
+		// Outlook enters two line breaks for every one the user actually entered
+		// because its stupid and selfish.
+		// Lets clean up that superfluous whitespace now.
+		$is_outlook = false;
+
+		$mailer = $this->reader->getHeader('X-Mailer');
+		if ($mailer && strpos($mailer->getHeader(), 'Outlook') !== false) {
+			$is_outlook = true;
+		}
+		if (!$is_outlook) {
+			$headers = $this->reader->getRawHeaders();
+			if (preg_match('#^X\-MS\-#', $headers)) {
+				$is_outlook = true;
+			}
+		}
+
+		if ($is_outlook) {
+			$plain = \Orb\Util\Strings::standardEol($plain);
+			$plain = str_replace("\n\n", "\n", $plain);
+		}
+
+		return $plain;
 	}
 }
