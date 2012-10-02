@@ -206,10 +206,6 @@ class EmailGatewaysController extends AbstractController
 					return $this->createJsonResponse(array('success' => true));
 				}
 
-				if ($is_new) {
-					$this->redirectRoute('admin_tickettriggers_edit', array('trigger_id' => '0', 'from_gateway' => $gateway->id));
-				}
-
 				$this->session->setFlash('saved', $gateway->title);
 				return $this->redirectRoute('admin_emailgateways');
 			}
