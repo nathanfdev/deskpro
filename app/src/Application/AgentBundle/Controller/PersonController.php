@@ -734,7 +734,7 @@ class PersonController extends AbstractController
 					$email_rec = $person->getEmailId($email_id);
 					if ($email_rec) {
 
-						if ($person->primary_email->id == $email_id) {
+						if ($person->primary_email && $person->primary_email->id == $email_id) {
 							$changed_primary_email = true;
 							$person->primary_email = null;
 						}
