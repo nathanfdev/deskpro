@@ -181,6 +181,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	},
 
 	resetPosition: function() {
+		if (!this.wrapper) {
+			return;
+		}
 		var chats = $('> section.agent-chat', this.chatsWrapper);
 		if (chats.length > 1) {
 			var lastChat = chats.last();
@@ -336,8 +339,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * Open the chat tab
 	 */
 	open: function() {
-		var self = this;
-		this.wrapper.addClass('open');
+		if (this.wrapper) {
+			this.wrapper.addClass('open');
+		}
 	},
 
 
@@ -345,7 +349,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * Close the chat tab
 	 */
 	close: function() {
-		this.wrapper.removeClass('open');
+		if (this.wrapper) {
+			this.wrapper.removeClass('open');
+		}
 	},
 
 
