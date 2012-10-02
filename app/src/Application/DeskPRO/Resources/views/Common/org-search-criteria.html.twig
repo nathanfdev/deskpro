@@ -62,6 +62,7 @@
 </div>
 {% endif %}
 
+{% if search_context != 'filter' %}
 {% if 'org_name' not in no_show_fields %}
 <div class="builder-type" title="{{ phrase('agent.general.name') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="builder-op">
@@ -75,6 +76,7 @@
 		<input type="text" name="name" value="" />
 	</div>
 </div>
+{% endif %}
 {% endif %}
 
 {% if 'org_contact_phone' not in no_show_fields %}
@@ -120,9 +122,9 @@
 {% endif %}
 
 {% if 'org_field' not in no_show_fields %}
-{% if app.get('OrgFieldsManager').getFields() %}
+{% if app.getOrgFieldManager().getFields() %}
 	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
-	{% for field in app.get('OrgFieldsManager').getDisplayArray() %}
+	{% for field in app.getOrgFieldManager().getDisplayArray() %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">
 		<div class="builder-op">

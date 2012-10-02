@@ -750,6 +750,10 @@
 		{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options, 'id': false, 'classname': false} %}
 	{% endif %}
 
+	{% if 'org' not in no_show_fields %}
+		{% include 'DeskPRO:Common:org-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options, 'id': false, 'classname': false} %}
+	{% endif %}
+
 {% if id or classname %}
 </div>
 {% endif %}

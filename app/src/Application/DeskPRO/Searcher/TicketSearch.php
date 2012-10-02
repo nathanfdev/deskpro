@@ -93,6 +93,11 @@ class TicketSearch extends SearcherAbstract
 	protected $person_search = null;
 
 	/**
+	 * @var OrganizationSearch
+	 */
+	protected $org_search = null;
+
+	/**
 	 * From getSqlParts()
 	 * @var array
 	 */
@@ -166,6 +171,16 @@ class TicketSearch extends SearcherAbstract
 	}
 
 
+	/**
+	 * Set a set of org search terms.
+	 *
+	 * @param OrganizationSearch $org_search
+	 */
+	public function setOrganizationSearch(OrganizationSearch $org_search)
+	{
+		$this->org_search = $org_search;
+	}
+
 
 	/**
 	 * Search old (closed) tickets that are archived (aka not in the search tables).
@@ -219,6 +234,12 @@ class TicketSearch extends SearcherAbstract
 			$person_summary = $this->person_search->getSummary();
 			if ($person_summary) {
 				$summary = array_merge($summary, $this->person_search->getSummary());
+			}
+		}
+		if ($this->org_search) {
+			$person_summary = $this->org_search->getSummary();
+			if ($person_summary) {
+				$summary = array_merge($summary, $this->org_search->getSummary());
 			}
 		}
 
@@ -313,9 +334,13 @@ class TicketSearch extends SearcherAbstract
 	public function getCount($limit = 1000)
 	{
 		$ticket_parts = $this->getSqlParts();
-		$user_parts = null;
+		$user_parts   = null;
+		$org_parts    = null;
 		if ($this->person_search) {
 			$user_parts = $this->person_search->getSqlParts();
+		}
+		if ($this->org_search) {
+			$org_parts = $this->org_search->getSqlParts();
 		}
 
 		$where = '';
@@ -390,14 +415,26 @@ class TicketSearch extends SearcherAbstract
 		if ($user_parts) {
 			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
 		}
+		if ($org_parts) {
+			$sql .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
+		}
 
 		if ($user_parts AND $user_parts['joins']) {
-
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
 					$sql .= $j[1] . " ";
 				} else {
 					$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+				}
+			}
+		}
+
+		if ($org_parts AND $org_parts['joins']) {
+			foreach ($org_parts['joins'] as $j) {
+				if (is_array($j)) {
+					$sql .= $j[1] . " ";
+				} else {
+					$sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
 				}
 			}
 		}
@@ -415,6 +452,9 @@ class TicketSearch extends SearcherAbstract
 		}
 		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
+		}
+		if (!empty($org_parts['wheres'])) {
+			$where .= " AND " . implode(" AND ", $org_parts['wheres']);
 		}
 
 		if ($this->add_raw_wheres) {
@@ -454,9 +494,13 @@ class TicketSearch extends SearcherAbstract
 	public function getSql(array $pageinfo = null)
 	{
 		$ticket_parts = $this->getSqlParts();
-		$user_parts = null;
+		$user_parts   = null;
+		$org_parts    = null;
 		if ($this->person_search) {
 			$user_parts = $this->person_search->getSqlParts();
+		}
+		if ($this->org_search) {
+			$org_parts = $this->org_search->getSqlParts();
 		}
 
 		$order_by = $this->getOrderByPart();
@@ -532,14 +576,26 @@ class TicketSearch extends SearcherAbstract
 		if ($user_parts) {
 			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
 		}
+		if ($org_parts) {
+			$sql .= "LEFT JOIN organizations ON (organizations.id = tickets.organization_id) ";
+		}
 
 		if ($user_parts AND $user_parts['joins']) {
-
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
 					$sql .= $j[1] . " ";
 				} else {
 					$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+				}
+			}
+		}
+
+		if ($org_parts AND $org_parts['joins']) {
+			foreach ($org_parts['joins'] as $j) {
+				if (is_array($j)) {
+					$sql .= $j[1] . " ";
+				} else {
+					$sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
 				}
 			}
 		}
@@ -563,6 +619,9 @@ class TicketSearch extends SearcherAbstract
 		}
 		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
+		}
+		if (!empty($org_parts['wheres'])) {
+			$where .= " AND " . implode(" AND ", $org_parts['wheres']);
 		}
 
 		if ($this->add_raw_wheres) {

@@ -113,6 +113,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('PersonFieldsManager');
 	}
 
+	public function getOrgFieldManager()
+	{
+		return App::getSystemService('OrgFieldsManager');
+	}
+
 	public function getDataRepository($ent)
 	{
 		return App::getSystemService("{$ent}Data");

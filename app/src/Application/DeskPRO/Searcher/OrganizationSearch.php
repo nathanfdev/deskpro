@@ -50,6 +50,12 @@ class OrganizationSearch extends SearcherAbstract
 	const TERM_CONTACT_ADDRESS      = 'org_contact_address';
 	const TERM_CONTACT_IM           = 'org_contact_im';
 
+	/**
+	 * Summary of terms in phrases
+	 * @var array
+	 */
+	protected $summary = array();
+
 
 	/**
 	 * Run the search and return an array of matching ID's.
@@ -64,6 +70,18 @@ class OrganizationSearch extends SearcherAbstract
 		$org_ids = $db->fetchAllCol($this->getSql());
 
 		return $org_ids;
+	}
+
+
+	/**
+	 * Get the summary of crtiera
+	 *
+	 * @array
+	 */
+	public function getSummary()
+	{
+		$this->getSqlParts();
+		return $this->summary;
 	}
 
 
@@ -169,7 +187,7 @@ class OrganizationSearch extends SearcherAbstract
 					case 'input':
 					case 'value':
 						$order_by = arary(
-							"INNER JOIN custom_data_organizations AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
+							"INNER JOIN custom_data_organizationss AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
 							"sort_table.$search_type $dir"
 						);
 						break;
@@ -300,10 +318,15 @@ class OrganizationSearch extends SearcherAbstract
 
 				case self::TERM_ORGANIZATION_FIELD:
 
+
 					$field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($term_id);
 					if (!$field) break;
 
 					$search_type = $field->getHandler()->getSearchType();
+
+					if (isset($choice['custom_fields']['field_' . $term_id])) {
+						$choice = $choice['custom_fields']['field_' . $term_id];
+					}
 
 					switch ($search_type) {
 						case 'input':
@@ -312,10 +335,14 @@ class OrganizationSearch extends SearcherAbstract
 							$join_id = Util::requestUniqueId();
 							$joins[] = array(
 								'custom_data_organizations',
-								"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id AND $join_id.field_id = $term_id)"
+								"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.field_id = $term_id)"
 							);
 
-							$field = $join_id.'.'.$search_type;
+							if (is_array($choice)) {
+								$choice = array_pop($choice);
+							}
+
+							$field = 'custom_data_organizations_'.$join_id.'.'.$search_type;
 							switch ($op) {
 								case self::OP_IS:
 									$wheres[] = "$field = " . $db->quote($choice);
@@ -340,27 +367,29 @@ class OrganizationSearch extends SearcherAbstract
 							}
 							$choices_in = implode(',', $choices_in);
 
-							$field = $join_id.'.field_id';
+							$field = 'custom_data_organizations_'.$join_id.'.field_id';
 							switch ($op) {
 								case self::OP_CONTAINS:
+								case self::OP_IS:
 									$joins[] = array(
 										'custom_data_organizations',
-										"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id)"
+										"LEFT JOIN custom_data_person AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
 									);
-									$wheres[] = "$field IN ($choices_in)";
+									$wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
 									break;
 
 								case self::OP_NOTCONTAINS:
+								case self::OP_NOT:
 									$joins[] = array(
 										'custom_data_organizations',
-										"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id AND $join_id.field_id IN ($choices_in)"
+										"LEFT JOIN custom_data_person AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
 									);
-									$wheres[] = "$field IS NULL";
+									$wheres[] = "custom_data_organizations_$join_id.id IS NULL";
 									break;
 							}
 							break;
 					}
-					break; // end TERM_PERSON_FIELD
+					break; // end TERM_ORGANIZATION_FIELD
 			}
 		}
 
