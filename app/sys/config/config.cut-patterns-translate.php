@@ -33,11 +33,38 @@
 		'%CC%'      => 'CC',
 	),
 
+	'french' => array(
+		'%From%'    => 'De',
+		'%Sent%'    => '(?:Envoyé|Envoye)',
+		'%To%'      => '(?:À|A)',
+		'%Subject%' => 'Objet',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
+	),
+
+	'german' => array(
+		'%From%'    => 'Von',
+		'%Sent%'    => 'Gesendet',
+		'%To%'      => 'An',
+		'%Subject%' => 'Betreff',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
+	),
+
 	'italian' => array(
 		'%From%'    => 'Da',
 		'%Sent%'    => 'Inviato',
 		'%To%'      => 'A',
 		'%Subject%' => 'Oggetto',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
+	),
+
+	'spanish' => array(
+		'%From%'    => 'De',
+		'%Sent%'    => 'Enviado',
+		'%To%'      => 'Para',
+		'%Subject%' => 'Asunto',
 		'%BCC%'     => 'BCC',
 		'%CC%'      => 'CC',
 	),
