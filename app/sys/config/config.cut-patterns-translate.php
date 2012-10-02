@@ -11,6 +11,8 @@
 		'%Sent%'    => 'Sent',
 		'%To%'      => 'To',
 		'%Subject%' => 'Subject',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
 	),
 
 	'danish' => array(
@@ -18,6 +20,8 @@
 		'%Sent%'    => 'Sendt',
 		'%To%'      => 'Til',
 		'%Subject%' => 'Emne',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
 	),
 
 	'dutch' => array(
@@ -25,6 +29,8 @@
 		'%Sent%'    => 'Verzonden',
 		'%To%'      => 'Aan',
 		'%Subject%' => 'Onderwerp',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
 	),
 
 	'italian' => array(
@@ -32,5 +38,7 @@
 		'%Sent%'    => 'Inviato',
 		'%To%'      => 'A',
 		'%Subject%' => 'Oggetto',
+		'%BCC%'     => 'BCC',
+		'%CC%'      => 'CC',
 	),
 );

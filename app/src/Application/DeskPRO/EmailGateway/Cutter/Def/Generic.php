@@ -38,6 +38,25 @@ use Orb\Util\Strings;
 class Generic implements ForwardDef, QuoteDef
 {
 	/**
+	 * @var array
+	 */
+	protected $fwd_patterns;
+
+	/**
+	 * @var array|array
+	 */
+	protected $translate_map;
+
+	public function __construct()
+	{
+		$this->translate_map = new \Application\DeskPRO\Config\UserFileConfig('cut-patterns-translate');
+		$this->translate_map = $this->translate_map->all();
+
+		$this->fwd_patterns = new \Application\DeskPRO\Config\UserFileConfig('cut-fwd-patterns');
+		$this->fwd_patterns = $this->fwd_patterns->all();
+	}
+
+	/**
 	 * Tries to split a message by looking at the first sequence of From/To/Date/Subject headers
 	 * to mark the beginning.
 	 *
@@ -52,22 +71,42 @@ class Generic implements ForwardDef, QuoteDef
 		$start_line = null;
 
 		// Try to fix From that has [email address] on a new line after From:
-		$body = preg_replace('#^From: ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m', 'From: $1 <$3>', $body);
+		foreach ($this->translate_map as $set) {
+			$pattern = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
+			foreach ($set as $f => $r) {
+				$pattern = str_replace($f, $r, $pattern);
+			}
+
+			$body = preg_replace($pattern, '$1: $2 <$4>', $body);
+		}
 
 		$body = explode("\n", $body);
 
-		foreach ($body as $ln => $l) {
-			$l = preg_replace('#^\s*>+\s*#', '', $l);
-			if (preg_match('#^(From|Sent|To|Date|Subject):(.*?)$#i', $l)) {
-				if (!$start_line) {
-					$start_line = $ln;
+		foreach ($this->translate_map as $set) {
+			foreach ($body as $ln => $l) {
+				$l = preg_replace('#^\s*>+\s*#', '', $l);
+
+				$pattern = '#^(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):(.*?)$#i';
+				foreach ($set as $f => $r) {
+					$pattern = str_replace($f, $r, $pattern);
 				}
-				$found++;
-				if ($found >= 2) break;
-			} else {
-				$found = 0;
-				$start_line = null;
+
+				if (preg_match($pattern, $l)) {
+					if (!$start_line) {
+						$start_line = $ln;
+					}
+					$found++;
+					if ($found >= 2) break;
+				} else {
+					$found = 0;
+					$start_line = null;
+				}
 			}
+
+			if ($found >= 2) {
+				break;
+			}
+			$found = 0;
 		}
 
 		// If we didnt find at least two of the four headers,
@@ -105,14 +144,23 @@ class Generic implements ForwardDef, QuoteDef
 			'fwd_from_name'        => null,
 		);
 
-		$parts = preg_split('#-{3,15}\s*Forward(ed)?( Message)?\s*-{3,15}#i', $body, 2);
-		if (!$parts || count($parts) != 2) {
-			$parts = preg_split('#^\s*Forward(ed)?( Message):\s*$#im', $body, 2);
+		$parts = null;
+		foreach ($this->fwd_patterns as $pattern) {
+			$parts = preg_split($pattern, $body, 2);
+			if ($parts && count($parts) == 2) {
+				break;
+			}
+
+			$parts = null;
+		}
+
+		if (!$parts) {
+			// Fallback on cutting based on standard message headers (From etc)
+			$parts = $this->splitFromFirstHeaderText($body);
+
+			// No suitable cutline
 			if (!$parts || count($parts) != 2) {
-				$parts = $this->splitFromFirstHeaderText($body);
-				if (!$parts || count($parts) != 2) {
-					return $forward_data;
-				}
+				return $forward_data;
 			}
 		}
 
