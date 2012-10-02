@@ -346,7 +346,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			if ($block_html) {
 				$pid = $item->getOption('pid');
 				$type = strtolower(\Orb\Util\Util::getBaseClassname($item));
-				$block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}" . ($item->getOption('is_enabled') ? '' : ' dp-p-disabled') . "\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
+				$block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}" . ($item->getOption('is_enabled') ? '' : ' dp-p-disabled disabled') . "\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
 				$html[] = $block_html;
 			}
 		}
