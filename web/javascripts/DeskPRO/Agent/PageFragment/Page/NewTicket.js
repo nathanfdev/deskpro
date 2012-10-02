@@ -67,6 +67,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var messageEl = this.getEl('message');
 		var subjectEl = this.getEl('subject');
 		var appliedMsgTpl = null;
+		var sig = $.trim(self.getEl('signature_value').val());
 
 		messageEl.on('keydown', function() {
 			messageEl.addClass('editted');
@@ -106,7 +107,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							messageEl.insertAtCaret(data.message);
 						}
 					} else {
-						messageEl.val(data.message);
+						var val = data.message;
+
+						if (sig) {
+							val += "\n\n";
+							val += sig;
+						}
+
+						messageEl.val(val);
 					}
 
 					if (subjectEl.hasClass('editted')) {
