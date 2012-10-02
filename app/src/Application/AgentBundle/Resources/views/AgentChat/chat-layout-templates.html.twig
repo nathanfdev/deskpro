@@ -56,7 +56,7 @@
 	<div class="chatRecieve">
 		<div class="avatar"><img src="${author_picture}" class="tipped" title="${author_name}" /></div>
 		<div class="chatMsgRecieve">
-			${message}
+			<span class="message-text">${message}</span>
 			<span class="bubbleLeft"></span>
 		</div>
 	</div>
@@ -66,7 +66,7 @@
 	<div class="chatSend">
 		<div class="avatar"><img src="{% endraw %}{{ app.user.getPictureUrl(25) }}{% raw %}" /></div>
 		<div class="chatMsgSend">
-			${message}
+			<span class="message-text">${message}</span>
 			<span class="bubbleLeft"></span>
 		</div>
 	</div>

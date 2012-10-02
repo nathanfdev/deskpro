@@ -134,6 +134,14 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			self.wrapper.css('z-index', count+1);
 		});
 
+		// Accept clicks on routes
+		newContainer.on('click', '[data-route]', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			DeskPRO_Window.runPageRouteFromElement($(this));
+		});
+
 		this.chatsWrapper.append(newContainer);
 		this.resetPosition();
 
@@ -280,11 +288,33 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			author_id: agent_id,
 			author_name: agentInfo.name,
 			author_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 25),
-			message: message
+			message: ''
 		});
+
+		newMessage.find('span.message-text').html(this.formatMessage(message));
 
 		$('.messages-container', this.wrapper).append(newMessage);
 		$('.messages-box').scrollTop(100000);
+	},
+
+
+	formatMessage: function(message) {
+		var message = Orb.escapeHtml(message);
+		var idMap = {
+			't': {title: 'Ticket', url: BASE_URL + 'agent/tickets/'},
+			'p': {title: 'Person', url: BASE_URL + 'agent/people/'},
+			'o': {title: 'Organizaton', url: BASE_URL + 'agent/organizations/'},
+			'a': {title: 'Article', url: BASE_URL + 'agent/kb/article/'},
+			'n': {title: 'News', url: BASE_URL + 'agent/news/post/'},
+			'd': {title: 'Download', url: BASE_URL + 'agent/downloads/file/'},
+			'i': {title: 'Feedback', url: BASE_URL + 'agent/feedback/view/'}
+		};
+		Object.each(idMap, function(info, prefix) {
+			var re = new RegExp('\{\{\s*' + prefix + '\-([0-9]+)\s*\}\}', 'g');
+			message = message.replace(re, '<a data-route="page:'+info.url+'$1">'+info.title+' #$1</a>');
+		});
+
+		return message;
 	},
 
 
@@ -294,7 +324,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * @param message
 	 */
 	showMyMessage: function(message) {
-		var newMessage = $.tmpl('agent_chat_message_me', { message: message });
+		var newMessage = $.tmpl('agent_chat_message_me', { message: '' });
+		newMessage.find('span.message-text').html(this.formatMessage(message));
+
 		$('.messages-container', this.wrapper).append(newMessage);
 		$('.messages-box').scrollTop(100000);
 	},
