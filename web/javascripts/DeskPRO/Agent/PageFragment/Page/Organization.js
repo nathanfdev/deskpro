@@ -339,7 +339,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 	//#########################################################################
 	//# Email domain associations
-	//#########################################################################
+	//###########	##############################################################
 
 	_initEmailDomainAssoc: function(opennow) {
 
@@ -429,7 +429,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 						data: { domain: domain, remove_users: removeusers },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
-							replaceEditor(newDisplayHtml);
+							self.emailDomainOverlay.destroy();
+							self.closeSelf();
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
@@ -443,7 +445,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 						data: { domain: domain },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
-							replaceEditor(newDisplayHtml);
+							self.emailDomainOverlay.destroy();
+							self.closeSelf();
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
@@ -457,7 +461,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 						data: { domain: domain },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
-							replaceEditor(newDisplayHtml);
+							self.emailDomainOverlay.destroy();
+							self.closeSelf();
+							DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/organizations/' + self.meta.org_id);
 						}
 					});
 				});
