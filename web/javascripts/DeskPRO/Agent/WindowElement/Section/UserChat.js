@@ -276,6 +276,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			DeskPRO_Window.faviconBadge.disableCrazyMode();
 		}
 
+		if (data.agent_id) {
+			if (parseInt(data.agent_id) == DESKPRO_PERSON_ID) {
+				DeskPRO_Window.util.modCountEl($('#userchat_mine_count'), '+');
+			} else {
+				DeskPRO_Window.util.modCountEl($('#userchat_assigned_count'), '+');
+			}
+		} else {
+			DeskPRO_Window.util.modCountEl($('#userchat_missed_count'), '+');
+		}
+
 		this.handleUpdateCounts();
 	},
 
