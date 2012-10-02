@@ -91,10 +91,32 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		$('section col', this.el).last().addClass('last');
 
 		var amClicking = false;
+		var lastClick = false;
+		var elList = this.el.find('li');
 		this.el.on('click', 'li', function(ev) {
 			if (amClicking) return;
 			amClicking = true;
+
 			var radio = $(':radio, :checkbox', this);
+
+			if (ev.shiftKey && lastClick) {
+				var idxMe = elList.index(this);
+				var idxLast = elList.index(lastClick);
+
+				var els = [];
+				if (idxMe > idxLast) {
+					for (var i = idxLast+1; i <= idxMe; i++) {
+						els.push($(elList.eq(i)).find(':radio, :checkbox').get(0));
+					}
+				} else {
+					for (var i = idxMe; i < idxLast; i++) {
+						els.push($(elList.eq(i)).find(':radio, :checkbox').get(0));
+					}
+				}
+
+				radio = $(els);
+			}
+
 			if (radio.length) {
 				radio.click();
 
@@ -102,6 +124,8 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 					self.close();
 				}
 			}
+
+			lastClick = this;
 			amClicking = false;
 		});
 
