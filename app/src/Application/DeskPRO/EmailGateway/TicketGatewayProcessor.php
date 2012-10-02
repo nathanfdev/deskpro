@@ -516,6 +516,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 			} else {
 				$this->logMessage("Text cutter did not match any pattern");
+
+				// Match generic email headers
+				$parts = $this->cutterDef->splitFromFirstHeaderText($email_info['body']);
+				if ($parts && count($parts) == 2) {
+					$this->logMessage("Generic cutter matched, cut from standard quote headers");
+					$email_info['body'] = trim($parts[0]);
+				} else {
+					$this->logMessage("Generic cutter did not match");
+				}
 			}
 
 			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
