@@ -29,59 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
-use Application\DeskPRO\App;
-
-class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class Build1349176493 extends AbstractBuild
 {
-	protected function configure()
+	public function run()
 	{
-		$this->setName('dp:plugin');
-		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
-		$this->addArgument('action', InputOption::VALUE_REQUIRED);
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$pluginId = $input->getOption('plugin');
-		if (!$pluginId) {
-			$output->writeln("--plugin option must be specified");
-			return 1;
-		}
-
-		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
-		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
-		if (!$plugin) {
-			$output->writeln("Plugin '$pluginId' could not be found");
-			return 1;
-		}
-
-		$action = $input->getArgument('action');
-		switch ($action) {
-			case 'export-sync-data':
-				$plugin->exportSyncData();
-				$output->writeln("$plugin->title sync data exported");
-				break;
-
-			case 'import-sync-data':
-				$plugin->importSyncData();
-				$output->writeln("$plugin->title sync data imported");
-				break;
-
-			default:
-				$output->writeln("Unknown action '$action'");
-				return 1;
-		}
-
-		return 0;
+		$this->out("Allow plugins to define ticket trigger actions");
+		$this->execMutateSql("CREATE TABLE ticket_trigger_plugin_actions (id INT AUTO_INCREMENT NOT NULL, plugin_id VARCHAR(255) DEFAULT NULL, event_type VARCHAR(50) NOT NULL, setup_class VARCHAR(255) NOT NULL, action_class VARCHAR(255) NOT NULL, INDEX IDX_1D905890EC942BCF (plugin_id), UNIQUE INDEX event_type_idx (event_type), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions ADD CONSTRAINT FK_1D905890EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
 	}
 }

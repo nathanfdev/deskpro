@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -25,63 +26,61 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace HipChat;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
-
+use Application\DeskPRO\Entity\Plugin;
+use Application\DeskPRO\Plugin\PluginPackage as CorePluginPackage;
+use Application\DeskPRO\Controller\AbstractController;
 use Application\DeskPRO\App;
 
-class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 {
-	protected function configure()
+	/**
+	 * Get the version
+	 *
+	 * @return mixed
+	 */
+	public function getVersion()
 	{
-		$this->setName('dp:plugin');
-		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
-		$this->addArgument('action', InputOption::VALUE_REQUIRED);
+		return '1.0';
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	
+	/**
+	 * Get the unique name for the plugin. Use a-zA-Z0-9 only (do not use underscores or settings will not be accessible).
+	 *
+	 * @return string
+	 */
+	public function getName()
 	{
-		$pluginId = $input->getOption('plugin');
-		if (!$pluginId) {
-			$output->writeln("--plugin option must be specified");
-			return 1;
-		}
+		return 'HipChat';
+	}
 
-		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
-		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
-		if (!$plugin) {
-			$output->writeln("Plugin '$pluginId' could not be found");
-			return 1;
-		}
 
-		$action = $input->getArgument('action');
-		switch ($action) {
-			case 'export-sync-data':
-				$plugin->exportSyncData();
-				$output->writeln("$plugin->title sync data exported");
-				break;
+	/**
+	 * Get the readable title for this plugin
+	 *
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return "HipChat";
+	}
 
-			case 'import-sync-data':
-				$plugin->importSyncData();
-				$output->writeln("$plugin->title sync data imported");
-				break;
+	public function getDescription()
+	{
+		return 'Allows you to add a ticket trigger that inserts a message into a HipChat room when matched.';
+	}
 
-			default:
-				$output->writeln("Unknown action '$action'");
-				return 1;
-		}
-
-		return 0;
+	public function getDeveloper()
+	{
+		return 'DeskPRO';
 	}
 }

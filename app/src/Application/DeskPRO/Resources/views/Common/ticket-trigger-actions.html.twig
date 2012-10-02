@@ -317,6 +317,12 @@
 	</div>
 	{% endif %}
 
+	{% if term_options.plugin_actions is not empty %}
+		{% for plugin_event_type, object in term_options.plugin_actions %}
+			{% include object.getActionTemplate() %}
+		{% endfor %}
+	{% endif %}
+
 	{% for field in app.getTicketFieldManager().getDisplayArray() %}
 		{% if field.field_def.isFormField() %}
 			<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

@@ -82,8 +82,16 @@ abstract class AbstractPluginPackage implements \ArrayAccess
 		$settings = App::get(App::SERVICE_SETTINGS);
 		$prefix = $plugin->id . '.';
 
-		foreach ($controller->in->getArray('settings') AS $setting => $value)
-		{
+		$setting_input = $controller->in->getArray('settings');
+		$set_settings = $controller->in->getCleanValueArray('set_settings', 'str_simple', 'discard');
+
+		foreach ($set_settings AS $key) {
+			if (!isset($setting_input[$key])) {
+				$setting_input[$key] = 0;
+			}
+		}
+
+		foreach ($setting_input AS $setting => $value) {
 			$settings->setSetting("$prefix$setting", $value);
 		}
 

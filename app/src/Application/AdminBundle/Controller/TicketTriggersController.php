@@ -132,22 +132,9 @@ class TicketTriggersController extends AbstractController
 			return $this->redirectRoute('admin_ticketescalations_edit', array('id' => $trigger->getId()));
 		}
 
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-		$ticket_options['people_term_options']  = array();
-		$ticket_options['people_term_options']  = array();
-		$ticket_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
-		$ticket_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
-		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
-
-		if ($this->container->getDataService('Language')->isMultiLang()) {
-			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
-		}
-
-		$ticket_options['web_hooks']  = $this->container->getDataService('WebHook')->getHookTitles();
-
 		return $this->render('AdminBundle:TicketTriggers:edit-trigger.html.twig', array(
 			'trigger'      => $trigger,
-			'term_options' => $ticket_options,
+			'term_options' => $this->_getTermOptions(),
 		));
 	}
 
@@ -168,21 +155,33 @@ class TicketTriggersController extends AbstractController
 			$trigger->event_trigger = $trigger_type;
 		}
 
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-		$ticket_options['people_term_options']  = array();
-		$ticket_options['people_term_options']  = array();
-		$ticket_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
-		$ticket_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
-		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
-
-		if ($this->container->getDataService('Language')->isMultiLang()) {
-			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
-		}
-
 		return $this->render('AdminBundle:TicketTriggers:edit-escalation.html.twig', array(
 			'trigger'      => $trigger,
-			'term_options' => $ticket_options,
+			'term_options' => $this->_getTermOptions(),
 		));
+	}
+
+	protected function _getTermOptions()
+	{
+		$term_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$term_options['people_term_options']  = array();
+		$term_options['people_term_options']  = array();
+		$term_options['people_term_options']['organizations']  = $this->container->getDataService('Organization')->getOrganizationNames();
+		$term_options['people_term_options']['usergroups']     = $this->container->getDataService('Usergroup')->getUsergroupNames();
+		$term_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
+
+		if ($this->container->getDataService('Language')->isMultiLang()) {
+			$term_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
+		}
+
+		$term_options['web_hooks']  = $this->container->getDataService('WebHook')->getHookTitles();
+
+		$term_options['plugin_actions'] = $this->container->getDataService('TicketTriggerPluginActions')->getSetupObjects();
+		foreach ($term_options['plugin_actions'] AS $object) {
+			$term_options = $object->alterTermOptionData($term_options);
+		}
+
+		return $term_options;
 	}
 
 	public function saveTriggerAction($id)

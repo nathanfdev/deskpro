@@ -29,59 +29,40 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TicketTriggerPluginActions extends AbstractEntityRepository
 {
-	protected function configure()
+	public function getActivePluginActions($index_by_type = false)
 	{
-		$this->setName('dp:plugin');
-		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
-		$this->addArgument('action', InputOption::VALUE_REQUIRED);
+		$index_by = ($index_by_type ? 'a.event_type' : 'a.id');
+
+		return $this->getEntityManager()->createQuery('
+			SELECT a
+			FROM DeskPRO:TicketTriggerPluginActions a INDEX BY ' . $index_by . '
+			INNER JOIN a.plugin p
+			WHERE p.enabled = 1
+		')->execute();
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	/**
+	 * Gets list of setup objects for each active plugin action
+	 *
+	 * @return \Application\DeskPRO\Tickets\TicketActions\AbstractPluginSetup[]
+	 */
+	public function getSetupObjects()
 	{
-		$pluginId = $input->getOption('plugin');
-		if (!$pluginId) {
-			$output->writeln("--plugin option must be specified");
-			return 1;
+		$objects = array();
+		foreach ($this->getActivePluginActions() AS $action) {
+			$class = $action->setup_class;
+			$objects[$action->event_type] = new $class();
 		}
 
-		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
-		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
-		if (!$plugin) {
-			$output->writeln("Plugin '$pluginId' could not be found");
-			return 1;
-		}
-
-		$action = $input->getArgument('action');
-		switch ($action) {
-			case 'export-sync-data':
-				$plugin->exportSyncData();
-				$output->writeln("$plugin->title sync data exported");
-				break;
-
-			case 'import-sync-data':
-				$plugin->importSyncData();
-				$output->writeln("$plugin->title sync data imported");
-				break;
-
-			default:
-				$output->writeln("Unknown action '$action'");
-				return 1;
-		}
-
-		return 0;
+		return $objects;
 	}
 }

@@ -53,6 +53,8 @@ class ActionsFactory
 {
 	protected $global_options = array();
 
+	protected $plugin_actions = null;
+
 	public function addGlobalOption($name, $value)
 	{
 		$this->global_options[$name] = $value;
@@ -193,6 +195,8 @@ class ActionsFactory
 						'tpl' => $value['tpl'],
 						'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : ''
 					);
+				} else {
+					$options = $value;
 				}
 		}
 
@@ -219,9 +223,16 @@ class ActionsFactory
 			return $this->createActionObject($action_class, $options);
 		} elseif (class_exists($modifier_class)) {
 			return $this->createModifierObject($modifier_class, $options);
-		} else {
-			throw new \InvalidArgumentException("Unknown action or modifier `$name`");
 		}
+
+		$plugin_action = $this->getPluginAction($name);
+		if ($plugin_action) {
+			$action_class = $plugin_action['action_class'];
+			$options = $plugin_action->getSetupObject()->filterActionOptions($options);
+			return $this->createActionObject($action_class, $options);
+		}
+
+		return new NullAction();
 	}
 
 	public function createActionObject($action_class, array $options)
@@ -240,5 +251,18 @@ class ActionsFactory
 
 		$obj = Util::callUserConstructorArray($action_class, $args);
 		return $obj;
+	}
+
+	protected function getPluginAction($name)
+	{
+		if ($this->plugin_actions === null) {
+			$this->plugin_actions = App::getEntityRepository('DeskPRO:TicketTriggerPluginActions')->getActivePluginActions(true);
+		}
+
+		if (isset($this->plugin_actions[$name])) {
+			return $this->plugin_actions[$name];
+		} else {
+			return false;
+		}
 	}
 }

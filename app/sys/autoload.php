@@ -50,6 +50,7 @@ $loader->registerClassNames(array(
 	'MimeMailParser_attachment'       => DP_ROOT.'/vendor/php-mime-mail-parser/attachment.class.php',
 	'Phirehose'                       => DP_ROOT.'/vendor/phirehose/Phirehose.php',
 	'UserstreamPhirehose'             => DP_ROOT.'/vendor/phirehose/UserstreamPhirehose.php',
+	'HipChatApi'                      => DP_ROOT.'/vendor/hipchat/HipChatApi.php',
 	'Markdown_Parser'                 => DP_ROOT.'/vendor/php-markdown/markdown.php',
 	'FineDiff'                        => DP_ROOT.'/vendor/PHP-FineDiff/finediff.php',
 	'GoogleOpenID'                    => DP_ROOT.'/vendor/googleopenid/GoogleOpenID.php',

@@ -29,59 +29,30 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+namespace HipChat\TicketActions;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class HipchatMessageSetup extends \Application\DeskPRO\Tickets\TicketActions\AbstractPluginSetup
 {
-	protected function configure()
+	public function getActionTemplate()
 	{
-		$this->setName('dp:plugin');
-		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
-		$this->addArgument('action', InputOption::VALUE_REQUIRED);
+		return 'HipChat:Admin:ticket-trigger-actions.html.twig';
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	public function filterActionOptions(array $options)
 	{
-		$pluginId = $input->getOption('plugin');
-		if (!$pluginId) {
-			$output->writeln("--plugin option must be specified");
-			return 1;
+		if (!isset($options['room'])) {
+			$options['room'] = '';
 		}
 
-		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
-		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
-		if (!$plugin) {
-			$output->writeln("Plugin '$pluginId' could not be found");
-			return 1;
-		}
-
-		$action = $input->getArgument('action');
-		switch ($action) {
-			case 'export-sync-data':
-				$plugin->exportSyncData();
-				$output->writeln("$plugin->title sync data exported");
-				break;
-
-			case 'import-sync-data':
-				$plugin->importSyncData();
-				$output->writeln("$plugin->title sync data imported");
-				break;
-
-			default:
-				$output->writeln("Unknown action '$action'");
-				return 1;
-		}
-
-		return 0;
+		return $options;
 	}
 }

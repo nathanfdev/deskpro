@@ -29,59 +29,64 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-class PluginCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+/**
+ * Represents an empty action. This is mostly important for actions added by plugins,
+ * when the plugin has since been removed.
+ */
+class NullAction extends AbstractAction
 {
-	protected function configure()
+	public function __construct()
 	{
-		$this->setName('dp:plugin');
-		$this->addOption('plugin', 'p', InputOption::VALUE_REQUIRED, 'ID of the plugin to handle data for');
-		$this->addArgument('action', InputOption::VALUE_REQUIRED);
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
 	{
-		$pluginId = $input->getOption('plugin');
-		if (!$pluginId) {
-			$output->writeln("--plugin option must be specified");
-			return 1;
-		}
+	}
 
-		/** @var $plugin \Application\DeskPRO\Entity\Plugin */
-		$plugin = App::getEntityRepository('DeskPRO:Plugin')->findOneById($pluginId);
-		if (!$plugin) {
-			$output->writeln("Plugin '$pluginId' could not be found");
-			return 1;
-		}
 
-		$action = $input->getArgument('action');
-		switch ($action) {
-			case 'export-sync-data':
-				$plugin->exportSyncData();
-				$output->writeln("$plugin->title sync data exported");
-				break;
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array();
+	}
 
-			case 'import-sync-data':
-				$plugin->importSyncData();
-				$output->writeln("$plugin->title sync data imported");
-				break;
 
-			default:
-				$output->writeln("Unknown action '$action'");
-				return 1;
-		}
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
 
-		return 0;
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return '';
 	}
 }
