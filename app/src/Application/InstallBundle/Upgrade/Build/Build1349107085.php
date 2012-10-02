@@ -204,6 +204,14 @@ class Build1349107085 extends AbstractBuild
 				), array('id' => $trigger['id']));
 			}
 		}
+
+		#----------------------------------------
+		# Set empty arrays for empty options
+		#----------------------------------------
+
+		$this->out("Set default empty option arrays");
+		$this->execMutateSql("UPDATE ticket_triggers SET event_trigger_options = 'a:0:{}' WHERE event_trigger_options IS NULL OR event_trigger_options = ''");
+		$this->execMutateSql("UPDATE ticket_triggers SET terms_any = 'a:0:{}' WHERE terms_any IS NULL OR terms_any = ''");
 	}
 
 	protected function snipTerm(array $terms, $find_term, &$found_val, array $hit_terms = array(), array &$hit_check = array())
