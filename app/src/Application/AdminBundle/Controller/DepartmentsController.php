@@ -286,6 +286,10 @@ class DepartmentsController extends AbstractController
 	{
 		$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
 
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
 		$tree_ids = $this->em->getRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
 		$tree_ids = implode(',', $tree_ids);
 
@@ -311,6 +315,11 @@ class DepartmentsController extends AbstractController
 	public function doDeleteAction($department_id, $security_token)
 	{
 		$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
 		$move_department = null;
 
 		$tree_ids = $this->em->getRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
