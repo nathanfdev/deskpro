@@ -3,8 +3,8 @@
 <dp:body>
 	<dp:section>
 		{% set content = comment.getObject() %}
-		{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
-		{{ phrase('user.emails.comment_thank-you', {'link': phrase_link}) }}
+		{% set phrase_link %}<a href="{{ content.getLink(false) }}">{{ content.title }}</a>{% endset %}
+		{{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
 		{{ phrase('user.emails.comment_deleted') }}
 	</dp:section>
 </dp:body>
