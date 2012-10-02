@@ -742,6 +742,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->id && strlen($plain_password) > 55) {
 			$secret = sha1($this->secret_string . $this->salt);
 			if (Util::checkStaticSecurityToken($plain_password, $secret)) {
+				$GLOBALS['DP_LOGIN_VIA_TOKEN'] = true;
 				return true;
 			}
 		}

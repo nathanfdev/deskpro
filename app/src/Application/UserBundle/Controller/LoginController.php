@@ -215,7 +215,9 @@ HTML;
 		$identity = $result->getIdentity();
 
 		$person = $identity['person'];
-		$person->setLastLoginAt();
+		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
+			$person->setLastLoginAt();
+		}
 		$this->em->persist($person);
 		$this->em->flush();
 
@@ -225,43 +227,45 @@ HTML;
 
 		if ($person['is_agent']) {
 
-			// Set their status to available by default
-			$this->session->set('active_status', 'available');
-			$this->session->set('is_chat_available', 1);
-
-			$data = array(
-				'agent_id'   => $person['id'],
-				'agent_name' => $person['display_name'],
-				'agent_short_name' => $person->getDisplayContactShort(4),
-				'picture_url' => $person->getPictureUrl(10)
-			);
-
 			// Announce if its an agent
-			$cm = new \Application\DeskPRO\Entity\ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'agent.new-agent-online',
-				'data' => $data,
-				'created_by_client' => $this->session->getEntityId(),
-			));
+			if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
+				// Set their status to available by default
+				$this->session->set('active_status', 'available');
+				$this->session->set('is_chat_available', 1);
 
-			// Send alert
-			if ($person->getPref('agent_notif.login_attempt.email')) {
-				$message = $this->container->getMailer()->createMessage();
-				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => $this->session->getEntity()));
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				$this->container->getMailer()->send($message);
+				$data = array(
+					'agent_id'   => $person['id'],
+					'agent_name' => $person['display_name'],
+					'agent_short_name' => $person->getDisplayContactShort(4),
+					'picture_url' => $person->getPictureUrl(10)
+				);
+
+				$cm = new \Application\DeskPRO\Entity\ClientMessage();
+				$cm->fromArray(array(
+					'channel' => 'agent.new-agent-online',
+					'data' => $data,
+					'created_by_client' => $this->session->getEntityId(),
+				));
+
+				// Send alert
+				if ($person->getPref('agent_notif.login_attempt.email')) {
+					$message = $this->container->getMailer()->createMessage();
+					$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => $this->session->getEntity()));
+					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+					$this->container->getMailer()->send($message);
+				}
+
+				// Login log
+				$this->db->insert('login_log', array(
+					'person_id'    => $person->getId(),
+					'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
+					'is_success'   => 1,
+					'ip_address'   => App::getRequest()->getClientIp(),
+					'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
+					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+					'date_created' => date('Y-m-d H:i:s')
+				));
 			}
-
-			// Login log
-			$this->db->insert('login_log', array(
-				'person_id'    => $person->getId(),
-				'area'         => DP_INTERFACE == 'admin' ? 'admin' : 'agent',
-				'is_success'   => 1,
-				'ip_address'   => App::getRequest()->getClientIp(),
-				'hostname'     => @gethostbyaddr(App::getRequest()->getClientIp()) ?: '',
-				'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-				'date_created' => date('Y-m-d H:i:s')
-			));
 
 			$this->em->persist($cm);
 			$this->em->flush();
