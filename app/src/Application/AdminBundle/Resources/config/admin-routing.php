@@ -2172,4 +2172,43 @@ $collection->add('admin_widgets_toggle', new Route(
 	array()
 ));
 
+################################################################################
+# Web Hooks
+################################################################################
+
+$collection->add('admin_webhooks', new Route(
+	'/web-hooks',
+	array('_controller' => 'AdminBundle:WebHook:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_webhooks_new', new Route(
+	'/web-hooks/new',
+	array('_controller' => 'AdminBundle:WebHook:edit', 'webhook_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_webhooks_edit', new Route(
+	'/web-hooks/{webhook_id}/edit',
+	array('_controller' => 'AdminBundle:WebHook:edit'),
+	array(),
+	array()
+));
+
+$collection->add('admin_webhooks_delete', new Route(
+	'/web-hooks/{webhook_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:WebHook:delete'),
+	array(),
+	array()
+));
+
+$collection->add('admin_webhooks_test', new Route(
+	'/web-hooks/{webhook_id}/test/{security_token}',
+	array('_controller' => 'AdminBundle:WebHook:test'),
+	array(),
+	array()
+));
+
 return $collection;
