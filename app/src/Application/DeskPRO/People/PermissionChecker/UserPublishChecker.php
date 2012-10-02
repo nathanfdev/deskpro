@@ -60,6 +60,11 @@ class UserPublishChecker extends AbstractChecker
 			return false;
 		}
 
+		// Only agents can view non-published
+		if ($article->status != 'published' && $article->status != 'archived' && !$this->person->is_agent) {
+			return false;
+		}
+
 		$perms = $this->person->PermissionsManager->ArticleCategories->getAllowedCategories();
 		$perms = array_flip($perms);
 		foreach ($article->categories as $cat) {
@@ -82,6 +87,11 @@ class UserPublishChecker extends AbstractChecker
 			return false;
 		}
 
+		// Only agents can view non-published
+		if ($news->status != 'published' && $news->status != 'archived' && !$this->person->is_agent) {
+			return false;
+		}
+
 		if ($this->person->PermissionsManager->NewsCategories->isCategoryAllowed($news->category->getId())) {
 			return true;
 		}
@@ -100,6 +110,11 @@ class UserPublishChecker extends AbstractChecker
 			return false;
 		}
 
+		// Only agents can view non-published
+		if ($download->status != 'published' && $download->status != 'archived' && !$this->person->is_agent) {
+			return false;
+		}
+
 		if ($this->person->PermissionsManager->DownloadCategories->isCategoryAllowed($download->category->getId())) {
 			return true;
 		}
@@ -115,6 +130,11 @@ class UserPublishChecker extends AbstractChecker
 	public function canViewFeedback(Feedback $feedback)
 	{
 		if (!$this->person->hasPerm('feedback.use')) {
+			return false;
+		}
+
+		// Only agents can view non-published
+		if ($feedback->status == 'hidden' && !$this->person->is_agent) {
 			return false;
 		}
 
