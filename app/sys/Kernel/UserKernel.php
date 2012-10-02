@@ -90,10 +90,11 @@ class UserKernel extends AbstractKernel
 		if (!$urlinfo || empty($urlinfo['host']) || empty($urlinfo['scheme'])) {
 			return null;
 		}
-		$now_host       = strtolower($urlinfo['host']);
-		$now_scheme     = strtolower($urlinfo['scheme']);
-		$correct_host   = strtolower($request->getHttpHost());
-		$correct_scheme = strtolower($request->getScheme());
+
+		$correct_host   = strtolower($urlinfo['host']);
+		$correct_scheme = strtolower($urlinfo['scheme']);
+		$now_host       = strtolower($request->getHttpHost());
+		$now_scheme     = strtolower($request->getScheme());
 
 		$do_correction = false;
 		if ($correct_scheme == 'https' && $now_scheme != 'https') {
