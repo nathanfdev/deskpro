@@ -221,6 +221,9 @@ class ChatController extends AbstractController
 
 		$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 
+		// Blob is not temp anymore
+		$this->container->getDb()->update('blobs', array('is_temp' => 0), array('id' => $blob->getId()));
+
 		return $this->createJsonResponse($msg->getInfo());
 	}
 
