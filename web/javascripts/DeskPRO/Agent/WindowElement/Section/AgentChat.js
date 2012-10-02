@@ -119,11 +119,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.agentTeamList.on('click', 'li', function(ev) {
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
-			DP.console.log(agentIds);
 			agentIds = (agentIds+"").split(',');
-			DP.console.log(agentIds);
 
-			self.newChatWindow(agentIds);
+			var name = $(this).data('team-name');
+
+			self.newChatWindow(agentIds, name);
 		});
 
 		// Agents/teams tabs
@@ -156,13 +156,14 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.panelEl.removeClass('open');
 	},
 
-	newChatWindow: function(agent_ids) {
+	newChatWindow: function(agent_ids, title) {
 		var self = this;
 
 		var chatWin = DeskPRO.Agent.Widget.AgentChatWin_FindAgents(agent_ids);
 		if (!chatWin) {
 			chatWin = new DeskPRO.Agent.Widget.AgentChatWin({
 				agentIds: agent_ids,
+				title: title || null,
 				onDestroy: function() { self.reflowButtons(); }
 			});
 		}

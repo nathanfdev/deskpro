@@ -29,15 +29,26 @@
 </script>
 
 <script type="text/x-jquery-tmpl" id="agent_groupchat_conversation">
-	<section class="agent-chat with-avatar" id="agent_groupchat_conversation_${to_agent_id}">
+	<section class="agent-chat with-avatar" id="agent_chat_conversation_${local_id}">
 		<nav>
+			<a style="padding-left:0; text-overflow: ellipsis; display: block; overflow: hidden; width: 62px;" title="${title}">${title}</a>
 			<span class="close-trigger">x</span>
-			<a>Group</a>
 		</nav>
-		<div class="messages-box">
-			<div class="messages-container"></div>
-			<div class="input-message"><textarea></textarea></div>
-		</div>
+		<section class="window">
+			<header>
+				<span class="close"></span>
+				<span class="minimize"></span>
+				<h2>${title}</h2>
+			</header>
+			<div class="messages-box">
+				<div class="messages-container"></div>
+			</div>
+			<div class="input-message-wrap">
+				<div class="input-message">
+					<textarea rows="1" cols="20"/></textarea>
+				</div>
+			</div>
+		</section>
 	</section>
 </script>
 

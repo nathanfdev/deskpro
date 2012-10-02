@@ -43,7 +43,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		this.options = {
 			convoId: 0,
-			agentIds: []
+			agentIds: [],
+			title: null
 		};
 
 		this.setOptions(options);
@@ -91,7 +92,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		// One agent: we're sending a new one, we dont define ourselves
 		// Two agents with us: incoming new message and got agentids from server, which includes us
-		if ( this.agentIds.length == 1 || (this.agentIds.length == 2 && this.agentIds.indexOf(parseInt(DESKPRO_PERSON_ID)) != -1) ) {
+		if (!this.options.title && (this.agentIds.length == 1 || (this.agentIds.length == 2 && this.agentIds.indexOf(parseInt(DESKPRO_PERSON_ID)) != -1) )) {
 			var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[0]);
 
 			if (!agentInfo) {
@@ -107,7 +108,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			});
 		} else {
 			var newContainer = $.tmpl('agent_groupchat_conversation', {
-				local_id: this.uuid
+				local_id: this.uuid,
+				title: this.options.title || 'Group'
 			});
 		}
 
