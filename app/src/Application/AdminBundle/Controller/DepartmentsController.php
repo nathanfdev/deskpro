@@ -64,8 +64,23 @@ class DepartmentsController extends AbstractController
 		$agents     = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$teams      = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
+
 		$current_options_tickets = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('tickets');
-		$current_options_chat = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('chat');
+		$current_options_chat    = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('chat');
+
+		// Filter out non-agents
+		$filter_outer = function(&$array) use ($agents) {
+			foreach ($array as &$dep) {
+				$new_list = array();
+				foreach ($dep as $id) {
+					if (isset($agents[$id])) $new_list[] = $id;
+				}
+				$dep = $new_list;
+			}
+		};
+
+		$filter_outer($current_options_tickets);
+		$filter_outer($current_options_chat);
 
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
 			'all_departments' => $all_departments,
