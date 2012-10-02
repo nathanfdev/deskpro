@@ -405,12 +405,16 @@ class ErrorReporter
 	 * @param $person
 	 * @param $message
 	 */
-	public static function sendFeedback($person, $message)
+	public static function sendFeedback($person, $message, $email_address = null)
 	{
+		if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
+			$email_address = $person->email_address;
+		}
+
 		$data = array(
 			'message' => $message,
 			'name' => $person->getDisplayName(),
-			'email' => $person->getEmailAddress(),
+			'email' => $email_address,
 			'url' => App::getSetting('core.deskpro_url')
 		);
 

@@ -30,7 +30,8 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: {
-					message: $.trim(self.el.find('textarea').val() + "\n\n" + self.el.find('input[name="message_extra"]').val())
+					message: $.trim(self.el.find('textarea').val() + "\n\n" + self.el.find('input[name="message_extra"]').val()),
+					email_address: self.el.find('input[name="email_address"]').val()
 				},
 				dataType: 'json',
 				complete: function() {

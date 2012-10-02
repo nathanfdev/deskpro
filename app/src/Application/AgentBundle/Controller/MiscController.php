@@ -656,7 +656,7 @@ JS;
 
 	public function submitDeskproFeedbackAction()
 	{
-		\Application\DeskPRO\Service\ErrorReporter::sendFeedback($this->person, $this->in->getString('message'));
+		\Application\DeskPRO\Service\ErrorReporter::sendFeedback($this->person, $this->in->getString('message'), $this->in->getString('email_address'));
 		return $this->createJsonResponse(array('success' => true));
 	}
 
