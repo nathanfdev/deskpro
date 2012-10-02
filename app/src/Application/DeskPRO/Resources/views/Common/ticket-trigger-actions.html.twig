@@ -261,6 +261,17 @@
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
 		</div>
 	</div>
+	{% if term_options.web_hooks %}
+		<div class="builder-type" title="Call Web Hook" data-rule-type="call_webhook">
+			<div class="builder-options">
+				<select name="webhook_id">
+				{% for id,title in term_options.web_hooks %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
 	{% if 'time_' not in event_group and event_group != 'macro' %}
 	<div class="builder-type" title="{{ phrase('agent.general.disable_all_notifications') }}" data-rule-type="disable_notifications">
 		<div class="builder-options" style="display:block">

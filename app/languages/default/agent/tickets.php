@@ -24,6 +24,7 @@
 	'agent.tickets.assign_to_agent_action'              => 'Assign agent to {{agent}}',
 	'agent.tickets.attachment'                          => 'Attachment',
 	'agent.tickets.attachment_deleted'                  => 'Attachment deleted',
+	'agent.tickets.call_webhook_action'                 => 'Call web hook {{hook}}',
 	'agent.tickets.cc'                                  => 'CC',
 	'agent.tickets.ccs'                                 => 'CC\'s',
 	'agent.tickets.change_agent'                        => 'Change agent from {{old}} to {{new}}',

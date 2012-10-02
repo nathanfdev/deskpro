@@ -143,6 +143,8 @@ class TicketTriggersController extends AbstractController
 			$ticket_options['people_term_options']['languages']  = $this->container->getDataService('Language')->getTitles();
 		}
 
+		$ticket_options['web_hooks']  = $this->container->getDataService('WebHook')->getHookTitles();
+
 		return $this->render('AdminBundle:TicketTriggers:edit-trigger.html.twig', array(
 			'trigger'      => $trigger,
 			'term_options' => $ticket_options,

@@ -50,30 +50,12 @@ class WebHook extends AbstractEntityRepository
 		')->execute();
 	}
 
-	/**
-	 * Gets all hooks, grouped by the event they belong to
-	 *
-	 * @return array
-	 */
-	public function getEventGroupedHooks()
+	public function getHookTitles()
 	{
-		$output = array();
-		foreach ($this->getAllHooks() AS $hook) {
-			$output[$hook->event_type][$hook->id] = $hook;
-		}
-
-		return $output;
-	}
-
-	/**
-	 * List of available web hook events
-	 *
-	 * @return array
-	 */
-	public function getEvents()
-	{
-		return array(
-			'ticket' => 'Tickets'
-		);
+		return App::getDb()->fetchAllKeyValue("
+			SELECT id, title
+			FROM web_hooks
+			ORDER BY title ASC
+		");
 	}
 }

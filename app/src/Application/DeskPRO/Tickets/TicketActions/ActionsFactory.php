@@ -183,6 +183,10 @@ class ActionsFactory
 				$options = array('message' => $value['message']);
 				break;
 
+			case 'call_webhook':
+				$options = array('webhook_id' => $value['webhook_id']);
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

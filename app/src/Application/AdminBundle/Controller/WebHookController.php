@@ -116,22 +116,15 @@ class WebHookController extends AbstractController
 
 		$hook = $this->_getWebHookOr404($webhook_id);
 
-		$client = new \Zend\Http\Client($hook->url);
-		if ($hook->username) {
-			$client->setAuth($hook->username, $hook->password);
-		}
-		$client->setParameterPost(array(
-			'test' => 1
-		));
-		$client->setMethod('POST');
+		$results = $hook->trigger(array('test' => 1));
+		$response = $results['response'];
+		$exception = $results['exception'];
 
-		$response = false;
-		$exception = false;
-		$success = null;
-		try {
-			$response = $client->send();
+		if ($response) {
 			$success = $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
-		} catch (\Exception $exception) {}
+		} else {
+			$success = null;
+		}
 
 		return $this->render('AdminBundle:WebHooks:test.html.twig', array(
 			'hook' => $hook,

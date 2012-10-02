@@ -54,6 +54,27 @@ class WebHook extends \Application\DeskPRO\Domain\DomainObject
 	protected $username = '';
 	protected $password = '';
 
+	public function trigger(array $data)
+	{
+		$client = new \Zend\Http\Client($this->url);
+		if ($this->username) {
+			$client->setAuth($this->username, $this->password);
+		}
+		$client->setParameterPost($data);
+		$client->setMethod('POST');
+
+		$response = false;
+		$exception = false;
+		try {
+			$response = $client->send();
+		} catch (\Exception $exception) {}
+
+		return array(
+			'response' => $response,
+			'exception' => $exception
+		);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
