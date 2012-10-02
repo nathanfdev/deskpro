@@ -201,10 +201,15 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 				if (License::getLicense()->isPastExpireDate()) {
 					if (DP_INTERFACE != 'billing') {
-						// Show lic error if not user, or if its been 14 days then show it for users too
-						if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
-							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
+						if (defined('DPC_IS_CLOUD')) {
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_expired', $request->getBaseUrl()));
 							return $response;
+						} else {
+							// Show lic error if not user, or if its been 14 days then show it for users too
+							if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
+								$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
+								return $response;
+							}
 						}
 					}
 				}

@@ -52,6 +52,8 @@ class HelpdeskOfflineMessage
 
 	public static function getLicenseErrorPage($type, $base_url)
 	{
+		$title = 'License Error';
+
 		switch ($type) {
 			case 'agents':
 				$message = 'You have more agents than your license allows.';
@@ -66,13 +68,41 @@ class HelpdeskOfflineMessage
 				}
 				break;
 
+			case 'cloud_expired':
+				if (defined('DPC_DEMO_EXPIRE') && DPC_DEMO_EXPIRE < time()) {
+					$now  = new \DateTime('now');
+					$date = new \DateTime('@' . DPC_DEMO_EXPIRE);
+
+					$days = $date->diff($now)->format('%a');
+					if ($days == 1) {
+						$days = 'today';
+					} elseif ($days == 2) {
+						$days = 'yesterday';
+					} else {
+						$days = "$days days ago";
+					}
+
+					$message = "Your demo expired $days.";
+					$title = "Demo Expired";
+				} else {
+					$message = "Your helpdesk failed to renew and has expired.";
+					$title = "Service Expired";
+				}
+				break;
+
 			default: trigger_error('getLicenseErrorPage called with bad $type', E_USER_ERROR); return '';
 		}
 
-		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
+		if ($type == 'cloud_expired') {
+			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error-cloud.html');
+		} else {
+			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/license-error.html');
+		}
+
 		$page_html = str_replace('{{ LICENSE_MESSAGE }}', $message, $page_html);
 		$page_html = str_replace('{{ BILLING_URL }}', $base_url . '/billing/', $page_html);
 		$page_html = str_replace('{{ LICENSE_ID }}', License::getLicense()->getLicenseId(), $page_html);
+		$page_html = str_replace('{{ TITLE }}', $title, $page_html);
 
 		$asset_url = $base_url;
 		$asset_url = str_replace('/index.php', '', $asset_url);
