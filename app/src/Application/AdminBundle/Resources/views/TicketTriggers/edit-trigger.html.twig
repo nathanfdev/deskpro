@@ -55,7 +55,7 @@ function TicketTriggerEditPage_init()
 			<option {% if trigger.event_trigger == 'new.web.user' %}selected="selected"{% endif %} value="new.web.user">any web form</option>
 			<option {% if trigger.event_trigger == 'new.web.user.portal' %}selected="selected"{% endif %} value="new.web.user.portal">the helpdesk portal</option>
 			<option {% if trigger.event_trigger == 'new.web.user.widget' %}selected="selected"{% endif %} value="new.web.user.widget">the website widget</option>
-			<option {% if trigger.event_trigger == 'new.web.user.embed' %}selected="selected"{% endif %} value="new.web.user.embed">the an embedded ticket form</option>
+			<option {% if trigger.event_trigger == 'new.web.user.embed' %}selected="selected"{% endif %} value="new.web.user.embed">the embedded ticket form</option>
 		</select>
 	{% endif %}
 {% endblock %}
