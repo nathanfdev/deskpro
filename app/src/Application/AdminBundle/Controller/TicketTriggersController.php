@@ -59,6 +59,7 @@ class TicketTriggersController extends AbstractController
 					'new.email.agent',
 					'new.web.agent',
 					'new.web.agent.portal',
+					'new.web.user',
 					'new.web.user.portal',
 					'new.web.user.widget',
 					'new.web.user.embed'
@@ -218,9 +219,9 @@ class TicketTriggersController extends AbstractController
 		$this->em->commit();
 
 		if ($trigger->getTriggerType() == 'escalation') {
-			return $this->redirectRoute('admin_ticketescalations_edit', array('id' => $trigger->getId()));
+			return $this->redirectRoute('admin_ticketescalations');
 		} else {
-			return $this->redirectRoute('admin_tickettriggers_edit', array('id' => $trigger->getId()));
+			return $this->redirectRoute('admin_tickettriggers');
 		}
 	}
 
