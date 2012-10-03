@@ -289,7 +289,32 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		if (!$this->language) {
-			$this->language = App::getDataService('Language')->getDefault();
+			$data = App::getDataService('Language');
+			$languages = $data->getAll();
+			$default_id = $data->getDefaultId();
+
+			$locales = array();
+			if (isset($languages[$default_id])) {
+				$locales[] = $languages[$default_id]->locale;
+			}
+			foreach ($languages AS $language) {
+				$locales[] = $language->locale;
+			}
+
+			try {
+				// get the highest priority language if available; returns first locale if no match
+				$locale = App::getRequest()->getPreferredLanguage($locales);
+			} catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
+				// the request may not be available, so use the first
+				$locale = reset($locales);
+			}
+
+			foreach ($languages AS $language) {
+				if ($language->locale === $locale) {
+					$this->language = $language;
+					break;
+				}
+			}
 		}
 
 		// still no locale? we might be pre-install, lets use the fake one

@@ -146,6 +146,15 @@ class LanguageDataService extends BaseRepositoryService
 
 
 	/**
+	 * @return int
+	 */
+	public function getDefaultId()
+	{
+		return $this->default_lang_id;
+	}
+
+
+	/**
 	 * @param $id
 	 * @return \Application\DeskPRO\Entity\Language
 	 */
