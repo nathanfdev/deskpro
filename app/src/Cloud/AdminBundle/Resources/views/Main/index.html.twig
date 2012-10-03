@@ -9,7 +9,7 @@
 	{% if lic.isDemo() %}
 		<section class="demo-notice">
 			<article>
-				Your DeskPRO helpdesk demo expires <em class="days">{% if lic.getExpireDays() == 1 %}TODAY{% if lic.getExpireDays() == 2 %}TOMORROW{% else %}in {{ lic.getExpireDays() }} days{% endif %}</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
+				Your DeskPRO helpdesk demo expires <em class="days">{% if lic.getExpireDays() == 1 %}TODAY{% elseif lic.getExpireDays() == 2 %}TOMORROW{% else %}in {{ lic.getExpireDays() }} days{% endif %}</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
 
 				<div class="enter-wrap">
 					<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
