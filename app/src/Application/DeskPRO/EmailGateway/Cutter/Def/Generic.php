@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
 use Orb\Util\Strings;
+use Application\DeskPRO\App;
 
 class Generic implements ForwardDef, QuoteDef
 {
@@ -243,7 +244,22 @@ class Generic implements ForwardDef, QuoteDef
 		if ($pos === false) {
 			$pos = strpos($body, 'DP_TOP_MARK_USER');
 			if ($pos === false) {
-				return $body;
+
+				// Try to detect '=== REPLY ABOVE THIS LINE ===' bits
+				if (!$is_html) {
+					$langs = App::getSystemService('Language')->getAll();
+					foreach ($langs as $l) {
+						$line = '=== ' . App::getTranslator()->getPhraseText('agent.emails.reply_above_line') . ' ===';
+						$pos = strpos($body, $line);
+						if ($pos !== false) {
+							break;
+						}
+					}
+				}
+
+				if ($pos === false) {
+					return $body;
+				}
 			}
 		}
 
