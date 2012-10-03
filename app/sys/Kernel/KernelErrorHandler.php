@@ -524,6 +524,11 @@ class KernelErrorHandler
 			$display = false;
 		}
 
+		// Dont output apc warnings (but still log them)
+		if ($display && strpos($errstr, 'Unable to allocate memory for pool') !== false) {
+			$display = false;
+		}
+
 		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
