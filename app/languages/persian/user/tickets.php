@@ -5,4 +5,6 @@
 	'user.tickets.fields_category'                                         => 'دسته بندی',
 	'user.tickets.fields_product'                                          => 'محصول',
 	'user.tickets.from_x_at_y'                                             => 'از {{name}} به {{date}}',
+	'user.tickets.new_reply'                                               => 'پاسخ جدید',
+	'user.tickets.new_ticket'                                              => 'تیکت جدید',
 );
