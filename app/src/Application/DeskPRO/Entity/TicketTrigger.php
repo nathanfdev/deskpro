@@ -597,7 +597,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	{
 		switch ($creation_system) {
 			case Ticket::CREATED_GATEWAY_PERSON:
-				$event = 'new.email.person';
+				$event = 'new.email.user';
 				break;
 			case Ticket::CREATED_WEB_PERSON_PORTAL:
 				$event = 'new.web.user.portal';
