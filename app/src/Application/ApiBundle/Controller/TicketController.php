@@ -191,7 +191,7 @@ class TicketController extends AbstractController
 
 			$this->em->flush();
 
-			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			if ($labels) {
 				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
 				$this->em->flush();
@@ -430,8 +430,6 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->_getTicketOr404($ticket_id, 'modify_merge');
 		$other_ticket = $this->_getTicketOr404($merge_ticket_id, 'modify_merge');
-
-		$old_ticket_id = $other_ticket['id'];
 
 		try {
 			$this->em->beginTransaction();

@@ -72,8 +72,8 @@ class TicketSearchController extends AbstractController
 		}
 
 		foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {
-			if ($this->in->checkIsset("fields." . $field->getId())) {
-				$in_val = $this->in->getString('fields.'.$field->getId());
+			if ($this->in->checkIsset("field." . $field->getId())) {
+				$in_val = $this->in->getString('field.'.$field->getId());
 				if ($in_val) {
 					$terms[] = array('type' => 'ticket_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
 				}

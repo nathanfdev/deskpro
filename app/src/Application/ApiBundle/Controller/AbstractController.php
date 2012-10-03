@@ -278,7 +278,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
-	public function getCustomFieldInput($input_name = 'fields')
+	public function getCustomFieldInput($input_name = 'field')
 	{
 		$custom_fields = $this->request->request->get($input_name, array());
 		if (!is_array($custom_fields) || empty($custom_fields)) {

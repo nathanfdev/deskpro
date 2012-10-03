@@ -60,8 +60,8 @@ class OrganizationController extends AbstractController
 		}
 
 		foreach ($this->container->getSystemService('org_fields_manager')->getFields() as $field) {
-			if ($this->in->checkIsset("fields." . $field->getId())) {
-				$in_val = $this->in->getString('fields.'.$field->getId());
+			if ($this->in->checkIsset("field." . $field->getId())) {
+				$in_val = $this->in->getString('field.'.$field->getId());
 				if ($in_val) {
 					$terms[] = array('type' => 'organization_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
 				}
@@ -140,7 +140,7 @@ class OrganizationController extends AbstractController
 		$this->db->beginTransaction();
 
 		try {
-			foreach ($this->in->getCleanValueArray('group_ids', 'int') as $ug_id) {
+			foreach ($this->in->getCleanValueArray('group_id', 'int') as $ug_id) {
 				$ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
 				if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
 					$org->usergroups->add($ug);
@@ -156,7 +156,7 @@ class OrganizationController extends AbstractController
 			}
 			$this->em->flush();
 
-			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			if ($labels) {
 				$org->getLabelManager()->setLabelsArray($labels, $this->em);
 				$this->em->flush();
