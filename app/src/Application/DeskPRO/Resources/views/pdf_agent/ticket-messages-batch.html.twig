@@ -9,7 +9,7 @@
         </tr>
     </table>
     <hr />
-    <span class="ticket_content">
+    <span class="ticket_content "{% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>
         {{ message.message_html|safe_link_urls_html }}
     </span>
 </div>

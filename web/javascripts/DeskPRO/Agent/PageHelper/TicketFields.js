@@ -172,8 +172,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
 
-		changeManager.saveChanges(customFieldData, (function() {
+		changeManager.saveChanges(customFieldData, (function(data) {
 			this.closeEditMode();
+			if (data.data && data.data.reload) {
+				this.page.closeSelf();
+				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
+			}
 		}).bind(this));
 	},
 

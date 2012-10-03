@@ -1332,6 +1332,8 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
 
+		$language = $ticket->language;
+
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 
 		$macro_id = $this->in->getUint('macro_id');
@@ -1396,6 +1398,11 @@ class TicketController extends AbstractController
 				'message' => $result['new_reply']
 			));
 		}
+
+		// need to reload the whole ticket if we flipped the language type
+		$was_rtl = ($language && $language->is_rtl);
+		$is_rtl = ($ticket->language && $ticket->language->is_rtl);
+		$data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(

@@ -195,7 +195,7 @@
 					</li>
 				</ul>
 				<div class="input-wrap">
-					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message">{% if agent_signature %}
+					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>{% if agent_signature %}
 
 
 
