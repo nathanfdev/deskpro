@@ -79,6 +79,10 @@ class ExceptionListener
 			return;
 		}
 
+		if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+			return;
+		}
+
 		$exception->_dp_sn = KernelErrorHandler::genSessionName();
 
 		$errinfo = KernelErrorHandler::getExceptionInfo($exception);

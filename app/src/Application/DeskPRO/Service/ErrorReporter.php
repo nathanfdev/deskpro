@@ -189,6 +189,7 @@ class ErrorReporter
 			$ignore_types = array(
 				'Application\\DeskPRO\\Command\\Exception\\CronRunningException',
 				'Application\\DeskPRO\\FileStorage\\Exception\\PermissionException',
+				'Application\\DeskPRO\\HttpKernel\\Exception\\NoPermissionException',
 				'Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException',
 			);
 

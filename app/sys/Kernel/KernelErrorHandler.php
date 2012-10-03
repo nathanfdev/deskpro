@@ -148,6 +148,9 @@ class KernelErrorHandler
 		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
 			return;
 		}
+		if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+			return;
+		}
 
 		self::$is_handling_exception = true;
 
