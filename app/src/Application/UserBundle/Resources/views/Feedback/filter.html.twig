@@ -125,10 +125,10 @@
 		</header>
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">
-				<div style="float:left; width: 100%;">
+				<div style="float:{% if is_rtl() %}right{% else %}left{% endif %}; width: 100%;">
 					{% include 'UserBundle:Feedback:filter-nav.html.twig' %}
 				</div>
-				<br style="clear:left;height: 1px;" />
+				<br style="clear:{% if is_rtl() %}right{% else %}left{% endif %};height: 1px;" />
 
 				<ul class="dp-content-list">
 					{% for result in display %}

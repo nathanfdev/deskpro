@@ -99,7 +99,7 @@
 				<h1><a href="{{ path('user') }}">{{ app.getSetting('user.portal_header') }}</a></h1>
 				<h2 {% if not app.getSetting('user.portal_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('user.portal_tagline') }}</h2>
 				{% if app.admin_portal_controls %}
-					<div id="dp_header_portal_off" style="float:left">
+					<div id="dp_header_portal_off" style="float:{% if is_rtl() %}right{% else %}left{% endif %}">
 						{{ phrase('admin.designer.reenable_simple_header') }}
 					</div>
 				{% endif %}

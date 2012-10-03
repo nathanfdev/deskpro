@@ -48,7 +48,7 @@
 		</div>
 
 		{{ download.content_html|raw }}
-		<br style="clear: right; height: 1px;overflow: hidden" />
+		<br style="clear: {% if is_rtl() %}left{% else %}right{% endif %}; height: 1px;overflow: hidden" />
 	</article>
 	<footer>
 		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}

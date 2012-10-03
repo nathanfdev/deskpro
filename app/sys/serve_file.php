@@ -266,7 +266,7 @@ class FilestorageLoader
 				}, $css);
 
 				// where the rule name contains left/right
-				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(padding|margin)-(left|right)\s*:/i', function($match) {
+				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(padding|margin|border)-(left|right)\s*:/i', function($match) {
 					switch (strtolower($match[2])) {
 						case 'left': $new = 'right'; break;
 						case 'right': $new = 'left'; break;
@@ -284,7 +284,7 @@ class FilestorageLoader
 					}, $css
 				);
 
-				// where the rull name is left/right
+				// where the rule name is left/right
 				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(left|right)\s*:/i', function($match) {
 					switch (strtolower($match[1])) {
 						case 'left': $new = 'right'; break;
@@ -294,6 +294,40 @@ class FilestorageLoader
 
 					return "$new:";
 				}, $css);
+
+				$position_flip = function($x) {
+					if (strtolower($x) == 'left') {
+						return 'right';
+					} else if (strtolower($x) == 'left') {
+						return 'left';
+					} else if (preg_match('/^0[a-z]*$/i', $x)) {
+						return '100%'; // left to completely right
+					} else if (preg_match('/^([0-9.]+)%$/', $x, $percent)) {
+						return (100 - $percent[1]) . '%'; // percentage left offset on right
+					} else {
+						return $x; // can't flip
+					}
+				};
+
+				// flip background position
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])(background-position)\s*:\s*([a-z0-9\._-]+)/i',
+					function($match) use ($position_flip) {
+						$x = $position_flip($match[2]);
+
+						return "$match[1]: $x";
+					}, $css
+				);
+
+				// flip background
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])(background)\s*:\s*([^;}]+?)\s+(left|right|center|0[a-z]*|[0-9.]+%)/i',
+					function($match) use($position_flip) {
+						$x = $position_flip($match[3]);
+
+						return "$match[1]: $match[2] $x";
+					}, $css
+				);
 
 				foreach ($replace AS $key => $replace_css) {
 					$css = str_replace("\x1a$key\x1a", $replace_css, $css);

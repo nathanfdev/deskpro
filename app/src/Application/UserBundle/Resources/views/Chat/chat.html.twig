@@ -213,7 +213,7 @@
 				<input type="hidden" id="no_feedback" name="no_feedback" value="0" />
 				<table cellspacing="0" cellpadding="0" class="dp-layout">
 					<tr>
-						<td style="padding-right: 5px; padding-bottom: 4px;">{{ phrase('user.chat.form_feedback_rate-time') }}</td>
+						<td style="padding-{% if is_rtl() %}left{% else %}right{% endif %}: 5px; padding-bottom: 4px;">{{ phrase('user.chat.form_feedback_rate-time') }}</td>
 						<td style="padding-bottom: 4px;">
 							<select name="rating_response_time">
 								<option value="1">{{ phrase('user.chat.form_feedback_rate-satisfied') }}</option>
@@ -222,7 +222,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="padding-right: 5px">{{ phrase('user.chat.form_feedback_rate-satisfaction') }}</td>
+						<td style="padding-{% if is_rtl() %}left{% else %}right{% endif %}: 5px">{{ phrase('user.chat.form_feedback_rate-satisfaction') }}</td>
 						<td>
 							<select name="rating_overall">
 								<option value="1">{{ phrase('user.chat.form_feedback_rate-satisfied') }}</option>

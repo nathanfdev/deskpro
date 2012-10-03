@@ -31,10 +31,10 @@
 <section class="dp-article-post dp-content-post dp-content-page">
 	<header class="dp-feedback-row {% if has_voted_this %}dp-voted-row{% endif %}">
 		<table class="dp-layout" width="100%"><tr>
-			<td style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
+			<td style="padding-{% if is_rtl() %}left{% else %}right{% endif %}: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 			<td class="dp-row-contain" width="100%">
 				{% if feedback.status != 'hidden' %}
-					<span class="dp-feedback-status" style="float: right; margin-left: 6px;">
+					<span class="dp-feedback-status" style="float: {% if is_rtl() %}left{% else %}right{% endif %}; margin-{% if is_rtl() %}right{% else %}left{% endif %}: 6px;">
 						{% if feedback.status_category %}
 							{{ feedback.status_category.title }}
 						{% else %}

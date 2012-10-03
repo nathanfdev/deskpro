@@ -16,7 +16,7 @@
 <section class="dp-content-post dp-content-page">
 	<header>
 		{% if app.getLastException()._dp_sn %}
-			<div style="float: right; font-size: 11px; color: #5A6467;">
+			<div style="float: {% if is_rtl() %}left{% else %}right{% endif %}; font-size: 11px; color: #5A6467;">
 				{{ phrase('user.error.error_code') }}: {{ app.getLastException()._dp_sn }}
 			</div>
 		{% endif %}

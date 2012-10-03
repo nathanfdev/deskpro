@@ -518,6 +518,12 @@ section#dp_header_search input#dp_search {
 	padding-left: 30px;
 }
 
+/*@no_rtl*/
+.rtl section#dp_header_search input#dp_search {
+	background-position: 98% 50%;
+}
+/*@/no_rtl*/
+
 section#dp_header_search input#dp_search::-webkit-input-placeholder { color: #555; }
 section#dp_header_search input#dp_search:-moz-placeholder { color: #555; }
 
@@ -4181,6 +4187,10 @@ dp .dp-labels-search td {
 #dp table.dp-grid-table td {
 	padding: 3px;
 	border: 1px solid #ccc;
+}
+
+#recaptcha_area {
+	direction: ltr;
 }
 
 {% include 'UserBundle:Css:custom.css.twig' %}

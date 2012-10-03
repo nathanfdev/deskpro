@@ -4,7 +4,7 @@
  ##}
 
 <ul class="dp-nav dp-nav-tabs dp-feedback-nav dp-nav-thicksep">
-	<li class="dp-dropdown dp-alt-option dp-first" style="float: left;">
+	<li class="dp-dropdown dp-alt-option dp-first" style="float: {% if is_rtl() %}right{% else %}left{% endif %};">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if category.id %}
 				<span class="dp-info-prefix">{{ phrase('user.feedback.category') }}:</span>
@@ -39,7 +39,7 @@
 			{% endfor %}
 		</ul>
 	</li>
-	<li class="dp-dropdown dp-alt-option dp-last" style="float: left;">
+	<li class="dp-dropdown dp-alt-option dp-last" style="float: {% if is_rtl() %}right{% else %}left{% endif %};">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			<span class="dp-info-prefix">{{ phrase('user.feedback.status') }}:</span>
 			{% if status_cat %}
