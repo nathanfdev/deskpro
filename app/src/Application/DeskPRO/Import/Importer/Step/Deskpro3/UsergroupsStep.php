@@ -215,21 +215,21 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			unset(
 				$insert_perms['feedback.use'],
 				$insert_perms['feedback.submit'],
-				$insert_perms['feedback.submit_validate'],
+				$insert_perms['feedback.no_submit_validate'],
 				$insert_perms['feedback.rate'],
 				$insert_perms['feedback.comment'],
-				$insert_perms['feedback.comment_validate']
+				$insert_perms['feedback.no_comment_validate']
 			);
 		} else {
 			if (!$group_info['p_ideas_new']) {
 				unset($insert_perms['feedback.submit']);
-				unset($insert_perms['feedback.submit_validate']);
+				unset($insert_perms['feedback.no_submit_validate']);
 			} elseif (!$group_info['p_ideas_new_visible']) {
-				unset($insert_perms['feedback.submit_validate']);
+				unset($insert_perms['feedback.no_submit_validate']);
 			}
 			if (!$group_info['p_ideas_comment_new']) {
 				unset($insert_perms['feedback.comment']);
-				unset($insert_perms['feedback.comment_validate']);
+				unset($insert_perms['feedback.no_comment_validate']);
 			}
 			if (!$group_info['p_ideas_vote']) {
 				unset($insert_perms['feedback.rate']);

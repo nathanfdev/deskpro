@@ -152,7 +152,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 				// Email doesnt exist,
 				// Might already be validating, or we might require validation based on the setting
-				} elseif ($email_validating || App::getSetting('core.email_validation')) {
+				} elseif (!$this->person_context->hasPerm('feedback.no_submit_validate') || $email_validating) {
 					$validating = 'new';
 					if (!$email_validating) {
 						$person = Person::newContactPerson();
@@ -209,11 +209,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 				$feedback->setStatusCode('hidden.temp');
 			} elseif ($validating) {
 				$feedback->setStatusCode('hidden.user_validating');
-			} else {
-				// Visible stuff always starts off as validating,
-				//the meaing just changes based on setting. ie they could
-				// be visible to end users or hidden. An agent always needs to approve or dismiss
-				// it.
+			} elseif (!$this->person_context->hasPerm('feedback.no_submit_validate')) {
 				$feedback->setStatusCode('hidden.validating');
 			}
 

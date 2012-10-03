@@ -87,6 +87,14 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 		App::getOrm()->beginTransaction();
 
+		$no_validation_required = true;
+		switch ($this->class) {
+			case 'Application\\DeskPRO\\Entity\\FeedbackComment':  $no_validation_required = $this->person_context->hasPerm('feedback.no_comment_validate'); break;
+			case 'Application\\DeskPRO\\Entity\\ArticleComment':   $no_validation_required = $this->person_context->hasPerm('articles.no_comment_validate'); break;
+			case 'Application\\DeskPRO\\Entity\\DownloadComment':  $no_validation_required = $this->person_context->hasPerm('downloads.no_comment_validate'); break;
+			case 'Application\\DeskPRO\\Entity\\NewsComment':      $no_validation_required = $this->person_context->hasPerm('news.no_comment_validate'); break;
+		}
+
 		try {
 			if ($this->person_context && !$this->person_context->isGuest()) {
 				$person = $this->person_context;
@@ -113,7 +121,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 				// Email doesnt exist,
 				// Might already be validating, or we might require validation based on the setting
-				} elseif ($email_validating || App::getSetting('core.email_validation')) {
+				} elseif (!$no_validation_required || $email_validating) {
 					$validating = 'new';
 					if (!$email_validating) {
 						$person = Person::newContactPerson();
@@ -163,12 +171,10 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 				$obj->setStatus('temp');
 			} elseif ($validating) {
 				$obj->setStatus('user_validating');
-			} else {
-				// Visible stuff always starts off as validating,
-				//the meaing just changes based on setting. ie they could
-				// be visible to end users or hidden. An agent always needs to approve or dismiss
-				// it.
+			} elseif (!$no_validation_required) {
 				$obj->setStatus('validating');
+			} else {
+				$obj->setStatus('visible');
 			}
 
 			foreach ($this->assignments as $k => $v) {

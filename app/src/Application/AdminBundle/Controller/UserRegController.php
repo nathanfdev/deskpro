@@ -69,7 +69,6 @@ class UserRegController extends AbstractController
 	{
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.user_mode', $this->in->getString('mode'));
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.reg_url', $this->in->getString('reg_url'));
-		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.email_validation', $this->in->getBool('email_validation'));
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.existing_account_login', $this->in->getBool('existing_account_login'));
 
 		if ($this->in->getString('mode') != 'closed') {

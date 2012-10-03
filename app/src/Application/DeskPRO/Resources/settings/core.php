@@ -213,11 +213,6 @@
 	'core.recaptcha_private_key' => '6LcWL8YSAAAAAJVZ5AEMb5Vq7wkZoGHfKfAqvB2U',
 
 	/**
-	 * Require email validation for newly registered users
-	 */
-	'core.email_validation' => false,
-
-	/**
 	 * Default storage method for blobs is the db. Other values: fs
 	 */
 	'core.filestorage_method' => 'db',
