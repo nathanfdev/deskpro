@@ -369,6 +369,11 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		$path = $request->getPathInfo();
 
+		$qs = $request->getQueryString();
+		if ($qs) {
+			$path .= '?' . $qs;
+		}
+
 		// Exclude admin interface
 		if (DP_INTERFACE == 'admin' || isset($_REQUEST['admin_portal_controls'])) {
 			return null;
