@@ -79,7 +79,16 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
-        this.wrapper.tinyscrollbar();
+
+		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
+		var scrollEl = $('.with-scrollbar', this.wrapper).first();
+		if (scrollEl.length) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
+
         $('.dp-radio-expander-form', this.wrapper).on('click', this.updatePositions.bind(this));
 		console.log(this.wrapper);
 		this.backdropEls = null;

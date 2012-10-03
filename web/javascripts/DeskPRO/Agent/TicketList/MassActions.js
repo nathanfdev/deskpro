@@ -78,7 +78,16 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
-		this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, this.wrapper);
+
+		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
+		var scrollEl = $('.with-scrollbar', this.wrapper).first();
+		if (scrollEl.length) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
+
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());
