@@ -319,7 +319,7 @@ class TicketsController extends AbstractController
 			//throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid feedback");
 		}
 
-		$ticket->setStatus(Entity\Ticket::STATUS_CLOSED);
+		$ticket->setStatus(Entity\Ticket::STATUS_RESOLVED);
 
 		$this->em->transactional(function($em) use ($ticket) {
 			$em->persist($ticket);
