@@ -193,7 +193,7 @@ class PersonController extends AbstractController
 
 			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 			if ($labels) {
-				$person->getLabelManager()->setLabelsArray($labels);
+				$person->getLabelManager()->setLabelsArray($labels, $this->em);
 				$this->em->flush();
 			}
 

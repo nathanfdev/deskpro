@@ -193,7 +193,7 @@ class TicketController extends AbstractController
 
 			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 			if ($labels) {
-				$ticket->getLabelManager()->setLabelsArray($labels);
+				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
 				$this->em->flush();
 			}
 

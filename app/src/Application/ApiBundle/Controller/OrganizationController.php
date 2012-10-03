@@ -158,7 +158,7 @@ class OrganizationController extends AbstractController
 
 			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 			if ($labels) {
-				$org->getLabelManager()->setLabelsArray($labels);
+				$org->getLabelManager()->setLabelsArray($labels, $this->em);
 				$this->em->flush();
 			}
 
