@@ -107,9 +107,27 @@ class EmailDomainManager
 	{
 		$this->em->beginTransaction();
 		try {
+
+			// Update tickets
+			$this->db->executeUpdate("
+				UPDATE tickets
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+				SET tickets.organization_id = ?
+				WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
+			", array($orgdomain->organization->id, $orgdomain->domain));
+
+			$this->db->executeUpdate("
+				UPDATE tickets_search_active
+				LEFT JOIN people ON (people.id = tickets_search_active.person_id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+				SET tickets_search_active.organization_id = ?
+				WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
+			", array($orgdomain->organization->id, $orgdomain->domain));
+
 			$count = $this->db->executeUpdate("
 				UPDATE people
-				LEFT JOIN people_emails ON (people_emails.id = people.id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 				SET people.organization_id = ?
 				WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
 			", array($orgdomain->organization->id, $orgdomain->domain));
@@ -128,9 +146,25 @@ class EmailDomainManager
 	{
 		$this->em->beginTransaction();
 		try {
+			$this->db->executeUpdate("
+				UPDATE tickets
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+				SET tickets.organization_id = ?
+				WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
+			", array($orgdomain->organization->id, $orgdomain->domain));
+
+			$this->db->executeUpdate("
+				UPDATE tickets_search_active
+				LEFT JOIN people ON (people.id = tickets_search_active.person_id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+				SET tickets_search_active.organization_id = ?
+				WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
+			", array($orgdomain->organization->id, $orgdomain->domain));
+
 			$count = $this->db->executeUpdate("
 				UPDATE people
-				LEFT JOIN people_emails ON (people_emails.id = people.id)
+				LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 				SET people.organization_id = ?
 				WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
 			", array($orgdomain->organization->id, $orgdomain->domain));
@@ -152,9 +186,25 @@ class EmailDomainManager
 		try {
 			$count = 0;
 			if ($remove_users) {
+				$this->db->executeUpdate("
+					UPDATE tickets
+					LEFT JOIN people ON (people.id = tickets.person_id)
+					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+					SET tickets.organization_id = ?
+					WHERE people.organization_id = ? AND people_emails.email_domain = ?
+				", array($orgdomain->organization->id, $orgdomain->domain));
+
+				$this->db->executeUpdate("
+					UPDATE tickets_search_active
+					LEFT JOIN people ON (people.id = tickets_search_active.person_id)
+					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+					SET tickets_search_active.organization_id = ?
+					WHERE people.organization_id = ? AND people_emails.email_domain = ?
+				", array($orgdomain->organization->id, $orgdomain->domain));
+
 				$count = $this->db->executeUpdate("
 					UPDATE people
-					LEFT JOIN people_emails ON (people_emails.id = people.id)
+					LEFT JOIN people_emails ON (people_emails.person_id = people.id)
 					SET people.organization_id = NULL
 					WHERE people.organization_id = ? AND people_emails.email_domain = ?
 				", array($orgdomain->organization->id, $orgdomain->domain));

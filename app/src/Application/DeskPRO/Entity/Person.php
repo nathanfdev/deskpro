@@ -372,6 +372,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $email_validating;
 
+	protected $_updated_org = false;
+
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
@@ -476,6 +478,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setOrganizationId($org_id)
 	{
+		$this->_updated_org = true;
 		if ($org_id) {
 			$org = App::getEntityRepository('DeskPRO:Organization')->find($org_id);
 			$this->setModelField('organization', $org);
@@ -1635,6 +1638,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setOrganization(Organization $org = null, $position = '')
 	{
+		$this->_updated_org = true;
 		if (!$org) {
 			$this->setModelField('organization', $org);
 			return;
@@ -1775,6 +1779,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				$this->removePropertyChangedListener($this->_person_logger);
 			}
 			$this->_initPersonLogger();
+		}
+
+		if ($this->_updated_org) {
+			$new_org = $this->organization ? $this->organization->getId() : null;
+			App::getDb()->update('tickets', array('organization_id' => $new_org), array('person_id' => $this->id));
+			App::getDb()->update('tickets_search_active', array('organization_id' => $new_org), array('person_id' => $this->id));
 		}
 	}
 
