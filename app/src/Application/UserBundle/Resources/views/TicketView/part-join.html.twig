@@ -5,7 +5,7 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_view', {'ticket_ref': request_ref}) }}">{{ ticket.subject }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': request_ref}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
 <section class="dp-portal-section dp-new-feedback-section">

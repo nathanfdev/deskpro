@@ -12,12 +12,12 @@
 	<link rel="canonical" href="{{ url('user_news_view', {'slug': news.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
 	{% for cat in news.category.getTreeParents() %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': news.category.url_slug}) }}">{{news.category.title}}</a></li>
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': news.category.url_slug}) }}">{{news.category.title}}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ news.title }}

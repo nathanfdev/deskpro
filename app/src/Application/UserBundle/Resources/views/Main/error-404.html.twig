@@ -4,7 +4,7 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.not-found-title') }}</li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> {{ phrase('user.error.not-found-title') }}</li>
 {% endblock %}
 {% block content %}
 

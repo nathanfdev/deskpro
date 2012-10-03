@@ -9,7 +9,7 @@ if (window.Dp_EnableDebug || 1) {
 	DpConsole['debug'] = function(){};
 }
 
-if (!DpNewTicket_Options) DpNewTicket_Options = {};
+if (!window.DpNewTicket_Options) DpNewTicket_Options = {};
 
 var TicketFormWidget = new (function() {
 

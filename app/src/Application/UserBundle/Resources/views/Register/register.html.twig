@@ -1,9 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	{% if this_page == 'register' %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_register') }}">{{ phrase('user.profile.register') }}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_register') }}">{{ phrase('user.profile.register') }}</a></li>
 	{% else %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_register') }}">{{ phrase('user.general.log_in') }}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_register') }}">{{ phrase('user.general.log_in') }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block head %}

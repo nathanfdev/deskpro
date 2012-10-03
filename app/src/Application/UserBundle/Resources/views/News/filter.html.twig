@@ -18,12 +18,12 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
-			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
+			<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
 		{% endfor %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': category.url_slug}) }}">{{ category.title }}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': category.url_slug}) }}">{{ category.title }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block page_title %}
@@ -61,11 +61,11 @@
 				{% set page_url = path('user_news', {'slug': category.url_slug}) ~ '?p=' %}
 				<div class="dp-pagination">
 					<ul>
-						{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+						{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">{{ language_arrow('left') }} {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
 						{% for p in pageinfo.pages %}
 							<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
 						{% endfor %}
-						{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.next') }} &rarr;</a></li>{% endif %}
+						{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.next') }} {{ language_arrow('right') }}</a></li>{% endif %}
 					</ul>
 				</div>
 			{% endif %}

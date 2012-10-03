@@ -20,10 +20,14 @@
 	{% if app.isDebug() %}
 		{{ dp_asset_html('user_vendors') }}
 		{{ dp_asset_html('user_common') }}
-		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1{% if is_rtl() %}&amp;rtl=1{% endif %}" media="screen,print" />
 	{% else %}
 		{{ dp_asset_html('user') }}
-		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+		{% if is_rtl() %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob_rtl.getDownloadUrl() }}?{{ app.style.css_blob_rtl.id }}" media="screen,print" />
+		{% else %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+		{% endif %}
 	{% endif %}
 
 	{% if app.isDebug() %}
@@ -32,6 +36,9 @@
 		<script src="{{ path('dp_user_lang', { v: app.getSetting('core.deskpro_build') } ) }}"></script>
 	{% endif %}
 
+	{% if is_rtl() %}
+		<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-rtl.css') }}" media="screen,print" />
+	{% endif %}
 	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 

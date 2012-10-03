@@ -246,7 +246,7 @@ class FilestorageLoader
 
 			if ($is_rtl) {
 				// filter CSS to change LTR ideas to RTL
-				preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#s', $css, $matches, PREG_SET_ORDER);
+				preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#sU', $css, $matches, PREG_SET_ORDER);
 				$replace = array();
 
 				foreach ($matches AS $key => $match) {
@@ -275,12 +275,31 @@ class FilestorageLoader
 
 					return "$match[1]-$new:";
 				}, $css);
+				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(border)-(left|right)-([a-z]+)\s*:/i', function($match) {
+					switch (strtolower($match[2])) {
+						case 'left': $new = 'right'; break;
+						case 'right': $new = 'left'; break;
+						default: $new = $match[2];
+					}
+
+					return "$match[1]-$new-$match[3]:";
+				}, $css);
 
 				// where the shortcut defines left/right
 				$css = preg_replace_callback(
 					'/(?<=[^a-z0-9_-])(padding|margin)\s*:\s*([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)/i',
 					function($match) {
 						return "$match[1]: $match[2] $match[5] $match[4] $match[3]";
+					}, $css
+				);
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])((-[a-z]+-)?border-radius)\s*:\s*([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)/i',
+					function($match) {
+						$tl = $match[3];
+						$tr = $match[4];
+						$br = $match[5];
+						$bl = $match[6];
+						return "$match[1]: $tr $tl $bl $br";
 					}, $css
 				);
 
@@ -300,10 +319,10 @@ class FilestorageLoader
 						return 'right';
 					} else if (strtolower($x) == 'left') {
 						return 'left';
-					} else if (preg_match('/^0[a-z]*$/i', $x)) {
-						return '100%'; // left to completely right
 					} else if (preg_match('/^([0-9.]+)%$/', $x, $percent)) {
 						return (100 - $percent[1]) . '%'; // percentage left offset on right
+					} else if (preg_match('/^0[a-z]*$/i', $x)) {
+						return '100%'; // left to completely right
 					} else {
 						return $x; // can't flip
 					}
@@ -314,17 +333,15 @@ class FilestorageLoader
 					'/(?<=[^a-z0-9_-])(background-position)\s*:\s*([a-z0-9\._-]+)/i',
 					function($match) use ($position_flip) {
 						$x = $position_flip($match[2]);
-
 						return "$match[1]: $x";
 					}, $css
 				);
 
 				// flip background
 				$css = preg_replace_callback(
-					'/(?<=[^a-z0-9_-])(background)\s*:\s*([^;}]+?)\s+(left|right|center|0[a-z]*|[0-9.]+%)/i',
+					'/(?<=[^a-z0-9_-])(background)\s*:\s*([^;}]*?url\([^;}]+?)\s+(left|right|center|[0-9.]+%|0[a-z]*)/i',
 					function($match) use($position_flip) {
 						$x = $position_flip($match[3]);
-
 						return "$match[1]: $match[2] $x";
 					}, $css
 				);

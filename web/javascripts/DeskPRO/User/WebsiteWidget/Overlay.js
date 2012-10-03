@@ -80,6 +80,11 @@ var DpOverlayWidget = new (function() {
 	 */
 	var winWidth  = 0;
 
+	/**
+	 * Contains whether the page being viewed is RTL.
+	 */
+	var isRtl = false;
+
 	var lastWinHeight = 0;
 	var lastWinWidth = 0;
 	var childRequestedHeight = 350;
@@ -224,7 +229,6 @@ var DpOverlayWidget = new (function() {
 				var myHeight = h + 50; // 20 for some space around
 
 				var top = (winHeight - myHeight) / 2;
-				var left = ((winWidth - myWidth) / 2) + 175 + 20;
 
 				var css = [];
 				css.push('position: fixed');
@@ -238,7 +242,7 @@ var DpOverlayWidget = new (function() {
 				css.push('margin: 0');
 				css.push('padding: 0');
 				css.push('top: ' + top + 'px');
-				css.push('left: ' + left + 'px');
+				css.push((isRtl ? 'right' : 'left') + ': ' + (((winWidth - myWidth) / 2) + 175 + 20) + 'px');
 				css.push('-webkit-border-radius: 8px');
 				css.push('-moz-border-radius: 8px');
 				css.push('border-radius: 8px');
@@ -275,7 +279,7 @@ var DpOverlayWidget = new (function() {
 				css.push('position: absolute');
 				css.push('background: url(' + options.staticUrl + 'images/user/widget/btn-close.png)');
 				css.push('top: -10px');
-				css.push('right: -10px');
+				css.push((isRtl ? 'left' : 'right') + ': -10px');
 				css = css.join(';');
 
 				close = $('<span style="'+css+'"></span>').appendTo(contentWrap).click(function(ev) {
@@ -540,7 +544,12 @@ var DpOverlayWidget = new (function() {
 
 		DpConsole.log('DpOverlayWidget.initScript');
 
+		isRtl = ($('html').attr('dir') == 'rtl');
+
 		if (window.DpOverlayWidget_Options) {
+			if (isRtl) {
+				window.DpOverlayWidget_Options.tabLocation = 'right';
+			}
 			options = $.extend({}, options, window.DpOverlayWidget_Options);
 		}
 
@@ -565,7 +574,6 @@ var DpOverlayWidget = new (function() {
 		css.push('border: ' + border);
 		css.push('overflow: hidden');
 		css.push('top: 200px');
-		css.push('left: 0');
 		css.push('cursor: pointer');
 		css.push('text-shadow: 0px 0px 2px #000000');
 		css.push('color: #fff');
@@ -578,10 +586,21 @@ var DpOverlayWidget = new (function() {
 		css.push('padding: 0 13px 0 13px');
 		css.push('margin: 0');
 		css.push('opacity: 0.85');
-		css.push('-webkit-transform: rotate(90deg)');
-		css.push('-moz-transform: rotate(90deg)');
-		css.push('-ms-transform: rotate(90deg)');
-		css.push('-o-transform: rotate(90deg)');
+
+		var degrees;
+
+		if (options.tabLocation == 'left') {
+			css.push('left: 0');
+			degrees = 90;
+		} else {
+			css.push('right: 0');
+			degrees = 270;
+		}
+
+		css.push('-webkit-transform: rotate(' + degrees + 'deg)');
+		css.push('-moz-transform: rotate(' + degrees + 'deg)');
+		css.push('-ms-transform: rotate(' + degrees + 'deg)');
+		css.push('-o-transform: rotate(' + degrees + 'deg)');
 
 		if ($.browser.msie) {
 			if (parseInt($.browser.version.slice(0,1)) >= "9") {
@@ -596,13 +615,6 @@ var DpOverlayWidget = new (function() {
 			css.push('-webkit-border-radius: 9px');
 		}
 
-		if (options.tabLocation == 'left') {
-			//url += 'left.png';
-			//css.push('left: 0');
-		} else {
-			url += 'right.png';
-			css.push('right: 0');
-		}
 		css = css.join(';');
 
 		var phrase = 'Feedback &amp; Support';
@@ -614,7 +626,7 @@ var DpOverlayWidget = new (function() {
 
 		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>').appendTo('body');
 
-		$('#dp_overlay_btn').css('left', '-' + ($('#dp_overlay_btn').width() / 2 + 6) + 'px');
+		$('#dp_overlay_btn').css(options.tabLocation, '-' + ($('#dp_overlay_btn').width() / 2 + 6) + 'px');
 
 		$('.dp-overlay-widget-trigger').on('click', function(ev) {
 			ev.preventDefault();

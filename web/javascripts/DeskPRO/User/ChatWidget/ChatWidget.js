@@ -56,6 +56,11 @@ var DpChatWidget = new (function() {
 	var openBtn;
 
 	/**
+	 * Contains whether the page being viewed is RTL.
+	 */
+	var isRtl = false;
+
+	/**
 	 * The child iframe talks to us
 	 *
 	 * @param {String} messageId
@@ -85,7 +90,7 @@ var DpChatWidget = new (function() {
 			var css = [];
 			css.push('position: fixed');
 			css.push('bottom: 0');
-			css.push('right: 20px');
+			css.push((isRtl ? 'left' : 'right') + ': 20px');
 			css.push('width: 340px');
 			css.push('height: 350px');
 			css.push('background: #ffffff');
@@ -126,7 +131,7 @@ var DpChatWidget = new (function() {
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
 			css.push('top: -18px');
-			css.push('right: 28px');
+			css.push((isRtl ? 'left' : 'right') + ': 28px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
 			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
@@ -155,7 +160,7 @@ var DpChatWidget = new (function() {
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
 			css.push('top: -18px');
-			css.push('right: 2px');
+			css.push((isRtl ? 'left' : 'right') + ': 2px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
 			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
@@ -174,8 +179,6 @@ var DpChatWidget = new (function() {
 			css.push('position: absolute');
 			css.push('bottom: 0');
 			css.push('top: 0');
-			css.push('left: 3');
-			css.push('right: 30');
 			css.push('width: 340px');
 			css.push('height: 350px');
 			css.push('margin: 0');
@@ -266,6 +269,8 @@ var DpChatWidget = new (function() {
 	function initSession() {
 		// Now load our session script
 		// DeskPRO script that sets/gets session and initial messages
+		isRtl = ($('html').attr('dir') == 'rtl');
+
 		var url = DpChatWidget_Options.deskproUrl + 'chat/chat-session?_1=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
 			url += DpChatWidget_Options.currentPageUrl;
@@ -423,9 +428,9 @@ var DpChatWidget = new (function() {
 		var css = [];
 		css.push('position: fixed');
 		css.push('bottom: 0');
-		css.push('right: 150px');
+		css.push((isRtl ? 'left' : 'right') + ': 150px');
 		css.push('margin: 0');
-		css.push('padding: 0 15px 0 15px');
+		css.push('padding: 0 15px');
 		css.push('height: 18px');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
@@ -439,7 +444,7 @@ var DpChatWidget = new (function() {
 		css.push('background: ' + bgColorA);
 		css.push('border: ' + border);
 		css.push('border-bottom: none');
-		css.push('border-right: none');
+		css.push('border-' + (isRtl ? 'left' : 'right') + ': none');
 		css.push('border-top: none');
 		css.push('text-shadow: 0px 0px 2px #000000');
 		css.push('opacity: 0.85');
@@ -450,22 +455,21 @@ var DpChatWidget = new (function() {
 		var css = [];
 		css.push('position: fixed');
 		css.push('bottom: 0');
-		css.push('right: 20px');
+		css.push((isRtl ? 'left' : 'right') + ': 20px');
 		css.push('margin: 0');
 		css.push('height: 7px');
 		css.push('padding: 0');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('-webkit-border-top-right-radius: 9px');
-		css.push('-moz-border-radius-topright: 9px');
-		css.push('border-top-right-radius: 9px')
+		css.push('-webkit-border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
+		css.push('-moz-border-radius-top' + (isRtl ? 'left' : 'right') + ': 9px');
+		css.push('border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px')
 		css.push('cursor: pointer');
 		css.push('background: ' + bgColor);
 		css.push('background: ' + bgColorA);
 		css.push('border: ' + border);
 		css.push('border-bottom: none');
-		css.push('border-left: none');
-		css.push('border-left: none');
+		css.push('border-' + (isRtl ? 'right' : 'left') + ': none');
 		css = css.join(';');
 
 		$('head').append('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
@@ -474,22 +478,22 @@ var DpChatWidget = new (function() {
 		css.push('position: absolute');
 		css.push('top: 0px');
 		css.push('bottom: 0');
-		css.push('right: -6px');
+		css.push((isRtl ? 'left' : 'right') + ': -6px');
 		css.push('width: 6px');
 		css.push('margin: 0');
 		css.push('height: 9px');
 		css.push('padding: 0');
 		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('-webkit-border-bottom-left-radius: 6px');
-		css.push('-moz-border-radius-bottomleft: 6px');
-		css.push('border-bottom-left-radius: 6px')
+		css.push('-webkit-border-bottom-' + (isRtl ? 'right' : 'left') + '-radius: 6px');
+		css.push('-moz-border-radius-bottom' + (isRtl ? 'right' : 'left') + ': 6px');
+		css.push('border-bottom-' + (isRtl ? 'right' : 'left') + '-radius: 6px')
 		css.push('cursor: pointer');
 		css.push('display: block');
 		css.push('background: transparent');
 		css.push('border: ' + border);
 		css.push('border-top: none');
-		css.push('border-right: none');
+		css.push('border-' + (isRtl ? 'left' : 'right') + ': none');
 		css.push('z-index: 1');
 		css = css.join(';');
 
@@ -499,9 +503,8 @@ var DpChatWidget = new (function() {
 		css.push('position: absolute');
 		css.push('top: -11px');
 		css.push('height: 6px');
-		css.push('right: 0');
-		css.push('left: -2px');
-		css.push('height: 6px');
+		css.push((isRtl ? 'left' : 'right') + ': 0');
+		css.push((isRtl ? 'right' : 'left') + ': -2px');
 		css.push('margin: 0');
 		css.push('height: 9px');
 		css.push('padding: 0');
@@ -529,7 +532,7 @@ var DpChatWidget = new (function() {
 		css.push('height: 9px');
 		css.push('width: 7px');
 		css.push('overflow: hidden');
-		css.push('left: -7px');
+		css.push((isRtl ? 'right' : 'left') + ': -7px');
 		css.push('margin: 0');
 		css.push('padding: 0');
 		css.push('line-height: 100%');
@@ -555,6 +558,9 @@ var DpChatWidget = new (function() {
 		}
 
 		openBtn = $('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label" style="position:relative;top:-1px;"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
+		if (isRtl) {
+			openBtn.addClass('rtl');
+		}
 		if (this.isWindowChat) {
 			openBtn.hide();
 		}

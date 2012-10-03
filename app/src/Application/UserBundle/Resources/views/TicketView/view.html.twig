@@ -4,8 +4,8 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ ticket.subject }} - {{ phrase('user.tickets.your_tickets') }}

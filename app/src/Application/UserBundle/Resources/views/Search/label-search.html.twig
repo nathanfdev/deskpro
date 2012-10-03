@@ -84,11 +84,11 @@
 		{% set page_url = path('user_search', {'q': query}) ~ '&p=' %}
 		<div class="dp-pagination">
 			<ul>
-				{% if pageinfo.prev %}<li><a href="{{ page_url|raw ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+				{% if pageinfo.prev %}<li><a href="{{ page_url|raw ~ pageinfo.prev }}">{{ language_arrow('left') }} {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
 				{% for p in pageinfo.pages %}
 					<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url|raw ~ p }}">{{ p }}</a>
 				{% endfor %}
-				{% if pageinfo.next %}<li><a href="{{ page_url|raw ~ pageinfo.next }}">{{ phrase('user.general.next') }} &rarr;</a></li>{% endif %}
+				{% if pageinfo.next %}<li><a href="{{ page_url|raw ~ pageinfo.next }}">{{ phrase('user.general.next') }} {{ language_arrow('right') }}</a></li>{% endif %}
 			</ul>
 		</div>
 	{% endif %}

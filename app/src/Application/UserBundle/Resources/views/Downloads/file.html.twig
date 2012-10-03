@@ -12,12 +12,12 @@
 	<link rel="canonical" href="{{ url('user_downloads_file', {'slug': download.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.title') }}</a></li>
 	{% for cat in category_path %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_downloads', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ download.filename }}

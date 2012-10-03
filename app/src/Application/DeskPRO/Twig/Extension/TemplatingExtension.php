@@ -70,6 +70,7 @@ class TemplatingExtension extends \Twig_Extension
             'phrase_object' => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'phrase_dev' => new \Twig_Function_Method($this, 'getPhraseDev'),
 	        'language_html_attr' => new \Twig_Function_Method($this, 'getLanguageHtmlAttributes', array('is_safe' => array('html'))),
+	        'language_arrow' => new \Twig_Function_Method($this, 'getLanguageArrow', array('is_safe' => array('html'))),
 	        'is_rtl' => new \Twig_Function_Method($this, 'isRtl'),
 			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
@@ -800,6 +801,23 @@ class TemplatingExtension extends \Twig_Extension
 		);
 
 		return implode(' ', $attributes);
+	}
+
+	public function getLanguageArrow($ltr, $rtl = null)
+	{
+		if ($rtl === null) {
+			switch ($ltr) {
+				case 'right': $ltr = '&rarr;'; $rtl = '&larr;'; break;
+				case 'left': $ltr = '&larr;'; $rtl = '&rarr;'; break;
+				default: return 'unknown';
+			}
+		}
+
+		if (App::getLanguage()->is_rtl) {
+			return $rtl;
+		} else {
+			return $ltr;
+		}
 	}
 
 	public function isRtl()

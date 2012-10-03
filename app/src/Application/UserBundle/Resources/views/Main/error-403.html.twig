@@ -6,7 +6,7 @@
 {% set page_noindex = true %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.permission-denied-title') }}</li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> {{ phrase('user.error.permission-denied-title') }}</li>
 {% endblock %}
 {% block content %}
 

@@ -4,7 +4,7 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
 {% block content %}
