@@ -17,6 +17,24 @@
 		</nav>
 	{% endif %}
 {% endblock %}
+{% block html_head %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('input.everyone-on').each(function() {
+				var toggle = $(this).next('.jquery-checkbox');
+				if (!toggle[0]) return;
+
+				toggle.css('opacity', 0.5).off('click').on('click', function(ev) {
+					ev.preventDefault();
+					ev.stopImmediatePropagation();
+					ev.stopPropagation();
+					alert('This permission is granted through the "Everyone" usergroup. Disable it from the "Everyone" usergroup first if you want to fine-tune access.');
+					return false;
+				});
+			});
+		});
+	</script>
+{% endblock %}
 {% block page %}
 
 <form action="{{ path('admin_usergroups_edit', {'id': usergroup.id|default(0)}) }}" method="post" class="with-form-validator">

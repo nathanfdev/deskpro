@@ -199,13 +199,32 @@ class UsergroupsController extends AbstractController
 			WHERE permissions.usergroup_id = ?
 		", array($usergroup->id));
 
+		$ug_deps_everyone = null;
+		$ug_permissions_everyone = null;
+
+		if ($usergroup->sys_name != 'everyone') {
+			$ug_deps_everyone = $this->db->fetchAllGrouped("
+				SELECT department_id, app
+				FROM department_permissions
+				WHERE usergroup_id = ?
+			", array(1), 'department_id', 'app', 'app');
+
+			$ug_permissions_everyone = $this->db->fetchAllKeyValue("
+				SELECT name, value
+				FROM permissions
+				WHERE permissions.usergroup_id = ?
+			", array(1));
+		}
+
 		return $this->render('AdminBundle:Usergroups:edit.html.twig', array(
-			'usergroup' => $usergroup,
-			'form'      => $form->getForm()->createView(),
-			'member_count' => $member_count,
-			'departments' => $departments,
-			'ug_deps' => $ug_deps,
-			'permissions' => $permissions,
+			'usergroup'               => $usergroup,
+			'form'                    => $form->getForm()->createView(),
+			'member_count'            => $member_count,
+			'departments'             => $departments,
+			'ug_deps'                 => $ug_deps,
+			'permissions'             => $permissions,
+			'ug_deps_everyone'        => $ug_deps_everyone,
+			'permissions_everyone'    => $ug_permissions_everyone,
 		));
 	}
 
