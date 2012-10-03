@@ -302,6 +302,18 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
 			return true;
 		} else {
+			// Handle _id's
+			if (substr($offset, -3) === '_id') {
+				$func = substr($func, 0, -3);
+				$offset = substr($offset, 0, -3);
+			}
+
+			if (method_exists($this, $func)) {
+				return true;
+			} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+				return true;
+			}
+
 			return false;
 		}
 	}
@@ -311,11 +323,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	public function offsetSet($offset, $value)
 	{
 		$old_value = isset($this[$offset]) ? $this[$offset] : null;
-
-		// No change
-		//if ($old_value == $value) {
-		//	return;
-		//}
 
 		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func)) {
@@ -340,6 +347,29 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
 			return $this->$offset;
 		} else {
+
+			// Handle _id's
+			if (substr($offset, -3) === '_id') {
+				$func = substr($func, 0, -3);
+				$offset = substr($offset, 0, -3);
+			}
+
+			if (method_exists($this, $func)) {
+				$obj = $this->$func();
+				if ($obj) {
+					return $obj['id'];
+				} else {
+					return 0;
+				}
+			} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+				$obj = $this->$offset;
+				if ($obj) {
+					return $obj['id'];
+				} else {
+					return 0;
+				}
+			}
+
 			// Always end up calling incase its magic,
 			// it'll throw an error if not set anyway
 			return $this->$func();
