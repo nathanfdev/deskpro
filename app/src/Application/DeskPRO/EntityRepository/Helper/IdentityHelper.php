@@ -209,8 +209,8 @@ class IdentityHelper
 	{
 		$this->collections[$name] = array();
 
-		foreach ($results as $r) {
-			$this->collections[$name][] = $r->getId();
+		foreach ($results as $k => $r) {
+			$this->collections[$name][$k] = $r->getId();
 		}
 	}
 

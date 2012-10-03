@@ -82,6 +82,9 @@ abstract class AbstractAgentNotification
 		$send_email   = array();
 
 		foreach ($online_ids as $aid) {
+			if (!isset($agents[$aid])) {
+				continue;
+			}
 			$agent = $agents[$aid];
 			if ($this->shouldSendBrowserNotification($agent)) {
 				$send_browser[$aid] = $agent;
