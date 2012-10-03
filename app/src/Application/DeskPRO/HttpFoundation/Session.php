@@ -293,27 +293,44 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$languages = $data->getAll();
 			$default_id = $data->getDefaultId();
 
-			$locales = array();
-			if (isset($languages[$default_id])) {
-				$locales[] = $languages[$default_id]->locale;
-			}
+			$locales = array('');
 			foreach ($languages AS $language) {
 				$locales[] = $language->locale;
 			}
 
 			try {
-				// get the highest priority language if available; returns first locale if no match
+				// get the highest priority language if available
 				$locale = App::getRequest()->getPreferredLanguage($locales);
+				$accept_languages = App::getRequest()->getLanguages();
 			} catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
-				// the request may not be available, so use the first
-				$locale = reset($locales);
+				// the request may not be available, so use the default lang
+				$locale = '';
+				$accept_languages = array();
 			}
 
-			foreach ($languages AS $language) {
-				if ($language->locale === $locale) {
-					$this->language = $language;
-					break;
+			if ($locale) {
+				// we have an exact locale match
+				foreach ($languages AS $language) {
+					if ($language->locale === $locale) {
+						$this->language = $language;
+						break;
+					}
 				}
+			} else {
+				// look for a language match (as there isn't an exact locale match)
+				foreach ($accept_languages AS $accept_language) {
+					$accept_language = substr($accept_language, 0, 2);
+					foreach ($languages AS $language) {
+						if (substr($language->locale, 0, 2) == $accept_language) {
+							$this->language = $language;
+							break 2;
+						}
+					}
+				}
+			}
+
+			if (!$this->language && isset($languages[$default_id])) {
+				$this->language = $languages[$default_id];
 			}
 		}
 
