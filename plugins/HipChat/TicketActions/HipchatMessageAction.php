@@ -114,6 +114,34 @@ class HipchatMessageAction extends \Application\DeskPRO\Tickets\TicketActions\Ab
 			. htmlspecialchars($ticket->subject) . ' (#' . $ticket->id . ')</a> - '
 			. $message;
 
+		// hipchat wants entities for unicode characters so convert them
+		$message = preg_replace_callback('/[\x{80}-\x{FFFFFF}]/u', function($match) {
+			$string = $match[0];
+			$c1 = ord($string[0]);
+			if ($c1 < 0x80) {
+				return $c1;
+			}
+
+			$code = null;
+
+			if (($c1 & 0xF8) == 0xF0) {
+				// 4 bytes
+				$code = (($c1 & 0x07) << 18) | ((ord($string[1]) & 0x3F) << 12) | ((ord($string[2]) & 0x3F) << 6) | (ord($string[3]) & 0x3F);
+			} else if (($c1 & 0xF0) == 0xE0) {
+				// 3 bytes
+				$code = (($c1 & 0x0F) << 12) | ((ord($string[1]) & 0x3F) << 6) | (ord($string[2]) & 0x3F);
+			} else if (($c1 & 0xE0) == 0xC0) {
+				// 2 bytes
+				$code = (($c1 & 0x1F) << 6) | (ord($string[1]) & 0x3F);
+			}
+
+			if ($code) {
+				return '&#' . $code . ';';
+			} else {
+				return '?';
+			}
+		}, $message);
+
 		try {
 			$api = new \HipChatApi(App::getSetting('HipChat.api_token'));
 			$api->message_room(
