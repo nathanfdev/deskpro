@@ -265,10 +265,10 @@ HTML;
 					'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
 					'date_created' => date('Y-m-d H:i:s')
 				));
-			}
 
-			$this->em->persist($cm);
-			$this->em->flush();
+				$this->em->persist($cm);
+				$this->em->flush();
+			}
 		}
 
 		// Remember me cookie
