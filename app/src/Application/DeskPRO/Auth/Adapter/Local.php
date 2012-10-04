@@ -74,7 +74,7 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 		$qb->select('p')
 			->from('DeskPRO:Person', 'p')
 			->leftJoin('p.emails', 'e')
-			->where('p.is_user = 1')
+			->where('p.is_user = 1 AND p.is_deleted = 0')
 			->setMaxResults(1);
 
 		$qb->andWhere('e.email = ?2');
