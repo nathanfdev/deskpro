@@ -53,6 +53,8 @@ class TermSummary
 	const OP_CONTAINS    = 'contains';
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_NOOP        = null;
+	const OP_IS_REGEX    = 'is_regex';
+	const OP_NOT_REGEX   = 'not_regex';
 
 	const OP_CHANGED            = 'changed';
 	const OP_CHANGED_TO         = 'changed_to';
@@ -469,9 +471,137 @@ class TermSummary
 			case 'action_performer':
 				$summary = 'Performed by ' . $choice['action_performer'];
 				break;
+
+			case 'creation_system_option':
+				$summary = $this->_stringMatchSummary("Submission URL", $op, $choice);
+				break;
+
+			case 'email_from_email':
+				$summary = $this->_stringMatchSummary("From email address", $op, $choice);
+				break;
+
+			case 'to_address':
+			case 'email_to_email':
+				$summary = $this->_stringMatchSummary("To email address", $op, $choice);
+				break;
+
+			case 'email_to_name':
+				$summary = $this->_stringMatchSummary("To name", $op, $choice);
+				break;
+
+			case 'cc_address':
+			case 'email_cc_email':
+				$summary = $this->_stringMatchSummary("CC email address", $op, $choice);
+				break;
+
+			case 'email_cc_name':
+				$summary = $this->_stringMatchSummary("CC name", $op, $choice);
+				break;
+
+			case 'email_subject':
+				$summary = $this->_stringMatchSummary("Email subject", $op, $choice);
+				break;
+
+			case 'email_body':
+				$summary = $this->_stringMatchSummary("Email body", $op, $choice);
+				break;
+
+			case 'email_header':
+				$summary = $this->_stringMatchSummary("Email header '" .  $choice['header'] . "'", $op, $choice);
+				break;
+
+			case 'message':
+				$summary = $this->_stringMatchSummary("Message", $op, $choice);
+				break;
+
+			case 'new_reply_agent':
+				$summary = $this->_stringMatchSummary("Is a new agent reply", $op, $choice);
+				break;
+
+			case 'new_reply_user':
+				$summary = $this->_stringMatchSummary("Is a new user reply", $op, $choice);
+				break;
+
+			case 'new_reply_note':
+				$summary = $this->_stringMatchSummary("Is a new agent note", $op, $choice);
+				break;
+
+			case 'email_has_attach':
+				$summary = "Email has an attachment";
+				break;
+
+			case 'email_account_bcc':
+				$summary = "Helpdesk was BCC'd";
+				break;
+
+			case 'day_created':
+				$days = isset($choice['days']) ? (array)$choice['days'] : array();
+
+				foreach ($days as &$_) {
+					switch ($_) {
+						case 0: $_ = 'Sunday'; break;
+						case 1: $_ = 'Monday'; break;
+						case 2: $_ = 'Tuesday'; break;
+						case 3: $_ = 'Wednesday'; break;
+						case 4: $_ = 'Thursday'; break;
+						case 5: $_ = 'Friday'; break;
+						case 6: $_ = 'Saturday'; break;
+					}
+				}
+
+				$summary = "Day created is " . implode(', ', $days);
+
+				break;
 		}
 
 		return $summary;
+	}
+
+	protected function _stringMatchSummary($field, $op, $choice, $suffix_only = false, $force_like = false)
+	{
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		if ($op == self::OP_IS_REGEX || $op	== self::OP_NOT_REGEX) {
+
+			if (is_array($choice)) {
+				$choice = array_pop($choice);
+			}
+
+			$regex = (string)$choice;
+
+			if (!$regex) {
+				return '';
+			}
+
+			if ($op == self::OP_IS_REGEX) {
+				return "$field matches regex $regex";
+			} else {
+				return "$field does not match regex $regex";
+			}
+
+		} elseif (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
+			$choices_in = (array)$choice;
+			$choices_in = implode(', ', $choices_in);
+
+			if ($op == self::OP_IS) {
+				return "$field is " . $choices_in;
+			} else {
+				return "$field not is " . $choices_in;
+			}
+
+		} else {
+
+			$choices_in = (array)$choice;
+			$choices_in = implode(', ', $choices_in);
+
+			if ($op == self::OP_CONTAINS) {
+				return "$field contains " . $choices_in;
+			} else {
+				return "$field does not contain " . $choices_in;
+			}
+		}
 	}
 
 	/**
