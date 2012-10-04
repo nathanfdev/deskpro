@@ -1586,9 +1586,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				}
 
 				if ($this->is_agent) {
-					$url .= '&d=' . urlencode(App::get('router')->generate('serve_default_picture', array('s' => $size, 'is_agent' => 1), true));
+					$url .= '&d=mm';
 				} else {
-					$url .= '&d=' . urlencode(App::get('router')->generate('serve_default_picture', array('s' => $size), true));
+					$url .= '&d=mm';
 				}
 			}
 		}
