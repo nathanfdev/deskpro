@@ -531,7 +531,20 @@ class Translate implements PersonContextInterface
 			$language = $this->_loaded_languages[$language];
 		}
 
-		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $language->getLocale());
+		try {
+			$phrase = $this->getCountPhraseSelector()->choose($phrase_text, $count, $language->getLocale());
+		} catch (\InvalidArgumentException $e) {
+			try {
+				// Try again with en_US locale in case
+				// Could be an untranslated phrase (which defaults to eng), but then the locale would be passed as the lang,
+				// which could use different rules and cause the chooser to fail.
+				$phrase = $this->getCountPhraseSelector()->choose($phrase_text, $count, 'en_US');
+			} catch (\InvalidArgumentException $e) {
+				$phrase = $e->getMessage();
+			}
+		}
+
+		return $phrase;
 	}
 
 
