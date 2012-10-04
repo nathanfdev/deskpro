@@ -120,7 +120,7 @@
 		'id'         => 'spanish',
 		'lang_code'  => 'spa',
 		'title'      => 'Spanish',
-		'locale'     => 'es',
+		'locale'     => 'es_ES',
 		'flag_image' => 'es.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
