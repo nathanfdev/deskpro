@@ -1109,6 +1109,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getCustomDataForField($field_id)
 	{
+		if ($field_id instanceof CustomDefPerson) {
+			$field_id = $field_id['id'];
+		}
+
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id) {
 				return $data;
@@ -1116,6 +1120,21 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+	public function removeCustomDataForField(CustomDefPerson $field)
+	{
+		$parent_id = null;
+		$field_id = $field['id'];
+		if ($field->parent) {
+			$parent_id = $field->parent['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$this->custom_data->removeElement($data);
+			}
+		}
 	}
 
 

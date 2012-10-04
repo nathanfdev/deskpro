@@ -276,6 +276,166 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		this.ownObject(this.moreactionsMenu);
 
+		var mergeMenu = this.getEl('merge_menu');
+
+		this.mergeMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.merge', this.getEl('action_buttons')),
+			menuElement: mergeMenu,
+			onBeforeMenuOpened: function() {
+				mergeMenu.find('.tab-reference').remove();
+
+				Array.each(DeskPRO_Window.getTabWatcher().findTabType('person'), function(tab) {
+					var id = tab.page.getMetaData('person_id');
+					if (id && id != self.meta.person_id) {
+						var li = $('<li />').addClass('tab-reference').data('person-id', id).text(tab.title);
+						mergeMenu.prepend(li);
+					}
+				});
+			},
+			onItemClicked: function(info) {
+				var otherPersonId = $(info.itemEl).data('person-id');
+				if (!otherPersonId) {
+					otherPersonId = 0;
+				}
+
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					contentAjax: {
+						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/merge-overlay/' + otherPersonId
+					}
+				});
+
+				var initOverlay = function() {
+					var wrapper = overlay.getWrapper();
+
+					DeskPRO.ElementHandler_Exec(wrapper);
+
+					wrapper.find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+						sb.close();
+
+						$.ajax({
+							url: BASE_URL + 'agent/people/' + self.meta.person_id + '/merge-overlay/' + personId,
+							type: 'get',
+							dataType: 'html',
+							success: function(html) {
+								overlay.setContent($(html));
+								initOverlay();
+							}
+						});
+					});
+
+					var buttons = wrapper.find('.merge-data .merge-target-button');
+
+					if (buttons.length != 2) {
+						return;
+					}
+
+					var keepHtml = '', mergeHtml = '';
+
+					buttons.each(function() {
+						var $this = $(this);
+						if ($this.data('keep')) {
+							keepHtml = $this.html();
+						} else {
+							mergeHtml = $this.html();
+						}
+					});
+
+					var rows = wrapper.find('.merge-data .merge-data-rows tr:not(.mergeable)');
+
+					var setMergeDataLostClasses = function() {
+						var keepCol = 0, mergeCol = 0;
+
+						buttons.each(function() {
+							var $this = $(this), cell = $this.closest('td');
+							if ($this.data('keep')) {
+								keepCol = cell.prevAll('td').length;
+							} else {
+								mergeCol = cell.prevAll('td').length;
+							}
+						});
+
+						rows.each(function() {
+							var $row = $(this);
+							var tds = $row.find('td'),
+								keep = tds.eq(keepCol),
+								merge = tds.eq(mergeCol);
+
+							keep.removeClass('merge-data-lost');
+							if ($row.hasClass('always-keep')) {
+								// always lose the merge data
+								merge.addClass('merge-data-lost');
+							} else if (!$.trim(keep.text()).length) {
+								// no value in keep, so we will keep the merge value
+								merge.removeClass('merge-data-lost');
+							} else {
+								merge.addClass('merge-data-lost');
+							}
+						});
+					};
+
+					setMergeDataLostClasses();
+
+					buttons.click(function() {
+						buttons.data('keep', false).html(mergeHtml);
+						$(this).data('keep', 1).html(keepHtml);
+						setMergeDataLostClasses();
+					});
+
+					wrapper.find('.merge-trigger').click(function() {
+						var personId = 0, otherPersonId = 0;
+						buttons.each(function() {
+							var $this = $(this);
+							if ($this.data('keep')) {
+								personId = $this.data('person-id');
+							} else {
+								otherPersonId = $this.data('person-id');
+							}
+						});
+
+						if (!personId || !otherPersonId) {
+							return;
+						}
+
+						$(this).text('...').attr('disabled', true);
+
+						var success = function(data) {};
+						var error = function(data) { overlay.close(); };
+
+						$.ajax({
+							url: BASE_URL + 'agent/people/' + personId + '/merge/' + otherPersonId,
+							type: 'POST',
+							dataType: 'json',
+							success: function(data) {
+								if (data.success) {
+									// remove old tabs, theyre outdated
+									Array.each(DeskPRO_Window.getTabWatcher().findTabType('person'), function(tab) {
+										var id = tab.page.getMetaData('person_id');
+										if (id == data.old_person_id || id == data.person_id) {
+											DeskPRO_Window.TabBar.removeTabById(tab.id);
+										}
+									});
+
+									DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+								}
+								overlay.close();
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								overlay.close();
+
+								var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+								DeskPRO_Window._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+							}
+						});
+					});
+				};
+
+				overlay.addEvent('ajaxDone', initOverlay);
+				overlay.open();
+			}
+		});
+		this.ownObject(this.mergeMenu);
+
 		this._initLabels();
 
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {

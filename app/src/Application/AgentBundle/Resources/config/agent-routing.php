@@ -511,6 +511,20 @@ $collection->add('agent_people_savecontactdata', new Route(
 	array()
 ));
 
+$collection->add('agent_people_merge_overlay', new Route(
+	'/people/{person_id}/merge-overlay/{other_person_id}',
+	array('_controller' => 'AgentBundle:Person:mergeOverlay'),
+	array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_people_merge', new Route(
+	'/people/{person_id}/merge/{other_person_id}',
+	array('_controller' => 'AgentBundle:Person:merge'),
+	array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_people_delete', new Route(
 	'/people/{person_id}/delete/{security_token}',
 	array('_controller' => 'AgentBundle:Person:deletePerson'),

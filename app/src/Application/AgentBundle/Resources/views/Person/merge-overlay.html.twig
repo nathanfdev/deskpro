@@ -1,0 +1,149 @@
+<div class="extended-merge overlay">
+	<div class="overlay-title">
+		<h4>Merge People</h4>
+	</div>
+
+	<div class="overlay-content">
+		<form>
+			<div
+				id="{{baseId}}_find_searchbox"
+				class="person-finder"
+				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+			>
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li><a>
+						<span class="user-name"></span>
+						<address>&lt;<span class="user-email"></span>&gt;</address>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="input-wrapper">
+					<input type="text" id="{{baseId}}_find_searchbox_txt" style="width: 300px" class="term" placeholder="Find person..." class="user-input" />
+				</div>
+				<input type="hidden" name="person_id" class="person-id" value="" />
+				<div class="person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+					</section>
+				</div>
+			</div>
+		</form>
+
+		<table class="merge-data" width="{% if other_person %}100%{% else %}63%{% endif %}">
+			<col width="25%" />
+			<col width="38%" />
+			<col width="37%" />
+		{% if other_person %}
+		<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<td><a class="clean-white merge-target-button" data-person-id="{{ person.id }}" data-keep="1">Keep this</a></td>
+			<td><a class="clean-white merge-target-button" data-person-id="{{ other_person.id }}">Merge this</a></td>
+		</tr>
+		</thead>
+		{% endif %}
+		<tbody class="merge-data-rows">
+		<tr>
+			<th>ID</th>
+			<td>{{ person.id }}</td>
+			{% if other_person %}<td>{{ other_person.id }}</td>{% endif %}
+		</tr>
+		<tr>
+			<th>Name</th>
+			<td>{{ person.name }}</td>
+			{% if other_person %}<td>{{ other_person.name }}</td>{% endif %}
+		</tr>
+		<tr class="mergeable">
+			<th>Emails</th>
+			<td>
+				{% if person.emails is not empty %}
+				<ul>
+				{% for email in person.emails %}
+					<li>{{ email.email }}</li>
+				{% endfor %}
+				</ul>
+				{% endif %}
+			</td>
+			{% if other_person %}
+				<td>
+					{% if other_person.emails is not empty %}
+						<ul>
+							{% for email in other_person.emails %}
+								<li>{{ email.email }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</td>
+			{% endif %}
+		</tr>
+		<tr>
+			<th>Organization</th>
+			<td>{{ person.organization ? person.organization.name : '' }}</td>
+			{% if other_person %}
+				<td>{{ other_person.organization ? other_person.organization.name : '' }}</td>
+			{% endif %}
+		</tr>
+		<tr>
+			<th>Organization Position</th>
+			<td>{{ person.organization_position }}</td>
+			{% if other_person %}
+				<td>{{ other_person.organization_position }}</td>
+			{% endif %}
+		</tr>
+		<tr>
+			<th>Timezone</th>
+			<td>{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }})</td>
+			{% if other_person %}
+				<td>{{ other_person.timezone }} (GMT {{ other_person.getTimezoneOffset(true) }})</td>
+			{% endif %}
+		</tr>
+
+		{% for k,f in person_custom_fields %}
+			<tr>
+				<th>{{ f.title }}</th>
+				<td>{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+				{% if other_person %}
+					<td>{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+
+		<tr class="mergeable">
+			<th>Labels</th>
+			<td>
+				{% if person.labels is not empty %}
+					<ul>
+						{% for label in person.labels %}
+							<li>{{ label.label }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</td>
+			{% if other_person %}
+				<td>
+					{% if other_person.labels is not empty %}
+						<ul>
+							{% for label in other_person.labels %}
+								<li>{{ label.label }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</td>
+			{% endif %}
+		</tr>
+		</tbody>
+		</table>
+
+		{% if other_person %}
+			<div style="text-align: center">
+				<button class="clean-white merge-trigger">{{ phrase('agent.general.merge') }}</button>
+			</div>
+		{% endif %}
+	</div>
+</div>

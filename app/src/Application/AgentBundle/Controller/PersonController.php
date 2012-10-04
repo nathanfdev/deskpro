@@ -947,6 +947,62 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
+	# merge
+	############################################################################
+
+	public function mergeOverlayAction($person_id, $other_person_id = 0)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$person_custom_fields = $field_manager->getDisplayArrayForObject($person);
+
+		if ($other_person_id && $other_person_id != $person_id) {
+			$other_person = $this->getPersonOr404($other_person_id);
+			$other_custom_fields = $field_manager->getDisplayArrayForObject($other_person);
+		} else {
+			$other_person = false;
+			$other_custom_fields = false;
+		}
+
+		return $this->render('AgentBundle:Person:merge-overlay.html.twig', array(
+			'person' => $person,
+			'person_custom_fields' => $person_custom_fields,
+			'other_person' => $other_person,
+			'other_custom_fields' => $other_custom_fields
+		));
+	}
+
+	public function mergeAction($person_id, $other_person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+		$other_person = $this->getPersonOr404($other_person_id);
+
+		if (!$person || !$other_person) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
+		if (!$this->person->hasPerm('agent_people.delete') || !$this->isPersonEditable($other_person)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
+		$old_person_id = $other_person['id'];
+
+		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
+		$merge->merge();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'person_id' => $person['id'],
+			'old_person_id' => $old_person_id
+		));
+	}
+
+	############################################################################
 	# delete
 	############################################################################
 
@@ -1069,7 +1125,7 @@ class PersonController extends AbstractController
 	}
 
 	/**
-	 * @return Application\DeskPRO\Entity\Person
+	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	protected function getPersonOr404($person_id)
 	{

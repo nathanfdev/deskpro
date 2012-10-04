@@ -53,7 +53,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<h1>
 				<span id="{{baseId}}_showname">{{ person.getDisplayName() }}</span>
 				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.getDisplayName() }}" /></span>
-				{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
+				{% if perms.edit and perms.delete %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
 				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 			</h1>
 			<div class="labels-line">
@@ -78,6 +78,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if app.user.hasPerm('agent_tickets.create') %}
 					<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.general.create_ticket') }}</a></li>
 				{% endif %}
+				{% if perms.delete %}
+					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
+				{% endif %}
 				{% if perms.reset_password or perms.delete %}
 					<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 				{% endif %}
@@ -94,6 +97,10 @@ pageMeta.baseId = '{{ baseId }}';
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
 				class="delete-trigger">{{ phrase('agent.people.delete_user') }}</li>
 		{% endif %}
+	</ul>
+
+	<ul id="{{baseId}}_merge_menu" style="display: none;">
+		<li>Find person...</li>
 	</ul>
 </header>
 

@@ -32,78 +32,88 @@
  * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\TicketMerge\Property;
+namespace Application\DeskPRO\People\PersonMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\CustomDefTicket;
-use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Arrays;
 
 /**
- * Merges custom fields
+ * A property is something that can be merged in a person
  */
-class CustomField extends PropertyAbstract
+abstract class PropertyAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefTicket
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $field;
+	protected $person;
 
-	public function setField(CustomDefTicket $field)
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $other_person;
+
+	/**
+	 * @var string
+	 */
+	protected $strategy = null;
+
+	/**
+	 * @var array
+	 */
+	protected $strategy_options = array();
+
+	const STRATEGY_LEFT     = 'left';
+	const STRATEGY_RIGHT    = 'right';
+	const STRATEGY_COMBINE  = 'merge';
+
+
+	public function __construct(Person $person, Person $other_person)
 	{
-		$this->field = $field;
+		$this->person = $person;
+		$this->other_person = $other_person;
 	}
 
-	public function merge()
+	
+	/**
+	 * Merge the two people
+	 */
+	abstract public function merge();
+
+
+	/**
+	 * Set the merge strategy (how to handle conflicts)
+	 * 
+	 * @param string $strategy
+	 * @return void
+	 */
+	public function setStrategy($strategy, array $options = array())
 	{
-		if ($this->strategy == self::STRATEGY_LEFT) {
-			return;
-		}
+		$this->strategy = $strategy;
+		$this->options = $options;
+	}
 
-		// No children means its a simple field (text input etc)
-		if (!count($this->field->children)) {
-			if ($this->strategy == self::STRATEGY_RIGHT) {
-				$other_exist = $this->other_ticket->getCustomDataForField($this->field);
-				if ($other_exist) {
+	
+	/**
+	 * @return string
+	 */
+	public function getStrategy()
+	{
+		return $this->strategy;
+	}
 
-					$this->ticket->removeCustomDataForField($this->field);
 
-					$other_exist->ticket = $this->ticket;
-					$this->ticket->custom_data->add($other_exist);
-				}
-			}
-
-		// Children means we can potentially merge selections
-		} else {
-			if ($this->strategy == self::STRATEGY_COMBINE) {
-				foreach ($this->field->children as $child) {
-					// Ignore if left already has a value
-					$exist = $this->ticket->getCustomDataForField($child);
-					if ($exist) {
-						continue;
-					}
-
-					$other_exist = $this->other_ticket->getCustomDataForField($child);
-					if ($other_exist) {
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
-					}
-				}
-			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
-
-				// Take right ones over left ones
-				foreach ($this->field->children as $child) {
-					$other_exist = $this->other_ticket->getCustomDataForField($child);
-					if ($other_exist) {
-
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
-					}
-				}
-			}
-		}
+	/**
+	 * Get a strategy option
+	 *
+	 * @param string $name Name of the option
+	 * @param string $default The default value if it wasnt set
+	 * @return mixed
+	 */
+	public function getStrategyOption($name, $default = null)
+	{
+		return isset($this->strategy_options[$name]) ? $this->strategy_options[$name] : $default;
 	}
 }

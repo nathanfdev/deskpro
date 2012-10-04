@@ -32,78 +32,43 @@
  * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\TicketMerge\Property;
+namespace Application\DeskPRO\People\PersonMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\CustomDefTicket;
-use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Arrays;
 
 /**
- * Merges custom fields
+ * A standard property on a person where only one value can exist.
  */
-class CustomField extends PropertyAbstract
+class StandardProperty extends PropertyAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefTicket
+	 * @var string
 	 */
-	protected $field;
+	protected $property;
 
-	public function setField(CustomDefTicket $field)
+	public function setProperty($property)
 	{
-		$this->field = $field;
+		$this->property = $property;
 	}
 
 	public function merge()
 	{
-		if ($this->strategy == self::STRATEGY_LEFT) {
-			return;
+		$do_set = false;
+
+		if ($this->strategy == self::STRATEGY_RIGHT) {
+			$do_set = true;
+		} elseif ($this->strategy == self::STRATEGY_COMBINE) {
+			if (!$this->person[$this->property]) {
+				$do_set = true;
+			}
 		}
 
-		// No children means its a simple field (text input etc)
-		if (!count($this->field->children)) {
-			if ($this->strategy == self::STRATEGY_RIGHT) {
-				$other_exist = $this->other_ticket->getCustomDataForField($this->field);
-				if ($other_exist) {
-
-					$this->ticket->removeCustomDataForField($this->field);
-
-					$other_exist->ticket = $this->ticket;
-					$this->ticket->custom_data->add($other_exist);
-				}
-			}
-
-		// Children means we can potentially merge selections
-		} else {
-			if ($this->strategy == self::STRATEGY_COMBINE) {
-				foreach ($this->field->children as $child) {
-					// Ignore if left already has a value
-					$exist = $this->ticket->getCustomDataForField($child);
-					if ($exist) {
-						continue;
-					}
-
-					$other_exist = $this->other_ticket->getCustomDataForField($child);
-					if ($other_exist) {
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
-					}
-				}
-			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
-
-				// Take right ones over left ones
-				foreach ($this->field->children as $child) {
-					$other_exist = $this->other_ticket->getCustomDataForField($child);
-					if ($other_exist) {
-
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
-					}
-				}
-			}
+		if ($do_set) {
+			$this->person[$this->property] = $this->other_person[$this->property];
 		}
 	}
 }
