@@ -221,7 +221,7 @@ class TicketTrigger extends AbstractEntityRepository
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
 			WHERE
-				$dql
+				($dql)
 				AND trig.is_enabled = true
 			ORDER BY trig.run_order ASC
 		")->execute($params);
