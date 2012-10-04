@@ -252,9 +252,21 @@ class ActionsCollection
 			if ($ticket_tracker && isset($metadata['trigger'])) {
 				$ticket_tracker->setApplyingTrigger($metadata['trigger']);
 			}
-			$action->apply($ticket);
-			if ($ticket_tracker && isset($metadata['trigger'])) {
-				$ticket_tracker->setApplyingTrigger(null);
+
+			try {
+				$action->apply($ticket);
+
+				if ($ticket_tracker && isset($metadata['trigger'])) {
+					$ticket_tracker->setApplyingTrigger(null);
+				}
+			} catch (\Exception $e) {
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+
+				if ($logger) {
+					$name = \Orb\Util\Util::getBaseClassname($action);
+					$logger->log(sprintf("[$name] EXCEPTION (%s): %s %s %s", $einfo['session_name'], $einfo['exception_type'], $einfo['summary']), \Orb\Log\Logger::DEBUG);
+				}
 			}
 
 			if ($logger) {

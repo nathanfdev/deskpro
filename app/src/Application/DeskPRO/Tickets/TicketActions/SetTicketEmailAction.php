@@ -62,14 +62,12 @@ class SetTicketEmailAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if ($ticket->notify_email != $this->email) {
-			// dont save default when its blank
-			if (!$ticket->notify_email && $this->email == App::getSetting('core.default_from_email')) {
-				return;
-			}
-
-			$ticket->notify_email = $this->email;
+		// dont save default when its blank
+		if (!$ticket->notify_email && $this->email == App::getSetting('core.default_from_email')) {
+			return;
 		}
+
+		$ticket->notify_email = $this->email;
 	}
 
 
