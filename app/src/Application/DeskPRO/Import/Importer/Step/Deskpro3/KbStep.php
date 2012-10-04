@@ -254,8 +254,8 @@ class KbStep extends AbstractDeskpro3Step
 			$blob = $this->getDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_id));
 
 			// Rewrite the old getimage.php to for attachments to go through file.php
-			$new_article->content = str_replace(
-				'https?://(.*?)/getimage\.php?id=' . $attach_info['id'],
+			$new_article->content = preg_replace(
+				'#https?://(.*?)/getimage\.php\?id='.$attach_info['id'].'#',
 				"![attach:{$blob['authcode']}:{$blob['filename']}]",
 				$new_article->content
 			);
