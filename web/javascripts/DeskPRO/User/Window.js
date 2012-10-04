@@ -68,6 +68,23 @@ DeskPRO.User.Window = new Orb.Class({
 			$('#dp_footer div').css({'display': 'block', 'opacity': 1});
 			$('#dp_footer a').css({'display': 'block', 'opacity': 1});
 		}
+
+		if ($('html').attr('dir') == 'rtl' && $('#share-this-js').length) {
+			var interval;
+
+			interval = setInterval(function() {
+				var wrapper = $('#stwrapper');
+				console.log('called');
+				if (wrapper.length) {
+					wrapper.css({
+						left: '',
+						right: '-999px'
+					});
+					console.log('done');
+					clearInterval(interval);
+				}
+			}, 100);
+		}
 	},
 
 	initFeatures: function(contextEl) {

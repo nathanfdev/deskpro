@@ -452,6 +452,13 @@ var DpChatWidget = new (function() {
 
 		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
 
+		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
+		var ieVer = 0;
+		if (isIE) {
+			var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			if (re.exec(navigator.userAgent) != null) ieVer = parseFloat(RegExp.$1);
+		}
+
 		var css = [];
 		css.push('position: fixed');
 		css.push('bottom: 0');
@@ -463,13 +470,16 @@ var DpChatWidget = new (function() {
 		css.push('box-shadow: none');
 		css.push('-webkit-border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
 		css.push('-moz-border-radius-top' + (isRtl ? 'left' : 'right') + ': 9px');
-		css.push('border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px')
+		if ($('html').attr('dir') == 'rtl' && !isIE) {
+			// IE has a bug where the background bleeds through the border radius in RTL
+			css.push('border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
+		}
 		css.push('cursor: pointer');
 		css.push('background: ' + bgColor);
 		css.push('background: ' + bgColorA);
 		css.push('border: ' + border);
 		css.push('border-bottom: none');
-		css.push('border-' + (isRtl ? 'right' : 'left') + ': none');
+		css.push('border-' + (isRtl ? 'right' : 'left') + ': 0 none');
 		css = css.join(';');
 
 		$('head').append('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
