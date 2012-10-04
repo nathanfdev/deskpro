@@ -60,7 +60,8 @@ class PeopleSearchController extends AbstractController
 		#------------------------------
 
 		$people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
-		$validating_count = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
+		$validating_count = $this->em->getRepository('DeskPRO:Person')->getValidatingCount();
+		$validating_count_agent = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
 
 		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
@@ -103,6 +104,7 @@ class PeopleSearchController extends AbstractController
 
 			'people_count'     => $people_count,
 			'validating_count' => $validating_count,
+			'validating_count_agent' => $validating_count_agent,
 			'people_tag_cloud' => $people_tag_cloud,
 			'people_tag_index' => $people_tag_index,
 			'org_tag_cloud'    => $org_tag_cloud,
@@ -118,7 +120,8 @@ class PeopleSearchController extends AbstractController
 		$data = array(
 			'people_count' => $this->em->getRepository('DeskPRO:Person')->getCount(),
 			'usergroup_counts' => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
-			'validating_count' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount()
+			'validating_count' => $this->em->getRepository('DeskPRO:Person')->getValidatingCount(),
+			'validating_count_agent' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount()
 		);
 
 		return $this->createJsonResponse($data);
@@ -309,6 +312,7 @@ class PeopleSearchController extends AbstractController
 				'person_email'              => array('op' => 'contains', 'options' => array()),
 				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
 				'is_agent_confirmed'        => array('op' => 'is', 'options' => array()),
+				'is_confirmed'              => array('op' => 'is', 'options' => array()),
 			);
 
 			foreach ($set_terms_map as $name => $info) {
@@ -791,15 +795,23 @@ class PeopleSearchController extends AbstractController
 
 	public function validateListAction()
 	{
-		return $this->searchAction(null, array(
-			'is_agent_confirmed' => 0
-		), 'awaiting_validation');
+		if ($this->in->getString('email_validating')) {
+			return $this->searchAction(null, array(
+				'is_confirmed' => 0
+			), 'awaiting_validation');
+		} else {
+			return $this->searchAction(null, array(
+				'is_agent_confirmed' => 0
+			), 'awaiting_validation');
+		}
 	}
 
 	public function validateApproveAction()
 	{
 		$people_ids = $this->in->getCleanValueArray('people_ids', 'uint', 'discard');
 		$people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
+
+		$email_ids = array();
 
 		$this->db->beginTransaction();
 		try {
@@ -812,8 +824,7 @@ class PeopleSearchController extends AbstractController
 					$this->em->persist($person);
 
 					if ($person->primary_email) {
-						$person->primary_email->is_validated = true;
-						$this->em->persist($person->primary_email);
+						$email_ids[] = $person->primary_email->getId();
 					}
 
 					// Make visible any content now
@@ -850,6 +861,11 @@ class PeopleSearchController extends AbstractController
 					$comment->setStatus('visible');
 					$this->em->persist($comment);
 				}
+			}
+
+			if ($email_ids) {
+				$email_ids = implode(',', $email_ids);
+				$this->db->executeUpdate("UPDATE people_emails SET is_validated = 1 WHERE id IN ($email_ids)");
 			}
 
 			$this->em->flush();

@@ -79,6 +79,16 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 				el.show();
 			}
 		}
+		if (typeof countData.validating_count_agent != 'undefined') {
+			var el = $('#people_nav_awaiting_agent_validation');
+			el.find('span.list-counter').text(countData.validating_count_agent+'');
+
+			if (!parseInt(countData.validating_count_agent)) {
+				el.hide();
+			} else {
+				el.show();
+			}
+		}
 	},
 
 	reloadLabels: function() {

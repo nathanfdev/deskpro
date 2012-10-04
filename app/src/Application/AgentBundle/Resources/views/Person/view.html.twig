@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 
-{% if not person.is_agent_confirmed or not person.is_confirmed %}
+{% if (not person.is_confirmed or not person.is_agent_confirmed) or (person.is_confirmed and person.is_agent_confirmed and has_email_validating) %}
 <div class="validating-bar">
 	<div class="options">
 		<div style="float:right; position:relative;top: -3px;">

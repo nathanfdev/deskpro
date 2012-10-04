@@ -269,10 +269,19 @@ class PersonController extends AbstractController
 
 		$validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
 
+		$has_email_validating = false;
+		foreach ($person->emails as $e) {
+			if (!$e->is_validated) {
+				$has_email_validating = true;
+				break;
+			}
+		}
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
 			'validating_emails' => $validating_emails,
+			'has_email_validating' => $has_email_validating,
 			'person_api' => $person_api,
 			'person_usergroups_ids' => $person_usergroups_ids,
 			'person_org_usergroups_ids' => $person_org_usergroups_ids,
