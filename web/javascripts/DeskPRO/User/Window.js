@@ -61,6 +61,7 @@ DeskPRO.User.Window = new Orb.Class({
 
 		this.elementHandlers = {};
 		this.initFeatures(document);
+		this.initLanguageChoices();
 
 		if (!$('#dp_footer .dp-copy').is(':visible')) {
 			$('#dp_footer').css({'display': 'block', 'opacity': 1});
@@ -200,6 +201,81 @@ DeskPRO.User.Window = new Orb.Class({
 				}
 			});
 		}
+	},
+
+	initLanguageChoices: function() {
+		var select = $('#dp_lang_chooser_form').find('select');
+		if (!select.length) {
+			return;
+		}
+
+		var choices = {}, selected;
+		select.find('option').each(function() {
+			var $this = $(this);
+			choices[$this.attr('value')] = {
+				name: $this.html(),
+				val: $this.attr('value'),
+				flag: $this.data('flag')
+			};
+			if ($this.attr('selected')) {
+				selected = $this.attr('value');
+			}
+		});
+
+		if (!selected) {
+			selected = select.find('option:first').attr('value');
+		}
+
+		var getChoiceHtml = function(choice) {
+			if (choice.flag && choice.flag.length) {
+				return '<img src="' + ASSETS_BASE_URL + '/images/flags/' + choice.flag + '" class="flag" alt="" /> ' + choice.name;
+			} else {
+				return '<span class="flag"></span> ' + choice.name;
+			}
+		};
+
+		var choiceHtml = $('<span class="language-choice" />'),
+			innerHtml = $('<span class="country-name" />').html(getChoiceHtml(choices[selected]));
+		choiceHtml.append(innerHtml);
+		choiceHtml.append($('<span class="drop" />'));
+
+		var choiceMenu = $('<ul class="language-options-list" />');
+		for (var i in choices) {
+			var li = $('<li />').html(getChoiceHtml(choices[i]));
+			(function(choice) {
+				li.click(function() {
+					select.val(choice.val);
+					select.closest('form').submit();
+					choiceMenu.hide();
+					innerHtml.html(getChoiceHtml(choice));
+				});
+			})(choices[i]);
+			choiceMenu.append(li);
+		}
+		$('#dp').append(choiceMenu);
+
+		innerHtml.css({
+			width: choiceMenu.outerWidth() - 24
+		});
+		choiceHtml.click(function() {
+			var pos = choiceHtml.offset();
+
+			choiceMenu.css({
+				top: pos.top + choiceHtml.outerHeight(true) - 1,
+				left: pos.left
+			});
+
+			choiceMenu.show();
+		});
+
+		select.hide();
+		select.after(choiceHtml);
+
+		$(document).click(function(e) {
+			if (!choiceHtml.find(e.target).length && !choiceMenu.find(e.target).length) {
+				choiceMenu.hide();
+			}
+		});
 	},
 
 	showAutoSignInOverlay: function() {

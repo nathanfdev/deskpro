@@ -431,6 +431,53 @@ html#dp_html.dp-simple-iframe, html#dp_html body.dp-simple-iframe {
 	padding: 0;
 }
 
+#dp .language-choice {
+	border: 1px solid #e9e9e9;
+	background: #fff;
+	padding: 2px 2px 2px 4px;
+	box-sizing: border-box;
+	text-align: left;
+	cursor: pointer;
+}
+
+#dp .language-choice .country-name {
+	display: inline-block; *zoom: 1;
+	text-align: left;
+}
+
+#dp .language-choice .drop {
+	/*@no_rtl*/
+	background: url({{ stylevar.static_path }}/images/select2.png) no-repeat 0 -2px;
+	/*@/no_rtl*/
+	display: inline-block; *zoom: 1;
+	width: 16px;
+	height: 16px;
+}
+
+#dp .language-options-list {
+	display: none;
+	position: absolute;
+	background: white;
+	border: 1px solid #e9e9e9;
+	margin: 0;
+	list-style: none;
+	z-index: 10000;
+}
+
+#dp .language-options-list li {
+	cursor: pointer;
+	padding: 2px 22px 2px 4px;
+}
+#dp .language-options-list li:hover {
+	background: #f0f0f0;
+}
+#dp .language-choice .flag, #dp .language-options-list .flag {
+	display: inline-block; *zoom: 1;
+	width: 16px;
+	height: 11px;
+	vertical-align: baseline;
+}
+
 /***********************************************************************************************************************
 * Header Bar
 * This includes the top blue bar, the helpdesk title, and the search box

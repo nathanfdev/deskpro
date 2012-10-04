@@ -92,6 +92,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	protected $locale = 'en_US';
 
 	/**
+	 * @var string
+	 */
+	protected $flag_image = '';
+
+	/**
 	 * True if this is a right-to-left language.
 	 *
 	 * @var bool
@@ -138,6 +143,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath', ));
 		$metadata->mapField(array( 'fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale', ));
+		$metadata->mapField(array( 'fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image', ));
 		$metadata->mapField(array( 'fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl', ));
 		$metadata->mapField(array( 'fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user', ));
 		$metadata->mapField(array( 'fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent', ));
