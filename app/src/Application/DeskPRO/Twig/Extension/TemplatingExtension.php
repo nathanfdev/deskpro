@@ -126,6 +126,8 @@ class TemplatingExtension extends \Twig_Extension
 	        'dp_widget_tabs_header' => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
 	        'dp_widget_tabs' => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 	        'dp_js_sso_loader' => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
+			'escape' => new \Twig_Function_Method($this, 'twig_escape_filter', array('needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe')),
+            'e'      => new \Twig_Function_Method($this, 'twig_escape_filter', array('needs_environment' => true, 'is_safe_callback' => 'twig_escape_filter_is_safe')),
         );
     }
 
@@ -1181,5 +1183,24 @@ STR;
 		}
 
 		return implode("\n\n", $output);
+	}
+
+	public function twig_escape_filter(\Twig_Environment $env, $string, $strategy = 'html', $charset = null, $autoescape = false)
+	{
+		if (!$string) {
+			return '';
+		}
+
+		if ('UTF-8' != $charset) {
+			$string = twig_convert_encoding($string, 'UTF-8', $charset);
+		}
+
+		$string = @twig_escape_filter($env, $string, $string, 'UTF-8', $autoescape);
+		if (!$string) {
+			$string = Strings::utf8_bad_strip($string);
+			$string = twig_escape_filter($env, $string, $string, 'UTF-8', $autoescape);
+		}
+
+		return $string;
 	}
 }
