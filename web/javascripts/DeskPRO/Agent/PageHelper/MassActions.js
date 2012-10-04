@@ -374,7 +374,9 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			});
 		}
 
-        this.wrapper.tinyscrollbar_update();
+		if (this.scrollerHandler) {
+			this.scrollerHandler.updateSize();
+		}
 	},
 
 	_initMacroOverlay: function() {
