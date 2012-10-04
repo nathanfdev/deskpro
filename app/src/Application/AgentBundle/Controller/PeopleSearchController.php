@@ -805,11 +805,16 @@ class PeopleSearchController extends AbstractController
 		try {
 			$ids = array();
 			foreach ($people as $person) {
-				if (!$person->is_agent && !$person->is_agent_confirmed) {
+				if (!$person->is_agent) {
 					$ids[] = $person->getId();
 					$person->is_agent_confirmed = true;
 					$person->is_confirmed = true;
 					$this->em->persist($person);
+
+					if ($person->primary_email) {
+						$person->primary_email->is_validated = true;
+						$this->em->persist($person->primary_email);
+					}
 
 					// Make visible any content now
 					$ticket_ids = $this->db->fetchAllCol("
