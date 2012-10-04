@@ -277,6 +277,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected function doNewReply(Entity\Ticket $ticket, $person, $context)
 	{
 		$this->ticket = $ticket;
+		$ticket->email_reader = $this->reader;
 
 		$this->logMessage("doNewRelpy context $context");
 		$this->processBlobs();
@@ -875,6 +876,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
 		$newticket->sent_to = $this->sent_to;
+		$newticket->setEmailReader($this->reader);
 
 		if ($this->logger) {
 			$newticket->logger = $this->logger;
