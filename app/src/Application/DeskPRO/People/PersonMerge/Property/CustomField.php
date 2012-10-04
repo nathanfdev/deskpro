@@ -121,6 +121,6 @@ class CustomField extends PropertyAbstract
 		$new_data->root_field = $data->root_field;
 		$new_data->person = $this->person;
 
-		$this->person->addCustomData($data);
+		$this->person->addCustomData($new_data);
 	}
 }

@@ -159,8 +159,13 @@ class PersonMerge implements PersonContextInterface
 
 	protected function _mergeCustomFields()
 	{
-		// TODO: this potentially creates some odd values, but using Property\CustomField doesn't work
-		$this->_updateTablePersonId('custom_data_person', 'person_id');
+		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		foreach ($field_defs as $f) {
+			$prop_field = new Property\CustomField($this->person, $this->other_person);
+			$prop_field->setField($f);
+			$prop_field->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+			$prop_field->merge();
+		}
 	}
 
 	protected function _mergeOtherPersonData()
