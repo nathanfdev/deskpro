@@ -309,6 +309,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				options.start = function() {
 					// Dont stack error messes. Once you upload again, the old one disappears
 					$(el).find('.error').remove();
+					options.filesContainer.show();
 				};
 
 				$(el).on('click', '.remove-attach-trigger', function(ev) {
@@ -321,6 +322,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					var el = $(this);
 					el.closest('li').slideUp('fast', function() {
 						el.remove();
+
+						if (options.filesContainer.hasClass('dp-hide-empty')) {
+							options.filesContainer.hide();
+						}
 					});
 				});
 

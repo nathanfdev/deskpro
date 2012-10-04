@@ -46,6 +46,20 @@
 	</header>
 	<article id="dp_article_content">
 		{{ article.content_html|raw }}
+
+		{% if article.attachments %}
+		<ul class="attachment-list">
+			{% for attach in article.attachments %}
+				<li class="{% if attach.blob.isImage() %}is-image{% else %}dp-fileicon dp-fileicon-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+					{% if attach.blob.isImage() %}
+						<a href="{{ attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 'filename': attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+					{% endif %}
+					<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
+					<span class="size">({{ attach.blob.readable_filesize }})</span>
+				</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 	</article>
 	<footer>
 		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}

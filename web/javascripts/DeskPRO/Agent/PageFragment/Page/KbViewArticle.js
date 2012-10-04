@@ -237,7 +237,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				dataType: 'json'
 			});
 
-			$(this).parent().fadeOut();
+			$(this).closest('li').remove();
+
+			if (!list.find('li')[0]) {
+				list.hide();
+			}
 		});
 	},
 
