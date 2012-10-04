@@ -75,6 +75,21 @@ class CleanupTmpData extends AbstractJob
 		}
 
 		#------------------------------
+		# Log Items
+		#------------------------------
+
+		$datecut = date('Y-m-d H:i:s', time() - 259200);
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM log_items
+			WHERE date_created < ?
+		",
+		array($datecut));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num old log items");
+		}
+
+		#------------------------------
 		# Try to delete old update status file
 		#------------------------------
 
