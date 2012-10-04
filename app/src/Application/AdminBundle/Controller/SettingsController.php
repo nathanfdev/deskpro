@@ -85,11 +85,11 @@ class SettingsController extends AbstractController
 				'core.redirect_correct_url'    => empty($_POST['settings']['core.redirect_correct_url']) ? 0 : 1,
 				'core.default_timezone'        => empty($_POST['settings']['core.default_timezone']) ? "UTC" : $_POST['settings']['core.default_timezone'],
 
-				'core.attach_agent_maxsize'    => (int)$_POST['settings']['core.attach_agent_maxsize'],
+				'core.attach_agent_maxsize'    => empty($_POST['settings']['core.attach_agent_maxsize']) ? 0 : (int)$_POST['settings']['core.attach_agent_maxsize'],
 				'core.attach_agent_must_exts'  => $format_exts($_POST['settings']['core.attach_agent_must_exts']),
 				'core.attach_agent_not_exts'   => $format_exts($_POST['settings']['core.attach_agent_not_exts']),
 
-				'core.attach_user_maxsize'     => (int)$_POST['settings']['core.attach_user_maxsize'],
+				'core.attach_user_maxsize'     => empty($_POST['settings']['core.attach_user_maxsize']) ? 0 : (int)$_POST['settings']['core.attach_user_maxsize'],
 				'core.attach_user_must_exts'   => $format_exts($_POST['settings']['core.attach_user_must_exts']),
 				'core.attach_user_not_exts'    => $format_exts($_POST['settings']['core.attach_user_not_exts']),
 
