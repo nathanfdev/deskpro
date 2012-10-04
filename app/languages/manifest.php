@@ -12,6 +12,32 @@
 		'is_managed' => false
 	),
 
+	'arabic' => array(
+		'id'         => 'arabic',
+		'lang_code'  => 'ara',
+		'title'      => 'Arabic',
+		'locale'     => 'ar',
+		'flag_image' => 'sa.png',
+		'is_rtl'     => true,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
+	'danish' => array(
+		'id'         => 'danish',
+		'lang_code'  => 'eng',
+		'title'      => 'dan',
+		'locale'     => 'da',
+		'flag_image' => 'dk.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => true,
+		'has_admin'  => true,
+		'is_managed' => false
+	),
+
 	'german' => array(
 		'id'         => 'german',
 		'lang_code'  => 'ger',
@@ -90,22 +116,22 @@
 		'is_managed' => true
 	),
 
-	// ensure an appropriate flag_image has been specified when adding a language
-
-	/*
-
-	'arabic' => array(
-		'id'         => 'arabic',
-		'lang_code'  => 'ara',
-		'title'      => 'Arabic',
-		'locale'     => 'ar',
-		'flag_image' => 'sa.png',
-		'is_rtl'     => true,
+	'spanish' => array(
+		'id'         => 'spanish',
+		'lang_code'  => 'spa',
+		'title'      => 'Spanish',
+		'locale'     => 'es',
+		'flag_image' => 'es.png',
+		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
 		'has_admin'  => false,
 		'is_managed' => true
 	),
+
+	// ensure an appropriate flag_image has been specified when adding a language
+
+	/*
 
 	'czech' => array(
 		'id'         => 'czech',
@@ -125,6 +151,7 @@
 		'lang_code'  => 'dut',
 		'title'      => 'Dutch',
 		'locale'     => 'nl',
+		'flag_image' => 'nl.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -137,6 +164,7 @@
 		'lang_code'  => 'fin',
 		'title'      => 'Finnish',
 		'locale'     => 'fi',
+		'flag_image' => 'fi.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -149,6 +177,7 @@
 		'lang_code'  => 'fre',
 		'title'      => 'French',
 		'locale'     => 'fr',
+		'flag_image' => 'fr.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -161,6 +190,7 @@
 		'lang_code'  => 'ger',
 		'title'      => 'German',
 		'locale'     => 'de',
+		'flag_image' => 'de.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -173,6 +203,7 @@
 		'lang_code'  => 'gre',
 		'title'      => 'Greek',
 		'locale'     => 'el',
+		'flag_image' => 'gr.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -293,18 +324,6 @@
 		'lang_code'  => 'rus',
 		'title'      => 'Russian',
 		'locale'     => 'ru',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'spanish' => array(
-		'id'         => 'spanish',
-		'lang_code'  => 'spa',
-		'title'      => 'Spanish',
-		'locale'     => 'es',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
