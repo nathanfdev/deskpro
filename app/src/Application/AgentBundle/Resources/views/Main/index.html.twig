@@ -11,6 +11,8 @@
 		{% else %}
 			DP_DEBUG = false;
 		{% endif %}
+
+		window.DP_LOADED_TIME = (new Date()).getTime() / 1000;
 	</script>
 
 	{% include 'AgentBundle:Main:page-vars.html.twig' %}

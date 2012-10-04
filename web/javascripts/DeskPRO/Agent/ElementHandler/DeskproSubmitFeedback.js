@@ -22,15 +22,22 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 			self.close();
 		});
 
+		this.requireInput = false;
+
 		this.el.find('form').on('submit', function(ev) {
 			ev.preventDefault();
+
+			var message = $.trim(self.el.find('textarea').val() + "\n\n" + self.el.find('input[name="message_extra"]').val());
+			if (!message && self.requireInput) {
+				return;
+			}
 
 			self.el.addClass('loading');
 			$.ajax({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: {
-					message: $.trim(self.el.find('textarea').val() + "\n\n" + self.el.find('input[name="message_extra"]').val()),
+					message: message,
 					email_address: self.el.find('input[name="email_address"]').val()
 				},
 				dataType: 'json',
@@ -46,12 +53,14 @@ DeskPRO.Agent.ElementHandler.DeskproSubmitFeedback = new Orb.Class({
 		});
 	},
 
-	open: function(message, messageExtra) {
+	open: function(message, messageExtra, requireInput) {
 
 		message = message || 'We want to hear about your experience with DeskPRO v4.';
 		if (typeof message === 'string') {
 			message = $('<span />').text(message);
 		}
+
+		this.requireInput = requireInput || false;
 
 		$('#dp_submit_feedback_label').empty().append(message);
 		this.el.find('input[name="message_extra"]').val(messageExtra || '');

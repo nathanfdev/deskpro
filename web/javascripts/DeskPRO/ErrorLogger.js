@@ -40,6 +40,12 @@ var DpErrorLog = {
 
 	logError: function(message, trace, script, line) {
 
+		if (window.DP_LOADED_TIME) {
+			var timeUsing = ((new Date()).getTime() / 1000) - window.DP_LOADED_TIME;
+		} else {
+			var timeUsing = 0;
+		}
+
 		if (window.console.log) {
 			window.console.log('[JS Error] %s (%s %d): %s', message, script, line, trace);
 		}
@@ -56,6 +62,8 @@ var DpErrorLog = {
 		if (this.logCount++ > 5) {
 			return;
 		}
+
+		message += ' (timeUsing: ' + timeUsing + ')';
 
 		var data = {
 			message: message || '',
@@ -97,7 +105,9 @@ var DpErrorLog = {
 				"To help us identify and fix the problem, we would appreciate it if you could describe what you were viewing " +
 				"and the actions you were performing just before this notice appeared.",
 
-				"Message: " + data.message + "\nScript: " + data.script + "\nLine:" + data.line + "\nUser Agent: " + navigator.userAgent
+				"Message: " + data.message + "\nScript: " + data.script + "\nLine:" + data.line + "\nUser Agent: " + navigator.userAgent,
+
+				true
 			);
 		}
 	},
