@@ -136,7 +136,7 @@ class TicketChecker extends AbstractChecker
 		# Can delete unassigned
 		#------------------------------
 
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.view_unassigned')) {
+		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.delete_unassigned')) {
 			return true;
 		}
 
@@ -144,7 +144,7 @@ class TicketChecker extends AbstractChecker
 		# Can delete others
 		#------------------------------
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.view_unassigned')) {
+		if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_unassigned')) {
 			return true;
 		}
 
