@@ -444,6 +444,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->addPropertyChangedListener($ticket_logger);
 	}
 
+	public function getSubject()
+	{
+		if (!$this->subject) {
+			return App::getTranslator()->getPhraseText('user.tickets.no_subject');
+		}
+
+		return $this->subject;
+	}
+
 
 	/**
 	 * Get an array of addresses the ticket was sent To or CC's
