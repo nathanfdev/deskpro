@@ -242,6 +242,15 @@ class EzcReader extends AbstractReader
 			}
 		}
 
+		$set_attachments = array();
+
+		foreach ($attachments as $attach) {
+			if ($attach->file_name != 'winmail.dat') {
+				$set_attachments[] = $attach;
+				continue;
+			}
+		}
+
 		return $attachments;
 	}
 
