@@ -131,8 +131,14 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
 				if ($ticket && !$ticket->isArchived()) {
-					$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
-					$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+					if ($this->_found_person) {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+					} else {
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
+					}
+
 					return $ticket;
 				}
 			}
