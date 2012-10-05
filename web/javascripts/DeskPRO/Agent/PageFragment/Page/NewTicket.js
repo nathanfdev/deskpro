@@ -207,14 +207,21 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var depId = depSel.val();
 			var opts = tplSelOrig.find('option.department_' + depId +', option.department_0').clone();
 			if (opts[0]) {
+
+				var selected = tplSel.val();
+
 				tplSel.empty();
-				tplSel.append('<option value="0">Blank</option>');
+				tplSel.append('<option value="0" selected="selected">Blank</option>');
 				tplSel.append(opts);
 				tplHolder.show();
 
-				if (opts.length == 1) {
-					tplSel.select2('val', tplSel.find('option').eq(1).val());
-					tplSel.trigger('change');
+				var selectedOpt = tplSel.find('[value="'+selected+'"]');
+
+				if (selectedOpt[0]) {
+					tplSel.select2('val', selected);
+				} else {
+					tplSel.select2('val', 0);
+					tplSel.change();
 				}
 			} else {
 				tplSel.empty();
