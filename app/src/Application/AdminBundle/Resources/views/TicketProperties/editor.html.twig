@@ -6,6 +6,17 @@
 <script type="text/javascript">
 var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </script>
+	<style type="text/css">
+		.field-agent-only {
+			margin-left: 10px;
+			background: #DBE3E8;
+			line-height: 100%;
+			padding: 1px 4px;
+			border-radius: 4px;
+			-webkit-border-radius: 4px;
+			border: 1px solid #B2B9C1;
+		}
+	</style>
 {% endblock %}
 {% block page_nav_inner %}
 <div class="page-nav-block">
@@ -29,7 +40,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 				{% if term_options.products %}<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>{% endif %}
 				{% if term_options.priorities %}<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.tickets.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.general.priority') }}</label></li>{% endif %}
 				{% for field in custom_ticket_fields %}
-				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="{{ phrase('admin.general.edit_field') }}" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
+				<li class="draggable" {% if field.field_def.is_agent_field %}data-is-agent-field="1"{% endif %} data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="{{ phrase('admin.general.edit_field') }}" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
 				<label>{{field.title}}</label>
 					</li>
 				{% endfor %}
@@ -172,6 +183,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 		<div class="dp-form-label">
 			<label class="field-title"></label>
+			<span class="field-agent-only" style="display:none">Agent Only</span>
 		</div>
 		<article class="dp-form-input"></article>
 

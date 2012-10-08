@@ -108,6 +108,9 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				var formItem = $(DeskPRO_Window.util.getPlainTpl($('#editor_row_tpl')));
 				formItem.data('item-id', el.data('item-id'));
 				$('label.field-title', formItem).text($('label', el).text());
+				if (el.data('is-agent-field')) {
+					formItem.find('.field-agent-only').show();
+				}
 
 				formItem.data('sidebar-item', draggingSidebarEl);
 
@@ -319,6 +322,9 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			var formItem = $(DeskPRO_Window.util.getPlainTpl($('#editor_row_tpl')));
 			formItem.data('item-id', draggingSidebarEl.data('item-id'));
 			$('label.field-title', formItem).text($('label', draggingSidebarEl).text());
+			if (draggingSidebarEl.data('is-agent-field')) {
+				formItem.find('.field-agent-only').show();
+			}
 
 			formItem.data('sidebar-item', draggingSidebarEl);
 
