@@ -308,6 +308,12 @@ class DeskPRO_Cloud_ProcMail
 
 		$out = implode("\n", $out);
 
+		if (strpos($out, 'DP_UNKNOWN_CAT') === false) {
+			$this->markFailed();
+			$this->exit_string = "Site has no such defined address";
+			$this->exit_code = 3;
+		}
+
 		if (strpos($out, 'DP_MAIL_ACCEPT') === false) {
 			$this->markFailed();
 			error_log($out);
