@@ -59,20 +59,49 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/big-forward.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/thunderbird.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
-		$body = $r->getBodyText()->getBodyUtf8();
-		$this->cutterDef = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
-		$fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($body, false, $this->cutterDef);
-		if (!$fwd_cutter->isValid()) {
-			echo "ERROR";
+		if (0 and $r->getBodyHtml()->getBodyUtf8()) {
+			$body = $r->getBodyHtml()->getBodyUtf8();
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
+
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$body = $cutter->cutQuoteBlock($body, true);
+
+			if ($cutter->getMatchedPatterns()) {
+				print_r($cutter->getMatchedPatterns());
+				exit;
+			} else {
+				echo "No matches\n";
+				exit;
+			}
+
+			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
+			$body = $inline_image->processTokens($body);
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+			$body = Strings::trimHtmlAdvanced($body);
+
+			foreach ($r->getAttachments() as $attach) {
+				$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
+			}
 		} else {
-			print_r($fwd_cutter->getData());
+			$body = $r->getBodyText()->getBodyUtf8();
+
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$body = $cutter->cutQuoteBlock($body, false);
 		}
 
+		echo $body;
 		echo "\n";
 	}
 }

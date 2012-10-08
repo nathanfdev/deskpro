@@ -42,6 +42,9 @@
 	// X-Mailer: Microsoft Windows Mail 6.0.6002.18197
 	'windows_mail_1'                     => 'blockquote div #-+\soriginal\smessage\s-+#i /div div b #from:#i /b /div div b #to:#i /b /div div b #sent:#i /b /div /blockquote',
 
+	// Thunderbird
+	'thunderbird_1'                      => 'br /br #On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]+):([0-9a-zA-Z]+), (.*?) wrote:# br /br',
+
 	// X-Mailer: Lotus Notes Release 8.5.1 September 28, 2009
 	'lotus_notes_1'                      => 'br /br table tr td td table tr td font b /b /font /td /tr /table br /br table tr td font /font td font #to:#i /font /td /td /tr /table br /br table tr td font b #please\srespond\sto\s#i /b /font /td /tr /table',
 
