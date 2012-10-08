@@ -39,7 +39,7 @@ class Build1349349294 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Recreate log_items table");
-		$this->execMutateSql("DROP TABLE IF EXISTS");
+		$this->execMutateSql("DROP TABLE IF EXISTS log_items");
 		$this->execMutateSql("
 			CREATE TABLE `log_items` (
 				`id` int(11) NOT NULL AUTO_INCREMENT,
