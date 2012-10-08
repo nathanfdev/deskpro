@@ -134,6 +134,8 @@ abstract class CustomDefAbstractController extends AbstractController
 					}
 
 					$form->bindRequest($this->get('request'));
+
+					$editfield->is_agent_field = $this->in->getBool('fielddef.is_agent_field');
 					$editfield->save();
 
 					$this->clearCacheForFieldType($field);

@@ -117,7 +117,11 @@ class FieldManager
 	{
 		if ($this->fields === null) {
 			$this->fields = array();
-			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledUserFields();
+			} else {
+				$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			}
 			foreach ($all_fields as $f) {
 
 				$this->all_fields[$f->getId()] = $f;

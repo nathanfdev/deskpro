@@ -157,6 +157,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	protected $default_value = null;
 
 	/**
+	 * @var string
+	 */
+	protected $is_agent_field = false;
+
+	/**
 	 * @var \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
 	 */
 	protected $_handler_instance = null;

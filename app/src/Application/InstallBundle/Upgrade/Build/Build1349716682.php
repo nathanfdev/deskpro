@@ -29,90 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CustomDefAbstract extends AbstractEntityRepository
+class Build1349716682 extends AbstractBuild
 {
-	public static function getCacheId($id)
+	public function run()
 	{
-		$str = 'customdef' . md5(get_called_class()) . '_' . $id;
-		return $str;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			ORDER BY f.display_order ASC
-		");
-		$q->useResultCache(true, null, static::getCacheId('getfields'));
-
-		return $q->execute();
-	}
-
-	public function getEnabledFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.is_enabled = true
-			ORDER BY f.display_order ASC
-		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
-
-		return $q->execute();
-	}
-
-	public function getEnabledUserFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.is_enabled = true AND f.is_agent_field = false
-			ORDER BY f.display_order ASC
-		");
-		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
-
-		return $q->execute();
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getTopFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.parent IS NULL
-			ORDER BY f.display_order ASC
-		");
-
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
-
-		return $q->execute();
-	}
-
-	public function getEnabledTopFields()
-	{
-		$q = $this->_em->createQuery("
-			SELECT f
-			FROM {$this->_entityName} f INDEX BY f.id
-			WHERE f.parent IS NULL AND f.is_enabled = true
-			ORDER BY f.display_order ASC
-		");
-
-		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
-
-		return $q->execute();
+		$this->out("Add is_agent_field to custom_def_* tables");
+		$this->execMutateSql("ALTER TABLE custom_def_article ADD is_agent_field TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE custom_def_feedback ADD is_agent_field TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE custom_def_organizations ADD is_agent_field TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE custom_def_people ADD is_agent_field TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE custom_def_ticket ADD is_agent_field TINYINT(1) NOT NULL");
 	}
 }
