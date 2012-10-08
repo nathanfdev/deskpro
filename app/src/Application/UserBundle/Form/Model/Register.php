@@ -47,6 +47,12 @@ class Register
 	public $language_id = 1;
 
 	public $no_validation;
+	public $custom_fields = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefPerson[]
+	 */
+	protected $_custom_fields;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -96,6 +102,10 @@ class Register
 			$this->em->persist($person);
 			$this->em->flush();
 
+			if ($this->custom_fields) {
+				App::getSystemService('PersonFieldsManager')->saveFormToObject($this->custom_fields, $person);
+			}
+
 			if ($email_validating) {
 				$this->em->persist($email_validating);
 				$this->em->flush();
@@ -122,5 +132,13 @@ class Register
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+	}
+
+	/**
+	 * @param array $custom_fields
+	 */
+	public function setCustomFields(array $custom_fields)
+	{
+		$this->_custom_fields = $custom_fields;
 	}
 }

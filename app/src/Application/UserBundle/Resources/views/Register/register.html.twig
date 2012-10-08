@@ -1,4 +1,5 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 {% block breadcrumb %}
 	{% if this_page == 'register' %}
 		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_register') }}">{{ phrase('user.profile.register') }}</a></li>
@@ -199,6 +200,19 @@
 						</div>
 					</div>
 					{% endif %}
+
+					{% if not custom_fields %}{% set custom_fields = app.getPersonFieldManager().getDisplayArray() %}{% endif %}
+					{% for f in custom_fields %}
+						<div class="dp-control-group {% if error_fields['field_' ~ f.field_def.id] %}dp-error{% endif %}">
+							<div class="dp-control-label">
+								<label>{{ f.field_def.title }}</label>
+							</div>
+							<div class="dp-controls dp-fill">
+								{{ render_custom_field_form(f) }}
+							</div>
+							{% if error_fields['field_' ~ f.field_def.id] %}<div class="dp-help-inline dp-error-explain">{{ formmacro.custom_field_errors(errors, f.field_def, 'field_' ~ f.field_def.id) }}</div>{% endif %}
+						</div>
+					{% endfor %}
 
 					<div class="dp-control-group">
 						<div class="dp-control-label">

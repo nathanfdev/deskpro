@@ -1,8 +1,8 @@
 {##
  # The user profile page lets them edit their name and timezone, manage email addresses and reset their password.
  ##}
-
 {% extends 'UserBundle::layout.html.twig' %}
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
@@ -61,6 +61,18 @@
 					</div>
 				</div>
 			{% endif %}
+
+			{% for f in custom_fields %}
+				<div class="dp-control-group {% if invalid_custom_fields['field_' ~ f.field_def.id] %}dp-error{% endif %}">
+					<div class="dp-control-label">
+						<label>{{ f.field_def.title }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						{{ render_custom_field_form(f) }}
+					</div>
+					{% if invalid_custom_fields['field_' ~ f.field_def.id] %}<div class="dp-help-inline dp-error-explain">{{ formmacro.custom_field_errors(invalid_custom_fields, f.field_def, 'field_' ~ f.field_def.id) }}</div>{% endif %}
+				</div>
+			{% endfor %}
 
 			<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
 		</div>

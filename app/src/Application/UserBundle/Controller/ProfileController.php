@@ -52,9 +52,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	public function indexAction()
 	{
 		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
+		$field_manager = $this->container->getSystemService('person_fields_manager');
 
 		$invalid_name = false;
 		$profile_saved = false;
+		$invalid_custom_fields = array();
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
@@ -66,9 +68,21 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$is_valid = false;
 			}
 
+			$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
+			foreach ($field_manager->getFields() as $field) {
+				$errors = $field->getHandler()->validateFormData($custom_fields ?	: array());
+				foreach ($errors as $code) {
+					$invalid_custom_fields['field_' . $field->getId()] = true;
+					$invalid_custom_fields['field_' . $field->getId() . '.' . $code] = true;
+					$is_valid = false;
+				}
+			}
+
 			if ($is_valid) {
 				$this->em->persist($this->person);
 				$this->em->flush();
+
+				$field_manager->saveFormToObject($custom_fields, $this->person);
 
 				$profile_saved = true;
 			}
@@ -76,11 +90,15 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 		$validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->person);
 
+		$custom_fields = $field_manager->getDisplayArrayForObject($this->person);
+
 		return $this->render('UserBundle:Profile:index.html.twig', array(
 			'form'               => $form->createView(),
 			'validating_emails'  => $validating_emails,
 			'invalid_name'       => $invalid_name,
 			'profile_saved'      => $profile_saved,
+			'custom_fields'      => $custom_fields,
+			'invalid_custom_fields' => $invalid_custom_fields,
 		));
 	}
 

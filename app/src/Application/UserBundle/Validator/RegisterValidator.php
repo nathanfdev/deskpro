@@ -43,6 +43,11 @@ use Orb\Validator\AbstractValidator;
 class RegisterValidator extends AbstractValidator
 {
 	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefPerson[]
+	 */
+	protected $_custom_fields;
+
+	/**
 	 * @var \Application\UserBundle\Form\Model\Register
 	 */
 	protected $register;
@@ -76,10 +81,24 @@ class RegisterValidator extends AbstractValidator
 			$this->addError('password.mismatch');
 		}
 
+		if ($this->_custom_fields) {
+			foreach ($this->_custom_fields as $field) {
+				$errors = $field->getHandler()->validateFormData($this->register->custom_fields ?: array());
+				foreach ($errors as $code) {
+					$this->addError($code);
+				}
+			}
+		}
+
 		if ($this->errors) {
 			return false;
 		}
 
 		return true;
+	}
+
+	public function setCustomFields(array $custom_fields)
+	{
+		$this->_custom_fields = $custom_fields;
 	}
 }

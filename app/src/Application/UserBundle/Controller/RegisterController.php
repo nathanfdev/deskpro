@@ -53,7 +53,24 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			return $this->redirectRoute('user');
 		}
 
+		// Custom fields
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+
+		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
+		$fm = $this->container->getSystemService('PersonFieldsManager');
+		if (isset($_POST['custom_fields'])) {
+			$field_data = $fm->getStrucutredDataFromForm($_POST['custom_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+
+			$field_form_data = $fm->createFieldDataFromArray($field_data);
+			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+		} else {
+			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+		}
+
 		$register = new \Application\UserBundle\Form\Model\Register();
+		$register->setCustomFields($fm->getFields());
 
 		if ($this->session->get('language_id')) {
 			$register->language_id = $this->session->get('language_id');
@@ -73,8 +90,10 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 		$errors = null;
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 			$form->bindRequest($this->get('request'));
+			$register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 
 			$validator = new \Application\UserBundle\Validator\RegisterValidator();
+			$validator->setCustomFields($fm->getFields());
 
 			$is_valid = $validator->isValid($register);
 
@@ -134,6 +153,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
 		return $this->render('UserBundle:Register:register.html.twig', array(
 			'form' => $form->createView(),
+			'custom_fields' => $custom_fields,
 			'errors' => $errors,
 			'error_fields' => $error_fields,
 			'from_ticket' => $from_ticket,
