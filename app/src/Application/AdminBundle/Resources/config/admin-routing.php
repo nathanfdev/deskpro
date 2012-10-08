@@ -884,6 +884,26 @@ $collection->add('admin_agents_groups_new', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_notifications', new Route(
+	'/agents/notifications',
+	array('_controller' => 'AdminBundle:Agents:notifications'),
+	array(),
+	array()
+));
+
+$collection->add('admin_agents_notifications_getagent', new Route(
+	'/agents/{person_id}/notifications/get-agent-options.json',
+	array('_controller' => 'AdminBundle:Agents:notificationsGet'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_notifications_saveagent', new Route(
+	'/agents/{person_id}/notifications/save-agent-options.json',
+	array('_controller' => 'AdminBundle:Agents:notificationsSave'),
+	array('person_id' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # Templates

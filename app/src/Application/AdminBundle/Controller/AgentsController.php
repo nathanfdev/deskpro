@@ -909,6 +909,105 @@ class AgentsController extends AbstractController
 	}
 
 	############################################################################
+	# notifications
+	############################################################################
+
+	public function notificationsAction()
+	{
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+
+		if ($this->in->getBool('process')) {
+			$this->ensureRequestToken();
+
+			$this->container->getDb()->delete('people_prefs', array('name' => 'agent_notif.no_allow_set_email'));
+			$this->container->getDb()->delete('people_prefs', array('name' => 'agent_notif.no_allow_set_browser'));
+
+			if ($this->in->getBool('core_tickets.disable_agent_notifications')) {
+				$this->container->getSettingsHandler()->setSetting('core_tickets.disable_agent_notifications', 1);
+				$this->container->getDb()->executeUpdate("DELETE FROM ticket_filter_subscriptions");
+			} else {
+				$this->container->getSettingsHandler()->setSetting('core_tickets.disable_agent_notifications', 0);
+				$allow_set_agent   = $this->in->getCleanValueArray('allow_set_email', 'uint');
+				$allow_set_browser = $this->in->getCleanValueArray('allow_set_browser', 'uint');
+
+				$insert_prefs = array();
+
+				foreach ($agents as $agent) {
+					if (!in_array($agent->getId(), $allow_set_agent)) {
+						$insert_prefs[] = array(
+							'person_id'   => $agent->getId(),
+							'name'        => 'agent_notif.no_allow_set_email',
+							'value_str'   => '1',
+							'value_array' => 'N;',
+							'date_expire' => null
+						);
+					}
+
+					if (!in_array($agent->getId(), $allow_set_browser)) {
+						$insert_prefs[] = array(
+							'person_id'   => $agent->getId(),
+							'name'        => 'agent_notif.no_allow_set_browser',
+							'value_str'   => '1',
+							'value_array' => 'N;',
+							'date_expire' => null
+						);
+					}
+				}
+
+				if ($insert_prefs) {
+					$this->container->getDb()->batchInsert('people_prefs', $insert_prefs);
+				}
+			}
+		}
+
+		$custom_filters = $this->em->getRepository('DeskPRO:TicketFilter')->getAllGlobalFilters();
+
+		$no_allow_set_email = $this->container->getDb()->fetchAllKeyValue("
+			SELECT person_id
+			FROM people_prefs
+			WHERE name = 'agent_notif.no_allow_set_email'
+		", array(), 0, 0);
+
+		$no_allow_set_browser = $this->container->getDb()->fetchAllKeyValue("
+			SELECT person_id
+			FROM people_prefs
+			WHERE name = 'agent_notif.no_allow_set_browser'
+		", array(), 0, 0);
+
+		return $this->render('AdminBundle:Agents:agent-notifications.html.twig', array(
+			'agents'               => $agents,
+			'no_allow_set_email'   => $no_allow_set_email,
+			'no_allow_set_browser' => $no_allow_set_browser,
+			'custom_filters'       => $custom_filters,
+		));
+	}
+
+	public function notificationsGetAction($person_id)
+	{
+		$agent = $this->getAgentOr404($person_id);
+
+		$prefs = $this->container->getDb()->fetchAll("
+			SELECT * FROM ticket_filter_subscriptions
+			WHERE person_id = ?
+		", array($agent->getId()));
+
+		return $this->createJsonResponse($prefs);
+	}
+
+	public function notificationsSaveAction($person_id)
+	{
+		$this->ensureRequestToken();
+
+		$agent = $this->getAgentOr404($person_id);
+
+		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
+		$person_editor = $this->container->getSystemService('person_edit_manager');
+		$person_editor->saveFilterSubscriptions($agent, $subs);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
 
 	/**
 	 * @return \Application\DeskPRO\Entity\AgentTeam
