@@ -225,9 +225,7 @@ class Basic implements CleanerPlugin
 		$string = Strings::removeInvisibleCharacters($string);
 
 		if ($this->use_utf_funcs) {
-			if (!Strings::utf8_is_valid($string)) {
-				$string = Strings::utf8_bad_strip($string);
-			}
+			$string = Strings::utf8_bad_strip($string);
 		}
 
 		return $string;
