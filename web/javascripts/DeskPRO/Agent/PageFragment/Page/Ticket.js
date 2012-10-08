@@ -305,7 +305,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
-
+		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
@@ -333,9 +333,26 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var new_messages = null;
 		if (data.ticket_messages_block) {
 			new_messages = $(data.ticket_messages_block);
-			var self = this;
-			new_messages.appendTo($(this.getEl('messages_wrap')));
-			this._initMessage(new_messages);
+
+			var any = false;
+			if (new_messages.hasClass('message')) {
+				if (!this.getEl('messages_wrap').find('.message-' + new_messages.data('message-id'))[0]) {
+					any = true;
+				}
+			} else {
+				new_messages.find('.message').each(function() {
+					if (self.getEl('messages_wrap').find('.message-' + $(this).data('message-id'))[0]) {
+						$(this).hide();
+					} else {
+						any = true;
+					}
+				});
+			}
+
+			if (any) {
+				new_messages.appendTo($(this.getEl('messages_wrap')));
+				this._initMessage(new_messages);
+			}
 		}
 
 		if (data.updated_agent_parts_html) {
@@ -364,7 +381,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	displayNewMessage: function(html, slideCallback) {
+		var self = this;
 		var new_message = $(html).hide();
+
+		if (new_message.data('message-id')) {
+			if (this.getEl('messages_wrap').find('.message-' + new_message.data('message-id'))[0]) {
+				return;
+			}
+		} else {
+			var any = false;
+			new_message.find('.message').each(function() {
+				if (self.getEl('messages_wrap').find('.message-' + $(this).data('message-id'))[0]) {
+					$(this).hide();
+				} else {
+					any = true;
+				}
+			});
+
+			if (!any) {
+				slideCallback();
+				return;
+			}
+		}
 
 		slideCallback = slideCallback || function(){};
 
@@ -566,7 +604,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: { since: last_id },
 			dataType: 'json',
 			success: function(data) {
-
 				Array.each(data.messages, function (html) {
 					this.displayNewMessage(html);
 				}, this);
