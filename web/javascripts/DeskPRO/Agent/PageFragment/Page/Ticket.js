@@ -883,9 +883,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					},
 					success: function() {
 						self.messageEditOverlay.close();
-						var messageHtml = Orb.escapeHtml(postData.message_text);
-						messageHtml = messageHtml.replace(/\n|\r\n|\r/g, '<br />');
-
+						var messageHtml = postData.message_html;
 						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text').html(messageHtml);
 					}
 				});
