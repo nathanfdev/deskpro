@@ -653,10 +653,25 @@ class FilestorageLoader
 		$check_namehash .= strtoupper(substr(md5($filename . $blob_id), 0, 3));
 
 		// Invalid hash, or the file doesnt exist on disk
-		if ($check_namehash != $namehash || !file_exists($filepath)) {
+		if (!file_exists($filepath)) {
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found. (2)";
 			return;
+		}
+
+		// Invalid name hash
+		// But we have to double-check before failing since the filename could
+		// possibly be custom in the case of downloads
+		if ($check_namehash != $namehash) {
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth->execute(array('id' => $blob_id));
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$blob || $blob['filename'] != $filename) {
+				header("HTTP/1.0 404 Not Found");
+				echo "File not found. (2.1)";
+				return;
+			}
 		}
 
 		$mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
