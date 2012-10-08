@@ -41,7 +41,7 @@ class DisplayEvent extends DataEvent implements FilterPluginInterface
 {
 	protected $field_def;
 
-	public function __construct($field_def, array $data = array())
+	public function __construct($field_def, $data = array())
 	{
 		parent::__construct($data);
 		$this->field_def = $field_def;

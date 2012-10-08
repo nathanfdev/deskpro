@@ -242,7 +242,7 @@ abstract class HandlerAbstract
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	public function renderHtml(array $data = null, array $template_vars = array())
+	public function renderHtml($data = null, array $template_vars = array())
 	{
 		if ($data === null) $data = array();
 
@@ -264,7 +264,7 @@ abstract class HandlerAbstract
 	/**
 	 * Render the field
 	 */
-	public function renderText(array $data = null, array $template_vars = array())
+	public function renderText($data = null, array $template_vars = array())
 	{
 		if ($data === null) $data = array();
 
@@ -324,7 +324,7 @@ abstract class HandlerAbstract
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function renderContext($context, array $data)
+	public function renderContext($context, $data)
 	{
 		switch ($context) {
 			case self::CONTEXT_HTML:
@@ -349,7 +349,7 @@ abstract class HandlerAbstract
 	 *
 	 * @return Symfony\Component\Form\Field
 	 */
-	abstract public function getFormField(array $data = null);
+	abstract public function getFormField($data = null);
 
 
 

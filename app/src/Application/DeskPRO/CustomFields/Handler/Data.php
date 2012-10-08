@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  */
 class Data extends HandlerAbstract
 {
-	public function getFormField(array $data = null)
+	public function getFormField($data = null)
 	{
 		$setData = null;
 		if ($data AND !empty($data['value'])) {
@@ -57,7 +57,7 @@ class Data extends HandlerAbstract
 		return $field;
 	}
 
-	function getDataFromForm(array $form_data)
+	function getDataFromForm($form_data)
 	{
 		if (isset($form_data[$this->getFormFieldName()])) {
 			return array(

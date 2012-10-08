@@ -48,7 +48,7 @@ class DataEvent extends Event
 	 */
 	protected $data = array();
 
-	public function __construct(array $data = array())
+	public function __construct($data = array())
 	{
 		$this->data = $data;
 	}

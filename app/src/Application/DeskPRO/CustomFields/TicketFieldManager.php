@@ -53,7 +53,7 @@ class TicketFieldManager extends FieldManager
 
 		if (isset($all_display_data[$field_def->id])) {
 			$handler = $all_display_data[$field_def->id]['handler'];
-			$old_value = $handler->renderText($all_display_data[$field_def->id]['value'], $all_display_data[$field_def->id]);
+			$old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
 
 			if ($old_value) {
 				$old_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($old_value)));
@@ -66,7 +66,7 @@ class TicketFieldManager extends FieldManager
 		if ($return) {
 			$all_display_data = $this->getDisplayArrayForObject($ticket);
 			$handler = $all_display_data[$field_def->id]['handler'];
-			$new_value = $handler->renderText($all_display_data[$field_def->id]['value'], $all_display_data[$field_def->id]);
+			$new_value = $handler->renderText($all_display_data[$field_def->id]['value']);
 			if ($new_value) {
 				$new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
 			}

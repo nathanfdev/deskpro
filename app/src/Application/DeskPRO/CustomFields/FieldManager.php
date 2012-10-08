@@ -213,49 +213,8 @@ class FieldManager
 
 		$custom_fields = array();
 		foreach ($this->getFields() as $f_def) {
-			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
-			if (!$value && $use_default && $f_def->default_value) {
-				if ($f_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-					$value = array('children' => array($f_def->default_value => array('value' => 1)));
-				} else {
-					$value = array('value' => $f_def->default_value);
-				}
-
-			}
-			if (!$f_def->isFormField()) {
-				$value = array();
-			}
-
-			$f = $f_def->getHandler()->getFormField($value);
-
-			$name = 'field_' . $f_def['id'];
-
-			if ($field_group) {
-				$field_group->add($f);
-				$form = $field_group->getForm();
-				$formView = $form->createView();
-				$formView = $formView[$name];
-			} else {
-				$form = $f->getForm();
-				$formView = $form->createView();
-			}
-
-			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
-			if ($rendered) $has_value = true;
-
-			$custom_fields[$f_def['id']] = array(
-				'elId'            => \Orb\Util\Util::requestUniqueIdString(),
-				'hasValue'        => ($value !== null),
-				'id'              => $f_def['id'],
-				'name'            => 'field_' . $f_def['id'],
-				'handler'         => $f_def->getHandler(),
-				'field_def'       => $f_def,
-				'title'           => $f_def['title'],
-				'form'            => $form,
-				'formView'        => $formView,
-				'value'           => $value,
-				'field_handler'   => strtolower(\Orb\Util\Util::getBaseClassname($f_def->getHandler())),
-			);
+			$display = new FieldDisplayArray($this, $f_def, $field_data, $field_group, $use_default);
+			$custom_fields[$f_def['id']] = $display;
 		}
 
 		return $custom_fields;

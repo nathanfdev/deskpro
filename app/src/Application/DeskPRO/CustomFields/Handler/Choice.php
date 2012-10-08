@@ -51,7 +51,7 @@ class Choice extends HandlerAbstract
 		$this->expanded = $this->field_def->getOption('expanded', false);
 	}
 
-	public function renderHtml(array $data = null, array $template_vars = array())
+	public function renderHtml($data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
 
@@ -59,7 +59,7 @@ class Choice extends HandlerAbstract
 		return parent::renderText($data, $template_vars);
 	}
 
-	public function renderText(array $data = null, array $template_vars = array())
+	public function renderText($data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
 
@@ -96,7 +96,7 @@ class Choice extends HandlerAbstract
 		return $val;
 	}
 
-	public function getFormField(array $data = null)
+	public function getFormField($data = null)
 	{
 		$options = array();
 		$has_other = false;

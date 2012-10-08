@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity;
  */
 class TextEmail extends Text
 {
-	public function renderHtml(array $data = null)
+	public function renderHtml($data = null)
 	{
 		if ($data === null) return '';
 

@@ -773,7 +773,12 @@ class TemplatingExtension extends \Twig_Extension
 	public function renderCustomField($display_array, array $vars = array())
 	{
 		$handler = $display_array['handler'];
+
+		if (is_object($display_array)) {
+			$display_array = $display_array->toArray();
+		}
 		$vars = array_merge($display_array, $vars);
+
 		return $handler->renderHtml($display_array['value'], $vars);
 	}
 
@@ -782,6 +787,9 @@ class TemplatingExtension extends \Twig_Extension
 		$handler = $display_array['handler'];
 		$formView = $display_array['formView'];
 
+		if (is_object($display_array)) {
+			$display_array = $display_array->toArray();
+		}
 		$vars = array_merge($display_array, $vars);
 
 		return $handler->renderFormHtml($formView, $vars);
@@ -790,7 +798,12 @@ class TemplatingExtension extends \Twig_Extension
 	public function renderCustomFieldText($display_array, array $vars = array())
 	{
 		$handler = $display_array['handler'];
+
+		if (is_object($display_array)) {
+			$display_array = $display_array->toArray();
+		}
 		$vars = array_merge($display_array, $vars);
+
 		return $handler->renderText($display_array['value'], $vars);
 	}
 

@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  */
 class Display extends HandlerAbstract
 {
-	public function getFormField(array $data = null)
+	public function getFormField($data = null)
 	{
 		$setData = '';
 		$field = App::getFormFactory()->createNamedBuilder('hidden', $this->getFormFieldName(), $setData, array('required' => false));

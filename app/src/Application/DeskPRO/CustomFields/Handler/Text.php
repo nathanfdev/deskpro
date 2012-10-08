@@ -43,7 +43,7 @@ use Orb\Util\Strings;
  */
 class Text extends HandlerAbstract
 {
-	public function getFormField(array $data = null)
+	public function getFormField($data = null)
 	{
 		$setData = null;
 		if ($data AND !empty($data['value'])) {
