@@ -534,7 +534,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getOptionScale()
 	{
-		if (!$this->event_trigger_options['time'] || strpos($this->event_trigger_options['time'], ' ') === false) {
+		if (!isset($this->event_trigger_options['time']) || !$this->event_trigger_options['time'] || strpos($this->event_trigger_options['time'], ' ') === false) {
 			return 'seconds';
 		}
 
