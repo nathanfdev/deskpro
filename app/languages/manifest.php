@@ -28,7 +28,7 @@
 	'danish' => array(
 		'id'         => 'danish',
 		'lang_code'  => 'eng',
-		'title'      => 'dan',
+		'title'      => 'Danish',
 		'locale'     => 'da',
 		'flag_image' => 'dk.png',
 		'is_rtl'     => false,
