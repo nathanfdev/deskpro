@@ -269,6 +269,9 @@ class AgentNotificationAction extends AbstractAction
 		// But we call now so getting the diff for the email is easier, same logic as logs
 		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogs();
 
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
 		foreach ($this->notify_agents as $agent_id) {
 
 			// Dont send an update notification to the agent for agent replies made by themselves
@@ -323,7 +326,8 @@ class AgentNotificationAction extends AbstractAction
 				'action_performer'   => App::getCurrentPerson(),
 				'ticket_logs'        => $ticket_logs,
 				'new_message'        => $new_message,
-				'agent'              => $agent
+				'agent'              => $agent,
+				'custom_fields'      => $custom_fields,
 			);
 
 			if (isset($this->notify_info[$agent->id]) && $this->notify_info[$agent->id]) {

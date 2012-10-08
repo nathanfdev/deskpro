@@ -59,4 +59,14 @@
 			{{ phrase( 'agent.tickets.status_' ~ ticket.status) }}
 		</td>
 	</tr>
+	{% for f in custom_fields %}
+		{% if ticket.hasCustomField(f.id) %}
+			<tr>
+				<td class="dp-th-heading">{{ f.title }}</td>
+				<td>
+					{{ render_custom_field(f) }}
+				</td>
+			</tr>
+		{% endif %}
+	{% endfor %}
 </table>
