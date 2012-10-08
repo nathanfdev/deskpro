@@ -458,7 +458,7 @@ class PersonSearch extends SearcherAbstract
 						case self::OP_NOT:
 							$joins[] = array(
 								'labels_people',
-								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = '.$db->quote($choice).')"
+								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).")"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;

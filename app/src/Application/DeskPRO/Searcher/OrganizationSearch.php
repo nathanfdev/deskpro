@@ -294,7 +294,7 @@ class OrganizationSearch extends SearcherAbstract
 						case self::OP_NOT:
 							$joins[] = array(
 								'labels_organizations',
-								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = '.$db->quote($choice).')"
+								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).")"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
