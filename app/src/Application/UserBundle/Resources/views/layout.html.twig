@@ -231,7 +231,9 @@
 			<ul>
 				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.portal.search.new-ticket') }}</a></li>
 				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.portal.search.new-feedback') }}</a></li>
-				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.portal.search.new-chat') }}</a></li>
+				{% if not app.getSetting('user.disable_chat_element') and not app.admin_portal_controls and app.user.hasPerm('chat.use') %}
+					<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.portal.search.new-chat') }}</a></li>
+				{% endif %}
 			</ul>
 		</div>
 	</div>
