@@ -927,6 +927,29 @@
 {% endif %}
 {% endfor %}
 
+<div class="builder-type" title="{{ phrase('agent.general.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			{% if event_trigger_master == 'update' %}
+				<option value="changed">{{ phrase('agent.general.changed') }}</option>
+				<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+				<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+				<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+				<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+			{% endif %}
+		</select>
+	</div>
+	<div class="builder-options">
+		<select name="status[]" multiple="multiple">
+			<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+			<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+			<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+		</select>
+	</div>
+</div>
+
 <div class="builder-type" title="Created on day" data-rule-type="day_created" data-rule-group="Ticket">
 	<div class="builder-op">
 		<select name="op" class="op">
