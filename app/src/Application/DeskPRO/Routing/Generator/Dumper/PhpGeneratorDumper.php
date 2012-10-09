@@ -57,6 +57,8 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 		$pos = strrpos($class, '}');
 		$class = Strings::inject("\n" . $method_code . "\n", $class, $pos);
 
+		$class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
+
 		return $class;
 	}
 

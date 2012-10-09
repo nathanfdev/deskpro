@@ -40,6 +40,7 @@ use Application\DeskPRO\Routing\Generator\ObjectUrlGenerator;
 use Orb\Util\Strings;
 
 use Application\DeskPRO\App;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * This URL generator sets a default _locale part with the current Translator locale.
@@ -47,6 +48,16 @@ use Application\DeskPRO\App;
 class UrlGenerator extends BaseUrlGenerator
 {
 	protected $object_url_generator = null;
+
+	public function setContext(RequestContext $context)
+    {
+		if (DP_INTERFACE == 'cli' && !$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#/index\.php/#', $context->getBaseUrl())) {
+			$base = $context->getBaseUrl() . '/index.php';
+			$context->setBaseUrl($base);
+		}
+
+        $this->context = $context;
+    }
 
 	/**
 	 * This is like generate() except it returns JUST the route. Nothing to do with the current base
