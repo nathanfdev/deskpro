@@ -35,23 +35,27 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
+use Orb\Util\Dates;
 
 class AgentHoursController extends AbstractController
 {
     public function indexAction()
     {
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
-        $dt->setTime(0, 0, 0);
+        $dt = $this->person->getDateTime();
+
         $vars = $this->getVarsForDate($dt);
         return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
 
     public function listAction($date)
     {
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
         list($year, $month, $day) = explode('-', $date);
-        $dt->setDate($year, $month, $day);
-        $dt->setTime(0, 0, 0);
+
+		$dt = new \DateTime();
+		$dt->setTimezone($this->person->getDateTimezone());
+		$dt->setDate($year, $month, $day);
+		$dt->setTime(0,0,0);
+
         $vars = $this->getVarsForDate($dt);
         return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
@@ -59,12 +63,14 @@ class AgentHoursController extends AbstractController
     private function getVarsForDate($date)
     {
         $db = $this->db;
-        $start_date = $date->setTimezone($this->person->getDateTimezone());
+
+        $start_date = clone $date;
+		$start_date->setTimezone(new \DateTimeZone('UTC'));
 
         $end_date = clone $start_date;
         $end_date->add(new \DateInterval('P1D'));
-        // Remove a single second to stop overlap.
-        $end_date->sub(new \DateInterval('PT1S'));
+        $end_date->sub(new \DateInterval('PT1S')); // Remove a single second to stop overlap.
+
         $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
 
         $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE date_active BETWEEN ? AND ?', $date_range);
