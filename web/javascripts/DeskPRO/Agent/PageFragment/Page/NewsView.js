@@ -13,6 +13,13 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
+		DeskPRO_Window.recentTabs.add(
+			'news',
+			this.meta.news_id,
+			this.meta.title,
+			BASE_URL + 'agent/news/post/' + this.meta.news_id
+		);
+
 		this.news_id = this.getMetaData('news_id');
 
 		this._initBasic();

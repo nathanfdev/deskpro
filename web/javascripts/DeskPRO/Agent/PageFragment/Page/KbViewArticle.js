@@ -13,6 +13,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
+		DeskPRO_Window.recentTabs.add(
+			'article',
+			this.meta.article_id,
+			this.meta.title,
+			BASE_URL + 'agent/kb/article/' + this.meta.article_id
+		);
+
 		this.article_id = this.getMetaData('article_id');
 
 		this._initBasic();

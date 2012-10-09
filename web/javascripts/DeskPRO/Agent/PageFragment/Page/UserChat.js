@@ -13,6 +13,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var OBJ_ID = this.OBJ_ID;
 		this.el = el;
 
+		DeskPRO_Window.recentTabs.add(
+			'userchat',
+			this.meta.conversation_id,
+			this.meta.title,
+			BASE_URL + 'agent/chat/view/' + this.meta.conversation_id
+		);
+
 		if (!this.meta.isEnded) {
 			var messageTextarea = this.getEl('replybox_txt');
 

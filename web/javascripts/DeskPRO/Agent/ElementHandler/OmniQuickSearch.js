@@ -12,6 +12,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		this.reqInCount = 0;
 
 		var self = this;
+		window.DP_OMNI_QUICK_SEARCH = this;
 
 		$(window).on('resize', function() {
 			if (!self._isOpen) return;
@@ -42,6 +43,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 			if (!self.el.val().trim().length) {
 				self.clearAll();
+				self.close();
 				return;
 			}
 
@@ -55,6 +57,8 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 					self.updateCallerQuick.touch($(this).val());
 					self.updateCallerSearch.touch($(this).val());
 				}
+			} else {
+				self.clearAll();
 			}
 		}).on('blur', function(ev) {
 			self.blurTimeout = window.setTimeout(function() { self.close(); },  300);
@@ -315,7 +319,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			this.clear();
 		}
 
-		if (!results) {
+		if (!results || !this.el.val().trim()) {
 			this.close();
 			return;
 		}
@@ -440,9 +444,9 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			this.cancelClose = false;
 			return;
 		}
-		if (!this._isOpen) return;
-		this._isOpen = false;
 		this.resultWrap.hide();
 		this.backdropEl.hide();
+		if (!this._isOpen) return;
+		this._isOpen = false;
 	}
 });

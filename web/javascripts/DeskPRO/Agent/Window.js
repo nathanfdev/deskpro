@@ -2372,6 +2372,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.tabWatcher.addTabTypeWatcher('ticket', new DeskPRO.Agent.WindowElement.TabWatcher.Tickets());
+
+		this.recentTabs = new DeskPRO.Agent.RecentTabs();
 	},
 
 	_initInterfaceServices: function() {

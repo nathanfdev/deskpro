@@ -220,6 +220,20 @@
 	</script>
 </div>
 
+<div id="dp_recent_list" style="display: none">
+	<section class="section {TYPE} section-{TYPE}">
+		<header>
+			RECENTLY VIEWED
+		</header>
+		<article>
+			<ul class="result-list"></ul>
+		</article>
+	</section>
+	<script type="text/x-deskpro-plain" id="dp_recent_list_row">
+		<li class="result-item {TYPE}-{ID}"><span class="prop-id">{ID}</span> <label>{TITLE}</label></li>
+	</script>
+</div>
+
 <div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
 	<div class="header-section">
 		<span id="omnisearch_reset">{{ phrase('agent.interface.reset_form') }}</span>

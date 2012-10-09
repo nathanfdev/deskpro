@@ -20,6 +20,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
 
+		DeskPRO_Window.recentTabs.add(
+			'org',
+			this.meta.org_id,
+			this.meta.title,
+			BASE_URL + 'agent/organizations/' + this.meta.org_id
+		);
+
 		if (this.tabBtn) {
 			if (this.getMetaData('orgPicIcon')) {
 				this.tabBtn.find('a').css('background-image', 'url(' + this.getMetaData('orgPicIcon') + ')').css('background-position', '2px 50%');

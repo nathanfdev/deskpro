@@ -22,6 +22,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.zIndex = 30001;
 
+		DeskPRO_Window.recentTabs.add(
+			'person',
+			this.meta.person_id,
+			this.meta.title,
+			BASE_URL + 'agent/people/' + this.meta.person_id
+		);
+
 		var self = this;
 
 		var cw = this.contentWrapper;

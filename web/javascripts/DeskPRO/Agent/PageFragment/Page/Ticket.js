@@ -24,6 +24,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		this.getEl('replybox_wrap').data('page', this);
 
+		DeskPRO_Window.recentTabs.add(
+			'tickets',
+			this.meta.ticket_id,
+			this.meta.title,
+			BASE_URL + 'agent/tickts/' + this.meta.ticket_id
+		);
+
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {
 			// Never actually submit the form (would load a new page)
