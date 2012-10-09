@@ -20,6 +20,8 @@
 	&middot; Changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_organization' %}
 	&middot; Changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
+{% elseif log.action_type == 'changed_subject' %}
+	&middot; Changed subject to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_person' %}
 	&middot; Changed person to {{log.details.new_person_name}}
 {% elseif log.action_type == 'message_created' %}

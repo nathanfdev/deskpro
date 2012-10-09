@@ -120,7 +120,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<span id="{{ baseId }}_id_num">#{{ ticket.id }}</span>
 				<span id="{{ baseId }}_ref_num" style="display: none;">Ref: {{ ticket.ref }}</span>
 			</h4>
-			<h1>{{ ticket.subject }}</h1>
+			<h1>
+				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
+				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
+				{% if ticket_perms.modify_fields %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
+				<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+			</h1>
 			<div class="labels-line">
 				{% if ticket_perms.modify_labels or ticket.labels|length %}
 					<input

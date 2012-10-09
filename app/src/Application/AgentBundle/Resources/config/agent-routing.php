@@ -1075,6 +1075,13 @@ $collection->add('agent_ticket_ajaxsavereply', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_ajaxsavesubject', new Route(
+	'/tickets/{ticket_id}/ajax-save-subject.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxSaveSubject'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_ajaxsaveoptions', new Route(
 	'/tickets/{ticket_id}/ajax-save-options',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveOptions'),

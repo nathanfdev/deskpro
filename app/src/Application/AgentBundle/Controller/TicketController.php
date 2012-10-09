@@ -1427,6 +1427,31 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function ajaxSaveSubjectAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_fields');
+
+		$subject = $this->in->getString('subject');
+
+		if (!$subject) {
+			$subject = App::getTranslator()->getPhraseText('user.tickets.no_subject');
+		}
+
+		$ticket->subject = $subject;
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($ticket);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	############################################################################
 	# ajax-get-macro-actions
 	############################################################################
