@@ -1750,7 +1750,7 @@ class TicketController extends AbstractController
 		$open_tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($this->in->getCleanValueArray('open_ticket_ids', 'uint', 'discard'));
 
 		$fn = function ($t) use ($ticket) {
-			if ($t['id'] == $ticket['id'] or $t->person->getId() != $ticket->person->getId()) {
+			if ($t['id'] == $ticket['id']) {
 				return false;
 			}
 			return true;

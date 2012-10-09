@@ -106,6 +106,9 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 		$old_id = $this->other_ticket->getId();
 
+		$ticket_person       = $this->ticket->person;
+		$other_ticket_person = $this->other_ticket->person;
+
 		// Old tikcet set to deleted so proper CM's are sent
 		$old_status = $this->other_ticket->getStatusCode();
 		$this->other_ticket->getTicketLogger()->recordExtra('bare_delete', 1);
@@ -167,6 +170,14 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$prop_field->setField($f);
 				$prop_field->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
 				$prop_field->merge();
+			}
+
+			// If they're different users, then add the old person as a participant on the ticket
+			if ($ticket_person->getId() != $other_ticket_person->getId()) {
+				$part = $this->ticket->addParticipantPerson($ticket_person);
+				if (!$part->getId()) {
+					$this->em->persist($part);
+				}
 			}
 
 			$ticket_del = new TicketDeleted();
