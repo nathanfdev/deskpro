@@ -304,7 +304,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/merge-overlay/' + otherPersonId
 					},
 					// Above floating people windows
-					zIndex: 40001
+					zIndex: 40000
 				});
 
 				var initOverlay = function() {
