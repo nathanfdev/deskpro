@@ -78,7 +78,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface
 			$agent_id = $this->person_context['id'];
 		}
 
-		$ticket['agent_id'] = $this->agent_id;
+		$ticket['agent_id'] = $agent_id;
 	}
 
 
