@@ -20,7 +20,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for dep in departments %}
+				{% for dep in departments if dep.is_tickets_enabled %}
 					<tr>
 						{% if dep.children|length %}
 							<td class="title title-group">{{ dep.title }}</td>
@@ -55,7 +55,9 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for dep in departments %}
+				{% set with_chat = false %}
+				{% for dep in departments if dep.is_chat_enabled %}
+					{% set with_chat = true %}
 					<tr>
 						{% if dep.children|length %}
 							<td class="title title-group">{{ dep.title }}</td>
@@ -74,6 +76,10 @@
 						{% endfor %}
 					{% endif %}
 				{% endfor %}
+				{% if not with_chat %}
+					You have no chat departments. Users will not be able to create chats until you
+					create at least one. <a href="{{ path('admin_departments') }}">Click here to manage departments</a>.
+				{% endif %}
 			</tbody>
 		</table>
 	</div>
