@@ -1691,11 +1691,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		if (xhr && xhr.status && xhr.status == '403' && (!data.error || data.error != 'session_expired')) {
-			this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
-			return;
-		}
-
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
@@ -1713,6 +1708,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			data = $.parseJSON(data);
 		} catch (e) {
 			data = null;
+		}
+
+		if (xhr && xhr.status && xhr.status == '403' && (!data || !data.error || data.error != 'session_expired')) {
+			this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+			return;
 		}
 
 		if (xhr && xhr.status && xhr.status == '403') {
