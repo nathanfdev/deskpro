@@ -169,7 +169,7 @@ class UsersourcesStep extends AbstractDeskpro3Step
 			# LDAP => Dp3Ldap
 			#---
 
-			case 'Ldap':
+			case 'LDAP':
 
 				$new_usersource->source_type = 'dp3_ldap';
 				$new_usersource->options = array(
