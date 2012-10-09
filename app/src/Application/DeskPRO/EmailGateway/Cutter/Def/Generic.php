@@ -247,9 +247,9 @@ class Generic implements ForwardDef, QuoteDef
 
 				// Try to detect '=== REPLY ABOVE THIS LINE ===' bits
 				if (!$is_html) {
-					$langs = App::getSystemService('Language')->getAll();
+					$langs = App::getDataService('Language')->getAll();
 					foreach ($langs as $l) {
-						$line = '=== ' . App::getTranslator()->getPhraseText('agent.emails.reply_above_line') . ' ===';
+						$line = '=== ' . App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l) . ' ===';
 						$pos = strpos($body, $line);
 						if ($pos !== false) {
 							break;
