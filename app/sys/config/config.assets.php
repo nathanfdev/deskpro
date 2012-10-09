@@ -90,10 +90,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 		'vendor/jquery/fileupload/jquery.iframe-transport.js',
 
-		'vendor/jquery/tipped/js/excanvas/excanvas.js',
-		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/tipped.js',
-
+		'vendor/jquery/qtip/jquery.qtip.min.js',
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/tinycon/tinycon.min.js',
 
@@ -676,7 +673,7 @@ $CONFIG['agent_vendors_css'] = array(
 	'filters' => array('css_path'),
 	'files' => array(
 		'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
-		'vendor/jquery/tipped/css/tipped.css',
+		'vendor/jquery/qtip/jquery.qtip.min.css',
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/token-field/token-field.css',
 		'vendor/select2/select2.css'

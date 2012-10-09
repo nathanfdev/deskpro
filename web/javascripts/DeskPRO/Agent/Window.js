@@ -329,10 +329,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 				});
 
-				$(el).on('click', function() {
-					try { Tipped.hideAll(); } catch (e) {}
-				});
-
 				return $(el).fileupload(options);
 			},
 
@@ -370,6 +366,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initPage: function() {
 
+		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
 			// if a drop target isnt configured yet (ie no tab open to accept a file)
@@ -2504,21 +2501,46 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, 60);
 
 		window.setTimeout(function() {
-			$(context).on('mouseover', '.tipped', function() {
+			$(context).on('mouseover', '.tipped', function(ev) {
 				if ($(this).is('.tipped-inited')) {
 					return;
 				}
+
 				var options = {};
 				if ($(this).data('tipped-options')) {
 					eval('options = {' + $(this).data('tipped-options') + '}');
 				}
 
-				Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+				qtipOptions = {};
+				if ($(this).data('tipped')) {
+					qtipOptions.content = {
+						attr: 'data-tipped'
+					};
+				} else {
+					qtipOptions.content = {
+						attr: 'title'
+					};
+				}
 
-				$(this).on('click', function(ev) {
-					try { Tipped.hideAll(); } catch (e) {}
-				});
+				if (options.inline) {
+					qtipOptions.content.attr = null;
+					var el = $('#' + $(this).data('tipped'));
+					qtipOptions.content.text = function() {
+						return el.html();
+					};
+				}
 
+				qtipOptions.style = {
+					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
+				};
+
+				qtipOptions.position = {
+					my: 'top center',
+					at: 'bottom center',
+					viewport: $(window)
+				};
+
+				$(this).qtip(qtipOptions).qtip('show', ev);
 				$(this).addClass('tipped-inited');
 			});
 		}, 80);

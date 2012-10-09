@@ -150,58 +150,45 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		$(document).on('mouseover', '.tipped', function() {
 			if ($(this).is('.tipped-inited')) {
-				return;
-			}
-			var options = {};
-			if ($(this).data('tipped-options')) {
-				eval('options = {' + $(this).data('tipped-options') + '}');
-			}
+					return;
+				}
 
-			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
-			$(this).addClass('tipped-inited');
-		});
+				var options = {};
+				if ($(this).data('tipped-options')) {
+					eval('options = {' + $(this).data('tipped-options') + '}');
+				}
 
-		jQuery.extend(Tipped.Skins, {
-			'dperror' : {
-				border: { size: 1, color: '#CF2020' },
-				background: '#F3DDDE',
-				radius: { size: 1, position: 'border' },
-				shadow: true,
-				closeButtonSkin: 'light'
-			}
-		});
-		$('.tipped-click').each(function() {
-			var target = $(this);
-			if (target.data('tipped-target')) {
-				target = target.find(target.data('tipped-target'));
-			}
+				qtipOptions = {};
+				if ($(this).data('tipped')) {
+					qtipOptions.content = {
+						attr: 'data-tipped'
+					};
+				} else {
+					qtipOptions.content = {
+						attr: 'title'
+					};
+				}
 
-			if (target.is('.tipped-inited')) {
-				return;
-			}
-			var options = {};
-			if ($(this).data('tipped-options')) {
-				eval('options = {' + $(this).data('tipped-options') + '}');
-			}
-			options.showOn = false;
-			options.hideOn = 'click-outside';
+				if (options.inline) {
+					qtipOptions.content.attr = null;
+					var el = $('#' + $(this).data('tipped'));
+					qtipOptions.content.text = function() {
+						return el.html();
+					};
+				}
 
-			var id = target.attr('id');
-			if (!id) {
-				id = Orb.getUniqueId('tipped');
-				target.attr('id', id);
-			}
+				qtipOptions.style = {
+					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
+				};
 
-			Tipped.create('#' + id, $(this).data('tipped') || $(this).attr('title'), options);
-			$(this).attr('title', '');
-			target.addClass('tipped-inited');
+				qtipOptions.position = {
+					my: 'top center',
+					at: 'bottom center',
+					viewport: $(window)
+				};
 
-			target.on('click', function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				ev.stopImmediatePropagation();
-				Tipped.show('#' + id);
-			});
+				$(this).qtip(qtipOptions).qtip('show', ev);
+				$(this).addClass('tipped-inited');
 		});
 
 		$(document).on('click', '.click-go', function(ev) {
