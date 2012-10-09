@@ -1762,6 +1762,62 @@ class TicketController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# change-user
+	############################################################################
+
+	public function changeUserOverlayAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+
+		return $this->render('AgentBundle:Ticket:change-user-overlay.html.twig', array(
+			'ticket' => $ticket,
+		));
+	}
+
+	public function changeUserOverlayPreviewAction($ticket_id, $new_person_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+		$new_person = $this->em->find('DeskPRO:Person', $new_person_id);
+		if (!$new_person) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->render('AgentBundle:Ticket:change-user-overlay-preview.html.twig', array(
+			'ticket'     => $ticket,
+			'new_person' => $new_person
+		));
+	}
+
+	public function changeUserAction($ticket_id, $new_person_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+
+		$old_person = $ticket->person;
+		$new_person = $this->em->find('DeskPRO:Person', $new_person_id);
+		if (!$new_person) {
+			throw $this->createNotFoundException();
+		}
+
+		$ticket->person = $new_person;
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($ticket);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'ticket_id' => $ticket['id'],
+			'old_person_id' => $old_person->getId(),
+			'new_person_id' => $new_person->getId()
+		));
+	}
 
 	############################################################################
 	# merge

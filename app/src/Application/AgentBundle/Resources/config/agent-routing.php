@@ -1005,6 +1005,27 @@ $collection->add('agent_ticket_merge', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_changeuser_overlay', new Route(
+	'/tickets/{ticket_id}/change-user-overlay',
+	array('_controller' => 'AgentBundle:Ticket:changeUserOverlay'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_changeuser_overlay_preview', new Route(
+	'/tickets/{ticket_id}/change-user-overlay/preview/{new_person_id}',
+	array('_controller' => 'AgentBundle:Ticket:changeUserOverlayPreview'),
+	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_changeuser', new Route(
+	'/tickets/{ticket_id}/change-user/{new_person_id}',
+	array('_controller' => 'AgentBundle:Ticket:changeUser'),
+	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_snippetviewer', new Route(
 	'/tickets/{ticket_id}/snippet-viewer',
 	array('_controller' => 'AgentBundle:Ticket:snippetsViewer'),
@@ -1076,7 +1097,7 @@ $collection->add('agent_ticket_ajaxsavereply', new Route(
 ));
 
 $collection->add('agent_ticket_ajaxsavesubject', new Route(
-	'/tickets/{ticket_id}/ajax-save-subject.json',
+	'/tickets/{ticket_id}/ajax-save-subject',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveSubject'),
 	array('ticket_id' => '\\d+'),
 	array()

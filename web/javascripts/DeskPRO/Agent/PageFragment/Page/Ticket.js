@@ -119,6 +119,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				mergeOverlay.open();
 			});
 
+			this.getEl('changeuser_trigger').on('click', function() {
+				var changeUserOverlay = new DeskPRO.Agent.Widget.TicketChangeUser({
+					ticketId: self.getMetaData('ticket_id'),
+					destroyOnClose: true,
+					onSuccess: function(data) {
+						self.closeSelf();
+						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+						changeUserOverlay.close();
+					}
+				});
+				changeUserOverlay.open();
+			});
+
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 		}
 

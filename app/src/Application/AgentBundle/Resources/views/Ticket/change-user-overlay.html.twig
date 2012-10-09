@@ -1,0 +1,39 @@
+<div class="ticket-merge overlay">
+	<div class="overlay-title">
+		<h4>Change User</h4>
+	</div>
+
+	<div class="overlay-content">
+		<form>
+			<div
+				class="person-finder"
+				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+			>
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li><a>
+						<span class="user-name"></span>
+						<address>&lt;<span class="user-email"></span>&gt;</address>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="input-wrapper">
+					<input type="text" style="width: 98%" class="term" placeholder="Find person..." class="user-input" />
+				</div>
+				<input type="hidden" name="person_id" class="person-id" value="" />
+				<div class="person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+					</section>
+				</div>
+			</div>
+		</form>
+
+		<div class="person-preview-content"></div>
+	</div>
+</div>

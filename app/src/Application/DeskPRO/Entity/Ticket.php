@@ -1217,6 +1217,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($person->organization) {
 			$this['organization'] = $person->organization;
 		}
+
+		if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
+			$this['person_email'] = null;
+		}
 	}
 
 	public function getPersonEmail()

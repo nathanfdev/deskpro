@@ -209,6 +209,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
 						</div>
 						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
+						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_changeuser_trigger"><span>Change User</span></a>{% endif %}
 						<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 						{% if ticket_perms.delete %}
 							{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
