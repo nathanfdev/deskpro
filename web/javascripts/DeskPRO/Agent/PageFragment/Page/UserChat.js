@@ -193,6 +193,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		// Fixes when typing indicator gets out of sync with messages
+		// Can happen if a CM for new message comes in after typing was started but before it stopped
+		if (this.userTypingTime && (new Date()).getTime() > this.userTypingTime) {
+			this.userTypingTime = null;
+			this.getEl('user_typing').hide();
+		}
+
 		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata, data);
 	},
 
@@ -285,6 +292,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		this.userTypingTime = (new Date()).getTime();
 		var el = this.getEl('user_typing');
 		$('.prop-msg', el).text(data.preview);
 		el.detach().appendTo(this.getEl('messages_box'));
