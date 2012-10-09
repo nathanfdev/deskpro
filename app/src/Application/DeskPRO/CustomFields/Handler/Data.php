@@ -57,7 +57,7 @@ class Data extends HandlerAbstract
 		return $field;
 	}
 
-	function getDataFromForm($form_data)
+	function getDataFromForm(array $form_data)
 	{
 		if (isset($form_data[$this->getFormFieldName()])) {
 			return array(
