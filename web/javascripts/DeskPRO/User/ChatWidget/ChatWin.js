@@ -504,6 +504,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		if (data.metadata.chat_ended) {
 			this.chatEnded();
+		} else {
+			this.tellParent('show');
 		}
 	},
 

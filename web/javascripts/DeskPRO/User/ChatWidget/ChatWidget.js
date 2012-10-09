@@ -638,7 +638,7 @@ var DpChatWidget = new (function() {
 				break;
 
 			case 'show':
-				chatIframe.hide();
+				self.open();
 				break;
 
 			case 'destroy':
