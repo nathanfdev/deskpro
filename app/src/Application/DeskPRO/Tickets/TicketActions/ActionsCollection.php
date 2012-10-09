@@ -261,12 +261,14 @@ class ActionsCollection
 				}
 			} catch (\Exception $e) {
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 
 				if ($logger) {
 					$name = \Orb\Util\Util::getBaseClassname($action);
-					$logger->log(sprintf("[$name] EXCEPTION (%s): %s %s %s", $einfo['session_name'], $einfo['exception_type'], $einfo['summary']), \Orb\Log\Logger::DEBUG);
+					$logger->log(sprintf("[$name] EXCEPTION (%s): %s %s", $einfo['session_name'], $einfo['exception_type'], $einfo['summary']), \Orb\Log\Logger::DEBUG);
 				}
+
+				throw $e;
 			}
 
 			if ($logger) {

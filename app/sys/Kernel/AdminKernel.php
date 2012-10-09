@@ -51,7 +51,10 @@ class AdminKernel extends AbstractKernel
 	protected function registerAdditionalBundles()
 	{
 		$bundles = array(
-			new \Application\AdminBundle\AdminBundle()
+			new \Application\AdminBundle\AdminBundle(),
+
+			// Needed for things like templates
+			new \Application\AgentBundle\AgentBundle(),
 		);
 
 		if (defined('DPC_IS_CLOUD')) {
