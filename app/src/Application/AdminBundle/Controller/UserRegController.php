@@ -407,6 +407,12 @@ class UserRegController extends AbstractController
 
 		$usersource->is_enabled = !$usersource->is_enabled;
 
+		if ($usersource->is_enabled && ($usersource->getTypeName() == 'ActiveDirectory' || $usersource->getTypeName() == 'Ldap')) {
+			if (!extension_loaded('ldap')) {
+				return $this->render('AdminBundle:UserReg:usersource-require-ldap.html.twig');
+			}
+		}
+
 		$this->db->beginTransaction();
 		try {
 			$this->em->persist($usersource);
