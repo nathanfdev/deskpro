@@ -219,7 +219,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 			html += '">';
 			html += '<a>';
-				html += '<span class="tab-title">'+data.title+'</span>';
+				html += '<span class="tab-title">'+Orb.escapeHtml(data.title)+'</span>';
 			html += '</a>';
 			html += '<span class="bound-fade"></span>';
 			html += '<span class="close"></span>';
