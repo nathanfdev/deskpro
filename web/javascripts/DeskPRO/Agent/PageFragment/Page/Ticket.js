@@ -28,7 +28,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			'tickets',
 			this.meta.ticket_id,
 			this.meta.title,
-			BASE_URL + 'agent/tickts/' + this.meta.ticket_id
+			BASE_URL + 'agent/tickets/' + this.meta.ticket_id
 		);
 
 		this.valueForm = $('form.value-form:first', this.wrapper);

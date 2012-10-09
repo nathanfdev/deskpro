@@ -25,7 +25,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			}
 		});
 		this.inputBound.on('blur', function(ev) {
-			self.close();
+			window.setTimeout(function() {self.close();}, 150);
 		});
 	},
 
@@ -83,6 +83,20 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	},
 
 	add: function(type, id, title, url) {
+
+		// Make sure its not already added
+		var found = false;
+		Array.each(this.recent, function(item) {
+			if (type == item[0] && id == item[1]) {
+				found = true;
+				return true;
+			}
+		});
+
+		if (found) {
+			return;
+		}
+
 		this.recent.unshift([type, id, title, url]);
 
 		while (this.recent.length > this.maxSize) {
