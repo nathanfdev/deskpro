@@ -233,14 +233,15 @@ class Deskpro3RedirectController extends AbstractController
 	 */
 	public function ticketViewAction()
 	{
-		$id = isset($_GET['ref']) ? $_GET['ref'] : 0;
+		$id = isset($_GET['ticketref']) ? $_GET['ticketref'] : 0;
 
 		if ($id) {
 			$new_id = $this->getNewId('dp3_ticketref_'.$id);
 			if ($new_id) {
+				$new_id = $new_id['new_id'];
 				$obj = $this->em->find('DeskPRO:Ticket', $new_id);
 				if ($obj) {
-					return $this->redirectRoute('user_tickets_view', array('slug' => $obj->getRef()), 301);
+					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
 				}
 			}
 		}
@@ -407,6 +408,12 @@ class Deskpro3RedirectController extends AbstractController
 	 */
 	public function getNewId($lookup_id)
 	{
-		return $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup_id));
+		$data = $this->db->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array($lookup_id));
+
+		if (preg_match('#^a:[0-9]+:\{#', $data)) {
+			$data = unserialize($data);
+		}
+
+		return $data;
 	}
 }
