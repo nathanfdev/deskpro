@@ -287,6 +287,10 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
 
+		if (!agentInfo) {
+			return;
+		}
+
 		var newMessage = $.tmpl('agent_chat_message', {
 			author_id: agent_id,
 			author_name: agentInfo.name,
