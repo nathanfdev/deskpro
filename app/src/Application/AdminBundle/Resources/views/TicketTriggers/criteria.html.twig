@@ -950,6 +950,56 @@
 	</div>
 </div>
 
+<div class="builder-type" title="{{ phrase('agent.general.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			{% if event_trigger_master == 'update' %}
+				<option value="changed">{{ phrase('agent.general.changed') }}</option>
+				<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+				<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+				<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+				<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+			{% endif %}
+		</select>
+	</div>
+	<div class="builder-options">
+		<select name="agent">
+			<option value="0">{{ phrase('agent.general.unassigned') }}</option>
+			<option value="-1">Performer</option>
+			{% for id,label in term_options.agents %}
+				<option value="{{id}}">{{label}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			{% if with_change_terms %}
+				<option value="changed">{{ phrase('agent.general.changed') }}</option>
+				<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+				<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+				<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+				<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+			{% endif %}
+		</select>
+	</div>
+	<div class="builder-options">
+		<select name="agent_team">
+			<option value="0">{{ phrase('agent.general.no_team') }}</option>
+			<option value="-1">Performer's Team</option>
+			{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+				<option value="{{id}}">{{title}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
 <div class="builder-type" title="Created on day" data-rule-type="day_created" data-rule-group="Ticket">
 	<div class="builder-op">
 		<select name="op" class="op">

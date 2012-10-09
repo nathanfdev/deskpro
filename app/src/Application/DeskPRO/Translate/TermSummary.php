@@ -173,7 +173,7 @@ class TermSummary
 				$not_id = $info['not_id'];
 
 				if ($unassigned) {
-					$summary = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.agent'));
+					$summary = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.unassigned'));
 				} else {
 					if ($agent_ids) {
 						$summary = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {

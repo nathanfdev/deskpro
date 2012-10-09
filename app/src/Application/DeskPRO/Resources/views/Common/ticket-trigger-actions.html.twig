@@ -128,6 +128,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent">
 		<div class="builder-options">
 			<select name="agent">
+				<option value="-1">Performer</option>
 				{% for id,title in term_options.agents %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
@@ -138,6 +139,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team">
 		<div class="builder-options">
 			<select name="agent_team">
+				<option value="-1">Performer's Team</option>
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
