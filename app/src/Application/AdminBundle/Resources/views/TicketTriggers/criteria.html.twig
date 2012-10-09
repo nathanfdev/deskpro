@@ -370,34 +370,6 @@
 	{% endif %}
 {% endif %}
 
-
-{% if event_trigger_sub == 'email' or event_trigger_sub == 'web' %}
-	<div class="builder-type" title="Week Day" data-rule-type="day_created">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			{% set days = {
-				1: 'Monday',
-				2: 'Tuesday',
-				3: 'Wednesday',
-				4: 'Thursday',
-				5: 'Friday',
-				6: 'Saturday',
-				0: 'Sunday'
-			} %}
-			<select name="days[]" multiple="multiple">
-				{% for day,name in days %}
-				<option value="{{ day }}">{{ name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-{% endif %}
-
 {##################################################################################################################}
 {# Updated #}
 {##################################################################################################################}
@@ -954,6 +926,54 @@
 	</div>
 {% endif %}
 {% endfor %}
+
+<div class="builder-type" title="Created on day" data-rule-type="day_created" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		{% set days = {
+			1: 'Monday',
+			2: 'Tuesday',
+			3: 'Wednesday',
+			4: 'Thursday',
+			5: 'Friday',
+			6: 'Saturday',
+			0: 'Sunday'
+		} %}
+		<select name="days[]" multiple="multiple">
+			{% for day,name in days %}
+			<option value="{{ day }}">{{ name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+<div class="builder-type" title="Created time of day" data-rule-type="time_created" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="before">{{ phrase('agent.general.before') }}</option>
+			<option value="after">{{ phrase('agent.general.after') }}</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		<label>{{ phrase('agent.general.hour') }}</label>
+		<select name="hour1">
+			{% for hour in range(0,23) %}
+			<option>{{ '%02s'|format(hour) }}</option>
+			{% endfor %}
+		</select>
+		<label>{{ phrase('agent.general.minute') }}</label>
+		<select name="minute1">
+			{% for minute in range(0,59) %}
+			<option>{{ '%02s'|format(minute) }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
 
 {% if id or classname %}
 </div>

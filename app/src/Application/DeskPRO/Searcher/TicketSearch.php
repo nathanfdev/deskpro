@@ -1482,11 +1482,13 @@ class TicketSearch extends SearcherAbstract
                 case 'time_last_user_reply':
                     switch($op) {
                         case 'before':
-                            $operator = '<';
+                            $operator = '<=';
+							break;
                         case 'after':
-                            $operator = '>';
+                            $operator = '>=';
                             break;
-                        default: $operator = '=';
+                        default:
+							$operator = '=';
                     }
 
                     foreach($choice as $k => $v) {
@@ -1494,11 +1496,14 @@ class TicketSearch extends SearcherAbstract
                     }
 
                     $column = str_replace('time', 'date', $term);
-                    $wheres[] = "TIME($term) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
+                    $wheres[] = "$column IS NOT NULL AND TIME($column) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
                     break;
 
 				case self::TERM_DAY_CREATED:
-					$days = isset($choice['days']) ? $choice['days'] : array();
+					$days = isset($choice['days']) ? $choice['days'] : $choice;
+					if (!$days || !is_array($days)) {
+						continue;
+					}
 					$wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
                     break;
 

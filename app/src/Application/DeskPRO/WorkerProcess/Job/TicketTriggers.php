@@ -80,11 +80,13 @@ class TicketTriggers extends AbstractJob
 			$searcher->addRawWhere("tickets.date_created >= '$install_date'");
 		}
 
-		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'INFO');
-
 		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 100));
 
-		$this->logger->log("Found " . count($ticket_ids) . " matching", 'INFO');
+		if (!$ticket_ids) {
+			return;
+		}
+
+		$this->logger->log("Trigger {$trigger->id}: Found " . count($ticket_ids) . " matching", 'INFO');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
 		App::getDb()->beginTransaction();
