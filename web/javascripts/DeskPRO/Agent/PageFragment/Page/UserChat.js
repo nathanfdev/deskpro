@@ -401,6 +401,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	leaveConvo: function(after) {
+		this.quitting = true;
 		var self = this;
 
 		var action = '';
@@ -529,7 +530,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			notify = false;
 		}
 
-		if (notify) {
+		if (notify && !this.quitting) {
 			this.alertTab();
 
 			DeskPRO_Window.faviconBadge.enableCrazyMode(titleMsg);
