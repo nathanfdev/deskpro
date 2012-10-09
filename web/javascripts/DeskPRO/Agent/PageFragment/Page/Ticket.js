@@ -173,16 +173,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO.ElementHandler_Exec(this.wrapper);
 		var messageboxTabs = this.getEl('messagebox_tabs').data('simpletabs');
-		messageboxTabs.addEvent('tabSwitch', function(evData) {
-			var type = evData.tabEl.data('list-type');
+		if (messageboxTabs) {
+			messageboxTabs.addEvent('tabSwitch', function(evData) {
+				var type = evData.tabEl.data('list-type');
 
-			if (type == 'messages') {
-				self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
-			} else {
-				self.getEl('messages_wrap').find('article.message-expanded').removeClass('message-expanded');
-				self.getEl('messages_wrap').addClass('show-log show-collapsed-messages');
-			}
-		});
+				if (type == 'messages') {
+					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
+				} else {
+					self.getEl('messages_wrap').find('article.message-expanded').removeClass('message-expanded');
+					self.getEl('messages_wrap').addClass('show-log show-collapsed-messages');
+				}
+			});
+
+		}
 
 		self.getEl('messages_wrap').on('click', 'article.message', function(ev) {
 			$(this).toggleClass('message-expanded');
