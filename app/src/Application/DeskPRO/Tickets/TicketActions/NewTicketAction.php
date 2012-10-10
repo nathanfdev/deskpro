@@ -212,11 +212,13 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			$ticket->person->is_confirmed = true;
 			App::getOrm()->persist($ticket->person);
 
-			$ticket->person->getPrimaryEmail()->setIsValidated(true);
-			App::getOrm()->persist($ticket->person->getPrimaryEmail());
+			$primary_email = $ticket->person->primary_email;
+			if ($primary_email) {
+				$primary_email->is_validated = true;
+				App::getOrm()->persist($primary_email);
+			}
 
-			App::getOrm()->flush($ticket->person);
-			App::getOrm()->flush($ticket->person->getPrimaryEmail());
+			App::getOrm()->flush();
 		}
 
 		#------------------------------
