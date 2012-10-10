@@ -1,22 +1,10 @@
+{% set this_page = 'dashboard' %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 <ul>
 	<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
 </ul>
-{% endblock %}
-{% block prepage %}
-	{% if lic.isDemo() %}
-		<section class="demo-notice">
-			<article>
-				Your DeskPRO helpdesk demo expires <em class="days">{% if lic.getExpireDays() == 1 %}TODAY{% elseif lic.getExpireDays() == 2 %}TOMORROW{% else %}in {{ lic.getExpireDays() }} days{% endif %}</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
-
-				<div class="enter-wrap">
-					<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
-				</div>
-			</article>
-		</section>
-	{% endif %}
 {% endblock %}
 {% block sidebar_right %}
 	<div class="dp-page-box">

@@ -47,6 +47,11 @@ class GlobalVariables extends BaseGlobalVariables
 		$this->variables[$name] = $value;
 	}
 
+	public function getLicense()
+	{
+		return \DeskPRO\Kernel\License::getLicense();
+	}
+
 	public function getVariable($name)
 	{
 		return isset($this->variables[$name]) ? $this->variables[$name] : null;

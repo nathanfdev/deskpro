@@ -244,6 +244,18 @@
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
 
+{% if app.getLicense().isDemo() and (this_page == 'dashboard' or app.getLicense().getExpireDays() <= 3) %}
+	<section class="demo-notice">
+		<article>
+			Your DeskPRO helpdesk demo expires <em class="days">{% if app.getLicense().getExpireDays() == 1 %}TODAY{% elseif app.getLicense().getExpireDays() == 2 %}TOMORROW{% else %}in {{ app.getLicense().getExpireDays() }} days{% endif %}</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
+
+			<div class="enter-wrap">
+				<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
+			</div>
+		</article>
+	</section>
+{% endif %}
+
 {% if is_post_install %}
 {% if not is_cron_page and app.getSetting('core.setup_initial') and not app.getSetting('core.last_cron_run') and app.getSetting('core.install_timestamp') and ( ('now'|date('U') - 600) > app.getSetting('core.install_timestamp')) %}
 	<div class="cron-warn">
