@@ -571,7 +571,7 @@ class TicketController extends AbstractController
 		$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
 
 		$snippet_id = $snippet['id'];
-		$category_id = $snippet->category['id'];
+		$category_id = $snippet->category ? $snippet->category->getId() : 0;
 
 		$this->em->transactional(function($em) use ($snippet) {
 			$em->remove($snippet);
