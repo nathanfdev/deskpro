@@ -57,6 +57,7 @@
 	// Outlook
 	'outlook_3'                          => 'lang:font b #%From%:# /b #.*?# br /br b #%Sent%:# /b #.*?# br /br b #%To%:# /b #.*?# br /br b #%Subject%:# /b #.*?# br /br',
 	'outlook_4'                          => 'b span #From:# /span /b span #.*?# br /br b #Sent:# /b #.*?# br /br b #To:# /b #.*?# br /br b #Subject:# /b #.*?# /span',
+	'outlook_5'                          => 'span #From:#i /span #.*# a /a #.*# br /br span #Date:#i /span #.*# br /br span #To:#i /span #.*# a /a #.*# br /br',
 
 	// X-Mailer: iPhone Mail (9A405)
 	'iphone_1'                           => 'div br /br #on\s.*\sat\s.*#i a /a #.*wrote:#i /div div /div blockquote /blockquote',
