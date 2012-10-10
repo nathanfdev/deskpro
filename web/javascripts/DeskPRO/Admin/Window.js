@@ -148,7 +148,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 		});
 
-		$(document).on('mouseover', '.tipped', function() {
+		$(document).on('mouseover', '.tipped', function(ev) {
 			if ($(this).is('.tipped-inited')) {
 					return;
 				}
