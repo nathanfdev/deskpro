@@ -6,7 +6,7 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
  */
 DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 
-	Implements: [Orb.Util.Options],
+	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(messageBroker, options) {
 

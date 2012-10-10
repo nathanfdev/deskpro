@@ -52,9 +52,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 					this.lastMessageId = d[0];
 				}
 
-				this.sendMessage(d[1], d[2]);
 				try {
-
+					this.sendMessage(d[1], d[2]);
 				} catch (err) {
 					DpErrorLog.logError('[AjaxChanneler] ' + err, '', '', '');
 				}
@@ -64,6 +63,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		if (typeof data.last_id != 'undefined' && parseInt(data.last_id) > this.lastMessageId) {
 			this.lastMessageId = parseInt(data.last_id);
 		}
+
+		this.fireEvent('postMessageSend', [data]);
 	},
 
 	getLastMessageId: function() {

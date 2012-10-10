@@ -596,7 +596,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 								// Try to find the list
 								var listPage = DeskPRO_Window.getListPage();
-								if (listPage.meta.filter_id && listPage.meta.filter_id == parseInt(filterId) && listPage.reloadIfStale) {
+								if (
+										listPage.meta.filter_id
+										&& (
+											(listPage.meta.filter_id == parseInt(filterId) && listPage.reloadIfStale)
+											|| (listPage.meta.filter_id == '5')
+											|| (listPage.meta.topGroupingOption) // We are dumb to any grouping, so only way to know if view should be updated is by refreshing
+										)
+								) {
 									if (li.data('route')) {
 										DeskPRO_Window.runPageRouteFromElement(li);
 									} else {
