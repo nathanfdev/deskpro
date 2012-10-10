@@ -186,7 +186,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		}
 		var chats = $('> section.agent-chat', this.chatsWrapper);
 		if (chats.length > 1) {
-			var lastChat = chats.last();
+			var lastChat = chats.eq(-2);
 			var leftPos = lastChat.position().left + $('> nav', lastChat).outerWidth() + 8;
 			this.wrapper.css('left', leftPos);
 		} else {

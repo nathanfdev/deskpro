@@ -193,11 +193,15 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	 * Re-positions buttons after one is closed
 	 */
 	reflowButtons: function() {
-		$('> section.agent-chat', this.chatsWrapper).css('left', 0);
-		Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
-			if (chatWin) {
-				chatWin.resetPosition();
+		var lastChat = null;
+		$('> section.agent-chat', this.chatsWrapper).each(function() {
+			var left = 0;
+			if (lastChat) {
+				left += lastChat.position().left + $('> nav', lastChat).outerWidth() + 8;
 			}
+
+			$(this).css('left', left);
+			lastChat = $(this);
 		});
 	},
 
