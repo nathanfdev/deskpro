@@ -196,6 +196,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessageHtml()
 	{
+		return $this->procInlineAttach($this->message);
+	}
+
+	protected function procInlineAttach($message)
+	{
 		// An email might have inline attachments and we tokenize them with these
 		// codes so we can now turn them into inline images or attachment links
 		$fn = function($m) {
@@ -214,7 +219,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			return $replace;
 		};
 
-		$message = $this->message;
 		$message = preg_replace_callback('#\[attach:(image|file):(.*?):(.*?)\]#', $fn, $message);
 
 		return $message;
@@ -235,7 +239,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessageFull()
 	{
-		return $this->message_full;
+		return $this->procInlineAttach($this->message_full);
 	}
 
 	public function getMessagePlainHtml()
