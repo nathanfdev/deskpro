@@ -7,6 +7,7 @@
 	# as your config.php file.
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	'#^Delivery Status Notification (.*?)$#',
+	'#^Delivery Status Notification (?P<subject>.*?)$#',
 	'#^Undeliverable: (?P<subject>.*?)$#',
+	'#^Out of Office: (?P<subject>.*?)$#',
 );
