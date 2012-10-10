@@ -1551,6 +1551,28 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# get-full-message
+	############################################################################
+
+	public function ajaxGetFullMessageAction($message_id)
+	{
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		if (!$message) {
+			throw $this->createNotFoundException();
+		}
+
+		$ticket = $this->getTicketOr404($message->ticket->getId());
+
+		$data = array(
+			'ticket_id'    => $ticket->getId(),
+			'message_id'   => $message->getId(),
+			'message_full' => $message->getMessageFull()
+		);
+
+		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
 	# get-ticket-messages
 	############################################################################
 

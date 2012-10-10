@@ -516,6 +516,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					fullEl.show();
 					simpleEl.hide();
 					self.updateUi();
+
+					if (!fullEl.hasClass('loaded')) {
+						var row = $(this).closest('article.content-message');
+						var message_id = row.data('message-id');
+
+						$.ajax({
+							url: BASE_URL + 'agent/tickets/messages/'+message_id+'/get-full-message.json',
+							type: 'GET',
+							success: function(data) {
+								row.find('.full-message-content').html(data.message_full)
+								self.updateUi();
+							}
+						});
+					}
 				});
 			}
 		});

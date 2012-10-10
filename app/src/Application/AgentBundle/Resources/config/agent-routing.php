@@ -949,6 +949,13 @@ $collection->add('agent_ticket_getmessagetext', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_getfullmessage', new Route(
+	'/tickets/messages/{message_id}/get-full-message.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxGetFullMessage'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticket_savemessagetext', new Route(
 	'/tickets/messages/{message_id}/save-message-text.json',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveMessageText'),

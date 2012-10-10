@@ -27,8 +27,8 @@
 				{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
 			</div>
 			{% if message.message_full %}
-				<div class="body-text-full-message" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
-					{{message.message_full|raw }}
+				<div class="body-text-full-message {% if message.show_full_hint %}loaded{% endif %}" {% if not message.show_full_hint %}style="display: none;"{% endif %}>
+					<div class="full-message-content">{% if message.show_full_hint %}{{message.message_full|raw }}{% else %}<span class="flat-spinner"></span>{% endif %}</div>
 					<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
 				</div>
 			{% endif %}
