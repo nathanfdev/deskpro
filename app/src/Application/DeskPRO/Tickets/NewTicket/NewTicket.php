@@ -359,6 +359,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket[$k] = $v;
 			}
 
+			$ticket->recomputeHash();
+			if ($dupe_ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+				$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
+				$e->ticket_id = $dupe_ticket->id;
+				throw $e;
+			}
+
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 
@@ -394,6 +401,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 			App::getOrm()->commit();
 
+		} catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
+			App::getDb()->rollback();
+			$ticket = App::getOrm()->find('DeskPRO:Ticket', $e->ticket_id);
+			return $ticket;
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
 			throw $e;
