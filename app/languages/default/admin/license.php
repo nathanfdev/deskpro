@@ -13,6 +13,7 @@
 	'admin.license.error_licensing_server_problems' => 'Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you',
 	'admin.license.error_site_name'                 => 'Please enter the name of your organization',
 	'admin.license.error_site_url'                  => 'Please enter your organization\'s website',
+	'admin.license.error_phone'                     => 'Please enter your organization\'s phone number',
 	'admin.license.error_you_timed_out'             => 'Your server timed-out while trying to contact our licesing server to generate your license code.',
 	'admin.license.explain_connection_problems'     => 'A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.',
 	'admin.license.get_demo_license'                => 'Get your demo license &rarr;',

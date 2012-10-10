@@ -243,6 +243,10 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				name: 'url',
 				value: url
 			});
+			formData.push({
+				name: 'build',
+				value: $(this).data('build')
+			});
 
 			form.addClass('mark-loading');
 
@@ -276,6 +280,10 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 						if (data.error_code && data.error_code == 'invalid_email') {
 							var data = {
 								error_codes: {email: 1}
+							};
+						} else if (data.error_code && data.error_code == 'invalid_phone') {
+							var data = {
+								error_codes: {phone: 1}
 							};
 						} else {
 							var data = {
