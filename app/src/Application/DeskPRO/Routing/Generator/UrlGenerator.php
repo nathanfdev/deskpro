@@ -51,7 +51,7 @@ class UrlGenerator extends BaseUrlGenerator
 
 	public function setContext(RequestContext $context)
     {
-		if (DP_INTERFACE == 'cli' && !$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#/index\.php/#', $context->getBaseUrl())) {
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && !$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#/index\.php/#', $context->getBaseUrl())) {
 			$base = $context->getBaseUrl() . '/index.php';
 			$context->setBaseUrl($base);
 		}
