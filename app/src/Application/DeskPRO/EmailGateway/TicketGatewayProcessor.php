@@ -390,9 +390,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$ticket->addMessage($message);
 
-		if ($this->reader->getCcAddresses()) {
-			$this->handleCc($ticket, $this->reader->getCcAddresses());
-		}
+		$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
 
 		if (!$this->is_bounce) {
 			if ($person['is_agent'] && $context == 'agent') {
@@ -938,8 +936,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			if ($this->reader->getCcAddresses()) {
 				$this->logMessage('[TicketGatewayProcessor] Has CC');
-				$this->handleCc($ticket, $this->reader->getCcAddresses());
 			}
+
+			$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
 
 			if ($this->reader->hasProperty('email_source')) {
 				$message['email_source'] = $this->reader->getProperty('email_source');

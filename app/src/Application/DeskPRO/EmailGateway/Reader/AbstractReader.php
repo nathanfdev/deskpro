@@ -167,6 +167,21 @@ abstract class AbstractReader
 	}
 
 	/**
+	 * This is a collection of both To and CC addresses.
+	 *
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress[]
+	 */
+	public function getDeliveredAddresses()
+	{
+		$to = $this->getToAddresses();
+		$cc = $this->getCcAddresses();
+
+		$all = array_merge($to, $cc);
+
+		return $all;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getOriginalTo()
