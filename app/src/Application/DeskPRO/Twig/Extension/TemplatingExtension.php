@@ -501,10 +501,13 @@ class TemplatingExtension extends \Twig_Extension
 				try {
 					$date_str = $date;
 					$date = new \DateTime($date_str);
-				} catch (\Exception $e) {
-					return "invalid_date($date_str)";
-				}
+				} catch (\Exception $e) {}
 			}
+		}
+
+		if (!($date instanceof \DateTime)) {
+			$date_str = (string)$date;
+			return "invalid_date($date_str)";
 		}
 
 		if ($timezone === null && App::getCurrentPerson()) {
