@@ -1686,6 +1686,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (DPC_IS_CLOUD) {
+			if (xhr && xhr.status && (xhr.status == '503' || xhr.status == '500')) {
+				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
+				if (DpErrorLog) {
+					DpErrorLog.logError('AJAX Error '. xhr.status + ' on ' + ajaxOptions.url);
+				}
+				return;
+			}
+			if (xhr && (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec')) {
+				this.showAlert($('<div>We could not load the page you requested because the connection timed out. Please try again.</div>'));
+				return;
+			}
+		}
+
 		if (xhr && xhr.status && xhr.status == '404') {
 			this.showAlert($('<div><strong>Not Found</strong><br />The page you are trying to view could not be found. It may have been moved or deleted.</div>'));
 			return;

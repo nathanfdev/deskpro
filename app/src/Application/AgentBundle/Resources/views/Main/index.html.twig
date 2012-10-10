@@ -12,6 +12,12 @@
 			DP_DEBUG = false;
 		{% endif %}
 
+		{% if app.isCloud() %}
+			DPC_IS_CLOUD = true;
+		{% else %}
+			DPC_IS_CLOUD = false;
+		{% endif %}
+
 		window.DP_LOADED_TIME = (new Date()).getTime() / 1000;
 	</script>
 
