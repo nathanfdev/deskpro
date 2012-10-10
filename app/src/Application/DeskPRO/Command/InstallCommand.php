@@ -202,6 +202,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		));
 
 		App::getDb()->replace('settings', array(
+			'name' => 'core.deskpro_build',
+			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+		));
+
+		App::getDb()->replace('settings', array(
 			'name' => 'core.deskpro_build_num',
 			'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
 		));
