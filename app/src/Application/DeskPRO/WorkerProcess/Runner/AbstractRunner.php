@@ -98,6 +98,7 @@ abstract class AbstractRunner
 	 */
 	public function runJob(Entity\WorkerJob $worker_job)
 	{
+		App::setCurrentPerson(null);
 		unset($GLOBALS['DP_CRON_LOGGER']);
 
 		if ($this->job_time_limit) {

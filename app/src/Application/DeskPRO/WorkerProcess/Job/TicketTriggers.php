@@ -117,7 +117,7 @@ class TicketTriggers extends AbstractJob
 							$action->setExecutionContext('trigger');
 						}
 
-						$actions_collection->add($action);
+						$actions_collection->add($action, array('trigger' => $trigger));
 						$tracker->recordExtraMulti('trigger', $trigger);
 					}
 				}

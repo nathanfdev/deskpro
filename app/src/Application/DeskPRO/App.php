@@ -140,7 +140,7 @@ class App
 	 *
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
-	public static function setCurrentPerson(Entity\Person $person)
+	public static function setCurrentPerson(Entity\Person $person = null)
 	{
 		self::$_current_person = $person;
 	}
