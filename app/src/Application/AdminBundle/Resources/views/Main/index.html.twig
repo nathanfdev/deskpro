@@ -179,7 +179,7 @@
 
 <br />
 
-{% if notice_items %}
+{% if notice_items.db_iis_localhost or notice_items.apc_check or notice_items.openssl_ext or notice_items.magic_quotes_gpc_check %}
 	<div class="content-table">
 		<table width="100%">
 			<thead>
