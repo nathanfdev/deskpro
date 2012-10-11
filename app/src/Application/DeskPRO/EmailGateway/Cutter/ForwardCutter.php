@@ -74,7 +74,7 @@ class ForwardCutter
 	 */
 	public static function cutSubjectForwardPrefix($subject)
 	{
-		return preg_replace('#^(FW|FWD|VL|WG|FS|VB|RV|VS|SV):\s*#i', '', trim($subject));
+		return preg_replace('#^(FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($subject));
 	}
 
 
