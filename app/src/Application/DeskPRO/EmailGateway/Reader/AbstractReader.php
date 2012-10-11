@@ -186,14 +186,12 @@ abstract class AbstractReader
 	 */
 	public function getOriginalTo()
 	{
-		$try = array(
-			'Envelope-To',
-			'X-Envelope-To',
-			'Original-To',
-			'X-Original-To',
-			'Rcpt-Original',
-			'X-Rcpt-Original'
-		);
+		if (isset($this->vals['original_to'])) {
+			return $this->vals['original_to'] ? $this->vals['original_to'] : null;
+		}
+
+		$try = new \Application\DeskPRO\Config\UserFileConfig('original-to-headers');
+		$try = $try->all();
 
 		foreach ($try as $header_name) {
 			if (!($h = $this->getHeader($header_name))) {
@@ -204,9 +202,11 @@ abstract class AbstractReader
 				continue;
 			}
 
+			$this->vals['original_to'] = strtolower($h->getHeader());
 			return strtolower($h->getHeader());
 		}
 
+		$this->vals['original_to'] = false;
 		return null;
 	}
 
