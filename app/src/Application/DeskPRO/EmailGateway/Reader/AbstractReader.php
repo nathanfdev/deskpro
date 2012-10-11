@@ -190,7 +190,9 @@ abstract class AbstractReader
 			'Envelope-To',
 			'X-Envelope-To',
 			'Original-To',
-			'X-Original-To'
+			'X-Original-To',
+			'Rcpt-Original',
+			'X-Rcpt-Original'
 		);
 
 		foreach ($try as $header_name) {
