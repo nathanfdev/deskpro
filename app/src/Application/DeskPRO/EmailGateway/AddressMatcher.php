@@ -66,6 +66,11 @@ class AddressMatcher
 	 */
 	protected $patterns = null;
 
+	/**
+	 * @var array
+	 */
+	protected $aliases = array();
+
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
@@ -118,6 +123,10 @@ class AddressMatcher
 
 		$address = Strings::utf8_strtolower($address);
 
+		if (isset($this->aliases[$address])) {
+			return $this->aliases[$address];
+		}
+
 		$match_address_id = null;
 		foreach ($this->patterns as $pattern) {
 			switch ($pattern['match_type']) {
@@ -163,6 +172,14 @@ class AddressMatcher
 	 */
 	public function getMatchingAddressFromReader(AbstractReader $reader, Emailgateway $gateway = null)
 	{
+		if ($orig_address = $reader->getOriginalTo()) {
+			$matched_address = $this->getMatchingAddress($orig_address, $gateway);
+			if ($matched_address) {
+				$this->aliases[strtolower($orig_address)] = $matched_address;
+				return $matched_address;
+			}
+		}
+
 		foreach ($reader->getToAddresses() as $email) {
 			$address = $email->getEmail();
 
@@ -176,13 +193,6 @@ class AddressMatcher
 			$address = $email->getEmail();
 
 			$matched_address = $this->getMatchingAddress($address, $gateway);
-			if ($matched_address) {
-				return $matched_address;
-			}
-		}
-
-		if ($orig_address = $reader->getOriginalTo()) {
-			$matched_address = $this->getMatchingAddress($orig_address, $gateway);
 			if ($matched_address) {
 				return $matched_address;
 			}

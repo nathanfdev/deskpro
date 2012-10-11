@@ -570,6 +570,10 @@ class TicketController extends AbstractController
 	{
 		$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
 
+		if (!$snippet) {
+			throw $this->createNotFoundException();
+		}
+
 		$snippet_id = $snippet['id'];
 		$category_id = $snippet->category ? $snippet->category->getId() : 0;
 

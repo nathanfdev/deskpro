@@ -186,15 +186,26 @@ abstract class AbstractReader
 	 */
 	public function getOriginalTo()
 	{
-		if (!($h = $this->getHeader('X-Original-To'))) {
-			return null;
+		$try = array(
+			'Envelope-To',
+			'X-Envelope-To',
+			'Original-To',
+			'X-Original-To'
+		);
+
+		foreach ($try as $header_name) {
+			if (!($h = $this->getHeader($header_name))) {
+				return null;
+			}
+
+			if (!$h->getHeader() || !\Orb\Validator\StringEmail::isValueValid($h->getHeader())) {
+				continue;
+			}
+
+			return strtolower($h->getHeader());
 		}
 
-		if (!$h->getHeader() || !\Orb\Validator\StringEmail::isValueValid($h->getHeader())) {
-			return null;
-		}
-
-		return strtolower($h->getHeader());
+		return null;
 	}
 
 	/**
