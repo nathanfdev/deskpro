@@ -33,9 +33,9 @@
 		'flag_image' => 'dk.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
-		'has_agent'  => true,
-		'has_admin'  => true,
-		'is_managed' => false
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
 	),
 
 	'german' => array(
