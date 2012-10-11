@@ -31,6 +31,33 @@
 			{{ form_widget(form.locale) }}
 		</div>
 	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Flag</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="checkbox-rows">
+				<ul style="max-height: 110px;">
+					<li>
+						<label>
+							<input type="radio" name="language[flag]" value="" {% if not language.flag_image %}checked="checked"{% endif %} />
+							None
+						</label>
+					</li>
+					{% for flag in flags %}
+					<li>
+						<label>
+							<input type="radio" name="language[flag]" value="{{ flag }}" {% if language.flag_image == flag %}checked="checked"{% endif %} />
+							<span style="background: url({{ asset('images/flags/' ~ flag) }}); display: inline-block; width: 16px; height: 11px; margin: 0 3px 0 3px;"></span>
+							{{ flag }}
+						</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
 
 <button class="clean-white">{{ phrase('agent.general.save') }}</button>

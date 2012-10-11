@@ -53,6 +53,12 @@ class LanguagesController extends AbstractController
     {
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 		$packs = $langpacks->getLangTitles();
+		$packs_flags = array();
+
+		foreach ($packs as $id => $title) {
+			$flag = $langpacks->getLangInfo($id, 'flag_image');
+			$packs_flags[$id] = $flag;
+		}
 
 		$packs_local = $langpacks->getLangTitles(true);
 
@@ -66,6 +72,7 @@ class LanguagesController extends AbstractController
 			'packs' => $packs,
 			'packs_local' => $packs_local,
 			'installed_packs' => $installed_packs,
+			'packs_flags' => $packs_flags,
 		));
 	}
 
@@ -258,16 +265,32 @@ class LanguagesController extends AbstractController
 	{
 		$vars = $this->getLangInfo($language_id);
 
+		$files = \Symfony\Component\Finder\Finder::create()->files()->in(DP_WEB_ROOT.'/web/images/flags')->name('*.png');
+		$flags = array();
+
+		foreach ($files as $f) {
+			$flags[] = $f->getFileName();
+		}
+
 		if ($this->in->getBool('process')) {
 			$lang = $vars['language'];
 			$lang->title = $this->in->getString('language.title');
 			$lang->locale = $this->in->getString('language.locale');
+
+			$flag = $this->in->getString('language.flag');
+			if ($flag && in_array($flag, $flags)) {
+				$lang->flag_image = $flag;
+			} else {
+				$lang->flag_image = '';
+			}
+
 			$this->em->persist($lang);
 			$this->em->flush();
 		}
 
 		$form = $this->get('form.factory')->create(new EditLanguageType(), $vars['language']);
 		$vars['form'] = $form->createView();
+		$vars['flags'] = $flags;
 
 		return $this->render('AdminBundle:Languages:lang-edit.html.twig', $vars);
 	}

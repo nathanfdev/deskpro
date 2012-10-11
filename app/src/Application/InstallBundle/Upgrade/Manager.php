@@ -138,7 +138,7 @@ class Manager
 		$langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
 		foreach ($langpacks->getLangTitles(true) as $id => $title) {
-			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ?", array($title, $id));
+			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
 		}
 
 		// Update flags if theyre blank

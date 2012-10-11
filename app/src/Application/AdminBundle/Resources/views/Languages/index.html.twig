@@ -70,10 +70,16 @@
 							</div>
 							<h4>
 								{% if installed_packs[id] %}
+									{% if installed_packs[id].flag_image %}
+										<span style="background: url({{ asset('images/flags/' ~ installed_packs[id].flag_image) }}); display: inline-block; width: 16px; height: 11px; margin-right: 8px;"></span>
+									{% endif %}
 									<a href="{{ path('admin_langs_editlang', {language_id: installed_packs[id].id}) }}">
 										{{ packs_local[id] }} {% if title != packs_local[id] %}/ {{ title }}{% endif %}
 									</a>
 								{% else %}
+									{% if packs_flags[id] %}
+										<span style="background: url({{ asset('images/flags/' ~ packs_flags[id]) }}); display: inline-block; width: 16px; height: 11px; margin-right: 8px;"></span>
+									{% endif %}
 									{{ packs_local[id] }} {% if title != packs_local[id] %}/ {{ title }}{% endif %}
 								{% endif %}
 							</h4>
