@@ -12,5 +12,6 @@
 	'Original-To',
 	'X-Original-To',
 	'Rcpt-Original',
-	'X-Rcpt-Original'
+	'X-Rcpt-Original',
+	'Delivered-To'
 );

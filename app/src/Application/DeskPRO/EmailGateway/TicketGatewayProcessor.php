@@ -390,7 +390,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$ticket->addMessage($message);
 
-		$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
+		if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
+			$this->logMessage('[TicketGatewayProcessor] Has CC');
+			$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
+		}
 
 		if (!$this->is_bounce) {
 			if ($person['is_agent'] && $context == 'agent') {
@@ -712,17 +715,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function handleCc($ticket, array $ccs)
 	{
-		$gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
 
 		$count = 0;
 		foreach ($ccs as $cc) {
 
+			$cc_email = $cc->getEmail();
+			$this->logMessage("Checking cc: $cc_email");
+
 			// Max 10 CC's to prevent mass spamming
 			if ($count >= 10) {
+				$this->logMessage("CC limit reached, break");
 				break;
 			}
 
-			$cc_email = $cc->getEmail();
 			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
 			if ($addr) {
 				$this->logMessage("Skipping cc: $cc_email (matches gateway address {$addr->id})");
@@ -745,6 +751,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$cc_person) {
 				continue;
 			}
+
+			$this->logMessage("Add CC person: {$cc_person->getId()}");
 
 			if (!$ticket->hasParticipantPerson($cc_person)) {
 				$ticket->addParticipantPerson($cc_person);
@@ -934,11 +942,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message = $newticket->new_message;
 			$message['email'] = $this->reader->getFromAddress()->getEmail();
 
-			if ($this->reader->getCcAddresses()) {
+			if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
 				$this->logMessage('[TicketGatewayProcessor] Has CC');
+				$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
 			}
-
-			$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
 
 			if ($this->reader->hasProperty('email_source')) {
 				$message['email_source'] = $this->reader->getProperty('email_source');

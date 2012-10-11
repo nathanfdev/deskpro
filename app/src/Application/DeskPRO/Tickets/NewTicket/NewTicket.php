@@ -415,7 +415,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public function handleCc(Entity\Ticket $ticket, $cc_email)
 	{
-		$gateway_address_matcher = new \Application\DeskPRO\EmailGateway\AddressMatcher(App::getContainer()->getEm());
+		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
 
 		if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
 			return null;
