@@ -17,7 +17,7 @@
 		'lang_code'  => 'ara',
 		'title'      => 'Arabic',
 		'locale'     => 'ar',
-		'flag_image' => 'sa.png',
+		'flag_image' => 'arabic.png',
 		'is_rtl'     => true,
 		'has_user'   => true,
 		'has_agent'  => false,
