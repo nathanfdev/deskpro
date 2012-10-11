@@ -110,29 +110,29 @@ class TicketController extends AbstractController
 
 		$ticket = new Ticket();
 
-		$fields = array(
-			'department_id' => 'Uint',
-			'language_id' => 'Uint',
-			'category_id' => 'Uint',
-			'agent_team_id' => 'Uint',
-			'product_id' => 'Uint',
-			'priority_id' => 'Uint',
-			'workflow_id' => 'Uint',
-			'urgency' => 'Uint',
-		);
-
-		$editor = App::getApi('tickets')->getTicketEditor($ticket);
-		$editor->setPersonContext($this->person);
-
-		foreach ($fields AS $field => $cleanType) {
-			if ($this->in->checkIsset($field)) {
-				$value = $this->in->{'get' . $cleanType}($field);
-				try {
-					$editor->applyActions(array($field => $value));
-				} catch (\InvalidArgumentException $e) {
-					$errors[$field] = array("invalid_argument", $e->getMessage());
-				}
-			}
+		if ($id = $this->in->getUint('department_id')) {
+			$ticket->setDepartmentId($id);
+		}
+		if ($id = $this->in->getUint('language_id')) {
+			$ticket->setLanguageId($id);
+		}
+		if ($id = $this->in->getUint('category_id')) {
+			$ticket->setCategoryId($id);
+		}
+		if ($id = $this->in->getUint('agent_team_id')) {
+			$ticket->setAgentTeamId($id);
+		}
+		if ($id = $this->in->getUint('product_id')) {
+			$ticket->setProductId($id);
+		}
+		if ($id = $this->in->getUint('priority_id')) {
+			$ticket->setPriorityId($id);
+		}
+		if ($id = $this->in->getUint('workflow_id')) {
+			$ticket->setWorkflowId($id);
+		}
+		if ($id = $this->in->getUint('urgency')) {
+			$ticket->setUrgency($id);
 		}
 
 		if (!$ticket->department) {
