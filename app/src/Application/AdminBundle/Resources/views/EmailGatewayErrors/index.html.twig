@@ -26,6 +26,10 @@
 				<td>
 					<table cellspacing="0" cellpadding="0" width="100%">
 						<tr>
+							<td nowrap="nowrap" width="50" style="text-align: right; padding-right: 8px;">Date:</td>
+							<td>{{ source.date_created|date('fulltime') }}</td>
+						</tr>
+						<tr>
 							<td nowrap="nowrap" width="50" style="text-align: right; padding-right: 8px;">{{ phrase('admin.general.email_from') }}:</td>
 							<td>{{ source.header_from }}</td>
 						</tr>
