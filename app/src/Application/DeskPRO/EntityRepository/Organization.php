@@ -154,4 +154,22 @@ class Organization extends AbstractEntityRepository
 				o.name = ?1
 		")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
 	}
+
+
+	/**
+	 * @param $q
+	 * @param null $limit
+	 * @return mixed
+	 */
+	public function search($q, $limit = null)
+	{
+		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+
+		return $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE o.name LIKE ?1
+			ORDER BY o.name ASC
+		")->setParameters(array(1=> $q))->setMaxResults($limit)->execute();
+	}
 }

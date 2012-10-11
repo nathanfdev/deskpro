@@ -353,6 +353,27 @@ class MainController extends AbstractController
 							$results['organization'][] = $p->organization;
 						}
 					}
+
+					// Organizations
+					$orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
+					$oids = array();
+					foreach ($orgs as $o) {
+						$results['organization'][] = $o;
+						$oids[] = $o->getId();
+					}
+
+					if ($oids) {
+						// Fetch users of these orgs too
+						$people = $this->em->createQuery("
+							SELECT p
+							FROM DeskPRO:Person p
+							WHERE p.organization IN (?0)
+							ORDER BY p.date_last_login DESC, p.id DESC
+						")->execute(array($oids));
+						foreach ($people as $p) {
+							$results['person'][] = $p;
+						}
+					}
 				}
 
 				if ($results['person']) {
