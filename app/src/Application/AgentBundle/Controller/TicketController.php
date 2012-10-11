@@ -2343,8 +2343,12 @@ class TicketController extends AbstractController
 
 		$ticket = $q->getOneOrNullResult();
 
-		if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-			throw new \Application\DeskPRO\HttpKernel\Exception\NoPermissionException("There is no ticket with ID $ticket_id");
+		if (!$ticket) {
+			throw $this->createNotFoundException("There is no ticket with ID $ticket_id");
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+			throw new \Application\DeskPRO\HttpKernel\Exception\NoPermissionException("You are not allowed to view this ticket");
 		}
 
 		if ($check_perm && !$this->checkPerm($ticket, $check_perm)) {
