@@ -206,9 +206,9 @@ var DpOverlayWidget = new (function() {
 
 				if (window.DpChatWidget) {
 					DpChatWidget.open([
-						['name', data[0].replace(/__DP_COL__/g, ':')],
-						['email', data[1].replace(/__DP_COL__/g, ':')],
-						['department_id', data[2].replace(/__DP_COL__/g, ':')],
+						['name', data.name],
+						['email', data.email],
+						['department_id', data.department_id],
 						['auto_start', 1]
 					]);
 					self.close();
