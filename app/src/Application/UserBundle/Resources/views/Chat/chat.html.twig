@@ -20,13 +20,17 @@
 	{% if app.isDebug() %}
 		{{ dp_asset_html('user_vendors') }}
 		{{ dp_asset_html('user_common') }}
-		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1{% if is_rtl() %}&amp;rtl=1{% endif %}" media="screen,print" />
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('U') }}&amp;reload=1{% if is_rtl() %}&amp;rtl=1{% endif %}" media="screen,print" />
 	{% else %}
 		{{ dp_asset_html('user') }}
-		{% if is_rtl() %}
-			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob_rtl.getDownloadUrl() }}?{{ app.style.css_blob_rtl.id }}" media="screen,print" />
+		{% if (is_rtl() and not app.style.css_blob_rtl) or (not is_rtl() and not app.style.css_blob) or app.admin_portal_controls %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('U') }}&amp;reload=1{% if is_rtl() %}&amp;rtl=1{% endif %}" media="screen,print" />
 		{% else %}
-			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+			{% if is_rtl() %}
+				<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob_rtl.getDownloadUrl() }}?{{ app.style.css_blob_rtl.id }}" media="screen,print" />
+			{% else %}
+				<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+			{% endif %}
 		{% endif %}
 	{% endif %}
 
