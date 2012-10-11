@@ -29,7 +29,7 @@
 		'id'         => 'danish',
 		'lang_code'  => 'dan',
 		'title'      => 'Danish',
-		'locale'     => 'da_DK',
+		'locale'     => 'da',
 		'flag_image' => 'dk.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
