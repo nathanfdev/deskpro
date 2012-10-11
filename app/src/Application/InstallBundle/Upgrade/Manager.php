@@ -141,6 +141,15 @@ class Manager
 			$this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ?", array($title, $id));
 		}
 
+		// Update flags if theyre blank
+		$blank_flags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
+		foreach ($blank_flags as $sys_name) {
+			$flag = $langpacks->getLangInfo($sys_name, 'flag_image');
+			if ($flag) {
+				$this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
+			}
+		}
+
 		// Auto-install any new langs
 		$auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
 		if ($auto_install) {
