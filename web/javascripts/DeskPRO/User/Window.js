@@ -274,14 +274,18 @@ DeskPRO.User.Window = new Orb.Class({
 		innerHtml.css({
 			width: choiceMenu.outerWidth() - 24
 		});
-		choiceHtml.click(function() {
+		var updatePos = function() {
+			if (!choiceMenu.hasClass('open')) return;
 			var pos = choiceHtml.offset();
-
 			choiceMenu.css({
 				top: pos.top + choiceHtml.outerHeight(true) - 1,
 				left: pos.left
 			});
-
+		};
+		$(window).on('resize', updatePos);
+		choiceHtml.click(function() {
+			choiceMenu.addClass('open');
+			updatePos();
 			choiceMenu.show();
 		});
 
@@ -290,7 +294,7 @@ DeskPRO.User.Window = new Orb.Class({
 
 		$(document).click(function(e) {
 			if (!choiceHtml.find(e.target).length && !choiceMenu.find(e.target).length) {
-				choiceMenu.hide();
+				choiceMenu.hide().removeClass('open');
 			}
 		});
 	},
