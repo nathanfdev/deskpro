@@ -43,6 +43,9 @@
 			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ article.date_created|date('full') }}</li>
 			<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}</a></li>
 		</ul>
+		{% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
+			<div class="sub-note">{{ phrase('user.general.can-view-because-agent') }}</div>
+		{% endif %}
 	</header>
 	<article id="dp_article_content">
 		{{ article.content_html|raw }}
