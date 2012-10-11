@@ -2196,6 +2196,26 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			exit(10);
 		}
 
+		// Check currently executing requirements
+		$fatal = array();
+
+		foreach (deskpro_install_check_reqs() as $type => $level) {
+			if ($level == 'fatal') {
+				$fatal[] = $type;
+			}
+		}
+
+		if ($fatal) {
+			$this->out("<error>Error: The PHP binary you are using does not meet the server requirements.</error>");
+			$this->out("The following server checks failed:");
+			$out = '- ' . implode("\n- ", $fatal);
+			$this->out($out);
+			$this->out("\nUse a different PHP binary or correct the proble, and then try again.");
+
+			exit(13);
+		}
+
+		// Now check that the php in the php path also passes
 		$cmd = sprintf(
 			"%s %s",
 			dp_get_php_path(),
