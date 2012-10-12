@@ -465,8 +465,12 @@ class Upgrade
 					$message = json_encode($message);
 				}
 
-				fwrite($fp, "STATUS(" . $code . ")@$time#$message\n");
+				$status = "STATUS(" . $code . ")@$time#$message\n";
+
+				fwrite($fp, $status);
 				fclose($fp);
+
+				$that->log($status);
 			};
 
 			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'w'))) {
@@ -902,6 +906,8 @@ class Upgrade
 
 		$time_start = microtime(true);
 
+		$this->log("installFilesFromZip: From $zip_path");
+
 		#------------------------------
 		# Extract the zip into the dir
 		#------------------------------
@@ -912,6 +918,8 @@ class Upgrade
 			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
 		}
 
+		$this->log("installFilesFromZip: Extracted to $tmp_dir");
+
 		#------------------------------
 		# Now copy everything over
 		#------------------------------
@@ -919,7 +927,10 @@ class Upgrade
 		$fileutil = new FilesystemUtil();
 		if ($dry_run) {
 			$fileutil->enableDryRun();
+			$this->log("installFilesFromZip: (dry run)");
 		}
+
+		$this->log("installFilesFromZip: Copying to " . DP_WEB_ROOT);
 
 		// Delete old cache dir
 		$fileutil->remove(DP_ROOT.'/sys/cache/dev');
@@ -2210,7 +2221,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out("The following server checks failed:");
 			$out = '- ' . implode("\n- ", $fatal);
 			$this->out($out);
-			$this->out("\nUse a different PHP binary or correct the proble, and then try again.");
+			$this->out("\nUse a different PHP binary or correct the problem, and then try again.");
 
 			exit(13);
 		}
@@ -2302,6 +2313,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#-----
 
 		if ($version_info) {
+			$this->upgrade->log("(Interactive Upgrader)");
 			$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
 			$this->out(sprintf("Latest build:    %s (%s)", $version_info['build_num'], $this->upgrade->formatBuild($version_info['build'])));
 			$this->upgrade->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
@@ -2417,6 +2429,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$db_backup_path   = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-database.zip';
 		$file_backup_path = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-files.zip';
 
+		$this->upgrade->log("(Gathering input)");
 		while(true) {
 			$this->out("Do you want to back up your current source files? ", false);
 			$this->answer_backup_files = $this->dialogHelper->askConfirmation($this, "[Y/n]> ", true);
@@ -2445,6 +2458,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			}
 			$this->out();
 		}
+		$this->upgrade->log(sprintf("(Done gathering input: answer_backup_files=%d, answer_backup_db=%d)", $this->answer_backup_files, $this->answer_backup_db));
 
 		$fileutil = new FilesystemUtil();
 		$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
