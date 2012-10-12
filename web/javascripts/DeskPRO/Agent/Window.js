@@ -1690,7 +1690,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (xhr && xhr.status && (xhr.status == '503' || xhr.status == '500')) {
 				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
 				if (DpErrorLog) {
-					DpErrorLog.logError('AJAX Error '. xhr.status + ' on ' + ajaxOptions.url);
+					DpErrorLog.logError('AJAX Error ' + xhr.status + ' on ' + ajaxOptions.url);
 				}
 				return;
 			}
