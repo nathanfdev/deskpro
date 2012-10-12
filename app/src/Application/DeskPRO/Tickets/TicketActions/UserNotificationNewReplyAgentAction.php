@@ -52,11 +52,6 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
-		}
-
 		// Agents can supress user notifications by unticking the option in the replybox
 		if ($this->tracker->isExtraSet('suppress_user_notify')) {
 			return;
