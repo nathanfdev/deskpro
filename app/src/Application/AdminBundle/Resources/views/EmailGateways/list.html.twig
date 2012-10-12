@@ -13,7 +13,36 @@
 		pading: 0 0 0 5px;
 		margin: 0;
 	}
+
+	#email_forward_list input[type="text"] {
+		width: 50%;
+	}
 </style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	var container = $('#email_forward_list');
+
+	container.on('click', '.remove-trigger', function(ev) {
+		ev.preventDefault();
+		$(this).closest('tr').remove();
+	});
+
+	container.find('button.add-trigger').on('click', function(ev) {
+		ev.preventDefault();
+		var html = '<tr><td><div style="float: right"><button class="clean-white remove-trigger">Remove</button></div><input type="text" name="helpdesk_emails[]" placeholder="Email address or a full domain name" value="" /></td></tr>';
+		container.find('tbody').find('tr').last().before(html);
+	});
+
+	$('#email_forward_list_chk').on('change', function() {
+		if (this.checked) {
+			$('#email_forward_list').slideDown();
+		} else {
+			$('#email_forward_list').slideUp();
+		}
+	});
+});
+</script>
 {% endblock %}
 {% block pagebar %}
 	<nav>
@@ -163,6 +192,50 @@
 			{% endfor %}
 		</tbody>
 	</table>
+</div>
+
+<br />
+<input
+	type="checkbox"
+	id="email_forward_list_chk"
+	class="onoff-slider"
+	{% if app.getSetting('core.helpdesk_emails') %}checked="checked"{% endif %}
+/> Enable email forwarding support<br />
+<div id="email_forward_list" {% if not app.getSetting('core.helpdesk_emails') %}style="display: none;"{% endif %}>
+	If you are forwarding other email addresses into the accounts defined above, you need to list those
+	addresses here so DeskPRO does not mistake them as real users. Add each address you are forwarding FROM here.
+
+	<form action="{{ path('admin_emailgateways_savehdaddr') }}" method="POST">
+		<div class="check-grid item-list">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th style="text-align:left">Forwarded Email Addresses</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for addr in helpdesk_emails %}
+						<tr>
+							<td>
+								<div style="float: right">
+									<button class="clean-white remove-trigger">Remove</button>
+								</div>
+								<input type="text" name="helpdesk_emails[]" value="{{ addr }}" placeholder="Email address or a full domain name" />
+							</td>
+						</tr>
+					{% endfor %}
+
+					<tr>
+						<td>
+							<button class="clean-white add-trigger">Add New Address</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<button class="clean-white" style="margin: 4px 4px;">Save Addresses</button>
+	</form>
 </div>
 
 {% endblock %}

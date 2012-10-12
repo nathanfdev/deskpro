@@ -1884,6 +1884,13 @@ $collection->add('admin_emailgateways', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_savehdaddr', new Route(
+	'/email/incoming/save-helpdesk-addresses',
+	array('_controller' => 'AdminBundle:EmailGateways:saveHelpdeskAddresses'),
+	array(),
+	array()
+));
+
 $collection->add('admin_emailgateways_new', new Route(
 	'/email/incoming/new',
 	array('_controller' => 'AdminBundle:EmailGateways:editAccount', 'id' => 0),

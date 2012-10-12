@@ -56,8 +56,11 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 			ORDER BY g.title ASC
 		")->getResult();
 
+		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
+
 		return $this->render('@list.html.twig', array(
 			'all_gateways' => $all_gateways,
+			'helpdesk_emails' => $helpdesk_emails,
 		));
 	}
 

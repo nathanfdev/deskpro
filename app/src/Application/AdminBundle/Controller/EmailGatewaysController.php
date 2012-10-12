@@ -74,11 +74,24 @@ class EmailGatewaysController extends AbstractController
 			}
 		}
 
+		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
+
 		return $this->render('@list.html.twig', array(
 			'all_gateways' => $all_gateways,
 			'all_transports' => $all_transports,
-			'all_gateways_byemail' => $all_gateways_byemail
+			'all_gateways_byemail' => $all_gateways_byemail,
+			'helpdesk_emails' => $helpdesk_emails,
 		));
+	}
+
+	public function saveHelpdeskAddressesAction()
+	{
+		$helpdesk_addresses = $this->in->getCleanValueArray('helpdesk_emails', 'string', 'discard');
+		$helpdesk_addresses = implode(',', $helpdesk_addresses);
+
+		$this->container->getSettingsHandler()->setSetting('core.helpdesk_emails', $helpdesk_addresses);
+
+		return $this->redirectRoute('admin_emailgateways');
 	}
 
 	############################################################################

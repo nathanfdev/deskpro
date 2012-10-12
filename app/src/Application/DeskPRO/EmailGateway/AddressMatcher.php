@@ -69,7 +69,7 @@ class AddressMatcher
 	/**
 	 * @var array
 	 */
-	protected $aliases = array();
+	protected $helpdesk_addresses = array();
 
 
 	/**
@@ -79,6 +79,35 @@ class AddressMatcher
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
+
+		$aliases = App::getSetting('core.helpdesk_emails');
+		$aliases = explode(',', $aliases);
+		foreach ($aliases as $a) {
+			$this->helpdesk_addresses[] = $a;
+		}
+	}
+
+
+	/**
+	 * Checks if an address is a known helpdesk address
+	 */
+	public function isHelpdeskAddress($addr)
+	{
+		$addr = strtolower($addr);
+
+		foreach ($this->helpdesk_addresses as $hd_addr) {
+			if (strpos($hd_addr, '@') === false) {
+				if (strpos($addr, '@' . $hd_addr) !== false) {
+					return true;
+				}
+			} else {
+				if ($hd_addr == $addr) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 
@@ -172,14 +201,6 @@ class AddressMatcher
 	 */
 	public function getMatchingAddressFromReader(AbstractReader $reader, Emailgateway $gateway = null)
 	{
-		if ($orig_address = $reader->getOriginalTo()) {
-			$matched_address = $this->getMatchingAddress($orig_address, $gateway);
-			if ($matched_address) {
-				$this->aliases[strtolower($orig_address)] = $matched_address;
-				return $matched_address;
-			}
-		}
-
 		foreach ($reader->getToAddresses() as $email) {
 			$address = $email->getEmail();
 
