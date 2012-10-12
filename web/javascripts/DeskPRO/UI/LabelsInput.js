@@ -60,6 +60,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		if (!tagSource) tagSource = [];
 
+		tagSource = Array.clone(tagSource);
+
 		this.input.on('change', function() {
 			self.fireEvent('change', self.getLabels());
 		});

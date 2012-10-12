@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
 
 class LabelManager
 {
@@ -63,6 +64,11 @@ class LabelManager
 		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
 			if ($labelobj['label'] == $label) {
 				$this->entity[$this->labels_property]->remove($k);
+
+				if ($this->entity instanceof Ticket) {
+					$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
+				}
+
 				return $labelobj;
 			}
 		}
@@ -99,6 +105,10 @@ class LabelManager
 			'label_type' => $type_name,
 			'label' => $label
 		));
+
+		if ($this->entity instanceof Ticket) {
+			$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
+		}
 
 		return $labelobj;
 	}

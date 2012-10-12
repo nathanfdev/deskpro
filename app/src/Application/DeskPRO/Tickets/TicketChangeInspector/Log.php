@@ -239,6 +239,31 @@ class Log
 			}
 		}
 
+		// Adding and removing labels
+		if ($info = $this->tracker->getChangedProperty('label_added')) {
+			$labels = array();
+			foreach ($info as $i) {
+				$labels[] = $i['new'];
+			}
+
+			if ($labels) {
+				$action = new LogActions\LabelsAdded($labels);
+				$actions[] = $action;
+			}
+		}
+		if ($info = $this->tracker->getChangedProperty('label_removed')) {
+			dpdev_log('sfsf');
+			$labels = array();
+			foreach ($info as $i) {
+				$labels[] = $i['old'];
+			}
+
+			if ($labels) {
+				$action = new LogActions\LabelsRemoved($labels);
+				$actions[] = $action;
+			}
+		}
+
 		// Need to rewrite status log based on if hidden was changed as well
 		if (($info = $this->tracker->getChangedProperty('hidden_status')) && $info['new']) {
 			if ($status_k) {
