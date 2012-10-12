@@ -67,6 +67,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
 			onTabSwitch: function(info) {
+				self.updateUi();
 			}
 		});
 
