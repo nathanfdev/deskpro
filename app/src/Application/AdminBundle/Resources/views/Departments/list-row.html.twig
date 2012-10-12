@@ -77,7 +77,7 @@
 {{ design.dpgrid_content_end() }}
 
 {% if department.children|length %}
-	{% for sub_dep in department.children %}
+	{% for sub_dep in department.getChildrenOrdered() %}
 		{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1, is_last: loop.last } %}
 	{% endfor %}
 {% endif %}
