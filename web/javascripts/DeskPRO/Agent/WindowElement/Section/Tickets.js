@@ -35,15 +35,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		DeskPRO_Window.getMessageChanneler().addEvent('postMessageSend', function() {
 
+			if (!self.collectedFilterUpdates.length && !self.queueRefreshFilterGrouping.length) {
+				return;
+			}
+
 			var filterIds = self.collectedFilterUpdates;
 			if (self.queueRefreshFilterGrouping.length) {
 				filterIds.append(self.queueRefreshFilterGrouping);
 			}
 
 			var filterOps = self.collectedFilterUpdateOps;
-
-			console.log(filterIds);
-			console.log(filterOps);
 
 			self.collectedFilterUpdates = [];
 			self.collectedFilterUpdateOps = {};
