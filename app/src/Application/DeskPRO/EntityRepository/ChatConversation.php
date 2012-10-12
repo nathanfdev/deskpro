@@ -293,13 +293,11 @@ class ChatConversation extends AbstractEntityRepository
 			$date_limit = $date_limit->format('Y-m-d H:i:s');
 		}
 
-		array_walk($participant_ids, function(&$item) {
-			if ($item instanceof PersonEntity) {
-				$item = $item['id'];
-			} elseif (!ctype_digit($item)) {
-				$item = null;
+		foreach ($participant_ids as &$pid) {
+			if ($pid instanceof PersonEntity) {
+				$pid = $pid->getId();
 			}
-		});
+		}
 
 		$participant_ids = Arrays::removeFalsey($participant_ids);
 		$participant_ids = array_unique($participant_ids);
