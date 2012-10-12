@@ -60,14 +60,45 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		if (!tagSource) tagSource = [];
 
-		tagSource = Array.clone(tagSource);
-
 		this.input.on('change', function() {
 			self.fireEvent('change', self.getLabels());
 		});
 
+		function markMatch(text, term, markup) {
+			if (typeof text != 'string') {
+				return '';
+			}
+
+			var match=text.toUpperCase().indexOf(term.toUpperCase()),
+				tl=term.length;
+
+			if (match<0) {
+				markup.push(text);
+				return;
+			}
+
+			markup.push(text.substring(0, match));
+			markup.push("<span class='select2-match'>");
+			markup.push(text.substring(match, match + tl));
+			markup.push("</span>");
+			markup.push(text.substring(match + tl, text.length));
+		}
+
 		DP.select(this.input, {
-			tags: tagSource
+			tags: tagSource,
+			id: function (e) { if (!e) return null; return e.id; },
+			formatResult: function(result, container, query) {
+				var markup=[];
+				markMatch(result.text, query.term, markup);
+				return markup.join("");
+			},
+			matcher: function(term, text) {
+				if (typeof text != 'string') {
+					return false;
+				}
+
+				return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+			}
 		});
 
 		this.input.select2('container').on('click', '.select2-search-choice', function(ev) {
