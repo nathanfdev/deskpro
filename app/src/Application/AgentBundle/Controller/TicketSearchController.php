@@ -1223,11 +1223,11 @@ class TicketSearchController extends AbstractController
 		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
 		$actions_builder = RuleBuilder::newTermsBuilder();
-		$actions_set = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'string'));
+		$actions_set = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'raw'));
 
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids);
 
-		if ($actions && $tickets) {
+		if (($actions || $actions_set) && $tickets) {
 
 			$factory = new ActionsFactory();
 			$collection = new ActionsCollection();
