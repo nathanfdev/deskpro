@@ -10,6 +10,7 @@
 		'%From%'    => 'From',
 		'%Sent%'    => 'Sent',
 		'%To%'      => 'To',
+		'%Date%'    => 'Date',
 		'%Subject%' => 'Subject',
 		'%BCC%'     => 'BCC',
 		'%CC%'      => 'CC',
@@ -18,6 +19,7 @@
 	'danish' => array(
 		'%From%'    => 'Fra',
 		'%Sent%'    => 'Sendt',
+		'%Date%'    => 'Dato',
 		'%To%'      => 'Til',
 		'%Subject%' => 'Emne',
 		'%BCC%'     => 'BCC',
@@ -27,6 +29,7 @@
 	'dutch' => array(
 		'%From%'    => 'Van',
 		'%Sent%'    => 'Verzonden',
+		'%Date%'    => 'Datum',
 		'%To%'      => 'Aan',
 		'%Subject%' => 'Onderwerp',
 		'%BCC%'     => 'BCC',
@@ -36,6 +39,7 @@
 	'french' => array(
 		'%From%'    => 'De',
 		'%Sent%'    => '(?:Envoyé|Envoye)',
+		'%Date%'    => 'Date',
 		'%To%'      => '(?:À|A)',
 		'%Subject%' => 'Objet',
 		'%BCC%'     => 'BCC',
@@ -45,6 +49,7 @@
 	'german' => array(
 		'%From%'    => 'Von',
 		'%Sent%'    => 'Gesendet',
+		'%Date%'    => 'Datum',
 		'%To%'      => 'An',
 		'%Subject%' => 'Betreff',
 		'%BCC%'     => 'BCC',
@@ -54,6 +59,7 @@
 	'italian' => array(
 		'%From%'    => 'Da',
 		'%Sent%'    => 'Inviato',
+		'%Date%'    => 'Data',
 		'%To%'      => 'A',
 		'%Subject%' => 'Oggetto',
 		'%BCC%'     => 'BCC',
@@ -63,6 +69,7 @@
 	'spanish' => array(
 		'%From%'    => 'De',
 		'%Sent%'    => 'Enviado',
+		'%Date%'    => 'Fecha',
 		'%To%'      => 'Para',
 		'%Subject%' => 'Asunto',
 		'%BCC%'     => 'BCC',

@@ -1013,12 +1013,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		} else {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
 			$email_info['body_is_html'] = false;
-
-			if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
-				$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
-			}
-
-			$email_info['body'] = strip_tags($email_info['body']);
+			$email_info['body'] = \Orb\Util\Strings::html2Text($email_info['body']);
 		}
 
 		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);

@@ -107,6 +107,7 @@ class Generic implements ForwardDef, QuoteDef
 			if ($found >= 2) {
 				break;
 			}
+			$start_line = null;
 			$found = 0;
 		}
 

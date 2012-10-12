@@ -1576,6 +1576,27 @@ class Strings
 
 
 	/**
+	 * Attempts to turn HTML into plaintext
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function html2Text($string)
+	{
+		$body = self::standardEol($string);
+		$body = str_replace("\n", '', $body);
+		$body = preg_replace('#<br[^>]*>#i', "\n", $body);
+		$body = preg_replace('#<p[^>]*>#i', "\n", $body);
+		$body = strip_tags($body);
+		$body = Strings::decodeHtmlEntities($body);
+		$body = preg_replace('#\x{00a0}#u', ' ', $body); // nbsp's
+		$body = trim($body);
+
+		return $body;
+	}
+
+
+	/**
 	 * Remove all empty lines in a string
 	 *
 	 * @param string $string
@@ -1656,6 +1677,9 @@ class Strings
 			$int = hexdec($m[1]);
 			return Strings::chrUni($int);
 		}, $html);
+
+		// Decode normal stuff
+		$html = html_entity_decode($html, \ENT_QUOTES, 'UTF-8');
 
 		return $html;
 	}
