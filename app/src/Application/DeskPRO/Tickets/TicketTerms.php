@@ -1192,12 +1192,12 @@ class TicketTerms
 			if (strpos($op, 'changed') !== false) {
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
-					$descs[$info['type']] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
+					$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
 				}
 			} else {
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
-					$descs[$info['type']] = $term;
+					$descs[] = $term;
 				} else {
 					error_log("Unknown term description for {$info['type']}");
 				}
