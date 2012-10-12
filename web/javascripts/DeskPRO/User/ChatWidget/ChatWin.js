@@ -25,12 +25,20 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				cacheBust: 0,
 				pollingInterval: 130,
 				recieveCallback: null,
+				resetHashTimeout: null,
 				send: function(message, targetUrl, target) {
 					if (this.hasPostMessage) {
 						target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 					} else {
-						var targetLoc = target.location + '';
-						target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+						var targetLoc = targetUrl;
+						target.location.replace(targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message);
+
+						if (this.resetHashTimeout) {
+							window.clearTimeout(this.resetHashTimeout);
+						}
+						this.resetHashTimeout = window.setTimeout(function() {
+							target.location.replace(targetLoc.replace(/#.*$/, '') + '#');
+						}, 95);
 					}
 				},
 				setupReciever: function(callback, sourceUrl) {
@@ -84,7 +92,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			};
 		}
 
-		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
+		var hash = window.location.hash + '';
+		this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
 		this.sentLoadingIndicator = false;
 		this.hasStarted = false;
 		this.hasBeenAssigned = false;
@@ -543,6 +552,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		var self = this;
 		var data = $('#dp_chat_done').find('input, select, textarea').serializeArray();
 
+		$('#send_feedback_controls').hide();
+		$('#send_feedback_loading').show();
 		$.ajax({
 			cache: false,
 			url: BASE_URL + 'chat/chat-finished-feedback/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1&__sid=' + this.sessionCode,

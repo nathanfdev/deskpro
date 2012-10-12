@@ -101,7 +101,6 @@ var DpOverlayWidget = new (function() {
 		lastHash: null,
 		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 		cacheBust: 0,
-		pollingInterval: 130,
 		recieveCallback: null,
 		send: function(message, targetUrl, target) {
 			if (this.hasPostMessage) {
@@ -112,12 +111,6 @@ var DpOverlayWidget = new (function() {
 			}
 		},
 		setupReciever: function(callback, sourceUrl) {
-			// Unset existing
-			if (callback && this.recieveCallback) {
-				this.recieveCallback = null;
-				this.setupReciever(null, '');
-			}
-
 			this.recieveCallback = callback;
 
 			if (this.hasPostMessage) {
@@ -140,7 +133,7 @@ var DpOverlayWidget = new (function() {
 							me.lastHash = hash;
 							me.recieveCallback({ data: hash.replace( re, '') });
 						}
-					});
+					}, 60);
 				}
 			}
 		}
@@ -282,7 +275,7 @@ var DpOverlayWidget = new (function() {
 				css.push((isRtl ? 'left' : 'right') + ': -10px');
 				css = css.join(';');
 
-				close = $('<span style="'+css+'"></span>').appendTo(contentWrap).click(function(ev) {
+				$('<span style="'+css+'"></span>').appendTo(contentWrap).click(function(ev) {
 					ev.preventDefault();
 					contentWrap.fadeOut('fast', function() {
 						contentWrap.remove();
@@ -301,7 +294,7 @@ var DpOverlayWidget = new (function() {
 
 				var url = data[0];
 				url = url.replace(/__DP_COL__/g, ':');
-				url += '#' + encodeURIComponent(document.location.href);
+				url += '#' + encodeURIComponent(window.location.href);
 				$('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
 
 				break;
@@ -416,7 +409,7 @@ var DpOverlayWidget = new (function() {
 			src += '&language_id=' + DpOverlayWidget_Options.languageId;
 		}
 
-		src += '#' + encodeURIComponent(document.location.href);
+		src += '#' + encodeURIComponent(window.location.href);
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
 		comms.setupReciever(function(m) {

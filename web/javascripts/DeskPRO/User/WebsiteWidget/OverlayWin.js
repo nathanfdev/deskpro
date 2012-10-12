@@ -17,14 +17,21 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			lastHash: null,
 			hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 			cacheBust: 0,
-			pollingInterval: 130,
 			recieveCallback: null,
+			resetHashTimeout: null,
 			send: function(message, targetUrl, target) {
 				if (this.hasPostMessage) {
 					target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 				} else {
-					var targetLoc = target.location + '';
-					target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+					var targetLoc = targetUrl;
+					target.location.replace(targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message);
+
+					if (this.resetHashTimeout) {
+						window.clearTimeout(this.resetHashTimeout);
+					}
+					this.resetHashTimeout = window.setTimeout(function() {
+						target.location.replace(targetLoc.replace(/#.*$/, '') + '#');
+					}, 95);
 				}
 			},
 			setupReciever: function(callback, sourceUrl) {
@@ -56,23 +63,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 								me.lastHash = hash;
 								me.recieveCallback({ data: hash.replace( re, '') });
 							}
-						}, this.pollingInterval);
+						}, 60);
 					}
 				}
 			}
 		};
 
-		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
+		var hash = window.location.hash + '';
+		this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
 	},
 
 	initPage: function() {
 		var self = this;
 
 		$(".widget-deskpro select:not('.no-uniform'),.file").uniform();
-
-		$('.widget-deskpro .btn-activity, .widget-deskpro .textarea, .widget-deskpro,.widget-deskpro .widget-container,.widget-deskpro .btn,.widget-deskpro .txt').each(function() {
-			//PIE.attach(this);
-		});
 
 		$('.with-handler[data-element-handler]').each(function() {
 			var el = $(this);

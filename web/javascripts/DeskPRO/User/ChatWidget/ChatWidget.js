@@ -200,7 +200,7 @@ var DpChatWidget = new (function() {
 				}
 			}
 
-			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(document.location.href);
+			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(window.location.href);
 			chatIframe = $('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(chatIframeHolder);
 
 			comms.setupReciever(childListen, frameSrc);
@@ -649,7 +649,12 @@ var DpChatWidget = new (function() {
 				chatIframeHolder = null;
 				chatIframeWinTab = null;
 				chatIframe = null;
-				comms.setupReciever(null, null);
+				comms.reset();
+
+				if (!comms.hasPostMessage) {
+					var targetLoc = window.location.href + '';
+					window.location.replace(targetLoc.replace(/#.*$/, '') + '#');
+				}
 				break;
 		}
 	};
@@ -666,7 +671,6 @@ var DpChatWidget = new (function() {
 		lastHash: null,
 		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 		cacheBust: 0,
-		pollingInterval: 130,
 		recieveCallback: null,
 		send: function(message, targetUrl, target) {
 			if (this.hasPostMessage) {
@@ -676,13 +680,14 @@ var DpChatWidget = new (function() {
 				target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 			}
 		},
-		setupReciever: function(callback, sourceUrl) {
-			// Unset existing
-			if (callback && this.recieveCallback) {
-				this.recieveCallback = null;
-				this.setupReciever(null, '');
+		reset: function() {
+			this.recieveCallback = null;
+			this.lastHash = null;
+			if (this.intervalId) {
+				window.clearInterval(this.intervalId);
 			}
-
+		},
+		setupReciever: function(callback, sourceUrl) {
 			this.recieveCallback = callback;
 
 			if (this.hasPostMessage) {
@@ -705,7 +710,7 @@ var DpChatWidget = new (function() {
 							me.lastHash = hash;
 							me.recieveCallback({ data: hash.replace( re, '') });
 						}
-					});
+					}, 60);
 				}
 			}
 		}
