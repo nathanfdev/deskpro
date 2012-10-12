@@ -198,6 +198,13 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
+		$ticket_display->setPersonContext($this->person);
+		$ticket_display->addPagesFromDb();
+		$page = $ticket_display->getDepartmentPage($ticket->getDepartmentId());
+		$vars['page_display'] = $page->getPageDisplay('default')->data;
+
+
 		$tpl = 'UserBundle:TicketView:view.html.twig';
 		if ($this->in->getBool('edit')) {
 
@@ -209,7 +216,6 @@ class TicketViewController extends AbstractController
 
 			$errors = array();
 			$error_fields = array();
-
 
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
