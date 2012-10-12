@@ -82,7 +82,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$this->em->persist($this->person);
 				$this->em->flush();
 
-				$field_manager->saveFormToObject($custom_fields, $this->person);
+				if ($custom_fields) {
+					$field_manager->saveFormToObject($custom_fields, $this->person);
+				}
 
 				$profile_saved = true;
 			}
