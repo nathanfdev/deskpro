@@ -40,6 +40,64 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}).bind(this));
 
 		this.openingChatTimeout = {};
+		this.refreshCountsTimeout = null;
+	},
+
+	refreshOpenCounts: function(now) {
+
+		var self = this;
+		if (!now && this.refreshCountsTimeout) {
+			return;
+		}
+
+		var fn = function() {
+			self.refreshCountsTimeout = null;
+			$.ajax({
+				url: BASE_URL + 'agent/chat/open-counts.json',
+				dataType: 'json',
+				success: function(data) {
+
+					$('#userchat_deplist_all').find('span.list-counter').each(function() {
+						var key, subkey, count;
+						key = $(this).data('count-key').split('.');
+						subkey = key[1];
+						key = key[0];
+
+						if (data && data[key] && data[key][subkey]) {
+							count = data[key][subkey];
+						} else {
+							count = 0;
+						}
+
+						$(this).text(count);
+						if (!$(this).parent().is('h3')) {
+							$(this).closest('li').hide();
+						} else {
+							$(this).closest('li').show();
+						}
+					});
+
+					$('#userchat_deplist_all').find('> ul.sub-group').each(function() {
+						if ($(this).find('> li').filter(':visible')) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+
+					self.handleUpdateCounts();
+				}
+			});
+		};
+
+		if (now) {
+			if (this.refreshCountsTimeout) {
+				window.clearTimeout(refreshCountsTimeout);
+			}
+			fn();
+		} else {
+			this.refreshCountsTimeout = window.setTimeout(fn, 4500);
+		}
 	},
 
 	_initSection: function(data) {
@@ -257,6 +315,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
+		this.refreshOpenCounts();
+
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
 		this.modListingCount(data.agent_id, '-');
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.ended', data);
@@ -300,6 +360,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
+		this.handleUpdateCounts();
+
 		var openTab = this.isChatOpen(data.conversation_id);
 		if (openTab && data.restarted) {
 			openTab.page.closeSelf();
@@ -337,7 +399,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.modDepListingCount(data.department_id, '+');
 		}
 
-		this.handleUpdateCounts();
+		this.refreshOpenCounts();
 	},
 
 	handleUnassignedChat: function(data) {
@@ -346,6 +408,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		this.modListingCount(data.old_agent_id, '-');
+		this.handleUpdateCounts();
 
 		if (data.old_agent_id) {
 			this.modDepListingCount(data.department_id, '+');
@@ -412,6 +475,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
+		this.handleUpdateCounts();
 		this.modListingCount(data.agent_id, '+');
 
 		if (data.agent_id && !data.old_agent_id) {
@@ -464,6 +528,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
+
+		this.refreshOpenCounts();
 
 		if (!$('#is_chat_available').is(':checked')) {
 			return;

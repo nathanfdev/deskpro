@@ -478,61 +478,6 @@ class UserChatController extends AbstractController
 	public function getSectionDataAction()
 	{
 		$agent_names = $this->em->getRepository('DeskPRO:Person')->getAgentNames();
-		$searcher = new ChatConversationSearch();
-		$searcher->setPersonContext($this->person);
-		$searcher->setColumns('IF(agent_id, agent_id, -1) AS agent_id, COUNT(*) AS count');
-		$searcher->setGroupBy('chat_conversations.agent_id');
-		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
-
-		// Initial counts
-		$initial_counts = $this->db->fetchAllKeyValue($searcher->getSql());
-		$initial_counts['total'] = array_sum(array_values($initial_counts));
-        $initial_counts['active'] = $initial_counts['total'];
-
-        if(isset($initial_counts[-1])) {
-            $initial_counts['active'] -= $initial_counts[-1];
-        }
-
-		$searcher = new ChatConversationSearch();
-		$searcher->setPersonContext($this->person);
-		$searcher->setColumns('IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count');
-		$searcher->setGroupBy('chat_conversations.agent_id');
-		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
-		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
-
-		$dep_counts = $this->db->fetchAllKeyValue($searcher->getSql());
-
-		$dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
-		$dep_counts['none'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
-
-		$dep_counts['0_total'] = $dep_counts['none'];
-
-		// Departments
-		$departments = $this->container->getDataService('Department')->getInHierarchy();
-		$single_dep_mode = false;
-		if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
-			$single_dep_mode = true;
-		}
-
-		foreach ($departments as $dep) {
-			$c_id = $dep['id'];
-			$total = 0;
-			if (isset($dep_counts[$c_id])) {
-				$total = $dep_counts[$c_id];
-			}
-
-			foreach ($dep['children'] as $child_dep) {
-				$child_id = $child_dep['id'];
-				$dep_counts[$child_id . '_total'] = 0;
-				if (isset($dep_counts[$child_id])) {
-					$dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
-					$total += $dep_counts[$child_id];
-				}
-			}
-
-			$dep_counts["{$c_id}_total"] = $total;
-			$dep_counts['0_total'] += $total;
-		}
 
 		$filters = array();
 		$tr = App::getTranslator();
@@ -571,6 +516,15 @@ class UserChatController extends AbstractController
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
+		// Departments
+		$departments = $this->container->getDataService('Department')->getInHierarchy();
+		$single_dep_mode = false;
+		if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
+			$single_dep_mode = true;
+		}
+
+		list($initial_counts, $dep_counts) = $this->getCounts();
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
 			'counts'          => $initial_counts,
 			'dep_counts'      => $dep_counts,
@@ -585,6 +539,76 @@ class UserChatController extends AbstractController
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
+	}
+
+	public function getOpenCountsAction()
+	{
+		list($initial_counts, $dep_counts) = $this->getCounts();
+
+		return $this->createJsonResponse(array(
+			'counts' => $initial_counts,
+			'dep_counts' => $dep_counts
+		));
+	}
+
+	public function getCounts()
+	{
+		$searcher = new ChatConversationSearch();
+		$searcher->setPersonContext($this->person);
+		$searcher->setColumns('IF(agent_id, agent_id, -1) AS agent_id, COUNT(*) AS count');
+		$searcher->setGroupBy('chat_conversations.agent_id');
+		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
+
+		// Initial counts
+		$initial_counts = $this->db->fetchAllKeyValue($searcher->getSql());
+		$initial_counts['total'] = array_sum(array_values($initial_counts));
+        $initial_counts['active'] = $initial_counts['total'];
+
+        if(isset($initial_counts[-1])) {
+            $initial_counts['active'] -= $initial_counts[-1];
+        }
+
+		$searcher = new ChatConversationSearch();
+		$searcher->setPersonContext($this->person);
+		$searcher->setColumns('IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count');
+		$searcher->setGroupBy('chat_conversations.agent_id');
+		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
+		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
+
+		$dep_counts = $this->db->fetchAllKeyValue($searcher->getSql());
+
+		$dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
+		$dep_counts['none'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
+
+		$dep_counts['0_total'] = $dep_counts['none'];
+
+		// Departments
+		$departments = $this->container->getDataService('Department')->getInHierarchy();
+
+		foreach ($departments as $dep) {
+			$c_id = $dep['id'];
+			$total = 0;
+			if (isset($dep_counts[$c_id])) {
+				$total = $dep_counts[$c_id];
+			}
+
+			foreach ($dep['children'] as $child_dep) {
+				$child_id = $child_dep['id'];
+				$dep_counts[$child_id . '_total'] = 0;
+				if (isset($dep_counts[$child_id])) {
+					$dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
+					$total += $dep_counts[$child_id];
+				}
+			}
+
+			$dep_counts["{$c_id}_total"] = $total;
+			$dep_counts['0_total'] += $total;
+		}
+
+		return array(
+			$initial_counts,
+			$dep_counts
+		);
 	}
 
 

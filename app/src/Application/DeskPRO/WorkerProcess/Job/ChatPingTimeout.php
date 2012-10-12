@@ -86,8 +86,7 @@ class ChatPingTimeout extends AbstractJob
 		# User timeouts
 		#------------------------------
 
-		$cutoff = time() - 60;
-		$cutoff = time() - 10;
+		$cutoff = time() - 50;
 
 		$chat_ids = App::getDb()->fetchAllCol("
 			SELECT DISTINCT c.id
