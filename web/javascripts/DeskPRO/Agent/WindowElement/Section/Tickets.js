@@ -4,11 +4,21 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+		var self = this;
 		this.archiveFilterIds = [];
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
 
 		this.urlFragmentName = 'tickets';
+
+		this.runningRefreshFilterGrouping = [];
+		this.rerunRefreshFilterGrouping = [];
+
+		this.collectedFilterUpdates = [];
+		this.collectedFilterUpdateOps = {};
+		this.queueRefreshFilterGrouping = [];
+
+		this.lastArchiveUpdate = new Date();
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
@@ -23,10 +33,27 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
 		}, this);
 
-		this.runningRefreshFilterGrouping = [];
-		this.rerunRefreshFilterGrouping = [];
+		DeskPRO_Window.getMessageChanneler().addEvent('postMessageSend', function() {
 
-		this.lastArchiveUpdate = new Date();
+			var filterIds = self.collectedFilterUpdates;
+			if (self.queueRefreshFilterGrouping.length) {
+				filterIds.append(self.queueRefreshFilterGrouping);
+			}
+
+			var filterOps = self.collectedFilterUpdateOps;
+
+			console.log(filterIds);
+			console.log(filterOps);
+
+			self.collectedFilterUpdates = [];
+			self.collectedFilterUpdateOps = {};
+			self.queueRefreshFilterGrouping = [];
+
+			if (filterIds.length) {
+				self.refreshFilterGrouping(filterIds, false, filterOps);
+				self._recountHold();
+			}
+		});
 	},
 
 	_initSection: function(data) {
@@ -262,7 +289,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			if (refreshFilterIds.length) {
-				self.refreshFilterGrouping(refreshFilterIds);
+				self.queueRefreshFilterGrouping.append(refreshFilterIds);
 			}
 		});
 
@@ -408,6 +435,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var filterId = parseInt(data.filter_id);
 		var ticketId = parseInt(data.ticket_id);
+		var filterOps = {};
 
 		if (!this.filterTicketIds[filterId]) {
 			this.filterTicketIds[filterId] = [];
@@ -428,6 +456,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				this.setFilterCount(filterId, count);
 			}
 
+			filterOps = {ticketId: ticketId, op: 'add'};
+
 			if (page && ticketId) {
 				page.handleAutoAdd(ticketId);
 			}
@@ -442,16 +472,24 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				this.setFilterCount(filterId, count);
 			}
 
+			filterOps = {ticketId: ticketId, op: 'del'};
+
 			if (page && ticketId) {
 				page.delTicket(ticketId);
 			}
 		}
 
-		this.refreshFilterGrouping([filterId]);
-		this._recountHold();
+		this.collectedFilterUpdates.push(filterId);
+		this.collectedFilterUpdateOps[filterId] = filterOps;
 	},
 
-	refreshFilterGrouping: function(filterIds, doSave) {
+	refreshFilterGrouping: function(filterIds, doSave, filterOps) {
+
+		if (this.queueRefreshFilterGrouping.length) {
+			filterIds.append(this.queueRefreshFilterGrouping);
+			this.queueRefreshFilterGrouping = [];
+		}
+
 		var postData = [];
 
 		var els = [];
@@ -584,6 +622,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 					this.setFilterGroupingContent(filterId, html, grouping);
 
+					// Update currently viewed list if we're viewing a
+					// subgrouping and its a non-delete update.
+					// - If its a delete, then the ticket is simply removed,
+					// any other update would require a server call to see
+					// if its visible in this group at all
 					if (selectedGrouping != 'undefined') {
 						filterEl = $('.filter-' + filterId, this.sectionEl);
 						li = filterEl.find('li.grouping-' + selectedGrouping);
@@ -604,10 +647,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 											|| (listPage.meta.topGroupingOption) // We are dumb to any grouping, so only way to know if view should be updated is by refreshing
 										)
 								) {
-									if (li.data('route')) {
-										DeskPRO_Window.runPageRouteFromElement(li);
+									if (filterOps && filterOps[filterId] && filterOps[filterId].ticketId && filterOps[filterId].op == 'del') {
+										listPage.delTicket(filterOps[filterId].ticketId);
 									} else {
-										DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'));
+										if (li.data('route')) {
+											DeskPRO_Window.runPageRouteFromElement(li);
+										} else {
+											DeskPRO_Window.runPageRouteFromElement(li.find('[data-route]'));
+										}
 									}
 								}
 							}
