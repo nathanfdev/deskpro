@@ -652,7 +652,9 @@ class UserChatManager
 
 		$this->em->flush();
 
-		$this->autoSendChatTranscript($convo);
+		if ($reason !== 'timeout') {
+			$this->autoSendChatTranscript($convo);
+		}
 	}
 
 
