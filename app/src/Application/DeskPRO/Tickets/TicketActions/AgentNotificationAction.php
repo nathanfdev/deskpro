@@ -254,7 +254,7 @@ class AgentNotificationAction extends AbstractAction
 			$tpl = $this->ticket_update_email_tpl;
 			$from_name = null;
 
-			if (App::getCurrentPerson()->getId()) {
+			if (App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
 				$from_name = App::getCurrentPerson()->getDisplayName();
 			}
 		}
