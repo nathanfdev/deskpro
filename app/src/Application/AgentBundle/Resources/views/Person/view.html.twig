@@ -93,9 +93,18 @@ pageMeta.baseId = '{{ baseId }}';
 		{% if perms.reset_password %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
 		{% if perms.delete %}
 			<li
+				data-action="ban"
+				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person'), ban: 1 }) }}"
+			>
+				Delete User &amp; Ban Email
+			</li>
+			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
-				class="delete-trigger">{{ phrase('agent.people.delete_user') }}</li>
+				class="delete-trigger"
+			>
+				Delete User
+			</li>
 		{% endif %}
 	</ul>
 

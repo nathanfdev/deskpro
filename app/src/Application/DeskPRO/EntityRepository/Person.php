@@ -428,4 +428,7 @@ class Person extends AbstractEntityRepository
 			WHERE is_confirmed = 0
 		");
 	}
+
+
+
 }

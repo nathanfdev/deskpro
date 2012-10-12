@@ -74,6 +74,7 @@ class PreProcessor extends AbstractGatewayProcessor
 		#------------------------------
 
 		$gateway_matcher = App::getSystemService('gateway_address_matcher');
+		$match_address_id = null;
 		if ($found_gateway = $gateway_matcher->getMatchingAddress($from, null, $match_address_id)) {
 			$this->error = EmailSource::ERR_FROM_GATEWAY;
 			$this->source_info[] = "Read from address: " . $from;
@@ -86,6 +87,7 @@ class PreProcessor extends AbstractGatewayProcessor
 		# From is a banned address
 		#------------------------------
 
+		$match = null;
 		if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
 			$this->error = EmailSource::ERR_FROM_BANNED;
 			$this->source_info[] = "Read from address: " . $from;

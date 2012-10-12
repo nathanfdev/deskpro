@@ -1027,6 +1027,16 @@ class PersonController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		if ($this->in->getBool('ban')) {
+			foreach ($person->emails as $email) {
+				$email_addy = strtolower($email->email);
+				App::getDb()->replace('ban_emails', array(
+					'banned_email' => $email_addy,
+					'is_pattern' => 0
+				));
+			}
+		}
+
 		$edit_manager = $this->container->getSystemService('person_edit_manager');
 		$edit_manager->setPersonContext($this->person);
 		$edit_manager->deleteUser($person);

@@ -1292,6 +1292,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return array
+	 */
+	public function getEmailAddresses()
+	{
+		$arr = array();
+		foreach ($this->emails as $email) {
+			if ($email->is_validated) {
+				$arr[] = $email->email;
+			}
+		}
+
+		return $arr;
+	}
+
+
+	/**
 	 * Get the primary email address ID
 	 *
 	 * @return int

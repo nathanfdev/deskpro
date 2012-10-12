@@ -1746,10 +1746,16 @@ class TicketController extends AbstractController
 					'is_pattern' => 0
 				));
 			}
+
+			$person = $ticket->person;
+			$edit_manager = $this->container->getSystemService('person_edit_manager');
+			$edit_manager->setPersonContext($this->person);
+			$edit_manager->deleteUser($person);
 		}
 
 		return $this->createJsonResponse(array(
-			'success' => true
+			'success' => true,
+			'banned' => $this->in->getBool('ban')
 		));
 	}
 

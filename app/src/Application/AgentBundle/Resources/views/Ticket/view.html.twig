@@ -218,9 +218,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 							<ul style="display:none" id="{{baseId}}_remove_menu">
 								<li data-action="spam">Set as Spam</li>
-								<li data-action="spam.ban">Set as Spam &amp; Ban User</li>
-								<li data-action="delete">Delete</li>
-								<li data-action="delete.ban">Delete &amp; Ban User</li>
+								<li data-action="delete">Delete Ticket</li>
+								{% if app.user.hasPerm('agent_people.delete') %}<li data-action="delete.ban">Delete Ticket, Delete User &amp; Ban Email</li>{% endif %}
 							</ul>
 						{% endif %}
 						<a class="clean-white" id="{{ baseId }}_lock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}>Lock Ticket</a>

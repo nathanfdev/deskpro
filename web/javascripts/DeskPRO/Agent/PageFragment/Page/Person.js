@@ -278,6 +278,20 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							self.closeSelf();
 						}
 					);
+				} else if (action == 'ban') {
+					DeskPRO_Window.showConfirm(
+						$('<div>Are you sure you want to ban this user?</div>'),
+						function() {
+							$.ajax({
+								url: $(info.itemEl).data('delete-url'),
+								type: 'POST',
+								success: function() {
+									DeskPRO_Window.showAlert('The user was deleted and banned');
+								}
+							});
+							self.closeSelf();
+						}
+					);
 				}
 			}
 		});

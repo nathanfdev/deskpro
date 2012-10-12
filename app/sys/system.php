@@ -112,6 +112,25 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+		// Make sure we arent banned ip
+		if (!preg_match('#^/admin/?#', $path)) {
+			$ip = $request->getClientIp();
+			$ip_long = sprintf("%u", ip2long($ip));
+
+			$banned = App::getDb()->fetchColumn("
+				SELECT banned_ip
+				FROM ban_ips
+				WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
+				LIMIT 1
+			", array($ip, $ip_long, $ip_long));
+
+			if ($banned) {
+				$response = new Response();
+				$response->setContent(HelpdeskOfflineMessage::getOfflinePage('The helpdesk is currently unavailable.'));
+				return $response;
+			}
+		}
+
 		// Make sure we arent offline
 		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
 			$response = new Response();

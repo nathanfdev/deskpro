@@ -53,4 +53,23 @@ class BanIp extends AbstractEntityRepository
 
 		return $list;
 	}
+
+
+	/**
+	 * @param $ip
+	 * @return bool
+	 */
+	public function isIpBanned($ip)
+	{
+		$ip_long = sprintf("%u", ip2long($ip));
+
+		$banned = App::getDb()->fetchColumn("
+			SELECT banned_ip
+			FROM ban_ips
+			WHERE banned_ip = ? OR (ip_start >= ? AND ip_end <= ?)
+			LIMIT 1
+		", array($ip, $ip_long, $ip_long));
+
+		return $banned ? true : false;
+	}
 }
