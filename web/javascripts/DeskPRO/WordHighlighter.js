@@ -6,6 +6,8 @@ Orb.createNamespace('DeskPRO');
 DeskPRO.WordHighlighter = {
 	highlight: function(node, words, excluseStopwords, onlyFirst) {
 
+		var i, w;
+
 		// We need the longest words to process first or they'll be passed up in favour of shorter guys
 		words.sort(function(a, b) {
 			if (a.length > b.length) {
@@ -25,42 +27,64 @@ DeskPRO.WordHighlighter = {
 			return [];
 		}
 
+		// Build a list of words we know are actually in the text
+		var text = $(node).text().toLowerCase();
+		var useWords = [];
+		for (i = 0; i < words.length; i++) {
+			var w = words[i].toLowerCase();
+			if (!w || !w.length) {
+				continue;
+			}
+			if (text.indexOf(w) !== -1) {
+				useWords.push(w);
+			}
+		}
+
+		if (!useWords.length) {
+			return [];
+		}
+
 		var addedNodes = [];
-		this._do(node, words, addedNodes, onlyFirst, {});
+		this._do(node, useWords, addedNodes, onlyFirst, {});
 
 		return addedNodes;
 	},
 
 	_do: function(node, words, addedNodes, onlyFirst, _doneWords) {
-		var i;
+		var i, tmp;
 
-		if (node.nodeType == 3) {
-			for (i = 0; i < words.length; i++) {
-				if (onlyFirst && _doneWords[i]) continue;
+		var proc_node = [node];
+		var replaceBits = [];
 
-				var pos = node.data.toLowerCase().indexOf(words[i].toLowerCase());
-				if (pos >= 0 && !$(node.parentNode).hasClass('dp-highlight-word') && !$(node.parentNode).closest('.dp-highlight-word')[0]) {
-					_doneWords[i] = true;
+		while (node = proc_node.pop()) {
+			if (node.nodeType == 3) {
+				for (i = 0; i < words.length; i++) {
+					if (onlyFirst && _doneWords[i]) continue;
 
-					var spannode = document.createElement('span');
-					spannode.className = 'dp-highlight-word';
-					spannode.setAttribute('data-word', words[i]);
-					addedNodes.push(spannode);
+					var pos = node.data.toLowerCase().indexOf(words[i]);
+					if (pos >= 0 && !$(node.parentNode).hasClass('dp-highlight-word') && !$(node.parentNode).closest('.dp-highlight-word')[0]) {
+						_doneWords[i] = true;
 
-					var middlebit = node.splitText(pos);
-					var endbit = middlebit.splitText(words[i].length);
-					var middleclone = middlebit.cloneNode(true);
-					spannode.appendChild(middleclone);
+						var spannode = document.createElement('span');
+						spannode.className = 'dp-highlight-word';
+						spannode.setAttribute('data-word', words[i]);
+						addedNodes.push(spannode);
 
-					this._do(endbit, words, addedNodes, onlyFirst, _doneWords);
+						var middlebit = node.splitText(pos);
+						var endbit = middlebit.splitText(words[i].length);
+						var middleclone = middlebit.cloneNode(true);
+						spannode.appendChild(middleclone);
 
-					middlebit.parentNode.replaceChild(spannode, middlebit);
+						middlebit.parentNode.replaceChild(spannode, middlebit);
+
+						proc_node.push(endbit);
+					}
 				}
-			}
-		}else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-			var children = $.makeArray(node.childNodes);
-			for (i = 0; i < children.length; i++) {
-				this._do(children[i], words, addedNodes, onlyFirst, _doneWords);
+			} else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+				var children = $.makeArray(node.childNodes);
+				for (i = 0; i < children.length; i++) {
+					proc_node.push(children[i]);
+				}
 			}
 		}
 	},
