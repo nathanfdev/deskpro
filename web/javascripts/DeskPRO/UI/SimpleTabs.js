@@ -110,6 +110,10 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 	activateTab: function(tabEl, event) {
 
+		if (!tabEl) {
+			return;
+		}
+
 		var eventData = {
 			event: event || null,
 			tabEl: tabEl,
