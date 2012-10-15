@@ -453,21 +453,23 @@ class TicketChangeTracker extends ChangeTracker
 			$this->original_ticket->part_add_ids = array();
 		}
 
-		if ($this->isPropertyChanged('hidden_status')) {
-			$tmp = $this->getChangedProperty('hidden_status');
-			if ($tmp['old']) {
-				$old_status_code = 'hidden.' . $tmp['old'];
-			} else {
+		if (!$this->isNewTicket()) {
+			if ($this->isPropertyChanged('hidden_status')) {
+				$tmp = $this->getChangedProperty('hidden_status');
+				if ($tmp['old']) {
+					$old_status_code = 'hidden.' . $tmp['old'];
+				} else {
+					$tmp = $this->getChangedProperty('status');
+					$old_status_code = $tmp['old'];
+				}
+
+				$this->original_ticket->setStatus($old_status_code);
+			} elseif ($this->isPropertyChanged('status')) {
 				$tmp = $this->getChangedProperty('status');
 				$old_status_code = $tmp['old'];
+
+				$this->original_ticket->setStatus($old_status_code);
 			}
-
-			$this->original_ticket->setStatus($old_status_code);
-		} elseif ($this->isPropertyChanged('status') && !$this->isNewTicket()) {
-			$tmp = $this->getChangedProperty('status');
-			$old_status_code = $tmp['old'];
-
-			$this->original_ticket->setStatus($old_status_code);
 		}
 
 		foreach ($this->getAllChangedProperties() as $prop => $info) {

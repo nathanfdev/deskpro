@@ -184,6 +184,8 @@ var DP = {
 			}
 		}
 
+		options.formatNoMatches = function() { return ''; }
+
 		el.select2(options);
 	}
 };
