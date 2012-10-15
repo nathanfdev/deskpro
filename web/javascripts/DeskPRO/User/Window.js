@@ -256,7 +256,7 @@ DeskPRO.User.Window = new Orb.Class({
 		choiceHtml.append(innerHtml);
 		choiceHtml.append($('<span class="drop" />'));
 
-		var choiceMenu = $('<ul class="language-options-list" />');
+		var choiceMenu = $('<ul class="language-options-list" />').css({display: 'none', position: 'absolute'});
 		for (var i in choices) {
 			var li = $('<li />').html(getChoiceHtml(choices[i]));
 			(function(choice) {
