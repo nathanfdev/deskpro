@@ -163,8 +163,14 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 		var contentId = aEl.data('content-id');
 		var self = this;
 
+		var tplEl = $('.related-content-overlay-tpl', this.el);
+
+		if (!tplEl[0]) {
+			window.open(origUrl);
+		}
+
 		var overlay = new DeskPRO.User.SuggestedContentOverlay({
-			template: $('.related-content-overlay-tpl', this.el).get(0).innerHTML,
+			template: tplEl.get(0).innerHTML,
 			url: url,
 			pageUrl: origUrl,
 			contentType: aEl.data('content-type'),
