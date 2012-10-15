@@ -158,7 +158,7 @@ class TicketController extends AbstractController
 		}
 
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
-		$message->person = $this->person;
+		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
 		$snip = new \Application\DeskPRO\Entity\TicketSnippet();
