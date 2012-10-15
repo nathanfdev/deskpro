@@ -367,9 +367,16 @@ foreach ($sites as $siteinfo) {
 	$cmd = "php cron.php --verbose $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $siteinfo['build_number']);
-	$proc->run(function($type, $data) {
-		dp_log(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))), false);
-	});
+	$proc->setTimeout(900);
+
+	try {
+		$proc->run(function($type, $data) {
+			dp_log(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))), false);
+		});
+	} catch (\RuntimeException $e) {
+		dp_log("!!! PROCESS TIMED OUT !!!");
+		$DO_REPORT_LOG = true;
+	}
 
 	if (!$proc->isSuccessful()) {
 		dp_log("!!! DETECTED ERROR STATUS !!!");
@@ -392,7 +399,7 @@ if ($DO_REPORT_LOG) {
 
 	// Also save log to filesystem
 	file_put_contents(
-		DP_WEB_ROOT."/data/logs/cloud-cron.{$range_start}-{$range_end}." . str_replace('.', '_', microtime(true)) . ".log",
+		CloudConfig::getDatastorePath() . "/_cloud/cloud-cron.{$range_start}-{$range_end}." . str_replace('.', '_', microtime(true)) . ".log",
 		$dp_log_messages
 	);
 }
