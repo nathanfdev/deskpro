@@ -69,6 +69,9 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
 			});
+			oWrapper.on('restorescroll', function() {
+
+			});
 
 			var oViewport = { obj: $('.scroll-viewport', oWrapper).first() };
 			var oContent = { obj: $('.scroll-content', oWrapper).first() };
@@ -139,6 +142,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+				oWrapper.data('dp-scroll-pos', iScroll);
 			});
 			oWrapper.on('goscrollbottom', function() {
 
@@ -148,6 +152,16 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				}
 
 				iScroll = oContent[options.axis] - oViewport[options.axis];
+
+				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
+				oContent.obj.css(sDirection, -iScroll);
+				oWrapper.data('dp-scroll-pos', iScroll);
+			});
+			oWrapper.on('restorescroll', function() {
+				iScroll = parseInt(oWrapper.data('dp-scroll-pos'));
+				if (!iScroll) {
+					return;
+				}
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
@@ -267,6 +281,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
 					oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 					oContent.obj.css(sDirection, -iScroll);
+					oWrapper.data('dp-scroll-pos', iScroll);
 
 					oEvent = $.event.fix(oEvent);
 					oEvent.preventDefault();

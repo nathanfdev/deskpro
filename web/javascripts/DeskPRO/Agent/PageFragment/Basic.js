@@ -64,6 +64,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				this.wrapper.find('.with-scroll-handler').each(function() {
 					var sh = $(this).data('scroll_handler');
 					if (sh && sh.updateSize) {
+						$(this).data('scroll_handler').restorePosition();
 						$(this).data('scroll_handler').updateSize();
 					}
 				});
