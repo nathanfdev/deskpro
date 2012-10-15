@@ -122,11 +122,15 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
 				<button class="clean-white spam delete-type noedit-hide" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.general.mark_spam') }}</button>
-				<button class="clean-white merge noedit-hide">{{ phrase('agent.general.merge') }}</button>
+				<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
 				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
 			</div>
 		</div>
+
+		<ul id="{{baseId}}_merge_menu" style="display: none;">
+			<li class="elm no-choice">Open an additional feedback tab to merge.</li>
+		</ul>
 	</section>
 </div>
 

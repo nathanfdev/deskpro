@@ -191,7 +191,7 @@ class FeedbackMerge implements PersonContextInterface
 
 		$comment->person = $this->other_feedback->person;
 		$comment->content = $this->other_feedback->content;
-		$comment->date_Created = $this->other_feedback->date_created;
+		$comment->date_created = $this->other_feedback->date_created;
 
 		$this->feedback->addComment($comment);
 

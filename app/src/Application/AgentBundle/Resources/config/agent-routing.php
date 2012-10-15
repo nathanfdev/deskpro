@@ -2306,9 +2306,9 @@ $collection->add('agent_feedback_ajaxupdatestatus', new Route(
 ));
 
 $collection->add('agent_feedback_merge_overlay', new Route(
-	'/feedback/merge-overlay/{feedback_id}',
+	'/feedback/merge-overlay/{feedback_id}/{other_feedback_id}',
 	array('_controller' => 'AgentBundle:Feedback:mergeOverlay'),
-	array('feedback_id' => '\\d+'),
+	array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
 	array()
 ));
 

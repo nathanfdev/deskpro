@@ -489,24 +489,19 @@ class FeedbackController extends AbstractController
 	# merge
 	############################################################################
 
-	public function mergeOverlayAction($feedback_id)
+	public function mergeOverlayAction($feedback_id, $other_feedback_id = 0)
 	{
 		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
-		$open_feedback = $this->em->getRepository('DeskPRO:Feedback')->getByIds($this->in->getCleanValueArray('open_feedback_ids', 'uint', 'discard'));
-
-		$fn = function ($i) use ($feedback) {
-			if ($i['id'] == $feedback['id']) {
-				return false;
-			}
-			return true;
-		};
-
-		$open_feedback = array_filter($open_feedback, $fn);
+		if ($other_feedback_id && $other_feedback_id != $feedback_id) {
+			$other_feedback = $this->em->find('DeskPRO:Feedback', $other_feedback_id);
+		} else {
+			$other_feedback = false;
+		}
 
 		return $this->render('AgentBundle:Feedback:merge-overlay.html.twig', array(
 			'feedback'          => $feedback,
-			'open_feedback'    => $open_feedback,
+			'other_feedback'    => $other_feedback,
 		));
 	}
 
@@ -544,8 +539,8 @@ class FeedbackController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'feedback_id' => $feedback['id'],
-			'old_feedback_id' => $old_feedback_id
+			'id' => $feedback['id'],
+			'old_id' => $old_feedback_id
 		));
 	}
 

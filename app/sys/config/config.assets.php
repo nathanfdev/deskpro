@@ -346,7 +346,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/Widget/MergeTicket.js',
 		'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
-		'javascripts/DeskPRO/Agent/Widget/MergeFeedback.js',
+		'javascripts/DeskPRO/Agent/Widget/Merge.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
 		'javascripts/DeskPRO/Agent/Widget/FilterGroupEditor.js',
 		'javascripts/DeskPRO/Agent/Widget/FilterOptionsPop.js',

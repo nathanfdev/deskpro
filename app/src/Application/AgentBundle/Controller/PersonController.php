@@ -1006,8 +1006,8 @@ class PersonController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'person_id' => $person['id'],
-			'old_person_id' => $old_person_id
+			'id' => $person['id'],
+			'old_id' => $old_person_id
 		));
 	}
 

@@ -1,33 +1,86 @@
-<div class="ticket-merge feedback-merge overlay">
+<div class="extended-merge overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.general.merge_x_into', {'name': feedback.title|e}) }}</h4>
-		<div class="info">
-			{{ phrase('agent.feedback.merge_explain') }}
-		</div>
+		<h4>Merge Feedback</h4>
 	</div>
 
 	<div class="overlay-content">
-		{% if not open_feedback %}
-			<div class="group">
-				<ul>
-					<li>
-						{{ phrase('agent.feedback.merge_none_open') }}
-					</li>
-				</ul>
-			</div>
+		<table class="merge-data" width="{% if other_feedback %}100%{% else %}63%{% endif %}">
+			<col width="25%" />
+			<col width="38%" />
+			<col width="37%" />
+		{% if other_feedback %}
+		<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<td><a class="clean-white merge-target-button" data-merge-id="{{ feedback.id }}" data-keep="1">Keep this</a></td>
+			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_feedback.id }}">Merge this</a></td>
+		</tr>
+		</thead>
 		{% endif %}
+		<tbody class="merge-data-rows">
+		<tr class="always-keep">
+			<th>ID</th>
+			<td>{{ feedback.id }}</td>
+			{% if other_feedback %}<td>{{ other_feedback.id }}</td>{% endif %}
+		</tr>
+		<tr class="always-keep">
+			<th>Title</th>
+			<td>{{ feedback.title }}</td>
+			{% if other_feedback %}<td>{{ other_feedback.title }}</td>{% endif %}
+		</tr>
+		<tr>
+			<th>Category</th>
+			<td>{{ feedback.category ? feedback.category.title : '' }}</td>
+			{% if other_feedback %}
+				<td>{{ other_feedback.category ? other_feedback.category.title : '' }}</td>
+			{% endif %}
+		</tr>
+		<tr class="always-keep">
+			<th>Status</th>
+			<td>{{ feedback.status_category ? feedback.status_category.title : '' }}</td>
+			{% if other_feedback %}
+				<td>{{ other_feedback.status_category ? other_feedback.status_category.title : '' }}</td>
+			{% endif %}
+		</tr>
+		<tr class="always-keep">
+			<th>Date Created</th>
+			<td>{{ feedback.date_created|date('fulltime') }}</td>
+			{% if other_feedback %}<td>{{ other_feedback.date_created|date('fulltime') }}</td>{% endif %}
+		</tr>
+		<tr class="mergeable">
+			<th>Ratings</th>
+			<td>{{ feedback.num_ratings }}</td>
+			{% if other_feedback %}
+				<td>{{ other_feedback.num_ratings }}</td>
+			{% endif %}
+		</tr>
+		<tr class="mergeable">
+			<th>Comments</th>
+			<td>{{ feedback.num_comments }}</td>
+			{% if other_feedback %}
+				<td>{{ other_feedback.num_comments }}</td>
+			{% endif %}
+		</tr>
+		<tr class="mergeable">
+			<th>View Count</th>
+			<td>{{ feedback.view_count }}</td>
+			{% if other_feedback %}
+				<td>{{ other_feedback.view_count }}</td>
+			{% endif %}
+		</tr>
+		{% if other_feedback %}
+		<tr class="mergeable">
+			<th>Description</th>
+			<td colspan="2"><em>The description from the merged feedback will be added as a comment to the kept feedback.</em></td>
+		</tr>
+		{% endif %}
+		</tbody>
+		</table>
 
-		{% if open_feedback %}
-		<div class="group open-tickets">
-			<ul>
-				{% for feedback in open_feedback %}
-					<li>
-						<a data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}" class="with-route">{{ feedback.title }}</a>
-						<button class="clean-gray xx-small merge-trigger" data-feedback-id="{{ feedback.id }}">{{ phrase('agent.general.merge') }}</button>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
+		{% if other_feedback %}
+			<div style="text-align: center">
+				<button class="clean-white merge-trigger">{{ phrase('agent.general.merge') }}</button>
+			</div>
 		{% endif %}
 	</div>
 </div>

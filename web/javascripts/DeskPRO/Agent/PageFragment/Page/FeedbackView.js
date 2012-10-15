@@ -351,27 +351,17 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			window.open(self.meta.permalink);
 		});
 
-		$('.merge', actions).on('click', (function(ev) {
-			var mergeOverlay = new DeskPRO.Agent.Widget.MergeFeedback({
-				feedbackId: this.getMetaData('feedback_id'),
-				destroyOnClose: true,
-				onMergeSuccess: function(data) {
-
-					// remove old tabs, theyre outdated
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
-						var tid = tab.page.getMetaData('feedback_id');
-						if (tid == data.old_feedback_id || tid == data.feedback_id) {
-							DeskPRO_Window.TabBar.removeTabById(tab.id);
-						}
-					});
-
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
-
-					mergeOverlay.close();
-				}
-			});
-			mergeOverlay.open();
-		}).bind(this));
+		this.merge = new DeskPRO.Agent.Widget.Merge({
+			tabType: 'feedback',
+			metaId: self.meta.feedback_id,
+			metaIdName: 'feedback_id',
+			menu: this.getEl('merge_menu'),
+			trigger: $('.merge', this.getEl('action_buttons')),
+			overlayUrl: BASE_URL + 'agent/feedback/merge-overlay/{id}/{other}',
+			mergeUrl: BASE_URL + 'agent/feedback/merge/{id}/{other}',
+			loadRoute: 'feedback:' + BASE_URL + 'agent/feedback/view/{id}'
+		});
+		this.ownObject(this.merge);
 	},
 
 
