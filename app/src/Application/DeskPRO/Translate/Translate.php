@@ -413,6 +413,10 @@ class Translate implements PersonContextInterface
 	 */
 	public function getPhraseGroupFromName($phrase_name)
 	{
+		if (!is_string($phrase_name)) {
+			return false;
+		}
+
 		$pos = strpos($phrase_name, '.');
 		if ($pos === false) {
 			return false;
