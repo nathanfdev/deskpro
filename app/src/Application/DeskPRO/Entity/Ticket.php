@@ -1763,6 +1763,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function undeleteTicket()
 	{
+		if (!$this->id) {
+			return;
+		}
+
 		$del = $this->getDeletionRecord();
 		if (!$del) {
 			return;

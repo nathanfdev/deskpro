@@ -378,6 +378,7 @@ class TicketChangeTracker extends ChangeTracker
 		if ($this->original_ticket !== null) return $this->original_ticket;
 
 		$this->original_ticket = clone $this->ticket;
+		$this->original_ticket->id = null;
 
 		foreach ($this->getAllChangedProperties() as $prop => $info) {
 			$action = null;
