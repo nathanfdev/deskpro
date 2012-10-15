@@ -452,6 +452,7 @@ class KernelErrorHandler
 	{
 		static $ignore = array(
 			'Swift_TransportException',
+			'Swift_IoException',
 			'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
 		);
 
