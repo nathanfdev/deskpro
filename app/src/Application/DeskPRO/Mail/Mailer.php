@@ -140,8 +140,8 @@ class Mailer extends \Swift_Mailer implements Loggable
 			}
 		} catch (\Exception $e) {}
 
-		\DpShutdown::add(array($this, 'sendQueued'), null, 'db_done_trans');
-		\DpShutdown::add(array($this, 'sendQueued'), null, 'shutdown', 1000);
+		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'db_done_trans');
+		\DpShutdown::add(array($this, 'sendQueuedSilent'), null, 'shutdown', 1000);
 	}
 
 	/**
@@ -218,6 +218,18 @@ class Mailer extends \Swift_Mailer implements Loggable
 	{
 		while ($message = array_shift($this->queued)) {
 			$this->sendNow($message);
+		}
+	}
+
+	public function sendQueuedSilent()
+	{
+		while ($message = array_shift($this->queued)) {
+			try {
+				$this->sendNow($message);
+			} catch (\Exception $e) {
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+			}
 		}
 	}
 
