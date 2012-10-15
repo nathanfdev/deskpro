@@ -56,13 +56,12 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function configure()
 	{
 		$this->setName('dp:agents');
-		$this->addOption('show-agents', null, InputOption::VALUE_NONE, 'List all agents');
 		$this->addOption('reset-password', null, InputOption::VALUE_NONE, 'Reset the password of an admin');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		if ($input->getOption('show-agents')) {
+		if (!$input->getOption('reset-password')) {
 			$agents = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->getAgents();
 
 			$output->writeln("ADMINS");
