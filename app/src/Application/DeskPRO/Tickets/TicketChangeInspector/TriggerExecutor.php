@@ -203,10 +203,14 @@ class TriggerExecutor
 			$performer = 'agent';
 		} elseif (DP_INTERFACE == 'user') {
 			$performer = 'user';
+		} elseif (DP_INTERFACE == 'api') {
+			$performer = 'api';
 		} else {
 			if ($is_newticket) {
 				if (strpos($this->ticket->creation_system, 'agent') !== false) {
 					$performer = 'agent';
+				} elseif (strpos($this->ticket->creation_system, 'api') !== false) {
+					$performer = 'api';
 				} else {
 					$performer = 'user';
 				}
@@ -222,6 +226,8 @@ class TriggerExecutor
 		} else {
 			if ($performer == 'agent') {
 				$this->event_types = array('update.agent');
+			} elseif ($performer == 'api') {
+				$this->event_types = array('update.api');
 			} else {
 				$this->event_types = array('update.user');
 			}

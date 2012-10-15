@@ -57,9 +57,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_NEW_WEB_USER_PORTAL   = 'new.web.user.portal';
 	const EVENT_NEW_WEB_USER_WIDGET   = 'new.web.user.widget';
 	const EVENT_NEW_WEB_USER_FORM     = 'new.web.user.embed';
+	const EVENT_NEW_WEB_API           = 'new.web.api';
 	const EVENT_UPDATE                = 'update';
 	const EVENT_UPDATE_AGENT          = 'update.agent';
 	const EVENT_UPDATE_USER           = 'update.user';
+	const EVENT_UPDATE_API            = 'update.api';
 
 	const EVENT_TIME_OPEN                  = 'time.open';
 	const EVENT_TIME_USER_WAITING          = 'time.user_waiting';

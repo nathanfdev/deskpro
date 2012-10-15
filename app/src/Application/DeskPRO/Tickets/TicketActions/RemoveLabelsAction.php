@@ -132,6 +132,6 @@ class RemoveLabelsAction extends AbstractAction
 	public function getDescription($as_html = true)
 	{
 		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.remove_labels_action', array('labels' => $this->remove_labels));
+		return $tr->phrase('agent.tickets.remove_labels_action', array('labels' => implode(', ', $this->remove_labels)));
 	}
 }

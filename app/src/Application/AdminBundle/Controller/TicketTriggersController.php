@@ -62,13 +62,14 @@ class TicketTriggersController extends AbstractController
 					'new.web.user',
 					'new.web.user.portal',
 					'new.web.user.widget',
-					'new.web.user.embed'
+					'new.web.user.embed',
+					'new.web.api'
 				);
 				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-new.html.twig';
 				break;
 
 			case 'update':
-				$types = array('update.agent', 'update.user');
+				$types = array('update.agent', 'update.user', 'update.api');
 				$list_tpl = 'AdminBundle:TicketTriggers:list-triggers-update.html.twig';
 				break;
 
@@ -84,10 +85,13 @@ class TicketTriggersController extends AbstractController
 		if (!empty($triggers['new.web.user.widget'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.widget']);
 		if (!empty($triggers['new.web.user.embed'])) $triggers['new.web.user_any'] = array_merge($triggers['new.web.user_any'], $triggers['new.web.user.embed']);
 
+		$show_api_option = $this->em->getRepository('DeskPRO:ApiKey')->countApiKeys() > 0;
+
 		return $this->render($list_tpl, array(
 			'list_type'  => $list_type,
 			'types'      => $types,
 			'triggers'   => $triggers,
+			'show_api_option' => $show_api_option
 		));
 	}
 
@@ -176,6 +180,7 @@ class TicketTriggersController extends AbstractController
 		}
 
 		$term_options['web_hooks']  = $this->container->getDataService('WebHook')->getHookTitles();
+		$term_options['api_keys']  = $this->container->getDataService('ApiKey')->getApiKeyTitles();
 
 		$term_options['plugin_actions'] = $this->container->getDataService('TicketTriggerPluginActions')->getSetupObjects();
 		foreach ($term_options['plugin_actions'] AS $object) {

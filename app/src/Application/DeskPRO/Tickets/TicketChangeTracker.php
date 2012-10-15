@@ -147,6 +147,10 @@ class TicketChangeTracker extends ChangeTracker
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
 		}
+
+		if (DP_INTERFACE == 'api') {
+			$this->extra['api_key'] = \Application\ApiBundle\StaticLoader\RequestKey::getApiKeyFromRequest();
+		}
 	}
 
 

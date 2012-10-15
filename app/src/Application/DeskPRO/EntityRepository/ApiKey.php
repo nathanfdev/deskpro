@@ -33,7 +33,8 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-use \Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
 
 class ApiKey extends AbstractEntityRepository
 {
@@ -54,5 +55,36 @@ class ApiKey extends AbstractEntityRepository
 		if ($apikey['code'] != $code) return null;
 
 		return $apikey;
+	}
+
+	public function getAllApiKeys()
+	{
+		return $this->_em->createQuery('
+			SELECT k
+			FROM DeskPRO:ApiKey k
+			LEFT JOIN k.person p
+			ORDER BY p.name
+		')->execute();
+	}
+
+	public function getApiKeyTitles(array $ids = null)
+	{
+		$output = array();
+		foreach ($this->getAllApiKeys() AS $key) {
+			if ($ids === null || in_array($key->id, $ids)) {
+				$output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
+					. ($key->note ? " ($key->note)" : '');
+			}
+		}
+
+		return $output;
+	}
+
+	public function countApiKeys()
+	{
+		return App::getDb()->fetchColumn('
+			SELECT COUNT(*)
+			FROM api_keys
+		');
 	}
 }

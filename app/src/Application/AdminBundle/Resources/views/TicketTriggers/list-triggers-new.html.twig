@@ -105,7 +105,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for new ticket emails sent by a user.
+								You have not defined any triggers for new ticket emails sent by a user.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -140,7 +140,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for new tickets made by an agent via the agent interface.
+								You have not defined any triggers for new tickets made by an agent via the agent interface.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.user'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -175,7 +175,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for new ticket emails sent by an agent.
+								You have not defined any triggers for new ticket emails sent by an agent.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.agent'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -210,7 +210,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for new tickets made by an agent via the agent interface.
+								You have not defined any triggers for new tickets made by an agent via the agent interface.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.agent.portal'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -220,5 +220,42 @@
 		</tbody>
 	</table>
 </div>
+
+{% if show_api_option %}
+	<br />
+
+	<div class="content-table template-dir trigger-dir">
+		<table width="100%" class="simple">
+			<thead>
+				<tr>
+					<th class="single-title" colspan="10">
+						<div style="float: right">
+							<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.api'}) }}">Add New Trigger</a>
+						</div>
+						<h1 class="noexpand">
+							New ticket using the API
+						</h1>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ul class="item-list trigger-set">
+							{% for trigger in triggers['new.web.api'] %}
+								{{ _self.trigger_row(loop.index, trigger, type) }}
+							{% else %}
+								<li>
+									You have not defined any triggers for new tickets made via the API.
+									<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.web.api'}) }}">Create one now</a>.
+								</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endif %}
 
 {% endblock %}

@@ -100,7 +100,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for ticket updates by agents
+								You have not defined any triggers for ticket updates by agents.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.agent'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -133,7 +133,7 @@
 							{{ _self.trigger_row(loop.index, trigger, type) }}
 						{% else %}
 							<li>
-								You have not defiend any triggers for ticket updates by users
+								You have not defined any triggers for ticket updates by users.
 								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.user'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -143,5 +143,40 @@
 		</tbody>
 	</table>
 </div>
+
+{% if show_api_option %}
+	<div class="content-table template-dir trigger-dir" style="margin-top: 8px;">
+		<table width="100%" class="simple">
+			<thead>
+				<tr>
+					<th class="single-title" colspan="10">
+						<div style="float: right">
+							<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.api'}) }}">Add New Trigger</a>
+						</div>
+						<h1 class="noexpand">
+							Ticket updated via the API
+						</h1>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ul class="item-list trigger-set">
+							{% for trigger in triggers['update.api'] %}
+								{{ _self.trigger_row(loop.index, trigger, type) }}
+							{% else %}
+								<li>
+									You have not defined any triggers for ticket updates via the API.
+									<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'update.api'}) }}">Create one now</a>.
+								</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endif %}
 
 {% endblock %}

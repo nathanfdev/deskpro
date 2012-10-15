@@ -559,6 +559,13 @@ class TermSummary
 				$summary = "Day created is " . implode(', ', $days);
 
 				break;
+
+			case 'api_key':
+				$summary = $this->_choiceSummary('API Key', $op, $choice, function($choice) {
+					$titles = App::getDataService('ApiKey')->getApiKeyTitles((array)$choice);
+					return $titles;
+				});
+				break;
 		}
 
 		return $summary;

@@ -20,6 +20,28 @@
 {% endif %}
 
 {##################################################################################################################}
+{# API Specific #}
+{##################################################################################################################}
+
+{% if event_trigger_sub == 'api' or trigger.getEventTriggerPath(2) == 'api' %}
+	<div class="builder-type" title="API Key" data-rule-type="api_key" data-term-type="GenericMenuTerm">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<select name="api_key">
+				{% for id,title in term_options.api_keys %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+
+{##################################################################################################################}
 {# New via Email #}
 {##################################################################################################################}
 

@@ -869,6 +869,13 @@ class TicketTerms
 				}
 				break;
 
+			case 'api_key':
+				$api_key = $this->tracker->getExtra('api_key');
+				if (!$api_key || !$this->_testChoiceMatch($api_key->id, $op, $choice)) {
+					return false;
+				}
+				break;
+
 			default:
 				$e = new \InvalidArgumentException("Unknown trigger criteria: " . $term);
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
