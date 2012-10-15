@@ -458,7 +458,7 @@ class TicketChangeTracker extends ChangeTracker
 			}
 
 			$this->original_ticket->setStatus($old_status_code);
-		} elseif ($this->isPropertyChanged('status')) {
+		} elseif ($this->isPropertyChanged('status') && !$this->isNewTicket()) {
 			$tmp = $this->getChangedProperty('status');
 			$old_status_code = $tmp['old'];
 
