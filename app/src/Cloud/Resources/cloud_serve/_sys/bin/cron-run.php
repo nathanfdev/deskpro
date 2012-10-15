@@ -97,6 +97,7 @@ $DO_REPORT_LOG = false;
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
+set_time_limit(0);
 
 ########################################################################
 # Sort out args
