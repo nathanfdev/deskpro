@@ -1704,7 +1704,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			list($status, $hstatus) = explode('.', $status, 2);
 		}
 
-		if ($status && !in_array($status, array(
+		if (!$status || !in_array($status, array(
 			self::STATUS_AWAITING_AGENT,
 			self::STATUS_AWAITING_USER,
 			self::STATUS_CLOSED,
