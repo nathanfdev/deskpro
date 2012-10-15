@@ -77,6 +77,16 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 		var assignOptionBox = new DeskPRO.UI.OptionBox({
 			element: assignOb,
+			onInit: function(ob) {
+				ob.el.find('li').on('click', function( ){
+					var sect = $(this).closest('section').get(0);
+					$('section', ob.el).each(function() {
+						if ($(this).get(0) != sect) {
+							$(this).find('li.on').removeClass('on');
+						}
+					});
+				});
+			},
 			onClose: function(ob) {
 
 				var agentId = parseInt(ob.getSelected('agents') || 0);

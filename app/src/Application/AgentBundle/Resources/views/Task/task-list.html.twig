@@ -103,7 +103,7 @@
 				{% for team in agent_teams %}
 					{% if team.id not in app.user.getAgent().getTeamIds() %}
 						<li>
-							<input type="radio" name="{{baseId}}_asignedto" value="{{ team.id }}" />
+							<input type="radio" name="{{baseId}}_asignedto_team" value="{{ team.id }}" />
 							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
 							<div class="bound-fade"></div>
 						</li>
