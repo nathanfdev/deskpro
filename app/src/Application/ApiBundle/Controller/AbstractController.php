@@ -34,6 +34,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App;
+
 /**
  * Base API controller.
  */
@@ -106,14 +108,35 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->apikey = $this->get('deskpro.api.request_key');
 
 		if ($this->apikey) {
-			$this->person = $this->apikey['person'];
+			$person = false;
 
-			$this->person->loadHelper('Agent');
-			$this->person->loadHelper('AgentTeam');
-			$this->person->loadHelper('AgentPermissions');
-			$this->person->loadHelper('PermissionsManager');
-			$this->person->loadHelper('HelpMessages');
-			$this->person->loadHelper('AgentPrefs');
+			if (!$this->apikey->person) {
+				$as_agent_id = $this->getRequest()->headers->get('X-DeskPRO-Agent-ID', null, true);
+				if (!$as_agent_id) {
+					$as_agent_id = isset($_REQUEST['DP-AGENT-ID']) ? $_REQUEST['DP-AGENT-ID'] : 0;
+				}
+				$as_agent_id = intval($as_agent_id);
+
+				$agent = $this->em->getRepository('DeskPRO:Person')->find($as_agent_id);
+				if ($agent && $agent->is_agent) {
+					$person = $agent;
+				}
+			} else {
+				$person = $this->apikey->person;
+			}
+
+			if ($person && $person->is_agent) {
+				App::setCurrentPerson($person);
+
+				$this->person = $person;
+
+				$this->person->loadHelper('Agent');
+				$this->person->loadHelper('AgentTeam');
+				$this->person->loadHelper('AgentPermissions');
+				$this->person->loadHelper('PermissionsManager');
+				$this->person->loadHelper('HelpMessages');
+				$this->person->loadHelper('AgentPrefs');
+			}
 		}
 	}
 
@@ -131,6 +154,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			));
 
 			return $response;
+		}
+
+		if (!$this->person) {
+			return $this->createApiErrorResponse('invalid_person', 'Please provide a valid agent for this request', 403);
 		}
 	}
 

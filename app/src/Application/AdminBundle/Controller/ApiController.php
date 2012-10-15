@@ -75,8 +75,10 @@ class ApiController extends AbstractController
 	{
 		if ($id) {
 			$apikey = $this->getApiKeyOr404($id);
+			$is_super = $apikey->person ? false : true;
 		} else {
 			$apikey = new Entity\ApiKey();
+			$is_super = false;
 		}
 
 		$errors = array();
@@ -84,16 +86,23 @@ class ApiController extends AbstractController
 		if ($this->in->getString('process')) {
 			$this->ensureRequestToken();
 
-			$agentId = $this->in->getUint('agent_id');
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($agentId);
-			if ($person) {
-				if ($person->is_agent) {
-					$apikey['person'] = $person;
-				} else {
-					$errors['person_email'] = 'The selected person is not an agent.';
-				}
+			if ($this->in->getBool('is_super')) {
+				$is_super = true;
+				$apikey->person = null;
 			} else {
-				$errors['person_email'] = 'No person was selected.';
+				$is_super = false;
+
+				$agent_id = $this->in->getUint('agent_id');
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneById($agent_id);
+				if ($person) {
+					if ($person->is_agent) {
+						$apikey['person'] = $person;
+					} else {
+						$errors['person_email'] = 'The selected person is not an agent.';
+					}
+				} else {
+					$errors['person_email'] = 'No person was selected.';
+				}
 			}
 
 			$apikey['note'] = $this->in->getString('note');
@@ -105,12 +114,13 @@ class ApiController extends AbstractController
 				return $this->redirectRoute('admin_api_keylist');
 			}
 		} else {
-			$agentId = $apikey->person ? $apikey->person->id : 0;
+			$agent_id = $apikey->person ? $apikey->person->id : 0;
 		}
 
 		return $this->render('AdminBundle:Api:edit-key.html.twig', array(
 			'apikey' => $apikey,
-			'agentId' => $agentId,
+			'is_super' => $is_super,
+			'agent_id' => $agent_id,
 			'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
 			'errors' => $errors
 		));

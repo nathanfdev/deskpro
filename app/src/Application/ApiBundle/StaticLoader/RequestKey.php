@@ -62,16 +62,15 @@ class RequestKey
 
 		if (!$key_str) {
 			$api_key = false;
-			return $api_key;
+			return false;
 		}
 
 		$api_key = $em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
-		if ($api_key && $api_key->person && $api_key->person->is_agent) {
-			App::setCurrentPerson($api_key->person);
-		} else {
-			$api_key = false;
+		if ($api_key) {
+			return $api_key;
 		}
 
-		return $api_key;
+		$api_key = false;
+		return false;
 	}
 }

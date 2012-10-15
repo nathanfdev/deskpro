@@ -30,18 +30,36 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>API Agent</label>
-		</div>
-		<div class="dp-form-input">
-			<select name="agent_id">
-				<option value="0">&nbsp;</option>
-				{% for agent in agents %}
-					<option value="{{ agent.id }}" {% if agentId == agent.id %}selected="selected"{% endif %}>{{ agent.name }}</option>
-				{% endfor %}
-			</select>
-			<p>Every API request is made as an agent in the system. Select the agent that will be making these requests.</p>
+	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>API Key Type</label>
+			</div>
+			<div class="dp-form-input">
+				<div class="dp-input-group">
+					<label>
+						<input type="radio" class="option-trigger" name="is_super" value="1" {% if is_super %}checked="checked"{% endif %} />
+						Super User
+					</label>
+					<div>A super user key is not associated with a particular agent. Every request must specify the agent performing the action.</div>
+				</div>
+
+				<div class="dp-input-group">
+					<label>
+						<input type="radio" class="option-trigger" name="is_super" value="0" {% if not is_super %}checked="checked"{% endif %} />
+						Specific Agent
+					</label>
+					<div>Perform all API requests as a specific agent.</div>
+					<div class="dp-group-options" style="display: none">
+						<select name="agent_id">
+							<option value="0">&nbsp;</option>
+							{% for agent in agents %}
+								<option value="{{ agent.id }}" {% if agent_id == agent.id %}selected="selected"{% endif %}>{{ agent.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
