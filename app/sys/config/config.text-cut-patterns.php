@@ -13,5 +13,7 @@
 	'thunderbird_1'                      => '#On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]+):([0-9a-zA-Z]+), (.*?) wrote:#',
 	'thunderbird_2'                      => '#\-\-\- Original Message Follows \-\-\-\s+Sender:(.*?)\s+Date:(.*?)\s+#',
 
-	'applemail_1'                        => '#On (.*?), ([0-9]+), at (.*?), (.*?) wrote:\s+#'
+	'applemail_1'                        => '#On (.*?), ([0-9]+), at (.*?), (.*?) wrote:\s+#',
+
+	'zimbra_1'                           => '#\-\-\-\-\- Original Message \-\-\-\-\-\sFrom: (.*?)\sTo: (.*?)#',
 );

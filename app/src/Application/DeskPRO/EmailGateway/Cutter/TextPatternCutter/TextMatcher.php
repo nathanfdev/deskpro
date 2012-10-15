@@ -87,10 +87,11 @@ class TextMatcher
 			return;
 		}
 
-		$this->marked_body = preg_replace($this->pattern->getPattern(), self::CUT_MARK . '$0', $this->body);
-
 		$this->pattern_match = false;
-		if (strpos($this->marked_body, self::CUT_MARK) !== false) {
+		$this->marked_body   = $this->body;
+
+		if (preg_match($this->pattern->getPattern(), $this->body)) {
+			$this->marked_body = preg_replace($this->pattern->getPattern(), self::CUT_MARK . '$0', $this->body);
 			$this->pattern_match = true;
 		}
 	}
