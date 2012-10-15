@@ -30,7 +30,7 @@ $collection->add('api_deskpro_time', new Route(
 	array()
 ));
 
-$collection->add('api_deskpro_setting', new Route(
+/*$collection->add('api_deskpro_setting', new Route(
 	'/deskpro/setting/{setting_name}',
 	array('_controller' => 'ApiBundle:Deskpro:setting'),
 	array('_method' => 'GET'),
@@ -42,11 +42,18 @@ $collection->add('api_deskpro_setting_post', new Route(
 	array('_controller' => 'ApiBundle:Deskpro:postSetting'),
 	array('_method' => 'POST'),
 	array()
-));
+));*/
 
-$collection->add('api_ping_object_updated', new Route(
+/*$collection->add('api_ping_object_updated', new Route(
 	'/ping/object-updated/{resource_id}/{object_id}',
 	array('_controller' => 'ApiBundle:ResourcePing:postObjectUpdated'),
+	array('_method' => 'POST'),
+	array()
+));*/
+
+$collection->add('api_misc_upload', new Route(
+	'/misc/upload',
+	array('_controller' => 'ApiBundle:Misc:upload'),
 	array('_method' => 'POST'),
 	array()
 ));

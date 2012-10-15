@@ -165,6 +165,8 @@ class TicketController extends AbstractController
 
 		$message->setMessageText($messageText);
 
+		$this->_insertTicketMessageAttachments($ticket, $message);
+
 		$ticket->addMessage($message);
 
 		$this->db->beginTransaction();
@@ -392,6 +394,8 @@ class TicketController extends AbstractController
 			));
 		}
 
+		$this->_insertTicketMessageAttachments($ticket, $message);
+
 		$ticket->addMessage($message);
 
 		if ($this->in->getBool('suppress_user_notify')) {
@@ -413,6 +417,45 @@ class TicketController extends AbstractController
 			array('message_id' => $message->id),
 			$this->generateUrl('api_tickets_ticket_message', array('ticket_id' => $ticket->id, 'message_id' => $message->id), true)
 		);
+	}
+
+	protected function _insertTicketMessageAttachments(Ticket $ticket, \Application\DeskPRO\Entity\TicketMessage $message)
+	{
+		$attachments = $this->request->files->get('attach');
+		if (!is_array($attachments)) {
+			$attachments = array($attachments);
+		}
+		$accept = $this->container->getAttachmentAccepter();
+
+		foreach ($attachments AS $file) {
+			$error = $accept->getError($file, 'agent');
+			if (!$error) {
+				$blob = $accept->accept($file);
+				$this->_addTicketMessageAttachment($blob, $ticket, $message);
+			}
+		}
+
+		foreach ($this->in->getCleanValueArray('attach_id') as $blob_id) {
+			$this->_addTicketMessageAttachment($blob_id, $ticket, $message);
+		}
+	}
+
+	protected function _addTicketMessageAttachment($blob_id, Ticket $ticket, \Application\DeskPRO\Entity\TicketMessage $message)
+	{
+		if ($blob_id instanceof \Application\DeskPRO\Entity\Blob) {
+			$blob = $blob_id;
+		} else {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+		}
+
+		if ($blob) {
+			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->person;
+
+			$message->addAttachment($attach);
+			$ticket->addAttachment($attach);
+		}
 	}
 
 	public function claimTicketAction($ticket_id)

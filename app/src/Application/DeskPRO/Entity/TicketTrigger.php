@@ -614,6 +614,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			case Ticket::CREATED_WEB_AGENT_PORTAL:
 				$event = 'new.web.agent.portal';
 				break;
+			case Ticket::CREATED_WEB_API:
+				$event = 'new.web.api';
+				break;
 			default:
 				$event = 'new';
 		}
