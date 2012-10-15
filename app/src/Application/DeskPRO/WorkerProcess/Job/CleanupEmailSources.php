@@ -48,12 +48,10 @@ class CleanupEmailSources extends AbstractJob
 	{
 		$snip = date('Y-m-d H:i:s', time() - App::getSetting('core.email_source_storetime'));
 		$email_sources = App::getDb()->fetchAllCol("
-			SELECT id
+			SELECT email_sources.id
 			FROM email_sources
-			LEFT JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources)
-			LEFT JOIN tickets_messages_raw ON (tickets_messages_raw.message_id = tickets_messages.id)
-			WHERE date_created < ? AND tickets_messages_raw.message_id IS NULL
-			ORDER BY id ASC
+			WHERE email_sources.date_created < ? AND email_sources.status = 'complete'
+			ORDER BY email_sources.id ASC
 			LIMIT 1000
 		", array($snip));
 
