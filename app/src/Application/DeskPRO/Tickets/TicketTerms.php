@@ -651,6 +651,30 @@ class TicketTerms
 
 				break;
 
+			case 'time_created':
+
+				$hour = (int)$ticket->date_created->format('H');
+				$min  = (int)$ticket->date_created->format('i');
+
+				$compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
+				$compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
+
+				if ($compare_hour == -1 || $compare_min == -1) {
+					return false;
+				}
+
+				if ($op == 'after') {
+					if (!($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min))) {
+						return false;
+					}
+				} else {
+					if ($compare_hour < $hour || ($compare_hour == $hour && $min < $compare_min)) {
+						return false;
+					}
+				}
+
+				break;
+
 			case TicketSearch::TERM_DEPARTMENT:
 				if (count($choice) == 1) $choice = array_pop($choice);
 				$choice = App::getDataService('Department')->getIdsInTree($choice, true);
