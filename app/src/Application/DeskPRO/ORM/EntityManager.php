@@ -58,4 +58,24 @@ class EntityManager extends UnprivateEntityManager
 			$config->getAutoGenerateProxyClasses()
 		);
 	}
+
+	public function persist($entity)
+	{
+		if (dp_get_config('debug.em_persist_log')) {
+			static $logger = null;
+
+			if ($logger === null) {
+				$logger = new \Orb\Log\Logger();
+				$wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/em-persist.log', 'a');
+				$logger->addWriter($wr);
+			}
+
+			$type  = get_class($entity);
+			$id    = isset($entity['id']) ? $entity['id'] : '0';
+			$trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace(debug_backtrace());
+			$logger->logDebug("Persist: $type :: $id\n$trace\n\n");
+		}
+
+		parent::persist($entity);
+	}
 }
