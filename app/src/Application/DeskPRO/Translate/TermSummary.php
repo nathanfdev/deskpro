@@ -883,12 +883,7 @@ class TermSummary
 		$not_ids = null;
 		$no_team = false;
 
-		if ($this->getPersonContext()) {
-			$agent = $this->getPersonContext();
-			$agent->loadHelper('AgentTeam');
-		} else {
-			$agent = null;
-		}
+		$agent = null;
 
 		foreach ($choice as $c) {
 			$c = (int)$c;
