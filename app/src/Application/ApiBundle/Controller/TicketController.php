@@ -380,7 +380,7 @@ class TicketController extends AbstractController
 
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message['ticket'] = $ticket;
-		$message['person'] = $this->person;
+		$message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
 		$message['ip_address'] = $this->request->getClientIp();
 		$message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 		$message->setMessageText($this->in->getString('message'));
