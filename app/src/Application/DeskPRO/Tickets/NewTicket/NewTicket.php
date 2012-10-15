@@ -85,6 +85,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 	protected $email_reader;
 
 	public $logger;
+	public $do_dupe_check = true;
 
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
@@ -360,10 +361,13 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			$ticket->recomputeHash();
-			if ($dupe_ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
-				$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
-				$e->ticket_id = $dupe_ticket->id;
-				throw $e;
+
+			if ($this->do_dupe_check) {
+				if ($dupe_ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+					$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
+					$e->ticket_id = $dupe_ticket->id;
+					throw $e;
+				}
 			}
 
 			App::getOrm()->persist($ticket);

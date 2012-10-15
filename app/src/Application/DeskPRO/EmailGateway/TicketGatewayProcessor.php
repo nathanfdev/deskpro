@@ -878,6 +878,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+
+		// We do our own dupe check here
+		$newticket->do_dupe_check = false;
+
 		$newticket->setPersonContext($person);
 		$newticket->gateway = $this->gateway;
 		$newticket->gateway_address = $this->gateway_address;
