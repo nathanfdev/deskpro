@@ -372,7 +372,6 @@ class OrganizationController extends AbstractController
 					$contact_data->organization = $org;
 
 					$this->em->persist($contact_data);
-					$org->contact_data->add($contact_data);
 
 					$added[] = $contact_data;
 				} catch (\Exception $e) {

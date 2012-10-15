@@ -771,7 +771,6 @@ class PersonController extends AbstractController
 					$contact_data->person = $person;
 
 					$this->em->persist($contact_data);
-					$person->contact_data->add($contact_data);
 
 					$added[] = $contact_data;
 				}
