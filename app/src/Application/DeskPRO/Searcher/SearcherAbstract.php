@@ -76,6 +76,14 @@ abstract class SearcherAbstract implements PersonContextInterface
 	protected $terms = array();
 
 	/**
+	 * Array of terms we've set.
+	 * term_type=>array(op_type, choice)
+	 *
+	 * @var array
+	 */
+	protected $terms_any = array();
+
+	/**
 	 * array(type, direction) of ordering
 	 * @var array
 	 */
@@ -160,6 +168,17 @@ abstract class SearcherAbstract implements PersonContextInterface
 	}
 
 
+	/**
+	 * Set an array of terms at once.
+	 *
+	 * @param array $terms
+	 */
+	public function setTermsAny(array $terms)
+	{
+		$this->terms_any = array_merge($this->terms_any, $terms);
+	}
+
+
 
 	/**
 	 * Get the current terms
@@ -169,6 +188,17 @@ abstract class SearcherAbstract implements PersonContextInterface
 	public function getTerms()
 	{
 		return $this->terms;
+	}
+
+
+	/**
+	 * Get the current terms
+	 *
+	 * @return array
+	 */
+	public function getTermsAny()
+	{
+		return $this->terms_any;
 	}
 
 
@@ -251,6 +281,20 @@ abstract class SearcherAbstract implements PersonContextInterface
 	public function addTerm($term, $op, $data)
 	{
 		$this->terms[$term] = array($op, $data);
+	}
+
+
+
+	/**
+	 * Add a new term.
+	 *
+	 * @param  $term
+	 * @param  $op
+	 * @param  $data
+	 */
+	public function addAnyTerm($term, $op, $data)
+	{
+		$this->terms_any[$term] = array($op, $data);
 	}
 
 

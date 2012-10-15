@@ -175,6 +175,16 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				}
 			}
 		}
+		foreach ($this->terms_any as $term) {
+			if ($term['op'] != 'ignore') {
+				if (strpos($term['type'], 'person_') === 0) {
+					$user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
+					$has_user_terms = true;
+				} else {
+					$searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
+				}
+			}
+		}
 
 		if ($has_user_terms) {
 			$searcher->setPersonSearch($user_searcher);

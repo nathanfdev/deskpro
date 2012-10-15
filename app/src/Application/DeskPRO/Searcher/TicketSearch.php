@@ -617,6 +617,9 @@ class TicketSearch extends SearcherAbstract
 		if (!empty($ticket_parts['wheres'])) {
 			$where .= implode(" AND ", $ticket_parts['wheres']);
 		}
+		if (!empty($ticket_parts['wheres_any'])) {
+			$where .= " AND (" . implode(" OR ", $ticket_parts['wheres_any']) . ")";
+		}
 		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
 		}
@@ -807,710 +810,722 @@ class TicketSearch extends SearcherAbstract
 		$wheres = array();
 		$joins = array();
 
+		$wheres_all = array();
+		$wheres_any = array();
+
 		// If we dont set a status, we will automatically
 		// exclude 'hidden' tickets
 		$set_status = false;
 
-		foreach ($this->terms as $term => $info) {
+		foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
 
-			if (!$info || !is_array($info)) continue;
-
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
-
-			list($op, $choice) = $info;
-
-			$term_id = null;
-
-			// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
-			$m = null;
-			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-				$term = $m[1];
-				$term_id = $m[2];
-			}
-
-			// The term handlers below that only accept single values
-			// will use $choice as a single value for brevity
-			if (is_array($choice) AND count($choice) == 1) {
-				$choice = Arrays::getFirstItem($choice);
-			}
-
-			if ($term_id) {
-				$this->getLogger()->logDebug(sprintf("Term: %s[%s] %s %s", $term, $term_id, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+			if ($term_set[0] == 'all') {
+				$wheres = &$wheres_all;
 			} else {
-				$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+				$wheres = &$wheres_any;
 			}
 
-			switch ($term) {
-				case self::TERM_ID:
-					$this->enableArchiveSearch();
-					if ($op == self::OP_IS) {
-						$wheres[] = "$tickets_table.id IN (" . implode(',', (array)$choice) . ")";
-					} else {
-						$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
-					}
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
-					break;
+			foreach ($term_set[1] as $term => $info) {
 
-				case self::TERM_TEXT:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
+				if (!$info || !is_array($info)) continue;
 
-					$joins[] = array(
-						'content_search',
-						"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
-					);
+				$join_id = Util::requestUniqueId();
+				$join_name = "j_$join_id";
 
-					$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDb()->quote($choice) . ")";
+				list($op, $choice) = $info;
 
-					$this->summary[] = "Ticket content matches: " . $choice;
-					break;
+				$term_id = null;
 
-				case self::TERM_ARCHIVE_SEARCH:
-					if ($choice) {
+				// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
+				$m = null;
+				if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+					$term = $m[1];
+					$term_id = $m[2];
+				}
+
+				// The term handlers below that only accept single values
+				// will use $choice as a single value for brevity
+				if (is_array($choice) AND count($choice) == 1) {
+					$choice = Arrays::getFirstItem($choice);
+				}
+
+				if ($term_id) {
+					$this->getLogger()->logDebug(sprintf("Term: %s[%s] %s %s", $term, $term_id, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+				} else {
+					$this->getLogger()->logDebug(sprintf("Term: %s %s %s", $term, $op, \DeskPRO\Kernel\KernelErrorHandler::varToString($choice)));
+				}
+
+				switch ($term) {
+					case self::TERM_ID:
 						$this->enableArchiveSearch();
-					}
-					break;
-				case self::TERM_DEPARTMENT:
-
-					$this->affected_fields[] = 'ticket.department_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
-						$titles = App::getDataService('Department')->getNames((array)$choice);
-						return $titles;
-					});
-
-					if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
-						$choice = (array)$choice;
-						foreach ($choice as $id) {
-							$choice = array_merge($choice, App::getDataService('Department')->getIdsInTree($id, true));
-						}
-						$choice = array_unique($choice, \SORT_NUMERIC);
-					}
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_DEPARTMENT;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
-
-					break;
-				case self::TERM_DELETED:
-					$this->affected_fields[] = 'ticket.status';
-					$this->affected_fields[] = 'ticket.hidden_status';
-
-					$set_status = true;
-					$this->summary[] = $tr->phrase('agent.tickets.ticket_is_deleted');
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
-					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
-
-					$this->enableArchiveSearch();
-
-					break;
-				case self::TERM_CATEGORY:
-					$this->affected_fields[] = 'ticket.category_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.category'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_CATEGORY;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.category_id", $op, $choice, true);
-					break;
-				case self::TERM_PRODUCT:
-					$this->affected_fields[] = 'ticket.product_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.product'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Product')->getNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_PRODUCT;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice, true);
-					break;
-				case self::TERM_PRIORITY:
-					$this->affected_fields[] = 'ticket.priority_id';
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_PRIORITY;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.priority_id", $op, $choice, true);
-					break;
-				case self::TERM_URGENCY:
-					$this->affected_fields[] = 'ticket.urgency';
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
-					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
-					break;
-				case self::TERM_DATE_CREATED:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
-					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
-					break;
-				case self::TERM_DATE_RESOLVED:
-					$this->affected_fields[] = 'ticket.date_resolved';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
-					$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
-					break;
-				case self::TERM_DATE_CLOSED:
-					$this->enableArchiveSearch();
-					$this->affected_fields[] = 'ticket.date_closed';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
-					$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
-					break;
-				case self::TERM_DATE_LAST_USER_REPLY:
-					$this->affected_fields[] = 'ticket.date_last_user_reply';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
-					$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
-					break;
-				case self::TERM_DATE_LAST_AGENT_REPLY:
-					$this->affected_fields[] = 'ticket.date_last_agent_reply';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
-					$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
-					break;
-				case self::TERM_WORKFLOW:
-					$this->affected_fields[] = 'ticket.workflow_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.workflow'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_WORKFLOW;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice, true);
-					break;
-				case self::TERM_LANGUAGE:
-					$this->affected_fields[] = 'ticket.language_id';
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_LANGUAGE;
-					}
-
-					if(is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-
-					if ($choice == App::getSetting('core.default_language_id')) {
-						$wheres[] = "(" . $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true) . " OR " . $this->_choiceMatch("$tickets_table.language_id", $op, 0, true) . ")";
-					} else {
-						$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
-					}
-					break;
-				case self::TERM_AGENT:
-					$this->affected_fields[] = 'ticket.agent_id';
-
-					$info = $this->_normalizeAgentChoice($choice);
-					$unassigned = $info['unassigned'];
-					$agent_ids = $info['agent_ids'];
-					$not_id = $info['not_id'];
-
-					if ($unassigned) {
-						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.agent'));
-						$wheres[] = "$tickets_table.agent_id IS NULL";
-					} else {
-						if ($agent_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
-								$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
-								return $titles;
-							});
-
-							if (count($agent_ids) == 1) {
-								$this->specific_fields[] = self::TERM_AGENT;
-							}
-
-							$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $agent_ids, true);
-						}
-
-						if ($not_id) {
-							$this->summary[] = $tr->phrase('agent.general.agent_is_not_me');
-							$wheres[] = "$tickets_table.agent_id != " . $not_id;
-						}
-					}
-					break;
-				case self::TERM_AGENT_TEAM:
-					$this->affected_fields[] = 'ticket.agent_team_id';
-
-					$info = $this->_normalizeAgentTeamChoice($choice);
-					$team_ids = $info['team_ids'];
-					$not_ids = $info['not_ids'];
-					$no_team = $info['no_team'];
-
-					if ($no_team) {
-						$wheres[] = "$tickets_table.agent_team_id IS NULL";
-						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.agent_team'));
-
-					} else {
-						if ($team_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function($choice) {
-								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
-								return $titles;
-							});
-
-							if (count($choice) == 1) {
-								$this->specific_fields[] = self::TERM_AGENT_TEAM;
-							}
-
-							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
-						}
-
-						if ($not_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
-								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
-								return $titles;
-							});
-
-							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
-						}
-					}
-					break;
-				case self::TERM_STATUS:
-
-					$this->affected_fields[] = 'ticket.status';
-					$set_status = true;
-
-					$show_status = array();
-					$hidden_status = array();
-
-					$choice_str = array();
-
-					foreach ((array)$choice as $c) {
-						if (strpos($c, '.') !== false) {
-							list ($status, $hstatus) = explode('.', $c, 2);
-							$hidden_status[] = $hstatus;
-							$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
-							$this->enableArchiveSearch();
+						if ($op == self::OP_IS) {
+							$wheres[] = "$tickets_table.id IN (" . implode(',', (array)$choice) . ")";
 						} else {
-							$show_status[] = $show_status;
-							$choice_str[] = $tr->phrase('agent.tickets.status_' . $c);
-							if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
-								$this->enableArchiveSearch();
-							}
+							$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
 						}
-					}
+						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+						break;
 
-					$choice_str = implode(' or ', $choice_str);
+					case self::TERM_TEXT:
+						if (is_array($choice)) {
+							$choice = array_pop($choice);
+						}
 
-					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-						$this->summary[] = 'Status is ' . $choice_str;
-					} else {
-						$this->summary[] = 'Status is not ' . $choice_str;
-					}
-
-					$w = '(';
-					if ($show_status) {
-						$w .= '(';
-						$w .= $this->_choiceMatch("$tickets_table.status", $op, $choice);
-						$w .= ')';
-					} else {
-						$w .= '(';
-						$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
-						$w .= ')';
-					}
-					$w .= ')';
-
-					$wheres[] = $w;
-					break;
-				case self::TERM_HIDDEN_STATUS:
-					$this->affected_fields[] = 'ticket.hidden_status';
-
-					$choice_str = array();
-					foreach ((array)$choice as $c) {
-						$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
-					}
-					$choice_str = implode(', ', $choice_str);
-
-					$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.is_not_x'), 'value' => $choice_str));
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
-					$this->enableArchiveSearch();
-
-					break;
-				case self::TERM_HOLD:
-
-					$this->affected_fields[] = 'ticket.is_hold';
-
-					// Op is irrelevant. or, it's always "is", and choice is yes/no
-
-					if ($choice) {
-						$wheres[] = "tickets.is_hold = 1";
-					} else {
-						$wheres[] = "tickets.is_hold = 0";
-					}
-
-					$this->summary[] = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
-
-					break;
-				case self::TERM_ORGANIZATION:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.organization'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_ORGANIZATION;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
-					break;
-				case self::TERM_PARTICIPANT:
-					$this->affected_fields[] = 'ticket.participants';
-					$joins[] = 'tickets_participants';
-					$field = 'tickets_participants.person_id';
-
-					$choice_info = $this->_normalizeAgentChoice($choice);
-					if (!empty($choice_info['agent_ids'])) {
-						$choice = $choice_info['agent_ids'];
-					} else {
-						continue;
-					}
-
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.followers'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
-						return $titles;
-					}, true);
-
-					$wheres[] = $this->_choiceMatch($field, $op, $choice);
-					break;
-				case self::TERM_PERSON:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.person'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Person')->getPersonNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_PERSON;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.person_id", $op, $choice, true);
-					break;
-				case self::TERM_SUBJECT:
-					$this->affected_fields[] = 'ticket.subject';
-					$field = 'tickets.subject';
-					if (!$this->is_archive) {
 						$joins[] = array(
-							'tickets_search_subject',
-							"LEFT JOIN tickets_search_subject AS $join_name ON ($join_name.id = tickets.id)"
+							'content_search',
+							"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
 						);
-						$field = "$join_name.subject";
-					}
 
-					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
-						$this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
-					} else {
-						$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
-					}
-					$wheres[] = $this->_stringMatch($field, $op, $choice);
-					break;
+						$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDb()->quote($choice) . ")";
 
-				case self::TERM_FLAGGED:
+						$this->summary[] = "Ticket content matches: " . $choice;
+						break;
 
-					$this->affected_fields[] = 'tickets_flagged';
-					$joins[] = 'tickets_flagged';
-
-					$color = $choice;
-					if ($color == 'any') {
-						$this->summary[] = "Flagged";
-						$wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
-					} else {
-						$this->summary[] = "Flagged with color {$color}";
-						$wheres[] = '(tickets_flagged.person_id = '. $this->person->id . ' AND ' . $this->_stringMatch('tickets_flagged.color', $op, $color) . ')';
-					}
-
-					break;
-
-				case self::TERM_LABEL:
-					$this->affected_fields[] = 'ticket.labels';
-					$this->_normalizeOpAndChoice($op, $choice);
-
-					$choices_in = array();
-					if (is_array($choice)) {
-						foreach ((array)$choice as $c) {
-							$choices_in[] = $db->quote($c);
+					case self::TERM_ARCHIVE_SEARCH:
+						if ($choice) {
+							$this->enableArchiveSearch();
 						}
-						$choices_in = implode(',', $choices_in);
-					}
+						break;
+					case self::TERM_DEPARTMENT:
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+						$this->affected_fields[] = 'ticket.department_id';
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
+							$titles = App::getDataService('Department')->getNames((array)$choice);
+							return $titles;
+						});
 
-					switch ($op) {
-						case self::OP_IS:
-							$joins[] = array(
-								'labels_tickets',
-								"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)"
-							);
-							$wheres[] = "$join_name.label = " . $db->quote($choice);
-							break;
-						case self::OP_NOT:
-							$joins[] = array(
-								'labels_tickets',
-								"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label = ".$db->quote($choice).")"
-							);
-							$wheres[] = "$join_name.ticket_id IS NULL";
-							break;
-						case self::OP_CONTAINS:
-							$joins[] = array(
-								'labels_tickets',
-								"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)"
-							);
-							$wheres[] = "$join_name.label IN ($choices_in)";
-							break;
-
-						case self::OP_NOTCONTAINS:
-							$joins[] = array(
-								'labels_tickets',
-								"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label IN ($choices_in)"
-							);
-							$wheres[] = "$join_name.ticket_id IS NULL";
-							break;
-					}
-					break;
-
-				case self::TERM_TICKET_FIELD:
-					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
-					if (!$field) break;
-
-					$this->affected_fields[] = 'ticket.custom_data_ticket_' . $field['id'];
-
-					$search_type = $field->getHandler()->getSearchType();
-
-					if (isset($choice['custom_fields']['field_' . $term_id])) {
-						$choice = $choice['custom_fields']['field_' . $term_id];
-					}
-
-					switch ($search_type) {
-						case 'input':
-						case 'value':
-
-							if (is_array($choice)) {
-								$choice = array_pop($choice);
-							}
-
-							if ($op == self::OP_IS) {
-								$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
-							} else {
-								$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
-							}
-
-							$joins[] = array(
-								'custom_data_ticket',
-								"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)"
-							);
-
-							$field = 'custom_data_ticket_'.$join_id.'.'.$search_type;
-							switch ($op) {
-								case self::OP_IS:
-									$wheres[] = "$field = " . $db->quote($choice);
-									break;
-								case self::OP_NOT:
-									$wheres[] = "$field != " . $db->quote($choice);
-									break;
-								case self::OP_CONTAINS:
-								case self::OP_NOTCONTAINS:
-									$op = 'LIKE';
-									if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-									$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
-									break;
-							}
-
-							$this->summary[] = "";
-
-							break;
-
-						case 'id':
-							$join_id = Util::requestUniqueId();
-							$choices_in = array();
+						if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
 							$choice = (array)$choice;
-							foreach ($choice as $c) {
-								$choices_in[] = (int)$c;
+							foreach ($choice as $id) {
+								$choice = array_merge($choice, App::getDataService('Department')->getIdsInTree($id, true));
 							}
-							$choices_in = implode(',', $choices_in);
+							$choice = array_unique($choice, \SORT_NUMERIC);
+						}
 
-							$choice_str = array();
-							foreach ($field->children as $child) {
-								if (in_array($child['id'], $choice)) {
-									$choice_str[] = $child['title'];
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_DEPARTMENT;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
+
+						break;
+					case self::TERM_DELETED:
+						$this->affected_fields[] = 'ticket.status';
+						$this->affected_fields[] = 'ticket.hidden_status';
+
+						$set_status = true;
+						$this->summary[] = $tr->phrase('agent.tickets.ticket_is_deleted');
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
+						$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
+
+						$this->enableArchiveSearch();
+
+						break;
+					case self::TERM_CATEGORY:
+						$this->affected_fields[] = 'ticket.category_id';
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.category'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_CATEGORY;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.category_id", $op, $choice, true);
+						break;
+					case self::TERM_PRODUCT:
+						$this->affected_fields[] = 'ticket.product_id';
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.product'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:Product')->getNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_PRODUCT;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice, true);
+						break;
+					case self::TERM_PRIORITY:
+						$this->affected_fields[] = 'ticket.priority_id';
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_PRIORITY;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.priority_id", $op, $choice, true);
+						break;
+					case self::TERM_URGENCY:
+						$this->affected_fields[] = 'ticket.urgency';
+						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
+						$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
+						break;
+					case self::TERM_DATE_CREATED:
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
+						break;
+					case self::TERM_DATE_RESOLVED:
+						$this->affected_fields[] = 'ticket.date_resolved';
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
+						break;
+					case self::TERM_DATE_CLOSED:
+						$this->enableArchiveSearch();
+						$this->affected_fields[] = 'ticket.date_closed';
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
+						break;
+					case self::TERM_DATE_LAST_USER_REPLY:
+						$this->affected_fields[] = 'ticket.date_last_user_reply';
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
+						break;
+					case self::TERM_DATE_LAST_AGENT_REPLY:
+						$this->affected_fields[] = 'ticket.date_last_agent_reply';
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
+						break;
+					case self::TERM_WORKFLOW:
+						$this->affected_fields[] = 'ticket.workflow_id';
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.workflow'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_WORKFLOW;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice, true);
+						break;
+					case self::TERM_LANGUAGE:
+						$this->affected_fields[] = 'ticket.language_id';
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_LANGUAGE;
+						}
+
+						if(is_array($choice)) {
+							$choice = array_pop($choice);
+						}
+
+						if ($choice == App::getSetting('core.default_language_id')) {
+							$wheres[] = "(" . $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true) . " OR " . $this->_choiceMatch("$tickets_table.language_id", $op, 0, true) . ")";
+						} else {
+							$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
+						}
+						break;
+					case self::TERM_AGENT:
+						$this->affected_fields[] = 'ticket.agent_id';
+
+						$info = $this->_normalizeAgentChoice($choice);
+						$unassigned = $info['unassigned'];
+						$agent_ids = $info['agent_ids'];
+						$not_id = $info['not_id'];
+
+						if ($unassigned) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.agent'));
+							$wheres[] = "$tickets_table.agent_id IS NULL";
+						} else {
+							if ($agent_ids) {
+								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
+									$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
+									return $titles;
+								});
+
+								if (count($agent_ids) == 1) {
+									$this->specific_fields[] = self::TERM_AGENT;
+								}
+
+								$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $agent_ids, true);
+							}
+
+							if ($not_id) {
+								$this->summary[] = $tr->phrase('agent.general.agent_is_not_me');
+								$wheres[] = "$tickets_table.agent_id != " . $not_id;
+							}
+						}
+						break;
+					case self::TERM_AGENT_TEAM:
+						$this->affected_fields[] = 'ticket.agent_team_id';
+
+						$info = $this->_normalizeAgentTeamChoice($choice);
+						$team_ids = $info['team_ids'];
+						$not_ids = $info['not_ids'];
+						$no_team = $info['no_team'];
+
+						if ($no_team) {
+							$wheres[] = "$tickets_table.agent_team_id IS NULL";
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.agent_team'));
+
+						} else {
+							if ($team_ids) {
+								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function($choice) {
+									$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+									return $titles;
+								});
+
+								if (count($choice) == 1) {
+									$this->specific_fields[] = self::TERM_AGENT_TEAM;
+								}
+
+								$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
+							}
+
+							if ($not_ids) {
+								$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
+									$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+									return $titles;
+								});
+
+								$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
+							}
+						}
+						break;
+					case self::TERM_STATUS:
+
+						$this->affected_fields[] = 'ticket.status';
+						$set_status = true;
+
+						$show_status = array();
+						$hidden_status = array();
+
+						$choice_str = array();
+
+						foreach ((array)$choice as $c) {
+							if (strpos($c, '.') !== false) {
+								list ($status, $hstatus) = explode('.', $c, 2);
+								$hidden_status[] = $hstatus;
+								$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
+								$this->enableArchiveSearch();
+							} else {
+								$show_status[] = $show_status;
+								$choice_str[] = $tr->phrase('agent.tickets.status_' . $c);
+								if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
+									$this->enableArchiveSearch();
 								}
 							}
-							$choice_str = implode(', ', $choice_str);
+						}
 
-							if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
-								$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
-							} else {
-								$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
-							}
+						$choice_str = implode(' or ', $choice_str);
 
-							$field = 'custom_data_ticket_'.$join_id.'.field_id';
-							switch ($op) {
-								case self::OP_CONTAINS:
-								case self::OP_IS:
-									$joins[] = array(
-										'custom_data_ticket',
-										"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
-									);
-									$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
-									break;
+						if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+							$this->summary[] = 'Status is ' . $choice_str;
+						} else {
+							$this->summary[] = 'Status is not ' . $choice_str;
+						}
 
-								case self::OP_NOTCONTAINS:
-								case self::OP_NOT:
-									$joins[] = array(
-										'custom_data_ticket',
-										"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
-									);
-									$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
-									break;
-							}
-							break;
-					}
-					break; // end break TERM_TICKET_FIELD
+						$w = '(';
+						if ($show_status) {
+							$w .= '(';
+							$w .= $this->_choiceMatch("$tickets_table.status", $op, $choice);
+							$w .= ')';
+						} else {
+							$w .= '(';
+							$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
+							$w .= ')';
+						}
+						$w .= ')';
 
-				case self::TERM_USER_WAITING:
-					$this->enableArchiveSearch();
-					$this->affected_fields[] = 'ticket.date_user_waiting';
-
-					$choice = $this->normalizeWaitingTime($choice);
-
-					if (is_array($choice) && isset($choice['waiting_time'])) {
-						$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
-						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
-
-						// Waiting time is inversed when supplied in relative format like this.
-						// If we want to know 'waiting time is gte 24 hours', then the date from normaliseWaitingTime is the upper limit of what we want.
-						// 'waiting time is gte 24 hours' == 'date_user_waiting lte 2012-01-02'
-						$op = $this->invertOp($op);
-					}
-
-					if ($choice) {
-						$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
-					}
-					break;
-
-				case self::TERM_AGENT_WAITING:
-					$this->affected_fields[] = 'ticket.date_agent_waiting';
-
-					$choice = $this->normalizeWaitingTime($choice);
-
-					if (is_array($choice) && isset($choice['waiting_time'])) {
-						$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
-						$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
-						$op = $this->invertOp($op);
-					}
-
-					if ($choice) {
-						$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
-					}
-					break;
-
-				case self::TERM_TOTAL_USER_WAITING:
-					$this->affected_fields[] = 'ticket.total_user_waiting';
-					$now = time();
-
-					$choice = $this->normalizeWaitingTime($choice);
-
-					// Need the check on waiting_time because it could be date1/date2 instead
-					if (is_array($choice) && isset($choice['waiting_time'])) {
-						$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
-						$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
-					}
-
-					if ($choice && is_array($choice)) {
-						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
-					} elseif ($choice) {
-						$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
-					}
-					break;
-
-				case self::TERM_CREATION_SYSTEM:
-					$set_status = true;
-					$this->summary[] = $tr->phrase('agent.general.x_is_y', array(
-						'field' => $tr->phrase('agent.tickets.creation_system'),
-						'value' => $tr->phrase('agent.tickets.creation_system_' . str_replace('.', '_', $choice))
-					));
-					$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
-					break;
-
-				case self::TERM_GATEWAY_ADDRESS:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_GATEWAY_ADDRESS;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_address_id", $op, $choice, true);
-
-					break;
-
-				case self::TERM_RECEIVING_GATEWAY:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.receiving_gateway'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
-						return $titles;
-					});
-
-					if (count($choice) == 1) {
-						$this->specific_fields[] = self::TERM_RECEIVING_GATEWAY;
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice, true);
-					break;
-
-				case 'escalation_eliminator':
-					/** @var $trigger \Application\DeskPRO\Entity\TicketTrigger */
-					$trigger = $choice;
-					$field = $trigger->getTicketTimeField();
-					if (!$field) {
+						$wheres[] = $w;
 						break;
-					}
+					case self::TERM_HIDDEN_STATUS:
+						$this->affected_fields[] = 'ticket.hidden_status';
 
-					$joins[] = array(
-						'ticket_trigger_logs',
-						"LEFT JOIN ticket_trigger_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.trigger_id = {$trigger->id} AND $join_name.date_criteria = tickets.$field)"
-					);
+						$choice_str = array();
+						foreach ((array)$choice as $c) {
+							$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
+						}
+						$choice_str = implode(', ', $choice_str);
 
-					$wheres[] = "$join_name.id IS NULL";
-					break;
+						$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.is_not_x'), 'value' => $choice_str));
 
-                case 'time_created':
-                case 'time_last_user_reply':
-                    switch($op) {
-                        case 'before':
-                            $operator = '<=';
+						$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+						$this->enableArchiveSearch();
+
+						break;
+					case self::TERM_HOLD:
+
+						$this->affected_fields[] = 'ticket.is_hold';
+
+						// Op is irrelevant. or, it's always "is", and choice is yes/no
+
+						if ($choice) {
+							$wheres[] = "tickets.is_hold = 1";
+						} else {
+							$wheres[] = "tickets.is_hold = 0";
+						}
+
+						$this->summary[] = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
+
+						break;
+					case self::TERM_ORGANIZATION:
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.organization'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_ORGANIZATION;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
+						break;
+					case self::TERM_PARTICIPANT:
+						$this->affected_fields[] = 'ticket.participants';
+						$joins[] = 'tickets_participants';
+						$field = 'tickets_participants.person_id';
+
+						$choice_info = $this->_normalizeAgentChoice($choice);
+						if (!empty($choice_info['agent_ids'])) {
+							$choice = $choice_info['agent_ids'];
+						} else {
+							continue;
+						}
+
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.followers'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
+							return $titles;
+						}, true);
+
+						$wheres[] = $this->_choiceMatch($field, $op, $choice);
+						break;
+					case self::TERM_PERSON:
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.person'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:Person')->getPersonNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_PERSON;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.person_id", $op, $choice, true);
+						break;
+					case self::TERM_SUBJECT:
+						$this->affected_fields[] = 'ticket.subject';
+						$field = 'tickets.subject';
+						if (!$this->is_archive) {
+							$joins[] = array(
+								'tickets_search_subject',
+								"LEFT JOIN tickets_search_subject AS $join_name ON ($join_name.id = tickets.id)"
+							);
+							$field = "$join_name.subject";
+						}
+
+						if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+							$this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
+						} else {
+							$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
+						}
+						$wheres[] = $this->_stringMatch($field, $op, $choice);
+						break;
+
+					case self::TERM_FLAGGED:
+
+						$this->affected_fields[] = 'tickets_flagged';
+						$joins[] = 'tickets_flagged';
+
+						$color = $choice;
+						if ($color == 'any') {
+							$this->summary[] = "Flagged";
+							$wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
+						} else {
+							$this->summary[] = "Flagged with color {$color}";
+							$wheres[] = '(tickets_flagged.person_id = '. $this->person->id . ' AND ' . $this->_stringMatch('tickets_flagged.color', $op, $color) . ')';
+						}
+
+						break;
+
+					case self::TERM_LABEL:
+						$this->affected_fields[] = 'ticket.labels';
+						$this->_normalizeOpAndChoice($op, $choice);
+
+						$choices_in = array();
+						if (is_array($choice)) {
+							foreach ((array)$choice as $c) {
+								$choices_in[] = $db->quote($c);
+							}
+							$choices_in = implode(',', $choices_in);
+						}
+
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+
+						switch ($op) {
+							case self::OP_IS:
+								$joins[] = array(
+									'labels_tickets',
+									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)"
+								);
+								$wheres[] = "$join_name.label = " . $db->quote($choice);
+								break;
+							case self::OP_NOT:
+								$joins[] = array(
+									'labels_tickets',
+									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label = ".$db->quote($choice).")"
+								);
+								$wheres[] = "$join_name.ticket_id IS NULL";
+								break;
+							case self::OP_CONTAINS:
+								$joins[] = array(
+									'labels_tickets',
+									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)"
+								);
+								$wheres[] = "$join_name.label IN ($choices_in)";
+								break;
+
+							case self::OP_NOTCONTAINS:
+								$joins[] = array(
+									'labels_tickets',
+									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label IN ($choices_in)"
+								);
+								$wheres[] = "$join_name.ticket_id IS NULL";
+								break;
+						}
+						break;
+
+					case self::TERM_TICKET_FIELD:
+						$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+						if (!$field) break;
+
+						$this->affected_fields[] = 'ticket.custom_data_ticket_' . $field['id'];
+
+						$search_type = $field->getHandler()->getSearchType();
+
+						if (isset($choice['custom_fields']['field_' . $term_id])) {
+							$choice = $choice['custom_fields']['field_' . $term_id];
+						}
+
+						switch ($search_type) {
+							case 'input':
+							case 'value':
+
+								if (is_array($choice)) {
+									$choice = array_pop($choice);
+								}
+
+								if ($op == self::OP_IS) {
+									$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
+								} else {
+									$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+								}
+
+								$joins[] = array(
+									'custom_data_ticket',
+									"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)"
+								);
+
+								$field = 'custom_data_ticket_'.$join_id.'.'.$search_type;
+								switch ($op) {
+									case self::OP_IS:
+										$wheres[] = "$field = " . $db->quote($choice);
+										break;
+									case self::OP_NOT:
+										$wheres[] = "$field != " . $db->quote($choice);
+										break;
+									case self::OP_CONTAINS:
+									case self::OP_NOTCONTAINS:
+										$op = 'LIKE';
+										if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
+										$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
+										break;
+								}
+
+								$this->summary[] = "";
+
+								break;
+
+							case 'id':
+								$join_id = Util::requestUniqueId();
+								$choices_in = array();
+								$choice = (array)$choice;
+								foreach ($choice as $c) {
+									$choices_in[] = (int)$c;
+								}
+								$choices_in = implode(',', $choices_in);
+
+								$choice_str = array();
+								foreach ($field->children as $child) {
+									if (in_array($child['id'], $choice)) {
+										$choice_str[] = $child['title'];
+									}
+								}
+								$choice_str = implode(', ', $choice_str);
+
+								if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
+									$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
+								} else {
+									$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+								}
+
+								$field = 'custom_data_ticket_'.$join_id.'.field_id';
+								switch ($op) {
+									case self::OP_CONTAINS:
+									case self::OP_IS:
+										$joins[] = array(
+											'custom_data_ticket',
+											"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
+										);
+										$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+										break;
+
+									case self::OP_NOTCONTAINS:
+									case self::OP_NOT:
+										$joins[] = array(
+											'custom_data_ticket',
+											"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
+										);
+										$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+										break;
+								}
+								break;
+						}
+						break; // end break TERM_TICKET_FIELD
+
+					case self::TERM_USER_WAITING:
+						$this->enableArchiveSearch();
+						$this->affected_fields[] = 'ticket.date_user_waiting';
+
+						$choice = $this->normalizeWaitingTime($choice);
+
+						if (is_array($choice) && isset($choice['waiting_time'])) {
+							$this->summary[] = 'User waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+							$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+
+							// Waiting time is inversed when supplied in relative format like this.
+							// If we want to know 'waiting time is gte 24 hours', then the date from normaliseWaitingTime is the upper limit of what we want.
+							// 'waiting time is gte 24 hours' == 'date_user_waiting lte 2012-01-02'
+							$op = $this->invertOp($op);
+						}
+
+						if ($choice) {
+							$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
+						}
+						break;
+
+					case self::TERM_AGENT_WAITING:
+						$this->affected_fields[] = 'ticket.date_agent_waiting';
+
+						$choice = $this->normalizeWaitingTime($choice);
+
+						if (is_array($choice) && isset($choice['waiting_time'])) {
+							$this->summary[] = 'Agent waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+							$choice = new \DateTime('-' . \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']) . ' seconds');
+							$op = $this->invertOp($op);
+						}
+
+						if ($choice) {
+							$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
+						}
+						break;
+
+					case self::TERM_TOTAL_USER_WAITING:
+						$this->affected_fields[] = 'ticket.total_user_waiting';
+						$now = time();
+
+						$choice = $this->normalizeWaitingTime($choice);
+
+						// Need the check on waiting_time because it could be date1/date2 instead
+						if (is_array($choice) && isset($choice['waiting_time'])) {
+							$this->summary[] = 'Total waiting time is ' . $choice['waiting_time'] . ' ' . $choice['waiting_time_unit'];
+							$choice = \Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']);
+						}
+
+						if ($choice && is_array($choice)) {
+							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", 'between', $choice);
+						} elseif ($choice) {
+							$wheres[] = $this->_rangeMatch("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now)))", $op, $choice);
+						}
+						break;
+
+					case self::TERM_CREATION_SYSTEM:
+						$set_status = true;
+						$this->summary[] = $tr->phrase('agent.general.x_is_y', array(
+							'field' => $tr->phrase('agent.tickets.creation_system'),
+							'value' => $tr->phrase('agent.tickets.creation_system_' . str_replace('.', '_', $choice))
+						));
+						$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
+						break;
+
+					case self::TERM_GATEWAY_ADDRESS:
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_GATEWAY_ADDRESS;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_address_id", $op, $choice, true);
+
+						break;
+
+					case self::TERM_RECEIVING_GATEWAY:
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.receiving_gateway'), $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
+							return $titles;
+						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_RECEIVING_GATEWAY;
+						}
+
+						$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice, true);
+						break;
+
+					case 'escalation_eliminator':
+						/** @var $trigger \Application\DeskPRO\Entity\TicketTrigger */
+						$trigger = $choice;
+						$field = $trigger->getTicketTimeField();
+						if (!$field) {
 							break;
-                        case 'after':
-                            $operator = '>=';
-                            break;
-                        default:
-							$operator = '=';
-                    }
+						}
 
-                    foreach($choice as $k => $v) {
-                        $choice[$k] = preg_replace('[^0-9]', '', $choice[$k]);
-                    }
+						$joins[] = array(
+							'ticket_trigger_logs',
+							"LEFT JOIN ticket_trigger_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.trigger_id = {$trigger->id} AND $join_name.date_criteria = tickets.$field)"
+						);
 
-                    $column = str_replace('time', 'date', $term);
-                    $wheres[] = "$column IS NOT NULL AND TIME($column) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
-                    break;
+						$wheres[] = "$join_name.id IS NULL";
+						break;
 
-				case self::TERM_DAY_CREATED:
-					$days = isset($choice['days']) ? $choice['days'] : $choice;
-					if (!$days || !is_array($days)) {
-						continue;
-					}
-					$wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
-                    break;
+					case 'time_created':
+					case 'time_last_user_reply':
+						switch($op) {
+							case 'before':
+								$operator = '<=';
+								break;
+							case 'after':
+								$operator = '>=';
+								break;
+							default:
+								$operator = '=';
+						}
 
-				default:
-					$e = new \InvalidArgumentException("Unknown term: $term");
-					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
-					break;
+						foreach($choice as $k => $v) {
+							$choice[$k] = preg_replace('[^0-9]', '', $choice[$k]);
+						}
+
+						$column = str_replace('time', 'date', $term);
+						$wheres[] = "$column IS NOT NULL AND TIME($column) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
+						break;
+
+					case self::TERM_DAY_CREATED:
+						$days = isset($choice['days']) ? $choice['days'] : $choice;
+						if (!$days || !is_array($days)) {
+							continue;
+						}
+						$wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
+						break;
+
+					default:
+						$e = new \InvalidArgumentException("Unknown term: $term");
+						\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
+						break;
+				}
 			}
 		}
 
@@ -1520,7 +1535,8 @@ class TicketSearch extends SearcherAbstract
 
 		$this->sql_parts = array(
 			'joins' => $joins,
-			'wheres' => $wheres
+			'wheres' => $wheres_all,
+			'wheres_any' => $wheres_any,
 		);
 
 		return $this->sql_parts;
