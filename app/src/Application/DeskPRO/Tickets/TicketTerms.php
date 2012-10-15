@@ -1223,7 +1223,7 @@ class TicketTerms
 			if (strpos($op, 'changed') !== false) {
 				$term = $this->getTermDescription($term, $op, $choice);
 				if ($term) {
-					$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
+					$descs[] = $term;
 				}
 			} else {
 				$term = $this->getTermDescription($term, $op, $choice);

@@ -819,6 +819,15 @@ class TermSummary
 			case self::OP_NOTCONTAINS:
 				$summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
 				break;
+			case self::OP_CHANGED:
+				$summary = "$field changed";
+				break;
+			case self::OP_CHANGED_TO:
+				$summary = "$field changed to $title";
+				break;
+			case self::OP_CHANGED_FROM:
+				$summary = "$field changed from $title";
+				break;
 		}
 
 		return $summary;
@@ -843,6 +852,9 @@ class TermSummary
 
 	protected function _normalizeAgentChoice($choice)
 	{
+		if (isset($choice['agent'])) {
+			$choice = $choice['agent'];
+		}
 		$choice = (array)$choice;
 
 		$agent_ids = array();
