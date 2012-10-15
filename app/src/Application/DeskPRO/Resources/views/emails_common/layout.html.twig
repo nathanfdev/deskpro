@@ -99,7 +99,7 @@
 </head>
 <body>
 <div class="dp-wrap">
-{% if agent_reply_above_line %}=== <a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />{% endif %}
+{% if agent_reply_above_line and app.getSetting('core_tickets.gateway_agent_require_marker') %}=== <a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} ===<br /><br />{% endif %}
 {% if not agent_reply_above_line %}<a class="DP_TOP_MARK" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>{% endif %}
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td {% if not agent_reply_above_line %}class="DP_TOP_MARK" name="DP_TOP_MARK"{% endif %}>
 
