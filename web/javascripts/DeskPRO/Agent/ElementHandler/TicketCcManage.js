@@ -8,7 +8,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 		var addUrl = this.el.data('add-url');
 		var deleteUrl = this.el.data('delete-url');
 
-
 		var list = $('ul', this.el).first();
 		var newrow = $('li.newrow', this.el);
 		var rowtpl = DeskPRO_Window.util.getPlainTpl($('.addrow-tpl', this.el));
@@ -22,10 +21,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
             row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(row);
 		});
 
-		var getReplyController = function() {
-			return $('.ticket-reply-form', self.el.data('replybox-container')).data('handler');
-		};
-
 		this.el.find('ul').on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('li');
 			var personId = row.data('person-id');
@@ -36,8 +31,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 					url: deleteUrl,
 					type: 'POST',
 					data: { person_id: personId },
-					success: function(html) {
-						row.remove();
+					dataType: 'json',
+					success: function(data) {
+						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+							$(this).empty().html(data.cc_list || '');
+						});
 					},
 					error: function() {
 						row.show();
@@ -45,11 +43,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				});
 
 				row.fadeOut('fast');
-
-				var trb = getReplyController();
-				if (trb && trb.removeCc) {
-					trb.removeCc(email);
-				}
 			}
 
 			row.fadeOut('fast', function() {
@@ -85,15 +78,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						return;
 					}
 
-					var li = $(data.row);
-
-					li.appendTo(list);
-
-					var email = li.data('email-address');
-					var trb = getReplyController();
-					if (trb && trb.addCc) {
-						trb.addCc(email);
-					}
+					self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+						$(this).empty().html(data.cc_list || '');
+					});
 				}
 			});
 		});

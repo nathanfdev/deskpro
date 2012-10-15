@@ -791,7 +791,7 @@ class TicketController extends AbstractController
 			if ($ticket->hasParticipantPerson($person)) {
 				return $this->createJsonResponse(array(
 					'success' => true,
-					'row' => $this->renderView('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms))
+					'cc_list' => $this->_getTicketCcList($ticket)
 				));
 			}
 		}
@@ -818,13 +818,45 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'row' => $this->renderView('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms))
+			'cc_list' => $this->_getTicketCcList($ticket)
 		));
 	}
 
 	############################################################################
 	# remove-participant
 	############################################################################
+
+	protected function _getTicketCcList($ticket)
+	{
+		// New reply box
+		$participants = $this->em->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		$participant_ids = array();
+		$agent_parts = array();
+		$user_parts = array();
+
+		foreach ($participants as $p) {
+			$participant_ids[] = $p->person->id;
+			if ($p->person->is_agent) {
+				$agent_parts[] = $p;
+			} else {
+				$user_parts[] = $p;
+			}
+		}
+
+		$cc_list = $this->renderView('AgentBundle:Ticket:view-user-cc-list.html.twig', array(
+			'user_parts' => $user_parts,
+			'ticket_perms' => $this->_getTicketPerms($ticket),
+		));
+
+		return $cc_list;
+	}
 
 	public function removeParticipantAction($ticket_id)
 	{
@@ -856,7 +888,7 @@ class TicketController extends AbstractController
             throw $e;
 		}
 
-		return $this->createJsonResponse(array('success' => true));
+		return $this->createJsonResponse(array('success' => true, 'cc_list' => $this->_getTicketCcList($ticket)));
 	}
 
 	public function setAgentParticipantsAction($ticket_id)
@@ -878,7 +910,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createJsonResponse(array('sucess' => true));
+		return $this->createJsonResponse(array('sucess' => true, 'cc_list' => $this->_getTicketCcList($ticket)));
 	}
 
 
@@ -1160,6 +1192,11 @@ class TicketController extends AbstractController
 			'ticket_perms' => $this->_getTicketPerms($ticket),
 		));
 
+		$cc_list = $this->renderView('AgentBundle:Ticket:view-user-cc-list.html.twig', array(
+			'user_parts' => $user_parts,
+			'ticket_perms' => $this->_getTicketPerms($ticket),
+		));
+
 		if ($charge) {
 			$charge_html = $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
 				'ticket' => $ticket,
@@ -1179,6 +1216,7 @@ class TicketController extends AbstractController
 			'status' => $ticket['status'],
 			'close_tab' => $close_tab,
 			'client_messages' => $client_messages,
+			'cc_list' => $cc_list,
 		));
 
 		return $this->createJsonResponse($data);

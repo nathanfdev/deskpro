@@ -87,7 +87,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var row = $(this).closest('.cc-user-row');
 			var input = $('<input type="hidden" />');
 			input.attr('name', 'delcc[]');
-			input.val(row.data('email'));
+			input.val(row.data('email-address'));
 
 			cc_del_wrap.append(input);
 			row.remove();
@@ -114,7 +114,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			cc_add_wrap.append(input);
 
-			var newrow = $('<div />').addClass('cc-user-row').data('email', email);
+			var newrow = $('<li />').addClass('cc-user-row').data('email', email);
 			newrow.append('<span class="btn-small-remove remove-row-trigger" />');
 			var span = $('<span class="user-email" />');
 			span.text(email);

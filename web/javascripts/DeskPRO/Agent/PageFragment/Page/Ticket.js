@@ -393,6 +393,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		}
 
+		if (typeof data.cc_list == "string") {
+			this.wrapper.find('ul.cc-row-list').empty().html(data.cc_list);
+		}
+
 		if (data.charge_html) {
 			this.addBillingRow(data.charge_html);
 			this.updateBillingForm(true);

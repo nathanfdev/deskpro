@@ -302,7 +302,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							data-add-trigger="#{{baseId}}_new_cc_user"
 							data-replybox-container="#{{baseId}}_replybox_wrap"
 						>
-							<ul>
+							<ul class="cc-row-list">
 								{% for part in user_parts %}
 									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 								{% endfor %}

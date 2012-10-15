@@ -85,9 +85,11 @@
 								<div id="{{replyBaseId}}_delcc" style="display: none;"></div>
 
                                 <div class="user-rows" id="{{replyBaseId}}_cc_user_rows">
-                                    {% for p in user_parts %}
-                                        <div class="cc-user-row" data-email="{{ p.person_email.email }}"><span class="btn-small-remove remove-row-trigger"></span><span class="user-email">{{ p.person_email.email }}</span></div>
-                                    {% endfor %}
+									<ul class="cc-row-list">
+										{% for p in user_parts %}
+											{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': p.person, 'ticket_perms':ticket_perms } %}
+										{% endfor %}
+									</ul>
                                 </div>
                                 <script class="email-row-tpl" type="text/x-deskpro-tmpl">
                                     <div class="cc-user-row">
