@@ -79,6 +79,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $ticket;
 
+	/**
+	 * If the Detector detected that an email should come from a specific person,
+	 * then this is the person.
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $detected_tac_person;
+
 	protected $error;
 	protected $source_info;
 	protected $is_dp3_reply = false;
@@ -121,6 +129,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$ticket = $detector->findExistingTicket($this->reader);
 
 				$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+
+				$this->detected_tac_person = $detector->getTacPerson();
+				if ($this->detected_tac_person) {
+					$this->logMessage(sprintf('[TicketGatewayProcessor] CodeTicketDetector used TAC belonging to %d %s', $this->detected_tac_person->getId(), $this->detected_tac_person->getDisplayContact()));
+				}
 			}
 
 			// If we imported form DP3, run the old codes
@@ -286,6 +299,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket->getTicketLogger()->recordExtra('is_user_reply', true);
 		} else {
 			$ticket->getTicketLogger()->recordExtra('is_agent_reply', true);
+
+			// Agent context. If this was a reply via a TAC,
+			// then the person detected via address and the person who owns the TAC
+			// should be the sames. Otherwise, *probably* means the agent used a different
+			// email address.
+			if ($this->detected_tac_person && $this->detected_tac_person->getId() != $person->getId()) {
+				$this->logMessage('doNewRelpy agent reply with TAC from unknown email address');
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_AUTH_INVALID;
+
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
+					'ticket'  => $ticket,
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+				App::getMailer()->send($message);
+
+				return null;
+			}
 		}
 
 		$email_info = array();

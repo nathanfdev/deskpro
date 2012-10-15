@@ -1,0 +1,12 @@
+<dp:is-noreply />
+<dp:subject>
+	Error with your reply to "{{ subject }}"
+</dp:subject>
+<dp:body>
+	<dp:section>
+		Your email reply to ticket #{{ ticket.id }} was not accepted because you
+		are sending from an unknown email address.
+		<br /><br />
+		Please send replies from the email address you have set in your profile on the helpdesk.
+	</dp:section>
+</dp:body>

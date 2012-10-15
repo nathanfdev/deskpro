@@ -60,6 +60,11 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 	protected $_found_person = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $_tac_person = null;
+
+	/**
 	 * @var \Orb\Log\Logger
 	 */
 	protected $logger;
@@ -131,7 +136,11 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
 				if ($ticket && !$ticket->isArchived()) {
+					// The person we have from the email address
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+					// The person who should own this tac
+					$this->_tac_person   = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
 
 					if ($this->_found_person) {
 						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
@@ -186,6 +195,16 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 
 		return null;
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person|null
+	 */
+	public function getTacPerson()
+	{
+		return $this->_tac_person;
+	}
+
 
 	/**
 	 * Unknown people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
