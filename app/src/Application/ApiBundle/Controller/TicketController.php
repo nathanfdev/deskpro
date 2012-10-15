@@ -105,7 +105,7 @@ class TicketController extends AbstractController
 				}
 			}
 		} else {
-			$agentId = $this->person->id;
+			$agentId = 0;
 		}
 
 		$ticket = new Ticket();
@@ -153,7 +153,9 @@ class TicketController extends AbstractController
 
 		$ticket->subject = $subject;
 		$ticket->status = $this->in->getString('status') ?: 'awaiting_agent';
-		$ticket->agent_id = $agentId;
+		if ($agentId) {
+			$ticket->agent_id = $agentId;
+		}
 
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message->person = $this->person;
