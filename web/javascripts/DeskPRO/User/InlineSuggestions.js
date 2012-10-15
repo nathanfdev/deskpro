@@ -167,6 +167,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 
 		if (!tplEl[0]) {
 			window.open(origUrl);
+			return;
 		}
 
 		var overlay = new DeskPRO.User.SuggestedContentOverlay({
