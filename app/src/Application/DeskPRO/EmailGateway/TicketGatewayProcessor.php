@@ -663,6 +663,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_full'] = '';
 		}
 
+		// The cut message is blank, fallback to using the full message
+		if (!trim(strip_tags($email_info['body']))) {
+			$email_info['body'] = $email_info['body_full'];
+			$email_info['body_full'] = '';
+		}
+
 		return $email_info;
 	}
 
