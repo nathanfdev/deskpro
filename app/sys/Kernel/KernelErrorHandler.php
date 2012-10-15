@@ -520,6 +520,7 @@ class KernelErrorHandler
 		$context_data = '';
 
 		$display = true;
+		$no_send_error = false;
 		if (!(error_reporting() & $errno)) {
 			$display = false;
 		}
@@ -527,6 +528,7 @@ class KernelErrorHandler
 		// Dont output apc warnings (but still log them)
 		if ($display && strpos($errstr, 'Unable to allocate memory for pool') !== false) {
 			$display = false;
+			$no_send_error = true;
 		}
 
 		$errstr  = self::stripPathPrefix($errstr);
@@ -554,7 +556,8 @@ class KernelErrorHandler
 			'process_log'     => implode("\n", self::$process_log),
 			'context_data'    => $context_data,
 			'error_time'     => microtime(true),
-			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0
+			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+			'no_send_error'  => $no_send_error,
 		);
 	}
 
