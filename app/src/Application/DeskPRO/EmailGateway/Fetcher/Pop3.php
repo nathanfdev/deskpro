@@ -56,10 +56,10 @@ class Pop3 extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = $this->gateway['connection_options']['host'];
-		$options['port']     = $this->gateway['connection_options']['port'];
-		$options['user']     = $this->gateway['connection_options']['username'];
-		$options['password'] = $this->gateway['connection_options']['password'];
+		$options['host']     = isset($this->gateway['connection_options']['host'])     ? $this->gateway['connection_options']['host']     : 'localhost';
+		$options['port']     = isset($this->gateway['connection_options']['port'])     ? $this->gateway['connection_options']['port']     : '110';
+		$options['user']     = isset($this->gateway['connection_options']['username']) ? $this->gateway['connection_options']['username'] : '';
+		$options['password'] = isset($this->gateway['connection_options']['password']) ? $this->gateway['connection_options']['password'] : '';
 
 		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
