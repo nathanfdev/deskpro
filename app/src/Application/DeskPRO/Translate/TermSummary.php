@@ -328,15 +328,11 @@ class TermSummary
 				break;
 
 			case 'label':
-				$choices_in = array();
-				if (is_array($choice)) {
-					foreach ((array)$choice as $c) {
-						$choices_in[] = $db->quote($c);
-					}
-					$choices_in = implode(',', $choices_in);
-				}
-
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+				break;
+
+			case 'org_label':
+				$summary = $this->_choiceSummary('Organisation label', $op, $choice);
 				break;
 
 			case 'person_field':
