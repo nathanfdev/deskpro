@@ -55,7 +55,7 @@
 							<a class="title" href="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id}) }}">{{usergroup.title}}</a>
 							<div class="icon-list">
 								<ul>
-									{% for id in usergroup_member_ids[usergroup.id] %}
+									{% for id in usergroup_member_ids[usergroup.id] if all_agents[id] %}
 										{% set agent = all_agents[id] %}
 										<li><img src="{{ agent.getPictureUrl(30) }}" class="tipped" title="{{ agent.display_name }}" /></li>
 									{% endfor %}
@@ -87,7 +87,7 @@
 							<a class="title" href="{{ path('admin_agents_teams_edit', {'team_id': team.id}) }}">{{team.name}}</a>
 							<div class="icon-list">
 								<ul>
-									{% for id in team_member_ids[team.id] %}
+									{% for id in team_member_ids[team.id] if all_agents[id] %}
 										{% set agent = all_agents[id] %}
 										<li><img src="{{ agent.getPictureUrl(30) }}" class="tipped" title="{{ agent.display_name }}" /></li>
 									{% endfor %}
