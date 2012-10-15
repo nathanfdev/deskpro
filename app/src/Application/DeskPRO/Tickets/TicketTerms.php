@@ -643,7 +643,7 @@ class TicketTerms
 			case 'day_created':
 
 				$days = isset($choice['days']) ? (array)$choice['days'] : array();
-				$day = $ticket->person->getDateForTime($ticket->date_created->getTimestamp())->format('w');
+				$day = $ticket->person->getDateForTime('@' . $ticket->date_created->getTimestamp())->format('w');
 
 				if (!in_array($day, $days)) {
 					return false;
