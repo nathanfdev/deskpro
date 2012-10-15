@@ -113,14 +113,14 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="billing">{{ phrase('agent.general.billing_interface') }}<span class="dropdownIcon"></span></a>
+				<a class="billing">{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 			<div class="dropdownSwitcherWrap">
 				<div class="switcherHeader">
-					<a class="billing"><span>{{ phrase('agent.general.billing_interface') }}</span></a>
+					<a class="billing"><span>{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}</span></a>
 				</div>
 				<ul>
 					{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}

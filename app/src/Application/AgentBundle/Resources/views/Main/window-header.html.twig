@@ -152,7 +152,7 @@
 			</div>
 			<ul>
 				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span>{{ phrase('agent.general.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing" style="margin-right: -3px;"><span class="check">{% if app.isCloud() %}{{ phrase('agent.general.billing_interface') }}{% else %}{{ phrase('agent.general.license_interface') }}{% endif %}</span></a></li>{% endif %}
 				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.general.reports_interface') }}</span></a></li>{% endif %}
 				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
 			</ul>

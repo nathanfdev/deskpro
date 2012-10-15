@@ -78,6 +78,7 @@
 	'agent.general.away'                                    => 'Away',
 	'agent.general.before'                                  => 'before',
 	'agent.general.between'                                 => 'between',
+	'agent.general.license_interface'                       => 'Licensing Interface',
 	'agent.general.billing_interface'                       => 'Billing Interface',
 	'agent.general.browser_agent'                           => 'Browser Agent',
 	'agent.general.by_agent_for_user'                       => 'By agent on behalf of user',
