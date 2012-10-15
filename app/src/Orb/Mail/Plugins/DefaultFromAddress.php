@@ -65,13 +65,26 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 		} else {
 			$from = $message->getFrom();
 
-			foreach ($from as $k => &$v) {
-				if (!$v) {
-					$v = $this->name;
+			if (is_array($from)) {
+				foreach ($from as $k => &$v) {
+					if (!$v) {
+						$v = $this->name;
+					}
+					break;
 				}
-				break;
+
+				$message->setFrom($from);
+
+			} elseif (is_string($from)) {
+				// From is a string now,
+				// It's either a string of email@example.com or Name <email@example.com>
+				// So if its just an email, we want to prepend the default name
+				if (\Orb\Validator\StringEmail::isValueValid($from)) {
+					$from = array($from	 => $this->name);
+				}
+
+				$message->setFrom($from);
 			}
-			$message->setFrom($from);
 		}
 	}
 }
