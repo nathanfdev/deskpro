@@ -176,6 +176,17 @@ $DP_CONFIG['import'] = array(
   'existing_attachment_files' => ''
 );
 
+######################################################
+# OPTIONAL: Trust proxy data                         #
+#                                                    #
+# You should enable this option if you want to trust #
+# proxy data passed in request headers. Typically    #
+# you only need to do this if you are hosting        #
+# DeskPRO behind a reverse proxy.                    #
+######################################################
+
+$DP_CONFIG['trust_proxy_data'] = false;
+
 # ~~~~~~~~~~~~~~~~ DEBUG & LOGS ~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################

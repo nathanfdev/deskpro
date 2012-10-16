@@ -174,6 +174,12 @@ class KernelBooter
 		if (!$request) {
 			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		}
+
+		if (isset($DP_CONFIG['trust_proxy_data']) && $DP_CONFIG['trust_proxy_data']) {
+			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
+			\Symfony\Component\HttpFoundation\Request::trustProxyData();
+		}
+
 		$path = $request->getPathInfo();
 
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
