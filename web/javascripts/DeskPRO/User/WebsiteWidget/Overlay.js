@@ -58,15 +58,15 @@ var DpOverlayWidget = new (function() {
 		getWindowSize: function() {
 			var winW = 0, winH = 0;
 
-			if (document.body && document.body.offsetWidth) {
-				winW = document.body.offsetWidth;
-				winH = document.body.offsetHeight;
-			} else if (document.compatMode=='CSS1Compat' && document.documentElement && document.documentElement.offsetWidth ) {
-				winW = document.documentElement.offsetWidth;
-				winH = document.documentElement.offsetHeight;
-			} else if (window.innerWidth && window.innerHeight) {
-				winW = window.innerWidth;
-				winH = window.innerHeight;
+			if (typeof window.innerWidth != 'undefined') {
+				winW = window.innerWidth,
+				winH = window.innerHeight
+			} else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth != 0) {
+				winW = document.documentElement.clientWidth,
+				winH = document.documentElement.clientHeight
+			} else {
+				winW = document.getElementsByTagName('body')[0].clientWidth,
+				winH = document.getElementsByTagName('body')[0].clientHeight
 			}
 
 			return {w: winW, h: winH};
@@ -557,7 +557,7 @@ var DpOverlayWidget = new (function() {
 		DpConsole.log('DpOverlayWidget:setHeight ' + height);
 
 		overlayWrapInner.style.height = height + "px";
-		overlayWrapInner.style.top = ((winHeight - height) / 2) + "px";
+		overlayWrapInner.style.top = ((util.getWindowSize().h - height) / 2) + "px";
 		overlayIframe.style.height = height + "px";
 	};
 
@@ -645,7 +645,7 @@ var DpOverlayWidget = new (function() {
 		css.push('-o-transform: rotate(' + degrees + 'deg)');
 
 		if (isIE ) {
-			if (parseInt(ieVer.slice(0,1)) >= "9") {
+			if (parseInt((ieVer+'').slice(0,1)) >= "9") {
 				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=4)');
 			} else {
 				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
