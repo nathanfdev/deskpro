@@ -74,13 +74,11 @@ DeskPRO.User.Window = new Orb.Class({
 
 			interval = setInterval(function() {
 				var wrapper = $('#stwrapper');
-				console.log('called');
 				if (wrapper.length) {
 					wrapper.css({
 						left: '',
 						right: '-999px'
 					});
-					console.log('done');
 					clearInterval(interval);
 				}
 			}, 100);
@@ -214,7 +212,24 @@ DeskPRO.User.Window = new Orb.Class({
 						&& boundBottom > (elementPosition.top + actualHeight)
 					};
 
-					return above ? 'top' : below ? 'bottom' : left ? 'left' : right ? 'right' : 'top';
+					var position = above ? 'top' : below ? 'bottom' : left ? 'left' : right ? 'right' : 'top';
+
+					if ($('html').attr('dir') == 'rtl') {
+						setTimeout(function() {
+							var $tip = $(tip);
+							$tip.css({left: '', right: ''});
+
+							if (position == 'top' || position == 'bottom') {
+								$tip.css({right: $(window).width() - pos.left - pos.width / 2 - $tip.width() / 2, left: ''});
+							} else if (position == 'left') {
+								$tip.css({right: $(window).width() - pos.left, left: ''});
+							} else if (position == 'right') {
+								$tip.css({right: $(window).width() - pos.left - pos.width - $tip.width(), left: ''});
+							}
+						}, 0);
+					}
+
+					return position;
 				}
 			});
 		}
