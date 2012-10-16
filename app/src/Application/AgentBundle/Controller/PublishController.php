@@ -659,7 +659,7 @@ class PublishController extends AbstractController
 			$word = Strings::utf8_strtolower($word);
 			$word = Strings::utf8_accents_to_ascii($word);
 
-			$this->db->insert('search_sticky_result', array(
+			$this->db->replace('search_sticky_result', array(
 				'word'        => $word,
 				'object_type' => $entity_name,
 				'object_id'   => $content_id
