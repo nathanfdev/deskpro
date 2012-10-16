@@ -15,6 +15,99 @@ if (!window.Dp_WaitingLibLoad) {
 
 var DpOverlayWidget = new (function() {
 
+	//##################################################################################################################
+	//# Util
+	//##################################################################################################################
+
+	var util = {
+		createEl: function(html) {
+			var div = document.createElement('div');
+			div.innerHTML = html;
+
+			return div.firstChild;
+		},
+
+		hasClass: function(el, className) {
+			if (el.className === "") {
+				return false;
+			}
+
+			return (" " + el.className + " ").indexOf(" " + className + " ") > -1;
+		},
+
+		addClass: function(el, className) {
+			if (!this.hasClass(el, className)) {
+				el.className += " " + className;
+			}
+		},
+
+		removeClass: function(el, className) {
+			if (this.hasClass(el, className)) {
+				el.className.replace(new RegExp("(^|\\s)" + className + "(\\s|$)"), " ").replace(/\s$/, "");
+			}
+		},
+
+		hideEl: function(el) {
+			el.style.display = 'none';
+		},
+
+		showEl: function(el) {
+			el.style.display = 'block';
+		},
+
+		getWindowSize: function() {
+			var winW = 0, winH = 0;
+
+			if (document.body && document.body.offsetWidth) {
+				winW = document.body.offsetWidth;
+				winH = document.body.offsetHeight;
+			} else if (document.compatMode=='CSS1Compat' && document.documentElement && document.documentElement.offsetWidth ) {
+				winW = document.documentElement.offsetWidth;
+				winH = document.documentElement.offsetHeight;
+			} else if (window.innerWidth && window.innerHeight) {
+				winW = window.innerWidth;
+				winH = window.innerHeight;
+			}
+
+			return {w: winW, h: winH};
+		},
+
+		getElWidth: function (el) {
+			return el.offsetWidth;
+		},
+
+		getElHeight: function(el) {
+			return el.offsetHeight;
+		},
+
+		removeEl: function(el) {
+			el.parentNode.removeChild(el);
+		},
+
+		bind: function(el, eventName, callback) {
+			if (el.addEventListener) {
+				el.addEventListener(eventName, callback);
+			} else {
+                el.attachEvent("on" + eventName, callback);
+			}
+		},
+
+		extend: function(obj, obj2) {
+			for (var property in obj2) {
+				obj[property] = obj2[property];
+			}
+
+			return obj;
+		}
+	};
+
+	//##################################################################################################################
+	//# Overlay Widget
+	//##################################################################################################################
+
+	var body = document.body;
+	var tmp, tmpi;
+
 	var options = {
 		protocol: null,
 		staticUrl: null,
@@ -27,33 +120,27 @@ var DpOverlayWidget = new (function() {
 	var self = this;
 
 	/**
-	 * Scoped reference to jQuery
-	 * @var {jQuery}
-	 */
-	var $ = null;
-
-	/**
 	 * The overlay backdrop div
-	 * @var {jQuery}
+	 * @var {HTMLElement}
 	 */
 	var overlayBack = null;
 
 	/**
 	 * The overlay wrapper
-	 * @var {jQuery}
+	 * @var {HTMLElement}
 	 */
 	var overlayWrap = null;
 
 	/**
 	 * The inner overlay wrapper
-	 * @var {jQuery}
+	 * @var {HTMLElement}
 	 */
 	var overlayWrapInner = null;
 
 
 	/**
 	 * The overlay iframe
-	 * @var {jQuery}
+	 * @var {HTMLElement}
 	 */
 	var overlayIframe = null;
 
@@ -192,10 +279,6 @@ var DpOverlayWidget = new (function() {
 					email: data[1].replace(/__DP_COL__/g, ':'),
 					department_id: data[2].replace(/__DP_COL__/g, ':')
 				};
-				var preform = $('#dpchat_preform');
-				preform.find('input[name="name"]').val(data.name);
-				preform.find('input[name="email"]').val(data.email);
-				preform.find('select[name="department_id"]').val(data.department_id);
 
 				if (window.DpChatWidget) {
 					DpChatWidget.open([
@@ -212,11 +295,12 @@ var DpOverlayWidget = new (function() {
 			case 'showContentPage':
 
 				if (contentWrap) {
-					contentWrap.remove();
+					util.removeEl(contentWrap);
+					contentWrap = null;
 				}
 
-				var w = overlayWrapInner.width();
-				var h = overlayWrapInner.height();
+				var w = util.getElWidth(overlayWrapInner);
+				var h = util.getElHeight(overlayWrapInner);
 
 				var myWidth  = w - 350 + 20; // 350 is width of the left pane inside
 				var myHeight = h + 50; // 20 for some space around
@@ -242,7 +326,8 @@ var DpOverlayWidget = new (function() {
 				css.push('z-index: 16001');
 				css.push('box-shadow: 0 0px 3px rgba(0, 0, 0, 0.5)');
 				css = css.join(';');
-				contentWrap = $('<div style="' + css  +'"></div>').appendTo('body');
+				contentWrap = util.createEl('<div style="' + css  +'"></div>');
+				body.appendChild(contentWrap);
 
 				var css = [];
 				css.push('position: absolute');
@@ -258,7 +343,8 @@ var DpOverlayWidget = new (function() {
 				css.push('-webkit-background-clip: padding-box');
 				css.push('background-clip: padding-box');
 				css = css.join(';');
-				var inner = $('<div style="' + css  +'"></div>').appendTo(contentWrap);
+				var inner = util.createEl('<div style="' + css  +'"></div>');
+				contentWrap.appendChild(inner);
 
 				css = [];
 				css.push('border: none');
@@ -275,12 +361,15 @@ var DpOverlayWidget = new (function() {
 				css.push((isRtl ? 'left' : 'right') + ': -10px');
 				css = css.join(';');
 
-				$('<span style="'+css+'"></span>').appendTo(contentWrap).click(function(ev) {
-					ev.preventDefault();
-					contentWrap.fadeOut('fast', function() {
-						contentWrap.remove();
-						contentWrap = null;
-					});
+				tmp = util.createEl('<span style="'+css+'"></span>');
+				contentWrap.appendChild(tmp);
+
+				util.bind(tmp, 'click', function(ev) {
+					if (ev && ev.preventDefault) ev.preventDefault();
+					else window.event.returnValue = false;
+
+					util.removeEl(contentWrap);
+					contentWrap = null;
 				});
 
 				css = [];
@@ -295,7 +384,8 @@ var DpOverlayWidget = new (function() {
 				var url = data[0];
 				url = url.replace(/__DP_COL__/g, ':');
 				url += '#' + encodeURIComponent(window.location.href);
-				$('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
+				tmp = util.createEl('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
+				inner.appendChild(tmp);
 
 				break;
 		}
@@ -314,7 +404,8 @@ var DpOverlayWidget = new (function() {
 
 		// Always re-create the iframe so the stage resets
 		if (overlayIframe) {
-			overlayIframe.remove();
+			util.removeEl(overlayIframe);
+			overlayIframe = null;
 		}
 
 		if (!overlayWrap) {
@@ -336,7 +427,8 @@ var DpOverlayWidget = new (function() {
 			css.push('opacity: 0.7');
 			css.push('z-index: 15000');
 			css = css.join(';');
-			overlayBack = $('<div id="dp_overlay_back" style="' + css  +'"></div>').appendTo('body');
+			overlayBack = util.createEl('<div id="dp_overlay_back" style="' + css  +'"></div>');
+			body.appendChild(overlayBack);
 
 			css = [];
 			css.push('position: fixed');
@@ -349,7 +441,8 @@ var DpOverlayWidget = new (function() {
 			css.push('text-align: center');
 			css.push('z-index: 15001');
 			css = css.join(';');
-			overlayWrap = $('<div id="dp_overlay_wrap" style="' + css  +'"></div>').appendTo('body');
+			overlayWrap = util.createEl('<div id="dp_overlay_wrap" style="' + css  +'"></div>');
+			body.appendChild(overlayWrap);
 
 			css = [];
 			css.push('position: relative');
@@ -367,7 +460,8 @@ var DpOverlayWidget = new (function() {
 			css.push('-webkit-box-shadow: 0 0 9px #000000');
 			css.push('-moz-box-shadow: 0 0 9px #000000');
 			css = css.join(';');
-			overlayWrapInner = $('<div style="' + css  +'"></div>').appendTo(overlayWrap);
+			overlayWrapInner = util.createEl('<div style="' + css  +'"></div>');
+			overlayWrap.appendChild(overlayWrapInner);
 
 			css = [];
 			css.push('border: none');
@@ -384,9 +478,13 @@ var DpOverlayWidget = new (function() {
 			css.push('right: -10px');
 			css = css.join(';');
 
-			var close = $('<span style="'+css+'"></span>').appendTo(overlayWrapInner);
-			close.click(function(ev) {
-				ev.preventDefault();
+			var close = util.createEl('<span style="'+css+'"></span>');
+			overlayWrapInner.appendChild(close);
+
+			util.bind(close, 'click', function(ev) {
+				if (ev && ev.preventDefault) ev.preventDefault();
+				else window.event.returnValue = false;
+
 				self.close();
 			});
 		}
@@ -410,7 +508,8 @@ var DpOverlayWidget = new (function() {
 		}
 
 		src += '#' + encodeURIComponent(window.location.href);
-		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
+		overlayIframe = util.createEl('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
+		overlayWrapInner.appendChild(overlayIframe);
 
 		comms.setupReciever(function(m) {
 			me.childListen(m);
@@ -418,8 +517,8 @@ var DpOverlayWidget = new (function() {
 		setHeight(750);
 		updatePosition();
 
-		overlayBack.fadeIn('fast');
-		overlayWrap.fadeIn();
+		util.showEl(overlayBack);
+		util.showEl(overlayWrap);
 	};
 
 
@@ -432,20 +531,20 @@ var DpOverlayWidget = new (function() {
 		}
 
 		if (contentWrap) {
-			contentWrap.remove();
+			util.removeEl(contentWrap);
 		}
 
 		isOpen = false;
 
 		if (!comms.hasPostMessage) {
-			overlayBack.hide();
-			overlayWrap.hide();
+			util.hideEl(overlayBack);
+			util.hideEl(overlayWrap);
 
 			var targetLoc = window.location + '';
 			window.location = targetLoc.replace(/#.*$/, '#');
 		} else {
-			overlayBack.fadeOut('fast');
-			overlayWrap.fadeOut('fast');
+			util.hideEl(overlayBack);
+			util.hideEl(overlayWrap);
 		}
 	};
 
@@ -457,16 +556,16 @@ var DpOverlayWidget = new (function() {
 	function setHeight(height) {
 		DpConsole.log('DpOverlayWidget:setHeight ' + height);
 
-		overlayWrapInner.height(height);
-		overlayWrapInner.css('top', (winHeight - height) / 2);
-		overlayIframe.height(height);
+		overlayWrapInner.style.height = height + "px";
+		overlayWrapInner.style.top = ((winHeight - height) / 2) + "px";
+		overlayIframe.style.height = height + "px";
 	};
 
 	function updatePosition() {
-		overlayWrapInner.css('top', (winHeight - overlayWrapInner.height()) / 2);
+		overlayWrapInner.style.top = ((winHeight - util.getElHeight(overlayWrapInner)) / 2) + "px";
 
 		var winMaxHeight = winHeight - 40;
-		var height = overlayWrapInner.height();
+		var height = util.getElHeight(overlayWrapInner);
 		if (height > winMaxHeight) {
 			setHeight(winMaxHeight);
 		} else if (height < childRequestedHeight) {
@@ -483,67 +582,17 @@ var DpOverlayWidget = new (function() {
 	//# Initialize Helpers
 	//##################################################################################################################
 
-	function initJquery() {
-		window.Dp_WaitingLibLoad.push(function() {
-			DpConsole.log('DpDpOverlayWidget.init: jquery loaded');
-			$ = window.Dp_jQuery;
-			initWidget();
-		});
-
-		if (!window.Dp_JqueryScript) {
-			window.oldJquery = window.jQuery;
-			window.old$ = window.$;
-
-			function jquery_loaded() {
-				window.Dp_jQuery = window.jQuery.noConflict(true);
-
-				window.jQuery = window.oldJquery;
-				window.$ = window.old$;
-
-				window.oldJquery = null;
-				window.old$ = null;
-
-				var i;
-				for (i = 0; i < window.Dp_WaitingLibLoad.length; i++) {
-					window.Dp_WaitingLibLoad[i]();
-				}
-
-				window.Dp_WaitingLibLoad = [];
-			};
-
-			var script_tag = document.createElement('script');
-			window.Dp_JqueryScript = script_tag;
-
-			script_tag.setAttribute("type", "text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");
-			script_tag.setAttribute("async", 'true');
-			script_tag.onload = function() {
-				jquery_loaded();
-			};
-			script_tag.onreadystatechange = function () { // Same thing but for IE
-				if (this.readyState == 'complete' || this.readyState == 'loaded') {
-					jquery_loaded();
-				}
-			};
-
-			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
-		}
-	};
-
-	/**
-	 * initWidget() is called when we know we've got jQuery
-	 */
 	function initWidget() {
 
 		DpConsole.log('DpOverlayWidget.initScript');
 
-		isRtl = ($('html').attr('dir') == 'rtl');
+		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
 
 		if (window.DpOverlayWidget_Options) {
 			if (isRtl) {
 				window.DpOverlayWidget_Options.tabLocation = 'right';
 			}
-			options = $.extend({}, options, window.DpOverlayWidget_Options);
+			util.extend(options, window.DpOverlayWidget_Options);
 		}
 
 		var bgColor  = 'rgb(63,63,63)';
@@ -595,8 +644,8 @@ var DpOverlayWidget = new (function() {
 		css.push('-ms-transform: rotate(' + degrees + 'deg)');
 		css.push('-o-transform: rotate(' + degrees + 'deg)');
 
-		if ($.browser.msie) {
-			if (parseInt($.browser.version.slice(0,1)) >= "9") {
+		if (isIE ) {
+			if (parseInt(ieVer.slice(0,1)) >= "9") {
 				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=4)');
 			} else {
 				css.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1)');
@@ -617,31 +666,45 @@ var DpOverlayWidget = new (function() {
 			}
 		}
 
-		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>').appendTo('body');
+		tmp = util.createEl('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>');
+		body.appendChild(tmp);
 
-		$('#dp_overlay_btn').css(options.tabLocation, '-' + ($('#dp_overlay_btn').width() / 2 + 6) + 'px');
+		tmp.style[options.tabLocation] = '-' + ((util.getElWidth(tmp) / 2) - 10) + 'px';
 
-		$('.dp-overlay-widget-trigger').on('click', function(ev) {
-			ev.preventDefault();
+		util.bind(tmp, 'click', function(ev) {
+			if (ev && ev.preventDefault) ev.preventDefault();
+			else window.event.returnValue = false;
+
 			self.open();
 		});
+
+		if (document.getElementsByClassName) {
+			tmp = document.getElementsByClassName('dp-overlay-widget-trigger');
+			for (tmpi = 0; i < tmp.length; tmpi++) {
+				util.bind(tmp[tmpi], 'click', function(ev) {
+					if (ev && ev.preventDefault) ev.preventDefault();
+					else window.event.returnValue = false;
+
+					self.open();
+				});
+			}
+		}
 
 		// Preload images used in the overlay
 		(new Image()).src = options.staticUrl + 'images/spinners/loading-big-circle.gif';
 		(new Image()).src = options.staticUrl + 'images/user/widgetlogo.png';
 		(new Image()).src = options.staticUrl + 'images/user/widgetlogo-on.png';
 
-		winWidth  = lastWinWidth  = $(window).width();
-		winHeight = lastWinHeight = $(window).height();
+		winWidth  = lastWinWidth  = util.getWindowSize().w;
+		winHeight = lastWinHeight = util.getWindowSize().h;
 
 		var repositionTimeout = null;
-		$(window).on('resize', function() {
-
+		util.bind(window, 'resize', function() {
 			lastWinWidth  = winWidth;
 			lastWinHeight = winHeight;
 
-			winWidth  = $(window).width();
-			winHeight = $(window).height();
+			winWidth  = util.getWindowSize().w;
+			winHeight = util.getWindowSize().h;
 
 			if (!isOpen) {
 				return;
@@ -665,19 +728,7 @@ var DpOverlayWidget = new (function() {
 	//##################################################################################################################
 
 	DpConsole.log('DpDpOverlayWidget.init');
-
-	if (!window.dpJquery && (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.7.') === -1)) {
-		DpConsole.log('DpOverlayWidgetChat.init: loading jquery');
-		initJquery();
-	} else {
-		DpConsole.log('DpOverlayWidget.init: already have jquery');
-		if (window.dpJquery) {
-			$ = window.dpJquery;
-		} else {
-			$ = window.jQuery;
-		}
-		initWidget();
-	}
+	initWidget();
 
 	return this;
 })();

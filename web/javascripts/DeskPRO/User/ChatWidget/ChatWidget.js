@@ -55,6 +55,10 @@ var DpChatWidget = new (function() {
 			return el.offsetWidth;
 		},
 
+		getElHeight: function(el) {
+			return el.offsetHeight;
+		},
+
 		removeEl: function(el) {
 			el.parentNode.removeChild(el);
 		},
@@ -385,9 +389,6 @@ var DpChatWidget = new (function() {
 		util.addClass(body, 'dp-chat-disabled');
 	},
 
-	/**
-	 * initWidget() is called when we know we've got jQuery
-	 */
 	this.initWidget = function(sessionId) {
 
 		if (sessionId) {
