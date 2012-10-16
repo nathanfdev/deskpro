@@ -462,6 +462,10 @@ class KernelErrorHandler
 			}
 		}
 
+		if ($exception instanceof \Doctrine\DBAL\Types\ConversionException && strpos($exception->getMessage(), 'Doctrine Type array') !== false) {
+			return true;
+		}
+
 		return false;
 	}
 
