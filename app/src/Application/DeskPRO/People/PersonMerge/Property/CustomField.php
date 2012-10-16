@@ -29,14 +29,14 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category People
  */
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDataPerson;
 
@@ -86,23 +86,45 @@ class CustomField extends PropertyAbstract
 
 		// Children means we can potentially merge selections
 		} else {
+			$multiple = $this->field->getOption('multiple');
+			$hasValue = false;
+			$hasOtherValue = false;
+			foreach ($this->field->children as $child) {
+				if ($this->person->getCustomDataForField($child)) {
+					$hasValue = true;
+				}
+				if ($this->other_person->getCustomDataForField($child)) {
+					$hasOtherValue = true;
+				}
+			}
+
 			if ($this->strategy == self::STRATEGY_COMBINE) {
 				foreach ($this->field->children as $child) {
 					// Ignore if left already has a value
 					$exist = $this->person->getCustomDataForField($child);
+					$other_exist = $this->other_person->getCustomDataForField($child);
 					if ($exist) {
 						continue;
 					}
 
-					$other_exist = $this->other_person->getCustomDataForField($child);
 					if ($other_exist) {
+						if (!$multiple && $hasValue) {
+							// already have a value for this field, so losing the other
+							continue;
+						}
+
 						$this->_addCustomData($other_exist);
 					}
 				}
 			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
-
 				// Take right ones over left ones
 				foreach ($this->field->children as $child) {
+					$exist = $this->person->getCustomDataForField($child);
+					if ($exist && $hasOtherValue && !$multiple) {
+						// remove this value as we'll get another
+						$this->person->removeCustomDataForField($child);
+					}
+
 					$other_exist = $this->other_person->getCustomDataForField($child);
 					if ($other_exist) {
 						$this->_addCustomData($other_exist);

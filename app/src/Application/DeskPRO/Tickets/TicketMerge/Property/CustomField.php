@@ -52,6 +52,11 @@ class CustomField extends PropertyAbstract
 	 */
 	protected $field;
 
+	/**
+	 * Data that will potentially be lost
+	 *
+	 * @var mixed|null
+	 */
 	public $lost = null;
 
 	public function setField(CustomDefTicket $field)
@@ -70,7 +75,6 @@ class CustomField extends PropertyAbstract
 			if ($this->strategy == self::STRATEGY_RIGHT) {
 				$other_exist = $this->other_ticket->getCustomDataForField($this->field);
 				if ($other_exist) {
-
 					$this->ticket->removeCustomDataForField($this->field);
 					$this->_addCustomData($other_exist);
 				}
@@ -78,7 +82,7 @@ class CustomField extends PropertyAbstract
 				$exist = $this->ticket->getCustomDataForField($this->field->id);
 				$other_exist = $this->other_ticket->getCustomDataForField($this->field->id);
 				if ($exist && $exist->input !== '') {
-					if ($other_exist) {
+					if ($other_exist && $exist->getData() != $other_exist->getData()) {
 						$this->lost = $other_exist->getData();
 					}
 					return;
@@ -92,23 +96,49 @@ class CustomField extends PropertyAbstract
 
 		// Children means we can potentially merge selections
 		} else {
+			$multiple = $this->field->getOption('multiple');
+			$hasValue = false;
+			$hasOtherValue = false;
+			foreach ($this->field->children as $child) {
+				if ($this->ticket->getCustomDataForField($child)) {
+					$hasValue = true;
+				}
+				if ($this->other_ticket->getCustomDataForField($child)) {
+					$hasOtherValue = true;
+				}
+			}
+
 			if ($this->strategy == self::STRATEGY_COMBINE) {
 				foreach ($this->field->children as $child) {
 					// Ignore if left already has a value
 					$exist = $this->ticket->getCustomDataForField($child);
+					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($exist) {
+						if ($other_exist && $exist->getData() != $other_exist->getData()) {
+							$this->lost = $other_exist->getData();
+						}
 						continue;
 					}
 
-					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
+						if (!$multiple && $hasValue) {
+							// already have a value for this field, so losing the other
+							$this->lost = $other_exist->getData();
+							continue;
+						}
+
 						$this->_addCustomData($other_exist);
 					}
 				}
 			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
-
 				// Take right ones over left ones
 				foreach ($this->field->children as $child) {
+					$exist = $this->ticket->getCustomDataForField($child);
+					if ($exist && $hasOtherValue && !$multiple) {
+						// remove this value as we'll get another
+						$this->ticket->removeCustomDataForField($child);
+					}
+
 					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
 						$this->_addCustomData($other_exist);
