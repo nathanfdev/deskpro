@@ -223,10 +223,9 @@ class FilestorageLoader
 
 		$sth = $this->getPdo()->prepare("
 			SELECT blobs.*
-			FROM blobs
-			LEFT JOIN styles ON (styles.$blob_column = blobs.id)
+			FROM styles
+			INNER JOIN blobs ON (blobs.id = styles.$blob_column)
 			WHERE styles.id = 1
-			LIMIT 1
 		");
 		$sth->execute();
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);

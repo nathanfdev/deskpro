@@ -55,8 +55,18 @@ class RefreshStylesheets
 				$desc->delete();
 			}
 
+			if ($style->css_blob_rtl && $style->css_blob_rtl->getId()) {
+				$desc = $container->getFilestorage()->getFileDescriptor($style->css_blob_rtl->getId());
+				$desc->delete();
+			}
+
 			$style->css_blob = null;
-			$container->getDb()->update('styles', array('css_blob_id' => null, 'css_updated' => date('Y-m-d H:i:s')), array('id' => $style->getId()));
+			$style->css_blob_rtl = null;
+			$container->getDb()->update('styles', array(
+				'css_blob_id' => null,
+				'css_blob_rtl_id' => null,
+				'css_updated' => date('Y-m-d H:i:s')
+			), array('id' => $style->getId()));
 		}
 	}
 }
