@@ -25,9 +25,9 @@ $paths = array(
 
 $tpl_info = array();
 
-$bogus = false;
-if (in_array('--bogus', $_SERVER['argv'])) {
-	$bogus = true;
+$bogus = true;
+if (in_array('--real-time', $_SERVER['argv'])) {
+	$bogus = false;
 }
 
 foreach ($paths as $bundle => $dir) {
