@@ -51,7 +51,7 @@ class SetFromNameModifier implements CollectionModifierInterface
 			$collection->getActionType('SetTicketFromName')->setName($this->from_name);
 		} else {
 			$status_action = new SetTicketFromNameAction($this->from_name);
-			$collection->addAction($status_action);
+			$collection->addAction($status_action, array(), true);
 		}
 	}
 

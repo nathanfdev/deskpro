@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 
-class SetFromAddressModifier implements CollectionModifierInterface
+class SetFromAddressAgentModifier implements CollectionModifierInterface
 {
 	protected $email_address;
 
@@ -48,17 +48,17 @@ class SetFromAddressModifier implements CollectionModifierInterface
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		if (!\Orb\Validator\StringEmail::isValueValid($this->email_address)) {
-			$e = new \InvalidArgumentException("SetFromAddressModifier: Invalid email address: {$this->email_address}");
+			$e = new \InvalidArgumentException("SetFromAddressAgentModifier: Invalid email address: {$this->email_address}");
 			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 			$einfo['no_send_error'] = true;
 			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			return;
 		}
 
-		if ($collection->hasActionType('SetTicketEmail')) {
-			$collection->getActionType('SetTicketEmail')->setEmail($this->email_address);
+		if ($collection->hasActionType('SetTicketEmailAgent')) {
+			$collection->getActionType('SetTicketEmailAgent')->setEmail($this->email_address);
 		} else {
-			$status_action = new SetTicketEmailAction($this->email_address);
+			$status_action = new SetTicketEmailAgentAction($this->email_address);
 			$collection->addAction($status_action, array(), true);
 		}
 	}
@@ -68,7 +68,6 @@ class SetFromAddressModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.send_notifs_from_email_action', array('email' => $this->email_address));
+		return $tr->phrase('agent.tickets.send_agent_notifs_from_email_action', array('email' => $this->email_address));
 	}
 }

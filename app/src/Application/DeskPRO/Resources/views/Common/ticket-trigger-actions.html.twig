@@ -26,12 +26,23 @@
 		</div>
 	{% endif %}
 
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }}" data-rule-type="set_from_address">
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }} (user emails)" data-rule-type="set_from_address">
 		<div class="builder-options">
 			<input type="text" name="email_address" />
 		</div>
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }}" data-rule-type="set_from_name">
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }} (user emails)" data-rule-type="set_from_name">
+		<div class="builder-options">
+			<input type="text" name="name" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }} (agent emails)" data-rule-type="set_from_address_agent">
+		<div class="builder-options">
+			<input type="text" name="email_address" />
+		</div>
+	</div>
+	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }} (agent emails)" data-rule-type="set_from_name_agent">
 		<div class="builder-options">
 			<input type="text" name="name" />
 		</div>

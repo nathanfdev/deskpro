@@ -115,8 +115,8 @@ class AgentNotificationAction extends AbstractAction
 
 	public function getFromAddress(Ticket $ticket)
 	{
-		if ($ticket->notify_email) {
-			return $ticket->notify_email;
+		if ($ticket->notify_email_agent) {
+			return $ticket->notify_email_agent;
 		}
 
 		$from_email = App::getSetting('core.default_from_email');
@@ -133,6 +133,15 @@ class AgentNotificationAction extends AbstractAction
 		}
 
 		return $from_email;
+	}
+
+	public function getFromName(Ticket $ticket)
+	{
+		if ($ticket->notify_email_name_agent) {
+			return $ticket->notify_email_name_agent;
+		}
+
+		return null;
 	}
 
 	/**
@@ -257,6 +266,10 @@ class AgentNotificationAction extends AbstractAction
 			if (App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
 				$from_name = App::getCurrentPerson()->getDisplayName();
 			}
+		}
+
+		if ($this->getFromName($ticket)) {
+			$from_name = $this->getFromName($ticket);
 		}
 
 		$agent_change = $this->tracker->getChangedProperty('agent');

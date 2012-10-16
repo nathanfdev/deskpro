@@ -161,15 +161,23 @@ class ActionsFactory
 				$options['set_value'] = $value;
 				break;
 
-		case 'set_gateway_address':
-			$options['gateway_address_id'] = $value['gateway_address_id'];
-			break;
+			case 'set_gateway_address':
+				$options['gateway_address_id'] = $value['gateway_address_id'];
+				break;
 
 			case 'set_from_address':
 				$options['email_address'] = $value['email_address'];
 				break;
 
 			case 'set_from_name':
+				$options['from_name'] = $value['name'];
+				break;
+
+			case 'set_from_address_agent':
+				$options['email_address'] = $value['email_address'];
+				break;
+
+			case 'set_from_name_agent':
 				$options['from_name'] = $value['name'];
 				break;
 

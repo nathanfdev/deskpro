@@ -103,7 +103,7 @@ class ActionsCollection
 	 *
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $action
 	 */
-	public function addAction(ActionInterface $action, array $metadata = array())
+	public function addAction(ActionInterface $action, array $metadata = array(), $prepend = false)
 	{
 		$name = get_class($action);
 
@@ -115,6 +115,11 @@ class ActionsCollection
 		$action->setMetaData($metadata);
 
 		$this->actions[$name] = $action;
+
+		if ($prepend) {
+			unset($this->actions[$name]);
+			\Orb\Util\Arrays::unshiftAssoc($this->actions, $name, $action);
+		}
 	}
 
 

@@ -221,6 +221,19 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $notify_email_name = '';
 
 	/**
+	 * The "from" address to send from for agent emails
+	 * @var string
+	 */
+	protected $notify_email_agent = '';
+
+	/**
+	 * The name to send from for agent emails
+	 *
+	 * @var string
+	 */
+	protected $notify_email_name_agent = '';
+
+	/**
 	 * @var string
 	 */
 	protected $creation_system;
@@ -2232,6 +2245,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'sent_to_address', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sent_to_address', ));
 		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));
 		$metadata->mapField(array( 'fieldName' => 'notify_email_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name', ));
+		$metadata->mapField(array( 'fieldName' => 'notify_email_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'notify_email_name_agent', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email_name_agent', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system_option', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system_option', ));
 		$metadata->mapField(array( 'fieldName' => 'ticket_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_hash', ));

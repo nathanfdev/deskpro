@@ -59,12 +59,12 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/thunderbird.txt');
+		$source = file_get_contents(DP_WEB_ROOT.'/_dev/emails/text-cutter.txt');
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
-		if (0 and $r->getBodyHtml()->getBodyUtf8()) {
+		if ($r->getBodyHtml()->getBodyUtf8()) {
 			$body = $r->getBodyHtml()->getBodyUtf8();
 			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 
@@ -73,14 +73,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 			$cutter->addPatterns($pattern_config->all());
 
 			$body = $cutter->cutQuoteBlock($body, true);
-
-			if ($cutter->getMatchedPatterns()) {
-				print_r($cutter->getMatchedPatterns());
-				exit;
-			} else {
-				echo "No matches\n";
-				exit;
-			}
 
 			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
 			$body = $inline_image->processTokens($body);

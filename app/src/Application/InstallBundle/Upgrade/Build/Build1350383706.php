@@ -29,46 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\TicketActions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class SetFromAddressModifier implements CollectionModifierInterface
+class Build1350383706 extends AbstractBuild
 {
-	protected $email_address;
-
-	public function __construct($email_address)
+	public function run()
 	{
-		$this->email_address = $email_address;
-	}
-
-	public function modifyCollection(ActionsCollection $collection)
-	{
-		if (!\Orb\Validator\StringEmail::isValueValid($this->email_address)) {
-			$e = new \InvalidArgumentException("SetFromAddressModifier: Invalid email address: {$this->email_address}");
-			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-			$einfo['no_send_error'] = true;
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
-			return;
-		}
-
-		if ($collection->hasActionType('SetTicketEmail')) {
-			$collection->getActionType('SetTicketEmail')->setEmail($this->email_address);
-		} else {
-			$status_action = new SetTicketEmailAction($this->email_address);
-			$collection->addAction($status_action, array(), true);
-		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.send_notifs_from_email_action', array('email' => $this->email_address));
+		$this->out("Add tickets.notify_email_agent and tickets.notify_email_name_agent");
+		$this->execMutateSql("ALTER TABLE tickets ADD notify_email_agent VARCHAR(200) NOT NULL, ADD notify_email_name_agent VARCHAR(200) NOT NULL");
 	}
 }
