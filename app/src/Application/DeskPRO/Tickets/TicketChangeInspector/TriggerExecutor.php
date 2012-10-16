@@ -328,7 +328,7 @@ class TriggerExecutor
 			}
 
 			$trigger_time = microtime(true);
-			$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+			$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->terms_any,true) . print_r($trigger->actions, true));
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 
 				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));
