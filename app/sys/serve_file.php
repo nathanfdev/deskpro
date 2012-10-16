@@ -301,6 +301,30 @@ class FilestorageLoader
 						return "$match[1]: $tr $tl $bl $br";
 					}, $css
 				);
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])((-[a-z]+-)?border-[a-z]+)-(left|right)-(radius)\s*:/i',
+					function($match) {
+						switch (strtolower($match[3])) {
+							case 'left': $new = 'right'; break;
+							case 'right': $new = 'left'; break;
+							default: $new = $match[2];
+						}
+
+						return "$match[1]-$new-$match[4]:";
+					}, $css
+				);
+				$css = preg_replace_callback(
+					'/(?<=[^a-z0-9_-])((-[a-z]+-)?border-radius-[a-z]+)(left|right)\s*:/i',
+					function($match) {
+						switch (strtolower($match[3])) {
+							case 'left': $new = 'right'; break;
+							case 'right': $new = 'left'; break;
+							default: $new = $match[2];
+						}
+
+						return "$match[1]$new:";
+					}, $css
+				);
 
 				// where the rule name is left/right
 				$css = preg_replace_callback('/(?<=[^a-z0-9_-])(left|right)\s*:/i', function($match) {
