@@ -12,6 +12,12 @@ var DpErrorLog = {
 		var gOldOnError = window.onerror;
 
 		window.onerror = function(message, script, line) {
+
+			if (line == "0") {
+				if ($.browser.mozilla) { return false; }
+				else { return true; }
+			}
+
 			self.handleError(message, script, line);
 
 			if (gOldOnError) {
@@ -50,7 +56,7 @@ var DpErrorLog = {
 			window.console.log('[JS Error] %s (%s %d): %s', message, script, line, trace);
 		}
 
-		if (!message || message == 'false' || (message == 'Script error.' && line == '0')) {
+		if (!message || message == 'false') {
 			return;
 		}
 
