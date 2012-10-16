@@ -83,6 +83,13 @@ class TicketController extends AbstractController
 		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 		if (!$ticket_attachments) $ticket_attachments = array();
 
+		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person, 10);
+		foreach ($tickets_by_user AS $key => $ticket_by_user) {
+			if ($ticket->id == $ticket_by_user->id) {
+				unset($tickets_by_user[$key]);
+			}
+		}
+
 		#------------------------------
 		# Custom fields
 		#------------------------------
@@ -212,6 +219,8 @@ class TicketController extends AbstractController
             'ticket_options' => $ticket_options,
             'ticket_flagged' => $ticket_flagged,
             'macros' => $macros,
+
+	        'tickets_by_user' => $tickets_by_user,
 
             'agent_signature' => $this->person->getPref('agent.ticket_signature')
         );
@@ -1894,27 +1903,26 @@ class TicketController extends AbstractController
 	# merge
 	############################################################################
 
-	public function mergeOverlayAction($ticket_id)
+	public function mergeOverlayAction($ticket_id, $other_ticket_id = 0)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
 
-		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person);
-		$open_tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($this->in->getCleanValueArray('open_ticket_ids', 'uint', 'discard'));
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-		$fn = function ($t) use ($ticket) {
-			if ($t['id'] == $ticket['id']) {
-				return false;
-			}
-			return true;
-		};
-
-		$tickets_by_user = array_filter($tickets_by_user, $fn);
-		$open_tickets    = array_filter($open_tickets, $fn);
+		if ($other_ticket_id) {
+			$other_ticket = $this->getTicketOr404($other_ticket_id, 'modify_merge');
+			$other_custom_fields = $field_manager->getDisplayArrayForObject($other_ticket);
+		} else {
+			$other_ticket = false;
+			$other_custom_fields = false;
+		}
 
 		return $this->render('AgentBundle:Ticket:merge-overlay.html.twig', array(
-			'ticket'          => $ticket,
-			'tickets_by_user' => $tickets_by_user,
-			'open_tickets'    => $open_tickets,
+			'ticket' => $ticket,
+			'custom_fields' => $custom_fields,
+			'other_ticket' => $other_ticket,
+			'other_custom_fields' => $other_custom_fields
 		));
 	}
 
@@ -1941,8 +1949,8 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'ticket_id' => $ticket['id'],
-			'old_ticket_id' => $old_ticket_id
+			'id' => $ticket['id'],
+			'old_id' => $old_ticket_id
 		));
 	}
 

@@ -135,46 +135,41 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$prop_agent = new Property\Agent($this->ticket, $this->other_ticket);
-			$prop_agent->setStrategy(Property\Agent::STRATEGY_RIGHT);
+			$prop_agent->setStrategy(Property\Agent::STRATEGY_COMBINE);
 			$prop_agent->merge();
 
 			$prop_person = new Property\Person($this->ticket, $this->other_ticket);
-			$prop_person->setStrategy(Property\Person::STRATEGY_RIGHT);
+			$prop_person->setStrategy(Property\Person::STRATEGY_COMBINE);
 			$prop_person->merge();
 
 			$standard_prop_names = array(
 				'agent',
 				'agent_team',
-				'person',
-				'person_email',
 				'department',
+				'language',
 				'category',
 				'product',
 				'workflow',
-				'organization',
-				'hidden_status',
-				'subject'
+				'priority'
 			);
 			foreach ($standard_prop_names as $prop_name) {
 				$prop_standard = new Property\StandardProperty($this->ticket, $this->other_ticket);
 				$prop_standard->setProperty($prop_name);
-				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
+				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
 				$prop_standard->merge();
 			}
-
-			$this->ticket->setStatus($old_status);
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 			foreach ($ticket_field_defs as $f) {
 				$prop_field = new Property\CustomField($this->ticket, $this->other_ticket);
 				$prop_field->setField($f);
-				$prop_field->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
+				$prop_field->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
 				$prop_field->merge();
 			}
 
 			// If they're different users, then add the old person as a participant on the ticket
 			if ($ticket_person->getId() != $other_ticket_person->getId()) {
-				$part = $this->ticket->addParticipantPerson($ticket_person);
+				$part = $this->ticket->addParticipantPerson($other_ticket_person);
 				if (!$part->getId()) {
 					$this->em->persist($part);
 				}

@@ -203,12 +203,14 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<div class="sep">-</div>
 			<div style="position:relative;">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
-					<td>
+					<td id="{{baseId}}_action_buttons">
 						<div id="{{ baseId }}_hold_container" style="{% if ticket.status != 'awaiting_agent' %}display: none{% else %}display: inline{% endif %}">
 							<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
 							<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><button class="clean-white">{{ phrase('agent.tickets.set_hold') }}</button></div>
 						</div>
-						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
+						{% if ticket_perms.modify_merge %}
+							<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
+						{% endif %}
 						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_changeuser_trigger"><span>Change User</span></a>{% endif %}
 						<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 						{% if ticket_perms.delete %}
@@ -227,6 +229,16 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 					</td>
 				</tr></table>
+				<ul id="{{baseId}}_merge_menu" style="display: none;">
+					{% if tickets_by_user %}
+						<li class="section-title">Other Tickets from User</li>
+					{% for ticket_by_user in tickets_by_user %}
+						<li data-merge-id="{{ ticket_by_user.id }}">{{ ticket_by_user.subject }}</li>
+					{% endfor %}
+					{% endif %}
+					<li class="tab-insert always-show section-title">Open Tickets</li>
+					<li class="elm no-choice">Open an additional ticket tab to merge.</li>
+				</ul>
 				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			</div>
 			{% if ticket.linked_chat %}

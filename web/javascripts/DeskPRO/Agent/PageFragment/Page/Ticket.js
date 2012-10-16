@@ -97,27 +97,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		if (this.meta.ticket_perms.modify_merge) {
-			this.getEl('merge_trigger').on('click', function() {
-				var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
-					ticketId: self.getMetaData('ticket_id'),
-					destroyOnClose: true,
-					onMergeSuccess: function(data) {
-
-						// remove old tabs, theyre outdated
-						Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
-							var tid = tab.page.getMetaData('ticket_id');
-							if (tid == data.old_ticket_id || tid == data.ticket_id) {
-								DeskPRO_Window.TabBar.removeTabById(tab.id);
-							}
-						});
-
-						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-
-						mergeOverlay.close();
-					}
-				});
-				mergeOverlay.open();
+			this.merge = new DeskPRO.Agent.Widget.Merge({
+				tabType: 'ticket',
+				metaId: self.meta.ticket_id,
+				metaIdName: 'ticket_id',
+				menu: this.getEl('merge_menu'),
+				trigger: $('.merge', this.getEl('action_buttons')),
+				overlayUrl: BASE_URL + 'agent/tickets/{id}/merge-overlay/{other}',
+				mergeUrl: BASE_URL + 'agent/tickets/{id}/merge/{other}',
+				loadRoute: 'ticket:' + BASE_URL + 'agent/tickets/{id}'
 			});
+			this.ownObject(this.merge);
 
 			this.getEl('changeuser_trigger').on('click', function() {
 				var changeUserOverlay = new DeskPRO.Agent.Widget.TicketChangeUser({

@@ -999,14 +999,14 @@ $collection->add('agent_ticket_split', new Route(
 ));
 
 $collection->add('agent_ticket_merge_overlay', new Route(
-	'/tickets/merge-overlay/{ticket_id}',
+	'/tickets/{ticket_id}/merge-overlay/{other_ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:mergeOverlay'),
-	array('ticket_id' => '\\d+'),
+	array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('agent_ticket_merge', new Route(
-	'/tickets/merge/{ticket_id}/{other_ticket_id}',
+	'/tickets/{ticket_id}/merge/{other_ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:merge'),
 	array('ticket_id' => '\\d+', 'other_ticket_id' => '\\d+'),
 	array()

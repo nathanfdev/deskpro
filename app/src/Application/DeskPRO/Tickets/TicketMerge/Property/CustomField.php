@@ -70,9 +70,18 @@ class CustomField extends PropertyAbstract
 				if ($other_exist) {
 
 					$this->ticket->removeCustomDataForField($this->field);
+					$this->_addCustomData($other_exist);
+				}
+			} elseif ($this->strategy == self::STRATEGY_COMBINE) {
+				$exist = $this->ticket->getCustomDataForField($this->field->id);
+				if ($exist && $exist->input !== '') {
+					return;
+				}
 
-					$other_exist->ticket = $this->ticket;
-					$this->ticket->custom_data->add($other_exist);
+				$other_exist = $this->other_ticket->getCustomDataForField($this->field->id);
+				if ($other_exist) {
+					$this->ticket->removeCustomDataForField($this->field);
+					$this->_addCustomData($other_exist);
 				}
 			}
 
@@ -88,8 +97,7 @@ class CustomField extends PropertyAbstract
 
 					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
+						$this->_addCustomData($other_exist);
 					}
 				}
 			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
@@ -98,12 +106,22 @@ class CustomField extends PropertyAbstract
 				foreach ($this->field->children as $child) {
 					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
-
-						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_data->add($other_exist);
+						$this->_addCustomData($other_exist);
 					}
 				}
 			}
 		}
+	}
+
+	protected function _addCustomData(CustomDataTicket $data)
+	{
+		$new_data = new CustomDataTicket();
+		$new_data->value = $data->value;
+		$new_data->input = $data->input;
+		$new_data->field = $data->field;
+		$new_data->root_field = $data->root_field;
+		$new_data->ticket = $this->ticket;
+
+		$this->ticket->addCustomData($new_data);
 	}
 }

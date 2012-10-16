@@ -81,7 +81,7 @@ class StandardProperty extends PropertyAbstract
 			$this->ticket[$this->property] = $this->other_ticket[$this->property];
 
 			if ($this->property == 'status' && $this->other_ticket[$this->property] == 'hidden') {
-				$this->ticket['hidden_status'] = $this->other_ticket[$this->property] == 'hidden';
+				$this->ticket['hidden_status'] = $this->other_ticket['hidden_status'];
 			}
 		}
 	}

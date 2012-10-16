@@ -56,7 +56,7 @@ class Person extends PropertyAbstract
 			$this->ticket->person_email = $this->other_ticket->person_email;
 			$this->ticket->organization = $this->other_ticket->organization;
 
-			if ($this->getStrategyOption('add_follower') and $old_agent != $this->ticket->agent) {
+			if ($this->getStrategyOption('add_follower') and $old_person != $this->ticket->person) {
 				$this->ticket->addParticipantPerson($old_person);
 			}
 		}

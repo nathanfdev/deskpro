@@ -37,17 +37,30 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 
 		menu.find('.tab-reference').remove();
 
+		var tabInsert = menu.find('.tab-insert'), insertPosition = tabInsert;
+		if (!insertPosition.length) {
+			insertPosition = false;
+		}
+
 		Array.each(DeskPRO_Window.getTabWatcher().findTabType(this.options.tabType), function(tab) {
 			var id = tab.page.getMetaData(self.options.metaIdName);
 			if (id && id != self.options.metaId) {
 				var li = $('<li />').addClass('tab-reference').data('merge-id', id).text(tab.title);
-				menu.prepend(li);
+
+				if (insertPosition) {
+					insertPosition.after(li);
+				} else {
+					menu.prepend(li);
+				}
+				insertPosition = li;
 			}
 		});
 
-		if (menu.find('li').length == menu.find('li.no-choice').length) {
+		if (menu.find('li.tab-reference').length == 0) {
+			if (!tabInsert.hasClass('always-show')) { tabInsert.hide(); }
 			menu.find('li.no-choice').show();
 		} else {
+			tabInsert.show();
 			menu.find('li.no-choice').hide();
 		}
 	},

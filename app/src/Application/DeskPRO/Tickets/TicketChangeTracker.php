@@ -149,7 +149,7 @@ class TicketChangeTracker extends ChangeTracker
 		}
 
 		if (DP_INTERFACE == 'api') {
-			$this->extra['api_key'] = \Application\ApiBundle\StaticLoader\RequestKey::getApiKeyFromRequest();
+			$this->recordExtra('api_key', \Application\ApiBundle\StaticLoader\RequestKey::getApiKeyFromRequest());
 		}
 	}
 
