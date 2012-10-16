@@ -125,6 +125,14 @@ abstract class AbstractRunner
 			$job->run();
 		} catch (\Exception $e) {
 			$run_e = $e;
+
+			// Roll back any transactions that might still be open
+			try {
+				while (App::getDb()->isTransactionActive()) {
+					$logger->log("(Rolling back open transaction)", Logger::DEBUG);
+					App::getDb()->rollback();
+				}
+			} catch (\Exception $e) {}
 		}
 
 		$mtime_end = microtime(true);

@@ -466,6 +466,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \Doctrine\DBAL\ConnectionException && strpos($exception->getMessage(), 'There is no active transaction') !== false) {
+			return true;
+		}
+
 		return false;
 	}
 
