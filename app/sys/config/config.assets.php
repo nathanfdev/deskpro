@@ -241,6 +241,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',

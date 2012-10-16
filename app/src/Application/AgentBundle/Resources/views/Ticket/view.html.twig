@@ -236,8 +236,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						<li data-merge-id="{{ ticket_by_user.id }}">{{ ticket_by_user.subject }}</li>
 					{% endfor %}
 					{% endif %}
-					<li class="tab-insert always-show section-title">Open Tickets</li>
-					<li class="elm no-choice">Open an additional ticket tab to merge.</li>
+					<li class="tab-insert always-show section-title">Other Tickets</li>
+					<li>Find ticket...</li>
 				</ul>
 				{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			</div>

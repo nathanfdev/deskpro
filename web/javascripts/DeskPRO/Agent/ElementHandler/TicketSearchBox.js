@@ -4,15 +4,15 @@ Orb.createNamespace('DeskPRO.Agent.ElementHandler');
  * Any wrapper that has 'nav ul' for tabs. The wrapper acts
  * as the context for data-tab-for
  */
-DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
+DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {
 		var self = this;
 
 		this.termInput   = $('input.term', this.el);
-		this.idInput     = $('input.person-id', this.el);
-		this.resultsBox  = $('.person-search-box', this.el);
+		this.idInput     = $('input.ticket-id', this.el);
+		this.resultsBox  = $('.ticket-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 
 		this.termInput.on('focus', function() {
@@ -26,7 +26,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 
 	/**
-	 * Inits the search box to ensre it can be positioned properly
+	 * Inits the search box to ensure it can be positioned properly
 	 */
 	_initResultsBox: function() {
 		var self = this;
@@ -34,7 +34,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		if (this._hasInitResultsBox) return;
 		this._hasInitResultsBox = true;
 
-		this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-row-tpl', this.el));
+		this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.ticket-row-tpl', this.el));
 
 		//------------------------------
 		// Update caller schedules the update requests
@@ -61,16 +61,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
-					var personId = current.data('person-id');
-					var name  = $('.user-name', current).text().trim();
-					var email = $('.user-email', current).text().trim();
+					var ticketId = current.data('ticket-id');
+					var subject  = $('.ticket-subject', current).text().trim();
 
-					self.termInput.val(email);
+					self.termInput.val(subject);
 
-					self.el.trigger('personsearchboxclick', [personId, name, email, self]);
-				} else {
-					var term = self.getTerm();
-					self.el.trigger('personsearchboxclicknew', [term, self]);
+					self.el.trigger('ticketsearchboxclick', [ticketId, subject, self]);
 				}
 
 			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
@@ -122,17 +118,10 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
-			var personId = $(this).data('person-id');
-			var name  = $('.user-name', this).text().trim();
-			var email = $('.user-email', this).text().trim();
+			var ticketId = $(this).data('ticket-id');
+			var subject = $('.ticket-subject', this).text().trim();
 
-			self.el.trigger('personsearchboxclick', [personId, name, email, self]);
-		});
-
-		$('.create-user', this.resultsBox).on('click', function(ev) {
-			ev.preventDefault();
-			var term = self.getTerm();
-			self.el.trigger('personsearchboxclicknew', [term, self]);
+			self.el.trigger('ticketsearchboxclick', [ticketId, subject, self]);
 		});
 
 		//------------------------------
@@ -203,7 +192,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 
 	/**
-	 * Sends the ajax request to find users that match the term in the search box
+	 * Sends the ajax request to find tickets that match the term in the search box
 	 */
 	updateResults: function() {
 
@@ -228,41 +217,34 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 				this.runningAjax = null;
 			},
 			success: function(data) {
-				var currentPersonId = parseInt($('li.on', this.resultsList).data('person-id')) || 0;
+				var currentTicketId = parseInt($('li.on', this.resultsList).data('ticket-id')) || 0;
 				this.resultsList.empty();
 
-				Array.each(data, function(user) {
+				Array.each(data, function(ticket) {
 					var row = $(this.tplHtml);
 
-					row.data('person-id', user.id);
-					row.attr('person-id', user.id);
-					row.addClass('person-' + user.id);
+					row.data('ticket-id', ticket.id);
+					row.attr('ticket-id', ticket.id);
+					row.addClass('ticket-' + ticket.id);
 
-					if (currentPersonId && currentPersonId == parseInt(user.id)) {
+					if (currentTicketId && currentTicketId == parseInt(ticket.id)) {
 						row.addClass('on');
-						currentPersonId = false;
+						currentTicketId = false;
 					}
 
 					if (this.el.data('highlight-term')) {
 						var term  = Orb.escapeHtml(this.getTerm());
-						var name  = Orb.escapeHtml(user.name);
-						var email = Orb.escapeHtml(user.email);
+						var subject = Orb.escapeHtml(ticket.subject);
 
 						term = (term+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
-						name = name.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
-						email = email.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
+						subject = subject.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
 
-						$('.user-name', row).html(name);
-						$('.user-email', row).html(email);
-
+						$('.ticket-subject', row).html(subject);
 					} else {
-						$('.user-name', row).text(user.name);
-						$('.user-email', row).text(user.email);
+						$('.ticket-subject', row).text(ticket.subject);
 					}
 
-					if (!user.email || user.name == user.email) {
-						$('address', row).hide();
-					}
+					$('.ticket-id', row).text(ticket.id);
 
 					this.resultsList.append(row);
 				}, this);

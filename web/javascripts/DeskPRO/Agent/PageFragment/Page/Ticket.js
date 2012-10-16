@@ -105,7 +105,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				trigger: $('.merge', this.getEl('action_buttons')),
 				overlayUrl: BASE_URL + 'agent/tickets/{id}/merge-overlay/{other}',
 				mergeUrl: BASE_URL + 'agent/tickets/{id}/merge/{other}',
-				loadRoute: 'ticket:' + BASE_URL + 'agent/tickets/{id}'
+				loadRoute: 'ticket:' + BASE_URL + 'agent/tickets/{id}',
+				overlayLoaded: function(overlay, merge) {
+					overlay.getWrapper().find('.ticket-finder').bind('ticketsearchboxclick', function(ev, ticketId, subject, sb) {
+						sb.close();
+
+						$.ajax({
+							url: merge._getOverlayUrl(merge.options.metaId, ticketId),
+							type: 'get',
+							dataType: 'html',
+							success: function(html) {
+								merge.resetOverlay(html);
+							}
+						});
+					});
+				}
 			});
 			this.ownObject(this.merge);
 

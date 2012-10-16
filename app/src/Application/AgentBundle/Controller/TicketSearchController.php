@@ -182,6 +182,38 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+	public function quickSearchAction()
+	{
+		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
+		}
+
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 10;
+		$limit = min($limit, 100);
+
+		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+		$searcher->setPerson($this->person);
+		$searcher->setOrderByCode('ticket.date_created:desc');
+		$searcher->addTerm('text', 'is', array('query' => $q));
+
+		$results = $searcher->getMatches();
+		$results = Arrays::castToType($results, 'integer');
+		$results = array_slice($results, 0, $limit);
+
+		$output = array();
+		foreach (App::getEntityRepository('DeskPRO:Ticket')->getByIds($results, true) AS $ticket) {
+			$output[] = array(
+				'id' => $ticket->id,
+				'value' => $ticket->id,
+				'subject' => $ticket->subject
+			);
+		}
+
+		return $this->createJsonResponse($output);
+	}
+
 	/**
 	 * Render a new pageset.
 	 *

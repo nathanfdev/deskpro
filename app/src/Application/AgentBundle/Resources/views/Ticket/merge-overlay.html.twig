@@ -4,6 +4,36 @@
 	</div>
 
 	<div class="overlay-content">
+		<form>
+			<div
+				class="ticket-finder"
+				data-element-handler="DeskPRO.Agent.ElementHandler.TicketSearchBox"
+				data-search-url="{{ path('agent_ticketsearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+			>
+				<script type="text/x-deskpro-tmpl" class="ticket-row-tpl">
+					<li><a>
+						<span class="ticket-id pill">1234</span>
+						<span class="ticket-subject"></span>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="input-wrapper">
+					<input type="text" style="width: 98%" class="term" placeholder="Find ticket..." class="user-input" />
+				</div>
+				<input type="hidden" name="ticket_id" class="ticket-id" value="" />
+				<div class="ticket-search-box person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+					</section>
+				</div>
+			</div>
+		</form>
+
 		<table class="merge-data" width="{% if other_ticket %}100%{% else %}63%{% endif %}">
 			<col width="25%" />
 			<col width="38%" />
