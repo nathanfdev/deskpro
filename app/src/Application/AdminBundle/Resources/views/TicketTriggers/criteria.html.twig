@@ -303,6 +303,25 @@
 		</div>
 	</div>
 
+	{% if app.getSetting('core.use_product') %}
+		<div class="builder-type" title="{{ phrase('agent.general.product') }}" data-rule-group="Ticket" data-rule-type="product" data-term-type="GenericMenuTerm">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="category">
+					{% for id,title in app.getDataRepository('Product').getNames() %}
+						<option value="{{ id }}">{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
+
 	{% if app.getSetting('core.use_ticket_category') %}
 		<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-group="Ticket" data-rule-type="category" data-term-type="GenericMenuTerm">
 			<div class="builder-op">
@@ -314,7 +333,7 @@
 			<div class="builder-options">
 				<select name="category">
 					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
-						{% if cat.children %}
+						{% if cat.children|length %}
 							<optgroup label="{{ cat.title }}">
 								{% for subcat in cat.children %}
 									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
@@ -357,7 +376,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for id,name in app.getDataRepository('TicketWorkflow').getNames() %}
+					{% for id,title in app.getDataRepository('TicketWorkflow').getNames() %}
 						<option value="{{ id }}">{{ title }}</option>
 					{% endfor %}
 				</select>
