@@ -90,6 +90,16 @@ class PlainMailDir extends AbstractFetcher
 		return $this->dir;
 	}
 
+	public function __destruct()
+	{
+		if ($this->storage && is_resource($this->storage->handle)) {
+			try { @$this->storage->close(); } catch (\Exception $e) {}
+		}
+
+		$this->storage = null;
+		$this->dir = null;
+	}
+
 
 	/**
 	 * Read filenames from directory
