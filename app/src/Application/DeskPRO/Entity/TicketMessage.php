@@ -273,6 +273,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setMessage($message)
 	{
+		$message = trim((string)$message);
+		if (!$message) {
+			$message = App::getTranslator()->getPhraseText('user.tickets.empty_message');
+		}
+
 		$this->setModelField('message', $message);
 	}
 
