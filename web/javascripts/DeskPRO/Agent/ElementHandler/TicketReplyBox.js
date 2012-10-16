@@ -47,9 +47,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
-		this.getElById('replybox_txt').TextAreaExpander(150, 550).on('textareaexpander_expanded', function() {
+		this.getElById('replybox_txt').data('expander-max-height', $(window).height() - 500).TextAreaExpander(150, $(window).height() - 500).on('textareaexpander_expanded', function() {
+			var h = $(this).height();
 			window.setTimeout(function() {
-				if (self.page) {
+				if (self.page && $(window).height() - 500 > h) {
 					self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
 				}
 			}, 250);
