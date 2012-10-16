@@ -143,6 +143,9 @@ class Ticket extends AbstractEntityRepository
 	{
 		if (!$ids) return array();
 
+		// Must be numerically indexed
+		$ids = array_values($ids);
+
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t INDEX BY t.id
