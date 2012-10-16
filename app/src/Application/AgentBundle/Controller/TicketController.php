@@ -1883,6 +1883,10 @@ class TicketController extends AbstractController
 
 		$this->db->beginTransaction();
 		try {
+			if ($this->in->getBool('keep')) {
+				$ticket->addParticipantPerson($old_person);
+			}
+
 			$this->em->persist($ticket);
 			$this->em->flush();
 			$this->db->commit();

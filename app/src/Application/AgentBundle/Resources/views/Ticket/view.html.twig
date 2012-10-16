@@ -211,7 +211,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						{% if ticket_perms.modify_merge %}
 							<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
 						{% endif %}
-						{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_changeuser_trigger"><span>Change User</span></a>{% endif %}
 						<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 						{% if ticket_perms.delete %}
 							{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
@@ -284,7 +283,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<section id="{{baseId}}_people_box_person_container">
 			<article id="{{baseId}}_people_box_person">
 				<dl>
-					<dt>{{ phrase('agent.general.owner') }}</dt>
+					<dt>
+						{{ phrase('agent.general.owner') }}
+						{% if ticket_perms.modify_merge %}<span class="btn-edit-gear2" id="{{baseId}}_changeuser_trigger"></span>{% endif %}
+					</dt>
 					<dd>
 						<a id="{{ baseId }}_profile_link" class="user-link clean-white as-popover preload tipped" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}" title="Click to view user profile">
 							<span style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">

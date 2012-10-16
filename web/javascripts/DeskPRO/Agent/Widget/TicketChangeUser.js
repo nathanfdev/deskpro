@@ -38,9 +38,13 @@ DeskPRO.Agent.Widget.TicketChangeUser = new Orb.Class({
 
 					var personId = $(this).data('person-id');
 
+					var keepParticipant = self.wrapper.find('.participant-check').is(':checked');
+					var data = {'keep': (keepParticipant ? 1 : 0)};
+
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/' + self.ticketId + '/change-user/' + personId,
 						type: 'POST',
+						data: data,
 						dataType: 'json',
 						success: function(data) {
 							self.fireEvent('success', [data]);
