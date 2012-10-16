@@ -52,6 +52,8 @@ class CustomField extends PropertyAbstract
 	 */
 	protected $field;
 
+	public $lost = null;
+
 	public function setField(CustomDefTicket $field)
 	{
 		$this->field = $field;
@@ -74,11 +76,14 @@ class CustomField extends PropertyAbstract
 				}
 			} elseif ($this->strategy == self::STRATEGY_COMBINE) {
 				$exist = $this->ticket->getCustomDataForField($this->field->id);
+				$other_exist = $this->other_ticket->getCustomDataForField($this->field->id);
 				if ($exist && $exist->input !== '') {
+					if ($other_exist) {
+						$this->lost = $other_exist->getData();
+					}
 					return;
 				}
 
-				$other_exist = $this->other_ticket->getCustomDataForField($this->field->id);
 				if ($other_exist) {
 					$this->ticket->removeCustomDataForField($this->field);
 					$this->_addCustomData($other_exist);

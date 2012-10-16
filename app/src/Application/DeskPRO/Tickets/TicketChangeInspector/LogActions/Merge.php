@@ -41,11 +41,13 @@ class Merge extends AbstractLogAction
 {
 	protected $ticket;
 	protected $old_ticket_id;
+	protected $lost;
 
-	public function __construct($ticket, $old_ticket_id)
+	public function __construct($ticket, $old_ticket_id, array $lost = array())
 	{
 		$this->ticket = $ticket;
 		$this->old_ticket_id = $old_ticket_id;
+		$this->lost = $lost;
 	}
 
 	public function getLogName()
@@ -58,6 +60,7 @@ class Merge extends AbstractLogAction
 		return array(
 			'id_before' => $this->old_ticket_id ?: null,
 			'id_after'  => $this->ticket['id'] ?: null,
+			'lost'      => $this->lost,
 			'merged'    => 1,
 		);
 	}

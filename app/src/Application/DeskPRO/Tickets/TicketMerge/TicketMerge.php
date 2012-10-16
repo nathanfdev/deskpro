@@ -73,6 +73,8 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 	 */
 	protected $em;
 
+	protected $data_lost = array();
+
 	public function __construct(Person $person_performer, Ticket $ticket, Ticket $other_ticket)
 	{
 		$this->em = App::getOrm();
@@ -132,32 +134,41 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 			// dont add logs for new messages etc
 			$this->ticket->resetTicketLogger();
-			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
-			$prop_agent = new Property\Agent($this->ticket, $this->other_ticket);
-			$prop_agent->setStrategy(Property\Agent::STRATEGY_COMBINE);
-			$prop_agent->merge();
-
-			$prop_person = new Property\Person($this->ticket, $this->other_ticket);
-			$prop_person->setStrategy(Property\Person::STRATEGY_COMBINE);
-			$prop_person->merge();
+			// non-merged fields that we want to log
+			$lost_log = array(
+				'subject' => null,
+			);
+			foreach ($lost_log AS $prop_name => $title_field) {
+				if ($title_field) {
+					$this->data_lost[$prop_name] = $this->other_ticket[$prop_name]->$title_field;
+				} else {
+					$this->data_lost[$prop_name] = $this->other_ticket[$prop_name];
+				}
+			}
 
 			$standard_prop_names = array(
-				'agent',
-				'agent_team',
-				'department',
-				'language',
-				'category',
-				'product',
-				'workflow',
-				'priority'
+				'agent' => 'name',
+				'agent_team' => 'name',
+				'department' => 'full_title',
+				'language' => 'title',
+				'category' => 'title',
+				'product' => 'title',
+				'workflow' => 'title',
+				'priority' => 'title'
 			);
-			foreach ($standard_prop_names as $prop_name) {
+			foreach ($standard_prop_names as $prop_name => $title_field) {
+				if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {
+					$this->data_lost[$prop_name] = $this->other_ticket[$prop_name]->$title_field;
+				}
+
 				$prop_standard = new Property\StandardProperty($this->ticket, $this->other_ticket);
 				$prop_standard->setProperty($prop_name);
 				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
 				$prop_standard->merge();
 			}
+
+			ksort($this->data_lost);
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 			foreach ($ticket_field_defs as $f) {
@@ -165,6 +176,10 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				$prop_field->setField($f);
 				$prop_field->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
 				$prop_field->merge();
+
+				if ($prop_field->lost) {
+					$this->data_lost['fields'][$f->id] = array($f->title, $prop_field->lost);
+				}
 			}
 
 			// If they're different users, then add the old person as a participant on the ticket
@@ -174,6 +189,11 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 					$this->em->persist($part);
 				}
 			}
+
+			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array(
+				'other_ticket_id' => $this->other_ticket_id,
+				'lost' => $this->data_lost
+			));
 
 			$ticket_del = new TicketDeleted();
 			$ticket_del->ticket_id = $this->other_ticket['id'];

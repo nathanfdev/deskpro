@@ -20,6 +20,19 @@
     {{ phrase('agent.tickets.ticket_split_form') }} <span class="old-val">ID {{log.details.from_ticket_id}}</span>
 {% elseif log.action_type == 'merged' %}
 	{{ phrase('agent.general.ticket') }} <span class="old-val">ID {{log.id_before}}</span> {{ phrase('agent.tickets.merged_into_this') }}
+	{% if log.details.lost is not empty %}
+		<ul>
+		{% for type,data in log.details.lost %}
+			{% if type == 'fields' %}
+				{% for field_data in data %}
+					<li>Lost {{ field_data.0 }}: {{ field_data.1 }}</li>
+				{% endfor %}
+			{% else %}
+				<li>Lost {{ type }}: {{ data }}</li>
+			{% endif %}
+		{% endfor %}
+		</ul>
+	{% endif %}
 {% elseif log.action_type == 'merged_message' %}
     {{ phrase('agent.general.message') }} <span class="old-val">ID {{log.details.message_id}}</span> {{ phrase('agent.tickets.into_this_from_ticket', {'id':log.details.old_ticket_id}) }}
 {% elseif log.action_type == 'merged_attach' %}
