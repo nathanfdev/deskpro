@@ -1195,15 +1195,20 @@ body.file-drag-over #dp .dp-drop-file-zone,
 }
 
 #dp .dp-download-post > header h3 a {
-	background: url({{ stylevar.static_path }}/images/user/page_white_put.png) no-repeat 6px 50%;
 	padding: 6px 6px 1px 6px;
-	padding-left: 27px;
 	background-color: #EEEEEE;
 	border: 1px solid #D8D8D8;
 	{{ _self.border_radius('4') }}
 	text-decoration: none;
 	display: inline-block;
 	line-height: 100%;
+}
+
+#dp .dp-download-post > header h3 a .icon {
+	background: url({{ stylevar.static_path }}/images/user/page_white_put.png) no-repeat;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
 }
 
 #dp .dp-download-post > header h3 a em {

@@ -78,6 +78,7 @@
 							<header>
 								<h3 style="margin-bottom: 0">
 									<a href="{{ path('user_downloads_file_download', {'slug': download.url_slug}) }}">
+										<span class="icon"></span>
 										{{ download.title }}
 										<em>{{ download.blob.getReadableFilesize() }}</em>
 									</a>
