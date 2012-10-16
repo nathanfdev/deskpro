@@ -426,6 +426,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('timezone',        'UTC');
 		$this->setModelField('salt',            Strings::random(40));
 
+		// If we're loaded, then set default timezone from setting
+		if (class_exists('Application\\DeskPRO\\App')) {
+			try {
+				$this->setModelField('timezone', App::getSetting('core.default_timezone'));
+			} catch (\Exception $e) {};
+		}
+
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
