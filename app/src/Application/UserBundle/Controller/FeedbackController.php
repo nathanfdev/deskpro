@@ -239,10 +239,15 @@ class FeedbackController extends AbstractController
 				$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
 				$notify_send->send();
 
+				$submitted_feedback = App::getSession()->get('submitted_feedback') ?: array();
+				$submitted_feedback[] = $feedback->getId();
+				App::getSession()->set('submitted_feedback', $submitted_feedback);
+				App::getSession()->save();
+
 				if ($newfeedback->require_login) {
 					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
 				} elseif ($feedback->getStatusCode() == 'hidden.user_validating') {
-					return $this->redirectRoute('user');
+					return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
 				} else {
 					return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
 				}
@@ -388,7 +393,7 @@ class FeedbackController extends AbstractController
 		}
 
 		// Perm check
-		if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback)) {
+		if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback, App::getSession())) {
 			return $this->renderLoginOrPermissionError();
 		}
 

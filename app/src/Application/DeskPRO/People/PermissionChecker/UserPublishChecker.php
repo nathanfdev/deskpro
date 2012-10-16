@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Download;
+use \Application\DeskPRO\HttpFoundation\Session as HttpSession;
 
 use Orb\Util\Arrays;
 
@@ -127,7 +128,7 @@ class UserPublishChecker extends AbstractChecker
 	 * @param \Application\DeskPRO\Entity\Feedback $feedback
 	 * @return bool
 	 */
-	public function canViewFeedback(Feedback $feedback)
+	public function canViewFeedback(Feedback $feedback, HttpSession $user_session = null)
 	{
 		if (!$this->person->hasPerm('feedback.use')) {
 			return false;
@@ -135,6 +136,18 @@ class UserPublishChecker extends AbstractChecker
 
 		// Only agents can view non-published
 		if ($feedback->status == 'hidden' && !$this->person->is_agent) {
+
+			// But still show the user their own submitted feedback
+			if ($feedback->person && $feedback->person->getId() == $this->person->getId()) {
+				return true;
+			}
+			if ($user_session) {
+				$submitted_feedback = $user_session->get('submitted_feedback');
+				if (is_array($submitted_feedback) && in_array($feedback->getId(), $submitted_feedback)) {
+					return true;
+				}
+			}
+
 			return false;
 		}
 
