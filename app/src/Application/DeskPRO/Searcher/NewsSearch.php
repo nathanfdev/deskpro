@@ -400,7 +400,7 @@ class NewsSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_AGENT_LIST:
-					$wheres[] = "(news.status = 'published' OR news.hidden_status IN('unpublished', 'archived'))";
+					$wheres[] = "(news.status IN ('published', 'archived') OR news.hidden_status IN('unpublished'))";
 					break;
 
 				case self::TERM_LABEL:

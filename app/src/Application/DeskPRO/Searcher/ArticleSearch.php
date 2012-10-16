@@ -409,7 +409,7 @@ class ArticleSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_AGENT_LIST:
-					$wheres[] = "(articles.status = 'published' OR articles.hidden_status IN('unpublished', 'archived'))";
+					$wheres[] = "(articles.status IN ('published', 'archived') OR articles.hidden_status IN('unpublished'))";
 					break;
 
 				case self::TERM_LABEL:

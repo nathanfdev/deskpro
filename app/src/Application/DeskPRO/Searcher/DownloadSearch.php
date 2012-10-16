@@ -404,7 +404,7 @@ class DownloadSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_AGENT_LIST:
-					$wheres[] = "(downloads.status = 'published' OR downloads.hidden_status IN('unpublished', 'archived'))";
+					$wheres[] = "(downloads.status IN ('published', 'archived') OR downloads.hidden_status IN('unpublished'))";
 					break;
 
 				case self::TERM_LABEL:
