@@ -61,7 +61,7 @@ class NewTicketController extends AbstractController
 			$interface = Entity\Ticket::CREATED_WEB_PERSON_EMBED;
 		}
 
-		$website_url = null;
+		$website_url = App::getRequest()->getUri();
 		if ($format == 'iframe') {
 			$website_url = $this->in->getString('website_url');
 		}
