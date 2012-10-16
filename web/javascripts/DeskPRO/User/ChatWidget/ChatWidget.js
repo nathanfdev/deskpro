@@ -9,11 +9,79 @@ if (window.Dp_EnableDebug) {
 	DpConsole['debug'] = function(){};
 }
 
-if (!window.Dp_WaitingLibLoad) {
-	window.Dp_WaitingLibLoad = [];
-}
-
 var DpChatWidget = new (function() {
+
+	//##################################################################################################################
+	//# Util
+	//##################################################################################################################
+
+	var util = {
+		createEl: function(html) {
+			var div = document.createElement('div');
+			div.innerHTML = html;
+
+			return div.firstChild;
+		},
+
+		hasClass: function(el, className) {
+			if (el.className === "") {
+				return false;
+			}
+
+			return (" " + el.className + " ").indexOf(" " + className + " ") > -1;
+		},
+
+		addClass: function(el, className) {
+			if (!this.hasClass(el, className)) {
+				el.className += " " + className;
+			}
+		},
+
+		removeClass: function(el, className) {
+			if (this.hasClass(el, className)) {
+				el.className.replace(new RegExp("(^|\\s)" + className + "(\\s|$)"), " ").replace(/\s$/, "");
+			}
+		},
+
+		hideEl: function(el) {
+			el.style.display = 'none';
+		},
+
+		showEl: function(el) {
+			el.style.display = 'block';
+		},
+
+		getElWidth: function (el) {
+			return el.offsetWidth;
+		},
+
+		removeEl: function(el) {
+			el.parentNode.removeChild(el);
+		},
+
+		bind: function(el, eventName, callback) {
+			if (el.addEventListener) {
+				el.addEventListener(eventName, callback);
+			} else {
+                el.attachEvent("on" + eventName, callback);
+			}
+		},
+
+		extend: function(obj, obj2) {
+			for (var property in obj2) {
+				obj[property] = obj2[property];
+			}
+
+			return obj;
+		}
+	};
+
+	//##################################################################################################################
+	//# Chat Widget
+	//##################################################################################################################
+
+	var body = document.body;
+	var tmp, tmpi;
 
 	var options = {
 		protocol: null,
@@ -25,12 +93,6 @@ var DpChatWidget = new (function() {
 	var self = this;
 
 	/**
-	 * Scoped reference to jQuery
-	 * @var {jQuery}
-	 */
-	var $ = null;
-
-	/**
 	 * Is the chat currently open?
 	 * @var {Boolean}
 	 */
@@ -38,7 +100,7 @@ var DpChatWidget = new (function() {
 
 	/**
 	 * The chat iFrame
-	 * @var {jQuery}
+	 * @var {HTMLElement}
 	 */
 	var chatIframeHolder;
 	var chatIframeWinTab;
@@ -113,7 +175,9 @@ var DpChatWidget = new (function() {
 			css.push('z-index: 90000');
 			css = css.join(';');
 
-			chatIframeHolder = $('<div id="dp_chat_iframe_holder" class="dp-chat-iframe-holder" style="' + css  +'" />').appendTo('body');
+			chatIframeHolder = util.createEl('<div id="dp_chat_iframe_holder" class="dp-chat-iframe-holder" style="' + css  +'" />');
+			body.appendChild(chatIframeHolder);
+
 
 			// The little tabby thing at the top
 			var css = [];
@@ -142,7 +206,9 @@ var DpChatWidget = new (function() {
 			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-new']) {
 				phrase = DESKPRO_LANG['user.chat.window_open-new'];
 			}
-			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + phrase + '</div>').on('click', openInWindow).appendTo(chatIframeHolder);
+			chatIframeWinTab = util.createEl('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + phrase + '</div>');
+			chatIframeHolder.appendChild(chatIframeWinTab);
+			util.bind(chatIframeWinTab, 'click', openInWindow);
 
 			// Minmize button
 			var css = [];
@@ -171,7 +237,9 @@ var DpChatWidget = new (function() {
 			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-minimize']) {
 				phrase = DESKPRO_LANG['user.chat.window_open-minimize'];
 			}
-			$('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" title="'+phrase+'" style="' + css + '">&#9660;</div>').on('click', function() { self.close() }).appendTo(chatIframeHolder);
+			tmp = util.createEl('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" title="'+phrase+'" style="' + css + '">&#9660;</div>');
+			chatIframeHolder.appendChild(tmp);
+			util.bind(tmp, 'click', function() { self.close() });
 
 			isNew = true;
 
@@ -201,17 +269,19 @@ var DpChatWidget = new (function() {
 			}
 
 			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(window.location.href);
-			chatIframe = $('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(chatIframeHolder);
+			chatIframe = util.createEl('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
+			chatIframeHolder.appendChild(chatIframe);
 
 			comms.setupReciever(childListen, frameSrc);
 
-			chatIframe.on('click', function(ev) {
-				ev.stopPropagation();
+			util.bind(chatIframe, 'click', function(ev) {
+				if (ev && ev.stopPropagation) ev.stopPropagation();
+				else window.event.cancelBubble = true;
 			});
 		}
 
 		isOpen = true;
-		chatIframeHolder.show();
+		util.showEl(chatIframeHolder);
 	};
 
 
@@ -224,7 +294,7 @@ var DpChatWidget = new (function() {
 		}
 
 		isOpen = false;
-		chatIframeHolder.hide();
+		util.hideEl(chatIframeHolder);
 	};
 
 
@@ -233,13 +303,13 @@ var DpChatWidget = new (function() {
 	//##################################################################################################################
 
 	function openInWindow() {
-		var src = chatIframe.get(0).src;
+		var src = chatIframe.src;
 		src = src.replace(/\?/, '?is_window_mode=1&');
 
 		window.open(src, 'dpchatwin','width=500,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=1');
 
-		chatIframeHolder.remove();
-		openBtn.hide();
+		util.removeEl(chatIframeHolder);
+		util.hideEl(openBtn);
 	};
 
 	function setCookie(name,value,days) {
@@ -269,7 +339,7 @@ var DpChatWidget = new (function() {
 	function initSession() {
 		// Now load our session script
 		// DeskPRO script that sets/gets session and initial messages
-		isRtl = ($('html').attr('dir') == 'rtl');
+		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
 
 		var url = DpChatWidget_Options.deskproUrl + 'chat/chat-session?_1=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
@@ -311,55 +381,8 @@ var DpChatWidget = new (function() {
 		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
 	};
 
-	function initJquery() {
-		window.Dp_WaitingLibLoad.push(function() {
-			DpConsole.log('DpChatWidget.init: jquery loaded');
-			$ = window.Dp_jQuery;
-			initSession();
-		});
-
-		if (!window.Dp_JqueryScript) {
-			window.oldJquery = window.jQuery;
-			window.old$ = window.$;
-
-			function jquery_loaded() {
-				window.Dp_jQuery = window.jQuery.noConflict(true);
-
-				window.jQuery = window.oldJquery;
-				window.$ = window.old$;
-
-				window.oldJquery = null;
-				window.old$ = null;
-
-				var i;
-				for (i = 0; i < window.Dp_WaitingLibLoad.length; i++) {
-					window.Dp_WaitingLibLoad[i]();
-				}
-
-				window.Dp_WaitingLibLoad = [];
-			};
-
-			var script_tag = document.createElement('script');
-			window.Dp_JqueryScript = script_tag;
-
-			script_tag.setAttribute("type", "text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");
-			script_tag.setAttribute("async", 'true');
-			script_tag.onload = function() {
-				jquery_loaded();
-			};
-			script_tag.onreadystatechange = function () { // Same thing but for IE
-				if (this.readyState == 'complete' || this.readyState == 'loaded') {
-					jquery_loaded();
-				}
-			};
-
-			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
-		}
-	};
-
 	this.setNotAvailable = function() {
-		$('body').addClass('dp-chat-disabled');
+		util.addClass(body, 'dp-chat-disabled');
 	},
 
 	/**
@@ -374,39 +397,7 @@ var DpChatWidget = new (function() {
 		DpConsole.log('DpChatWidget.initWidget');
 
 		if (window.DpChatWidget_Options) {
-			options = $.extend({}, options, window.DpChatWidget_Options);
-		}
-
-		if (window.DpChatWidget_Options.interceptLeavingDomains) {
-			$(document).on('click', 'a', function(ev) {
-				if ($(this).is('dp-no-touch')) {
-					return;
-				}
-
-				var href = $(this).attr('href');
-				if (!href) return;
-
-				var m = href.match(/:\/\/(.[^/]+)/)[1];
-				if (!m || !m[1]) return;
-
-				var domain = m[1];
-
-				var foundDomain = false;
-
-				Array.each(DpChatWidget_Options.interceptLeavingDomains, function(checkDomain) {
-					if (domain == checkDomain || domain.indexOf(checkDomain) !== -1) {
-						foundDomain = true;
-						return false;
-					}
-				});
-
-				if (!foundDomain) {
-					if (!confirmGoingAway()) {
-						ev.preventDefault();
-						ev.stopPropagation();
-					}
-				}
-			});
+			util.extend(options, window.DpChatWidget_Options);
 		}
 
 		var bgColor  = 'rgb(63,63,63)';
@@ -450,7 +441,8 @@ var DpChatWidget = new (function() {
 		css.push('opacity: 0.85');
 		css = css.join(';');
 
-		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
+		tmp = util.createEl('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
 
 		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
 		var ieVer = 0;
@@ -482,7 +474,8 @@ var DpChatWidget = new (function() {
 		css.push('border-' + (isRtl ? 'right' : 'left') + ': 0 none');
 		css = css.join(';');
 
-		$('head').append('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
+		tmp = util.createEl('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
 
 		var css = [];
 		css.push('position: absolute');
@@ -507,7 +500,8 @@ var DpChatWidget = new (function() {
 		css.push('z-index: 1');
 		css = css.join(';');
 
-		$('head').append('<style type="text/css">#dpchat_btn_inner2 { '+css+ '}</style>');
+		tmp = util.createEl('<style type="text/css">#dpchat_btn_inner2 { '+css+ '}</style>');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
 
 		var css = [];
 		css.push('position: absolute');
@@ -534,7 +528,8 @@ var DpChatWidget = new (function() {
 		css.push('border-bottom: none');
 		css = css.join(';');
 
-		$('head').append('<style type="text/css">#dpchat_btn_inner { '+css+ '}</style>');
+		tmp = util.createEl('<style type="text/css">#dpchat_btn_inner { '+css+ '}</style>');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
 
 		var css = [];
 		css.push('position: absolute');
@@ -554,7 +549,8 @@ var DpChatWidget = new (function() {
 		css.push('border: none');
 		css = css.join(';');
 
-		$('head').append('<style type="text/css">#dpchat_btn_btm_shade { '+css+ '}</style>');
+		tmp = util.createEl('<style type="text/css">#dpchat_btn_btm_shade { '+css+ '}</style>');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
 
 		var phrase1 = 'Chat with us';
 		var phrase2 = 'Open your chat';
@@ -567,21 +563,25 @@ var DpChatWidget = new (function() {
 			}
 		}
 
-		openBtn = $('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label" style="position:relative;top:-1px;"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
+		openBtn = util.createEl('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label" style="position:relative;top:-1px;"><span id="dpchat_btn_label_start-chat" class="start-chat">'+phrase1+'</span><span id="dpchat_btn_label_open-chat" class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
 		if (isRtl) {
-			openBtn.addClass('rtl');
+			util.addClass(openBtn, 'rtl');
 		}
 		if (this.isWindowChat) {
-			openBtn.hide();
+			util.hideEl(openBtn);
 		}
-		openBtn.appendTo('body');
+		body.appendChild(openBtn);
 
-		var w = $('#dpchat_btn').width();
-		$('#dpchat_btn_btm').width(w - 20 + 150 - w - 8);
+		var w = util.getElWidth(document.getElementById('dpchat_btn'));
+		document.getElementById('dpchat_btn_btm').style.width = (w - 20 + 150 - w - 8) + "px";
 
-		openBtn.on('click', function(ev) {
-			ev.stopPropagation();
-			ev.preventDefault();
+		util.bind(openBtn, 'click', function(ev) {
+			if (ev && ev.preventDefault) ev.preventDefault();
+			else window.event.returnValue = false;
+
+			if (ev && ev.stopPropagation) ev.stopPropagation();
+			else window.event.cancelBubble = true;
+
 			self.open();
 		});
 
@@ -591,15 +591,22 @@ var DpChatWidget = new (function() {
 			if (this.doResume) {
 				self.open();
 			} else {
-				openBtn.show();
+				util.showEl(openBtn);
 			}
 		}
 
-		$('body').addClass('dp-chat-enabled');
-		$('.dp-chat-trigger').on('click', function(ev) {
-			ev.preventDefault();
-			DpChatWidget.open();
-		});
+		util.addClass(body, 'dp-chat-enabled');
+		if (document.getElementsByClassName) {
+			tmp = document.getElementsByClassName('dp-chat-trigger');
+			for (tmpi = 0; i < tmp.length; tmpi++) {
+				util.bind(tmp[tmpi], 'click', function(ev) {
+					if (ev && ev.preventDefault) ev.preventDefault();
+					else window.event.returnValue = false;
+
+					DpChatWidget.open();
+				});
+			}
+		}
 	};
 
 	var confirmGoingAway = function() {
@@ -625,12 +632,12 @@ var DpChatWidget = new (function() {
 
 		switch (messageId) {
 			case 'started':
-				$('#dpchat_btn_label').find('.start-chat').hide();
-				$('#dpchat_btn_label').find('.open-chat').show();
+				util.hideEl(document.getElementById('dpchat_btn_label_start-chat'));
+				util.showEl(document.getElementById('dpchat_btn_label_open-chat'));
 
 				// The button might be hidden because of doResume above,
 				// but we want to show it all the time (its overlapped anyway)
-				openBtn.show();
+				util.showEl(openBtn);
 				break;
 
 			case 'hide':
@@ -644,7 +651,7 @@ var DpChatWidget = new (function() {
 			case 'destroy':
 				self.close();
 				if (chatIframeHolder) {
-					chatIframeHolder.remove();
+					util.removeEl(chatIframeHolder);
 				}
 				chatIframeHolder = null;
 				chatIframeWinTab = null;
@@ -721,15 +728,7 @@ var DpChatWidget = new (function() {
 	//##################################################################################################################
 
 	DpConsole.log('DpChatWidget.init');
-
-	if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.7.') === -1) {
-		DpConsole.log('DpChatWidget.init: loading jquery');
-		initJquery();
-	} else {
-		DpConsole.log('DpChatWidget.init: already have jquery');
-		$ = jQuery;
-		initSession();
-	}
+	initSession();
 
 	return this;
 })();
