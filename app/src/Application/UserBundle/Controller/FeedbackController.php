@@ -121,7 +121,7 @@ class FeedbackController extends AbstractController
 
 		$captcha = null;
 		$captcha_html = '';
-		if ($this->container->getSetting('user.publish_captcha')) {
+		if ($this->container->getSetting('user.publish_captcha') && !$this->person->getId()) {
 			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
 			$captcha_html = $captcha->getHtml();
 		}
