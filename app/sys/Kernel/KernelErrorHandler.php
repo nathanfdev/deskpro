@@ -138,7 +138,7 @@ class KernelErrorHandler
 	 * @param \Exception $exception
 	 * @return void
 	 */
-	public static function handleException(\Exception $exception)
+	public static function handleException(\Exception $exception, $exit = true)
 	{
 		if (self::$is_handling_exception) {
 			return;
@@ -173,7 +173,7 @@ class KernelErrorHandler
 			}
 		} catch (\Exception $e) {}
 
-		if ($errinfo['die']) {
+		if ($errinfo['die'] && $exit) {
 
 			self::tryCleanup();
 

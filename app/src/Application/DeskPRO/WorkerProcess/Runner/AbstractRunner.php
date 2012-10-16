@@ -117,18 +117,27 @@ abstract class AbstractRunner
 		$logger->log("Job {$worker_job['id']} start", Logger::INFO, array('flag' => 'job_start'));
 
 		$worker_job['last_start_date'] = new \DateTime();
-		App::getOrm()->persist($worker_job);
-		App::getOrm()->flush();
+		App::getDb()->update('worker_jobs', array('last_start_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));
 
-		$job->run();
+		$run_e = null;
+
+		try {
+			$job->run();
+		} catch (\Exception $e) {
+			$run_e = $e;
+		}
 
 		$mtime_end = microtime(true);
 		$mtime_total = $mtime_end - $mtime_start;
 		$mtime_total = sprintf("%.5f", $mtime_total);
 
-		$worker_job['last_run_date'] = new \DateTime();
-		App::getOrm()->persist($worker_job);
-		App::getOrm()->flush();
+		if ($run_e) {
+			$logger->log(sprintf("Exception: %s[%d]: %s", get_class($run_e), $run_e->getCode(), $run_e->getMessage()));
+			\DeskPRO\Kernel\KernelErrorHandler::handleException($run_e);
+		} else {
+			$worker_job['last_run_date'] = new \DateTime();
+			App::getDb()->update('worker_jobs', array('last_run_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));
+		}
 
 		$logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, array('flag' => 'job_end'));
 
