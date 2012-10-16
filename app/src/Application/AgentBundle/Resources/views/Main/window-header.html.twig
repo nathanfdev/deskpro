@@ -187,8 +187,8 @@
 					</div>
 				</li>
 				<li class="networkStatIndicator" id="network_status_indicator">
-					<a class="tipped" data-tipped="network_status_tip" data-tipped-options="inline:true, hook: 'bottommiddle'"></a>
-					<div id='network_status_tip' style="display: none;">{{ phrase('agent.interface.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.interface.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.interface.network_status_bad') }}</div></div>
+					<a class="tipped" data-tipped="network_status_tip_wrap" data-tipped-options="inline:true, hook: 'bottommiddle'"></a>
+					<div id="network_status_tip_wrap" style="display: none;"><div id='network_status_tip'>{{ phrase('agent.interface.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.interface.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.interface.network_status_bad') }}</div></div></div>
 				</li>
 				<li class="keyboardIcon">
 					<a id="keyboard_shortcuts_trigger" class="tipped" title="{{ phrase('agent.interface.keyboard_shortcuts') }}" data-tipped-options="hook: 'bottommiddle'"></a>
