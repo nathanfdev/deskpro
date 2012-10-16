@@ -207,9 +207,12 @@ abstract class AbstractFetcher
 
 			if ($raw_message->too_big) {
 				$desc = App::getSystemService('filestorage')->createRandomPath();
-				$desc->write($raw_message->headers, array(
-					'filename' => 'headers.dat',
+				$desc->write($raw_message->content, array(
+					'filename' => 'email.dat',
 				));
+
+				// Unset the content now, its not used from here on out
+				$raw_message->content = '';
 
 				$source->status = 'error';
 				$source->error_code = EmailSource::ERR_MESSAGE_TOO_BIG;

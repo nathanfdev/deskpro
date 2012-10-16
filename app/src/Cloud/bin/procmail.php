@@ -316,6 +316,7 @@ class DeskPRO_Cloud_ProcMail
 
 		if (strpos($out, 'DP_MAIL_ACCEPT') === false) {
 			$this->markFailed();
+			$this->exit_string = "Message was rejected";
 			error_log($out);
 		}
 	}
