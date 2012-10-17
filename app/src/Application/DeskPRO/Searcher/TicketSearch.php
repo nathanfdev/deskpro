@@ -396,7 +396,10 @@ class TicketSearch extends SearcherAbstract
 				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
 			}
 
-			$where .= "tickets_participants_perm.person_id = {$this->person->id})) AND ";
+			$where .= "tickets_participants_perm.person_id = {$this->person->id}))";
+		} else {
+			// all where parts below add starting with AND
+			$where = '1';
 		}
 
 
@@ -448,7 +451,10 @@ class TicketSearch extends SearcherAbstract
 		#------------------------------
 
 		if (!empty($ticket_parts['wheres'])) {
-			$where .= implode(" AND ", $ticket_parts['wheres']);
+			$where .= " AND " . implode(" AND ", $ticket_parts['wheres']);
+		}
+		if (!empty($ticket_parts['wheres_any'])) {
+			$where .= " AND (" . implode(" OR ", $ticket_parts['wheres_any']) . ")";
 		}
 		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
@@ -467,10 +473,6 @@ class TicketSearch extends SearcherAbstract
 
 		if ($where) {
 			$sql .= " WHERE $where";
-		}
-
-		if ($limit) {
-			$sql .= "LIMIT $limit";
 		}
 
 		$this->getLogger()->logDebug("Search Count Query: " . $sql);
@@ -558,6 +560,9 @@ class TicketSearch extends SearcherAbstract
 			}
 
 			$where .= "tickets_participants_perm.person_id = {$this->person->id}))";
+		} else {
+			// all where parts below add starting with AND
+			$where = '1';
 		}
 
 
