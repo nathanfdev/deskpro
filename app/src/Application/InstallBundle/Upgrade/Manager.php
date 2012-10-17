@@ -144,6 +144,8 @@ class Manager
 		// Update flags if theyre blank
 		$blank_flags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
 		foreach ($blank_flags as $sys_name) {
+			if (!$langpacks->hasLang($sys_name)) continue;
+
 			$flag = $langpacks->getLangInfo($sys_name, 'flag_image');
 			if ($flag) {
 				$this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
