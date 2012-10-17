@@ -304,6 +304,25 @@ class ServerController extends AbstractController
 	{
 		$config_hash = md5_file(DP_CONFIG_FILE);
 
+		if ($this->in->getBool('download')) {
+
+			$file = file_get_contents(dp_get_log_dir() . '/error.log');
+			$filename = 'error.log';
+			$filetype = 'text/plain';
+
+			if (function_exists('gzencode')) {
+				$file = gzencode($file);
+				$filename = 'error.log.gz';
+				$filetype = 'application/gzip';
+			}
+
+			header('Content-Disposition: attachment; filename='.$filename);
+			header('Content-type: '.$filetype.'; filename='.$filename);
+			$res = new \Symfony\Component\HttpFoundation\Response($file, 200);
+
+			return $res;
+		}
+
 		$log_reader = new \Application\DeskPRO\Log\ErrorLog\ErrorLogReader(dp_get_log_dir() . '/error.log');
 
 		return $this->render('AdminBundle:Server:error-logs.html.twig', array(
@@ -322,6 +341,14 @@ class ServerController extends AbstractController
 
 		if (!$log) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($this->in->getBool('download')) {
+			header('Content-Disposition: attachment; filename=log-' . $log_id . '.log');
+			header('Content-type: text/plain; filename=log-' . $log_id . '.log');
+			$res = new \Symfony\Component\HttpFoundation\Response($log['log'], 200);
+
+			return $res;
 		}
 
 		return $this->render('AdminBundle:Server:error-view.html.twig', array(

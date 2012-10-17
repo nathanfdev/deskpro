@@ -14,6 +14,8 @@
 		</div>
 		<div class="dp-form-input">
 			{{ log.id }}
+			<br />
+			<a class="clean-white" href="{{ path('admin_server_error_logs_view', {'log_id': log.id, download: 1}) }}">Download report file: log-{{ log.id }}.log</a>
 		</div>
 	</div>
 
