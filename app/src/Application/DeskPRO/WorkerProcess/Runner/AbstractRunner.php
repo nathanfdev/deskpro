@@ -140,7 +140,7 @@ abstract class AbstractRunner
 		$mtime_total = sprintf("%.5f", $mtime_total);
 
 		if ($run_e) {
-			$logger->log(sprintf("Exception: %s[%d]: %s", get_class($run_e), $run_e->getCode(), $run_e->getMessage()));
+			$logger->log(sprintf("Exception: %s[%d]: %s", get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
 			\DeskPRO\Kernel\KernelErrorHandler::handleException($run_e);
 		} else {
 			$worker_job['last_run_date'] = new \DateTime();
