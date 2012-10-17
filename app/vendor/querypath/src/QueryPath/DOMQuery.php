@@ -7,7 +7,7 @@
  * was done for a few reasons:
  * - The library has been refactored, and it made more sense to call the top
  *   level class QueryPath. This is not the top level class.
- * - There have been requests for a JSONQuery class, which would be the 
+ * - There have been requests for a JSONQuery class, which would be the
  *   natural complement of DOMQuery.
  */
 
@@ -63,6 +63,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     'exception_level' => 771, // E_ERROR | E_USER_ERROR | E_USER_WARNING | E_WARNING
     'ignore_parser_warnings' => FALSE,
     'escape_xhtml_js_css_sections' => self::JS_CSS_ESCAPE_CDATA_CCOMMENT,
+	'format_output' => true,
   );
   /**
    * The array of matches.
@@ -186,6 +187,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     if (isset($string) && strlen($string) > 0) {
       $this->find($string);
     }
+
+	  $this->document->formatOutput = TRUE;
   }
 
 
@@ -2674,6 +2677,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *  In the event that a file cannot be written, an Exception will be thrown.
    */
   public function writeXML($path = NULL, $options = NULL) {
+	$this->document->formatOutput = true;
     if ($path == NULL) {
       print $this->document->saveXML(NULL, $options);
     }
@@ -2710,6 +2714,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    *  In the event that a file cannot be written, an Exception will be thrown.
    */
   public function writeHTML($path = NULL) {
+	$this->document->formatOutput = true;
     if ($path == NULL) {
       print $this->document->saveHTML();
     }

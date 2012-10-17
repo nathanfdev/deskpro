@@ -152,15 +152,14 @@ class HtmlPurifier implements CleanerPlugin
 		}
 
 		$value = $purifier->purify($value, $config);
-		$value = preg_replace('#class="([a-zA-Z0-9]*)MsoNormal([a-zA-Z0-9]*)"#i', 'class="$1MsoNormal$2" style="margin:0;"', $value);
-		$value = preg_replace_callback('#<[^>]*>#', function ($m) {
-			return preg_replace('#(.*?)style="(.*?)"(.*?)style="(.*?)"#', '$1style="$2;$3"$4', $m[0]);
+		$value = preg_replace('#class="([a-zA-Z0-9]*)MsoNormal([a-zA-Z0-9]*)"#iu', 'class="$1MsoNormal$2" style="margin:0;"', $value);
+		$value = preg_replace_callback('#<[^>]*>#u', function ($m) {
+			return preg_replace('#(.*?)style="(.*?)"(.*?)style="(.*?)"#u', '$1style="$2;$3"$4', $m[0]);
 		}, $value);
 
 		if ($type == 'html_email') {
 			$value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
 			$value = Strings::decodeWhitespaceHtmlEntities($value);
-			$value = Strings::trimHtml($value);
 			$value = Strings::trimHtmlAdvanced($value);
 		}
 

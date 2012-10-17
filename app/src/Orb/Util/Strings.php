@@ -1221,7 +1221,7 @@ class Strings
 		}
 
 		// Working with DOMDocument will have encoded things as HTML entities, convert back
-		$html = \Orb\Util\Strings::decodeHtmlEntities($html);
+		$html = \Orb\Util\Strings::decodeUnicodeEntities($html);
 
 		return $html;
 	}
@@ -1283,6 +1283,7 @@ class Strings
 		$orig_html = $html;
 
 		$dom = new \DOMDocument('1.0', 'UTF-8');
+		$dom->formatOutput = true;
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
 		}
@@ -1307,6 +1308,7 @@ class Strings
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
+				$frag->formatOutput = true;
 				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>' . $newText . '</body>');
 				$xpath2 = new \DOMXPath($frag);
 
@@ -1669,17 +1671,46 @@ class Strings
 	 */
 	public static function decodeHtmlEntities($html)
 	{
-		$html = preg_replace_callback('/&#([0-9]+);/', function($m) {
-			return Strings::chrUni($m[1]);
-		}, $html);
-
-		$html = preg_replace_callback('/&#x([0-9A-F]+);/', function($m) {
-			$int = hexdec($m[1]);
-			return Strings::chrUni($int);
-		}, $html);
+		$html = self::decodeUnicodeEntities($html);
 
 		// Decode normal stuff
 		$html = html_entity_decode($html, \ENT_QUOTES, 'UTF-8');
+
+		return $html;
+	}
+
+
+	/**
+	 * Decodes unicode html entities into their actual characters.
+	 *
+	 * @param string $html
+	 * @return mixed
+	 */
+	public static function decodeUnicodeEntities($html)
+	{
+		// HTML special chars that we dont want to decode this way
+		$skip_chars = array(
+			34 => true, // "
+			39 => true, // '
+			38 => true, // &
+			60 => true, // <
+			62 => true, // >
+		);
+
+		$html = preg_replace_callback('/&#([0-9]+);/', function($m) use ($skip_chars) {
+			if (isset($skip_chars[$m[1]])) {
+				return $m[0];
+			}
+			return Strings::chrUni($m[1]);
+		}, $html);
+
+		$html = preg_replace_callback('/&#x([0-9A-F]+);/', function($m) use ($skip_chars) {
+			$int = hexdec($m[1]);
+			if (isset($skip_chars[$int])) {
+				return $m[0];
+			}
+			return Strings::chrUni($int);
+		}, $html);
 
 		return $html;
 	}
