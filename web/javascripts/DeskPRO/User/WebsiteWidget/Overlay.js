@@ -680,7 +680,7 @@ var DpOverlayWidget = new (function() {
 
 		if (document.getElementsByClassName) {
 			tmp = document.getElementsByClassName('dp-overlay-widget-trigger');
-			for (tmpi = 0; i < tmp.length; tmpi++) {
+			for (tmpi = 0; tmpi < tmp.length; tmpi++) {
 				util.bind(tmp[tmpi], 'click', function(ev) {
 					if (ev && ev.preventDefault) ev.preventDefault();
 					else window.event.returnValue = false;

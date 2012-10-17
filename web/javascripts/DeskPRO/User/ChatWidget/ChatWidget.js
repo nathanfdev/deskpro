@@ -599,7 +599,7 @@ var DpChatWidget = new (function() {
 		util.addClass(body, 'dp-chat-enabled');
 		if (document.getElementsByClassName) {
 			tmp = document.getElementsByClassName('dp-chat-trigger');
-			for (tmpi = 0; i < tmp.length; tmpi++) {
+			for (tmpi = 0; tmpi < tmp.length; tmpi++) {
 				util.bind(tmp[tmpi], 'click', function(ev) {
 					if (ev && ev.preventDefault) ev.preventDefault();
 					else window.event.returnValue = false;
