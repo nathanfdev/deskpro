@@ -32,44 +32,44 @@
 	{{ design.dpgrid_content({class: 'top' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
 {% endif %}
 
-	{{ design.dpgrid_col({ class: 'l r', style: "width: 580px;"}) }}
+	{{ design.dpgrid_col({ class: 'l r', style: "width: 720px;"}) }}
 		<span class="grab-handle"></span>
 		<h2>
 			<a class="edit-trigger" data-user-title="{{ department.getRealUserTitle() }}">{{department.getRealTitle()}} {% if department.getRealUserTitle() %}<span style="color: #666; font-size: 11px; font-weight: normal; padding-left: 10px;">User title: {{ department.getRealUserTitle() }}</span>{% endif %}</a>
 		</h2>
 	{{ design.dpgrid_col_end() }}
 
-	{{ design.dpgrid_col({ class: 'l r l-margin r-margin alt', style: "width: 140px"}) }}
-		{% if is_sub or not department.children|length %}
-			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
-			<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
-				{% if not current_options_tickets[department.id] %}
-                {{ phrase('admin.departments.no_agents') }}
-				{% else %}
-                    {{ phrase('admin.departments.count_agents', {'count':current_options_tickets[department.id]|length}) }}
-				{% endif %}
-			</button>
-			{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
-		{% else %}
-			&nbsp;
-		{% endif %}
-	{{ design.dpgrid_col_end() }}
-
-	{{ design.dpgrid_col({ class: 'l r alt r-margin', style: "width: 140px;"}) }}
-		{% if is_sub or not department.children|length %}
-			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
-			<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
-				{% if not current_options_chat[department.id] %}
+	{% if type == 'tickets' %}
+		{{ design.dpgrid_col({ class: 'l r alt l-margin r-margin', style: "width: 140px;"}) }}
+			{% if is_sub or not department.children|length %}
+				<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
+					{% if not current_options_tickets[department.id] %}
 					{{ phrase('admin.departments.no_agents') }}
-				{% else %}
-                    {{ phrase('admin.departments.count_agents', {'count':current_options_chat[department.id]|length}) }}
-				{% endif %}
-			</button>
-			{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}
-		{% else %}
-			&nbsp;
-		{% endif %}
-	{{ design.dpgrid_col_end() }}
+					{% else %}
+						{{ phrase('admin.departments.count_agents', {'count':current_options_tickets[department.id]|length}) }}
+					{% endif %}
+				</button>
+				{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
+			{% else %}
+				&nbsp;
+			{% endif %}
+		{{ design.dpgrid_col_end() }}
+	{% else %}
+		{{ design.dpgrid_col({ class: 'l r alt l-margin r-margin', style: "width: 140px;"}) }}
+			{% if is_sub or not department.children|length %}
+				<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
+					{% if not current_options_chat[department.id] %}
+						{{ phrase('admin.departments.no_agents') }}
+					{% else %}
+						{{ phrase('admin.departments.count_agents', {'count':current_options_chat[department.id]|length}) }}
+					{% endif %}
+				</button>
+				{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}
+			{% else %}
+				&nbsp;
+			{% endif %}
+		{{ design.dpgrid_col_end() }}
+	{% endif %}
 
 	{{ design.dpgrid_col({ class: 'l r alt icon-only', style: "width: 16px"}) }}
 		<a href="{{ path('admin_departments_del', {'department_id': department.id}) }}" class="delete"></a>

@@ -7,7 +7,11 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.general.departments') }}</li>
+		{% if type == 'tickets' %}
+			<li>Ticket Departments</li>
+		{% else %}
+			<li>Chat Departments</li>
+		{% endif %}
 	</ul>
 {% endblock %}
 {% block content %}
@@ -19,14 +23,11 @@
 
 	{{ design.dpgrid({class: 'dep-list'}) }}
 		{{ design.dpgrid_headerrow() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 580px;"}) }}
+			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 720px;"}) }}
 				<h1>{{ phrase('agent.general.department') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 140px"}) }}
-				<h1>{{ phrase('agent.general.tickets') }}</h1>
-			{{ design.dpgrid_headercol_end() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 140px"}) }}
-				<h1>{{ phrase('agent.general.chat') }}</h1>
+			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin', style: "width: 140px"}) }}
+				<h1>Permissions</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -88,7 +89,7 @@
 		<h4>{{ phrase('admin.departments.new_department') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<form class="dp-form" method="POST" action="{{ path('admin_departments_savenew') }}">
+		<form class="dp-form" method="POST" action="{{ path('admin_departments_savenew', {type: type}) }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
 					<label>{{ phrase('agent.general.title') }}</label>

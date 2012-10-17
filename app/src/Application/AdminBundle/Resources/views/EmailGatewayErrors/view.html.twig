@@ -1,6 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
+		<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
 		<li><a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.general.gateway_error_logs') }}</a></li>
 		<li>{{ phrase('admin.general.gateway_source_id', {id: source.id}) }}</li>
 	</ul>

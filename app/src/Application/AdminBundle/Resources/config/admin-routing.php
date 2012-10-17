@@ -1535,9 +1535,9 @@ $collection->add('admin_products_dodel', new Route(
 ################################################################################
 
 $collection->add('admin_departments', new Route(
-	'/departments',
-	array('_controller' => 'AdminBundle:Departments:list'),
-	array(),
+	'/departments/{type}',
+	array('_controller' => 'AdminBundle:Departments:list', 'type' => ''),
+	array('type' => '(tickets|chat|)'),
 	array()
 ));
 
@@ -1555,15 +1555,8 @@ $collection->add('admin_departments_saveusergroups', new Route(
 	array()
 ));
 
-$collection->add('admin_departments_savefeaturestate', new Route(
-	'/departments/{department_id}/save-feature-state.json',
-	array('_controller' => 'AdminBundle:Departments:saveFeatureState'),
-	array('department_id' => '\\d+'),
-	array()
-));
-
 $collection->add('admin_departments_savenew', new Route(
-	'/departments/save-new',
+	'/departments/{type}/save-new',
 	array('_controller' => 'AdminBundle:Departments:saveNew'),
 	array(),
 	array()

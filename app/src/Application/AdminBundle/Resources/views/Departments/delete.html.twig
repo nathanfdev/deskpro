@@ -2,7 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_departments') }}">{{ phrase('admin.general.departments') }}</a></li>
+		{% if department.is_tickets_enabled %}
+			<li><a href="{{ path('admin_departments', {type:'tickets'}) }}">Ticket Departments</a></li>
+		{% else %}
+			<li><a href="{{ path('admin_departments', {type:'chat'}) }}">Chat Departments</a></li>
+		{% endif %}
 		<li>{{ phrase('admin.departments.delete_department') }}</li>
 	</ul>
 {% endblock %}

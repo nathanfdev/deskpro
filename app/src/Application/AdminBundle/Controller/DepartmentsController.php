@@ -52,12 +52,16 @@ class DepartmentsController extends AbstractController
 	/**
 	 * Shows the main listing of departments
 	 */
-	public function listAction()
+	public function listAction($type = null)
 	{
+		if ($type == null) {
+			return $this->redirectRoute('admin_departments', array('type' => 'tickets'));
+		}
+
 		$all_departments = $this->em->createQuery("
 			SELECT dep
 			FROM DeskPRO:Department dep
-			WHERE dep.parent IS NULL
+			WHERE dep.parent IS NULL AND " . ($type == 'tickets' ? 'dep.is_tickets_enabled = true' : 'dep.is_chat_enabled = true') . "
 			ORDER BY dep.display_order ASC
 		")->getResult();
 
@@ -86,6 +90,7 @@ class DepartmentsController extends AbstractController
 			'all_departments' => $all_departments,
 			'agents' => $agents,
 			'teams' => $teams,
+			'type' => $type,
 			'usergroups' => $usergroups,
 			'current_options_tickets' => $current_options_tickets,
 			'current_options_chat' => $current_options_chat,
@@ -123,40 +128,6 @@ class DepartmentsController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
-	}
-
-	public function saveFeatureStateAction($department_id)
-	{
-		$chat = $this->in->getBool('chat');
-		$tickets = $this->in->getBool('tickets');
-
-		$department = $this->em->find('DeskPRO:Department', $department_id);
-
-		if (!$department) {
-			throw $this->createNotFoundException();
-		}
-
-		if ($department->is_chat_enabled != $chat) {
-			$check = App::getDb()->fetchColumn("SELECT COUNT(*) FROM departments WHERE is_chat_enabled = 1");
-			if (!$chat && $check <= 1) {
-				$chat = 1;
-			}
-		}
-		if ($department->is_tickets_enabled != $tickets) {
-			$check = App::getDb()->fetchColumn("SELECT COUNT(*) FROM departments WHERE is_tickets_enabled = 1");
-			if (!$tickets && $check <= 1) {
-				$tickets = 1;
-			}
-		}
-
-		$department->is_tickets_enabled = $tickets;
-		$department->is_chat_enabled = $chat;
-
-		$this->em->transactional(function($em) use ($department) {
-			$em->persist($department);
-		});
-
-		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	public function saveTitleAction()
@@ -198,14 +169,23 @@ class DepartmentsController extends AbstractController
 			throw $e;
 		}
 
-		return $this->redirectRoute('admin_departments');
+		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
+		return $this->redirectRoute('admin_departments', array('type' => $type));
 	}
 
-	public function saveNewAction()
+	public function saveNewAction($type)
 	{
 		$department = new \Application\DeskPRO\Entity\Department();
 		$department->title = $this->in->getString('title');
 		$department->user_title = $this->in->getString('user_title');
+
+		if ($type == 'tickets') {
+			$department->is_tickets_enabled = true;
+			$department->is_chat_enabled = false;
+		} else {
+			$department->is_chat_enabled = true;
+			$department->is_tickets_enabled = false;
+		}
 
 		if (!$department->title) {
 			$department->title = 'Untitled';
@@ -232,31 +212,38 @@ class DepartmentsController extends AbstractController
 
 			$dep_perms = array();
 			foreach ($agent_ids as $aid) {
+				if ($type == 'tickets') {
+					$dep_perms[] = array(
+						'department_id' => $department->getId(),
+						'usergroup_id' => null,
+						'person_id' => $aid,
+						'app' => 'tickets'
+					);
+				} else {
+					$dep_perms[] = array(
+						'department_id' => $department->getId(),
+						'usergroup_id' => null,
+						'person_id' => $aid,
+						'app' => 'chat'
+					);
+				}
+			}
+
+			if ($type == 'tickets') {
 				$dep_perms[] = array(
 					'department_id' => $department->getId(),
-					'usergroup_id' => null,
-					'person_id' => $aid,
+					'usergroup_id' => 1,
+					'person_id' => null,
 					'app' => 'tickets'
 				);
+			} else {
 				$dep_perms[] = array(
 					'department_id' => $department->getId(),
-					'usergroup_id' => null,
-					'person_id' => $aid,
+					'usergroup_id' => 1,
+					'person_id' => null,
 					'app' => 'chat'
 				);
 			}
-			$dep_perms[] = array(
-				'department_id' => $department->getId(),
-				'usergroup_id' => 1,
-				'person_id' => null,
-				'app' => 'tickets'
-			);
-			$dep_perms[] = array(
-				'department_id' => $department->getId(),
-				'usergroup_id' => 1,
-				'person_id' => null,
-				'app' => 'chat'
-			);
 
 			$this->db->batchInsert('department_permissions', $dep_perms);
 
@@ -275,7 +262,8 @@ class DepartmentsController extends AbstractController
 			throw $e;
 		}
 
-		return $this->redirectRoute('admin_departments');
+		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
+		return $this->redirectRoute('admin_departments', array('type' => $type));
 	}
 
 	############################################################################
@@ -422,7 +410,9 @@ class DepartmentsController extends AbstractController
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $department->title);
-		return $this->redirectRoute('admin_departments');
+
+		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
+		return $this->redirectRoute('admin_departments', array('type' => $type));
 	}
 
 	############################################################################
