@@ -60,6 +60,8 @@ class BillingKernel extends AbstractKernel
 			);
 		}
 
+		$bundles[] = new \Application\AgentBundle\AgentBundle();
+
 		return $bundles;
 	}
 
