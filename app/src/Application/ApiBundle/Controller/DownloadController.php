@@ -127,7 +127,7 @@ class DownloadController extends AbstractController
 			$download->title = $title;
 		}
 
-		$download->content = $this->in->getString('content');
+		$download->content = $this->in->getHtml('content');
 
 		$status = $this->in->getString('status');
 		if (!$status) {
@@ -137,8 +137,8 @@ class DownloadController extends AbstractController
 
 		$cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
 		if (!$cat) {
-			$errors['category_id.invalid_argument'] = 'category_id not found';
-		} else {
+			$errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
+			} else {
 			$download->category = $cat;
 		}
 
@@ -159,13 +159,13 @@ class DownloadController extends AbstractController
 				$blob = $accept->accept($file);
 			} else {
 				$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-				$errors['attach.' . $error['error_code']] = $message;
+				$errors['attach'] = array($error['error_code'] . '.attach', $message);
 			}
 		} else {
 			$blob_id = $this->in->getUint('attach_id');
 			$blob = $this->em->find('DeskPRO:Blob', $blob_id);
 			if (!$blob) {
-				$errors['attach_id.invalid_argument'] = 'attach_id not found';
+				$errors['attach_id'] = array('invalid_argument.attach_id', 'attach_id not found');
 			}
 		}
 

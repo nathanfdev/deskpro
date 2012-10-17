@@ -171,8 +171,6 @@ class Download extends ContentAbstract
 
 		$data['filename'] = $this->getFileName();
 		$data['filesize'] = $this->getFileSize();
-		$data['link'] = $this->getLink();
-		$data['permalink'] = $this->getPermalink();
 		if ($this->blob) {
 			$data['downloadurl'] = App::getRouter()->generate(
 				'serve_blob', array('blob_auth_id' => $this->blob->auth_id, 'filename' => $this->filename), true

@@ -803,4 +803,78 @@ $collection->add('api_downloads_categories', new Route(
 	array()
 ));
 
+################################################################################
+# News
+################################################################################
+
+$collection->add('api_news', new Route(
+	'/news',
+	array('_controller' => 'ApiBundle:News:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_news_post', new Route(
+	'/news',
+	array('_controller' => 'ApiBundle:News:newNews'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_news_news', new Route(
+	'/news/{news_id}',
+	array('_controller' => 'ApiBundle:News:getNews'),
+	array('_method' => 'GET', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_post', new Route(
+	'/news/{news_id}',
+	array('_controller' => 'ApiBundle:News:postNews'),
+	array('_method' => 'POST', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_delete', new Route(
+	'/news/{news_id}',
+	array('_controller' => 'ApiBundle:News:deleteNews'),
+	array('_method' => 'DELETE', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_labels', new Route(
+	'/news/{news_id}/labels',
+	array('_controller' => 'ApiBundle:News:getNewsLabels'),
+	array('_method' => 'GET', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_labels_post', new Route(
+	'/news/{news_id}/labels',
+	array('_controller' => 'ApiBundle:News:postNewsLabels'),
+	array('_method' => 'POST', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_label', new Route(
+	'/news/{news_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:News:getNewsLabel'),
+	array('_method' => 'GET', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_news_label_delete', new Route(
+	'/news/{news_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:News:deleteNewsLabel'),
+	array('_method' => 'DELETE', 'news_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_categories', new Route(
+	'/news/categories',
+	array('_controller' => 'ApiBundle:News:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;
