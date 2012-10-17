@@ -121,7 +121,7 @@
 		'lang_code'  => 'swe',
 		'title'      => 'Swedish',
 		'locale'     => 'sv',
-		'flag_image' => 'sv.png',
+		'flag_image' => 'se.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
