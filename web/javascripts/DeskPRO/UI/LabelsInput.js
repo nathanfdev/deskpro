@@ -64,33 +64,14 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			self.fireEvent('change', self.getLabels());
 		});
 
-		function markMatch(text, term, markup) {
-			if (typeof text != 'string') {
-				return '';
-			}
-
-			var match=text.toUpperCase().indexOf(term.toUpperCase()),
-				tl=term.length;
-
-			if (match<0) {
-				markup.push(text);
-				return;
-			}
-
-			markup.push(text.substring(0, match));
-			markup.push("<span class='select2-match'>");
-			markup.push(text.substring(match, match + tl));
-			markup.push("</span>");
-			markup.push(text.substring(match + tl, text.length));
-		}
-
 		DP.select(this.input, {
 			tags: tagSource,
 			id: function (e) { if (!e) return null; return e.id; },
 			formatResult: function(result, container, query) {
-				var markup=[];
-				markMatch(result.text, query.term, markup);
-				return markup.join("");
+				if (!result || !result.text) {
+					return '';
+				}
+				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
 				if (typeof text != 'string') {
