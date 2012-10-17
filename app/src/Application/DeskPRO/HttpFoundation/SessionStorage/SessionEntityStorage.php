@@ -300,7 +300,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$sess_rec['visitor_id'] = (isset($_SESSION['_symfony2']['attributes']['dpvid']) ? $_SESSION['_symfony2']['attributes']['dpvid'] : null);
 		$sess_rec['page_count'] = $this->session->page_count + 1;
 
-		if (!empty($_SESSION['_symfony2']['attributes']['auth_person_id'])) {
+		if (!empty($_SESSION['_symfony2']['attributes']['auth_person_id']) && !empty($_SESSION['_symfony2']['attributes']['dp_interface']) && $_SESSION['_symfony2']['attributes']['dp_interface'] == 'agent') {
 			$sess_rec['is_person'] = 1;
 			$sess_rec['person_id'] = $_SESSION['_symfony2']['attributes']['auth_person_id'];
 

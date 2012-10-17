@@ -260,7 +260,7 @@ class ChatController extends AbstractController
 	public function chatSessionAction()
 	{
 		// First lets see if anyone is even available for chatting
-		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents()) {
+		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
