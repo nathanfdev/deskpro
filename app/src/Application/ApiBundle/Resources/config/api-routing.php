@@ -729,4 +729,78 @@ $collection->add('api_chats_chat_label_delete', new Route(
 	array()
 ));
 
+################################################################################
+# Downloads
+################################################################################
+
+$collection->add('api_downloads', new Route(
+	'/downloads',
+	array('_controller' => 'ApiBundle:Download:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_downloads_post', new Route(
+	'/downloads',
+	array('_controller' => 'ApiBundle:Download:newDownload'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_downloads_download', new Route(
+	'/downloads/{download_id}',
+	array('_controller' => 'ApiBundle:Download:getDownload'),
+	array('_method' => 'GET', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_post', new Route(
+	'/downloads/{download_id}',
+	array('_controller' => 'ApiBundle:Download:postDownload'),
+	array('_method' => 'POST', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_delete', new Route(
+	'/downloads/{download_id}',
+	array('_controller' => 'ApiBundle:Download:deleteDownload'),
+	array('_method' => 'DELETE', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_labels', new Route(
+	'/downloads/{download_id}/labels',
+	array('_controller' => 'ApiBundle:Download:getDownloadLabels'),
+	array('_method' => 'GET', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_labels_post', new Route(
+	'/downloads/{download_id}/labels',
+	array('_controller' => 'ApiBundle:Download:postDownloadLabels'),
+	array('_method' => 'POST', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_label', new Route(
+	'/downloads/{download_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Download:getDownloadLabel'),
+	array('_method' => 'GET', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_download_label_delete', new Route(
+	'/downloads/{download_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Download:deleteDownloadLabel'),
+	array('_method' => 'DELETE', 'download_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_categories', new Route(
+	'/downloads/categories',
+	array('_controller' => 'ApiBundle:Download:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;

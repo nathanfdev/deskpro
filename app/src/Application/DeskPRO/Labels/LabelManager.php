@@ -132,10 +132,10 @@ class LabelManager
 
 	public function hasLabel($label)
 	{
-		$label = self::normalizeLabel($label);
+		$label_test = self::normalizeLabel($label);
 
 		foreach ($this->entity[$this->labels_property] as $label) {
-			if ($label['label'] == $label) {
+			if ($label['label'] == $label_test) {
 				return true;
 			}
 		}
