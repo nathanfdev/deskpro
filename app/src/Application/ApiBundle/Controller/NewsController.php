@@ -140,6 +140,14 @@ class NewsController extends AbstractController
 		}
 		$news->setStatusCode($status);
 
+		$date = $this->in->getUint('date');
+		if ($date) {
+			$news->date_created = new \DateTime('@' . $date);
+			if ($status == 'published') {
+				$news->date_published = new \DateTime('@' . $date);
+			}
+		}
+
 		$cat = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
 		if (!$cat) {
 			$errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
