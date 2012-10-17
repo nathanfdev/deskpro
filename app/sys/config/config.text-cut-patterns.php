@@ -6,7 +6,7 @@
 	# as your config.php file.
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	'outlook_1'                          => 'lang:#\s%From%: (.*?)\s+%Sent%: (.*?)\s+%To%: (.*?)\s+%Subject%: (.*?)\s+#',
+	'outlook_1'                          => 'lang:#(\-\-\-\-\-\s*Original Message\s*\-\-\-\-\-)?\s%From%: (.*?)\s+%Sent%: (.*?)\s+%To%: (.*?)\s+(%CC%: (.*?)\s+)?%Subject%: (.*?)\s+#i',
 
 	'sparrow_1'                          => '#On (.*?), ([0-9]+) (.*?) ([0-9]{4}) at (.*?), (.*?) wrote:\s+#',
 
@@ -15,5 +15,5 @@
 
 	'applemail_1'                        => '#On (.*?), ([0-9]+), at (.*?), (.*?) wrote:\s+#',
 
-	'zimbra_1'                           => '#\-\-\-\-\- Original Message \-\-\-\-\-\sFrom: (.*?)\sTo: (.*?)#',
+	'zimbra_1'                           => '#\-\-\-\-\-\s+Original Message\s+\-\-\-\-\-\sFrom: (.*?)\sTo: (.*?)#',
 );
