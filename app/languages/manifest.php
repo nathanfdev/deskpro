@@ -38,6 +38,19 @@
 		'is_managed' => true
 	),
 
+	'dutch' => array(
+		'id'         => 'dutch',
+		'lang_code'  => 'dut',
+		'title'      => 'Dutch',
+		'locale'     => 'nl',
+		'flag_image' => 'nl.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'german' => array(
 		'id'         => 'german',
 		'lang_code'  => 'ger',
@@ -77,32 +90,6 @@
 		'is_managed' => true
 	),
 
-	'turkish' => array(
-		'id'         => 'turkish',
-		'lang_code'  => 'tur',
-		'title'      => 'Turkish',
-		'locale'     => 'tr',
-		'flag_image' => 'tr.png',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'dutch' => array(
-		'id'         => 'dutch',
-		'lang_code'  => 'dut',
-		'title'      => 'Dutch',
-		'locale'     => 'nl',
-		'flag_image' => 'nl.png',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
 	'persian' => array(
 		'id'         => 'persian',
 		'lang_code'  => 'per',
@@ -122,6 +109,32 @@
 		'title'      => 'Spanish',
 		'locale'     => 'es_ES',
 		'flag_image' => 'es.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
+	'swedish' => array(
+		'id'         => 'swedish',
+		'lang_code'  => 'swe',
+		'title'      => 'Swedish',
+		'locale'     => 'sv',
+		'flag_image' => 'sv.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
+	'turkish' => array(
+		'id'         => 'turkish',
+		'lang_code'  => 'tur',
+		'title'      => 'Turkish',
+		'locale'     => 'tr',
+		'flag_image' => 'tr.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
@@ -324,18 +337,6 @@
 		'lang_code'  => 'rus',
 		'title'      => 'Russian',
 		'locale'     => 'ru',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'swedish' => array(
-		'id'         => 'swedish',
-		'lang_code'  => 'swe',
-		'title'      => 'Swedish',
-		'locale'     => 'sv',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
