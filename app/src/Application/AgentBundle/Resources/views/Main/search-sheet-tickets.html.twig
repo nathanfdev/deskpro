@@ -38,7 +38,7 @@
 		</li>
 		{% if app.getSetting('core.use_agent_team') %}
 			<li class="ob">
-				<label>{{ phrase('agent.general.agent') }} {{ phrase('agent.general.agent_team') }}</label>
+				<label>{{ phrase('agent.general.agent_team') }}</label>
 				<div class="values">
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
