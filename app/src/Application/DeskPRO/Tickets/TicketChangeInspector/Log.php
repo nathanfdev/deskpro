@@ -252,7 +252,6 @@ class Log
 			}
 		}
 		if ($info = $this->tracker->getChangedProperty('label_removed')) {
-			dpdev_log('sfsf');
 			$labels = array();
 			foreach ($info as $i) {
 				$labels[] = $i['old'];
