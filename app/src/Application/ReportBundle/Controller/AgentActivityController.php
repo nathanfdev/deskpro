@@ -40,7 +40,8 @@ class AgentActivityController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->listAction(0, date('Y-m-d'));
+		$dt = $this->person->getDateTime();
+        return $this->listAction(0, $dt->format('Y-m-d'));
     }
 
     public function listAction($agent_id, $date)
@@ -230,18 +231,11 @@ class AgentActivityController extends AbstractController
 
     private function createDateFromParamString($date_str)
     {
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
-        list($year, $month, $day) = explode('-', $date_str);
-        $dt->setDate($year, $month, $day);
-        $dt->setTime(0, 0, 0);
-
-        return $dt;
-    }
-
-    private function createDateToday()
-    {
-        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
-        $dt->setTime(0, 0, 0);
+		$dt = new \DateTime();
+		$dt->setTimezone($this->person->getDateTimezone());
+		list($year, $month, $day) = explode('-', $date_str);
+		$dt->setDate($year, $month, $day);
+		$dt->setTime(0,0,0);
 
         return $dt;
     }
@@ -252,7 +246,8 @@ class AgentActivityController extends AbstractController
         $date = clone $date;
 
         // Apply the user's timezone offset.
-        $start_date = $date->setTimezone($this->person->getDateTimezone());
+        $start_date = clone $date;
+		$start_date->setTimezone(new \DateTimeZone('UTC'));
 
         // The timezone offset will already be applied, so no need to reapply.
         $end_date = clone $start_date;
