@@ -198,6 +198,14 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<div class="dp-form-row">
 						<div class="dp-form-label">
 							<label>
+								<input type="checkbox" class="agent_only" name="agent_only" value="1" />
+								Only show this field for agents
+							</label>
+							<br />
+							<br />
+						</div>
+						<div class="dp-form-label">
+							<label>
                                 {% set phrase_part %}
 								<select name="term_match_type">
                                     <option value="all">{{ phrase('agent.general.all') }}</option>

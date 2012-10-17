@@ -189,6 +189,14 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 				el.data('options-id', overlayEl.attr('id'));
 
+				overlayEl.find('input.agent_only').on('click', function() {
+					if (this.checked) {
+						el.find('.field-agent-only').show();
+					} else {
+						el.find('.field-agent-only').hide();
+					}
+				});
+
 				var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 				editor.addEvent('newRow', function(new_row) {
 					$('.remove', new_row).on('click', function() {
@@ -366,6 +374,11 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				formItem.data('rules', item.rules);
 			}
 
+			if (item.agent_only) {
+				formItem.find('input.agent_only').prop('checked', true);
+				formItem.find('.field-agent-only').show();
+			}
+
             $('.Date.customfield input', formItem).datepicker();
 		}
 
@@ -431,6 +444,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 						}
 					});
 				});
+			}
+
+			if (optionsEl.find('input.agent_only').is(':checked')) {
+				data.push({ name: baseKey+'[agent_only]', value: 1 });
 			}
 		}
 

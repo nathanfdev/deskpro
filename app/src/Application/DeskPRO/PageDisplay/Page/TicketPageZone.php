@@ -107,6 +107,18 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 			throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
 		}
 
+		// Filter out agent_only items
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+			$data = array();
+			foreach ($page_display->data as $k => $d) {
+				if (!isset($d['agent_only']) || !$d['agent_only']) {
+					$data[$k] = $d;
+				}
+			}
+
+			$page_display->data = $data;
+		}
+
 		parent::addPageDisplay($page_display);
 	}
 
