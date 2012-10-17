@@ -729,6 +729,10 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_LABEL:
 					$any = false;
+					if (isset($choice['label'])) {
+						$choice = $choice['label'];
+					}
+
 					foreach ($person->getLabelManager()->getLabelsArray() as $label) {
 						if (strpos(strtolower($label), strtolower($choice)) !== false) {
 							$any = true;
