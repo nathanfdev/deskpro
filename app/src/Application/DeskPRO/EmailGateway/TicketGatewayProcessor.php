@@ -769,9 +769,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 
 			$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
-			if ($addr || $gateway_address_matcher->isHelpdeskAddress($cc_email)) {
-				$this->logMessage("Skipping cc: $cc_email (matches helpdesk address)");
+			if ($addr) {
+				$this->logMessage("Skipping cc: $cc_email (matches gateway address {$addr->id})");
 				continue;
+			}
+			if ($gateway_address_matcher->isHelpdeskAddress($cc_email)) {
+				$this->logMessage("Skipping cc: $cc_email (matches helpdesk address)");
 			}
 
 			$person_processor = new PersonFromEmailProcessor();

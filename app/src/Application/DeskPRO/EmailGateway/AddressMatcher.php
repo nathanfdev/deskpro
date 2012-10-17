@@ -85,6 +85,8 @@ class AddressMatcher
 		foreach ($aliases as $a) {
 			$this->helpdesk_addresses[] = $a;
 		}
+
+		$this->helpdesk_addresses = \Orb\Util\Arrays::removeFalsey($this->helpdesk_addresses);
 	}
 
 
@@ -93,6 +95,10 @@ class AddressMatcher
 	 */
 	public function isHelpdeskAddress($addr)
 	{
+		if (!$this->helpdesk_addresses) {
+			return false;
+		}
+
 		$addr = strtolower($addr);
 
 		foreach ($this->helpdesk_addresses as $hd_addr) {
