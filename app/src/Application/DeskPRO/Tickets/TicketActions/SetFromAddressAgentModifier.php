@@ -68,6 +68,7 @@ class SetFromAddressAgentModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
 		return $tr->phrase('agent.tickets.send_agent_notifs_from_email_action', array('email' => $this->email_address));
 	}
 }
