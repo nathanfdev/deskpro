@@ -1283,7 +1283,6 @@ class Strings
 		$orig_html = $html;
 
 		$dom = new \DOMDocument('1.0', 'UTF-8');
-		$dom->formatOutput = true;
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
 		}
@@ -1308,7 +1307,6 @@ class Strings
 
 			if ($origText != $newText) {
 				$frag = new \DOMDocument('1.0', 'UTF-8');
-				$frag->formatOutput = true;
 				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>' . $newText . '</body>');
 				$xpath2 = new \DOMXPath($frag);
 
@@ -1690,11 +1688,12 @@ class Strings
 	{
 		// HTML special chars that we dont want to decode this way
 		$skip_chars = array(
-			34 => true, // "
-			39 => true, // '
-			38 => true, // &
-			60 => true, // <
-			62 => true, // >
+			34  => true, // "
+			39  => true, // '
+			38  => true, // &
+			60  => true, // <
+			62  => true, // >
+			160 => true, // nbsp
 		);
 
 		$html = preg_replace_callback('/&#([0-9]+);/', function($m) use ($skip_chars) {

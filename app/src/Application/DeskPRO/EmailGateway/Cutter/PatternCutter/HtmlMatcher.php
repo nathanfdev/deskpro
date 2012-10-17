@@ -196,7 +196,12 @@ class HtmlMatcher
 		if ($wrap_pos) {
 			$piece1 = substr($this->marked_body, 0, $wrap_pos);
 			$piece2 = substr($this->marked_body, $wrap_pos);
-			$piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
+
+			if (preg_match($this->root_state[$this->pattern_match_id]['mark_pattern'], $piece1)) {
+				$piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
+			} else {
+				$piece2 = self::CUT_MARK . $piece2;
+			}
 
 			$this->marked_body = $piece1 . $piece2;
 		}
@@ -303,7 +308,16 @@ class HtmlMatcher
 
 			$m = null;
 			if (!preg_match($token[0], $text, $m)) {
-				return null;
+
+				// Check entire contents
+				$html = $branch->innerHTML();
+				$text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
+				$text = strip_tags($text);
+				$text = trim($text);
+
+				if (!preg_match($token[0], $text, $m)) {
+					return null;
+				}
 			}
 
 			if (!$this->root_state[$id]['mark_spot']) {

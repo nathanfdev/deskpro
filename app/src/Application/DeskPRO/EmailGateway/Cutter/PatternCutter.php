@@ -70,7 +70,7 @@ class PatternCutter implements QuoteDef
 	public function getTranslateMap()
 	{
 		if (!$this->translate_map) {
-			$this->translate_map = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns-translate');
+			$this->translate_map = new \Application\DeskPRO\Config\UserFileConfig('cut-patterns-translate');
 			$this->translate_map = $this->translate_map->all();
 		}
 

@@ -1,0 +1,125 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body><p class="MsoNormal" style="margin:0;">Hi Guys</p>
+<br /><p class="MsoNormal" style="margin:0;">Not sure if these are of any interest to you. Seem to be arriving since build 146</p>
+<br /><br /><p class="MsoNormal" style="margin:0;"><span>DESKPRO ERROR LOG FILE</span></p>
+<br /><p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt; Error: Trying to get property of non-object</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         Type: E_NOTICE</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         Date: 2012-10-16 16:06:40</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         Build: 1350385973</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         Line 773 of /app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #0 [/app/sys/Kernel/KernelErrorHandler.php:95]  DeskPRO\Kernel\KernelErrorHandler::getErrorInfo([array](0 =&gt; '8', 1 =&gt; 'Trying
+ to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #1 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:773]  DeskPRO\Kernel\KernelErrorHandler::handleError([array](0
+ =&gt; '8', 1 =&gt; 'Trying to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773', 4 =&gt; [array](ticket =&gt; [object](Application\DeskPRO\Entity\Ticket), ccs =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress),
+ 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 2 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress)), gateway_address_matcher =&gt; [object](Application\DeskPRO\EmailGateway\AddressMatcher), count =&gt; '0', cc =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress),
+ cc_email =&gt; 'martin.ashton@imgtec.com', addr =&gt; '')))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #2 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:990]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::handleCc([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Ticket), 1 =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 2 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #3 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:276]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::runNewTicket([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Person)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #4 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:353]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #5 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:141]  Application\DeskPRO\EmailGateway\Runner::executeGateway([array](0
+ =&gt; [object](Application\DeskPRO\Entity\EmailGateway), 1 =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #6 [/app/src/Application/DeskPRO/WorkerProcess/Job/ProcessEmailGateways.php:80]  Application\DeskPRO\EmailGateway\Runner::execute([array](0
+ =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #7 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:125]  Application\DeskPRO\WorkerProcess\Job\ProcessEmailGateways::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #8 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:89]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJob([array](0
+ =&gt; [object](Application\DeskPRO\Entity\WorkerJob)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #9 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:414]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJobs([array](0
+ =&gt; [array](0 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 1 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 2 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 3 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 4 =&gt; [object](Application\DeskPRO\Entity\WorkerJob),
+ 5 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 6 =&gt; [object](Application\DeskPRO\Entity\WorkerJob))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #10 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:268]  Application\DeskPRO\Command\WorkerJobCommand::doExecute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #11 [/app/vendor/symfony/src/Symfony/Component/Console/Command/Command.php:226]  Application\DeskPRO\Command\WorkerJobCommand::execute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #12 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:194]  Application\DeskPRO\Command\WorkerJobCommand::run([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #13 [/app/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Console/Application.php:76]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #14 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:118]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #15 [/app/sys/KernelBooter.php:311]  Symfony\Bundle\FrameworkBundle\Console\Application::run([array](0 =&gt; [object](Symfony\Component\Console\Input\ArgvInput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #16 [/app/sys/boot_cron.php:3]  DeskPRO\Kernel\KernelBooter::bootCron([array](0 =&gt; 'prod', 1 =&gt; ''))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #17 [/index.php:40]  require([array](0 =&gt; '/app/sys/boot_cron.php'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU341&gt;         -&gt; #18 [/cron.php:3]  require([array](0 =&gt; '/index.php'))</span></p>
+<br /><br /><p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt; Error: Trying to get property of non-object</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         Type: E_NOTICE</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         Date: 2012-10-16 16:06:45</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         Build: 1350385973</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         Line 773 of /app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #0 [/app/sys/Kernel/KernelErrorHandler.php:95]  DeskPRO\Kernel\KernelErrorHandler::getErrorInfo([array](0 =&gt; '8', 1 =&gt; 'Trying
+ to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #1 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:773]  DeskPRO\Kernel\KernelErrorHandler::handleError([array](0
+ =&gt; '8', 1 =&gt; 'Trying to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773', 4 =&gt; [array](ticket =&gt; [object](Application\DeskPRO\Entity\Ticket), ccs =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress),
+ 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 2 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress)), gateway_address_matcher =&gt; [object](Application\DeskPRO\EmailGateway\AddressMatcher), count =&gt; '0', cc =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress),
+ cc_email =&gt; 'Stefan.Szwarnowski@imgtec.com', addr =&gt; '')))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #2 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:990]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::handleCc([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Ticket), 1 =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 2 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #3 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:276]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::runNewTicket([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Person)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #4 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:353]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #5 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:141]  Application\DeskPRO\EmailGateway\Runner::executeGateway([array](0
+ =&gt; [object](Application\DeskPRO\Entity\EmailGateway), 1 =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #6 [/app/src/Application/DeskPRO/WorkerProcess/Job/ProcessEmailGateways.php:80]  Application\DeskPRO\EmailGateway\Runner::execute([array](0
+ =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #7 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:125]  Application\DeskPRO\WorkerProcess\Job\ProcessEmailGateways::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #8 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:89]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJob([array](0
+ =&gt; [object](Application\DeskPRO\Entity\WorkerJob)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #9 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:414]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJobs([array](0
+ =&gt; [array](0 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 1 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 2 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 3 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 4 =&gt; [object](Application\DeskPRO\Entity\WorkerJob),
+ 5 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 6 =&gt; [object](Application\DeskPRO\Entity\WorkerJob))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #10 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:268]  Application\DeskPRO\Command\WorkerJobCommand::doExecute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #11 [/app/vendor/symfony/src/Symfony/Component/Console/Command/Command.php:226]  Application\DeskPRO\Command\WorkerJobCommand::execute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #12 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:194]  Application\DeskPRO\Command\WorkerJobCommand::run([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #13 [/app/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Console/Application.php:76]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #14 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:118]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #15 [/app/sys/KernelBooter.php:311]  Symfony\Bundle\FrameworkBundle\Console\Application::run([array](0 =&gt; [object](Symfony\Component\Console\Input\ArgvInput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #16 [/app/sys/boot_cron.php:3]  DeskPRO\Kernel\KernelBooter::bootCron([array](0 =&gt; 'prod', 1 =&gt; ''))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #17 [/index.php:40]  require([array](0 =&gt; '/app/sys/boot_cron.php'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MBZU392&gt;         -&gt; #18 [/cron.php:3]  require([array](0 =&gt; '/index.php'))</span></p>
+<br /><br /><p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt; Error: Trying to get property of non-object</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         Type: E_NOTICE</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         Date: 2012-10-16 23:08:39</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         Build: 1350385973</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         Line 773 of /app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #0 [/app/sys/Kernel/KernelErrorHandler.php:95]  DeskPRO\Kernel\KernelErrorHandler::getErrorInfo([array](0 =&gt; '8', 1 =&gt; 'Trying
+ to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #1 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:773]  DeskPRO\Kernel\KernelErrorHandler::handleError([array](0
+ =&gt; '8', 1 =&gt; 'Trying to get property of non-object', 2 =&gt; '/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php', 3 =&gt; '773', 4 =&gt; [array](ticket =&gt; [object](Application\DeskPRO\Entity\Ticket), ccs =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress),
+ 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress)), gateway_address_matcher =&gt; [object](Application\DeskPRO\EmailGateway\AddressMatcher), count =&gt; '0', cc =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), cc_email
+ =&gt; 'Sean.Clift@imgtec.com', addr =&gt; '')))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #2 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:428]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::handleCc([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Ticket), 1 =&gt; [array](0 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress), 1 =&gt; [object](Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #3 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:821]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::doNewReply([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Ticket), 1 =&gt; [object](Proxies\__CG__\Application\DeskPRO\Entity\Person), 2 =&gt; 'user'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #4 [/app/src/Application/DeskPRO/EmailGateway/TicketGatewayProcessor.php:241]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::runNewUserReply([array](0
+ =&gt; [object](Application\DeskPRO\Entity\Ticket), 1 =&gt; [object](Proxies\__CG__\Application\DeskPRO\Entity\Person)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #5 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:353]  Application\DeskPRO\EmailGateway\TicketGatewayProcessor::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #6 [/app/src/Application/DeskPRO/EmailGateway/Runner.php:141]  Application\DeskPRO\EmailGateway\Runner::executeGateway([array](0
+ =&gt; [object](Application\DeskPRO\Entity\EmailGateway), 1 =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #7 [/app/src/Application/DeskPRO/WorkerProcess/Job/ProcessEmailGateways.php:80]  Application\DeskPRO\EmailGateway\Runner::execute([array](0
+ =&gt; '180'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #8 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:125]  Application\DeskPRO\WorkerProcess\Job\ProcessEmailGateways::run()</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #9 [/app/src/Application/DeskPRO/WorkerProcess/Runner/AbstractRunner.php:89]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJob([array](0
+ =&gt; [object](Application\DeskPRO\Entity\WorkerJob)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #10 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:414]  Application\DeskPRO\WorkerProcess\Runner\Standard::runJobs([array](0
+ =&gt; [array](0 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 1 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 2 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 3 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 4 =&gt; [object](Application\DeskPRO\Entity\WorkerJob),
+ 5 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 6 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 7 =&gt; [object](Application\DeskPRO\Entity\WorkerJob), 8 =&gt; [object](Application\DeskPRO\Entity\WorkerJob))))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #11 [/app/src/Application/DeskPRO/Command/WorkerJobCommand.php:268]  Application\DeskPRO\Command\WorkerJobCommand::doExecute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #12 [/app/vendor/symfony/src/Symfony/Component/Console/Command/Command.php:226]  Application\DeskPRO\Command\WorkerJobCommand::execute([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #13 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:194]  Application\DeskPRO\Command\WorkerJobCommand::run([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #14 [/app/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Console/Application.php:76]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #15 [/app/vendor/symfony/src/Symfony/Component/Console/Application.php:118]  Symfony\Bundle\FrameworkBundle\Console\Application::doRun([array](0
+ =&gt; [object](Symfony\Component\Console\Input\ArgvInput), 1 =&gt; [object](Symfony\Component\Console\Output\ConsoleOutput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #16 [/app/sys/KernelBooter.php:311]  Symfony\Bundle\FrameworkBundle\Console\Application::run([array](0 =&gt; [object](Symfony\Component\Console\Input\ArgvInput)))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #17 [/app/sys/boot_cron.php:3]  DeskPRO\Kernel\KernelBooter::bootCron([array](0 =&gt; 'prod', 1 =&gt; ''))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #18 [/index.php:40]  require([array](0 =&gt; '/app/sys/boot_cron.php'))</span></p>
+<p class="MsoNormal" style="margin:0;"><span>&lt;DP_LOG:0MC0DMF1&gt;         -&gt; #19 [/cron.php:3]  require([array](0 =&gt; '/index.php'))</span></p></body></html>
