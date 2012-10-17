@@ -198,6 +198,7 @@ class LangPackInfo
 		$lang->sys_name      = $this->getLangInfo($id, 'id');
 		$lang->title         = $this->getLangInfo($id, 'title');
 		$lang->lang_code     = $this->getLangInfo($id, 'lang_code');
+		$lang->flag_image    = $this->getLangInfo($id, 'flag_image') ?: '';
 		$lang->locale        = $this->getLangInfo($id, 'locale');
 		$lang->is_rtl        = $this->getLangInfo($id, 'is_rtl');
 		$lang->has_user      = $this->getLangInfo($id, 'has_user');
