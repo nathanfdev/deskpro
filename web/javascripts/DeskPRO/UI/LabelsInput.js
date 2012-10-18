@@ -74,8 +74,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
-				if (typeof text != 'string') {
-					return false;
+				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+					return;
 				}
 
 				return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
