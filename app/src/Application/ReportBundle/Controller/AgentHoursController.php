@@ -42,6 +42,7 @@ class AgentHoursController extends AbstractController
     public function indexAction()
     {
         $dt = $this->person->getDateTime();
+		$dt->setTime(0,0,0);
 
         $vars = $this->getVarsForDate($dt);
         return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);

@@ -41,6 +41,8 @@ class AgentActivityController extends AbstractController
     public function indexAction()
     {
 		$dt = $this->person->getDateTime();
+		$dt->setTime(0,0,0);
+
         return $this->listAction(0, $dt->format('Y-m-d'));
     }
 
@@ -233,6 +235,7 @@ class AgentActivityController extends AbstractController
     {
 		$dt = new \DateTime();
 		$dt->setTimezone($this->person->getDateTimezone());
+		$dt->setTime(0,0,0);
 		list($year, $month, $day) = explode('-', $date_str);
 		$dt->setDate($year, $month, $day);
 		$dt->setTime(0,0,0);
