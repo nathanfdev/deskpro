@@ -303,6 +303,11 @@ class AgentNotificationAction extends AbstractAction
 				continue;
 			}
 
+			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+				$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id (noperm)");
+				continue;
+			}
+
 			$agent->loadHelper('Agent');
 
 			$type_flag = null;

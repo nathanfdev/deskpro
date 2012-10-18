@@ -182,6 +182,16 @@ class AgentAlertNotificationAction extends AbstractAction
 				$this->tracker->logMessage("[AgentAlertNotificationAction] Sent to $agent_id");
 				$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
+				if (!$agent) {
+					$this->tracker->logMessage("[AgentNotificationAction] Bad agent: " . $agent_id);
+					continue;
+				}
+
+				if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+					$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id (noperm)");
+					continue;
+				}
+
 				$vars = array(
 					'is_new_ticket'      => $is_new_ticket,
 					'is_new_agent_reply' => $is_new_agent_reply,
