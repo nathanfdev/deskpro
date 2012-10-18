@@ -158,7 +158,7 @@ class LanguagesController extends AbstractController
 
 		$all_categories = $this->em->createQuery("
 			SELECT cat
-			FROM DeskPRO:ticketCategory cat
+			FROM DeskPRO:TicketCategory cat
 			WHERE cat.parent IS NULL
 			ORDER BY cat.display_order ASC
 		")->getResult();
