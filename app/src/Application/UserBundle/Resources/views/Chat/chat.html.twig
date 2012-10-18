@@ -135,20 +135,26 @@
 			</div>
 		{% endif %}
 
-		{% if departments|length %}
-			<div class="dp-control-group">
-				<div class="dp-control-label">
-					<label>{{ phrase('user.chat.form_create_department') }}</label>
+		{% if app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
+			{% if app.getDataRepository('Department').getPersonDepartments(app.user, 'chat')|length == 1 %}
+				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
+					<input type="hidden" name="department_id" class="department_id" value="{{ cat.id }}">
+				{% endfor %}
+			{% else %}
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ phrase('user.chat.form_create_department') }}</label>
+					</div>
+					<div class="dp-controls">
+						<select name="department_id" class="department_id">
+							<option value=""></option>
+							{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
+								{{ formmacro.select_options_hierarchy(cat, initial_department_id) }}
+							{% endfor %}
+						</select>
+					</div>
 				</div>
-				<div class="dp-controls">
-					<select name="department_id" class="department_id">
-						<option value=""></option>
-						{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'chat') %}
-							{{ formmacro.select_options_hierarchy(cat, initial_department_id) }}
-						{% endfor %}
-					</select>
-				</div>
-			</div>
+			{% endif %}
 		{% endif %}
 
 		<div style="vertical-align: middle">
