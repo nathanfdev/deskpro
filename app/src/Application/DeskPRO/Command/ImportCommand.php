@@ -417,12 +417,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$cli_check = file_get_contents($cli_check_file);
 				$cli_check = @unserialize($cli_check);
 
+				$logger->log("cli check file: $cli_check_file: " . print_r($cli_check,1), Logger::INFO);
+
 				if (is_array($cli_check) && isset($cli_check['checks'])) {
 					$okay = true;
 					if (in_array('fatal', $cli_check['checks'])) {
 						$okay = false;
 					}
 				}
+			} else {
+				$logger->log("cli check file does not exist: $cli_check_file", Logger::ERR);
 			}
 
 			// Means they are different: Import command (the wrapper) works fine or else we would have quit already,
