@@ -154,6 +154,13 @@ class KbController extends AbstractController
 			}
 		}
 
+		if ($this->in->checkIsset('date_published') && $status != 'published') {
+			$date_published = $this->in->getUint('date_published');
+			if ($date_published) {
+				$article->date_published = new \DateTime('@' . $date_published);
+			}
+		}
+
 		$date_end = $this->in->getUint('date_end');
 		if ($date_end) {
 			$article->date_end = new \DateTime('@' . $date_end);
@@ -167,7 +174,7 @@ class KbController extends AbstractController
 		}
 		$article->setCategories($cats);
 
-		$product_ids = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
+		$product_ids = $this->in->getCleanValueArray('product_id', 'uint', 'discard');
 		$products = $this->em->getRepository('DeskPRO:Product')->getByIds($product_ids);
 		if ($products) {
 			$article->setProducts($products);
