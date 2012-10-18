@@ -205,11 +205,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		// codes so we can now turn them into inline images or attachment links
 		$fn = function($m) {
 			$download_url = App::getSetting('core.deskpro_url');
-			$download_url .= ltrim(App::get('router')->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
+			$download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
 			if ($m[1] == 'image') {
 				$url = App::getSetting('core.deskpro_url');
-				$url .= ltrim(App::get('router')->generate('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
+				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
 
 				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
 			} else {
