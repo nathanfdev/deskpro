@@ -238,6 +238,10 @@ class UsersStep extends AbstractDeskpro3Step
 		$insert_person['is_confirmed']     = 1;
 		$insert_person['name']             = \Orb\Util\Strings::htmlEntityDecodeUtf8($user_info['name']);
 
+		if ($user_info['disabled']) {
+			$insert_person['is_disabled'] = true;
+		}
+
 		if ($user_info['awaiting_register_validate_tech']) {
 			$insert_person['is_agent_confirmed'] = 0;
 		} else {
