@@ -407,11 +407,6 @@ class KbController extends AbstractController
 				$article->date_published = null;
 				break;
 
-			case 'auto-unpub':
-				$date = date_create('@' . $this->in->getUint('end_timestamp'));
-				$article->date_published = $date;
-				break;
-
 			case 'add-related':
 				$updater = new RelatedContentUpdate($article);
 				$updater->addRelated(

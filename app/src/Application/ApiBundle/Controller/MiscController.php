@@ -41,8 +41,6 @@ class MiscController extends AbstractController
 		$file = $this->request->files->get('file');
 		$accept = $this->container->getAttachmentAccepter();
 
-		print_r($file); exit;
-
 		$error = $accept->getError($file, 'agent');
 		if (!$error && $this->in->getBool('is_image')) {
 			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
@@ -57,14 +55,6 @@ class MiscController extends AbstractController
 
 		$blob = $accept->accept($file);
 
-		return $this->createApiResponse(array(
-			'blob_id'           => $blob['id'],
-			'blob_auth'         => $blob->authcode,
-			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
-			'download_url'      => $blob->getDownloadUrl(true),
-			'filename'          => $blob['filename'],
-			'filesize_readable' => $blob->getReadableFilesize(),
-			'is_image'          => $blob->isImage()
-		));
+		return $this->createApiResponse(array('blob' => $blob->toApiData()));
 	}
 }

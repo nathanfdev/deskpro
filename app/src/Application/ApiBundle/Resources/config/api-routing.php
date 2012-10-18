@@ -877,4 +877,120 @@ $collection->add('api_news_categories', new Route(
 	array()
 ));
 
+################################################################################
+# Knowledgebase
+################################################################################
+
+$collection->add('api_kb', new Route(
+	'/kb',
+	array('_controller' => 'ApiBundle:Kb:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_kb_post', new Route(
+	'/kb',
+	array('_controller' => 'ApiBundle:Kb:newArticle'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_kb_article', new Route(
+	'/kb/{article_id}',
+	array('_controller' => 'ApiBundle:Kb:getArticle'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_post', new Route(
+	'/kb/{article_id}',
+	array('_controller' => 'ApiBundle:Kb:postArticle'),
+	array('_method' => 'POST', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_delete', new Route(
+	'/kb/{article_id}',
+	array('_controller' => 'ApiBundle:Kb:deleteArticle'),
+	array('_method' => 'DELETE', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_attachments', new Route(
+	'/kb/{article_id}/attachments',
+	array('_controller' => 'ApiBundle:Kb:getArticleAttachments'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_attachments_post', new Route(
+	'/kb/{article_id}/attachments',
+	array('_controller' => 'ApiBundle:Kb:newArticleAttachment'),
+	array('_method' => 'POST', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_attachment', new Route(
+	'/kb/{article_id}/attachments/{attachment_id}',
+	array('_controller' => 'ApiBundle:Kb:getArticleAttachment'),
+	array('_method' => 'GET', 'article_id' => '\\d+', 'attachment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_attachment_delete', new Route(
+	'/kb/{article_id}/attachments/{attachment_id}',
+	array('_controller' => 'ApiBundle:Kb:deleteArticleAttachment'),
+	array('_method' => 'DELETE', 'article_id' => '\\d+', 'attachment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_labels', new Route(
+	'/kb/{article_id}/labels',
+	array('_controller' => 'ApiBundle:Kb:getArticleLabels'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_labels_post', new Route(
+	'/kb/{article_id}/labels',
+	array('_controller' => 'ApiBundle:Kb:postArticleLabels'),
+	array('_method' => 'POST', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_label', new Route(
+	'/kb/{article_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Kb:getArticleLabel'),
+	array('_method' => 'GET', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_article_label_delete', new Route(
+	'/kb/{article_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Kb:deleteArticleLabel'),
+	array('_method' => 'DELETE', 'article_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_categories', new Route(
+	'/kb/categories',
+	array('_controller' => 'ApiBundle:Kb:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_kb_fields', new Route(
+	'/kb/fields',
+	array('_controller' => 'ApiBundle:Kb:getFields'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_kb_products', new Route(
+	'/kb/products',
+	array('_controller' => 'ApiBundle:Kb:getProducts'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;
