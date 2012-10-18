@@ -546,6 +546,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$has_text_cut = true;
 			$email_info['body_raw'] = $txt;
+			$email_info['generic_cut'] = $txt;
 			$email_info['body'] = $txt;
 			$email_info['body_full'] = $txt;
 
@@ -597,6 +598,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$generic_cut = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
 			if ($email_info['body'] != $generic_cut) {
 				$email_info['body'] = $generic_cut;
+				$email_info['generic_cut'] = $generic_cut;
 				$email_info['found_top_marker'] = true;
 				$has_cut = true;
 			} else {
@@ -676,8 +678,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// The cut message is blank, fallback to using the full message
 		if (!trim(strip_tags($email_info['body']))) {
-			$email_info['body'] = $email_info['body_full'];
-			$email_info['body_full'] = '';
+			if ($email_info['generic_cut'] && trim(strip_tags($email_info['generic_cut']))) {
+				$email_info['body'] = $email_info['generic_cut'];
+			} else {
+				$email_info['body'] = $email_info['body_full'];
+				$email_info['body_full'] = '';
+			}
+		}
+
+		// Clean out PTAC's on this ticket to prevent mistakes with forwarding
+		foreach ($this->ticket->access_codes as $code) {
+			$email_info['body']      = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body']);
+			$email_info['body_full'] = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body_full']);
 		}
 
 		return $email_info;
