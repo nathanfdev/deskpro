@@ -120,9 +120,9 @@ class UserChatManager
 	/**
 	 * Start a new chat conversation, or if its within time and sitll open, resume the previous.
 	 *
-	 * @return \Application\DeskPRO\Entity\ChatConversation
+	 * @return \Application\DeskPRO\Entity\ChatConversation|null
 	 */
-	public function startChat(array $chat_options, $is_window_mode = false)
+	public function startChat(array $chat_options, $is_window_mode = false, &$error_code = false)
 	{
 		$convo = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($this->session);
 
@@ -161,6 +161,11 @@ class UserChatManager
 				}
 			}
 			$is_new_convo = true;
+
+			if ($convo->person && $convo->person->is_disabled) {
+				$error_code = 'person_disabled';
+				return null;
+			}
 
 			// Update the visitor name/email while we have a chance,
 			// its used elsewhere and stays for a long time

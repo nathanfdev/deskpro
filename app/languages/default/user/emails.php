@@ -1,5 +1,4 @@
 <?php return array(
-	'user.emails.account_disabled'            => "Your account is currently disabled. You may not login or interact with tickets.",
 	'user.emails.chat_transcript'             => 'Thank you for chatting with us. Here is your chat transcript.',
 	'user.emails.comment_approved'            => 'Your comment has been published.',
 	'user.emails.comment_deleted'             => 'Your comment was used to improve the page.',

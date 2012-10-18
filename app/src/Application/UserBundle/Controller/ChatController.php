@@ -169,7 +169,22 @@ class ChatController extends AbstractController
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
-			$convo = $chat_manager->startChat($_REQUEST);
+			$convo = $chat_manager->startChat($_REQUEST, false, $error_code);
+			if (!$convo) {
+				if ($error_code == 'person_disabled') {
+					$error = App::getTranslator()->getPhraseText('user.profile.account_disabled_message');
+				} else {
+					$error = 'Unknown error.';
+				}
+				$response = $this->createJsonResponse(array(
+					'conversation_id' => false,
+					'error' => $error
+				));
+				$response->setLastModified(date_create('-1 day'));
+				$response->setExpires(date_create("-1 day"));
+
+				return $response;
+			}
 		} elseif ($this->in->getString('content')) {
 			$chat_manager->addUserMessage($convo, $this->in->getString('content'));
 		}

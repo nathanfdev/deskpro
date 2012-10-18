@@ -1,6 +1,6 @@
 <?php return array(
 	'user.prifle.ticket_validated-message'             => 'Our agents will now read and reply to all of your messages.',
-	'user.profile.account_disabled_message'            => 'Your account is currently disabled. You may not login or interact with tickets.',
+	'user.profile.account_disabled_message'            => 'Your account is currently disabled. You may not login or interact with tickets or chat.',
 	'user.profile.add_email_address'                   => 'Add an email address to your account',
 	'user.profile.awaiting_validation'                 => '(awaiting validation)',
 	'user.profile.change_email'                        => 'Change email address',

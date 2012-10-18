@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                           => 'Your Email Address',
 	'user.chat.ended-no-agent'                  => 'We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later.',
+	'user.chat.error'                           => 'Chat Error',
 	'user.chat.form_chat_button-submit'         => 'Send',
 	'user.chat.form_chat_send-file'             => 'Upload a File',
 	'user.chat.form_create_button-submit'       => 'Start Chat',
@@ -37,6 +38,7 @@
 	'user.chat.window_cancel'                   => 'Cancel',
 	'user.chat.window_cancel-confirm'           => 'Are you sure you want to end your chat?',
 	'user.chat.window_close'                    => 'No thanks, just close the window',
+	'user.chat.window_close_only'               => 'Close the window',
 	'user.chat.window_end-chat'                 => 'End Chat',
 	'user.chat.window_open-new'                 => 'Open this chat in a new window',
 	'user.chat.window_resume-button'            => 'Open your chat',

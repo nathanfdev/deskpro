@@ -161,7 +161,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			$('#no_feedback').val('1');
 			self.endChatReal();
 		});
-		$('#dp_chat_end_real_unassigned').on('click', function(ev) {
+		$('#dp_chat_end_real_unassigned, #dp_chat_end_error').on('click', function(ev) {
 			ev.preventDefault();
 			self.tellParent('destroy', []);
 			if (self.options.isWindowMode) {
@@ -337,6 +337,14 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.hasBeenAssigned = true;
 	},
 
+	chatError: function(error) {
+		$('#dp_chat_start').hide();
+		$('#dp_chat_finding_agent').hide();
+		$('#dp_chat_active').hide();
+		$('#dp_chat_error_text').text(error);
+		$('#dp_chat_error').show();
+	},
+
 	sendTypedMessage: function() {
 		var message = $('#dp_chat_message_input').val().trim();
 		$('#dp_chat_message_input').val('');
@@ -371,6 +379,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			content: message
 		});
 
+		var self = this;
+
 		$.ajax({
 			cache: false,
 			url: BASE_URL + 'chat/send-message/' + this.sessionCode + '?__sid=' + this.sessionCode,
@@ -379,6 +389,12 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
+				if (!data.conversation_id && data.error) {
+					self.ajaxPoller.disable = true;
+					self.chatError(data.error);
+					return;
+				}
+
 				if (data.conversation_id) {
 					conversationId = data.conversation_id;
 				}
