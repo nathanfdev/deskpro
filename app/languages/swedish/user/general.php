@@ -1,6 +1,7 @@
 <?php return array(
 	'user.general.add'                                                     => 'Lägg till',
 	'user.general.attachments'                                             => 'Bifogade filer',
+	'user.general.can-view-because-agent'                                  => 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.',
 	'user.general.comments_add-comment'                                    => 'Posta en kommentar',
 	'user.general.comments_logged_in_as'                                   => 'Inloggad Som',
 	'user.general.comments_no_comments'                                    => 'Det finns inga nya kommentarer.',
@@ -34,6 +35,8 @@
 	'user.general.save'                                                    => 'Spara',
 	'user.general.set_as_helpful'                                          => 'Denna sida var hjälpfull',
 	'user.general.set_as_unhelpful'                                        => 'Denna sida var inte hjälpfull',
+	'user.general.signing_in'                                              => 'Loggar in...',
+	'user.general.signing_in_please_wait'                                  => 'Loggar in. Var god vänta.',
 	'user.general.upload'                                                  => 'Ladda upp',
 	'user.general.upload-drag'                                             => 'Släpp din fil här för att ladda upp den',
 	'user.general.upload_a_file'                                           => 'Ladda upp en fil',
