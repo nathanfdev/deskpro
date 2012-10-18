@@ -99,22 +99,33 @@ class SearchUpdater
 			App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->_isRemoved));
 			App::getDb()->delete('tickets_search_message', array('id' => $this->ticket->_isRemoved));
 			App::getDb()->delete('tickets_search_subject', array('id' => $this->ticket->_isRemoved));
-		} elseif ($this->ticket->id) {
-			App::getDb()->replace('tickets_search_message', $this->getCloneData(true));
-			App::getDb()->replace('tickets_search_subject', array(
-				'id' => $this->ticket->id,
-				'subject' => $this->ticket->subject
-			));
+		} elseif ($this->ticket->id && !$this->ticket->_isRemoved) {
 
-			if (!$this->ticket->isArchived()) {
-				App::getDb()->replace('tickets_search_active', $this->getCloneData());
-				App::getDb()->replace('tickets_search_message_active', $this->getCloneData(true));
-			} else {
+			$clone_data_search = $this->getCloneData(true);
+			$clone_data = $this->getCloneData(true);
+
+			if (!$clone_data) {
 				App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
 				App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->id));
-			}
+				App::getDb()->delete('tickets_search_message', array('id' => $this->ticket->id));
+				App::getDb()->delete('tickets_search_subject', array('id' => $this->ticket->id));
+			} else {
+				App::getDb()->replace('tickets_search_message', $clone_data_search);
+				App::getDb()->replace('tickets_search_subject', array(
+					'id' => $this->ticket->id,
+					'subject' => $this->ticket->subject
+				));
 
-			App::getSystemService('search_indexer')->update($this->ticket, 'update');
+				if (!$this->ticket->isArchived()) {
+					App::getDb()->replace('tickets_search_active', $clone_data);
+					App::getDb()->replace('tickets_search_message_active', $clone_data_search);
+				} else {
+					App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
+					App::getDb()->delete('tickets_search_message_active', array('id' => $this->ticket->id));
+				}
+
+				App::getSystemService('search_indexer')->update($this->ticket, 'update');
+			}
 		}
 	}
 
@@ -128,6 +139,10 @@ class SearchUpdater
 		$row_data = $this->getRowData();
 		foreach ($this->getCloneFields() as $k) {
 			$set_data[$k] = $row_data[$k];
+		}
+
+		if (!isset($set_data['id']) || empty($set_data['id'])) {
+			return null;
 		}
 
 		if ($with_search_content) {
