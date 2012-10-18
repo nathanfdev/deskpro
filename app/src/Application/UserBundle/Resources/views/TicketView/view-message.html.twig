@@ -47,6 +47,7 @@
 				<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">{{ phrase('user.tickets.rate_helpful') }}</a>
 				<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">{{ phrase('user.tickets.rate_unhelpful') }}</a>
 			</div>
+			<br class="clearfix" />
 		{% endif %}
 	</article>
 </li>
