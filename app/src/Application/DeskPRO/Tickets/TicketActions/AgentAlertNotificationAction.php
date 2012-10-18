@@ -39,11 +39,11 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ClientMessage;
 
-use Application\DeskPRO\Email\TicketUtil;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Translate\DelegatePhrase;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Orb\Util\Arrays;
 
 /**
  * An agent notification sends emails to agents when a ticket in one
@@ -97,30 +97,17 @@ class AgentAlertNotificationAction extends AbstractAction
 	 */
 	public function addAdditionalAgents($codes)
 	{
-		$agent_ids = array();
-		$ticket = $this->tracker->getTicket();
-
 		if (!is_array($codes)) {
 			$codes = array($codes);
 		}
 
-		foreach ($codes as $send_to) {
-			if ($send_to == 'assigned_agent') {
-				if ($ticket['agent_id']) $agent_ids[] = $ticket['agent_id'];
+		$this->tracker->logMessage("[AgentAlertNotificationAction] addAdditionalAgents " . implode(', ', $codes));
+		$agent_ids = TicketUtil::resolveAgentCodes($codes, $this->tracker->getTicket());
 
-			} elseif ($send_to == 'assigned_agent_team') {
-				if ($ticket['agent_team_id']) {
-					$agent_ids = array_merge($agent_ids, App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($ticket['agent_team_id']));
-				}
-
-			} elseif (strpos($send_to, 'agent.') === 0) {
-				list (, $agent_id) = explode('.', $send_to, 2);
-				$agent_ids[] = $agent_id;
-
-			} elseif (strpos($send_to, 'agent_team.') === 0) {
-				list (, $agent_team_id) = explode('.', $send_to, 2);
-				$agent_ids = array_merge($agent_ids, App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($agent_team_id));
-			}
+		// Dont notify about self action
+		$person_context = App::getCurrentPerson();
+		if ($person_context && $person_context->getId()) {
+			$agent_ids = Arrays::removeValue($agent_ids, $person_context->getId());
 		}
 
 		if ($agent_ids) {

@@ -314,6 +314,7 @@
 		<div class="builder-options" style="display:block">
 			<select name="codes[]" multiple="multiple" style="display: block">
 				<optgroup label="Agents">
+					<option value="all_agents">All Agents</option>
 					<option value="assigned_agent">{{ phrase('agent.general.assigned_agent') }}</option>
 					{% for k,v in term_options.agents %}
 						<option value="agent.{{k}}">{{v}}</option>
