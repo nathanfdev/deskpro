@@ -102,7 +102,7 @@ class SearchUpdater
 		} elseif ($this->ticket->id && !$this->ticket->_isRemoved) {
 
 			$clone_data_search = $this->getCloneData(true);
-			$clone_data = $this->getCloneData(true);
+			$clone_data = $this->getCloneData(false);
 
 			if (!$clone_data) {
 				App::getDb()->delete('tickets_search_active', array('id' => $this->ticket->id));
