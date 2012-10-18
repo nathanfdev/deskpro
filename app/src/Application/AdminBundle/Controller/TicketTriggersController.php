@@ -226,7 +226,11 @@ class TicketTriggersController extends AbstractController
 		if ($trigger->getTriggerType() == 'escalation') {
 			return $this->redirectRoute('admin_ticketescalations');
 		} else {
-			return $this->redirectRoute('admin_tickettriggers');
+			if (strpos($trigger->event_trigger, 'update.') === 0) {
+				return $this->redirectRoute('admin_tickettriggers', array('list_type' => 'update'));
+			} else {
+				return $this->redirectRoute('admin_tickettriggers');
+			}
 		}
 	}
 
