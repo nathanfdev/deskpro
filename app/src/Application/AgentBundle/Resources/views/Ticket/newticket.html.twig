@@ -261,9 +261,6 @@ pageMeta.baseId = '{{ baseId }}';
 								{% endfor %}
 							</select>
 
-							{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
-							{% else %}{% set agent_id = ticket.agent %}{% endif %}
-
 							<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 								<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
 								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
@@ -275,7 +272,7 @@ pageMeta.baseId = '{{ baseId }}';
 								{% endif %}
 
 								{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
-									<option value="{{ id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ name }}</option>
+									<option value="{{ id }}" {% if ticket.agent_team.id == id %}selected="selected"{% endif %}>{{ name }}</option>
 								{% endfor %}
 							</select>
 						</div>
