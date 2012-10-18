@@ -279,6 +279,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				} else {
 					var setel = $('.template-upload', el);
 				}
+
+				if (!setel || !setel[0]) {
+					console.error("Invalid uploadTemplate");
+					return $(el);
+				}
+
 				if (!setel.attr('id')) {
 					var id = Orb.getUniqueId('up');
 					setel.attr('id', id);
@@ -293,6 +299,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				} else {
 					var setel = $('.template-download', el);
 				}
+
+				if (!setel || !setel[0]) {
+					console.error("Invalid downloadTemplate");
+					return $(el);
+				}
+
 				if (!setel.attr('id')) {
 					var id = Orb.getUniqueId('up');
 					setel.attr('id', id);
