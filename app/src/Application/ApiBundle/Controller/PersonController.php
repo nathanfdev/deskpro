@@ -313,7 +313,8 @@ class PersonController extends AbstractController
 
 		$bulk_set = array(
 			'summary' => 'String',
-			'disable_autoresponses' => 'Bool'
+			'disable_autoresponses' => 'Bool',
+			'is_disabled' => 'Bool'
 		);
 		foreach ($bulk_set AS $input => $type) {
 			if ($this->in->checkIsset($input)) {
