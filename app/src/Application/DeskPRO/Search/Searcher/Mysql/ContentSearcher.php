@@ -92,6 +92,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
+		// Specific labels
+		if (preg_match_all('#\[(.*?)\]#', $query_text, $m)) {
+			foreach ($m[1] as $w) {
+				$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+			}
+		}
+
 		$words = explode(' ', $query_text);
 		foreach ($words as $w) {
 			$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
