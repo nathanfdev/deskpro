@@ -90,14 +90,16 @@ class ezcMailDeliveryStatusParser extends ezcMailPartParser
             $this->part->createRecipient();
             return;
         }
-        if ( $this->section == 0 )
-        {
-            $this->part->message[$this->lastParsedHeader] = $this->headerValue;
-        }
-        else
-        {
-            $this->part->recipients[$this->section - 1][$this->lastParsedHeader] = $this->headerValue;
-        }
+		if (isset($this->lastParsedHeader)) {
+			if ( $this->section == 0 )
+			{
+				$this->part->message[$this->lastParsedHeader] = $this->headerValue;
+			}
+			else
+			{
+				$this->part->recipients[$this->section - 1][$this->lastParsedHeader] = $this->headerValue;
+			}
+		}
     }
 
     /**
