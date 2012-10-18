@@ -234,7 +234,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			triggerElement: $('.more', this.getEl('action_buttons')),
 			menuElement: this.getEl('more_actions_menu'),
 			onItemClicked: function(info) {
-				var action = $(info.itemEl).data('action');
+				var itemEl = $(info.itemEl), action = itemEl.data('action');
 
 				if (action == 'reset-password') {
 					DeskPRO_Window.showPrompt(
@@ -292,6 +292,38 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							self.closeSelf();
 						}
 					);
+				} else if (action == 'enable-user') {
+					$.ajax({
+						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							action: 'set-is-disabled',
+							is_disabled: 0
+						}
+					});
+
+					var text = itemEl.text();
+					itemEl.text(itemEl.data('flip'));
+					itemEl.data('flip', text);
+					itemEl.data('action', 'disable-user');
+					self.getEl('change_user_picture').find('.person-disabled').remove();
+				} else if (action == 'disable-user') {
+					$.ajax({
+						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							action: 'set-is-disabled',
+							is_disabled: 1
+						}
+					});
+
+					var text = itemEl.text();
+					itemEl.text(itemEl.data('flip'));
+					itemEl.data('flip', text);
+					itemEl.data('action', 'enable-user');
+					self.getEl('change_user_picture').append($('<span class="person-disabled" />'));
 				}
 			}
 		});

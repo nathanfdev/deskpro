@@ -46,6 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box tipped" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
 			<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
+			{% if person.is_disabled %}<span class="person-disabled"></span>{% endif %}
 		</div>
 	</td><td>
 		<div class="titlewrap">
@@ -81,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if perms.delete %}
 					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
 				{% endif %}
-				{% if perms.reset_password or perms.delete %}
+				{% if perms.reset_password or perms.delete or perms.edit %}
 					<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 				{% endif %}
 			</ul>
@@ -90,6 +91,13 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
+		{% if perms.edit %}
+			{% if person.is_disabled %}
+				<li data-action="enable-user" data-flip="Disable Account">Enable Account</li>
+			{% else %}
+				<li data-action="disable-user" data-flip="Enable Account">Disable Account</li>
+			{% endif %}
+		{% endif %}
 		{% if perms.reset_password %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
 		{% if perms.delete %}
 			<li

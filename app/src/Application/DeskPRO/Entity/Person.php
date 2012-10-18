@@ -156,6 +156,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_deleted = false;
 
 	/**
+	 * Is the user disabled?
+	 *
+	 * @var bool
+	 */
+	protected $is_disabled = false;
+
+	/**
 	 * The user importance, 0-5
 	 *
 	 * @var int
@@ -1993,6 +2000,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_confirmed', ));
 		$metadata->mapField(array( 'fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_confirmed', ));
 		$metadata->mapField(array( 'fieldName' => 'is_deleted', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_deleted', ));
+		$metadata->mapField(array( 'fieldName' => 'is_disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_disabled', ));
 		$metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));

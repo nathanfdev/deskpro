@@ -1,0 +1,9 @@
+<dp:is-noreply />
+<dp:subject>{{ phrase('user.email_subjects.re', {subject: subject}) }}</dp:subject>
+<dp:body>
+	<dp:section>
+		{{ phrase('user.emails.greeting', {name: name}) }}<br>
+		<br>
+		{{ phrase('user.emails.account_disabled') }}
+	</dp:section>
+</dp:body>

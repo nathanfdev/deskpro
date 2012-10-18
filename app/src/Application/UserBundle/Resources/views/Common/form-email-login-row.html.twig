@@ -31,7 +31,11 @@
 					{{ phrase('user.profile.login_if_registered', {'link': phrase_link}, true) }}
 				</div>
 				<div class="dp-help-inline dp-error-explain">
-					{{ phrase('user.general.form_fix_email') }}
+					{% if errors[form_key_prefix ~ 'email.account_disabled'] is not empty %}
+						{{ phrase('user.profile.account_disabled_message') }}
+					{% else %}
+						{{ phrase('user.general.form_fix_email') }}
+					{% endif %}
 				</div>
 			</div>
 		</div>

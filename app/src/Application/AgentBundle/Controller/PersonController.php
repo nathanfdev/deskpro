@@ -420,6 +420,11 @@ class PersonController extends AbstractController
 
 				break;
 
+			case 'set-is-disabled':
+				$person->is_disabled = $this->in->getBool('is_disabled');
+				$this->em->persist($person);
+				break;
+
 			case 'disable_autoresponses':
 				$person->disable_autoresponses = $this->in->getBool('disable_autoresponses');
 				$this->em->persist($person);

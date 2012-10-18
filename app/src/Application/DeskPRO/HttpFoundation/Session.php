@@ -202,6 +202,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 	protected function _setCurrentPerson(\Application\DeskPRO\Entity\Person $person)
 	{
+		if (DP_INTERFACE == 'user' && $person->is_disabled) {
+			// can't login as this person
+			return;
+		}
+
 		$this->person = $person;
 		App::setCurrentPerson($person);
 		if ($person->is_agent) {
@@ -244,6 +249,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if ($person_id) {
 			$person = $this->getEntity()->person;
+		}
+
+		if (DP_INTERFACE == 'user' && $person && $person->is_disabled) {
+			$person = false;
 		}
 
 		if (!$person) {

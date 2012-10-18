@@ -113,6 +113,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
 		<div class="person-picture-box">
 			<img src="{{ ticket.person.getPictureUrl(60) }}" />
+			{% if ticket.person.is_disabled %}<span class="person-disabled"></span>{% endif %}
 		</div>
 	</td><td>
 		<div class="titlewrap">

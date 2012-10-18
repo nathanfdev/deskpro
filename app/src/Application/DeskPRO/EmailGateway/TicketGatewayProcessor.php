@@ -222,6 +222,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		if (!$person['is_agent'] && $person['is_disabled']) {
+			// user is disabled so can't create/reply to tickets
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', array(
+				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+				'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+			));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+			App::getMailer()->send($message);
+
+			return null;
+		}
+
 		$ret = null;
 		if ($ticket AND $person) {
 

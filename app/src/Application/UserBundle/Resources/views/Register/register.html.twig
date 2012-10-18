@@ -67,6 +67,10 @@
 				<div class="dp-alert dp-alert-error">
 					{{ phrase('user.profile.login_error') }}
 				</div>
+			{% elseif account_disabled %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.account_disabled_message') }}
+				</div>
 			{% endif %}
 			<form action="{{ path('user_login_authenticate_local') }}" class="dp-layout" method="post">
 				{% if return %}

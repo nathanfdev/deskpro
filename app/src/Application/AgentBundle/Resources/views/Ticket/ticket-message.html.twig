@@ -10,7 +10,7 @@
 			{% if message.person.is_agent %}class="agent-link" data-agent-id="{{ message.person.id }}"
 			{% else %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
 			{% endif %}
-		/></div>
+		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
 		<header>
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>

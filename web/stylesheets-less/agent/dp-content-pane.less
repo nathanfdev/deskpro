@@ -1088,10 +1088,20 @@ article.content-message .avatar {
 	height: 40px;
 	.rounded(2px);
 	overflow: hidden;
+	position: relative;
 }
 article.content-message .avatar img {
 	margin: 0;
 	padding:  0;
+}
+
+article.content-message .avatar .person-disabled {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 40px;
+	height: 40px;
+	background: url("../../images/agent/person-disabled-40.png");
 }
 
 article.content-message .content {
@@ -1481,9 +1491,19 @@ header.page-header .labels-line {
 }
 
 .person-picture-box {
+	position: relative;
 	width: 60px;
 	height: 60px;
 	margin-right: 5px;
+}
+
+.person-picture-box .person-disabled {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	background: url("../../images/agent/person-disabled-60.png");
 }
 
 .table-container {

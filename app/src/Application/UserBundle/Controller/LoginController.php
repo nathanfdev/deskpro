@@ -90,10 +90,18 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->session->save();
 		}
 
+		$account_disabled = false;
+		if ($this->session->has('account_disabled')) {
+			$account_disabled = $this->session->get('account_disabled');
+			$this->session->remove('account_disabled');
+			$this->session->save();
+		}
+
 		return $this->render($this->tpl_prefix . ':index.html.twig', array(
 			'return' => $return,
 			'form' => $form->createView(),
 			'failed_login_name' => $failed_login_name,
+			'account_disabled' => $account_disabled
 		));
 	}
 
@@ -215,6 +223,13 @@ HTML;
 		$identity = $result->getIdentity();
 
 		$person = $identity['person'];
+
+		if ($person->is_disabled) {
+			$this->session->set('account_disabled', $person->id);
+			$this->session->save();
+			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+		}
+
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}

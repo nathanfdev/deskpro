@@ -217,6 +217,11 @@ class NewTicketValidator extends AbstractValidator
 				$validator = new \Orb\Validator\StringEmail();
 				if (!$validator->isValid($this->newticket->person->email)) {
 					$this->addError('person.email.invalid');
+				} else {
+					$exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->newticket->person->email);
+					if ($exists && $exists->person && $exists->person->is_disabled) {
+						$this->addError('person.email.account_disabled', 'account_disabled');
+					}
 				}
 
 			// Logged in user
