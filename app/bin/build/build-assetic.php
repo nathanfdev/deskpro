@@ -16,7 +16,11 @@ require DP_ROOT.'/sys/system.php';
 
 $kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
 
-$_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
+if (in_array('--js', $_SERVER['argv'])) {
+	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--not', '--verbose', '-p', '_css');
+} else {
+	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
+}
 
 $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run();
