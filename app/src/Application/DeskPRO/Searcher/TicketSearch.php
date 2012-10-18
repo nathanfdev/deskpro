@@ -355,7 +355,7 @@ class TicketSearch extends SearcherAbstract
 		if ($this->add_raw_selects) {
 			$select = ', ' . implode(', ', $this->add_raw_selects);
 		}
-		$sql = "SELECT COUNT(*) FROM $table AS tickets ";
+		$sql = "SELECT COUNT(DISTINCT tickets.id) FROM $table AS tickets ";
 
 		#------------------------------
 		# Standard for permissions
