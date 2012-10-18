@@ -382,8 +382,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			data: formData,
 			context: this,
 			dataType: 'json',
-			success: function() {
+			success: function(data) {
 				DeskPRO_Window.sections.publish_section.reload();
+
+				// First cat becomes selectable if there are more than one
+				if (data && data.category_ids && data.category_ids.length >= 2) {
+					this.getEl('categories').find('.remove').show();
+				}
 			}
 		});
 	},
