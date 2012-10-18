@@ -173,9 +173,14 @@ class NotifyListBuilder
 		foreach ($filter_changes as $change_info) {
 			$filter = $change_info['filter'];
 
+			$new_match_agents = array();
+
 			// Notify about tickets entering a list
 			// AKA a ticket changed such that it was added into a new list it wasnt before
 			foreach ($change_info['new_match'] as $agent) {
+
+				$new_match_agents[$agent->getId()] = $agent->getId();
+
 				if (!isset($agent_subs[$agent->id][$filter->id])) continue;
 				$sub = $agent_subs[$agent->id][$filter->id];
 
@@ -233,6 +238,17 @@ class NotifyListBuilder
 					}
 					if ($notify_user_reply && $sub->alert_user_activity) {
 						$types[] = 'alert';
+					}
+				}
+
+				// If orig matched but its not a new match,
+				// then we know it's left this list
+				if (!isset($new_match_agents[$agent->getId()])) {
+					if ($sub->email_leave) {
+						$types[] = 'email';
+					}
+					if ($sub->alert_leave) {
+						$types[] = 'email';
 					}
 				}
 

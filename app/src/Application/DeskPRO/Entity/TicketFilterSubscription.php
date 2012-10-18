@@ -71,6 +71,11 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var bool
 	 */
+	protected $email_leave = false;
+
+	/**
+	 * @var bool
+	 */
 	protected $email_user_activity = false;
 
 	/**
@@ -92,6 +97,11 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 */
 	protected $alert_new = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $alert_leave = false;
 
 	/**
 	 * @var bool
@@ -132,11 +142,13 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapField(array( 'fieldName' => 'email_created', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_created', ));
 		$metadata->mapField(array( 'fieldName' => 'email_new', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_new', ));
+		$metadata->mapField(array( 'fieldName' => 'email_leave', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_leave', ));
 		$metadata->mapField(array( 'fieldName' => 'email_user_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_user_activity', ));
 		$metadata->mapField(array( 'fieldName' => 'email_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_agent_activity', ));
 		$metadata->mapField(array( 'fieldName' => 'email_property_change', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_property_change', ));
 		$metadata->mapField(array( 'fieldName' => 'alert_created', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_created', ));
 		$metadata->mapField(array( 'fieldName' => 'alert_new', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_new', ));
+		$metadata->mapField(array( 'fieldName' => 'alert_leave', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_leave', ));
 		$metadata->mapField(array( 'fieldName' => 'alert_user_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_user_activity', ));
 		$metadata->mapField(array( 'fieldName' => 'alert_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_agent_activity', ));
 		$metadata->mapField(array( 'fieldName' => 'alert_property_change', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_property_change', ));
