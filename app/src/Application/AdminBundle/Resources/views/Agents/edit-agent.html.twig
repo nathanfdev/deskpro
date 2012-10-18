@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
-	{% if agent.id %}
+	{% if agent.id and agent.id != app.user.id %}
 	<nav>
 		<ul>
 			<li class="tools" id="tools_menu_trigger"><a></a><em></em></li>

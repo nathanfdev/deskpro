@@ -136,7 +136,7 @@
 					{% else %}
 						<tr data-agent-id="{{ person.id }}">
 							<td class="title">
-								<span class="tools-menu-icon agent"></span>
+								{% if person.id != app.user.id %}<span class="tools-menu-icon agent"></span>{% endif %}
 								<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
 								<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
 								<address>{{person.primary_email_address}}</address>

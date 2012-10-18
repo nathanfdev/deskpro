@@ -695,6 +695,11 @@ class AgentsController extends AbstractController
 		$this->ensureRequestToken();
 
 		$agent = $this->getAgentOr404($person_id);
+
+		if ($agent->getId() == $this->person->getId()) {
+			return $this->renderStandardError('You cannot delete yourself');
+		}
+
 		$agent->is_deleted = $set_to;
 
 		if (!$set_to) {
