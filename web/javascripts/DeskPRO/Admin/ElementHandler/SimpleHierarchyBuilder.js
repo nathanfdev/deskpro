@@ -253,7 +253,9 @@ DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder = new Orb.Class({
 				.data('option-id', id)
 				.data('option-title', title);
 
-			title += ' (' + (count||0) + ')';
+			if (id) {
+				$('<span class="field-id" style="float:right">ID: ' + id + '</span>').appendTo(li);
+			}
 
 			var label = $('<div class="label">').text(title);
 			$('<i class="remove-trigger"></i><i class="move-grip"></i>').appendTo(label);

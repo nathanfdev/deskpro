@@ -3250,22 +3250,6 @@ nav.admin-object-nav li:hover {
 	.rounded(8px);
 
 	header {
-
-		.field-id {
-			float: left;
-			font-size: 10px;
-			font-family: Monaco, Consolas, "Courier New", monospace;
-			background: #fff;
-			line-height: 100%;
-			padding: 1px 2px;
-			border: 1px solid #D3D4D5;
-			border-radius: 3px;
-			-webkit-border-radius: 3px;
-			position: relative;
-			top: 2px;
-			margin-right: 4px;
-		}
-
 		h3 {
 			font-size: 13px;
 			font-family: @heading-font;
@@ -4440,6 +4424,10 @@ ul.standard-list li {
 		}
 	}
 
+	.field-id {
+		display: none;
+	}
+
 	i.move-grip {
 		position: absolute;
 		top: 12px;
@@ -4484,6 +4472,10 @@ ul.standard-list li {
 	.label {
 		position: relative;
 		padding: 6px;
+	}
+	.field-id {
+		position: relative;
+		top: 9px;
 	}
 }
 
@@ -4666,4 +4658,20 @@ a.delete-icon {
 	> article {
 		padding: 10px;
 	}
+}
+
+.field-id {
+	float: left;
+	font-size: 9px;
+	font-family: Monaco, Consolas, "Courier New", monospace;
+	background: #fff;
+	line-height: 100%;
+	padding: 1px 2px;
+	border: 1px solid #D3D4D5;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	position: relative;
+	top: 2px;
+	margin-right: 4px;
+	.opacity(70);
 }

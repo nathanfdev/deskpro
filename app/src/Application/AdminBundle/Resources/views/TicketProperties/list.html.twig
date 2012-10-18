@@ -96,7 +96,7 @@
 	{% for field in fields %}
 		<li class="short" {% if loop.index == 2 %}style="clear:left"{% endif %}>
 			<header>
-				<span class="field-id tipped" data-tipped="This is the unique Field ID for use in reports or templates.">#{{ field.id }}</span>
+				<span class="field-id">ID: {{ field.id }}</span>
 				<h3><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">{{ field.title }}</a></h3>
 				<div class="check-control">
 					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />

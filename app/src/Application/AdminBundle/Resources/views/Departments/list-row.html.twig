@@ -32,8 +32,8 @@
 	{{ design.dpgrid_content({class: 'top' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
 {% endif %}
 
-	{{ design.dpgrid_col({ class: 'l r', style: "width: 720px;"}) }}
-		<span class="grab-handle"></span>
+	{{ design.dpgrid_col({ class: 'l r', style: "width: 720px; cursor: move;"}) }}
+		<span class="field-id" style="float:right">ID: {{ department.id }}</span>
 		<h2>
 			<a class="edit-trigger" data-user-title="{{ department.getRealUserTitle() }}">{{department.getRealTitle()}} {% if department.getRealUserTitle() %}<span style="color: #666; font-size: 11px; font-weight: normal; padding-left: 10px;">User title: {{ department.getRealUserTitle() }}</span>{% endif %}</a>
 		</h2>

@@ -16,8 +16,8 @@
 	{{ design.dpgrid_content({class: 'top' ~ ' category-' ~ product.id, extra: "data-category-id='#{product.id}'"}) }}
 {% endif %}
 
-{{ design.dpgrid_col({ class: 'l r', style: "width: 890px;"}) }}
-	<span class="grab-handle"></span>
+{{ design.dpgrid_col({ class: 'l r', style: "width: 890px; cursor: move;"}) }}
+	<span class="field-id" style="float:right">ID: {{ product.id }}</span>
 	<h2><a class="edit-trigger">{{product.getRealTitle()}}</a></h2>
 {{ design.dpgrid_col_end() }}
 
