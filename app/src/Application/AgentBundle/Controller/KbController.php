@@ -285,6 +285,14 @@ class KbController extends AbstractController
 
 						if ($from) {
 							$article->removeFromCategory($from);
+						} else {
+							// If theres no 'from' category, means we're
+							// moving from all so delete all old cats
+							foreach ($article->categories as $c) {
+								if ($c->getId() != $to->getId()) {
+									$article->removeFromCategory($c);
+								}
+							}
 						}
 
 						if(!$article->isInCategory($to)) {
