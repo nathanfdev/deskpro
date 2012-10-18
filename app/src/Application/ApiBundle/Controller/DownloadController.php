@@ -51,8 +51,8 @@ class DownloadController extends AbstractController
 	public function searchAction()
 	{
 		$search_map = array(
-			'category' => DownloadSearch::TERM_CATEGORY,
-			'category_specific' => DownloadSearch::TERM_CATEGORY_SPECIFIC,
+			'category_id' => DownloadSearch::TERM_CATEGORY,
+			'category_id_specific' => DownloadSearch::TERM_CATEGORY_SPECIFIC,
 			'label' => DownloadSearch::TERM_LABEL,
 			'new' => DownloadSearch::TERM_NEW,
 			'popular' => DownloadSearch::TERM_POPULAR,

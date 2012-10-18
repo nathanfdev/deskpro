@@ -51,8 +51,8 @@ class NewsController extends AbstractController
 	public function searchAction()
 	{
 		$search_map = array(
-			'category' => NewsSearch::TERM_CATEGORY,
-			'category_specific' => NewsSearch::TERM_CATEGORY_SPECIFIC,
+			'category_id' => NewsSearch::TERM_CATEGORY,
+			'category_id_specific' => NewsSearch::TERM_CATEGORY_SPECIFIC,
 			'label' => NewsSearch::TERM_LABEL,
 			'status' => NewsSearch::TERM_STATUS
 		);

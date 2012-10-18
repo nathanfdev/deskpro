@@ -55,8 +55,8 @@ class KbController extends AbstractController
 	public function searchAction()
 	{
 		$search_map = array(
-			'category' => ArticleSearch::TERM_CATEGORY,
-			'category_specific' => ArticleSearch::TERM_CATEGORY_SPECIFIC,
+			'category_id' => ArticleSearch::TERM_CATEGORY,
+			'category_id_specific' => ArticleSearch::TERM_CATEGORY_SPECIFIC,
 			'label' => ArticleSearch::TERM_LABEL,
 			'new' => ArticleSearch::TERM_NEW,
 			'popular' => ArticleSearch::TERM_POPULAR,
