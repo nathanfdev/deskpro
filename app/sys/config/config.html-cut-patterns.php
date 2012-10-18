@@ -7,11 +7,12 @@ return array(
 	# as your config.php file.
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+	// Thunderbird
+	'thunderbird_1'                      => '#On ([0-9]+)/([0-9]+)/([0-9]+) (.*?), (.*?) wrote:#',
+	'thunderbird_2'                      => '#On (.*?) at (.*?), (.*?) wrote:#',
+
 	'unknown_1'                          => 'p blockquote #^on\s#i a /a #\swrote:$#i br /br /blockquote /p',
 	'unknown_2'                          => 'hr /hr font p b #from:#i /b #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /p /font',
-
-	// Sparrow mac client
-	'sparrow_1'                          => 'p #On .*?,.*?wrote:#i /p blockquote /blockquote',
 
 	// mail from blackberry.net
 	'blackberry_1'                       => 'hr /hr div b #from:#i /b /div div b #date:#i /b /div div b #to:#i /b /div',
@@ -39,9 +40,6 @@ return array(
 
 	// X-Mailer: Microsoft Windows Mail 6.0.6002.18197
 	'windows_mail_1'                     => 'blockquote div #-+\soriginal\smessage\s-+#i /div div b #from:#i /b /div div b #to:#i /b /div div b #sent:#i /b /div /blockquote',
-
-	// Thunderbird
-	'thunderbird_1'                      => 'br /br #On ([0-9]+)/([0-9]+)/([0-9]+) ([0-9]+):([0-9a-zA-Z]+), (.*?) wrote:# br /br',
 
 	// X-Mailer: Lotus Notes Release 8.5.1 September 28, 2009
 	'lotus_notes_1'                      => 'br /br table tr td td table tr td font b /b /font /td /tr /table br /br table tr td font /font td font #to:#i /font /td /td /tr /table br /br table tr td font b #please\srespond\sto\s#i /b /font /td /tr /table',
@@ -89,4 +87,7 @@ return array(
 
 	// X-Mailer: Zimbra 7.1.1_GA_3196 (Zimbra Desktop/7.1.4_11299_Windows)
 	'zimbra'                             => 'b #From: # /b br /br b #To: # /b br /br b #Sent: # /b br /br b #Subject: # /b',
+
+	// Sparrow mac client
+	'sparrow_1'                          => 'p #On .*?,.*?wrote:#i /p blockquote /blockquote',
 );

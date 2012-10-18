@@ -103,6 +103,21 @@ class HtmlMatcher
 		$tokens = $this->pattern->getTokens();
 
 		$first_token = array_shift($tokens);
+
+		// If theres only one token and its a regex check,
+		// then this pattern is a simple string pattern with no dom traversal
+		if ($first_token[0] == 'match' && !$tokens) {
+			$m = null;
+			if (preg_match($first_token[1], $this->body, $m)) {
+				$this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
+
+				$this->pattern_match = 'SIMPLE_MATCH';
+				return 'SIMPLE_MATCH';
+			} else {
+				return null;
+			}
+		}
+
 		$roots = array();
 
 		try {
@@ -181,7 +196,12 @@ class HtmlMatcher
 
 		$match = $this->process();
 		if (!$match) {
-			return $this->body;
+			$this->marked_body = $this->body;
+			return $this->marked_body;
+		}
+
+		if ($match == 'SIMPLE_MATCH') {
+			return $this->marked_body;
 		}
 
 		if (!$this->root_state[$this->pattern_match_id]['mark_spot']) {
