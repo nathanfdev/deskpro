@@ -209,22 +209,28 @@ class Generic implements ForwardDef, QuoteDef
 		$from_str = substr($forward_data['fwd_message_headers'], $pos);
 		$m = null;
 
-		$from_str = str_replace('mailto:', '', $from_str);
-
-		// From: Name <email@tdl.com> or Name [email@tdl.com]
-		if (preg_match('#From:\s*(.*?)\s*(<|\[)(.*?)@(.*?)(>|\])#i', $from_str, $m)) {
-			$forward_data['fwd_from_name'] = $m[1];
-			$forward_data['fwd_from_email'] = $m[3] . '@' . $m[4];
-
-		// From: email@tdl.com
-		} elseif (preg_match('#From:\s*<?(.*?)@(.*?)>?#i', $from_str, $m)) {
+		if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
 			$forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
-
-		// Try to find any email address on the line,
-		// we've cut $from_str to be after 'From' so the first match sholud be
-		// the email we want
-		} elseif (preg_match('#\s(.*?)@(.*?)\s#i', $from_str, $m)) {
+		} elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
+			$forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
+		} elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
 			$forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+		} elseif (preg_match('#\s(.*?)@([a-zA-Z0-9\.\-]+)\s#i', $from_str, $m)) {
+			$forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+		}
+
+		if ($forward_data['fwd_from_email']) {
+			$forward_data['fwd_from_email'] = trim($forward_data['fwd_from_email']);
+
+			$pos = strpos($from_str, $forward_data['fwd_from_email']);
+			$name = substr($from_str, 0, $pos);
+			if (preg_match('#^[\w]+:(.*?)(<|\[|\()#', $name, $m)) {
+				$name = $m[1];
+			} elseif (preg_match('#^[\w]+:(.*?)#', $name, $m)) {
+				$name = $m[1];
+			}
+			$name = trim($name);
+			$forward_data['fwd_from_name'] = $name;
 		}
 
 		return $forward_data;

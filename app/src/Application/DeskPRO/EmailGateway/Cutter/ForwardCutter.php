@@ -93,7 +93,11 @@ class ForwardCutter
 	{
 		$this->forward_info = $this->cutter->getForwardInfo($this->body, $this->is_html);
 
-		if ($this->forward_info['fwd_message_body'] && $this->forward_info['fwd_from_email']) {
+		if (
+			$this->forward_info['fwd_message_body']
+			&& $this->forward_info['fwd_from_email']
+			&& \Orb\Validator\StringEmail::isValueValid($this->forward_info['fwd_from_email'])
+		) {
 			$this->is_valid = true;
 		}
 	}
