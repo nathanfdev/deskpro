@@ -1338,23 +1338,45 @@ class Strings
 	 */
 	public static function extractBodyTag($value)
 	{
-		do {
-			$changed = false;
+		$value = preg_replace('#(<body[^>]*>)#', '<body>', $value);
+		$count = substr_count($value, '<body>');
 
-			$pos = strpos($value, "<body");
+		if (!$count) {
+			return $value;
+		}
+
+		// Most common case, only one body tag
+		if ($count == 1) {
+			do {
+				$changed = false;
+
+				$pos = strpos($value, "<body");
+				if ($pos !== false) {
+					$changed = true;
+					$value = substr($value, $pos);
+
+					// Cut out the rest of the body tag too, eg if it was <body class="abc"> we're finding the ">" part of that
+					$pos = strpos($value, ">");
+					$value = substr($value, $pos+1);
+				}
+			} while($changed);
+
+			$pos = strpos($value, '</body>');
 			if ($pos !== false) {
-				$changed = true;
-				$value = substr($value, $pos);
-
-				// Cut out the rest of the body tag too, eg if it was <body class="abc"> we're finding the ">" part of that
-				$pos = strpos($value, ">");
-				$value = substr($value, $pos+1);
+				$value = substr($value, 0, $pos);
 			}
-		} while($changed);
 
-		$pos = strpos($value, '</body>');
-		if ($pos !== false) {
-			$value = substr($value, 0, $pos);
+		// Less common case of multiple body tags, we'll parse them out and append them into one string
+		} else {
+			$qp = \QueryPath::withHTML('<html>' . $value . '</html>', null, array('convert_to_encoding' => null));
+			$set_value = array();
+
+			$qp->find('body');
+			foreach ($qp as $body) {
+				$set_value[] = $body->innerHTML();
+			}
+
+			$value = implode('', $set_value);
 		}
 
 		$value = trim($value);
