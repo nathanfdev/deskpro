@@ -153,6 +153,11 @@ class NewTicketController extends AbstractController
 		}
 
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+
+			if (!$this->checkRequestToken('newticket')) {
+				return $this->redirectRoute('user');
+			}
+
 			$form->bindRequest($this->get('request'));
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;

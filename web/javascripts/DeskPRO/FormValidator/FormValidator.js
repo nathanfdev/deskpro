@@ -7,8 +7,16 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 		var self = this;
 		this.el = $(el);
 
+		var submitting = false;
+
 		if (this.el.is('form')) {
 			this.el.on('submit', function(ev) {
+
+				if (submitting) {
+					ev.preventDefault();
+					return;
+				}
+
 				$('.dp-error').removeClass('dp-error');
 				self.validateAll();
 				if (self.hasErrors()) {
@@ -22,6 +30,8 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 						debugbox.text(debugbox.text() + "\n" + append.join("\n"));
 					}
 					ev.preventDefault();
+				} else {
+					submitting = true;
 				}
 			});
 

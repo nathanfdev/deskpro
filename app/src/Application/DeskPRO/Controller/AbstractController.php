@@ -95,6 +95,44 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
 
 	/**
+	 * Checks a request token in a form, and if its valid, also "consumes" it on the session so it cant be used again.
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 * @return bool
+	 */
+	public function consumeRequestToken($name = '', $field_name = '_dp_security_token')
+	{
+		if (empty($_REQUEST[$field_name])) {
+			return false;
+		}
+
+		$token = $_REQUEST[$field_name];
+		$valid = $this->session->getEntity()->checkSecurityToken($name, $token);
+
+		if (!$valid) {
+			return false;
+		}
+
+		$used = $this->session->get('consumed_tokens', array());
+		if (in_array($token, $used)) {
+			return false;
+		}
+
+		$used[] = $token;
+
+		while (count($used) > 100) {
+			array_shift($used);
+		}
+
+		$this->session->set('consumed_tokens', $used);
+		$this->session->save();
+
+		return true;
+	}
+
+
+	/**
 	 * Just like checkRequestToken but this shows an error for you if its bad
 	 *
 	 * @param string $name
