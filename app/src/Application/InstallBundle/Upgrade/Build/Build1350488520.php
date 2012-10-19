@@ -107,6 +107,7 @@ class Build1350488520 extends AbstractBuild
 				'department_id' => $new_dep['id'],
 				'usergroup_id'  => $p['usergroup_id'],
 				'person_id'     => $p['person_id'],
+				'app'           => 'chat',
 			));
 		}
 
