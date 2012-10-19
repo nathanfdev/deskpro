@@ -6,7 +6,7 @@
 				{% include 'AgentBundle:Common:select-department.html.twig' with {
 					'name': 'set_term[department][]',
 					'blank_title': phrase('agent.general.department'),
-					'departments': ticket_options.departments_hierarchy,
+					'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets'),
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>

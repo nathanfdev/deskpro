@@ -165,43 +165,34 @@
 						<label>{{ phrase('admin.agents.department_access_permissions') }}</label>
 					</div>
 					<div class="dp-form-input" id="dep_perms">
-						<div class="check-grid" style="max-height: 200px; overflow: auto;">
+
+						<nav class="check-grid-tabs" style="height: 24px;">
+							<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+								<li class="on" data-tab-for="#depperm_tickets"><span>{{ phrase('agent.general.tickets') }}</span></li>
+								<li data-tab-for="#depperm_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
+							</ul>
+						</nav>
+
+						<div class="check-grid" style="max-height: 200px; overflow: auto;" id="depperm_tickets">
 							<table width="100%">
 								<thead>
 									<tr>
 										<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
 										<th width="60">
-											{{ phrase('agent.general.tickets') }}
-											<br /><a href="#" id="ticketdep_toggle_all" style="font-size:9px">Toggle All</a>
-										</th>
-										<th width="60">
-											{{ phrase('agent.general.chat') }}
-											<br /><a href="#" id="chatdep_toggle_all" style="font-size:9px">Toggle All</a>
+											<a href="#" id="ticketdep_toggle_all" style="font-size:9px">Toggle All</a>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									{% for dep in departments %}
+									{% for dep in departments if dep.is_tickets_enabled %}
 										<tr>
 											{% if dep.children|length %}
 												<td class="title title-group">{{ dep.title }}</td>
 												<td class="prop">&nbsp;</td>
-												<td class="prop">&nbsp;</td>
 											{% else %}
 												<td class="title">{{ dep.title }}</td>
 												<td class="prop ticket-choice">
-													{% if dep.is_tickets_enabled %}
-														<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" />
-													{% else %}
-														<span style="color:#A2A3A3;font-size:11px;font-variant:small-caps;">disabled</span>
-													{% endif %}
-												</td>
-												<td class="prop chat-choice">
-													{% if dep.is_chat_enabled %}
-														<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" />
-													{% else %}
-														<span style="color:#A2A3A3;font-size:11px;font-variant:small-caps;">disabled</span>
-													{% endif %}
+													<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" />
 												</td>
 											{% endif %}
 										</tr>
@@ -210,18 +201,7 @@
 												<tr>
 													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
 													<td class="prop ticket-choice">
-														{% if subdep.is_tickets_enabled %}
-															<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" />
-														{% else %}
-															<span style="color:#A2A3A3;font-size:11px;font-variant:small-caps;">disabled</span>
-														{% endif %}
-													</td>
-													<td class="prop chat-choice">
-														{% if subdep.is_chat_enabled %}
-															<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" />
-														{% else %}
-															<span style="color:#A2A3A3;font-size:11px;font-variant:small-caps;">disabled</span>
-														{% endif %}
+														<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 												</tr>
 											{% endfor %}
@@ -230,6 +210,45 @@
 								</tbody>
 							</table>
 						</div>
+
+						<div class="check-grid" style="max-height: 200px; overflow: auto; display: none;" id="depperm_chat">
+							<table width="100%">
+								<thead>
+									<tr>
+										<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
+										<th width="60">
+											<a href="#" id="chatdep_toggle_all" style="font-size:9px">Toggle All</a>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for dep in departments if dep.is_chat_enabled %}
+										<tr>
+											{% if dep.children|length %}
+												<td class="title title-group">{{ dep.title }}</td>
+												<td class="prop">&nbsp;</td>
+											{% else %}
+												<td class="title">{{ dep.title }}</td>
+												<td class="prop chat-choice">
+													<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" />
+												</td>
+											{% endif %}
+										</tr>
+										{% if dep.children %}
+											{% for subdep in dep.children %}
+												<tr>
+													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+													<td class="prop chat-choice">
+														<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" />
+													</td>
+												</tr>
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+
 					</div>
 				</div>
 			</td>

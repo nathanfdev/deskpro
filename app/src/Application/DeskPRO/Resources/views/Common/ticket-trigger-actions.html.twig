@@ -175,8 +175,16 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department">
 		<div class="builder-options">
 			<select name="department">
-				{% for id,title in term_options.departments %}
-					<option value="{{id}}">{{title}}</option>
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+					{% if dep.children|length %}
+						<optgroup label="{{ dep.title }}">
+							{% for subdep in dep.children %}
+								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{dep.id}}">{{dep.title}}</option>
+					{% endif %}
 				{% endfor %}
 			</select>
 		</div>
