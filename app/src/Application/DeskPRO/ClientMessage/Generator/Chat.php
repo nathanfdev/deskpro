@@ -186,7 +186,7 @@ class Chat
 	public static function createPartisipatedUpdatedMessages($by_client_id, ChatConversation $conversation)
 	{
 		$cm_data = array(
-			'conversation_id' => $conversation,
+			'conversation_id' => $conversation->getId(),
 			'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0,
 			'participant_ids' => array()
 		);
