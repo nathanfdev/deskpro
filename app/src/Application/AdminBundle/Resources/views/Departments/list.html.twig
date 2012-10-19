@@ -151,5 +151,29 @@
 	</div>
 </div>
 
+{% if type == 'tickets' %}
+<div style="padding: 0 10px 10px 15px;">
+	<form action="{{ path('admin_departments_setdefault', {type: 'tickets'}) }}" method="POST">
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default"></span> Default department:
+		<select name="default_value">
+			<option></option>
+			{% for dep in all_departments %}
+				{% if dep.children|length %}
+					<optgroup label="{{ dep.title }}">
+						{% for subdep in dep.children %}
+							<option value="{{ subdep.id }}" {% if app.getSetting('core.default_ticket_dep') == subdep.id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
+						{% endfor %}
+					</optgroup>
+				{% else %}
+					<option value="{{ dep.id }}" {% if app.getSetting('core.default_ticket_dep') == dep.id %}selected="selected"{% endif %}>{{ dep.title }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+		<button class="clean-white">Update</button>
+	</form>
+</div>
+{% else %}
+{% endif %}
+
 </div>
 {% endblock %}

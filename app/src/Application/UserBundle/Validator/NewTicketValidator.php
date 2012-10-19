@@ -114,7 +114,9 @@ class NewTicketValidator extends AbstractValidator
 		$this->newticket = $newticket;
 
 		$this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
-		$this->mock_ticket->setDepartmentId($newticket->ticket->department_id);
+		if ($newticket->ticket->department_id) {
+			$this->mock_ticket->setDepartmentId($newticket->ticket->department_id);
+		}
 		if ($newticket->ticket->category_id) {
 			$this->mock_ticket->setCategoryId($newticket->ticket->category_id);
 		}
@@ -135,9 +137,10 @@ class NewTicketValidator extends AbstractValidator
 
 		if (!$this->display_fields || isset($this->display_fields['ticket_department'])) {
 			$department_validator = new \Application\DeskPRO\Validator\Department();
+
 			$department_id = $newticket->ticket->department_id;
 
-			if (!$department_validator->isValid($department_id)) {
+			if ($this->display_fields['ticket_department'] && !$department_validator->isValid($department_id)) {
 				$this->addError('ticket.department_id.invalid');
 			} else {
 

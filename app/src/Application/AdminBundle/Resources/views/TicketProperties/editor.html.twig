@@ -28,7 +28,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
-				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.tickets.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('agent.general.department') }}</label></li>
+				<li class="draggable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.tickets.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('agent.general.department') }}</label></li>
 				{% if section == 'create' %}
 					<li class="draggable irremovable" data-item-id="message"><label>{{ phrase('admin.tickets.ticket_message') }}</label></li>
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.tickets.ticket_subject') }}</label></li>

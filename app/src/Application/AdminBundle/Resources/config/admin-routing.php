@@ -1548,6 +1548,13 @@ $collection->add('admin_departments_saveagents', new Route(
 	array()
 ));
 
+$collection->add('admin_departments_setdefault', new Route(
+	'/departments/{type}/set-default',
+	array('_controller' => 'AdminBundle:Departments:setDefault'),
+	array('department_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_departments_saveusergroups', new Route(
 	'/departments/{department_id}/save-usergroups.json',
 	array('_controller' => 'AdminBundle:Departments:saveUsergroups'),

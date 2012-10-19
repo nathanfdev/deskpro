@@ -266,6 +266,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket[$prop] = $this->ticket->$prop;
 			}
 
+			if (!$ticket->department) {
+				$ticket->department = App::getDataService('Department')->getDefaultTicketDepartment();
+			}
+
 			$ticket_message = new Entity\TicketMessage();
 			$ticket_message['creation_system'] = $this->creation_system;
 

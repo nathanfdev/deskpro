@@ -48,11 +48,17 @@ class DepartmentDataService extends BaseRepositoryService
 	 */
 	protected $translator;
 
+	/**
+	 * @var int
+	 */
+	protected $default_id;
+
 	public static function create(DeskproContainer $container, array $options = null)
 	{
 		if (!$options) $options = array();
 		$options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
 		$options['translator'] = $container->getTranslator();
+		$options['default_id'] = $container->getSetting('core.default_ticket_dep');
 
 		$em = $container->getEm();
 		$o = new static($em, $options);
@@ -62,6 +68,7 @@ class DepartmentDataService extends BaseRepositoryService
 	protected function init()
 	{
 		$this->translator = $this->options['translator'];
+		$this->default_id = $this->options['default_id'];
 	}
 
 	public function get($dep_id)
@@ -206,6 +213,27 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		return $this->getByIds($ids);
+	}
+
+	public function getDefaultTicketDepartment()
+	{
+		$this->preload();
+
+		if (!$this->default_id || !isset($this->cats[$this->default_id]) || count($this->getChildren($this->default_id)) || !$this->cats[$this->default_id]->is_tickets_enabled) {
+			$this->default_id = 0;
+		}
+
+		// Invalid default just chooses first
+		if (!$this->default_id) {
+			foreach ($this->cats as $c) {
+				if ($c->is_tickets_enabled && !count($this->getChildren($c))) {
+					$this->default_id = $c->getId();
+					break;
+				}
+			}
+		}
+
+		return $this->cats[$this->default_id];
 	}
 
 
