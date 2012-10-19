@@ -410,6 +410,51 @@ class Dates
 
 
 	/**
+	 * Get offset in seconds
+	 *
+	 * @param $tz
+	 * @return int
+	 */
+	public static function getTimezoneOffset($tz)
+	{
+		if (is_string($tz)) {
+			$tz = new \DateTimeZone($tz);
+		}
+
+		$tz_utc = new \DateTimeZone('UTC');
+
+		$now = new \DateTime('now', $tz_utc);
+
+		$offset = $tz->getOffset($now);
+		return $offset;
+	}
+
+
+	/**
+	 * Get offset as a string
+	 *
+	 * @param $tz
+	 * @return string
+	 */
+	public static function getTimezoneOffsetString($tz)
+	{
+		$offset = self::getTimezoneOffset($tz);
+
+		if ($offset == 0) {
+			return 'UTC';
+		}
+
+		$hours = $offset / 60 / 60;
+
+		if ($hours < 0) {
+			return "UTC" . $hours;
+		} else {
+			return "UTC+" . $hours;
+		}
+	}
+
+
+	/**
 	 * Convert unit of time into seconds (years, days, hours etc to seconds).
 	 *
 	 * @param int $num

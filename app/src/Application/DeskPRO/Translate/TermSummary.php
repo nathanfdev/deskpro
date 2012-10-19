@@ -437,6 +437,11 @@ class TermSummary
 
 			case 'time_created':
 				$summary = $tr->phrase('agent.general.time_created_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' =>$choice['minute1']));
+
+				if (!empty($choice['timezone'])) {
+					$summary .= " (" . \Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']) . ")";;
+				}
+
 				break;
 
 			case 'time_last_user_reply':

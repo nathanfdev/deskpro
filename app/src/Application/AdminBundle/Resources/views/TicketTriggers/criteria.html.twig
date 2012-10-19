@@ -1074,6 +1074,7 @@
 		</select>
 	</div>
 	<div class="builder-options">
+		<input type="hidden" name="timezone" value="{{ app.user.timezone }}" />
 		<label>{{ phrase('agent.general.hour') }}</label>
 		<select name="hour1">
 			{% for hour in range(0,23) %}

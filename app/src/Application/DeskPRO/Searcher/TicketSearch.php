@@ -1785,14 +1785,22 @@ class TicketSearch extends SearcherAbstract
                 case 'time_created':
                 case 'time_last_user_reply':
                     $field = str_replace('time', 'date', $term);
-                    $time = clone $ticket[$field];
+
+					$ticket_time = clone $ticket[$field];
+
+					if (!empty($choice['timezone'])) {
+						$ticket_time->setTimezone(new \DateTimeZone($choice['timezone']));
+						$ticket_time = \Orb\Util\Dates::convertToUtcDateTime($ticket_time);
+					}
+
+					$time = clone $ticket_time;
                     $time->setTime($choice['hour1'], $choice['minute1']);
 
                     switch($op) {
                         case 'before':
-                            return $ticket[$field] < $time;
+                            return $ticket_time < $time;
                         case 'after':
-                            return $ticket[$field] > $time;
+                            return $ticket_time > $time;
                     }
 
                     break;

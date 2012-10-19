@@ -653,8 +653,14 @@ class TicketTerms
 
 			case 'time_created':
 
-				$hour = (int)$ticket->date_created->format('H');
-				$min  = (int)$ticket->date_created->format('i');
+				$date_created = clone $ticket->date_created;
+				if (!empty($choice['timezone'])) {
+					$date_created->setTimezone($choice['timezone']);
+					$date_created = \Orb\Util\Dates::convertToUtcDateTime($date_created);
+				}
+
+				$hour = (int)$date_created->format('H');
+				$min  = (int)$date_created->format('i');
 
 				$compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
 				$compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
