@@ -1238,6 +1238,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			}
 		});
+
+		if (!this.meta.auto_start_bill) {
+			if (this.billingTimer) {
+				window.clearTimeout(this.billingTimer);
+				this.billingTimer = null;
+			}
+		}
 	},
 
 	addBillingRow: function(html) {

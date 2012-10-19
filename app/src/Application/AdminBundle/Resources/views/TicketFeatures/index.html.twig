@@ -45,8 +45,15 @@
 				Enable ticket billing</label>
 		</div>
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core_tickets.billing_on_reply]" {% if app.getSetting('core_tickets.billing_on_reply') %}checked="checked"{% endif %} />
+			<label>
+				<input type="checkbox" name="settings[core_tickets.billing_auto_timer]" {% if app.getSetting('core_tickets.billing_auto_timer') %}checked="checked"{% endif %} id="bill_auto_opt" />
+				Automatically start billing timer
+			</label>
+
+			<div id="show_reply_bill" style="margin-left: 15px; {% if not app.getSetting('core_tickets.billing_auto_timer') %}display: none;{% endif %}">
+				<label><input type="checkbox" name="settings[core_tickets.billing_on_reply]" {% if app.getSetting('core_tickets.billing_on_reply') %}checked="checked"{% endif %} />
 				Show billing on reply form</label>
+			</div>
 		</div>
 		<div class="field_row">
 			<label>Billing currency name</label>
@@ -56,6 +63,7 @@
 	<input type="hidden" name="set_settings[]" value="core_tickets.enable_billing" />
 	<input type="hidden" name="set_settings[]" value="core_tickets.billing_on_reply" />
 	<input type="hidden" name="set_settings[]" value="core_tickets.billing_currency" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.billing_auto_timer" />
 </div>
 
 <div class="setting_field_row">
@@ -268,6 +276,15 @@ $(document).ready(function() {
 			$('#archive_options').slideDown();
 		} else {
 			$('#archive_options').slideUp();
+		}
+	});
+
+	$('#bill_auto_opt').on('click', function() {
+		if (this.checked) {
+			$('#show_reply_bill').slideDown();
+		} else {
+			$('#show_reply_bill').slideUp();
+			$('#show_reply_bill').find(':checkbox').prop('checked', false);
 		}
 	});
 });

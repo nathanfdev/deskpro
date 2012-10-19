@@ -48,6 +48,7 @@ pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% e
 pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %};
 {% if agent_signature %}
 pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 {% endif %}
 
 </script>
