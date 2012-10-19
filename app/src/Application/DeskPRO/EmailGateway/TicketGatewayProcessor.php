@@ -398,6 +398,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$message['message'] = $email_info['body'];
 		$message['message_full'] = $email_info['body_full'];
+		$message['message_raw'] = $email_info['body_raw'];
 
 		$message['show_full_hint'] = false;
 		$inline_reply_detector = new \Application\DeskPRO\EmailGateway\TicketGateway\DetectInlineReply(App::getOrm(), $this->reader);
@@ -502,6 +503,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
+			$body_raw = $email_info['body'];
+
 			// If the document is too complex then htmlpurifier can crash.
 			// We'll try to find a cut-mark now and trim the document down to see if we can still use it
 			// (We dont alway cut first because we want an in-tact 'full body' if possible)
@@ -543,6 +546,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$txt = $this->reader->getBodyText()->getBody();
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
+
+			$body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
 
 			$has_text_cut = true;
 			$email_info['body_raw'] = $txt;
@@ -691,6 +696,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body']      = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body']);
 			$email_info['body_full'] = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body_full']);
 		}
+
+		$email_info['body_raw'] = $body_raw;
 
 		return $email_info;
 	}
