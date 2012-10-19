@@ -1694,6 +1694,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('date_closed', new \DateTime());
 		}
 
+		if ($status == 'awaiting_user' && !$this->date_agent_waiting) {
+			$this->setModelField('date_agent_waiting', new \DateTime());
+		}
+		if ($status != 'awaiting_user' && $this->date_agent_waiting) {
+			$this->setModelField('date_agent_waiting', null);
+		}
+
 		if ($status != 'closed' && $this->date_closed) {
 			$this->setModelField('date_closed', null);
 		}
