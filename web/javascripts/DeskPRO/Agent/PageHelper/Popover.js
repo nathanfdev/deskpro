@@ -353,7 +353,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	isOpen: function() {
-		if (this.isDestroyed) return false;
+		if (this.isDestroyed || !this._hasInit) return false;
 
 		if (this.popover && this.popover.is(':visible')) {
 			return true;
