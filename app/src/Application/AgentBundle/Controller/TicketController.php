@@ -1513,15 +1513,48 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id);
 
 		$macro_id = $this->in->getUint('macro_id');
+
+		/** @var $macro \Application\DeskPRO\Entity\TicketMacro */
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
-		$actions_collection = $macro->getActionsCollection($ticket);
-		$actions = $actions_collection->getApplyActions($ticket, $this->person);
+		if (!$macro || ($macro->person && $macro->person->getId() != $this->person->getId())) {
+			throw $this->createNotFoundException();
+		}
+
+		$descriptions = $macro->getActionDescriptions($ticket);
 
 		return $this->createJsonResponse(array(
 			'macro_id' => $macro->id,
-			'actions_apply' => $actions,
-			'actions_display' => $macro->actions
+			'descriptions' => $descriptions,
+		));
+	}
+
+	public function applyMacroAction($ticket_id, $macro_id)
+	{
+		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
+		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+
+		/** @var $macro \Application\DeskPRO\Entity\TicketMacro */
+		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+
+		if (!$macro || ($macro->person && $macro->person->getId() != $this->person->getId())) {
+			throw $this->createNotFoundException();
+		}
+
+		$actions_collection = $macro->getActionsCollection($ticket);
+
+		$this->db->beginTransaction();
+		try {
+			$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+		}
+
+		return $this->createJsonResponse(array(
+			'ticket_id' => $ticket->getId(),
+			'macro_id' => $macro->getId(),
+			'success' => true,
 		));
 	}
 

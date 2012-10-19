@@ -1173,6 +1173,13 @@ $collection->add('agent_ticket_ajax_get_macro', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_ajax_apply_macro', new Route(
+	'/tickets/{ticket_id}/{macro_id}/apply-macro.json',
+	array('_controller' => 'AgentBundle:Ticket:applyMacro'),
+	array('ticket_id' => '\\d+', 'macro_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_ajax_save_actions', new Route(
 	'/tickets/{ticket_id}/ajax-save-actions',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveActions'),

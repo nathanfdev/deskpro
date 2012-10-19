@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.setOptions(options);
 
 		this.changeManager = this.page.changeManager;
+		this.ticketId = this.page.meta.ticket_id;
 
 		var wrapper = this.page.wrapper;
 		var actionsButtons = this.getEl('action_buttons');
@@ -249,9 +250,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 
 		var overlayEl = this.getEl('confirm_macro_overlay');
-		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
-		$('.actions-list', overlayEl).empty().append(add);
-
 		this.getEl('apply_macro_btn').on('click', function() {
 			self.saveMacro();
 		});
@@ -264,6 +262,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	confirmMacro: function(macroId) {
 		this.macroActions = null;
 
+		var overlayEl = this.getEl('confirm_macro_overlay');
 		$.ajax({
 			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', macroId),
 			type: 'GET',
@@ -272,22 +271,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			success: function(data) {
 				this._initMacroOverlay();
 
-				var add = $('.actions-list', this.macroOverlay.getElement()).addClass('static-list');
-				$('.search-terms', add).addClass('static-list').empty();
+				console.log(data);
 
-				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
-				Array.each(data.actions_display, function(info, x) {
-					var basename = 'actions[initial_' + x + ']';
-					editor.addNewRow($('.search-terms', add), basename, {
-						type: info.type,
-						op: info.op,
-						options: info.options
-					});
+				var ul = overlayEl.find('ul.actions-list');
+				ul.empty();
+
+				Array.each(data.descriptions, function(desc) {
+					var li = $('<li />');
+					li.html(desc);
+
+					ul.append(li);
 				});
-
-				this.macroActions = data.actions_apply;
-				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
-				$('.remove', add).remove();
 
 				this.macroId = macroId;
 				this.macroOverlay.open();
@@ -299,64 +293,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		this.macroOverlay.close();
 
-		if (!this.macroActions || !this.macroActions.length) {
+		if (!this.macroId) {
 			return;
 		}
 
-		DP.console.log('Applying macro actions: %o', this.macroActions);
-		var formData = [];
+		DP.console.log('Applying macro %d', this.macroId);
 
-		Array.each(this.macroActions, function(action_info) {
-			var type = action_info.action;
-			var action;
+		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json';
 
-			delete action_info.action;
-			var action_info_vals = Object.values(action_info);
-			if (action_info_vals.length == 1) {
-				action = action_info_vals[0];
-			} else {
-				action = action_info;
+		$.ajax({
+			url: url,
+			type: 'POST',
+			dataType: 'json',
+			context: this,
+			success: function() {
+				this.page.closeSelf();
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/' + this.ticketId);
 			}
-
-			var type_id = null;
-			var m = /^(.*?)\[(.*?)\]$/.exec(type);
-			if (m !== null) {
-				type = m[1];
-				type_id = m[2];
-			}
-
-			var prop = this.changeManager.getPropertyManager(type, type_id);
-
-			if (prop) {
-				if (typeOf(action) == 'object' && action.value_display) {
-					action = action.value_display;//custom fields
-				}
-				this.changeManager.addChange(prop, action);
-			} else {
-				Object.each(action_info, function (v, k) {
-					if (k != 'action') {
-						formData.push({
-							name: 'other_actions[' + type + '][' + k + ']',
-							value: v
-						});
-					}
-				});
-			}
-		}, this);
-
-		formData.push({
-			name: 'macro_id',
-			value: this.macroId
-		})
-
-		this.changeManager.applyChanges();
-
-		var self = this;
-		this.changeManager.saveChanges(formData, function() {;
-			this.macroOverlay
 		});
 
-		this.macroActions = null;
+
+		this.macroId = null;
 	},
 
 	/**

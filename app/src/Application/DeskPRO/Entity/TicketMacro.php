@@ -82,6 +82,11 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	protected $actions = array();
 
 	/**
+	 * @var ActionsCollection
+	 */
+	protected $_actions_coll;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -121,15 +126,31 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getActionsCollection(Entity\Ticket $ticket = null)
 	{
+		if ($this->_actions_coll) return $this->_actions_coll;
+
 		$factory = new ActionsFactory();
 		$collection = new ActionsCollection();
 
 		foreach ($this->actions as $action_info) {
 			$action = $factory->createFromInfo($action_info);
 			$collection->add($action);
+			if ($action) {
+				$collection->add($action);
+			}
 		}
 
-		return $collection;
+		$this->_actions_coll = $collection;
+		return $this->_actions_coll;
+	}
+
+
+
+	/**
+	 * @return array
+	 */
+	public function getActionDescriptions(Entity\Ticket $ticket = null)
+	{
+		return $this->getActionsCollection()->getDescriptions($ticket);
 	}
 
 
