@@ -55,6 +55,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initBilling();
 		this._initEditName();
 
+		this.addEvent('deactivate', function() {
+			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');
+		});
+		this.addEvent('activate', function() {
+			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_activate');
+		});
+
 		if (this.meta.ticket_perms['delete']) {
 			if (this.meta.isDeleted) {
 				$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));

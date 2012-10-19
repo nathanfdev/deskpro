@@ -407,6 +407,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	close: function(ignoreForms) {
 
 		if (this.isDestroyed) return;
+		if (!this.isOpen()) return;
 
 		if (!ignoreForms && this.hasFormsChanged() && this.page && !this.page.noIgnoreForm) {
 			var self = this;

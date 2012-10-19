@@ -191,6 +191,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
+		this.el.bind('page_deactivate', function() {
+			if (self.snippetsViewer && self.snippetsViewer.pop && self.snippetsViewer.pop.isOpen()) {
+				self.snippetsViewer.close();
+				DeskPRO.Agent.Widget.SnippetViewer.OpenNext = true;
+			}
+		});
+		this.el.bind('page_activate', function() {
+			if (DeskPRO.Agent.Widget.SnippetViewer.OpenNext) {
+				self.snippetsViewer.open();
+			}
+			DeskPRO.Agent.Widget.SnippetViewer.OpenNext = false;
+		});
+
 		//------------------------------
 		// Status
 		//------------------------------
