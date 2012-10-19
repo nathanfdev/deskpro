@@ -38,6 +38,18 @@ use Application\DeskPRO\App;
 
 class TicketWorkflow extends AbstractEntityRepository
 {
+	public function getAll()
+	{
+		$works = $this->getEntityManager()->createQuery("
+				SELECT w
+				FROM DeskPRO:TicketWorkflow w
+				ORDER BY w.display_order
+			")->execute();
+
+		return $works;
+	}
+
+
 	public function getNames($for_ids = null)
 	{
 		if ($for_ids) {

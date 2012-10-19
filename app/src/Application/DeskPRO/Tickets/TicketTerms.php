@@ -705,6 +705,9 @@ class TicketTerms
 			case TicketSearch::TERM_PRIORITY:
 				if (!$this->_testChoiceMatch($ticket['priority_id'], $op, $choice)) return false;
 				break;
+			case TicketSearch::TERM_WORKFLOW:
+				if (!$this->_testChoiceMatch($ticket['workflow_id'], $op, $choice)) return false;
+				break;
 			case TicketSearch::TERM_ORGANIZATION:
 				if (!$this->_testChoiceMatch($ticket['organization_id'], $op, $choice)) return false;
 				break;

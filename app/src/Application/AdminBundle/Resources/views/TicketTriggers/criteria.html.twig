@@ -376,8 +376,8 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for id,title in app.getDataRepository('TicketWorkflow').getNames() %}
-						<option value="{{ id }}">{{ title }}</option>
+					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -549,8 +549,8 @@
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for id,name in app.getDataRepository('TicketWorkflow').getNames() %}
-						<option value="{{ id }}">{{ title }}</option>
+					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}
 				</select>
 			</div>
