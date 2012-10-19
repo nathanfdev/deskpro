@@ -73,6 +73,11 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	protected $zone;
 
 	/**
+	 * @var string
+	 */
+	protected $interface;
+
+	/**
 	 * @param string $zone The zone (one of TicketPageDisplay::ZONE_*)
 	 * @param Department $department The department context
 	 */
@@ -80,6 +85,17 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	{
 		$this->zone = $zone;
 		$this->department = $department;
+
+		$this->interface = defined('DP_INTERFACE') ? DP_INTERFACE : '';
+	}
+
+
+	/**
+	 * @param $interace
+	 */
+	public function setInterface($interace)
+	{
+		$this->interface = $interace;
 	}
 
 
@@ -108,7 +124,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		}
 
 		// Filter out agent_only items
-		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+		if ($this->interface == 'user') {
 			$data = array();
 			foreach ($page_display->data as $k => $d) {
 				if (!isset($d['agent_only']) || !$d['agent_only']) {

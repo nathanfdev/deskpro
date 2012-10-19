@@ -272,6 +272,11 @@ class AgentNotificationAction extends AbstractAction
 		$field_manager = App::getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
+		$ticket_display->addPagesFromDb('agent');
+		$page = $ticket_display->getDepartmentPage($ticket->getDepartmentId());
+		$page_display = $page->getPageDisplay('default')->data;
+
 		foreach ($this->notify_agents as $agent_id) {
 
 			// Dont send an update notification to the agent for agent replies made by themselves
@@ -333,6 +338,7 @@ class AgentNotificationAction extends AbstractAction
 				'new_message'        => $new_message,
 				'agent'              => $agent,
 				'custom_fields'      => $custom_fields,
+				'page_display'       => $page_display,
 			);
 
 			if (isset($this->notify_info[$agent->id]) && $this->notify_info[$agent->id]) {

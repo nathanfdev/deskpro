@@ -89,7 +89,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 	 * Read all TIcketPageDisplay records from the database, initialize TicketPageZone's,
 	 * and then add them to this collection.
 	 */
-	public function addPagesFromDb()
+	public function addPagesFromDb($interface = null)
 	{
 		if ($this->zone == 'agent') {
 			$this->generateAgentZone();
@@ -132,6 +132,9 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$page->data = $page_data;
 
 		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		if ($interface) {
+			$ticket_page_zone->setInterface($interface);
+		}
 		$ticket_page_zone->addPageDisplay($page);
 		$this->addPage($ticket_page_zone);
 	}
@@ -161,6 +164,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$page_display->setData($options);
 
 		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		$ticket_page_zone->setInterface('agent');
 		$ticket_page_zone->addPageDisplays(array($page_display));
 		$this->addPage($ticket_page_zone);
 	}

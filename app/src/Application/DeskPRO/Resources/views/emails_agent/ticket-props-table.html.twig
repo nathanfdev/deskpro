@@ -16,8 +16,10 @@
 		</tr>
 	{% endif %}
 	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.department') }}</td>
-		<td>{{ticket.department.full_title|default(phrase('agent.general.none'))}}</td>
+		<td class="dp-td-heading">{{ phrase('agent.general.status') }}</td>
+		<td>
+			{{ phrase( 'agent.tickets.status_' ~ ticket.status) }}
+		</td>
 	</tr>
 	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.agent') }}</td>
@@ -29,44 +31,46 @@
 		<td>{{ticket.agent_team.name|default(phrase('agent.general.none'))}}</td>
 	</tr>
 	{% endif %}
-	{% if ticket.category %}
-	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.category') }}</td>
-		<td>{{ticket.category.full_title|default(phrase('agent.general.none'))}}</td>
-	</tr>
-	{% endif %}
-	{% if ticket.product %}
-	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.product') }}</td>
-		<td>{{ticket.product.title|default(phrase('agent.general.none'))}}</td>
-	</tr>
-	{% endif %}
-	{% if ticket.priority %}
-	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.priority') }}</td>
-		<td>{{ticket.priority.title|default(phrase('agent.general.none'))}}</td>
-	</tr>
-	{% endif %}
-	{% if ticket.workflow %}
-	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.workflow') }}</td>
-		<td>{{ticket.workflow.title|default(phrase('agent.general.none'))}}</td>
-	</tr>
-	{% endif %}
-	<tr>
-		<td class="dp-td-heading">{{ phrase('agent.general.status') }}</td>
-		<td>
-			{{ phrase( 'agent.tickets.status_' ~ ticket.status) }}
-		</td>
-	</tr>
-	{% for f in custom_fields %}
-		{% if ticket.hasCustomField(f.id) %}
+
+	{% for item in page_display %}
+		{% if item.field_type == 'ticket_department' %}
 			<tr>
-				<td class="dp-th-heading">{{ f.title }}</td>
-				<td>
-					{{ render_custom_field(f) }}
-				</td>
+				<td class="dp-td-heading">{{ phrase('agent.general.department') }}</td>
+				<td>{{ticket.department.full_title|default(phrase('agent.general.none'))}}</td>
 			</tr>
+		{% elseif item.field_type == 'ticket_category' and ticket.category %}
+			<tr>
+				<td class="dp-td-heading">{{ phrase('agent.general.category') }}</td>
+				<td>{{ticket.category.full_title|default(phrase('agent.general.none'))}}</td>
+			</tr>
+		{% elseif item.field_type == 'ticket_product' and ticket.product %}
+			<tr>
+				<td class="dp-td-heading">{{ phrase('agent.general.product') }}</td>
+				<td>{{ticket.product.title|default(phrase('agent.general.none'))}}</td>
+			</tr>
+		{% elseif item.field_type == 'ticket_priority' and ticket.priority %}
+			<tr>
+				<td class="dp-td-heading">{{ phrase('agent.general.priority') }}</td>
+				<td>{{ticket.priority.title|default(phrase('agent.general.none'))}}</td>
+			</tr>
+		{% elseif item.field_type == 'ticket_workflow' and ticket.workflow %}
+			<tr>
+				<td class="dp-td-heading">{{ phrase('agent.general.workflow') }}</td>
+				<td>{{ticket.workflow.title|default(phrase('agent.general.none'))}}</td>
+			</tr>
+		{% else %}
+				{% for f in custom_fields %}
+					{% if item.field_type == 'ticket_field' and item.field_id == f.id %}
+						{% if ticket.hasCustomField(f.field_def.id) %}
+							<tr>
+								<td class="dp-th-heading">{{ f.title }}</td>
+								<td>
+									{{ render_custom_field(f) }}
+								</td>
+							</tr>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
 		{% endif %}
 	{% endfor %}
 </table>
