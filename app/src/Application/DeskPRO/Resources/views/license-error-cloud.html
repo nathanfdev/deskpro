@@ -189,8 +189,6 @@
 				<div class="links">
 					<a class="btn btn-danger btn-small" href="https://www.deskpro.com/">DeskPRO.com</a>
 					&nbsp;&nbsp;
-					<a class="btn btn-danger btn-small" href="https://www.deskpro.com/members/">Members Area</a>
-					&nbsp;&nbsp;
 					<a class="btn btn-danger btn-small" href="https://support.deskpro.com/">Help &amp; Support</a>
 				</div>
 				<a href="https://www.deskpro.com/">
@@ -202,15 +200,29 @@
 				<h2>{{ TITLE }}</h2>
 				<div class="block">
 					{{ LICENSE_MESSAGE }}
-					To update your license, go to <a href="{{ BILLING_URL }}">{{ BILLING_URL }}</a>
 
-					<div style="margin-top: 45px;  background-color: #D0E8F4; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
-						Enter your billing details in the <a class="btn" href="{{ BILLING_URL }}">Billing Interface</a>
-					</div>
+					<Br /><Br />
+
+					Log in to update your billing information.
+					<form action="{{ BILLING_URL }}/login/authenticate-password" method="POST">
+						<table cellspacing="0" cellpadding="0" border="0">
+							<tr>
+								<td>Email Address:</td>
+								<td><input type="text" name="email" /></td>
+							</tr>
+							<tr>
+								<td>Password:</td>
+								<td><input type="password" name="password" /></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<button class="btn">Go to billing &rarr;</button>
+								</td>
+							</tr>
+						</table>
+					</form>
 				</div>
-			</div>
-			<div style="text-align: right; font-size: 10px; color: #aaa; margin-right: 20px;">
-				License ID: {{ LICENSE_ID }}
 			</div>
 		</div>
     </body>
