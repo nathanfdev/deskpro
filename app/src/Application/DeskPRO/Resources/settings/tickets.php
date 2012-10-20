@@ -25,4 +25,13 @@
 
 	// True to force agent emails to have the marker line
 	'core_tickets.gateway_agent_require_marker' => true,
+
+	'core_tickets.reply_status' => 'awaiting_user',
+	'core_tickets.reply_assign_unassigned' => 'assign',
+	'core_tickets.reply_assign_assigned' => false,
+	'core_tickets.reply_assignteam_unassigned' => false,
+	'core_tickets.reply_assignteam_assigned' => false,
+	'core_tickets.new_status' => 'awaiting_user',
+	'core_tickets.new_assign' => 'assign',
+	'core_tickets.new_assignteam' => false,
 );

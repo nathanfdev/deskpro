@@ -124,57 +124,48 @@
 						<label>{{ phrase('agent.general.status') }}:</label>
 						<div>
 							<select id="{{replyBaseId}}_status_sel" class="dpe_select" name="options[status]" style="min-width: 170px;">
-								<option value="">Do not change status</option>
-								<option value="awaiting_user" selected="selected">Awaiting User</option>
-								<option value="awaiting_agent">Awaiting Agent</option>
-								<option value="resolved">Resolved</option>
+								<option {% if not app.getSetting('core_tickets.reply_status') %}selected="selected"{% endif %} value="">Do not change status</option>
+								<option {% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' %}selected="selected"{% endif %} value="awaiting_user">Awaiting User</option>
+								<option {% if app.getSetting('core_tickets.reply_status') == 'awaiting_agent' %}selected="selected"{% endif %} value="awaiting_agent">Awaiting Agent</option>
+								<option {% if app.getSetting('core_tickets.reply_status') == 'resolved' %}selected="selected"{% endif %} value="resolved">Resolved</option>
 							</select>
 						</div>
 					</li>
 					<li class="hide-note with-select2">
 						<label>{{ phrase('agent.general.assign') }}:</label>
 						<div>
-							{% set is_selected = false %}
+							{% if ticket.agent %}
+								{% set assign_opt = 'core_tickets.reply_assign_assigned' %}
+							{% else %}
+								{% set assign_opt = 'core_tickets.reply_assign_unassigned' %}
+							{% endif %}
 							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;">
-								{% if ticket.agent %}
-									<option value="-1">Do not change agent</option>
-								{% endif %}
+								<option {% if not ticket.agent and not app.getSetting('core_tickets.reply_assign_unassigned') %}selected="selected"{% endif %} value="0">Unassigned</option>
 
-								<option {% if not ticket.agent.id %}{% set is_selected = true %}selected="selected"{% endif %} value="0">Unassigned</option>
-
-								{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-									{% set is_selected = true %}
-									<option selected="selected" data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
-								{% endif %}
 								{% for agent in agents %}
-									{% if agent.id != app.user.id %}
-										<option {% if not is_selected and agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-									{% endif %}
+									<option {% if (not app.getSetting(assign_opt) and agent.id == ticket.agent.id) or (app.getSetting(assign_opt) == 'assign' and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</select>
 
-							{% set is_selected = false %}
+							{% if ticket.agent_team %}
+								{% set assign_opt = 'core_tickets.reply_assignteam_assigned' %}
+							{% else %}
+								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
+							{% endif %}
 							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;">
-
-								{% if ticket.agent_team %}
-									<option value="-1">Do not change team</option>
-								{% endif %}
-
-								{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
-									<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
-								{% endif %}
+								<option value="0" {% if not ticket.agent_team and not app.getSetting('core_tickets.reply_assignteam_unassigned') %}selected="selected"{% endif %}>No Team</option>
 
 								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 									{% for team in app.user.getAgent().getTeams() %}
-										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+										<option value="{{ team.id }}" {% if app.getSetting(assign_opt) == 'assign' %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endfor %}
 								</optgroup>
 								{% endif %}
 
 								{% for team in agent_teams %}
 									{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+										<option value="{{ team.id }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endif %}
 								{% endfor %}
 							</select>

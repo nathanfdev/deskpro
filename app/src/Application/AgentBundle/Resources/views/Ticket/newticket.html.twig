@@ -255,18 +255,18 @@ pageMeta.baseId = '{{ baseId }}';
 							{% else %}{% set agent_id = ticket.agent %}{% endif %}
 
 							<select name="newticket[agent_id]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
-								<option value="0">Unassigned</option>
+								<option {% if not app.getSetting('core_tickets.new_assign') %}selected="selected"{% endif %} value="0">Unassigned</option>
 								{% for agent in agents %}
-									<option {% if agent.id == agent_id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+									<option {% if agent.id == agent_id and app.getSetting('core_tickets.new_assign') == 'assign' %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</select>
 
 							<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
-								<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
+								<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') or not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
 								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 									{% for team in app.user.getAgent().getTeams() %}
-										<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+										<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' or ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endfor %}
 								</optgroup>
 								{% endif %}
@@ -281,9 +281,9 @@ pageMeta.baseId = '{{ baseId }}';
 						<label>Status</label>
 						<div>
 							<select name="newticket[status]" id="{{baseId}}_status">
-								<option value="awaiting_agent" selected="selected">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-								<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-								<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+								<option {% if app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}selected="selected"{% endif %} value="awaiting_agent" selected="selected">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+								<option {% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}selected="selected"{% endif %} value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+								<option {% if app.getSetting('core_tickets.new_status') == 'resolved' %}selected="selected"{% endif %} value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
 							</select>
 						</div>
 					</li>
