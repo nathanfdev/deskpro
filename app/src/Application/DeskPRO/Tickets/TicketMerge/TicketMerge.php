@@ -195,9 +195,13 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 				'lost' => $this->data_lost
 			));
 
-			$ticket_del = new TicketDeleted();
-			$ticket_del->ticket_id = $this->other_ticket['id'];
-			$ticket_del->old_ptac = $this->other_ticket->auth;
+			$ticket_del = $this->em->find('DeskPRO:TicketDeleted', $this->other_ticket['id']);
+			if (!$ticket_del) {
+				$ticket_del = new TicketDeleted();
+				$ticket_del->ticket_id = $this->other_ticket['id'];
+				$ticket_del->old_ptac = $this->other_ticket->auth;
+			}
+
 			$ticket_del->new_ticket_id = $this->ticket['id'];
 			$ticket_del->by_person = $this->person;
 			$ticket_del->reason = "Merge into " . $this->ticket['id'];
