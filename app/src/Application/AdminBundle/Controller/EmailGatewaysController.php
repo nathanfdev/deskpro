@@ -88,6 +88,7 @@ class EmailGatewaysController extends AbstractController
 	{
 		$helpdesk_addresses = $this->in->getCleanValueArray('helpdesk_emails', 'string', 'discard');
 		$helpdesk_addresses = implode(',', $helpdesk_addresses);
+		$helpdesk_addresses = strtolower($helpdesk_addresses);
 
 		$this->container->getSettingsHandler()->setSetting('core.helpdesk_emails', $helpdesk_addresses);
 
