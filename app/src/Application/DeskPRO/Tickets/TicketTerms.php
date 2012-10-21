@@ -717,6 +717,9 @@ class TicketTerms
 			case TicketSearch::TERM_AGENT:
 				if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
 				break;
+			case TicketSearch::TERM_AGENT_TEAM:
+				if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $choice)) return false;
+				break;
 			case TicketSearch::TERM_LABEL:
 				$any = false;
 				foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
