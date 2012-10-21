@@ -9,7 +9,7 @@
 	</nav>
 	<ul id="tools_menu" style="display: none">
 		{#{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">{{ phrase('admin.agents.vacation_mode') }}</li>{% endif %}#}
-		<li id="delete_overlay_trigger">{{ phrase('admin.agents.delete_agent') }}</li>
+		<li><a href="{{ path('admin_agents_remove', {agent_id: agent.id}) }}">{{ phrase('admin.agents.delete_agent') }}</a></li>
 	</ul>
 	{% endif %}
 

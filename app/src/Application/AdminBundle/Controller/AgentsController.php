@@ -276,6 +276,118 @@ class AgentsController extends AbstractController
 		));
 	}
 
+	public function removeAgentAction($agent_id)
+	{
+		$agent = $this->em->find('DeskPRO:Person', $agent_id);
+
+		if (!$agent || !$agent->is_agent) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->render('AdminBundle:Agents:remove-agent.html.twig', array(
+			'agent' => $agent
+		));
+	}
+
+	public function convertToUserAction($agent_id)
+	{
+		$agent = $this->em->find('DeskPRO:Person', $agent_id);
+
+		if (!$agent || !$agent->is_agent) {
+			throw $this->createNotFoundException();
+		}
+
+		$agent->is_agent = false;
+		$agent->can_agent = false;
+		$agent->can_admin = false;
+		$agent->can_billing = false;
+		$agent->can_reports = false;
+		$agent->was_agent = true;
+
+		$this->db->beginTransaction();
+		try {
+
+			$this->em->persist($agent);
+			$this->em->flush();
+
+			// Specific department permissions are agent-only feature, remove those
+			$this->db->executeUpdate("
+				DELETE FROM department_permissions
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Specific department permissions are agent-only feature, remove those
+			$agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
+			if ($agent_groups) {
+				$agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
+				$this->db->executeUpdate("
+					DELETE FROM person2usergroups
+					WHERE person_id = ? AND usergroup_id IN (" . implode(',', $agent_group_ids) . ")
+				", array($agent->id));
+			}
+
+			// Their filter subs
+			$this->db->executeUpdate("
+				DELETE FROM ticket_filter_subscriptions
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Their filters
+			$this->db->executeUpdate("
+				DELETE FROM ticket_filters
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Their teams
+			$this->db->executeUpdate("
+				DELETE FROM agent_team_members
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Their macros
+			$this->db->executeUpdate("
+				DELETE FROM ticket_macros
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Snippets
+			$this->db->executeUpdate("
+				DELETE FROM text_snippets
+				WHERE person_id = ?
+			", array($agent->id));
+			$this->db->executeUpdate("
+				DELETE FROM text_snippet_categories
+				WHERE person_id = ?
+			", array($agent->id));
+
+			$this->db->executeUpdate("
+				DELETE FROM ticket_snippets
+				WHERE person_id = ?
+			", array($agent->id));
+			$this->db->executeUpdate("
+				DELETE FROM ticket_snippet_categories
+				WHERE person_id = ?
+			", array($agent->id));
+
+			// Assigned tickets
+			$this->db->executeUpdate("
+				UPDATE tickets SET agent_id = NULL
+				WHERE agent_id = ?
+			", array($agent->id));
+			$this->db->executeUpdate("
+				UPDATE tickets_search_active SET agent_id = NULL
+				WHERE agent_id = ?
+			", array($agent->id));
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents');
+	}
+
 	############################################################################
 	# edit-agent
 	############################################################################

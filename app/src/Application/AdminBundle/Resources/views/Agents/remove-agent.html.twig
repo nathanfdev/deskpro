@@ -1,0 +1,36 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.general.agents') }}</a></li>
+		<li>{{ agent.display_name }}</li>
+		<li>Delete Agent</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<div class="alert-message block-message info">
+	<h1>Delete agent</h1>
+	<form action="{{ path('admin_agents_setdeleted', {person_id: agent.id, set_to: '0'}) }}" method="post">
+		{{ form_token() }}
+		This marks the agent as deleted. The user won't be able to log in anymore to either the user or agent interfaces.
+		You are able to restore the agent later.
+		<br />
+		<button class="clean-white">Delete Agent</button>
+	</form>
+</div>
+
+
+<div class="alert-message block-message info">
+	<h1>Convert to user</h1>
+	<form action="{{ path('admin_agents_convertuser', {agent_id: agent.id}) }}" method="post">
+		{{ form_token() }}
+		This converts the agent into a regular user. This will immediately unassign all tickets from the agent.
+		You can turn the user back into an agent later, but some settings such as permissions and any
+		assigned tickets will be lost.
+		<br />
+		<button class="clean-white">Convert to user</button>
+	</form>
+</div>
+
+{% endblock %}

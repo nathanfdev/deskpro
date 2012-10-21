@@ -779,6 +779,13 @@ $collection->add('admin_agents_new', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_remove', new Route(
+	'/agents/{agent_id}/remove',
+	array('_controller' => 'AdminBundle:Agents:removeAgent'),
+	array(),
+	array('agent_id' => '\\d+')
+));
+
 $collection->add('admin_agents_new_fromusersource', new Route(
 	'/agents/new-from-usersource/{usersource_id}',
 	array('_controller' => 'AdminBundle:Agents:newFromUsersource', 'usersource_id' => '0'),
@@ -825,6 +832,13 @@ $collection->add('admin_agents_setdeleted', new Route(
 	'/agents/{person_id}/set-deleted/{set_to}',
 	array('_controller' => 'AdminBundle:Agents:setDeleted', 'set_to' => '0'),
 	array('person_id' => '\\d+', 'set_to' => '(1|0)'),
+	array()
+));
+
+$collection->add('admin_agents_convertuser', new Route(
+	'/agents/{agent_id}/convert-user',
+	array('_controller' => 'AdminBundle:Agents:convertToUser'),
+	array('agent_id' => '\\d+'),
 	array()
 ));
 
