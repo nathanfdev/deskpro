@@ -6,6 +6,7 @@ DeskPRO.ElementHandler.CheckboxToggle = new Orb.Class({
 	init: function() {
 		var self = this;
 		var targets = $(this.el.data('targets'));
+		var clearTargets = this.el.data('clear-targets');
 
 		if (!targets.length) return;
 
@@ -14,6 +15,10 @@ DeskPRO.ElementHandler.CheckboxToggle = new Orb.Class({
 				targets.show();
 			} else {
 				targets.hide();
+
+				if (clearTargets) {
+					targets.find('input[type="text"], input[type="password"], textarea').val('');
+				}
 			}
 		}
 
