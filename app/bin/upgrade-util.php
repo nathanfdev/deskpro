@@ -705,7 +705,7 @@ class Upgrade
 			$write_status("file_backup_done");
 
 			if ($this->file_backup) {
-				$write_status("file_backup_loc", $this->file_backup);
+				$write_status("file_backup_loc", $this->file_backup . ' (' . Upgrade::getFilesizeDisplay(filesize($this->file_backup)) . ')');
 			}
 
 		} catch (\Exception $e) {
@@ -732,7 +732,7 @@ class Upgrade
 			$write_status("database_backup_end");
 
 			if ($this->db_backup) {
-				$write_status("database_backup_loc", $this->db_backup);
+				$write_status("database_backup_loc", $this->db_backup . ' (' . Upgrade::getFilesizeDisplay(filesize($this->db_backup)) . ')');
 			}
 
 		} catch (\Exception $e) {

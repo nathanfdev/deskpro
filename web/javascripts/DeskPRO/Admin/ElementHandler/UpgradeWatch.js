@@ -181,7 +181,7 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 				$('#backup_path').show().find('em').text(message);
 				$('#file_backup_loc').text(message);
 				break;
-			case 'db_backup_loc':
+			case 'database_backup_loc':
 				$('#backup_path2').show().find('em').text(message);
 				$('#db_backup_loc').text(message);
 				break;
