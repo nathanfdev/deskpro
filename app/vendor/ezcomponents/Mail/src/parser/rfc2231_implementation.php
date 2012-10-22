@@ -46,7 +46,7 @@ class ezcMailRfc2231Implementation
         $parameterBuffer = array();
 
         // parameters
-        if ( preg_match_all( '/\s*(\S*?)="?([^;"]*);?/i', $header, $matches, PREG_SET_ORDER ) )
+        if ( preg_match_all( '/\s*(\S*?)=\s*"?([^;"]*);?/i', $header, $matches, PREG_SET_ORDER ) )
         {
             foreach ( $matches as $parameter )
             {
@@ -84,7 +84,9 @@ class ezcMailRfc2231Implementation
                 $charset = null;
                 if ( $parts[0]['encoding'] == true )
                 {
-                    preg_match( "/(\S*)'(\S*)'(.*)/", $parts[0]['value'], $matches );
+                    if (!preg_match( "/(\S*)'(\S*)'(.*)/", $parts[0]['value'], $matches )) {
+						continue;
+					}
                     $charset = $matches[1];
                     $language = $matches[2];
                     $parts[0]['value'] = urldecode( $matches[3] ); // rewrite value: todo: decoding
@@ -154,7 +156,7 @@ class ezcMailRfc2231Implementation
                         {
                             $cd->displayFileName = ezcMailTools::mimeDecode( $cd->displayFileName );
                         }
- 
+
                         if ( isset( $data['language'] ) )
                         {
                             $cd->fileNameLanguage = $data['language'];
