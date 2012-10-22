@@ -1136,7 +1136,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('task_list').show().prepend(row);
 
 					DeskPRO_Window.util.modCountEl(self.getEl('task_count'), '+', 1);
-					DeskPRO_Window.sections.tasks_section.refresh();
+
+					if (DeskPRO_Window.sections.tasks_section) {
+						DeskPRO_Window.sections.tasks_section.refresh();
+					}
 				}
 			});
 		});

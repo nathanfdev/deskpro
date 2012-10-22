@@ -169,7 +169,9 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				},
 				success: function(data) {
 					self.meta.popover.close();
-					DeskPRO_Window.sections.tasks_section.refresh();
+					if (DeskPRO_Window.sections.tasks_section) {
+						DeskPRO_Window.sections.tasks_section.refresh();
+					}
 				}
 			});
 		});
