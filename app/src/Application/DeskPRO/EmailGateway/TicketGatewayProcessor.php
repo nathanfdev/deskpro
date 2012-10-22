@@ -410,6 +410,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message['show_full_hint'] = true;
 		}
 
+		$ticket_attach = array();
 		foreach ($this->processBlobs() as $blob) {
 
 			if (isset($this->dupe_inline_blobs[$blob->getId()])) {
@@ -425,11 +426,24 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 
 			$message->addAttachment($attach);
+			$ticket_attach[] = $attach;
 		}
 
 		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
 			$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+
+			// Reset some objects so they dont get flushed during next loop
+			$ticket->resetTicketLogger();
+			App::getOrm()->detach($ticket);
+			App::getOrm()->detach($message);
+
+			foreach ($ticket_attach as $a) {
+				$a->ticket = null;
+				$a->message = null;
+				App::getOrm()->detach($a);
+			}
+
 			return $dupe_message;
 		}
 
