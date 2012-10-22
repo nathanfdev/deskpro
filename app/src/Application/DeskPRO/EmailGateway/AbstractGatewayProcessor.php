@@ -120,7 +120,7 @@ abstract class AbstractGatewayProcessor
 		if($this->gateway_address) {
 			$this->logMessage(sprintf("Matched address %s (%d)", $this->gateway_address->getTitle(), $this->gateway_address->id));
 		} else {
-			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %s (%d)!', $gateway->title, $gateway->id));
+			$this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $gateway->id));
 		}
 
 		$to_addresses = array();
