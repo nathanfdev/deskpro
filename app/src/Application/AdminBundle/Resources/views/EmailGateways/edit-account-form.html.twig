@@ -10,6 +10,32 @@
 	<input type="hidden" name="gateway[gateway_type]" value="tickets" />
 	<input type="hidden" id="define_transport" name="gateway[define_transport]" value="{% if not editgateway.define_transport %}0{% else %}1{% endif %}" />
 
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Linked Department</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="department_id">
+				{% if gateway.department %}
+					<option value="{{ gateway.department.id }}">{{ gateway.department.full_title }}</option>
+					<option value="{{ gateway.department.id }}">------------------------</option>
+				{% endif %}
+				<option value="0">Do not link a department</option>
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+					{% if dep.children|length %}
+						<optgroup label="{{ dep.title }}">
+							{% for subdep in dep.children %}
+								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{dep.id}}">{{dep.title}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -25,32 +51,6 @@
 						{% endfor %}
 					</ul>
 				</div>
-				{% endif %}
-
-				{% if gateway.department or unlinked_deps|length %}
-					<div class="dp-input-group">
-						<label>
-							Linked Department
-						</label>
-					</div>
-					<div class="dp-group-options" style="display: none">
-						<select name="gateway[department_id]">
-							{% if gateway.department %}
-								<option value="{{ gateway.department.id }}">{{ gateway.department.full_title }}</option>
-								{% if unlinked_deps|length %}<option value="{{ gateway.department.id }}">------------------------</option>{% endif %}
-							{% endif %}
-							<option value="0">Do not link a department</option>
-							{% for dep in unlinked_deps %}
-								{% if dep.children|length %}
-									{% for subdep in dep.children %}
-										<option value="{{ subdep.id }}">{{ subdep.full_title }}</option>
-									{% endfor %}
-								{% else %}
-									<option value="{{ dep.id }}">{{ dep.full_title }}</option>
-								{% endif %}
-							{% endfor %}
-						</select>
-					</div>
 				{% endif %}
 
 				<div class="dp-input-group">

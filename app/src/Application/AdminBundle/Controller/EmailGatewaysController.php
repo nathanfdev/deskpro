@@ -119,8 +119,6 @@ class EmailGatewaysController extends AbstractController
 			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
 
-		$unlinked_deps = $this->em->getRepository('DeskPRO:Department')->getUnlinkedGatewayDepartments();
-
 		$editgateway = new EditEmailGatewayModel($gateway);
 		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
 
@@ -186,6 +184,33 @@ class EmailGatewaysController extends AbstractController
 					$editgateway->save();
 					$this->em->flush();
 
+					$set_dep_id = $this->in->getUint('department_id');
+
+					$old_dep = $gateway->department;
+
+					$new_dep = false;
+					if ($set_dep_id) {
+						$new_dep = $this->em->find('DeskPRO:Department', $set_dep_id);
+						if ($new_dep) {
+							$new_dep->email_gateway = $gateway;
+							$gateway->department = $new_dep;
+
+							$this->em->persist($new_dep);
+							$this->em->persist($gateway);
+							$set_dep_id = $new_dep->getId();
+						}
+					}
+
+					if ($old_dep && $old_dep->getId() != $set_dep_id) {
+						$old_dep->email_gateway = null;
+						$this->em->persist($old_dep);
+					}
+
+					if (!$new_dep) {
+						$gateway->department = null;
+						$this->em->persist($new_dep);
+					}
+
 					if ($editgateway->define_transport) {
 						$edittrans->save();
 						$gateway->linked_transport = $transport;
@@ -240,7 +265,6 @@ class EmailGatewaysController extends AbstractController
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
 			'partial' => $this->request->isPartialRequest(),
-			'unlinked_deps' => $unlinked_deps,
 		));
 	}
 
