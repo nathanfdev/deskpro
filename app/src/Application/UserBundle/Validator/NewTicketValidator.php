@@ -140,7 +140,7 @@ class NewTicketValidator extends AbstractValidator
 
 			$department_id = $newticket->ticket->department_id;
 
-			if ($this->display_fields['ticket_department'] && !$department_validator->isValid($department_id)) {
+			if (isset($this->display_fields['ticket_department']) && !$department_validator->isValid($department_id)) {
 				$this->addError('ticket.department_id.invalid');
 			} else {
 
