@@ -57,7 +57,17 @@ class DepartmentAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$ticket['department_id'] = $this->department_id;
+		$dep_id = $this->department_id;
+		if ($dep_id == 'email_account') {
+			if ($ticket->email_gateway && $ticket->email_gateway->department) {
+				$dep_id = $ticket->email_gateway->getId();
+			} else {
+				// no op
+				return;
+			}
+		}
+
+		$ticket['department_id'] = $dep_id;
 	}
 
 
@@ -104,6 +114,10 @@ class DepartmentAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
+		if ($this->department_id == 'email_account') {
+			return 'Set department as the linked department for the email account';
+		}
+
 		$tr = App::getTranslator();
 
 		$names = App::getDataService('Department')->getFullNames();

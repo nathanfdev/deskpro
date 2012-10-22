@@ -56,7 +56,7 @@ class SetGatewayAddressAction extends AbstractAction
 	public function __construct($gateway_address_id)
 	{
 		$this->gateway_address_id = $gateway_address_id;
-		if ($gateway_address_id) {
+		if ($gateway_address_id && $this->gateway_address_id != 'department') {
 			$this->gateway_address = App::getOrm()->find('DeskPRO:EmailGatewayAddress', $gateway_address_id);
 		}
 	}
@@ -69,7 +69,15 @@ class SetGatewayAddressAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if (!$this->gateway_address) {
+		$gateway_address = $this->gateway_address;
+
+		if ($this->gateway_address_id == 'department') {
+			if ($ticket->department && $ticket->department->email_gateway && $ticket->department->email_gateway->getPrimaryEmailAddress(true)) {
+				$gateway_address = $ticket->department->email_gateway->getPrimaryEmailAddress(true);
+			}
+		}
+
+		if (!$gateway_address) {
 			return;
 		}
 
@@ -105,6 +113,10 @@ class SetGatewayAddressAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
+		if ($this->gateway_address_id == 'department') {
+			return 'Set the email account that matches the department';
+		}
+
 		if (!$this->gateway_address) {
 			return '';
 		}

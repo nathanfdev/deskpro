@@ -208,7 +208,6 @@ class EmailGatewaysController extends AbstractController
 
 					if (!$new_dep) {
 						$gateway->department = null;
-						$this->em->persist($new_dep);
 					}
 
 					if ($editgateway->define_transport) {
@@ -283,6 +282,48 @@ class EmailGatewaysController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array('success' => true, 'is_enabled' => $gateway->is_enabled, 'gateway_id' => $gateway->getId()));
+	}
+
+	public function setLinkedDepartmentAction()
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_id'));
+		if (!$gateway) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$set_dep_id = $this->in->getUint('department_id');
+
+		$old_dep = $gateway->department;
+
+		$new_dep = false;
+		if ($set_dep_id) {
+			$new_dep = $this->em->find('DeskPRO:Department', $set_dep_id);
+			if ($new_dep) {
+				$new_dep->email_gateway = $gateway;
+				$gateway->department = $new_dep;
+
+				$this->em->persist($new_dep);
+				$this->em->persist($gateway);
+				$set_dep_id = $new_dep->getId();
+			}
+		}
+
+		if ($old_dep && $old_dep->getId() != $set_dep_id) {
+			$old_dep->email_gateway = null;
+			$this->em->persist($old_dep);
+		}
+
+		if (!$new_dep) {
+			$gateway->department = null;
+		}
+
+		$this->em->persist($gateway);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'gateway_id' => $gateway->getId(),
+			'department_id' => $new_dep ? $new_dep->getId() : 0,
+		));
 	}
 
 	############################################################################

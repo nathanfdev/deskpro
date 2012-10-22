@@ -18,6 +18,7 @@
 		<div class="builder-type" title="Set Gateway Address" data-rule-type="set_gateway_address">
 			<div class="builder-options">
 				<select name="gateway_address_id">
+					<option value="department">Linked account for department</option>
 					{% for addr in app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
 						<option value="{{ addr.id }}">{{ addr.match_pattern }}</option>
 					{% endfor %}
@@ -175,6 +176,7 @@
 	<div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department">
 		<div class="builder-options">
 			<select name="department">
+				<option value="email_account">Linked department for email account</option>
 				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">

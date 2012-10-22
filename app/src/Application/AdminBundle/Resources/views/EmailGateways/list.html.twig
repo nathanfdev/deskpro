@@ -41,6 +41,24 @@ $(document).ready(function() {
 			$('#email_forward_list').slideUp();
 		}
 	});
+
+	$('select.change-linked-dep').on('change', function() {
+		var gateway_id = $(this).data('gateway-id');
+		var dep_id = $(this).val();
+		var el = $(this);
+
+		$.ajax({
+			url: '{{ path('admin_emailgateways_setlinkeddep') }}',
+			data: {
+				gateway_id: gateway_id,
+				department_id: dep_id
+			},
+			method: 'POST',
+			success: function() {
+				DeskPRO_Window.util.showSavePuff(el);
+			}
+		});
+	});
 });
 </script>
 {% endblock %}
@@ -55,123 +73,19 @@ $(document).ready(function() {
 		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.general.email_gateways') }}</a></li>
 	</ul>
 {% endblock %}
-{% block sidebar_right %}
-<div class="dp-page-box">
-	<div class="resource-item-list">
-		<header>
-			<div class="controls">
-				<a class="clean-white small" href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('agent.feedback.status_new') }}</a>
-			</div>
-			<h4>{{ phrase('admin.general.outgoing_email_accounts') }}</h4>
-		</header>
-		<article>
-			{% if all_transports|length > 1 %}{# > 1 because 1 is always the 'all' transport #}
-				<ul class="item-list">
-					{% for transport in all_transports %}{% if transport.match_type != 'all' %}
-						<li>
-							<div class="dp-block-controls">
-								<ul>
-									<li class="dp-edit"><a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}"><span></span></a></li>
-								</ul>
-							</div>
-
-							{{ phrase('admin.gateway.from') }}:
-							<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}">
-							{% if transport.match_type == 'exact' %}{{ transport.match_pattern }}
-							{% elseif transport.match_type == 'domain' %}*@{{ transport.match_pattern }}
-							{% elseif transport.match_type == 'regex' %}{{ transport.match_pattern }}
-							{% endif %}
-							</a>
-							<br />
-							{{ phrase('admin.gateway.send_through') }}:<br />
-							&nbsp;&nbsp;&nbsp;<span title="{{ transport.title }}">{{ transport.title|truncate(45) }}</span>
-						</li>
-					{% endif %}{% endfor %}
-				</ul>
-				<p>
-                    {% set phrase_link %}
-                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>
-                    {% endset %}
-                    {{ phrase('admin.gateway.when_no_rules_match', {'link':phrase_link}, true) }}
-				</p>
-			{% else %}
-				<p>
-                    {% set phrase_link %}
-                    <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>
-                    {% endset %}
-                    {{ phrase('admin.gateway.all_email_is_being_sent_via', {'link':phrase_link}, true) }}
-				</p>
-				<p>
-                    {% set phrase_link %}
-                    <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.gateway.add_new_account') }}</a>
-                    {% endset %}
-                    {{ phrase('admin.gateway.explain_different_servers', {'link':phrase_link}, true) }}
-				</p>
-			{% endif %}
-		</article>
-	</div>
-</div>
-{% endblock %}
 {% block page %}
 
 {{ design.helpbox() }}
 	<p>{{ phrase('admin.gateway.explain_email_gateway') }}</p>
 {{ design.helpbox_end() }}
 
-<div style="padding-bottom: 5px; font-size: 11px;">
-	{{ phrase('admin.general.view_by') }}:
-	<label><input type="radio" name="view_by" value="address" checked="checked" onclick="$('#by_account').hide(); $('#by_address').show();"> {{ phrase('admin.general.email_addresses') }}</label>
-	&nbsp;&nbsp;
-	<label><input type="radio" name="view_by" value="account" onclick="$('#by_account').show(); $('#by_address').hide();"> {{ phrase('admin.general.account') }}</label>
-</div>
-
-<div class="check-grid item-list" id="by_account" style="display:none;">
-	<table width="100%">
-		<thead>
-			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.general.account') }}</th>
-				<th style="text-align:left" width="10">&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for gateway in all_gateways %}
-				<tr>
-					<td>
-						<input
-							type="checkbox"
-							class="onoff-slider gateway-toggle-{{ gateway.id }}"
-							{% if gateway.is_enabled %}checked="checked"{% endif %}
-							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
-							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
-							data-state-property="is_enabled"
-						/>
-						{{ gateway.title }}
-						<ul class="small-detail-list">
-							{% for address in gateway.addresses %}
-								<li>{{ address.match_pattern }}</li>
-							{% endfor %}
-							{% if gateway.department %}
-								<li>
-									Department: {{ gateway.department.full_title }}
-								</li>
-							{% endif %}
-						</ul>
-					</td>
-					<td style="padding: 3px 3px 0 0">
-						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}"><span class="btn-edit-gear"></span></a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
-
 <div class="check-grid item-list" id="by_address">
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
+				<th style="text-align:right">Department</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -186,18 +100,29 @@ $(document).ready(function() {
 							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
 							data-state-property="is_enabled"
 						/>
+					</td>
+					<td>
 						{{ pattern }}
+						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}" style="position:relative;top: 3px;"><span class="btn-edit-gear"></span></a>
 						<ul class="small-detail-list">
 							<li>{{ phrase('admin.general.account') }}: {{ gateway.title }}</li>
-							{% if gateway.department %}
-								<li>
-									Department: {{ gateway.department.full_title }}
-								</li>
-							{% endif %}
 						</ul>
 					</td>
-					<td style="padding: 3px 3px 0 0">
-						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}"><span class="btn-edit-gear"></span></a>
+					<td  style="text-align:right">
+						<select class="change-linked-dep" data-gateway-id="{{ gateway.id }}">
+							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>None</option>
+							{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+								{% if dep.children|length %}
+									<optgroup label="{{ dep.title }}">
+										{% for subdep in dep.children %}
+											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == dep.1 %}selected="selected"{% endif %}>{{subdep.title}}</option>
+										{% endfor %}
+									</optgroup>
+								{% else %}
+									<option value="{{dep.id}}" {% if gateway.department.id == dep.id %}selected="selected"{% endif %}>{{dep.title}}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
 					</td>
 				</tr>
 			{% endfor %}

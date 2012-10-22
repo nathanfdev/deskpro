@@ -39,10 +39,20 @@ DeskPRO.Admin.Window = new Orb.Class({
 			},
 
 			showSavePuff: function(overEl) {
+
+				if (!overEl || !overEl[0]) {
+					return;
+				}
+
+				var pos = overEl.offset();
+
+				if (!pos) {
+					return;
+				}
+
 				var el = $('<div class="load-puff" style="display: none; opacity: 0" />');
 				el.appendTo('body');
 
-				var pos = overEl.offset();
 				el.css({
 					top: pos.top + 15,
 					left: pos.left + overEl.width() - 4

@@ -1926,6 +1926,13 @@ $collection->add('admin_emailgateways_quicktoggle', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_setlinkeddep', new Route(
+	'/email/incoming/accounts/set-linked-department.json',
+	array('_controller' => 'AdminBundle:EmailGateways:setLinkedDepartment'),
+	array('id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_emailgateways_del', new Route(
 	'/email/incoming/accounts/{id}/delete/{security_token}',
 	array('_controller' => 'AdminBundle:EmailGateways:delete'),
