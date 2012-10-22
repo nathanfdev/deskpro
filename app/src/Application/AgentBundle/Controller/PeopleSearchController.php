@@ -889,6 +889,10 @@ class PeopleSearchController extends AbstractController
 			foreach ($people as $person) {
 				if (!$person->is_agent && !$person->is_agent_confirmed) {
 					$ids[] = $person->getId();
+
+					foreach ($person->emails as $email) {
+						$this->em->remove($email);
+					}
 					$this->em->remove($person);
 				}
 			}
