@@ -184,7 +184,7 @@ Orb.findHighestZindex = function(els) {
 Orb.escapeHtml = function(string) {
 	string = string||'';
 
-	if (typeOf(string) != 'element') {
+	if (typeOf(string) == 'element') {
 		string = $(string).text();
 	} else if (typeOf(string) != 'string') {
 		if (string.toString) {
