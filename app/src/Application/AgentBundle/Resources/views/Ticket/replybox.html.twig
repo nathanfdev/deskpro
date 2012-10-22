@@ -140,6 +140,7 @@
 								{% set assign_opt = 'core_tickets.reply_assign_unassigned' %}
 							{% endif %}
 							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;">
+								<option value="-1">{{ phrase('agent.general.dont_change_agent') }}</option>
 								<option {% if not ticket.agent and not app.getSetting('core_tickets.reply_assign_unassigned') %}selected="selected"{% endif %} value="0">Unassigned</option>
 
 								{% for agent in agents %}
@@ -153,6 +154,7 @@
 								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
 							{% endif %}
 							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;">
+								<option value="-1">{{ phrase('agent.general.dont_change_team') }}</option>
 								<option value="0" {% if not ticket.agent_team and not app.getSetting('core_tickets.reply_assignteam_unassigned') %}selected="selected"{% endif %}>No Team</option>
 
 								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
