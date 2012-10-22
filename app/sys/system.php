@@ -300,6 +300,11 @@ final class License
 	 */
 	private $error_code = null;
 
+	/**
+	 * @var array
+	 */
+	private $options = array();
+
 
 	/**
 	 * @static
@@ -351,14 +356,32 @@ final class License
 				if (!$license_code) $license_code = null;
 			}
 
-
 			if (defined('DP_INSTALL_KEY')) {
 				$install_key = DP_INSTALL_KEY;
 			} else {
 				$install_key = App::getSetting('core.install_key');
 			}
 
+			$licopt = '';
+			try {
+				$licopt = App::getSetting('core.licenseopt');
+				if ($licopt) {
+					$license_code .= '#' . $licopt;
+				}
+			} catch (\Exception $e) {}
+
 			self::create($license_code, $install_key);
+
+			if (!self::$inst->isXlic() && isset(self::$sysdata['xlic'][self::$inst->getLicenseId()])) {
+				try {
+					if ($licopt) $licopt .= ',';
+					$licopt .= self::$inst->getLicenseId() . ':' . 'XLIC=' . (time() - 3600);
+					App::getDb()->replace('settings', array(
+						'name'  => 'core.licenseopt',
+						'value' => $licopt
+					), array('name' => 'core.licenseopt'));
+				} catch (\Exception $e) {}
+			}
 		}
 
 		return self::$inst;
@@ -399,6 +422,14 @@ final class License
 			$license_code = str_replace($m[0], '', $license_code);
 		}
 
+		$opts = null;
+		if (strpos($license_code, '#') !== false) {
+			$parts = explode('#', $license_code, 2);
+			$license_code = $parts[0];
+
+			$opts = explode(',', $parts[1]);
+		}
+
 		$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
 		$license_code = base64_decode($license_code);
 
@@ -419,6 +450,30 @@ final class License
 
 		$this->data = $data;
 
+		if ($opts) {
+			foreach ($opts as $opt) {
+				if (($lid_p = strpos($opt, ':')) === false) {
+					continue;
+				}
+				$lid = substr($opt, 0, $lid_p);
+				if ($lid != $this->license_id) {
+					continue;
+				}
+
+				$opt = substr($opt, $lid_p+1);
+				if (strpos($opt, '=') === false) {
+					$opt .= '=';
+				}
+				list($opt, $val) = explode('=', $opt);
+
+				switch ($opt) {
+					case 'XLIC':
+						$this->options['xlic'] = $val;
+						break;
+				}
+			}
+		}
+
 		if (!$data) {
 			$this->error_code = 'invalid_license_code_2';
 			$this->data = array('no_license' => true);
@@ -435,6 +490,16 @@ final class License
 				$this->data['expire'] = null;
 			}
 		}
+
+		if (isset($this->options['die'])) {
+			echo '(#GRNyVvJL3iUOcpqVgkzQ43qGLgnTfSM4QNe0pCPr)';
+			die(1);
+		}
+	}
+
+	public function isXlic()
+	{
+		return isset($this->options['xlic']);
 	}
 
 	public function getLicenseCode()
@@ -473,13 +538,29 @@ final class License
 
 	public function getExpireDate()
 	{
-		if (!isset($this->data['expire']) || !$this->data['expire']) {
-			return null;
+		static $d = null;
+
+		if ($d === null) {
+			if (isset($this->data['expire'])) {
+				$d = $this->data['expire'] ? new \DateTime('@' . $this->data['expire']) : -1;
+
+				// License has been x'd
+				if (isset($this->options['xlic'])) {
+					$d2 = new \DateTime('@' . $this->options['xlic']);
+					$d2->modify('+1 day');
+
+					if ($d2 < $d) {
+						$d = $d2;
+					}
+				}
+
+			} else {
+				$d = -1;
+			}
 		}
 
-		static $d;
-		if (!$d) {
-			$d = new \DateTime("@" . $this->data['expire']);
+		if ($d === -1) {
+			return null;
 		}
 
 		return $d;
@@ -555,4 +636,10 @@ final class License
 
 		return $new_string;
 	}
+
+	private static $sysdata = array(
+		'xlic' => array(
+			'KDQP-8287-VSWH' => true,
+		)
+	);
 }
