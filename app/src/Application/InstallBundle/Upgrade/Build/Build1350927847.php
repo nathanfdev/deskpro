@@ -29,85 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-
-class Department extends AbstractCategoryRepository
+class Build1350927847 extends AbstractBuild
 {
-	public function getAll()
+	public function run()
 	{
-		return $this->getRootNodes();
-	}
-
-
-	/**
-	 * Get the default ticket department for a given context (ticket, chat)
-	 *
-	 * @param string $context
-	 * @return \Application\DeskPRO\Entity\Department
-	 */
-	public function getDefaultDepartment($context)
-	{
-		switch ($context) {
-			case 'ticket':
-				$opt = 'core.tickets.default_department';
-				$check_field = 'is_tickets_enabled';
-				break;
-			case 'chat':
-				$opt = 'core.chat.default_department';
-				$check_field = 'is_chat_enabled';
-				break;
-			default:
-				throw new \InvalidArgumentException("Unknown context `$context`");
-		}
-
-		$dep_id = App::getSetting($opt);
-		$dep = null;
-		if ($dep_id) {
-			$dep = $this->find($dep_id);
-		}
-
-		if (!$dep) {
-			// There should always be a correct default set, but this is
-			// error handling in case
-			$dep_id = App::getDb()->fetchColumn("
-				SELECT d.id
-				FROM departments d
-				LEFT JOIN departments AS subdep ON (subdep.parent_id = d.id)
-				WHERE subdep.id IS NULL AND d.$check_field = 1
-				ORDER BY d.display_order ASC
-				LIMIT 1
-			");
-
-			if ($dep_id) {
-				$dep = $this->find($dep_id);
-			}
-		}
-
-		return $dep;
-	}
-
-
-	/**
-	 * Get deps that arent linked up to a gateway
-	 *
-	 * @return array
-	 */
-	public function getUnlinkedGatewayDepartments()
-	{
-		return $this->_em->createQuery("
-			SELECT dep
-			FROM DeskPRO:Department dep
-			LEFT JOIN dep.email_gateway em
-			WHERE em IS NULL
-			ORDER BY dep.display_order ASC
-		")->execute();
+		$this->out("Links between departments and email_gateways");
+		$this->execMutateSql("ALTER TABLE departments ADD department_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D4AE80F5DF FOREIGN KEY (department_id) REFERENCES email_gateways (id) ON DELETE SET NULL");
+		$this->execMutateSql("ALTER TABLE email_gateways ADD department_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE email_gateways ADD CONSTRAINT FK_D0C64232AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL");
 	}
 }

@@ -226,7 +226,7 @@ class AddressMatcher
 		}
 
 		if ($gateway && $gateway->getPrimaryEmailAddress()) {
-			return $gateway->getPrimaryEmailAddress();
+			return $gateway->getPrimaryEmailAddress(true);
 		}
 
 		return null;

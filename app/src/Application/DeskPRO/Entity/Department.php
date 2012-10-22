@@ -83,6 +83,11 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	 */
 	protected $is_chat_enabled = true;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 */
+	protected $email_gateway = null;
+
 	protected $_usergroups = null;
 	protected $_people = null;
 
@@ -282,5 +287,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), 'indexBy' => 'id' ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'email_gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => 'department', 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
 	}
 }

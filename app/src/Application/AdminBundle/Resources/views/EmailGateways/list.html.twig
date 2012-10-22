@@ -150,6 +150,11 @@ $(document).ready(function() {
 							{% for address in gateway.addresses %}
 								<li>{{ address.match_pattern }}</li>
 							{% endfor %}
+							{% if gateway.department %}
+								<li>
+									Department: {{ gateway.department.full_title }}
+								</li>
+							{% endif %}
 						</ul>
 					</td>
 					<td style="padding: 3px 3px 0 0">
@@ -184,6 +189,11 @@ $(document).ready(function() {
 						{{ pattern }}
 						<ul class="small-detail-list">
 							<li>{{ phrase('admin.general.account') }}: {{ gateway.title }}</li>
+							{% if gateway.department %}
+								<li>
+									Department: {{ gateway.department.full_title }}
+								</li>
+							{% endif %}
 						</ul>
 					</td>
 					<td style="padding: 3px 3px 0 0">

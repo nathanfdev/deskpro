@@ -27,6 +27,32 @@
 				</div>
 				{% endif %}
 
+				{% if gateway.department or unlinked_deps|length %}
+					<div class="dp-input-group">
+						<label>
+							Linked Department
+						</label>
+					</div>
+					<div class="dp-group-options" style="display: none">
+						<select name="gateway[department_id]">
+							{% if gateway.department %}
+								<option value="{{ gateway.department.id }}">{{ gateway.department.full_title }}</option>
+								{% if unlinked_deps|length %}<option value="{{ gateway.department.id }}">------------------------</option>{% endif %}
+							{% endif %}
+							<option value="0">Do not link a department</option>
+							{% for dep in unlinked_deps %}
+								{% if dep.children|length %}
+									{% for subdep in dep.children %}
+										<option value="{{ subdep.id }}">{{ subdep.full_title }}</option>
+									{% endfor %}
+								{% else %}
+									<option value="{{ dep.id }}">{{ dep.full_title }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+				{% endif %}
+
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />

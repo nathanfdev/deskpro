@@ -119,6 +119,8 @@ class EmailGatewaysController extends AbstractController
 			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
 
+		$unlinked_deps = $this->em->getRepository('DeskPRO:Department')->getUnlinkedGatewayDepartments();
+
 		$editgateway = new EditEmailGatewayModel($gateway);
 		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
 
@@ -237,7 +239,8 @@ class EmailGatewaysController extends AbstractController
 			'form' => $form->createView(),
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
-			'partial' => $this->request->isPartialRequest()
+			'partial' => $this->request->isPartialRequest(),
+			'unlinked_deps' => $unlinked_deps,
 		));
 	}
 

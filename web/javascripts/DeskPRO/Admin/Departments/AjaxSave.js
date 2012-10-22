@@ -147,6 +147,8 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 		var depId = row.data('department-id');
 		var currentTitle = row.find('a.edit-trigger').text().trim();
 		var currentUserTitle = row.find('a.edit-trigger').data('user-title');
+		var currentGatewayId = parseInt(row.find('a.edit-trigger').data('linked-gateway-id'));
+		var currentGatewayTitle = row.find('a.edit-trigger').data('linked-gateway-title');
 
 		this.currentEditDep = depId;
 		$('#editdep_title').val(currentTitle);
@@ -177,6 +179,26 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 				$('#editdep_overlay form').submit();
 			});
 		}
+
+		var gatesel = $('#editdep_gateway_account_id');
+		gatesel.find('option.current').remove();
+		if (currentGatewayId) {
+			var opt = $('<option />');
+			opt.text(currentGatewayTitle);
+			opt.val(currentGatewayId);
+			opt.addClass('current');
+
+			opt.prependTo(gatesel);
+			gatesel.closest('.dp-form-row').show();
+		} else {
+			if (!gatesel.find('option')[0]) {
+				gatesel.closest('.dp-form-row').hide();
+			} else {
+				gatesel.closest('.dp-form-row').show();
+			}
+		}
+
+		gatesel.find('option').first().prop('selected', true);
 
 		this.editOverlay.open();
 	},

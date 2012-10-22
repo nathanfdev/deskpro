@@ -95,6 +95,22 @@ class EmailGateway extends AbstractEntityRepository
 		return null;
 	}
 
+	/**
+	 * Get gateways that arent linked up to a department
+	 *
+	 * @return array
+	 */
+	public function getUnlinkedGateways()
+	{
+		return $this->_em->createQuery("
+			SELECT g
+			FROM DeskPRO:EmailGateway g
+			LEFT JOIN g.department dep
+			WHERE dep IS NULL AND g.is_enabled = true
+			ORDER BY g.title ASC
+		")->execute();
+	}
+
 
 	/**
 	 * Get all gateway accounts that are enabled
