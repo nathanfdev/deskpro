@@ -1095,10 +1095,10 @@ class TicketController extends AbstractController
 			#------------------------------
 
 			if (!$message['is_agent_note']) {
-				if ($this->in->getUint('options.agent_id') != -1) {
+				if ($this->in->getInt('options.agent_id') != -1) {
 					$ticket['agent_id'] = $this->in->getUint('options.agent_id');
 				}
-				if ($this->in->getUint('options.agent_team_id') != -1) {
+				if ($this->in->getInt('options.agent_team_id') != -1) {
 					$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 				}
 
