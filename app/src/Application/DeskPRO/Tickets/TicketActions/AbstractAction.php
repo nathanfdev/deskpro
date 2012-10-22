@@ -60,4 +60,12 @@ abstract class AbstractAction implements ActionInterface
 	{
 		return $this->metadata;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function doPrepend()
+	{
+		return false;
+	}
 }

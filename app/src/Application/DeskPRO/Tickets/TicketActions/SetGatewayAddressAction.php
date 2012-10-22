@@ -110,4 +110,12 @@ class SetGatewayAddressAction extends AbstractAction
 		}
 		return 'Set gateway address to ' . $this->gateway_address->match_pattern;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function doPrepend()
+	{
+		return true;
+	}
 }

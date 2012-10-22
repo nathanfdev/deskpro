@@ -116,6 +116,10 @@ class ActionsCollection
 
 		$this->actions[$name] = $action;
 
+		if (!$prepend && $action->doPrepend()) {
+			$prepend = true;
+		}
+
 		if ($prepend) {
 			unset($this->actions[$name]);
 			\Orb\Util\Arrays::unshiftAssoc($this->actions, $name, $action);

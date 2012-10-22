@@ -117,6 +117,8 @@ class AgentNotificationAction extends AbstractAction
 	{
 		if ($ticket->notify_email_agent) {
 			return $ticket->notify_email_agent;
+		} elseif ($ticket->email_gateway && $ticket->email_gateway->getPrimaryEmailAddress()) {
+			return $ticket->email_gateway->getPrimaryEmailAddress();
 		}
 
 		$from_email = App::getSetting('core.default_from_email');

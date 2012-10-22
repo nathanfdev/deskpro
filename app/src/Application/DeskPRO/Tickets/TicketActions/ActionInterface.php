@@ -86,4 +86,9 @@ interface ActionInterface
 	 * @return array
 	 */
 	public function getMetaData();
+
+	/**
+	 * @return bool
+	 */
+	public function doPrepend();
 }

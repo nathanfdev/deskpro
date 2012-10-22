@@ -64,6 +64,8 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 	{
 		if ($ticket->notify_email) {
 			$from_email = $ticket->notify_email;
+		} elseif ($ticket->email_gateway && $ticket->email_gateway->getPrimaryEmailAddress()) {
+			$from_email = $ticket->email_gateway->getPrimaryEmailAddress();
 		} else {
 			$from_email = App::getSetting('core.default_from_email');
 			$default_address = App::getDb()->fetchColumn("
@@ -182,6 +184,6 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 	 */
 	public function merge(ActionInterface $other_action)
 	{
-		return new self($this->tracker);
+		return new static($this->tracker);
 	}
 }

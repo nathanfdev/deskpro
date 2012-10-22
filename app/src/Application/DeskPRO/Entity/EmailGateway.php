@@ -136,7 +136,12 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		return \Orb\Util\Arrays::getFirstItem($this->addresses);
+		$addr = $this->addresses->first();
+		if (!$addr || $addr->match_type != 'exact') {
+			return null;
+		}
+
+		return $addr->match_pattern;
 	}
 
 

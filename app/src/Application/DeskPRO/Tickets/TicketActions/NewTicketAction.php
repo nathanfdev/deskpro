@@ -343,6 +343,8 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	{
 		if ($ticket->notify_email) {
 			$from_email = $ticket->notify_email;
+		} elseif ($ticket->email_gateway && $ticket->email_gateway->getPrimaryEmailAddress()) {
+			$from_email = $ticket->email_gateway->getPrimaryEmailAddress();
 		} else {
 			$from_email = App::getSetting('core.default_from_email');
 			$default_address = App::getDb()->fetchColumn("
