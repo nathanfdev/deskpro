@@ -519,7 +519,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var el = $('.glossary-add-dlg:first', this.glossaryWrapper);
 		this.addDlg = new DeskPRO.UI.Overlay({
 			contentElement: el,
-			customClassname: 'normal-size'
+			customClassname: 'normal-size',
+			onBeforeOverlayOpened: function() {
+				el.find('input.word, textarea.content').val('');
+			}
 		});
 
 		$('.save-trigger', el).on('click', this.saveNewWord.bind(this));
