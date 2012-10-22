@@ -705,23 +705,27 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_USERGROUP:
 					$any = false;
+
+					$choice = isset($choice['usergroup']) ? (array)$choice['usergroup'] : array();
+
 					foreach ($person->getUsergroupIds() as $ug_id) {
 						if ($this->_testChoiceMatch($ug_id, $op, $choice)) {
 							$any = true;
-							if ($op == self::OP_NOTCONTAINS) {
+							if ($op == self::OP_NOTCONTAINS || $op == self::OP_NOT) {
 								return false;
 							}
 						}
 					}
 
-					if ($op == self::OP_CONTAINS AND !$any) {
+					if (($op == self::OP_IS || $op == self::OP_CONTAINS) AND !$any) {
 						return false;
 					}
 					break;
 
 				case self::TERM_ORGANIZATION:
-					$org_id = $person->getOrganizationId();
-					if (!$this->_testChoiceMatch($org_id, $op, $choice)) {
+					$name = $person->organization ? $person->organization->name : '';
+					$choice = isset($choice['name']) ? (array)$choice['name'] : array();
+					if (!$this->_testStringMatch($name, $op, $choice)) {
 						return false;
 					}
 
