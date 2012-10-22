@@ -771,7 +771,7 @@ class Upgrade
 		if (!$is_quiet) $this->out("Performing database upgrades ...");
 
 		$write_status("updating_db_start");
-		chdir(DP_ROOT);
+		chdir(DP_ROOT . '/../');
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		exec($cmd, $out, $ret);
 		$write_status("updating_db_end");
@@ -844,7 +844,7 @@ class Upgrade
 			$this->outAndLog("Cannot find path to the `php` CLI");
 		}
 
-		chdir(DP_ROOT);
+		chdir(DP_ROOT . '/../');
 		$cmd = dp_get_php_command('cmd.php', 'dp:upgrade');
 		echo "> $cmd\n";
 		passthru($cmd, $ret);
@@ -2539,7 +2539,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$php_path = $this->upgrade->getPhpBinaryPath();
 
-		chdir(DP_ROOT);
+		chdir(DP_ROOT . '/../');
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		passthru($cmd, $ret);
 
@@ -2658,7 +2658,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$php_path = $this->upgrade->getPhpBinaryPath();
 
-		chdir(DP_ROOT);
+		chdir(DP_ROOT . '/../');
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		ob_start();
 		passthru($cmd, $ret);

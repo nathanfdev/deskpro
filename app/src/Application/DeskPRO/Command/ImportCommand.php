@@ -396,7 +396,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			@unlink($cli_check_file);
 
 			$cmd = $php_path . ' cmd.php dp_write_cli_info';
-			$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT);
+			$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT . '/../');
 			$proc->setTimeout(360000);
 			$proc->run(function ($type, $buffer) {
 				if ('err' === $type) {
@@ -936,7 +936,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					}
 
 					$cmd = $php_path . ' cmd.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
-					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT);
+					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT . '/../');
 					$proc->setTimeout(360000);
 					$proc->run(function ($type, $buffer) {
 						if ('err' === $type) {

@@ -111,7 +111,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		# The main executor loop
 		#------------------------------
 
-		chdir(DP_ROOT);
+		chdir(DP_ROOT . '/../');
 
 		while ($next_id = $manager->getNextBuildId()) {
 			$output->writeln("<info>Build #$next_id</info>");
