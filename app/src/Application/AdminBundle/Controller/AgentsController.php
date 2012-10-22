@@ -311,12 +311,13 @@ class AgentsController extends AbstractController
 			$this->em->flush();
 
 			// Specific department permissions are agent-only feature, remove those
+			// Users get them from their usergroups
 			$this->db->executeUpdate("
 				DELETE FROM department_permissions
 				WHERE person_id = ?
 			", array($agent->id));
 
-			// Specific department permissions are agent-only feature, remove those
+			// Agent groups
 			$agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
 			if ($agent_groups) {
 				$agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
@@ -325,49 +326,6 @@ class AgentsController extends AbstractController
 					WHERE person_id = ? AND usergroup_id IN (" . implode(',', $agent_group_ids) . ")
 				", array($agent->id));
 			}
-
-			// Their filter subs
-			$this->db->executeUpdate("
-				DELETE FROM ticket_filter_subscriptions
-				WHERE person_id = ?
-			", array($agent->id));
-
-			// Their filters
-			$this->db->executeUpdate("
-				DELETE FROM ticket_filters
-				WHERE person_id = ?
-			", array($agent->id));
-
-			// Their teams
-			$this->db->executeUpdate("
-				DELETE FROM agent_team_members
-				WHERE person_id = ?
-			", array($agent->id));
-
-			// Their macros
-			$this->db->executeUpdate("
-				DELETE FROM ticket_macros
-				WHERE person_id = ?
-			", array($agent->id));
-
-			// Snippets
-			$this->db->executeUpdate("
-				DELETE FROM text_snippets
-				WHERE person_id = ?
-			", array($agent->id));
-			$this->db->executeUpdate("
-				DELETE FROM text_snippet_categories
-				WHERE person_id = ?
-			", array($agent->id));
-
-			$this->db->executeUpdate("
-				DELETE FROM ticket_snippets
-				WHERE person_id = ?
-			", array($agent->id));
-			$this->db->executeUpdate("
-				DELETE FROM ticket_snippet_categories
-				WHERE person_id = ?
-			", array($agent->id));
 
 			// Assigned tickets
 			$this->db->executeUpdate("

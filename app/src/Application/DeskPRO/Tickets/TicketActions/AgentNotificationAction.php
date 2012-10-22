@@ -295,6 +295,14 @@ class AgentNotificationAction extends AbstractAction
 				continue;
 			}
 
+			if (!$agent->is_agent) {
+				$this->tracker->logMessage("[AgentNotificationAction] Not an agent: " . $agent_id);
+				$e = new \InvalidArgumentException("[AgentNotificationAction] Not an agent");
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+				continue;
+			}
+
 			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
 				$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id (noperm)");
 				continue;

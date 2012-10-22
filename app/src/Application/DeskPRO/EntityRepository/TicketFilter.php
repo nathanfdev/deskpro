@@ -49,11 +49,24 @@ class TicketFilter extends AbstractEntityRepository
 		return $this->getAllForAgents($online_agents);
 	}
 
+	public function getAllRecords()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+		")->execute();
+
+		return $filters;
+	}
+
 	public function getAll()
 	{
 		$filters = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			LEFT JOIN q.person p
+			WHERE p IS NULL OR (p.is_agent = true AND p.is_deleted = 0)
+			ORDER BY q.id ASC
 		")->execute();
 
 		return $filters;

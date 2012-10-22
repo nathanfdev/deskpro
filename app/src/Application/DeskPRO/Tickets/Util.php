@@ -85,7 +85,11 @@ class Util
 
 			} elseif (strpos($send_to, 'agent.') === 0) {
 				list (, $agent_id) = explode('.', $send_to, 2);
-				$agent_ids[] = $agent_id;
+
+				$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+				if (isset($agents[$agent_id])) {
+					$agent_ids[] = $agent_id;
+				}
 
 			} elseif (strpos($send_to, 'agent_team.') === 0) {
 				list (, $agent_team_id) = explode('.', $send_to, 2);
