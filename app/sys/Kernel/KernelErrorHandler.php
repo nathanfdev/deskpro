@@ -549,6 +549,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Dont send connection errors with smtp
+		if (strpos($errfile, 'StreamBuffer.php') !== false && strpos($errstr, 'bytes failed with errno') !== false) {
+			$no_send_error = true;
+		}
+
 		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
