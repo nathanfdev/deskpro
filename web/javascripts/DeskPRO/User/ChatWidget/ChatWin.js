@@ -30,7 +30,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					if (this.hasPostMessage) {
 						target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 					} else {
-						var targetLoc = targetUrl;
+						var targetLoc = target.location + '';
 						target.location.replace(targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message);
 
 						if (this.resetHashTimeout) {
