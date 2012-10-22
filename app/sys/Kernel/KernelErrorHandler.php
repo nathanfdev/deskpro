@@ -470,6 +470,10 @@ class KernelErrorHandler
 			return true;
 		}
 
+		if ($exception instanceof \Imagine\Exception\RuntimeException && strpos($exception->getMessage(), 'Unable to open temporary file') !== false) {
+
+		}
+
 		return false;
 	}
 
@@ -537,6 +541,11 @@ class KernelErrorHandler
 		// Dont output apc warnings (but still log them)
 		if ($display && strpos($errstr, 'Unable to allocate memory for pool') !== false) {
 			$display = false;
+			$no_send_error = true;
+		}
+
+		// Dont send in general perm errors
+		if (strpos($errstr, 'failed to open stream: Permission denied') !== false) {
 			$no_send_error = true;
 		}
 
