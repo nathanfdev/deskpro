@@ -63,6 +63,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		@ini_set('track_errors', true);
 		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
 
 		if ($input->getOption('info')) {
@@ -128,59 +129,61 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		# Report fatal errors from logs
 		#------------------------------
 
-		$date_cut = time() - 86400;
-		$date_cut_min = time() - 172800;
-		foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
-			$logpath = dp_get_log_dir() . '/' . $logfile;
-			if (!file_exists($logpath)) {
-				continue;
+		if (!defined('DPC_IS_CLOUD')) {
+			$date_cut = time() - 259200;
+			$date_cut_min = time() - 172800;
+			foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
+				$logpath = dp_get_log_dir() . '/' . $logfile;
+				if (!file_exists($logpath)) {
+					continue;
+				}
+
+				$mtime = @filemtime($logpath);
+				if (!$mtime || $mtime < $date_cut_min) {
+					continue;
+				}
+
+				// One per day
+				$check = (int)App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.cron_logreport.' . $logfile));
+				if ($check && $check > $date_cut) {
+					continue;
+				}
+
+				App::getDb()->replace('settings', array('name' => 'core.cron_logreport.' . $logfile, 'value' => time()));
+
+				if ($is_verbose) {
+					$output->writeln("Submitting $logfile log");
+				}
+
+				$log = file_get_contents($logpath);
+				if (filesize($logpath) > 307200) {
+					$log = substr($log, -307200);
+				}
+
+				$errinfo = array(
+					'type'            => 'error',
+					'session_name'    => '',
+					'die'             => false,
+					'pri'             => 'ERR',
+					'trace'           => $log,
+					'summary'         => 'PHP error log ('.$logfile.')',
+					'errstr'          => 'PHP error log ('.$logfile.')',
+					'errname'         => 'E_ERROR',
+					'errno'           => 1,
+					'errfile'         => $logfile,
+					'errline'         => 1,
+					'display'         => false,
+					'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+					'process_log'     => '',
+					'context_data'    => '',
+					'error_time'      => microtime(true),
+					'time_to_error'   => 1
+				);
+
+				try {
+					\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
+				} catch (\Exception $e) {}
 			}
-
-			$mtime = @filemtime($logpath);
-			if (!$mtime || $mtime < $date_cut_min) {
-				continue;
-			}
-
-			// One per day
-			$check = (int)App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.cron_logreport.' . $logfile));
-			if ($check && $check > $date_cut) {
-				continue;
-			}
-
-			App::getDb()->replace('settings', array('name' => 'core.cron_logreport.' . $logfile, 'value' => time()));
-
-			if ($is_verbose) {
-				$output->writeln("Submitting $logfile log");
-			}
-
-			$log = file_get_contents($logpath);
-			if (filesize($logpath) > 307200) {
-				$log = substr($log, -307200);
-			}
-
-			$errinfo = array(
-				'type'            => 'error',
-				'session_name'    => '',
-				'die'             => false,
-				'pri'             => 'ERR',
-				'trace'           => $log,
-				'summary'         => 'PHP error log ('.$logfile.')',
-				'errstr'          => 'PHP error log ('.$logfile.')',
-				'errname'         => 'E_ERROR',
-				'errno'           => 1,
-				'errfile'         => $logfile,
-				'errline'         => 1,
-				'display'         => false,
-				'build'           => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-				'process_log'     => '',
-				'context_data'    => '',
-				'error_time'      => microtime(true),
-				'time_to_error'   => 1
-			);
-
-			try {
-				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
-			} catch (\Exception $e) {}
 		}
 
 		#------------------------------
@@ -205,6 +208,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		} elseif ($input->getOption('group')) {
 			$cron_id .= '-g-' . $input->getOption('group');
 		}
+
+		$GLOBALS['DP_CRON_ID'] = $cron_id;
 
 		if (!$input->getOption('ignore-interval')) {
 			$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.' . $cron_id));
@@ -258,36 +263,62 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			'value' => time()
 		));
 
-		try {
-			$step = (int)App::getSetting('core.setup_initial');
-
-			// Only run crom if we've passed initial setup
-			// This command will just execute nothing and set the last run time
-			// so the system knows its been set up
-			if ($step) {
-				$ret = $this->doExecute($input, $output);
-			} else {
-				$ret = 0;
+		\DpShutdown::add(function() {
+			// Already done (clean shutdown)
+			if (!isset($GLOBALS['DP_CRON_ID'])) {
+				return;
 			}
 
-			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
-			App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
+			try {
+				$last_error = error_get_last();
+				if (!$last_error && isset($GLOBALS['DP_LAST_ERROR'])) {
+					$last_error = $GLOBALS['DP_LAST_ERROR'];
+				} elseif (!$last_error && isset($php_errormsg) && $php_errormsg) {
+					$last_error = array($php_errormsg);
+				}
 
-			$done_time = microtime(true);
-			App::getDb()->insert('log_items', array(
-				'log_name' => 'worker_job.cron_runner',
-				'session_name' => 'cron_runner.' . $time_start,
-				'flag' => 'cron_end',
-				'priority' => 6,
-				'priority_name' => 'INFO',
-				'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
-				'date_created' => date('Y-m-d H:i:s')
-			));
-			return $ret;
-		} catch (\Exception $e) {
-			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
-			throw $e;
+				if ($last_error) {
+					$e = new \Exception("Cron did not shut down cleanly. Last error: " . implode("\n", $last_error));
+					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+				} else {
+					$e = new \Exception("Cron did not shut down cleanly");
+					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+				}
+
+				App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $GLOBALS['DP_CRON_ID']));
+			} catch (\Exception $e) {}
+		});
+
+		$step = (int)App::getSetting('core.setup_initial');
+
+		// Only run crom if we've passed initial setup
+		// This command will just execute nothing and set the last run time
+		// so the system knows its been set up
+		if ($step) {
+			$ret = $this->doExecute($input, $output);
+		} else {
+			$ret = 0;
 		}
+
+		App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
+		App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
+
+		$done_time = microtime(true);
+		App::getDb()->insert('log_items', array(
+			'log_name' => 'worker_job.cron_runner',
+			'session_name' => 'cron_runner.' . $time_start,
+			'flag' => 'cron_end',
+			'priority' => 6,
+			'priority_name' => 'INFO',
+			'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
+			'date_created' => date('Y-m-d H:i:s')
+		));
+
+		unset($GLOBALS['DP_CRON_ID']);
+
+		return $ret;
 	}
 
 	protected function doExecute(InputInterface $input, OutputInterface $output)

@@ -88,6 +88,8 @@ class KernelErrorHandler
 	 */
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
+		$GLOBALS['DP_LAST_ERROR'] = array('type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline);
+
 		if (!(error_reporting() & $errno)) {
 			return;
 		}
@@ -151,6 +153,8 @@ class KernelErrorHandler
 		if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
 			return;
 		}
+
+		$GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getFile());
 
 		self::$is_handling_exception = true;
 

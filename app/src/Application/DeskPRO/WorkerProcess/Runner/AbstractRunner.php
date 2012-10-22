@@ -64,7 +64,7 @@ abstract class AbstractRunner
 	/**
 	 * @var int
 	 */
-	protected $job_time_limit = 40;
+	protected $job_time_limit = 300;
 
 
 	/**
