@@ -3,7 +3,7 @@ var Orb = {};
 if (!window.console) {
 	window.console = {};
 }
-['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
+['error', 'log', 'warn', 'info', 'debug', 'trace'].each(function(v) {
 	if (!window.console[v]) {
 		window.console[v] = function() { };
 	}
@@ -183,6 +183,18 @@ Orb.findHighestZindex = function(els) {
  */
 Orb.escapeHtml = function(string) {
 	string = string||'';
+
+	if (typeOf(string) != 'element') {
+		string = $(string).text();
+	} else if (typeOf(string) != 'string') {
+		if (string.toString) {
+			string = string.toString();
+		}
+		console.error("Invalid type passed to Orb.escapeHtml: %o", string);
+		console.trace();
+		return (typeof string) + '';
+	}
+
 	return string.replace(/&/g, "&amp;")
 		.replace(/>/g, "&gt;")
 		.replace(/</g, "&lt;")
