@@ -113,6 +113,7 @@ class ActionsFactory
 				break;
 			case 'urgency_set':
 				$options['num'] = $value['num'];
+				$options['allow_lower'] = isset($value['allow_lower']) && $value['allow_lower'] ? true : false;
 				break;
 			case 'workflow':
 				$options['workflow'] = $value['workflow'];

@@ -63,7 +63,7 @@ class UrgencySetAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if ($ticket->urgency < $this->num && !$this->allow_lower) {
+		if ($this->allow_lower || $ticket->urgency < $this->num) {
 			$ticket['urgency'] = $this->num;
 		}
 	}
