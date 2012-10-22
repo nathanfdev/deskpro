@@ -1327,6 +1327,11 @@ class Strings
 			$html = str_replace('<a', '<a target="_blank"', $html);
 		}
 
+		// Attempt to fix bad www. urls. These will be invalid input from the client,
+		// but we can try to fix them easily enough
+		// We're just looking for schema-less links to insert http://
+		$html = preg_replace('#<a([^>]*)href=("|\')(?![a-zA-Z0-9]+:)#', '<a$1href=$2http://', $html);
+
 		return $html;
 	}
 
