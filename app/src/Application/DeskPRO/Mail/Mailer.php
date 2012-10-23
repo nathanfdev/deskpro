@@ -233,6 +233,15 @@ class Mailer extends \Swift_Mailer implements Loggable
 		}
 	}
 
+	public function countQueued()
+	{
+		if (!$this->queued) {
+			return 0;
+		}
+
+		return count($this->queued);
+	}
+
 	public function sendNow(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		return parent::send($message, $failedRecipients);

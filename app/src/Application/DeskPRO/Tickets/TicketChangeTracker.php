@@ -716,8 +716,12 @@ class TicketChangeTracker extends ChangeTracker
 		$this->getSearchUpdater()->run();
 		$this->logMessage(sprintf("[TicketChangeTracker] Search updater took %.4f seconds", microtime(true)-$time));
 
-		$total_time = microtime(true) - $this->start_time;
+		$this->logMessage(sprintf("[TicketChangeTracker] Sending %d queued emails", App::getMailer()->countQueued()));
+		$email_start = microtime(true);
+		App::getMailer()->sendQueuedSilent();
+		$this->logMessage(sprintf("[TicketChangeTracker] -- Done sending in %.4f seconds", microtime($email_start) - $email_start));
 
+		$total_time = sprintf("%.4f", microtime(true) - $this->start_time);
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
 		$this->running = false;
