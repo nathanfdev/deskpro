@@ -98,6 +98,17 @@ class TermSummary
 				$summary = $tr->phrase('agent.general.content_matches_summary', array('pattern' => $choice));
 				break;
 
+			case 'agent_performer':
+				$summary = $this->_choiceSummary("Agent performer", $op, $choice['agent_ids'], function($choice) {
+					$titles = App::getDataService('Agent')->getNames((array)$choice);
+					return $titles;
+				});
+				break;
+
+			case 'user_performer_email':
+				$summary = $this->_stringMatchSummary("User performer email address", $op, $choice['user_email']);
+				break;
+
 			case 'department':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
 					$titles = App::getDataService('Department')->getNames((array)$choice);

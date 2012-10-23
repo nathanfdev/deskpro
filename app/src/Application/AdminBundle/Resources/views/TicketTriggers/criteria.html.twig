@@ -460,6 +460,22 @@
 			<input type="hidden" name="do" value="1" />
 		</div>
 	</div>
+
+	<div class="builder-type" title="Agent Performer" data-rule-type="agent_performer" data-term-type="GenericMenuTerm">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.is') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.is_not') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<select name="agent_ids[]" multiple="multiple">
+				{% for agent in app.getDataRepository('Agent').getAgents() %}
+					<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 	{% endif %}
 
 	{% if event_trigger_sub == 'user' %}
@@ -469,6 +485,20 @@
 		</div>
 		<div class="builder-options">
 			<input type="hidden" name="do" value="1" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="User Performer Email" data-rule-type="user_performer_email" data-term-type="GenericMenuTerm">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="user_email" value="" placeholder="Enter an email address of a user to match" />
 		</div>
 	</div>
 	{% endif %}

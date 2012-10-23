@@ -339,6 +339,56 @@ class TicketTerms
 
 				break;
 
+			case 'agent_performer':
+
+				$performer = $tracker ? $tracker->getPersonPerformer() : null;
+				if (!$performer && App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
+					$performer = App::getCurrentPerson();
+				}
+
+				if (!$performer || !$performer->is_agent) {
+					if ($op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					$agent_ids = $choice['agent_ids'];
+					$any = false;
+					foreach ($agent_ids as $id) {
+						if ($person->getId() == $id) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS && !$any) {
+						return false;
+					}
+				}
+
+				break;
+
+			case 'user_performer_email':
+
+				$performer = $tracker ? $tracker->getPersonPerformer() : null;
+				if (!$performer && App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
+					$performer = App::getCurrentPerson();
+				}
+
+				if (!$performer) {
+					if ($op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					$email = $performer->getPrimaryEmailAddress();
+					if (!$this->_testStringMatch($email, $op, $choice['user_email'])) {
+						return false;
+					}
+				}
+
+				break;
+
 			case 'action_performer':
 				$is_agent = App::getCurrentPerson()->isAgent();
 
