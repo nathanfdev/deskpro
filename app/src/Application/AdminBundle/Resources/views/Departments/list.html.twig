@@ -192,7 +192,6 @@
 	<form action="{{ path('admin_departments_setdefault', {type: 'tickets'}) }}" method="POST">
 		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This is the value selected by default"></span> Default department:
 		<select name="default_value">
-			<option></option>
 			{% for dep in all_departments %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">
