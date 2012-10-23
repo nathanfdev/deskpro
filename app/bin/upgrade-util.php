@@ -3033,7 +3033,7 @@ class Zip_PclZip implements DpZip
 		$zip = new \PclZip($out_filepath);
 		$zip->add(
 			$path,
-			\PCLZIP_OPT_REMOVE_PATH, $path,
+			\PCLZIP_OPT_REMOVE_PATH, dirname($path),
 			\PCLZIP_OPT_ADD_PATH, 'dp_zip'
 		);
 
