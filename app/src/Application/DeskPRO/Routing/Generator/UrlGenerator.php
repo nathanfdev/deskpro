@@ -70,7 +70,18 @@ class UrlGenerator extends BaseUrlGenerator
 	public function generatePath($name, $parameters = array(), $absolute = false)
 	{
 		$url = $this->generate($name, $parameters, $absolute);
+
+		$with_file = false;
+		if (strpos($url, '/file.php/') !== false) {
+			$with_file = true;
+			$url = str_replace('/file.php/', '/index.php/', $url);
+		}
 		$url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
+
+		if ($with_file) {
+			$url = '/file.php' . $url;
+		}
+
 		return $url;
 	}
 
