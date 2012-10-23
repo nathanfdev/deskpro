@@ -29,12 +29,12 @@ var DpChatWidget = new (function() {
 			styleEl.setAttribute('type', 'text/css');
 
 			// IE
-			if (style.styleSheet) {
+			if (styleEl.styleSheet) {
 				styleEl.styleSheet.cssText = css;
 
 			// Others
 			} else {
-				style.appendChild(document.createTextNode(css));
+				styleEl.appendChild(document.createTextNode(css));
 			}
 
 			return styleEl;
@@ -643,7 +643,7 @@ var DpChatWidget = new (function() {
 		var data = messageData.split(':');
 		var messageId = data.shift();
 
-		console.log('[ChatWidget] comms received: %s %o', messageId, data);
+		DpConsole.log('[ChatWidget] comms received: %s %o', messageId, data);
 
 		switch (messageId) {
 			case 'started':

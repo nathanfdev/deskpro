@@ -148,16 +148,6 @@
 				<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label>
 			</div>
 			<div class="dp-form-input">
-				<span class="show-non-gapps" {% if gateway.connection_type == 'gmail' %}style="display: none"{% endif %}>
-					{% if partial == 'setup' %}
-						Use the default outgoing email account you defined above.
-					{% else %}
-						{% set phrase_link %}
-							<a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>.
-						{% endset %}
-						{{ phrase('admin.gateway.using_the', {'link':phrase_link}, true) }}
-					{% endif %}
-                </span>
 				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.gateway.use_google_for_outgoing') }}</span>
 				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.gateway.use_different_outgoing_account') }}</button>
 			</div>
@@ -168,7 +158,7 @@
 		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label> <button class="clean-white small toggle-custom-smtp">{{ phrase('admin.gateway.revert_default_outgoing_account') }}</button>
+					<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label> <button class="clean-white small toggle-custom-smtp" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>Use the same Google Apps account</button>
 				</div>
 				<div class="dp-form-input">
 					<div class="dp-input-group">
