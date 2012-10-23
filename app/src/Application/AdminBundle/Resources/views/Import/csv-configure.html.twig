@@ -7,7 +7,8 @@
 	function _page_exec() {
 		window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.CsvImportConfigure([
 			'secondary_email', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook',
-			'address1', 'address2', 'city', 'state', 'post_code', 'country'
+			'address1', 'address2', 'city', 'state', 'post_code', 'country', 'new_custom'
+			{% for field in custom_fields %}{% if field.isChoiceType() and field.getOption('multiple') %}, 'custom_{{ field.id }}' {% endif %}{% endfor %}
 		]);
 	}
 </script>
@@ -25,8 +26,8 @@
 	<thead>
 		<tr>
 			<th style="text-align: left; width: 20%">Column Name</th>
-			<th style="text-align: left; width: 42%">Example Data</th>
-			<th style="text-align: left; width: 38%">Mapping Field</th>
+			<th style="text-align: left; width: 40%">Example Data</th>
+			<th style="text-align: left; width: 40%">Mapping Field</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -60,13 +61,12 @@
 					<option value="post_code">Post Code</option>
 					<option value="country">Country</option>
 				</optgroup>
-				{% if custom_fields is not empty %}
-					<optgroup label="Custom Fields">
-					{% for field in custom_fields %}
-						<option value="custom_{{ field.id }}">{{ field.title }}</option>
-					{% endfor %}
-					</optgroup>
-				{% endif %}
+				<optgroup label="Custom Fields">
+				{% for field in custom_fields %}
+					<option value="custom_{{ field.id }}">{{ field.title }}</option>
+				{% endfor %}
+					<option value="new_custom">New Custom Field</option>
+				</optgroup>
 			</select></td>
 		</tr>
 	{% endfor %}
@@ -136,6 +136,22 @@
 		<li data-map-type="country">
 			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
 		</li>
+		<li data-map-type="new_custom">
+			<input type="text" name="%prefix%[title]" placeholder="Title" style="width: 80px" />
+			<select name="%prefix%[handler_class]">
+				<option value="Application\DeskPRO\CustomFields\Handler\Text">Text</option>
+				<option value="Application\DeskPRO\CustomFields\Handler\Textarea">Textarea</option>
+				<option value="Application\DeskPRO\CustomFields\Handler\Choice">Choice</option>
+				<option value="Application\DeskPRO\CustomFields\Handler\Date">Date</option>
+			</select>
+		</li>
+		{% for field in custom_fields %}
+		{% if field.isChoiceType() %}
+			<li data-map-type="custom_{{ field.id }}">
+				<label><input type="checkbox" name="%prefix%[new_on_unknown]" value="1" checked="checked" /> Add new choice if unknown</label>
+			</li>
+		{% endif %}
+		{% endfor %}
 	</ul>
 
 	<input type="hidden" name="filename" value="{{ filename }}" />

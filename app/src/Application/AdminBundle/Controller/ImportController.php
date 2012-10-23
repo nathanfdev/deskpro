@@ -135,11 +135,6 @@ class ImportController extends AbstractController
 		fclose($fp);
 
 		$custom_fields = App::getApi('custom_fields.people')->getEnabledFields();
-		foreach ($custom_fields AS $key => $field) {
-			if ($field->isChoiceType()) {
-				unset($custom_fields[$key]);
-			}
-		}
 
 		return $this->render('AdminBundle:Import:csv-configure.html.twig', array(
 			'filename' => $filename,

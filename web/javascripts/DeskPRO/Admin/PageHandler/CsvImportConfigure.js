@@ -46,7 +46,7 @@ DeskPRO.Admin.PageHandler.CsvImportConfigure = new Class({
 
 			var extra = extras.find('li[data-map-type="' + $this.val() + '"]');
 			if (extra.length) {
-				var html = extra.html().replace('%prefix%', $this.attr('name').replace('[map]', ''));
+				var html = extra.html().replace(/%prefix%/g, $this.attr('name').replace('[map]', ''));
 				$('<span />').html(html).insertAfter($this);
 			}
 

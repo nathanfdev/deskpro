@@ -299,6 +299,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 	}
 
 
+	/**
+	 * @return \Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getAllChildren()
+	{
+		return $this->children;
+	}
+
+
 
 	/**
 	 * Get an array of all IDs from this def and down.

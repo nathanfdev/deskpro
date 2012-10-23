@@ -1222,7 +1222,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Add a custom data item to this ticket
 	 *
-	 * @param CustomDataTicket $data
+	 * @param CustomDataPerson $data
 	 */
 	public function addCustomData(CustomDataPerson $data)
 	{
