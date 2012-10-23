@@ -697,7 +697,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// The cut message is blank, fallback to using the full message
 		if (!trim(strip_tags($email_info['body']))) {
-			if ($email_info['generic_cut'] && trim(strip_tags($email_info['generic_cut']))) {
+			if (isset($email_info['generic_cut']) && trim(strip_tags($email_info['generic_cut']))) {
 				$email_info['body'] = $email_info['generic_cut'];
 			} else {
 				$email_info['body'] = $email_info['body_full'];
