@@ -113,17 +113,25 @@ class SendTicketEmailAction extends AbstractAction
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $from_address, $ticket, $person, $parts) {
 
+			$email = $person->getPrimaryEmailAddress();
+			if(!$email && $ticket->person_email_validating) {
+				$email = $ticket->person_email_validating;
+			}
+
+			if (!$email) {
+				return;
+			}
+
 			$message = App::getMailer()->createMessage();
 			$message->setContextId('ticket_gateway');
 			$message->setTemplate('DeskPRO:emails_user:ticket-email-blank.html.twig', $vars);
 
-			if (!empty($vars['validating_email'])) {
-				$message->setTo($vars['validating_email']->getEmail());
-			} else {
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-			}
+			$message->setTo($email, $person->getDisplayName());
+
 			foreach ($parts as $part) {
-				$message->addCc($part['email_address'], $part->person->getDisplayName());
+				if ($part['email_address']) {
+					$message->addCc($part['email_address'], $part->person->getDisplayName());
+				}
 			}
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
