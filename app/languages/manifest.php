@@ -90,6 +90,19 @@
 		'is_managed' => true
 	),
 
+	'norwegian' => array(
+		'id'         => 'norwegian',
+		'lang_code'  => 'nor',
+		'title'      => 'Norwegian',
+		'locale'     => 'no',
+		'flag_image' => 'no.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'persian' => array(
 		'id'         => 'persian',
 		'lang_code'  => 'per',
@@ -277,18 +290,6 @@
 		'lang_code'  => 'cmn',
 		'title'      => 'Mandarin',
 		'locale'     => 'cmn',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'norwegian' => array(
-		'id'         => 'norwegian',
-		'lang_code'  => 'nor',
-		'title'      => 'Norwegian',
-		'locale'     => 'no',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
