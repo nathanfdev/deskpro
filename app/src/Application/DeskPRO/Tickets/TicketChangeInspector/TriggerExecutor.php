@@ -381,7 +381,7 @@ class TriggerExecutor
 				// If ticket is over antiflood, require validation
 				if ($new_ticket_count > App::getSetting('core_email.antiflood_newtickets')) {
 					$this->tracker->logMessage('Anti-flood delete');
-					$actions_collection->add($factory->create('delete', array()));
+					$actions_collection->add($factory->create('force_email_validation', array()));
 
 				// Lower threshold for turning off notificaiton
 				} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newtickets_warn')) {
