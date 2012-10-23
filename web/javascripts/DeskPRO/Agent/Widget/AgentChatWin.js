@@ -93,7 +93,12 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		// One agent: we're sending a new one, we dont define ourselves
 		// Two agents with us: incoming new message and got agentids from server, which includes us
 		if (!this.options.title && (this.agentIds.length == 1 || (this.agentIds.length == 2 && this.agentIds.indexOf(parseInt(DESKPRO_PERSON_ID)) != -1) )) {
-			var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[0]);
+
+			if (this.agentIds[0] == DESKPRO_PERSON_ID) {
+				var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[1]);
+			} else {
+				var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[0]);
+			}
 
 			if (!agentInfo) {
 				return;
