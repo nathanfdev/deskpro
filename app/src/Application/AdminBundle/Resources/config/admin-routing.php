@@ -1593,6 +1593,13 @@ $collection->add('admin_departments_saveagents', new Route(
 	array()
 ));
 
+$collection->add('admin_departments_savegateway', new Route(
+	'/departments/{department_id}/save-gateway-account.json',
+	array('_controller' => 'AdminBundle:Departments:saveGatewayAccount'),
+	array('department_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_departments_setdefault', new Route(
 	'/departments/{type}/set-default',
 	array('_controller' => 'AdminBundle:Departments:setDefault'),

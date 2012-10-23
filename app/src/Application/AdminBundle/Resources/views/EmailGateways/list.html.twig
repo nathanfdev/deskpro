@@ -17,6 +17,10 @@
 	#email_forward_list input[type="text"] {
 		width: 50%;
 	}
+
+	.select2-container .select2-choice span {
+		text-align: left;
+	}
 </style>
 
 <script type="text/javascript">
@@ -42,10 +46,22 @@ $(document).ready(function() {
 		}
 	});
 
+	DP.select($('select.change-linked-dep'));
+
 	$('select.change-linked-dep').on('change', function() {
 		var gateway_id = $(this).data('gateway-id');
 		var dep_id = $(this).val();
 		var el = $(this);
+		var me = this;
+
+		if (dep_id != '0') {
+			$('select.change-linked-dep').each(function() {
+				if (this != me && $(this).val() == dep_id) {
+					$(this).select2('val', '0');
+					DeskPRO_Window.util.showSavePuff($(this).prev());
+				}
+			});
+		}
 
 		$.ajax({
 			url: '{{ path('admin_emailgateways_setlinkeddep') }}',
@@ -55,7 +71,7 @@ $(document).ready(function() {
 			},
 			method: 'POST',
 			success: function() {
-				DeskPRO_Window.util.showSavePuff(el);
+				DeskPRO_Window.util.showSavePuff(el.prev());
 			}
 		});
 	});

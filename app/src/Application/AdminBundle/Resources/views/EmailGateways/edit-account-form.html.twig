@@ -16,20 +16,16 @@
 		</div>
 		<div class="dp-form-input">
 			<select name="department_id">
-				{% if gateway.department %}
-					<option value="{{ gateway.department.id }}">{{ gateway.department.full_title }}</option>
-					<option value="{{ gateway.department.id }}">------------------------</option>
-				{% endif %}
-				<option value="0">Do not link a department</option>
+				<option value="0" {% if not gateway.department and not selected_department_id %}selected="selected"{% endif %}>Do not link a department</option>
 				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
 						<optgroup label="{{ dep.title }}">
 							{% for subdep in dep.children %}
-								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == subdep.id or selected_department_id == subdep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
 							{% endfor %}
 						</optgroup>
 					{% else %}
-						<option value="{{dep.id}}">{{dep.title}}</option>
+						<option value="{{dep.id}}" {% if gateway.department.id == dep.id or selected_department_id == dep.id %}selected="selected"{% endif %}>{{dep.title}}</option>
 					{% endif %}
 				{% endfor %}
 			</select>

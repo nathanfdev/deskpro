@@ -86,9 +86,9 @@ class DepartmentsController extends AbstractController
 		$filter_outer($current_options_tickets);
 		$filter_outer($current_options_chat);
 
-		$unlinked_gateways = null;
+		$gateway_accounts = null;
 		if ($type == 'tickets') {
-			$unlinked_gateways = $this->em->getRepository('DeskPRO:EmailGateway')->getUnlinkedGateways();
+			$gateway_accounts = $this->em->getRepository('DeskPRO:EmailGateway')->getAllEnabled();
 		}
 
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
@@ -99,7 +99,25 @@ class DepartmentsController extends AbstractController
 			'usergroups' => $usergroups,
 			'current_options_tickets' => $current_options_tickets,
 			'current_options_chat' => $current_options_chat,
-			'unlinked_gateways' => $unlinked_gateways,
+			'gateway_accounts' => $gateway_accounts,
+		));
+	}
+
+	public function saveGatewayAccountAction($department_id)
+	{
+		$department = $this->em->find('DeskPRO:Department', $department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		$email_gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_account_id'));
+
+		$this->em->getRepository('DeskPRO:Department')->linkToGateway($department, $email_gateway);
+
+		return $this->createJsonResponse(array(
+			'department_id' => $department->getId(),
+			'email_gateway_id' => $email_gateway ? $email_gateway->getId() : 0
 		));
 	}
 
@@ -163,27 +181,6 @@ class DepartmentsController extends AbstractController
 			}
 		}
 
-		$type = $department->is_tickets_enabled ? 'tickets' : 'chat';
-		if ($type == 'tickets') {
-
-			$old_email_gateway = $department->email_gateway;
-			if ($old_email_gateway) {
-				$old_email_gateway->department = null;
-				$this->em->persist($old_email_gateway);
-			}
-
-			$email_gateway = null;
-			if ($this->in->getUint('gateway_account_id')) {
-				$email_gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_account_id'));
-			}
-
-			$department->email_gateway = $email_gateway;
-			if ($email_gateway) {
-				$email_gateway->department = $department;
-				$this->em->persist($email_gateway);
-			}
-		}
-
 		$this->em->persist($department);
 
 		$this->em->getConnection()->beginTransaction();
@@ -232,25 +229,10 @@ class DepartmentsController extends AbstractController
 			SELECT id FROM people WHERE is_agent = 1
 		");
 
-		$email_gateway = null;
-		if ($type == 'tickets') {
-			if ($this->in->getUint('gateway_account_id')) {
-				$email_gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_account_id'));
-			}
-
-			$department->email_gateway = $email_gateway;
-		}
-
 		$this->em->getConnection()->beginTransaction();
 
 		try {
 			$this->em->persist($department);
-
-			if ($email_gateway) {
-				$email_gateway->department = $department;
-				$this->em->persist($email_gateway);
-			}
-
 			$this->em->flush();
 
 			$dep_perms = array();

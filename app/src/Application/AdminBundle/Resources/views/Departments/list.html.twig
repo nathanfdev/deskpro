@@ -1,5 +1,56 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block html_head %}
+<style type="text/css">
+{% if type == 'tickets' %}
+.dp-grid article.dp-grid-row .col .r .inner-wrap2 {
+	height: 30px;
+}
+{% endif %}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+	var selects = $('select.change-linked-gateway');
+	DP.select(selects, {
+		width: 256
+	});
+
+	selects.on('change', function(ev) {
+		var sel = $(this);
+		var departmentId = $(this).data('department-id');
+		var gatewayId = $(this).val();
+		var me = this;
+
+		if (gatewayId == '-1') {
+			window.location = '{{ path('admin_emailgateways_new') }}?linked_department_id=' + departmentId;
+			return;
+		}
+
+		// Change value of existing selects
+		if (gatewayId != '0') {
+			selects.each(function() {
+				if (this != me && $(this).val() == gatewayId) {
+					$(this).select2('val', '0');
+					DeskPRO_Window.util.showSavePuff($(this).prev());
+				}
+			});
+		}
+
+		$.ajax({
+			url: BASE_URL + 'admin/departments/'+departmentId+'/save-gateway-account.json',
+			data: {
+				gateway_account_id: gatewayId
+			},
+			type: 'POST',
+			dataType: 'json',
+			success: function(data) {
+				DeskPRO_Window.util.showSavePuff(sel.prev());
+			}
+		});
+	});
+});
+</script>
+{% endblock %}
 {% block pagebar %}
 	<nav>
 		<ul>
@@ -27,8 +78,8 @@
 				<h1>{{ phrase('agent.general.department') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{% if type == 'tickets' %}
-				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin ', style: "width: 275px"}) }}
-					<h1>Gateway</h1>
+				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin ', style: "width: 275px;"}) }}
+					<h1>Linked Email Account</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{% endif %}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin', style: "width: 125px"}) }}
@@ -41,7 +92,7 @@
 		{% endfor %}
 	{{ design.dpgrid_end() }}
 
-<div id="editdep_overlay" style="width: 400px; {% if type == 'tickets' and unlinked_gateways|length %}height: 383px;{% else %}height: 330px;{% endif %}; display: none;">
+<div id="editdep_overlay" style="width: 400px; height: 330px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>{{ phrase('admin.departments.edit_department_title') }}</h4>
@@ -81,21 +132,6 @@
 					</select>
 				</div>
 			</div>
-			{% if type == 'tickets' %}
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>Gateway Account</label>
-					</div>
-					<div class="dp-form-input">
-						<select name="gateway_account_id" id="editdep_gateway_account_id">
-							<option value="0">No linked gateway account</option>
-							{% for email_gateway in unlinked_gateways %}
-								<option value="{{ email_gateway.id }}">{{ email_gateway.title }}</option>
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-			{% endif %}
 		</form>
 	</div>
 	<div class="overlay-footer">
@@ -103,7 +139,7 @@
 	</div>
 </div>
 
-<div id="newdep_overlay" style="width: 400px; {% if type == 'tickets' and unlinked_gateways|length %}height: 383px;{% else %}height: 330px;{% endif %}; display: none;">
+<div id="newdep_overlay" style="width: 400px; height: 330px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>{{ phrase('admin.departments.new_department') }}</h4>
@@ -143,22 +179,6 @@
 					</select>
 				</div>
 			</div>
-
-			{% if type == 'tickets' and unlinked_gateways|length %}
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>Gateway Account</label>
-					</div>
-					<div class="dp-form-input">
-						<select name="gateway_account_id" id="newdep_gateway_account_id">
-							<option value="0">No linked gateway account</option>
-							{% for email_gateway in unlinked_gateways %}
-								<option value="{{ email_gateway.id }}">{{ email_gateway.title }}</option>
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-			{% endif %}
 		</form>
 	</div>
 	<div class="overlay-footer">

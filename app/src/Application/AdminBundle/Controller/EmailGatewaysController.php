@@ -119,6 +119,8 @@ class EmailGatewaysController extends AbstractController
 			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
 
+		$selected_department_id = $this->in->getUint('linked_department_id');
+
 		$editgateway = new EditEmailGatewayModel($gateway);
 		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
 
@@ -264,6 +266,7 @@ class EmailGatewaysController extends AbstractController
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
 			'partial' => $this->request->isPartialRequest(),
+			'selected_department_id' => $selected_department_id,
 		));
 	}
 
@@ -298,27 +301,22 @@ class EmailGatewaysController extends AbstractController
 		$new_dep = false;
 		if ($set_dep_id) {
 			$new_dep = $this->em->find('DeskPRO:Department', $set_dep_id);
-			if ($new_dep) {
-				$new_dep->email_gateway = $gateway;
-				$gateway->department = $new_dep;
-
-				$this->em->persist($new_dep);
-				$this->em->persist($gateway);
-				$set_dep_id = $new_dep->getId();
+		}
+		if ($new_dep) {
+			$this->em->getRepository('DeskPRO:Department')->linkToGateway($new_dep, $gateway);
+		} else {
+			if ($old_dep && $old_dep->getId() != $set_dep_id) {
+				$old_dep->email_gateway = null;
+				$this->em->persist($old_dep);
 			}
-		}
 
-		if ($old_dep && $old_dep->getId() != $set_dep_id) {
-			$old_dep->email_gateway = null;
-			$this->em->persist($old_dep);
-		}
+			if (!$new_dep) {
+				$gateway->department = null;
+			}
 
-		if (!$new_dep) {
-			$gateway->department = null;
+			$this->em->persist($gateway);
+			$this->em->flush();
 		}
-
-		$this->em->persist($gateway);
-		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'gateway_id' => $gateway->getId(),

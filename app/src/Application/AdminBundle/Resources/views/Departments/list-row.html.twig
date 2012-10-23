@@ -45,12 +45,16 @@
 	{{ design.dpgrid_col_end() }}
 
 	{% if type == 'tickets' %}
-		{{ design.dpgrid_col({ class: 'l r alt l-margin r-margin', style: "width: 275px; overflow: hidden; whitespace: nowrap;"}) }}
-			{% if department.email_gateway %}
-				{{ department.email_gateway.title }}
-			{% else %}
-				None
-			{% endif %}
+		{{ design.dpgrid_col({ class: 'l r alt l-margin', style: "width: 275px;"}) }}
+			<select class="change-linked-gateway" style="width: 256px;" data-department-id="{{ department.id }}">
+				<option value="0" {% if not department.email_gateway %}selected="selected"{% endif %}>None</option>
+				<option value="-1">Create a new email account &rarr;</option>
+				<optgroup label="Email Accounts">
+					{% for gateway in gateway_accounts %}
+						<option value="{{ gateway.id }}" {% if department.email_gateway.id == gateway.id %}selected="selected"{% endif %}>{{ gateway.getPrimaryEmailAddress() }}</option>
+					{% endfor %}
+				</optgroup>
+			</select>
 		{{ design.dpgrid_col_end() }}
 
 		{{ design.dpgrid_col({ class: 'l r alt l-margin r-margin', style: "width: 125px;"}) }}

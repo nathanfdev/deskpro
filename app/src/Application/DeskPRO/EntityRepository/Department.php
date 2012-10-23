@@ -110,4 +110,62 @@ class Department extends AbstractCategoryRepository
 			ORDER BY dep.display_order ASC
 		")->execute();
 	}
+
+
+	/**
+	 * @param $department
+	 * @param $email_gateway
+	 */
+	public function linkToGateway($department, $email_gateway = null)
+	{
+		$em = $this->_em;
+
+		$old_email_gateway = $department->email_gateway;
+
+		// Unlink old
+		if ($old_email_gateway) {
+			$old_email_gateway->department = null;
+			$em->persist($old_email_gateway);
+
+			$department->email_gateway = null;
+		}
+
+		if ($email_gateway && $email_gateway->department) {
+			$old_dep = $email_gateway->department;
+			$old_dep->email_gateway = null;
+			$em->persist($old_dep);
+
+			$email_gateway->department = null;
+		}
+
+		// Link new
+		if ($email_gateway) {
+			$department->email_gateway = $email_gateway;
+			$email_gateway->department = $department;
+			$em->persist($email_gateway);
+		}
+
+		$em->persist($department);
+		$em->flush();
+
+		// validate links
+		if ($email_gateway) {
+			$em->getConnection()->executeUpdate("
+				UPDATE departments
+				SET email_gateway_id = NULL
+				WHERE id != ? AND email_gateway_id = ?
+			", array($department->getId(), $email_gateway->getId()));
+			$em->getConnection()->executeUpdate("
+				UPDATE email_gateways
+				SET department_id = NULL
+				WHERE department_id = ? AND id != ?
+			", array($department->getId(), $email_gateway->getId()));
+		} else {
+			$em->getConnection()->executeUpdate("
+				UPDATE email_gateways
+				SET department_id = NULL
+				WHERE department_id = ?
+			", array($department->getId()));
+		}
+	}
 }
