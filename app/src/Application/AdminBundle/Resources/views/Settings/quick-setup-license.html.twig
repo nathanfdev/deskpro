@@ -24,9 +24,11 @@
 				<div class="error-item error_timeout error_server_error error_request_error error_unknown_request_error" style="display: none">
 					<p>
 						{{ phrase('admin.license.explain_connection_problems') }}
+						<br />
+						<button class="clean-white" style="margin: 15px;">Try Again &rarr;</button>
 					</p>
-					<p style="font-size: 120%; color: #000; margin-top: 10px; padding-top: 5px; border-top: #FBC7C6;">
-						<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
+					<p style="font-size: 110%; color: #000; margin-top: 10px; padding-top: 20px; border-top: 1px solid #FBC7C6;">
+						<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file" style="float:left;">Download Key File</a>
 						<br />
 						{% set phrase_link %}
 						<a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.general.supportdeskprocom') }}</a>
