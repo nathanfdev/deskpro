@@ -116,7 +116,7 @@ class TicketChangeTracker extends ChangeTracker
 	/**
 	 * @var float
 	 */
-	protected $start_time;
+	protected $start_time = 0;
 
 	/**
 	 * Fields that shouldnt trigger the full logger and filter inspections
@@ -631,8 +631,10 @@ class TicketChangeTracker extends ChangeTracker
 		if (!$this->has_non_ignored) {
 			return;
 		}
-		$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
-		$this->start_time = microtime(true);
+		if (!$this->start_time) {
+			$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
+			$this->start_time = microtime(true);
+		}
 		$this->getLogInspector()->runPre();
 	}
 
@@ -643,6 +645,11 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function done()
 	{
+		if (!$this->start_time) {
+			$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
+			$this->start_time = microtime(true);
+		}
+		
 		$hstatus = $this->getChangedProperty('hidden_status');
 
 		if ($this->ticket->_isRemoved || $this->ticket->_no_log) {
