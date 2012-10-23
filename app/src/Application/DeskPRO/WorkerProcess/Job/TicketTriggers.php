@@ -89,57 +89,60 @@ class TicketTriggers extends AbstractJob
 		$this->logger->log("Trigger {$trigger->id}: Found " . count($ticket_ids) . " matching", 'INFO');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
-		App::getDb()->beginTransaction();
-		try {
-			foreach ($tickets as $ticket) {
-				$tracker = $ticket->getTicketLogger();
+		foreach ($tickets as $ticket) {
+			$tracker = $ticket->getTicketLogger();
 
-				$field = $trigger->getTicketTimeField();
-				if (!$field) {
-					continue;
-				}
+			$field = $trigger->getTicketTimeField();
+			if (!$field) {
+				continue;
+			}
 
-				$d = !empty($ticket[$field]) ? $ticket[$field] : null;
-				if (!$d) {
-					continue;
-				}
+			$d = !empty($ticket[$field]) ? $ticket[$field] : null;
+			if (!$d) {
+				continue;
+			}
 
-				$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
-				$factory->addGlobalOption('tracker', $tracker);
-				$factory->addGlobalOption('ticket', $ticket);
+			// Always insert log first so same trigger isnt applied over and over
+			// in worst-case of an error
+			$trigger_log = array(
+				'ticket_id'     => $ticket->id,
+				'trigger_id'    => $trigger->id,
+				'date_ran'      => date('Y-m-d H:i:s'),
+				'date_criteria' => $d->format('Y-m-d H:i:s')
+			);
+			App::getDb()->insert('ticket_trigger_logs', $trigger_log);
 
-				$actions_collection = new ActionsCollection();
-				foreach ($trigger->actions as $action_info) {
-					$action = $factory->createFromInfo($action_info);
-					if ($action) {
+			$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
+			$factory->addGlobalOption('tracker', $tracker);
+			$factory->addGlobalOption('ticket', $ticket);
 
-						if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
-							$action->setExecutionContext('trigger');
-						}
+			$actions_collection = new ActionsCollection();
+			foreach ($trigger->actions as $action_info) {
+				$action = $factory->createFromInfo($action_info);
+				if ($action) {
 
-						$actions_collection->add($action, array('trigger' => $trigger));
-						$tracker->recordExtraMulti('trigger', $trigger);
+					if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
+						$action->setExecutionContext('trigger');
 					}
+
+					$actions_collection->add($action, array('trigger' => $trigger));
+					$tracker->recordExtraMulti('trigger', $trigger);
 				}
+			}
 
+			App::getDb()->beginTransaction();
+			try {
 				$actions_collection->apply($ticket->getTicketLogger(), $ticket, null);
-
-				$trigger_log = array(
-					'ticket_id'     => $ticket->id,
-					'trigger_id'    => $trigger->id,
-					'date_ran'      => date('Y-m-d H:i:s'),
-					'date_criteria' => $d->format('Y-m-d H:i:s')
-				);
-
-				App::getDb()->insert('ticket_trigger_logs', $trigger_log);
-
 				App::getOrm()->persist($ticket);
 				App::getOrm()->flush();
+				App::getDb()->commit();
+			} catch (\Exception $e) {
+				App::getDb()->rollback();
+
+				// Log the error but continue with execution
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			}
-			App::getDb()->commit();
-		} catch (\Exception $e) {
-			App::getDb()->rollback();
-			throw $e;
 		}
 	}
 }
