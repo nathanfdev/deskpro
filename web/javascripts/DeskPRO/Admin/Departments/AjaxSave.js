@@ -155,6 +155,14 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 		$('#editdep_user_title').val(currentUserTitle);
 		$('#editdep_depid').val(depId);
 
+		if (!this.editDepParentOpt) {
+			this.editDepParentOpt = $('#editcat_parent_id').find('option').clone();
+		}
+
+		$('#editcat_parent_id').empty();
+		$('#editcat_parent_id').append(this.editDepParentOpt.clone());
+		$('#editcat_parent_id').find('option[value="'+depId+'"]').remove();
+
 		var group = row.closest('.department-group');
 		var parentId = group.find('> article.top').data('department-id');
 		if (parentId != depId) {
