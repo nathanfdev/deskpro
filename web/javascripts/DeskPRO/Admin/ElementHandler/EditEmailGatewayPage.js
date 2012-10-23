@@ -41,10 +41,14 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 		this._initAddresses();
 
 		$('#pop3_btn').on('click', function(ev) {
-			$('.toggle-custom-smtp').hide();
+			$('#smtp_options_default').hide();
+			$('#smtp_options').show();
+			$('#define_transport').val('1');
 		});
 		$('#gapps_btn').on('click', function(ev) {
-			$('.toggle-custom-smtp').show();
+			$('#smtp_options').hide();
+			$('#smtp_options_default').show();
+			$('#define_transport').val('0');
 		});
 
 		$('.toggle-custom-smtp').click(function(ev) {
