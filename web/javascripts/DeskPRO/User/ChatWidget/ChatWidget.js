@@ -28,7 +28,15 @@ var DpChatWidget = new (function() {
 			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(styleEl);
 			styleEl.setAttribute('type', 'text/css');
 
-			styleEl.styleSheet.cssText = css;
+			// IE
+			if (style.styleSheet) {
+				styleEl.styleSheet.cssText = css;
+
+			// Others
+			} else {
+				style.appendChild(document.createTextNode(css));
+			}
+
 			return styleEl;
 		},
 
