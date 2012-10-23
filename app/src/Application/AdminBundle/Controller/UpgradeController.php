@@ -109,7 +109,7 @@ class UpgradeController extends AbstractController
 		}
 
 		// To late now
-		$file = @file_get_contents(DP_WEB_ROOT . ' /auto-update-status.txt');
+		$file = @file_get_contents(DP_WEB_ROOT . ' /auto-update-status.php');
 		if ($file && strpos($file, 'STATUS(start)') !== null) {
 			return $this->redirectRoute('admin_upgrade_watch');
 		}

@@ -451,19 +451,22 @@ class Upgrade
 
 		if ($is_status_write) {
 
-			if (file_exists(DP_WEB_ROOT . '/auto-update-status.txt') && !unlink(DP_WEB_ROOT . '/auto-update-status.txt')) {
+			if (file_exists(DP_WEB_ROOT . '/auto-update-status.php') && !unlink(DP_WEB_ROOT . '/auto-update-status.php')) {
 				$this->outAndLog("Could not delete previous auto-update-status.log file");
 				exit(1);
 			}
 
 			$that = $this;
 			$write_status = function($code, $message = '') use ($that) {
-				$fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+				$fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
 				$time = microtime(true);
 
 				if (is_array($message)) {
 					$message = json_encode($message);
 				}
+
+				// Wont ever happen, but best be sure
+				$message = str_replace('<?', '< ?', $message);
 
 				$status = "STATUS(" . $code . ")@$time#$message\n";
 
@@ -473,7 +476,7 @@ class Upgrade
 				$that->log($status);
 			};
 
-			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'w'))) {
+			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'w'))) {
 				$this->outAndLog("Could not write update status file");
 				exit(1);
 			}
@@ -487,7 +490,7 @@ class Upgrade
 		}
 
 		$write_status("start");
-		@chmod(DP_WEB_ROOT . '/auto-update-status.txt', 0777);
+		@chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
 
 		#----------------------------------------
 		# Requirement Checks

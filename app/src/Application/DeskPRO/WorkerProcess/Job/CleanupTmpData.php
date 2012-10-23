@@ -93,8 +93,8 @@ class CleanupTmpData extends AbstractJob
 		# Try to delete old update status file
 		#------------------------------
 
-		if (file_exists(DP_WEB_ROOT.'/auto-update-status.txt') && App::getSetting('core.last_auto_upgrade_time') < time()-180) {
-			@unlink(DP_WEB_ROOT.'/auto-update-status.txt');
+		if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && App::getSetting('core.last_auto_upgrade_time') < time()-180) {
+			@unlink(DP_WEB_ROOT.'/auto-update-status.php');
 		}
 	}
 }

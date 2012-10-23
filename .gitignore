@@ -18,7 +18,7 @@
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
 /app/src/Application/InstallBundle/Data/schema.php
-/auto-update-status.txt
+/auto-update-status.php
 /app/src/Application/DeskPRO/Dpql/Parser.out
 
 /data/last-email_error.dat

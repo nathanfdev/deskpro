@@ -73,11 +73,11 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			// Otherwise assume crashed and continue
 		}
 
-		if (file_exists(DP_WEB_ROOT . '/auto-update-status.txt')) {
-			@unlink(DP_WEB_ROOT . '/auto-update-status.txt');
+		if (file_exists(DP_WEB_ROOT . '/auto-update-status.php')) {
+			@unlink(DP_WEB_ROOT . '/auto-update-status.php');
 		}
 		$write_status = function($code, $message = '') {
-			$fp = @fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+			$fp = @fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
 			if (!$fp) {
 				return false;
 			}
@@ -86,6 +86,9 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			if (is_array($message)) {
 				$message = json_encode($message);
 			}
+
+			// Wont ever happen, but best be sure
+			$message = str_replace('<?', '< ?', $message);
 
 			if (!@fwrite($fp, "STATUS(" . $code . ")@$time#$message\n")) {
 				return false;
@@ -116,7 +119,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			return 1;
 		}
 
-		@chmod(DP_WEB_ROOT . '/auto-update-status.txt', 0777);
+		@chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
 
