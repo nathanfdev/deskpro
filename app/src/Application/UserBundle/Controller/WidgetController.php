@@ -129,6 +129,7 @@ class WidgetController extends AbstractController
 		$website_url = $this->in->getString('website_url');
 
 		$vars = array(
+			'parent_url' => $this->in->getString('parent_url'),
 			'departments' => $departments,
 
 			'newticket' => $newticket,
@@ -297,6 +298,7 @@ class WidgetController extends AbstractController
 		$departments = $this->container->getDataService('Department')->getPersonDepartments($sessionObj->getPerson() ?: $this->person, 'chat');
 
 		$vars = array(
+			'parent_url' => $this->in->getString('parent_url'),
 			'session_code' => $session->getSessionCode(),
 			'convo' => $convo,
 			'convo_messages' => $convo_messages,

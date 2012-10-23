@@ -3,7 +3,12 @@ Orb.createNamespace('DeskPRO.User.WebsiteWidget');
 DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
-	initialize: function() {
+	initialize: function(options) {
+
+		this.options = {
+			parentUrl: null
+		};
+		this.setOptions(options);
 
 		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
 		var ieVer = 0;
@@ -15,7 +20,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this.comms = {
 			intervalId: null,
 			lastHash: null,
-			hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
+			hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 			cacheBust: 0,
 			recieveCallback: null,
 			resetHashTimeout: null,
@@ -69,8 +74,12 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			}
 		};
 
-		var hash = window.location.hash + '';
-		this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
+		if (this.options.parentUrl) {
+			this.parentUrl = this.options.parentUrl;
+		} else {
+			var hash = window.location.hash + '';
+			this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
+		}
 	},
 
 	initPage: function() {

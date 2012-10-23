@@ -186,7 +186,7 @@ var DpOverlayWidget = new (function() {
 	var comms = {
 		intervalId: null,
 		lastHash: null,
-		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
+		hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 		cacheBust: 0,
 		recieveCallback: null,
 		send: function(message, targetUrl, target) {
@@ -383,7 +383,13 @@ var DpOverlayWidget = new (function() {
 
 				var url = data[0];
 				url = url.replace(/__DP_COL__/g, ':');
-				url += '#' + encodeURIComponent(window.location.href);
+				if (url.indexOf('?') == -1) {
+					url += '?';
+				} else {
+					url += '&';
+				}
+				url += 'parent_url=' + encodeURIComponent(window.location.href);
+
 				tmp = util.createEl('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
 				inner.appendChild(tmp);
 
@@ -507,7 +513,7 @@ var DpOverlayWidget = new (function() {
 			src += '&language_id=' + DpOverlayWidget_Options.languageId;
 		}
 
-		src += '#' + encodeURIComponent(window.location.href);
+		src += '&parent_url=' + encodeURIComponent(window.location.href);
 		overlayIframe = util.createEl('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
 		overlayWrapInner.appendChild(overlayIframe);
 

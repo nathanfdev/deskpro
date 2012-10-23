@@ -4,7 +4,6 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
-
 		this.options = {
 			findingAgentTimeout: 30000
 		};
@@ -21,7 +20,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			this.comms = {
 				intervalId: null,
 				lastHash: null,
-				hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
+				hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 				cacheBust: 0,
 				pollingInterval: 130,
 				recieveCallback: null,
@@ -30,8 +29,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					if (this.hasPostMessage) {
 						target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 					} else {
-						var targetLoc = target.location + '';
-						target.location.replace(targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message);
+						var targetLoc = targetUrl;
+						targetLoc = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+						target.location.replace(targetLoc);
 
 						if (this.resetHashTimeout) {
 							window.clearTimeout(this.resetHashTimeout);
@@ -92,8 +92,13 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			};
 		}
 
-		var hash = window.location.hash + '';
-		this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
+		if (this.options.parentUrl) {
+			this.parentUrl = this.options.parentUrl;
+		} else {
+			var hash = window.location.hash + '';
+			this.parentUrl = decodeURIComponent(hash.replace(/^#/, ''));
+		}
+
 		this.sentLoadingIndicator = false;
 		this.hasStarted = false;
 		this.hasBeenAssigned = false;

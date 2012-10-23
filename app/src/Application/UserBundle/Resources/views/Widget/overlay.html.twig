@@ -43,7 +43,9 @@
 
 	<script type="text/javascript">
 		window.DeskPRO_Window = new DeskPRO.User.Window();
-		var OverlayWin = new DeskPRO.User.WebsiteWidget.OverlayWin();
+		var OverlayWin = new DeskPRO.User.WebsiteWidget.OverlayWin({
+			parentUrl: {{ parent_url|json_encode|raw }}
+		});
 		$(document).ready(function() {
 			window.DeskPRO_Window.initPage();
 			if (!Orb.Compat.WebForms.isPlaceholderSupported()) {

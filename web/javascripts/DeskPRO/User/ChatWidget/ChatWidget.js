@@ -23,6 +23,15 @@ var DpChatWidget = new (function() {
 			return div.firstChild;
 		},
 
+		addStyleEl: function(css) {
+			var styleEl = document.createElement('style');
+			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(styleEl);
+			styleEl.setAttribute('type', 'text/css');
+
+			styleEl.styleSheet.cssText = css;
+			return styleEl;
+		},
+
 		hasClass: function(el, className) {
 			if (el.className === "") {
 				return false;
@@ -272,7 +281,9 @@ var DpChatWidget = new (function() {
 				}
 			}
 
-			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(window.location.href);
+			qs += '&parent_url=' + encodeURIComponent(window.location.href);
+
+			frameSrc = options.deskproUrl + 'widget/chat.html' + qs;
 			chatIframe = util.createEl('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
 			chatIframeHolder.appendChild(chatIframe);
 
@@ -442,8 +453,7 @@ var DpChatWidget = new (function() {
 		css.push('opacity: 0.85');
 		css = css.join(';');
 
-		tmp = util.createEl('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
+		util.addStyleEl('#dpchat_btn { '+css+ '}');
 
 		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
 		var ieVer = 0;
@@ -475,8 +485,7 @@ var DpChatWidget = new (function() {
 		css.push('border-' + (isRtl ? 'right' : 'left') + ': 0 none');
 		css = css.join(';');
 
-		tmp = util.createEl('<style type="text/css">#dpchat_btn_btm { '+css+ '}</style>');
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
+		util.addStyleEl('#dpchat_btn_btm { '+css+ '}');
 
 		var css = [];
 		css.push('position: absolute');
@@ -501,8 +510,7 @@ var DpChatWidget = new (function() {
 		css.push('z-index: 1');
 		css = css.join(';');
 
-		tmp = util.createEl('<style type="text/css">#dpchat_btn_inner2 { '+css+ '}</style>');
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
+		util.addStyleEl('#dpchat_btn_inner2 { '+css+ '}');
 
 		var css = [];
 		css.push('position: absolute');
@@ -529,8 +537,7 @@ var DpChatWidget = new (function() {
 		css.push('border-bottom: none');
 		css = css.join(';');
 
-		tmp = util.createEl('<style type="text/css">#dpchat_btn_inner { '+css+ '}</style>');
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
+		util.addStyleEl('#dpchat_btn_inner { '+css+ '}');
 
 		var css = [];
 		css.push('position: absolute');
@@ -550,8 +557,7 @@ var DpChatWidget = new (function() {
 		css.push('border: none');
 		css = css.join(';');
 
-		tmp = util.createEl('<style type="text/css">#dpchat_btn_btm_shade { '+css+ '}</style>');
-		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(tmp);
+		util.addStyleEl('#dpchat_btn_btm_shade { '+css+ '}');
 
 		var phrase1 = 'Chat with us';
 		var phrase2 = 'Open your chat';
@@ -651,13 +657,14 @@ var DpChatWidget = new (function() {
 
 			case 'destroy':
 				self.close();
-				if (chatIframeHolder) {
-					util.removeEl(chatIframeHolder);
-				}
+				comms.reset();
 				chatIframeHolder = null;
 				chatIframeWinTab = null;
 				chatIframe = null;
-				comms.reset();
+
+				if (chatIframeHolder) {
+					util.removeEl(chatIframeHolder);
+				}
 
 				if (!comms.hasPostMessage) {
 					var targetLoc = window.location.href + '';
@@ -677,15 +684,22 @@ var DpChatWidget = new (function() {
 	var comms = {
 		intervalId: null,
 		lastHash: null,
-		hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
+		hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 		cacheBust: 0,
 		recieveCallback: null,
 		send: function(message, targetUrl, target) {
 			if (this.hasPostMessage) {
-				target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+				target.postMessage(message, targetUrl.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 			} else {
-				var targetLoc = target.location + '';
-				target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+				var targetLoc = targetUrl;
+				target.location.replace(targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message);
+
+				if (this.resetHashTimeout) {
+					window.clearTimeout(this.resetHashTimeout);
+				}
+				this.resetHashTimeout = window.setTimeout(function() {
+					target.location.replace(targetLoc.replace(/#.*$/, '') + '#');
+				}, 95);
 			}
 		},
 		reset: function() {

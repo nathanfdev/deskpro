@@ -50,6 +50,7 @@
 	<script type="text/javascript">
 		window.DeskPRO_Window = new DeskPRO.User.Window();
 		var ChatWin = new DeskPRO.User.WebsiteWidget.ChatWin({
+			parentUrl: {{ parent_url|json_encode|raw }},
 			sessionCode: '{{ session_code }}',
 			conversationId: {{ convo.id|default(0) }},
 			assignedAgentId: {{ convo.agent.id|default(0) }},
