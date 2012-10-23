@@ -1,51 +1,52 @@
+{{ performer.name }}
 {% if log.action_type == 'changed_agent' %}
-	&middot; Changed agent to {{log.details.new_agent_name|default(phrase('agent.general.unassigned'))}}
+	changed agent to {{log.details.new_agent_name|default(phrase('agent.general.unassigned'))}}
 {% elseif log.action_type == 'changed_agent_team' %}
-	&middot; Changed agent team to {{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
+	changed agent team to {{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'participant_added' %}
-	&middot; Removed {{log.details.email}} as a participant
+	Removed {{log.details.email}} as a participant
 {% elseif log.action_type == 'participant_removed' %}
-	&middot; Added {{log.details.email}} as a participant
+	Added {{log.details.email}} as a participant
 {% elseif log.action_type == 'ticket_created' %}
-	&middot; Created ticket
+	Created ticket
 {% elseif log.action_type == 'subject' %}
-	&middot; Changed subject
+	changed subject
 {% elseif log.action_type == 'ticket_split' %}
-    &middot; Split ticket
+    Split ticket
 {% elseif log.action_type == 'merged' %}
-	&middot; Merged ticket
+	Merged ticket
 {% elseif log.action_type == 'labels_added' %}
 	Labels added: <span class="new-val">{{ log.details.labels|implode(', ') }}</span>
 {% elseif log.action_type == 'labels_removed' %}
 	Labels removed: <span class="new-val">{{ log.details.labels|implode(', ') }}</span>
 {% elseif log.action_type == 'changed_category' %}
-	&middot; {{log.details.new_category_title|default(phrase('agent.general.none'))}}
+	{{log.details.new_category_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_department' %}
-	&middot; Changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
+	changed department to {{log.details.new_department_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_organization' %}
-	&middot; Changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
+	changed organization to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_subject' %}
-	&middot; Changed subject to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
+	changed subject to {{log.details.new_org_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_person' %}
-	&middot; Changed person to {{log.details.new_person_name}}
+	changed person to {{log.details.new_person_name}}
 {% elseif log.action_type == 'message_created' %}
-	&middot; Added reply
+	Added reply
 {% elseif log.action_type == 'message_removed' %}
-	&middot; <span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">ID {{log.id_before}}</span>
+	<span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">ID {{log.id_before}}</span>
 {% elseif log.action_type == 'changed_priority' %}
-	&middot; Changed priority to {{log.details.new_priority_title|default(phrase('agent.general.none'))}}
+	changed priority to {{log.details.new_priority_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_workflow' %}
-	&middot; Changed workflow to {{log.details.new_workflow_title|default(phrase('agent.general.none'))}}
+	changed workflow to {{log.details.new_workflow_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_urgency' %}
-	&middot; Changed urgency to {{log.details.new_urgency}}
+	changed urgency to {{log.details.new_urgency}}
 {% elseif log.action_type == 'changed_product' %}
-	&middot; Changed product to {{log.details.new_product_title|default(phrase('agent.general.none'))}}
+	changed product to {{log.details.new_product_title|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'attach_added' %}
-	&middot; Added attachment
+	Added attachment
 {% elseif log.action_type == 'attach_removed' %}
-	&middot; Removed attachment
+	Removed attachment
 {% elseif log.action_type == 'changed_status' %}
-	&middot; Changed status to {{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}
+	changed status to {{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}
 {% elseif log.action_type == 'changed_custom_field' %}
-	&middot; Changed {{ log.details.field_name }}
+	changed {{ log.details.field_name }}
 {% endif %}
