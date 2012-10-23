@@ -38,7 +38,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -118,6 +117,11 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	protected $contact_data;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $email_domains;
+
+	/**
 	 * The date the org was inserted into the system
 	 *
 	 * @var \DateTime
@@ -128,6 +132,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
+		$this->setModelField('email_domains'       , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
 		$this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
@@ -174,6 +179,28 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
 		return null;
+	}
+
+
+	/**
+	 * @param null $type
+	 * @return array
+	 */
+	public function getContactData($type = null)
+	{
+		if (!$type) {
+			return $this->contact_data;
+		}
+
+		$ret = array();
+
+		foreach ($this->contact_data as $cd) {
+			if ($cd->contact_type == $type) {
+				$ret[] = $cd;
+			}
+		}
+
+		return $ret;
 	}
 
 
@@ -408,5 +435,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'dpApi' => true ));
 	}
 }

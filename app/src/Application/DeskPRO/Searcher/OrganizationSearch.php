@@ -38,7 +38,7 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Organization;
 
 class OrganizationSearch extends SearcherAbstract
 {
@@ -49,6 +49,7 @@ class OrganizationSearch extends SearcherAbstract
 	const TERM_CONTACT_PHONE        = 'org_contact_phone';
 	const TERM_CONTACT_ADDRESS      = 'org_contact_address';
 	const TERM_CONTACT_IM           = 'org_contact_im';
+	const TERM_EMAIL_DOMAIN         = 'org_email_domain';
 
 	/**
 	 * Summary of terms in phrases
@@ -237,7 +238,7 @@ class OrganizationSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_NAME:
-					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);;
+					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_PHONE:
@@ -270,6 +271,14 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
+					break;
+
+				case self::TERM_EMAIL_DOMAIN:
+					$joins[] = array(
+						'organization_email_domains',
+						"LEFT JOIN organization_email_domains AS $join_name ON ($join_name.organization_id = organizations.id)"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
 					break;
 
 				case self::TERM_LABEL:
@@ -399,5 +408,99 @@ class OrganizationSearch extends SearcherAbstract
 			'joins' => $joins,
 			'wheres' => $wheres
 		);
+	}
+
+
+	public function doesOrganizationMatch(Organization $org)
+	{
+		foreach ($this->terms as $term => $info) {
+			list($op, $choice) = $info;
+
+			if (count($choice) == 1) {
+				$choice = array_pop($choice);
+			}
+
+			switch ($term) {
+				case self::TERM_NAME:
+					switch ($op) {
+						case self::OP_IS:
+							if (strtolower($org['name']) != strtolower($choice)) return false;
+							break;
+						case self::OP_NOT:
+							if (strtolower($org['name']) == strtolower($choice)) return false;
+							break;
+						case self::OP_CONTAINS:
+							if (strpos(strtolower($org['name']), strtolower($choice)) === false) return false;
+							break;
+						case self::OP_NOTCONTAINS:
+							if (strpos(strtolower($org['name']), strtolower($choice)) !== false) return false;
+							break;
+					}
+					break;
+
+				case self::TERM_EMAIL_DOMAIN:
+					$any = false;
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					foreach ($org->email_domains as $domain) {
+						if (strpos(strtolower($domain['domain']), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
+				case self::TERM_CONTACT_ADDRESS:
+				case self::TERM_CONTACT_IM:
+				case self::TERM_CONTACT_PHONE:
+					if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
+					if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
+					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
+
+					$any = false;
+					foreach ($org->getContactData('address') as $cd) {
+						if ($cd->checkStringMatch($choice)) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
+				case self::TERM_LABEL:
+					$any = false;
+					if (isset($choice['label'])) {
+						$choice = $choice['label'];
+					}
+
+					foreach ($org->getLabelManager()->getLabelsArray() as $label) {
+						if (strpos(strtolower($label), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+			}
+		}
+
+		return true;
 	}
 }

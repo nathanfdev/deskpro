@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
+use Application\DeskPRO\Searcher\OrganizationSearch;
+
 /**
  * Summarizes terms
  */
@@ -570,6 +572,55 @@ class TermSummary
 					$titles = App::getDataService('ApiKey')->getApiKeyTitles((array)$choice);
 					return $titles;
 				});
+				break;
+
+			############################################################################################################
+			# Organization Terms
+			############################################################################################################
+
+			case OrganizationSearch::TERM_NAME:
+				$name = array_pop($choice);
+				$summary = $this->_stringMatchSummary('Organization name', $op, $name);
+				break;
+
+			case OrganizationSearch::TERM_EMAIL_DOMAIN:
+				$name = array_pop($choice);
+				$summary = $this->_stringMatchSummary('Organization email domain', $op, $name);
+				break;
+
+			case OrganizationSearch::TERM_CONTACT_ADDRESS:
+			case OrganizationSearch::TERM_CONTACT_IM:
+			case OrganizationSearch::TERM_CONTACT_PHONE:
+				if ($term == OrganizationSearch::TERM_CONTACT_ADDRESS) $field = 'Contact address';
+				if ($term == OrganizationSearch::TERM_CONTACT_IM)      $field = 'Contact IM';
+				if ($term == OrganizationSearch::TERM_CONTACT_PHONE)   $field = 'Contact phone';
+				$name = array_pop($choice);
+
+				$summary = $this->_stringMatchSummary('Organization ' . $field, $op, $name);
+				break;
+
+			case OrganizationSearch::TERM_LABEL:
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+				break;
+
+			case OrganizationSearch::TERM_ORGANIZATION_FIELD:
+				$field = App::getSystemService('OrgFieldsManager')->getFieldFromId($term_id);
+				if ($field) {
+					switch ($op) {
+						case self::OP_IS:
+							$summary = $tr->phrase('agent.general.x_is_y', array('field' => $field->title, 'value' => $choice['subject']));
+							break;
+						case self::OP_CONTAINS:
+							$summary = $tr->phrase('agent.general.x_include_y', array('field' => $field->title, 'value' => $choice['subject']));
+							break;
+						case self::OP_NOTCONTAINS:
+							$summary = $tr->phrase('agent.general.x_not_include_y', array('field' => $field->title, 'value' => $choice['subject']));
+							break;
+						default:
+							$summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field->title, 'value' => $choice['subject']));
+							break;
+					}
+				}
 				break;
 		}
 

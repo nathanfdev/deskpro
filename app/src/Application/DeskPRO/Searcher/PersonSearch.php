@@ -731,6 +731,28 @@ class PersonSearch extends SearcherAbstract
 
 					break;
 
+				case self::TERM_CONTACT_ADDRESS:
+				case self::TERM_CONTACT_IM:
+				case self::TERM_CONTACT_PHONE:
+					if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
+					if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
+					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
+
+					$any = false;
+					foreach ($person->getContactData('address') as $cd) {
+						if ($cd->checkStringMatch($choice)) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+					break;
+
 				case self::TERM_LABEL:
 					$any = false;
 					if (isset($choice['label'])) {

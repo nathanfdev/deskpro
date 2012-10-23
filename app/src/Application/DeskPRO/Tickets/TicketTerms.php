@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\OrganizationSearch;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
@@ -297,6 +298,9 @@ class TicketTerms
 			$term = $m[1];
 			$term_id = $m[2];
 		}
+
+		$person = $ticket->person ? $ticket->person : null;
+		$org    = $person && $person->organization ? $person->organization : null;
 
 		switch ($term) {
 
@@ -885,6 +889,131 @@ class TicketTerms
 				$api_key = $this->tracker->getExtra('api_key');
 				if (!$api_key || !$this->_testChoiceMatch($api_key->id, $op, $choice)) {
 					return false;
+				}
+				break;
+
+			############################################################################################################
+			# Organization Terms
+			############################################################################################################
+
+			case OrganizationSearch::TERM_NAME:
+				if (is_array($choice)) {
+					$choice = array_pop($choice);
+				}
+
+				$name = $org ? strtolower($org->name) : '';
+				$choice = strtolower($choice);
+
+				switch ($op) {
+					case self::OP_IS:
+						dpdev_log("ERE");
+						if ($name != $choice) return false;
+						break;
+					case self::OP_NOT:
+						if ($name == $choice) return false;
+						break;
+					case self::OP_CONTAINS:
+						if (strpos($name, $choice) === false) return false;
+						break;
+					case self::OP_NOTCONTAINS:
+						if (strpos($name, $choice) !== false) return false;
+						break;
+				}
+				break;
+
+			case OrganizationSearch::TERM_EMAIL_DOMAIN:
+				if (!$org) {
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					$any = false;
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					foreach ($org->email_domains as $domain) {
+						if (strpos(strtolower($domain['domain']), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+				}
+				break;
+
+			case OrganizationSearch::TERM_CONTACT_ADDRESS:
+			case OrganizationSearch::TERM_CONTACT_IM:
+			case OrganizationSearch::TERM_CONTACT_PHONE:
+				if (!$org) {
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
+					if ($term == OrganizationSearch::TERM_CONTACT_ADDRESS) $field = 'addresss';
+					if ($term == OrganizationSearch::TERM_CONTACT_IM)      $field = 'instant_message';
+					if ($term == OrganizationSearch::TERM_CONTACT_PHONE)   $field = 'phone';
+
+					$any = false;
+					foreach ($org->getContactData($field) as $cd) {
+						if ($cd->checkStringMatch($choice)) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+				}
+				break;
+
+			case OrganizationSearch::TERM_LABEL:
+				if (!$org) {
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					$any = false;
+					if (isset($choice['label'])) {
+						$choice = $choice['label'];
+					}
+
+					foreach ($org->getLabelManager()->getLabelsArray() as $label) {
+						if (strpos(strtolower($label), strtolower($choice)) !== false) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+
+					if ($op == self::OP_CONTAINS AND !$any) {
+						return false;
+					}
+				}
+				break;
+
+			case OrganizationSearch::TERM_ORGANIZATION_FIELD:
+				if (!$org) {
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						return false;
+					}
+				} else {
+					$test = $this->testCustomField('CustomDefOrganization', $term_id, $op, $choice, $ticket->person);
+					if (!$test && $test !== null) {
+						return false;
+					}
 				}
 				break;
 

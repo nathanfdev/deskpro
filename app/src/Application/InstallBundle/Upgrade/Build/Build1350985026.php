@@ -29,59 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\Util\Util as ORM_Util;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-use Orb\Util\Numbers;
-
-/**
- * Maps known company domains to their company objects
- *
- */
-class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
+class Build1350985026 extends AbstractBuild
 {
-	/**
-	 * The email domain
-	 *
-	 * @var string
-	 */
-	protected $domain;
-
-	/**
-	 * The users organization
-	 *
-	 * @var \Application\DeskPRO\Entity\Organization
-	 */
-	protected $organization = null;
-
-	public function __toString()
+	public function run()
 	{
-		return $this->domain;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\OrganizationEmailDomain';
-		$metadata->setPrimaryTable(array( 'name' => 'organization_email_domains', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'domain', 'id' => true, ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$this->out("Correct FK on organization_email_domains.organization_id");
+		$this->execMutateSql("ALTER TABLE organization_email_domains DROP FOREIGN KEY FK_2CCB20C232C8A3DE", true);
+		$this->execMutateSql("ALTER TABLE organization_email_domains ADD CONSTRAINT FK_2CCB20C232C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE", true);
 	}
 }

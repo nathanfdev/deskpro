@@ -110,13 +110,22 @@ abstract class AbstractBuild
 	/**
 	 * @param $sql
 	 */
-	public function execMutateSql($sql)
+	public function execMutateSql($sql, $ignore_err = false)
 	{
 		$sql = preg_replace('#^\s*#m', '', $sql);
 
 		echo "\t-> " . $sql;
 		echo "\n";
-		$this->container->getDb()->exec($sql);
+
+		try {
+			$this->container->getDb()->exec($sql);
+		} catch (\Exception $e) {
+			echo "\t-> " . $e->getMessage();
+			echo "\n";
+			if (!$ignore_err) {
+				throw $e;
+			}
+		}
 	}
 
 

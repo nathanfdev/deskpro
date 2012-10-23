@@ -173,4 +173,40 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
 		return $vars;
 	}
+
+
+	/**
+	 * Gets a collapsed string that can be tried for searches
+	 *
+	 * @return mixed
+	 */
+	public function getSearchString()
+	{
+		$pieces = array();
+		for ($i = 1; $i <= 10; $i++) {
+			$field = 'field_' . $i;
+			if ($this->$field) {
+				$pieces[] = $this->$field;
+			}
+		}
+
+		$pieces = implode(',', $pieces);
+		$pieces = preg_replace('#\s#', '', $pieces);
+		$pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+
+		return $pieces;
+	}
+
+
+	/**
+	 * @param $string
+	 * @return bool
+	 */
+	public function checkStringMatch($string)
+	{
+		$string = preg_replace('#\s#', '', $string);
+		$string = \Orb\Util\Strings::utf8_strtolower($string);
+
+		return (strpos($this->getSearchString(), $string) !== false);
+	}
 }

@@ -1121,6 +1121,28 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param null $type
+	 * @return array
+	 */
+	public function getContactData($type = null)
+	{
+		if (!$type) {
+			return $this->contact_data;
+		}
+
+		$ret = array();
+
+		foreach ($this->contact_data as $cd) {
+			if ($cd->contact_type == $type) {
+				$ret[] = $cd;
+			}
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Find an existing data record for a field id.
 	 *
 	 * @param int $field_id

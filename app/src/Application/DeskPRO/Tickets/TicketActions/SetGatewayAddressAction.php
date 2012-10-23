@@ -82,8 +82,8 @@ class SetGatewayAddressAction extends AbstractAction
 		}
 
 		$ticket->notify_email = '';
-		$ticket->email_gateway_address = $this->gateway_address;
-		$ticket->email_gateway = $this->gateway_address->gateway;
+		$ticket->email_gateway_address = $gateway_address;
+		$ticket->email_gateway = $gateway_address->gateway;
 	}
 
 
