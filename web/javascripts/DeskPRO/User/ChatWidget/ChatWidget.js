@@ -473,7 +473,7 @@ var DpChatWidget = new (function() {
 		css.push('box-shadow: none');
 		css.push('-webkit-border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
 		css.push('-moz-border-radius-top' + (isRtl ? 'left' : 'right') + ': 9px');
-		if ($('html').attr('dir') == 'rtl' && !isIE) {
+		if (isRtl && !isIE) {
 			// IE has a bug where the background bleeds through the border radius in RTL
 			css.push('border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
 		}
