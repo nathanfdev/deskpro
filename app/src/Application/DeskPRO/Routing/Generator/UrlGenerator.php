@@ -79,7 +79,8 @@ class UrlGenerator extends BaseUrlGenerator
 		$url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
 
 		if ($with_file) {
-			$url = '/file.php' . $url;
+				$url = '/file.php' . $url;
+				$url = str_replace('/file.php/index.php/', '/file.php/', $url);
 		}
 
 		return $url;
