@@ -649,7 +649,7 @@ class TicketChangeTracker extends ChangeTracker
 			$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
 			$this->start_time = microtime(true);
 		}
-		
+
 		$hstatus = $this->getChangedProperty('hidden_status');
 
 		if ($this->ticket->_isRemoved || $this->ticket->_no_log) {
