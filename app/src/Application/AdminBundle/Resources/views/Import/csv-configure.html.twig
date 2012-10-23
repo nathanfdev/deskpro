@@ -1,0 +1,144 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/CsvImportConfigure.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" >
+	function _page_exec() {
+		window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.CsvImportConfigure([
+			'secondary_email', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook',
+			'address1', 'address2', 'city', 'state', 'post_code', 'country'
+		]);
+	}
+</script>
+{% endblock %}
+{% block pagebar %}
+<ul>
+	<li>Import Users from CSV File</li>
+</ul>
+{% endblock %}
+{% block page %}
+<form action="{{ path('admin_import_csv_import') }}" method="post" class="dp-form" id="import-form">
+
+	<div class="check-grid item-list">
+	<table width="100%">
+	<thead>
+		<tr>
+			<th style="text-align: left; width: 20%">Column Name</th>
+			<th style="text-align: left; width: 42%">Example Data</th>
+			<th style="text-align: left; width: 38%">Mapping Field</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for column_id,column_title in columns %}
+		<tr>
+			<td>{{ column_title }}</a></td>
+			<td>{{ examples[column_id] is not empty ? examples[column_id] : '' }}</td>
+			<td><select name="field_maps[{{ column_id }}][map]" class="import-map-select">
+				<option value="">Do Not Map</option>
+				<optgroup label="Basic Information">
+					<option value="first_name">First Name</option>
+					<option value="last_name">Last Name</option>
+					<option value="name">Name</option>
+					<option value="primary_email">Primary Email</option>
+					<option value="secondary_email">Secondary Email</option>
+					<option value="password">Password</option>
+					<option value="organization">Organization</option>
+					<option value="organization_position">Organization Position</option>
+				</optgroup>
+				<optgroup label="Contact Details">
+					<option value="phone">Phone Number</option>
+					<option value="website">Website URL</option>
+					<option value="im">IM</option>
+					<option value="twitter">Twitter</option>
+					<option value="linkedin">LinkedIn</option>
+					<option value="facebook">Facebook</option>
+					<option value="address1">Address Line 1</option>
+					<option value="address2">Address Line 2</option>
+					<option value="city">City</option>
+					<option value="state">State</option>
+					<option value="post_code">Post Code</option>
+					<option value="country">Country</option>
+				</optgroup>
+				{% if custom_fields is not empty %}
+					<optgroup label="Custom Fields">
+					{% for field in custom_fields %}
+						<option value="custom_{{ field.id }}">{{ field.title }}</option>
+					{% endfor %}
+					</optgroup>
+				{% endif %}
+			</select></td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+	</div>
+
+	<ul id="errors_container" style="display:none; margin-top: 10px">
+		<li>You must select a field that maps to the Primary Email.</li>
+	</ul>
+
+	<footer class="controls">
+		<button class="clean-white">Start Import</button>
+	</footer>
+
+	<ul style="display:none" id="import-map-extras">
+		<li data-map-type="organization">
+			<label><input type="checkbox" name="%prefix%[create_auto]" value="1" checked="checked" /> Create if does not exist</label>
+		</li>
+		<li data-map-type="phone">
+			<select name="%prefix%[type]">
+				<option value="phone">Phone</option>
+				<option value="mobile">Mobile</option>
+				<option value="fax">Fax</option>
+			</select>
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="website">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="im">
+			<select name="%prefix%[type]">
+				<option value="aim">AIM</option>
+				<option value="msn">MSN</option>
+				<option value="yim">YIM</option>
+				<option value="icq">ICQ</option>
+				<option value="skype">Skype</option>
+				<option value="gtalk">GTalk</option>
+				<option value="other">Other</option>
+			</select>
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="twitter">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="linkedin">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="facebook">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="address1">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="address2">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="city">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="state">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="post_code">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+		<li data-map-type="country">
+			<input type="text" name="%prefix%[label]" placeholder="Label" style="width: 80px" />
+		</li>
+	</ul>
+
+	<input type="hidden" name="filename" value="{{ filename }}" />
+	{{ form_token() }}
+</form>
+{% endblock %}

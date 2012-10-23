@@ -34,63 +34,59 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity\Article;
 
 /**
- * A job completes some specific processing task.
+ * Runs queued tasks if there are any
  */
-abstract class AbstractJob
+class RunQueuedTasks extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+	const DEFAULT_INTERVAL = 60; // 60 seconds
 
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	protected $options;
-
-	/**
-	 * @var \Application\DeskPRO\Log\Logger
-	 */
-	protected $logger;
-
-	final public function __construct(Logger $logger, array $options = null)
+	public function run()
 	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-		$this->logger = $logger;
-		$this->init();
-	}
+		$max_run = 25;
+		$start_time = microtime(true);
+		$task = false;
 
+		$em = App::getOrm();
+		$logger = $this->getLogger();
 
-	protected function init() { }
+		while (($remaining_time = $max_run - (microtime(true) - $start_time)) > 1) {
+			if (!$task) {
+				/** @var $task \Application\DeskPRO\Entity\TaskQueue */
+				$task = App::getEntityRepository('DeskPRO:TaskQueue')->getRunnableTask();
+			}
 
+			if (!$task) {
+				break;
+			}
 
-	/**
-	 * Run the task
-	 */
-	abstract public function run();
+			$logger->logInfo("Running task #$task->id: $task->runner_class");
 
+			try {
+				$result = $task->runTask($remaining_time, $logger);
+			} catch (\Exception $e) {
+				$result = false;
+				$logger->logWarn("Task #$task->id ($task->runner_class) errored: " . $e->getMessage());
+			}
 
-	/**
-	 * Log a status message. These should include information about how many records
-	 * processed etc.
-	 *
-	 * @param string $message
-	 * @param array $details
-	 */
-	public function logStatus($message, array $details = array())
-	{
-		$details['flag'] = 'status';
-		$this->logger->log($message, Logger::INFO, $details);
-	}
+			$em->persist($task);
+			$em->flush();
 
-
-	/**
-	 * Get the logger for this job
-	 *
-	 * @return \Application\DeskPRO\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
+			if ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_COMPLETED) {
+				// finished task, move on
+				$logger->logInfo("Task #$task->id ($task->runner_class) completed successfully.");
+				$task = false;
+			} elseif ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_CONTINUING) {
+				// still running task, so keep $task in case we have more time
+				$logger->logInfo("Task #$task->id ($task->runner_class) to be continued.");
+			} else {
+				// task errored, logged above already
+				$task = false;
+			}
+		}
 	}
 }

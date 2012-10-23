@@ -48,6 +48,13 @@ $collection->add('admin_networkcheck', new Route(
 	array()
 ));
 
+$collection->add('admin_check_task_queue', new Route(
+	'/misc/check-task/{task_queue_id}',
+	array('_controller' => 'AdminBundle:Main:checkTaskQueue'),
+	array(),
+	array()
+));
+
 $collection->add('admin_skip_setup_todo', new Route(
 	'/misc/skip-setup-todo',
 	array('_controller' => 'AdminBundle:Main:skipSetupStep'),
@@ -1418,6 +1425,30 @@ $collection->add('admin_customdeforganizations_test', new Route(
 	array()
 ));
 
+################################################################################
+# Importing
+################################################################################
+
+$collection->add('admin_import', new Route(
+	'/import',
+	array('_controller' => 'AdminBundle:Import:index'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_import_csv_configure', new Route(
+	'/import/csv-configure',
+	array('_controller' => 'AdminBundle:Import:csvConfigure'),
+	array('field_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_import_csv_import', new Route(
+	'/import/csv-import',
+	array('_controller' => 'AdminBundle:Import:csvImport'),
+	array('field_id' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # User Rules

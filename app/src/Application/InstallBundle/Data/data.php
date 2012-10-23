@@ -1087,6 +1087,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\UpdateViewCounts::DEFAUL
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.run_queued_tasks##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'run_queued_tasks';
+$j['worker_group'] = 'run_queued_tasks';
+$j['title'] = 'Run Queued Tasks';
+$j['description'] = 'Runs any general-purpose queued tasks';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\RunQueuedTasks';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\RunQueuedTasks::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

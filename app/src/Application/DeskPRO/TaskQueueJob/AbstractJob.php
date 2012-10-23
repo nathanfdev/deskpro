@@ -29,68 +29,58 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category TaskQueueJob
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\TaskQueueJob;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity\TaskQueue;
 
-/**
- * A job completes some specific processing task.
- */
 abstract class AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+	const TASK_COMPLETED = 1;
+	const TASK_CONTINUING = 2;
 
 	/**
-	 * @var \Orb\Util\OptionsArray
+	 * @var array
 	 */
-	protected $options;
+	protected $_data;
 
 	/**
-	 * @var \Application\DeskPRO\Log\Logger
+	 * @var \Application\DeskPRO\Entity\TaskQueue
 	 */
-	protected $logger;
+	protected $_task;
 
-	final public function __construct(Logger $logger, array $options = null)
+	/**
+	 * @var \Application\DeskPRO\Log\Logger|null
+	 */
+	protected $_logger;
+
+	public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
 	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-		$this->logger = $logger;
-		$this->init();
+		$this->_data = array_merge($this->_getDefaultData(), $data);
+		$this->_task = $task;
+		$this->_logger = $logger;
 	}
 
-
-	protected function init() { }
-
-
-	/**
-	 * Run the task
-	 */
-	abstract public function run();
-
-
-	/**
-	 * Log a status message. These should include information about how many records
-	 * processed etc.
-	 *
-	 * @param string $message
-	 * @param array $details
-	 */
-	public function logStatus($message, array $details = array())
+	public function getData()
 	{
-		$details['flag'] = 'status';
-		$this->logger->log($message, Logger::INFO, $details);
+		return $this->_data;
 	}
 
-
-	/**
-	 * Get the logger for this job
-	 *
-	 * @return \Application\DeskPRO\Log\Logger
-	 */
 	public function getLogger()
 	{
-		return $this->logger;
+		return $this->_logger;
 	}
+
+	public function getTask()
+	{
+		return $this->_task;
+	}
+
+	abstract protected function _getDefaultData();
+
+	abstract public function run($max_time);
 }

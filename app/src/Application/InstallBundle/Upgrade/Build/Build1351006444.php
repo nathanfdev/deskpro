@@ -29,68 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Log\Logger;
-
-/**
- * A job completes some specific processing task.
- */
-abstract class AbstractJob
+class Build1351006444 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 3600;
-
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	protected $options;
-
-	/**
-	 * @var \Application\DeskPRO\Log\Logger
-	 */
-	protected $logger;
-
-	final public function __construct(Logger $logger, array $options = null)
+	public function run()
 	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-		$this->logger = $logger;
-		$this->init();
-	}
+		$this->out("Add task queue system");
+		$this->execMutateSql("CREATE TABLE task_queue (id INT AUTO_INCREMENT NOT NULL, runner_class VARCHAR(255) NOT NULL, task_data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_runnable DATETIME NOT NULL, task_group VARCHAR(50) DEFAULT NULL, status VARCHAR(25) NOT NULL, date_started DATETIME DEFAULT NULL, date_completed DATETIME DEFAULT NULL, error_text LONGTEXT NOT NULL, run_status LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("
+			INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+			VALUES ('run_queued_tasks', 'run_queued_tasks', 'Run Queued Tasks', 'Runs any general-purpose queued tasks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\RunQueuedTasks', X'613A303A7B7D', '60', NULL, NULL)
+		");
 
-
-	protected function init() { }
-
-
-	/**
-	 * Run the task
-	 */
-	abstract public function run();
-
-
-	/**
-	 * Log a status message. These should include information about how many records
-	 * processed etc.
-	 *
-	 * @param string $message
-	 * @param array $details
-	 */
-	public function logStatus($message, array $details = array())
-	{
-		$details['flag'] = 'status';
-		$this->logger->log($message, Logger::INFO, $details);
-	}
-
-
-	/**
-	 * Get the logger for this job
-	 *
-	 * @return \Application\DeskPRO\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
 	}
 }

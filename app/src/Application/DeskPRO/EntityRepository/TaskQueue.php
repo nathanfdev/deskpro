@@ -29,68 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
 
-/**
- * A job completes some specific processing task.
- */
-abstract class AbstractJob
+class TaskQueue extends AbstractEntityRepository
 {
-	const DEFAULT_INTERVAL = 3600;
-
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	protected $options;
-
-	/**
-	 * @var \Application\DeskPRO\Log\Logger
-	 */
-	protected $logger;
-
-	final public function __construct(Logger $logger, array $options = null)
+	public function getRunningTask()
 	{
-		$this->options = new \Orb\Util\OptionsArray($options);
-		$this->logger = $logger;
-		$this->init();
+		return $this->getEntityManager()->createQuery("
+			SELECT tq
+			FROM DeskPRO:TaskQueue tq
+			WHERE tq.status = 'running'
+			ORDER BY tq.date_runnable
+		")->setMaxResults(1)->getOneOrNullResult();
 	}
 
-
-	protected function init() { }
-
-
-	/**
-	 * Run the task
-	 */
-	abstract public function run();
-
-
-	/**
-	 * Log a status message. These should include information about how many records
-	 * processed etc.
-	 *
-	 * @param string $message
-	 * @param array $details
-	 */
-	public function logStatus($message, array $details = array())
+	public function getNextQueuedTask()
 	{
-		$details['flag'] = 'status';
-		$this->logger->log($message, Logger::INFO, $details);
+		return $this->getEntityManager()->createQuery("
+			SELECT tq
+			FROM DeskPRO:TaskQueue tq
+			WHERE tq.status = 'queued' AND tq.date_runnable < ?0
+			ORDER BY tq.date_runnable
+		")->setMaxResults(1)->setParameters(array(date('Y-m-d H:i:s')))->getOneOrNullResult();
 	}
 
-
-	/**
-	 * Get the logger for this job
-	 *
-	 * @return \Application\DeskPRO\Log\Logger
-	 */
-	public function getLogger()
+	public function getRunnableTask()
 	{
-		return $this->logger;
+		$task = $this->getRunningTask();
+		if ($task) {
+			return $task;
+		}
+
+		$task = $this->getNextQueuedTask();
+		if ($task) {
+			return $task;
+		}
+
+		return null;
+	}
+
+	public function enqueueTask($runner_class, array $data = array(), $task_group = null)
+	{
+		$task = new \Application\DeskPRO\Entity\TaskQueue();
+		$task->runner_class = $runner_class;
+		$task->task_data = $data;
+		$task->task_group = $task_group;
+
+		$em = $this->getEntityManager();
+		$em->persist($task);
+		$em->flush();
+
+		return $task;
 	}
 }

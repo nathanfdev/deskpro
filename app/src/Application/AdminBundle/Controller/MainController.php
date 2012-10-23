@@ -173,4 +173,19 @@ class MainController extends AbstractController
 	{
 		return $this->createJsonResponse(array('okay' => 1));
 	}
+
+	public function checkTaskQueueAction($task_queue_id)
+	{
+		$task = $this->em->getRepository('DeskPRO:TaskQueue')->find($task_queue_id);
+		if (!$task) {
+			return $this->createJsonResponse(array('exists' => false));
+		} else {
+			return $this->createJsonResponse(array(
+				'exists' => true,
+				'status' => $task->status,
+				'run_status' => $task->run_status,
+				'error_text' => $task->error_text
+			));
+		}
+	}
 }
