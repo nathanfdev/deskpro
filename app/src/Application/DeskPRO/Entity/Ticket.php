@@ -2219,6 +2219,101 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param $string
+	 * @param bool $escape
+	 * @return mixed
+	 */
+	public function replaceVarsInString($string, Person $performer = null, $escape = false)
+	{
+		$repl = array();
+
+		$repl = array_merge(array(
+			'user.name'                   => $this->person->getDisplayName(),
+			'user.email'                  => $this->person->getPrimaryEmailAddress(),
+			'user.organization_position'  => $this->person->organization_position,
+
+			'org.name' => $this->person->organization ? $this->person->organization->name : '',
+		), $repl);
+
+		// Custom user fields: {{ user.field23 }}
+		$field_manager = App::getSystemService('person_fields_manager');
+		$custom_fields = $field_manager->getRenderedToTextForObject($this->person);
+		foreach ($custom_fields as $f) {
+			$repl["user.field{$f['id']}"] = $f['rendered'];
+		}
+
+		// Custom org fields: {{ agent.field23 }}
+		if ($this->person->organization) {
+			$field_manager = App::getSystemService('org_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject($this->person->organization);
+			foreach ($custom_fields as $f) {
+				$repl["org.field{$f['id']}"] = $f['rendered'];
+			}
+		}
+
+		if (!$performer && App::getCurrentPerson() && App::getCurrentPerson()->getId()) {
+			$performer = App::getCurrentPerson();
+		}
+
+		if ($performer) {
+			$repl = array_merge(array(
+				'performer.name'                   => $performer->getDisplayName(),
+				'performer.email'                  => $performer->getPrimaryEmailAddress(),
+				'performer.organization_position'  => $performer->organization_position,
+
+				'performer.org.name' => $performer->organization ? $performer->organization->name : '',
+			), $repl);
+
+			$field_manager = App::getSystemService('person_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject($performer);
+			foreach ($custom_fields as $f) {
+				$repl["performer.field{$f['id']}"] = $f['rendered'];
+			}
+
+			if ($performer->organization) {
+				$field_manager = App::getSystemService('org_fields_manager');
+				$custom_fields = $field_manager->getRenderedToTextForObject($performer->organization);
+				foreach ($custom_fields as $f) {
+					$repl["performer.org.field{$f['id']}"] = $f['rendered'];
+				}
+			}
+		}
+
+		$repl = array_merge(array(
+			'ticket.id'               => $this->id,
+			'ticket.ref'              => $this->ref,
+			'ticket.subject'          => $this->subject,
+			'ticket.department'       => $this->department ? $this->department->full_title : '',
+			'ticket.product'          => $this->product ? $this->product->full_title : '',
+			'ticket.category'         => $this->category ? $this->category->full_title : '',
+			'ticket.workflow'         => $this->workflow ? $this->workflow->title : '',
+			'ticket.priority'         => $this->priority ? $this->priority->title : '',
+
+			'agent.name'     => $this->agent ? $this->agent->getDisplayName() : '',
+			'agent.email'    => $this->agent ? $this->agent->getPrimaryEmailAddress() : '',
+
+			'agent_team.name' => $this->agent_team ? $this->agent_team->name : '',
+		), $repl);
+
+		// Custom ticket fields: {{ ticket.field23 }}
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getRenderedToTextForObject($this);
+		foreach ($custom_fields as $f) {
+			$repl["ticket.field{$f['id']}"] = $f['rendered'];
+		}
+
+		foreach ($repl as $k => $v) {
+			if ($escape) {
+				$v = htmlspecialchars($v);
+			}
+			$string = str_replace("{{ $k }}", $v, $string);
+			$string = str_replace("{{{$k}}}", $v, $string);
+		}
+
+		return $string;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

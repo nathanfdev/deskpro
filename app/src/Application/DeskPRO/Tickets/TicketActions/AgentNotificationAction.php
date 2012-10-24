@@ -143,6 +143,10 @@ class AgentNotificationAction extends AbstractAction
 			return $ticket->notify_email_name_agent;
 		}
 
+		if ($this->tracker->isExtraSet('set_initial_from_toagent')) {
+			return $this->tracker->getExtra('set_initial_from_toagent');
+		}
+
 		return null;
 	}
 

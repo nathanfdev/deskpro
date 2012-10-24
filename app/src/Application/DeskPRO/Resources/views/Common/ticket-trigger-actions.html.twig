@@ -27,6 +27,19 @@
 		</div>
 	{% endif %}
 
+	<div class="builder-type" title="Set initial From name on emails" data-rule-type="set_initial_from_name">
+		<div class="builder-options">
+			<input type="text" name="from_name" />
+			<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This sets the default From name on email notifications sent during the update if one has not already been set before.<br/><br/>You can usee variables in this name such as: {{'{{'}}ticket.department{{'}}'}} or {{'{{'}}agent.name{{'}}'}} or {{'{{'}}performer.name{{'}}'}}"></span>
+			<br />
+			<select name="to_whom">
+				<option value="0">On both user and agent emails</option>
+				<option value="agent">On agent emails only</option>
+				<option value="user">On user emails only</option>
+			</select>
+		</div>
+	</div>
+
 	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }} (user emails)" data-rule-type="set_from_address">
 		<div class="builder-options">
 			<input type="text" name="email_address" />

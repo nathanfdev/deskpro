@@ -84,10 +84,10 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		if ($ticket->notify_email_name) {
 			$from_name = $ticket->notify_email_name;
 		} else {
-			if ($this->via_message) {
-				$from_name = $this->via_message->getPerson()->getDisplayName();
-			} else {
-				$from_name = App::getSetting('core.deskpro_name');
+			$from_name = App::getSetting('core.deskpro_name');
+
+			if ($this->tracker->isExtraSet('set_initial_from_touser')) {
+				$from_name = $this->tracker->getExtra('set_initial_from_touser');
 			}
 		}
 

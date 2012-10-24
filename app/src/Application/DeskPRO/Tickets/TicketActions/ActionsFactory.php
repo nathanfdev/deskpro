@@ -182,6 +182,19 @@ class ActionsFactory
 				$options['from_name'] = $value['name'];
 				break;
 
+			case 'set_initial_from_name':
+				$options['pattern'] = $value['from_name'];
+				$options['to_agent'] = true;
+				$options['to_user'] = true;
+				if (isset($value['to_whom']) && $value['to_whom']) {
+					if ($value['to_whom'] == 'agent') {
+						$options['to_user'] = false;
+					} elseif ($value['to_whom'] == 'user') {
+						$options['to_agent'] = false;
+					}
+				}
+				break;
+
 			case 'new_ticket':
 				$options = array('mode' => isset($value['mode']) ? $value['mode'] : 'run');
 				break;
