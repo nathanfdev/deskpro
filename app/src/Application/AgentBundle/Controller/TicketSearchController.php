@@ -1239,9 +1239,12 @@ class TicketSearchController extends AbstractController
 		$macro_id = $this->in->getUint('macro_id');
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
+		$descriptions = $macro->getActionDescriptions();
+
 		return $this->createJsonResponse(array(
-			'macro_id' => $macro['id'],
-			'macro_actions' => $macro['actions']
+			'macro_id'      => $macro['id'],
+			'macro_actions' => $macro['actions'],
+			'descriptions'  => $descriptions,
 		));
 	}
 
@@ -1259,52 +1262,53 @@ class TicketSearchController extends AbstractController
 
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids);
 
-		if (($actions || $actions_set) && $tickets) {
+		$macro = false;
+		if ($macro_id = $this->in->getUint('run_macro_id')) {
+			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+		}
 
-			$factory = new ActionsFactory();
-			$collection = new ActionsCollection();
+		if (($actions || $actions_set || $macro) && $tickets) {
 
-			foreach ($actions as $name => $opt) {
-				$action = $factory->createFromForm($name, $opt);
-				$collection->add($action);
-			}
-
-			foreach ($actions_set as $info) {
-				$action = $factory->createFromForm($info['type'], $info['options']);
-				$collection->add($action);
-			}
-
-			$count = 0;
-
-
-			try {
+			if ($macro) {
 				foreach ($tickets as $ticket) {
+					$actions_collection = $macro->getActionsCollection($ticket);
 
-					if ($count == 0) {
-						$this->em->beginTransaction();
-					}
-
-					$count++;
-					$collection->apply(null, $ticket, $this->person);
-					$this->em->persist($ticket);
-					$ticket->_saveTicketLogs();
-					$this->em->flush();
-
-					// Commit in batches of three
-					if ($count % 3 == 0) {
-						$this->em->commit();
-						$count = 0;
+					$this->db->beginTransaction();
+					try {
+						$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+						$this->db->commit();
+					} catch (\Exception $e) {
+						$this->db->rollback();
+						throw $e;
 					}
 				}
+			} else {
+				$factory = new ActionsFactory();
+				$collection = new ActionsCollection();
 
-				if ($count) {
-					$this->em->commit();
+				foreach ($actions as $name => $opt) {
+					$action = $factory->createFromForm($name, $opt);
+					$collection->add($action);
 				}
-			} catch (\Exception $e) {
-				if ($count) {
-					$this->em->rollback();
+
+				foreach ($actions_set as $info) {
+					$action = $factory->createFromForm($info['type'], $info['options']);
+					$collection->add($action);
 				}
-				throw $e;
+
+				foreach ($tickets as $ticket) {
+					$this->db->beginTransaction();
+					try {
+						$collection->apply(null, $ticket, $this->person);
+						$this->em->persist($ticket);
+						$ticket->_saveTicketLogs();
+						$this->em->flush();
+						$this->db->commit();
+					} catch (\Exception $e) {
+						$this->em->rollback();
+						throw $e;
+					}
+				}
 			}
 		}
 

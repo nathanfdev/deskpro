@@ -405,6 +405,15 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		if (!info) info = {};
 		info.actionsCount = 0;
 
+		if (this.wrapper.find('input.macro_id')[0]) {
+			appendArray.push({
+				name: 'run_macro_id',
+				value: this.wrapper.find('input.macro_id').val()
+			});
+			info.actionsCount = 1;
+			return appendArray;
+		}
+
 		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
 
 			var val = $(this).val(), name = $(this).attr('name');
@@ -719,31 +728,21 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.updateUi();
 	},
 
-	_initMacroOverlay: function() {
-		var self = this;
-		if (this.macroOverlay) {
-			return;
-		}
-
-		var overlayEl = this.getElById('confirm_macro_overlay');
-
-		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
-		$('.actions-list', overlayEl).empty().append(add);
-
-		this.macroOverlay = new DeskPRO.UI.Overlay({
-			contentElement: overlayEl,
-			zIndex: 30001
-		});
-	},
-
 
 	/**
 	 * Load a macro into the form
 	 */
 	loadMacro: function(macro_id) {
 
+		var macroEl = $('.macro-options', this.wrapper);
+		var inputActionsEl = $('.actions-input', this.wrapper);
+
 		macro_id = parseInt(macro_id);
 		if (!macro_id) {
+			macroEl.hide();
+			macroEl.find('ul.actions-list').empty();
+			macroEl.find('input.macro_id').remove();
+			inputActionsEl.show();
 			return;
 		}
 
@@ -757,86 +756,26 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			context: this,
 			success: function(data) {
 
-				this._initMacroOverlay();
+				inputActionsEl.hide();
+				macroEl.show();
 
-				var add = $('.actions-list', this.macroOverlay.getElement());
-				$('.search-terms', add).empty();
+				var input = $('<input type="hidden" class="macro_id" name="run_macro_id" />');
+				input.val(macro_id);
+				input.appendTo(macroEl);
 
-				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
-				Array.each(data.macro_actions, function(info, x) {
-					var basename = 'actions[initial_' + x + ']';
-					editor.addNewRow($('.search-terms', add), basename, {
-						type: info.type,
-						options: info.options
-					});
+				var ul = macroEl.find('ul.actions-list');
+				ul.empty();
+
+				Array.each(data.descriptions, function(desc) {
+					var li = $('<li />');
+					li.html(desc);
+
+					ul.append(li);
 				});
-
-				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
-				$('.remove', add).remove();
-
-				this.macroOverlay.open();
-
 
 				macroBtnEl.removeClass('loading');
 
 				self.hasAnyChange = true;
-
-				DP.console.log(data);
-				if (!data.macro_actions) {
-					return;
-				}
-
-				Array.each(data.macro_actions, function(action) {
-					switch (action.type) {
-						case 'agent':
-							$(':radio.agent', this.assignOptionBox.getElement()).prop('checked', false).attr('checked', '');
-							$(':radio.agent-' + action.options.agent, this.assignOptionBox.getElement()).prop('checked', true).attr('checked', '');
-							this.updateAssignmentsDisplay();
-							break;
-						case 'agent_team':
-							$('[name="actions[agent_team]"]', this.wrapper).val(action.options.agent_team);
-							break;
-						case 'category':
-							$('[name="actions[category]"]', this.wrapper).val(action.options.category);
-							break;
-						case 'department':
-							$('[name="actions[department]"]', this.wrapper).val(action.options.department);
-							break;
-						case 'product':
-							$('[name="actions[product]"]', this.wrapper).val(action.options.product);
-							break;
-						case 'flag':
-							$('[name="actions[flag]"]', this.wrapper).val(action.options.flag);
-							break;
-						case 'priority':
-							$('[name="actions[priority]"]', this.wrapper).val(action.options.priority);
-							break;
-						case 'urgency':
-
-							break;
-						case 'urgency_set':
-
-							break;
-						case 'workflow':
-							$('[name="actions[workflow]"]', this.wrapper).val(action.options.workflow);
-							break;
-						case 'status':
-							$('button.status.status-' + action.options.status, this.wrapper).click();
-							break;
-						case 'reply':
-							$('[name="actions[reply]"]', this.wrapper).val(action.options.reply_text);
-							break;
-						default:
-							var actList = $('.other-properties-wrapper', this.wrapper);
-							var x = Orb.getUniqueId();
-							var basename = 'actions_set[set' + x + ']';
-							this.actionsEditor.addNewRow($('.search-terms', actList), basename, {
-								type: action.type,
-								options: action.options
-							});
-							break;
-					}
-				}, this);
 			}
 		});
 
