@@ -337,6 +337,33 @@ class CsvImport extends AbstractJob
 								$em->persist($custom_data);
 								$person->addCustomData($custom_data);
 							}
+						} if ($custom_field->getTypeName() == 'date') {
+							if (ctype_digit($column_value)) {
+								// assume timestamp
+								$set_field = true;
+							} else if (preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', $column_value)) {
+								$set_field = true;
+
+								$date = \DateTime::createFromFormat('Y-m-d', $column_value,
+									new \DateTimeZone(App::getSetting('core.default_timezone'))
+								);
+								$date = \Orb\Util\Dates::convertToUtcDateTime($date);
+
+								$column_value = $date->getTimestamp();
+							} else {
+								$set_field = false;
+							}
+
+							if ($set_field) {
+								$custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
+								$custom_data->person = $person;
+								$custom_data->field = $custom_field;
+								$custom_data->root_field = $custom_field;
+								$custom_data->value = $column_value;
+
+								$em->persist($custom_data);
+								$person->addCustomData($custom_data);
+							}
 						} else {
 							$custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
 							$custom_data->person = $person;
