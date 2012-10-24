@@ -94,13 +94,25 @@ class ImportController extends AbstractController
 			return $this->_renderCsvConfigureForm($filename);
 		}
 
+		$welcome_email = $this->in->getBool('welcome_email') && !defined('DPC_IS_CLOUD');
+
+		$task_data = array(
+			'filename' => $filename,
+			'field_maps' => $field_maps,
+			'skip_first' => $skip_first,
+			'welcome_email' => $welcome_email
+		);
+
+		if ($welcome_email) {
+			$task_data['welcome_from_name'] = $this->in->getString('from_name');
+			$task_data['welcome_from_email'] = $this->in->getString('from_email');
+			$task_data['welcome_subject'] = $this->in->getString('subject');
+			$task_data['welcome_message'] = $this->in->getString('message');
+		}
+
 		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
 			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
-			array(
-				'filename' => $filename,
-				'field_maps' => $field_maps,
-				'skip_first' => $skip_first
-			),
+			$task_data,
 			'data_import'
 		);
 
@@ -141,11 +153,14 @@ class ImportController extends AbstractController
 
 		$custom_fields = App::getApi('custom_fields.people')->getEnabledFields();
 
+		$show_welcome_email = !defined('DPC_IS_CLOUD');
+
 		return $this->render('AdminBundle:Import:csv-configure.html.twig', array(
 			'filename' => $filename,
 			'columns' => $columns,
 			'examples' => $examples,
-			'custom_fields' => $custom_fields
+			'custom_fields' => $custom_fields,
+			'show_welcome_email' => $show_welcome_email
 		));
 	}
 }

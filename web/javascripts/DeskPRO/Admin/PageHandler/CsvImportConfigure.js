@@ -64,12 +64,32 @@ DeskPRO.Admin.PageHandler.CsvImportConfigure = new Class({
 			});
 
 			if (hasEmail) {
-				$('#errors_container').hide();
-				return true;
+				$('#primary-email-error').hide();
 			} else {
-				$('#errors_container').show();
-				return false;
+				$('#primary-email-error').show();
 			}
+
+			var welcomeValid = true;
+
+			if ($(this).find('input[name=welcome_email]:checked').val()) {
+				$('input, textarea', '#welcome-email-inputs').each(function() {
+					if ($(this).val() == '') {
+						welcomeValid = false;
+					} else if ($(this).attr('name') == 'from_email' && $(this).val().indexOf('@') == -1) {
+						welcomeValid = false;
+					}
+				});
+			}
+
+			if (welcomeValid) {
+				$('#welcome-email-error').hide();
+			} else {
+				$('#welcome-email-error').show();
+			}
+
+			return hasEmail && welcomeValid;
 		});
+
+		$('#welcome-email-textarea').TextAreaExpander();
 	}
 });

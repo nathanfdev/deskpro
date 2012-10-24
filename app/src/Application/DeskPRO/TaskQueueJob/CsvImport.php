@@ -51,6 +51,11 @@ class CsvImport extends AbstractJob
 			'field_maps' => false,
 			'new_custom_map' => false,
 			'skip_first' => true,
+			'welcome_email' => false,
+			'welcome_from_name' => '',
+			'welcome_from_email' => '',
+			'welcome_subject' => '',
+			'welcome_message' => '',
 			'imported' => 0,
 			'lines_done' => 0,
 			'fseek' => 0,
@@ -395,7 +400,33 @@ class CsvImport extends AbstractJob
 		$em->persist($person);
 		$em->flush();
 
+		if ($this->_data['welcome_email'] && !defined('DPC_IS_CLOUD')) {
+			$mailer = App::getContainer()->getMailer();
+
+			$message = $mailer->createMessage();
+			$message->setToPerson($person);
+			$message->setFrom($this->_data['welcome_from_email'], $this->_data['welcome_from_name']);
+			$message->setSubject($this->_data['welcome_subject']);
+			$message->setBody($this->_replaceMessagePlaceholders($this->_data['welcome_message'], $person));
+
+			$mailer->send($message);
+		}
+
 		return $person->id;
+	}
+
+	protected function _replaceMessagePlaceholders($message, Person $person)
+	{
+		$message = preg_replace_callback('/\{\{\s*([a-z0-9_-]+)\s*\}\}/i', function ($match) use ($person) {
+			switch (strtolower($match[1])) {
+				case 'name': return $person->getDisplayName();
+				case 'email': return $person->getPrimaryEmailAddress();
+				case 'password': return $person->getPlaintextPassword();
+				default: return $match[0];
+			}
+		}, $message);
+
+		return $message;
 	}
 
 	protected function _addContactData(Person $person, $type, array $data, $comment = null)
