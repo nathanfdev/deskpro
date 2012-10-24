@@ -239,6 +239,7 @@ class CsvImport extends AbstractJob
 				case 'first_name':
 				case 'last_name':
 				case 'name':
+				case 'title_prefix':
 				case 'organization_position':
 					$person->$map_field = $column_value;
 					break;

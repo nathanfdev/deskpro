@@ -16,7 +16,7 @@
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"></span>
 			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
-			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
+			{% else %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			{% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
 			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>

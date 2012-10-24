@@ -6,7 +6,7 @@
 					class="as-popover {% if person.primary_email_address %}tipped{% endif %}"
 					data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}"
 					{% if person.primary_email_address %}title="{{ person.primary_email_address }}"{% endif %}
-				>{{ person.display_name }}</a>
+				>{{ person.getNameWithTitle() }}</a>
 			</div>
 			<div class="bound-fade"></div>
 		</div>

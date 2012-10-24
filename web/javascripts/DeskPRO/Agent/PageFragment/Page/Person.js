@@ -110,10 +110,58 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			var namef       = this.getEl('showname');
 			var editName    = this.getEl('editname');
+			var editTitle   = this.getEl('edittitle');
 			var orgpos      = this.getEl('showorgpos');
 			var editOrgpos  = this.getEl('editorgpos');
 			var startBtn    = this.getEl('editname_start');
 			var stopBtn     = this.getEl('editname_end');
+
+			var editTitleChoicesRaw = editTitle.data('choices').split(',');
+			var editTitleChoices = [];
+			for (var i = 0; i < editTitleChoicesRaw.length; i++) {
+				editTitleChoices.push($.trim(editTitleChoicesRaw[i]));
+			}
+			editTitle.select2({
+				initSelection: function(el, callback) {
+					var existingTitle = editTitle.val();
+					if (existingTitle.length) {
+						callback({id: existingTitle, text: existingTitle});
+					} else {
+						callback({id: '', text: '\u00A0'});
+					}
+				},
+				query: function(query) {
+					var inList = function(term) {
+						for (var i = 0; i < editTitleChoices.length; i++) {
+							if (editTitleChoices[i] == term) {
+								return true;
+							}
+						}
+
+						return false;
+					};
+
+					var results = [];
+
+					if (query.term.length) {
+						results.push({id: query.term, text: query.term});
+					}
+
+					var val = editTitle.val();
+					if (val.length && !inList(val) && val != query.term) {
+						results.push({id: val, text: val});
+					}
+
+					for (var i = 0; i < editTitleChoices.length; i++) {
+						var choice = editTitleChoices[i];
+						results.push({id: choice, text: choice});
+					}
+
+					results.push({id: '', text: '\u00A0'});
+
+					query.callback({results: results});
+				}
+			});
 
 			var startEditable = function() {
 				namef.hide();
@@ -125,10 +173,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			};
 
 			var stopEditable = function() {
-				var nametxt = editName.find('input').first();
+				var nametxt = editName.find('input[name=name]').first();
+				var titletxt = editName.find('input[name=title_prefix]').first();
 				var postxt  = editOrgpos.find('input').first();
 
 				var setName = nametxt.val().trim();
+				var setTitle = titletxt.val().trim();
 				if (postxt) {
 					var setPos  = '';
 				} else {
@@ -151,7 +201,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				namef.show();
 				orgpos.hide();
 				stopBtn.hide();
-				namef.text(setName);
+				namef.text((setTitle ? setTitle + ' ' : '') + setName);
 
 				var postData = [];
 				postData.push({
@@ -161,6 +211,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				postData.push({
 					name: 'name',
 					value: setName
+				});
+				postData.push({
+					name: 'title_prefix',
+					value: setTitle
 				});
 				postData.push({
 					name: 'organization_position',

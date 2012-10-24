@@ -17,7 +17,7 @@
 			{% if field == 'name' %}
 				<td class="subject">
 					<a class="subject-link">
-						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
+						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.getNameWithTitle() }}</span></a>
 					</a>
 				</td>
 			{% elseif field == 'email' %}

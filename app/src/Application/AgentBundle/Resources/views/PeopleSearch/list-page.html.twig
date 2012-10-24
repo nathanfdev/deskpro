@@ -8,7 +8,7 @@
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
-						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
+						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.getNameWithTitle() }}</span></a>
 						{% if person_email.email %}<span class="person-email">&lt;{{ person_email.email }}&gt;</span>{% endif %}
 						{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
 					</h3>

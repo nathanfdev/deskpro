@@ -404,6 +404,7 @@ class PersonController extends AbstractController
 
 			case 'quick-edit-name':
 				$person->name = $this->in->getString('name');
+				$person->title_prefix = $this->in->getString('title_prefix');
 				if ($person->organization) {
 					$person->organization_position = $this->in->getString('organization_position');
 				}

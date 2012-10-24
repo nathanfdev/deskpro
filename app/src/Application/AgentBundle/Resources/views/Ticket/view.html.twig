@@ -292,7 +292,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 					<dd>
 						<a id="{{ baseId }}_profile_link" class="user-link clean-white as-popover preload tipped" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}" title="Click to view user profile">
 							<span style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">
-								{{ ticket.person.display_name }}
+								{{ ticket.person.getNameWithTitle() }}
 								{% if ticket.person.organization %}
 									|
 									{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}
