@@ -172,19 +172,55 @@ class TicketController extends AbstractController
 		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
 
 		$ticket_api = array();
-		foreach (array('id', 'subject', 'ref', 'status') AS $key) {
+		foreach (array(
+			'id', 'subject', 'ref', 'status', 'hidden_status', 'creation_system', 'is_hold',
+			'urgency', 'total_user_waiting', 'total_to_first_reply', 'has_attachments'
+		) AS $key) {
 			$ticket_api[$key] = $ticket->$key;
 		}
+
+		foreach (array(
+			'date_created', 'date_resolved', 'date_closed', 'date_first_agent_assign',
+			'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply',
+			'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked'
+		) AS $date_key) {
+			if ($ticket->$date_key instanceof \DateTime) {
+				$ticket_api[$date_key] = $ticket->$date_key->getTimestamp();
+			}
+		}
+
+		$ticket_api['person'] = $ticket->person->getDataForWidget();
+
+		if ($ticket->agent) {
+			$ticket_api['agent'] = $ticket->agent->getDataForWidget();
+		}
+
+		foreach (array(
+			'department' => 'title',
+			'language' => 'title',
+			'category' => 'title',
+			'priority' => 'title',
+			'workflow' => 'title',
+			'product' => 'title',
+			'organization' => 'name'
+		) AS $key => $title_field) {
+			if ($ticket->$key) {
+				$ticket_api[$key] = array('id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field);
+			}
+		}
+		if (count($ticket->labels)) {
+			$ticket_api['labels'] = array();
+			foreach ($ticket->labels AS $label) {
+				$ticket_api['labels'][] = $label['label'];
+			}
+		}
+
 		foreach ($custom_fields AS $field) {
 			$ticket_api['custom'][$field['id']] = array(
 				'id' => $field['id'],
 				'title' => $field['title'],
 				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
 			);
-		}
-		$ticket_api['person'] = $ticket->person->getDataForWidget();
-		if ($ticket->agent) {
-			$ticket_api['agent'] = $ticket->agent->getDataForWidget();
 		}
 
         $vars = array(

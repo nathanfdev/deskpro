@@ -1982,10 +1982,25 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function getDataForWidget()
 	{
 		$data = array();
-		foreach (array('id', 'name', 'first_name', 'last_name') AS $key) {
+		foreach (array('id', 'name', 'first_name', 'last_name', 'title_prefix', 'creation_system', 'organization_position') AS $key) {
 			$data[$key] = $this->$key;
 		}
+		$data['date_created'] = $this->date_created->getTimestamp();
 		$data['email'] = $this->getPrimaryEmailAddress();
+
+		if ($this->organization) {
+			$data['organization'] = array('id' => $this->organization->id, 'name' => $this->organization->name);
+		}
+		if ($this->language) {
+			$data['language'] = array('id' => $this->language->id, 'title' => $this->language->title);
+		}
+
+		if (count($this->labels)) {
+			$data['labels'] = array();
+			foreach ($this->labels AS $label) {
+				$data['labels'][] = $label['label'];
+			}
+		}
 
 		$customFields = App::getSystemService('person_fields_manager')->getDisplayArrayForObject($this);
 		$data['custom'] = array();
