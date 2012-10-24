@@ -165,6 +165,32 @@ class ServerController extends AbstractController
 	}
 
 	############################################################################
+	# download-database-schema
+	############################################################################
+
+	public function downloadDatabaseSchemaAction()
+	{
+		$sql = array();
+
+		$sql[] = '### ' . $this->container->getSetting('core.deskpro_url') . "\n";
+		$sql[] = '### DeskPRO Build: ' . DP_BUILD_TIME . "\n";
+		$sql[] = '### Generated: ' . date('Y-m-d H:i:s') . "\n\n";
+
+		$tables = App::getDb()->fetchAllCol("SHOW TABLES");
+		foreach ($tables as $table) {
+			$sql[] = "### TABLE: $table\n";
+			$sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", array(), 1);
+			$sql[] = "\n\n";
+		}
+
+		$sql = implode('', $sql);
+
+		$res = $this->createResponse($sql, 200);
+		$res->headers->set('Content-Type', array('text/sql; filename=schema.sql'));
+		return $res;
+	}
+
+	############################################################################
 	# server-checks
 	############################################################################
 

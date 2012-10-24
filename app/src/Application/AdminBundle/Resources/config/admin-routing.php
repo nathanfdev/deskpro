@@ -2137,6 +2137,13 @@ $collection->add('admin_server_mysqlstatus', new Route(
 	array()
 ));
 
+$collection->add('admin_server_downloadschema', new Route(
+	'/server/database-schema.sql',
+	array('_controller' => 'AdminBundle:Server:downloadDatabaseSchema'),
+	array(),
+	array()
+));
+
 $collection->add('admin_server_testemail', new Route(
 	'/server/test-email',
 	array('_controller' => 'AdminBundle:Server:testEmail'),
