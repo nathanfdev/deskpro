@@ -21,7 +21,7 @@
 {% block page %}
 <form action="{{ path('admin_import_csv_import') }}" method="post" class="dp-form" id="import-form">
 
-	<div class="check-grid item-list">
+	<div class="check-grid item-list" style="margin-bottom: 10px;">
 	<table width="100%">
 	<thead>
 		<tr>
@@ -72,6 +72,28 @@
 	{% endfor %}
 	</tbody>
 	</table>
+	</div>
+
+	<div class="dp-form-row-group"
+		 data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group"
+	>
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>First Row Handling</label>
+			</div>
+			<div class="dp-form-input">
+				<div class="dp-input-group on">
+					<label><input type="radio" class="option-trigger" name="skip_first" value="1" checked="checked" />
+						Skip the first row</label>
+					<p>This should be selected if the "column name" values above contain labels rather than actual data.</p>
+				</div>
+				<div class="dp-input-group">
+					<label><input type="radio" class="option-trigger" name="skip_first" value="0" />
+						Import the first row</label>
+					<p>This should be selected if the "column name" values above contain actual data.</p>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<ul id="errors_container" style="display:none; margin-top: 10px">

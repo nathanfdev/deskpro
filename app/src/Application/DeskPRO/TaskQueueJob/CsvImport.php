@@ -50,6 +50,7 @@ class CsvImport extends AbstractJob
 			'filename' => false,
 			'field_maps' => false,
 			'new_custom_map' => false,
+			'skip_first' => true,
 			'imported' => 0,
 			'lines_done' => 0,
 			'fseek' => 0,
@@ -77,8 +78,8 @@ class CsvImport extends AbstractJob
 		$fp = fopen($csv_file, 'r');
 		fseek($fp, $this->_data['fseek']);
 
-		if ($this->_data['fseek'] == 0) {
-			// skip the first row, assuming it's labels
+		if ($this->_data['fseek'] == 0 && $this->_data['skip_first']) {
+			// skip the first row - it's labels
 			fgetcsv($fp);
 		}
 

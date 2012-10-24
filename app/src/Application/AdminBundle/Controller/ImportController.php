@@ -80,6 +80,7 @@ class ImportController extends AbstractController
 
 		$field_maps = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
 		$filename = $this->in->getString('filename');
+		$skip_first = $this->in->getBool('skip_first');
 
 		$has_email = false;
 		foreach ($field_maps AS $map_field) {
@@ -95,7 +96,11 @@ class ImportController extends AbstractController
 
 		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
 			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
-			array('filename' => $filename, 'field_maps' => $field_maps),
+			array(
+				'filename' => $filename,
+				'field_maps' => $field_maps,
+				'skip_first' => $skip_first
+			),
 			'data_import'
 		);
 
