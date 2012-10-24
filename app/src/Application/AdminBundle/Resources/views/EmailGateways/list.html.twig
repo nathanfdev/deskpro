@@ -131,7 +131,7 @@ $(document).ready(function() {
 								{% if dep.children|length %}
 									<optgroup label="{{ dep.title }}">
 										{% for subdep in dep.children %}
-											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == dep.1 %}selected="selected"{% endif %}>{{subdep.title}}</option>
+											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == dep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
 										{% endfor %}
 									</optgroup>
 								{% else %}
