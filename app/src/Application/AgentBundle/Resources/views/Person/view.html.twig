@@ -54,7 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<h1>
 				<span id="{{baseId}}_showname">{{ person.getNameWithTitle() }}</span>
 				<span id="{{baseId}}_editname" style="display: none">
-					<input type="text" name="title_prefix" id="{{baseId}}_edittitle" value="{{ person.title_prefix }}" data-choices="Dr., Hon., Gov., Miss, Mr., Mrs., Ms., Prof., Rev." style="width: 90px" />
+					<input type="text" name="title_prefix" id="{{baseId}}_edittitle" value="{{ person.title_prefix }}" data-choices="Mr., Miss, Mrs., Ms., Dr., Hon., Prof., Rev." style="width: 90px" />
 					<input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.getDisplayName() }}" />
 				</span>
 				{% if perms.edit and perms.delete %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
