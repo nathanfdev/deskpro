@@ -277,12 +277,29 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 		", array($this->ticket['id'], $this->other_ticket['id']));
 		App::getDb()->delete('article_pending_create', array('ticket_id' => $this->other_ticket['id']));
 
-		// Pending articles
 		App::getDb()->executeUpdate("
 			UPDATE IGNORE labels_tickets
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
 		App::getDb()->delete('labels_tickets', array('ticket_id' => $this->other_ticket['id']));
+
+		App::getDb()->executeUpdate("
+			UPDATE IGNORE task_associations
+			SET ticket_id = ?
+			WHERE ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
+
+		App::getDb()->executeUpdate("
+			UPDATE IGNORE ticket_charges
+			SET ticket_id = ?
+			WHERE ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
+
+		App::getDb()->executeUpdate("
+			UPDATE IGNORE ticket_feedback
+			SET ticket_id = ?
+			WHERE ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
 	}
 }
