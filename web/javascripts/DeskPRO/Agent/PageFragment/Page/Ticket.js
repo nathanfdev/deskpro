@@ -1269,12 +1269,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
 		var replyBillingRow = $('#' + replyBaseId + '_billing_reply');
 
+		if (this.billingTimer) {
+			this.billingTimer = null;
+			clearInterval(this.billingTimer);
+		}
+
 		if (val == 'time') {
-			this.startBillingTimer(reset);
+			if (this.meta.auto_start_bill) {
+				this.startBillingTimer(reset);
+			}
 			replyBillingRow.show();
 			replyBillingRow.find('input[type=checkbox]').attr('disabled', false);
 		} else {
-			this.stopBillingTimer(reset);
+			if (this.meta.auto_start_bill) {
+				this.stopBillingTimer(reset);
+			}
 			replyBillingRow.hide();
 			replyBillingRow.find('input[type=checkbox]').attr('disabled', true);
 		}
