@@ -151,6 +151,106 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		return $ret;
 	}
 
+
+	############################################################################
+	# set-cloud-alias
+	############################################################################
+
+	public function setCloudAliasAction()
+	{
+		/** @var $gateway \Application\DeskPRO\Entity\EmailGateway */
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_id'));
+		if (!$gateway) {
+			throw $this->createNotFoundException();
+		}
+
+		$email = $this->in->getString('email');
+
+		if ($email) {
+			$email = strtolower($email);
+			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+				return $this->createJsonResponse(array('error' => 'invalid_email'));
+			}
+
+			// Check its not already used
+			$is_used = App::getDb()->fetchColumn("
+				SELECT id
+				FROM email_gateway_addresses
+				WHERE match_pattern = ? AND email_gateway_id != ?
+			", array($email, $gateway->getId()));
+
+			if ($is_used) {
+				return $this->createJsonResponse(array('error' => 'dupe'));
+			}
+		}
+
+		$previous = $gateway->getAliasEmailAddress(true);
+		if ($previous) {
+			$this->em->remove($previous);
+		}
+
+		if ($email) {
+			$new = EmailGatewayAddress::newEmailAddress($gateway, $email);
+			$new->run_order = 100;
+
+			$this->em->persist($new);
+		}
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array(
+			'success'    => true,
+			'email'      => $email ?: false,
+			'gateway_id' => $gateway->getid()
+		));
+	}
+
+	############################################################################
+	# set-outgoing-account
+	############################################################################
+
+	public function getCloudOutgoingAccountFormAction()
+	{
+		/** @var $gateway \Application\DeskPRO\Entity\EmailGateway */
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $this->in->getUint('gateway_id'));
+		if (!$gateway) {
+			throw $this->createNotFoundException();
+		}
+
+		if (!$gateway->linked_transport) {
+			$transport                   = new EmailTransport();
+			$transport->title            = 'Default (send through DeskPRO)';
+			$transport->match_type       = 'exact';
+			$transport->match_pattern    = $gateway->getPrimaryEmailAddress();
+			$transport->transport_type   = 'mail';
+
+			$gateway->linked_transport = $transport;
+
+			$this->em->persist($transport);
+			$this->em->persist($gateway);
+			$this->em->flush();
+		}
+
+		$outgoing_email_form = $this->forward('CloudAdminBundle:EmailTransports:editAccount', array('id' => $gateway->linked_transport->getId()), array('_partial' => 'cloud_email'))->getContent();
+
+		return $this->createJsonResponse(array(
+			'gateway_id' => $gateway->getId(),
+			'form_html' => $outgoing_email_form,
+		));
+	}
+
+	public function setCloudOutgoingAccountAction()
+	{
+
+	}
+
 	####################################################################################################################
 
 	public function editAccountAction($id) { throw $this->createNotFoundException(); }

@@ -1,7 +1,48 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
+<style type="text/css">
+	ul.small-detail-list {
+		margin: 0 0 0 20px;
+		padding: 0;
+	}
+
+	ul.small-detail-list li {
+		font-size: 11px;
+		list-style: square;
+		pading: 0 0 0 5px;
+		margin: 0;
+	}
+
+	#email_forward_list input[type="text"] {
+		width: 50%;
+	}
+
+	.select2-container .select2-choice span {
+		text-align: left;
+	}
+
+	.editable-link {
+		background: url({{ asset('images/agent/icons/gear.png') }}) no-repeat scroll 100% 3px transparent;
+		cursor: pointer;
+		padding-right: 15px;
+	}
+
+	.editable-link span {
+		border-bottom: 1px solid #ddd;
+	}
+
+	.editable-link:hover span {
+		border-bottom: 1px solid #888;
+	}
+</style>
 <script type="text/javascript">
+
+//######################################################################################################################
+// Creating new account
+//######################################################################################################################
+
 $(document).ready(function() {
 	var overlay = new DeskPRO.UI.Overlay({
 		triggerElement: $('#newcat_trigger'),
@@ -34,6 +75,219 @@ $(document).ready(function() {
 		});
 	});
 });
+
+//######################################################################################################################
+// Changing departments
+//######################################################################################################################
+
+$(document).ready(function() {
+	var container = $('#email_forward_list');
+
+	container.on('click', '.remove-trigger', function(ev) {
+		ev.preventDefault();
+		$(this).closest('tr').remove();
+	});
+
+	container.find('button.add-trigger').on('click', function(ev) {
+		ev.preventDefault();
+		var html = '<tr><td><div style="float: right"><button class="clean-white remove-trigger">Remove</button></div><input type="text" name="helpdesk_emails[]" placeholder="Email address or a full domain name" value="" /></td></tr>';
+		container.find('tbody').find('tr').last().before(html);
+	});
+
+	$('#email_forward_list_chk').on('change', function() {
+		if (this.checked) {
+			$('#email_forward_list').slideDown();
+		} else {
+			$('#email_forward_list').slideUp();
+		}
+	});
+
+	DP.select($('select.change-linked-dep'));
+
+	$('select.change-linked-dep').on('change', function() {
+		var gateway_id = $(this).data('gateway-id');
+		var dep_id = $(this).val();
+		var el = $(this);
+		var me = this;
+
+		if (dep_id != '0') {
+			$('select.change-linked-dep').each(function() {
+				if (this != me && $(this).val() == dep_id) {
+					$(this).select2('val', '0');
+					DeskPRO_Window.util.showSavePuff($(this).prev());
+				}
+			});
+		}
+
+		$.ajax({
+			url: '{{ path('admin_emailgateways_setlinkeddep') }}',
+			data: {
+				gateway_id: gateway_id,
+				department_id: dep_id
+			},
+			method: 'POST',
+			success: function() {
+				DeskPRO_Window.util.showSavePuff(el.prev());
+			}
+		});
+	});
+});
+
+//######################################################################################################################
+// Setting an alias
+//######################################################################################################################
+
+$(document).ready(function() {
+	var gatewayId    = 0;
+	var activeEl     = null;
+	var overlayEl    = $('#setalias_overlay');
+
+	var overlay = new DeskPRO.UI.Overlay({
+		contentElement: overlayEl
+	});
+
+	$('.set-gateway-alias').on('click', function(ev) {
+		ev.preventDefault();
+
+		activeEl     = $(this);
+		gatewayId    = activeEl.data('gateway-id');
+
+		var gatewayTitle = activeEl.data('gateway-title');
+		var existAlais   = activeEl.find('> span').text().trim() || '';
+		if (existAlais == 'No alias set') {
+			existAlais = '';
+		}
+
+		overlayEl.find('.email-account-title').text(gatewayTitle);
+
+		// Reset
+		overlayEl.find('#setalias_err').hide().find('> div').hide();
+		$('#email_alias').val(existAlais);
+
+		overlay.open();
+	});
+
+	$('#setalias_save').on('click', function(ev) {
+		ev.preventDefault();
+
+		var email = $('#email_alias').val();
+
+		overlayEl.find('#setalias_err').hide().find('> div').hide();
+		$('#setalias_save_wrap').hide();
+		$('#setalias_loading_wrap').show();
+
+		$.ajax({
+			url: '{{ path('admin_emailgateways_cloud_alias') }}',
+			data: {
+				email: email,
+				gateway_id: gatewayId
+			},
+			type: 'POST',
+			dataType: 'json',
+			complete: function() {
+				$('#setalias_loading_wrap').hide();
+				$('#setalias_save_wrap').show();
+			},
+			success: function(data) {
+				if (data.error) {
+					$('#setalias_err').show().find('.' + data.error).show();
+					return;
+				}
+
+				var title = 'Default (send through DeskPRO)';
+				if (data.title && data.title != 'mail()') {
+					title = data.title;
+				}
+
+				activeEl.find('span').text(data.email || 'No alias set');
+				DeskPRO_Window.util.showSavePuff(activeEl);
+				overlay.close();
+			}
+		});
+	});
+});
+
+//######################################################################################################################
+// Setting an alias
+//######################################################################################################################
+
+$(document).ready(function() {
+	var gatewayId    = 0;
+	var activeEl     = null;
+	var overlayEl    = $('#setout_overlay');
+
+	var overlay = new DeskPRO.UI.Overlay({
+		contentElement: overlayEl
+	});
+
+	$('.set-outgoing-account').on('click', function(ev) {
+		ev.preventDefault();
+
+		activeEl     = $(this);
+		gatewayId    = activeEl.data('gateway-id');
+
+		var gatewayTitle = activeEl.data('gateway-title');
+		var existAlais   = activeEl.find('> span').text().trim() || '';
+
+		overlay.open();
+
+		$.ajax({
+			url: '{{ path('admin_emailgateways_cloud_setoutgoing_form') }}',
+			data: {
+				gateway_id: gatewayId
+			},
+			type: 'GET',
+			dataType: 'json',
+			error: function() {
+				overlay.close();
+			},
+			success: function(data) {
+				$('#setout_form_container').empty();
+				$('#setout_form_container').html('<div>' + data.form_html + '</div>');
+
+				DeskPRO.ElementHandler_Exec($('#setout_form_container').find('.edit-email-transport-page'));
+			}
+		});
+	});
+
+	$('#setout_save').on('click', function(ev) {
+		ev.preventDefault();
+
+		var formData = overlayEl.find('input, select').serializeArray();
+		formData.push({
+			name: 'gateway_id',
+			value: gatewayId
+		});
+
+		overlayEl.find('#setalias_err').hide().find('> div').hide();
+		$('#setalias_save_wrap').hide();
+		$('#setalias_loading_wrap').show();
+
+		$.ajax({
+			url: '{{ path('admin_emailgateways_cloud_setoutgoing') }}',
+			data: formData,
+			type: 'POST',
+			dataType: 'json',
+			complete: function() {
+				$('#setalias_loading_wrap').hide();
+				$('#setalias_save_wrap').show();
+			},
+			success: function(data) {
+				if (data.errors) {
+					Array.each(data.errors, function() {
+						$('#setout_err').show().find('.' + data.error).show();
+					})
+					return;
+				}
+
+				activeEl.find('span').text(data.email || 'No alias set');
+				DeskPRO_Window.util.showSavePuff(activeEl);
+				overlay.close();
+			}
+		});
+	});
+});
+
 </script>
 {% endblock %}
 {% block pagebar %}
@@ -59,26 +313,59 @@ $(document).ready(function() {
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
+				<th style="text-align:right">Department</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for gateway in all_gateways %}
 				<tr>
-					<td>
-						<input
-							type="checkbox"
-							class="onoff-slider gateway-toggle-{{ gateway.id }}"
-							{% if gateway.is_enabled %}checked="checked"{% endif %}
-							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
-							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
-							data-state-property="is_enabled"
-						/>
-						{{ gateway.title }}
+					<td style="vertical-align:top;">
+						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');" style="position:relative;top:1px;"><span class="btn-remove"></span></a>
 					</td>
-					<td style="padding: 3px 3px 0 0">
-						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');"><span class="btn-remove"></span></a>
+					<td>
+						<strong>{{ gateway.title }}</strong>
+						<ul class="small-detail-list">
+							<li>
+								Outgoing account:
+								<span
+									class="set-outgoing-account editable-link"
+									data-gateway-id="{{ gateway.id }}"
+									data-gateway-title="{{ gateway.title }}"
+								><span>
+									{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
+										{{ gateway.linked_transport.title }}
+									{% else %}
+										Default (send through DeskPRO)
+									{% endif %}
+								</span></span>
+							</li>
+							<li>
+								Custom Alias:
+								<span
+									class="set-gateway-alias editable-link"
+									data-gateway-id="{{ gateway.id }}"
+									data-gateway-title="{{ gateway.title }}"
+								><span>{{ gateway.getAliasEmailAddress()|default('No alias set') }}</span></span>
+							</li>
+						</ul>
+					</td>
+					<td  style="text-align:right">
+						<select class="change-linked-dep" data-gateway-id="{{ gateway.id }}">
+							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>None</option>
+							{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+								{% if dep.children|length %}
+									<optgroup label="{{ dep.title }}">
+										{% for subdep in dep.children %}
+											<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == dep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
+										{% endfor %}
+									</optgroup>
+								{% else %}
+									<option value="{{dep.id}}" {% if gateway.department.id == dep.id %}selected="selected"{% endif %}>{{dep.title}}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
 					</td>
 				</tr>
 			{% endfor %}
@@ -113,6 +400,73 @@ $(document).ready(function() {
 			<button class="clean-white" id="newcat_savebtn">Create Email Address</button>
 		</div>
 		<div id="newcat_loading_wrap" style="display: none;">
+			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+		</div>
+	</div>
+</div>
+
+<div id="setalias_overlay" style="width: 400px; height: 210px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Custom Email Forward</h4>
+	</div>
+	<div class="overlay-content">
+		<form class="dp-form" method="POST" action="{{ path('admin_emailgateways_cloud_alias') }}">
+			<div class="dp-form-row">
+				<div class="dp-form-input">
+					Make sure you configure your email address to <strong>forward</strong> mail to<br /><strong><span class="email-account-title"></span></strong>.
+				</div>
+			</div>
+
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Your Email Address:</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" id="email_alias" value="" placeholder="Enter the email address you are forwarding" style="width: 300px;" />
+					<div id="setalias_err" style="display: none; padding: 6px; color: #f00;">
+						<div class="invalid_email">Please enter a valid email address</div>
+						<div class="dupe">You already have this alias attached to a different account</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="overlay-footer">
+		<div id="setalias_save_wrap">
+			<button class="clean-white" id="setalias_save">Save Custom Alias</button>
+		</div>
+		<div id="setalias_loading_wrap" style="display: none;">
+			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+		</div>
+	</div>
+</div>
+
+<div id="setout_overlay" style="width: 700px; height: 500px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Custom Outgoing Email Account</h4>
+	</div>
+	<div class="overlay-content">
+		<div id="setout_err" class="alert-message block-message error errors-box" style="display: none;">
+			<strong>Please correct the following errors:</strong>
+			<ul>
+				<li class="error-item error_default_email">Please enter a valid default "From" email address</li>
+				<li class="error-item error_smtp_host">Please enter a host for your SMTP server</li>
+				<li class="error-item error_smtp_port">Please enter a valid connection port for your SMTP server</li>
+				<li class="error-item error_smtp_username">You indicated your SMTP server requires authentication. You need to enter a username and password.</li>
+				<li class="error-item error_gapps_username">Please enter your Gmail / Google Apps email address</li>
+				<li class="error-item error_gapps_password">Please enter your Gmail / Google Apps password</li>
+			</ul>
+		</div>
+
+		<div id="setout_form_container"></div>
+	</div>
+	<div class="overlay-footer">
+		<div id="setout_save_wrap">
+			<button class="clean-white" id="setout_save">Save Custom Outgoing Email Account</button>
+		</div>
+		<div id="setout_loading_wrap" style="display: none;">
 			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
 		</div>
 	</div>

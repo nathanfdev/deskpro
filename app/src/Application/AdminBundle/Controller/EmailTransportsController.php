@@ -134,7 +134,11 @@ class EmailTransportsController extends AbstractController
 				}
 
 				if ($this->request->isXmlHttpRequest()) {
-					return $this->createJsonResponse(array('success' => true));
+					return $this->createJsonResponse(array(
+						'success' => true,
+						'transport_id' => $transport->id,
+						'title' => $transport->title
+					));
 				}
 
 				$this->session->setFlash('saved', $transport->title);

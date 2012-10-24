@@ -9,10 +9,12 @@
 				<a href="{{ path('admin_settings') }}" data-search-keywords="settings options" data-search-name="Settings">{{ phrase('agent.general.settings') }}</a>
 				<p>{{ phrase('admin.menu.change_settings') }}</p>
 			</li>
-			<li class="link-email">
-				<a href="{{ path('admin_emailtrans_setup') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">{{ phrase('admin.menu.outgoing_email_account') }}</a>
-				<p>{{ phrase('admin.menu.set_email_methods') }}</p>
-			</li>
+			{% if not app.isCloud() %}
+				<li class="link-email">
+					<a href="{{ path('admin_emailtrans_setup') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">{{ phrase('admin.menu.outgoing_email_account') }}</a>
+					<p>{{ phrase('admin.menu.set_email_methods') }}</p>
+				</li>
+			{% endif %}
 			<li class="link-portal">
 				<a href="{{ path('admin_portal') }}" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">{{ phrase('admin.menu.portal_and_site_integration') }}</a>
 				<p>{{ phrase('admin.menu.change_homepage') }}</p>

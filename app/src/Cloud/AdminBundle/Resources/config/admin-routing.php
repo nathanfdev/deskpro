@@ -115,16 +115,16 @@ $collection->add('admin_emailgateways', new Route(
 	array()
 ));
 
-$collection->add('admin_emailgateways_new', new Route(
-	'/email/incoming/new',
-	array('_controller' => 'CloudAdminBundle:EmailGateways:editAccount', 'id' => 0),
+$collection->add('admin_emailgateways_savehdaddr', new Route(
+	'/email/incoming/save-helpdesk-addresses',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:saveHelpdeskAddresses'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_emailgateways_newcloud', new Route(
-	'/email/incoming/new-cloud',
-	array('_controller' => 'CloudAdminBundle:EmailGateways:newCloudEmail'),
+$collection->add('admin_emailgateways_new', new Route(
+	'/email/incoming/new',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:editAccount', 'id' => 0),
 	array(),
 	array()
 ));
@@ -143,6 +143,13 @@ $collection->add('admin_emailgateways_quicktoggle', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_setlinkeddep', new Route(
+	'/email/incoming/accounts/set-linked-department.json',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:setLinkedDepartment'),
+	array('id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_emailgateways_del', new Route(
 	'/email/incoming/accounts/{id}/delete/{security_token}',
 	array('_controller' => 'CloudAdminBundle:EmailGateways:delete'),
@@ -153,6 +160,36 @@ $collection->add('admin_emailgateways_del', new Route(
 $collection->add('admin_emailgateways_testaccount', new Route(
 	'/email/incoming/accounts/test-account.json',
 	array('_controller' => 'CloudAdminBundle:EmailGateways:ajaxTest'),
+	array('id' => '\\d+'),
+	array()
+));
+
+
+// Custom cloud routes
+$collection->add('admin_emailgateways_newcloud', new Route(
+	'/email/incoming/new-cloud',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:newCloudEmail'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateways_cloud_alias', new Route(
+	'/email/incoming/accounts/set-cloud-alias',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:setCloudAlias'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_emailgateways_cloud_setoutgoing', new Route(
+	'/email/incoming/accounts/set-cloud-outgoing',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:setCloudOutgoingAccount'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_emailgateways_cloud_setoutgoing_form', new Route(
+	'/email/incoming/accounts/set-cloud-outgoing/form',
+	array('_controller' => 'CloudAdminBundle:EmailGateways:getCloudOutgoingAccountForm'),
 	array('id' => '\\d+'),
 	array()
 ));

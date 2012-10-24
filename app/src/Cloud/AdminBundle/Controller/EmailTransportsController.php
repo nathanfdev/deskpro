@@ -38,23 +38,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Application\AdminBundle\Controller\EmailTransportsController as BaseEmailTransportsController;
-use Application\AdminBundle\Form\EditEmailTransport as EditEmailTransportForm;
-use Application\AdminBundle\FormModel\EditEmailTransport as EditEmailTransportModel;
 
 class EmailTransportsController extends BaseEmailTransportsController
 {
 	public function editAccountAction($id)
 	{
-		// Prevent sneaky POSTs setting PHP type that doesnt exist on form
-		if ($this->in->getString('transport.transport_type') == 'mail' || $this->in->getString('transport.backup_transport_type') == 'mail') {
-			return $this->redirectRoute('admin_emailtrans_list');
-		}
-
 		return parent::editAccountAction($id);
-	}
-
-	public function setupAction()
-	{
-		return $this->redirectRoute('admin_emailtrans_list');
 	}
 }

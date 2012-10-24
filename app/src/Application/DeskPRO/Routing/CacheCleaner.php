@@ -131,10 +131,10 @@ class CacheCleaner
 			$this->gen_files[] = DP_ROOT.'/sys/cache/dev/'.$k.'KerneldevUrlMatcher.php';
 			$this->gen_files[] = DP_ROOT.'/sys/cache/prod/'.$k.'KerneldevUrlGenerator.php';
 			$this->gen_files[] = DP_ROOT.'/sys/cache/prod/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache-cloud/dev/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache-cloud/dev/'.$k.'KerneldevUrlMatcher.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache-cloud/prod/'.$k.'KerneldevUrlGenerator.php';
-			$this->gen_files[] = DP_ROOT.'/sys/cache-cloud/prod/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = DP_ROOT.'/sys/cache/dev-cloud/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = DP_ROOT.'/sys/cache/dev-cloud/'.$k.'KerneldevUrlMatcher.php';
+			$this->gen_files[] = DP_ROOT.'/sys/cache/prod-cloud/'.$k.'KerneldevUrlGenerator.php';
+			$this->gen_files[] = DP_ROOT.'/sys/cache/prod-cloud/'.$k.'KerneldevUrlMatcher.php';
 		}
 
 		return $this->gen_files;
