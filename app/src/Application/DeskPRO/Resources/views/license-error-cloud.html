@@ -173,6 +173,30 @@
 				font-weight: normal;
 			}
         </style>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var emailform = $('.email-form');
+				var emailsent = $('.email-form-sent');
+
+				emailform.find('button.send-btn').on('click', function() {
+					var message = emailform.find('textarea').val();
+
+					emailform.find('.send-btn').hide();
+					emailform.find('.send-loading').show();
+					$.ajax({
+						url: '{{ BILLING_URL }}billing-send-question',
+						data: { message: message },
+						type: 'POST',
+						dataType: 'json',
+						success: function() {
+							emailform.hide();
+							emailsent.show();
+						}
+					});
+				});
+			});
+		</script>
     </head>
     <body>
 		<div id="topbar">
@@ -199,29 +223,50 @@
 			<div class="content">
 				<h2>{{ TITLE }}</h2>
 				<div class="block">
-					{{ LICENSE_MESSAGE }}
+					Log in now to add your billing information.
+					<form action="{{ BILLING_URL }}login/authenticate-password" method="POST">
 
-					<Br /><Br />
-
-					Log in to update your billing information.
-					<form action="{{ BILLING_URL }}/login/authenticate-password" method="POST">
-						<table cellspacing="0" cellpadding="0" border="0">
-							<tr>
-								<td>Email Address:</td>
-								<td><input type="text" name="email" /></td>
-							</tr>
-							<tr>
-								<td>Password:</td>
-								<td><input type="password" name="password" /></td>
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td>
-									<button class="btn">Go to billing &rarr;</button>
-								</td>
-							</tr>
-						</table>
+						<div style="margin-top: 45px;  background-color: #FFF; border: 1px solid #E8E8E8; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
+							<table cellspacing="0" cellpadding="5" border="0">
+								<tr>
+									<td style="vertical-align:middle; text-align: right;">Email Address:</td>
+									<td style="vertical-align:middle;">
+										<input type="text" name="email" style="font-family: sans-serif; line-height: 100%; padding: 5px; border-radius: 3px; border: 1px solid #aaa; width: 350px" placeholder="Enter your admin email address" />
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align:middle; text-align: right;">Password:</td>
+									<td style="vertical-align:middle;">
+										<input type="password" name="password" style="font-family: sans-serif; line-height: 100%; padding: 5px; border-radius: 3px; border: 1px solid #aaa; width: 350px" placeholder="Enter your admin password" />
+									</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td style="vertical-align:middle;">
+										<button class="btn">Go to billing &rarr;</button>
+									</td>
+								</tr>
+							</table>
+						</div>
 					</form>
+
+
+					<div style="margin-top: 45px;  background-color: #D0E8F4; padding: 8px; border-radius: 6px; -webkit-border-radius: 6px;">
+						<strong>Contact Us</strong><br />
+						If you have any questions, just submit this form and we'll get back to you at the email address you signed up under.
+						You can also email us directly at <a href="mailto:sales@deskpro.com">sales@deskpro.com</a>.
+
+						<div class="email-form">
+							<textarea style="width: 98%; height: 120px; font-family: sans-serif; padding: 5px; margin: 5px 0 5px 0; border-radius: 3px; border: 1px solid #aaa;" placeholder="Enter your question here" name="message"></textarea><br />
+							<div style="padding-top: 5px;">
+								<button	class="send-btn btn btn-primary">Send Message</button>
+								<img class="send-loading" src="https://www.deskpro.com/wp-content/themes/dpstyle/assets/images/loading-small-flat.gif" width="16" height="11" style="margin-top: 4px; display: none;" />
+							</div>
+						</div>
+						<div class="email-form-sent" style="display:none; margin: 20px;">
+							Thank you for your message. Our agents will respond to you as soon as they can.
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

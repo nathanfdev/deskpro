@@ -12,6 +12,13 @@ $collection->add('billing', new Route(
 	array()
 ));
 
+$collection->add('billing', new Route(
+	'/billing-send-question',
+	array('_controller' => 'CloudBillingBundle:SendFeedback:send'),
+	array(),
+	array()
+));
+
 $collection->add('billing_login', new Route(
 	'/login',
 	array('_controller' => 'CloudBillingBundle:Login:index'),
