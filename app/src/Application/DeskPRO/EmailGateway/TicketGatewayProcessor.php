@@ -332,7 +332,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
-		$email_info = array();
+		$email_info = array(
+			'found_top_marker' => false,
+		);
 
 		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
 		if (!$email_info['subject'] && $this->reader->getSubject()->getSubject()) {
