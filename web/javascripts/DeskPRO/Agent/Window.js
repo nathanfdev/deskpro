@@ -331,14 +331,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 						return;
 					}
 					ev.preventDefault();
-					var el = $(this);
-					el.closest('li').slideUp('fast', function() {
-						el.remove();
+
+					var clicked = $(this), li = clicked.closest('li');
+					li.slideUp('fast', function() {
+						clicked.remove();
 
 						if (options.filesContainer.hasClass('dp-hide-empty')) {
 							options.filesContainer.hide();
 						}
 					});
+
+					el.trigger('fileremoved', [li]);
 				});
 
 				return $(el).fileupload(options);

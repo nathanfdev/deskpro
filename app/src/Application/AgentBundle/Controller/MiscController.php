@@ -391,6 +391,42 @@ JS;
 		return $res;
 	}
 
+	public function acceptRedactorImageUploadAction()
+	{
+		$file = $this->request->files->get('file');
+		$accept = $this->container->getAttachmentAccepter();
+
+		$error = $accept->getError($file, 'agent');
+		if (!$error) {
+			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+			$accept->addRestrictionSet('only_images', $set);
+			$error = $accept->getError($file, 'only_images');
+		}
+		if ($error) {
+			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+
+			$res = $this->createJsonResponse($error);
+		} else {
+			$blob = $accept->accept($file);
+
+			$res = $this->createJsonResponse(array(
+				'blob_id'           => $blob['id'],
+				'blob_auth'         => $blob->authcode,
+				'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+				'download_url'      => $blob->getDownloadUrl(true),
+				'filename'          => $blob['filename'],
+				'filesize_readable' => $blob->getReadableFilesize(),
+				'is_image'          => $blob->isImage(),
+
+				// needed for Redactor
+				'filelink'     => $blob->getDownloadUrl(true)
+			));
+		}
+
+		return $res;
+	}
+
     public function parseVCardAction()
     {
         $file = $this->request->files->get('files');

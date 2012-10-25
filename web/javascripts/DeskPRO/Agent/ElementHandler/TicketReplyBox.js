@@ -27,7 +27,39 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			textarea.redactor({
 				direction: textarea.attr('dir') || 'ltr',
 				buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
-				minHeight: 150
+				minHeight: 150,
+				observeImages: false,
+				imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
+				imageUploadCallback: function(obj, json) {
+					var templateEl = $('.template-download', self.el);
+					if (!templateEl.attr('id')) {
+						templateEl.attr('id', Orb.getUniqueId('up'));
+					}
+
+					var template = window.tmpl(templateEl.attr('id'));
+					var results = template({
+						files: [json]
+					});
+					$(self.el).find('.files').append(results);
+
+					self.el.trigger('fileuploaddone');
+				},
+				imageUploadErrorCallback: function(obj, json) {
+					alert(json.error);
+				}
+			});
+
+			this.el.bind('fileremoved', function(ev, li) {
+				var downloadUrlRegex = li.find('a').attr('href').replace('.', '\\.');
+				console.log("url: " + downloadUrlRegex);
+				if (downloadUrlRegex) {
+					var html = textarea.getCode(),
+						regex1 = new RegExp('<p><img[^>]+src="' + downloadUrlRegex + '"[^>]*></p>', 'g'),
+						regex2 = new RegExp('<img[^>]+src="' + downloadUrlRegex + '"[^>]*>', 'g');
+
+					html = html.replace(regex1, '').replace(regex2, '');
+					textarea.setCode(html);
+				}
 			});
 
 			sig = DP.convertTextToWysiwygHtml(sig);
@@ -179,7 +211,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('attach_row').slideDown().removeClass('is-hidden');
 		});
 		this.el.bind('fileuploadstart', function() {
-			self.getElById('attach_row').slideDown().removeClass('is-hidden');;
+			self.getElById('attach_row').slideDown().removeClass('is-hidden');
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {

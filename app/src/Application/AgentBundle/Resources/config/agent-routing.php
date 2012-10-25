@@ -51,6 +51,13 @@ $collection->add('agent_accept_upload', new Route(
 	array()
 ));
 
+$collection->add('agent_accept_redactor_image_upload', new Route(
+	'/misc/accept-redactor-image-upload',
+	array('_controller' => 'AgentBundle:Misc:acceptRedactorImageUpload'),
+	array(),
+	array()
+));
+
 $collection->add('agent_submit_deskpro_feedback', new Route(
 	'/misc/submit-deskpro-feedback.json',
 	array('_controller' => 'AgentBundle:Misc:submitDeskproFeedback'),
