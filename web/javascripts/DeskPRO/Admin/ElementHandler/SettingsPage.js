@@ -33,9 +33,16 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 				$('#'+x+'_attach_maxsize_label').text(mb);
 				$('#'+x+'_attach_maxsize').val(val);
 			}
+
+			if (maxSize) {
+				var sliderMax = Math.max(50000000, maxSize + 1000000);
+			} else {
+				sliderMax = 50000000;
+			}
+
 			$('#'+x+'_attach_maxsize_slider').slider({
-				min: 0,   // 0.1 mb
-				max: 50000000, // 100 mb
+				min: 0,
+				max: sliderMax,
 				step: 100000,
 				value: $('#'+x+'_attach_maxsize').val(),
 				slide: function(event, ui) {
