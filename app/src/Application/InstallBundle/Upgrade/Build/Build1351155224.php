@@ -29,40 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class SettingsProfile extends AbstractType
+class Build1351155224 extends AbstractBuild
 {
-	public function buildForm(FormBuilder $builder, array $options)
-    {
-		$builder->add('name', 'text', array('required' => false));
-	    $builder->add('override_display_name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
-		));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
-		$builder->add('ticket_signature', 'textarea', array('required' => false));
-
-		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
-    }
-
-	public function getDefaultOptions(array $options)
+	public function run()
 	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-		);
+		$this->out("Add display name override");
+		$this->execMutateSql("ALTER TABLE people ADD override_display_name VARCHAR(200) NOT NULL");
 	}
-
-    public function getName()
-    {
-        return 'settings_profile';
-    }
 }

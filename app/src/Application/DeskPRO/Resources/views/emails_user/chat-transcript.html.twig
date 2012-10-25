@@ -24,7 +24,7 @@
 				</div>
 			{% elseif message.author.is_agent and message.author.id != convo.person.id %}
 				<div style="background-color: #EDEDED">
-					[{{ message.date_created|date('time') }}] {{ message.author.display_name }}:
+					[{{ message.date_created|date('time') }}] {{ message.author.display_name_user }}:
 					{% if message.is_html %}
 						{{message.content|raw}}
 					{% else %}
@@ -33,7 +33,7 @@
 				</div>
 			{% else %}
 				<div style="background-color: #EDEDED">
-					[{{ message.date_created|date('time') }}] {% if message.author %}{{ message.author.display_name }}{% else %}{{ convo.person_email }}{% endif %}:
+					[{{ message.date_created|date('time') }}] {% if message.author %}{{ message.author.display_name_user }}{% else %}{{ convo.person_email }}{% endif %}:
 					{% if message.is_html %}
 						{{message.content|raw}}
 					{% else %}

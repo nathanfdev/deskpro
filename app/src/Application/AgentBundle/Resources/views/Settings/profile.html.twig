@@ -23,6 +23,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Override Name</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.override_display_name) }}
+				<div>If entered, this name will be displayed to users instead of your real name.</div>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.email') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}

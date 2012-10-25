@@ -208,6 +208,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $title_prefix = '';
 
 	/**
+	 * Overrides the display name of an person in the user interface (agents only).
+	 *
+	 * @var string
+	 */
+	protected $override_display_name = '';
+
+	/**
 	 * The summary field as filled in by agents
 	 *
 	 * @var string
@@ -591,7 +598,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get a string display name we can call this person.
-	 * @return string
+	 *
+	 * @param bool $id_fallback
+	 *
+	 * @return string|null
 	 */
 	public function getDisplayName($id_fallback = true)
 	{
@@ -623,15 +633,28 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+	/**
+	 * Gets the display name to be display
+	 *
+	 * @return null|string
+	 */
+	public function getDisplayNameUser()
+	{
+		if ($this->is_agent && $this->override_display_name) {
+			return $this->override_display_name;
+		}
+
+		return $this->getDisplayName();
+	}
 
 	/**
 	 * Gets this person's name with the title prefix
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getNameWithTitle()
 	{
-		$name = $this->getDisplayName();
+		$name = $this->getDisplayName(true);
 		if ($this->title_prefix) {
 			$name = $this->title_prefix . ' ' . $name;
 		}
@@ -2073,6 +2096,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name', ));
 		$metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name', ));
 		$metadata->mapField(array( 'fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix', ));
+		$metadata->mapField(array( 'fieldName' => 'override_display_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'override_display_name', ));
 		$metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
 		$metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position', ));

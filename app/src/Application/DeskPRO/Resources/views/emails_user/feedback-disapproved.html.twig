@@ -7,7 +7,7 @@
 		<br /><br />
 
 		{% if reason %}
-			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name}) }}
+			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name_user}) }}
 			<br /><br />
 			{{ reason }}
 		{% else %}

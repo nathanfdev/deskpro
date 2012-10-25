@@ -320,8 +320,8 @@ class UserChatManager
 			$this->addSystemMessage(
 				$convo,
 				'message_user-joined',
-				array('name' => $person->display_name),
-				array('user_joined' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
+				array('name' => $person->display_name_user),
+				array('user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id)
 			);
 
 			$this->em->flush();
@@ -349,8 +349,8 @@ class UserChatManager
 			$this->addSystemMessage(
 				$convo,
 				'message_user-left',
-				array('name' => $person->display_name),
-				array('user_left' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
+				array('name' => $person->display_name_user),
+				array('user_left' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id)
 			);
 
 			$this->em->flush();
@@ -396,7 +396,7 @@ class UserChatManager
 			$this->addSystemMessage(
 				$convo,
 				'message_set-department',
-				array('name' => $who->display_name, 'department' => $dep_name),
+				array('name' => $who->display_name_user, 'department' => $dep_name),
 				array('department_changed' => true, 'new_department_id' => $convo->department_id)
 			);
 
@@ -440,7 +440,7 @@ class UserChatManager
 		$old_agent_name = '';
 
 		if ($convo->agent) {
-			$old_agent_name = $convo->agent->getDisplayName();
+			$old_agent_name = $convo->agent->getDisplayNameUser();
 		}
 
 		$this->em->beginTransaction();
@@ -448,10 +448,10 @@ class UserChatManager
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'message_assigned', array('name' => $agent->display_name), array(
+			$this->addSystemMessage($convo, 'message_assigned', array('name' => $agent->display_name_user), array(
 				'chat_assigned' => true,
 				'assigned_to' => $agent->id,
-				'assigned_name' => $agent->getDisplayName(),
+				'assigned_name' => $agent->getDisplayNameUser(),
 				'assigned_avatar' => $agent->getPictureUrl(16),
 				'old_assigned_to' => $old_agent_id,
 				'old_assigned_name' => $old_agent_name,
@@ -462,7 +462,7 @@ class UserChatManager
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'chat.reassigned',
-				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name)),
+				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
 				'created_by_client' => $this->getCurrentClientId(),
 			));
 
@@ -519,7 +519,7 @@ class UserChatManager
 		$old_agent_id = $convo->agent_id;
 		$old_agent_name = '';
 
-		$old_agent_name = $convo->agent->getDisplayName();
+		$old_agent_name = $convo->agent->getDisplayNameUser();
 
 		$convo->agent = null;
 		$this->em->persist($convo);
@@ -569,7 +569,7 @@ class UserChatManager
 			$this->addSystemMessage(
 				$convo,
 				'message_agent-timeout',
-				array('name' => $convo->agent->display_name),
+				array('name' => $convo->agent->display_name_user),
 				array('agent_timed_out' => true)
 			);
 
@@ -640,7 +640,7 @@ class UserChatManager
 
 		if ($convo->ended_by != 'timeout') {
 			if ($author) {
-				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
+				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayNameUser()), array('chat_ended' => true));
 			} else {
 				$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
 			}

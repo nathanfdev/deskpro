@@ -2220,16 +2220,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @param $string
+	 * @param string $string
+	 * @param Person|null $performer
 	 * @param bool $escape
+	 * @param bool $to_user
 	 * @return mixed
 	 */
-	public function replaceVarsInString($string, Person $performer = null, $escape = false)
+	public function replaceVarsInString($string, Person $performer = null, $escape = false, $to_user = true)
 	{
 		$repl = array();
 
+		$display_name = $to_user ? $this->person->getDisplayNameUser() : $this->person->getDisplayName();
+
 		$repl = array_merge(array(
-			'user.name'                   => $this->person->getDisplayName(),
+			'user.name'                   => $display_name,
 			'user.email'                  => $this->person->getPrimaryEmailAddress(),
 			'user.organization_position'  => $this->person->organization_position,
 
@@ -2257,8 +2261,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($performer) {
+			$display_name = $to_user ? $performer->getDisplayNameUser() : $performer->getDisplayName();
+
 			$repl = array_merge(array(
-				'performer.name'                   => $performer->getDisplayName(),
+				'performer.name'                   => $display_name,
 				'performer.email'                  => $performer->getPrimaryEmailAddress(),
 				'performer.organization_position'  => $performer->organization_position,
 
@@ -2280,6 +2286,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		if ($this->agent) {
+			$agent_display_name = $to_user ? $this->agent->getDisplayNameUser() : $this->agent->getDisplayName();
+		} else {
+			$agent_display_name = '';
+		}
+
 		$repl = array_merge(array(
 			'ticket.id'               => $this->id,
 			'ticket.ref'              => $this->ref,
@@ -2290,7 +2302,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'ticket.workflow'         => $this->workflow ? $this->workflow->title : '',
 			'ticket.priority'         => $this->priority ? $this->priority->title : '',
 
-			'agent.name'     => $this->agent ? $this->agent->getDisplayName() : '',
+			'agent.name'     => $agent_display_name,
 			'agent.email'    => $this->agent ? $this->agent->getPrimaryEmailAddress() : '',
 
 			'agent_team.name' => $this->agent_team ? $this->agent_team->name : '',

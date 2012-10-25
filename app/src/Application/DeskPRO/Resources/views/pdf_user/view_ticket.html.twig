@@ -56,7 +56,7 @@ body {
 {% if ticket.person.id != app.user.id %}
     <table class="ticket_attribute">
         <tr><th>{{ phrase('agent.general.ticket_starter') }}</th></tr>
-        <tr><td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
+        <tr><td>{{ ticket.person.display_name_user }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
     </table>
 {% endif %}
 
@@ -67,7 +67,7 @@ body {
             <td>
                 <ul>
                     {% for part in user_participants %}
-                        {{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+                        {{ part.person.display_name_user }} &lt;{{ part.person.email_address }}&gt;
                         {% if not loop.last %}, {% endif%}
                     {% endfor %}
                 </ul>
@@ -91,7 +91,7 @@ body {
 <table width="100%" class="ticket_list_table" border="0" cellspacing="0">
     <tr><td colspan="2"><hr /></td></tr>
     <tr>
-        <th>{{ phrase('user.tickets.from_x_at_y', {'name': message.person.display_name, 'date': message.date_created|date('fulltime')}) }}</th>
+        <th>{{ phrase('user.tickets.from_x_at_y', {'name': message.person.display_name_user, 'date': message.date_created|date('fulltime')}) }}</th>
     </tr>
     <tr><td colspan="2"><hr /></td></tr>
 

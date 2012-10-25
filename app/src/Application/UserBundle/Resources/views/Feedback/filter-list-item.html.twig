@@ -32,7 +32,7 @@
 								</div>
 							</h3></div>
 						<ul class="dp-post-info">
-							<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
+							<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name_user }}</li>
 							<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
 							{% if result.user_category %}
 								<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ result.user_category.getTitle() }}</li>

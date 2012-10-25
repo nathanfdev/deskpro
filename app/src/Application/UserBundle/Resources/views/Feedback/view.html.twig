@@ -47,7 +47,7 @@
 				{% endif %}
 				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
 				<ul class="dp-post-info">
-					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
+					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name_user }}</li>
 					<li class="dp-category"><i class="dp-icon-book"></i> <a href="{{ path('user_feedback', {'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
 					{% if display.user_category %}
 						<li class="dp-user-category"><i class="dp-icon-folder-close"></i> {{ display.user_category.getTitle() }}</li>

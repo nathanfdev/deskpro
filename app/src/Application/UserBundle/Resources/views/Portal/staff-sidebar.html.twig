@@ -23,8 +23,8 @@
 			</p>
 			<ul class="dp-clearfix dp-person-list {% if staff|length > 5 %}dp-compact{% endif %}">
 				{% for agent in staff %}
-				<li title="{{ agent.display_name }}">
-					<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
+				<li title="{{ agent.display_name_user }}">
+					<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name_user }}</span>
 				</li>
 				{% endfor %}
 			</ul>

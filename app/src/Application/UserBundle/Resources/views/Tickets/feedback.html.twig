@@ -9,7 +9,7 @@
 {% block content %}
 <section class="dp-portal-section dp-new-feedback-section">
 	<header>
-		<h1>{{ phrase('user.tickets.feedback_message_title', {'name': message.person.display_name}) }}</h1>
+		<h1>{{ phrase('user.tickets.feedback_message_title', {'name': message.person.display_name_user}) }}</h1>
 	</header>
 	<article>
 		<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">

@@ -9,7 +9,7 @@
 		{% if ticket.person.id != app.user.id %}
 			<tr>
 				<th>{{ phrase('user.tickets.ticket_starter') }}</th>
-				<td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td>
+				<td>{{ ticket.person.display_name_user }} &lt;{{ ticket.person.email_address }}&gt;</td>
 			</tr>
 		{% endif %}
 
@@ -20,7 +20,7 @@
 					<ul>
 						{% for part in user_participants %}
 							<li>
-								{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+								{{ part.person.display_name_user }} &lt;{{ part.person.email_address }}&gt;
 							</li>
 						{% endfor %}
 					</ul>
@@ -30,7 +30,7 @@
 
 		<tr>
 			<th>{{ phrase('user.tickets.assigned-agent') }}</th>
-			<td>{% if ticket.agent %}{{ ticket.agent.display_name }}{% else %}{{ phrase('user.tickets.unassigned') }}{% endif %}</td>
+			<td>{% if ticket.agent %}{{ ticket.agent.display_name_user }}{% else %}{{ phrase('user.tickets.unassigned') }}{% endif %}</td>
 		</tr>
 
 		{% for item in page_display %}

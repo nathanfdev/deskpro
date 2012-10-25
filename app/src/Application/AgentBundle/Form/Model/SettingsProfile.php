@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Person;
 class SettingsProfile
 {
 	public $name;
+	public $override_display_name;
 	public $email;
 	public $timezone = 'UTC';
 	public $password = '';
@@ -64,6 +65,7 @@ class SettingsProfile
 		$this->person = $person;
 
 		$this->name = $person->name;
+		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
 		$this->ticket_signature = $person->getPref('agent.ticket_signature');
@@ -91,6 +93,7 @@ class SettingsProfile
 
 		try {
 			$person->name = $this->name;
+			$person->override_display_name = $this->override_display_name;
 			$person->timezone = $this->timezone;
 
 			if ($this->new_picture_blob_id) {

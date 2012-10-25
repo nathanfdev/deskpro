@@ -32,7 +32,7 @@
 				{% if last_messages[ticket.id].person.id == app.user.id %}
 					{{ phrase('user.tickets.list_last_activity_by_you') }}
 				{% else %}
-					{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
+					{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name_user}) }}
 				{% endif %}
 				(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c', 'UTC') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
 			</li>

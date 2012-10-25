@@ -2,7 +2,7 @@
 <dp:body>
 	<dp:section>
 		{% if is_first %}
-			{{ phrase('user.emails.ticket_cc-new', {'name':ticket.person.display_name}) }}
+			{{ phrase('user.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
 			<br /><br />
 		{% endif %}
 

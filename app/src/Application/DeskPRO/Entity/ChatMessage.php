@@ -139,7 +139,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 			$old = $this->author;
 			$this->setModelField('author', $author);
 			if ($author && !$this->person_name) {
-				$this['person_name'] = $author->getDisplayName();
+				$this['person_name'] = $author->getDisplayNameUser();
 			}
 		}
 	}
@@ -158,7 +158,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_sys) {
 			return '*';
 		} elseif ($this->author) {
-			return $this->author['display_name'];
+			return $this->author['display_name_user'];
 		} else if ($this->conversation['person_name']) {
 			return $this->conversation['person_name'];
 		}
@@ -196,7 +196,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 			$info['author_type'] = 'sys';
 		} elseif ($this->author) {
 			$info['author_id'] = $this->author->id;
-			$info['author_name'] = $this->author->display_name;
+			$info['author_name'] = $this->author->display_name_user;
 			$info['author_type'] = $this->author->is_agent ? 'agent' : 'user';
 
 			// Handle the case where the author is an agent in the user interface

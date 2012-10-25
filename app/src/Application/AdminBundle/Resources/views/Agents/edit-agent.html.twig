@@ -82,6 +82,16 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
+				<label>Override Name</label>
+			</div>
+			<div class="dp-form-input">
+				<input style="width:422px;" type="text" name="agent[override_display_name]" value="{{ agent.override_display_name }}" />
+				<div>If entered, this will be displayed to users instead of the agent's real name.</div>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
 				<label>{{ phrase('agent.general.email') }}</label>
 			</div>
 			<div class="dp-form-input">

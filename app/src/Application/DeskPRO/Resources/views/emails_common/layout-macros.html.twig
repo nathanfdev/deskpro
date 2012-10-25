@@ -49,5 +49,5 @@
 # Standard greeting text for a user
 ##}
 {% macro greeting(person) %}
-	{{ phrase('user.emails.greeting', {'name': person.display_name}) }}<br /><br />
+	{{ phrase('user.emails.greeting', {'name': person.display_name_user}) }}<br /><br />
 {% endmacro %}

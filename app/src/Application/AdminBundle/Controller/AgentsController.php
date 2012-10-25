@@ -303,6 +303,7 @@ class AgentsController extends AbstractController
 		$agent->can_billing = false;
 		$agent->can_reports = false;
 		$agent->was_agent = true;
+		$agent->override_display_name = ''; // only settable for agents currently
 
 		$this->db->beginTransaction();
 		try {
@@ -507,6 +508,7 @@ class AgentsController extends AbstractController
 
 		$agent->first_name = $this->in->getString('agent.first_name');
 		$agent->last_name = $this->in->getString('agent.last_name');
+		$agent->override_display_name = $this->in->getString('agent.override_display_name');
 
 		$errors = array();
 

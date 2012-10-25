@@ -96,7 +96,8 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	public function getAddress(Ticket $ticket)
 	{
-		return $ticket->replaceVarsInString($this->pattern);
+		$to_user = ($this->to_agent ? false : true);
+		return $ticket->replaceVarsInString($this->pattern, null, false, $to_user);
 	}
 
 

@@ -54,7 +54,7 @@
 			sessionCode: '{{ session_code }}',
 			conversationId: {{ convo.id|default(0) }},
 			assignedAgentId: {{ convo.agent.id|default(0) }},
-			assignedAgentName: '{{ convo.agent.display_name|default(0) }}',
+			assignedAgentName: '{{ convo.agent.display_name_user|default(0) }}',
 			assignedAgentAvatar: '{{ convo.agent.getPictureUrl(30)|default(0) }}',
 			assignedAgentAvatarIcon: '{{ convo.agent.getPictureUrl(16)|default(0) }}',
 			initialMessages: {{ convo_messages|json_encode|raw }},
