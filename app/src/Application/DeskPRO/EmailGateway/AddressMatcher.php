@@ -83,7 +83,7 @@ class AddressMatcher
 		$aliases = App::getSetting('core.helpdesk_emails');
 		$aliases = explode(',', $aliases);
 		foreach ($aliases as $a) {
-			$this->helpdesk_addresses[] = $a;
+			$this->helpdesk_addresses[] = strtolower($a);
 		}
 
 		$this->helpdesk_addresses = \Orb\Util\Arrays::removeFalsey($this->helpdesk_addresses);
