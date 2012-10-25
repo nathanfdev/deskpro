@@ -16,7 +16,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 
-		if (true) {
+		if (false) {
 			isWysiwyg = true;
 
 			var val = textarea.val();
