@@ -23,7 +23,7 @@
 				</label>
 			</div>
 			<div class="dp-controls dp-fill-half">
-				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.LengthValidator" />
 				<div style="font-size: 11px;">
 					{%- set phrase_link -%}
 						<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>

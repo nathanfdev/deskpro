@@ -725,9 +725,7 @@ HTML;
 
 	public function inlineLoginAction()
 	{
-		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-		$result = $adapter->authenticate();
+		$result = $this->authLocalInput();
 
 		if (!$result->isValid()) {
 			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
