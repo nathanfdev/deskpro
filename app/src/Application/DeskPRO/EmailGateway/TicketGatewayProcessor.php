@@ -273,6 +273,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 						));
 						$message->setTo($this->reader->getFromAddress()->getEmail());
 						App::getMailer()->send($message);
+						return null;
 					}
 				}
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
