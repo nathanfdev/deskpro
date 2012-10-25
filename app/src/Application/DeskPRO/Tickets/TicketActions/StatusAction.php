@@ -37,11 +37,12 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * Sets status
  */
-class StatusAction extends AbstractAction
+class StatusAction extends AbstractAction implements PermissionableAction
 {
 	protected $status;
 
@@ -59,6 +60,34 @@ class StatusAction extends AbstractAction
 			throw new \InvalidArgumentException("Invalid status `$status`");
 		}
 		$this->status = $status;
+	}
+
+	/**
+	 * True to stop processing actions after this one
+	 *
+	 * @return bool
+	 */
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		// No change, sure they can apply no change
+		if ($ticket->getStatusCode() == $this->status) {
+			return true;
+		}
+
+		if ($this->status == 'hidden.deleted' && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+			return false;
+		}
+		if ($this->status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
+			return false;
+		}
+		if ($this->status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
+			return false;
+		}
+		if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

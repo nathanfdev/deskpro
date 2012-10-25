@@ -239,6 +239,41 @@ class ActionsCollection
 
 
 	/**
+	 * Checks to see if the $person_context person can perform all of the actions in the collection
+	 *
+	 * @param \Application\DeskPRO\Tickets\TicketChangeTracker $ticket_tracker
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Person $person_context
+	 * @param null $logger
+	 * @return bool
+	 */
+	public function applyCheckPermission(Ticket $ticket, Person $person_context)
+	{
+		// Load up common helpers
+		$person_context->loadHelper('Agent');
+		$person_context->loadHelper('AgentTeam');
+		$person_context->loadHelper('AgentPermissions');
+		$person_context->loadHelper('PermissionsManager');
+		$person_context->loadHelper('HelpMessages');
+		$person_context->loadHelper('AgentPrefs');
+
+		foreach ($this->actions as $action) {
+			if ($action instanceof PersonContextInterface) {
+				$action->setPersonContext($person_context);
+			}
+
+			if ($action instanceof PermissionableAction) {
+				if (!$action->checkPermission($ticket, $person_context)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * Apply actions in this collection to $ticket, using $person_context as
 	 * the context on actions that require it.
 	 *

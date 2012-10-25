@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * Sets agent
  */
-class AgentTeamAction extends AbstractAction implements PersonContextInterface
+class AgentTeamAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
 	protected $agent_team_id;
 	protected $person_context;
@@ -57,6 +57,20 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface
 	public function setPersonContext(Person $person)
 	{
 		$this->person_context = $person;
+	}
+
+
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getAgentTeamId() == $this->agent_team_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
+			return false;
+		}
+
+		return true;
 	}
 
 

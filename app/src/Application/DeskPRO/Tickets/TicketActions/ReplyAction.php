@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
 
-class ReplyAction extends AbstractAction implements PersonContextInterface
+class ReplyAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
 	protected $reply_text;
 	protected $attach_ids = array();
@@ -65,6 +65,15 @@ class ReplyAction extends AbstractAction implements PersonContextInterface
 		$this->person_context = $person;
 	}
 
+
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'reply')) {
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
 	 * Apply the property to the ticket

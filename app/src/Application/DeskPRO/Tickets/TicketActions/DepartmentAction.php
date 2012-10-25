@@ -39,7 +39,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class DepartmentAction extends AbstractAction
+class DepartmentAction extends AbstractAction implements PermissionableAction
 {
 	protected $department_id;
 
@@ -48,6 +48,18 @@ class DepartmentAction extends AbstractAction
 		$this->department_id = $department;
 	}
 
+	public function checkPermission(Ticket $ticket, Person $person)
+	{
+		if ($ticket->getDepartmentId() == $this->department_id) {
+			return true;
+		}
+
+		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
 	 * Apply the property to the ticket

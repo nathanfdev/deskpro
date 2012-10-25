@@ -1267,6 +1267,9 @@ class TicketSearchController extends AbstractController
 			$macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
 		}
 
+		$permission_errors = array();
+		$success = array();
+
 		if (($actions || $actions_set || $macro) && $tickets) {
 
 			if ($macro) {
@@ -1297,13 +1300,25 @@ class TicketSearchController extends AbstractController
 				}
 
 				foreach ($tickets as $ticket) {
+
+					if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+						$permission_errors[] = $ticket->getId();
+						continue;
+					}
+
 					$this->db->beginTransaction();
 					try {
+						if (!$collection->applyCheckPermission($ticket, $this->person)) {
+							$permission_errors[] = $ticket->getId();
+							continue;
+						}
 						$collection->apply(null, $ticket, $this->person);
 						$this->em->persist($ticket);
 						$ticket->_saveTicketLogs();
 						$this->em->flush();
 						$this->db->commit();
+
+						$success[] = $ticket->getId();
 					} catch (\Exception $e) {
 						$this->em->rollback();
 						throw $e;
@@ -1312,6 +1327,10 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		return $this->createJsonResponse(array('success' => true));
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'success_tickets' => $success,
+			'failed_tickets'  => $permission_errors,
+		));
 	}
 }

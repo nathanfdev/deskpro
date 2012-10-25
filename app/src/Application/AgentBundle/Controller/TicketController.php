@@ -1438,8 +1438,6 @@ class TicketController extends AbstractController
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
-			$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
-
 			// If department is changed,
 			// then we re-output the holder template
 			$is_dep_changed = false;

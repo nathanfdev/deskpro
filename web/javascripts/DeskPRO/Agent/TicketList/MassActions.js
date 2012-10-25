@@ -490,7 +490,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			complete: function() {
 				rows.removeClass('loading');
 			},
-			success: function(html) {
+			success: function(data) {
 
 				if (this.options.isListView) {
 					this.close();
@@ -506,7 +506,11 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 				this.close();
 
-				this.fireEvent('postApply', [this, html, formDataInfo]);
+				this.fireEvent('postApply', [this, data, formDataInfo]);
+
+				if (data && data.failed_tickets && data.failed_tickets.length) {
+					DeskPRO_Window.showAlert('Note: ' + data.failed_tickets.length + ' tickets were not updated because you do not have permission to make the requested changed.');
+				}
 			}
 		});
 
