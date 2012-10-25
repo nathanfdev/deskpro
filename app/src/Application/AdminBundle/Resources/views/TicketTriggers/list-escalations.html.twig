@@ -26,14 +26,15 @@
 			</ul>
 		</div>
 		<div class="contents" style="margin-left:0">
-			{% if trigger.sys_name and trigger.sys_name == trigger.title %}
-				<lable><h2>{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
-			{% elseif trigger.title %}
-				<lable><h2>{{ trigger.title }}</h2></lable>
-			{% endif %}
 			<div class="trigger-desc">
-				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
+				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="400">
 					<div class="terms">
+						{% if trigger.sys_name and trigger.sys_name == trigger.title %}
+							{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}<br />
+						{% elseif trigger.title %}
+							{{ trigger.title }}<br />
+						{% endif %}
+
 						<em class="trigger-type-phrase">{{ types_phrases[trigger.event_trigger] }}</em>
 						{% if trigger.getEventTriggerOption('time') %}
 							{% if trigger.getOptionScale() == 'seconds' %}
@@ -67,7 +68,7 @@
 							{% endif %}
 						{% endif %}
 					</div>
-				</td><td valign="top" width="50%" style="padding-left: 15px;">
+				</td><td valign="top" width="400" style="padding-left: 15px;">
 					<div class="actions">
 						<em class="op ctrl">{{ phrase('admin.tickets.then') }}</em>
 						{% for desc in trigger.getActionDescriptions() %}
