@@ -254,9 +254,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.el.data('snippet-viewer-url'),
 			triggerElement: this.getElById('text_snippets_btn'),
+			onBeforeOpen: function() {
+				if (isWysiwyg) {
+					textarea.data('redactor').saveSelection();
+				}
+			},
 			onSnippetClick: function(info) {
 				if (!self.page) {
 					return;
+				}
+
+				if (isWysiwyg) {
+					textarea.data('redactor').restoreSelection();
 				}
 
 				self.page.insertTextInReply(info.snippet);
@@ -328,7 +337,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.stopPropagation();
 
 			if (isWysiwyg) {
-				textarea.val(textarea.getCode());
+				textarea.data('redactor').syncCode();
 			}
 
 			var formData = self.el.serializeArray();

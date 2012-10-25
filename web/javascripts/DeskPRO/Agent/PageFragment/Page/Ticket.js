@@ -89,8 +89,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			// Scroll down
 			self.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-			// Focus reply
-			$('textarea[name="message"]', self.ticketReply).focus();
+			self.focusOnReply();
 		});
 
 		this.addEvent('openUserProfile', function(ev) {
@@ -361,7 +360,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var sig = this.getEl('replybox_wrap').find('textarea.signature-value').val();
 			if (sig) sig = "\n\n" + sig;
 
-			this.getEl('replybox_wrap').find('textarea[name="message"]').val(sig);
+			var textarea = this.getReplyTextArea();
+			if (textarea.data('redactor')) {
+				textarea.setCode(DP.convertTextToWysiwygHtml(sig));
+			} else {
+				textarea.val(sig);
+			}
 			return;
 		}
 
@@ -577,11 +581,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// Scroll down
 		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-		// Focus reply
-		$('textarea[name="message"]', self.ticketReply).focus();
+		this.focusOnReply();
 
 		// Resize it by firing change which'll run the resize
-		$('textarea[name="message"]', self.ticketReply).trigger('textareaexpander_fire');
+		this.getReplyTextArea().trigger('textareaexpander_fire');
 	},
 
 	addAttachToList: function(attachInfo) {
@@ -881,8 +884,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				// Scroll down
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-				// Focus reply
-				$('textarea[name="message"]', self.ticketReply).focus();
+				this.focusOnReply();
 
 				break;
 
@@ -970,17 +972,38 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.messageEditOverlay.open();
 	},
 
-	insertTextInReply: function(text) {
-		var txt = this.getEl('replybox_wrap').find('textarea[name="message"]');
-
-		var pos = txt.getCaretPosition();
-		if (!pos) {
-			txt.setCaretPosition(0);
-		}
-
-		txt.insertAtCaret(text);
-		txt.trigger('textareaexpander_fire');
+	getReplyTextArea: function() {
+		return this.getEl('replybox_wrap').find('textarea[name="message"]');
 	},
+
+	insertTextInReply: function(text) {
+		var txt = this.getReplyTextArea();
+
+		if (txt.data('redactor')) {
+			txt.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text));
+		} else {
+			var pos = txt.getCaretPosition();
+			if (!pos) {
+				txt.setCaretPosition(0);
+			}
+
+			txt.insertAtCaret(text);
+			txt.trigger('textareaexpander_fire');
+		}
+	},
+
+	focusOnReply: function() {
+		var txt = this.getReplyTextArea();
+
+		if (txt.data('redactor')) {
+			var redactor = txt.data('redactor');
+			redactor.saveSelection();
+			redactor.restoreSelection();
+		} else {
+			txt.focus();
+		}
+	},
+
 
 	doTicketUpdate: function() {
 		var formData = [];
