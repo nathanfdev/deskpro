@@ -68,11 +68,17 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
 	{
+		$tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
 		if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
-			mkdir(dp_get_tmp_dir() . '/swiftmailer-cache', 0777, true);
+			if (!@mkdir($tmpdir, 0777, true)) {
+				$tmpdir = sys_get_temp_dir() . '/dp-swiftmailer-cache';
+				if (!is_dir($tmpdir)) {
+					@mkdir($tmpdir, 0777, true);
+				}
+			}
 		}
 
-		\Swift_Preferences::getInstance()->setTempDir(dp_get_tmp_dir() . '/swiftmailer-cache');
+		\Swift_Preferences::getInstance()->setTempDir($tmpdir);
 
 		$this->messagesLog = new \Orb\Log\Writer\ArrayWriter();
 
