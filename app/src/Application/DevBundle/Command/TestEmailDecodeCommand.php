@@ -57,6 +57,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		))->setName('dpdev:test-email-decode');
 
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
+		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -81,11 +82,13 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			$body = $r->getBodyHtml()->getBodyUtf8();
 			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 
-			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-			$cutter->addPatterns($pattern_config->all());
+			if (!$input->getOption('no-cut')) {
+				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+				$cutter->addPatterns($pattern_config->all());
 
-			$body = $cutter->cutQuoteBlock($body, true);
+				$body = $cutter->cutQuoteBlock($body, true);
+			}
 
 			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
 			$body = $inline_image->processTokens($body);
@@ -101,11 +104,12 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		} else {
 			$body = $r->getBodyText()->getBodyUtf8();
 
-			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
-			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
-			$cutter->addPatterns($pattern_config->all());
-
-			$body = $cutter->cutQuoteBlock($body, false);
+			if (!$input->getOption('no-cut')) {
+				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+				$cutter->addPatterns($pattern_config->all());
+				$body = $cutter->cutQuoteBlock($body, false);
+			}
 		}
 
 		echo $body;

@@ -16,4 +16,6 @@
 	'applemail_1'                        => '#On (.*?), ([0-9]+), at (.*?), (.*?) wrote:\s+#',
 
 	'zimbra_1'                           => '#\-\-\-\-\-\s+Original Message\s+\-\-\-\-\-\sFrom: (.*?)\sTo: (.*?)#',
+
+	'generic_1'                          => '#^[a-zA-Z0-9\-\.\'" ]+ <.*?@[a-zA-Z0-9\.\-_]+> wrote:\s$#m',
 );
