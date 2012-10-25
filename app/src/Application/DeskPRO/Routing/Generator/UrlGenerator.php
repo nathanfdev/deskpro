@@ -59,6 +59,21 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
+	public function generate($name, $parameters = array(), $absolute = false)
+	{
+		if (App::getEnvironment() == 'dev') {
+			return parent::generate($name, $parameters, $absolute);
+		}
+
+		// When in prod, eat route not found exceptions because
+		// users can mistype them when editing templates
+		try {
+			return parent::generate($name, $parameters, $absolute);
+		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+			return null;
+		}
+	}
+
 	/**
 	 * This is like generate() except it returns JUST the route. Nothing to do with the current base
 	 * path etc is added. This will begin with a slash.
