@@ -21,10 +21,12 @@
 </div>
 {% endif %}
 
+{% if type != 'modify' %}
 {% if item.field_type == 'ticket_cc_emails' and ((mode == 'default' and (item.rules or item.id in page_data_field_ids)) or (mode =='non_default' and item.id not in page_data_field_ids)) %}
 <div data-field-id="ticket_subject" class="ticket-display-field ticket_cc_emails" {% if item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-cc.html.twig' %}
 </div>
+{% endif %}
 {% endif %}
 
 {% if type != 'modify' %}
