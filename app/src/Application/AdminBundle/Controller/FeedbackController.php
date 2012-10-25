@@ -233,7 +233,10 @@ class FeedbackController extends AbstractController
 						$vals[] = array('category_id' => $category->getId(), 'usergroup_id' => $uid);
 					}
 				}
-				$this->container->getDb()->batchInsert('feedback_category2usergroup', $vals);
+
+				if ($vals) {
+					$this->container->getDb()->batchInsert('feedback_category2usergroup', $vals);
+				}
 
 				$this->em->getConnection()->commit();
 			} catch (\Exception $e) {
