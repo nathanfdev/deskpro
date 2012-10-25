@@ -76,6 +76,15 @@ var DP = {
 		return field.tinymce(options);
 	},
 
+	convertTextToWysiwygHtml: function(text) {
+		if (!text.length) {
+			return '';
+		}
+
+		text = '<p>' + text.replace(/\r?\n/g, '<br>\n').replace(/<br>\n<br>\n/g, "</p>\n\n<p>") + '</p>';
+		return text.replace('<p></p>', '<p><br></p>');
+	},
+
 	drawBox: function(w, h) {
 		if (this.lastBox) {
 			this.lastBox.remove();

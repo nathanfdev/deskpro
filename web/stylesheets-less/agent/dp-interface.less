@@ -18,6 +18,86 @@ del { text-decoration: line-through; }
 table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
 
+/* UNRESET WHERE WE NEED TO */
+.unreset em, .unreset i, .unreset dfn {
+	font-style: italic;
+}
+.unreset strong, .unreset b, .unreset dfn {
+	font-weight:bold;
+}
+.unreset p, .unreset code, .unreset pre, .unreset kbd {
+	margin:0 0 1.5em 0;
+}
+.unreset blockquote {
+	margin:0 1.5em 1.5em 1.5em;
+}
+.unreset cite {
+	font-style: italic;
+}
+.unreset li ul, .unreset li ol {
+	margin:0 1.5em;
+}
+.unreset ul, .unreset ol {
+	margin:0 1.5em 1.5em 1.5em;
+}
+.unreset ul {
+	list-style-type:disc;
+}
+.unreset ol {
+	list-style-type:decimal;
+}
+.unreset ol ol {
+	list-style: upper-alpha;
+}
+.unreset ol ol ol {
+	list-style: lower-roman;
+}
+.unreset ol ol ol ol {
+	list-style: lower-alpha;
+}
+.unreset dl {
+	margin:0 0 1.5em 0;
+}
+.unreset dl dt {
+	font-weight:bold;
+}
+.unreset dd {
+	margin-left:1.5em;
+}
+.unreset table {
+	margin-bottom:1.4em;
+	width:100%;
+}
+.unreset th {
+	font-weight:bold;
+}
+.unreset th, .unreset td, .unreset caption {
+	padding:4px 10px 4px 5px;
+}
+.unreset tfoot {
+	font-style:italic;
+}
+.unreset sup, .unreset sub {
+	line-height:0;
+}
+.unreset abbr, .unreset acronym {
+	border-bottom: 1px dotted;
+}
+.unreset address {
+	margin:0 0 1.5em;
+	font-style:italic;
+}
+.unreset del {
+	text-decoration: line-through;
+}
+.unreset pre {
+	margin:1.5em 0;
+	white-space:pre;
+}
+
+
+
+
 select, .ui-widget select {
 	font-size: 13px !important;
 	font-family: @body-font;

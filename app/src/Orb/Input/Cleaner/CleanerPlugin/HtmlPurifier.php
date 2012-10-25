@@ -218,7 +218,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_simple':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br');
+				$config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href],img,ul,li,dd,dt,dl,ol,p,span,br');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);

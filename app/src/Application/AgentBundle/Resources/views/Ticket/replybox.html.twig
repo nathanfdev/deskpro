@@ -189,13 +189,14 @@
 						</div>
 					</li>
 				</ul>
-				<div class="input-wrap">
+				<div class="input-wrap unreset">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>{% if agent_signature %}
 
 
 
 {{ agent_signature }}{% endif %}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+					<input type="hidden" id="{{replyBaseId}}_is_html_reply" name="is_html_reply" value="0" />
 				</div>
 			</section>
 		</article>

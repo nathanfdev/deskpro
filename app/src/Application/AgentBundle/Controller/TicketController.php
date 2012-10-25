@@ -1006,7 +1006,12 @@ class TicketController extends AbstractController
 		$message['person'] = $this->person;
 		$message['ip_address'] = $this->request->getClientIp();
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
-		$message->setMessageText($this->in->getString('message'));
+
+		if ($this->in->getBool('is_html_reply')) {
+			$message->message = $this->in->getSimpleHtml('message');
+		} else {
+			$message->setMessageText($this->in->getString('message'));
+		}
 
 		if ($this->in->getBool('options.is_note')) {
 			$message['is_agent_note'] = true;

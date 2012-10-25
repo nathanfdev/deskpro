@@ -84,6 +84,8 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 
+		'vendor/redactor/redactor.min.js',
+
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
 
 		'vendor/jquery/fileupload/jquery.fileupload.js',
@@ -676,7 +678,8 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/qtip/jquery.qtip.min.css',
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/token-field/token-field.css',
-		'vendor/select2/select2.css'
+		'vendor/select2/select2.css',
+		'vendor/redactor/redactor.css'
 	)
 );
 

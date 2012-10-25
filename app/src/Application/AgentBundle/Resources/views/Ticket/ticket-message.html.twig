@@ -22,7 +22,7 @@
 			<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>
 		</header>
 		<div class="body-text">
-			<div class="body-text-message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
+			<div class="body-text-message unreset" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %} {% if message.show_full_hint %}style="display: none"{% endif %}>
 				{{message.message_html|safe_link_urls_html }}
 				{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
 			</div>

@@ -14,6 +14,40 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var sig = this.el.find('textarea.signature-value').val();
 		var sigTrimmed = false;
 
+		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
+
+		if (true) {
+			isWysiwyg = true;
+
+			var val = textarea.val();
+			if (val.length) {
+				textarea.val(DP.convertTextToWysiwygHtml(val));
+			}
+
+			textarea.redactor({
+				direction: textarea.attr('dir') || 'ltr',
+				buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
+				minHeight: 150
+			});
+
+			sig = DP.convertTextToWysiwygHtml(sig);
+
+			this.getElById('is_html_reply').val(1);
+		} else {
+			textarea.data('expander-max-height', $(window).height() - 500).TextAreaExpander(150, $(window).height() - 500).on('textareaexpander_expanded', function() {
+				var h = $(this).height();
+				window.setTimeout(function() {
+					if (self.page && $(window).height() - 500 > h) {
+						self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+					}
+				}, 250);
+			});
+
+			textarea.on('keypress change', function() {
+				$(this).addClass('touched');
+			});
+		}
+
 		this.getElById('replybox_replytab_btn').on('click', function() {
 			self.el.removeClass('dp-note-on');
 			$(this).addClass('on');
@@ -23,8 +57,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('is_note').val('0');
 
 			if (sigTrimmed) {
-				var reply = self.getElById('replybox_txt').val();
-				self.getElById('replybox_txt').val(reply + "\n\n" + sig);
+				if (isWysiwyg) {
+					var reply = textarea.getCode();
+					if (sig.length) {
+						if (!reply.length) {
+							reply = '<p><br></p>';
+						}
+						textarea.setCode(reply + "\n\n" + sig);
+					}
+				} else {
+					var reply = textarea.val();
+					textarea.val(reply + "\n\n" + sig);
+				}
 				sigTrimmed = false;
 			}
 		});
@@ -37,27 +81,23 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 
-			var reply = self.getElById('replybox_txt').val();
-			if (Orb.strEndsWith(reply, sig)) {
-				var pos = reply.indexOf(sig);
-				reply = $.trim(reply.substring(0, pos));
-				sigTrimmed = true;
-
-				self.getElById('replybox_txt').val(reply);
-			}
-		});
-
-		this.getElById('replybox_txt').data('expander-max-height', $(window).height() - 500).TextAreaExpander(150, $(window).height() - 500).on('textareaexpander_expanded', function() {
-			var h = $(this).height();
-			window.setTimeout(function() {
-				if (self.page && $(window).height() - 500 > h) {
-					self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			if (isWysiwyg) {
+				var reply = textarea.getCode();
+				if (Orb.strEndsWith(reply, sig)) {
+					var pos = reply.indexOf(sig);
+					reply = $.trim(reply.substring(0, pos));
+					textarea.setCode(reply);
+					sigTrimmed = true;
 				}
-			}, 250);
-		});
-
-		this.getElById('replybox_txt').on('keypress change', function() {
-			$(this).addClass('touched');
+			} else {
+				var reply = textarea.val();
+				if (Orb.strEndsWith(reply, sig)) {
+					var pos = reply.indexOf(sig);
+					reply = $.trim(reply.substring(0, pos));
+					textarea.val(reply);
+					sigTrimmed = true;
+				}
+			}
 		});
 
 		//------------------------------
@@ -255,6 +295,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
+			if (isWysiwyg) {
+				textarea.val(textarea.getCode());
+			}
+
 			var formData = self.el.serializeArray();
 			self.el.trigger('replyboxsubmit', [formData, self]);
 		});
@@ -284,8 +328,23 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	appendToMessage: function(content) {
+		var textarea = this.getElById('replybox_txt');
+		var isWysiwyg = textarea.data('redactor') ? true : false;
+
 		var sig = this.getElById('signature_value').val();
-		var val = this.getElById('replybox_txt').val();
+
+		if (isWysiwyg) {
+			sig = DP.convertTextToWysiwygHtml(sig);
+			content = DP.convertTextToWysiwygHtml(content);
+
+			var val = textarea.getCode();
+			if (val == '<p></p>' || val == '<p><br></p>') {
+				val = '';
+			}
+		} else {
+			var val = textarea.val();
+		}
+
 		if (val.trim().length) {
 
 			// Always put it before the signature
@@ -299,7 +358,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		} else {
 			val = content;
 		}
-		this.getElById('replybox_txt').val(val);
+
+		if (isWysiwyg) {
+			textarea.setCode(val);
+		} else {
+			textarea.val(val);
+		}
 	},
 
 	destroy: function() {
