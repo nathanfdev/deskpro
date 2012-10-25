@@ -61,7 +61,7 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	protected $to_agent = true;
 
-	public function __construct(TicketChangeTracker $tracker, $pattern, $to_user = true, $to_agent = true)
+	public function __construct($pattern, $to_user = true, $to_agent = true, TicketChangeTracker $tracker = null)
 	{
 		$this->tracker  = $tracker;
 		$this->pattern  = $pattern;
@@ -77,6 +77,10 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->tracker) {
+			return;
+		}
+
 		$address = $this->getAddress($ticket);
 		if ($this->to_agent) {
 			$this->tracker->recordExtra('set_initial_from_toagent', $address);
