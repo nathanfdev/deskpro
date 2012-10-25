@@ -334,6 +334,12 @@ class GroupingCounter
 				// Get a real time so we dont have mysql doing calculations,
 				// and we dont need to do a subquery etc
 				$date = date('Y-m-d H:i:s', $now - $t);
+
+				if ($t == 300) {
+					$now = date('Y-m-d H:i:s');
+					$parts[] = " WHEN tickets.$fieldname BETWEEN '$date' AND '$now' THEN $t ";
+				}
+
 				$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
 			}
 		}
@@ -664,8 +670,10 @@ class GroupingCounter
 				$key = array_search($groupchoice, $times);
 
 				if ($key == 0) {
-					$date = new \DateTime('-5 minutes');
-					return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
+					$date1 = new \DateTime('-5 minutes');
+					$date2 = new \DateTime('now');
+
+					return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
 				} elseif ($key == (count($times) - 1)) {
 					$date = new \DateTime('-6 months');
 					return array('type' => $groupvar, 'op' => 'gte', 'options' => array('date1' => $date));
