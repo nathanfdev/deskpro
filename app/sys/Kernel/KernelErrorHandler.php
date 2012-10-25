@@ -475,7 +475,11 @@ class KernelErrorHandler
 		}
 
 		if ($exception instanceof \Imagine\Exception\RuntimeException && strpos($exception->getMessage(), 'Unable to open temporary file') !== false) {
+			return true;
+		}
 
+		if ($exception instanceof \PDOException && strpos($exception->getFile(), 'DbTablePhpPasswordCheck.php') !== false) {
+			return true;
 		}
 
 		return false;
