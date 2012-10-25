@@ -85,18 +85,28 @@ class OverviewController extends AbstractController
 
 	public function updateStatAction($type)
 	{
+		try {
+			return $this->doUpdateStatAction($type);
+		} catch (\InvalidArgumentException $e) {
+			return $this->doUpdateStatAction($type, 'department');
+		}
+	}
+
+	public function doUpdateStatAction($type, $grouping_field = null)
+	{
 		$this->person->loadPrefGroup('reports.ui.overview.options');
+
+		if (!$grouping_field) {
+			$grouping_field = $this->in->getString('grouping_field');
+		}
 
 		switch ($type) {
 			case 'tickets_awaiting_agent':
-				$grouping_field = $this->in->getString('grouping_field');
-
 				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_awaiting_agent.grouping', $grouping_field);
 
 				return $this->render('ReportBundle:Overview:tickets-awaiting-agent.html.twig', array('data' => $this->getValues('tickets_awaiting_agent', array('grouping_field' => $grouping_field))));
 
 			case 'tickets_resolved':
-				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
 
 				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_resolved.grouping', $grouping_field);
@@ -107,7 +117,6 @@ class OverviewController extends AbstractController
 				);
 
 			case 'tickets_response_time':
-				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
 
 				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_response_time.grouping', $grouping_field);
@@ -118,8 +127,6 @@ class OverviewController extends AbstractController
 				);
 
 			case 'tickets_user_waiting_time':
-				$grouping_field = $this->in->getString('grouping_field');
-
 				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.tickets_user_waiting_time.grouping', $grouping_field);
 
 				return $this->render('ReportBundle:Overview:tickets-user-waiting-time.html.twig', array(
@@ -141,7 +148,6 @@ class OverviewController extends AbstractController
 				));
 
 			case 'chats_created':
-				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
 
 				$this->em->getRepository('DeskPRO:PersonPref')->savePref($this->person, 'reports.ui.overview.options.chats_created.grouping', $grouping_field);
