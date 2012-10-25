@@ -32,24 +32,26 @@
  * @subpackage Import
  */
 
-namespace Application\DeskPRO\Import\PasswordScheme;
+namespace Application\DeskPRO\People\PasswordScheme;
 
 use Application\DeskPRO\People\PasswordSchemeInterface;
 use Application\DeskPRO\Entity\Person;
 
-class Deskpro3PasswordScheme implements PasswordSchemeInterface
+require DP_ROOT . '/vendor/phpass/PasswordHash.php';
+
+class Bcrypt implements PasswordSchemeInterface
 {
+	const ITERATIONS = 11;
+
 	public function hashPassword(Person $person, $plain_password)
 	{
-		if ($person->password_scheme == 'deskpro3_tech') {
-			return sha1($plain_password . $person->salt);
-		} else {
-			return md5($plain_password . $person->salt);
-		}
+		$hasher = new \PasswordHash(self::ITERATIONS, false);
+		return $hasher->HashPassword($plain_password);
 	}
 
 	public function checkPassword(Person $person, $hashed_password, $plain_password)
 	{
-		return ($hashed_password === $this->hashPassword($person, $plain_password));
+		$hasher = new \PasswordHash(self::ITERATIONS, false);
+		return $hasher->CheckPassword($plain_password, $hashed_password);
 	}
 }

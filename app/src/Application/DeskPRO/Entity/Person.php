@@ -815,23 +815,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$hash = $this->hashPassword($plain_password);
-
 		// Allows a define to be added to config to override a users password:
 		// define('DP_OVERRIDE_USER_PASS', '20001:mypassword');
 		if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
 			list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
 			if ($this->id == $id) {
-				$o = $this->password_scheme;
-				$this->password_scheme = null;
-				$override_hash = $this->hashPassword($override_pass);
-				$this->password_scheme = $o;
-
-				return ($hash == $override_hash);
+				return ($override_pass === $plain_password);
 			}
 		}
 
-		return ($hash == $this->password);
+		return $this->getPasswordSchemeHandler()->checkPassword($this, $this->password, $plain_password);
 	}
 
 
@@ -846,7 +839,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// If we're setting the password, we're now using the default
 		// password scheme so remove the old one. eg an imported user just changed their password
-		$this->setModelField('password_scheme', null);
+		$this->setModelField('password_scheme', 'bcrypt');
 
 		// When a password is set, then they're a user now
 		$this->setModelField('is_user', true);
@@ -905,11 +898,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hashPassword($plain_password)
 	{
+		return $this->getPasswordSchemeHandler()->hashPassword($this, $plain_password);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\People\PasswordSchemeInterface
+	 */
+	public function getPasswordSchemeHandler()
+	{
 		if ($this->password_scheme === null) {
-			return sha1($this->salt . $plain_password);
+			$scheme = 'deskpro4original';
+		} else {
+			$scheme = $this->password_scheme;
 		}
 
-		return App::getSystemObject('password_scheme', array('scheme' => $this->password_scheme))->hashPassword($this, $plain_password);
+		return App::getSystemObject('password_scheme', array('scheme' => $scheme));
 	}
 
 
@@ -2101,7 +2105,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position', ));
 		$metadata->mapField(array( 'fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'timezone', ));
-		$metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false, ));
+		$metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_scheme', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

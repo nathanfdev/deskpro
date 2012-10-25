@@ -32,20 +32,16 @@
  * @subpackage Import
  */
 
-namespace Application\DeskPRO\Import\PasswordScheme;
+namespace Application\DeskPRO\People\PasswordScheme;
 
 use Application\DeskPRO\People\PasswordSchemeInterface;
 use Application\DeskPRO\Entity\Person;
 
-class Deskpro3PasswordScheme implements PasswordSchemeInterface
+class Deskpro4Original implements PasswordSchemeInterface
 {
 	public function hashPassword(Person $person, $plain_password)
 	{
-		if ($person->password_scheme == 'deskpro3_tech') {
-			return sha1($plain_password . $person->salt);
-		} else {
-			return md5($plain_password . $person->salt);
-		}
+		return sha1($person->salt . $plain_password);
 	}
 
 	public function checkPassword(Person $person, $hashed_password, $plain_password)

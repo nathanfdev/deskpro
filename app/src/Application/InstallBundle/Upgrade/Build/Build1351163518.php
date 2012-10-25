@@ -29,27 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Import
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Import\PasswordScheme;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\People\PasswordSchemeInterface;
-use Application\DeskPRO\Entity\Person;
-
-class Deskpro3PasswordScheme implements PasswordSchemeInterface
+class Build1351163518 extends AbstractBuild
 {
-	public function hashPassword(Person $person, $plain_password)
+	public function run()
 	{
-		if ($person->password_scheme == 'deskpro3_tech') {
-			return sha1($plain_password . $person->salt);
-		} else {
-			return md5($plain_password . $person->salt);
-		}
-	}
-
-	public function checkPassword(Person $person, $hashed_password, $plain_password)
-	{
-		return ($hashed_password === $this->hashPassword($person, $plain_password));
+		$this->out("Change password length to allow longer hashes");
+		$this->execMutateSql("ALTER TABLE people CHANGE password password VARCHAR(100) DEFAULT NULL");
 	}
 }

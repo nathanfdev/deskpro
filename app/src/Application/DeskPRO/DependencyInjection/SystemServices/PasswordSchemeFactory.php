@@ -47,9 +47,13 @@ class PasswordSchemeFactory
 		switch ($options['scheme']) {
 			case 'deskpro3':
 			case 'deskpro3_tech':
-				$s = new \Application\DeskPRO\Import\PasswordScheme\Deskpro3PasswordScheme();
-				return $s;
-				break;
+				return new \Application\DeskPRO\Import\PasswordScheme\Deskpro3PasswordScheme();
+
+			case 'deskpro4original':
+				return new \Application\DeskPRO\People\PasswordScheme\Deskpro4Original();
+
+			case 'bcrypt':
+				return new \Application\DeskPRO\People\PasswordScheme\Bcrypt();
 
 			default:
 				throw new \InvalidArgumentException("Unknown password scheme `{$options['scheme']}`");
