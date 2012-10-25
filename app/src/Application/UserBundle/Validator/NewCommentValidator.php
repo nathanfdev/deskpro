@@ -92,11 +92,11 @@ class NewCommentValidator extends AbstractValidator
 			if (!$validator->isValid($this->newcomment->email)) {
 				$this->addError('email.invalid');
 			}
-		}
 
-		if ($this->captca) {
-			if (!$this->captca->validate()) {
-				$this->addError('captcha.invalid');
+			if ($this->captca) {
+				if (!$this->captca->validate()) {
+					$this->addError('captcha.invalid');
+				}
 			}
 		}
 

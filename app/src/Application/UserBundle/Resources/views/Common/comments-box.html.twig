@@ -49,7 +49,7 @@
 										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.general.comments_add-comment') }}"></textarea>
 									</div>
 									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
-									{% if app.getSetting('user.publish_captcha') %}
+									{% if not app.user.id and app.getSetting('user.publish_captcha') %}
 										<div style="padding: 8px 0 8px 0">
 											{{ captcha_html('new_comment') }}
 										</div>
