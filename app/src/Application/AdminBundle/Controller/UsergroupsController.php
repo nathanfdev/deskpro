@@ -104,6 +104,8 @@ class UsergroupsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$everyone_ug = $this->em->find('DeskPRO:Usergroup', \Application\DeskPRO\Entity\Usergroup::EVERYONE_ID);
+
 		#------------------------------
 		# Saving form
 		#------------------------------
@@ -202,7 +204,7 @@ class UsergroupsController extends AbstractController
 		$ug_deps_everyone = null;
 		$ug_permissions_everyone = null;
 
-		if ($usergroup->sys_name != 'everyone') {
+		if ($usergroup->sys_name != 'everyone' && $everyone_ug->is_enabled) {
 			$ug_deps_everyone = $this->db->fetchAllGrouped("
 				SELECT department_id, app
 				FROM department_permissions
