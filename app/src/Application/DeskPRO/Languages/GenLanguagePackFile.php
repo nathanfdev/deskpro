@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\Languages;
 
-use DOMDocument;
+use Orb\Util\DOMDocument;
 
 class GenLanguagePackFile
 {

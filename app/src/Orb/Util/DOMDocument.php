@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
@@ -26,39 +25,17 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
+ * @package Orb
+ * @category Util
  */
 
-namespace Application\DevBundle\Command;
+namespace Orb\Util;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\Output;
 
-use Application\DeskPRO\App;
-
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Routing\Route;
-
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class DOMDocument extends \DOMDocument
 {
-	protected function configure()
-	{
-		$this->setDefinition(array(
-		))->setName('dpdev:test');
-	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo "\n";
-	}
 }

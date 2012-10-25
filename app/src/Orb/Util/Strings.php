@@ -34,6 +34,8 @@
 
 namespace Orb\Util;
 
+use Orb\Util\DOMDocument;
+
 /**
  * String utility functions.
  *
@@ -1282,7 +1284,7 @@ class Strings
 
 		$orig_html = $html;
 
-		$dom = new \DOMDocument('1.0', 'UTF-8');
+		$dom = new DOMDocument('1.0', 'UTF-8');
 		if (strpos($html, '<body') === false) {
 			$html = "<body>$html</body>";
 		}
@@ -1306,7 +1308,7 @@ class Strings
 			$newText  = self::linkify($origText, '');
 
 			if ($origText != $newText) {
-				$frag = new \DOMDocument('1.0', 'UTF-8');
+				$frag = new DOMDocument('1.0', 'UTF-8');
 				$frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>' . $newText . '</body>');
 				$xpath2 = new \DOMXPath($frag);
 
@@ -1557,6 +1559,53 @@ class Strings
 		if ($escape_html) {
 			$string = htmlspecialchars($string, \ENT_QUOTES, 'UTF-8', false);
 		}
+
+		return $string;
+	}
+
+
+	/**
+	 * Takes a unicode string and encodes multi-byte characters as HTML entities.
+	 *
+	 * Use $encodeString to use a pattern other than &#<code>;. (Used when you need to mark
+	 * the unicode points with something other than entities). Use %s as the placeholder.
+	 *
+	 * @param string $string
+	 * @param bool $encodeString
+	 * @return string
+	 */
+	public static function htmlEntityEncodeUtf8($string, $encodeString = null)
+	{
+		$string = preg_replace_callback('/[\x{80}-\x{FFFFFF}]/u', function($match) use ($encodeString) {
+			$string = $match[0];
+			$c1 = ord($string[0]);
+			if ($c1 < 0x80) {
+				return $c1;
+			}
+
+			$code = null;
+
+			if (($c1 & 0xF8) == 0xF0) {
+				// 4 bytes
+				$code = (($c1 & 0x07) << 18) | ((ord($string[1]) & 0x3F) << 12) | ((ord($string[2]) & 0x3F) << 6) | (ord($string[3]) & 0x3F);
+			} else if (($c1 & 0xF0) == 0xE0) {
+				// 3 bytes
+				$code = (($c1 & 0x0F) << 12) | ((ord($string[1]) & 0x3F) << 6) | (ord($string[2]) & 0x3F);
+			} else if (($c1 & 0xE0) == 0xC0) {
+				// 2 bytes
+				$code = (($c1 & 0x1F) << 6) | (ord($string[1]) & 0x3F);
+			}
+
+			if ($code) {
+				if ($encodeString) {
+					return sprintf($encodeString, $code);
+				} else {
+					return '&#' . $code . ';';
+				}
+			} else {
+				return '?';
+			}
+		}, $string);
 
 		return $string;
 	}

@@ -15,7 +15,7 @@ namespace QueryPath;
 
 use \QueryPath\CSS\QueryPathEventHandler;
 use \QueryPath;
-
+use Orb\Util\DOMDocument;
 
 /**
  * The DOMQuery object is the primary tool in this library.
@@ -113,7 +113,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
     // Empty: Just create an empty QP.
     if (empty($document)) {
-      $this->document = isset($this->options['encoding']) ? new \DOMDocument('1.0', $this->options['encoding']) : new \DOMDocument();
+      $this->document = isset($this->options['encoding']) ? new DOMDocument('1.0', $this->options['encoding']) : new DOMDocument();
       $this->setMatches(new \SplObjectStorage());
     }
     // Figure out if document is DOM, HTML/XML, or a filename
@@ -124,7 +124,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         if ($this->matches->count() > 0)
           $this->document = $this->getFirstMatch()->ownerDocument;
       }
-      elseif ($document instanceof \DOMDocument) {
+      elseif ($document instanceof DOMDocument) {
         $this->document = $document;
         //$this->matches = $this->matches($document->documentElement);
         $this->setMatches($document->documentElement);
@@ -1234,7 +1234,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
         foreach ($this->matches as $m) {
           // DOMDocumentFragments are even more troublesome, as they don't
           // always clone correctly. So we have to clone their children.
-          if ($data instanceof \DOMDocumentFragment) {
+          if ($data instanceof DOMDocumentFragment) {
             foreach ($data->childNodes as $n)
               $m->appendChild($n->cloneNode(TRUE));
           }
@@ -1853,7 +1853,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
    * @see remove()
    * @see replaceWith()
    */
-  public function replaceAll($selector, \DOMDocument $document) {
+  public function replaceAll($selector, DOMDocument $document) {
     $replacement = $this->size() > 0 ? $this->getFirstMatch() : $this->document->createTextNode('');
 
     $c = new QueryPathEventHandler($document);
@@ -2243,7 +2243,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return NULL;
     }
 
-    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
       return $this->document->saveHTML();
     }
     // saveHTML cannot take a node and serialize it.
@@ -2563,7 +2563,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return NULL;
     }
 
-    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
 
       // Has the unfortunate side-effect of stripping doctype.
       //$text = ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement, LIBXML_NOEMPTYTAG) : $this->document->saveXML(NULL, LIBXML_NOEMPTYTAG));
@@ -2645,7 +2645,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return NULL;
     }
 
-    if ($first instanceof \DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
+    if ($first instanceof DOMDocument || $first->isSameNode($first->ownerDocument->documentElement)) {
 
       return  ($omit_xml_decl ? $this->document->saveXML($first->ownerDocument->documentElement) : $this->document->saveXML());
     }
@@ -3577,7 +3577,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
 
   private function parseXMLString($string, $flags = NULL) {
 
-    $document = new \DOMDocument('1.0');
+    $document = new DOMDocument('1.0');
     $lead = strtolower(substr($string, 0, 5)); // <?xml
     try {
       set_error_handler(array('\QueryPath\ParseException', 'initializeFromError'), $this->errTypes);
@@ -3746,7 +3746,7 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
       return $this->parseXMLString($contents, $flags);
     }
 
-    $document = new \DOMDocument();
+    $document = new DOMDocument();
     $lastDot = strrpos($filename, '.');
 
     $htmlExtensions = array(

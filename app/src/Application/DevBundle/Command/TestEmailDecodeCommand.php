@@ -49,16 +49,66 @@ use Orb\Util\Strings;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Routing\Route;
 
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{
 		$this->setDefinition(array(
-		))->setName('dpdev:test');
+		))->setName('dpdev:test-email-decode');
+
+		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$file = $input->getArgument('file');
+		if ($file && !is_file($file)) {
+			if (is_file(getcwd() . '/' . $file)) {
+				$file = getcwd() . '/' . $file;
+			}
+		}
+		if (!$file || !is_file($file)) {
+			$output->writeln("<error>Invalid file specified</error>");
+			return 1;
+		}
+
+		$source = file_get_contents($file);
+
+		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$r->setRawSource($source);
+
+		if ($r->getBodyHtml()->getBodyUtf8()) {
+			$body = $r->getBodyHtml()->getBodyUtf8();
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
+
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$body = $cutter->cutQuoteBlock($body, true);
+
+			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
+			$body = $inline_image->processTokens($body);
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+			$body = Strings::trimHtmlAdvanced($body);
+
+			foreach ($r->getAttachments() as $attach) {
+				$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
+			}
+
+			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
+		} else {
+			$body = $r->getBodyText()->getBodyUtf8();
+
+			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+			$cutter->addPatterns($pattern_config->all());
+
+			$body = $cutter->cutQuoteBlock($body, false);
+		}
+
+		echo $body;
 		echo "\n";
 	}
 }

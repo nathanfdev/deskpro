@@ -55,6 +55,7 @@ class HtmlPurifier implements CleanerPlugin
 			'html_email',
 			'html_email_basicclean',
 			'html_email_preclean',
+			'html_email_postclean',
 			'html_fix',
 		);
 	}
@@ -129,6 +130,20 @@ class HtmlPurifier implements CleanerPlugin
 				}
 			}
 
+			// Email do a bunch of processing with DOMDocument which messes with HTML Entities
+			// There are bugs with different versions of libxml where entites are not properly
+			// decoded, or the DOMDocument->substituteEntities not being honoured etc.
+			// Easiest solution is to hack around entiites altogether so DOMDocument doesnt mess them up
+			$value = Strings::htmlEntityEncodeUtf8($value, '__DPUNI_%s_DPUNI__');
+
+			return $value;
+		}
+
+		if ($type == 'html_email_postclean') {
+			// Undo unicode encode
+			$value = preg_replace_callback('#__DPUNI_([0-9]+)_DPUNI__#', function ($m) {
+				return Strings::chrUtf8($m[1]);
+			}, $value);
 			return $value;
 		}
 

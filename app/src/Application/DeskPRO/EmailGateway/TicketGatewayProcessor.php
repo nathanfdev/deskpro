@@ -715,6 +715,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['body_raw'] = $body_raw;
 
+		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
+		$email_info['body_raw'] = $this->cleaner->clean($email_info['body_raw'], 'html_email_postclean');
+		$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_postclean');
+
 		return $email_info;
 	}
 
@@ -939,6 +943,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = $ev->email_info;
 
+		$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
 		$email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
 		#------------------------------
