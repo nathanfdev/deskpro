@@ -61,7 +61,9 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/organizations/' + data.org_id);
 					this.closeSelf();
 				} else {
-					alert('There was an error with the form');
+					if (data && data.error_code && data.error_code == 'invalid_name') {
+						DeskPRO_Window.showAlert('Please enter a name for the organization');
+					}
 				}
 			}
 		});

@@ -699,6 +699,10 @@ class OrganizationController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			if (!$neworg->name) {
+				return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_name'));
+			}
+
 			$neworg->setCustomFieldForm($_POST);
 			$neworg->save();
 
