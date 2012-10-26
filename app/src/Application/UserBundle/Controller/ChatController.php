@@ -275,7 +275,7 @@ class ChatController extends AbstractController
 	public function chatSessionAction()
 	{
 		// First lets see if anyone is even available for chatting
-		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
+		if (!$this->container->getSetting('core.apps_chat') || !$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
@@ -291,6 +291,10 @@ class ChatController extends AbstractController
 
 		// User is blocked
 		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked($this->getRequest()->getClientIp(), $session->visitor);
+
+		if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
+			$blocked = true;
+		}
 
 		if ($blocked) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
