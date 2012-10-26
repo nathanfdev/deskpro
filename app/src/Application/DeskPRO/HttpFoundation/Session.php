@@ -94,8 +94,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		if (DP_INTERFACE == 'user' && $this->is_first_page && empty($_COOKIE['dplogout'])) {
 			// user interface and a new session - we need to look through user sources for cookie handlers
 			$sources = App::getEntityRepository('DeskPRO:Usersource')->getCookieInputUsersources();
-			foreach ($sources AS $source)
-			{
+			foreach ($sources AS $source) {
 				/** @var $source \Application\DeskPRO\Entity\Usersource */
 				$adapter = $source->getAdapter()->getAuthAdapter();
 
@@ -112,6 +111,22 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 					$this->_setCurrentPerson($person);
 					break;
+				}
+			}
+		}
+
+		// See if we need to carry an admin session
+		if (DP_INTERFACE == 'user' && !$this->person && isset($_GET['admin_portal_controls'])) {
+			$admin_session_code = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : false;
+			$admin_session = null;
+			if ($admin_session_code) {
+				$admin_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($admin_session_code);
+				if (!$admin_session || !$admin_session->person || !$admin_session->person->is_agent) {
+					$admin_session = null;
+				}
+
+				if ($admin_session && $admin_session->person) {
+					$this->_setCurrentPerson($admin_session->person);
 				}
 			}
 		}
