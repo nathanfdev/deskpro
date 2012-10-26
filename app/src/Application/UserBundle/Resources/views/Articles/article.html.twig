@@ -50,7 +50,7 @@
 	<article id="dp_article_content">
 		{{ article.content_html|raw }}
 
-		{% if article.attachments %}
+		{% if article.attachments|length %}
 		<ul class="attachment-list">
 			{% for attach in article.attachments %}
 				<li class="{% if attach.blob.isImage() %}is-image{% else %}dp-fileicon dp-fileicon-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
