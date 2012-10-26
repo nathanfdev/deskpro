@@ -48,10 +48,6 @@ class SetFromAddressAgentModifier implements CollectionModifierInterface
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		if (!\Orb\Validator\StringEmail::isValueValid($this->email_address)) {
-			$e = new \InvalidArgumentException("SetFromAddressAgentModifier: Invalid email address: {$this->email_address}");
-			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-			$einfo['no_send_error'] = true;
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			return;
 		}
 
