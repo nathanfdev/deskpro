@@ -7,7 +7,7 @@
 	{% block bottom_extra %}{% endblock %}
 	{{ bottom_extra }}
 {% endset %}
-{% if top_extra|trim|length or bottom_extra|trim|length or contact_data.website or contact_data.twitter or contact_data.linkedin or contact_data.facebook or contact_data.mobile or contact_data.phone or contact_data.fax or contact_data.instant_message %}
+{% if top_extra|trim|length or bottom_extra|trim|length or contact_data.website or contact_data.twitter or contact_data.linked_in or contact_data.facebook or contact_data.mobile or contact_data.phone or contact_data.fax or contact_data.instant_message %}
 <ul class="contact-data-list">
 	{{ top_extra|raw }}
 
@@ -27,8 +27,8 @@
 	{% endfor %}
 	{% endif %}
 
-	{% if not show_only or show_only.linkedin %}
-	{% for contact in contact_data.linkedin %}
+	{% if not show_only or show_only.linked_in %}
+	{% for contact in contact_data.linked_in %}
 		<li class="linkedin {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
 			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
 		</li>

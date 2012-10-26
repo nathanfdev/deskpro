@@ -216,11 +216,11 @@
 		 # LinkedIn
 		 ############################################}
 
-		 <div class="row-type linkedin {% if contact_data.linkedin|length %}with-values{% endif %}">
+		 <div class="row-type linkedin {% if contact_data.linked_in|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.linkedin') }}</h4>
 			<div class="contact-info">
 				<ul>
-					{% for contact in contact_data.linkedin %}
+					{% for contact in contact_data.linked_in %}
 						<li data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
 							<div class="controls">
 								<span class="remove">x</span>
@@ -245,10 +245,10 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<input type="text" size="15" class="single-input" name="new_contact_data[linkedin][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.general.linkedin_url') }}" />
+						<input type="text" size="15" class="single-input" name="new_contact_data[linked_in][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.general.linkedin_url') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[linkedin][%id%][comment]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[linked_in][%id%][comment]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
