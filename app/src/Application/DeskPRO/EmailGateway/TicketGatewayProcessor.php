@@ -1144,6 +1144,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info['subject'] = ForwardCutter::cutSubjectForwardPrefix($email_info['subject']);
 
+		$agent_reply = $fwd_cutter->getReply();
+
 		#------------------------------
 		# Find person
 		#------------------------------
@@ -1192,12 +1194,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			App::getOrm()->flush();
 		}
 
+		// Add attachments to users message if no agent reply
+		if (!$agent_reply && $this->processBlobs()) {
+			$this->logMessage('[TicketGatewayProcessor] Adding attachments to user message');
+			$message = $newticket->new_message;
+			foreach ($this->processBlobs() as $blob) {
+				$attach = new Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $person;
+
+				$message->addAttachment($attach);
+				App::getOrm()->persist($attach);
+			}
+		}
+
 		App::getOrm()->commit();
 
 		// Add agent reply if there was one
-		$agent_reply = $fwd_cutter->getReply();
 		if ($agent_reply) {
 
+			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
 			App::getOrm()->beginTransaction();
@@ -1205,6 +1221,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$agent_message->email_reader = $this->reader;
 			$agent_message->person = $agent;
 			$agent_message['message'] = $agent_reply;
+
+			if ($this->processBlobs()) {
+				$this->logMessage('[TicketGatewayProcessor] Adding attachments to agent message');
+				foreach ($this->processBlobs() as $blob) {
+					$attach = new Entity\TicketAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $agent;
+
+					$agent_message->addAttachment($attach);
+					App::getOrm()->persist($attach);
+				}
+			}
 
 			$ticket->setStatus('awaiting_user');
 			$ticket->addMessage($agent_message);
