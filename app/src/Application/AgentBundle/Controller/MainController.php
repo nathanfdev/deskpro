@@ -265,6 +265,8 @@ class MainController extends AbstractController
 			'organization' => array()
 		);
 
+		$result_meta = array();
+
 		$people_top = false;
 
 		#------------------------------
@@ -278,7 +280,15 @@ class MainController extends AbstractController
 
 		if (!$is_label && Numbers::isInteger($q)) {
 			foreach ($type_to_ent as $type => $ent) {
-				$obj = $this->em->find($ent, $q);
+				if ($type == 'ticket') {
+					$obj = $this->em->getRepository('DeskPRO:Ticket')->findTicketId($q);
+					if ($obj && $obj->getId() != $q) {
+						$result_meta['ticket_deleted'] = $obj->getId();
+						$result_meta['ticket_deleted_oldid'] = $q;
+					}
+				} else {
+					$obj = $this->em->find($ent, $q);
+				}
 				if ($obj) {
 					if ($obj instanceof \Application\DeskPRO\Entity\Ticket && !$this->person->PermissionsManager->TicketChecker->canView($obj)) {
 						continue;
@@ -403,6 +413,7 @@ class MainController extends AbstractController
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
 			'router' => App::getRouter(),
 			'results' => $results,
+			'result_meta' => $result_meta,
 			'people_top' => $people_top,
 		));
 	}

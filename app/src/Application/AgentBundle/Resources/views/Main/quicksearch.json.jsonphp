@@ -5,6 +5,11 @@ if ($results['ticket']) {
 	$OUTPUT['ticket'] = array();
 	foreach ($results['ticket'] as $r) {
 
+		$tid = $r->id;
+		if (isset($result_meta['ticket_deleted']) && $result_meta['ticket_deleted'] == $tid) {
+			$tid = $result_meta['ticket_deleted_oldid'];
+		}
+
 		$org_str = '';
 		if ($r->person->organization) {
 			if ($r->person->organization_position) {
@@ -16,10 +21,10 @@ if ($results['ticket']) {
 		$user_name = htmlspecialchars($r->person->getDisplayName()) . ($r->person->getPrimaryEmailAddress() ? ' &lt;' . $r->person->getPrimaryEmailAddress() . '&gt;' : '') . $org_str;
 
 		$OUTPUT['ticket'][] = array(
-			'id' => $r->id,
+			'id' => $tid,
 			'title' => htmlspecialchars($r->subject),
 			'subtitle' => $user_name,
-			'route' => 'ticket:' . $router->generate('agent_ticket_view', array('ticket_id' => $r->id))
+			'route' => 'ticket:' . $router->generate('agent_ticket_view', array('ticket_id' => $tid))
 		);
 	}
 }
