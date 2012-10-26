@@ -1008,9 +1008,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var txt = this.getReplyTextArea();
 
 		if (txt.data('redactor')) {
-			var redactor = txt.data('redactor');
-			redactor.saveSelection();
-			redactor.restoreSelection();
+			txt.data('redactor').setFocus();
 		} else {
 			txt.focus();
 		}

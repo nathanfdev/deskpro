@@ -27,10 +27,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		var navigateListPane = function(action) {
 			return function(ev) {
-				if (self.isInContextEditable(ev)) {
-					return;
-				}
-
 				var listNav = getActiveListNav();
 				if (listNav) {
 					listNav[action]();
@@ -60,14 +56,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		this.addContextShortcut('ticket', 'shift+p', 'openUserProfile');
 		this.addContextShortcut('ticket', 'shift+o', 'openOrgProfile');
 		this.addContextShortcut('person', 'shift+o', 'openOrgProfile');
-	},
-
-	isInContextEditable: function(event) {
-		if (!event) {
-			return false;
-		}
-
-		return $(event.srcElement).closest('[contenteditable=true]').length > 0;
 	},
 
 
@@ -103,10 +91,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 			return;
 		}
 
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		var page = DeskPRO_Window.getCurrentTabPage();
 		if (!page || !page.TYPENAME || !this.boundShortkuts[key][page.TYPENAME]) {
 			return;
@@ -120,67 +104,31 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	//#########################################################################
 
 	showNewTicket: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newTicketLoader.toggle();
 	},
 	showNewArticle: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newArticleLoader.toggle();
 	},
 	showNewNews: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newNewsLoader.toggle();
 	},
 	showNewDownload: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newDownloadLoader.toggle();
 	},
 	showNewFeedback: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newFeedbackLoader.toggle();
 	},
 	showNewPerson: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newPersonLoader.toggle();
 	},
 	showNewOrganization: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newOrganizationLoader.toggle();
 	},
 	showNewTask: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		$('form#newTaskForm input, form#newTaskForm select').val('');
 		DeskPRO_Window.newTaskLoader.toggle();
 	},
 	showNewDeal: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		DeskPRO_Window.newDealLoader.toggle();
 	},
 
@@ -225,10 +173,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabLeft: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.prev();
 
@@ -242,10 +186,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabRight: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.next();
 
@@ -259,10 +199,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	closeTab: function(ev) {
-		if (this.isInContextEditable(ev)) {
-			return;
-		}
-
 		var activeTab = DeskPRO_Window.TabBar.getActiveTab();
 		if (activeTab) {
 			DeskPRO_Window.TabBar.removeTabById(activeTab.id);

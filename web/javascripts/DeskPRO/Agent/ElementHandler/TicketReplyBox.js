@@ -49,6 +49,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 			});
 
+			textarea.getEditor().bind('keydown', function(ev) {
+				ev.stopPropagation();
+			})
+
 			this.el.bind('fileremoved', function(ev, li) {
 				var downloadUrlRegex = li.find('a').attr('href').replace('.', '\\.');
 				console.log("url: " + downloadUrlRegex);
