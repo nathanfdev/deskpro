@@ -140,9 +140,11 @@
 
 		<div id="dp_page_wrapper" {% if not any_tabs and not app.admin_portal_controls %}class="dp-no-tabs"{% endif %}>
 
-			<div class="dp-device-small">
-				{% include 'UserBundle:Portal:userinfo-topbar.html.twig' %}
-			</div>
+			{% if portal_hasblock('sidebar', 'userinfo') %}
+				<div class="dp-device-small">
+					{% include 'UserBundle:Portal:userinfo-topbar.html.twig' %}
+				</div>
+			{% endif %}
 
 			<div id="dp_sidebar_wrapper">
 				<section id="dp_sidebar">

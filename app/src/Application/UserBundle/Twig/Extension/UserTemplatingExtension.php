@@ -55,6 +55,7 @@ class UserTemplatingExtension extends \Twig_Extension
             'portal_js'   => new \Twig_Function_Method($this, 'portalJs', array('is_safe' => array('html'))),
 			'portal_css' => new \Twig_Function_Method($this, 'portalCss', array('is_safe' => array('html'))),
             'portal_section'   => new \Twig_Function_Method($this, 'portalSection', array('is_safe' => array('html'))),
+            'portal_hasblock'   => new \Twig_Function_Method($this, 'portalHasBlock', array('is_safe' => array('html'))),
         );
     }
 
@@ -88,6 +89,12 @@ class UserTemplatingExtension extends \Twig_Extension
 	{
 		$portal_page = $this->container->get('deskpro.user_portal_page');
 		return $portal_page->getSectionHtml($section);
+	}
+
+	public function portalHasBlock($section, $type)
+	{
+		$portal_page = $this->container->get('deskpro.user_portal_page');
+		return $portal_page->hasBlock($section, $type);
 	}
 
 	public function getFilters()

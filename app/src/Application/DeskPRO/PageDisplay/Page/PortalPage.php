@@ -288,6 +288,28 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
 
 	/**
+	 * @param string $section
+	 * @param string $type
+	 * @return bool
+	 */
+	public function hasBlock($section, $type)
+	{
+		if (!isset($this->page_display_items[$section])) {
+			return false;
+		}
+
+		foreach ($this->page_display_items[$section] as $item) {
+			$item_type = strtolower(\Orb\Util\Util::getBaseClassname($item));
+			if ($item_type == $type) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Get the renderable HTML for a section.
 	 *
 	 * @param $section
