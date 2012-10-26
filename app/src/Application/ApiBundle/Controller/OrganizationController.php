@@ -63,7 +63,7 @@ class OrganizationController extends AbstractController
 			if ($this->in->checkIsset("field." . $field->getId())) {
 				$in_val = $this->in->getString('field.'.$field->getId());
 				if ($in_val) {
-					$terms[] = array('type' => 'organization_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
+					$terms[] = array('type' => 'org_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
 				}
 			}
 		}
