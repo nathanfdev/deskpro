@@ -82,7 +82,12 @@ var DP = {
 		}
 
 		text = '<p>' + text.replace(/\r?\n/g, '<br>\n').replace(/<br>\n<br>\n/g, "</p>\n\n<p>") + '</p>';
-		return text.replace('<p></p>', '<p><br></p>');
+		if (!$.browser.msie) {
+			// IE renders the empty <p> tags
+			text = text.replace(/<p><\/p>/g, '<p><br></p>');
+		}
+
+		return text;
 	},
 
 	drawBox: function(w, h) {
