@@ -71,7 +71,7 @@ DeskPRO.Admin.PageHandler.CsvImportConfigure = new Class({
 
 			var welcomeValid = true;
 
-			if ($(this).find('input[name=welcome_email]:checked').val()) {
+			if ($(this).find('input[name=welcome_email]:checked').val() == 1) {
 				$('input, textarea', '#welcome-email-inputs').each(function() {
 					if ($(this).val() == '') {
 						welcomeValid = false;
