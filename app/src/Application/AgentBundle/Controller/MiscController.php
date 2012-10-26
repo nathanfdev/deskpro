@@ -393,8 +393,17 @@ JS;
 
 	public function acceptRedactorImageUploadAction()
 	{
+		/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
 		$file = $this->request->files->get('file');
 		$accept = $this->container->getAttachmentAccepter();
+
+		$filename = $this->in->getString('filename');
+		if ($filename) {
+			// override filename
+			$file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+				$file->getPathname(), $filename, $file->getClientMimeType(), $file->getClientSize(), $file->getError()
+			);
+		}
 
 		$error = $accept->getError($file, 'agent');
 		if (!$error) {

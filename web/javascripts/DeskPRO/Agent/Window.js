@@ -2892,6 +2892,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
 			minHeight: 150,
 			observeImages: false,
+			cleanup: false,
 			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 			imageUploadCallback: function(obj, json) {
 				if (uploadWrapper) {
@@ -2915,6 +2916,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 
 		options = Object.merge(defaultOptions, options);
+		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
 		textarea.redactor(options);
 
 		textarea.getEditor().bind('keydown', function(ev) {
@@ -2934,6 +2936,125 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 			});
 		}
+
+		// setup paste support for images (Webkit, FireFox only)
+		var pasteImageCounter = 1;
+		var api = textarea.data('redactor');
+
+		var sendImage = function(pasteId, type, data, encoding) {
+			try {
+				var form = new FormData();
+				if (typeof(data) == 'string') {
+					// data URI
+					var byteString;
+					if (encoding == 'base64') {
+						byteString = atob(data);
+					} else {
+						byteString = unescape(data);
+					}
+
+				    var array = [];
+				    for(var i = 0; i < byteString.length; i++) {
+				        array.push(byteString.charCodeAt(i));
+				    }
+				    data = new Blob([new Uint8Array(array)], {type: 'image/' + type});
+				}
+
+				form.append('file', data, 'upload.' + type);
+				form.append('filename', 'upload.' + type);
+			} catch (e) {
+				return false;
+			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/misc/accept-redactor-image-upload',
+				type: 'POST',
+				dataType: 'json',
+				data: form,
+				processData: false,
+				contentType: false,
+				success: function(json) {
+					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
+					if (json.error) {
+						img.remove();
+					} else {
+						img.data('paste-id', '').attr('src', json.filelink);
+						if (typeof api.opts.imageUploadCallback === 'function') {
+							api.opts.imageUploadCallback(api, json);
+						}
+					}
+				}
+			});
+
+			return true;
+		};
+
+		textarea.getEditor().on('paste', $.proxy(function(ev)
+		{
+			if (ev.originalEvent.clipboardData) {
+				var items = ev.originalEvent.clipboardData.items;
+				if (items) {
+					var hasImage = false;
+					for (var i = 0; i < items.length; i++) {
+						if (items[i].type.match(/^image\/([a-z0-9_-]+)$/i)) {
+							var blob = items[i].getAsFile();
+							var URLObj = window.URL || window.webkitURL;
+							var source = URLObj.createObjectURL(blob);
+
+							var pasteImageId = pasteImageCounter++;
+
+							if (sendImage(pasteImageId, RegExp.$1, blob)) {
+								textarea.insertHtml('<img src="' + source + '" data-paste-id="' + pasteImageId + '">');
+								hasImage = true;
+							}
+						}
+					}
+
+					// pasted an image - won't be other content
+					if (hasImage) {
+						ev.preventDefault();
+						ev.stopPropagation();
+						return;
+					}
+				}
+			}
+
+			this.setBuffer();
+
+			if (this.opts.autoresize === true) {
+				this.saveScroll = document.body.scrollTop;
+			} else {
+				this.saveScroll = this.$editor.scrollTop();
+			}
+
+			var frag = this.extractContent();
+
+			setTimeout($.proxy(function() {
+				var pastedFrag = this.extractContent();
+				this.$editor.append(frag);
+
+				this.restoreSelection();
+
+				var imgs = pastedFrag.querySelectorAll('img');
+				if (imgs) {
+					for (var i = 0; i < imgs.length; i++) {
+						imgs[i].setAttribute('style', '-x-ignore: 1');
+						if (imgs[i].src.match(/^data:image\/([a-z0-9_-]+);([a-z0-9_-]+),([\W\w]+)$/i)) {
+							var pasteImageId = pasteImageCounter++;
+							imgs[i].setAttribute('data-paste-id',  pasteImageId);
+
+							if (!sendImage(pasteImageId, RegExp.$1, RegExp.$3, RegExp.$2)) {
+								imgs[i].parentNode.removeChild(imgs[i]);
+							}
+						}
+					}
+				}
+
+				var html = this.getFragmentHtml(pastedFrag);
+				this.pasteCleanUp(html);
+			}, this), 1);
+
+		}, textarea.data('redactor')));
 
 		return textarea;
 	}
