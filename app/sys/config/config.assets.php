@@ -84,8 +84,6 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 
-		'vendor/redactor/redactor.min.js',
-
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
 
 		'vendor/jquery/fileupload/jquery.fileupload.js',
