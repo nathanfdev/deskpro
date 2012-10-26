@@ -14,6 +14,8 @@
 	'core_tickets.billing_auto_timer' => 0,
 	'core_tickets.billing_currency' => 'USD',
 
+	'core_tickets.enable_agent_rte' => true,
+
 	'core_tickets.use_ref' => false,
 
 	'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top

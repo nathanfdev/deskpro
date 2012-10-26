@@ -2867,7 +2867,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	canUseAgentReplyRte: function() {
-		return false;
+		if (window.DP_SETTINGS) {
+			return window.DP_SETTINGS['core_tickets.enable_agent_rte'];
+		}
+
+		return true;
 	},
 
 	initRteAgentReply: function(textarea, options) {

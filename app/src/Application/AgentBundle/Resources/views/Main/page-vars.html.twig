@@ -24,7 +24,7 @@
 	var DESKPRO_TIME_OUT_OF_SYNC_IGNORE = parseInt({{ app.user.getPref('agent.ui.tz_detect_dismiss')|json_encode|raw }}) + 100;
 
 	var DP_SETTINGS = {
-		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow'] %}
+		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow', 'core_tickets.enable_agent_rte'] %}
 			'{{ x }}': {% if app.getSetting(x) %}true{% else %}false{% endif %},
 		{% endfor %}
 		'rand': {{ rand() }}
