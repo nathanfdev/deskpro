@@ -204,7 +204,10 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 			label.text(this.types[existing.type]);
 
 			this.handleSelectChange(new_row);
-			$('.builder-op select', new_row).val(existing.op).addClass('op').change();
+			$('.builder-op select', new_row)
+				.val(existing.op)
+				.addClass('op')
+				.change();
 
 			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
@@ -342,6 +345,17 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		if (rowDestroy.length) {
 			this.rowDestroy[rowId] = rowDestroy;
 		}
+
+		var opSel = $('.builder-op select', row);
+		var updateOp = function() {
+			var val = opSel.val();
+			if (val == 'changed') {
+				$('.builder-options', row).hide();
+			} else {
+				$('.builder-options', row).show();
+			}
+		};
+		opSel.on('change', updateOp);
 
 		this.fireEvent('selectChange', [row, type]);
 	},
