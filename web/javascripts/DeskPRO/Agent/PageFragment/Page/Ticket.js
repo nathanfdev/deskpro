@@ -857,6 +857,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// added. So we take care of opening the menu manually.
 		var menu = this.messageActionsMenu;
 		var wrap = $('.messages-wrap', this.wrapper)[0];
+		$('.ticket-message-edit-btn', wrap).live('mousedown', function(event) {
+			var textarea = self.getReplyTextArea();
+			if (textarea.data('redactor')) {
+				textarea.data('redactor').saveSelection();
+			}
+		});
 		$('.ticket-message-edit-btn', wrap).live('click', function(event) {
 			menu.openMenu(event);
 		});
@@ -879,6 +885,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (!quote) {
 					quote = '';
 				}
+
+				var textarea = this.getReplyTextArea();
+				if (textarea.data('redactor')) {
+					textarea.data('redactor').restoreSelection();
+				}
+
 				this.insertTextInReply(quote.trim() + "\n");
 
 				// Scroll down

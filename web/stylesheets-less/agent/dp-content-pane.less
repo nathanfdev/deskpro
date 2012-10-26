@@ -3346,7 +3346,9 @@ article.content-message .content .body-text .fade-bar {
 	box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
 }
 
-.ticketreply > nav ul.option-buttons li span {
+/* an a tag is needed to maintain wysiwyg editor selection */
+.ticketreply > nav ul.option-buttons li span,
+.ticketreply > nav ul.option-buttons li a{
 	display: block;
 	background-repeat: no-repeat;
 	background-position: 6px;
@@ -3358,7 +3360,7 @@ article.content-message .content .body-text .fade-bar {
 }
 
 .ticketreply > nav ul.option-buttons li.attach span    { background-image: url("../../images/agent/icons/attach.png")          /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
-.ticketreply > nav ul.option-buttons li.snippets span  { background-image: url("../../images/agent/icons/page.png")            /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
+.ticketreply > nav ul.option-buttons li.snippets a  { background-image: url("../../images/agent/icons/page.png")            /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
 .ticketreply > nav ul.option-buttons li.article span   { background-image: url("../../images/agent/icons/document_pencil.png") /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
 .ticketreply > nav ul.option-buttons li.closetab span  { background-image: url("../../images/agent/icons/tab_delete.png")      /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
 .ticketreply > nav ul.option-buttons li.notifyuser span  { background-image: url("../../images/agent/icons/mail_open_document.png")      /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }

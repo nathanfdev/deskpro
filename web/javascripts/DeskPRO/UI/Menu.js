@@ -517,7 +517,6 @@ DeskPRO.UI.Menu = new Orb.Class({
 	},
 
 
-
 	/**
 	 * Fired when a menu item is clicked.
 	 */

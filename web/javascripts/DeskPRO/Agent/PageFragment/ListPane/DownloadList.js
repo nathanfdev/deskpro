@@ -21,8 +21,8 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.downloads-simple-list', this.wrapper)
-			.on('click', 'button.dl-insert-link', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
-			.on('click', 'button.dl-insert-attach', function() { self.insertIntoTicket($(this).data('download-id'), 'attach') });
+			.on('click', '.dl-insert-link', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
+			.on('click', '.dl-insert-attach', function() { self.insertIntoTicket($(this).data('download-id'), 'attach') });
 
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
 		this.addEvent('watchedTabActivated', function(tab) {
