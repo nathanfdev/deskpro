@@ -224,6 +224,25 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		return $message;
 	}
 
+	public function convertEmbeddedImagesToInlineAttach()
+	{
+		$message_text = $this->message;
+
+		foreach ($this->attachments AS $attachment) {
+			if ($attachment->is_inline) {
+				$blob = $attachment->blob;
+
+				$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
+				$replace = $blob->getEmbedCode(true);
+				$message_text = preg_replace($regex, $replace, $message_text);
+			}
+		}
+
+		$this->message = $message_text;
+
+		return $message_text;
+	}
+
 	public function getMessageText()
 	{
 		$message = $this->message;

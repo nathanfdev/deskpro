@@ -130,15 +130,20 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
 
 		$attach_attachments = array();
-		if (!$this->tracker->isExtraSet('is_user_reply') && $this->via_message && $ticketdisplay->getMessageAttachments($this->via_message)) {
+		if (!$this->tracker->isExtraSet('is_user_reply') && $this->via_message && $ticketdisplay->getMessageAttachments($this->via_message, true)) {
 			$max = App::getSetting('core.sendemail_attach_maxsize');
+			$max_embed = App::getSetting('core.sendemail_embed_maxsize');
 			$size = 0;
-			foreach ($ticketdisplay->getMessageAttachments($this->via_message) as $attach) {
+			foreach ($ticketdisplay->getMessageAttachments($this->via_message, true) as $attach) {
+				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
+					continue;
+				}
+
 				if ($size + $attach->blob->filesize > $max) {
 					break;
 				}
 
-				$attach_attachments[] = $attach;
+				$attach_attachments[$attach->blob->getDownloadUrl(true)] = $attach;
 			}
 		}
 
@@ -169,8 +174,8 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 
 			if ($attach_attachments) {
-				foreach ($attach_attachments as $attach) {
-					$message->attachBlob($attach->blob);
+				foreach ($attach_attachments as $src => $attach) {
+					$message->attachBlob($attach->blob, $src, $attach->is_inline);
 				}
 			}
 

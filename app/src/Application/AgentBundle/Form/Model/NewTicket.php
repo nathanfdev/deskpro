@@ -78,6 +78,8 @@ class NewTicket
 	 */
 	protected $_person_context;
 
+	protected $_blob_inline_ids = array();
+
 	public function __construct(EntityManager $em, Person $person_context)
 	{
 		$this->_em = $em;
@@ -102,6 +104,11 @@ class NewTicket
 			$this->_em->getConnection()->rollback();
 			throw $e;
 		}
+	}
+
+	public function setBlobInlineIds(array $ids)
+	{
+		$this->_blob_inline_ids = $ids;
 	}
 
 	protected function _save()
@@ -207,9 +214,15 @@ class NewTicket
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->_person_context;
 
+			if (in_array($blob->getId(), $this->_blob_inline_ids)) {
+				$attach->is_inline = true;
+			}
+
 			$message->addAttachment($attach);
 			$ticket->addAttachment($attach);
 		}
+
+		$message->convertEmbeddedImagesToInlineAttach();
 
 		$ticket->addMessage($message);
 

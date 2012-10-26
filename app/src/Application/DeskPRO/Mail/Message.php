@@ -62,9 +62,14 @@ class Message extends \Orb\Mail\Message
 	protected $template_vars;
 
 	/**
-	 * @var array
+	 * @var \Application\DeskPRO\Entity\Blob[]
 	 */
 	protected $attach_blobs = array();
+
+	/**
+	 * @var array
+	 */
+	protected $embed_only = array();
 
 	/**
 	 * Is the message being re-sent?
@@ -118,6 +123,7 @@ class Message extends \Orb\Mail\Message
 				$this->setSubject($subject);
 			}
 
+			$body = $this->replaceEmbeds($body);
 			$this->setBody($body, 'text/html');
 		}
 
@@ -128,7 +134,11 @@ class Message extends \Orb\Mail\Message
 		$this->template_engine = null;
 
 		// Attach blobs
-		foreach ($this->attach_blobs as $blob) {
+		foreach ($this->attach_blobs as $src => $blob) {
+			if (isset($this->embed_only[$src])) {
+				continue;
+			}
+
 			$this->attach(\Swift_Attachment::newInstance(
 				App::getSystemService('filestorage')->getFileDescriptor($blob->getId())->get(),
 				$blob->filename,
@@ -136,17 +146,81 @@ class Message extends \Orb\Mail\Message
 			));
 		}
 		$this->attach_blobs = null;
+		$this->embed_only = true;
+	}
+
+	/**
+	 * Replaces embeddable attachments with their embedded version.
+	 *
+	 * @param string $body
+	 *
+	 * @return string
+	 */
+	public function replaceEmbeds($body)
+	{
+		$self = $this;
+
+		$embed_map = array();
+		foreach ($this->attach_blobs AS $src => $blob) {
+			if (is_int($src)) {
+				continue;
+			}
+
+			$regex = '#(<img[^>]+src=")' . preg_quote($src, '#') . '(\?s=\d+)?("[^>]*>)#i';
+			$body = preg_replace_callback($regex, function($match) use($self, $embed_map, $src, $blob) {
+				if (!isset($embed_map[$src])) {
+					// in case the src is referenced twice
+					$embed_map[$src] = $self->embed(\Swift_Image::newInstance(
+						App::getSystemService('filestorage')->getFileDescriptor($blob->getId())->get(),
+						$blob->filename,
+						$blob->content_type
+					));
+				}
+
+				return $match[1] . $embed_map[$src] . $match[3];
+			}, $body);
+		}
+
+		foreach ($embed_map AS $src => $null) {
+			// already embedded, don't need to attach again
+			unset($self->attach_blobs[$src]);
+		}
+
+		return $body;
 	}
 
 
 	/**
-	 * Attach a blob to the message
+	 * Attach a blob to the message. If you want it to be embedded,
+	 * pass the src value of an <img> tag that will hold it. It is recommended
+	 * that the embed image src is a URL, as it will be left if the embed
+	 * cannot happen for any reason.
 	 *
 	 * @param Blob $blob
+	 * @param string|null $embedImageSrc If non-null/integer, will search the body for this image src to embed
+	 * @param bool $includeEmbeddedOnly If true, the file will only be attached if embedded
 	 */
-	public function attachBlob(Blob $blob)
+	public function attachBlob(Blob $blob, $embedImageSrc = null, $includeEmbeddedOnly = false)
 	{
-		$this->attach_blobs[] = $blob;
+		if ($embedImageSrc && !ctype_digit($embedImageSrc)) {
+			$this->attach_blobs[$embedImageSrc] = $blob;
+			if ($includeEmbeddedOnly) {
+				$this->embed_only[$embedImageSrc] = true;
+			}
+		} else {
+			$this->attach_blobs[] = $blob;
+		}
+	}
+
+	/**
+	 * Brings in a blob that will be embedded
+	 *
+	 * @param string $src The image src attribute that will be replaced
+	 * @param \Application\DeskPRO\Entity\Blob $blob
+	 */
+	public function embedImage($src, Blob $blob)
+	{
+		$this->embed_images[$src] = $blob;
 	}
 
 

@@ -18,7 +18,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			isWysiwyg = true;
-			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.el});
+			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.el, inlineHiddenPosition: this.getElById('is_html_reply')});
 			sig = DP.convertTextToWysiwygHtml(sig);
 			this.getElById('is_html_reply').val(1);
 		} else {

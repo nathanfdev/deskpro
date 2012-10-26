@@ -285,6 +285,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
 	}
 
+	public function getEmbedCode($for_ticket = false, $is_image = true)
+	{
+		if ($for_ticket) {
+			return '[attach:' . ($is_image ? 'image' : 'file') . ':' . $this->getAuthId() . ':' . $this->filename . ']';
+		} else {
+			return '[attach:' . $this->getAuthId() . ':' . $this->filename . ']';
+		}
+	}
+
 
 	/**
 	 * Get a thumbnail for this blob (if its an image)

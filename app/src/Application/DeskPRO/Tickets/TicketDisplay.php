@@ -144,7 +144,7 @@ class TicketDisplay implements PersonContextInterface
 		return $this->attachments;
 	}
 
-	public function getMessagesToAttachments()
+	public function getMessagesToAttachments($include_inline = false)
 	{
 		if ($this->message_to_attach !== null) return $this->message_to_attach;
 
@@ -155,7 +155,7 @@ class TicketDisplay implements PersonContextInterface
 
 		foreach ($this->attachments as $attach) {
 
-			if ($attach->is_inline) {
+			if (!$include_inline && $attach->is_inline) {
 				continue;
 			}
 
@@ -169,10 +169,10 @@ class TicketDisplay implements PersonContextInterface
 		return $this->message_to_attach;
 	}
 
-	public function getMessageAttachments($message)
+	public function getMessageAttachments($message, $include_inline = false)
 	{
 		$id = $message->getId();
-		$messagetoattach = $this->getMessagesToAttachments();
+		$messagetoattach = $this->getMessagesToAttachments($include_inline);
 
 		if (!isset($messagetoattach[$id])) {
 			return null;

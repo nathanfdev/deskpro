@@ -2887,6 +2887,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var uploadWrapper = options.uploadWrapper;
 
+		var inlineHiddenPosition = options.inlineHiddenPosition;
+
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',
 			buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
@@ -2908,6 +2910,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					$(uploadWrapper).find('.files').append(results);
 
 					uploadWrapper.trigger('fileuploaddone');
+
+					if (inlineHiddenPosition) {
+						inlineHiddenPosition.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
+					}
 				}
 			},
 			imageUploadErrorCallback: function(obj, json) {

@@ -1017,6 +1017,8 @@ class TicketController extends AbstractController
 			$message['is_agent_note'] = true;
 		}
 
+		$blob_inline_ids = $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard');
+
 		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 
 			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
@@ -1025,8 +1027,14 @@ class TicketController extends AbstractController
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
 
+			if (in_array($blob->getId(), $blob_inline_ids)) {
+				$attach->is_inline = true;
+			}
+
 			$message->addAttachment($attach);
 		}
+
+		$message->convertEmbeddedImagesToInlineAttach();
 
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createJsonResponse(array(
@@ -2130,6 +2138,7 @@ class TicketController extends AbstractController
 			$this->em,
 			$this->person
 		);
+		$newticket->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
 
 		$formType = new \Application\AgentBundle\Form\Type\NewTicket();
 		$form = $this->get('form.factory')->create($formType, $newticket);

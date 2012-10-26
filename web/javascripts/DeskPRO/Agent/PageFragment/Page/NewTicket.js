@@ -669,7 +669,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var textarea = this.getEl('message');
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
-			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.wrapper});
+			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.wrapper, inlineHiddenPosition: this.getEl('is_html_reply')});
 			this.getEl('is_html_reply').val(1);
 		} else {
 			textarea.css('height', 100);

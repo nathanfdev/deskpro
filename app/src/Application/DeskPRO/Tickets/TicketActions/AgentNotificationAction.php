@@ -378,38 +378,13 @@ class AgentNotificationAction extends AbstractAction
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 
 			if ($is_new_ticket) {
-				$max = App::getSetting('core.sendemail_attach_maxsize');
-				$size = 0;
-				foreach ($new_message->attachments as $attach) {
-					if ($attach->is_inline) {
-						continue;
-					}
-
-					$size += $attach->blob->filesize;
-					if ($size > $max) {
-						break;
-					}
-
-					$message->attachBlob($attach->blob);
-				}
+				$this->_addAttachments($message, $new_message->attachments);
 			} elseif ($is_new_agent_reply || $is_new_user_reply) {
 				$new_message = \Orb\Util\Arrays::getFirstItem($vars['messages']);
+				$attachments = $ticketdisplay->getMessageAttachments($new_message, true);
 
-				if ($new_message && $ticketdisplay->getMessageAttachments($new_message)) {
-					$max = App::getSetting('core.sendemail_attach_maxsize');
-					$size = 0;
-					foreach ($ticketdisplay->getMessageAttachments($new_message) as $attach) {
-						if ($attach->is_inline) {
-							continue;
-						}
-
-						$size += $attach->blob->filesize;
-						if ($size > $max) {
-							break;
-						}
-
-						$message->attachBlob($attach->blob);
-					}
+				if ($new_message && $attachments) {
+					$this->_addAttachments($message, $attachments);
 				}
 			}
 
@@ -428,6 +403,42 @@ class AgentNotificationAction extends AbstractAction
 		}
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+	}
+
+	protected function _addAttachments($message, $attachments)
+	{
+		$max = App::getSetting('core.sendemail_attach_maxsize');
+		$max_embed = App::getSetting('core.sendemail_embed_maxsize');
+		$embedded = array();
+		$size = 0;
+
+		foreach ($attachments as $attach) {
+			if ($attach->is_inline) {
+				$embedded[] = $attach;
+				continue;
+			}
+
+			$size += $attach->blob->filesize;
+			if ($size > $max) {
+				break;
+			}
+
+			$message->attachBlob($attach->blob, $attach->blob->getDownloadUrl(true));
+		}
+
+		// add embeds last so we don't miss out something not embedded
+		foreach ($embedded as $attach) {
+			if ($attach->blob->filesize > $max_embed) {
+				continue;
+			}
+
+			$size += $attach->blob->filesize;
+			if ($size > $max) {
+				break;
+			}
+
+			$message->attachBlob($attach->blob, $attach->blob->getDownloadUrl(true), true);
+		}
 	}
 
 	/**
