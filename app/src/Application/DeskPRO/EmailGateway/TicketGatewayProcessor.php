@@ -913,7 +913,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
-			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
 		}
 
