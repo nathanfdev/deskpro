@@ -272,6 +272,7 @@ class EzcReader extends AbstractReader
 		// Default to a blank body
 		$body = new Item\BodyHtml();
 		$body->body = '';
+		$body->body_utf8 = '';
 		$body->original_charset = 'UTF-8';
 		return $body;
 	}
@@ -294,6 +295,7 @@ class EzcReader extends AbstractReader
 		// Default to a blank body
 		$body = new Item\BodyText();
 		$body->body = '';
+		$body->body_utf8 = '';
 		$body->original_charset = 'UTF-8';
 		return $body;
 	}
