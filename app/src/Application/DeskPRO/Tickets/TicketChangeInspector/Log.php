@@ -417,6 +417,22 @@ class Log
 		return $log_items;
 	}
 
+	public function getTicketLogsForAlert()
+	{
+		$ticket_logs = $this->getTicketLogs();
+		$ret_logs = array();
+
+		foreach ($ticket_logs as $log) {
+			if ($log->action_type == 'executed_triggers') {
+				continue;
+			}
+
+			$ret_logs[] = $log;
+		}
+
+		return $ret_logs;
+	}
+
 	public function run()
 	{
 		$this->tracker->logMessage('[Log] run');

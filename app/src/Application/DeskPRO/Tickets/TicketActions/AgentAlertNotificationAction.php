@@ -128,6 +128,12 @@ class AgentAlertNotificationAction extends AbstractAction
 			return;
 		}
 
+		$log_items = $this->getLogItems();
+		if (!$log_items) {
+			$this->tracker->logMessage("[AgentAlertNotificationAction] Nothing to alert about");
+			return;
+		}
+
 		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
 
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents: " . implode(', ', $this->notify_agents));
@@ -160,8 +166,6 @@ class AgentAlertNotificationAction extends AbstractAction
 		}
 
 		$em = App::getOrm();
-
-		$log_items = $this->getLogItems();
 
 		$em->beginTransaction();
 		try {
@@ -249,6 +253,16 @@ class AgentAlertNotificationAction extends AbstractAction
 	protected function getLogItems()
 	{
 		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogs();
-		return $ticket_logs;
+		$ret_logs = array();
+
+		foreach ($ticket_logs as $log) {
+			if ($log->action_type == 'executed_triggers') {
+				continue;
+			}
+
+			$ret_logs[] = $log;
+		}
+
+		return $ret_logs;
 	}
 }

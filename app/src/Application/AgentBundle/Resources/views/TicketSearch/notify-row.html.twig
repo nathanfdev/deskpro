@@ -20,6 +20,7 @@
 		{% elseif is_new_user_reply %}
             {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% else %}
+			({{ performer.display_name }})
 			{% for log in log_items %}
 				{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}
 			{% endfor %}

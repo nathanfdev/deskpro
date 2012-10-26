@@ -273,7 +273,7 @@ class AgentNotificationAction extends AbstractAction
 
 		// This will generate an array of ticket logs that will be saved after notifcations are sent
 		// But we call now so getting the diff for the email is easier, same logic as logs
-		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogs();
+		$ticket_logs = $this->tracker->getLogInspector()->getTicketLogsForAlert();
 
 		$field_manager = App::getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
