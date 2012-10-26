@@ -61,6 +61,7 @@ class NewTicket extends AbstractType
 		$builder->add('subject', 'text');
 		$builder->add('notify_template', 'hidden');
 		$builder->add('message', 'textarea');
+	    $builder->add('is_html_reply', 'hidden');
 
 		$builder->add('department_id', 'text');
 		$builder->add('status', 'text');

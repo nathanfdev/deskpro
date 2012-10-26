@@ -2864,5 +2864,73 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 			}
 		}
+	},
+
+	canUseAgentReplyRte: function() {
+		return false;
+	},
+
+	initRteAgentReply: function(textarea, options) {
+		textarea = $(textarea);
+		options = options || {};
+
+		if (!options.defaultIsHtml) {
+			var val = textarea.val();
+			if (val.length) {
+				textarea.val(DP.convertTextToWysiwygHtml(val));
+			}
+		}
+
+		var uploadWrapper = options.uploadWrapper;
+
+		var defaultOptions = {
+			direction: textarea.attr('dir') || 'ltr',
+			buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
+			minHeight: 150,
+			observeImages: false,
+			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
+			imageUploadCallback: function(obj, json) {
+				if (uploadWrapper) {
+					var templateEl = $('.template-download', uploadWrapper);
+					if (!templateEl.attr('id')) {
+						templateEl.attr('id', Orb.getUniqueId('up'));
+					}
+
+					var template = window.tmpl(templateEl.attr('id'));
+					var results = template({
+						files: [json]
+					});
+					$(uploadWrapper).find('.files').append(results);
+
+					uploadWrapper.trigger('fileuploaddone');
+				}
+			},
+			imageUploadErrorCallback: function(obj, json) {
+				alert(json.error);
+			}
+		};
+
+		options = Object.merge(defaultOptions, options);
+		textarea.redactor(options);
+
+		textarea.getEditor().bind('keydown', function(ev) {
+			ev.stopPropagation();
+		});
+
+		if (uploadWrapper) {
+			uploadWrapper.bind('fileremoved', function(ev, li) {
+				var downloadUrlRegex = li.find('a').attr('href').replace('.', '\\.');
+				if (downloadUrlRegex) {
+					var html = textarea.getCode(),
+						regex1 = new RegExp('<p><img[^>]+src="' + downloadUrlRegex + '"[^>]*></p>', 'g'),
+						regex2 = new RegExp('<img[^>]+src="' + downloadUrlRegex + '"[^>]*>', 'g');
+
+					html = html.replace(regex1, '').replace(regex2, '');
+					textarea.setCode(html);
+				}
+			});
+		}
+
+		return textarea;
 	}
 });

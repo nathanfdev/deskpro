@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\App;
 
 class NewTicket
 {
@@ -48,6 +49,7 @@ class NewTicket
 	public $subject;
 	public $notify_template = '';
 	public $message;
+	public $is_html_reply;
 	public $department_id;
 	public $status;
 	public $agent_id;
@@ -190,7 +192,11 @@ class NewTicket
 		$snip->snippet = $message_text;
 		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
 
-		$message->setMessageText($message_text);
+		if ($this->is_html_reply) {
+			$message->message = App::get('deskpro.core.input_cleaner')->clean($message_text, 'simple_html');
+		} else {
+			$message->setMessageText($message_text);
+		}
 
 		// Message Attachments
 		foreach ($this->attach as $blob_id) {

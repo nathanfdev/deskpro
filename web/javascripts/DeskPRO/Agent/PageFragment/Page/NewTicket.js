@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 			if (!id) {
 				if (!messageEl.hasClass('editted')) {
-					messageEl.val('');
+					self.setMessageText('');
 				}
 				if (!subjectEl.hasClass('editted')) {
 					subjectEl.val('');
@@ -104,7 +104,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						var msgCmp = data.message.replace(/(\r\n|\n|\r)/gm, " ");
 						var valCmp = messageEl.val().replace(/(\r\n|\n|\r)/gm, " ");
 						if (valCmp.indexOf(msgCmp) === -1) {
-							messageEl.insertAtCaret(data.message);
+							self.insertMessageText(data.message);
 						}
 					} else {
 						var val = data.message;
@@ -114,7 +114,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							val += sig;
 						}
 
-						messageEl.val(val);
+						self.setMessageText(val);
 					}
 
 					if (subjectEl.hasClass('editted')) {
@@ -360,8 +360,35 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.updateUi();
 	},
 
+	insertMessageText: function(content) {
+		var textarea = this.getEl('message');
+
+		if (textarea.data('redactor')) {
+			textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(content));
+		} else {
+			var pos = textarea.getCaretPosition();
+			if (!pos) {
+				textarea.setCaretPosition(0);
+			}
+
+			textarea.insertAtCaret(text);
+			textarea.trigger('textareaexpander_fire');
+		}
+	},
+
+	setMessageText: function(content) {
+		var textarea = this.getEl('message');
+
+		if (textarea.data('redactor')) {
+			textarea.setCode(DP.convertTextToWysiwygHtml(content));
+		} else {
+			textarea.val(content);
+			textarea.trigger('textareaexpander_fire');
+		}
+	},
+
 	setNewByComment: function(data) {
-		this.getEl('message').val(data.message);
+		this.setMessageText(data.message);
 		this.getEl('for_comment_type').val(data.content_type);
 		this.getEl('for_comment_id').val(data.comment_id);
 		$('.pending-info.comment', this.wrapper).show();
@@ -639,16 +666,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.loadSnippetsViewer();
 
-		this.getEl('message').css('height', 100);
+		var textarea = this.getEl('message');
 
-		this.getEl('message').TextAreaExpander(150, 1000).on('textareaexpander_expanded', function() {
-			self.updateUi();
-			window.setTimeout(function() {
-				if (self.wrapper) {
-					self.wrapper.find('div.layout-content').trigger('goscrollbottom');
-				}
-			}, 250);
-		});
+		if (DeskPRO_Window.canUseAgentReplyRte()) {
+			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.wrapper});
+			this.getEl('is_html_reply').val(1);
+		} else {
+			textarea.css('height', 100);
+
+			textarea.TextAreaExpander(150, 1000).on('textareaexpander_expanded', function() {
+				self.updateUi();
+				window.setTimeout(function() {
+					if (self.wrapper) {
+						self.wrapper.find('div.layout-content').trigger('goscrollbottom');
+					}
+				}, 250);
+			});
+		}
 	},
 
 	loadSnippetsViewer: function() {
@@ -664,17 +698,24 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			url += '?person_id=' + person_id;
 		}
 
+		var self = this;
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: url,
 			positionMode: this.meta.isPopover ? 'over' : 'side',
-			onSnippetClick: function(info) {
-				var val = self.getEl('message').val();
-				if (val.length) {
-					val += " ";
+			onBeforeOpen: function() {
+				var redactor = self.getEl('message').data('redactor');
+				if (redactor) {
+					redactor.saveSelection();
 				}
-				val += info.snippet;
-				self.getEl('message').val(val);
-				self.getEl('message').trigger('textareaexpander_fire');
+			},
+			onSnippetClick: function(info) {
+				var redactor = self.getEl('message').data('redactor');
+				if (redactor) {
+					redactor.restoreSelection();
+				}
+
+				self.insertMessageText(info.snippet);
 			}
 		});
 	},

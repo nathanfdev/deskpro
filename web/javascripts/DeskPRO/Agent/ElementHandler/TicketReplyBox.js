@@ -16,58 +16,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 
-		if (false) {
+		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			isWysiwyg = true;
-
-			var val = textarea.val();
-			if (val.length) {
-				textarea.val(DP.convertTextToWysiwygHtml(val));
-			}
-
-			textarea.redactor({
-				direction: textarea.attr('dir') || 'ltr',
-				buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
-				minHeight: 150,
-				observeImages: false,
-				imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
-				imageUploadCallback: function(obj, json) {
-					var templateEl = $('.template-download', self.el);
-					if (!templateEl.attr('id')) {
-						templateEl.attr('id', Orb.getUniqueId('up'));
-					}
-
-					var template = window.tmpl(templateEl.attr('id'));
-					var results = template({
-						files: [json]
-					});
-					$(self.el).find('.files').append(results);
-
-					self.el.trigger('fileuploaddone');
-				},
-				imageUploadErrorCallback: function(obj, json) {
-					alert(json.error);
-				}
-			});
-
-			textarea.getEditor().bind('keydown', function(ev) {
-				ev.stopPropagation();
-			})
-
-			this.el.bind('fileremoved', function(ev, li) {
-				var downloadUrlRegex = li.find('a').attr('href').replace('.', '\\.');
-				console.log("url: " + downloadUrlRegex);
-				if (downloadUrlRegex) {
-					var html = textarea.getCode(),
-						regex1 = new RegExp('<p><img[^>]+src="' + downloadUrlRegex + '"[^>]*></p>', 'g'),
-						regex2 = new RegExp('<img[^>]+src="' + downloadUrlRegex + '"[^>]*>', 'g');
-
-					html = html.replace(regex1, '').replace(regex2, '');
-					textarea.setCode(html);
-				}
-			});
-
+			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.el});
 			sig = DP.convertTextToWysiwygHtml(sig);
-
 			this.getElById('is_html_reply').val(1);
 		} else {
 			textarea.data('expander-max-height', $(window).height() - 500).TextAreaExpander(150, $(window).height() - 500).on('textareaexpander_expanded', function() {

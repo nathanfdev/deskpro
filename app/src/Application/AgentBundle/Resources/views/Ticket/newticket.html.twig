@@ -242,7 +242,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="file" class="file" name="file-upload" />
 					<span></span>
 				</li>
-				<li class="tipped snippets" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.general.snippets') }}"><span></span></li>
+				<li class="tipped snippets" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.general.snippets') }}"><a href="javascript:"></a></li>
 			</ul>
 		</nav>
 		<article>
@@ -361,13 +361,14 @@ pageMeta.baseId = '{{ baseId }}';
 						</div>
 					</li>
 				</ul>
-				<div class="input-wrap">
+				<div class="input-wrap unreset">
 					<textarea id="{{baseId}}_message" name="newticket[message]" placeholder="Enter your ticket message here">{% if agent_signature %}
 
 
 
 {{ agent_signature }}{% endif %}</textarea>
 					<textarea id="{{baseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+					<input type="hidden" id="{{baseId}}_is_html_reply" name="newticket[is_html_reply]" value="0" />
 				</div>
 			</section>
 		</article>
