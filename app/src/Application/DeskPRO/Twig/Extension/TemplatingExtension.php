@@ -1018,12 +1018,12 @@ STR;
 		return $output;
 	}
 
-	public function getWidgetsRaw($page, $location, $position = '*')
+	public function getWidgetsRaw($page, $location, $position = '')
 	{
 		return $this->_getPageLocationWidgets($page, $location, $position);
 	}
 
-	protected function _getPageLocationWidgets($page, $location, $position = '*')
+	protected function _getPageLocationWidgets($page, $location, $position = '')
 	{
 		if (!array_key_exists($page, $this->_widgetCache)) {
 			$this->_widgetCache[$page] = App::getEntityRepository('DeskPRO:Widget')->getEnabledPageWidgetsGrouped($page);
@@ -1032,7 +1032,7 @@ STR;
 		if (empty($this->_widgetCache[$page][$location])) {
 			return array();
 		} else {
-			if ($position === '*') {
+			if ($position === '') {
 				$output = array();
 				foreach ($this->_widgetCache[$page][$location] AS $widgets) {
 					foreach ($widgets AS $widget) {
@@ -1142,6 +1142,8 @@ STR;
 
 	public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
 	{
+		$originalCount = count($tabs);
+
 		foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
 			$htmlId = $this->getWidgetHtmlId($baseId, $widget);
 			$tabs[$htmlId] = $widget->title;
@@ -1155,7 +1157,7 @@ STR;
 
 		if (!$tabs) {
 			return '';
-		} else if (count($tabs) == 1) {
+		} else if (count($tabs) == 1 && $originalCount == 1) {
 			return '<h4>' . reset($tabs) . '</h4>';
 		} else {
 			$tabHtml = array();

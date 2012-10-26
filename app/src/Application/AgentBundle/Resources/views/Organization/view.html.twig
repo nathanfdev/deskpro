@@ -10,6 +10,8 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_org_view', {'organization_id': 
 pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';
 {% endif %}
 
+pageMeta.organization = {{ org_api|json_encode|raw }};
+
 pageMeta.perms = {
 	edit: {% if app.user.hasPerm('agent_org.edit') %}true{% else %}false{% endif %}
 };
@@ -72,6 +74,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </header>
 
+{{ dp_widgets(baseId, 'organization', 'header', 'below', org_api) }}
+
 <table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
 		{% include 'AgentBundle:Organization:view-content-col.html.twig' %}
@@ -82,7 +86,11 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </td></tr></table>
 
+{{ dp_widgets(baseId, 'organization', 'footer', 'above', org_api) }}
+
 {% include 'AgentBundle:Organization:contact-overlay.html.twig' %}
+
+{{ dp_widgets(baseId, 'organization', '', '', org_api) }}
 
 {# Page Containers #}
 </div></div>

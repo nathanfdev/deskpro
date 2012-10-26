@@ -117,6 +117,20 @@ class OrganizationController extends AbstractController
 
 		$org_members = $this->em->getRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
+		$org_api = array();
+		foreach (array('id', 'name', 'summary') AS $key) {
+			$org_api[$key] = $org->$key;
+		}
+		$org_api['date_created'] = $org->date_created->getTimestamp();
+
+		foreach ($custom_fields AS $field) {
+			$org_api['custom'][$field['id']] = array(
+				'id' => $field['id'],
+				'title' => $field['title'],
+				'value' => isset($field['value']['value']) ? $field['value']['value'] : false
+			);
+		}
+
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
 			'org_email_domains'             => $org_domain_data['org_email_domains'],
@@ -124,6 +138,7 @@ class OrganizationController extends AbstractController
 			'org_count_domain_takenmembers' => $org_domain_data['org_count_domain_takenmembers'],
 			'org_count_domain_members'      => $org_domain_data['org_count_domain_members'],
 			'org_members'        => $org_members,
+			'org_api'            => $org_api,
 			'contact_data'       => $contact_data,
 			'org_usergroups'     => $org_usergroups,
 			'usergroup_names'    => $usergroup_names,

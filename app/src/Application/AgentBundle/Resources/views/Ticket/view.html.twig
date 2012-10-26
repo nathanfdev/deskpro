@@ -145,6 +145,8 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 	<br class="clear" />
 </header>
 
+{{ dp_widgets(baseId, 'ticket', 'header', 'below', ticket_api) }}
+
 <div class="profile-box-container">
 	<header>
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'headerbox', {
@@ -618,7 +620,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 {% endif %}
 
 {{ dp_widgets(baseId, 'ticket', 'reply', 'below', ticket_api) }}
-{{ dp_widgets(baseId, 'ticket', 'footer', '', ticket_api) }}
+{{ dp_widgets(baseId, 'ticket', 'footer', 'above', ticket_api) }}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">

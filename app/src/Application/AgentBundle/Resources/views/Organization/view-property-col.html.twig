@@ -1,20 +1,29 @@
 {# Box Contact #}
+{{ dp_widgets(baseId, 'organization', 'contact', 'above', org_api) }}
+
 <div class="profile-box-container contact">
 	<header>
 		{% if app.user.hasPerm('agent_org.edit') %}
 			<span class="edit-gear contact-edit"></span>
 		{% endif %}
-		<h4>{{ phrase('agent.people.contact_info') }}</h4>
+		{{ dp_widget_tabs_header(baseId, 'organization', 'contact', {
+			(baseId ~ '_contact_body'): phrase('agent.people.contact_info')
+		}) }}
 	</header>
-	<section>
+	<section id="{{baseId}}_contact_body">
 		<div class="table-content contact-list contact-list-wrapper">
 			{% include 'AgentBundle:Organization:view-contact-display.html.twig' %}
 		</div>
 	</section>
+	{{ dp_widget_tabs(baseId, 'organization', 'contact', 'section', org_api) }}
 </div>
+
+{{ dp_widgets(baseId, 'organization', 'contact', 'below', org_api) }}
 {# /Box Contact #}
 
 {# Properties Box #}
+{{ dp_widgets(baseId, 'organization', 'properties', 'above', org_api) }}
+
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if app.user.hasPerm('agent_org.edit') %}
@@ -25,9 +34,11 @@
 				<button class="save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 		{% endif %}
-		<h4>{{ phrase('agent.general.properties') }}</h4>
+		{{ dp_widget_tabs_header(baseId, 'organization', 'properties', {
+			(baseId ~ '_properties_body'): phrase('agent.general.properties')
+		}) }}
 	</header>
-	<section>
+	<section id="{{baseId}}_properties_body">
 		{% if custom_fields|length %}
 			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
 				{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
@@ -48,15 +59,24 @@
 			<br class="clear" />
 		</div>
 	</section>
+	{{ dp_widget_tabs(baseId, 'organization', 'properties', 'section', org_api) }}
 </div>
+
+{{ dp_widgets(baseId, 'organization', 'properties', 'below', org_api) }}
 {# /Properties Box #}
 
 {# Email Associations Box #}
+{{ dp_widgets(baseId, 'organization', 'email_assoc', 'above', org_api) }}
+
 <div id="{{baseId}}_email_assoc_box">
 	{% include 'AgentBundle:Organization:orgemail-display.html.twig' %}
 </div>
 
+{{ dp_widgets(baseId, 'organization', 'email_assoc', 'below', org_api) }}
+
 {# Usergroup Box #}
+{{ dp_widgets(baseId, 'organization', 'usergroups', 'above', org_api) }}
+
 {% if app.getDataRepository('Usergroup').getUsergroupNames() %}
 	<div class="profile-box-container summary {% if org.getUsergroups()|length < 1 %}no-section{% endif %}" id="{{baseId}}_ug_box">
 		<header>
@@ -68,9 +88,11 @@
 				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 			{% endif %}
-			<h4>{{ phrase('agent.general.usergroups') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'organization', 'usergroups', {
+				(baseId ~ '_usergroups_body'): phrase('agent.general.usergroups')
+			}) }}
 		</header>
-		<section {% if org.getUsergroups()|length < 1 %}style="display:none"{% endif %}>
+		<section id="{{baseId}}_usergroups_body" {% if org.getUsergroups()|length < 1 %}style="display:none"{% endif %}>
 			<div id="{{baseId}}_ug_display_box" class="contact-list">
 				<ul>
 					{% for id,name in app.getDataRepository('Usergroup').getUsergroupNames() %}
@@ -88,6 +110,9 @@
 				</ul>
 			</div>
 		</section>
+		{{ dp_widget_tabs(baseId, 'organization', 'usergroups', 'section', org_api) }}
 	</div>
 {% endif %}
+
+{{ dp_widgets(baseId, 'organization', 'usergroups', 'below', org_api) }}
 {# /Usergroup Box #}

@@ -19,14 +19,19 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 
 		var pageSelect = $('#page-select'),
 			pageInsert = $('#page-insert-position-select'),
-			pageLocations = $('#page-location-select');
+			pageLocations = $('#page-location-select'),
+			pageLocationInsertPosition = pageLocations.find('option[value=""]').first();
 
 		var pageChange = function() {
 			var page = pageSelect.val(), haveSelected = false, firstVisible;
+
+			var visibles = [];
+
 			pageLocations.find('option').each(function() {
 				var $this = $(this);
 				if ($this.data('page') == page) {
 					$this.show();
+					visibles.push($this);
 					if (!firstVisible) {
 						firstVisible = $this;
 					}
@@ -37,6 +42,9 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 					$this.hide();
 				}
 			});
+
+			// move visible ones to the top - works around a webkit bug
+			$(visibles).insertAfter(pageLocationInsertPosition);
 
 			if (!haveSelected && firstVisible) {
 				pageLocations.val(firstVisible.val());

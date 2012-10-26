@@ -3,9 +3,11 @@
 	<div class="profile-box-container email-assoc">
 		<header>
 			{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-gear email-assoc-edit"></span>{% endif %}
-			<h4>{{ phrase('agent.organizations.email_domain_assoc') }}</h4>
+			{{ dp_widget_tabs_header(baseId, 'organization', 'email_assoc', {
+				(baseId ~ '_email_assoc_body'): phrase('agent.organizations.email_domain_assoc')
+			}) }}
 		</header>
-		<section>
+		<section id="{{baseId}}_email_assoc_body">
 			{% if not org_email_domains|length %}
 				<p>
 					{{ phrase('agent.organizations.email_domain_assoc_none') }}
@@ -17,6 +19,7 @@
 				</p>
 			{% endif %}
 		</section>
+		{{ dp_widget_tabs(baseId, 'organization', 'email_assoc', 'section', org_api) }}
 	</div>
 	<div class="email-assoc-overlay-wrapper" style="display: none">
 		{% include 'AgentBundle:Organization:orgemail-overlay.html.twig' %}

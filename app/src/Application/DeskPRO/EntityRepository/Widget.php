@@ -97,6 +97,7 @@ class Widget extends AbstractEntityRepository
 		return array(
 			'ticket' => 'Ticket View',
 			'profile' => 'Profile View',
+			'organization' => 'Organization View',
 			'chat' => 'Chat View',
 		);
 	}
@@ -127,6 +128,17 @@ class Widget extends AbstractEntityRepository
 				'agent' => array('Agent', ''),
 				'contact' => array('Contact Information', ''),
 				'organization' => array('Organization', ''),
+				'usergroups' => array('Usergroups', ''),
+				'footer' => array('Page Footer', 'above')
+			),
+			'organization' => array(
+				'header' => array('Page Header', 'below'),
+				'summary' => array('Summary', ''),
+				'members' => array('Members', ''),
+				'notes' => array('Notes and Activity Stream', ''),
+				'contact' => array('Contact Information', ''),
+				'properties' => array('Properties', ''),
+				'email_assoc' => array('Email Association', ''),
 				'usergroups' => array('Usergroups', ''),
 				'footer' => array('Page Footer', 'above')
 			),
