@@ -198,6 +198,17 @@
 		</div>
 	</div>
 </div>
+<div class="setting_field_row">
+	<h4>Agent Interface</h4>
+	<div class="setting_fields">
+		<div class="field_row" style="padding-top: 6px;">
+			<label><input type="checkbox" name="settings[core.disable_dpcom_newticket]" {% if app.getSetting('core.disable_dpcom_newticket') %}checked="checked"{% endif %} />
+				Disable the "Ask the DeskPRO Team a Question" button
+				<span class="small-light-icon tipped" title="This removes the button tab on the left side of the agent interface that lets agents submit tickets directly to DeskPRO support."></span>
+			</label>
+		</div>
+	</div>
+</div>
 
 <div class="setting_field_row" style="text-align: center">
 	<button class="clean-white">{{ phrase('admin.general.save_settings') }}</button>
