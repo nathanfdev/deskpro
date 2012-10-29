@@ -32,6 +32,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		//------------------------------
 
 		DeskPRO_Window.util.fileupload(this.wrapper, {
+			dropZone: $('.option-rows', this.wrapper),
 			uploadTemplate: $('.template-upload', this.wrapper),
 			downloadTemplate: $('.template-download', this.wrapper)
 		});

@@ -3430,16 +3430,21 @@ article.content-message .content .body-text .fade-bar {
 
 }
 
-.ticketreply > article > section > ul > li .new-val-label {
+.ticketreply >article > section .option-rows
+{
+	position: relative;
+}
+
+.ticketreply > article > section .option-rows > ul > li .new-val-label {
 	font-weight: bold;
 }
-.ticketreply > article > section > ul > li {
+.ticketreply > article > section .option-rows > ul > li {
 	border-bottom: 1px dotted #999;
 	padding:  6px 8px 5px 8px;
 	font-family: @heading-font;
 }
 
-.ticketreply > article > section > ul > li > label {
+.ticketreply > article > section .option-rows > ul > li > label {
 	display: block;
 	float: left;
 	width: 60px;
@@ -3449,15 +3454,15 @@ article.content-message .content .body-text .fade-bar {
 	margin-right: 15px;
 }
 
-.ticketreply > article > section > ul > li.with-select2 > label {
+.ticketreply > article > section .option-rows > ul > li.with-select2 > label {
 	margin-top: 4px;
 }
 
-.ticketreply > article > section > ul > li .prop-change { display: none; }
-.ticketreply > article > section > ul > li .prop-no-change { display: inline; }
+.ticketreply > article > section .option-rows > ul > li .prop-change { display: none; }
+.ticketreply > article > section .option-rows > ul > li .prop-no-change { display: inline; }
 
-.ticketreply > article > section > ul > li .changed .prop-change { display: inline; }
-.ticketreply > article > section > ul > li .changed .prop-no-change { display: none; }
+.ticketreply > article > section .option-rows > ul > li .changed .prop-change { display: inline; }
+.ticketreply > article > section .option-rows > ul > li .changed .prop-no-change { display: none; }
 
 .ticketreply > article > section ul li.attach-row > label span {
 	display: block;

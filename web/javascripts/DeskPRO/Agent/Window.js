@@ -2889,6 +2889,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var inlineHiddenPosition = options.inlineHiddenPosition;
 
+		// must be done before initializing
+		var dropZone = textarea.siblings('.drop-file-zone');
+
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',
 			buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
@@ -2910,27 +2913,55 @@ DeskPRO.Agent.Window = new Orb.Class({
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
 		textarea.redactor(options);
 
-		textarea.getEditor().bind('keydown', function(ev) {
+		var api = textarea.data('redactor'), editor = textarea.getEditor();
+
+		editor.bind('keydown', function(ev) {
 			ev.stopPropagation();
 		});
 
-		if (uploadWrapper) {
-			uploadWrapper.bind('fileremoved', function(ev, li) {
-				var downloadUrlRegex = li.find('a').attr('href').replace('.', '\\.');
-				if (downloadUrlRegex) {
-					var html = textarea.getCode(),
-						regex1 = new RegExp('<p><img[^>]+src="' + downloadUrlRegex + '"[^>]*></p>', 'g'),
-						regex2 = new RegExp('<img[^>]+src="' + downloadUrlRegex + '"[^>]*>', 'g');
+		// drag onto the editor to upload
+		if (api.opts.imageUpload && !$.browser.msie) {
+			var dropTarget = dropZone.length ? dropZone : editor;
+			dropTarget.bind('drop', function(event) {
+				event.preventDefault();
 
-					html = html.replace(regex1, '').replace(regex2, '');
-					textarea.setCode(html);
-				}
+				var file = event.originalEvent.dataTransfer.files[0];
+				var fd = new FormData();
+
+				// append file data
+				fd.append('file', file);
+
+				$.ajax({
+					url: api.opts.imageUpload,
+					dataType: 'html',
+					data: fd,
+					cache: false,
+					contentType: false,
+					processData: false,
+					type: 'POST',
+					success: $.proxy(function(data) {
+						var json = $.parseJSON(data);
+
+						if (typeof json.error == 'undefined') {
+							$.proxy(api.imageUploadCallback, api)(json);
+						} else {
+							$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
+							$.proxy(api.imageUploadCallback, api)(false);
+						}
+
+					}, api)
+				});
 			});
+
+			if (dropZone.length) {
+				textarea.getEditor().after(dropZone);
+			}
+		} else {
+			dropZone.remove();
 		}
 
 		// setup paste support for images (Webkit, FireFox only)
 		var pasteImageCounter = 1;
-		var api = textarea.data('redactor');
 
 		var sendImage = function(pasteId, type, data, encoding) {
 			try {

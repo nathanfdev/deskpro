@@ -196,6 +196,7 @@
 	'agent.general.downloads'                               => 'Downloads',
 	'agent.general.drog_file_here'                          => '(or drag a file onto this window)',
 	'agent.general.drop_here_to_attach'                     => 'Drop your file here to attach it to your reply',
+	'agent.general.drop_here_to_insert_image'               => 'Drop your <strong>image</strong> here to insert it into your reply',
 	'agent.general.drop_here_to_upload'                     => 'Drop your file here to upload a new picture',
 	'agent.general.edit'                                    => 'edit',
 	'agent.general.edit_categories'                         => 'Edit Categories',
