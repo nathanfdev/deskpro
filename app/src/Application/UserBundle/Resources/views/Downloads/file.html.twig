@@ -70,13 +70,11 @@
 	</footer>
 </section>
 
-{% if app.user.hasPerm('downloads.comment') %}
-	{% include 'UserBundle:Common:comments-box.html.twig' with {
-		'type': 'feedback',
-		'comments': comments,
-		'form_action': path('user_downloads_newcomment', {'download_id': download.id}),
-		'check_perm': 'downloads.comment'
-	} %}
-{% endif %}
+{% include 'UserBundle:Common:comments-box.html.twig' with {
+	'type': 'feedback',
+	'comments': comments,
+	'form_action': path('user_downloads_newcomment', {'download_id': download.id}),
+	'check_perm': 'downloads.comment'
+} %}
 
 {% endblock %}

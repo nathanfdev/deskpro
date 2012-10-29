@@ -339,6 +339,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 				return false;
 			}
 		}
+		if ($name == 'articles.comment' || $name == 'downloads.comment' || $name == 'news.comment') {
+			if (!App::getSetting('user.publish_comments')) {
+				return false;
+			}
+		}
+
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
 	}
 

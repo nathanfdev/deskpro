@@ -58,13 +58,11 @@
 	</footer>
 </section>
 
-{% if app.user.hasPerm('news.comment') %}
-	{% include 'UserBundle:Common:comments-box.html.twig' with {
-		'type': 'news',
-		'comments': comments,
-		'form_action': path('user_news_newcomment', {'post_id': news.id}),
-		'check_perm': 'news.comment'
-	} %}
-{% endif %}
+{% include 'UserBundle:Common:comments-box.html.twig' with {
+	'type': 'news',
+	'comments': comments,
+	'form_action': path('user_news_newcomment', {'post_id': news.id}),
+	'check_perm': 'news.comment'
+} %}
 
 {% endblock %}

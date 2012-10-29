@@ -27,6 +27,10 @@
 			<input type="text" name="settings[user.show_ratings]" value="{{app.getSetting('user.show_ratings')|default('0')}}" size="20" style="width: 50px" />
 		</div>
 		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="user.publish_comments" />
+			<label><input type="checkbox" name="settings[user.publish_comments]" {% if app.getSetting('user.publish_comments') %}checked="checked"{% endif %} /> Enable comments on articles, news and downloads</label>
+		</div>
+		<div class="field_row">
 			<input type="hidden" name="set_settings_falseable[]" value="user.publish_captcha" />
 			<label><input type="checkbox" name="settings[user.publish_captcha]" {% if app.getSetting('user.publish_captcha') %}checked="checked"{% endif %} /> Enable captcha on new feedback and new comment forms</label>
 		</div>
