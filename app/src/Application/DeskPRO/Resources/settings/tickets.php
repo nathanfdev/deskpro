@@ -15,6 +15,17 @@
 	'core_tickets.billing_currency' => 'USD',
 
 	'core_tickets.enable_agent_rte' => true,
+	'core_tickets.agent_rte_button_bold' => true,
+	'core_tickets.agent_rte_button_italic' => true,
+	'core_tickets.agent_rte_button_underline' => true,
+	'core_tickets.agent_rte_button_strike' => false,
+	'core_tickets.agent_rte_button_color' => false,
+	'core_tickets.agent_rte_button_list' => true,
+	'core_tickets.agent_rte_button_image' => true,
+	'core_tickets.agent_rte_button_link' => true,
+	'core_tickets.agent_rte_button_table' => false,
+	'core_tickets.agent_rte_button_hr' => false,
+	'core_tickets.agent_rte_button_alignment' => false,
 
 	'core_tickets.use_ref' => false,
 

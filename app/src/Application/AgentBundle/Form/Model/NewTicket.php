@@ -200,7 +200,7 @@ class NewTicket
 		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
 
 		if ($this->is_html_reply) {
-			$message->message = App::get('deskpro.core.input_cleaner')->clean($message_text, 'simple_html');
+			$message->message = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
 		} else {
 			$message->setMessageText($message_text);
 		}

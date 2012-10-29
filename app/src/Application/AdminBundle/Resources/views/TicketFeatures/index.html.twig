@@ -164,15 +164,55 @@
 </div>
 
 <div class="setting_field_row">
-	<h4>Ticket Messages</h4>
+	<h4>Rich Text Editor</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core_tickets.enable_agent_rte]" {% if app.getSetting('core_tickets.enable_agent_rte') %}checked="checked"{% endif %} />
 				Enable the rich text editor for agents, allowing them to format and insert inline images into messages</label>
 		</div>
+		<div class="field_row">
+			<strong>Available Text Editor Buttons:</strong>
+			<ul>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_bold]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_bold') %}checked="checked"{% endif %} /> Bold</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_italic]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_italic') %}checked="checked"{% endif %} /> Italics</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_underline]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_underline') %}checked="checked"{% endif %} /> Underline</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_strike]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_strike') %}checked="checked"{% endif %} /> Strikethrough</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_color]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_color') %}checked="checked"{% endif %} /> Change Color</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_alignment]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_alignment') %}checked="checked"{% endif %} /> Change Alignment</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_list]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_list') %}checked="checked"{% endif %} /> Insert List</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_image]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_image') %}checked="checked"{% endif %} /> Insert Image</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_link]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_link') %}checked="checked"{% endif %} /> Insert Link</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_table]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_table') %}checked="checked"{% endif %} /> Insert Table</label></li>
+				<li><label><input type="checkbox" name="settings[core_tickets.agent_rte_button_hr]" value="1" {% if app.getSetting('core_tickets.agent_rte_button_hr') %}checked="checked"{% endif %} /> Insert Horizontal Rule</label></li>
+			</ul>
+		</div>
 	</div>
 	<input type="hidden" name="set_settings[]" value="core_tickets.enable_agent_rte" />
 	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.enable_agent_rte" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_bold" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_bold" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_italic" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_italic" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_italic" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_italic" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_underline" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_underline" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_strike" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_strike" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_color" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_color" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_list" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_list" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_image" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_image" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_link" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_link" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_alignment" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_alignment" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_table" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_table" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.agent_rte_button_hr" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.agent_rte_button_hr" />
 </div>
 
 <div class="setting_field_row">

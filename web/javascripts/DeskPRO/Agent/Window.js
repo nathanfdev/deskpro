@@ -2892,9 +2892,41 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// must be done before initializing
 		var dropZone = textarea.siblings('.drop-file-zone');
 
+		// [ 'table',, 'horizontalrule']
+
+		if (window.DP_AGENT_RTE_BUTTONS) {
+			var b = window.DP_AGENT_RTE_BUTTONS;
+			var buttons = ['html'];
+			if (b.bold || b.italic || b.underline || b.strike || b.color) buttons.push('|');
+			if (b.bold) buttons.push('bold');
+			if (b.italic) buttons.push('italic');
+			if (b.underline) buttons.push('underline');
+			if (b.strike) buttons.push('deleted');
+			if (b.color) buttons.push('fontcolor');
+			if (b.alignment) {
+				buttons.push('|');
+				buttons.push('alignment');
+			}
+			if (b.list) {
+				buttons.push('|');
+				buttons.push('unorderedlist');
+				buttons.push('orderedlist');
+				buttons.push('outdent');
+				buttons.push('indent');
+			}
+			if (b.image || b.link || b.table || b.hr) buttons.push('|');
+			if (b.image) buttons.push('image');
+			if (b.link) buttons.push('link');
+			if (b.table) buttons.push('table');
+			if (b.hr) buttons.push('horizontalrule');
+
+		} else {
+			var buttons = ['html', '|', 'bold', 'italic', 'underline', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'];
+		}
+
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',
-			buttons: ['html', '|', 'bold', 'italic', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'],
+			buttons: buttons,
 			minHeight: 150,
 			observeImages: false,
 			cleanup: false,

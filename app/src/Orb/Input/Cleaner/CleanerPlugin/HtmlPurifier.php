@@ -52,6 +52,7 @@ class HtmlPurifier implements CleanerPlugin
 		return array(
 			'html',
 			'simple_html',
+			'html_core',
 			'html_email',
 			'html_email_basicclean',
 			'html_email_preclean',
@@ -217,8 +218,16 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('Attr.IDPrefix', 'dp-user-');
 				break;
 
-			case 'html_simple':
-				$config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href],img,ul,li,dd,dt,dl,ol,p,span,br');
+			case 'html_core':
+				$config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td,th,pre,div[align],p[align],blockquote,span,br,hr');
+				$config->set('AutoFormat.AutoParagraph', true);
+				$config->set('AutoFormat.Linkify', true);
+				$config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
+				$config->set('AutoFormat.RemoveEmpty', true);
+				break;
+
+			case 'simple_html':
+				$config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href],img[src],ul,li,dd,dt,dl,ol,p[align],span,br');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);

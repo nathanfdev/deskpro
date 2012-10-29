@@ -29,4 +29,10 @@
 		{% endfor %}
 		'rand': {{ rand() }}
 	};
+	var DP_AGENT_RTE_BUTTONS = {
+		{% for x in ['bold', 'italic', 'underline', 'strike', 'list', 'image', 'link', 'alignment'] %}
+			'{{ x }}': {% if app.getSetting('core_tickets.agent_rte_button_' ~ x) %}true{% else %}false{% endif %},
+		{% endfor %}
+		'_': false
+	};
 </script>
