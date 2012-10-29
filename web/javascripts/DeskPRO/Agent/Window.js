@@ -2937,6 +2937,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		};
 
+		if (options.autosaveContent && options.autosaveContentId) {
+			defaultOptions.autosave = BASE_URL + 'agent/misc/redactor-autosave/' + options.autosaveContent + '/' + options.autosaveContentId;
+			defaultOptions.interval = 60;
+		}
+
 		options = Object.merge(defaultOptions, options);
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
 		textarea.redactor(options);

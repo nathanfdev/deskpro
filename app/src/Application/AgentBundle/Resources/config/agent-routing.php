@@ -58,6 +58,13 @@ $collection->add('agent_accept_redactor_image_upload', new Route(
 	array()
 ));
 
+$collection->add('agent_redactor_autosave', new Route(
+	'/misc/redactor-autosave/{content_type}/{content_id}',
+	array('_controller' => 'AgentBundle:Misc:redactorAutosave'),
+	array('content_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_submit_deskpro_feedback', new Route(
 	'/misc/submit-deskpro-feedback.json',
 	array('_controller' => 'AgentBundle:Misc:submitDeskproFeedback'),

@@ -1105,6 +1105,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\RunQueuedTasks::DEFAULT_
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.cleanup_drafts##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_drafts';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Drafts';
+$j['description'] = 'Cleans up old drafts';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupDrafts';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupDrafts::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

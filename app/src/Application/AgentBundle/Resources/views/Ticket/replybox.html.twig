@@ -195,6 +195,9 @@
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
+					{% if draft %}
+						<textarea id="{{replyBaseId}}_draft_html" class="draft-html" style="display: none;">{{ draft.message }}</textarea>
+					{% endif %}
 					<input type="hidden" id="{{replyBaseId}}_is_html_reply" name="is_html_reply" value="0" />
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>

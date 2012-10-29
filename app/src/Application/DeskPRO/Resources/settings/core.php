@@ -330,4 +330,9 @@
 	 * Automatically install new languages on upgrade
 	 */
 	'core.lang_auto_install' => false,
+
+	/**
+	 * How long, in seconds, are drafts valid for?
+	 */
+	'core.drafts_lifetime' => 604800, // 1 week
 );

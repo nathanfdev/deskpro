@@ -140,6 +140,11 @@ class SettingsProfile
 						}
 					}
 
+					$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
+					$signature_html = preg_replace($regex, '$1', $signature_html);
+
+					$signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
+
 					$signature = strip_tags($signature_html);
 				} else {
 					$signature = $this->ticket_signature;

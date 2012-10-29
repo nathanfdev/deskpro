@@ -5,7 +5,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 	init: function() {
 		this.baseId = this.el.data('base-id');
-		this.headerRows = $('')
 	},
 
 	initPage: function() {
@@ -17,7 +16,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val();
-			if (sig) {
+
+			var draft = this.getElById('draft_html');
+			if (draft.length) {
+				textarea.val(draft.val());
+			} else if (sig) {
 				textarea.val(($.browser.msie ? '<p></p>' : '<p><br></p>') + '\n\n' + sig);
 			}
 
@@ -25,7 +28,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
-				inlineHiddenPosition: this.getElById('is_html_reply')
+				inlineHiddenPosition: this.getElById('is_html_reply'),
+				autosaveContent: 'ticket',
+				autosaveContentId: (this.page ? this.page.meta.ticket_id : false)
 			});
 			this.getElById('is_html_reply').val(1);
 		} else {

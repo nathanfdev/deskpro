@@ -156,12 +156,6 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
-		$draft_text = '';
-		if ($draft_pref) {
-			$draft_text = $draft_pref->getValue();
-		}
-
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
@@ -223,6 +217,8 @@ class TicketController extends AbstractController
 			);
 		}
 
+		$draft = $this->em->getRepository('DeskPRO:Draft')->getDraft('ticket', $ticket->id);
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
@@ -234,7 +230,7 @@ class TicketController extends AbstractController
             'ticket_attachments' => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
 
-            'draft_text' => $draft_text,
+            'draft' => $draft,
 
             'last_message_id' => $ticket_messages_blockcache['last_message_id'],
             'last_log_id' => $ticket_messages_blockcache['last_log_id'],
@@ -997,11 +993,6 @@ class TicketController extends AbstractController
 		# Handle new message
 		#------------------------------
 
-		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array(
-			'person' => $this->person['id'],
-			'name' => "ticket_draft.{$ticket['id']}"
-		));
-
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
@@ -1173,14 +1164,11 @@ class TicketController extends AbstractController
 				}
 			}
 
-			// Delete any possible ticket draft
-			if ($draft_pref) {
-				$this->em->remove($draft_pref);
-			}
-
 			$this->em->persist($ticket);
 			$this->em->flush();
 			$this->db->commit();
+
+			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
