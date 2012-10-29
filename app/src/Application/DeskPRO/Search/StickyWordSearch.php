@@ -167,6 +167,13 @@ class StickyWordSearch implements PersonContextInterface
 			$entity_name = $class::getEntityName();
 			$kb = "$entity_name-{$b['id']}";
 
+			if (isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
+				return -1;
+			}
+			if (!isset($results_ranked[$ka]) && isset($results_ranked[$kb])) {
+				return 1;
+			}
+
 			if ($results_ranked[$ka]['count'] == $results_ranked[$kb]['count']) {
 				return 0;
 			}
