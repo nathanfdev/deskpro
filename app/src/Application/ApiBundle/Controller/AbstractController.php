@@ -200,7 +200,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		$_SERVER['HTTP_ACCEPT'] = 'application/json';
 
-		return $this->createJsonResponse($data, $status = 200);
+		return $this->createJsonResponse($data, $status);
 	}
 
 
@@ -222,7 +222,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	public function createApiCreateResponse(array $data, $url)
 	{
-		$response = $this->createApiResponse($data, $status = 200);
+		$response = $this->createApiResponse($data, 201);
 		$response->headers->add(array('Location' => $url));
 
 		return $response;
