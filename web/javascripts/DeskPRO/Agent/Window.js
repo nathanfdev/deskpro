@@ -2919,6 +2919,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.stopPropagation();
 		});
 
+		editor.bind('dragover drop', function(ev) {
+			ev.stopPropagation();
+		});
+
 		// drag onto the editor to upload
 		if (api.opts.imageUpload && !$.browser.msie) {
 			var dropTarget = dropZone.length ? dropZone : editor;
@@ -2926,6 +2930,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				event.preventDefault();
 
 				var file = event.originalEvent.dataTransfer.files[0];
+				if (!file) {
+					return;
+				}
 				var fd = new FormData();
 
 				// append file data
