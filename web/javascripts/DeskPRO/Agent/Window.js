@@ -2897,23 +2897,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			cleanup: false,
 			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 			imageUploadCallback: function(obj, json) {
-				if (uploadWrapper) {
-					var templateEl = $('.template-download', uploadWrapper);
-					if (!templateEl.attr('id')) {
-						templateEl.attr('id', Orb.getUniqueId('up'));
-					}
-
-					var template = window.tmpl(templateEl.attr('id'));
-					var results = template({
-						files: [json]
-					});
-					$(uploadWrapper).find('.files').append(results);
-
-					uploadWrapper.trigger('fileuploaddone');
-
-					if (inlineHiddenPosition) {
-						inlineHiddenPosition.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
-					}
+				if (inlineHiddenPosition) {
+					inlineHiddenPosition.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
 				}
 			},
 			imageUploadErrorCallback: function(obj, json) {

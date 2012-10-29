@@ -1017,21 +1017,27 @@ class TicketController extends AbstractController
 			$message['is_agent_note'] = true;
 		}
 
-		$blob_inline_ids = $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard');
-
 		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
-
 			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+			if ($blob) {
+				$attach = new Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $this->person;
 
-			$attach = new Entity\TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
-
-			if (in_array($blob->getId(), $blob_inline_ids)) {
-				$attach->is_inline = true;
+				$message->addAttachment($attach);
 			}
+		}
 
-			$message->addAttachment($attach);
+		foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') as $blob_id) {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+			if ($blob) {
+				$attach = new Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $this->person;
+				$attach->is_inline = true;
+
+				$message->addAttachment($attach);
+			}
 		}
 
 		$message->convertEmbeddedImagesToInlineAttach();

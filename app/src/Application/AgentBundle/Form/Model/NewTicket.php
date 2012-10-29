@@ -214,9 +214,17 @@ class NewTicket
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->_person_context;
 
-			if (in_array($blob->getId(), $this->_blob_inline_ids)) {
-				$attach->is_inline = true;
-			}
+			$message->addAttachment($attach);
+			$ticket->addAttachment($attach);
+		}
+
+		foreach ($this->_blob_inline_ids as $blob_id) {
+			$blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$attach = new TicketAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->_person_context;
+			$attach->is_inline = true;
 
 			$message->addAttachment($attach);
 			$ticket->addAttachment($attach);
