@@ -258,7 +258,8 @@ class TicketController extends AbstractController
 
 	        'tickets_by_user' => $tickets_by_user,
 
-            'agent_signature' => $this->person->getPref('agent.ticket_signature')
+            'agent_signature' => $this->person->getSignature(),
+	        'agent_signature_html' => $this->person->getSignatureHtml()
         );
 
         if($is_pdf)
@@ -1252,7 +1253,8 @@ class TicketController extends AbstractController
 			'participant_ids' => $participant_ids,
 			'agent_parts' => $agent_parts,
 			'user_parts' => $user_parts,
-			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
+			'agent_signature' => $this->person->getSignature(),
+	        'agent_signature_html' => $this->person->getSignatureHtml(),
 			'ticket_perms' => $this->_getTicketPerms($ticket),
 		));
 
@@ -1343,7 +1345,8 @@ class TicketController extends AbstractController
 			'participant_ids' => $participant_ids,
 			'agent_parts' => $agent_parts,
 			'user_parts' => $user_parts,
-			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
+			'agent_signature' => $this->person->getSignature(),
+	        'agent_signature_html' => $this->person->getSignatureHtml(),
 			'ticket_perms' => $this->_getTicketPerms($ticket),
 		));
 
@@ -2127,7 +2130,8 @@ class TicketController extends AbstractController
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'agents' => $agents,
-			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
+			'agent_signature' => $this->person->getSignature(),
+	        'agent_signature_html' => $this->person->getSignatureHtml(),
 			'agent_teams' => $agent_teams,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,

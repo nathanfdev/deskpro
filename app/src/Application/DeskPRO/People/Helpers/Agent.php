@@ -86,6 +86,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 			'getCountTeams' => 'countTeams',
 			'hasTeams' => 'hasTeams',
 			'getHasTeams' => 'hasTeams',
+
+			'getSignature' => 'getSignature',
+			'getSignatureHtml' => 'getSignatureHtml'
 		);
 	}
 
@@ -302,5 +305,56 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		}
 
 		return $this->_dep_allowed_ids;
+	}
+
+	/**
+	 * Gets the agent's text signature
+	 *
+	 * @return string
+	 */
+	public function getSignature()
+	{
+		$sig = $this->person->getPref('agent.ticket_signature');
+		if ($sig) {
+			return $sig;
+		}
+
+		$sig_html = $this->person->getPref('agent.ticket_signature_html');
+		if ($sig_html) {
+			return htmlspecialchars_decode(strip_tags($sig_html));
+		}
+
+		return '';
+	}
+
+	/**
+	 * Gets the agent's HTML signature
+	 *
+	 * @return string
+	 */
+	public function getSignatureHtml()
+	{
+		$sig_html = $this->person->getPref('agent.ticket_signature_html');
+		if (!$sig_html) {
+			$sig = $this->person->getPref('agent.ticket_signature');
+			if ($sig) {
+				$sig_html = nl2br(htmlspecialchars($sig));
+			}
+		}
+
+		if ($sig_html) {
+			$fn = function($m) {
+				$url = App::getSetting('core.deskpro_url');
+				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), false), '/');
+
+				return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
+					$url, htmlspecialchars($m[2]), htmlspecialchars($m[0])
+				);
+			};
+
+			return preg_replace_callback('#\[attach:signature_image:(.*?):(.*?)\]#', $fn, $sig_html);
+		}
+
+		return '';
 	}
 }

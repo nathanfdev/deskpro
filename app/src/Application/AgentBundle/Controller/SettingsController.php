@@ -49,15 +49,25 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
+		$signature_html = $this->person->getSignatureHtml();
+		$signature = $this->person->getSignature();
+
         return $this->render('AgentBundle:Settings:profile.html.twig', array(
 			'form' => $form->createView(),
-			'edit_profile' => $edit_profile
+			'edit_profile' => $edit_profile,
+
+	        'signature' => $signature,
+	        'signature_html' => $signature_html,
+
+	        'can_signature' => $this->person->PermissionsManager->GeneralChecker->canSetSignature(),
+	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
 		));
     }
 
 	public function profileSaveAction()
 	{
 		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$edit_profile->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 

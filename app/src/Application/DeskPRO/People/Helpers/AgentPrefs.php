@@ -50,7 +50,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
 	protected $loaded_prefs = array();
 	protected $loaded_pref_prefixes = array();
 
-	protected $preload_ids = array('agent.ticket_signature');
+	protected $preload_ids = array('agent.ticket_signature', 'agent.ticket_signature_html');
 	protected $preload_prefixes = array('agent.ui.flag.');
 
 	public function __construct(Entity\Person $person)

@@ -167,7 +167,7 @@ class Message extends \Orb\Mail\Message
 			}
 
 			$regex = '#(<img[^>]+src=")' . preg_quote($src, '#') . '(\?s=\d+)?("[^>]*>)#i';
-			$body = preg_replace_callback($regex, function($match) use($self, $embed_map, $src, $blob) {
+			$body = preg_replace_callback($regex, function($match) use($self, &$embed_map, $src, $blob) {
 				if (!isset($embed_map[$src])) {
 					// in case the src is referenced twice
 					$embed_map[$src] = $self->embed(\Swift_Image::newInstance(

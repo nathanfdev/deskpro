@@ -50,6 +50,7 @@ class SettingsProfile extends AbstractType
 		$builder->add('password', 'password', array('required' => false));
 		$builder->add('password2', 'password', array('required' => false));
 		$builder->add('ticket_signature', 'textarea', array('required' => false));
+	    $builder->add('is_html_signature', 'hidden', array('required' => false));
 
 		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
     }

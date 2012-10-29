@@ -29,67 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-use \Doctrine\ORM\EntityRepository;
-
-class Blob extends AbstractEntityRepository
+class Build1351526036 extends AbstractBuild
 {
-	/**
-	 * Get a blob by a combined ID/authcode
-	 *
-	 * @returb \Application\DeskPRO\Entity\Blob
-	 */
-	public function getByAuthId($auth_id)
+	public function run()
 	{
-		if (strpos($auth_id, '-') === false) {
-			return null;
-		}
-
-		list($blob_id, $authcode) = explode('-', $auth_id, 2);
-		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
-		if ($blob && $blob->getAuthId() != $authcode) {
-			$blob = null;
-		}
-
-		return $blob;
-	}
-
-	/**
-	 * @param string $auth_code
-	 *
-	 * @return \Application\DeskPRO\Entity\Blob|null
-	 */
-	public function getByAuthCode($auth_code)
-	{
-		return $this->getEntityManager()->createQuery('
-			SELECT b
-			FROM DeskPRO:Blob
-			WHERE b.authcode = ?0
-		')->setParameters(array($auth_code))->getOneOrNullResult();
-	}
-
-	public function getByAuthCodes($auth_codes)
-	{
-		$auth_codes = (array)$auth_codes;
-		if (!$auth_codes) {
-			return array();
-		}
-
-		return $this->getEntityManager()->createQuery("
-			SELECT b
-			FROM DeskPRO:Blob b INDEX BY b.id
-			WHERE b.authcode IN(?0)
-		")->execute(array($auth_codes));
-	}
-
-	public function getSystemBlob($sys_name)
-	{
-		return $this->findOneBy(array('sys_name' => $sys_name));
+		$this->out("Support for HTML-based agent signatures");
+		$this->execMutateSql("CREATE INDEX authcode_idx ON blobs (authcode)");
+		$this->execMutateSql("
+			INSERT IGNORE INTO permissions
+				(usergroup_id, name, value)
+			SELECT id, 'agent_general.signature', 1
+			FROM usergroups
+			WHERE is_agent_group = 1
+		");
+		$this->execMutateSql("
+			INSERT IGNORE INTO permissions
+				(usergroup_id, name, value)
+			SELECT id, 'agent_general.signature_rte', 1
+			FROM usergroups
+			WHERE is_agent_group = 1
+		");
+		$this->execMutateSql("TRUNCATE TABLE permissions_cache");
 	}
 }

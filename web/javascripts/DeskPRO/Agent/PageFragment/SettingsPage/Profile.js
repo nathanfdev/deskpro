@@ -20,6 +20,21 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			$('.files', form).empty();
 		});
 
+		var textarea = $('#agent_settings_signature');
+
+
+		if (DeskPRO_Window.canUseAgentReplyRte() && textarea.data('rte') == 1) {
+			textarea.val($('#agent_settings_signature_html').val());
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				inlineHiddenPosition: $('#agent_settings_is_html_signature'),
+				minHeight: 100
+			});
+			$('#agent_settings_is_html_signature').val(1);
+		} else {
+			textarea.val($('#agent_settings_signature_text').val());
+		}
+
 		var startEmail = $('#settings_profile_email').val();
 
 		var changePass = false;
@@ -69,6 +84,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 					}
 				});
 				return;
+			}
+
+			if (textarea.syncCode) {
+				textarea.syncCode();
 			}
 
 			var data = $(this).serializeArray();

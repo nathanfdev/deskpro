@@ -81,6 +81,8 @@ var DP = {
 			return '';
 		}
 
+		text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
 		text = '<p>' + text.replace(/\r?\n/g, '<br>\n').replace(/<br>\n<br>\n/g, "</p>\n\n<p>") + '</p>';
 		if (!$.browser.msie) {
 			// IE renders the empty <p> tags

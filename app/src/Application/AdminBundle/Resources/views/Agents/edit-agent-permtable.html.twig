@@ -10,6 +10,7 @@
 		<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
 		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
 		<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.general.publish') }}</span></li>
+		<li data-tab-for="#permgroup_general"><span>General</span></li>
 	</ul>
 </nav>
 
@@ -186,4 +187,23 @@
 		</table>
 	</div>
 </div>
-{# /CHAT PERMISSIONS #}
+{# /PUBLISH PERMISSIONS #}
+
+{# GENERAL PERMISSIONS #}
+<div id="permgroup_general" style="display: none">
+	<div class="check-grid">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.general.description') }}</th>
+					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- PERMISSION:agent_general.signature -->{{ col.perm_col('Set a signature', usergroup_values, 'agent_general', 'signature') }}
+				<!-- PERMISSION:agent_general.signature_rte -->{{ col.perm_col('Use the rich text editor for a signature', usergroup_values, 'agent_general', 'signature_rte') }}
+			</tbody>
+		</table>
+	</div>
+</div>
+{# /GENERAL PERMISSIONS #}

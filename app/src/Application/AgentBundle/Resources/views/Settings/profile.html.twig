@@ -86,13 +86,21 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
+		{% if can_signature %}
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.ticket_signature') }}</label></div>
 			<div class="dp-form-input">
-				{{ form_widget(form.ticket_signature) }}
-				<br /><em class="desc">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
+				<div style="width: 70%" class="unreset">
+					<textarea name="settings_profile[ticket_signature]" id="agent_settings_signature" data-rte="{% if can_signature_html %}1{% else %}0{% endif %}"></textarea>
+					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.settings.drop_here_insert_signature') }}</h1></div>
+				</div>
+				<em class="desc">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
+				<input type="hidden" id="agent_settings_is_html_signature" name="settings_profile[is_html_signature]" value="0" />
+				<input type="hidden" value="{{ signature }}" id="agent_settings_signature_text" />
+				<input type="hidden" value="{{ signature_html }}" id="agent_settings_signature_html" />
 			</div>
 		</div>
+		{% endif %}
 	</div>
 
 	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>

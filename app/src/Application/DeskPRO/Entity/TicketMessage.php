@@ -207,7 +207,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			$download_url = App::getSetting('core.deskpro_url');
 			$download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
-			if ($m[1] == 'image') {
+			if ($m[1] == 'signature_image') {
+				$url = App::getSetting('core.deskpro_url');
+				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
+
+				$replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
+			} else if ($m[1] == 'image') {
 				$url = App::getSetting('core.deskpro_url');
 				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
 
@@ -219,7 +224,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			return $replace;
 		};
 
-		$message = preg_replace_callback('#\[attach:(image|file):(.*?):(.*?)\]#', $fn, $message);
+		$message = preg_replace_callback('#\[attach:(.*?):(.*?):(.*?)\]#', $fn, $message);
 
 		return $message;
 	}
@@ -238,9 +243,28 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		// signature images - alt contains the original text
+		$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
+		$message_text = preg_replace($regex, '$1', $message_text);
+
 		$this->message = $message_text;
 
 		return $message_text;
+	}
+
+	public function getUsedSignatureImageBlobs()
+	{
+		preg_match_all('#\[attach:signature_image:(.*?):(.*?)\]#', $this->message, $matches, PREG_SET_ORDER);
+		$auth_codes = array();
+		foreach ($matches AS $match) {
+			$auth_codes[] = $match[1];
+		}
+
+		if ($auth_codes) {
+			return App::getEntityRepository('DeskPRO:Blob')->getByAuthCodes($auth_codes);
+		} else {
+			return array();
+		}
 	}
 
 	public function getMessageText()

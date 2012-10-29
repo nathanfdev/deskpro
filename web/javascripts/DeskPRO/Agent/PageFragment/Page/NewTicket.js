@@ -670,9 +670,22 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var textarea = this.getEl('message');
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
-			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.wrapper, inlineHiddenPosition: this.getEl('is_html_reply')});
+			var sig = this.getEl('signature_value_html').val();
+			if (sig) {
+				textarea.val(($.browser.msie ? '<p></p>' : '<p><br></p>') + '\n\n' + sig);
+			}
+
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				inlineHiddenPosition: this.getEl('is_html_reply')
+			});
 			this.getEl('is_html_reply').val(1);
 		} else {
+			var sig = this.getEl('signature_value').val();
+			if (sig) {
+				textarea.val('\n\n' + sig);
+			}
+
 			textarea.css('height', 100);
 
 			textarea.TextAreaExpander(150, 1000).on('textareaexpander_expanded', function() {

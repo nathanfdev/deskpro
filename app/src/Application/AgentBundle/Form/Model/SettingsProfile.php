@@ -47,6 +47,9 @@ class SettingsProfile
 	public $password2 = '';
 	public $ticket_signature = '';
 	public $new_picture_blob_id = false;
+	public $is_html_signature = false;
+
+	protected $_blob_inline_ids = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -68,7 +71,11 @@ class SettingsProfile
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
-		$this->ticket_signature = $person->getPref('agent.ticket_signature');
+	}
+
+	public function setBlobInlineIds(array $ids)
+	{
+		$this->_blob_inline_ids = $ids;
 	}
 
 	public function getPerson()
@@ -120,7 +127,27 @@ class SettingsProfile
 				$person->setPassword($this->password);
 			}
 
-			$person->setPreference('agent.ticket_signature', $this->ticket_signature);
+			if ($this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
+				if ($this->is_html_signature && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
+					$signature_html = App::get('deskpro.core.input_cleaner')->clean($this->ticket_signature, 'html_core');
+
+					foreach ($this->_blob_inline_ids AS $blob_id) {
+						$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
+						if ($blob) {
+							$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
+							$replace = $blob->getEmbedCode(true, 'signature_image');
+							$signature_html = preg_replace($regex, $replace, $signature_html);
+						}
+					}
+
+					$signature = strip_tags($signature_html);
+				} else {
+					$signature = $this->ticket_signature;
+					$signature_html = nl2br(htmlspecialchars($signature));
+				}
+				$person->setPreference('agent.ticket_signature', $signature);
+				$person->setPreference('agent.ticket_signature_html', $signature_html);
+			}
 
 			$this->em->persist($person);
 			$this->em->flush();

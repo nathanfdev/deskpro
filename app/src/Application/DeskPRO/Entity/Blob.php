@@ -285,10 +285,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
 	}
 
-	public function getEmbedCode($for_ticket = false, $is_image = true)
+	public function getEmbedCode($for_ticket = false, $type = 'image')
 	{
 		if ($for_ticket) {
-			return '[attach:' . ($is_image ? 'image' : 'file') . ':' . $this->getAuthId() . ':' . $this->filename . ']';
+			return '[attach:' . $type . ':' . $this->getAuthId() . ':' . $this->filename . ']';
 		} else {
 			return '[attach:' . $this->getAuthId() . ':' . $this->filename . ']';
 		}
@@ -375,7 +375,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Blob';
-		$metadata->setPrimaryTable(array( 'name' => 'blobs', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'blobs',
+			'indexes' => array(
+				'authcode_idx' => array('columns' => array('authcode')),
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));

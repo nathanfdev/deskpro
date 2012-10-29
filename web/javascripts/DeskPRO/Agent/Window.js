@@ -2885,14 +2885,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		var uploadWrapper = options.uploadWrapper;
-
 		var inlineHiddenPosition = options.inlineHiddenPosition;
 
 		// must be done before initializing
 		var dropZone = textarea.siblings('.drop-file-zone');
-
-		// [ 'table',, 'horizontalrule']
 
 		if (window.DP_AGENT_RTE_BUTTONS) {
 			var b = window.DP_AGENT_RTE_BUTTONS;

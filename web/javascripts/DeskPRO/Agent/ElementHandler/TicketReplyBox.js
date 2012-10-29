@@ -11,17 +11,29 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('div.replybox-wrap').data('page');
-		var sig = this.el.find('textarea.signature-value').val();
 		var sigTrimmed = false;
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
+			var sig = this.el.find('textarea.signature-value-html').val();
+			if (sig) {
+				textarea.val(($.browser.msie ? '<p></p>' : '<p><br></p>') + '\n\n' + sig);
+			}
+
 			isWysiwyg = true;
-			DeskPRO_Window.initRteAgentReply(textarea, {uploadWrapper: this.el, inlineHiddenPosition: this.getElById('is_html_reply')});
-			sig = DP.convertTextToWysiwygHtml(sig);
+
+			DeskPRO_Window.initRteAgentReply(textarea, {
+				defaultIsHtml: true,
+				inlineHiddenPosition: this.getElById('is_html_reply')
+			});
 			this.getElById('is_html_reply').val(1);
 		} else {
+			var sig = this.el.find('textarea.signature-value').val();
+			if (sig) {
+				textarea.val('\n\n' + sig);
+			}
+
 			textarea.data('expander-max-height', $(window).height() - 500).TextAreaExpander(150, $(window).height() - 500).on('textareaexpander_expanded', function() {
 				var h = $(this).height();
 				window.setTimeout(function() {
@@ -49,7 +61,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var reply = textarea.getCode();
 					if (sig.length) {
 						if (!reply.length) {
-							reply = '<p><br></p>';
+							reply = ($.browser.msie ? '<p></p>' : '<p><br></p>');
 						}
 						textarea.setCode(reply + "\n\n" + sig);
 					}

@@ -364,12 +364,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_attach') }}</h1></div>
 				</div>
 				<div class="input-wrap unreset">
-					<textarea id="{{baseId}}_message" name="newticket[message]" placeholder="Enter your ticket message here">{% if agent_signature %}
-
-
-
-{{ agent_signature }}{% endif %}</textarea>
+					<textarea id="{{baseId}}_message" name="newticket[message]" placeholder="Enter your ticket message here"></textarea>
 					<textarea id="{{baseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+					<textarea id="{{baseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="newticket[is_html_reply]" value="0" />
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>

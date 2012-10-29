@@ -3,6 +3,7 @@
 	'agent.settings.browser_notifications'       => 'Browser Notifications',
 	'agent.settings.create_filter'               => 'Create Filter',
 	'agent.settings.create_macro'                => 'Create Macro',
+	'agent.settings.drop_here_insert_signature'  => 'Drop your <strong>image</strong> here to insert it into your signature',
 	'agent.settings.edit_filter'                 => 'Edit Filter',
 	'agent.settings.edit_macro'                  => 'Edit Macro',
 	'agent.settings.email_notifications'         => 'Email Notifications',
