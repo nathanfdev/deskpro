@@ -1279,6 +1279,9 @@ class TicketSearchController extends AbstractController
 					$this->db->beginTransaction();
 					try {
 						$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+						$this->em->persist($ticket);
+						$this->em->flush();
+						$ticket->getTicketLogger()->done();
 						$this->db->commit();
 					} catch (\Exception $e) {
 						$this->db->rollback();

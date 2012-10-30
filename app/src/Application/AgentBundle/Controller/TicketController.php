@@ -1439,6 +1439,16 @@ class TicketController extends AbstractController
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
 				$macro->performOnTicket($ticket, $this->person);
+
+				try {
+					$this->em->persist($ticket);
+					$this->em->flush();
+					$ticket->getTicketLogger()->done();
+					$this->em->commit();
+				} catch (\Exception $e) {
+					$this->em->rollback();
+					throw $e;
+				}
 			}
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
@@ -1592,6 +1602,9 @@ class TicketController extends AbstractController
 		$this->db->beginTransaction();
 		try {
 			$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+			$this->em->persist($ticket);
+			$this->em->flush();
+			$ticket->getTicketLogger()->done();
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
