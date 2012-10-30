@@ -1284,7 +1284,7 @@ class TicketSearch extends SearcherAbstract
 							case self::OP_NOTCONTAINS:
 								$joins[] = array(
 									'labels_tickets',
-									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label IN ($choices_in)"
+									"LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label IN ($choices_in))"
 								);
 								$wheres[] = "$join_name.ticket_id IS NULL";
 								break;
