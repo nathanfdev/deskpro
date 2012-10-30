@@ -74,6 +74,7 @@
 
 	<h1 id="login_title">{{ phrase('agent.general.log_in') }}</h1>
 	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.general.lost_password') }}</h1>
+	{% if timeout %}<p class="error" style="display: block">Your session has timed out, you must log in again.</p>{% endif %}
 	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
 	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.password_was_reset') }}</p>{% endif %}
 	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
