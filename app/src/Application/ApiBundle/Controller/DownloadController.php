@@ -91,13 +91,7 @@ class DownloadController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new DownloadSearch());
+		$result_cache = $this->getApiSearchResult('download', $terms, $extra, $this->in->getUint('cache_id'), new DownloadSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -113,6 +107,7 @@ class DownloadController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($ids),
+			'cache_id' => $result_cache->id,
 			'downloads' => $this->getApiData($downloads)
 		));
 	}

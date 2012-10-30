@@ -87,13 +87,7 @@ class ChatController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new ChatConversationSearch());
+		$result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new ChatConversationSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -109,6 +103,7 @@ class ChatController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($person_ids),
+			'cache_id' => $result_cache->id,
 			'chats' => $this->getApiData($chats)
 		));
 	}

@@ -95,13 +95,7 @@ class KbController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new ArticleSearch());
+		$result_cache = $this->getApiSearchResult('article', $terms, $extra, $this->in->getUint('cache_id'), new ArticleSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -117,6 +111,7 @@ class KbController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($ids),
+			'cache_id' => $result_cache->id,
 			'articles' => $this->getApiData($articles)
 		));
 	}

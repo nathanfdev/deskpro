@@ -82,13 +82,7 @@ class OrganizationController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new OrganizationSearch());
+		$result_cache = $this->getApiSearchResult('organization', $terms, $extra, $this->in->getUint('cache_id'), new OrganizationSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -104,6 +98,7 @@ class OrganizationController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($person_ids),
+			'cache_id' => $result_cache->id,
 			'organizations' => $this->getApiData($orgs)
 		));
 	}
@@ -261,13 +256,7 @@ class OrganizationController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\PersonSearch());
+		$result_cache = $this->getApiSearchResult('person', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\PersonSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -283,6 +272,7 @@ class OrganizationController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($person_ids),
+			'cache_id' => $result_cache->id,
 			'people' => $this->getApiData($people)
 		));
 	}
@@ -310,13 +300,7 @@ class OrganizationController extends AbstractController
 			$extra['order_by'] = $order_by;
 		}
 
-		if ($this->in->checkIsset('cache')) {
-			$cache = $this->in->getUint('cache');
-		} else {
-			$cache = 3600;
-		}
-
-		$result_cache = $this->getApiSearchResult($terms, $extra, $cache, new \Application\DeskPRO\Searcher\TicketSearch());
+		$result_cache = $this->getApiSearchResult('ticket', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\TicketSearch());
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
@@ -332,6 +316,7 @@ class OrganizationController extends AbstractController
 			'page' => $page,
 			'per_page' => $per_page,
 			'total' => count($person_ids),
+			'cache_id' => $result_cache->id,
 			'tickets' => $this->getApiData($tickets)
 		));
 	}

@@ -1471,9 +1471,6 @@ class Arrays
 
 		$count = count($array);
 
-		// Only one page
-		if ($count <= $per_page) return $array;
-
 		$page = max(0, $page);
 		$start = ($page - 1) * $per_page;
 

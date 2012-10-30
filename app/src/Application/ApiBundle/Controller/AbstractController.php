@@ -248,31 +248,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 
 
-	public function getApiSearchResult(array $terms, array $extra, $cache, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
+	public function getApiSearchResult($type, array $terms, array $extra, $cache_id, \Application\DeskPRO\Searcher\SearcherAbstract $searcher)
 	{
-		$cache_date = new \DateTime('-' . $cache . ' seconds', new \DateTimeZone('UTC'));
-
-		$query_params = array(
-			$this->person->id,
-			serialize($terms),
-			serialize($extra),
-			$cache_date->format('Y-m-d H:i:s')
-		);
-
-		$id = $this->db->fetchColumn('
-			SELECT id
-			FROM result_cache
-			WHERE person_id = ? AND criteria = ? AND extra = ? AND date_created > ?
-			ORDER BY date_created DESC
-			LIMIT 1
-		', $query_params);
-
-		if ($id) {
+		if ($cache_id) {
 			$result_cache = $this->em->createQuery('
 				SELECT r
 				FROM DeskPRO:ResultCache r
 				WHERE r.id = ?0
-			')->setParameters(array($id))->getOneOrNullResult();
+			')->setParameters(array($cache_id))->getOneOrNullResult();
+			if ($result_cache) {
+				if ($result_cache->person->id != $this->person->id || $result_cache->results_type !== $type) {
+					$result_cache = null;
+				}
+			}
 		} else {
 			$result_cache = null;
 		}
@@ -291,6 +279,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$result_cache = new \Application\DeskPRO\Entity\ResultCache();
 			$result_cache->person = $this->person;
 			$result_cache->results = $results;
+			$result_cache->results_type = $type;
 			$result_cache->criteria = $terms;
 			$result_cache->num_results = count($results);
 			foreach ($extra AS $key => $value) {
