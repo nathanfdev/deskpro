@@ -503,7 +503,7 @@
             } else {
                 target = $(e.target).closest("div.select2-drop").get(0);
                 $(document).find("div.select2-drop-active").each(function () {
-                    if (this !== target) $(this).data("select2").blur();
+                    if (this !== target && $(this).data("select2")) $(this).data("select2").blur();
                 });
             }
 
