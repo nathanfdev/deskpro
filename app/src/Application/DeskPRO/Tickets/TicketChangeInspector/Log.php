@@ -221,6 +221,13 @@ class Log
 						}
 						break;
 
+					case 'is_hold':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Hold($old_val, $new_val);
+						}
+						break;
+
+
 					default:
 						$unknown[] = $prop;
 						break;

@@ -84,6 +84,8 @@
 	{% elseif log.action_type == 'changed_status' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span style="{{ layout.actiontext_style('old-val') }}">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status|replace({'.': '_'})) }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'})) }}</span>
+	{% elseif log.action_type == 'changed_hold' %}
+		{% if log.details.is_hold %}Ticket put on hold{% else %}Ticket no longer on hold{% endif %}
 	{% elseif log.action_type == 'changed_custom_field' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span style="{{ layout.actiontext_style('old-val') }}">{{ log.details.value_before|default('(no value)') }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.value_after|default('(no value)') }}</span>
