@@ -810,9 +810,12 @@ class TemplatingExtension extends \Twig_Extension
 		return $handler->renderText($display_array['value'], $vars);
 	}
 
-	public function getLanguageHtmlAttributes()
+	public function getLanguageHtmlAttributes($language = null)
 	{
-		$language = App::getLanguage();
+		if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
+			$language = App::getLanguage();
+		}
+
 		$attributes = array(
 			'dir' => ($language->is_rtl ? 'dir="rtl"' : 'dir="ltr"'),
 			'lang' => 'lang="' . htmlspecialchars(substr($language->locale, 0, 2), \ENT_QUOTES, 'UTF-8') . '"'
@@ -821,7 +824,7 @@ class TemplatingExtension extends \Twig_Extension
 		return implode(' ', $attributes);
 	}
 
-	public function getLanguageArrow($ltr, $rtl = null)
+	public function getLanguageArrow($ltr, $rtl = null, $language = null)
 	{
 		if ($rtl === null) {
 			switch ($ltr) {
@@ -831,16 +834,24 @@ class TemplatingExtension extends \Twig_Extension
 			}
 		}
 
-		if (App::getLanguage()->is_rtl) {
+		if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
+			$language = App::getLanguage();
+		}
+
+		if ($language->is_rtl) {
 			return $rtl;
 		} else {
 			return $ltr;
 		}
 	}
 
-	public function isRtl()
+	public function isRtl($language = null)
 	{
-		return App::getLanguage()->is_rtl;
+		if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
+			$language = App::getLanguage();
+		}
+
+		return $language->is_rtl;
 	}
 
 	public function getPhraseDev($phrase_name, array $vars = array())
