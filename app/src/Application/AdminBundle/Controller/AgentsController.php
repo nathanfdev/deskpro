@@ -460,11 +460,8 @@ class AgentsController extends AbstractController
 			}
 		}
 
-		if (!$this->in->getString('agent.first_name')) {
-			$errors[] = 'You did not enter a first name';
-		}
-		if (!$this->in->getString('agent.last_name')) {
-			$errors[] = 'You did not enter a last name';
+		if (!$this->in->getString('agent.name')) {
+			$errors[] = 'You did not a name';
 		}
 
 		if ($errors) {
@@ -506,17 +503,13 @@ class AgentsController extends AbstractController
 			if (!$this->canAddAgent('save')) return $this->showLicenseError();
 		}
 
-		$agent->first_name = $this->in->getString('agent.first_name');
-		$agent->last_name = $this->in->getString('agent.last_name');
+		$agent->name = $this->in->getString('agent.name');
 		$agent->override_display_name = $this->in->getString('agent.override_display_name');
 
 		$errors = array();
 
-		if (!$agent->first_name) {
-			$errors[] = 'You did not enter a first name';
-		}
-		if (!$agent->last_name) {
-			$errors[] = 'You did not enter a last name';
+		if (!$agent->name) {
+			$errors[] = 'You did not enter a name';
 		}
 
 		foreach (array('can_agent', 'can_admin', 'can_billing', 'can_reports') as $prop) {

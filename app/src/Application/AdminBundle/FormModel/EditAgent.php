@@ -55,8 +55,7 @@ class EditAgent
 	# getters
 	############################################################################
 
-	public function getFirstName() { return $this->person['first_name']; }
-	public function getLastName() { return $this->person['last_name']; }
+	public function getName() { return $this->person['name']; }
 	public function getPassword() { return ''; }
 
 	public function getEmail()
@@ -111,8 +110,7 @@ class EditAgent
 	# setters
 	############################################################################
 
-	public function setFirstName($v) { $this->person['first_name'] = $v; }
-	public function setLastName($v) { $this->person['last_name'] = $v; }
+	public function setName($v) { $this->person['name'] = $v; }
 	public function setPassword($v)
 	{
 		if ($v) {

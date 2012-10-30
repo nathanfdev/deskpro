@@ -14,12 +14,10 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 			var errors = [];
 
-			var f_name = $('input[name="agent[first_name]"]').val().trim();
-			var l_name = $('input[name="agent[last_name]"]').val().trim();
+			var name = $('input[name="agent[name]"]').val().trim();
 			var email  = $('input[name="agent[email]"]').val().trim()
 
-			if (!f_name.length) errors.push('Enter a first name');
-			if (!l_name.length) errors.push('Enter a last name');
+			if (!name.length) errors.push('Enter a name');
 			if (!email.length) {
 				errors.push('Enter an email address');
 			} else if (!email.test(/^.+@.+\..+$/)) {

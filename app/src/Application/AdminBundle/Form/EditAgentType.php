@@ -48,8 +48,7 @@ class EditAgentType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('first_name', 'text');
-		$builder->add('last_name', 'text');
+		$builder->add('name', 'text');
 		$builder->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
 		$builder->add('email', 'text');
 
