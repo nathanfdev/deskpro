@@ -2885,25 +2885,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (window.DP_AGENT_RTE_BUTTONS) {
 			var b = window.DP_AGENT_RTE_BUTTONS;
-			var buttons = ['html'];
-			if (b.bold || b.italic || b.underline || b.strike || b.color) buttons.push('|');
+			var buttons = [];
+			if (b.html) buttons.push('html');
+
+			if ((b.bold || b.italic || b.underline || b.strike) && buttons.length) buttons.push('|');
 			if (b.bold) buttons.push('bold');
 			if (b.italic) buttons.push('italic');
 			if (b.underline) buttons.push('underline');
 			if (b.strike) buttons.push('deleted');
-			if (b.color) buttons.push('fontcolor');
+
+			if (b.color) {
+				if (buttons.length) buttons.push('|');
+				buttons.push('fontcolor');
+			}
+
 			if (b.alignment) {
-				buttons.push('|');
+				if (buttons.length) buttons.push('|');
 				buttons.push('alignment');
 			}
+
 			if (b.list) {
-				buttons.push('|');
+				if (buttons.length) buttons.push('|');
 				buttons.push('unorderedlist');
 				buttons.push('orderedlist');
 				buttons.push('outdent');
 				buttons.push('indent');
 			}
-			if (b.image || b.link || b.table || b.hr) buttons.push('|');
+
+			if ((b.image || b.link || b.table || b.hr) && buttons.length) buttons.push('|');
 			if (b.image) buttons.push('image');
 			if (b.link) buttons.push('link');
 			if (b.table) buttons.push('table');

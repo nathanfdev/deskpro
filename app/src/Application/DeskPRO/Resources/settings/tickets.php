@@ -15,6 +15,7 @@
 	'core_tickets.billing_currency' => 'USD',
 
 	'core_tickets.enable_agent_rte' => true,
+	'core_tickets.agent_rte_button_html' => false,
 	'core_tickets.agent_rte_button_bold' => true,
 	'core_tickets.agent_rte_button_italic' => true,
 	'core_tickets.agent_rte_button_underline' => true,
