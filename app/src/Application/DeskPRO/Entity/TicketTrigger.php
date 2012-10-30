@@ -321,7 +321,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			$any_match = true;
 		} else {
 			$any_ticket_terms = $this->getAnyTicketTerms();
-			$ticket_terms->setChangeTracker($tracker);
+			$any_ticket_terms->setChangeTracker($tracker);
 			$any_match = $any_ticket_terms->doesTicketMatchAny($ticket);
 		}
 
