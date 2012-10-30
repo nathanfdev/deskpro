@@ -76,14 +76,19 @@ var DP = {
 		return field.tinymce(options);
 	},
 
-	convertTextToWysiwygHtml: function(text) {
+	convertTextToWysiwygHtml: function(text, pOneLine) {
 		if (!text.length) {
 			return '';
 		}
 
 		text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-		text = '<p>' + text.replace(/\r?\n/g, '<br>\n').replace(/<br>\n<br>\n/g, "</p>\n\n<p>") + '</p>';
+		if (pOneLine) {
+			text = '<p>' + text.replace(/\r?\n/g, "</p>\n\n<p>") + '</p>';
+		} else {
+			text = '<p>' + text.replace(/\r?\n/g, '<br>\n').replace(/<br>\n<br>\n/g, "</p>\n\n<p>") + '</p>';
+		}
+
 		if (!$.browser.msie) {
 			// IE renders the empty <p> tags
 			text = text.replace(/<p><\/p>/g, '<p><br></p>');

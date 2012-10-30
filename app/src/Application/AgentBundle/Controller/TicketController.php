@@ -1000,7 +1000,9 @@ class TicketController extends AbstractController
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
 		if ($this->in->getBool('is_html_reply')) {
-			$message->message = $this->in->getHtmlCore('message');
+			$message_text = $this->in->getHtmlCore('message');
+			$message_text = Strings::prepareWysiwygHtml($message_text);
+			$message->message = $message_text;
 		} else {
 			$message->setMessageText($this->in->getString('message'));
 		}

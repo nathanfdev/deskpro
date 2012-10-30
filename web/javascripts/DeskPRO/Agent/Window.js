@@ -2881,7 +2881,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!options.defaultIsHtml) {
 			var val = textarea.val();
 			if (val.length) {
-				textarea.val(DP.convertTextToWysiwygHtml(val));
+				textarea.val(DP.convertTextToWysiwygHtml(val, true));
 			}
 		}
 
@@ -2947,6 +2947,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		textarea.redactor(options);
 
 		var api = textarea.data('redactor'), editor = textarea.getEditor();
+
+		api.$toolbar.find('a').attr('unselectable', 'on');
 
 		editor.bind('keydown', function(ev) {
 			ev.stopPropagation();

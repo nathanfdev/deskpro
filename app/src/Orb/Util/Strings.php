@@ -1711,6 +1711,31 @@ class Strings
 
 
 	/**
+	 * Prepares WYSIWYG HTML where <p> tags only take up one line
+	 * by translating into <divs> or replacing with a simple <br>
+	 *
+	 * @param $html
+	 *
+	 * @return string
+	 */
+	public static function prepareWysiwygHtml($html)
+	{
+		$html = str_replace(array('<p', '</p>'), array('<div', '</div>'), $html);
+		$html = preg_replace('#(<br\s*/?>)\s*</div>#', '</div>', $html);
+		$html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);
+		do {
+			$original = $html;
+			$html = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);
+			// need to loop to handle nested divs - may not be perfect
+		} while ($original != $html);
+
+		$html = preg_replace('#(<br\s*/?>\s*)+$#', '', $html);
+
+		return trim($html);
+	}
+
+
+	/**
 	 * Decodes entities that are whitespace into their UTF-8 characters
 	 *
 	 * @param string $string

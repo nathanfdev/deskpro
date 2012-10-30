@@ -46,14 +46,8 @@ body .redactor_box_fullscreen {
 	position: relative;
 	outline: none;
 	box-shadow: none !important;
-	padding: 15px !important;
 	margin: 0 !important;
-	background: none;	
-	background: #fff !important;
 	overflow: auto;
-	font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif !important;      
-	font-size: 15px !important;
-	line-height: 1.45em !important;	
 	white-space: normal;
 }
 .redactor_editor a {
@@ -73,8 +67,6 @@ body .redactor_box_fullscreen {
 	height: auto;
 }
 
-.redactor_editor div,
-.redactor_editor p,
 .redactor_editor ul,
 .redactor_editor ol,
 .redactor_editor table,
@@ -85,9 +77,6 @@ body .redactor_box_fullscreen {
 	background: none !important;
 	margin: 0 !important;
 	margin-bottom: 15px !important;
-	line-height: 1.45em !important;
-	font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif !important;      
-	font-size: 15px !important;
 	border: none;	
 }
 .redactor_editor iframe, 

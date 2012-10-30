@@ -21,7 +21,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (draft.length) {
 				textarea.val(draft.val());
 			} else if (sig) {
-				textarea.val(($.browser.msie ? '<p></p>' : '<p><br></p>') + '\n\n' + sig);
+				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 			}
 
 			isWysiwyg = true;
@@ -66,7 +66,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var reply = textarea.getCode();
 					if (sig.length) {
 						if (!reply.length) {
-							reply = ($.browser.msie ? '<p></p>' : '<p><br></p>');
+							reply = ($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>');
 						}
 						textarea.setCode(reply + "\n\n" + sig);
 					}
@@ -349,8 +349,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var sig = this.getElById('signature_value').val();
 
 		if (isWysiwyg) {
-			sig = DP.convertTextToWysiwygHtml(sig);
-			content = DP.convertTextToWysiwygHtml(content);
+			sig = DP.convertTextToWysiwygHtml(sig, true);
+			content = DP.convertTextToWysiwygHtml(content, true);
 
 			var val = textarea.getCode();
 			if (val == '<p></p>' || val == '<p><br></p>') {

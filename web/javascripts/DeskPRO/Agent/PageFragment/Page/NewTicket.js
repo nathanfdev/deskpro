@@ -365,7 +365,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var textarea = this.getEl('message');
 
 		if (textarea.data('redactor')) {
-			textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(content));
+			textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(content, true));
 		} else {
 			var pos = textarea.getCaretPosition();
 			if (!pos) {
@@ -381,7 +381,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var textarea = this.getEl('message');
 
 		if (textarea.data('redactor')) {
-			textarea.setCode(DP.convertTextToWysiwygHtml(content));
+			textarea.setCode(DP.convertTextToWysiwygHtml(content, true));
 		} else {
 			textarea.val(content);
 			textarea.trigger('textareaexpander_fire');
@@ -672,7 +672,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.getEl('signature_value_html').val();
 			if (sig) {
-				textarea.val(($.browser.msie ? '<p></p>' : '<p><br></p>') + '\n\n' + sig);
+				textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 			}
 
 			DeskPRO_Window.initRteAgentReply(textarea, {

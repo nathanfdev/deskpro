@@ -200,7 +200,9 @@ class NewTicket
 		$message_text = $snip->snippetFormatted($ticket, $ticket->person);
 
 		if ($this->is_html_reply) {
-			$message->message = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+			$message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+			$message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+			$message->message = $message_text;
 		} else {
 			$message->setMessageText($message_text);
 		}
