@@ -141,7 +141,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 				changeUserOverlay.open();
 			});
+		}
 
+		if (this.meta.ticket_perms.reply) {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 		}
 
