@@ -65,28 +65,32 @@ class Address extends AbstractContactData
 	 */
 	public function getTemplateVars(ContactDataAbstract $contact_record)
 	{
+		$address_txt = array(
+			$contact_record->field_1,
+			$contact_record->field_2,
+			$contact_record->field_3,
+			$contact_record->field_4,
+			$contact_record->field_5
+		);
+		$address_txt = Arrays::removeFalsey($address_txt);
+		$address_txt = implode("\n", $address_txt);
+
 		$params = array(
 			'sensor' => 'false',
 			'size' => '200x200',
-			'center' => str_replace("\n", " ", Strings::standardEol(
-				$contact_record->field_1 . ' '
-				. $contact_record->field_2
-				. $contact_record->field_3
-				. $contact_record->field_4
-				. $contact_record->field_5
-			))
+			'center' => str_replace("\n", " ", Strings::standardEol($address_txt))
 		);
 		$google_url = 'https://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params, null, '&amp;');
 
 		return array(
-			'comment' => $contact_record->comment,
-			'address' => $contact_record->field_1,
-			'city' => $contact_record->field_2,
-			'state' => $contact_record->field_3,
-			'zip' => $contact_record->field_4,
-			'country' => $contact_record->field_5,
-			'address_html' => nl2br(htmlentities($contact_record->field_1)),
-			'map_url' => $google_url,
+			'comment'      => $contact_record->comment,
+			'address'      => $contact_record->field_1,
+			'city'         => $contact_record->field_2,
+			'state'        => $contact_record->field_3,
+			'zip'          => $contact_record->field_4,
+			'country'      => $contact_record->field_5,
+			'address_html' => nl2br(htmlentities($address_txt)),
+			'map_url'      => $google_url,
 		);
 	}
 }

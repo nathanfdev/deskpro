@@ -352,7 +352,7 @@
 							<input type="text" size="10" name="new_contact_data[address][%id%][zip]" value="{{ contact.zip }}" placeholder="{{ phrase('agent.people.address_postal') }}" />
 						</div>
 						<div class="line-3">
-							<select name="contact_data[{{ contact.id }}][country]">
+							<select name="new_contact_data[address][%id%][country]">
 								<option value=""></option>
 								{% for c in get_data('country_names') %}
 									<option value="{{ c }}" {% if contact.country == c %}selected="selected"{% endif %}>{{ c }}</option>
