@@ -225,7 +225,7 @@ class OverviewController extends AbstractController
 
 				$date->setTime(0,0,0);
 
-				$date2 = $this->person->getDateTime();
+				$date2 = new \DateTime();
 
 				if ($this->no_data_mode) {
 					return array(
@@ -250,11 +250,6 @@ class OverviewController extends AbstractController
 				switch ($date_choice) {
 					case 'this_week':
 						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P1D');
-						$date->sub($interval);
-						break;
-					case 'this_week':
-						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
 						$date->sub($interval);
 						break;
@@ -273,7 +268,7 @@ class OverviewController extends AbstractController
 						break;
 				}
 
-				$date2 = $this->person->getDateTime();
+				$date2 = new \DateTime();
 
 				$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field', 'department'));
 
@@ -301,11 +296,6 @@ class OverviewController extends AbstractController
 				switch ($date_choice) {
 					case 'this_week':
 						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P1D');
-						$date->sub($interval);
-						break;
-					case 'this_week':
-						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
 						$date->sub($interval);
 						break;
@@ -324,7 +314,7 @@ class OverviewController extends AbstractController
 						break;
 				}
 
-				$date2 = $this->person->getDateTime();
+				$date2 = new \DateTime();
 
 				if ($options->get('grouping_field')) {
 					$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field'));
@@ -405,11 +395,6 @@ class OverviewController extends AbstractController
 				switch ($date_choice) {
 					case 'this_week':
 						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P1D');
-						$date->sub($interval);
-						break;
-					case 'this_week':
-						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
 						$date->sub($interval);
 						break;
@@ -428,7 +413,7 @@ class OverviewController extends AbstractController
 						break;
 				}
 
-				$date2 = $this->person->getDateTime();
+				$date2 = new \DateTime();
 
 				$gf = new \Application\ReportBundle\OverviewStat\ChatGroupingField($options->get('grouping_field', 'department'));
 
@@ -457,11 +442,6 @@ class OverviewController extends AbstractController
 				switch ($date_choice) {
 					case 'this_week':
 						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P1D');
-						$date->sub($interval);
-						break;
-					case 'this_week':
-						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
 						$date->sub($interval);
 						break;
@@ -480,7 +460,7 @@ class OverviewController extends AbstractController
 						break;
 				}
 
-				$date2 = $this->person->getDateTime();
+				$date2 = new \DateTime();
 
 				if ($this->no_data_mode) {
 					return array(
