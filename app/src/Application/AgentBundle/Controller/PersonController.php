@@ -817,6 +817,15 @@ class PersonController extends AbstractController
 			throw $e;
 		}
 
+		// Reset display array
+		$contact_data_array = array();
+		foreach ($person->contact_data as $cd) {
+			if (!isset($contact_data_array[$cd->contact_type])) {
+				$contact_data_array[$cd->contact_type] = array();
+			}
+			$contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
+		}
+
 		foreach ($added as $cd) {
 			if (!isset($contact_data_array[$cd->contact_type])) {
 				$contact_data_array[$cd->contact_type] = array();
