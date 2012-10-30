@@ -210,9 +210,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 		return (strpos($this->getSearchString(), $string) !== false);
 	}
 
-	public function toApiData($deep = true, array $visited = array())
+	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
-		$data = parent::toApiData($deep, $visited);
+		$data = parent::toApiData($primary, $deep, $visited);
 		$data = array_merge($data, $this->getHandler()->getApiVars($this));
 
 		return $data;

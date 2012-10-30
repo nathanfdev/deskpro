@@ -113,4 +113,19 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	{
 		return $this->field['id'];
 	}
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		// record isn't useful without these, so always include them
+		if ($this->field) {
+			$data['field'] = $this->field->toApiData(false, false, $visited);
+		}
+		if ($this->root_field) {
+			$data['root_field'] = $this->root_field->toApiData(false, false, $visited);
+		}
+
+		return $data;
+	}
 }

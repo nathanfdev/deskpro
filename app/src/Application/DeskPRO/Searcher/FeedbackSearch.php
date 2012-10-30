@@ -46,6 +46,7 @@ class FeedbackSearch extends SearcherAbstract
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
+	const TERM_STATUS_CATEGORY = 'status_category';
 	const TERM_NUM_RATINGS       = 'num_ratings';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_LABEL           = 'label';
@@ -324,12 +325,17 @@ class FeedbackSearch extends SearcherAbstract
 
 					$cats = array();
 					$types = array();
+					$hidden_types = array();
 
 					foreach ((array)$choice as $c) {
 						if (strpos($c, '.') !== false) {
-							list (, $c) = explode('.', $c, 2);
+							list ($hidden, $c) = explode('.', $c, 2);
+						} else {
+							$hidden = false;
 						}
-						if (ctype_digit($c)) {
+						if ($hidden === 'hidden') {
+							$hidden_types[] = $c;
+						} else if (ctype_digit($c)) {
 							$cats[] = $c;
 						} else {
 							$types[] = $c;
@@ -350,6 +356,9 @@ class FeedbackSearch extends SearcherAbstract
 					if ($types) {
 						$part_where[] = $this->_stringMatch('feedback.status', $op, $types);
 					}
+					if ($hidden_types) {
+						$part_where[] = "(feedback.status = 'hidden' AND " . $this->_stringMatch('feedback.hidden_status', $op, $types) . ')';
+					}
 
 					$part_where = "(" . implode(' OR ', $part_where) . ")";
 
@@ -359,7 +368,7 @@ class FeedbackSearch extends SearcherAbstract
 
 				case self::TERM_CATEGORY:
 				case self::TERM_CATEGORY_SPECIFIC:
-					$base_ids = (array)(is_array($choice) ? $choice['category'] : $choice);
+					$base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
 					$ids = array();
 
 					if ($term == self::TERM_CATEGORY_SPECIFIC) {
@@ -376,6 +385,18 @@ class FeedbackSearch extends SearcherAbstract
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array)$choice);
+						return $titles;
+					});
+					break;
+
+				case self::TERM_STATUS_CATEGORY:
+					$ids = (array)$choice;
+					$ids = array_unique($ids);
+
+					$wheres[] = $this->_choiceMatch('feedback.status_category_id', $op, $ids);
+
+					$this->summary[] = $this->_choiceSummary('Status Category', $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getNames((array)$choice);
 						return $titles;
 					});
 					break;

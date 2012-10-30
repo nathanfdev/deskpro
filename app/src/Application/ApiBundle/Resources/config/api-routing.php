@@ -1007,4 +1007,127 @@ $collection->add('api_kb_products', new Route(
 	array()
 ));
 
+################################################################################
+# Feedback
+################################################################################
+
+$collection->add('api_feedback', new Route(
+	'/feedback',
+	array('_controller' => 'ApiBundle:Feedback:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_feedback_post', new Route(
+	'/feedback',
+	array('_controller' => 'ApiBundle:Feedback:newFeedback'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_feedback_feedback', new Route(
+	'/feedback/{feedback_id}',
+	array('_controller' => 'ApiBundle:Feedback:getFeedback'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_post', new Route(
+	'/feedback/{feedback_id}',
+	array('_controller' => 'ApiBundle:Feedback:postFeedback'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_delete', new Route(
+	'/feedback/{feedback_id}',
+	array('_controller' => 'ApiBundle:Feedback:deleteFeedback'),
+	array('_method' => 'DELETE', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_merge', new Route(
+	'/feedback/{feedback_id}/merge/{other_feedback_id}',
+	array('_controller' => 'ApiBundle:Feedback:mergeFeedback'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_attachments', new Route(
+	'/feedback/{feedback_id}/attachments',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackAttachments'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_attachments_post', new Route(
+	'/feedback/{feedback_id}/attachments',
+	array('_controller' => 'ApiBundle:Feedback:newFeedbackAttachment'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_attachment', new Route(
+	'/feedback/{feedback_id}/attachments/{attachment_id}',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackAttachment'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+', 'attachment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_attachment_delete', new Route(
+	'/feedback/{feedback_id}/attachments/{attachment_id}',
+	array('_controller' => 'ApiBundle:Feedback:deleteFeedbackAttachment'),
+	array('_method' => 'DELETE', 'feedback_id' => '\\d+', 'attachment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_labels', new Route(
+	'/feedback/{feedback_id}/labels',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackLabels'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_labels_post', new Route(
+	'/feedback/{feedback_id}/labels',
+	array('_controller' => 'ApiBundle:Feedback:postFeedbackLabels'),
+	array('_method' => 'POST', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_label', new Route(
+	'/feedback/{feedback_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Feedback:getFeedbackLabel'),
+	array('_method' => 'GET', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_feedback_label_delete', new Route(
+	'/feedback/{feedback_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Feedback:deleteFeedbackLabel'),
+	array('_method' => 'DELETE', 'feedback_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_feedback_categories', new Route(
+	'/feedback/categories',
+	array('_controller' => 'ApiBundle:Feedback:getCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_feedback_status_categories', new Route(
+	'/feedback/status-categories',
+	array('_controller' => 'ApiBundle:Feedback:getStatusCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_feedback_user_categories', new Route(
+	'/feedback/user-categories',
+	array('_controller' => 'ApiBundle:Feedback:getUserCategories'),
+	array('_method' => 'GET'),
+	array()
+));
+
 return $collection;

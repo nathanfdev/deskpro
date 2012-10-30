@@ -72,4 +72,18 @@ class FeedbackStatusCategory extends AbstractEntityRepository
 		if ($this->closed_cats === null) $this->reload();
 		return $this->closed_cats;
 	}
+
+	public function getNames(array $for_ids = null)
+	{
+		$categories = $this->findAll();
+
+		$ret = array();
+		foreach ($categories as $category) {
+			if ($for_ids === null || in_array($category->id, $for_ids)) {
+				$ret[$category->id] = $category->title;
+			}
+		}
+
+		return $ret;
+	}
 }

@@ -236,11 +236,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$output = array();
 			foreach ($input AS $key => $value) {
 				if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {
-					$output[$key] = $value->toApiData($deep);
+					$output[$key] = $value->toApiData(false, $deep);
 				}
 			}
 
 			return $output;
+		} else if ($input instanceof \Application\DeskPRO\Domain\DomainObject) {
+			return $input->toApiData(true, $deep);
 		}
 
 		return false;

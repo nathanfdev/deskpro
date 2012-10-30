@@ -2042,9 +2042,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $data;
 	}
 
-	public function toApiData($deep = true, array $visited = array())
+	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
-		$data = parent::toApiData($deep, $visited);
+		$data = parent::toApiData($primary, $deep, $visited);
 		if ($deep) {
 			$data['labels'] = array();
 			foreach ($this->labels AS $label) {

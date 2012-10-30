@@ -122,7 +122,7 @@ abstract class DomainObject extends BasicDomainObject
 		$this->_onPropertyChanged($field, $old, $value);
 	}
 
-	public function toApiData($deep = true, array $visited = array())
+	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$repository = static::getRepository();
 		if (!method_exists($repository, 'getFieldMappings')) {
@@ -136,6 +136,10 @@ abstract class DomainObject extends BasicDomainObject
 			if ($this->_api_mode == self::API_MODE_OPT_IN && empty($field['dpApi'])) {
 				continue;
 			} elseif ($this->_api_mode == self::API_MODE_OPT_OUT && isset($field['dpApi']) && !$field['dpApi']) {
+				continue;
+			}
+
+			if (!empty($field['dpApiPrimary']) && !$primary) {
 				continue;
 			}
 
@@ -154,6 +158,10 @@ abstract class DomainObject extends BasicDomainObject
 					continue;
 				}
 
+				if (!empty($association['dpApiPrimary']) && !$primary) {
+					continue;
+				}
+
 				$val = $this[$name];
 
 				$subDeep = !empty($association['dpApiDeep']);
@@ -162,13 +170,13 @@ abstract class DomainObject extends BasicDomainObject
 				}
 
 				if ($val instanceof DomainObject) {
-					$values[$name] = $val->toApiData($subDeep, $visited);
+					$values[$name] = $val->toApiData(false, $subDeep, $visited);
 				} else if (is_array($val) || $val instanceof \Traversable) {
 					$output = array();
 
 					foreach ($val AS $key => $sub) {
 						if ($sub instanceof \Application\DeskPRO\Domain\DomainObject) {
-							$output[$key] = $sub->toApiData($subDeep, $visited);
+							$output[$key] = $sub->toApiData(false, $subDeep, $visited);
 						}
 					}
 

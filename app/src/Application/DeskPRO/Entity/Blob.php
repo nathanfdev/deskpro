@@ -355,7 +355,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_label_manager;
 	}
 
-	public function toApiData($deep = true, array $visited = array())
+	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		return array(
 			'id' => $this->id,
