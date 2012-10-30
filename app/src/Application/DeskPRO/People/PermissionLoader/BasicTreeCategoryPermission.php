@@ -69,7 +69,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 				$this->allowed_cats[] = $node['id'];
 
 				if ($node['children']) {
-					$this->_computeTree($node['children'], true);
+					$this->_computeTree($node['children']);
 				}
 			}
 		}

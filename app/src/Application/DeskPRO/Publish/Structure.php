@@ -793,7 +793,7 @@ class Structure implements PersonContextInterface
 				$total_key = $c['id'] . '_total';
 				if ($c['depth'] == $highest) {
 					foreach ($h->getChildrenIds($c, true) as $subcatid) {
-						$counts[$total_key] += $counts["{$subcatid}_total"];
+						$counts[$total_key] += isset($counts["{$subcatid}_total"]) ? $counts["{$subcatid}_total"] : 0;
 					}
 				}
 			}
