@@ -204,6 +204,11 @@ class NewsController extends AbstractController
 			$news->status = $status;
 		}
 
+		$date = $this->in->getUint('date_published');
+		if ($date && $news->status == 'published') {
+			$news->date_published = new \DateTime('@' . $date);
+		}
+
 		$content = $this->in->getString('content');
 		if ($content && $content != $news->content) {
 			$news->content = $this->in->getHtml('content');
