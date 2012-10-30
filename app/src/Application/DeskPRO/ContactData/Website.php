@@ -78,4 +78,16 @@ class Website extends AbstractContactData
 			'display' => $display
 		);
 	}
+
+	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	public function getApiVars(ContactDataAbstract $contact_record)
+	{
+		return array(
+			'url' => $contact_record->field_1,
+		);
+	}
 }

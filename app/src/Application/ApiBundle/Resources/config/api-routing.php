@@ -364,6 +364,13 @@ $collection->add('api_people_person_contact_details', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_contact_details_post', new Route(
+	'/people/{person_id}/contact-details',
+	array('_controller' => 'ApiBundle:Person:postPersonContactDetails'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_contact_detail', new Route(
 	'/people/{person_id}/contact-details/{contact_id}',
 	array('_controller' => 'ApiBundle:Person:getPersonContactDetail'),
@@ -526,6 +533,13 @@ $collection->add('api_organizations_organization_contact_details', new Route(
 	'/organizations/{organization_id}/contact-details',
 	array('_controller' => 'ApiBundle:Organization:getOrganizationContactDetails'),
 	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_contact_details_post', new Route(
+	'/organizations/{organization_id}/contact-details',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationContactDetails'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
 	array()
 ));
 

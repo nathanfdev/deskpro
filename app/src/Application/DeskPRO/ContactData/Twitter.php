@@ -69,4 +69,16 @@ class Twitter extends AbstractContactData
 			'display_feed' => $contact_record->field_2
 		);
 	}
+
+	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	public function getApiVars(ContactDataAbstract $contact_record)
+	{
+		return array(
+			'username' => $contact_record->field_1,
+		);
+	}
 }

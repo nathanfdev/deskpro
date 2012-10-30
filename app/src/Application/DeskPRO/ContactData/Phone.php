@@ -73,4 +73,19 @@ class Phone extends AbstractContactData
 			'type' => $contact_record->field_3,
 		);
 	}
+
+
+	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	public function getApiVars(ContactDataAbstract $contact_record)
+	{
+		return array(
+			'country_calling_code' => $contact_record->field_1,
+			'number' => $contact_record->field_2,
+			'type' => $contact_record->field_3,
+		);
+	}
 }

@@ -132,6 +132,38 @@ class OrganizationController extends AbstractController
 			return $this->createApiMultipleErrorResponse($errors);
 		}
 
+		foreach ($this->in->getArrayValue('contact_data') AS $contact) {
+			$contact_type = isset($contact['type']) ? $contact['type'] : false;
+			$data = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
+
+			if (!$contact_type || !$data) {
+				continue;
+			}
+
+			$data['comment'] = isset($contact['comment']) ? $contact['comment'] : '';
+
+			$contact_data = new \Application\DeskPRO\Entity\OrganizationContactData();
+			$contact_data->contact_type = $contact_type;
+			try {
+				$contact_data->applyFormData($data);
+			} catch (\InvalidArgumentException $e) {
+				// invalid type
+				continue;
+			}
+
+			$all_empty = true;
+			for ($i = 1; $i <= 10; $i++) {
+				if ($contact_data->{'field_' . $i}) {
+					$all_empty = false;
+					break;
+				}
+			}
+
+			if (!$all_empty) {
+				$org->addContactData($contact_data);
+			}
+		}
+
 		$this->db->beginTransaction();
 
 		try {
@@ -374,6 +406,54 @@ class OrganizationController extends AbstractController
 		$org = $this->_getOrganizationOr404($organization_id);
 
 		return $this->createApiResponse(array('details' => $this->getApiData($org->contact_data)));
+	}
+
+	public function postOrganizationContactDetailsAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$type = $this->in->getString('type');
+		$data = $this->in->getArrayValue('data');
+		$comment = $this->in->getString('comment');
+
+		if (!$type) {
+			return $this->createApiErrorResponse('required_field.type', 'type is empty or missing');
+		}
+		if (!$data) {
+			return $this->createApiErrorResponse('required_field.data', 'data is empty or missing');
+		}
+
+		$data['comment'] = $comment;
+
+		$contact_data = new \Application\DeskPRO\Entity\OrganizationContactData();
+		$contact_data->contact_type = $type;
+		try {
+			$contact_data->applyFormData($data);
+		} catch (\InvalidArgumentException $e) {
+			return $this->createApiErrorResponse('invalid_argument.type', 'type is invalid');
+		}
+
+		$all_empty = true;
+		for ($i = 1; $i <= 10; $i++) {
+			if ($contact_data->{'field_' . $i}) {
+				$all_empty = false;
+				break;
+			}
+		}
+
+		if ($all_empty) {
+			return $this->createApiErrorResponse('invalid_argument.data', 'data contains invalid data');
+		}
+
+		$contact_data->organization = $org;
+
+		$this->em->persist($contact_data);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $contact_data->id),
+			$this->generateUrl('api_organizations_organization_contact_detail', array('organization_id' => $org->id, 'contact_id' => $contact_data->id), true)
+		);
 	}
 
 	public function getOrganizationContactDetailAction($organization_id, $contact_id)

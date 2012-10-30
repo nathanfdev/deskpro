@@ -93,4 +93,20 @@ class Address extends AbstractContactData
 			'map_url'      => $google_url,
 		);
 	}
+
+	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	public function getApiVars(ContactDataAbstract $contact_record)
+	{
+		return array(
+			'address'      => $contact_record->field_1,
+			'city'         => $contact_record->field_2,
+			'state'        => $contact_record->field_3,
+			'zip'          => $contact_record->field_4,
+			'country'      => $contact_record->field_5,
+		);
+	}
 }

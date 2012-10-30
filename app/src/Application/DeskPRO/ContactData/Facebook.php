@@ -81,4 +81,17 @@ class Facebook extends AbstractContactData
 			'display'     => $contact_record->field_2 ?: $contact_record->field_1
 		);
 	}
+
+	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	public function getApiVars(ContactDataAbstract $contact_record)
+	{
+		return array(
+			'profile_url' => $contact_record->field_1,
+			'display'     => $contact_record->field_2 ?: $contact_record->field_1
+		);
+	}
 }

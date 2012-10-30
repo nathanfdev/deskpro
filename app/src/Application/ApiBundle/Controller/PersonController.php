@@ -145,6 +145,47 @@ class PersonController extends AbstractController
 			$person->name = $name;
 		}
 
+		$updates = $this->_setBasicPersonDetailsFromInput($person);
+
+		foreach ($this->in->getArrayValue('contact_data') AS $contact) {
+			$contact_type = isset($contact['type']) ? $contact['type'] : false;
+			$data = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
+
+			if (!$contact_type || !$data) {
+				continue;
+			}
+
+			$data['comment'] = isset($contact['comment']) ? $contact['comment'] : '';
+
+			$contact_data = new \Application\DeskPRO\Entity\PersonContactData();
+			$contact_data->contact_type = $contact_type;
+			try {
+				$contact_data->applyFormData($data);
+			} catch (\InvalidArgumentException $e) {
+				// invalid type
+				continue;
+			}
+
+			$all_empty = true;
+			for ($i = 1; $i <= 10; $i++) {
+				if ($contact_data->{'field_' . $i}) {
+					$all_empty = false;
+					break;
+				}
+			}
+
+			if (!$all_empty) {
+				$person->addContactData($contact_data);
+			}
+		}
+
+		foreach ($this->in->getCleanValueArray('group_id', 'int') as $ug_id) {
+			$ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
+			if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
+				$person->usergroups->add($ug);
+			}
+		}
+
 		$email = $this->in->getString('email');
 		if (!$email || !\Orb\Validator\StringEmail::isValueValid($email)) {
 			$errors['email'] = array('required_field.email', 'email is empty or invalid');
@@ -157,8 +198,6 @@ class PersonController extends AbstractController
 			}
 		}
 
-		$updates = $this->_setBasicPersonDetailsFromInput($person);
-
 		if ($errors) {
 			return $this->createApiMultipleErrorResponse($errors);
 		}
@@ -166,25 +205,19 @@ class PersonController extends AbstractController
 		$this->db->beginTransaction();
 
 		try {
-			foreach ($this->in->getCleanValueArray('group_id', 'int') as $ug_id) {
-				$ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
-				if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
-					$person->usergroups->add($ug);
-				}
-			}
-
 			if ($updates['new_org']) {
 				$this->em->persist($updates['new_org']);
 			}
 
 			$this->em->persist($person);
+			$this->em->flush();
 
 			$field_manager = $this->container->getSystemService('person_fields_manager');
 			$post_custom_fields = $this->getCustomFieldInput();
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $person, true);
+				$this->em->flush();
 			}
-			$this->em->flush();
 
 			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			if ($labels) {
@@ -444,6 +477,54 @@ class PersonController extends AbstractController
 		$person = $this->_getPersonOr404($person_id);
 
 		return $this->createApiResponse(array('details' => $this->getApiData($person->contact_data)));
+	}
+
+	public function postPersonContactDetailsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$type = $this->in->getString('type');
+		$data = $this->in->getArrayValue('data');
+		$comment = $this->in->getString('comment');
+
+		if (!$type) {
+			return $this->createApiErrorResponse('required_field.type', 'type is empty or missing');
+		}
+		if (!$data) {
+			return $this->createApiErrorResponse('required_field.data', 'data is empty or missing');
+		}
+
+		$data['comment'] = $comment;
+
+		$contact_data = new \Application\DeskPRO\Entity\PersonContactData();
+		$contact_data->contact_type = $type;
+		try {
+			$contact_data->applyFormData($data);
+		} catch (\InvalidArgumentException $e) {
+			return $this->createApiErrorResponse('invalid_argument.type', 'type is invalid');
+		}
+
+		$all_empty = true;
+		for ($i = 1; $i <= 10; $i++) {
+			if ($contact_data->{'field_' . $i}) {
+				$all_empty = false;
+				break;
+			}
+		}
+
+		if ($all_empty) {
+			return $this->createApiErrorResponse('invalid_argument.data', 'data contains invalid data');
+		}
+
+		$contact_data->person = $person;
+
+		$this->em->persist($contact_data);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $contact_data->id),
+			$this->generateUrl('api_people_person_contact_detail', array('person_id' => $person->id, 'contact_id' => $contact_data->id), true)
+		);
 	}
 
 	public function getPersonContactDetailAction($person_id, $contact_id)

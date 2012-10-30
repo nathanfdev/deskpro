@@ -58,6 +58,13 @@ abstract class AbstractContactData
 	abstract public function getTemplateVars(ContactDataAbstract $contact_record);
 
 	/**
+	 * Return an array of values that are useful to the API
+	 *
+	 * @return array
+	 */
+	abstract public function getApiVars(ContactDataAbstract $contact_record);
+
+	/**
 	 * Get the short typename for this type
 	 *
 	 * @return string
