@@ -17,7 +17,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 	updateUi: function() {
 		if (this.wrapper) {
-			this.wrapper.find('.with-scroll-handler').each(function() {
+			if (!this.scrollHandlers) {
+				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
+			}
+			this.scrollHandlers.each(function() {
 				var sh = $(this).data('scroll_handler');
 				if (sh && sh.updateSize) {
 					sh.updateSize();
@@ -110,7 +113,23 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				window.clearInterval(self.resizerInterval);
 			}
 
-			self.wrapper.data('with-page-fragment', null);
+			if (self.wrapper) {
+				self.wrapper.find('div.with-scroll-handler').each(function() {
+					var sh = $(this).data('scroll_handler');
+					if (sh) {
+						sh.destroy();
+						$(this).data('scroll_handler', null);
+					}
+				});
+				self.wrapper.find('select.with-select2, input.with-select2').each(function() {
+					$(this).select2('destroy');
+				});
+				self.wrapper.find('textarea.with-redactor').each(function() {
+					$(this).getObject().destroy();
+				});
+
+				self.wrapper.data('with-page-fragment', null);
+			}
 
 			if (self.destroyObjects) {
 				var i;
@@ -121,6 +140,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			}
 
 			DeskPRO_Window.getMessageBroker().removeTaggedListeners(self.OBJ_ID);
+			if (self.wrapper) {
+				self.wrapper.empty();
+			}
 		});
 		this.addEvent('destroy', this.destroy);
 

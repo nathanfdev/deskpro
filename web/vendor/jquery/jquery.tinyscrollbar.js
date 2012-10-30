@@ -111,6 +111,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			};
 			var options = $.extend(defaults, options);
 			var oWrapper = $(this);
+			var timeout = null;
 
 			// Handle inserting wrappers etc automatically if the supplied
 			// element is the scroll content
@@ -128,24 +129,15 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				return oWrapper;
 			}
 
-			oWrapper.addClass('scroll-setup with-scrollbar');
-
-			oWrapper.on('goscrolltop', function() {
-				oThumb.obj.css(sDirection, 0);
-				oContent.obj.css(sDirection, 0);
-				iScroll = 0;
-				iMouse['start'] = oThumb.obj.offset()[sDirection];
-			});
-			oWrapper.on('goscrollto', function(ev, scrollTo) {
+			function goscrollto(ev, scrollTo) {
 				iScroll = scrollTo;
 				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
 				oWrapper.data('dp-scroll-pos', iScroll);
-			});
-			oWrapper.on('goscrollbottom', function() {
-
+			}
+			function goscrollbottom() {
 				// No scrolling, there is no bottom
 				if (oScrollbar.obj.hasClass('disable')) {
 					return;
@@ -156,8 +148,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
 				oWrapper.data('dp-scroll-pos', iScroll);
-			});
-			oWrapper.on('restorescroll', function() {
+			}
+			function restorescroll() {
 				iScroll = parseInt(oWrapper.data('dp-scroll-pos'));
 				if (!iScroll) {
 					return;
@@ -165,32 +157,12 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
-			});
-
-			var oViewport = { obj: $('.scroll-viewport', oWrapper).first() };
-			var oContent = { obj: $('.scroll-content', oWrapper).first() };
-			var oScrollbar = { obj: $('.scrollbar', oWrapper).first() };
-			var oTrack = { obj: $('.track', oScrollbar.obj) };
-			var oThumb = { obj: $('.thumb', oScrollbar.obj) };
-			var sAxis = options.axis == 'x', sDirection = sAxis ? 'left' : 'top', sSize = sAxis ? 'Width' : 'Height';
-			var iScroll, iPosition = { start: 0, now: 0 }, iMouse = {};
-			var wheelStopTimeout = null;
-			var mouseoverTimeout = null;
-
-			if (this.length > 1){
-				this.each(function(){$(this).tinyscrollbar(options)});
-				return this;
 			}
-			this.initialize = function(){
-				setEvents();
-				var self = this;
-				window.setTimeout(function() {
-					self.tinyscrollbar_update();
-					oWrapper.addClass('scroll-draw');
-				}, 250);
-			};
-			this.tinyscrollbar_update = function(sScroll){
-
+			function _update() {
+				scrollbarUpdate();
+				oWrapper.addClass('scroll-draw');
+			}
+			function scrollbarUpdate(sScroll) {
 				if (!sScroll) {
 					sScroll = 'relative';
 				}
@@ -238,6 +210,47 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				}
 
 				setSize();
+				oWrapper.trigger('dp_resize');
+			}
+
+			oWrapper.addClass('scroll-setup with-scrollbar');
+
+			oWrapper.on('goscrolltop', function() {
+				oThumb.obj.css(sDirection, 0);
+				oContent.obj.css(sDirection, 0);
+				iScroll = 0;
+				iMouse['start'] = oThumb.obj.offset()[sDirection];
+			});
+			oWrapper.on('goscrollto', goscrollto);
+			oWrapper.on('goscrollbottom', goscrollbottom);
+			oWrapper.on('restorescroll', restorescroll);
+
+			var oViewport = { obj: $('.scroll-viewport', oWrapper).first() };
+			var oContent = { obj: $('.scroll-content', oWrapper).first() };
+			var oScrollbar = { obj: $('.scrollbar', oWrapper).first() };
+			var oTrack = { obj: $('.track', oScrollbar.obj) };
+			var oThumb = { obj: $('.thumb', oScrollbar.obj) };
+			var sAxis = options.axis == 'x', sDirection = sAxis ? 'left' : 'top', sSize = sAxis ? 'Width' : 'Height';
+			var iScroll, iPosition = { start: 0, now: 0 }, iMouse = {};
+			var wheelStopTimeout = null;
+			var mouseoverTimeout = null;
+
+			if (this.length > 1){
+				this.each(function(){$(this).tinyscrollbar(options)});
+				return this;
+			}
+			this.initialize = function(){
+				setEvents();
+				timeout = window.setTimeout(_update, 250);
+			};
+			this.tinyscrollbar_destroy = function() {
+				if (timeout) {
+					window.clearTimeout(timeout);
+					timeout = null;
+				}
+			};
+			this.tinyscrollbar_update = function(sScroll){
+				scrollbarUpdate(sScroll);
 			};
 			function setSize(){
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);

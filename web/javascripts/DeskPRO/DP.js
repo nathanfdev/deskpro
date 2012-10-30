@@ -207,6 +207,7 @@ var DP = {
 
 		options.formatNoMatches = function() { return ''; }
 
+		el.addClass('with-select2');
 		el.select2(options);
 	}
 };

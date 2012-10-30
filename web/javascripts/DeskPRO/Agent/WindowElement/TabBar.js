@@ -442,6 +442,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		if (data.wrapper) {
+			data.wrapper.empty();
 			data.wrapper.remove();
 		}
 

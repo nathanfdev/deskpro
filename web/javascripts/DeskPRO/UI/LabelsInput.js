@@ -97,7 +97,6 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		});
 	},
 
-
 	/**
 	 * Get the labels currently added to the list
 	 *
@@ -129,5 +128,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		}, this);
 
 		return postData;
+	},
+
+	destroy: function() {
+		this.getLabels = function() { return []; };
+		this.getFormData = function() { return []; };
+		this.input = null;
+		this.options = null;
 	}
 });

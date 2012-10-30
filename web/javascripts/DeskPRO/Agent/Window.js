@@ -445,14 +445,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.messageChanneler.poller.send();
 
-		/**
-		 * After everything is init'ed we'll start our GC
-		 */
-		Orb.Class_GC_Start(5000);
-		Orb.Class_GC_Callbacks.push(function(obj, id) {
-			self.messageBroker.removeTaggedEvents(id);
-		});
-
 		if (DESKPRO_TIME_OUT_OF_SYNC) {
 			DESKPRO_TIME_OUT_OF_SYNC = false;
 			$.ajax({
@@ -2945,6 +2937,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		options = Object.merge(defaultOptions, options);
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
+		textarea.addClass('with-redactor');
 		textarea.redactor(options);
 
 		var api = textarea.data('redactor'), editor = textarea.getEditor();

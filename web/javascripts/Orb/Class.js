@@ -1,64 +1,5 @@
 if (!Orb) var Orb = {};
 
-Orb.Class_Instances = {};
-Orb.Class_GC_Callbacks = [];
-Orb.Class_GC_PrintDebug = false;
-Orb.Class_GC_Start = function(timeout) {
-	/*
-	if (Orb.Class_GC_Interval) {
-		console.warn('[GC] GC already restarted. Clearing cycle timeout and starting again.');
-		window.clearTimeout(Orb.Class_GC_Interval);
-	}
-
-	// Default to 10 seconds
-	if (!timeout) {
-		timeout = 10000;
-	}
-
-	Orb.Class_GC_Interval = window.setInterval(function() {
-		Orb.Class_GC_Cycle();
-	}, timeout);
-	*/
-}
-
-Orb.Class_GC_Cycle = function() {
-	var i, l;
-
-	if (this.isRunning) return;
-	this.isRunning = true;
-
-	if (Orb.Class_GC_PrintDebug) {
-		console.log('[GC] Cycle');
-	}
-
-	Object.each(Orb.Class_Instances, function(obj) {
-		if (obj.OBJ_DESTROYED) {
-			Orb.Class_GC_Cycle_Class(obj);
-		}
-	});
-
-	this.isRunning = false;
-};
-
-Orb.Class_GC_Cycle_Class = function(obj) {
-
-	var id = obj.OBJ_ID, i = null;
-
-	if (obj.OBJ_DESTROYED && !obj.OBJ_DONE_DESTROYED) {
-		obj.OBJ_DONE_DESTROYED = true;
-
-		if (Orb.Class_GC_PrintDebug) {
-			console.log('[GC] Destroyed %s: %o', id, obj);
-		}
-
-		for (i = 0, l = Orb.Class_GC_Callbacks.length; i < l; i++) {
-			Orb.Class_GC_Callbacks[i](obj, id);
-		}
-
-		delete Orb.Class_Instances[id];
-	}
-};
-
 Orb.Class = function(properties) {
 
 	//------------------------------
@@ -164,15 +105,12 @@ Orb.Class = function(properties) {
 					old.apply(this);
 				}
 				this.OBJ_DESTROYED = true;
-
-				Orb.Class_GC_Cycle_Class(this);
 			};
 		})(properties.__destroy);
 	} else {
 		properties.destroy = (function() {
 			return function() {
 				this.OBJ_DESTROYED = true;
-				Orb.Class_GC_Cycle_Class(this);
 			};
 		})();
 	}
@@ -213,8 +151,6 @@ Orb.Class = function(properties) {
 		this.SUPER  = parent_class;
 		this.OBJ_ID = Orb.uuid();
 		this.OBJ_DESTROYED = false;
-
-		Orb.Class_Instances[this.OBJ_ID] = this;
 
 		if (this.initialize) {
 			this.initialize.apply(this, arguments);
