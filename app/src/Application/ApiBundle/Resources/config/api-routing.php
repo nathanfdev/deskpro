@@ -350,6 +350,27 @@ $collection->add('api_people_person_delete', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_picture', new Route(
+	'/people/{person_id}/picture',
+	array('_controller' => 'ApiBundle:Person:getPersonPicture'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_picture_post', new Route(
+	'/people/{person_id}/picture',
+	array('_controller' => 'ApiBundle:Person:postPersonPicture'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_picture_delete', new Route(
+	'/people/{person_id}/picture',
+	array('_controller' => 'ApiBundle:Person:deletePersonPicture'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_tickets', new Route(
 	'/people/{person_id}/tickets',
 	array('_controller' => 'ApiBundle:Person:getPersonTickets'),
@@ -525,6 +546,27 @@ $collection->add('api_organizations_organization_post', new Route(
 $collection->add('api_organizations_organization_delete', new Route(
 	'/organizations/{organization_id}',
 	array('_controller' => 'ApiBundle:Organization:deleteOrganization'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_picture', new Route(
+	'/organizations/{organization_id}/picture',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationPicture'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_picture_post', new Route(
+	'/organizations/{organization_id}/picture',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationPicture'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_picture_delete', new Route(
+	'/organizations/{organization_id}/picture',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationPicture'),
 	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
 	array()
 ));

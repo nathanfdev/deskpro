@@ -426,6 +426,8 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		$data['picture_url'] = $this->getPictureUrl();
+
 		return $data;
 	}
 

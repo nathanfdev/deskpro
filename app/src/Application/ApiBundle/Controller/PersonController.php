@@ -366,6 +366,69 @@ class PersonController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getPersonPictureAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$size = $this->in->getUint('size');
+		if (!$size) {
+			$size = 80;
+		}
+
+		return $this->createApiResponse(array(
+			'has_picture' => $person->hasPicture(),
+			'picture_url' => $person->getPictureUrl($size),
+			'size' => $size
+		));
+	}
+
+	public function postPersonPictureAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$file = $this->request->files->get('file');
+		$accept = $this->container->getAttachmentAccepter();
+
+		if ($file) {
+			$error = $accept->getError($file, 'agent');
+			if (!$error) {
+				$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+				$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+				$accept->addRestrictionSet('only_images', $set);
+				$error = $accept->getError($file, 'only_images');
+			}
+			if ($error) {
+				$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createApiErrorResponse($error['error_code'], $message);
+			}
+
+			$blob = $accept->accept($file);
+		} else {
+			$blob_id = $this->in->getUint('blob_id');
+			$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+			if (!$blob) {
+				return $this->createApiErrorResponse('invalid_argument.blob_id', 'blob_id not found');
+			}
+		}
+
+		$person->setPictureBlob($blob);
+		$this->em->persist($person);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deletePersonPictureAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$person->setPictureBlob(null);
+		$this->em->persist($person);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getPersonTicketsAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);

@@ -265,6 +265,70 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+
+	public function getOrganizationPictureAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$size = $this->in->getUint('size');
+		if (!$size) {
+			$size = 80;
+		}
+
+		return $this->createApiResponse(array(
+			'has_picture' => $org->hasPicture(),
+			'picture_url' => $org->getPictureUrl($size),
+			'size' => $size
+		));
+	}
+
+	public function postOrganizationPictureAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$file = $this->request->files->get('file');
+		$accept = $this->container->getAttachmentAccepter();
+
+		if ($file) {
+			$error = $accept->getError($file, 'agent');
+			if (!$error) {
+				$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+				$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+				$accept->addRestrictionSet('only_images', $set);
+				$error = $accept->getError($file, 'only_images');
+			}
+			if ($error) {
+				$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createApiErrorResponse($error['error_code'], $message);
+			}
+
+			$blob = $accept->accept($file);
+		} else {
+			$blob_id = $this->in->getUint('blob_id');
+			$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+			if (!$blob) {
+				return $this->createApiErrorResponse('invalid_argument.blob_id', 'blob_id not found');
+			}
+		}
+
+		$org->picture_blob = $blob;
+		$this->em->persist($org);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteOrganizationPictureAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$org->picture_blob = null;
+		$this->em->persist($org);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getOrganizationMembersAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
