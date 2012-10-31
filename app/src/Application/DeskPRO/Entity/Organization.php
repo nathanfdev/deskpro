@@ -426,6 +426,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		$data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
 		$data['picture_url'] = $this->getPictureUrl();
 
 		return $data;
