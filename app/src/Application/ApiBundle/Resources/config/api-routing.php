@@ -371,6 +371,41 @@ $collection->add('api_people_person_picture_delete', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_emails', new Route(
+	'/people/{person_id}/emails',
+	array('_controller' => 'ApiBundle:Person:getPersonEmails'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_emails_post', new Route(
+	'/people/{person_id}/emails',
+	array('_controller' => 'ApiBundle:Person:postPersonEmails'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_email', new Route(
+	'/people/{person_id}/emails/{email_id}',
+	array('_controller' => 'ApiBundle:Person:getPersonEmail'),
+	array('_method' => 'GET', 'person_id' => '\\d+', 'email_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_email_post', new Route(
+	'/people/{person_id}/emails/{email_id}',
+	array('_controller' => 'ApiBundle:Person:postPersonEmail'),
+	array('_method' => 'POST', 'person_id' => '\\d+', 'email_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_email_delete', new Route(
+	'/people/{person_id}/emails/{email_id}',
+	array('_controller' => 'ApiBundle:Person:deletePersonEmail'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+', 'email_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_tickets', new Route(
 	'/people/{person_id}/tickets',
 	array('_controller' => 'ApiBundle:Person:getPersonTickets'),

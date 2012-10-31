@@ -198,6 +198,19 @@ class PersonController extends AbstractController
 			}
 		}
 
+		foreach ($this->in->getCleanValueArray('secondary_email', 'string') AS $secondary_email) {
+			if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email)) {
+				$errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email is empty or invalid');
+			} else {
+				$check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($secondary_email);
+				if ($check_exists) {
+					$errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email already exists');
+				} else {
+					$person->addEmailAddressString($secondary_email);
+				}
+			}
+		}
+
 		if ($errors) {
 			return $this->createApiMultipleErrorResponse($errors);
 		}
@@ -424,6 +437,156 @@ class PersonController extends AbstractController
 
 		$person->setPictureBlob(null);
 		$this->em->persist($person);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getPersonEmailsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array('emails' => $this->getApiData($person->emails)));
+	}
+
+	public function postPersonEmailsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		if (!$this->person->hasPerm('agent_people.manage_emails')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$email = $this->in->getString('email');
+
+		if (!$email) {
+			return $this->createApiErrorResponse('required_field.email', 'email missing');
+		}
+
+		if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+			return $this->createApiErrorResponse('invalid_argument.email', 'invalid email');
+		}
+
+		$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
+		if ($check) {
+			if ($check->person->id == $person->id) {
+				return $this->createApiErrorResponse('invalid_argument.email', 'email in use by self');
+			} else {
+				return $this->createApiErrorResponse('invalid_argument.email', 'email in use');
+			}
+		}
+
+		$comment = $this->in->getString('comment');
+
+		$email_rec = $person->addEmailAddressString($email);
+		$email_rec->comment = $comment;
+		$this->em->persist($email_rec);
+
+		if ($this->in->getBool('set_primary')) {
+			$person->primary_email = $email_rec;
+			$this->em->persist($person);
+		}
+
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $email_rec->id),
+			$this->generateUrl('api_people_person_email', array('person_id' => $person->id, 'email_id' => $email_rec->id), true)
+		);
+	}
+
+	public function getPersonEmailAction($person_id, $email_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+		$email = false;
+
+		foreach ($person->emails AS $test_email) {
+			if ($test_email->id == $email_id) {
+				$email = $test_email;
+				break;
+			}
+		}
+
+		if (!$email) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->createApiResponse(array('email' => $this->getApiData($email)));
+	}
+
+	public function postPersonEmailAction($person_id, $email_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+		$email = false;
+
+		foreach ($person->emails AS $test_email) {
+			if ($test_email->id == $email_id) {
+				$email = $test_email;
+				break;
+			}
+		}
+
+		if (!$email) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->hasPerm('agent_people.manage_emails')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($this->in->checkIsset('comment')) {
+			$email->comment = $this->in->getString('comment');
+			$this->em->persist($email);
+			$this->em->flush();
+		}
+
+		if ($this->in->getBool('set_primary')) {
+			$person->primary_email = $email;
+			$this->em->persist($person);
+			$this->em->flush();
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deletePersonEmailAction($person_id, $email_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+		$email = false;
+
+		foreach ($person->emails AS $test_email) {
+			if ($test_email->id == $email_id) {
+				$email = $test_email;
+				break;
+			}
+		}
+
+		if (!$email) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->hasPerm('agent_people.manage_emails')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (count($person->emails) == 1) {
+			return $this->createApiErrorResponse('required_field', 'cannot remove the last email');
+		}
+
+		$person->emails->removeElement($email);
+
+		$is_primary = ($person->primary_email && $email->id == $person->primary_email->id);
+
+		$this->em->remove($email);
+
+		if ($is_primary) {
+			foreach ($person->emails AS $new_primary) {
+				$person->primary_email = $new_primary;
+				$this->em->persist($person);
+				break;
+			}
+		}
+
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
