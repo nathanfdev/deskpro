@@ -2955,7 +2955,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var api = textarea.data('redactor'), editor = textarea.getEditor();
 
-		api.$toolbar.find('a').attr('unselectable', 'on');
+		api.$toolbar.find('a').attr('unselectable', 'on').attr('tabindex', '-1');
 
 		editor.bind('keydown', function(ev) {
 			ev.stopPropagation();
