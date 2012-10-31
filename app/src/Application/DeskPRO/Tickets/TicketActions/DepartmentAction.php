@@ -70,8 +70,8 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
 	{
 		$dep_id = $this->department_id;
 		if ($dep_id == 'email_account') {
-			if ($ticket->email_gateway && $ticket->email_gateway->department) {
-				$dep_id = $ticket->email_gateway->getId();
+			if ($ticket->email_gateway && $ticket->email_gateway->department && $ticket->email_gateway->department->is_tickets_enabled) {
+				$dep_id = $ticket->email_gateway->department->getId();
 			} else {
 				// no op
 				return;
