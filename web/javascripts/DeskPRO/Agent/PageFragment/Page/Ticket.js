@@ -191,9 +191,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (type == 'messages') {
 					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
+					self.getEl('messages_wrap').find('article.content-message').show();
+				} else if (type == 'feedback') {
+					self.getEl('messages_wrap').removeClass('show-log show-collapsed-messages');
+					self.getEl('messages_wrap').find('article.content-message').not('article.with-feedback').hide();
 				} else {
 					self.getEl('messages_wrap').find('article.message-expanded').removeClass('message-expanded');
 					self.getEl('messages_wrap').addClass('show-log show-collapsed-messages');
+					self.getEl('messages_wrap').find('article.content-message').show();
 				}
 			});
 

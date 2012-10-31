@@ -486,6 +486,11 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">Messages</li>
 				<li data-list-type="log" data-tab-for="#{{baseId}}_messages_wrap">Full Log</li>
+				{% if ticket.date_feedback_rating %}
+					<li data-list-type="feedback" data-tab-for="#{{baseId}}_messages_wrap">
+						Ticket Feedback <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
+					</li>
+				{% endif %}
 				<li data-tab-for="#{{ baseId }}_times">Dates &amp; Times</li>
 			{% for widget in messageTabs %}
 				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>

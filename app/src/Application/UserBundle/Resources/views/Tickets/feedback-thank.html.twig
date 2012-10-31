@@ -8,30 +8,39 @@
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
-<section class="dp-portal-section dp-new-feedback-section">
+<section class="dp-portal-section" style="margin-top: 0;">
 	<header>
 		<h1>{{ phrase('user.tickets.feedback_thanks') }}</h1>
 	</header>
 	<article>
 		{% if feedback.rating == 1 %}
-			<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'message_id': message.id, 'close_win': 1}) }}">
+			<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, 'close_win': 1}) }}">
 				<p>
 					{{ phrase('user.tickets.feedback_thanks_pos') }}
 				</p>
 
-				<p>
-					<button class="dp-btn" type="submit">{{ phrase('user.tickets.feedback_close_btn') }}</button>
-					<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
-				</p>
+				<br />
+
+				{% if app.user.id %}
+					<p>
+						<button class="dp-btn" type="submit">{{ phrase('user.tickets.feedback_close_btn') }}</button>
+						&nbsp;
+						<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
+					</p>
+				{% endif %}
 			</form>
 		{% else %}
 			<p>
 				{{ phrase('user.tickets.feedback_thanks_neg') }}
 			</p>
 
-			<p>
-				<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
-			</p>
+			<br />
+
+			{% if app.user.id %}
+				<p>
+					<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
+				</p>
+			{% endif %}
 		{% endif %}
 	</article>
 </section>

@@ -364,14 +364,14 @@ $collection->add('user_tickets_resolve', new Route(
 ));
 
 $collection->add('user_tickets_feedback', new Route(
-	'/ticket-edit/{ticket_ref}/feedback/{message_id}',
+	'/ticket-rate/{ticket_ref}/{auth}/{message_id}',
 	array('_controller' => 'UserBundle:Tickets:feedback'),
 	array(),
 	array()
 ));
 
 $collection->add('user_tickets_feedback_save', new Route(
-	'/ticket-edit/{ticket_ref}/feedback/{message_id}/save',
+	'/ticket-rate/{ticket_ref}/{auth}/{message_id}/save',
 	array('_controller' => 'UserBundle:Tickets:feedbackSave'),
 	array(),
 	array()

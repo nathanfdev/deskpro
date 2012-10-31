@@ -51,18 +51,14 @@ class TicketFeedback extends AbstractEntityRepository
 	 */
 	public function getFeedback(TicketMessageEntity $message, PersonEntity $person, $create_if_notexist = false)
 	{
-		try {
-			$feedback = $this->getEntityManager()->createQuery("
+		$feedback = $this->getEntityManager()->createQuery("
 				SELECT f
 				FROM DeskPRO:TicketFeedback f
-				WHERE f.ticket = ?1 AND f.message = ?2 AND f.person = ?3
-			")->setParameter(1, $message->ticket)
-			  ->setParameter(2, $message)
-			  ->setParameter(3, $person)
-			  ->getSingleResult();
-		} catch (\Exception $e) {
-			$feedback = null;
-		}
+				WHERE f.ticket_message = ?0 AND f.person = ?1
+			")->setParameter(0, $message)
+			  ->setParameter(1, $person)
+			  ->setMaxResults(1)
+			  ->getOneOrNullResult();
 
 		if (!$feedback AND $create_if_notexist) {
 			$feedback = new TicketFeedbackEntity();

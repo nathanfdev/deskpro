@@ -7,38 +7,65 @@
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
-<section class="dp-portal-section dp-new-feedback-section">
+<section class="dp-portal-section" style="padding-top:0; margin-top: 0;">
 	<header>
-		<h1>{{ phrase('user.tickets.feedback_message_title', {'name': message.person.display_name_user}) }}</h1>
+		<h1>{{ phrase('user.tickets.rate_support') }}</h1>
 	</header>
 	<article>
-		<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
-			<div class="dp-control-group">
-				<div class="dp-control-label">
-					<label>{{ phrase('user.tickets.was_reply_helpful') }}</label>
-				</div>
-				<div class="dp-controls">
-					<label style="margin:0;display:inline;"><input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} style="display: inline" /> {{ phrase('user.tickets.rate_helpful') }}</label>
-					&nbsp;&nbsp;&nbsp;
-					<label style="margin:0;display:inline;"><input type="radio" name="rating" value="0" {% if feedback.rating == -1 %}checked="checked"{% endif %} style="display: inline" /> {{ phrase('user.tickets.rate_unhelpful') }}</label>
-				</div>
-			</div>
 
-			<br />
+		<table class="dp-layout" width="100%"><tr>
+			<td style="vertical-align: top;" width="80">
+				<img src="{{ message.person.getPictureUrl(80) }}" alt="{{ message.person.display_name }}" style="float:left; margin: 0 11px 0 0;" />
+			</td>
+			<td style="vertical-align: top;">
+				<p><strong>{{ message.person.display_name }}</strong> helped you with your ticket "{{ ticket.subject }}"</p>
+				<p>How would you rate the support you recieved?</p>
 
-			<div class="dp-control-group">
-				<div class="dp-control-label">
-					<label>{{ phrase('user.tickets.feedback_message_leave_comment') }}</label>
-				</div>
-				<div class="dp-controls">
-					<textarea name="message" style="width: 95%; height: 60px;">{{ feedback.message }}</textarea>
-				</div>
-			</div>
+				<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
+					<table class="dp-layout" width="550" align="center"><tr>
+						<td width="33%" style="padding: 10px;">
+							<label class="dp-rate-box dp-positive">
+								<i>
+									☺
+								</i>
+								<span>
+									<input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} style="display: inline" />
+									It was great
+								</span>
+							</label>
+						</td>
+						<td width="33%" style="padding: 10px;">
+							<label class="dp-rate-box dp-neutral">
+								<i>
+									&mdash;
+								</i>
+								<span>
+									<input type="radio" name="rating" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} style="display: inline" />
+									It was OK
+								</span>
+							</label>
+						</td>
+						<td width="33%" style="padding: 10px;">
+							<label class="dp-rate-box dp-negative">
+								<i>
+									☹
+								</i>
+								<span>
+									<input type="radio" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} style="display: inline" />
+									It was not good
+								</span>
+							</label>
+						</td>
+					</tr><tr>
+						<td colspan="3" style="padding: 10px; padding-top: 0;">
+							<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('user.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
-			<p>
-				<button class="dp-btn dp-btn-primary" type="submit">{{ phrase('user.feedback.submit_feedback') }}</button>
-			</p>
-		</form>
+							<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('user.feedback.submit_feedback') }}</button>
+						</td>
+					</tr></table>
+				</form>
+			</td>
+		</tr></table>
 	</article>
 </section>
 {% endblock %}

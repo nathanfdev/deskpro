@@ -278,6 +278,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $urgency = 1;
 
 	/**
+	 * @var int
+	 */
+	protected $feedback_rating = null;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_feedback_rating = null;
+
+	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
@@ -664,6 +674,26 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->urgency = $new_u;
 			$this->_onPropertyChanged('urgency', $old_u, $new_u);
 		}
+	}
+
+
+	/**
+	 * @param string $rating
+	 */
+	public function setFeedbackRating($rating)
+	{
+		$this->setModelField('feedback_rating', $rating);
+		$this->setModelField('date_feedback_rating', new \DateTime());
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFeedbackRatingType()
+	{
+		if ($this->feedback_rating == 1) return 'positive';
+		elseif ($this->feedback_rating == -1) return 'negative';
+		else return 'neutral';
 	}
 
 
@@ -2389,6 +2419,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
 		$metadata->mapField(array( 'fieldName' => 'is_hold', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_hold', ));
 		$metadata->mapField(array( 'fieldName' => 'urgency', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'urgency', ));
+		$metadata->mapField(array( 'fieldName' => 'feedback_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'feedback_rating', ));
+		$metadata->mapField(array( 'fieldName' => 'date_feedback_rating', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_feedback_rating', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_resolved', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_resolved', ));
 		$metadata->mapField(array( 'fieldName' => 'date_closed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_closed', ));

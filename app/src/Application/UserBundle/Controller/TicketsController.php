@@ -241,20 +241,21 @@ class TicketsController extends AbstractController
 	# feedback
 	################################################################################
 
-	public function feedbackAction($ticket_ref, $message_id)
+	public function feedbackAction($ticket_ref, $auth, $message_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_ref);
+		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
 		// Message must be of the correct ticket,
 		// must not be a note,
 		// must be by an agent
 		// must not be rating ourself
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
+		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $person->id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
 
 		if ($this->in->getUint('rating')) {
 			$feedback->setRating(1);
@@ -267,29 +268,38 @@ class TicketsController extends AbstractController
 		));
 	}
 
-	public function feedbackSaveAction($ticket_ref, $message_id)
+	public function feedbackSaveAction($ticket_ref, $auth, $message_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_ref);
+		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
 		// Message must be of the correct ticket,
 		// must not be a note,
 		// must be by an agent
 		// must not be rating ourself
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
+		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $person->id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
-		$feedback['message'] = $this->in->getString('message');
-		if ($this->in->getBool('rating')) {
-			$feedback->rateUp();
-		} else {
-			$feedback->rateDown();
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
+		$feedback->message = $this->in->getString('message');
+		$feedback->setRating($this->in->getInt('rating'));
+		$this->em->persist($feedback);
+
+		$last_message_id = App::getDb()->fetchColumn("
+			SELECT message_id FROM ticket_feedback
+			WHERE ticket_id = ?
+			ORDER BY message_id DESC
+			LIMIT 1
+		", array($ticket->getId()));
+
+		if (!$last_message_id || $message->getId() >= $last_message_id) {
+			$ticket->feedback_rating = $feedback->rating;
+			$this->em->persist($ticket);
 		}
 
 		$this->em->transactional(function($em) use ($feedback) {
-			$em->persist($feedback);
 			$em->flush();
 		});
 

@@ -43,6 +43,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 {
+	const RATE_NEGATIVE  = -1;
+	const RATE_NEUTRAL   = 0;
+	const RATE_POSITIVE  = 1;
+
 	/**
 	 * @var int
 	 */
@@ -66,7 +70,7 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $rating;
+	protected $rating = 0;
 
 	/**
 	 * @var string
@@ -132,21 +136,33 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setRating($rating)
 	{
-		if ($rating > 0) {
-			$this->setModelField('rating', 1);
-		} else {
-			$this->setModelField('rating', -1);
+		if ($rating < -1 || $rating > 1) {
+			$rating = 0;
 		}
+
+		$this->setModelField('rating', $rating);
 	}
 
-	public function rateUp()
+	public function ratePositive()
 	{
 		$this->setRating(1);
 	}
 
-	public function rateDown()
+	public function rateNegative()
 	{
 		$this->setRating(-1);
+	}
+
+	public function rateNeutral()
+	{
+		$this->setRating(0);
+	}
+
+	public function getRatingType()
+	{
+		if ($this->rating == 1) return 'positive';
+		elseif ($this->rating == -1) return 'negative';
+		else return 'neutral';
 	}
 
 

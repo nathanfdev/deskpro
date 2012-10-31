@@ -33,19 +33,18 @@
 		{% if message.id == last_agent_message_id and message.person.id != app.user.id %}
 			<div class="feedback-link">
 				<span class="desc">
-					{% if user_ratings[message.id] == 1 %}
-						{{ phrase('user.tickets.you_rated_helpful') }}
-					{% elseif user_ratings[message.id] == -1 %}
-						{{ phrase('user.tickets.you_rated_unhelpful') }}
-					{% else %}
-						{{ phrase('user.tickets.was_reply_helpful') }}
-					{% endif %}
+					<a href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id }) }}">
+						{% if user_ratings[message.id] is not defined %}
+							{{ phrase('user.tickets.was_reply_helpful') }}
+						{% elseif user_ratings[message.id] == 1 %}
+							{{ phrase('user.tickets.you_rated_helpful') }}
+						{% elseif user_ratings[message.id] == -1 %}
+							{{ phrase('user.tickets.you_rated_unhelpful') }}
+						{% elseif user_ratings[message.id] == 0 %}
+							{{ phrase('user.tickets.you_rated_neutral') }}
+						{% endif %}
+					</a>
 				</span>
-				<span class="desc-helpful">{{ phrase('user.tickets.rate_helpful') }}</span>
-				<span class="desc-not-helpful">{{ phrase('user.tickets.rate_unhelpful') }}</span>
-
-				<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">{{ phrase('user.tickets.rate_helpful') }}</a>
-				<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">{{ phrase('user.tickets.rate_unhelpful') }}</a>
 			</div>
 			<br class="clearfix" />
 		{% endif %}

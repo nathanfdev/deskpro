@@ -1,5 +1,5 @@
 <article
-	class="content-message message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %}"
+	class="content-message message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %}"
 	data-message-id="{{message.id}}"
 >
 	<div class="avatar"><img
@@ -51,8 +51,14 @@
 		{% if all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">
-                {{ phrase('agent.tickets.name_found_this_message_x', {'name':feedback.person.display_name}) }}
-				{% if feedback.rating > 0 %}<em class="helpful">{{ phrase('agent.tickets.helpful') }}</em>{% else %}<em class="unhelpful">{{ phrase('agent.tickets.unhelpful') }}</em>{% endif %}
+                {{ feedback.person.display_name }} rated this message as
+				{% if feedback.rating == 1 %}
+					<em class="helpful">{{ phrase('agent.tickets.helpful') }}</em>
+				{% elseif feedback.rating == -1 %}
+					<em class="unhelpful">{{ phrase('agent.tickets.unhelpful') }}</em>
+				{% else %}
+					<em class="neutral">neutral</em>
+				{% endif %}
 				{% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
 			</div>
 		{% endif %}
