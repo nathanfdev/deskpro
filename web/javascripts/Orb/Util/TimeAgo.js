@@ -155,7 +155,6 @@ Orb.Util.TimeAgo = {
 	 */
 	getForMs: function(ms, ago) {
 		var info = this.getRelativeInfo(ms);
-
 		var total_secs = parseInt(ms / 1000);
 
 		// less than 60 secons: 20 seconds
@@ -163,7 +162,7 @@ Orb.Util.TimeAgo = {
 			return this.getPhraseFor('sec', total_secs, ago);
 
 		// less than 120 minutes: 20 minutes
-		} else if (total_secs <= 7200) {
+		} else if (total_secs <= 1200) {
 			return this.getPhraseFor('min', info.mins, ago);
 
 		// less than 24 hours: 2 1/2 hours
