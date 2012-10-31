@@ -2967,8 +2967,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// setup autosave
 		if (autosaveUrl) {
-			autosaveInterval = 5;
-
 			var autosaveTimer = setInterval($.proxy(function() {
 				if (!textarea.data('redactor')) {
 					clearInterval(autosaveTimer);
