@@ -413,6 +413,13 @@ $collection->add('api_people_person_tickets', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_chats', new Route(
+	'/people/{person_id}/chats',
+	array('_controller' => 'ApiBundle:Person:getPersonChats'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_activity_stream', new Route(
 	'/people/{person_id}/activity-stream',
 	array('_controller' => 'ApiBundle:Person:getPersonActivityStream'),
@@ -630,6 +637,13 @@ $collection->add('api_organizations_organization_members', new Route(
 $collection->add('api_organizations_organization_tickets', new Route(
 	'/organizations/{organization_id}/tickets',
 	array('_controller' => 'ApiBundle:Organization:getOrganizationTickets'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_chats', new Route(
+	'/organizations/{organization_id}/chats',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationChats'),
 	array('_method' => 'GET', 'organization_id' => '\\d+'),
 	array()
 ));

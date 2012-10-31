@@ -438,6 +438,54 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	public function getOrganizationChatsAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$member_ids = App::getEntityRepository('DeskPRO:Person')->getOrganizationMemberIds($org);
+		if ($member_ids)
+		{
+			$terms = array(
+				array(
+					'type' => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON_ID,
+					'op' => 'contains',
+					'options' => $member_ids
+				)
+			);
+
+			$order_by = 'chat_conversations.id:desc';
+
+			$extra = array();
+			if ($order_by !== null) {
+				$extra['order_by'] = $order_by;
+			}
+
+			$result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\ChatConversationSearch());
+
+			$ids = $result_cache->results;
+			$cache_id = $result_cache->id;
+		} else {
+			$ids = array();
+			$cache_id = 0;
+		}
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+		$chats = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($ids),
+			'cache_id' => $cache_id,
+			'chats' => $this->getApiData($chats)
+		));
+	}
+
 	public function getOrganizationNotesAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);

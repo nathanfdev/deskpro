@@ -48,6 +48,7 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_DEPARTMENT_ID        = 'department_id';
 	const TERM_DEPARTMENT_ID_SPECIFIC = 'department_id_specific';
 	const TERM_DATE_CREATED         = 'date_created';
+	const TERM_PERSON               = 'person';
 	const TERM_PERSON_ID            = 'person_id';
 	const TERM_STATUS               = 'status';
 	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
@@ -282,6 +283,30 @@ class ChatConversationSearch extends SearcherAbstract
 
 				case self::TERM_PERSON_ID:
 					$wheres[] = $this->_choiceMatch('chat_conversations.person_id', $op, $choice, true);
+					break;
+
+				case self::TERM_PERSON:
+					$choice = (array)$choice;
+					$people = App::getEntityRepository('DeskPRO:Person')->getByIds($choice);
+
+					$person_ids = array();
+					$emails = array();
+					$db = App::getDb();
+					foreach ($people AS $person) {
+						if ($person instanceof \Application\DeskPRO\Entity\Person) {
+							$person_ids[] = $db->quote($person->id);
+							$emails[] = $db->quote($person->getPrimaryEmailAddress());
+						}
+					}
+
+					if ($person_ids && $emails) {
+						$wheres[] = '(chat_conversations.person_id IN (' . implode(',', $person_ids)
+							. ') OR chat_conversations.person_email IN (' . implode(',', $emails) . '))';
+					} else if ($person_ids) {
+						$wheres[] = 'chat_conversations.person_id IN (' . implode(',', $person_ids) . ')';
+					}  else if ($emails) {
+						$wheres[] = 'chat_conversations.person_email IN (' . implode(',', $emails) . ')';
+					}
 					break;
 
 				case self::TERM_STATUS:

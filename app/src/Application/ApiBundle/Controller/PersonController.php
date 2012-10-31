@@ -657,6 +657,46 @@ class PersonController extends AbstractController
 		));
 	}
 
+	public function getPersonChatsAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$terms = array(
+			array(
+				'type' => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON,
+				'op' => 'contains',
+				'options' => array($person->id)
+			)
+		);
+
+		$order_by = 'chat_conversations.id:desc';
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		$result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\ChatConversationSearch());
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+		$chats = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($ids),
+			'cache_id' => $result_cache->id,
+			'chats' => $this->getApiData($chats)
+		));
+	}
+
 	public function resetPasswordAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id, 'reset_password');

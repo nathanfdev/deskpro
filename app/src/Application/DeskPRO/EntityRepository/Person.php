@@ -309,6 +309,21 @@ class Person extends AbstractEntityRepository
 		")->execute(array(1=> $org));
 	}
 
+	public function getOrganizationMemberIds(OrganizationEntity $org)
+	{
+		$ids = array();
+		$results = $this->getEntityManager()->createQuery("
+			SELECT p.id
+			FROM DeskPRO:Person p
+			WHERE p.organization = ?1
+		")->execute(array(1=> $org));
+		foreach ($results AS $result) {
+			$ids[] = $result['id'];
+		}
+
+		return $ids;
+	}
+
 
 	public function getUsergroupMembers(UsergroupEntity $ug)
 	{
