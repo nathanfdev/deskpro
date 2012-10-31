@@ -620,9 +620,9 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-	public function postOrganizationEmailDomainMoveTakenUsersAction(, 'edit'$organization_id, $domain)
+	public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
@@ -880,7 +880,7 @@ class OrganizationController extends AbstractController
 	 * @return \Application\DeskPRO\Entity\Organization
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function _getOrganizationOr404($id, , $check_perm = '')
+	protected function _getOrganizationOr404($id, $check_perm = '')
 	{
 		$org = $this->em->getRepository('DeskPRO:Organization')->findOneById($id);
 
