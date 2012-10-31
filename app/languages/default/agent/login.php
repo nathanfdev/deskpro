@@ -21,7 +21,7 @@
 	'agent.login.notice_outdated_browser'    => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
 	'agent.login.opera'                      => 'Opera',
 	'agent.login.password_was_reset'         => 'Your password has been reset successfully.',
-	'agent.login.sent_pw_reset_instructions' => 'We sent insutructions on how to reset your password to the email address you provided.',
+	'agent.login.sent_pw_reset_instructions' => 'We sent instructions on how to reset your password to the email address you provided.',
 	'agent.login.supported_browsers'         => 'The following browsers are supported',
 	'agent.login.version_x_or_later'         => 'v{{version}} or later',
 );
