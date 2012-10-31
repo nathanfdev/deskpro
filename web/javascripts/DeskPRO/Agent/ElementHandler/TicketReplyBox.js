@@ -34,6 +34,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false)
 			});
 			this.getElById('is_html_reply').val(1);
+
+			textarea.getEditor().on('keypress change', function() {
+				textarea.addClass('touched');
+			});
 		} else {
 			var sig = this.el.find('textarea.signature-value').val();
 			if (sig) {
