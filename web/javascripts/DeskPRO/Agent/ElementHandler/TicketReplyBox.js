@@ -16,6 +16,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val();
+			sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
 
 			var draft = this.getElById('draft_html');
 			if (draft.length) {

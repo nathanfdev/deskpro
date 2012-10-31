@@ -2945,6 +2945,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		options = Object.merge(defaultOptions, options);
+
+		var autosaveUrl = options.autosave, autosaveInterval = options.interval || 60;
+
+		options.autosave = false;
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
 		textarea.addClass('with-redactor');
 		textarea.redactor(options);
@@ -2960,6 +2964,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 		editor.bind('dragover drop', function(ev) {
 			ev.stopPropagation();
 		});
+
+		// setup autosave
+		if (autosaveUrl) {
+			autosaveInterval = 5;
+
+			var autosaveTimer = setInterval($.proxy(function() {
+				if (!textarea.data('redactor')) {
+					clearInterval(autosaveTimer);
+					autosaveTimer = false;
+					return;
+				}
+
+				if (!api.$editor.is(':visible')) {
+					return;
+				}
+
+				$.ajax({
+					url: autosaveUrl,
+					type: 'post',
+					data: this.$el.attr('name') + '=' + encodeURIComponent(this.getCode()),
+					success: $.proxy(function(data) {
+						if (typeof this.opts.autosaveCallback === 'function') {
+							this.opts.autosaveCallback(data, this);
+						}
+					}, this)
+				});
+			}, api), autosaveInterval * 1000);
+		}
 
 		// drag onto the editor to upload
 		if (api.opts.imageUpload && !$.browser.msie) {
