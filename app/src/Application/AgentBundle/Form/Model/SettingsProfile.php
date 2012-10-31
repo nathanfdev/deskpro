@@ -112,12 +112,19 @@ class SettingsProfile
 
 			$primary_email = $person->getPrimaryEmail();
 			if ($primary_email->email != $this->email) {
-				$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
-				$new_primary_email->email = $this->email;
-				$new_primary_email->is_validated = true;
-				$person->addEmailAddress($new_primary_email);
 
-				$this->em->persist($new_primary_email);
+				$found_email = $person->findEmailAddress($this->email);
+				if ($found_email) {
+					$new_primary_email = $found_email;
+				} else {
+					$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
+					$new_primary_email->email = $this->email;
+					$new_primary_email->is_validated = true;
+					$person->addEmailAddress($new_primary_email);
+					$this->em->persist($new_primary_email);
+				}
+
+				$person->primary_email = $new_primary_email;
 
 				$person->removeEmailAddressId($primary_email->id);
 				$this->em->remove($primary_email);
