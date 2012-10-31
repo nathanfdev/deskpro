@@ -308,13 +308,31 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Message context: %s", $message->getContextId()));
 		}
 
+		$matcher = $this->getGatewayAddressMatcher();
+		$address = $matcher->getMatchingAddress($from_address);
+
+		// See if it matches a gateway account which can be linked to transport
+		if (!$get_backup_transport && $gateway_address = $matcher->getMatchingAddress($from_address)) {
+			$gateway = $gateway_address->gateway;
+			if ($gateway && $gateway->linked_transport) {
+				$this->getLogger()->logDebug("[DelegatingTransport] Matched gateway account {$gateway->id} with linked transport {$gateway->linked_transport->id}");
+
+				$new_address = $gateway->getPrimaryEmailAddress();
+				if ($gateway->getAliasEmailAddress()) {
+					$new_address = $gateway->getAliasEmailAddress();
+				}
+				$from = array($new_address => $from_name);
+				$message->setFrom($from);
+
+				$this->getLogger()->logDebug("[DelegatingTransport] From set to $new_address");
+
+				return $gateway->linked_transport->getTransport();
+			}
+		}
+
 		if (!App::getSetting('core.allow_arbitrary_gateway_address') && $message instanceof \Application\DeskPRO\Mail\Message && $message->getContextId() == 'ticket_gateway') {
 
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] ticket_gateway context, checking gateway address for %s", $from_address));
-
-			// Make sure a ticket always belongs to a gateway address
-			$matcher = $this->getGatewayAddressMatcher();
-			$address = $matcher->getMatchingAddress($from_address);
 
 			if ($address) {
 
@@ -334,12 +352,10 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 			// If theres no address match, then we need to choose one
 			if (!$address) {
-
 				$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
 				$new_address = $matcher->getDefaultTicketAccountFrom();
 				if ($new_address) {
 					$from = array($new_address => $from_name);
-
 					$message->setFrom($from);
 
 					$from_address = $new_address;
