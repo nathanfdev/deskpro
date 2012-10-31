@@ -406,6 +406,13 @@ $collection->add('api_people_person_email_delete', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_vcard', new Route(
+	'/people/{person_id}/vcard',
+	array('_controller' => 'ApiBundle:Person:getPersonVcard'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_tickets', new Route(
 	'/people/{person_id}/tickets',
 	array('_controller' => 'ApiBundle:Person:getPersonTickets'),

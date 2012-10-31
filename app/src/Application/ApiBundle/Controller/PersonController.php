@@ -592,6 +592,88 @@ class PersonController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getPersonVcardAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$response = new \Symfony\Component\HttpFoundation\Response();
+		$response->headers->set('Content-Type', 'text/vcf');
+
+		if ($person->getName()) {
+			$filename = $person->getName();
+		} else {
+			$filename = $person->getEmailAddress();
+		}
+
+		$filename = str_replace(' ', '_', $filename);
+		$filename = preg_replace('[^a-zA-Z0-9_.@-]' , '', $filename);
+
+		if(strlen($filename) == 0) {
+			$filename = 'Unknown_'.$person->id;
+		}
+
+		if(strlen($filename) > 128) {
+			$filename = substr($filename, 0, 128);
+		}
+
+		$response->headers->set('Content-Disposition', 'attachment; filename='.$filename.'.vcf');
+		$vcard = \File_IMC::build('vCard');
+
+		$vcard->setFormattedName($person->name);
+		$vcard->setName($person->last_name, $person->first_name, '', '', '');
+
+		if ($person->organization) {
+			$vcard->addOrganization($person->organization->name);
+		}
+
+		if (!empty($person['organization_position'])) {
+			$vcard->setTitle($person['organization_position']);
+		}
+
+		foreach ($person->emails as $email) {
+			$vcard->addEmail($email->email);
+		}
+
+		foreach ($person->contact_data as $c_data) {
+			$data = $c_data->getTemplateVars();
+			switch($c_data['contact_type']) {
+				case 'phone':
+					if(empty($data['number']))
+						break;
+
+					$tel = '';
+
+					if(!empty($data['country_calling_code']))
+						$tel .= '+'.$data['country_calling_code'].'-';
+
+
+					$tel .= $data['number'];
+
+					$vcard->addTelephone($tel);
+					break;
+
+				case 'website':
+					$vcard->setURL($data['url']);
+					break;
+
+				case 'address':
+					$vcard->addAddress(
+						'',
+						'',
+						$data['address'],
+						$data['city'],
+						$data['state'],
+						$data['zip'],
+						$data['country']
+					);
+					break;
+			}
+		}
+
+		$response->setContent($vcard->fetch());
+		return $response;
+	}
+
 	public function getPersonActivityStreamAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);
