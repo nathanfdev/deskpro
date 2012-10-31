@@ -683,6 +683,48 @@ $collection->add('api_organizations_organization_billing_charges', new Route(
 	array()
 ));
 
+$collection->add('api_organizations_organization_email_domains', new Route(
+	'/organizations/{organization_id}/email-domains',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationEmailDomains'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_email_domains_post', new Route(
+	'/organizations/{organization_id}/email-domains',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationEmailDomains'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_email_domain', new Route(
+	'/organizations/{organization_id}/email-domains/{domain}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationEmailDomain'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_email_domain_move_users', new Route(
+	'/organizations/{organization_id}/email-domains/{domain}/move-users',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationEmailDomainMoveUsers'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_email_domain_move_taken_users', new Route(
+	'/organizations/{organization_id}/email-domains/{domain}/move-taken-users',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationEmailDomainMoveTakenUsers'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_email_domain_delete', new Route(
+	'/organizations/{organization_id}/email-domains/{domain}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationEmailDomain'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_organizations_organization_contact_details', new Route(
 	'/organizations/{organization_id}/contact-details',
 	array('_controller' => 'ApiBundle:Organization:getOrganizationContactDetails'),

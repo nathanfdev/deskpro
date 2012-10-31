@@ -424,6 +424,11 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			foreach ($this->labels AS $label) {
 				$data['labels'][] = $label['label'];
 			}
+
+			$data['email_domains'] = array();
+			foreach ($this->email_domains AS $domain) {
+				$data['email_domains'][] = $domain->domain;
+			}
 		}
 
 		$data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
@@ -454,6 +459,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'dpApi' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
 	}
 }

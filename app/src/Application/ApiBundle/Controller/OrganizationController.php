@@ -558,6 +558,106 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	public function getOrganizationEmailDomainsAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+
+		$org_count_domain_nonmembers   = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains, $org);
+		$org_count_domain_takenmembers = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
+		$org_count_domain_members      = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
+
+		$domains = array();
+		foreach ($org_email_domains AS $domain) {
+			$domains[] = array(
+				'domain' => $domain,
+				'members' => isset($org_count_domain_members[$domain]) ? $org_count_domain_members[$domain] : 0,
+				'nonmembers' => isset($org_count_domain_nonmembers[$domain]) ? $org_count_domain_nonmembers[$domain] : 0,
+				'taken_members' => isset($org_count_domain_takenmembers[$domain]) ? $org_count_domain_takenmembers[$domain] : 0,
+			);
+		}
+
+		return $this->createApiResponse(array('domains' => $domains));
+	}
+
+	public function postOrganizationEmailDomainsAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$domain = $this->in->getString('domain');
+		if (!$domain) {
+			return $this->createApiErrorResponse('required_field.domain', 'domain is missing');
+		}
+
+		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+
+		if ($org_domain_manager->isInUse($domain)) {
+			return $this->createApiErrorResponse('invalid_argument.domain', 'domain is in use');
+		}
+
+		$domain_rec = $org_domain_manager->assignDomain($domain, $org);
+
+		return $this->createApiCreateResponse(
+			array('domain' => $domain_rec->domain),
+			$this->generateUrl('api_organizations_organization_email_domain', array('organization_id' => $org->id, 'domain' => $domain_rec->domain), true)
+		);
+	}
+
+	public function getOrganizationEmailDomainAction($organization_id, $domain)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$exists = false;
+		foreach ($org->email_domains AS $email_domain) {
+			if ($email_domain->domain == $domain) {
+				$exists = true;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => $exists));
+	}
+
+	public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		if ($orgdomain) {
+			$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+			$org_domain_manager->moveNonCompanyUsers($orgdomain);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		if ($orgdomain) {
+			$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+			$org_domain_manager->moveOtherCompanyUsers($orgdomain);
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteOrganizationEmailDomainAction($organization_id, $domain)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		if ($orgdomain) {
+			$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+			$org_domain_manager->unassignDomain($orgdomain, $this->in->getBool('remove_users'));
+		}
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getOrganizationContactDetailsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);

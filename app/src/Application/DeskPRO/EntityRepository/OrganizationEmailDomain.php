@@ -102,7 +102,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
 			}
 		}
 
-		$org_id = is_object($org) ? $org : $org->id;
+		$org_id = is_object($org) ? $org->id : $org;
 
 		$single = false;
 		if (!is_array($domains)) {
@@ -124,7 +124,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
 		$domains = App::getDb()->quoteIn($domains);
 
 		$results = array_merge($results, App::getDb()->fetchAllKeyValue("
-			SELECT people_emails.email_domain, COUNT(*) as count
+			SELECT people_emails.email_domain, COUNT(DISTINCT people.id) as count
 			FROM people_emails
 			LEFT JOIN people ON (people.id = people_emails.person_id)
 			WHERE people_emails.email_domain IN ($domains) AND people.organization_id $op ?
