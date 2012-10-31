@@ -160,6 +160,34 @@ $collection->add('api_tickets_ticket_unlock', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_ticket_billing_charges', new Route(
+	'/tickets/{ticket_id}/billing-charges',
+	array('_controller' => 'ApiBundle:Ticket:getTicketBillingCharges'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_billing_charges_post', new Route(
+	'/tickets/{ticket_id}/billing-charges',
+	array('_controller' => 'ApiBundle:Ticket:postTicketBillingCharges'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_billing_charge', new Route(
+	'/tickets/{ticket_id}/billing-charges/{charge_id}',
+	array('_controller' => 'ApiBundle:Ticket:getTicketBillingCharge'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+', 'charge_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_billing_charge_delete', new Route(
+	'/tickets/{ticket_id}/billing-charges/{charge_id}',
+	array('_controller' => 'ApiBundle:Ticket:deleteTicketBillingCharge'),
+	array('_method' => 'DELETE', 'ticket_id' => '\\d+', 'charge_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_tickets_ticket_participants', new Route(
 	'/tickets/{ticket_id}/participants',
 	array('_controller' => 'ApiBundle:Ticket:getParticipants'),
@@ -357,6 +385,13 @@ $collection->add('api_people_person_notes_note', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_billing_charges', new Route(
+	'/people/{person_id}/billing-charges',
+	array('_controller' => 'ApiBundle:Person:getPersonBillingCharges'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_contact_details', new Route(
 	'/people/{person_id}/contact-details',
 	array('_controller' => 'ApiBundle:Person:getPersonContactDetails'),
@@ -528,6 +563,13 @@ $collection->add('api_organizations_organization_notes_note', new Route(
 	array('_method' => 'GET', 'organization_id' => '\\d+', 'note_id' => '\\d+'),
 	array()
 ));*/
+
+$collection->add('api_organizations_organization_billing_charges', new Route(
+	'/organizations/{organization_id}/billing-charges',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationBillingCharges'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
 
 $collection->add('api_organizations_organization_contact_details', new Route(
 	'/organizations/{organization_id}/contact-details',

@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 class TicketCharge extends AbstractEntityRepository
 {
-	public function getChargesForPerson(\Application\DeskPRO\Entity\Person $person, $limit = null)
+	public function getChargesForPerson(\Application\DeskPRO\Entity\Person $person, $limit = null, $offset = null)
 	{
 		if ($limit !== null) {
 			$limit = intval($limit);
@@ -57,6 +57,9 @@ class TicketCharge extends AbstractEntityRepository
 		if ($limit) {
 			$q->setMaxResults($limit);
 		}
+		if ($offset) {
+			$q->setFirstResult($offset);
+		}
 
 		return $q->execute(array($person));
 	}
@@ -70,7 +73,7 @@ class TicketCharge extends AbstractEntityRepository
 		', array($person->id));
 	}
 
-	public function getChargesForOrganization(\Application\DeskPRO\Entity\Organization $org, $limit = null)
+	public function getChargesForOrganization(\Application\DeskPRO\Entity\Organization $org, $limit = null, $offset = null)
 	{
 		if ($limit !== null) {
 			$limit = intval($limit);
@@ -88,6 +91,9 @@ class TicketCharge extends AbstractEntityRepository
 
 		if ($limit) {
 			$q->setMaxResults($limit);
+		}
+		if ($offset) {
+			$q->setFirstResult($offset);
 		}
 
 		return $q->execute(array($org));

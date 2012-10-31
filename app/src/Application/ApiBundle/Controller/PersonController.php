@@ -472,6 +472,30 @@ class PersonController extends AbstractController
 		);
 	}
 
+	public function getPersonBillingChargesAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$per_page = 25;
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$offset = ($page - 1) * $per_page;
+
+		$person_charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, $per_page, $offset);
+		$person_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForPerson($person);
+
+		return $this->createApiResponse(array(
+			'total_charge_time' => $person_charge_totals['charge_time'],
+			'total_charge_amount' => $person_charge_totals['charge'],
+			'total' => $person_charge_totals['count'],
+			'per_page' => $per_page,
+			'page' => $page,
+			'charges' => $this->getApiData($person_charges)
+		));
+	}
+
 	public function getPersonContactDetailsAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);

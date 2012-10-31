@@ -401,6 +401,30 @@ class OrganizationController extends AbstractController
 		return $this->createApiResponse(array('note' => $note->toApiData()));
 	}
 
+	public function getOrganizationBillingChargesAction($organization_id)
+	{
+		$organization = $this->_getOrganizationOr404($organization_id);
+
+		$per_page = 25;
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$offset = ($page - 1) * $per_page;
+
+		$charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($organization, $per_page, $offset);
+		$charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForOrganization($organization);
+
+		return $this->createApiResponse(array(
+			'total_charge_time' => $charge_totals['charge_time'],
+			'total_charge_amount' => $charge_totals['charge'],
+			'total' => $charge_totals['count'],
+			'per_page' => $per_page,
+			'page' => $page,
+			'charges' => $this->getApiData($charges)
+		));
+	}
+
 	public function getOrganizationContactDetailsAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);

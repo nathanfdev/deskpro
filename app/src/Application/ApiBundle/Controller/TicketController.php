@@ -564,6 +564,89 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getTicketBillingChargesAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$charges = $ticket->charges;
+
+		$time = 0;
+		$charge_amount = 0;
+
+		foreach ($charges AS $charge) {
+			$time += $charge->charge_time;
+			$charge_amount += $charge->amount;
+		}
+
+		return $this->createApiResponse(array(
+			'total_charge_time' => $time,
+			'total_charge_amount' => $charge_amount,
+			'total' => count($charges),
+			'charges' => $this->getApiData($charges)
+		));
+	}
+
+	public function postTicketBillingChargesAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$time = $this->in->getUint('time');
+		$amount = $this->in->getUFloat('amount');
+
+		if (!$time && !$amount) {
+			return $this->createApiErrorResponse('required_field', 'time or amount is required');
+		}
+
+		if ($time) {
+			$amount = null;
+		} else {
+			$time = null;
+		}
+
+		$comment = $this->in->getString('comment');
+
+		$charge = $ticket->addCharge($this->person, $time, $amount, $comment);
+		$this->em->persist($ticket);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $charge->id),
+			$this->generateUrl('api_tickets_ticket_billing_charge', array('ticket_id' => $ticket->id, 'charge_id' => $charge->id), true)
+		);
+	}
+
+	public function getTicketBillingChargeAction($ticket_id, $charge_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$charge = false;
+
+		foreach ($ticket->charges AS $ticket_charge) {
+			if ($ticket_charge->id == $charge_id) {
+				$charge = $ticket_charge;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => (bool)$charge));
+	}
+
+	public function deleteTicketBillingChargeAction($ticket_id, $charge_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		foreach ($ticket->charges AS $key => $ticket_charge) {
+			if ($ticket_charge->id == $charge_id) {
+				$ticket->charges->remove($key);
+				$this->em->persist($ticket);
+				$this->em->flush();
+				break;
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getParticipantsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
