@@ -592,6 +592,27 @@ class PersonController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getPersonActivityStreamAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+		$offset = $per_page * ($page - 1);
+
+		$activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, $per_page, $offset);
+		$total = $this->em->getRepository('DeskPRO:PersonActivity')->countForPerson($person);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => $total,
+			'activity' => $this->getApiData($activity)
+		));
+	}
+
 	public function getPersonTicketsAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);

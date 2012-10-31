@@ -50,6 +50,15 @@ class PersonActivity extends AbstractEntityRepository
 		")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$person));
 	}
 
+	public function countForPerson(PersonEntity $person)
+	{
+		return $this->getEntityManager()->getConnection()->fetchColumn('
+			SELECT COUNT(*)
+			FROM person_activity
+			WHERE person_id = ?
+		', array($person->id));
+	}
+
 	public function getForOrganization(OrganizationEntity $org, $max = 30, $offset = 0)
 	{
 		return $this->getEntityManager()->createQuery("
@@ -59,5 +68,15 @@ class PersonActivity extends AbstractEntityRepository
 			WHERE p.organization = ?1
 			ORDER BY a.id DESC
 		")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$org));
+	}
+
+	public function countForOrganization(OrganizationEntity $org)
+	{
+		return $this->getEntityManager()->getConnection()->fetchColumn('
+			SELECT COUNT(*)
+			FROM people
+			INNER JOIN person_activity AS act ON (act.person_id = people.id)
+			WHERE people.organization_id = ?
+		', array($org->id));
 	}
 }

@@ -329,6 +329,27 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getOrganizationActivityStreamAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+		$offset = $per_page * ($page - 1);
+
+		$activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, $per_page, $offset);
+		$total = $this->em->getRepository('DeskPRO:PersonActivity')->countForOrganization($org);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => $total,
+			'activity' => $this->getApiData($activity)
+		));
+	}
+
 	public function getOrganizationMembersAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);

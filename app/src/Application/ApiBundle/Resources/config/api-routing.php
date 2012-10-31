@@ -413,6 +413,13 @@ $collection->add('api_people_person_tickets', new Route(
 	array()
 ));
 
+$collection->add('api_people_person_activity_stream', new Route(
+	'/people/{person_id}/activity-stream',
+	array('_controller' => 'ApiBundle:Person:getPersonActivityStream'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_people_person_reset_password', new Route(
 	'/people/{person_id}/reset-password',
 	array('_controller' => 'ApiBundle:Person:resetPassword'),
@@ -603,6 +610,13 @@ $collection->add('api_organizations_organization_picture_delete', new Route(
 	'/organizations/{organization_id}/picture',
 	array('_controller' => 'ApiBundle:Organization:deleteOrganizationPicture'),
 	array('_method' => 'DELETE', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_activity_stream', new Route(
+	'/organizations/{organization_id}/activity-stream',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationActivityStream'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
 	array()
 ));
 
