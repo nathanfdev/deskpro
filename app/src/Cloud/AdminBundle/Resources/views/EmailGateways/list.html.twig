@@ -245,7 +245,7 @@ $(document).ready(function() {
 				$('#setout_form_container').empty();
 				$('#setout_form_container').html('<div>' + data.form_html + '</div>');
 
-				DeskPRO.ElementHandler_Exec($('#setout_form_container').find('.edit-email-transport-page'));
+				DeskPRO.ElementHandler_Exec($('#setout_overlay').find('.overlay-content > div'));
 			}
 		});
 	});
@@ -280,7 +280,11 @@ $(document).ready(function() {
 					return;
 				}
 
-				activeEl.find('span').text(data.email || 'No alias set');
+				if (!data.title || data.title == 'PHP mail()') {
+					data.title =  'Default (send through DeskPRO)';
+				}
+
+				activeEl.find('span').text(data.title);
 				DeskPRO_Window.util.showSavePuff(activeEl);
 				overlay.close();
 			}

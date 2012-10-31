@@ -42,6 +42,9 @@ use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailTransport;
 
+use Application\AdminBundle\Form\EditEmailTransport as EditEmailTransportForm;
+use Application\AdminBundle\FormModel\EditEmailTransport as EditEmailTransportModel;
+
 class EmailGatewaysController extends BaseEmailGatewaysController
 {
 	############################################################################
@@ -248,7 +251,31 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 
 	public function setCloudOutgoingAccountAction()
 	{
+		$id = App::getDb()->fetchColumn("
+			SELECT linked_transport_id
+			FROM email_gateways
+			WHERE id = ?
+		", array($this->in->getUint('gateway_id')));
 
+		if (!$id) {
+			throw $this->createNotFoundException();
+		}
+
+		$transport = $this->em->find('DeskPRO:EmailTransport', $id);
+
+		$edittrans = new EditEmailTransportModel($transport);
+		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+
+		$this->ensureRequestToken('edit_transport');
+		$form->bindRequest($this->get('request'));
+
+		$edittrans->save();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'transport_id' => $transport->id,
+			'title' => $transport->title
+		));
 	}
 
 	####################################################################################################################
