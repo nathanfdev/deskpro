@@ -36,13 +36,13 @@ namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
 
-/**
- * Handles creating/editing of Usersources
- */
 class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->createResponse('');
+		$page_html = '';
+		return $this->render('AdminBundle:Main:test.html.twig', array(
+			'page_html' => $page_html
+		));
 	}
 }
