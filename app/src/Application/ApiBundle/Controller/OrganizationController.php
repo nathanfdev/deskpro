@@ -210,11 +210,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
-
-		if (!$this->person->hasPerm('agent_org.edit')) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$name = $this->in->getString('name');
 		if ($name) {
@@ -253,11 +249,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
-
-		if (!$this->person->hasPerm('agent_org.delete')) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+		$org = $this->_getOrganizationOr404($organization_id, 'delete');
 
 		$edit_manager = $this->container->getSystemService('org_edit_manager');
 		$edit_manager->deleteOrganization($org);
@@ -284,7 +276,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationPictureAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$file = $this->request->files->get('file');
 		$accept = $this->container->getAttachmentAccepter();
@@ -320,7 +312,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationPictureAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$org->picture_blob = null;
 		$this->em->persist($org);
@@ -497,11 +489,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationNotesAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
-
-		if (!$this->person->hasPerm('agent_org.note')) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+		$org = $this->_getOrganizationOr404($organization_id, 'note');
 
 		$note_text = $this->in->getString('note');
 		if (!$note_text) {
@@ -583,7 +571,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationEmailDomainsAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$domain = $this->in->getString('domain');
 		if (!$domain) {
@@ -621,7 +609,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
@@ -632,7 +620,7 @@ class OrganizationController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
-	public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
+	public function postOrganizationEmailDomainMoveTakenUsersAction(, 'edit'$organization_id, $domain)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
@@ -647,7 +635,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationEmailDomainAction($organization_id, $domain)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
@@ -667,7 +655,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationContactDetailsAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$type = $this->in->getString('type');
 		$data = $this->in->getArrayValue('data');
@@ -728,7 +716,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationContactDetailAction($organization_id, $contact_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		foreach ($org->contact_data AS $key => $contact) {
 			if ($contact->id == $contact_id) {
@@ -751,7 +739,7 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationGroupsAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$group_id = $this->in->getUint('id');
 
@@ -801,7 +789,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationGroupAction($organization_id, $usergroup_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		foreach ($org->usergroups AS $key => $group) {
 			if ($group->id == $usergroup_id) {
@@ -827,11 +815,11 @@ class OrganizationController extends AbstractController
 
 	public function postOrganizationLabelsAction($organization_id)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 		$label = $this->in->getString('label');
 
 		if ($label === '') {
-			return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
+			return $this->createApiErrorResponse('required_field.label', "Field 'label' missing or empty");
 		}
 
 		$org->getLabelManager()->addLabel($label);
@@ -857,7 +845,7 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationLabelAction($organization_id, $label)
 	{
-		$org = $this->_getOrganizationOr404($organization_id);
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
 
 		$org->getLabelManager()->removeLabel($label);
 		$this->em->persist($org);
@@ -888,15 +876,32 @@ class OrganizationController extends AbstractController
 
 	/**
 	 * @param integer $id
+	 * @param string $check_perm
 	 * @return \Application\DeskPRO\Entity\Organization
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function _getOrganizationOr404($id)
+	protected function _getOrganizationOr404($id, , $check_perm = '')
 	{
 		$org = $this->em->getRepository('DeskPRO:Organization')->findOneById($id);
 
 		if (!$org) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no organization with ID $id");
+		}
+
+		if ($check_perm) {
+			switch ($check_perm) {
+				case 'edit':
+				case 'delete':
+				case 'create':
+				case 'note':
+					if (!$this->person->hasPerm('agent_org.' . $check_perm)) {
+						throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+					}
+					break;
+
+				default:
+					throw new \Exception("Uknown perm type $check_perm");
+			}
 		}
 
 		return $org;
