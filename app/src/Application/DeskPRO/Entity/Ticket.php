@@ -2297,6 +2297,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 					$repl["performer.org.field{$f['id']}"] = $f['rendered'];
 				}
 			}
+		} else {
+			$repl = array_merge(array(
+				'performer.name'                   => '',
+				'performer.email'                  => '',
+				'performer.organization_position'  => '',
+				'performer.org.name' => '',
+			), $repl);
 		}
 
 		if ($this->agent) {

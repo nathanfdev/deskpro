@@ -956,7 +956,6 @@ class TicketTerms
 
 				switch ($op) {
 					case self::OP_IS:
-						dpdev_log("ERE");
 						if ($name != $choice) return false;
 						break;
 					case self::OP_NOT:

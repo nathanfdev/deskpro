@@ -159,7 +159,20 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function getPersonPerformer()
 	{
-		return $this->person_context;
+		if ($this->person_context && $this->person_context->getId()) {
+			return $this->person_context;
+		}
+
+		$reply = $this->getNewAgentReply();
+		if (!$reply) {
+			$reply = $this->getNewUserReply();
+		}
+
+		if (!$reply) {
+			return null;
+		}
+
+		return $reply->person;
 	}
 
 
