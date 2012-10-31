@@ -1952,6 +1952,19 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return string
+	 */
+	public function getEmailReferencesHeader()
+	{
+		$uid = 'TICKET-' . $this->getAccessCode() . '.';
+		$uid .= App::getSetting('core.site_id');
+		$uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
+
+		return $uid;
+	}
+
+
+	/**
 	 * Get the ID used in the interface for links etc.
 	 *
 	 * @return int

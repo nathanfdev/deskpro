@@ -187,6 +187,7 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			}
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+			$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
 
 			if ($attach_attachments) {
 				foreach ($attach_attachments as $src => $attach) {

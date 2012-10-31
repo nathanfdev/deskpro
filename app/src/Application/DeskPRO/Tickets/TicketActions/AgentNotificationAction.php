@@ -376,6 +376,7 @@ class AgentNotificationAction extends AbstractAction
 			$message->setTemplate($tpl, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
+			$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
 
 			if ($is_new_ticket) {
 				$this->_addAttachments($message, $new_message->attachments, $new_message->getUsedSignatureImageBlobs());

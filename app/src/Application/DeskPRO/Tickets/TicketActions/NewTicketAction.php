@@ -278,6 +278,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				$message->setFrom($from_address);
 				$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+				$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
 
 				App::getMailer()->send($message);
 			});
