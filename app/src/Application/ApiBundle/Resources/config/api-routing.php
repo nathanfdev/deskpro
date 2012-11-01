@@ -1203,6 +1203,69 @@ $collection->add('api_kb_categories', new Route(
 	array()
 ));
 
+$collection->add('api_kb_categories_post', new Route(
+	'/kb/categories',
+	array('_controller' => 'ApiBundle:Kb:postCategories'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_kb_category', new Route(
+	'/kb/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Kb:getCategory'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_post', new Route(
+	'/kb/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Kb:postCategory'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_delete', new Route(
+	'/kb/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Kb:deleteCategory'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_articles', new Route(
+	'/kb/categories/{category_id}/articles',
+	array('_controller' => 'ApiBundle:Kb:getCategoryArticles'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_groups', new Route(
+	'/kb/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:Kb:getCategoryGroups'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_groups_post', new Route(
+	'/kb/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:Kb:postCategoryGroups'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_group', new Route(
+	'/kb/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:Kb:getCategoryGroup'),
+	array('_method' => 'GET', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_kb_category_group_delete', new Route(
+	'/kb/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:Kb:deleteCategoryGroup'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_kb_fields', new Route(
 	'/kb/fields',
 	array('_controller' => 'ApiBundle:Kb:getFields'),

@@ -480,6 +480,234 @@ class KbController extends AbstractController
 		return $this->createApiResponse(array('categories' => $categories));
 	}
 
+	public function postCategoriesAction()
+	{
+		$errors = array();
+
+		$title = $this->in->getString('title');
+		if (!$title) {
+			$errors['title'] = array('required_field.title', 'title empty or missing');
+		}
+
+		$category = new \Application\DeskPRO\Entity\ArticleCategory();
+
+		$category->title = $title;
+
+		$parent_id = $this->in->getUint('parent_id');
+		if ($parent_id) {
+			$parent = $this->em->getRepository('DeskPRO:ArticleCategory')->find($parent_id);
+			if ($parent) {
+				$category->setParent($parent);
+			}
+		}
+
+		$category->display_order = $this->in->getUint('display_order');
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
+
+		if ($this->in->checkIsset('usergroup_id')) {
+			$usergroup_ids = $this->in->getCleanValueArray('usergroup_id', 'uint');
+		} else {
+			$usergroup_ids = array(1);
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			$this->em->persist($category);
+			$this->em->flush();
+
+			foreach ($usergroup_ids AS $usergroup_id) {
+				if (!$usergroup_id) {
+					continue;
+				}
+				App::getDb()->insert('article_category2usergroup', array(
+					'category_id'  => $category->getId(),
+					'usergroup_id' => $usergroup_id
+				));
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createApiCreateResponse(
+			array('id' => $category->id),
+			$this->generateUrl('api_kb_category', array('category_id' => $category->id), true)
+		);
+	}
+
+	public function getCategoryAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		return $this->createApiResponse(array('category' => $category->toApiData()));
+	}
+
+	public function postCategoryAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		$errors = array();
+
+		if ($this->in->checkIsset('title')) {
+			$title = $this->in->getString('title');
+			if (!$title) {
+				$errors['title'] = array('required_field.title', 'title empty or missing');
+			}
+			$category->title = $title;
+		}
+
+
+		if ($this->in->checkIsset('parent_id')) {
+			$parent_id = $this->in->getUint('parent_id');
+			if ($parent_id) {
+				$parent = $this->em->getRepository('DeskPRO:ArticleCategory')->find($parent_id);
+				if ($parent) {
+					$category->setParent($parent);
+				}
+			} else {
+				$category->setParent(null);
+			}
+		}
+
+		if ($this->in->checkIsset('display_order')) {
+			$category->display_order = $this->in->getUint('display_order');
+		}
+
+		$this->em->persist($category);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteCategoryAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		try {
+			\Application\DeskPRO\Publish\CategoryEdit::deleteCategory('articles', $category_id);
+		} catch (\OutOfBoundsException $e) {
+			return $this->createApiErrorResponse('invalid_argument.category_id', 'category is not empty');
+		}
+
+		return $this->createSuccessResponse();
+	}
+
+	public function getCategoryArticlesAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		$terms = array(
+			array('type' => ArticleSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
+		);
+
+		$order_by = $this->in->getString('order');
+		if (!$order_by) {
+			$order_by = 'date:desc';
+		}
+
+		$extra = array();
+		if ($order_by !== null) {
+			$extra['order_by'] = $order_by;
+		}
+
+		$result_cache = $this->getApiSearchResult('article', $terms, $extra, $this->in->getUint('cache_id'), new ArticleSearch());
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$per_page = 25;
+
+		$ids = $result_cache->results;
+
+		$page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+		$articles = App::getEntityRepository('DeskPRO:Article')->getByIds($page_ids, true);
+
+		return $this->createApiResponse(array(
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => count($ids),
+			'cache_id' => $result_cache->id,
+			'articles' => $this->getApiData($articles)
+		));
+	}
+
+	public function getCategoryGroupsAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
+	}
+
+	public function postCategoryGroupsAction($category_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		$group_id = $this->in->getUint('id');
+
+		$group = $this->em->getRepository('DeskPRO:Usergroup')->find($group_id);
+		if (!$group || $group->is_agent_group) {
+			return $this->createApiErrorResponse('invalid_argument.id', 'group cannot be found or is not available');
+		}
+
+		$exists = false;
+		foreach ($category->usergroups AS $group) {
+			if ($group->id == $group_id) {
+				$exists = true;
+				break;
+			}
+		}
+
+		if (!$exists) {
+			$this->db->insert('article_category2usergroup', array(
+				'category_id' => $category->id,
+				'usergroup_id' => $group_id
+			));
+		}
+
+		return $this->createApiCreateResponse(
+			array('id' => $group_id),
+			$this->generateUrl('api_kb_category_group', array('category_id' => $category->id, 'group_id' => $group_id), true)
+		);
+	}
+
+	public function getCategoryGroupAction($category_id, $group_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		$exists = false;
+		foreach ($category->usergroups AS $group) {
+			if ($group->id == $group_id) {
+				$exists = true;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => $exists));
+	}
+
+	public function deleteCategoryGroupAction($category_id, $group_id)
+	{
+		$category = $this->_getCategoryOr404($category_id);
+
+		foreach ($category->usergroups AS $key => $group) {
+			if ($group->id == $group_id) {
+				$category->usergroups->remove($key);
+				$this->em->persist($category);
+				$this->em->flush();
+				echo 'hi'; exit;
+				break;
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getFieldsAction()
 	{
 		$field_manager = $this->container->getSystemService('article_fields_manager');
@@ -519,5 +747,21 @@ class KbController extends AbstractController
 		}
 
 		return $article;
+	}
+
+	/**
+	 * @param integer $id
+	 * @return \Application\DeskPRO\Entity\ArticleCategory
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	protected function _getCategoryOr404($id)
+	{
+		$category = $this->em->getRepository('DeskPRO:ArticleCategory')->find($id);
+
+		if (!$category) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no category with ID $id");
+		}
+
+		return $category;
 	}
 }
