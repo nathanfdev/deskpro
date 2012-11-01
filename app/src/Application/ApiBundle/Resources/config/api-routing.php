@@ -1027,6 +1027,69 @@ $collection->add('api_downloads_categories', new Route(
 	array()
 ));
 
+$collection->add('api_downloads_categories_post', new Route(
+	'/downloads/categories',
+	array('_controller' => 'ApiBundle:Download:postCategories'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_downloads_category', new Route(
+	'/downloads/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Download:getCategory'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_post', new Route(
+	'/downloads/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Download:postCategory'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_delete', new Route(
+	'/downloads/categories/{category_id}',
+	array('_controller' => 'ApiBundle:Download:deleteCategory'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_downloads', new Route(
+	'/downloads/categories/{category_id}/downloads',
+	array('_controller' => 'ApiBundle:Download:getCategoryDownloads'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_groups', new Route(
+	'/downloads/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:Download:getCategoryGroups'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_groups_post', new Route(
+	'/downloads/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:Download:postCategoryGroups'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_group', new Route(
+	'/downloads/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:Download:getCategoryGroup'),
+	array('_method' => 'GET', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_downloads_category_group_delete', new Route(
+	'/downloads/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:Download:deleteCategoryGroup'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
 ################################################################################
 # News
 ################################################################################
