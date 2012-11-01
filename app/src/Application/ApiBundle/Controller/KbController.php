@@ -700,7 +700,6 @@ class KbController extends AbstractController
 				$category->usergroups->remove($key);
 				$this->em->persist($category);
 				$this->em->flush();
-				echo 'hi'; exit;
 				break;
 			}
 		}

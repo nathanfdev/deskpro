@@ -1101,6 +1101,69 @@ $collection->add('api_news_categories', new Route(
 	array()
 ));
 
+$collection->add('api_news_categories_post', new Route(
+	'/news/categories',
+	array('_controller' => 'ApiBundle:News:postCategories'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_news_category', new Route(
+	'/news/categories/{category_id}',
+	array('_controller' => 'ApiBundle:News:getCategory'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_post', new Route(
+	'/news/categories/{category_id}',
+	array('_controller' => 'ApiBundle:News:postCategory'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_delete', new Route(
+	'/news/categories/{category_id}',
+	array('_controller' => 'ApiBundle:News:deleteCategory'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_news', new Route(
+	'/news/categories/{category_id}/news',
+	array('_controller' => 'ApiBundle:News:getCategoryNews'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_groups', new Route(
+	'/news/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:News:getCategoryGroups'),
+	array('_method' => 'GET', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_groups_post', new Route(
+	'/news/categories/{category_id}/groups',
+	array('_controller' => 'ApiBundle:News:postCategoryGroups'),
+	array('_method' => 'POST', 'category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_group', new Route(
+	'/news/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:News:getCategoryGroup'),
+	array('_method' => 'GET', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_news_category_group_delete', new Route(
+	'/news/categories/{category_id}/groups/{group_id}',
+	array('_controller' => 'ApiBundle:News:deleteCategoryGroup'),
+	array('_method' => 'DELETE', 'category_id' => '\\d+', 'group_id' => '\\d+'),
+	array()
+));
+
 ################################################################################
 # Knowledgebase
 ################################################################################
