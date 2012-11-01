@@ -369,7 +369,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var textarea = this.getReplyTextArea();
 			if (textarea.data('redactor')) {
-				textarea.setCode(DP.convertTextToWysiwygHtml(sig));
+				textarea.setCode(DP.convertTextToWysiwygHtml(sig, true));
 			} else {
 				textarea.val(sig);
 			}
@@ -1019,7 +1019,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var txt = this.getReplyTextArea();
 
 		if (txt.data('redactor')) {
-			txt.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text));
+			txt.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text, true));
 		} else {
 			var pos = txt.getCaretPosition();
 			if (!pos) {
