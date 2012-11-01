@@ -59,6 +59,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		set_time_limit(0);
+
 		// Clear caches, including doctrine query caches
 		App::getDb()->exec("TRUNCATE TABLE cache");
 
