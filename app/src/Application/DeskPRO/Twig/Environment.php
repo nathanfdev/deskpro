@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Twig;
 
 class Environment extends \Twig_Environment
 {
+	protected $ext_dirty = false;
+
 	public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
 	{
 		static $has_done = false;
@@ -55,6 +57,43 @@ class Environment extends \Twig_Environment
 		parent::__construct($loader, $options);
 	}
 
+	public function addExtension(\Twig_ExtensionInterface $extension)
+	{
+		parent::addExtension($extension);
+		$this->ext_dirty = true;
+	}
+
+	public function setExtensions(array $extensions)
+	{
+		parent::setExtensions($extensions);
+		$this->ext_dirty = true;
+	}
+
+	public function getExtensions()
+	{
+		// Ensures the DeskPRO filters and functions are always used over the default
+		if ($this->ext_dirty) {
+			$this->ext_dirty = false;
+
+			$set_ext = array();
+			$append_ext = array();
+
+			foreach ($this->extensions as $k => $ext) {
+				if ($ext instanceof \Application\DeskPRO\Twig\Extension\TemplatingExtension || $ext instanceof \Application\UserBundle\Twig\Extension\UserTemplatingExtension) {
+					$append_ext[$k] = $ext;
+				} else {
+					$set_ext[$k] = $ext;
+				}
+			}
+			foreach ($append_ext as $k => $ext) {
+				$set_ext[$k] = $ext;
+			}
+
+			$this->extensions = $set_ext;
+		}
+
+		return $this->extensions;
+	}
 
 	public function loadTemplate($name, $index = null)
     {

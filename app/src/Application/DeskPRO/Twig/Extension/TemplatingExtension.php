@@ -159,6 +159,9 @@ class TemplatingExtension extends \Twig_Extension
 
 			'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
 
+			'trans' => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
+			'transchoice' => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
+
 			// Override for custom UTF-8 handling
 			'upper' => new \Twig_Filter_Method($this, 'strUpper'),
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
@@ -1211,4 +1214,8 @@ STR;
 
 		return implode("\n\n", $output);
 	}
+}
+
+function deskpro_twig_filter_dummy($ret) {
+	return $ret;
 }
