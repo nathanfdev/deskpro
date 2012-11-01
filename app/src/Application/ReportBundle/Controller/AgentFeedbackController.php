@@ -71,7 +71,7 @@ class AgentFeedbackController extends AbstractController
         $totals = array();
 
         foreach($all_agents as $agent) {
-            $totals[$agent['id']] = array(-1 => 0, 1 => 0);
+            $totals[$agent['id']] = array(-1 => 0, 1 => 0, 0 => 0);
         }
 
         foreach($days as $day) {
@@ -80,7 +80,7 @@ class AgentFeedbackController extends AbstractController
 
             foreach($all_agents as $agent) {
                 $ratings = $repo->getFeedbackRatingsForAgent($agent, $date_range);
-                $ratings_sum = array(-1 => 0, 1 => 0);
+                $ratings_sum = array(-1 => 0, 1 => 0, 0 => 0);
 
                 foreach($ratings as $rating) {
                     $ratings_sum[$rating['rating']]++;
