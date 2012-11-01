@@ -1013,26 +1013,26 @@ class TicketSearch extends SearcherAbstract
 
 						if ($choice == 'set') {
 							if ($op == self::OP_IS) {
-								$wheres[] = 'ticket.feedback_rating IS NOT NULL';
+								$wheres[] = "$tickets_table.feedback_rating IS NOT NULL";
 							} else {
-								$wheres[] = 'ticket.feedback_rating IS NULL';
+								$wheres[] = "$tickets_table.feedback_rating IS NULL";
 							}
 						} else {
 							$op = $op == self::OP_IS ? '=' : '!=';
 
 							$check = '';
 							if ($choice == 'positive') {
-								$check .= "ticket.feedback_rating $op 1";
+								$check .= "$tickets_table.feedback_rating $op 1";
 							} elseif ($choice == 'negative') {
-								$check .= "ticket.feedback_rating $op -1";
+								$check .= "$tickets_table.feedback_rating $op -1";
 							} else {
-								$check .= "ticket.feedback_rating $op 0";
+								$check .= "$tickets_table.feedback_rating $op 0";
 							}
 
 							if ($op == '=') {
-								$wheres[] = "(ticket.feedback IS NOT NULL AND $check)";
+								$wheres[] = "($tickets_table.feedback_rating IS NOT NULL AND $check)";
 							} else {
-								$wheres[] = "(ticket.feedback IS NULL OR $check)";
+								$wheres[] = "($tickets_table.feedback_rating IS NULL OR $check)";
 							}
 						}
 
