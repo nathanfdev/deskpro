@@ -116,6 +116,32 @@
 		'is_managed' => true
 	),
 
+	'polish' => array(
+		'id'         => 'polish',
+		'lang_code'  => 'pol',
+		'title'      => 'Polish',
+		'locale'     => 'pl',
+		'flag_image' => 'pl.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
+	'russian' => array(
+		'id'         => 'russian',
+		'lang_code'  => 'rus',
+		'title'      => 'Russian',
+		'locale'     => 'ru',
+		'flag_image' => 'ru.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'spanish' => array(
 		'id'         => 'spanish',
 		'lang_code'  => 'spa',
@@ -297,18 +323,6 @@
 		'is_managed' => true
 	),
 
-	'polish' => array(
-		'id'         => 'polish',
-		'lang_code'  => 'pol',
-		'title'      => 'Polish',
-		'locale'     => 'pl',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
 	'portuguese' => array(
 		'id'         => 'portuguese',
 		'lang_code'  => 'por',
@@ -326,18 +340,6 @@
 		'lang_code'  => 'rum',
 		'title'      => 'Romanian',
 		'locale'     => 'ro',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'russian' => array(
-		'id'         => 'russian',
-		'lang_code'  => 'rus',
-		'title'      => 'Russian',
-		'locale'     => 'ru',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
