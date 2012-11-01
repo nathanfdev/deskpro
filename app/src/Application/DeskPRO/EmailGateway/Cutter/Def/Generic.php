@@ -256,9 +256,10 @@ class Generic implements ForwardDef, QuoteDef
 				if (!$is_html) {
 					$langs = App::getDataService('Language')->getAll();
 					foreach ($langs as $l) {
-						$line = '=== ' . App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l) . ' ===';
-						$pos = strpos($body, $line);
-						if ($pos !== false) {
+						$re = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
+						$matches = null;
+						if (preg_match('#===\s*'.$re.'\s*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
+							$pos = $matches[0][1];
 							break;
 						}
 					}
