@@ -217,7 +217,13 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
 
-		return $this->createApiResponse(array('ticket' => $ticket->toApiData()));
+		$data = $ticket->toApiData();
+		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
+		if ($ticket_flagged) {
+			$data['flag'] = $ticket_flagged;
+		}
+
+		return $this->createApiResponse(array('ticket' => $data));
 	}
 
 	public function postTicketAction($ticket_id)
