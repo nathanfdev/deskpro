@@ -74,7 +74,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
 			return true;
 		}
 
-		if ($this->status == 'hidden.deleted' && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+		if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
 			return false;
 		}
 		if ($this->status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
