@@ -58,6 +58,13 @@ $collection->add('api_misc_upload', new Route(
 	array()
 ));
 
+$collection->add('api_misc_session_person', new Route(
+	'/misc/session-person/{session_code}',
+	array('_controller' => 'ApiBundle:Misc:getSessionPerson'),
+	array('_method' => 'GET'),
+	array()
+));
+
 ################################################################################
 # Tickets
 ################################################################################

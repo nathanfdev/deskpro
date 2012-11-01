@@ -57,4 +57,18 @@ class MiscController extends AbstractController
 
 		return $this->createApiResponse(array('blob' => $blob->toApiData()));
 	}
+
+	public function getSessionPersonAction($session_code)
+	{
+		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		if (!$session) {
+			return $this->createApiErrorResponse('no_session', 'session could not be found or could not be validated');
+		}
+
+		if ($session->person) {
+			return $this->createApiResponse(array('person' => $session->person->toApiData()));
+		} else {
+			return $this->createApiResponse(array('person' => false));
+		}
+	}
 }
