@@ -40,6 +40,8 @@
     width: 4px;
     vertical-align: middle;
     padding: 0px;
+	margin: 0;
+	overflow: hidden;
 }
 
 .time_cell.active .bar {
@@ -51,6 +53,8 @@
     border-top-style: solid;
     border-top-color: #999999;
     border-top-width: 1px;
+	position: relative;
+	z-index: 1;
 }
 
 .time_cell.active.first .bar {
@@ -65,14 +69,9 @@
     border-right-width: 1px;
 }
 
-.time_row.last .time_cell {
-    border-bottom-style: solid;
-    border-bottom-color: #CCCCCC;
-    border-bottom-width: 1px;
-}
-
 .left_panel {
     padding: 4px;
+	width: 225px;
 }
 
 .left_panel.agent_total {
@@ -102,15 +101,23 @@
 }
 
 .border_table {
-    width: 100%;
     height: 100%;
+	position: relative;
+	left: 1px;
+	border-collapse: collapse;
 }
 
 .border_table td {
-    border-right-style: solid;
-    border-right-color: #CCCCCC;
-    border-right-width: 1px;
     padding: 0px;
+	width: 4px;
+	border-right: 1px solid transparent;
+	padding: 0;
+	margin: 0;
+	height: {{ (26 * agents|length) + 5 }}px;
+}
+
+.border_table td.hour {
+	border-right: 1px solid #CCCCCC;
 }
 
 .date_today {
@@ -174,27 +181,55 @@
 
 </script>
 
-<table class="chart_parent_table">
-    <tr>
-        <th rowspan="{% if agents|length %}2{% else %}1{% endif %}" colspan="2" class="left_panel empty"></th>
-        <th class="date_today" colspan="24">
-			{% if not agents|length %}No agent activity for {{ view_date|date('jS F Y') }}{% endif %}
-			&nbsp;
-        </th>
-    </tr>
-    {% if agents|length %}
+<div class="chart-wrapper" style="position:relative;">
+	<table class="chart_parent_table">
+		{% if not agents|length %}
 		<tr>
+			<th rowspan="1" colspan="2" class="left_panel empty"></th>
+			<th class="date_today" colspan="24">
+				{% if not agents|length %}No agent activity for {{ view_date|date('jS F Y') }}{% endif %}
+				&nbsp;
+			</th>
+		</tr>
+		{% endif %}
+		{% if agents|length %}
+			<tr>
+				<td class="left_panel empty">&nbsp;</td>
+				{% for i in range(0, 23) %}
+					<td class="hour_title {% if loop.first %}first{% endif %}">
+						{{ '%02d'|format(i) }}:00
+					</td>
+				{% endfor %}
+			</tr>
+			{% for agent in agents %}
+				<tr>
+					<td class="left_panel empty" style="text-align: right;">
+						{{ agent.name }}
+						<em style="font-style: normal; font-size: 10px;">({{ totals[agent.id].hours }}hrs, {{ totals[agent.id].minutes }}mins)</em>
+					</td>
+					{% for i in range(0, 23) %}
+						<td class="hour_title {% if loop.first %}first{% endif %}">
+							&nbsp;
+						</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		{% endif %}
+	</table>
+	{% if agents|length %}
+	<table class="chart_parent_table" style="position:absolute; top:0; left:0;">
+		<tr>
+			<td class="left_panel empty">&nbsp;</td>
 			{% for i in range(0, 23) %}
-				<td class="hour_title {% if loop.first %}first{% endif %}">
-					{{ '%02d'|format(i) }}:00
+				<td>
+					&nbsp;
 				</td>
 			{% endfor %}
 		</tr>
-    	{% for agent in agents %}
+		{% for agent in agents %}
 			{% set last_active = 0 %}
 			<tr id="agent_row-{{ agent.id }}" class="agent_row">
-				<td class="left_panel agent_name">{{ agent.name }}</td>
-				<td class="left_panel agent_total">({{ totals[agent.id].hours }}hrs, {{ totals[agent.id].minutes }}mins)</td>
+				<td class="left_panel">&nbsp;</td>
 				{% if loop.first %}
 				<td class="chart_container" colspan="24" rowspan="{{ agents|length }}">
 					<div><table>
@@ -216,19 +251,13 @@
 						</tr>
 						{% endfor %}
 					</table></div>
-					<table class="border_table">
-						<tr>
-							{% for i in range(0, 23) %}
-							<td>&nbsp;</td>
-							{% endfor %}
-						</tr>
-					</table>
 				</td>
 				{% endif %}
 			</tr>
     	{% endfor %}
-    {% endif %}
-</table>
+	</table>
+	{% endif %}
+</div>
 
 <div class="reports-popup-page-overlay hidden"></div>
 </div>
