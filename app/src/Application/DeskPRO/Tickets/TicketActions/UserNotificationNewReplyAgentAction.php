@@ -73,7 +73,13 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 
 		$vars = array(
 			'action' => 'new_user_reply',
+			'show_rating_link' => true
 		);
+
+		// Dont rate own
+		if ($this->via_message->person->getId() == $ticket->person->getId()) {
+			$vars['show_rating_link'] = false;
+		}
 
 		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-agent.html.twig');
 		$this->doSend($tpl, $vars, $ticket, $change_info);

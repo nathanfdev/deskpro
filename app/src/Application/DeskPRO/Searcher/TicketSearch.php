@@ -80,6 +80,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_TEXT                      = 'text';
 	const TERM_SENT_TO_ADDRESS           = 'sent_to_address';
 	const TERM_DAY_CREATED               = 'day_created';
+	const TERM_FEEDBACK_RATING           = 'feedback_rating';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -1005,6 +1006,36 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice, true);
+						break;
+					case self::TERM_FEEDBACK_RATING:
+
+						$choice = isset($choice['rating']) ? $choice['rating'] : 'set';
+
+						if ($choice == 'set') {
+							if ($op == self::OP_IS) {
+								$wheres[] = 'ticket.feedback_rating IS NOT NULL';
+							} else {
+								$wheres[] = 'ticket.feedback_rating IS NULL';
+							}
+						} else {
+							$op = $op == self::OP_IS ? '=' : '!=';
+
+							$check = '';
+							if ($choice == 'positive') {
+								$check .= "ticket.feedback_rating $op 1";
+							} elseif ($choice == 'negative') {
+								$check .= "ticket.feedback_rating $op -1";
+							} else {
+								$check .= "ticket.feedback_rating $op 0";
+							}
+
+							if ($op == '=') {
+								$wheres[] = "(ticket.feedback IS NOT NULL AND $check)";
+							} else {
+								$wheres[] = "(ticket.feedback IS NULL OR $check)";
+							}
+						}
+
 						break;
 					case self::TERM_LANGUAGE:
 						$this->affected_fields[] = 'ticket.language_id';

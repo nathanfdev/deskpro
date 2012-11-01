@@ -37,6 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 
 use Orb\Util\Arrays;
@@ -545,5 +546,60 @@ class Ticket extends AbstractEntityRepository
 			WHERE person_id IN ($ids)
 			GROUP BY person_id
 		");
+	}
+
+
+	/**
+	 * @param mixed $id
+	 * @return \Application\DeskPRO\Entity\Ticket
+	 */
+	public function getTicketByPublicId($ticket_ref, PersonEntity $person_context = null, &$matched_type = null)
+	{
+		if ($person_context && !$person_context->getId()) {
+			$person_context = null;
+		}
+
+		if ($person_context) {
+			$try_order = array('id', 'ref', 'ptac');
+		} else {
+			$try_order = array('id', 'ptac', 'ref');
+		}
+
+		foreach ($try_order as $lookup_type) {
+			switch ($lookup_type) {
+				case 'id':
+					if (Numbers::isInteger($ticket_ref)) {
+						$ticket = $this->_em->find('DeskPRO:Ticket', $ticket_ref);
+						if ($ticket) {
+							$matched_type = 'id';
+							return $ticket;
+						}
+					}
+					break;
+
+				case 'ref':
+					$ref_gen = App::getSystemService('RefGenerator');
+					if ($ref_gen->isRefMatch($ticket_ref)) {
+						$ticket = $this->_em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+						if ($ticket) {
+							$matched_type = 'ref';
+							return $ticket;
+						}
+					}
+					break;
+
+				case 'ptac':
+
+					$ticket = $this->_em->getRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
+
+					if ($ticket) {
+						$matched_type = 'ptac';
+						return $ticket;
+					}
+					break;
+			}
+		}
+
+		return null;
 	}
 }

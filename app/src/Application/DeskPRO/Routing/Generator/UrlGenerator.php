@@ -51,9 +51,20 @@ class UrlGenerator extends BaseUrlGenerator
 
 	public function setContext(RequestContext $context)
     {
-		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && (!isset($GLOBALS['DP_CONFIG']['rewrite_urls']) || !$GLOBALS['DP_CONFIG']['rewrite_urls']) && !preg_match('#/index\.php/#', $context->getBaseUrl())) {
-			$base = $context->getBaseUrl() . '/index.php';
-			$context->setBaseUrl($base);
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+			$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+			if ((!isset($GLOBALS['DP_CONFIG']['rewrite_urls']) || !$GLOBALS['DP_CONFIG']['rewrite_urls']) && !preg_match('#index\.php$#', $deskpro_url)) {
+				$deskpro_url .= '/index.php';
+			}
+
+			$info = parse_url($deskpro_url);
+			$context->setScheme($info['scheme']);
+			$context->setBaseUrl($info['path']);
+			$context->setHost($info['host']);
+			$context->setMethod('GET');
+			if (!empty($info['port'])) {
+				$context->setHttpPort($info['port']);
+			}
 		}
 
         $this->context = $context;

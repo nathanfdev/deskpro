@@ -34,41 +34,24 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Entity\Person;
 
-class SetInitialFromNameAction extends AbstractAction
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\App;
+
+class SendFeedbackEmailAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	protected $tracker;
 
-	/**
-	 * @var string
-	 */
-	protected $pattern;
-
-	/**
-	 * @var bool
-	 */
-	protected $to_user = true;
-
-	/**
-	 * @var bool
-	 */
-	protected $to_agent = true;
-
-	public function __construct($pattern, $to_user = true, $to_agent = true, TicketChangeTracker $tracker = null)
+	public function __construct(TicketChangeTracker $tracker = null)
 	{
-		$this->tracker  = $tracker;
-		$this->pattern  = $pattern;
-		$this->to_user  = $to_user;
-		$this->to_agent = $to_agent;
+		$this->tracker = $tracker;
 	}
-
 
 	/**
 	 * Apply the property to the ticket
@@ -77,32 +60,44 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if (!$this->tracker) {
+		$ticket_message = App::getOrm()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			LEFT JOIN m.person person
+			WHERE m.is_agent_note = false AND person.is_agent = true AND m.ticket = ?0
+			ORDER BY m.id DESC
+		")->setParameter(0, $ticket)->setMaxResults(1)->getOneOrNullResult();
+
+		if (!$ticket_message) {
 			return;
 		}
 
-		if ($this->to_agent) {
-			$address = $this->getAddress($ticket, false);
-			$this->tracker->recordExtra('set_initial_from_toagent', $address);
-		}
-		if ($this->to_user) {
-			$address = $this->getAddress($ticket, true);
-			$this->tracker->recordExtra('set_initial_from_touser', $address);
-		}
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getAddress(Ticket $ticket, $to_user)
-	{
-		return $ticket->replaceVarsInString(
-			$this->pattern,
-			$this->tracker->getPersonPerformer(),
-			false,
-			$to_user
+		$change_info = array(
+			'type' => 'user_notify',
+			'notify_type' => 'feedback',
+			'emailed' => array(),
+			'cced' => array()
 		);
+
+		$person = $ticket->person;
+
+		$change_info['emailed'] = array($person);
+
+		$vars['ticket'] = $ticket;
+		$vars['person'] = $person;
+		$vars['message'] = $ticket_message;
+
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $ticket, $person) {
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_user:ticket-rate.html.twig', $vars);
+			$message->setToPerson($person);
+
+			App::getMailer()->send($message);
+		});
+
+		if ($this->tracker) {
+			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+		}
 	}
 
 
@@ -113,7 +108,18 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	public function getApplyActions(Ticket $ticket)
 	{
-		return array();
+		return array(
+			array('action' => 'send_feedback_email')
+		);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Send user an email asking for feedback';
 	}
 
 
@@ -124,26 +130,5 @@ class SetInitialFromNameAction extends AbstractAction
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$desc = 'Any notifications are sent from ' . ($as_html ? htmlspecialchars($this->pattern) : $this->pattern);
-
-		if (!$this->to_agent || !$this->to_user) {
-			if ($this->to_agent) {
-				$desc .= ' (on agent emails only)';
-			} else {
-				$desc .= ' (on user emails only)';
-			}
-		}
-
-		$desc = str_replace('{{performer.name}}', 'name of action performer', $desc);
-
-		return $desc;
 	}
 }

@@ -292,6 +292,11 @@
 			<textarea name="message" cols="80" rows="4"></textarea>
 		</div>
 	</div>
+	<div class="builder-type" title="Send the user an email requesting feedback" data-rule-type="send_feedback_email">
+		<div class="builder-options">
+			<input type="hidden" name="do" value="1" />
+		</div>
+	</div>
 	<div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply">
 		<div class="builder-options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>

@@ -15,9 +15,11 @@
 		<p>
 			{{ phrase('user.tickets.ticket_was_closed') }}
 		</p>
-		<p>
-			<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
-		</p>
+		{% if app.user.id %}
+			<p>
+				<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
+			</p>
+		{% endif %}
 	</article>
 </section>
 {% endblock %}

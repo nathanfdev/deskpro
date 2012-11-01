@@ -243,7 +243,11 @@ class TicketsController extends AbstractController
 
 	public function feedbackAction($ticket_ref, $auth, $message_id)
 	{
-		$ticket  = $this->getTicketOr404($ticket_ref);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getTicketByPublicId($ticket_ref);
+		if (!$ticket) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
@@ -257,20 +261,40 @@ class TicketsController extends AbstractController
 
 		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
 
-		if ($this->in->getUint('rating')) {
-			$feedback->setRating(1);
+		if ($this->container->getIn()->checkIsset('rating')) {
+			$feedback->setRating($this->in->getInt('rating'));
+
+			$last_message_id = App::getDb()->fetchColumn("
+				SELECT message_id FROM ticket_feedback
+				WHERE ticket_id = ?
+				ORDER BY message_id DESC
+				LIMIT 1
+			", array($ticket->getId()));
+
+			if (!$last_message_id || $message->getId() >= $last_message_id) {
+				$ticket->feedback_rating = $feedback->rating;
+				$this->em->persist($ticket);
+			}
+
+			$this->em->persist($feedback);
+			$this->em->flush();
 		}
 
 		return $this->render('UserBundle:Tickets:feedback.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
-			'feedback' => $feedback
+			'feedback' => $feedback,
+			'is_resolved' => $this->in->getBool('resolved')
 		));
 	}
 
 	public function feedbackSaveAction($ticket_ref, $auth, $message_id)
 	{
-		$ticket  = $this->getTicketOr404($ticket_ref);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getTicketByPublicId($ticket_ref);
+		if (!$ticket) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
@@ -312,8 +336,13 @@ class TicketsController extends AbstractController
 
 	public function feedbackCloseTicketAction($ticket_ref, $message_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_ref);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getTicketByPublicId($ticket_ref);
+		if (!$ticket) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
 		// Message must be of the correct ticket,
 		// must not be a note,
@@ -323,10 +352,10 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, false);
 
 		if (!$feedback) {
-			//throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid feedback");
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		$ticket->setStatus(Entity\Ticket::STATUS_RESOLVED);
@@ -348,49 +377,36 @@ class TicketsController extends AbstractController
 	{
 		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
-		$exist_feedback = null;
-		$no_feedback = false;
-
-		if (!$message || $message->person->id == $this->person->id) {
-			$no_feedback = true;
-		} else {
-			$exist_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
-		}
 
 		if ($this->in->getBool('process')) {
-			$feedback = false;
-			if (!$no_feedback and $this->in->getBool('with_feedback')) {
-				if ($exist_feedback) {
-					$feedback = $exist_feedback;
-				} else {
-					$feedback = new \Application\DeskPRO\Entity\TicketFeedback();
-					$feedback->ticket = $message->ticket;
-					$feedback->ticket_message = $message;
-					$feedback->person = $this->person;
-				}
-
-				$feedback->message = $this->in->getString('message');
-				$feedback->rating  = $this->in->getInt('rating');
-			}
-
 			$ticket->setStatus('resolved');
 
-			$this->em->transactional(function ($em) use ($ticket, $feedback) {
-				if ($feedback) {
-					$em->persist($feedback);
-				}
+			$this->em->transactional(function ($em) use ($ticket) {
 				$em->persist($ticket);
 				$em->flush();
 			});
 
-			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+			$ticket_message = null;
+			if (!$ticket->date_feedback_rating) {
+				$ticket_message = App::getOrm()->createQuery("
+					SELECT m
+					FROM DeskPRO:TicketMessage m
+					LEFT JOIN m.person person
+					WHERE m.is_agent_note = false AND person.is_agent = true AND m.ticket = ?0
+					ORDER BY m.id DESC
+				")->setParameter(0, $ticket)->setMaxResults(1)->getOneOrNullResult();
+			}
+
+			if (!$ticket->date_feedback_rating && $ticket_message) {
+				return $this->redirectRoute('user_tickets_feedback', array('resolved' => 1, 'ticket_ref' => $ticket->getPublicId(), 'auth' => $ticket->getAuth(), 'message_id' => $ticket_message->getId()));
+			} else {
+				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+			}
 		}
 
 		return $this->render('UserBundle:Tickets:resolve.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
-			'exist_feedback' => $exist_feedback,
-			'no_feedback' => $no_feedback,
 		));
 	}
 

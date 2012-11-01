@@ -887,6 +887,33 @@ class TicketTerms
 				}
 				break;
 
+			case TicketSearch::TERM_FEEDBACK_RATING:
+				$choice = isset($choice['rating']) ? $choice['rating'] : 'set';
+
+				if ($choice == 'set') {
+					if ($op == self::OP_IS) {
+						if (!$ticket->date_feedback_rating) return false;
+					} else {
+						if ($ticket->date_feedback_rating) return false;
+					}
+				} else {
+					$match = false;
+					if ($choice == 'positive') {
+						if ($ticket->feedback_rating == 1)  $match = true;
+					} elseif ($choice == 'negative') {
+						if ($ticket->feedback_rating == -1) $match = true;
+					} else {
+						if ($ticket->feedback_rating == 0)  $match = true;
+					}
+
+					if ($op == self::OP_IS) {
+						if (!$match) return false;
+					} else {
+						if ($match) return false;
+					}
+				}
+				break;
+
 			case TicketSearch::TERM_TICKET_FIELD:
 				$test = $this->testCustomField('CustomDefTicket', $term_id, $op, $choice, $ticket);
 				if (!$test && $test !== null) {

@@ -1125,6 +1125,23 @@
 	</div>
 </div>
 
+<div class="builder-type" title="Feedback Rating" data-rule-type="feedback_rating" data-rule-group="Ticket">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		<select name="rating">
+			<option value="set">submitted</option>
+			<option value="set">positive</option>
+			<option value="set">neutral</option>
+			<option value="set">negative</option>
+		</select>
+	</div>
+</div>
+
 {% if id or classname %}
 </div>
 {% endif %}

@@ -253,6 +253,27 @@ class TermSummary
 				$choice_str = implode(', ', $choice_str);
 				break;
 
+			case 'feedback_rating':
+				$choice = isset($choice['rating']) ? $choice['rating'] : 'set';
+
+				if ($choice == 'set') {
+					if ($op == self::OP_IS) {
+						$summary = 'Ticket feedback has been submitted';
+					} else {
+						$summary = 'Ticket feedback has not been submitted';
+					}
+				} else {
+					$op = $op == self::OP_IS ? 'is' : 'is not';
+					if ($choice == 'positive') {
+						$summary = "Ticket feedback $op positive";
+					} elseif ($choice == 'negative') {
+						$summary = "Ticket feedback $op negative";
+					} else {
+						$summary = "Ticket feedback $op neutral";
+					}
+				}
+				break;
+
 			case 'ticket_hold':
 				$summary = $tr->phrase('agent.tickets.tickets_on_hold');
 				break;

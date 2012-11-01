@@ -18,8 +18,8 @@
 				<img src="{{ message.person.getPictureUrl(80) }}" alt="{{ message.person.display_name }}" style="float:left; margin: 0 11px 0 0;" />
 			</td>
 			<td style="vertical-align: top;">
-				<p><strong>{{ message.person.display_name }}</strong> helped you with your ticket "{{ ticket.subject }}"</p>
-				<p>How would you rate the support you recieved?</p>
+				<p>{{ phrase('user.tickets.rate-intro', {name: message.person.display_name, subject: ticket.subject}) }}</p>
+				<p>{{ phrase('user.tickets.rate-question') }}</p>
 
 				<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
 					<table class="dp-layout" width="550" align="center"><tr>
@@ -30,7 +30,7 @@
 								</i>
 								<span>
 									<input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} style="display: inline" />
-									It was great
+									{{ phrase('user.tickets.rate-positive') }}
 								</span>
 							</label>
 						</td>
@@ -41,7 +41,7 @@
 								</i>
 								<span>
 									<input type="radio" name="rating" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} style="display: inline" />
-									It was OK
+									{{ phrase('user.tickets.rate-neutral') }}
 								</span>
 							</label>
 						</td>
@@ -52,7 +52,7 @@
 								</i>
 								<span>
 									<input type="radio" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} style="display: inline" />
-									It was not good
+									{{ phrase('user.tickets.rate-negative') }}
 								</span>
 							</label>
 						</td>

@@ -520,6 +520,10 @@ class App
 	 */
 	public static function isWebRequest()
 	{
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+			return false;
+		}
+
 		if (self::has(self::SERVICE_REQUEST) AND self::has(self::SERVICE_RESPONSE)) {
 			return true;
 		}

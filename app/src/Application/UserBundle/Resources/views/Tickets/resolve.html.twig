@@ -26,34 +26,6 @@
 
 				<center><button class="dp-btn dp-btn-primary">{{ phrase('user.tickets.resolve_my_ticket_btn') }}</button></center>
 			</div>
-
-			{% if not exist_feedback and not no_feedback %}
-			<div class="dp-box-section">
-				<div class="dp-form">
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.tickets.leave_feedback_title') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<label><input type="radio" name="rating" value="1" {% if exist_feedback.rating == 1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_helpful') }}</label>
-							&nbsp;&nbsp;&nbsp;
-							<label><input type="radio" name="rating" value="0" {% if exist_feedback.rating == -1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_unhelpful') }}</label>
-						</div>
-					</div>
-
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.tickets.leave_feedback_text_title') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<textarea name="message" style="width: 95%; height: 60px;">{{ exist_feedback.message }}</textarea>
-						</div>
-					</div>
-
-					<center><input class="dp-btn dp-btn-primary" type="submit" name="with_feedback" value="{{ phrase('user.tickets.resolve_my_ticket_send_feedback_btn') }}" /></center>
-				</div>
-			</div>
-			{% endif %}
 		</form>
 	</article>
 </section>

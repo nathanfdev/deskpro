@@ -274,7 +274,7 @@ class TriggerExecutor
 					array('type' => 'user_notification_new_reply_agent', 'options' => array())
 				);
 
-				array_unshift($all_triggers, $trigger);
+				$all_triggers[] = $trigger;
 			} elseif ($this->tracker->hasNewUserReply() || $this->tracker->isExtraSet('is_user_reply')) {
 				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 				$trigger->terms = array();
@@ -282,7 +282,7 @@ class TriggerExecutor
 					array('type' => 'user_notification_new_reply_user', 'options' => array())
 				);
 
-				array_unshift($all_triggers, $trigger);
+				$all_triggers[] = $trigger;
 			}
 		}
 

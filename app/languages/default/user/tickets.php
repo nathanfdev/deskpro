@@ -95,4 +95,9 @@
 	'user.tickets.your_tickets'                        => 'Your Tickets',
 	'user.tickets.empty_message'                       => '(Empty message)',
 	'user.tickets.no_subject'                          => '(No subject)',
+	'user.tickets.rate-intro'                          => '{{name}} helped you with your ticket "{{subject}}"',
+	'user.tickets.rate-question'                       => 'How would you rate the support you recieved?',
+	'user.tickets.rate-positive'                       => 'It was great',
+	'user.tickets.rate-neutral'                        => 'It was OK',
+	'user.tickets.rate-negative'                       => 'It was not good',
 );
