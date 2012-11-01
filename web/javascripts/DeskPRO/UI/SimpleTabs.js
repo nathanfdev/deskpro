@@ -114,6 +114,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			return;
 		}
 
+		tabEl = $(tabEl);
+
 		var eventData = {
 			event: event || null,
 			tabEl: tabEl,
