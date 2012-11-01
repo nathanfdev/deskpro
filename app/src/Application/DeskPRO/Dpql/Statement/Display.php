@@ -179,6 +179,7 @@ class Display
 		'feedback_attachments' => 'DeskPRO:FeedbackAttachment',
 		'feedback_comments' => 'DeskPRO:FeedbackComment',
 		'labels_articles' => 'DeskPRO:LabelArticle',
+		'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
 		'labels_downloads' => 'DeskPRO:LabelDownload',
 		'labels_feedback' => 'DeskPRO:LabelFeedback',
 		'labels_news' => 'DeskPRO:LabelNews',
