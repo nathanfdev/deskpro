@@ -48,6 +48,7 @@ class ClientMessagesController extends AbstractController
 	{
 		$new_since = $this->in->getUint('since');
 		$last_since = $this->person->getPref('agent.ui.last_message_id');
+		$activity_time = $this->in->getUint('at');
 
 		#------------------------------
 		# Standard client messages
@@ -104,6 +105,17 @@ class ClientMessagesController extends AbstractController
 				'date_expire'  => null,
 				'person_id'    => $this->person->getId()
 			));
+		}
+
+		// See if we should update last activity time
+		if ($activity_time && $activity_time > (time()-330)) {
+			// This bit makes sure theres only one record per 5 minute block
+            $date_active = new \DateTime('@' . $activity_time);
+            list($hour, $minute) = explode(':', $date_active->format('H:i'));
+            $minute = intval($minute / 5) * 5;
+            $date_active->setTime($hour, $minute, 0);
+
+			App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($this->person->getId(), $date_active->format('Y-m-d H:i:s')));
 		}
 
 		return $this->createJsonResponse($data);

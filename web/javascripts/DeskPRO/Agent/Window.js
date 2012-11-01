@@ -38,6 +38,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.cancelHashLoad = 0;
 		this.activeListNav = null;
+		this.activityTime = new Date();
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -506,6 +507,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 
 			snippetsViewer.open();
+		});
+
+		// Used by the poller to send flag to update the last active time
+		$(document).on('click mousemove keypress', function() {
+			self.activityTime = new Date();
 		});
 	},
 
@@ -1858,6 +1864,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.options.messageChanneler.interval = DP_POLLER_INTERVAL;
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
+
+		this.messageChanneler.poller.addData((function () {
+			return {'at': parseInt(this.activityTime.getTime() / 1000)};
+		}).bind(this), 'at', { recurring: true });
 	},
 
 	_initRoutes: function() {
