@@ -30,7 +30,7 @@
 			<div class="trigger-desc">
 				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="400">
 					<div class="terms">
-						{% if trigger.sys_name and trigger.sys_name == trigger.title %}
+						{% if trigger.sys_name and trigger.sys_name == trigger.title and has_phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) %}
 							{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}<br />
 						{% elseif trigger.title %}
 							{{ trigger.title }}<br />

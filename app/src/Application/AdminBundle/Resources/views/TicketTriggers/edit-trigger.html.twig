@@ -1,6 +1,6 @@
 {% extends 'AdminBundle:TicketTriggers:ticket-trigger-tpl.html.twig' %}
 {% block pagebar %}
-	{% if trigger.id %}
+	{% if trigger.id and not trigger.sys_name %}
 		<nav>
 			<ul>
 				<li class="delete"><a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.general.delete') }}</a></li>

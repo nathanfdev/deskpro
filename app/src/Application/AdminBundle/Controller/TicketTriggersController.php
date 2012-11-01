@@ -286,7 +286,7 @@ class TicketTriggersController extends AbstractController
 		$this->ensureAuthToken('delete_trigger', $auth);
 
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
-		if (!$trigger) {
+		if (!$trigger || $trigger->sys_name) {
 			throw $this->createNotFoundException();
 		}
 

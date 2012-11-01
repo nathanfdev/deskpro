@@ -535,7 +535,7 @@ $em->flush();
 
 ##BEGIN:create_trigger.email_validation_web##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Enable email validation for new users';
+$q->title = 'email_validation.email';
 $q->sys_name = 'email_validation.email';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 0;
@@ -563,7 +563,7 @@ $em->flush();
 
 ##BEGIN:create_trigger.email_validation_email##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Enable email validation for new users';
+$q->title = 'email_validation.web';
 $q->sys_name = 'email_validation.web';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 0;
@@ -591,7 +591,7 @@ $em->flush();
 
 ##BEGIN:create_trigger.email_validation_widget##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Enable email validation for new users';
+$q->title = 'email_validation.widget';
 $q->sys_name = 'email_validation.widget';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 0;
@@ -617,23 +617,6 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_trigger.urgency_base##
-$q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Initial urgency';
-$q->event_trigger = 'new_ticket';
-$q->is_enabled = 1;
-$q->terms = array();
-$q->actions = array(
-	array(
-		'type' => 'urgency_set',
-		'options' => array(
-			'num' => 1
-		)
-	)
-);
-
-$em->persist($q);
-$em->flush();
 
 ##BEGIN:create_trigger.urgency_up1##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
@@ -696,7 +679,6 @@ $em->flush();
 // When a ticket has been awaiting agent for 2 months, set it to resolved
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.resolve_user_reply';
-$q->sys_name = 'auto_close.resolve_user_reply';
 $q->event_trigger = 'time.user_waiting';
 $q->setEventTriggerOption('time', '2 months');
 $q->is_enabled = 1;
@@ -725,7 +707,6 @@ $em->flush();
 // When a ticket has been awaiting user for 5 days, set it to resolved
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.resolve_agent_reply';
-$q->sys_name = 'auto_close.resolve_agent_reply';
 $q->event_trigger = 'time.agent_waiting';
 $q->setEventTriggerOption('time', '5 days');
 $q->is_enabled = 0;
@@ -754,7 +735,6 @@ $em->flush();
 // When a ticket has been awaiting user for 3 days, warn the user it will be closed
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.warn_user';
-$q->sys_name = 'auto_close.warn_user';
 $q->event_trigger = 'time.agent_waiting';
 $q->setEventTriggerOption('time', '3 days');
 $q->is_enabled = 0;
@@ -781,14 +761,15 @@ $em->flush();
 
 ##BEGIN:create_trigger.enable_autoreply_gateway##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'Enable auto-response confirmation';
-$q->event_trigger = 'new_reply';
+$q->title = 'response.reply_confirm';
+$q->sys_name = 'response.reply_confirm';
+$q->event_trigger = 'update.user';
 $q->is_enabled = 0;
 $q->terms = array(
 	array(
-		'type' => 'creation_system',
+		'type' => 'new_reply_user',
 		'op' => 'is',
-		'options' => array('creation_system' => 'gateway.person')
+		'options' => array('do' => '1')
 	)
 );
 $q->actions = array(
@@ -803,20 +784,20 @@ $em->flush();
 
 ##BEGIN:create_trigger.default_set##
 $em->getConnection()->exec("
-INSERT INTO `ticket_triggers` (`id`, `title`, `event_trigger`, `is_enabled`, `terms`, `actions`, `sys_name`, `run_order`, `date_created`, `event_trigger_options`, `terms_any`)
+INSERT INTO `ticket_triggers` (`id`, `sys_name`, `title`, `event_trigger`, `is_enabled`, `terms`, `actions`, `run_order`, `date_created`, `event_trigger_options`, `terms_any`)
 VALUES
-	(NULL, '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:10:\"department\";s:7:\"options\";a:1:{s:10:\"department\";s:13:\"email_account\";}}}', NULL, 0, '2012-10-22 19:56:52', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', NULL, 0, '2012-10-22 19:57:20', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:10:\"department\";s:7:\"options\";a:1:{s:10:\"department\";s:13:\"email_account\";}}}', NULL, 0, '2012-10-22 19:57:36', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', NULL, 0, '2012-10-22 19:59:50', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'update.agent', 1, 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"department\";s:2:\"op\";s:7:\"changed\";s:7:\"options\";a:1:{s:10:\"department\";s:1:\"1\";}}}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', NULL, 0, '2012-10-22 20:00:25', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'update.user', 1, 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"department\";s:2:\"op\";s:7:\"changed\";s:7:\"options\";a:1:{s:10:\"department\";s:1:\"1\";}}}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', NULL, 0, '2012-10-22 20:03:33', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'update.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:10:26', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'update.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:12:46', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-	(NULL, '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', NULL, 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}');
+	(NULL, 'setdep.newemail_user', '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:10:\"department\";s:7:\"options\";a:1:{s:10:\"department\";s:13:\"email_account\";}}}', 0, '2012-10-22 19:56:52', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setgateway.newweb_user', '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', 0, '2012-10-22 19:57:20', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setdep.newemail_agent', '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:10:\"department\";s:7:\"options\";a:1:{s:10:\"department\";s:13:\"email_account\";}}}', 0, '2012-10-22 19:57:36', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setgateway.newweb_agent', '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', 0, '2012-10-22 19:59:50', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setgateway.update_agent', '', 'update.agent', 1, 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"department\";s:2:\"op\";s:7:\"changed\";s:7:\"options\";a:1:{s:10:\"department\";s:1:\"1\";}}}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', 0, '2012-10-22 20:00:25', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setgateway.update_user', '', 'update.user', 1, 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"department\";s:2:\"op\";s:7:\"changed\";s:7:\"options\";a:1:{s:10:\"department\";s:1:\"1\";}}}', 'a:1:{i:0;a:2:{s:4:\"type\";s:19:\"set_gateway_address\";s:7:\"options\";a:1:{s:18:\"gateway_address_id\";s:10:\"department\";}}}', 0, '2012-10-22 20:03:33', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.reply_agent', '', 'update.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:10:26', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.reply_user', '', 'update.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:12:46', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newemail_user', '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newweb_user', '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newemail_agent', '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newweb_agent', '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}');
 ");
 
 ##BEGIN:create_style.master##
