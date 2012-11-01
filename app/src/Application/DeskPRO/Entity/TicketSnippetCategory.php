@@ -61,13 +61,6 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
-	 * Teams who can use this snippet
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $agent_teams = null;
-
-	/**
 	 * Everyone can see it?
 	 *
 	 * @var bool
@@ -81,7 +74,7 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
+
 	}
 
 	/**
@@ -96,8 +89,6 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->is_global) {
 			return 'global';
-		} else if (count($this->agent_teams)) {
-			return 'team';
 		} else {
 			return 'me';
 		}

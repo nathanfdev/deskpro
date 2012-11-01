@@ -12,7 +12,6 @@
 			<dt>{{ phrase('agent.general.permissions') }}:</dt>
 			<dd>
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
-				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
 			</dd>
 
