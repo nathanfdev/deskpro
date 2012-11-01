@@ -871,7 +871,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		$('.ticket-message-edit-btn', wrap).live('mousedown', function(event) {
 			var textarea = self.getReplyTextArea();
 			if (textarea.data('redactor')) {
-				textarea.data('redactor').saveSelection();
+				// save the selection - but don't focus the editor as that can break this
+				$.proxy(function() {
+					this.savedSel = null;
+					this.savedSelObj = null;
+
+					if ($.browser.msie && parseInt($.browser.version, 10) < 9)
+					{
+						var node = this.$editor.get(0);
+						this.savedSel = window.Selection.getOrigin(node);
+						this.savedSelObj = window.Selection.getFocus(node);
+					}
+					else
+					{
+						this.savedSel = window.Selection.getOrigin(window);
+						this.savedSelObj = window.Selection.getFocus(window);
+					}
+				}, textarea.data('redactor'))();
 			}
 		});
 		$('.ticket-message-edit-btn', wrap).live('click', function(event) {
