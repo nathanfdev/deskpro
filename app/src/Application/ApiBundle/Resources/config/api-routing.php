@@ -160,6 +160,20 @@ $collection->add('api_tickets_ticket_unlock', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_ticket_tasks', new Route(
+	'/tickets/{ticket_id}/tasks',
+	array('_controller' => 'ApiBundle:Ticket:getTicketTasks'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_tasks_post', new Route(
+	'/tickets/{ticket_id}/tasks',
+	array('_controller' => 'ApiBundle:Ticket:postTicketTasks'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_tickets_ticket_billing_charges', new Route(
 	'/tickets/{ticket_id}/billing-charges',
 	array('_controller' => 'ApiBundle:Ticket:getTicketBillingCharges'),
@@ -1323,6 +1337,129 @@ $collection->add('api_feedback_user_categories', new Route(
 	'/feedback/user-categories',
 	array('_controller' => 'ApiBundle:Feedback:getUserCategories'),
 	array('_method' => 'GET'),
+	array()
+));
+
+################################################################################
+# Tasks
+################################################################################
+
+$collection->add('api_tasks', new Route(
+	'/tasks',
+	array('_controller' => 'ApiBundle:Task:search'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tasks_post', new Route(
+	'/tasks',
+	array('_controller' => 'ApiBundle:Task:newTask'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_tasks_task', new Route(
+	'/tasks/{task_id}',
+	array('_controller' => 'ApiBundle:Task:getTask'),
+	array('_method' => 'GET', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_post', new Route(
+	'/tasks/{task_id}',
+	array('_controller' => 'ApiBundle:Task:postTask'),
+	array('_method' => 'POST', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_delete', new Route(
+	'/tasks/{task_id}',
+	array('_controller' => 'ApiBundle:Task:deleteTask'),
+	array('_method' => 'DELETE', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_associations', new Route(
+	'/tasks/{task_id}/associations',
+	array('_controller' => 'ApiBundle:Task:getTaskAssociations'),
+	array('_method' => 'GET', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_associations_post', new Route(
+	'/tasks/{task_id}/associations',
+	array('_controller' => 'ApiBundle:Task:postTaskAssociations'),
+	array('_method' => 'POST', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_associated_item', new Route(
+	'/tasks/{task_id}/associations/{assoc_id}',
+	array('_controller' => 'ApiBundle:Task:getTaskAssociation'),
+	array('_method' => 'GET', 'task_id' => '\\d+', 'assoc_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_associated_item_delete', new Route(
+	'/tasks/{task_id}/associations/{assoc_id}',
+	array('_controller' => 'ApiBundle:Task:deleteTaskAssociation'),
+	array('_method' => 'DELETE', 'task_id' => '\\d+', 'assoc_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_comments', new Route(
+	'/tasks/{task_id}/comments',
+	array('_controller' => 'ApiBundle:Task:getTaskComments'),
+	array('_method' => 'GET', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_comments_post', new Route(
+	'/tasks/{task_id}/comments',
+	array('_controller' => 'ApiBundle:Task:postTaskComments'),
+	array('_method' => 'POST', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_comment', new Route(
+	'/tasks/{task_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Task:getTaskComment'),
+	array('_method' => 'GET', 'task_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_associated_item_delete', new Route(
+	'/tasks/{task_id}/comments/{comment_id}',
+	array('_controller' => 'ApiBundle:Task:deleteTaskComment'),
+	array('_method' => 'DELETE', 'task_id' => '\\d+', 'comment_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_labels', new Route(
+	'/tasks/{task_id}/labels',
+	array('_controller' => 'ApiBundle:Task:getTaskLabels'),
+	array('_method' => 'GET', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_labels_post', new Route(
+	'/tasks/{task_id}/labels',
+	array('_controller' => 'ApiBundle:Task:postTaskLabels'),
+	array('_method' => 'POST', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_label', new Route(
+	'/tasks/{task_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Task:getTaskLabel'),
+	array('_method' => 'GET', 'task_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tasks_task_label_delete', new Route(
+	'/tasks/{task_id}/labels/{label}',
+	array('_controller' => 'ApiBundle:Task:deleteTaskLabel'),
+	array('_method' => 'DELETE', 'task_id' => '\\d+'),
 	array()
 ));
 

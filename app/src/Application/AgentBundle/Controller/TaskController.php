@@ -557,7 +557,7 @@ class TaskController extends AbstractController
 			'task_id' => $task->id,
 			'task_title' => $task->title,
 			'task_agent_id' => $task->assigned_agent ? $task->assigned_agent->id : 0,
-			'task_agent_id' => $task->assigned_agent_team ? $task->assigned_agent_team->id : 0,
+			'task_agent_team_id' => $task->assigned_agent_team ? $task->assigned_agent_team->id : 0,
 			'is_new' => $is_new
 		);
 
@@ -577,6 +577,7 @@ class TaskController extends AbstractController
 					'data' => $data,
 					'created_by_client' => $this->session->getId(),
 				));
+				$cms[] = $cm;
 			}
 		}
 

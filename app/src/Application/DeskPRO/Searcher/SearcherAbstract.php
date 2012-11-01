@@ -555,11 +555,11 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$date2 = $choice[1];
 		}
 
-		if ($date1 AND !($date1 instanceof \DateTime)) {
-			$date1 = new \DateTime("@{$date1}");
+		if (!($date1 instanceof \DateTime)) {
+			$date1 = new \DateTime("@" . intval($date1));
 		}
-		if ($date2 AND !($date2 instanceof \DateTime)) {
-			$date2 = new \DateTime("@{$date2}");
+		if (!($date2 instanceof \DateTime)) {
+			$date2 = new \DateTime("@" . intval($date2));
 		}
 
 		// There should always be at least one date

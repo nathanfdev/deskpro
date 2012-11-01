@@ -564,6 +564,43 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getTicketTasksAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
+
+		return $this->createApiResponse(array('tasks' => $this->getApiData($tasks)));
+	}
+
+	public function postTicketTasksAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$title = $this->in->getString('title');
+		if (!$title) {
+			return $this->createApiErrorResponse('required_field.title', 'title is empty or missing');
+		}
+
+		$task = new \Application\DeskPRO\Entity\Task();
+		$task->title = $title;
+		$task->person = $this->person;
+		$task->assigned_agent = $this->person;
+
+		$assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+		$assoc->ticket = $ticket;
+		$assoc->task   = $task;
+		$task->task_associations->add($assoc);
+
+		$this->em->persist($task);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $task->id),
+			$this->generateUrl('api_tasks_task', array('task_id' => $task->id), true)
+		);
+	}
+
 	public function getTicketBillingChargesAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);

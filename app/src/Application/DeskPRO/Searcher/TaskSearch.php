@@ -105,10 +105,24 @@ class TaskSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		if ($parts['wheres']) {
-			$sql .= "WHERE ";
-			$sql .= implode(" AND ", $parts['wheres']);
+		if ($this->person && $this->person->is_agent) {
+			$person_id = App::getDb()->quote($this->person->id);
+
+			$this->person->loadHelper('Agent');
+			if ($this->person->Agent->getTeamIds()) {
+				$where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (" . implode(',', $this->person->Agent->getTeamIds()) . ")) OR tasks.visibility = 1)";
+			} else {
+				$where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id) OR tasks.visibility = 1)";
+			}
+		} else {
+			$where = '1';
 		}
+
+		if ($parts['wheres']) {
+			$where .= ' AND ' . implode(" AND ", $parts['wheres']);
+		}
+
+		$sql .= "WHERE $where";
 
 		$sql .= " GROUP BY tasks.id ";
 		$sql .= $order_by;
@@ -241,6 +255,48 @@ class TaskSearch extends SearcherAbstract
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
 					break;
 
+				case self::TERM_DATE_CREATED:
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
+					$wheres[] = $this->_dateMatch("tasks.date_created", $op, $choice);
+					break;
+
+				case self::TERM_DATE_COMPLETED:
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_completed'), $op, $choice);
+					$wheres[] = $this->_dateMatch("tasks.date_completed", $op, $choice);
+					break;
+
+				case self::TERM_DATE_DUE:
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_due'), $op, $choice);
+					$wheres[] = $this->_dateMatch("tasks.date_due", $op, $choice);
+					break;
+
+				case self::TERM_IS_COMPLETED:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
+					if ($choice) {
+						$choice = 1;
+					} else {
+						$choice = 0;
+					}
+
+					$wheres[] = $this->_choiceMatch("tasks.is_completed", $op, $choice, false);
+					break;
+
+				case self::TERM_VISIBILITY:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
+					if ($choice) {
+						$choice = 1;
+					} else {
+						$choice = 0;
+					}
+
+					$wheres[] = $this->_choiceMatch("tasks.visibility", $op, $choice, false);
+					break;
 			}
 		}
 
