@@ -142,7 +142,7 @@ class TicketChangeTracker extends ChangeTracker
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
 
-		if (!defined('DP_INTERFACE') || DP_INTERFACE != 'cli') {
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
 			$this->person_context = null;
 		} else {
 			$this->person_context = App::getCurrentPerson();
