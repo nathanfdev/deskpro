@@ -1683,7 +1683,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				$url = App::get('router')->generate('serve_blob', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
 					'filename' => $this->picture_blob->filename,
-					's' => $size
+					's' => $size,
+					'size-fit' => 1,
 				), true);
 
 			} elseif (App::getSetting('core.use_gravatar') && $this->primary_email && $this->primary_email->getId()) {
@@ -1702,7 +1703,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		if (!$url) {
 			$url = App::get('router')->generate('serve_default_picture', array(
-				's' => $size
+				's' => $size,
+				'size-fit' => 1,
 			), true);
 		}
 

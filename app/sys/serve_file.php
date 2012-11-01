@@ -954,7 +954,7 @@ class FilestorageLoader
 		$height = $image->getSize()->getHeight();
 
 		// Only shrink if it doesn't fit inside the box.
-		if (max($width, $height) > $size) {
+		if (max($width, $height) > $size || $is_fit) {
 			$size_w = $size_h = $size;
 
 			// Preserve image ratio.
