@@ -46,9 +46,11 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				this.overlay.setContent($(html));
-				this.wrapperEl = this.overlay.getWrapper();
-				this._initControls();
+				if (this.overlay) {
+					this.overlay.setContent($(html));
+					this.wrapperEl = this.overlay.getWrapper();
+					this._initControls();
+				}
 			}
 		});
 	},
