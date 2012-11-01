@@ -562,6 +562,10 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		if (strpos($errstr, 'htmlspecialchars(): Invalid multibyte sequence in argument') !== false) {
+			$no_send_error = true;
+		}
+
 		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
