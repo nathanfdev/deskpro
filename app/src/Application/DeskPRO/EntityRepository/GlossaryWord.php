@@ -53,4 +53,19 @@ class GlossaryWord extends AbstractEntityRepository
 
 		return $words;
 	}
+
+	/**
+	 * Get a list of all words containing the string
+	 */
+	public function getWordsContaining($string)
+	{
+		$words = App::getDb()->fetchAllKeyValue("
+			SELECT id, word
+			FROM glossary_words
+			WHERE word LIKE ?
+			ORDER BY word ASC
+		", array("%$string%"));
+
+		return $words;
+	}
 }

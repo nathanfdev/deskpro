@@ -1652,4 +1652,50 @@ $collection->add('api_tasks_task_label_delete', new Route(
 	array()
 ));
 
+################################################################################
+# Glossary
+################################################################################
+
+$collection->add('api_glossary', new Route(
+	'/glossary',
+	array('_controller' => 'ApiBundle:Glossary:list'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_glossary_lookup', new Route(
+	'/glossary/lookup',
+	array('_controller' => 'ApiBundle:Glossary:lookup'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_glossary_post', new Route(
+	'/glossary',
+	array('_controller' => 'ApiBundle:Glossary:newWord'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('api_glossary_word', new Route(
+	'/glossary/{word_id}',
+	array('_controller' => 'ApiBundle:Glossary:getWord'),
+	array('_method' => 'GET', 'word_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_glossary_word_post', new Route(
+	'/glossary/{word_id}',
+	array('_controller' => 'ApiBundle:Glossary:postWord'),
+	array('_method' => 'POST', 'word_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_glossary_word_delete', new Route(
+	'/glossary/{word_id}',
+	array('_controller' => 'ApiBundle:Glossary:deleteWord'),
+	array('_method' => 'DELETE', 'word_id' => '\\d+'),
+	array()
+));
+
 return $collection;
