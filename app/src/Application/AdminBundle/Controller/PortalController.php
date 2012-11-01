@@ -152,6 +152,11 @@ class PortalController extends AbstractController
 				$this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $this->in->getStrSimple('tab'), $val);
 
 				break;
+
+			case 'reorder_tabs':
+				$order = $this->container->getIn()->getCleanValueArray('display_order', 'str_simple', 'discard');
+				$this->container->getSettingsHandler()->setSetting('user.portal_tabs_order', implode(',', $order));
+				break;
 		}
 
 		return $this->createJsonResponse(array('success' => true));

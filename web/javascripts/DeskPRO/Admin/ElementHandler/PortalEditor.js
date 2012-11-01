@@ -172,7 +172,25 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					}
 				});
 				break;
+			case 'reorder_tabs':
+				var order = data.order;
 
+				var postData = [];
+				for (var i = 0; i < order.length; i++) {
+					postData.push({
+						name: 'display_order[]',
+						value: order[i]
+					});
+				}
+
+				$.ajax({
+					url: BASE_URL + 'admin/portal/save-editor/reorder_tabs',
+					type: 'POST',
+					dataType: 'json',
+					data: postData
+				});
+
+				break;
 			case 'open_logo_editor':
 				var controller = data.controller;
 				var overlay = new DeskPRO.UI.Overlay({

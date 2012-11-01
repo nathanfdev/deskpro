@@ -45,15 +45,12 @@ class PortalController extends AbstractController
 {
     public function portalAction()
     {
-		$show_portal_controls = $this->in->getBool('admin_portal_controls');
-
-		$custom_templates = null;
-		if ($show_portal_controls) {
-			$custom_templates = $this->db->fetchAllKeyValue("SELECT name,id FROM templates");
-		}
-
 		$tpl_globals = $this->container->get('templating.globals');
-		if (!$tpl_globals->getVariable('admin_portal_controls')) {
+
+		$tabs_order     = $tpl_globals->getVariable('portal_tabs_order');
+		$admin_controls = $tpl_globals->getVariable('admin_portal_controls');
+
+		if (!$admin_controls) {
 			/** @var $portal_page \Application\DeskPRO\PageDisplay\Page\PortalPage */
 			$portal_page = $this->container->get('deskpro.user_portal_page');
 
@@ -65,22 +62,51 @@ class PortalController extends AbstractController
 					return $this->redirectRoute('user_tickets_new');
 				}
 			}
+		}
 
-			// If tabs are turned off, the home page changes
-			if ($this->container->getSetting('user.portal_tab_news')) {
+		do {
+			$page = array_shift($tabs_order);
+			$ctrl = null;
+			switch ($page) {
+				case 'news':
+					if ($this->container->getSetting('user.portal_tab_news')) {
+						$ctrl = 'UserBundle:News:browse';
+					}
+					break;
+				case 'articles':
+					if ($this->container->getSetting('user.portal_tab_articles') && ($admin_controls || $this->person->hasPerm('articles.use'))) {
+						$ctrl = 'UserBundle:Articles:browse';
+					}
+					break;
+				case 'feedback':
+					if ($this->container->getSetting('user.portal_tab_feedback') && ($admin_controls || $this->person->hasPerm('feedback.use'))) {
+						$ctrl = 'UserBundle:Feedback:filter';
+					}
+					break;
+				case 'downloads':
+					if ($this->container->getSetting('user.portal_tab_downloads') && ($admin_controls || $this->person->hasPerm('downloads.use'))) {
+						$ctrl = 'UserBundle:Downloads:browse';
+					}
+					break;
+				case 'newticket':
+					if ($this->container->getSetting('user.portal_tab_tickets') && ($admin_controls || $this->person->hasPerm('tickets.use'))) {
+						$ctrl = 'UserBundle:NewTicket:new';
+					}
+					break;
+			}
+		} while (!$ctrl && $tabs_order);
 
-			} elseif ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')) {
-				return $this->redirectRoute('user_articles');
-			} elseif ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')) {
-				return $this->redirectRoute('user_feedback');
-			} elseif ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')) {
-				return $this->redirectRoute('user_downloads_home');
+		if (!$ctrl) {
+			if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+				return $this->redirectRoute('user_login');
 			} else {
 				return $this->redirectRoute('user_tickets_new');
 			}
 		}
 
-        return $this->render('UserBundle:Portal:portal.html.twig');
+		$tpl_globals->setVariable('is_homepage', true);
+
+		return $this->forward($ctrl);
     }
 
 	public function saveRatingAction($object_type, $object_id)

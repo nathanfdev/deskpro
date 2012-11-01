@@ -42,12 +42,6 @@ use Application\DeskPRO\People\AccountValidator;
 
 class MainController extends AbstractController
 {
-    public function indexAction()
-    {
-        return $this->render('UserBundle:Main:index.html.twig');
-    }
-
-
 	/**
 	 * This action is used to render the header/footer in the portal editor when it was updated.
 	 * We need to actually render it like this because they could use twig tags in it, and it could

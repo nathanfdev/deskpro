@@ -64,6 +64,33 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 		$tpl_globals->setVariable('search_query', $this->search_query);
+
+		#------------------------------
+		# Portal display order
+		#------------------------------
+
+		if (!$tpl_globals->getVariable('portal_tabs_order')) {
+			$val = App::getSetting('user.portal_tabs_order');
+
+			if ($val) {
+				$val = explode(',', $val);
+				$val = \Orb\Util\Arrays::removeFalsey($val);
+			} else {
+				$val = array();
+			}
+
+			$val = array_merge($val, array(
+				'articles',
+				'news',
+				'feedback',
+				'downloads',
+				'newticket'
+			));
+
+			$val = array_unique($val);
+
+			$tpl_globals->setVariable('portal_tabs_order', $val);
+		}
 	}
 
 	public function preAction($action, $arguments = null)

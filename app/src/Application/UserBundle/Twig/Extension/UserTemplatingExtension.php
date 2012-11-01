@@ -52,10 +52,11 @@ class UserTemplatingExtension extends \Twig_Extension
 	public function getFunctions()
     {
         return array(
-            'portal_js'   => new \Twig_Function_Method($this, 'portalJs', array('is_safe' => array('html'))),
-			'portal_css' => new \Twig_Function_Method($this, 'portalCss', array('is_safe' => array('html'))),
-            'portal_section'   => new \Twig_Function_Method($this, 'portalSection', array('is_safe' => array('html'))),
+            'portal_js'         => new \Twig_Function_Method($this, 'portalJs', array('is_safe' => array('html'))),
+			'portal_css'        => new \Twig_Function_Method($this, 'portalCss', array('is_safe' => array('html'))),
+            'portal_section'    => new \Twig_Function_Method($this, 'portalSection', array('is_safe' => array('html'))),
             'portal_hasblock'   => new \Twig_Function_Method($this, 'portalHasBlock', array('is_safe' => array('html'))),
+			'portal_option'     => new \Twig_Function_Method($this, 'portalOption', array()),
         );
     }
 
@@ -95,6 +96,21 @@ class UserTemplatingExtension extends \Twig_Extension
 	{
 		$portal_page = $this->container->get('deskpro.user_portal_page');
 		return $portal_page->hasBlock($section, $type);
+	}
+
+	public function portalOption($name)
+	{
+		static $options = array();
+		if (isset($options[$name])) {
+			return $options[$name];
+		}
+
+		switch ($name) {
+			default:
+				return '';
+		}
+
+		return $options[$name];
 	}
 
 	public function getFilters()

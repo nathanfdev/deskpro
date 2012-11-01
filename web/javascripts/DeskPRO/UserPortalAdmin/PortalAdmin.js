@@ -38,14 +38,47 @@ var PortalAdmin = {
 		// Tabs at the top switch paths in the admin page
 		//----------------------------------------
 
-		$('#dp_content_tabs').find('a').on('click', function(ev) {
+		var contentTabs = $('#dp_content_tabs');
+		var cancelClick = false;
+		contentTabs.find('a').on('click', function(ev) {
 			ev.preventDefault();
 			var path = $(this).attr('href');
 
-			self.tellAdmin('switch_page', {
-				path: path
-			});
+			if (!cancelClick) {
+				self.tellAdmin('switch_page', {
+					path: path
+				});
+			}
+
+			cancelClick = false;
 		});
+
+		// And they're reorderable
+		contentTabs.find('> ul').sortable({
+			axix: 'y',
+			containment: contentTabs,
+			items: '> li',
+			start: function() {
+				cancelClick = true;
+			},
+			stop: function() {
+				window.setTimeout(function() {
+					cancelClick = false;
+				}, 80);
+			},
+			update: function() {
+				var order = [];
+
+				contentTabs.find('> ul > li').each(function() {
+					order.push($(this).data('tabtype'));
+				});
+
+				self.tellAdmin('reorder_tabs', {
+					order: order
+				});
+			}
+		});
+
 
 		//----------------------------------------
 		// Alert admin that we're ready
