@@ -89,6 +89,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			}
 			this.initialize = function(){	};
 			this.tinyscrollbar_update = function(sScroll){};
+			this.tinyscrollbar_destroy = function() {};
 			function setSize(){	};
 			function setEvents(){};
 			function start(oEvent){	return false;};
