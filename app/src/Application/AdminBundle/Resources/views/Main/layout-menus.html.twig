@@ -134,16 +134,11 @@
 
 
 	{#############################
-	 # Apps Menu
+	 # Integrate Menu
 	 #############################}
 
-	<div id="apps_menu">
+	<div id="integrate_menu">
 		<ul>
-			<li class="link-apps">
-				<a href="{{ path('admin_apps') }}" data-search-keywords="apps" data-search-name="Apps &rsaquo; DeskPRO Apps">DeskPRO Apps</a>
-				<p>Enable and disable built-in DeskPRO apps.</p>
-			</li>
-
 			<li class="link-widgets">
 				<a href="{{ path('admin_widgets') }}" data-search-keywords="widgets" data-search-name="Apps &rsaquo; Widgets">Widgets</a>
 				<p>Manage widgets that add additional functions to the agent interface.</p>
@@ -234,10 +229,15 @@
 
 	<div id="chat_menu">
 		<ul>
-			<li class="link-fields">
-				<a href="{{ path('admin_departments', {type:'chat'}) }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">{{ phrase('admin.general.departments') }}</a>
-				<p>{{ phrase('admin.menu.manage_departments') }}</p>
-			</li>
+			{% if not app.getSetting('core.apps_chat') %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}">Enable Chat</a></li>
+			{% else %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}">Disable Chat</a></li>
+				<li class="link-fields">
+					<a href="{{ path('admin_departments', {type:'chat'}) }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">{{ phrase('admin.general.departments') }}</a>
+					<p>{{ phrase('admin.menu.manage_departments') }}</p>
+				</li>
+			{% endif %}
 		</ul>
 	</div>
 
@@ -248,8 +248,15 @@
 
 	<div id="kb_menu">
 		<ul>
-			{# <li class="link-fields"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li> #}
-			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_articles') }}</a></li>
+			{% if not app.getSetting('core.apps_kb') %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'kb', enable: '1'}) }}">Enable Knowledgebase</a></li>
+			{% else %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'kb', enable: '0'}) }}">Disable Knowledgebase</a></li>
+				<li class="link-fields">
+					<a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_articles') }}</a>
+					<p>Manage content from the agent interface.</p>
+				</li>
+			{% endif %}
 		</ul>
 	</div>
 
@@ -259,10 +266,18 @@
 
 	<div id="feedback_menu">
 		<ul>
-			<li class="link-fields"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.general.statuses') }}</a></li>
-			<li class="link-fields"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.general.types') }}</a></li>
-			<li class="link-fields"><a href="{{ path('admin_feedback_usercats') }}">{{ phrase('agent.general.categories') }}</a></li>
-			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
+			{% if not app.getSetting('core.apps_feedback') %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'feedback', enable: '1'}) }}">Enable Feedback</a></li>
+			{% else %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'feedback', enable: '0'}) }}">Disable Feedback</a></li>
+				<li class="link-fields"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.general.statuses') }}</a></li>
+				<li class="link-fields"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.general.types') }}</a></li>
+				<li class="link-fields"><a href="{{ path('admin_feedback_usercats') }}">{{ phrase('agent.general.categories') }}</a></li>
+				<li class="link-fields">
+					<a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a>
+					<p>Manage content from the agent interface.</p>
+				</li>
+			{% endif %}
 		</ul>
 	</div>
 
@@ -272,8 +287,12 @@
 
 	<div id="downloads_menu">
 		<ul>
-			{#<li class="link-fields"><a>{{ phrase('admin.portal.custom_fields') }}</a></li>#}
-			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_downloads') }}</a></li>
+			{% if not app.getSetting('core.apps_downloads') %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'downloads', enable: '1'}) }}">Enable Downloads</a></li>
+			{% else %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'downloads', enable: '0'}) }}">Disable Downloads</a></li>
+				<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_downloads') }}</a></li>
+			{% endif %}
 		</ul>
 	</div>
 
@@ -283,8 +302,12 @@
 
 	<div id="news_menu">
 		<ul>
-			{#<li class="link-fields"><a>{{ phrase('admin.portal.custom_fields') }}</a></li>#}
-			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_news') }}</a></li>
+			{% if not app.getSetting('core.apps_news') %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'news', enable: '1'}) }}">Enable News</a></li>
+			{% else %}
+				<li><a href="{{ path('admin_apps_toggle', {app: 'news', enable: '0'}) }}">Disable News</a></li>
+				<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_news') }}</a></li>
+			{% endif %}
 		</ul>
 	</div>
 </div>

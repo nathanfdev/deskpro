@@ -207,35 +207,52 @@
 		{% endif %}
 		<div class="sep">-</div>
 		<ul>
-			<li data-menu="#apps_menu">
-				<a href="{{ path('admin_apps') }}"><span class="apps">{{ phrase('admin.general.apps') }}</span></a>
+			<li data-menu="#integrate_menu">
+				<a href="#"><span class="apps">Integrate</span></a>
 			</li>
 		</ul>
-		<div class="apps-well">
-			<ul>
-				<li data-menu="#tickets_menu">
-					<a><span class="tickets">{{ phrase('agent.general.tickets') }}</span></a>
-				</li>
-				<li data-menu="#users_menu">
-					<a><span class="users">{{ phrase('admin.menu.crm') }}</span></a>
-				</li>
-				<li {% if app.getSetting('core.apps_kb') %}data-menu="#kb_menu"{% else %}class="off"{% endif %}>
-					<a {% if not app.getSetting('core.apps_kb') %}href="{{ path('admin_apps') }}"{% endif %}><span class="kb">{{ phrase('agent.general.kb') }}</span></a>
-				</li>
-				<li {% if app.getSetting('core.apps_feedback') %}data-menu="#feedback_menu"{% else %}class="off"{% endif %}>
-					<a {% if not app.getSetting('core.apps_feedback') %}href="{{ path('admin_apps') }}"{% endif %}><span class="feedback">{{ phrase('agent.general.feedback') }}</span></a>
-				</li>
-				<li {% if app.getSetting('core.apps_downloads') %}data-menu="#downloads_menu"{% else %}class="off"{% endif %}>
-					<a {% if not app.getSetting('core.apps_downloads') %}href="{{ path('admin_apps') }}"{% endif %}><span class="downloads">{{ phrase('agent.general.downloads') }}</span></a>
-				</li>
-				<li {% if app.getSetting('core.apps_news') %}data-menu="#news_menu"{% else %}class="off"{% endif %}>
-					<a {% if not app.getSetting('core.apps_news') %}href="{{ path('admin_apps') }}"{% endif %}><span class="news">{{ phrase('agent.general.news') }}</span></a>
-				</li>
-				<li {% if app.getSetting('core.apps_chat') %}data-menu="#chat_menu"{% else %}class="off"{% endif %}>
-					<a {% if not app.getSetting('core.apps_chat') %}href="{{ path('admin_apps') }}"{% endif %}><span class="chat">{{ phrase('agent.general.chat') }}</span></a>
-				</li>
-			</ul>
-		</div>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#tickets_menu">
+				<a><span class="tickets">{{ phrase('agent.general.tickets') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#users_menu">
+				<a><span class="users">{{ phrase('admin.menu.crm') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#kb_menu" {% if not app.getSetting('core.apps_kb') %}class="off"{% endif %}>
+				<a {% if not app.getSetting('core.apps_kb') %}href="{{ path('admin_apps') }}"{% endif %}><span class="kb">{{ phrase('agent.general.kb') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#feedback_menu" {% if not app.getSetting('core.apps_feedback') %}class="off"{% endif %}>
+				<a {% if not app.getSetting('core.apps_feedback') %}href="{{ path('admin_apps') }}"{% endif %}><span class="feedback">{{ phrase('agent.general.feedback') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#downloads_menu"{% if not app.getSetting('core.apps_downloads') %}class="off"{% endif %}>
+				<a {% if not app.getSetting('core.apps_downloads') %}href="{{ path('admin_apps') }}"{% endif %}><span class="downloads">{{ phrase('agent.general.downloads') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#news_menu"{% if not app.getSetting('core.apps_news') %}class="off"{% endif %}>
+				<a {% if not app.getSetting('core.apps_news') %}href="{{ path('admin_apps') }}"{% endif %}><span class="news">{{ phrase('agent.general.news') }}</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#chat_menu"{% if not app.getSetting('core.apps_chat') %}class="off"{% endif %}>
+				<a {% if not app.getSetting('core.apps_chat') %}href="{{ path('admin_apps') }}"{% endif %}><span class="chat">{{ phrase('agent.general.chat') }}</span></a>
+			</li>
+		</ul>
 	</div>
 </div>
 

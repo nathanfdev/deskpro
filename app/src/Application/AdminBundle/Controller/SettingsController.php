@@ -649,6 +649,6 @@ class SettingsController extends AbstractController
 
 		$this->container->getSettingsHandler()->setSetting($name, $on);
 
-		return $this->redirectRoute('admin_apps');
+		return $this->redirectRoute('admin');
 	}
 }
