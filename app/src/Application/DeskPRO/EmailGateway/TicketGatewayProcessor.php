@@ -510,6 +510,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$did_html_trim = false;
 		$is_text = false;
 		$has_text_cut = false;
+		$has_cut = false;
 
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
@@ -572,6 +573,21 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body'] = $txt;
 			$email_info['body_full'] = $txt;
 
+			// Always generic cut from the DP_TOP_MARK position first
+			// The PatternCutter will trim off the remaining quoted headers
+			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+			$generic_cut = $cut->cutQuoteBlock($email_info['body'], false);
+			if ($email_info['body'] != $generic_cut) {
+				$this->logMessage("Generic cutter matched");
+				$email_info['body'] = $generic_cut;
+				$email_info['generic_cut'] = $generic_cut;
+				$email_info['found_top_marker'] = true;
+				$has_cut = true;
+			} else {
+				$this->logMessage("Generic cutter did not match");
+				$email_info['found_top_marker'] = false;
+			}
+
 			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
 			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
 			$cutter->addPatterns($pattern_config->all());
@@ -590,18 +606,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// Run generic cutter as well, in case it matches higher
 			$parts = $this->cutterDef->splitFromFirstHeaderText($email_info['body']);
 			if ($parts && count($parts) == 2) {
-				$this->logMessage("Generic cutter matched, cut from standard quote headers");
+				$this->logMessage("Split header cutter matched, cut from standard quote headers");
 				$email_info['body'] = trim($parts[0]);
 			} else {
-				$this->logMessage("Generic cutter did not match");
+				$this->logMessage("Split header cutter did not match");
 			}
 
 			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body'], \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_full'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($email_info['body_full'], \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
 		}
-
-		$has_cut = false;
 
 		if (!$is_text) {
 			$email_info['body_raw'] = $email_info['body'];
