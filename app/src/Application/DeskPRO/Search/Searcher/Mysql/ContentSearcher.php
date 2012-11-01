@@ -56,11 +56,21 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	protected $person;
 
 	/**
+	 * @var bool
+	 */
+	protected $ignore_perms = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function setPersonContext(Person $person)
 	{
 		$this->person = $person;
+
+		// Agents in the agent interface dont apply user usergroup permissions
+		if ($person->is_agent && defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+			$this->ignore_perms = true;
+		}
 	}
 
 	protected function permFilterTypes($types)
@@ -109,11 +119,16 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			AND MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE)
 		";
 
-		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-		$permfilter->setPersonContext($this->person);
-		$perm_join  = $permfilter->getJoin();
-		$perm_where = $permfilter->getWhere();
-		if (!$perm_where) {
+		if (!$this->ignore_perms) {
+			$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+			$permfilter->setPersonContext($this->person);
+			$perm_join  = $permfilter->getJoin();
+			$perm_where = $permfilter->getWhere();
+			if (!$perm_where) {
+				$perm_where = '1';
+			}
+		} else {
+			$perm_join = '';
 			$perm_where = '1';
 		}
 
@@ -280,11 +295,16 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 				AND (" . implode(' OR ', $likes) . ")
 			";
 
-			$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-			$permfilter->setPersonContext($this->person);
-			$perm_join  = $permfilter->getJoin();
-			$perm_where = $permfilter->getWhere();
-			if (!$perm_where) {
+			if (!$this->ignore_perms) {
+				$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+				$permfilter->setPersonContext($this->person);
+				$perm_join  = $permfilter->getJoin();
+				$perm_where = $permfilter->getWhere();
+				if (!$perm_where) {
+					$perm_where = '1';
+				}
+			} else {
+				$perm_join = '';
 				$perm_where = '1';
 			}
 
