@@ -38,6 +38,15 @@ use Orb\Util\Numbers;
 
 class MainController extends AbstractController
 {
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($action == 'indexAction') {
+			return false;
+		}
+
+		return parent::requireRequestToken($action, $arguments);
+	}
+
     public function indexAction()
     {
 		$this->person->loadPrefGroup('agent.ui');

@@ -44,6 +44,15 @@ use Orb\Util\Numbers;
 
 class MiscController extends AbstractController
 {
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($action == 'getInterfaceDataAction') {
+			return false;
+		}
+
+		return parent::requireRequestToken($action, $arguments);
+	}
+
 	public function getInterfaceDataAction()
 	{
 		$js = array();

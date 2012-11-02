@@ -45,16 +45,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	protected $tpl_prefix = 'AgentBundle:Login';
 	protected $route_prefix = 'agent';
 
-	public function requireRequestToken($action, $arguments = null)
-	{
-		// Loading the main interface, no request token required for that
-		if ($action == 'index') {
-			return false;
-		}
-
-		return true;
-	}
-
 	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.
