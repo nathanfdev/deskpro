@@ -231,9 +231,9 @@ $collection->add('user_search', new Route(
 ));
 
 $collection->add('user_search_labels', new Route(
-	'/search/labels/{label}/{type}',
+	'/search/labels/{type}/{label}',
 	array('_controller' => 'UserBundle:Search:labelSearch', 'label' => '', 'type' => 'all'),
-	array(),
+	array('label' => '.*'),
 	array()
 ));
 
