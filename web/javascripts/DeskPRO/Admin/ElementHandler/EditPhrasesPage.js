@@ -67,5 +67,28 @@ DeskPRO.Admin.ElementHandler.EditPhrasesPage = new Orb.Class({
 
 			overlay.open();
 		});
+
+		var addOverlayEl = $('#add_phrase_overlay');
+		if (addOverlayEl) {
+			var addOverlay = new DeskPRO.UI.Overlay({
+				triggerElement: $('#new_custom_phrase'),
+				contentElement: addOverlayEl,
+				beforeOverlayOpened: function() {
+					addOverlayEl.find('textarea.custom_phrase, input.phrase_id').val('');
+				}
+			});
+
+			addOverlayEl.find('button.save-trigger').on('click', function(ev) {
+				ev.preventDefault();
+				$.ajax({
+					url: $(this).data('add-url'),
+					type: 'POST',
+					data: addOverlayEl.find('textarea, input').serializeArray(),
+					success: function() {
+						window.location.reload(false);
+					}
+				});
+			});
+		}
 	}
 });

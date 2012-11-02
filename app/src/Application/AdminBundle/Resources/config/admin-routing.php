@@ -1086,6 +1086,13 @@ $collection->add('admin_langs_newlang_save', new Route(
 	array()
 ));
 
+$collection->add('admin_langs_newphrase', new Route(
+	'/languages/{language_id}/add-custom',
+	array('_controller' => 'AdminBundle:Languages:addCustomPhrase'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_langs_departments', new Route(
 	'/languages/{language_id}/phrases/departments',
 	array('_controller' => 'AdminBundle:Languages:departments'),

@@ -339,6 +339,7 @@ class LanguagesController extends AbstractController
 			foreach ($vars['lang_phrases']['custom'] as $phrase) {
 				$groups[] = $phrase->groupname;
 			}
+			$groups[] = 'custom';
 			$groups = array_unique($groups);
 		} else {
 			$groups = array($group);
@@ -358,6 +359,23 @@ class LanguagesController extends AbstractController
 			}
 		}
 
+		if ($group == 'CUSTOM') {
+			$custom_phrases = App::getDb()->fetchAllKeyValue("
+				SELECT name, phrase
+				FROM phrases
+				WHERE groupname = 'custom' AND language_id = 1
+			");
+			$vars['lang_phrases']['original'] = array_merge($vars['lang_phrases']['original'], $custom_phrases);
+
+			$vars['lang_phrases']['custom'] = array_merge($vars['lang_phrases']['custom'], App::getDb()->fetchAllKeyValue("
+				SELECT name, phrase
+				FROM phrases
+				WHERE groupname = 'custom' AND language_id = $language_id
+			"));
+
+			$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
+		}
+
 		// If we're in custom, only show the phrases we actually have
 		if ($group == 'CUSTOM') {
 			$set = array();
@@ -369,6 +387,31 @@ class LanguagesController extends AbstractController
 		}
 
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
+	}
+
+	public function addCustomPhraseAction($language_id)
+	{
+		$language = $this->getLanguageOr404($language_id);
+
+		$phrase_id   = $this->in->getString('phrase_id');
+		$phrase_id = preg_replace('#[^a-zA-Z0-9_\-]#', '_', $phrase_id);
+		$phrase_id = 'custom.' . $phrase_id;
+
+		$phrase_text = $this->in->getString('custom_phrase');
+
+		App::getDb()->replace('phrases', array(
+			'language_id'   => $language_id,
+			'name'          => $phrase_id,
+			'groupname'     => 'custom',
+			'phrase'        => $phrase_text,
+			'created_at'    => date('Y-m-d H:i:s'),
+			'updated_at'    => date('Y-m-d H:i:s')
+		));
+
+		return $this->createJsonResponse(array(
+			'success'   => true,
+			'phrase_id' => $phrase_id,
+		));
 	}
 
 	public function savePhrasesAction($language_id)
