@@ -185,7 +185,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			});
 		}
 
-		chatWin.showMessage(info.author_id, info.message);
+		chatWin.showMessage(info.author_id, info.message, info.time);
 		chatWin.open();
 	},
 

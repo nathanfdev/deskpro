@@ -55,9 +55,10 @@
 <script type="text/x-jquery-tmpl" id="agent_chat_message">
 	<div class="chatRecieve">
 		<div class="avatar"><img src="${author_picture}" class="tipped" title="${author_name}" /></div>
+		<time>${time}</time>
 		<div class="chatMsgRecieve">
 			<span class="message-text">${message}</span>
-			<span class="bubbleLeft"></span>
+			<span class="bubbleRight"></span>
 		</div>
 	</div>
 </script>
@@ -65,6 +66,7 @@
 <script type="text/x-jquery-tmpl" id="agent_chat_message_me">
 	<div class="chatSend">
 		<div class="avatar"><img src="{% endraw %}{{ app.user.getPictureUrl(25) }}{% raw %}" /></div>
+		<time>${time}</time>
 		<div class="chatMsgSend">
 			<span class="message-text">${message}</span>
 			<span class="bubbleLeft"></span>

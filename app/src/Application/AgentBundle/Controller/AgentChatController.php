@@ -87,9 +87,14 @@ class AgentChatController extends AbstractController
 
 		$info = $this->agent_chat->sendAgentMessage($this->in->getString('content'), $agent_ids, $convo_id);
 
+		$date = clone $info['new_message']['date_created'];
+		$date->setTimeZone(App::getCurrentPerson()->getDateTimezone());
+		$time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
+
 		return $this->createJsonResponse(array(
 			'conversation_id' => $info['conversation']['id'],
-			'new_message_id'  => $info['new_message']['id']
+			'new_message_id'  => $info['new_message']['id'],
+			'time' => $time
 		));
 	}
 

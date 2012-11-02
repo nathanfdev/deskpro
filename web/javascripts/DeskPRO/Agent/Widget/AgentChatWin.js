@@ -208,8 +208,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			return;
 		}
 
-		this.sendMessage(msg);
-		this.showMyMessage(msg);
+		var messageBlock = this.showMyMessage(msg);
+		this.sendMessage(msg, messageBlock);
 	},
 
 
@@ -237,8 +237,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * Send a new message
 	 *
 	 * @param {String} message
+	 * @param messageBlock
 	 */
-	sendMessage: function(message) {
+	sendMessage: function(message, messageBlock) {
 		var data = [];
 		data.push({
 			name: 'content',
@@ -277,6 +278,10 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				info.messageId = data.message_id;
 				info.convoId = this.convoId;
 				this.fireEvent('sendMessageDone', [this, info]);
+
+				if (messageBlock) {
+					messageBlock.find('time').text(data.time);
+				}
 			}
 		});
 	},
@@ -287,8 +292,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 *
 	 * @param agent_id
 	 * @param message
+	 * @param time
 	 */
-	showMessage: function(agent_id, message) {
+	showMessage: function(agent_id, message, time) {
 
 		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
 
@@ -300,7 +306,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			author_id: agent_id,
 			author_name: agentInfo.name,
 			author_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 25),
-			message: ''
+			message: '',
+			time: time || ''
 		});
 
 		newMessage.find('span.message-text').html(this.formatMessage(message));
@@ -336,11 +343,13 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * @param message
 	 */
 	showMyMessage: function(message) {
-		var newMessage = $.tmpl('agent_chat_message_me', { message: '' });
+		var newMessage = $.tmpl('agent_chat_message_me', { message: '', time: '...' });
 		newMessage.find('span.message-text').html(this.formatMessage(message));
 
 		$('.messages-container', this.wrapper).append(newMessage);
 		$('.messages-box').scrollTop(100000);
+
+		return newMessage;
 	},
 
 

@@ -86,6 +86,10 @@ class AgentChat
 				continue;
 			}
 
+			$date = clone $chat_message['date_created'];
+			$date->setTimeZone(App::getCurrentPerson()->getDateTimezone());
+			$time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
+
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $channel,
@@ -95,7 +99,8 @@ class AgentChat
 					'message_id'        => $chat_message['id'],
 					'author_id'         => $chat_message->author['id'],
 					'message'           => $chat_message['content'],
-					'date_created'      => $chat_message['date_created']->getTimestamp()
+					'date_created'      => $chat_message['date_created']->getTimestamp(),
+					'time'              => $time
 				),
 				'created_by_client' => $this->session['id'],
 				'for_person' => $part
