@@ -126,7 +126,7 @@ $collection->add('admin_license_reqdemo', new Route(
 $collection->add('admin_license_input_save', new Route(
 	'/license/input/save',
 	array('_controller' => 'AdminBundle:License:saveNewLicense'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -201,7 +201,7 @@ $collection->add('admin_tickets_editor_dep', new Route(
 $collection->add('admin_tickets_editor_dep_save', new Route(
 	'/tickets/editor/{department_id}/{section}/save',
 	array('_controller' => 'AdminBundle:TicketProperties:saveEditor'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -264,7 +264,7 @@ $collection->add('admin_ticketcats', new Route(
 $collection->add('admin_ticketcats_setdefault', new Route(
 	'/tickets/categories/set-default',
 	array('_controller' => 'AdminBundle:TicketCategories:setDefault'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -278,14 +278,14 @@ $collection->add('admin_ticketcats_toggle', new Route(
 $collection->add('admin_ticketcats_savenew', new Route(
 	'/tickets/categories/save-new',
 	array('_controller' => 'AdminBundle:TicketCategories:saveNew'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_ticketcats_savetitle', new Route(
 	'/tickets/categories/save-title',
 	array('_controller' => 'AdminBundle:TicketCategories:saveTitle'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -327,21 +327,21 @@ $collection->add('admin_ticketpris_toggle', new Route(
 $collection->add('admin_ticketpris_savenew', new Route(
 	'/tickets/priorities/save-new',
 	array('_controller' => 'AdminBundle:TicketPriorities:saveNew'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_ticketpris_setdefault', new Route(
 	'/tickets/priorities/set-default',
 	array('_controller' => 'AdminBundle:TicketPriorities:setDefault'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_ticketpris_savetitle', new Route(
 	'/tickets/priorities/save-title',
 	array('_controller' => 'AdminBundle:TicketPriorities:saveTitle'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -369,7 +369,7 @@ $collection->add('admin_ticketworks', new Route(
 $collection->add('admin_ticketworks_setdefault', new Route(
 	'/tickets/workflows/set-default',
 	array('_controller' => 'AdminBundle:TicketWorkflows:setDefault'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -383,14 +383,14 @@ $collection->add('admin_ticketworks_toggle', new Route(
 $collection->add('admin_ticketworks_savenew', new Route(
 	'/tickets/workflows/save-new',
 	array('_controller' => 'AdminBundle:TicketWorkflows:saveNew'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_ticketworks_savetitle', new Route(
 	'/tickets/workflows/save-title',
 	array('_controller' => 'AdminBundle:TicketWorkflows:saveTitle'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -464,14 +464,14 @@ $collection->add('admin_portal_custom_sideblock_simple_get', new Route(
 $collection->add('admin_portal_custom_sideblock_simple_save', new Route(
 	'/portal/sideblock-simple/{pid}/save.json',
 	array('_controller' => 'AdminBundle:Portal:saveCustomBlockSimple', 'pid' => '0'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_portal_custom_sideblock_simple_delete', new Route(
 	'/portal/sideblock-simple/{pid}/delete.json',
 	array('_controller' => 'AdminBundle:Portal:deleteCustomBlockSimple'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -492,7 +492,7 @@ $collection->add('admin_portal_get_editor', new Route(
 $collection->add('admin_portal_save_editor', new Route(
 	'/portal/save-editor/{type}',
 	array('_controller' => 'AdminBundle:Portal:saveEditor'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -546,7 +546,7 @@ $collection->add('admin_settings', new Route(
 $collection->add('admin_settings_saveform', new Route(
 	'/settings/save-settings/{type}/{auth}',
 	array('_controller' => 'AdminBundle:Settings:settingsSaveForm'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -574,7 +574,7 @@ $collection->add('admin_settings_cron', new Route(
 $collection->add('admin_settings_set', new Route(
 	'/settings/save-setting/{setting_name}/{security_token}',
 	array('_controller' => 'AdminBundle:Settings:saveSingleSetting'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -634,7 +634,7 @@ $collection->add('admin_userreg_options', new Route(
 $collection->add('admin_userreg_options_save', new Route(
 	'/settings/user-registration/save.json',
 	array('_controller' => 'AdminBundle:UserReg:saveOptions'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -802,7 +802,7 @@ $collection->add('admin_agents_new_fromusersource', new Route(
 
 $collection->add('admin_agents_new_fromusersource_make', new Route(
 	'/agents/new-from-usersource/{usersource_id}/make',
-	array('_controller' => 'AdminBundle:Agents:newFromUsersourceMake', 'usersource_id' => '0'),
+	array('_controller' => 'AdminBundle:Agents:newFromUsersourceMake', 'usersource_id' => '0', '_method' => 'POST'),
 	array(),
 	array()
 ));
@@ -859,7 +859,7 @@ $collection->add('admin_agents_getperms', new Route(
 $collection->add('admin_agents_edit_save', new Route(
 	'/agents/{person_id}/edit/save',
 	array('_controller' => 'AdminBundle:Agents:editAgentSave'),
-	array('person_id' => '\\d+'),
+	array('person_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
@@ -922,7 +922,7 @@ $collection->add('admin_agents_notifications_getagent', new Route(
 $collection->add('admin_agents_notifications_saveagent', new Route(
 	'/agents/{person_id}/notifications/save-agent-options.json',
 	array('_controller' => 'AdminBundle:Agents:notificationsSave'),
-	array('person_id' => '\\d+'),
+	array('person_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
@@ -968,14 +968,14 @@ $collection->add('admin_templates_getcode', new Route(
 $collection->add('admin_templates_save', new Route(
 	'/templates/save-template.json',
 	array('_controller' => 'AdminBundle:Templates:saveTemplate'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_templates_revert', new Route(
 	'/templates/revert-template.json',
 	array('_controller' => 'AdminBundle:Templates:revertTemplate'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1089,7 +1089,7 @@ $collection->add('admin_langs_install_pack', new Route(
 $collection->add('admin_langs_newlang_save', new Route(
 	'/languages/new-lang/save',
 	array('_controller' => 'AdminBundle:Languages:newLanguageSave'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1145,7 +1145,7 @@ $collection->add('admin_langs_editphrases', new Route(
 $collection->add('admin_langs_editphrases_save', new Route(
 	'/languages/{language_id}/phrases-save',
 	array('_controller' => 'AdminBundle:Languages:savePhrases'),
-	array('language_id' => '\\d+'),
+	array('language_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
@@ -1344,7 +1344,7 @@ $collection->add('admin_ticketescalations_edit', new Route(
 $collection->add('admin_tickettriggers_save', new Route(
 	'/tickets/triggers/{id}/save',
 	array('_controller' => 'AdminBundle:TicketTriggers:saveTrigger'),
-	array('id' => '\\d+'),
+	array('id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
@@ -1542,14 +1542,14 @@ $collection->add('admin_products_toggle', new Route(
 $collection->add('admin_products_savenew', new Route(
 	'/products/save-new',
 	array('_controller' => 'AdminBundle:Products:saveNew'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_products_savetitle', new Route(
 	'/products/save-title',
 	array('_controller' => 'AdminBundle:Products:saveTitle'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1589,14 +1589,14 @@ $collection->add('admin_departments', new Route(
 $collection->add('admin_departments_saveagents', new Route(
 	'/departments/{department_id}/save-agents.json',
 	array('_controller' => 'AdminBundle:Departments:saveAgents'),
-	array('department_id' => '\\d+'),
+	array('department_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_departments_savegateway', new Route(
 	'/departments/{department_id}/save-gateway-account.json',
 	array('_controller' => 'AdminBundle:Departments:saveGatewayAccount'),
-	array('department_id' => '\\d+'),
+	array('department_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
@@ -1610,21 +1610,21 @@ $collection->add('admin_departments_setdefault', new Route(
 $collection->add('admin_departments_saveusergroups', new Route(
 	'/departments/{department_id}/save-usergroups.json',
 	array('_controller' => 'AdminBundle:Departments:saveUsergroups'),
-	array('department_id' => '\\d+'),
+	array('department_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_departments_savenew', new Route(
 	'/departments/{type}/save-new',
 	array('_controller' => 'AdminBundle:Departments:saveNew'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('admin_departments_savetitle', new Route(
 	'/departments/save-title',
 	array('_controller' => 'AdminBundle:Departments:saveTitle'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1939,7 +1939,7 @@ $collection->add('admin_emailgateways', new Route(
 $collection->add('admin_emailgateways_savehdaddr', new Route(
 	'/email/incoming/save-helpdesk-addresses',
 	array('_controller' => 'AdminBundle:EmailGateways:saveHelpdeskAddresses'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1967,7 +1967,7 @@ $collection->add('admin_emailgateways_quicktoggle', new Route(
 $collection->add('admin_emailgateways_setlinkeddep', new Route(
 	'/email/incoming/accounts/set-linked-department.json',
 	array('_controller' => 'AdminBundle:EmailGateways:setLinkedDepartment'),
-	array('id' => '\\d+'),
+	array('id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 

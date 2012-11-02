@@ -86,12 +86,14 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				break;
 			case 'enable_logo_area':
 				$.ajax({
+					type: 'POST',
 					url: BASE_URL + 'admin/portal/save-editor/enable_logo_area',
 					type: 'POST'
 				});
 				break;
 			case 'disable_logo_area':
 				$.ajax({
+					type: 'POST',
 					url: BASE_URL + 'admin/portal/save-editor/disable_logo_area',
 					type: 'POST'
 				});
@@ -120,6 +122,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				}
 
 				$.ajax({
+					type: 'POST',
 					url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
 				});
 
@@ -329,6 +332,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				el.hide();
 
 				$.ajax({
+					type: 'POST',
 					url: BASE_URL + 'admin/portal/sideblock-simple/'+data.pid+'/delete.json',
 					error: function() {
 						el.show();
@@ -345,6 +349,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				el.hide();
 
 				$.ajax({
+					type: 'POST',
 					url: BASE_URL + 'admin/portal/blocks/' + data.pid + '/delete-template-block.json',
 					error: function() {
 						el.show();
@@ -419,6 +424,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					if (name == 'head_include') {
 						if (!postData.code.length) {
 							$.ajax({
+								type: 'POST',
 								url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name,
 								success: function() {
 									window.location.reload(false);
@@ -440,6 +446,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 
 					if (!postData.code.length) {
 						$.ajax({
+							type: 'POST',
 							url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
 						});
 

@@ -16,6 +16,7 @@ We found this user record:
 <br />
 
 <form action="{{ path('admin_agents_new_fromusersource_make', {'usersource_id': usersource.id}) }}" method="post">
+	{{ form_token() }}
 	<input type="hidden" name="search_term" value="{{search_term}}" />
 	<button class="clean-white make-trigger">Make this user into an agent &rarr;</button>
 </form>

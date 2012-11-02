@@ -137,6 +137,7 @@ DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
 		this.overlayEl.find('.overlay-footer').addClass('loading');
 		$.ajax({
 			url: BASE_URL + 'admin/templates/revert-template.json?name=' + this.editingTemplate,
+			type: 'POST',
 			context: this,
 			success: function(val) {
 				this.markReverted(this.editingTemplate);

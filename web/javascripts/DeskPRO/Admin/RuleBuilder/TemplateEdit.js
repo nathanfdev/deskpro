@@ -99,7 +99,8 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 			});
 
 			$.ajax({
-				url: BASE_URL + 'admin/templates/revert-template.json?name=' + name
+				url: BASE_URL + 'admin/templates/revert-template.json?name=' + name,
+				type: 'POST'
 			});
 		});
 
@@ -240,6 +241,7 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 		this.tplOverlayEl.find('.overlay-footer').addClass('loading');
 		$.ajax({
 			url: BASE_URL + 'admin/templates/revert-template.json?name=' + this.editingTemplate,
+			type: 'POST',
 			context: this,
 			success: function(val) {
 				this.closeTemplateEditor();
