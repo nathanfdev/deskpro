@@ -10,7 +10,7 @@
 	'admin.server.db'                                => 'database',
 	'admin.server.db_to_fs'                          => 'the database to the filesystem',
 	'admin.server.download_attachment'               => 'Download attachment',
-	'admin.server.edit_php_ini_to_make_changes'      => 'To make changes to any of these values, you will need to edit your servers php.ini file.',
+	'admin.server.edit_php_ini_to_make_changes'      => 'To make changes to any of these values, you will need to edit your server\'s php.ini file and restart your web server.',
 	'admin.server.error_log'                         => 'error_log',
 	'admin.server.failed'                            => 'Failed',
 	'admin.server.file_storage'                      => 'File Storage',
