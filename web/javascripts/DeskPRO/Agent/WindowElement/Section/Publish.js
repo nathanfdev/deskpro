@@ -52,6 +52,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		DeskPRO_Window.getSectionData('publish_section', (function(data) {
 			this._initSection(data);
+
+			if (this.sectionEl) {
+				var scroller = this.sectionEl.find('.with-scroll-handler').data('scroll_handler');
+				if (scroller) {
+					scroller.updateSize();
+				}
+			}
 		}).bind(this));
 	},
 
