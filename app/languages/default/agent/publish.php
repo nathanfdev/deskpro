@@ -31,7 +31,7 @@
 	'agent.publish.draft_content'                 => 'My Drafts',
 	'agent.publish.draft_revision'                => 'Change',
 	'agent.publish.drop_file_to_add'              => 'Drop your file here to add it to this post',
-	'agent.publish.edit_new_glossary'             => 'Edit new glossary word',
+	'agent.publish.edit_new_glossary'             => 'Edit glossary word',
 	'agent.publish.error_kb_cats_same'            => 'Categories are the same.',
 	'agent.publish.error_kb_missing'              => '{{count}} article not found.|{{count}} articles not found.',
 	'agent.publish.error_kb_not_in_db'            => 'A category was not found.',
@@ -91,7 +91,7 @@
 	'agent.publish.who_voted_none'                => 'No one has voted yet',
 	'agent.publish.who_voted_show_guests'         => 'Show guests',
 	'agent.publish.who_voted_show_people'         => 'Show people and contacts',
-	'agent.publish.word_def'                      => 'Word defintion',
+	'agent.publish.word_def'                      => 'Word definition',
 	'agent.publish.word_title'                    => 'Word title',
 	'agent.publish.words'                         => 'Words',
 );

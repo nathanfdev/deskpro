@@ -100,8 +100,9 @@ class GlossaryHandler
 			$in_q = implode(',', $in_q);
 
 			$words = $this->db->fetchAllKeyValue("
-				SELECT word, content
+				SELECT word, glossary_word_definitions.definition
 				FROM glossary_words
+				INNER JOIN glossary_word_definitions ON (glossary_words.definition_id = glossary_word_definitions.id)
 				WHERE word IN ($in_q)
 			", $load);
 

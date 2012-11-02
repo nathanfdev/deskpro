@@ -503,9 +503,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(info) {
-				$('.word', form).html(info.word);
+				form.find('input.word').select2('val', info.words);
 				$('input.word_id', form).val(info.id);
-				$('textarea.content', form).val(info.content);
+				$('textarea.definition', form).val(info.definition);
 
 				loading.hide();
 				form.show();
@@ -521,11 +521,30 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			contentElement: el,
 			customClassname: 'normal-size',
 			onBeforeOverlayOpened: function() {
-				el.find('input.word, textarea.content').val('');
+				el.find('textarea.definition').val('');
+				el.find('input.word').val('').select2('val', []);
 			}
 		});
 
 		$('.save-trigger', el).on('click', this.saveNewWord.bind(this));
+
+		DP.select(el.find('input.word'), {
+			tags: [],
+			id: function (e) { if (!e) return null; return e.id; },
+			formatResult: function(result, container, query) {
+				if (!result || !result.text) {
+					return '';
+				}
+				return Orb.escapeHtml(result.text);
+			},
+			matcher: function(term, text) {
+				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+					return;
+				}
+
+				return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+			}
+		});
 
 		return this.addDlg;
 	},
@@ -539,6 +558,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			customClassname: 'normal-size'
 		});
 
+		DP.select(el.find('input.word'), {
+			tags: [],
+			id: function (e) { if (!e) return null; return e.id; },
+			formatResult: function(result, container, query) {
+				if (!result || !result.text) {
+					return '';
+				}
+				return Orb.escapeHtml(result.text);
+			},
+			matcher: function(term, text) {
+				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+					return;
+				}
+
+				return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+			}
+		});
+
 		$('.save-trigger', el).on('click', this.saveEditWord.bind(this));
 		$('.delete-trigger', el).on('click', this.deleteEditWord.bind(this));
 
@@ -547,13 +584,17 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 	saveNewWord: function() {
 		var data = [];
+
+		var words = $('input.word', this.addDlg.elements.wrapperOuter).select2('val');
+		for (var i = 0; i < words.length; i++) {
+			data.push({
+				name: 'words[]',
+				value: words[i]
+			});
+		}
 		data.push({
-			name: 'word',
-			value: $('input.word', this.addDlg.elements.wrapperOuter).val().trim()
-		});
-		data.push({
-			name: 'content',
-			value: $('textarea.content', this.addDlg.elements.wrapperOuter).val().trim()
+			name: 'definition',
+			value: $('textarea.definition', this.addDlg.elements.wrapperOuter).val().trim()
 		});
 
 		$.ajax({
@@ -578,9 +619,18 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			name: 'word_id',
 			value: word_id
 		});
+
+		var words = $('input.word', this.editDlg.elements.wrapperOuter).select2('val');
+		for (var i = 0; i < words.length; i++) {
+			data.push({
+				name: 'words[]',
+				value: words[i]
+			});
+		}
+
 		data.push({
-			name: 'content',
-			value: $('textarea.content', this.editDlg.elements.wrapperOuter).val().trim()
+			name: 'definition',
+			value: $('textarea.definition', this.editDlg.elements.wrapperOuter).val().trim()
 		});
 
 		$.ajax({

@@ -29,60 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Orb\Util\Strings;
-
-/**
- * Glossary
- *
- */
-class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
+class Build1351871191 extends AbstractBuild
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * @var string
-	 */
-	protected $word;
-
-	/**
-	 * @var GlossaryWordDefinition
-	 */
-	protected $definition;
-
-	/**
-	 * @return int
-	 */
-	public function getId()
+	public function run()
 	{
-		return $this->id;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\GlossaryWord';
-		$metadata->setPrimaryTable(array( 'name' => 'glossary_words', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 255, 'unique' => true, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'definition', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'definition_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$this->out("Allow multiple glossary words per definition");
+		$this->execMutateSql("CREATE TABLE glossary_word_definitions (id INT AUTO_INCREMENT NOT NULL, definition LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE glossary_words ADD definition_id INT NOT NULL");
+		$this->execMutateSql("INSERT INTO glossary_word_definitions SELECT id, content FROM glossary_words");
+		$this->execMutateSql("UPDATE glossary_words SET definition_id = id");
+		$this->execMutateSql("ALTER TABLE glossary_words DROP content");
+		$this->execMutateSql("ALTER TABLE glossary_words ADD CONSTRAINT FK_1A8003DAD11EA911 FOREIGN KEY (definition_id) REFERENCES glossary_word_definitions (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_1A8003DAD11EA911 ON glossary_words (definition_id)");
+		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_1A8003DAC3F17511 ON glossary_words (word)");
 	}
 }

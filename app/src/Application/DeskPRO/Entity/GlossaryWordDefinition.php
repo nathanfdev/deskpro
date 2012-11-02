@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 
@@ -43,7 +44,7 @@ use Orb\Util\Strings;
  * Glossary
  *
  */
-class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
+class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -53,12 +54,12 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $word;
+	protected $definition;
 
 	/**
-	 * @var GlossaryWordDefinition
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
-	protected $definition;
+	protected $words;
 
 	/**
 	 * @return int
@@ -68,7 +69,67 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
+	public function __construct()
+	{
+		$this->words    = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
+	public function addWord($word)
+	{
+		$word = trim(strval($word));
+		if ($word === '') {
+			return;
+		}
+
+		$existing = App::getEntityRepository('DeskPRO:GlossaryWord')->findByWord($word);
+		if ($existing) {
+			return;
+		}
+		foreach ($this->words AS $existing_word) {
+			if (strtolower($word) == strtolower($existing_word->word)) {
+				return;
+			}
+		}
+
+		$obj = new GlossaryWord();
+		$obj->word = $word;
+		$obj->definition = $this;
+
+		$this->words->add($obj);
+	}
+
+	public function updateWords(array $words)
+	{
+		if (!$words) {
+			throw new \InvalidArgumentException("Must provide some words");
+		}
+
+		$words_test = array_map('strtolower', $words);
+
+		foreach ($this->words AS $existing_key => $existing_word) {
+			$key = array_search(strtolower($existing_word->word), $words_test);
+			if ($key !== false) {
+				unset($words_test[$key]);
+			} else {
+				$this->words->remove($existing_key);
+			}
+		}
+
+		foreach (array_keys($words_test) AS $key) {
+			$this->addWord($words[$key]);
+		}
+	}
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['words'] = array();
+		foreach ($this->words AS $word) {
+			$data['words'][] = $word->word;
+		}
+
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -77,12 +138,12 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\GlossaryWord';
-		$metadata->setPrimaryTable(array( 'name' => 'glossary_words', ));
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+		$metadata->setPrimaryTable(array( 'name' => 'glossary_word_definitions', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 255, 'unique' => true, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'definition', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'definition_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapField(array( 'fieldName' => 'definition', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'definition', ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'words', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'definition', 'orphanRemoval' => true ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
