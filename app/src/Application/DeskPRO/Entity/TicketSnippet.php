@@ -76,6 +76,11 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	protected $snippet;
 
 	/**
+	 * @var string
+	 */
+	protected $snippet_html;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -89,19 +94,27 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param array|bool $pattern
+	 * @param string|bool $snippet If specified, uses this snippet as an override
+	 *
 	 * @return string
 	 */
-	public function snippetFormatted(Ticket $ticket = null, Person $person = null, array $pattern = null)
+	public function snippetFormatted(Ticket $ticket = null, Person $person = null, $pattern = false, $snippet = false)
 	{
-		$snippet = $this->snippet;
-
-		if (!$pattern) {
+		if (!is_array($pattern) && $pattern) {
+			// passed true - render as html with no wrapping
+			$pattern = array('', '', true);
+		} else if (!$pattern) {
 			// 0=>wrapstart, 1=>wrapend, 2=>render as html
 			$pattern = array('', '', false);
 		}
 
-		if ($pattern[2]) {
-			$snippet = nl2br(htmlspecialchars($snippet));
+		if ($snippet === false) {
+			if ($pattern[2]) {
+				$snippet = $this->getSnippetHtml();
+			} else {
+				$snippet = $this->snippet;
+			}
 		}
 
 		$repl = array(
@@ -206,17 +219,64 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Format a snippet for display as html (ie preview)
+	 * Format a snippet for display as an html preview
 	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person
+	 *
+	 * @return string
+	 */
+	public function snippetFormattedHtmlPreview(Ticket $ticket = null, Person $person = null)
+	{
+		$snippet = $this->snippetFormatted(
+			$ticket,
+			$person,
+			array('<span class="replacement">', '</span>', true),
+			$this->snippet
+		);
+
+		return $snippet;
+	}
+
+	/**
+	 * Format a snippet for display as html
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 *
 	 * @return string
 	 */
 	public function snippetFormattedHtml(Ticket $ticket = null, Person $person = null)
 	{
-		$snippet = $this->snippetFormatted($ticket, $person, array('<span class="replacement">', '</span>', true));
+		$snippet = $this->snippetFormatted(
+			$ticket,
+			$person,
+			true,
+			$this->getSnippetHtml()
+		);
 
 		return $snippet;
+	}
+
+	public function setSnippet($snippet)
+	{
+		$this->setModelField('snippet', $snippet);
+		$this->setModelField('snippet_html', nl2br(htmlspecialchars($snippet)));
+	}
+
+	public function setSnippetHtml($snippet)
+	{
+		$this->setModelField('snippet_html', $snippet);
+		$this->setModelField('snippet', \Orb\Util\Strings::convertWysiwygHtmlToText($snippet));
+	}
+
+	public function getSnippetHtml()
+	{
+		if (!$this->snippet_html) {
+			return nl2br(htmlspecialchars($this->snippet));
+		}
+
+		return $this->snippet_html;
 	}
 
 
@@ -234,6 +294,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'snippet', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet', ));
+		$metadata->mapField(array( 'fieldName' => 'snippet_html', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'snippet_html', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSnippetCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

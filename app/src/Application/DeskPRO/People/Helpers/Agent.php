@@ -321,7 +321,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 		$sig_html = $this->person->getPref('agent.ticket_signature_html');
 		if ($sig_html) {
-			return htmlspecialchars_decode(strip_tags($sig_html));
+			return \Orb\Util\Strings::convertWysiwygHtmlToText($sig_html);
 		}
 
 		return '';

@@ -1734,6 +1734,23 @@ class Strings
 		return trim($html);
 	}
 
+	/**
+	 * Converts WYISWYG HTML to plain text.
+	 *
+	 * @param string $html
+	 * @param bool $p_one_line If true, P tags are treated as one line break
+	 *
+	 * @return string
+	 */
+	public static function convertWysiwygHtmlToText($html, $p_one_line = true)
+	{
+		$html = preg_replace('#</p>\s*#', $p_one_line ? "\n" : "\n\n", $html);
+		$html = preg_replace('#</(div|ul|ol|li)>\s*#', "\n", $html);
+		$html = preg_replace('#<br\s*/?>\s*#', "\n", $html);
+
+		return trim(htmlspecialchars_decode(strip_tags($html)));
+	}
+
 
 	/**
 	 * Decodes entities that are whitespace into their UTF-8 characters

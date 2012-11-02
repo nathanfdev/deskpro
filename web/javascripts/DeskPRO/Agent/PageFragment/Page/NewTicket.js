@@ -728,9 +728,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var redactor = self.getEl('message').data('redactor');
 				if (redactor) {
 					redactor.restoreSelection();
+					redactor.insertHtml(info.snippetHtml);
+				} else {
+					self.insertMessageText(info.snippet);
 				}
-
-				self.insertMessageText(info.snippet);
 			}
 		});
 	},

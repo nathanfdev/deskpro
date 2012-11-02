@@ -587,7 +587,11 @@ class TicketController extends AbstractController
 		}
 
 		$snippet['title'] = $this->in->getString('title');
-		$snippet['snippet'] = $this->in->getString('snippet');
+		if ($this->in->getBool('is_html')) {
+			$snippet['snippet_html'] = $this->in->getHtmlCore('snippet');
+		} else {
+			$snippet['snippet'] = $this->in->getString('snippet');
+		}
 		$snippet->person = $this->person;
 
 		$this->em->transactional(function($em) use ($snippet) {
