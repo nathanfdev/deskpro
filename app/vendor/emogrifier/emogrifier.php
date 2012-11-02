@@ -63,7 +63,25 @@ class Emogrifier {
         $xmldoc->normalizeDocument();
 
         $xpath = new DOMXPath($xmldoc);
+
+        // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
+        // we wouldn't have to do this if DOMXPath supported XPath 2.0.
+        // also store a reference of nodes with existing inline styles so we don't overwrite them
         $vistedNodes = $vistedNodeRef = array();
+        $nodes = @$xpath->query('//*[@style]');
+        foreach ($nodes as $node) {
+            $normalizedOrigStyle = preg_replace('/[A-z\-]+(?=\:)/Se',"strtolower('\\0')", $node->getAttribute('style'));
+
+            // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
+            $nodeKey = md5($node->getNodePath());
+            if (!isset($vistedNodeRef[$nodeKey])) {
+                $vistedNodeRef[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
+                $vistedNodes[$nodeKey]   = $node;
+            }
+
+            $node->setAttribute('style', $normalizedOrigStyle);
+        }
+
         $css = $this->css;
 
 		// process the CSS file for selectors and definitions
