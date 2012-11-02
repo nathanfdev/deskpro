@@ -485,6 +485,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var dl_url = Orb.appendQueryData(url, 'dl', '1');
 				return '<a href="'+url+'" target="_blank">Open In New Window</a> | <a href="'+dl_url+'" target="_blank">Download</a>'
 			},
+			onComplete: function() {
+				var image = $('#cboxLoadedContent img');
+				console.log(image);
+				if (image.length) {
+					$('#cboxLoadedContent').append(
+						$('<a />').attr('href', $(this).attr('href')).attr('target', '_blank').append(image)
+					);
+					console.log('append');
+				}
+			},
 			width: '50%',
 			height: '50%',
 			initialWidth: '200',
