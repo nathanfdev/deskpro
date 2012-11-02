@@ -151,7 +151,7 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 
 	public function getDescription()
 	{
-		return 'Integrates widgets to the ticket and profile pages in the agent interface to show information from Magento.';
+		return 'Integrates widgets to the ticket and profile pages in the agent interface to show information from Magento. Also allows for a Magento user source and single sign-on with Magento users.';
 	}
 
 	public function getDeveloper()
