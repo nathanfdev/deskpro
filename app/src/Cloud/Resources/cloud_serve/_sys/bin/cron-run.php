@@ -262,20 +262,18 @@ file_put_contents($proc_file, time());
 ########################################################################
 
 $db = CloudConfig::getDb();
-$now = date('Y-m-d H:i:s');
 
 if ($account_type) {
+	if ($account_type == 'demo') {
+		$where = "cloud_accounts.is_demo = 1 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1 AND cloud_accounts.date_demo_expire > NOW()";
+	} else {
+		$where = "cloud_accounts.is_demo = 0 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1";
+	}
 	$st = $db->prepare("
 		SELECT COUNT(*)
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-		WHERE
-			" . ($account_type == 'demo' ? "is_demo = 1" : "is_demo = 0") . "
-			AND cloud_sites.build_number > 0
-			AND cloud_sites.sys_disabled IS NULL
-			AND cloud_sites.in_use = 1
-			AND cloud_accounts.is_cancelled = 0
-			AND (cloud_accounts.is_demo = 0 OR cloud_accounts.date_demo_expire > '$now')
+		WHERE $where
 	");
 	$st->execute();
 	$num_sites = $st->fetchColumn(0);
@@ -294,13 +292,7 @@ if ($account_type) {
 			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-		WHERE
-			" . ($account_type == 'demo' ? "is_demo = 1" : "is_demo = 0") . "
-			AND cloud_sites.build_number > 0
-			AND cloud_sites.sys_disabled IS NULL
-			AND cloud_sites.in_use = 1
-			AND cloud_accounts.is_cancelled = 0
-			AND (cloud_accounts.is_demo = 0 OR cloud_accounts.date_demo_expire > '$now')
+		WHERE $where
 		ORDER BY cloud_sites.id ASC
 		LIMIT $limit_start, $per_run
 	");
@@ -314,12 +306,7 @@ if ($account_type) {
 		SELECT COUNT(*)
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-		WHERE
-			cloud_sites.build_number > 0
-			AND cloud_sites.sys_disabled IS NULL
-			AND cloud_sites.in_use = 1
-			AND cloud_accounts.is_cancelled = 0
-			AND (cloud_accounts.is_demo = 0 OR cloud_accounts.date_demo_expire > '$now')
+		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
 	");
 	$st->execute();
 	$num_sites = $st->fetchColumn(0);
@@ -338,12 +325,7 @@ if ($account_type) {
 			cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
 		FROM cloud_sites
 		LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
-		WHERE
-			cloud_sites.build_number > 0
-			AND cloud_sites.sys_disabled IS NULL
-			AND cloud_sites.in_use = 1
-			AND cloud_accounts.is_cancelled = 0
-			AND (cloud_accounts.is_demo = 0 OR cloud_accounts.date_demo_expire > '$now')
+		WHERE cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1
 		ORDER BY cloud_sites.id ASC
 		LIMIT $limit_start, $per_run
 	");
@@ -352,7 +334,7 @@ if ($account_type) {
 	$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
 }
 
-dp_logf("Batch %d of %d running %d sites (of total %d in all batches)", $range_start, $range_end, count($sites), $num_sites);
+dp_logf("Batch %d of %d running %d of %d sites", $range_start, $range_end, count($sites), $num_sites);
 
 #------------------------------
 # Run sites
