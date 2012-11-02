@@ -66,6 +66,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			'feedback_attachments' => 'Attachments to feedback and suggestions',
 			'feedback_comments' => 'Comments for feedback and suggestions',
 			'labels_articles' => 'Labels for knowledgebase articles',
+			'labels_chat_conversations' => 'Labels for chats',
 			'labels_downloads' => 'Labels for downloads',
 			'labels_feedback' => 'Labels for feedback and suggestions',
 			'labels_news' => 'Labels for news entries',
@@ -84,6 +85,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			'tickets_log' => 'Ticket change log entries',
 			'tickets_messages' => 'Individual messages in tickets',
 			'ticket_attachments' => 'Attachments to tickets',
+			'ticket_charges' => 'Ticket billing charges',
 			'ticket_feedback' => 'Feedback on ticket responses'
 		);
 
