@@ -214,23 +214,4 @@ class TicketPropertiesController extends AbstractController
 
 		return $this->redirectRoute('admin_tickets_editor');
 	}
-
-	############################################################################
-	# form-embed
-	############################################################################
-
-	public function formEmbedAction($department_id)
-	{
-		$department_hierarchy = $this->em->getRepository('DeskPRO:Department')->getInHierarchy();
-
-		$department = null;
-		if ($department_id) {
-			$department = $this->em->find('DeskPRO:Department', $department_id);
-		}
-
-		return $this->render('AdminBundle:TicketProperties:form-embed.html.twig', array(
-			'department' => $department,
-			'department_hierarchy' => $department_hierarchy,
-		));
-	}
 }

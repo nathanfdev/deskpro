@@ -329,12 +329,18 @@ class PortalController extends AbstractController
 			$selections = array();
 		}
 
+		$department = null;
+		if ($dep_id = $this->in->getUint('department_id')) {
+			$department = $this->em->find('DeskPRO:Department', $dep_id);
+		}
+
 		return $this->render('AdminBundle:Portal:website-widgets.html.twig', array(
 			'articles'  => $articles,
 			'downloads' => $downloads,
 			'news'      => $news,
 
 			'selections' => $selections,
+			'department' => $department,
 
 			'article_cat_map'   => $article_cat_map,
 			'download_cat_map'  => $download_cat_map,

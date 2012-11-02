@@ -1,13 +1,7 @@
 {% set this_page = 'website_widgets' %}
-{% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-<h1>{{ phrase('admin.portal.portal_settings') }}</h1>
-{% endblock %}
-{% block pagebar %}
-<ul>
-	<li><a href="{{ path('admin_portal') }}">{{ phrase('admin.general.portal') }}</a></li>
-	<li>{{ phrase('admin.portal.website_widgets') }}</li>
-</ul>
+	Website Embeds
 {% endblock %}
 {% block html_head %}
 <script type="text/javascript">
@@ -19,6 +13,24 @@ $(document).ready(function() {
 	$('#widget_content_select_showmore').show().on('click', function() {
 		$(this).hide();
 		$('#widget_content_select').css('max-height', '1000000000px');
+	});
+});
+
+$(document).ready(function() {
+	var dep_form_wrap = $('#department_form_wrap');
+	var sel = dep_form_wrap.find('select');
+	DP.select(sel);
+
+	sel.on('change', function() {
+		var depid = parseInt(sel.val());
+
+		if (depid) {
+			window.location = '{{ path('admin_website_embeds') }}?department_id=' + depid + '#contact_form';
+		} else {
+			window.location = '{{ path('admin_website_embeds') }}#contact_form';
+		}
+
+		$('#change_dep_load').show();
 	});
 });
 </script>
@@ -54,111 +66,184 @@ $(document).ready(function() {
 }
 </style>
 {% endblock %}
-{% block page %}
+{% block dp_full_page %}
 
-<div class="content-table template-dir">
-	<table width="100%">
-		<thead>
-		<tr>
-			<th class="single-title" colspan="10">
-				<h1 class="noexpand">{{ phrase('admin.portal.website_widgets_overlay') }}</h1>
-			</th>
-		</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<p>{{ phrase('admin.portal.website_widgets_overlay_explain') }}</p>
+	{##################################################################################################################}
+	{# Overlay #}
+	{##################################################################################################################}
 
-					{% set code %}{% include 'AdminBundle:Portal:widget-code-overlay.txt.twig' %}{% endset %}
-					<textarea class="code">{{ code|e }}</textarea>
-					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div id="widget_content_select_wrap">
-						<div id="widget_content_select">
-							<form action="{{ path('admin_portal_widgets') }}" method="post">
-							<input type="hidden" name="save_selections" value="1" />
-							<h1 class="noexpand">Show links to content by default</h1>
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>"Feedback and Support" Website Tab</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				<p>{{ phrase('admin.portal.website_widgets_overlay_explain') }}</p>
 
-							{% macro build_list(name, cats, items, map, selections, depth) %}
-								{% for cat in cats %}
-									<div style="margin-left: {{ 10 * depth }}px; margin-bottom: 6px;">
-										<strong>{{ cat.title }}</strong>
-										{% for item_id in map[cat.id] if items[item_id] %}
-											<div style="margin-left: {{ 10 * (depth+1) }}px">
-												<label>
-													<input type="checkbox" name="selections[{{ name }}][]" value="{{ item_id }}" {% if item_id in selections %}checked="checked"{% endif %} />
-													{{ items[item_id] }}
-												</label>
-											</div>
-										{% endfor %}
-										{% if cat.children %}
-											{{ _self.build_list(name, cat.children, items, map, selections, depth + 1) }}
-										{% endif %}
-									</div>
-								{% endfor %}
-							{% endmacro %}
-							{% if articles %}
-								<div style="width:295px; float: left; overflow: auto;">
-									<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px; margin-bottom: 5px;">Articles</h3>
-									{{ _self.build_list('articles', app.getDataRepository('ArticleCategory').getRootNodes(), articles, article_cat_map, selections.articles, 0) }}
+				{% set code %}{% include 'AdminBundle:Portal:widget-code-overlay.txt.twig' %}{% endset %}
+				<textarea class="code" wrap="off">{{ code|e }}</textarea>
+				<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+
+				<div id="widget_content_select_wrap">
+					<div id="widget_content_select">
+						<form action="{{ path('admin_website_embeds') }}" method="post">
+						<input type="hidden" name="save_selections" value="1" />
+						<h1 class="noexpand">Show links to content by default</h1>
+
+						{% macro build_list(name, cats, items, map, selections, depth) %}
+							{% for cat in cats %}
+								<div style="margin-left: {{ 10 * depth }}px; margin-bottom: 6px;">
+									<strong>{{ cat.title }}</strong>
+									{% for item_id in map[cat.id] if items[item_id] %}
+										<div style="margin-left: {{ 10 * (depth+1) }}px">
+											<label>
+												<input type="checkbox" name="selections[{{ name }}][]" value="{{ item_id }}" {% if item_id in selections %}checked="checked"{% endif %} />
+												{{ items[item_id] }}
+											</label>
+										</div>
+									{% endfor %}
+									{% if cat.children %}
+										{{ _self.build_list(name, cat.children, items, map, selections, depth + 1) }}
+									{% endif %}
 								</div>
-							{% endif %}
+							{% endfor %}
+						{% endmacro %}
+						{% if articles %}
+							<div style="width:295px; float: left; overflow: auto;">
+								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px; margin-bottom: 5px;">Articles</h3>
+								{{ _self.build_list('articles', app.getDataRepository('ArticleCategory').getRootNodes(), articles, article_cat_map, selections.articles, 0) }}
+							</div>
+						{% endif %}
 
-							{% if downloads %}
-								<div style="width:295px; float: left; overflow: auto;">
-									<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">Downloads</h3>
-									{{ _self.build_list('downloads', app.getDataRepository('DownloadCategory').getRootNodes(), downloads, download_cat_map, selections.downloads, 0) }}
-								</div>
-							{% endif %}
+						{% if downloads %}
+							<div style="width:295px; float: left; overflow: auto;">
+								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">Downloads</h3>
+								{{ _self.build_list('downloads', app.getDataRepository('DownloadCategory').getRootNodes(), downloads, download_cat_map, selections.downloads, 0) }}
+							</div>
+						{% endif %}
 
-							{% if news %}
-								<div style="width:295px; float: left; overflow: auto;">
-									<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">News</h3>
-									{{ _self.build_list('news', app.getDataRepository('NewsCategory').getRootNodes(), news, news_cat_map, selections.news, 0) }}
-								</div>
-							{% endif %}
+						{% if news %}
+							<div style="width:295px; float: left; overflow: auto;">
+								<h3 style="color: #88826F; border-top: 1px solid #88826F; border-bottom: 1px solid #88826F; padding: 3px 0 3px 0; margin-top: 5px;">News</h3>
+								{{ _self.build_list('news', app.getDataRepository('NewsCategory').getRootNodes(), news, news_cat_map, selections.news, 0) }}
+							</div>
+						{% endif %}
 
-							<br style="clear:both" />
-							<br />
+						<br style="clear:both" />
+						<br />
 
-							<button class="clean-white">Update Selections</button>
+						<button class="clean-white">Update Selections</button>
 
-							</form>
-						</div>
-						<div id="widget_content_select_showmore" style="display: none;"><button class="clean-white">Show More</button></div>
+						</form>
 					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<br />
+					<div id="widget_content_select_showmore" style="display: none;"><button class="clean-white">Show More</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
 
-<div class="content-table template-dir">
-	<table width="100%">
-		<thead>
-		<tr>
-			<th class="single-title" colspan="10">
-				<h1 class="noexpand">{{ phrase('admin.portal.website_widgets_chat') }}</h1>
-			</th>
-		</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
+	{##################################################################################################################}
+	{# Chat Widget #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>"Chat with us" Tab</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
+
 					<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
 
 					{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
-					<textarea class="code">{{ code|e }}</textarea>
+					<textarea class="code" wrap="off">{{ code|e }}</textarea>
 					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+
+	{##################################################################################################################}
+	{# Contact Form #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar" id="contact_form">
+		<ul>
+			<li>Contact Form</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
+
+					<div id="department_form_wrap" style="margin-bottom: 10px;">
+						<table cellspacing="0" cellpadding="0"><tr>
+							<td valign="middle" style="vertical-align: middle; padding-right: 7px;">
+								Get code for a speciifc department:
+							</td>
+							<td valign="middle" style="vertical-align: middle; padding-right: 7px;">
+								<select name="department">
+									<option value=""></option>
+									{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+										{% if dep.children|length %}
+											<optgroup label="{{ dep.title }}">
+												{% for subdep in dep.children %}
+													<option value="{{subdep.id}}" {% if subdep.id == department.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
+												{% endfor %}
+											</optgroup>
+										{% else %}
+											<option value="{{dep.id}}" {% if dep.id == department.id %}selected="selected"{% endif %}>{{dep.title}}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</td>
+							<td valign="middle" style="vertical-align: middle;">
+								<i id="change_dep_load" style="display: none;" class="flat-spinner"></i>
+							</td>
+						</tr></table>
+					</div>
+
+					<h3>{{ phrase('admin.tickets.direct_link') }}</h3>
+					{{ phrase('admin.tickets.choice_direct_link_ticket_form') }}:
+					<br />
+					<input type="text" value="{{ app.request.getUriForPath('') }}/new-ticket{% if department %}/{{ department.id }}{% endif %}" style="width: 80%;" />
+
+					<br />
+					<br />
+
+					<h3>{{ phrase('admin.tickets.popup_window') }}</h3>
+					{{ phrase('admin.tickets.add_popup_link') }}
+					<br />
+{% set code %}
+<a
+	href="{{ app.request.getUriForPath('') }}/tickets/new-simple/{{ department.id|default('0') }}"
+	onclick="window.open(this.href, null, 'height=600, width=710, toolbar=0, location=0, status=1, scrollbars=1, resizable=1'); return false;"
+	class="dp-newticket-link"
+>{{ phrase('admin.tickets.contact_us') }}</a>
+{% endset %}
+					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+
+					<br />
+					<br />
+
+					<h3>{{ phrase('agent.general.website_widget') }}</h3>
+					{{ phrase('admin.tickets.embed_ticket_form_websites') }}:
+					<br />
+					{% set code %}{% include 'AdminBundle:Portal:widget-code-form.txt.twig' %}{% endset %}
+					<textarea class="code" wrap="off">{{ code|e }}</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
 
 {% endblock %}

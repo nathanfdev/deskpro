@@ -52,17 +52,6 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</article>
 	</section>
 </div>
-<div class="page-nav-block">
-	<div class="inner-shadow"></div>
-	<section class="top">
-		<header>
-			<h4>{{ phrase('admin.tickets.embed_in_website') }}</h4>
-		</header>
-		<article class="with-single-button">
-			<button class="clean-white small" id="embed_form_overlay_trigger" data-load-url="{{ path('admin_tickets_editor_form_embed', {department_id: department.id|default(0)}) }}">{{ phrase('admin.tickets.integration_options') }}</button>
-		</article>
-	</section>
-</div>
 {% endblock %}
 {% block pagebar %}
 	<nav>

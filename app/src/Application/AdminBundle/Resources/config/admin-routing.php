@@ -156,13 +156,6 @@ $collection->add('admin_tickets_editor_reset', new Route(
 	array()
 ));
 
-$collection->add('admin_tickets_editor_form_embed', new Route(
-	'/tickets/editor/{department_id}/website-widget',
-	array('_controller' => 'AdminBundle:TicketProperties:formEmbed'),
-	array(),
-	array()
-));
-
 $collection->add('admin_tickets_editor', new Route(
 	'/tickets/editor/{department_id}/{section}',
 	array('_controller' => 'AdminBundle:TicketProperties:editor', 'department_id' => 0, 'section' => 'create'),
@@ -503,8 +496,8 @@ $collection->add('admin_portal_settings', new Route(
 	array()
 ));
 
-$collection->add('admin_portal_widgets', new Route(
-	'/portal/widgets',
+$collection->add('admin_website_embeds', new Route(
+	'/website-embeds',
 	array('_controller' => 'AdminBundle:Portal:widgets'),
 	array(),
 	array()
