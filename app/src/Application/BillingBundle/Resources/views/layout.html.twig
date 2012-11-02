@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-	<title>Billing</title>
+	<title>{% if app.isCloud() %}Billing{% else %}Licensing{% endif %}</title>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
