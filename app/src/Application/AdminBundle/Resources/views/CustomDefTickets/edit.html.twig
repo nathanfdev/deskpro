@@ -18,3 +18,39 @@
 		</nav>
 	{% endif %}
 {% endblock %}
+{% block form_extra2 %}
+	{% if custom_form_deps_default or custom_form_deps %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Add field to custom layouts</label>
+			</div>
+			<div class="dp-form-input">
+				<div class="dp-input-group">
+					You have defined custom ticket form layouts in the <a href="{{ path('admin_tickets_editor') }}" target="_blank">Layout Editor</a>. Check the layouts you want to add this
+					new field to automatically:
+
+					<div class="checkbox-rows" style="width: 500px;">
+						<ul>
+							{% if custom_form_deps_default %}
+								<li>
+									<label>
+										<input type="checkbox" name="add_to_layouts[]" value="0" />
+										Default Layout
+									</label>
+								</li>
+							{% endif %}
+							{% for dep in custom_form_deps %}
+								<li>
+									<label>
+										<input type="checkbox" name="add_to_layouts[]" value="{{ dep.id }}" />
+										{{ dep.full_title }}
+									</label>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

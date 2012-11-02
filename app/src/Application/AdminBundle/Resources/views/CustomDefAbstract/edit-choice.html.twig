@@ -11,7 +11,10 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.custom_fields.options') }}</label>
+			<label>
+				{{ phrase('admin.custom_fields.options') }}
+				<span class="small-light-icon tipped" title="These are the pre-defined options that users can choose from. Click the 'Edit Choices' button to add, remove and re-order options."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="choices-list-wrap" data-element-handler="DeskPRO.Admin.ElementHandler.SimpleHierarchyBuilder" data-with-default-select="true">
@@ -20,6 +23,7 @@
 				<input type="hidden" name="choices_structure" class="choices_structure" value="{{ choices_structure|json_encode }}" />
 				<input type="hidden" name="choices_removed_structure" class="choices_removed" value="" />
 				<div class="default-select" style="display: none; padding-top: 8px;">
+					<span class="small-light-icon tipped" title="The option that is pre-selected when the form is first loaded."></span>
 					Default option: <select name="default_option" data-current-default="{{ field.default_value }}"></select>
 				</div>
 			</div>
@@ -29,7 +33,10 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.custom_fields.user_validation') }}</label>
+				<label>
+					{{ phrase('admin.custom_fields.user_validation') }}
+					<span class="small-light-icon tipped" title="Validation rules applied when agents create tickets or update tickets through the agent interface."></span>
+				</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
@@ -57,7 +64,10 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.custom_fields.agent_validation') }}</label>
+				<label>
+					{{ phrase('admin.custom_fields.agent_validation') }}
+					<span class="small-light-icon tipped" title="Validation rules applied when agents create tickets or update tickets through the agent interface."></span>
+				</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">

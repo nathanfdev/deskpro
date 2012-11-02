@@ -20,7 +20,10 @@
 	{% endif %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.title') }}</label>
+			<label>
+				{{ phrase('agent.general.title') }}
+				<span class="small-light-icon tipped" title="The title is displayed to both users and agents who see the field. You should usually keep titles short as they are used as labels when showing the field in the interface and emails."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -29,7 +32,10 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.general.description') }}</label>
+			<label>
+				{{ phrase('agent.general.description') }}
+				<span class="small-light-icon tipped" title="The description is displayed to the user when they hover over the '?' icon in the web interface."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.description, {
@@ -44,13 +50,13 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.custom_fields.custom_styling') }}</label>
+			<label>
+				{{ phrase('admin.custom_fields.custom_css_class') }}
+				<span class="small-light-icon tipped" title="This adds a custom CSS class to the HTML markup of the field. This makes it easier to style this specific field by adding custom CSS in Portal &gt; Portal Editor &gt; Custom CSS."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
-			<div class="dp-input-group">
-				{{ phrase('admin.custom_fields.custom_css_class') }}:<br />
-				{{ form_widget(form.custom_css_classname, { 'attr': { 'class': 'small', 'size': '40', 'style': 'width:506px' }}) }}
-			</div>
+			{{ form_widget(form.custom_css_classname, { 'attr': { 'class': 'small', 'size': '40', 'style': 'width:506px' }}) }}
 		</div>
 	</div>
 </div>

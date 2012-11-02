@@ -151,6 +151,8 @@ abstract class CustomDefAbstractController extends AbstractController
 					$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketfield', time());
 				}
 
+				$this->_postEditSave($field, $is_new);
+
 				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->getListingRoute());
 			}
@@ -190,9 +192,20 @@ abstract class CustomDefAbstractController extends AbstractController
 
 		$tpl_name = 'edit-' . strtolower($basetype) . '.html.twig';
 
+		$vars = array_merge($vars, $this->_getEditFieldData($field));
+
 		return $this->render($this->getTemplateName($tpl_name), $this->getTemplateVars($vars));
 	}
 
+	public function _getEditFieldData($field)
+	{
+		return array();
+	}
+
+	public function _postEditSave($field, $is_new)
+	{
+
+	}
 
 	############################################################################
 	# set-enabled

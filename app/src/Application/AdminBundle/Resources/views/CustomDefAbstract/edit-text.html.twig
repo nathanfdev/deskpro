@@ -3,7 +3,10 @@
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.general.default_value') }}</label>
+		<label>
+			{{ phrase('admin.general.default_value') }}
+			<span class="small-light-icon tipped" title="This value will be disaplyed by default when the user has not input anything. The user can still remove the value to submit an empty field. If you always want input, you should use the validation options below."></span>
+		</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.default_value) }}
@@ -13,7 +16,10 @@
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.custom_fields.user_validation') }}</label>
+			<label>
+				{{ phrase('admin.custom_fields.user_validation') }}
+				<span class="small-light-icon tipped" title="Validation rules applied when the user submits a new ticket or updates a ticket through the web interface."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="dp-input-group">
@@ -51,7 +57,10 @@
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.custom_fields.agent_validation') }}</label>
+			<label>
+				{{ phrase('admin.custom_fields.agent_validation') }}
+				<span class="small-light-icon tipped" title="Validation rules applied when agents create tickets or update tickets through the agent interface."></span>
+			</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="dp-input-group">
