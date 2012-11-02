@@ -62,7 +62,7 @@
 {% block page %}
 
 	<div class="alert-message block-message">
-		The billing interface is used to manage the licensing of your DeskPRO installation.
+		The {% if app.isCloud() %}billing{% else %}licensing{% endif %} interface is used to manage the licensing of your DeskPRO installation.
 		If you are an existing customer you can manage your account in the DeskPRO Members Area: <a href="http://www.deskpro.com/members/">http://www.deskpro.com/members/</a>
 	</div>
 

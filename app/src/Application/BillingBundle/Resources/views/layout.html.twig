@@ -139,7 +139,7 @@
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav" class="billing">
 	<div id="dp_admin_nav_sections" class="deskproPane">
-		<h1>Billing</h1>
+		<h1>{% if app.isCloud() %}Billing{% else %}Licensing{% endif %}</h1>
 	</div>
 </div>
 
