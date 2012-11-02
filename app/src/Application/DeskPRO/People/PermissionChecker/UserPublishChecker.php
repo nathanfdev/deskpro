@@ -68,6 +68,11 @@ class UserPublishChecker extends AbstractChecker
 
 		$perms = $this->person->PermissionsManager->ArticleCategories->getAllowedCategories();
 		$perms = array_flip($perms);
+
+		if (!count($article->categories)) {
+			return true;
+		}
+
 		foreach ($article->categories as $cat) {
 			if (isset($perms[$cat->id])) {
 				return true;
@@ -93,7 +98,7 @@ class UserPublishChecker extends AbstractChecker
 			return false;
 		}
 
-		if ($this->person->PermissionsManager->NewsCategories->isCategoryAllowed($news->category->getId())) {
+		if (!$news->category || $this->person->PermissionsManager->NewsCategories->isCategoryAllowed($news->category->getId())) {
 			return true;
 		}
 
@@ -116,7 +121,7 @@ class UserPublishChecker extends AbstractChecker
 			return false;
 		}
 
-		if ($this->person->PermissionsManager->DownloadCategories->isCategoryAllowed($download->category->getId())) {
+		if (!$download->category || $this->person->PermissionsManager->DownloadCategories->isCategoryAllowed($download->category->getId())) {
 			return true;
 		}
 
