@@ -19,10 +19,9 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	</style>
 {% endblock %}
 {% block page_nav_inner %}
-<div class="page-nav-block">
+<div class="page-nav-block" {% if is_default %}style="display: none"{% endif %}>
 	<div class="inner-shadow"></div>
 	<section class="top">
-		{% if is_default %}<div class="disable-overlay"></div>{% endif %}
 		<header>
 			<h4>{{ phrase('admin.tickets.ticket_elements') }}</h4>
 		</header>
@@ -110,7 +109,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<br />
 	</nav>
 
-	<div class="editor-toggle-alt-view">
+	<div class="editor-toggle-alt-view" {% if is_default %}style="border-bottom: none"{% endif %}>
 		{% if is_default %}
 			{% if section == 'view' or section == 'modify' %}
 				{{ phrase('admin.tickets.view_modify_ticket_page_default_explain') }}
@@ -137,7 +136,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
         {{ phrase('admin.tickets.enable_alternative_for_x', {'subphrase':phrase_part}, true) }}
 	</div>
 
-	<section>
+	<section {% if is_default %}style="display: none"{% endif %}>
 		<form
 			action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0), 'section': section }) }}"
 			method="post"
@@ -146,8 +145,6 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
 			data-section="{{section}}"
 		>
-		{% if is_default %}<div class="disable-overlay"></div>{% endif %}
-
 		<ul id="admin_ticket_editor_items" class="dp-form">
 			<li class="no-items-notice">
 				{{ phrase('admin.tickets.drag_drop_fields') }}
