@@ -1684,12 +1684,29 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (is_success) {
 			$('#network_status_indicator > a').removeClass('on').data('error-count', 0);
 			$('#network_status_tip').removeClass('error');
+
+			// If we're showing the update_running notice,
+			// then the first success afterwards means
+			// the helpdesk is back and we should relaod the page
+			if (this.update_running) {
+				window.location.reload(true);
+			}
 		} else {
 			this.incNetworkError();
 		}
 	},
 
+	showUpdateRunning: function() {
+		this.update_running = true;
+		$('#reload_overlay').show();
+		$('#reload_overlay_updates').show();
+	},
+
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown, force) {
+
+		if (this.update_running) {
+			return;
+		}
 
 		console.log(arguments);
 		// status of 0 means aborted
@@ -1739,6 +1756,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (xhr && xhr.status && xhr.status == '403' && (!data || !data.error || data.error != 'session_expired')) {
 			this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+			return;
+		}
+
+		if (xhr && xhr.status && xhr.status == '503' && data && data.error && data.error == 'update_running') {
+			this.showUpdateRunning();
 			return;
 		}
 

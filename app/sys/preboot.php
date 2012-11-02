@@ -74,10 +74,19 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 			echo "Currently installing updates";
 			die(0);
 		} else {
-			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
-			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', 'Currently installing updates', $page_html);
-			echo $page_html;
-			exit;
+			if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+				header('HTTP/1.0 503 Service Unavailable');
+				header('Content-Type: application/json');
+				echo json_encode(array(
+					'error' => 'update_running'
+				));
+				exit;
+			} else {
+				$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
+				$page_html = str_replace('{{ OFFLINE_MESSAGE }}', 'Currently installing updates', $page_html);
+				echo $page_html;
+				exit;
+			}
 		}
 	}
 }
