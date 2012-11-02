@@ -171,7 +171,10 @@ class MainController extends AbstractController
 
 	public function sessionPingAction()
 	{
-		return $this->createJsonResponse(array('okay' => 1));
+		return $this->createJsonResponse(array(
+			'okay' => 1,
+			'request_token' => App::getSession()->getEntity()->generateSecurityToken('request_token', 10800)
+		));
 	}
 
 	public function checkTaskQueueAction($task_queue_id)

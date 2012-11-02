@@ -118,7 +118,7 @@ class ClientMessagesController extends AbstractController
 			App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($this->person->getId(), $date_active->format('Y-m-d H:i:s')));
 		}
 
-		$data['request_token'] = App::getSession()->getEntity()->generateSecurityToken('request_token', 21600);
+		$data['request_token'] = App::getSession()->getEntity()->generateSecurityToken('request_token', 10800);
 
 		return $this->createJsonResponse($data);
 	}

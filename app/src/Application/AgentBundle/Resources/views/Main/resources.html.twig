@@ -36,7 +36,7 @@
 {% endif %}
 
 <script type="text/javascript">
-	var DP_REQUEST_TOKEN = '{{ security_token('request_token', 21600) }}';
+	var DP_REQUEST_TOKEN = '{{ security_token('request_token', 10800) }}';
 
 	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
 		var url = options.url;

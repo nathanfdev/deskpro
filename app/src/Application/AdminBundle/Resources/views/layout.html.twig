@@ -28,7 +28,7 @@
 
     <script type="text/javascript" charset="utf-8">
 
-		var DP_REQUEST_TOKEN = '{{ security_token('request_token', 21600) }}';
+		var DP_REQUEST_TOKEN = '{{ security_token('request_token', 10800) }}';
 
 		$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
 			var url = options.url;
@@ -46,12 +46,34 @@
 			$('form').each(function() {
 				var form = $(this);
 				var method = (form.attr('method') || 'GET').toUpperCase();
+				var tok = null;
 
 				if (method == 'POST') {
-					var tok = $('<input type="hidden" name="_rt" />');
-					tok.val(DP_REQUEST_TOKEN);
+					tok = form.find('input.dp_request_token');
+					if (!tok[0]) {
+						tok = $('<input type="hidden" name="_rt" />');
+						tok.val(DP_REQUEST_TOKEN);
+						tok.addClass('dp_request_token');
 
-					form.append(tok);
+						form.append(tok);
+					}
+				}
+			}).on('submit', function() {
+				var form = $(this);
+				var method = (form.attr('method') || 'GET').toUpperCase();
+				var tok = null;
+
+				if (method == 'POST') {
+					tok = form.find('input.dp_request_token');
+					if (!tok[0]) {
+						tok = $('<input type="hidden" name="_rt" />');
+						tok.val(DP_REQUEST_TOKEN);
+						tok.addClass('dp_request_token');
+
+						form.append(tok);
+					} else {
+						tok.val(DP_REQUEST_TOKEN);
+					}
 				}
 			});
 		});

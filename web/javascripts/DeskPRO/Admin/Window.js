@@ -327,6 +327,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 				window.setTimeout(function() {
 					self.sessionPing();
 				}, 30000);
+			},
+			success: function(data) {
+				if (data.request_token) {
+					window.DP_REQUEST_TOKEN = data.request_token;
+				}
 			}
 		});
 	},
