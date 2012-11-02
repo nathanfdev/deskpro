@@ -12,6 +12,7 @@ DeskPRO.User.Window = new Orb.Class({
 	},
 
 	initPage: function() {
+		var self = this;
 
 		var isIE = (navigator.appVersion.toLowerCase().indexOf("msie")!=-1);
 		if (isIE) {
