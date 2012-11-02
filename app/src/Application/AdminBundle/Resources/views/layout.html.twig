@@ -27,6 +27,35 @@
     {{ dp_asset_html('admin_admin_handlers') }}
 
     <script type="text/javascript" charset="utf-8">
+
+		var DP_REQUEST_TOKEN = '{{ security_token('request_token', 21600) }}';
+
+		$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+			var url = options.url;
+			if (url.indexOf('?') == -1) {
+				url += '?';
+			} else {
+				url += '&';
+			}
+			url += '_rt=' + DP_REQUEST_TOKEN;
+
+			options.url = url;
+		});
+
+		$(document).ready(function() {
+			$('form').each(function() {
+				var form = $(this);
+				var method = (form.attr('method') || 'GET').toUpperCase();
+
+				if (method == 'POST') {
+					var tok = $('<input type="hidden" name="_rt" />');
+					tok.val(DP_REQUEST_TOKEN);
+
+					form.append(tok);
+				}
+			});
+		});
+
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
 		var BASE_URL = '{{ app.request.getBaseUrl() }}/';
 		var ASSETS_BASE_URL = '{{ asset('') }}';

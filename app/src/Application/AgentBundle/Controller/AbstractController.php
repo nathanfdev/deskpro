@@ -107,6 +107,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				);
 
 				return $this->createJsonResponse($data, 403);
+			} else {
+				die('invalid security token');
 			}
 		}
 

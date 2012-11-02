@@ -66,6 +66,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->get('templating.globals')->setVariable('helpdesk_is_offline', file_exists(dp_get_data_dir().'/helpdesk-offline.trigger') || $this->container->getSetting('core.helpdesk_disabled'));
 	}
 
+	/**
+	 * Check if the global request token check is required for the request
+	 */
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($this->request->getMethod() == 'POST') {
+			return true;
+		}
+	}
 
 	/**
 	 * Force a login
@@ -93,6 +102,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		if (!$this->_userHasPermissions()) {
 			return $this->renderStandardPermissionError('You do not have permission to use the admin interface.');
+		}
+
+		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array(
+					'error' => 'invalid_request_token',
+					'redirect_login' => $this->generateUrl('agent_login')
+				);
+
+				return $this->createJsonResponse($data, 403);
+			} else {
+				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+			}
 		}
 
 		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
