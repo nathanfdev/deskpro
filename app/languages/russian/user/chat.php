@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Адрес Вашей электронной почты',
 	'user.chat.ended-no-agent'                                             => 'Приносим свои извиненинения, но пока нет свободных специалистов, чтобы связаться с вами. Пожалуйста, напишите нам электронное письмо или попытатесь еще раз через некоторое время.',
+	'user.chat.error'                                                      => 'Ошибка диалога',
 	'user.chat.form_chat_button-submit'                                    => 'Отправить',
 	'user.chat.form_chat_send-file'                                        => 'Отправить файл',
 	'user.chat.form_create_button-submit'                                  => 'Начать диалог',
@@ -37,6 +38,7 @@
 	'user.chat.window_cancel'                                              => 'Отмена',
 	'user.chat.window_cancel-confirm'                                      => 'Вы уверены, что хотите закончить разговор?',
 	'user.chat.window_close'                                               => 'Нет, спасибо, просто закрыть данное окно',
+	'user.chat.window_close_only'                                          => 'Закрыть окно',
 	'user.chat.window_end-chat'                                            => 'Завершить разговор',
 	'user.chat.window_open-new'                                            => 'Открыть диалог в новом окне',
 	'user.chat.window_resume-button'                                       => 'Открыть Ваш диалог',

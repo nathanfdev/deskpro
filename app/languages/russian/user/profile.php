@@ -1,5 +1,6 @@
 <?php return array(
 	'user.prifle.ticket_validated-message'                                 => 'Наши сотрудники прочтут и ответят на все ваши сообщения в ближайшее время',
+	'user.profile.account_disabled_message'                                => 'В настоящее время Ваша учетная запись заблокирована.Вы не сможете авторизоваться и взаимодействовать с заявками и диалогами.',
 	'user.profile.add_email_address'                                       => 'Добавьте адрес электронной почты к своей учетной записи',
 	'user.profile.awaiting_validation'                                     => '(дожидается подтверждения)',
 	'user.profile.change_email'                                            => 'Поменять адрес электронной почты',

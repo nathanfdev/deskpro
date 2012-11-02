@@ -13,6 +13,7 @@
 	'user.email_subjects.password_agent-reset'                             => 'Ваш пароль восстановлен',
 	'user.email_subjects.password_reset'                                   => 'Восстановить пароль',
 	'user.email_subjects.re'                                               => 'Тема:{{subject}}',
+	'user.email_subjects.ticket-rate'                                      => 'Оцените наш опыт работы в поддержке клиентов на примере заявки "{{subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Ваша заявка передана другому специалисту',
 	'user.email_subjects.validate-email'                                   => 'Подтвердите Ваш адрес электронной почты',
 );
