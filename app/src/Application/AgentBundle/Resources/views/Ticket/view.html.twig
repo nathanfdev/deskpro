@@ -307,14 +307,12 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 					{% if ticket_perms.modify_cc or user_parts|length %}
 						<dt>
 							{{ phrase('agent.tickets.cc') }}
-							{% if ticket_perms.modify_cc %}<span id="{{baseId}}_new_cc_user" class="btn-small-add"></span>{% endif %}
 						</dt>
 						<dd
 							class="cc-row"
 							data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
 							data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
 							data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
-							data-add-trigger="#{{baseId}}_new_cc_user"
 							data-replybox-container="#{{baseId}}_replybox_wrap"
 						>
 							<ul class="cc-row-list">
@@ -322,39 +320,30 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 								{% endfor %}
 							</ul>
-							<script type="text/x-deskpro-plain" class="addrow-tpl">
-                                <div class="cc-autocomplete addrow noedit-hide">
-                                    <table width="100%">
-                                        <tr>
-                                            <td>
-                                                <span class="btn-small-remove remove-row-trigger is-new"></span>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="user-part cc-people-search-trigger" style="width:95%;" />
-                                                <div class="person-search-box" style="display: none">
-                                                    <section>
-                                                        <ul class="results-list">
-                                                        </ul>
-                                                    </section>
-                                                </div>
-												<span class="is-not-loading">
-													<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
-												</span>
-												<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </script>
-                            <script class="user-row-tpl" type="text/x-deskpro-tmpl">
-                                <li>
-                                    <a>
-                                        <span class="user-name"></span>
-                                        <address>&lt;<span class="user-email"></span>&gt;</address>
-                                        <div class="bound-fade"></div>
-                                    </a>
-                                </li>
-                            </script>
+							{% if ticket_perms.modify_cc %}
+								<div class="cc-autocomplete addrow noedit-hide">
+									<input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
+											</ul>
+										</section>
+									</div>
+									<span class="is-not-loading">
+										<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
+									</span>
+									<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
+								</div>
+							{% endif %}
+							<script class="user-row-tpl" type="text/x-deskpro-tmpl">
+								<li>
+									<a>
+										<span class="user-name"></span>
+										<address>&lt;<span class="user-email"></span>&gt;</address>
+										<div class="bound-fade"></div>
+									</a>
+								</li>
+							</script>
                         </dd>
 					{% endif %}
 				</dl>

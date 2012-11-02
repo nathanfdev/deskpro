@@ -169,6 +169,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			newrow.append('<span class="btn-small-remove remove-row-trigger" />');
 			var span = $('<span class="user-email" />');
 			span.text(email);
+			newrow.append(' ');
 			newrow.append(span);
 
 			cc_user_rows.append(newrow);

@@ -80,7 +80,7 @@
 						{% if ticket_perms.modify_cc or user_parts|length %}
 							<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
 								<label>{{ phrase('agent.tickets.cc') }}:</label>
-								<div>
+								<div class="cc-container">
 									<div id="{{replyBaseId}}_newcc" style="display: none;"></div>
 									<div id="{{replyBaseId}}_delcc" style="display: none;"></div>
 
@@ -98,7 +98,7 @@
 	                                    </div>
 	                                </script>
 	                                <div class="addrow noedit-hide">
-	                                    <input type="text" class="user-part cc-people-search-trigger" />
+	                                    <input type="text" class="user-part cc-people-search-trigger" placeholder="Choose a person" />
 	                                    <div class="person-search-box" style="display: none">
 	                                        <section>
 	                                            <ul class="results-list">

@@ -10,16 +10,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 		var list = $('ul', this.el).first();
 		var newrow = $('li.newrow', this.el);
-		var rowtpl = DeskPRO_Window.util.getPlainTpl($('.addrow-tpl', this.el));
-
-		$(this.el.data('add-trigger')).on('click', function() {
-			var row = $(rowtpl);
-			row.find('.remove-row-trigger').on('click', function() {
-				row.remove();
-			});
-			row.appendTo(list.closest('article'));
-            row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(row);
-		});
 
 		this.el.find('ul').on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('li');
@@ -50,39 +40,43 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			});
 		});
 
+		var addRow = $('.addrow', this.el);
+		if (addRow.length) {
+			addRow.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(addRow);
 
-		this.el.closest('article').on('click', '.cc-saverow-trigger', function(ev) {
-			var row = $(this).closest('.addrow');
-			var email = $('input', row).val().trim();
+			addRow.on('click', '.cc-saverow-trigger', function(ev) {
+				var email = $('input', addRow).val().trim();
 
-			if (!email) {
-				return;
-			}
-
-			row.addClass('loading');
-
-			$.ajax({
-				url: addUrl,
-				type: 'POST',
-				data: { email_address: email },
-				dataType: 'json',
-				complete: function() {
-					row.remove();
-				},
-				success: function(data) {
-
-					if (data.error) {
-						if (data.error_code == 'invalid_email') {
-							DeskPRO_Window.showAlert('Please enter a valid email address');
-						}
-						return;
-					}
-
-					self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
-						$(this).empty().html(data.cc_list || '');
-					});
+				if (!email) {
+					return;
 				}
+
+				addRow.addClass('loading');
+
+				$.ajax({
+					url: addUrl,
+					type: 'POST',
+					data: { email_address: email },
+					dataType: 'json',
+					complete: function() {
+						addRow.removeClass('loading');
+					},
+					success: function(data) {
+						if (data.error) {
+							if (data.error_code == 'invalid_email') {
+								DeskPRO_Window.showAlert('Please enter a valid email address');
+							}
+							return;
+						}
+
+						addRow.find('input').val('');
+
+						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
+							$(this).empty().html(data.cc_list || '');
+						});
+					}
+				});
 			});
-		});
-	},
+		}
+	}
 });
