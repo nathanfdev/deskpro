@@ -1,9 +1,3 @@
-{# Bridge tries to auto-load these, but with the compiled scripts
-the detected path is incorrect so we have to hard-code them #}
-<script type="text/javascript">
-var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
-</script>
-
 {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
 	{{ dp_asset_html('agent_vendors_css') }}
 	{{ dp_asset_html('agent_interface_css') }}
@@ -40,3 +34,19 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 	{% endif %}
 	<script src="{{ path('agent_interface_data_js') }}"></script>
 {% endif %}
+
+<script type="text/javascript">
+	var DP_REQUEST_TOKEN = '{{ security_token('request_token', 21600) }}';
+
+	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+		var url = options.url;
+		if (url.indexOf('?') == -1) {
+			url += '?';
+		} else {
+			url += '&';
+		}
+		url += '_rt=' + DP_REQUEST_TOKEN;
+
+		options.url = url;
+	});
+</script>

@@ -217,6 +217,10 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 */
 	_handleAjaxSuccess: function (data, sent_info) {
 
+		if (data.request_token) {
+			window.DP_REQUEST_TOKEN = data.request_token;
+		}
+
 		// Start auto timer
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 

@@ -56,6 +56,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 	}
 
+	/**
+	 * Check if the global request token check is required for the request
+	 */
+	public function requireRequestToken($action, $arguments = null)
+	{
+		return true;
+	}
 
 	/**
 	 * Force a login
@@ -90,6 +97,17 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		if (!$this->_userHasPermissions()) {
 			die('no permission');
+		}
+
+		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array(
+					'error' => 'invalid_request_token',
+					'redirect_login' => $this->generateUrl('agent_login')
+				);
+
+				return $this->createJsonResponse($data, 403);
+			}
 		}
 
 		$this->person->loadHelper('Agent');
