@@ -118,6 +118,22 @@ class BounceDetector
 	 */
 	public function isBounced()
 	{
+		// Subject check first, which also populates original_subject
+		// which is used again when detecting the ticket this belongs to
+
+		$subject = $this->reader->getSubject()->getSubjectUtf8();
+
+		foreach ($this->getPatterns() as $pattern) {
+			$m = null;
+			if (preg_match($pattern, $subject, $m)) {
+				if (isset($m['subject'])) {
+					$this->original_subject = $m['subject'];
+				}
+				if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
+				return true;
+			}
+		}
+
 		// Standard autoreply headers
 		if ($this->reader->isFromRobot()) {
 			if ($this->logger) $this->logger->logDebug('Is bounced based on isFromRobot');
@@ -137,19 +153,6 @@ class BounceDetector
 		if ($failed && $failed->getHeader()) {
 			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
 			return true;
-		}
-
-		$subject = $this->reader->getSubject()->getSubjectUtf8();
-
-		foreach ($this->getPatterns() as $pattern) {
-			$m = null;
-			if (preg_match($pattern, $subject, $m)) {
-				if (isset($m['subject'])) {
-					$this->original_subject = $m['subject'];
-				}
-				if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
-				return true;
-			}
 		}
 
 		if ($this->logger) $this->logger->logDebug('Not a bounce');
