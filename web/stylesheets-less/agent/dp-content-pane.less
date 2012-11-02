@@ -4843,11 +4843,20 @@ section.new-user-chat-alert footer {
 }
 
 .chatreply > nav ul.option-buttons li.attach input.file {
-	position: relative;
-	text-align: right;
+	position: absolute;
+	right: 0;
+	top: 0;
 	.opacity(0);
 	z-index: 2;
 	cursor: pointer;
+	border: none;
+	border-right: 500px solid transparent;
+	border-left: 500px solid transparent;
+	-o-transform: translate(250px, -50px) scale(1);
+	-moz-transform: translate(-300px, 0) scale(4);
+	direction: ltr;
+	padding: 0;
+	margin: 0;
 }
 
 .chatreply > nav ul.option-buttons li.attach span {

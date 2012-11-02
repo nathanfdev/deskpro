@@ -3105,13 +3105,36 @@ dp .dp-new-feedback td {
 	border: 1px solid #A7E99E;
 }
 
-#dp_chat_message_upload_file {
+#dp_chat_message_upload {
 	position: absolute;
 	bottom: 0;
 	left: 0;
+	height: 21px;
+	width: 150px;
+	overflow: hidden;
+}
+
+#dp_chat #dp_chat_message_upload_file {
+	position: absolute;
+	bottom: 0;
 	right: 0;
 	margin: 0 !important;
 	padding: 0 !important;
+
+	filter: alpha(opacity=0);
+	-khtml-opacity: 0;
+	-moz-opacity: 0;
+	opacity: 0;
+
+	z-index: 2;
+
+	border: none;
+	border-right: 500px solid transparent;
+	border-left: 500px solid transparent;
+	-o-transform: translate(250px, -50px) scale(1);
+	-moz-transform: translate(-300px, 0) scale(4);
+	direction: ltr;
+	cursor: pointer;
 }
 
 #dp_chat_upload_link {
@@ -3142,17 +3165,6 @@ dp .dp-new-feedback td {
 
 #dp_chat_upload_link i {
 	{{ _self.opacity(0.5) }}
-}
-
-#dp_chat_message_upload_file {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	filter: alpha(opacity=0);
-	-khtml-opacity: 0;
-	-moz-opacity: 0;
-	opacity: 0;
-	z-index: 2;
 }
 
 #dp_chat_filedrag {
