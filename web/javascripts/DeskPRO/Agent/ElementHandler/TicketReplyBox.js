@@ -87,6 +87,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 				sigTrimmed = false;
 			}
+
+			if (self.page) {
+				var scroller = self.page.wrapper.find('div.layout-content');
+				scroller.data('scroll_handler').updateSize();
+				scroller.trigger('goscrollbottom');
+			}
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
@@ -113,6 +119,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					textarea.val(reply);
 					sigTrimmed = true;
 				}
+			}
+
+			if (self.page) {
+				var scroller = self.page.wrapper.find('div.layout-content');
+				scroller.data('scroll_handler').updateSize();
+				scroller.trigger('goscrollbottom');
 			}
 		});
 
