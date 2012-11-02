@@ -715,16 +715,27 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				});
 			});
 
+			var showSaving = this.getEl('article_save').find('.mark-loading');
+			var showSaved  = this.getEl('article_save').find('.mark-saved');
+
+			showSaved.stop().hide();
+			showSaving.show();
+
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
 				dataType: 'json',
+				complete: function() {
+					showSaving.hide();
+				},
 				success: function(data) {
 					this.getEl('content_ed').html(data.content_html);
 					this._initPostArea();
 					this.handleUnloadRevisions(data.revision_id);
+
+					showSaved.show().fadeOut(2000);
 				}
 			});
 

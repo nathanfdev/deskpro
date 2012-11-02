@@ -236,6 +236,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container reply-box-wrap">
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
+			<div class="controls" id="{{baseId}}_article_save">
+				<span style="display:none" class="mark-loading"></span>
+				<span style="display:none" class="mark-saved">Saved</span>
+			</div>
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.general.article') }}</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
