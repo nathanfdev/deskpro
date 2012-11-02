@@ -54,7 +54,9 @@ class UserAgentRequirementCheck
 		} elseif ($browser->getBrowser() == \Browser::BROWSER_OPERA && $browser->getVersion() < 11) {
 			return false;
 		} elseif ($browser->getBrowser() == \Browser::BROWSER_IE && $browser->getVersion() < 8) {
-			return false;
+			if (!$browser->isChromeFrame()) {
+				return false;
+			}
 		}
 
 		// Unknown browsers we'll err on the lenient side and assume
