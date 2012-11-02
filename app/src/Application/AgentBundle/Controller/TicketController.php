@@ -1178,9 +1178,10 @@ class TicketController extends AbstractController
 
 			$this->em->persist($ticket);
 			$this->em->flush();
-			$this->db->commit();
 
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
+
+			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;

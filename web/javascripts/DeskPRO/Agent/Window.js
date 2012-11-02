@@ -2989,6 +2989,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
+				if (textarea.data('disable-autosave')) {
+					return;
+				}
+
 				$.ajax({
 					url: autosaveUrl,
 					type: 'post',

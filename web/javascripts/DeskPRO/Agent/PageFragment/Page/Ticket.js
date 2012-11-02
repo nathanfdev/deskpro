@@ -235,6 +235,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
 
+		this.getReplyTextArea().data('disable-autosave', true);
+
 		var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
 		loadingEl.fadeIn();
 
@@ -306,6 +308,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			noErrorOverride: true,
 			complete: function() {
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
+
+				this.getReplyTextArea().data('disable-autosave', false);
 			},
 			error: function() {
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
