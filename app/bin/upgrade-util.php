@@ -474,6 +474,8 @@ class Upgrade
 				fclose($fp);
 
 				$that->log($status);
+
+				@file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
 			};
 
 			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'w'))) {
@@ -1917,6 +1919,8 @@ function Upgrade_Shutdown_Function()
 	try {
 		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 	} catch (\Exception $e) {}
+
+	@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 
 	$UPGRADE_CLEANUP = null;
 }

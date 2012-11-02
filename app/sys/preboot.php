@@ -64,6 +64,25 @@ if (!DP_REAL_ERROR_LOG) {
 }
 
 #------------------------------
+# Detect if auto-update is running which
+# means we should quit now.
+#------------------------------
+
+if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgrade')) {
+	if (file_exists(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
+		if (php_sapi_name() == 'cli') {
+			echo "Currently installing updates";
+			die(0);
+		} else {
+			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
+			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', 'Currently installing updates', $page_html);
+			echo $page_html;
+			exit;
+		}
+	}
+}
+
+#------------------------------
 # Handle CLI logging of info
 #------------------------------
 

@@ -95,6 +95,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			}
 			@fclose($fp);
 
+			@file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
+
 			return true;
 		};
 
@@ -228,6 +230,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+
+		@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 
 		return $ret;
 	}

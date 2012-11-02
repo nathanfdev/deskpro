@@ -19,6 +19,7 @@
 /app/sys/Resources/distro-checksums.php
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.php
+/auto-update-is-running.trigger
 /app/src/Application/DeskPRO/Dpql/Parser.out
 
 /data/last-email_error.dat
