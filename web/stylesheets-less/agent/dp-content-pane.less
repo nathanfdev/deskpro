@@ -2648,7 +2648,7 @@ padding: 30px;
 }
 
 .people-box dl dt {
-	padding: 3px 0 3px 6px;
+	padding: 3px 0 3px 10px;
 	font-size: 11px;
 	font-weight: bold;
 	font-family: @heading-font;
@@ -2662,6 +2662,14 @@ padding: 30px;
 		line-height: 23px;
 		display: inline-block;
 		padding-left: 25px;
+	}
+
+	&.followers .select2-input {
+		padding-left: 0;
+	}
+
+	&.followers .select2-search-choice:first-child {
+		margin-left: 0;
 	}
 }
 
