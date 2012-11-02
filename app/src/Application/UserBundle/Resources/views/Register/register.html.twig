@@ -73,6 +73,8 @@
 				</div>
 			{% endif %}
 			<form action="{{ path('user_login_authenticate_local') }}" class="dp-layout" method="post">
+				{{ form_token('user_login') }}
+
 				{% if return %}
 					<input type="hidden" name="return" value="{{return}}" />
 				{% else %}
@@ -116,6 +118,7 @@
 			</header>
 			<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post">
+					{{ form_token() }}
 					<table cellspacing="0" cellpadding="0">
 						<tr>
 							<td width="40%">
@@ -149,6 +152,7 @@
 			</header>
 			<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>
 				<form action="{{ path('user_register') }}" method="post">
+					{{ form_token() }}
 					<input type="hidden" name="process" value="1" />
 
 					<div class="dp-control-group {% if error_fields['name'] %}dp-error{% endif %}">

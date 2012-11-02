@@ -15,6 +15,7 @@
 	<article>
 		{% if feedback.rating == 1 %}
 			<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, 'close_win': 1}) }}">
+				{{ form_token() }}
 				<p>
 					{{ phrase('user.tickets.feedback_thanks_pos') }}
 				</p>

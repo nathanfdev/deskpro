@@ -182,6 +182,10 @@ HTML;
 			return $this->redirectRoute('user_login');
 		}
 
+		if (!empty($_REQUEST['_dp_security_token']) && !$this->consumeRequestToken('user_login')) {
+			return $this->redirectRoute('user_login');
+		}
+
 		$return = $this->in->getString('return');
 
 		$result = $this->authLocalInput();

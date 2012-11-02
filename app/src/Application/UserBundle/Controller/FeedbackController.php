@@ -221,6 +221,9 @@ class FeedbackController extends AbstractController
 		$errors = $error_fields = null;
 		$is_submitted = false;
 		if ($this->in->getBool('process_new')) {
+
+			$this->ensureStandardRequestToken();
+
 			$is_submitted = true;
 			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 

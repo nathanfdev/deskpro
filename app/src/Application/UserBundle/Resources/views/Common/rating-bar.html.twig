@@ -10,6 +10,7 @@
 		{% endif %}
 	{% else %}
 		<form action="{{ path('user_saverating', { 'object_type': content_object.content_type, 'object_id': content_object.id}) }}" method="post">
+			{{ form_token() }}
 			<input type="hidden" name="log_search_id" value="{{ rating_log_search_id }}" />
 			<button class="dp-btn dp-good" value="1" name="rating"><span>{{ phrase('user.general.set_as_helpful') }}</span></button>
 			<button class="dp-btn dp-bad" value="-1" name="rating"><span>{{ phrase('user.general.set_as_unhelpful') }}</span></button>

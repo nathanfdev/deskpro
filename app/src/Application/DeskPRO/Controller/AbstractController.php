@@ -95,6 +95,17 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
 
 	/**
+	 * Checks the standard request token.
+	 *
+	 * @return bool
+	 */
+	public function checkStandardRequestToken()
+	{
+		return $this->checkRequestToken('request_token', '_rt');
+	}
+
+
+	/**
 	 * Checks a request token in a form, and if its valid, also "consumes" it on the session so it cant be used again.
 	 *
 	 * @param string $name
@@ -144,6 +155,18 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			echo 'invalid security token';
 			exit;
 		}
+	}
+
+
+	/**
+	 * Just like checkRequestToken but this shows an error for you if its bad
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 */
+	public function ensureStandardRequestToken()
+	{
+		return $this->ensureRequestToken('request_token', '_rt');
 	}
 
 

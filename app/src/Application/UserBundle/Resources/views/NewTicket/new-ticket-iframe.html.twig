@@ -75,6 +75,7 @@ var ticketReader = {
 	</div>
 {% endif %}
 <form action="{{ path('user_tickets_new_simple', {for_department_id: set_dep_id}) }}{% if app.getRequest().query.has('_debug') %}?_debug{% endif %}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+	{{ form_token() }}
 	<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 	<input type="hidden" name="process" value="1" />
 	<input type="hidden" name="is_iframe" value="1" />

@@ -12,6 +12,13 @@ $collection->add('user', new Route(
 	array()
 ));
 
+$collection->add('user_session_ping', new Route(
+	'/session-ping.json',
+	array('_controller' => 'UserBundle:Main:sessionPing'),
+	array(),
+	array()
+));
+
 $collection->add('user_admin_rendertpl', new Route(
 	'/admin-render-template/{type}',
 	array('_controller' => 'UserBundle:Main:adminRenderTemplate'),
@@ -37,7 +44,7 @@ $collection->add('user_test', new Route(
 $collection->add('user_saverating', new Route(
 	'/portal/save-rating/{object_type}/{object_id}',
 	array('_controller' => 'UserBundle:Portal:saveRating'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -177,14 +184,14 @@ $collection->add('user_profile_setlang', new Route(
 $collection->add('user_profile_changepassword', new Route(
 	'/profile/change-password',
 	array('_controller' => 'UserBundle:Profile:changePassword'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('user_profile_emails_new', new Route(
 	'/profile/emails/new',
 	array('_controller' => 'UserBundle:Profile:newEmail'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -324,7 +331,7 @@ $collection->add('user_tickets_view', new Route(
 $collection->add('user_tickets_addreply', new Route(
 	'/ticket-edit/{ticket_ref}/add-reply',
 	array('_controller' => 'UserBundle:Tickets:addReply'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -345,7 +352,7 @@ $collection->add('user_tickets_participants', new Route(
 $collection->add('user_tickets_participants_add', new Route(
 	'/ticket-edit/{ticket_ref}/people/add',
 	array('_controller' => 'UserBundle:Tickets:addParticipant'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -373,14 +380,14 @@ $collection->add('user_tickets_feedback', new Route(
 $collection->add('user_tickets_feedback_save', new Route(
 	'/ticket-rate/{ticket_ref}/{auth}/{message_id}/save',
 	array('_controller' => 'UserBundle:Tickets:feedbackSave'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('user_tickets_feedback_closeticket', new Route(
 	'/ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket',
 	array('_controller' => 'UserBundle:Tickets:feedbackCloseTicket'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -408,7 +415,7 @@ $collection->add('user_articles_article', new Route(
 $collection->add('user_articles_newcomment', new Route(
 	'/kb/new-comment/{article_id}',
 	array('_controller' => 'UserBundle:Articles:newComment'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -444,7 +451,7 @@ $collection->add('user_downloads_file_download', new Route(
 $collection->add('user_downloads_newcomment', new Route(
 	'/downloads/new-comment/{download_id}',
 	array('_controller' => 'UserBundle:Downloads:newComment'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -472,7 +479,7 @@ $collection->add('user_news_view', new Route(
 $collection->add('user_news_newcomment', new Route(
 	'/news/new-comment/{post_id}',
 	array('_controller' => 'UserBundle:News:newComment'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -518,14 +525,14 @@ $collection->add('user_feedback_newfeedback_finishlogin', new Route(
 $collection->add('user_feedback_newcomment', new Route(
 	'/feedback/new-comment/{feedback_id}',
 	array('_controller' => 'UserBundle:Feedback:newComment'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('user_feedback_vote', new Route(
 	'/feedback/vote/{feedback_id}',
 	array('_controller' => 'UserBundle:Feedback:vote'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 

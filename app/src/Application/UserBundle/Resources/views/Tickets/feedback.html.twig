@@ -22,6 +22,7 @@
 				<p>{{ phrase('user.tickets.rate-question') }}</p>
 
 				<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
+					{{ form_token() }}
 					<table class="dp-layout" width="550" align="center"><tr>
 						<td width="33%" style="padding: 10px;">
 							<label class="dp-rate-box dp-positive">

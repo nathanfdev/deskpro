@@ -14,6 +14,7 @@
 	</header>
 	<article>
 		<form action="{{ path('user_tickets_view', {'ticket_ref': request_ref}) }}" method="post">
+			{{ form_token() }}
 			<div class="dp-control-group">
 				<div class="dp-controls">
 					<p>

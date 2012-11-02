@@ -70,6 +70,7 @@
 			</header>
 			<div class="dp-well dp-well-light">
 				<form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.public_id}) }}" method="POST" class="with-form-validator" enctype="multipart/form-data">
+					{{ form_token() }}
 					<div class="dp-form">
 						{% if errors|length %}
 							<div class="dp-alert dp-alert-error">

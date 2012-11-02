@@ -4,6 +4,7 @@
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 <div id="newchat" class="tab" style="display: none; min-height: 300px;">
 	<form method="POST" id="dp_newchat_form" class="with-form-validator">
+		{{ form_token() }}
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 		<div class="socials">
 			<div>

@@ -7,6 +7,7 @@
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
 	var DESKPRO_SESSION_ID = '{{ app.getSession().getEntity().getSessionCode() }}';
+	var DP_REQUEST_TOKEN = '{{ security_token('request_token', 10800) }}';
 
 	{% if constant('DP_DEBUG') %}
 	DP_DEBUG = true;
@@ -44,6 +45,41 @@
 <!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
 <script type="text/javascript">
+	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+		var url = options.url;
+		if (url.indexOf('?') == -1) {
+			url += '?';
+		} else {
+			url += '&';
+		}
+		url += '_rt=' + DP_REQUEST_TOKEN;
+
+		options.url = url;
+	});
+
+	$(document).ready(function() {
+		// Update request tokens with DP_REQUEST_TOKEN
+		// to catch cases where user sat on a page for a long time
+		$('form').on('submit', function() {
+			var form = $(this);
+			var method = (form.attr('method') || 'GET').toUpperCase();
+			var tok = null;
+
+			if (method == 'POST') {
+				tok = form.find('input.dp_request_token');
+				if (!tok[0]) {
+					tok = $('<input type="hidden" name="_rt" />');
+					tok.val(DP_REQUEST_TOKEN);
+					tok.addClass('dp_request_token');
+
+					form.append(tok);
+				} else {
+					tok.val(DP_REQUEST_TOKEN);
+				}
+			}
+		});
+	});
+
 	window.DeskPRO_Window = new DeskPRO.User.Window();
 	$(document).ready(function() {
 		window.DeskPRO_Window.initPage();

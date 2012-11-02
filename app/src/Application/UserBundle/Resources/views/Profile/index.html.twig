@@ -10,6 +10,7 @@
 {% block content %}
 
 <form accept="{{ path('user_profile') }}" method="POST">
+	{{ form_token() }}
 
 	<section class="dp-portal-section">
 		<header>
@@ -150,6 +151,7 @@
 					<tr class="dp-new-email">
 						<td>
 							<form action="{{ path('user_profile_emails_new') }}" method="post">
+								{{ form_token() }}
 								<input type="text" name="new_email" value="" size="50" style="width: 350px;" placeholder="{{ phrase('user.profile.add_email_address') }}" />
 								<br />
 								<button class="dp-btn dp-btn-primary">{{ phrase('user.general.add') }}</button>
@@ -190,6 +192,7 @@
 		{% endif %}
 
 		<form action="{{ path('user_profile_changepassword') }}" method="post">
+			{{ form_token() }}
 			<div class="dp-box-content dp-form">
 				<div class="dp-control-group">
 					<div class="dp-control-label">

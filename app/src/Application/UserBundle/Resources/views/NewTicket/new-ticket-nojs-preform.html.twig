@@ -6,6 +6,7 @@
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
 				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data">
+				{{ form_token() }}
 				<input type="hidden" name="nojs" value="1" />
 				<input type="hidden" name="no_submit" value="1" />
 					{###############

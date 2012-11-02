@@ -93,6 +93,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 	}
 
+	/**
+	 * Check if the global request token check is required for the request
+	 */
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($this->request->getMethod() == 'POST') {
+			return true;
+		}
+	}
+
 	public function preAction($action, $arguments = null)
 	{
 		$this->person = $this->session->getPerson();
@@ -159,6 +169,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
 			$tpl_globals->setVariable('admin_portal_controls', true);
 			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+		}
+
+		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array(
+					'error' => 'invalid_request_token',
+					'redirect_login' => $this->generateUrl('agent_login')
+				);
+
+				return $this->createJsonResponse($data, 403);
+			} else {
+				return $this->renderStandardError('The form you are trying to submit has expired. Please go back and try again.');
+			}
 		}
 	}
 

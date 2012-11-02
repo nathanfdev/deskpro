@@ -74,6 +74,7 @@ var ticketReader = {
 			class="with-form-validator with-handler"
 			data-element-handler="DeskPRO.User.ElementHandler.EditTicket"
 		>
+			{{ form_token() }}
 			<input type="hidden" name="process" value="1" />
 
 			{#--- FIELDS CONTAINER ---#}

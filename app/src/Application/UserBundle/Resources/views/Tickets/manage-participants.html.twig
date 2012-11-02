@@ -30,6 +30,7 @@
 {% endif %}
 
 <form action="{{ path('user_tickets_participants_add', {'ticket_ref':ticket.ref}) }}" method="post">
+	{{ form_token() }}
 	{{ phrase('user.tickets.cc_form_add_title') }}:<br />
 	{{ phrase('user.general.first_name') }}: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
 	{{ phrase('user.general.last_name') }}: {{ form_widget(newpart_form.last_name) }}

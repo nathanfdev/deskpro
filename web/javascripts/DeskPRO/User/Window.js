@@ -83,6 +83,28 @@ DeskPRO.User.Window = new Orb.Class({
 				}
 			}, 100);
 		}
+
+		window.setTimeout(function() {
+			self.sessionPing();
+		}, 600000);
+	},
+
+	sessionPing: function() {
+		var self = this;
+		$.ajax({
+			url: BASE_URL + 'session-ping.json',
+			cache: false,
+			complete: function() {
+				window.setTimeout(function() {
+					self.sessionPing();
+				}, 600000);
+			},
+			success: function(data) {
+				if (data.request_token) {
+					window.DP_REQUEST_TOKEN = data.request_token;
+				}
+			}
+		});
 	},
 
 	initFeatures: function(contextEl) {

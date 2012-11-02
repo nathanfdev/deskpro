@@ -43,6 +43,7 @@ DeskPRO.User.ElementHandler.FeedbackAgreeBtn = new Orb.Class({
 			data: { rating: rating },
 			dataType: 'json',
 			context: this,
+			type: 'POST',
 			success: function(data) {
 				if (data.voted) {
 					el.addClass('dp-voted');
