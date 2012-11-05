@@ -321,12 +321,19 @@ class PersonSearch extends SearcherAbstract
                         "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
                     );
 
+	                $join_name_org = "{$join_name}_org";
+
+	                $joins[] = array(
+                        'organization2usergroups',
+                        "LEFT JOIN organization2usergroups AS $join_name_org ON ($join_name_org.organization_id = $people_table.organization_id)"
+                    );
+
                     $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.usergroup'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
 						return $titles;
 					});
 
-					$wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
+					$wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . ' OR ' . $this->_choiceMatch("$join_name_org.usergroup_id", $op, $choice) . ')';
 					break;
 				case self::TERM_EMAIL:
 					$joins[] = array(

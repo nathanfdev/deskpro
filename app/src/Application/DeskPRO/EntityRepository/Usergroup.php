@@ -146,9 +146,13 @@ class Usergroup extends AbstractEntityRepository
 	public function getCountsForAll()
 	{
 		return App::getDb()->fetchAllKeyValue("
-			SELECT usergroup_id, COUNT(*)
-			FROM person2usergroups
-			GROUP BY usergroup_id
+			SELECT usergroups.id, COUNT(DISTINCT people.id)
+			FROM people
+			INNER JOIN usergroups
+			LEFT JOIN person2usergroups ON (usergroups.id = person2usergroups.usergroup_id AND people.id = person2usergroups.person_id)
+			LEFT JOIN organization2usergroups ON (usergroups.id = organization2usergroups.usergroup_id AND people.organization_id = organization2usergroups.organization_id)
+			WHERE (person2usergroups.person_id IS NOT NULL OR organization2usergroups.organization_id IS NOT NULL)
+			GROUP BY usergroups.id
 		");
 	}
 
@@ -166,10 +170,14 @@ class Usergroup extends AbstractEntityRepository
 		$ids_comma = implode(',', $ids);
 
 		return App::getDb()->fetchAllKeyValue("
-			SELECT usergroup_id, COUNT(*)
-			FROM person2usergroups
-			WHERE usergroup_id IN ($ids_comma)
-			GROUP BY usergroup_id
+			SELECT usergroups.id, COUNT(DISTINCT people.id)
+			FROM people
+			INNER JOIN usergroups
+			LEFT JOIN person2usergroups ON (usergroups.id = person2usergroups.usergroup_id AND people.id = person2usergroups.person_id)
+			LEFT JOIN organization2usergroups ON (usergroups.id = organization2usergroups.usergroup_id AND people.organization_id = organization2usergroups.organization_id)
+			WHERE usergroups.id IN ($ids_comma)
+				AND (person2usergroups.person_id IS NOT NULL OR organization2usergroups.organization_id IS NOT NULL)
+			GROUP BY usergroups.id
 		");
 	}
 
