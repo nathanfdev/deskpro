@@ -108,6 +108,10 @@ class HtmlMatcher
 		// then this pattern is a simple string pattern with no dom traversal
 		if ($first_token[0] == 'match' && !$tokens) {
 			$m = null;
+			// Get rid of new lines that may affect the cutter.
+			// (Doesnt matter with HTML emails anyway)
+			$this->body = str_replace(array("\r\n", "\n"), " ", $this->body);
+
 			if (preg_match($first_token[1], $this->body, $m)) {
 				$this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
 
