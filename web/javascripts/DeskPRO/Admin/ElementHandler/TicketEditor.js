@@ -9,12 +9,20 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 		var drawRendered = this.el.data('section') != 'view' ? true : false;
 
 		window.TicketEditor = this;
-		var ob = new DeskPRO.UI.OptionBox({
-			element: $('#department_ob'),
-			trigger: $('#department_switcher'),
-			onChecked: function(check, ob) {
-				var url = check.data('refresh-url');
-				window.location = url;
+		$('#department_switcher').on('change', function() {
+			var url = $('#department_switcher').find('option:selected').first().data('refresh-url');
+			window.location = url;
+		});
+		DP.select($('#department_switcher'), {
+			formatResult: function (result) {
+				var opt = $('#department_switcher').find('option[value="' + result.id + '"]');
+				var name = Orb.escapeHtml(opt.text());
+
+				if (opt.hasClass('custom') ){
+					return '<div class="orange-pip">' + name + '</div>';
+				} else {
+					return '<div class="">' + name + '</div>';
+				}
 			}
 		});
 

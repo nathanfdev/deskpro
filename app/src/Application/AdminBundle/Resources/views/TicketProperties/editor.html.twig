@@ -16,6 +16,16 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			-webkit-border-radius: 4px;
 			border: 1px solid #B2B9C1;
 		}
+
+		.orange-pip {
+			background: url({{ asset('images/agent/icons/bullet_orange.png') }}) no-repeat 100% 50%;
+			padding-right: 20px;
+		}
+
+		.content-tabs ul a {
+			color: #000;
+			text-decoration: none;
+		}
 	</style>
 {% endblock %}
 {% block page_nav_inner %}
@@ -81,13 +91,20 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.tickets.enable_custom_layouts_department') }}
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
-			<span id="department_switcher" class="switcher"><span>
-				{% if department %}
-					{{ department.full_title }}
-				{% else %}
-					{{ phrase('admin.tickets.default_layout') }}
-				{% endif %}
-			</span></span>
+			<select id="department_switcher">
+				<option value="0" {% if 0 in dep_ids_custom %}class="custom"{% endif %} {% if not department %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.tickets.default_layout') }}</option>
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+					{% if dep.children|length %}
+						<optgroup label="{{ dep.title }}">
+							{% for subdep in dep.children %}
+								<option {% if subdep.id in dep_ids_custom %}class="custom"{% endif %} data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if department.id == subdep.id %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': subdep.id, 'section': section}) }}">{{subdep.title}}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option {% if dep.id in dep_ids_custom %}class="custom"{% endif %} value="{{dep.id}}" {% if department.id == dep.id %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': dep.id, 'section': section}) }}">{{dep.title}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
 		</div>
 	{% endif %}
 </div>
@@ -97,13 +114,19 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<span class="saving-text" id="saving_text" style="display: none">{{ phrase('agent.general.saving') }}</span>
 		<ul>
 			<li {% if section == 'create' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">{{ phrase('admin.tickets.new_ticket_form') }}</a>
+				<div {% if 'create' in custom_sections %}class="orange-pip"{% endif %}>
+					<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">{{ phrase('admin.tickets.new_ticket_form') }}</a>
+				</div>
 			</li>
 			<li {% if section == 'view' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">{{ phrase('admin.tickets.view_ticket_page') }}</a>
+				<div {% if 'view' in custom_sections %}class="orange-pip"{% endif %}>
+					<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">{{ phrase('admin.tickets.view_ticket_page') }}</a>
+				</div>
 			</li>
 			<li class="{% if section == 'modify' %}on{% endif %}">
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">{{ phrase('admin.tickets.modify_ticket_form') }}</a>
+				<div {% if 'modify' in custom_sections %}class="orange-pip"{% endif %}>
+					<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">{{ phrase('admin.tickets.modify_ticket_form') }}</a>
+				</div>
 			</li>
 		</ul>
 		<br />
@@ -478,67 +501,6 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	{% endif %}
 </div>
 {% endif %}
-
-<div class="optionbox" id="department_ob">
-	<section data-section-name="department">
-		<header>
-			<h3>{{ phrase('admin.tickets.switch_to_department') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-		</header>
-		<ul>
-			{% if department.id %}
-				<li class="top first emphasis">
-					<input
-						type="radio"
-						name="dep_radio"
-						value="0"
-						{% if not department %}checked="checked"{% endif %}
-						data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}"
-					/>
-					<label>{{ phrase('admin.tickets.default_layout') }}</label>
-				</li>
-			{% endif %}
-			{% for dep in department_hierarchy %}
-				<li
-					class="top {% if dep.children %}group-title{% endif %} item-{{ dep.id }}"
-					data-item-id="{{ dep.id }}"
-					data-full-title="{{ dep.title }}"
-				>
-					{% if not dep.children %}
-					<input
-						type="radio"
-						name="dep_radio"
-						value="{{ dep.id }}"
-						{% if department.id == dep.id %}checked="checked"{% endif %}
-						data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': dep.id, 'section': section}) }}"
-					/>
-					{% endif %}
-					<label>{{ dep.title }}</label>
-				</li>
-				{% if dep.children %}
-					{% for subdep in dep.children %}
-						<li
-							class="child item-{{ subdep.id }} child-of-{{ dep.id }}"
-							data-item-id="{{ dep.id }}"
-							data-parent-id="{{ dep.id }}"
-							data-full-title="{{ dep.title }} &gt; {{ subdep.title }}"
-						>
-							<span class="elbow-end"></span>
-							<input
-								type="radio"
-								name="dep_radio"
-								value="{{ subdep.id }}"
-								{% if department.id == dep.id %}checked="checked"{% endif %}
-								data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': subdep.id, 'section': section}) }}"
-							/>
-							<label>{{subdep.title}}</label>
-						</li>
-					{% endfor %}
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-</div>
 
 <div id="embed_form_overlay" style="width: 785px; height: 555px; display: none;">
 	<div class="overlay-title">

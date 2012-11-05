@@ -103,6 +103,25 @@ class TicketPropertiesController extends AbstractController
 		$is_default = false;
 		$page_data = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default', $is_default);
 
+		$dep_ids_custom = App::getDb()->fetchAllCol("
+			SELECT COALESCE(department_id, 0)
+			FROM ticket_page_display
+		");
+
+		if ($department_id) {
+			$custom_sections = App::getDb()->fetchAllCol("
+				SELECT zone
+				FROM ticket_page_display
+				WHERE department_id = ?
+			", array($department_id));
+		} else {
+			$custom_sections = App::getDb()->fetchAllCol("
+				SELECT zone
+				FROM ticket_page_display
+				WHERE department_id IS NULL
+			");
+		}
+
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
 			'department_hierarchy' => $department_hierarchy,
@@ -113,7 +132,9 @@ class TicketPropertiesController extends AbstractController
 			'ticket_options' => $ticket_options,
 			'is_default' => $is_default,
 			'page_data' => $page_data,
-			'section' => $section
+			'section' => $section,
+			'dep_ids_custom' => $dep_ids_custom,
+			'custom_sections' => $custom_sections,
 		));
 	}
 
