@@ -2992,6 +2992,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		editor.bind('keydown', function(ev) {
 			ev.stopPropagation();
+
+			if (ev.metaKey && !ev.ctrlKey) { // pressing "cmd" on a mac
+				var sel;
+				if (window.getSelection && (sel = window.getSelection()) && sel.modify) {
+					switch (ev.keyCode) {
+						case 39: // right - act like "end" in windows
+							sel.modify("move", "forward", "lineboundary");
+							ev.preventDefault();
+							break;
+
+						case 37: // left - act like "home" in windows
+							sel.modify("move", "backward", "lineboundary");
+							ev.preventDefault();
+							break;
+					}
+				}
+			}
 		});
 
 		editor.bind('dragover drop', function(ev) {
