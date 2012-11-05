@@ -219,7 +219,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_core':
-				$config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td,th,pre,div[align|class],p[align|class],blockquote,span[class],br,hr');
+				$config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td,th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('AutoFormat.RemoveSpansWithoutAttributes', true);

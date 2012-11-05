@@ -976,8 +976,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$(this).hide();
 				overlayEl.find('.save-text-loading').show();
 
+				if (overlayEl.find('textarea.message_text').data('redactor')) {
+					overlayEl.find('textarea.message_text').data('redactor').syncCode();
+				}
+
 				var postData = {
-					message_html: overlayEl.find('textarea.message_text').html()
+					message_html: overlayEl.find('textarea.message_text').val()
 				};
 
 				$.ajax({
@@ -989,10 +993,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						overlayEl.find('.save-text-loading').hide();
 						overlayEl.find('.save-text-trigger').show();
 					},
-					success: function() {
+					success: function(info) {
 						self.messageEditOverlay.close();
-						var messageHtml = postData.message_html;
-						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text').html(messageHtml);
+						var messageHtml = info.message_html;
+						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text-message').html(messageHtml);
 					}
 				});
 			});
@@ -1006,16 +1010,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					if (!self.messageEditOverlay.hasInitRte) {
 						self.messageEditOverlay.hasInitRte = true;
-						overlayEl.find('textarea.message_text').height(overlayEl.find('.overlay-content').height() - 20);
-						DP.rteTextarea(overlayEl.find('textarea.message_text'), {});
+						overlayEl.find('textarea.message_text').height(overlayEl.find('.overlay-content').height() - 50);
+						//DP.rteTextarea(overlayEl.find('textarea.message_text'), {});
+						DeskPRO_Window.initRteAgentReply(overlayEl.find('textarea.message_text'), {
+							autoresize: false
+						});
 					}
 
-					overlayEl.find('textarea.message_text').html('Loading...');
+					//overlayEl.find('textarea.message_text').html('Loading...');
+					overlayEl.find('textarea.message_text').setCode('Loading...');
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/get-message-text.json',
 						dataType: 'json',
 						success: function(data) {
-							overlayEl.find('textarea.message_text').html(data.message_html);
+							//overlayEl.find('textarea.message_text').html(data.message_html);
+							overlayEl.find('textarea.message_text').setCode(data.message_html);
 						}
 					});
 				}
