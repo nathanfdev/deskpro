@@ -38,4 +38,16 @@
 
 		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
 	</dp:section>
+
+	<dp:section>
+		<dp:section-header>{{ phrase('agent.general.message_history') }}</dp:section-header>
+		{% for message in messages|slice(1) %}
+			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				show_author_email: true,
+				is_to_agent: true
+			} %}
+			<dp:spacer />
+		{% endfor %}
+	</dp:section>
 </dp:body>
