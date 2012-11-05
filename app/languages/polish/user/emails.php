@@ -28,7 +28,6 @@ Zanim będziesz mógł używać Twojego konta, musisz kliknąć na następujący
 	'user.emails.registration_closed'                                      => 'Szanowny(a) {{name}},
 
 Nowe petycje mogą być wysłane tylko przez zarejestrowanych użytkowników Helpdesku. Jeżeli już masz konto, napisz do nas z Twojego zarejestrowanego adresu email.',
-	'user.emails.ticket-message-rate'                                      => 'Czy ta wiadomość Ci pomogła? Oceń naszą pomoc online.',
 	'user.emails.ticket_access_ticket_online'                              => 'Zobacz i kieruj petycją online:',
 	'user.emails.ticket_cc-new'                                            => 'Zostałeś dołączony do petycji, stworzonej przez {{name}}.',
 	'user.emails.ticket_flood'                                             => 'Niedawno wysłałeś email do naszego Helpdesku. Nasz system automatyczny wykrył, że wysłałeś wiele wiadomości w krótkim czasie, jak by były automatycznie zgenerowane.

@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'Se vores filer',
 	'user.portal.tab_feedback'                                             => 'Indlæg',
 	'user.portal.tab_feedback-description'                                 => 'Kundeforslag',
-	'user.portal.tab_home'                                                 => 'Hjem',
-	'user.portal.tab_home-description'                                     => 'Velkommen &amp; Nyheder',
 	'user.portal.tab_knowledgebase'                                        => 'Videnbase',
 	'user.portal.tab_knowledgebase-description'                            => 'Læs hjælpeartiklerne',
 	'user.portal.tab_tickets'                                              => 'Kontakt os',

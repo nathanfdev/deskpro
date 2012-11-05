@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'Bekijk onze downloads',
 	'user.portal.tab_feedback'                                             => 'Feedback',
 	'user.portal.tab_feedback-description'                                 => 'Klant suggesties',
-	'user.portal.tab_home'                                                 => 'Home',
-	'user.portal.tab_home-description'                                     => 'Welkom &amp; nieuws',
 	'user.portal.tab_knowledgebase'                                        => 'Kennisbank',
 	'user.portal.tab_knowledgebase-description'                            => 'Lees artikelen',
 	'user.portal.tab_tickets'                                              => 'Neem contact met ons op',

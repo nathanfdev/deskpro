@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'Доступные загрузки',
 	'user.portal.tab_feedback'                                             => 'Отзыв',
 	'user.portal.tab_feedback-description'                                 => 'Предложения клиентов',
-	'user.portal.tab_home'                                                 => 'Домой',
-	'user.portal.tab_home-description'                                     => 'Добро пожаловать &amp; Новости',
 	'user.portal.tab_knowledgebase'                                        => 'База знаний',
 	'user.portal.tab_knowledgebase-description'                            => 'Читать вспомогательные статьи',
 	'user.portal.tab_tickets'                                              => 'Связаться с нами',

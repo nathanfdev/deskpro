@@ -20,7 +20,6 @@
 	'user.portal.tab_downloads'                                            => 'دانلود',
 	'user.portal.tab_feedback'                                             => 'نظرات',
 	'user.portal.tab_feedback-description'                                 => 'انتقادات و پیشنهادات مشتری',
-	'user.portal.tab_home'                                                 => 'صفحه اصلی',
 	'user.portal.tab_tickets'                                              => 'تماس با ما',
 	'user.portal.tab_tickets-description'                                  => 'ما در اینجا برای کمک',
 	'user.portal.twitter-user-link'                                        => '@{{name}} در توییتر',

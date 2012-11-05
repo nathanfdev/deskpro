@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'Bläddra bland våra nedladdningar',
 	'user.portal.tab_feedback'                                             => 'Feedback',
 	'user.portal.tab_feedback-description'                                 => 'Förslag från användare',
-	'user.portal.tab_home'                                                 => 'Hem',
-	'user.portal.tab_home-description'                                     => 'Välkommen &amp; Nyheter',
 	'user.portal.tab_knowledgebase'                                        => 'Kunskapsbas',
 	'user.portal.tab_knowledgebase-description'                            => 'Läs kunskapsartiklar',
 	'user.portal.tab_tickets'                                              => 'Kontakta Oss',

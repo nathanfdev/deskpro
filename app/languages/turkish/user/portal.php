@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'İndirmelere gözat',
 	'user.portal.tab_feedback'                                             => 'Geri Bildirim',
 	'user.portal.tab_feedback-description'                                 => 'Müşteri Tavsiyeleri',
-	'user.portal.tab_home'                                                 => 'Ev',
-	'user.portal.tab_home-description'                                     => 'Hoş geldiniz &amp; Haberler',
 	'user.portal.tab_knowledgebase'                                        => 'Bilgi Bankası',
 	'user.portal.tab_knowledgebase-description'                            => 'Yardım Belgelerini Oku',
 	'user.portal.tab_tickets'                                              => 'İletişim',

@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'ダウンロードを検索',
 	'user.portal.tab_feedback'                                             => 'フィードバック',
 	'user.portal.tab_feedback-description'                                 => 'ユーザのおすすめ',
-	'user.portal.tab_home'                                                 => 'ホーム',
-	'user.portal.tab_home-description'                                     => '最新ニュース',
 	'user.portal.tab_knowledgebase'                                        => 'ナレッジベース',
 	'user.portal.tab_knowledgebase-description'                            => 'ヘルプ記事を読む',
 	'user.portal.tab_tickets'                                              => '連絡先',

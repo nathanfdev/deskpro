@@ -23,8 +23,6 @@
 	'user.portal.tab_downloads-description'                                => 'Durchsuchen Sie unsere Downloads',
 	'user.portal.tab_feedback'                                             => 'Feedback',
 	'user.portal.tab_feedback-description'                                 => 'Kundenvorschläge',
-	'user.portal.tab_home'                                                 => 'Home',
-	'user.portal.tab_home-description'                                     => 'Willkommen &amp; Neuigkeiten',
 	'user.portal.tab_knowledgebase'                                        => 'Knowledgebase',
 	'user.portal.tab_knowledgebase-description'                            => 'Hilfeartikel lesen',
 	'user.portal.tab_tickets'                                              => 'Kontaktieren Sie uns',
