@@ -28,6 +28,10 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
 		var type = row.data('type');
 
+		if (type == 'chat') {
+			return;
+		}
+
 		$('time.timeago', row).text('').attr('datetime', (new Date()).toUTCString());
 		DeskPRO_Window.initInterfaceServices(row);
 

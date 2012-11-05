@@ -33,10 +33,55 @@
 
 	<!-- BEGIN NOTIFICATION SECTION -->
 	<div id="DP-NotificationSection">
+		<div id="chatStatusWrap">
+			<div class="well">
+				<em>
+					<span id="chatOnlineCount">1</span>
+				</em>
+			</div>
+		</div>
+		<div id="agent_status_menu" style="display:none;">
+			<div class="notifDropdown">
+				<div class="notifHead">
+					<em>
+						<span id="chatOnlineCount2">1</span>
+					</em>
+				</div>
+				<div id="agent_status_menu_body">
+					<ul>
+						<li id="agent_status_menu_onlinerow">
+							<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
+							You are currently available for chat.
+							<button class="clean-white toggle-status-trigger">Sign out of chat</button>
+						</li>
+						<li id="agent_status_menu_offlinerow" style="display: none;">
+							<div class="avatar" style="background-image: url({{ app.user.getPictureUrl(30) }});"></div>
+							You are currently away from chat.
+							<button class="clean-white toggle-status-trigger">Sign in to chat</button>
+						</li>
+					</ul>
+
+					<div class="online-list" id="agent_status_menu_onlinelist">
+						<h6>Other agents online for chat</h6>
+						<ul class="list">
+							{% for agent in agents if agent.id != app.user.id %}
+								<li
+									class="agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"
+									style="{% if agent.id == app.user.id %}display: none;{% endif %}"
+								>
+									<div class="avatar" style="background-image: url({{ agent.getPictureUrl(30) }});"></div>
+									{{ agent.display_name }}
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id="notificationWrap" class="left">
 			<div class="notifications" id="dp_notif_bed">
 				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
-				<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>
+				{#<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>#}
 				<div class="notifFeedback notif-item notif-feedback"><span class="counter">0</span></div>
 			</div>
 		</div>
@@ -45,7 +90,7 @@
 		<div class="notifDropdown">
 			<div class="notifHead">
 				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
-				<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>
+				{#<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>#}
 				<div class="notifFeedback notif-item notif-feedback"><span class="counter">0</span></div>
 			</div>
 			<div id="dp_notify_list_wrap">
@@ -166,26 +211,6 @@
 	<div id="DP-StatusSection">
 		<div class="DP-adminStatus">
 			<ul>
-				<li class="agentStatus" id="agent_status_trigger">
-					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.interface.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.general.away') }}</em><em class="label-dnd">{{ phrase('agent.interface.do_not_disturb_short') }}</em></a>
-					<div id="agent_status_menu" style="display:none;">
-						<div class="createDropdown">
-							<ul>
-								<li>
-									<div class="options">
-										<label class="status-title"><input type="radio" name="status" value="available" checked="checked" /> Available</label>
-										<div class="sub-options">
-											<label><input type="checkbox" name="is_chat_available" id="is_chat_available" value="1" checked="checked" /> Available for chat</label>
-										</div>
-									</div>
-									<div class="options">
-										<label class="status-title"><input type="radio" name="status" value="away" /> Away</label>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</li>
 				<li class="networkStatIndicator" id="network_status_indicator">
 					<a class="tipped" data-tipped="network_status_tip_wrap" data-tipped-options="inline:true, hook: 'bottommiddle'"></a>
 					<div id="network_status_tip_wrap" style="display: none;"><div id='network_status_tip'>{{ phrase('agent.interface.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.interface.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.interface.network_status_bad') }}</div></div></div>

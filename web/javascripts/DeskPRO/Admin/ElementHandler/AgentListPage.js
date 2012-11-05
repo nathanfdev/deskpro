@@ -38,6 +38,19 @@ DeskPRO.Admin.ElementHandler.AgentListPage = new Orb.Class({
 				menuElement: $('#add_from_us_menu')
 			});
 		}
+
+		$('.kill-chat-session').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var agentId = $(this).data('agent-id');
+			$.ajax({
+				url: BASE_URL + 'admin/agents/kill-session/' + agentId,
+				type: 'POST'
+			});
+
+			$(this).fadeOut();
+		});
 	},
 
 	showAgentVacationOverlay: function(agentId, agentName) {

@@ -2101,3 +2101,98 @@ ul#dp_notify_list li#dp_notify_list_none {
 	height: 239px;
 	background: url(../../images/submit-beta-feedback.png) no-repeat 0 0;
 }
+
+#DP-NotificationSection {
+	position: relative;
+}
+
+#chatStatusWrap {
+	position: absolute;
+	top: 8px;
+	left: 11px;
+	z-index: 1;
+
+	.well {
+		.header-btn();
+		padding: 0 5px 0 5px;
+	}
+
+	em {
+		line-height: 23px;
+		background: url(../../images/agent/tabs/tabtype-chat-white.png) no-repeat 0 50%;
+		padding-left: 22px;
+		color: #fff;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 11px;
+		font-style: normal;
+	}
+}
+
+#chatStatusWrap.offline {
+	em {
+		background: url(../../images/agent/tabs/tabtype-chat-red.png) no-repeat 0 50%;
+		color: #FFAFBA;
+	}
+}
+
+#agent_status_menu {
+
+	position: absolute;
+	top: 41px;
+	left: 66px;
+
+	.notifDropdown {
+		width: auto;
+	}
+
+	.notifHead em {
+		line-height: 23px;
+		background: url(../../images/agent/tabs/tabtype-chat.png) no-repeat 0 50%;
+		padding-left: 22px;
+		color: #fff;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 11px;
+		font-style: normal;
+		color: #000;
+	}
+
+	h6 {
+		margin: 6px;
+	}
+
+	ul {
+		margin: 6px;
+	}
+
+	li {
+		font-size: 11px;
+
+		background-color: #F3F3F3;
+		border-bottom: 1px solid #E3E4E6;
+		padding: 0 10px 0px 38px;
+		position: relative;
+		height: 34px;
+		line-height: 34px;
+
+		font-family: @heading-font;
+		font-weight: bold;
+		font-size: 11px;
+
+		.avatar {
+			position: absolute;
+			top: 2px; left: 2px;
+
+			width: 30px;
+			height: 30px;
+			background-color: #fff;
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+		}
+	}
+
+	button.clean-white {
+		font-size: 11px;
+		padding: 0 5px;
+		margin-left: 5px;
+	}
+}

@@ -169,6 +169,11 @@ class AgentsController extends AbstractController
 			}
 		}
 
+		$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgents();
+
+		$online_agents = array_keys($active_agents);
+		$online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
+
 		return $this->render('AdminBundle:Agents:list.html.twig', array(
 			'all_agents'     => $all_agents,
 			'agent_to_groups' => $agent_to_groups,
@@ -178,6 +183,9 @@ class AgentsController extends AbstractController
 			'all_usergroups' => $all_usergroups,
 			'all_departments' => $all_departments,
 			'add_from_usersource' => $add_from_usersource,
+
+			'online_agents' => $online_agents,
+			'online_agents_userchat' => $online_agents_userchat,
 
 			'team_member_ids'      => $team_member_ids,
 			'usergroup_member_ids' => $usergroup_member_ids,
@@ -205,6 +213,27 @@ class AgentsController extends AbstractController
 		return $this->render('AdminBundle:Agents:list-deleted.html.twig', array(
 			'all_agents'     => $all_agents,
 		));
+	}
+
+	public function killAgentSessionAction($agent_id)
+	{
+		$sessions = App::getDb()->fetchAll("
+			SELECT id, data
+			FROM sessions
+			WHERE is_chat_available = 1 AND person_id = ?
+			LIMIT 10
+		", array($agent_id));
+
+		foreach ($sessions as $s) {
+			$data = str_replace('"is_chat_available";i:1;', '"is_chat_available";i:0;', $s['data']);
+			App::getDb()->executeUpdate("
+				UPDATE sessions
+				SET is_chat_available = 0, data = ?
+				WHERE person_id = ?
+			", array($data, $agent_id));
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	############################################################################

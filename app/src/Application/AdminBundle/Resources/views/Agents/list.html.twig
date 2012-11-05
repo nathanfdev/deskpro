@@ -136,6 +136,14 @@
 					{% else %}
 						<tr data-agent-id="{{ person.id }}">
 							<td class="title">
+								{% if person.id in online_agents %}
+									<span class="online-badge">
+										online now
+										{% if person.id in online_agents_userchat %}
+											<em class="tipped kill-chat-session" data-agent-id="{{ person.id }}" title="Click here to sign the agent out of chat">/ available for chat</em>
+										{% endif %}
+									</span>
+								{% endif %}
 								<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
 								<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
 								<address>{{person.primary_email_address}}</address>

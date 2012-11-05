@@ -765,6 +765,13 @@ $collection->add('admin_agents', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_killsession', new Route(
+	'/agents/kill-session/{agent_id}',
+	array('_controller' => 'AdminBundle:Agents:killAgentSession'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_agents_deleted', new Route(
 	'/agents/deleted',
 	array('_controller' => 'AdminBundle:Agents:deletedAgents'),

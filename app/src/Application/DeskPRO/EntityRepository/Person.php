@@ -191,6 +191,23 @@ class Person extends AbstractEntityRepository
 
 
 	/**
+	 * @return array
+	 */
+	public function getActiveAgentIdsForUserChat()
+	{
+		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
+
+		$agent_ids = App::getDb()->fetchAllCol("
+			SELECT DISTINCT(person_id)
+			FROM sessions
+			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1
+		", array($datecut));
+
+		return $agent_ids;
+	}
+
+
+	/**
 	 * Find a person by their email address.
 	 *
 	 * @param string $email

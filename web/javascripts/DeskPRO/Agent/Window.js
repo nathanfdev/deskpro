@@ -2222,40 +2222,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		});
 
-		// Status
-		$('#agent_status_trigger').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#agent_status_menu');
-			list.hide().detach().appendTo('body');
-			list.css({
-				top: 9,
-				right: 185
-			});
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-				self.toggleAgentStatus();
-			};
-			backdrop.on('click', close);
-			$('#agent_status_away_overlay').on('click', close);
-		});
-
-		$('#agent_status_menu').find(':radio').on('click', function(ev) {
-			if ($(this).val() == 'away') {
-				$('#is_chat_available').prop('checked', false);
-			} else {
-				$('#is_chat_available').prop('checked', true);
-			}
-		});
-
-		$('#agent_status').data('status', 'available');
-
 		$('#dp_keyboard_shortcuts').find('.close').on('click', function() {
 			$('#dp_keyboard_shortcuts').hide();
 		});
@@ -2263,33 +2229,118 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_keyboard_shortcuts').show();
 		});
 
+		// Status
+		$('#chatStatusWrap').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var list = $('#agent_status_menu');
+			list.hide().detach().appendTo('body');
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.on('click', close);
+			$('#agent_status_away_overlay').on('click', close);
+		});
+
+
+		$('#agent_status_menu').find('button.toggle-status-trigger').on('click', function(ev) {
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			$('#chatStatusWrap').toggleClass('offline');
+			self._sendUpdateAgentStatus();
+
+			if ($('#chatStatusWrap').hasClass('offline')) {
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '-');
+
+				$('#agent_status_menu_onlinerow').hide();
+				$('#agent_status_menu_offlinerow').show();
+			} else {
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
+				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '+');
+
+				$('#agent_status_menu_onlinerow').show();
+				$('#agent_status_menu_offlinerow').hide();
+			}
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', function(info) {
+			var list = $('#agent_status_menu_onlinelist');
+			var count = 0;
+			var hasme = false;
+
+			if (info.online_agents && info.online_agents.length) {
+				list.find('li').hide();
+				Array.each(info.online_agents, function(agent_id) {
+					if (agent_id == DESKPRO_PERSON_ID) {
+						hasme = true;
+					} else {
+						count++;
+						list.find('li.agent-' + agent_id).show();
+					}
+				});
+			}
+
+			if (count) {
+				list.show();
+			} else {
+				list.hide();
+			}
+
+			// Not in online list and locally we think we're online,
+			// probably were signed out by admin
+			if (!hasme) {
+				if (!$('#chatStatusWrap').hasClass('offline')) {
+					$('#chatStatusWrap').addClass('offline');
+					$('#agent_status_menu_onlinerow').hide();
+					$('#agent_status_menu_offlinerow').show();
+				}
+			}
+
+			if (!$('#chatStatusWrap').hasClass('offline')) {
+				count++;
+			}
+
+			DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
+			DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
+
+		}, this);
+
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
 
-	toggleAgentStatus: function() {
+	_sendUpdateAgentStatus: function() {
 
-		var status   = $('#agent_status_menu').find('input[name="status"]:checked').val();
-		var postData = $('#agent_status_menu').find('input[name="status"]:checked').closest('.options').find('input').serializeArray();
+		var status   = 'available';
+		var postData = [];
 
-		var statusEl = $('#agent_status');
-		statusEl.data('status', status);
-
-		$('#agent_status_away_overlay').remove();
+		if (!$('#chatStatusWrap').hasClass('offline')) {
+			postData.push({
+				name: 'is_chat_available',
+				value: 1
+			});
+		} else {
+			postData.push({
+				name: 'is_chat_available',
+				value: 0
+			});
+		}
 
 		if (status == 'available') {
-			statusEl.removeClass('away').removeClass('dnd');
-
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/available',
 				type: 'POST',
 				data: postData
 			});
-
 		} else if (status == 'away') {
-			var overlayEl = $('<div id="agent_status_away_overlay" />').appendTo('body');
-
-			statusEl.addClass('away').removeClass('dnd');
-
 			$.ajax({
 				url: BASE_URL + 'agent/misc/set-agent-status/away',
 				type: 'POST'

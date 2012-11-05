@@ -77,6 +77,12 @@ class ClientMessagesController extends AbstractController
 
 		$dos = $this->in->getArrayValue('do');
 
+		// Every second poll, update online agents list
+		if ($this->in->getUint('count') && $this->in->getUint('count') % 2 === 0) {
+			$dos[] = 'get-online-agents';
+			$dos = array_unique($dos);
+		}
+
 		foreach ($dos as $do) {
 			$do = Strings::dashToCamelCase($do);
 			$method = $do . 'Message';
@@ -242,6 +248,12 @@ class ClientMessagesController extends AbstractController
 		$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgents();
 		$online_agents = array_keys($active_agents);
 
-		return array(array(null, 'agent.online-agents', array('online_agents' => $online_agents)));
+		// Get agents online for user chat
+		$online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
+
+		return array(
+			array(null, 'agent.online-agents', array('online_agents' => $online_agents)),
+			array(null, 'agent.online-agents-userchat', array('online_agents' => $online_agents_userchat))
+		);
 	}
 }
