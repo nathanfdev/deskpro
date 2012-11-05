@@ -12,7 +12,7 @@
 	</div>
 {% endif %}
 
-<form action="{{ path('admin_settings_saveform', {type: 'ticket_features', auth: security_token('settings_ticket_features') }) }}">
+<form action="{{ path('admin_settings_saveform', {type: 'ticket_features', auth: security_token('settings_ticket_features') }) }}" method="post">
 <input type="hidden" name="return" value="{{ path('admin_features') }}" />
 
 <input type="hidden" name="set_settings[]" value="core.tickets.enable_feedback" />
@@ -138,23 +138,25 @@
 	<h4>Ticket Billing</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core_tickets.enable_billing]" {% if app.getSetting('core_tickets.enable_billing') %}checked="checked"{% endif %} />
+			<label><input type="checkbox" name="settings[core_tickets.enable_billing]" {% if app.getSetting('core_tickets.enable_billing') %}checked="checked"{% endif %} id="billing_enable" />
 				Enable ticket billing</label>
 		</div>
-		<div class="field_row">
-			<label>
-				<input type="checkbox" name="settings[core_tickets.billing_auto_timer]" {% if app.getSetting('core_tickets.billing_auto_timer') %}checked="checked"{% endif %} id="bill_auto_opt" />
-				Automatically start billing timer
-			</label>
+		<div id="billing_dependencies" style="{% if not app.getSetting('core_tickets.enable_billing') %}display: none;{% endif %}">
+			<div class="field_row">
+				<label>
+					<input type="checkbox" name="settings[core_tickets.billing_auto_timer]" {% if app.getSetting('core_tickets.billing_auto_timer') %}checked="checked"{% endif %} id="bill_auto_opt" />
+					Automatically start billing timer
+				</label>
 
-			<div id="show_reply_bill" style="margin-left: 15px; {% if not app.getSetting('core_tickets.billing_auto_timer') %}display: none;{% endif %}">
-				<label><input type="checkbox" name="settings[core_tickets.billing_on_reply]" {% if app.getSetting('core_tickets.billing_on_reply') %}checked="checked"{% endif %} />
-				Show billing on reply form</label>
+				<div id="show_reply_bill" style="margin-left: 15px; {% if not app.getSetting('core_tickets.billing_auto_timer') %}display: none;{% endif %}">
+					<label><input type="checkbox" name="settings[core_tickets.billing_on_reply]" {% if app.getSetting('core_tickets.billing_on_reply') %}checked="checked"{% endif %} />
+					Show billing on reply form</label>
+				</div>
 			</div>
-		</div>
-		<div class="field_row">
-			<label>Billing currency name</label>
-			<input type="text" name="settings[core_tickets.billing_currency]" value="{{ app.getSetting('core_tickets.billing_currency') }}" />
+			<div class="field_row">
+				<label>Billing currency name</label>
+				<input type="text" name="settings[core_tickets.billing_currency]" value="{{ app.getSetting('core_tickets.billing_currency') }}" />
+			</div>
 		</div>
 	</div>
 	<input type="hidden" name="set_settings[]" value="core_tickets.enable_billing" />
@@ -437,6 +439,14 @@ $(document).ready(function() {
 		} else {
 			$('#show_reply_bill').slideUp();
 			$('#show_reply_bill').find(':checkbox').prop('checked', false);
+		}
+	});
+
+	$('#billing_enable').on('click', function() {
+		if (this.checked) {
+			$('#billing_dependencies').slideDown();
+		} else {
+			$('#billing_dependencies').slideUp();
 		}
 	});
 });
