@@ -3,17 +3,17 @@
 {% block content %}
 <nav class="top-tabs">
 	<ul>
-		<li {% if current_page == 'details' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_details', {'ticket_id': ticket.id, 'message_id': message.id}) }}">{{ phrase('agent.general.detail') }}</a></li>
-		<li {% if current_page == 'view-unformatted' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': message.id}) }}">Unformatted</a></li>
+		<li {% if current_page == 'details' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_details', {'ticket_id': ticket.id, 'message_id': message.id, _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.detail') }}</a></li>
+		<li {% if current_page == 'view-unformatted' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': message.id, _rt: security_token('request_token', 10800)}) }}">Unformatted</a></li>
 		{% if message.message_raw %}
 			<li>
-				<a href="{{ path('agent_ticket_message_raw', {ticket_id: message.ticket.id, message_id: message.id}) }}" target="_blank">Raw HTML Message (new window)</a>
+				<a href="{{ path('agent_ticket_message_raw', {ticket_id: message.ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">Raw HTML Message (new window)</a>
 			</li>
 		{% endif %}
 		{% if message.email_source %}
-			<li {% if current_page == 'email-source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emailsource', {'ticket_id': ticket.id, 'message_id': message.id}) }}">Email Source</a></li>
-			<li {% if current_page == 'view-decoded' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaildecoded', {'ticket_id': ticket.id, 'message_id': message.id}) }}">Decoded Email</a></li>
-			<li {% if current_page == 'email-log' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaillog', {'ticket_id': ticket.id, 'message_id': message.id}) }}">Email Process Log</a></li>
+			<li {% if current_page == 'email-source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emailsource', {'ticket_id': ticket.id, 'message_id': message.id, _rt: security_token('request_token', 10800)}) }}">Email Source</a></li>
+			<li {% if current_page == 'view-decoded' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaildecoded', {'ticket_id': ticket.id, 'message_id': message.id, _rt: security_token('request_token', 10800)}) }}">Decoded Email</a></li>
+			<li {% if current_page == 'email-log' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_emaillog', {'ticket_id': ticket.id, 'message_id': message.id, _rt: security_token('request_token', 10800)}) }}">Email Process Log</a></li>
 		{% endif %}
 	</ul>
 </nav>

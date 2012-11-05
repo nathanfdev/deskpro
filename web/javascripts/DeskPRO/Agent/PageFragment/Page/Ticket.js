@@ -915,7 +915,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var overlay = new DeskPRO.UI.Overlay({
 					contentMethod: 'iframe',
 					title: 'Message Details',
-					iframeUrl: this.getMetaData('viewMessageUnformattedUrl').replace('{message_id}', messageId),
+					iframeUrl: this.getMetaData('viewMessageUnformattedUrl').replace('{message_id}', messageId) + '?_rt=' + DP_REQUEST_TOKEN,
 					destroyOnClose: true
 				});
 				overlay.openOverlay();
