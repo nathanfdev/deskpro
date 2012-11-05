@@ -227,6 +227,16 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
 						}, this);
 					} else if (typeOf(val) == 'array') {
+						if (name == 'labels') {
+							var texts = [];
+							var labelval = $('.builder-options select.label-values', new_row);
+							Array.each(val, function(subval) {
+								texts.push(val);
+							});
+
+							$('.builder-options .menu-trigger', new_row).text(texts.join(', ')).data('select-texts', texts);
+						}
+
 						Array.each(val, function(subval) {
 							var el = $('option[value="'+subval+'"]', new_row).first().get(0);
 							if (el) el.selected = true;
