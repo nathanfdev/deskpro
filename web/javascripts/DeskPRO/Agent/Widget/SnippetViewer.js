@@ -8,7 +8,8 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 		this.options = {
 			viewUrl: null,
 			triggerElement: null,
-			positionMode: 'side'
+			positionMode: 'side',
+			sidePosition: 'bottom'
 		};
 
 		var self = this;
@@ -25,7 +26,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 
 		this.pop = new DeskPRO.Agent.PageHelper.Popover({
 			positionMode: this.options.positionMode,
-			sidePosition: 'bottom',
+			sidePosition: this.options.sidePosition,
 			pageUrl: this.options.viewUrl,
 			destroyOnClose: false,
 			onPageInit: function(pop, page) {
