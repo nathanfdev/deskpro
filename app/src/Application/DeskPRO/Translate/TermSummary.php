@@ -699,7 +699,7 @@ class TermSummary
 			$choices_in = implode(', ', $choices_in);
 
 			if ($op == self::OP_CONTAINS) {
-				return "$field contains " . $choices_in;
+				return "$field contains \"" . $choices_in . '"';
 			} else {
 				return "$field does not contain " . $choices_in;
 			}
