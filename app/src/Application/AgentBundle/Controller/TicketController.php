@@ -1874,17 +1874,6 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$this->em->getConnection()->beginTransaction();
-
-		try {
-			$ticket->setStatus('hidden.deleted');
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-
 		$this->db->insert('tickets_deleted', array(
 			'ticket_id' => $ticket->id,
 			'by_person_id' => $this->person->id,
@@ -1906,6 +1895,17 @@ class TicketController extends AbstractController
 			$edit_manager = $this->container->getSystemService('person_edit_manager');
 			$edit_manager->setPersonContext($this->person);
 			$edit_manager->deleteUser($person);
+		} else {
+			$this->em->getConnection()->beginTransaction();
+
+			try {
+				$ticket->setStatus('hidden.deleted');
+				$this->em->flush();
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
 		}
 
 		return $this->createJsonResponse(array(
