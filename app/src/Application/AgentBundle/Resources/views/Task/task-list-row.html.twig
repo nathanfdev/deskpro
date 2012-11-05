@@ -13,8 +13,8 @@
 	{% if task.person.id == app.user.id and task.assigned_agent_team or (task.assigned_agent and task.assigned_agent.id != app.user.id) %}data-in-delegated="1"{% endif %}
 >
 	<div class="task-title">
-		{% if task.person.id == app.user.id %}<i class="delete-task"></i>{% endif %}
 		<span class="expand-collapse-icon"></span>
+		{% if task.person.id == app.user.id %}<i class="delete-task" data-confirm="Are you sure you want to delete this task?"></i>{% endif %}
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
 		<h5>{{ task.title }}</h5>
 	</div>

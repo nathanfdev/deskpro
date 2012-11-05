@@ -271,17 +271,19 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			var row = $(this).closest('.row-item');
 			var taskId = row.data('task-id');
 
-			row.slideUp();
-			updateCount('-', row);
-			$.ajax({
-				url: BASE_URL + 'agent/tasks/' + taskId + '/delete',
-				error: function() {
-					row.show();
-				},
-				success: function() {
-					row.remove();
-				}
-			});
+			if (confirm($(this).data('confirm'))) {
+				row.slideUp();
+				updateCount('-', row);
+				$.ajax({
+					url: BASE_URL + 'agent/tasks/' + taskId + '/delete',
+					error: function() {
+						row.show();
+					},
+					success: function() {
+						row.remove();
+					}
+				});
+			}
 		});
 	}
 });

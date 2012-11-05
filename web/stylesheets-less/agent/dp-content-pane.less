@@ -5218,13 +5218,11 @@ article.task .task-title {
 }
 
 article.task .task-title i.delete-task {
-	position: absolute;
 	.iconbase(16px, 16px);
 	background: url(../../images/agent/icons/cross.png);
-	top: 3px;
-	right: 2px;
 	cursor: pointer;
-	display: none;
+	float: right;
+	margin-right: 2px;
 }
 
 article.task.completed .task-title .expand-collapse-icon {
@@ -5233,9 +5231,9 @@ article.task.completed .task-title .expand-collapse-icon {
 
 article.task .task-title .expand-collapse-icon {
     display: none;
-    position: absolute;
-	top: 5px;
-	right: 4px;
+	float: right;
+	margin-right: 2px;
+	margin-top: 2px;
 }
 
 article.task .task-title input[type="checkbox"] {
