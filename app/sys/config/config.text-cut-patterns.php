@@ -18,4 +18,5 @@
 	'zimbra_1'                           => '#\-\-\-\-\-\s+Original Message\s+\-\-\-\-\-\sFrom: (.*?)\sTo: (.*?)#',
 
 	'generic_1'                          => '#^[a-zA-Z0-9\-\.\'" ]+ <.*?@[a-zA-Z0-9\.\-_]+> wrote:\s$#m',
+	'generic_2'                          => '#^El (.*?) a las (.*?) (.*?) escribi(ó|o):\s$#m',
 );

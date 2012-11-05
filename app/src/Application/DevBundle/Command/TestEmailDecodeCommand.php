@@ -58,6 +58,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
+		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -80,6 +81,13 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 		if ($r->getBodyHtml()->getBodyUtf8()) {
 			$body = $r->getBodyHtml()->getBodyUtf8();
+
+			if ($input->getOption('raw')) {
+				echo $body;
+				echo "\n";
+				return 0;
+			}
+
 			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 
 			if (!$input->getOption('no-cut')) {
@@ -103,6 +111,12 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 		} else {
 			$body = $r->getBodyText()->getBodyUtf8();
+
+			if ($input->getOption('raw')) {
+				echo $body;
+				echo "\n";
+				return 0;
+			}
 
 			if (!$input->getOption('no-cut')) {
 				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
