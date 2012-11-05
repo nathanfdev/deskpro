@@ -65,6 +65,14 @@ class HtmlPurifier implements CleanerPlugin
 	{
 		$value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
 
+		if ($type == 'html_email_postclean') {
+			// Undo unicode encode
+			$value = preg_replace_callback('#__DPUNI_([0-9]+)_DPUNI__#', function ($m) {
+				return Strings::chrUtf8($m[1]);
+			}, $value);
+			return $value;
+		}
+
 		if (!$value || strpos($value, '<') === false) {
 			return $value;
 		}
@@ -137,14 +145,6 @@ class HtmlPurifier implements CleanerPlugin
 			// Easiest solution is to hack around entiites altogether so DOMDocument doesnt mess them up
 			$value = Strings::htmlEntityEncodeUtf8($value, '__DPUNI_%s_DPUNI__');
 
-			return $value;
-		}
-
-		if ($type == 'html_email_postclean') {
-			// Undo unicode encode
-			$value = preg_replace_callback('#__DPUNI_([0-9]+)_DPUNI__#', function ($m) {
-				return Strings::chrUtf8($m[1]);
-			}, $value);
 			return $value;
 		}
 
