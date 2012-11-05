@@ -49,6 +49,9 @@ class SettingsProfile
 	public $new_picture_blob_id = false;
 	public $is_html_signature = false;
 
+	public $ticket_close_reply = false;
+	public $ticket_close_note = false;
+
 	protected $_blob_inline_ids = array();
 
 	/**
@@ -71,6 +74,9 @@ class SettingsProfile
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
+
+		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
+		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', true);
 	}
 
 	public function setBlobInlineIds(array $ids)
@@ -161,6 +167,9 @@ class SettingsProfile
 				$person->setPreference('agent.ticket_signature', $signature);
 				$person->setPreference('agent.ticket_signature_html', $signature_html);
 			}
+
+			$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
+			$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
 
 			$this->em->persist($person);
 			$this->em->flush();

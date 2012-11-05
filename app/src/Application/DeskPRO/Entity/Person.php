@@ -958,9 +958,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Get the value of a preference as it's currently stored.
 	 *
 	 * @param string $name
+	 * @param mixed $default Default Value for the preference
+	 *
 	 * @return mixed
 	 */
-	public function getPref($name)
+	public function getPref($name, $default = null)
 	{
 		if (!in_array($name, $this->_pref_loaded)) {
 			$this->_pref_values[$name] = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($name, $this->id);
@@ -970,7 +972,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_pref_values[$name];
 		}
 
-		return null;
+		return $default;
 	}
 
 

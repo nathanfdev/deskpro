@@ -10,6 +10,8 @@
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
+    data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', true) ? 1 : '' }}"
+    data-close-note="{{ app.user.getPref('agent.ticket_close_note', true) ? 1 : '' }}"
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
@@ -23,7 +25,7 @@
 
 		<div class="close-tab-message">
 			<em>This tab will automatically close after your message is posted.</em>
-			<button class="keep-open-toggle clean-white" id="{{ replyBaseId }}_keep_open_toggle">Click here to keep this tab open</button>
+			<button class="keep-open-toggle clean-white" id="{{ replyBaseId }}_keep_open_toggle" data-keep-text="Click here to close this tab">Click here to keep this tab open</button>
 		</div>
 	</div>
 	<header>

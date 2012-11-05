@@ -52,6 +52,9 @@ class SettingsProfile extends AbstractType
 		$builder->add('ticket_signature', 'textarea', array('required' => false));
 	    $builder->add('is_html_signature', 'hidden', array('required' => false));
 
+	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
+	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
+
 		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
     }
 

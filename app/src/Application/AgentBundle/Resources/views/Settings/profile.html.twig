@@ -101,6 +101,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 		{% endif %}
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Ticket Tabs</label></div>
+			<div class="dp-form-input">
+				Automatically close ticket tabs when:
+					<label>{{ form_widget(form.ticket_close_reply) }} replying</label> |
+					<label>{{ form_widget(form.ticket_close_note) }} adding a note</label>
+			</div>
+		</div>
 	</div>
 
 	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
