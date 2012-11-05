@@ -153,6 +153,7 @@
 
 <br />
 
+{% if app.getSetting('core_tickets.process_agent_fwd') %}
 <div class="content-table template-dir trigger-dir">
 	<table width="100%" class="simple">
 		<thead>
@@ -187,6 +188,7 @@
 </div>
 
 <br />
+{% endif %}
 
 <div class="content-table template-dir trigger-dir">
 	<table width="100%" class="simple">

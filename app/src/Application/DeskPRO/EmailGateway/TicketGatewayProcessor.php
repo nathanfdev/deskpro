@@ -289,7 +289,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::setCurrentPerson($person);
 
-			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+			if (App::getSetting('core_tickets.process_agent_fwd') AND $person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
 				$this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 				$ret = $this->runNewForwardedTicket($person);
 			} else {
@@ -1173,6 +1173,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
+			$message->attach(\Swift_Attachment::newInstance(
+				$this->reader->getRawSource(),
+				'message.eml',
+				'message/rfc822'
+			));
+
 			App::getMailer()->send($message);
 
 			return null;

@@ -53,4 +53,9 @@
 	 * True to add agents CC's in emails as followers
 	 */
 	'core_tickets.add_agent_ccs' => false,
+
+	/**
+	 * Process FW agent emails as forwards
+	 */
+	'core_tickets.process_agent_fwd' => true,
 );
