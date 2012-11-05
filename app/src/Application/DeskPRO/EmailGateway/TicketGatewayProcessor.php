@@ -409,7 +409,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$inline_reply_detector->setLogger($this->logger);
 		}
 
-		if ($inline_reply_detector->hasDifferentMessage()) {
+		if ($inline_reply_detector->hasDifferentMessage() && $message['message_full']) {
 			$message['show_full_hint'] = true;
 		}
 
