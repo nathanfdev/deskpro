@@ -2258,17 +2258,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self._sendUpdateAgentStatus();
 
 			if ($('#chatStatusWrap').hasClass('offline')) {
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
+				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '-');
 				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '-');
 
 				$('#agent_status_menu_onlinerow').hide();
 				$('#agent_status_menu_offlinerow').show();
 			} else {
-				DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
+				var count = DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '+');
 				DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '+');
 
 				$('#agent_status_menu_onlinerow').show();
 				$('#agent_status_menu_offlinerow').hide();
+			}
+
+			if (count) {
+				$('#chatStatusWrap').removeClass('red');
+			} else {
+				$('#chatStatusWrap').addClass('red');
 			}
 		});
 
@@ -2311,6 +2317,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			DeskPRO_Window.util.modCountEl($('#chatOnlineCount'), '=', count);
 			DeskPRO_Window.util.modCountEl($('#chatOnlineCount2'), '=', count);
+
+			if (count) {
+				$('#chatStatusWrap').removeClass('red');
+			} else {
+				$('#chatStatusWrap').addClass('red');
+			}
 
 		}, this);
 
