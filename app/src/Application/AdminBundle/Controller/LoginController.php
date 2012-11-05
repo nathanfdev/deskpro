@@ -55,12 +55,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			return $this->redirectRoute('admin');
 		}
 
-		$agent_session_code = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : false;
-		$agent_session = null;
-		if ($agent_session_code) {
-			$agent_session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($agent_session_code);
-			if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
-				$agent_session = null;
+		$local_usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+
+		if (empty($local_usersources)) {
+			$agent_session_code = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : false;
+			$agent_session = null;
+			if ($agent_session_code) {
+				$agent_session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($agent_session_code);
+				if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
+					$agent_session = null;
+				}
 			}
 		}
 
