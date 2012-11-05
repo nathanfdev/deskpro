@@ -91,6 +91,24 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			$(this).width(min);
 		});
 		DP.select(this.display.find('select'));
+
+		$('.Date.customfield input', this.display).datepicker({
+			dateFormat: 'yy-mm-dd',
+			showButtonPanel: true,
+			beforeShow: function(input) {
+				setTimeout(function() {
+					var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+
+					buttonPane.find('button:first').remove();
+
+					var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
+					btn.appendTo( buttonPane );
+
+					$(input).datepicker("widget").css('z-index', 30001);
+				},1);
+			}
+		});
 	},
 
 	closeEditMode: function() {

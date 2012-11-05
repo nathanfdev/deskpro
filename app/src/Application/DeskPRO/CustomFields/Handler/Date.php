@@ -99,7 +99,8 @@ class Date extends HandlerAbstract
 			try {
 				$date = new \DateTime('@' . $data['value']);
 				$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-				$setData = $date->getTimestamp();
+				//$setData = $date->getTimestamp();
+				$setData = $date->format('Y-m-d');
 			} catch (\Exception $e) {
 				$setData = null;
 			}
