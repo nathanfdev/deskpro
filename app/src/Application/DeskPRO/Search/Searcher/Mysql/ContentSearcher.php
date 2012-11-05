@@ -141,11 +141,11 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE) AS _rel
+			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
 			FROM content_search
 			$perm_join
 			WHERE $perm_where AND $where
-			ORDER BY _rel
+			ORDER BY _rel DESC
 			LIMIT $start, $per_page
 		";
 
@@ -212,10 +212,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE) AS _rel
+			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
 			FROM content_search
 			WHERE $where
-			ORDER BY _rel
+			ORDER BY _rel DESC
 			LIMIT $start, $per_page
 		";
 

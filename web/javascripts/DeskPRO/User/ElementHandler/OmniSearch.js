@@ -70,6 +70,8 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	},
 
 	activateAssist: function() {
+		var wasActive = this.isActivated;
+
 		this.isActivated = true;
 		this.updatePosition();
 
@@ -77,7 +79,9 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			this.deactivateAssist();
 		} else {
 			this.open();
-			this.searchTimer.execNow();
+			if (!wasActive) {
+				this.searchTimer.execNow();
+			}
 		}
 	},
 
@@ -110,7 +114,6 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	},
 
 	updateResults: function() {
-
 		if (!this.isActivated) {
 			return;
 		}

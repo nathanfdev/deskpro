@@ -81,7 +81,7 @@ class ChatConversationSearcher implements PersonContextInterface
 			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
 			FROM content_search
 			WHERE $where
-			ORDER BY _rel
+			ORDER BY _rel DESC
 			LIMIT $start, $per_page
 		";
 
