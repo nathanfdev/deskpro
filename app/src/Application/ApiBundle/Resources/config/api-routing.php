@@ -1691,17 +1691,31 @@ $collection->add('api_glossary_word', new Route(
 	array()
 ));
 
-$collection->add('api_glossary_word_post', new Route(
-	'/glossary/{word_id}',
-	array('_controller' => 'ApiBundle:Glossary:postWord'),
-	array('_method' => 'POST', 'word_id' => '\\d+'),
-	array()
-));
-
 $collection->add('api_glossary_word_delete', new Route(
 	'/glossary/{word_id}',
 	array('_controller' => 'ApiBundle:Glossary:deleteWord'),
 	array('_method' => 'DELETE', 'word_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_glossary_definition', new Route(
+	'/glossary/definitions/{definition_id}',
+	array('_controller' => 'ApiBundle:Glossary:getDefinition'),
+	array('_method' => 'GET', 'definition_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_glossary_definition_post', new Route(
+	'/glossary/definitions/{definition_id}',
+	array('_controller' => 'ApiBundle:Glossary:postDefinition'),
+	array('_method' => 'POST', 'definition_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_glossary_definition_delete', new Route(
+	'/glossary/definitions/{definition_id}',
+	array('_controller' => 'ApiBundle:Glossary:deleteDefinition'),
+	array('_method' => 'DELETE', 'definition_id' => '\\d+'),
 	array()
 ));
 

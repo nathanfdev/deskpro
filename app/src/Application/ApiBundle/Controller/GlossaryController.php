@@ -66,38 +66,27 @@ class GlossaryController extends AbstractController
 
 	public function newWordAction()
 	{
-		$word = new GlossaryWord();
-		$errors = array();
+		$def = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
+		$def->definition = $this->in->getString('definition');
 
-		$word_text = $this->in->getString('word');
-		if ($word_text) {
-			if ($this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word_text)) {
-				$errors['word'] = array('invalid_argument.word', 'word already exists');
-			} else {
-				$word->word = $word_text;
-			}
-		} else {
-			$errors['word'] = array('required_field.word', 'word is required');
+		$words = array();
+		foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+			$words[] = $def->addWord($word);
 		}
 
-		$content = $this->in->getString('content');
-		if ($content) {
-			$word->content = $content;
-		} else {
-			$errors['content'] = array('required_field.content', 'content is required');
+		if (!count($def->words)) {
+			return $this->createApiErrorResponse('invalid_argument.word', 'words already exist or not provided');
 		}
 
-		if ($errors) {
-			return $this->createApiMultipleErrorResponse($errors);
-		}
-
-		$this->em->persist($word);
+		$this->em->persist($def);
 		$this->em->flush();
 
-		return $this->createApiCreateResponse(
-			array('id' => $word->id),
-			$this->generateUrl('api_glossary_word', array('word_id' => $word->id), true)
-		);
+		$ids = array();
+		foreach ($words AS $word) {
+			$ids[] = $word->id;
+		}
+
+		return $this->createApiResponse(array('ids' => $ids, 'definition_id' => $def->id));
 	}
 
 	public function getWordAction($word_id)
@@ -107,26 +96,50 @@ class GlossaryController extends AbstractController
 		return $this->createApiResponse(array('word' => $word->toApiData()));
 	}
 
-	public function postWordAction($word_id)
+	public function deleteWordAction($word_id)
 	{
 		$word = $this->_getWordOr404($word_id);
 
-		$content = $this->in->getString('content');
-		if ($content) {
-			$word->content = $content;
+		if (count($word->definition->words) == 1) {
+			$this->em->remove($word->definition);
+		} else {
+			$this->em->remove($word);
 		}
-
-		$this->em->persist($word);
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
 	}
 
-	public function deleteWordAction($word_id)
+	public function getDefinitionAction($definition_id)
 	{
-		$word = $this->_getWordOr404($word_id);
+		$def = $this->_getDefinitionOr404($definition_id);
 
-		$this->em->remove($word);
+		return $this->createApiResponse(array('definition' => $def->toApiData()));
+	}
+
+	public function postDefinitionAction($definition_id)
+	{
+		$def = $this->_getDefinitionOr404($definition_id);
+
+		if ($this->in->checkIsset('definition')) {
+			$def->definition = $this->in->getString('definition');
+		}
+
+		foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+			$def->addWord($word);
+		}
+
+		$this->em->persist($def);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
+	public function deleteDefinitionAction($definition_id)
+	{
+		$def = $this->_getDefinitionOr404($definition_id);
+
+		$this->em->remove($def);
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
@@ -146,5 +159,21 @@ class GlossaryController extends AbstractController
 		}
 
 		return $word;
+	}
+
+	/**
+	 * @param integer $id
+	 * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	protected function _getDefinitionOr404($id)
+	{
+		$def = $this->em->getRepository('DeskPRO:GlossaryWordDefinition')->findOneById($id);
+
+		if (!$def) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no definition with ID $id");
+		}
+
+		return $def;
 	}
 }

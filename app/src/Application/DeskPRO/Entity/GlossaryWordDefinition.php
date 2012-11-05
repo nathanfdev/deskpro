@@ -96,6 +96,8 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 		$obj->definition = $this;
 
 		$this->words->add($obj);
+
+		return $obj;
 	}
 
 	public function updateWords(array $words)
@@ -125,7 +127,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 		$data = parent::toApiData($primary, $deep, $visited);
 		$data['words'] = array();
 		foreach ($this->words AS $word) {
-			$data['words'][] = $word->word;
+			$data['words'][$word->id] = $word->word;
 		}
 
 		return $data;
