@@ -251,17 +251,23 @@ class TicketsController extends AbstractController
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
-		// Message must be of the correct ticket,
-		// must not be a note,
-		// must be by an agent
-		// must not be rating ourself
-		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $person->id) {
+		// Verify ticket and message
+		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
 		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
 
+		$rating = null;
+		$setrating = false;
 		if ($this->container->getIn()->checkIsset('rating')) {
+			$rating = $this->in->getInt('rating');
+		} elseif ($this->container->getIn()->checkIsset('setrating')) {
+			$rating = $this->in->getInt('setrating');
+			$setrating = true;
+		}
+
+		if ($rating !== null) {
 			$feedback->setRating($this->in->getInt('rating'));
 
 			$last_message_id = App::getDb()->fetchColumn("
@@ -281,10 +287,11 @@ class TicketsController extends AbstractController
 		}
 
 		return $this->render('UserBundle:Tickets:feedback.html.twig', array(
-			'ticket' => $ticket,
-			'message' => $message,
-			'feedback' => $feedback,
-			'is_resolved' => $this->in->getBool('resolved')
+			'ticket'      => $ticket,
+			'message'     => $message,
+			'feedback'    => $feedback,
+			'is_resolved' => $this->in->getBool('resolved'),
+			'setrating'   => $setrating,
 		));
 	}
 
@@ -298,11 +305,8 @@ class TicketsController extends AbstractController
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
-		// Message must be of the correct ticket,
-		// must not be a note,
-		// must be by an agent
-		// must not be rating ourself
-		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $person->id) {
+		// Verify ticket and message
+		if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
@@ -344,11 +348,8 @@ class TicketsController extends AbstractController
 		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
-		// Message must be of the correct ticket,
-		// must not be a note,
-		// must be by an agent
-		// must not be rating ourself
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
+		// Verify ticket and message
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 

@@ -76,8 +76,12 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			'show_rating_link' => true
 		);
 
-		// Dont rate own
-		if ($this->via_message->person->getId() == $ticket->person->getId()) {
+		// Dont rate own, dont rate notes, dont rate replies by non agents
+		if (
+			$this->via_message->is_agent_note
+			|| !$this->via_message->person->is_agent
+			|| $this->via_message->person->getId() == $ticket->person->getId()
+		) {
 			$vars['show_rating_link'] = false;
 		}
 
