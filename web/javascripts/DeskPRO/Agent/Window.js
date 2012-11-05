@@ -2617,7 +2617,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				qtipOptions = {};
-				if ($(this).data('tipped')) {
+
+				if (options.ajax) {
+					qtipOptions.content = {
+						text: 'Loading...',
+						ajax: {
+							url: $(this).data('tipped'),
+							type: 'GET'
+						}
+					};
+				} else if ($(this).data('tipped')) {
 					qtipOptions.content = {
 						attr: 'data-tipped'
 					};
@@ -2644,6 +2653,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					at: 'bottom center',
 					viewport: $(window)
 				};
+
+				qtipOptions = $.extend(true, qtipOptions, options);
 
 				$(this).qtip(qtipOptions).qtip('show', ev);
 				$(this).addClass('tipped-inited');

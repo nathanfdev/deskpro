@@ -45,12 +45,12 @@ DeskPRO.WordHighlighter = {
 		}
 
 		var addedNodes = [];
-		this._do(node, useWords, addedNodes, onlyFirst, {});
+		this._do(node, useWords, words, addedNodes, onlyFirst, {});
 
 		return addedNodes;
 	},
 
-	_do: function(node, words, addedNodes, onlyFirst, _doneWords) {
+	_do: function(node, words, originalWords, addedNodes, onlyFirst, _doneWords) {
 		var i, tmp;
 
 		var proc_node = [node];
@@ -67,7 +67,7 @@ DeskPRO.WordHighlighter = {
 
 						var spannode = document.createElement('span');
 						spannode.className = 'dp-highlight-word';
-						spannode.setAttribute('data-word', words[i]);
+						spannode.setAttribute('data-word', originalWords[i]);
 						addedNodes.push(spannode);
 
 						var middlebit = node.splitText(pos);
