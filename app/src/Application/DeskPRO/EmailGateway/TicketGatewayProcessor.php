@@ -73,6 +73,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected $charset_error = false;
 
 	/**
+	 * The person replying or submitting the ticket.
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
 	 * If in reply mode, this is the ticket being replied to
 	 *
 	 * @var \Application\DeskPRO\Entity\Ticket
@@ -303,6 +310,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function doNewReply(Entity\Ticket $ticket, $person, $context)
 	{
+		$this->person = $person;
 		$this->ticket = $ticket;
 		$ticket->email_reader = $this->reader;
 
@@ -860,6 +868,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				continue;
 			}
 
+			if ($cc_person->is_agent) {
+				if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
+					if (!App::getSetting('core_tickets.add_agent_ccs')) {
+						$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
+						continue;
+					}
+				}
+			}
+
 			$this->logMessage("Add CC person: {$cc_person->getId()}");
 
 			if (!$ticket->hasParticipantPerson($cc_person)) {
@@ -898,6 +915,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewTicket(Entity\Person $person)
 	{
+		$this->person = $person;
+
 		#------------------------------
 		# Read email body/subject
 		#------------------------------
@@ -1116,6 +1135,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewForwardedTicket(Entity\Person $agent)
 	{
+		$this->person = $agent;
+
 		$this->logMessage('[TicketGatewayProcessor] Forwarded ticket by ' . $agent->getId() . ' ' . $agent->getDisplayContact());
 
 		#------------------------------
