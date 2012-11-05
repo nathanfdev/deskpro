@@ -10,7 +10,13 @@
 	<tr>
 		<th>{{ phrase('agent.general.timezone') }}</th>
 		<td>
-			{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }}, {{ phrase('agent.general.local_time') }}: {{ person.date_time|date('fulltime', person) }})
+			{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }})
+		</td>
+	</tr>
+	<tr>
+		<th>{{ phrase('agent.general.local_time') }}</th>
+		<td>
+			{{ person.date_time|date('fulltime', person) }}
 		</td>
 	</tr>
 </table>
