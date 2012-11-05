@@ -166,21 +166,6 @@ class ChoiceField extends CustomFieldAbstract
 			$choices[$child->getId()] = $child;
 		}
 
-		foreach ($choices_removed as $id) {
-			if (isset($choices[$id])) {
-				$this->_em->remove($choices[$id]);
-				unset($choices[$id]);
-				foreach ($choices as $cid => $c) {
-					if ($c->getOption('parent_id') == $id) {
-						$this->_em->remove($choices[$cid]);
-						unset($choices[$cid]);
-					}
-				}
-			}
-		}
-
-		$this->_em->flush();
-
 		// Maps string IDs generated on the client with real
 		// field IDs saved in the database that we've saved right now
 		$new_id_map = array();
@@ -200,6 +185,10 @@ class ChoiceField extends CustomFieldAbstract
 			$id = $info['id'];
 			$title = $info['title'];
 
+			if (in_array($id, $choices_removed)) {
+				continue;
+			}
+
 			if (isset($choices[$id])) {
 				$choices[$id]->setTitle($title);
 				$choices[$id]->setDisplayOrder($k);
@@ -216,6 +205,21 @@ class ChoiceField extends CustomFieldAbstract
 
 				$new_id_map[$id] = $child->getId();
 				$choices[$child->getId()] = $child;
+			}
+		}
+
+		foreach ($choices_removed as $id) {
+			if (isset($choices[$id])) {
+				$this->_field->children->removeElement($choices[$id]);
+				$this->_em->remove($choices[$id]);
+				unset($choices[$id]);
+				foreach ($choices as $cid => $c) {
+					if ($c->getOption('parent_id') == $id) {
+						$this->_field->children->removeElement($choices[$cid]);
+						$this->_em->remove($choices[$cid]);
+						unset($choices[$cid]);
+					}
+				}
 			}
 		}
 
