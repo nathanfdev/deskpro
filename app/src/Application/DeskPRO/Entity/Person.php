@@ -2054,6 +2054,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		if ($this->organization) {
+			$data['organization_usergroups'] = array();
+			foreach ($this->organization->usergroups AS $group) {
+				$data['organization_usergroups'][] = $group->toApiData(false, false, $visited);
+			}
+		}
+
 		$data['primary_email'] = $this->getPrimaryEmailAddress();
 		$data['picture_url'] = $this->getPictureUrl();
 
