@@ -46,19 +46,38 @@
 			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
 				<tr>
 					<td class="label" valign="middle">Your Organization's Name:</td>
-					<td><input type="text" id="lic_website_name" name="website_name" value="{{ app.getSetting('core.site_name') }}" style="width: 90%;" /></td>
+					<td><input type="text" id="lic_website_name" name="website_name" value="{{ app.getSetting('core.site_name') }}" style="width: 90%;" placeholder="Organization Name" /></td>
 				</tr>
 				<tr>
 					<td class="label"  valign="middle">Your Organization's Website URL:</td>
-					<td><input type="text" id="lic_website_url" name="website_url" value="{{ app.getSetting('core.site_url') }}" style="width: 90%;" /></td>
+					<td><input type="text" id="lic_website_url" name="website_url" value="{{ app.getSetting('core.site_url') }}" style="width: 90%;" placeholder="Website URL" /></td>
 				</tr>
 				<tr>
 					<td class="label"  valign="middle">Your Phone Number:</td>
-					<td><input type="text" id="lic_phone" name="phone" value="" style="width: 90%;" /></td>
+					<td>
+						<table width="561">
+							<tr>
+								<td width="200" valign="top" style="vertical-align: top">
+									<select name="phone_country" id="lic_phone_country" style="width: 200px">
+										{% for title in calling_countries %}
+											<option value="{{ title }}" {% if "United States" in title and loop.index < 10 %}selected="selected"{% endif %}>{{ title }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td valign="top" style="vertical-align: top">
+									<input type="text" id="lic_phone" name="phone" value="" style="width: 100%; display: inline;" placeholder="Phone Number" />
+									<br />
+									<div style="text-align: right;font-size: 11px; margin-top: 4px; margin-right: -10px;">
+										Extension: <input type="text" id="lic_phone" name="phone_ext" value="" style="width: 80px; font-size: 11px; padding: 1px; margin: 0; display: inline;" />
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				<tr>
 					<td class="label" width="250" valign="middle">Email Address to Send License:</td>
-					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" style="width: 90%;" /></td>
+					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" style="width: 90%;" placeholder="Email Address" /></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>

@@ -806,15 +806,6 @@ class Countries
 	);
 
 	protected static $calling_codes = array(
-		array('country' => 'Canada',                                          'country_code' => 'CA',  'calling_code' => '1'       ),
-		array('country' => 'China',                                           'country_code' => 'CN',  'calling_code' => '86'      ),
-		array('country' => 'France',                                          'country_code' => 'FR',  'calling_code' => '33'      ),
-		array('country' => 'Germany',                                         'country_code' => 'DE',  'calling_code' => '49'      ),
-		array('country' => 'India',                                           'country_code' => 'IN',  'calling_code' => '91'      ),
-		array('country' => 'Japan',                                           'country_code' => 'JP',  'calling_code' => '81'      ),
-		array('country' => 'Pakistan',                                        'country_code' => 'PK',  'calling_code' => '92'      ),
-		array('country' => 'United Kingdom',                                  'country_code' => 'UK',  'calling_code' => '44'      ),
-		array('country' => 'United States',                                   'country_code' => 'US',  'calling_code' => '1'       ),
 		array('country' => 'Abkhazia',                                        'country_code' => null,  'calling_code' => '7 840'   ),
 		array('country' => 'Abkhazia',                                        'country_code' => null,  'calling_code' => '7 940'   ),
 		array('country' => 'Afghanistan',                                     'country_code' => 'AF',  'calling_code' => '93'      ),

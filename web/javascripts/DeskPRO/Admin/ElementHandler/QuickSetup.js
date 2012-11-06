@@ -189,6 +189,8 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var self = this;
 		var wrapper = $('#section_enter_license');
 
+		DP.select($('#lic_phone_country'));
+
 		wrapper.find('.page-radio-group').on('click', function(ev) {
 			wrapper.find('.page-radio-group').removeClass('open');
 			$(this).addClass('open').find(':radio').prop('checked', true);

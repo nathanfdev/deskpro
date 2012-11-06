@@ -447,6 +447,7 @@ class SettingsController extends AbstractController
 		$php_path_set = dp_get_config('php_path');
 
 		$licdata_report = dp_get_config('instance_data.report');
+		$calling_countries = \Orb\Data\Countries::getCallingCodeOptions();
 
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'outgoing_email_form' => $outgoing_email_form,
@@ -463,7 +464,8 @@ class SettingsController extends AbstractController
 
 			'ma_server' => \DeskPRO\Kernel\License::getLicServer(),
 			'install_token' => App::getSetting('core.install_token'),
-			'licdata_report' => $licdata_report
+			'licdata_report' => $licdata_report,
+			'calling_countries' => $calling_countries,
 		));
 	}
 
