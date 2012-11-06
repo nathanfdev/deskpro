@@ -994,7 +994,6 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveReplyAction($ticket_id)
 	{
-
 		if (!$this->in->getString('message') || $this->in->getString('message') == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
 		}
@@ -1013,6 +1012,13 @@ class TicketController extends AbstractController
 
 		if ($this->in->getBool('is_html_reply')) {
 			$message_text = $this->in->getHtmlCore('message');
+
+			$message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_text);
+			$message_test = trim(preg_replace('#^(\s*<p>(<br\s*/?>)?</p>)+#i', '', $message_test));
+			if (!$message_test) {
+				return $this->createJsonResponse(array('error' => 'no_message'));
+			}
+
 			$message_text = Strings::prepareWysiwygHtml($message_text);
 			$message->message = $message_text;
 		} else {

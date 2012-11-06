@@ -76,8 +76,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				if (isWysiwyg) {
 					var reply = textarea.getCode();
 					if (sig.length) {
+						reply = reply.replace(/\s*(<p>(<br\s*\/?>)?<\/p>\s*)*$/, '');
 						if (!reply.length) {
-							reply = ($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>');
+							reply += ($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>');
+						} else {
+							reply += ($.browser.msie ? '<p></p>' : '<p><br></p>');
 						}
 						textarea.setCode(reply + "\n\n" + sig);
 					}
@@ -105,10 +108,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 			if (isWysiwyg) {
 				var reply = textarea.getCode();
-				if (Orb.strEndsWith(reply, sig)) {
-					var pos = reply.indexOf(sig);
-					reply = $.trim(reply.substring(0, pos));
-					textarea.setCode(reply);
+				var newReply = reply.replace(/<(p|div) class="dp-signature-start">[\w\W]*$/, '');
+				if (newReply != reply) {
+					textarea.setCode(newReply);
 					sigTrimmed = true;
 				}
 			} else {
