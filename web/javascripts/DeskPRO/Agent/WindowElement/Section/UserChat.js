@@ -531,7 +531,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.refreshOpenCounts();
 
-		if (!$('#is_chat_available').is(':checked')) {
+		if ($('#chatStatusWrap').hasClass('offline')) {
 			return;
 		}
 
