@@ -132,6 +132,10 @@ class ImportController extends AbstractController
 
 		for ($i = 0; $i < 100; $i++) {
 			$row = fgetcsv($fp);
+			if (!$row) {
+				// eof or can't read properly
+				break;
+			}
 			if (isset($row[0]) && $row[0] === null) {
 				// empty row
 				continue;
