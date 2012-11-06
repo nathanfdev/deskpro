@@ -60,6 +60,7 @@ class AdvancedSettings extends SettingFiles
 			'core_chat.user_timeout',
 			'core_chat.require_department',
 			'core.bcc_all_emails',
+			'core.drafts_lifetime',
 			'core.store_sent_mail_days',
 			'core.site_id',
 			'core.sessions_lifetime',
