@@ -1491,16 +1491,41 @@ var RLANG = {
 		{
 			var parent = this.getParentNode();
 
-			if (parent.nodeName === 'DIV' && parent.className === 'redactor_editor')
+			var isParentRoot = (parent.nodeName === 'DIV' && parent.className.match(/(\s|^)redactor_editor(\s|$)/));
+			var isParentP = (parent.nodeName === 'P');
+
+			if (isParentRoot || isParentP)
 			{
 				var element = $(this.getCurrentNode());
+				var isEmpty = (element.html() === '' || element.html() === '<br>');
 
-				if (element.get(0).tagName === 'DIV' && (element.html() === '' || element.html() === '<br>'))
+				if (element.get(0).tagName === 'DIV')
 				{
-					var newElement = $('<p>').append(element.clone().get(0).childNodes);
-					element.replaceWith(newElement);
-					newElement.html('<br />');
-					this.setFocusNode(newElement.get(0));
+					if (element.parent().is('p'))
+					{
+						var attachParent = element.parent();
+						while (attachParent.parent().is('p'))
+						{
+							attachParent = attachParent.parent();
+						}
+						attachParent.after(element);
+						this.setFocusNode(element.get(0));
+					}
+
+					if (isEmpty)
+					{
+						var newElement = $('<p>').append(element.clone().get(0).childNodes);
+						element.replaceWith(newElement);
+						newElement.html('<br />');
+						this.setFocusNode(newElement.get(0));
+					} 
+				}
+				else if (element.get(0).tagName === 'P' && !isEmpty)
+				{
+					// pressing enter at beginning of a line
+					var newElement = $('<p><br /></p>');
+					element.before(newElement);
+					this.setFocusNode(element.get(0));
 				}
 			}
 		},
