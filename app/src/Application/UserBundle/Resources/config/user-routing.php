@@ -387,7 +387,7 @@ $collection->add('user_tickets_feedback_save', new Route(
 $collection->add('user_tickets_feedback_closeticket', new Route(
 	'/ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket',
 	array('_controller' => 'UserBundle:Tickets:feedbackCloseTicket'),
-	array('_method' => 'POST'),
+	array(),
 	array()
 ));
 
