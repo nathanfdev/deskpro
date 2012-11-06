@@ -3214,8 +3214,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return true;
 		};
 
-		textarea.getEditor().on('paste', $.proxy(function(ev)
-		{
+		textarea.getEditor().on('paste', $.proxy(function(ev) {
+			this.pasteRunning = true;
+
 			if (ev.originalEvent.clipboardData) {
 				var items = ev.originalEvent.clipboardData.items;
 				if (items) {
@@ -3277,6 +3278,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var html = this.getFragmentHtml(pastedFrag);
 				this.pasteCleanUp(html);
+
+				this.pasteRunning = false;
 			}, this), 1);
 
 		}, textarea.data('redactor')));

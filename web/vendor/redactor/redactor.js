@@ -702,6 +702,8 @@ var RLANG = {
 						return true;
 					}
 
+					this.pasteRunning = true;
+
 					this.setBuffer();
 
 					if (this.opts.autoresize === true)
@@ -724,6 +726,8 @@ var RLANG = {
 
 						var html = this.getFragmentHtml(pastedFrag);
 						this.pasteCleanUp(html);
+
+						this.pasteRunning = true;
 
 					}, this), 1);
 
@@ -793,7 +797,10 @@ var RLANG = {
 
 				if ($.browser.mozilla)
 				{
-					this.saveSelection();
+					if (!this.pasteRunning)
+					{
+						this.saveSelection();
+					}
 				}
 
 				// callback as you type
