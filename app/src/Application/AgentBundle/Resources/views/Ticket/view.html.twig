@@ -224,7 +224,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 								{% if app.user.hasPerm('agent_people.delete') %}<li data-action="delete.ban">Delete Ticket, Delete User &amp; Ban Email</li>{% endif %}
 							</ul>
 						{% endif %}
-						<a class="clean-white" id="{{ baseId }}_lock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}>Lock Ticket</a>
+						<a class="clean-white" id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>Lock Ticket</a>
 						<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.general.print') }}</span></a>
 						<a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.general.download_pdf') }}</span></a>
 					</td>
