@@ -380,10 +380,14 @@ class LanguagesController extends AbstractController
 		if ($group == 'CUSTOM') {
 			$set = array();
 			foreach ($vars['lang_phrases']['custom'] as $phrase) {
-				$set[$phrase->name] = isset($vars['master_phrases'][$phrase->name]) ? $vars['master_phrases'][$phrase->name] : null;
+				if (isset($vars['master_phrases'][$phrase['name']])) {
+					$set[$phrase['name']] = $vars['master_phrases'][$phrase['name']];
+				} else {
+					$set[$phrase['name']] = null;
+				}
 			}
 
-			$vars['master_phrases'] = $set;
+			$vars['master_phrases'] = array_merge($vars['master_phrases'], $set);
 		}
 
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
