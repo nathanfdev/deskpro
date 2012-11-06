@@ -364,15 +364,12 @@ class Upgrade
 		$this->out('');
 		$this->out("Possible actions:");
 
-		$this->out("\t--auto [--quiet] [--error-halt]");
+		$this->out("\t--auto [--quiet]");
 		$this->out("\t\tAutomatically checks for a newer version, and if one exists, will attempt to ");
 		$this->out("\t\tdownload it, extract it and install it. Backups will be made to the backups directory.");
 		$this->out('');
 		$this->out("\t\t--quiet suppresses output. Ideal for automation. The log file will contain any");
 		$this->out("\t\trelevant information.");
-		$this->out('');
-		$this->out("\t\t--error-halt will halt on errors instead of trying to restore the files/database");
-		$this->out("\t\twhen somethign bad happens.");
 		$this->out('');
 
 		$this->out("\t--check-version");
@@ -388,18 +385,8 @@ class Upgrade
 		$this->out("\t\tExecutes a mysqldump of your database into the data/backups directory");
 		$this->out('');
 
-		$this->out("\t--restore-db --path <zip-file>");
-		$this->out("\t\tRestores the database from a backup. zip-file should be a full path, or the filename");
-		$this->out("\t\tof a backup in the data/backups directory.");
-		$this->out('');
-
 		$this->out("\t--backup-files");
 		$this->out("\t\tBacks up all DeskPRO files. Note: This will NOT back up the data/backups directory.");
-		$this->out('');
-
-		$this->out("\t--restore-files --path <zip-file>");
-		$this->out("\t\tRestores files from a backup file. zip-file should be a full path, or the filename");
-		$this->out("\t\tof a backup in the data/backups directory.");
 		$this->out('');
 
 		$this->out("\t--download-latest [--path <path>]");
@@ -2709,6 +2696,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out();
 		}
 
+		/*
 		if ($this->file_backup && $this->revert_checkpoint == 'files' || $this->revert_checkpoint == 'db') {
 			$this->out(sprintf("%-40s", "<info>[*] Restoring files from backup ...</info>"), false);
 			$this->upgrade->installFilesFromZip($this->file_backup);
@@ -2720,6 +2708,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->upgrade->restoreDbFromZip($this->db_backup);
 			$this->out("<info>Done</info>");
 		}
+		*/
 
 		$fileutil = new FilesystemUtil();
 		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
