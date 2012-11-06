@@ -1882,7 +1882,7 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$this->db->insert('tickets_deleted', array(
+		$this->db->replace('tickets_deleted', array(
 			'ticket_id' => $ticket->id,
 			'by_person_id' => $this->person->id,
 			'new_ticket_id' => 0,

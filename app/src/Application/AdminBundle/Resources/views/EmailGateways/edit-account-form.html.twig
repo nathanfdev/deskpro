@@ -10,28 +10,6 @@
 	<input type="hidden" name="gateway[gateway_type]" value="tickets" />
 	<input type="hidden" id="define_transport" name="gateway[define_transport]" value="{% if not editgateway.define_transport %}0{% else %}1{% endif %}" />
 
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>Linked Department</label>
-		</div>
-		<div class="dp-form-input">
-			<select name="department_id">
-				<option value="0" {% if not gateway.department and not selected_department_id %}selected="selected"{% endif %}>Do not link a department</option>
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
-					{% if dep.children|length %}
-						<optgroup label="{{ dep.title }}">
-							{% for subdep in dep.children %}
-								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == subdep.id or selected_department_id == subdep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
-							{% endfor %}
-						</optgroup>
-					{% else %}
-						<option value="{{dep.id}}" {% if gateway.department.id == dep.id or selected_department_id == dep.id %}selected="selected"{% endif %}>{{dep.title}}</option>
-					{% endif %}
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -51,7 +29,7 @@
 
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
+						<input type="radio" class="option-trigger connection-type" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
 						{{ phrase('admin.gateway.pop3_account') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
@@ -101,7 +79,7 @@
 				{% if get_instance_ability('can_use_google_apps') %}
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
+						<input type="radio" class="option-trigger connection-type" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
 						{{ phrase('admin.general.google_apps') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
@@ -123,7 +101,7 @@
 				{% else %}
 					<div class="dp-input-group grayed">
 						<label>
-							<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
+							<input type="radio" class="option-trigger connection-type" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
 							{{ phrase('admin.general.google_apps') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
@@ -138,7 +116,7 @@
 		</div>
 	</div>
 
-	<div id="smtp_options_default" {% if editgateway.define_transport %}style="display: none"{% endif %}>
+	<div id="smtp_options_default" {% if editgateway.define_transport or not transport.id %}style="display: none"{% endif %}>
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label>
@@ -149,7 +127,7 @@
 		</div>
 	</div>
 
-	<div id="smtp_options" {% if not editgateway.define_transport %}style="display: none;"{% endif %} data-element-handler="DeskPRO.Admin.ElementHandler.EditEmailTransportPage" data-overlay-id="test_settings_overlay2">
+	<div id="smtp_options" {% if not editgateway.define_transport and transport.id %}style="display: none;"{% endif %} data-element-handler="DeskPRO.Admin.ElementHandler.EditEmailTransportPage" data-overlay-id="test_settings_overlay2">
 		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
@@ -249,112 +227,6 @@
 					{% endif %}
 				</div>
 			</div>
-
-			{% if partial != 'setup' %}
-			<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
-						<label>
-							<input type="checkbox" name="transport[use_backup]" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
-							{{ phrase('admin.gateway.backup_outgoing_mail_account') }}
-						</label>
-					</div>
-					<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" id="backup_form_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
-								{{ phrase('admin.general.php_mail') }}
-							</label>
-							<div class="dp-group-options" style="display: none">
-								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.general.test_settings') }}</span>
-								</div>
-							</div>
-						</div>
-
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="smtp" {% if transport.backup_transport_type == 'smtp' %}checked="checked"{% endif %} />
-								{{ phrase('admin.general.smtp_account') }}
-							</label>
-							<div class="dp-group-options" style="display: none">
-								<table cellspacing="0" cellpadding="0" width="100%">
-									<tr>
-										<td  class="title" width="120">{{ phrase('agent.general.host') }}:</td>
-										<td>
-											{{ form_widget(trans_form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
-										</td>
-									</tr>
-									<tr>
-										<td class="title">{{ phrase('admin.general.secure') }}:</td>
-										{% if get_instance_ability('can_use_secure_smtp') %}
-											<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
-										{% else %}
-											<td>
-												<input type="checkbox" disabled="disabled" />
-												<a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}" style="font-size: 90%; padding-left: 10px;">Why is this option disabled?</a>
-											</td>
-										{% endif %}
-									</tr>
-									<tr>
-										<td class="title">{{ phrase('admin.general.port') }}:</td>
-										<td>{{ form_widget(trans_form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
-									</tr>
-									<tr>
-										<td class="title">{{ phrase('admin.general.requires_auth') }}:</td>
-										<td>
-											<input
-												type="checkbox"
-												{% if edittrans.backup_smtp_options.username or edittrans.backup_smtp_options.password %}checked="checked"{% endif %}
-												data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
-												data-targets="#backup_smtp_auth_username, #backup_smtp_auth_password"
-											/> {{ phrase('admin.general.yes') }}
-										</td>
-									</tr>
-									<tr id="backup_smtp_auth_username">
-										<td class="title">{{ phrase('admin.general.username') }}:</td>
-										<td>{{ form_widget(trans_form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
-									</tr>
-									<tr id="backup_smtp_auth_password">
-										<td class="title">{{ phrase('agent.general.password') }}:</td>
-										<td>{{ form_widget(trans_form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
-									</tr>
-								</table>
-
-								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.general.test_settings') }}</span>
-								</div>
-							</div>
-						</div>
-
-						{% if get_instance_ability('can_use_google_apps') %}
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="gmail" {% if transport.backup_transport_type == 'gmail' %}checked="checked"{% endif %} />
-								{{ phrase('admin.general.google_apps') }}
-							</label>
-							<div class="dp-group-options" style="display: none">
-								<table cellspacing="0" cellpadding="0" width="100%">
-									<tr>
-										<td class="title" width="120">{{ phrase('admin.general.full_email_address') }}:</td>
-										<td>{{ form_widget(trans_form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
-									</tr>
-									<tr>
-										<td class="title">{{ phrase('agent.general.password') }}:</td>
-										<td>{{ form_widget(trans_form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
-									</tr>
-								</table>
-								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.general.test_settings') }}</span>
-								</div>
-							</div>
-						</div>
-						{% endif %}
-					</div>
-				</div>
-			</div>
-			{% endif %}
 		</div>
 	</div>
 
@@ -367,6 +239,28 @@
 				{{ form_widget(form.is_enabled) }}
 				{{ phrase('admin.gateway.confirm_process_account') }}
 			</label>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Linked Department</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="department_id">
+				<option value="0" {% if not gateway.department and not selected_department_id %}selected="selected"{% endif %}>Do not link a department</option>
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+					{% if dep.children|length %}
+						<optgroup label="{{ dep.title }}">
+							{% for subdep in dep.children %}
+								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}" {% if gateway.department.id == subdep.id or selected_department_id == subdep.id %}selected="selected"{% endif %}>{{subdep.title}}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{dep.id}}" {% if gateway.department.id == dep.id or selected_department_id == dep.id %}selected="selected"{% endif %}>{{dep.title}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
 		</div>
 	</div>
 </div>

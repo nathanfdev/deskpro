@@ -68,6 +68,8 @@ class SetTicketEmailAction extends AbstractAction
 		}
 
 		$ticket->notify_email = $this->email;
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
 	}
 
 

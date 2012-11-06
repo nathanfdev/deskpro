@@ -12,6 +12,12 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			self.overlay.open();
 		});
 
+		$('input.connection-type').on('click', function(ev) {
+			if ($(this).val() == 'pop3') {
+
+			}
+		});
+
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#test_gateway_settings_overlay'),
 			onBeforeOverlayOpened: function() {
