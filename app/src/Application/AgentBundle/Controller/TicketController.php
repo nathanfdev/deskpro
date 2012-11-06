@@ -2221,14 +2221,9 @@ class TicketController extends AbstractController
 			$this->db->beginTransaction();
 
 			try {
+				$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 				$newticket->save();
 				$ticket = $newticket->getTicket();
-
-				$field_manager = $this->container->getSystemService('ticket_fields_manager');
-				$post_custom_fields = $this->request->request->get('custom_fields', array());
-				if (!empty($post_custom_fields)) {
-					$field_manager->saveFormToObject($post_custom_fields, $ticket);
-				}
 
 				$this->em->flush();
 

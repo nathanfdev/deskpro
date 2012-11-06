@@ -53,6 +53,11 @@ use Orb\Util\Util;
  */
 class ChatController extends AbstractController
 {
+	public function requireRequestToken($action, $arguments = null)
+	{
+		return false;
+	}
+
 	protected function init()
 	{
 		$GLOBALS['DP_NON_HELPDESK_SESSION'] = true;

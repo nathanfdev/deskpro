@@ -111,7 +111,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
 	public function getFieldId()
 	{
-		return $this->field['id'];
+		return $this->field->getId();
 	}
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())

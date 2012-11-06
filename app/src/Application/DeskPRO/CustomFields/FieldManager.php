@@ -396,7 +396,9 @@ class FieldManager
 	 */
 	public function saveFormToObject(array $form, $object, $only_set = false)
 	{
-		$this->em->beginTransaction();
+		if ($object->getId()) {
+			$this->em->beginTransaction();
+		}
 
 		try {
 
@@ -410,7 +412,9 @@ class FieldManager
 				}
 				$this->removeCustomDataOnObject($object, $field_def);
 			}
-			$this->em->flush();
+			if ($object->getId()) {
+				$this->em->flush();
+			}
 
 			foreach ($this->getFields() as $field_def) {
 				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
@@ -423,10 +427,14 @@ class FieldManager
 
 			$this->_orig_display = null;
 
-			$this->em->flush();
-			$this->em->commit();
+			if ($object->getId()) {
+				$this->em->flush();
+				$this->em->commit();
+			}
 		} catch (\Exception $e) {
-			$this->em->rollback();
+			if ($object->getId()) {
+				$this->em->rollback();
+			}
 			throw $e;
 		}
 	}
@@ -509,7 +517,9 @@ class FieldManager
 			return null;
 		}
 
-		$this->em->beginTransaction();
+		if ($object->getId()) {
+			$this->em->beginTransaction();
+		}
 
 		try {
 			$custom_data = $this->createDataClass();
@@ -519,12 +529,16 @@ class FieldManager
 
 			$object->addCustomData($custom_data);
 			$this->em->persist($custom_data);
-			$this->em->flush();
 
-			$this->em->commit();
+			if ($object->getId()) {
+				$this->em->flush();
+				$this->em->commit();
+			}
 
 		} catch (\Exception $e) {
-			$this->em->rollback();
+			if ($object->getId()) {
+				$this->em->rollback();
+			}
 			throw $e;
 		}
 

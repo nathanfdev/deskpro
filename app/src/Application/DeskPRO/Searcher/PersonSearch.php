@@ -692,6 +692,10 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_EMAIL_DOMAIN:
+
+					if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+					if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
 					$any = false;
 					if (is_array($choice)) {
 						$choice = array_pop($choice);

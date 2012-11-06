@@ -62,6 +62,7 @@ class NewTicket
 	public $add_cc_person = array();
 	public $add_cc_newperson = array();
 	public $attach = array();
+	public $ticket_fields = array();
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -237,6 +238,13 @@ class NewTicket
 		$ticket->addMessage($message);
 
 		$this->_em->persist($ticket);
+
+		$field_manager = App::getSystemService('ticket_fields_manager');
+		$post_custom_fields = $this->ticket_fields;
+		if (!empty($post_custom_fields)) {
+			$field_manager->saveFormToObject($post_custom_fields, $ticket);
+		}
+
 		$this->_em->flush();
 		$this->_em->persist($message);
 		$this->_em->flush();
