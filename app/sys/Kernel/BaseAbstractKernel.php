@@ -367,21 +367,20 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	 */
 	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		$path = $request->getPathInfo();
-
-		$qs = $request->getQueryString();
-		if ($qs) {
-			$path .= '?' . $qs;
-		}
-
-		// Exclude admin interface
-		if (DP_INTERFACE == 'admin' || isset($_REQUEST['admin_portal_controls'])) {
+		if (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections']) {
 			return null;
 		}
 
 		// Exclude ajax requests
 		if ($request->isXmlHttpRequest()) {
 			return null;
+		}
+
+		$path = $request->getPathInfo();
+
+		$qs = $request->getQueryString();
+		if ($qs) {
+			$path .= '?' . $qs;
 		}
 
 		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
@@ -396,6 +395,44 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path, 301);
 				return $response;
 			}
+		}
+
+		$is_installed = App::getSetting('core.setup_initial');
+		if (!$is_installed) {
+			return null;
+		}
+
+		$redirect_corrections = App::getSetting('core.redirect_correct_url');
+		if (!$redirect_corrections) {
+			return null;
+		}
+
+		$now_path = $request->getPathInfo();
+		if (strpos($request->getRequestUri(), '/index.php/') !== false) {
+			$now_path = '/index.php' . $now_path;
+		}
+
+		$urlinfo        = parse_url(App::getSetting('core.deskpro_url'));
+		if (!$urlinfo || empty($urlinfo['host']) || empty($urlinfo['scheme'])) {
+			return null;
+		}
+
+		$correct_host   = strtolower($urlinfo['host']);
+		$correct_scheme = strtolower($urlinfo['scheme']);
+		$now_host       = strtolower($request->getHttpHost());
+		$now_scheme     = strtolower($request->getScheme());
+
+		$do_correction = false;
+		if ($correct_scheme == 'https' && $now_scheme != 'https') {
+			$do_correction = true;
+		} elseif ($now_host != $correct_host) {
+			$do_correction = true;
+		}
+
+		if ($do_correction) {
+			$url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
+			$response = new RedirectResponse($url, 301);
+			return $response;
 		}
 
 		return null;

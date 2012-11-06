@@ -190,6 +190,16 @@ $DP_CONFIG['trust_proxy_data'] = false;
 # ~~~~~~~~~~~~~~~~ DEBUG & LOGS ~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
+# OPTIONAL : Disable URL corrections                 #
+#                                                    #
+# This disables the auto-redirection that happens    #
+# when you try to view the site through a URL that   #
+# is not the configured 'helpdesk url.'              #
+######################################################
+
+$DP_CONFIG['disable_url_corrections'] = false;
+
+######################################################
 # OPTIONAL : Enable debug call trace                 #
 #                                                    #
 # Sometimes a support agent may ask you to enable    #

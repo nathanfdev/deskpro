@@ -28,7 +28,10 @@
 				</td>
 				<td>
 					<label>{{ phrase('admin.settings.your_helpdesk_url') }}</label>
-					<input type="text" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" size="40" />
+					<input type="text" id="helpdesk_url" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" data-original-value="{{app.getSetting('core.deskpro_url')}}" size="40" />
+					<div id="helpdesk_url_invalid" style="color: red; display: none;">
+						The URL you entered appears to be invalid or the server is not responding.<br/>You should check the URL and try again.
+					</div>
 				</td>
 			</tr></table>
 		</div>
@@ -58,7 +61,7 @@
 				{{ phrase('admin.settings.rewrite_urls_desc') }}</label>
 		</div>
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} />
+			<label><input type="checkbox" id="redirect_correct_url" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} onclick="if (this.checked) $(this).addClass('do-check'); else $(this).removeClass('do-check'); " />
 				{{ phrase('admin.settings.notice_always_redirect_users') }}
 		</div>
 	</div>
@@ -211,7 +214,8 @@
 </div>
 
 <div class="setting_field_row" style="text-align: center">
-	<button class="clean-white">{{ phrase('admin.general.save_settings') }}</button>
+	<button class="clean-white" id="save_btn">{{ phrase('admin.general.save_settings') }}</button>
+	<span class="flat-spinner" id="save_loading" style="display: none;"></span>
 </div>
 
 </form>

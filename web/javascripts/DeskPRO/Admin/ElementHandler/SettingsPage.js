@@ -89,5 +89,53 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 			contentElement: '#adv_settings_warn',
 			triggerElement: '#adv_settings_btn'
 		});
+
+		form.on('submit', function(ev) {
+			$('#save_loading').show();
+			$('#save_btn').hide();
+
+			var url = $('#helpdesk_url').val().trim();
+			var origUrl = $('#helpdesk_url').data('original-value').trim();
+
+			if (url == origUrl && !$('#redirect_correct_url').hasClass('do-check')) {
+				form.addClass('do-process');
+			}
+
+			if (form.hasClass('do-process')) {
+				return;
+			}
+
+			ev.preventDefault();
+
+			url = url.replace(/index\.php/, '');
+			url = url.replace(/\/*$/, '');
+			url += '/';
+
+			if (!url.match(/^https?:\/\//)) {
+				url = 'http://' + url;
+			}
+
+			$('#helpdesk_url').val(url);
+
+			url += 'index.php?_sys=ping&type=jsonp';
+
+			$('#helpdesk_url_invalid').hide();
+			$('#save_loading').show();
+			$('#save_btn').hide();
+
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				error: function() {
+					$('#helpdesk_url_invalid').show();
+					$('#save_loading').hide();
+					$('#save_btn').show();
+				},
+				success: function(res) {
+					form.addClass('do-process');
+					form.submit();
+				}
+			});
+		});
 	}
 });

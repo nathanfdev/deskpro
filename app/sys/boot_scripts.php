@@ -86,4 +86,8 @@ switch ($_GET['_sys']) {
 	case 'savemail':
 		require DP_ROOT . '/sys/scripts/savemail.php';
 		break;
+
+	case 'ping':
+		require DP_ROOT . '/sys/scripts/ping.php';
+		break;
 }
