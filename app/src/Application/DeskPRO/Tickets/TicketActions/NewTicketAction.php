@@ -271,17 +271,21 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				}
 			}
 
-			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
-				$message = App::getMailer()->createMessage();
-				$message->setContextId('ticket_gateway');
-				$message->setTemplate($tpl, $vars);
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				$message->setFrom($from_address);
-				$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
-				$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+			if ($person->getPrimaryEmailAddress()) {
+				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
+					$message = App::getMailer()->createMessage();
+					$message->setContextId('ticket_gateway');
+					$message->setTemplate($tpl, $vars);
+					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+					$message->setFrom($from_address);
+					$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+					$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
 
-				App::getMailer()->send($message);
-			});
+					App::getMailer()->send($message);
+				});
+			} else {
+				$this->tracker->logMessage("[NewTicketAction] No validated email address on user account");
+			}
 		} else {
 			$this->tracker->logMessage("[NewTicketAction] No notification");
 		}
