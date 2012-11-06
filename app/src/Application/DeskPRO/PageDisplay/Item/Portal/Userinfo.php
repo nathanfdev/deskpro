@@ -50,7 +50,7 @@ class Userinfo extends Template
 		$org_ticket_count = 0;
 		if (!$this->person_context->isGuest()) {
 			$ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
-			if ($this->person_context->organization) {
+			if ($this->person_context->organization && $this->person_context->organization_manager) {
 				$org_ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForOrganization($this->person_context->organization, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
 			}
 		}

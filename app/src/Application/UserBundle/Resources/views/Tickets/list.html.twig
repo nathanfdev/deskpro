@@ -45,9 +45,9 @@
 {% set sort_form %}
 	<form class="dp-ticket-sort" action="{{ path('user_tickets') }}">
 		<select name="sort">
-			<option value="date_created" {% if sort == 'date_created' %}selected="selected"{% endif %}>Date Created</option>
-			<option value="last_reply" {% if sort == 'last_reply' %}selected="selected"{% endif %}>Last Reply</option>
-			<option value="department" {% if sort == 'department' %}selected="selected"{% endif %}>Department</option>
+			<option value="date_created" {% if sort == 'date_created' %}selected="selected"{% endif %}>{{ phrase('user.tickets.date_created') }}</option>
+			<option value="last_reply" {% if sort == 'last_reply' %}selected="selected"{% endif %}>{{ phrase('user.tickets.last_reply') }}</option>
+			<option value="department" {% if sort == 'department' %}selected="selected"{% endif %}>{{ phrase('user.tickets.fields_department') }}</option>
 		</select>
 		<input type="submit" class="dp-btn-primary" value="Sort" />
 	</form>
