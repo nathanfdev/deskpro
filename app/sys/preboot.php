@@ -182,13 +182,18 @@ if (php_sapi_name() == 'cli') {
 	}
 }
 
+if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron' && php_sapi_name() != 'cli') {
+	$errors[] = "You are using a PHP binary that is not meant for use on the command-line. You should re-compile PHP. (Using: " . php_sapi_name() . ")";
+	$errors_codes[] = 'php_not_cli';
+}
+
 if ($errors) {
 
 	if (!(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron')) {
 		deskpro_install_simple_data_submit(implode("\n", $errors));
 	}
 
-	if (php_sapi_name() == 'cli') {
+	if (php_sapi_name() == 'cli' || (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron')) {
 		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
 		$msg .= '- ' . implode("\n- ", $errors);
 		$msg .= "\n\n";
