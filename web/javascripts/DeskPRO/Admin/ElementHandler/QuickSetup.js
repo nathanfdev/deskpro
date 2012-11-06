@@ -103,7 +103,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var form = $('#setting_form');
 		$.ajax({
 			url: form.attr('action'),
-			method: 'POST',
+			type: 'POST',
 			data: postData,
 			cache: false
 		});

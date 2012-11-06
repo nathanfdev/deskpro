@@ -146,7 +146,7 @@ $collection->add('admin_emailgateways_quicktoggle', new Route(
 $collection->add('admin_emailgateways_setlinkeddep', new Route(
 	'/email/incoming/accounts/set-linked-department.json',
 	array('_controller' => 'CloudAdminBundle:EmailGateways:setLinkedDepartment'),
-	array('id' => '\\d+'),
+	array('id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 

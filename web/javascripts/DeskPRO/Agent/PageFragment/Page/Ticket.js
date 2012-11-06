@@ -1318,7 +1318,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: $(this).data('submit-url'),
 				data: form.find('input, textarea, select').serialize(),
-				method: 'POST',
+				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
 				if (json.inserted) {
@@ -1338,7 +1338,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (confirm(billingRows.data('delete-confirm'))) {
 				$.ajax({
 					url: $this.attr('href'),
-					method: 'POST',
+					type: 'POST',
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
