@@ -374,20 +374,7 @@ class LanguagesController extends AbstractController
 			"));
 
 			$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
-		}
-
-		// If we're in custom, only show the phrases we actually have
-		if ($group == 'CUSTOM') {
-			$set = array();
-			foreach ($vars['lang_phrases']['custom'] as $phrase) {
-				if (isset($vars['master_phrases'][$phrase['name']])) {
-					$set[$phrase['name']] = $vars['master_phrases'][$phrase['name']];
-				} else {
-					$set[$phrase['name']] = null;
-				}
-			}
-
-			$vars['master_phrases'] = array_merge($vars['master_phrases'], $set);
+			$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);
 		}
 
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
