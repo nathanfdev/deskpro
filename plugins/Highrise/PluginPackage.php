@@ -62,7 +62,16 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 				if ($email) {
 					$highrise = new \Orb\Service\Highrise\Highrise($url, $token);
 					$personApi = new \Orb\Service\Highrise\Resource\Person($highrise);
-					$output = $personApi->findPeopleWithCriteria(array('email' => $email));
+					try {
+						$error = error_reporting();
+						error_reporting($error & ~E_WARNING);
+
+						$output = $personApi->findPeopleWithCriteria(array('email' => $email));
+
+						error_reporting($error);
+					} catch (\Exception $e) {
+						return $controller->createJsonResponse(array('error' => 'Invalid Highrise API URL or token.'));
+					}
 
 					foreach ($output AS $person) {
 						if (isset($person['first-name'], $person['last-name'])) {

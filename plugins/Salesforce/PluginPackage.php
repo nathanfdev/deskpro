@@ -58,10 +58,24 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 
 				$email = $controller->in->getString('email');
 				if ($email) {
-					require_once(DP_ROOT . '/vendor/salesforce/SforcePartnerClient.php');
-					$sforce = new \SforcePartnerClient();
-					$sforce->createConnection(DP_ROOT . '/vendor/salesforce/partner.wsdl.xml');
-					$sforce->login($user, $password . $token);
+					try {
+						$error = error_reporting();
+						error_reporting($error & ~E_WARNING);
+
+						require_once(DP_ROOT . '/vendor/salesforce/SforcePartnerClient.php');
+						$sforce = new \SforcePartnerClient();
+						$sforce->createConnection(DP_ROOT . '/vendor/salesforce/partner.wsdl.xml');
+
+						error_reporting($error);
+					} catch (\SoapFault $e) {
+						return $controller->createJsonResponse(array('error' => 'Invalid Salesforce URL.'));
+					}
+
+					try {
+						$sforce->login($user, $password . $token);
+					} catch (\SoapFault $e) {
+						return $controller->createJsonResponse(array('error' => 'Invalid Salesforce API user, password, or token.'));
+					}
 
 					$response = $sforce->query("
 						SELECT Id, FirstName, LastName, Title, Department, Email
