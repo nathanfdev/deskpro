@@ -139,9 +139,7 @@ class MiscController extends AbstractController
 		$js[] = $fragment_router->compile();
 
 		$count = $this->em->getRepository('DeskPRO:LabelDef')->countLabels();
-		if ($count <= 300) {
-			$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
-		}
+		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 
 		$tr = $this->container->getTranslator();
 

@@ -122,6 +122,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				name: field + '[]',
 				value: x
 			});
+
+			// Make sure the group exists
+			if (!DeskPRO.UI.LabelsInput_Grouped[this.options.type]) {
+				DeskPRO.UI.LabelsInput_Grouped[this.options.type] = [];
+			}
+			// Add the label to the group if its new
 			if (DeskPRO.UI.LabelsInput_Grouped[this.options.type].indexOf(x) === -1) {
 				DeskPRO.UI.LabelsInput_Grouped[this.options.type].push(x);
 			}
