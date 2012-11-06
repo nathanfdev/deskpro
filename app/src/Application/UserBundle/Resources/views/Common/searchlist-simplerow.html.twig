@@ -10,12 +10,12 @@
 		{% endif %}
 		{% if q %}
 			<a
-				href="{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}"
-				onmouseover="window.status='item.getLink()';"
-				onmouseout="window.status='item.getLink()';"
+				href="{{ item.getLink() }}"
+				onclick="this.href='{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}'"
 				class="view-item"
 				data-content-type="{{ type }}"
 				data-content-id="{{ item.id }}"
+				data-link="{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}"
 			>
 		{% else %}
 			<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
