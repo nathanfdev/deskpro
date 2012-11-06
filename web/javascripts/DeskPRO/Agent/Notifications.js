@@ -205,7 +205,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var pos = $('#dp_notif_bed').offset();
 		this.menu.css({
-			left: pos.left - $('#dp_notif_bed').width() + 53
+			left: pos.left - $('#dp_notif_bed').width() + 56
 		});
 	},
 
