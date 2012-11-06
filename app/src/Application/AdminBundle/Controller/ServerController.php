@@ -291,8 +291,18 @@ class ServerController extends AbstractController
 			$mysqlinfo = null;
 		}
 
+		try {
+			$schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
+			if ($schemadiff) {
+				$schemadiff = implode(";\n", $schemadiff) . ";";
+			}
+		} catch (\Exception $e) {
+			$schemadiff = null;
+		}
+
 		return $this->render('AdminBundle:Server:mysqlinfo.html.twig', array(
-			'mysqlinfo' => $mysqlinfo
+			'mysqlinfo'  => $mysqlinfo,
+			'schemadiff' => $schemadiff,
 		));
 	}
 

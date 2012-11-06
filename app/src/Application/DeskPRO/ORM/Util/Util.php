@@ -34,7 +34,10 @@
 
 namespace Application\DeskPRO\ORM\Util;
 
-use \Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\PersistentCollection;
+use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
+use Application\DeskPRO\App;
 
 /**
  * Simple utility methods for working with the ORM
@@ -44,7 +47,7 @@ class Util
 	private function __construct() { /* Static class, no instances */ }
 
 
-	
+
 	/**
 	 * Checks to see if $collection is a valid PersistentCollection, and if it's
 	 * been initialized yet.
@@ -59,5 +62,22 @@ class Util
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\ORM\EntityManager $em
+	 * @return array
+	 */
+	public static function getUpdateSchemaSql(EntityManager $em = null)
+	{
+		if ($em === null) {
+			$em = App::getOrm();
+		}
+
+		$metadata = $em->getMetadataFactory()->getAllMetadata();
+		$tool = new SchemaTool($em);
+
+		return $tool->getUpdateSchemaSql($metadata, true);
 	}
 }
