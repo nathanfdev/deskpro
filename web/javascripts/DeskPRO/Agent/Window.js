@@ -3070,14 +3070,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (ev.metaKey && !ev.ctrlKey) { // pressing "cmd" on a mac
 				var sel;
 				if (window.getSelection && (sel = window.getSelection()) && sel.modify) {
+					var adjustmentType = ev.shiftKey ? "extend" : "move";
+
 					switch (ev.keyCode) {
 						case 39: // right - act like "end" in windows
-							sel.modify("move", "forward", "lineboundary");
+							sel.modify(adjustmentType, "right", "lineboundary");
 							ev.preventDefault();
 							break;
 
 						case 37: // left - act like "home" in windows
-							sel.modify("move", "backward", "lineboundary");
+							sel.modify(adjustmentType, "left", "lineboundary");
 							ev.preventDefault();
 							break;
 					}
