@@ -2502,13 +2502,16 @@ dp .dp-new-feedback td {
 	font-size: 11px;
 }
 
-
 /***********************************************************************************************************************
 * Tickets list
 ***********************************************************************************************************************/
 
 #dp section.dp-ticketlist-section > .dp-content-block {
 	margin: 0;
+}
+
+#dp .dp-ticket-sort {
+	float: right;
 }
 
 #dp ul.dp-ticket-list {
@@ -2541,6 +2544,13 @@ dp .dp-new-feedback td {
 	display: inline-block;
 	font-size: 12pt;
 	line-height: 18px;
+}
+
+#dp .dp-ticket-list .dp-title h4 .ticket-creator {
+	color: {{ stylevar.meta_text_color }};
+	font-weight: normal;
+	margin-left: 5px;
+	font-size: 90%;
 }
 
 #dp .dp-ticket-list .dp-title .dp-time {

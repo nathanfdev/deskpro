@@ -272,11 +272,18 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 			}
 
 			if ($person->getPrimaryEmailAddress()) {
-				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
+				$parts = $ticket->getUserParticipants();
+
+				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts) {
 					$message = App::getMailer()->createMessage();
 					$message->setContextId('ticket_gateway');
 					$message->setTemplate($tpl, $vars);
 					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+					foreach ($parts as $part) {
+						if ($part['email_address']) {
+							$message->addCc($part['email_address'], $part->person->getDisplayName());
+						}
+					}
 					$message->setFrom($from_address);
 					$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 					$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());

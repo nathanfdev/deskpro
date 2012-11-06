@@ -258,6 +258,16 @@
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
+	<div class="builder-type" title="Add organization managers to ticket" data-rule-type="add_org_managers">
+		<div class="builder-options" style="display:block">
+			<input type="hidden" name="x" value="DP_ALLOW_BLANK" />
+		</div>
+	</div>
+	<div class="builder-type" title="Send the organization managers an email" data-rule-type="send_org_managers_email">
+		<div class="builder-options" style="display:block">
+			<textarea name="message" cols="80" rows="4"></textarea>
+		</div>
+	</div>
 	<div class="builder-type" title="{{ phrase('agent.general.set_flag') }}" data-rule-type="flag">
 		<div class="builder-options">
 			<select name="flag">

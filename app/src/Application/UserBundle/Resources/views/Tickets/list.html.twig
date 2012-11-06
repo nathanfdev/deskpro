@@ -4,17 +4,18 @@
 {% import 'UserBundle::macros.html.twig' as dp %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.tickets') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.tickets.your_tickets') }}{% endblock %}
 {% block content %}
 
-{% macro ticket_row(ticket, last_messages) %}
+{% macro ticket_row(ticket, last_messages, show_owner) %}
 	<li>
 		<div class="dp-title">
 			<div class="dp-fadeaway-container">
 				<h4 class="dp-fadetitle">
 					<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a>
+					{% if show_owner %}<span class="ticket-creator">{{ ticket.person.display_name }}</span>{% endif %}
 					{% if 0 %}
 					<a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}">
 						<img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" alt="{{ phrase('user.tickets.download_pdf') }}" />
@@ -41,9 +42,21 @@
 	</li>
 {% endmacro %}
 
+{% set sort_form %}
+	<form class="dp-ticket-sort" action="{{ path('user_tickets') }}">
+		<select name="sort">
+			<option value="date_created" {% if sort == 'date_created' %}selected="selected"{% endif %}>Date Created</option>
+			<option value="last_reply" {% if sort == 'last_reply' %}selected="selected"{% endif %}>Last Reply</option>
+			<option value="department" {% if sort == 'department' %}selected="selected"{% endif %}>Department</option>
+		</select>
+		<input type="submit" class="dp-btn-primary" value="Sort" />
+	</form>
+{% endset %}
+
 {% if active_tickets|length %}
 	<section class="dp-ticketlist-section dp-portal-section">
 		<header>
+			{{ sort_form|raw }}
 			<h1>{{ phrase('user.tickets.open_tickets') }}</h1>
 		</header>
 		<div class="dp-content-block">
@@ -63,6 +76,7 @@
 {% if resolved_tickets|length %}
 	<section class="dp-ticketlist-section dp-portal-section">
 		<header>
+			{% if not active_tickets %}{{ sort_form|raw }}{% endif %}
 			<h1>{{ phrase('user.tickets.list_resolved') }}</h1>
 		</header>
 		<div class="dp-content-block">

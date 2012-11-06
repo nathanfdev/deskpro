@@ -2478,7 +2478,7 @@ padding: 30px;
 	color: #246626;
 }
 
-.profile .org-edit .pos-input {
+.profile .org-edit .extra-input {
 	border-top: 1px dotted #999;
 	padding: 4px;
 }
@@ -6005,6 +6005,30 @@ div.cc-autocomplete.loading .is-not-loading { display: none !important; }
 tr.member-row:hover .single-click-activate {
 	background: url(../../images/agent/controlbar-display-options.png) no-repeat 100% 50%;
 	padding-right: 13px;
+}
+
+.member-row .organization-manager-icon {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+	text-indent: -100px;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/flag-gray.png") /** sprite-ref: ui-v */;
+	cursor: pointer;
+	.opacity(25);
+}
+
+.member-row .is-manager {
+	font-weight: bold;
+
+	.organization-manager-icon {
+		background-image: url("../../images/agent/icons/flag-green.png") /** sprite-ref: ui-v */;
+		.opacity(100);
+	}
 }
 
 .field-holders .mode-edit { display: none; }

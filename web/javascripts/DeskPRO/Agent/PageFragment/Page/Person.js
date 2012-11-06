@@ -599,7 +599,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			if ($(this).is('.cancel')) {
 				if (!parseInt(self.meta.org_id)) {
 					$('.org-name', self.getEl('org_edit_wrap')).val('');
-					$('.pos-input', self.getEl('org_edit_wrap')).hide();
+					$('.extra-input', self.getEl('org_edit_wrap')).hide();
 				}
 				self.getEl('org_searchbox').removeClass('is-new').removeClass('is-set');
 				self.toggleOrgEdit('close');
@@ -611,10 +611,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		//orgEnableBtn
 		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
-			$('.pos-input', orgEdit).show();
+			$('.extra-input', orgEdit).show();
 			self.orgEnableBtn('save');
 		}).bind('orgsearchboxcreate', function(ev, term, name) {
-			$('.pos-input', orgEdit).show();
+			$('.extra-input', orgEdit).show();
 			self.orgEnableBtn('save');
 		}).bind('orgsearchreverted', function(ev, term, name) {
 			if (self.getEl('org_searchbox').is('.is-new') || ($('.org-id', orgEdit).val() && $('.org-id', orgEdit).val() != '0')) {
@@ -624,7 +624,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			}
 		});
 
-		$('.pos-input', orgEdit).on('keyup', function() {
+		$('.extra-input', orgEdit).on('keyup change', function() {
 			if (self.getEl('org_searchbox').is('.is-new') || ($('.org-id', orgEdit).val() && $('.org-id', orgEdit).val() != '0')) {
 				self.orgEnableBtn('save');
 			}
@@ -664,6 +664,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				value: $('.org-pos-set', self.getEl('org_edit_wrap')).val().trim()
 			});
 
+			postData.push({
+				name: 'manager',
+				value: $('.org-manager-set', self.getEl('org_edit_wrap')).is(':checked') ? 1 : 0
+			});
+
 			$.ajax({
 				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 				type: 'POST',
@@ -691,7 +696,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.getEl('org_edit_remove_org').on('click', function() {
 			$('.org-id', self.getEl('org_edit_wrap')).val('0');
 			$('.org-name', self.getEl('org_edit_wrap')).val('');
-			$('.pos-input', orgEdit).hide();
+			$('.extra-input', orgEdit).hide();
 			saveFn();
 		});
 

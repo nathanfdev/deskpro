@@ -146,11 +146,18 @@
 						</section>
 					</div>
 				</div>
-				<div class="pos-input" {% if not person.organization %}style="display: none"{% endif %}>
+				<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
 						<label>{{ phrase('agent.general.position') }}:</label>
 					</td><td width="100%">
 						<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.general.set_a_position') }}" value="{{ person.organization_position }}" />
+					</td></tr></table>
+				</div>
+				<div class="extra-input" {% if not person.organization %}style="display: none"{% endif %}>
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+						<label>Manager:</label>
+					</td><td width="100%">
+						<input type="checkbox" class="org-manager-set" value="1" {% if person.organization_manager %}checked="checked"{% endif %} />
 					</td></tr></table>
 				</div>
 			</div>

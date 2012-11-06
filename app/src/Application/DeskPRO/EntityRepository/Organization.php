@@ -136,6 +136,23 @@ class Organization extends AbstractEntityRepository
 		");
 	}
 
+	/**
+	 * Gets the list of organization managers
+	 *
+	 * @param \Application\DeskPRO\Entity\Organization $org
+	 *
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 */
+	public function getManagers(OrganizationEntity $org)
+	{
+		return $this->getEntityManager()->createQuery('
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE p.organization = ?1 AND p.organization_manager = 1
+			ORDER BY p.last_name, p.first_name
+		')->execute(array(1 => $org));
+	}
+
 
 	/**
 	 * Fetch an organization by its name.

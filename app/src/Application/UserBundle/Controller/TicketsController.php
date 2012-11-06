@@ -67,20 +67,41 @@ class TicketsController extends AbstractController
 	 */
     public function listAction()
     {
+		$dql_join = '';
+		$sort = $this->in->getString('sort');
+		switch ($sort) {
+			case 'department':
+				$dql_join = 'LEFT JOIN ticket.department d'
+					. "\nLEFT JOIN d.parent d_parent";
+				$sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
+				break;
+
+			case 'last_reply':
+				$sort_dql = 'ticket.date_last_user_reply DESC';
+				break;
+
+			case 'date_created':
+			default:
+				$sort = 'date_created';
+				$sort_dql = 'ticket.id DESC';
+		}
+
 		if ($this->person->is_agent) {
 			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
+				$dql_join
 				WHERE ticket.person = :person AND ticket.status != 'hidden'
-				ORDER BY ticket.id DESC
+				ORDER BY $sort_dql
 			")->execute(array('person' => $this->person));
 		} else {
 			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
 				LEFT JOIN ticket.participants part
+				$dql_join
 				WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
-				ORDER BY ticket.id DESC
+				ORDER BY $sort_dql
 			")->execute(array('person' => $this->person));
 		}
 
@@ -126,6 +147,96 @@ class TicketsController extends AbstractController
         return $this->render('UserBundle:Tickets:list.html.twig', array(
 			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
+			'last_messages'    => $last_messages,
+			'sort'             => $sort,
+		));
+    }
+
+	/**
+	 * View a list of all organization tickets
+	 */
+    public function listOrganizationAction()
+    {
+		if (!$this->person->organization || !$this->person->organization_manager) {
+			return $this->redirectRoute('user_tickets');
+		}
+
+		$dql_join = '';
+		$sort = $this->in->getString('sort');
+		switch ($sort) {
+			case 'creator':
+				$dql_join = 'INNER JOIN ticket.person p';
+				$sort_dql = 'p.last_name, p.first_name, ticket.id DESC';
+				break;
+
+			case 'department':
+				$dql_join = 'LEFT JOIN ticket.department d'
+					. "\nLEFT JOIN d.parent d_parent";
+				$sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
+				break;
+
+			case 'last_reply':
+				$sort_dql = 'ticket.date_last_user_reply DESC';
+				break;
+
+			case 'date_created':
+			default:
+				$sort = 'date_created';
+				$sort_dql = 'ticket.id DESC';
+		}
+
+		$tickets = $this->em->createQuery("
+			SELECT ticket
+			FROM DeskPRO:Ticket ticket
+			$dql_join
+			WHERE ticket.organization = :organization AND ticket.status != 'hidden'
+			ORDER BY $sort_dql
+		")->execute(array('organization' => $this->person->organization));
+
+		$active_tickets   = array();
+		$resolved_tickets = array();
+
+		$ticket_ids = array();
+
+		foreach ($tickets as $t) {
+			$ticket_ids[] = $t['id'];
+			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
+				$active_tickets[] = $t;
+			} else {
+				$resolved_tickets[] = $t;
+			}
+		}
+
+		$ticket_ids = implode(',', $ticket_ids);
+
+		$last_messages = array();
+		if ($tickets) {
+			$last_mesasge_ids = App::getDb()->fetchAllCol("
+				SELECT MAX(id)
+				FROM tickets_messages
+				WHERE ticket_id IN ($ticket_ids)
+				GROUP BY ticket_id
+			");
+			$last_mesasge_ids = implode(',', $last_mesasge_ids);
+			if ($last_mesasge_ids) {
+				$last_messages = $this->em->createQuery("
+					SELECT m, p
+					FROM DeskPRO:TicketMessage m
+					LEFT JOIN m.person p
+					WHERE m.id IN ($last_mesasge_ids)
+					GROUP BY m.ticket
+					ORDER BY m.id DESC
+				")->execute();
+			}
+
+			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
+		}
+
+        return $this->render('UserBundle:Tickets:list-organization.html.twig', array(
+			'organization'     => $this->person->organization,
+			'sort'             => $sort,
+			'active_tickets'   => $active_tickets,
+			'resolved_tickets' => $resolved_tickets,
 			'last_messages'    => $last_messages
 		));
     }
@@ -159,6 +270,7 @@ class TicketsController extends AbstractController
 
 		if ($validator->isValid($newreply)) {
 			$newreply->save();
+
 			$ticket_message = $newreply->getNewMessage();
 		} else {
 			$errors = $validator->getErrors(true);
@@ -423,9 +535,21 @@ class TicketsController extends AbstractController
 			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		}
 
+		if (!$ticket) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
+		}
+
 		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
 
-		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !isset($this->session_allowed[$ticket['id']])) AND !$ticket->hasParticipantPerson($this->person)) {
+		$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
+		$is_org_manager = (
+			$ticket->organization
+			&& $this->person->organization
+			&& $ticket->organization->id == $this->person->organization->id
+			&& $this->person->organization_manager
+		);
+
+		if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 

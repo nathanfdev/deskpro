@@ -930,6 +930,18 @@
 	</div>
 </div>
 
+<div class="builder-type" title="Organization Manager" data-rule-group="Organization" data-rule-type="org_manager">
+	<div class="builder-op">
+		<select name="op" class="op">
+			<option value="is">exists</option>
+			<option value="not">does not exist</option>
+		</select>
+	</div>
+	<div class="builder-options">
+		<input type="hidden" name="org_manager" value="1" />
+	</div>
+</div>
+
 <div class="builder-type" title="{{ phrase('agent.general.labels') }}" data-rule-group="Organization" data-rule-type="org_label" data-term-type="GenericInputTerm">
 	<div class="builder-op">
 		<select name="op">

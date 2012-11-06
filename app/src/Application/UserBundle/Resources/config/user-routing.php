@@ -258,6 +258,13 @@ $collection->add('user_tickets', new Route(
 	array()
 ));
 
+$collection->add('user_tickets_organization', new Route(
+	'/tickets/organization',
+	array('_controller' => 'UserBundle:Tickets:listOrganization'),
+	array(),
+	array()
+));
+
 $collection->add('user_tickets_new', new Route(
 	'/new-ticket/{for_department_id}',
 	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'normal', 'for_department_id' => 0),

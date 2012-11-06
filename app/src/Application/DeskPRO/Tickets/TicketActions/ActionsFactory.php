@@ -211,6 +211,14 @@ class ActionsFactory
 				$options = array('webhook_id' => $value['webhook_id']);
 				break;
 
+			case 'add_org_managers':
+				$options = array();
+				break;
+
+			case 'send_org_managers_email':
+				$options = array('message' => $value['message']);
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

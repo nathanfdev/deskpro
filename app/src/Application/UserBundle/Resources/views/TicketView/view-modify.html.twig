@@ -4,11 +4,15 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	{% if is_participant %}
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	{% else %}
+		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_organization') }}">{{ phrase('user.tickets.organization_tickets', {organization: ticket.organization.name}) }}</a></li>
+	{% endif %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block page_title %}
-	{{ ticket.subject }} - {{ phrase('user.tickets.your_tickets') }}
+	{{ ticket.subject }} - {{ is_participant ? phrase('user.tickets.your_tickets') : phrase('user.tickets.organization_tickets', {organization: ticket.organization.name}) }}
 {% endblock %}
 {% block head %}
 <script type="text/javascript" src="{{ asset('/javascripts/DeskPRO/User/ElementHandler/EditTicket.js') }}"></script>

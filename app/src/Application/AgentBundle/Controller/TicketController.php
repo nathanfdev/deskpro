@@ -858,7 +858,9 @@ class TicketController extends AbstractController
 			}
 
 			$part = $ticket->addParticipantPerson($person);
-			$this->em->persist($part);
+			if ($part) {
+				$this->em->persist($part);
+			}
 			$this->em->persist($ticket);
 			$this->em->flush();
 
@@ -2250,7 +2252,9 @@ class TicketController extends AbstractController
 						$p = $this->em->find('DeskPRO:Person', $pid);
 						if ($p) {
 							$part = $ticket->addParticipantPerson($p);
-							$this->em->persist($part);
+							if ($part) {
+								$this->em->persist($part);
+							}
 							$this->em->persist($ticket);
 						}
 					}
@@ -2264,7 +2268,9 @@ class TicketController extends AbstractController
 						$p = $this->em->find('DeskPRO:Person', $pid);
 						if ($p) {
 							$part = $ticket->addParticipantPerson($p);
-							$this->em->persist($part);
+							if ($part) {
+								$this->em->persist($part);
+							}
 						}
 					}
 
@@ -2298,7 +2304,9 @@ class TicketController extends AbstractController
 						$this->em->flush();
 
 						$part = $ticket->addParticipantPerson($p);
-						$this->em->persist($part);
+						if ($part) {
+							$this->em->persist($part);
+						}
 					}
 
 					$this->em->flush();

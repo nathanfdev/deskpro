@@ -713,6 +713,13 @@ $collection->add('agent_org_save_member_pos', new Route(
 	array()
 ));
 
+$collection->add('agent_org_save_member_manager', new Route(
+	'/organizations/{organization_id}/save-member-manager/{person_id}',
+	array('_controller' => 'AgentBundle:Organization:saveManager'),
+	array('organization_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_org_savecontactdata', new Route(
 	'/organizations/{organization_id}/save-contact-data.json',
 	array('_controller' => 'AgentBundle:Organization:saveContactData'),

@@ -654,6 +654,16 @@ class TermSummary
 					}
 				}
 				break;
+
+			case 'org_manager':
+				switch ($op) {
+					case self::OP_IS:
+						$summary = 'Organization has a manager';
+						break;
+					case self::OP_NOT:
+						$summary = 'Organization does not have a manager';
+						break;
+				}
 		}
 
 		return $summary;

@@ -47,12 +47,17 @@ class Userinfo extends Template
 	public function getVars()
 	{
 		$ticket_count = 0;
+		$org_ticket_count = 0;
 		if (!$this->person_context->isGuest()) {
 			$ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
+			if ($this->person_context->organization) {
+				$org_ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForOrganization($this->person_context->organization, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
+			}
 		}
 
 		return array(
 			'ticket_count' => $ticket_count,
+			'org_ticket_count' => $org_ticket_count
 		);
 	}
 }

@@ -128,6 +128,11 @@ class NewReply
 				$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
 			}
 
+			if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
+				// someone like the org manager replying - need to make sure they're CC'd
+				$this->ticket->addParticipantPerson($this->person);
+			}
+
 			App::getOrm()->beginTransaction();
 			App::getOrm()->persist($ticket_message);
 			App::getOrm()->persist($this->ticket);

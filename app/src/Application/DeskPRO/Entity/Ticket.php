@@ -776,6 +776,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
+		if ($person->id == $this->person->id) {
+			return null;
+		}
+
 		if ($ticket_part = $this->hasParticipantPerson($person)) {
 			return $ticket_part;
 		}
@@ -2120,6 +2124,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if (!$this->_no_log && $this->_ticket_logger) {
 			$this->getTicketLogger()->recordExtra('created', true);
+		}
+
+		if ($this->organization) {
+			$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($this->organization);
+			foreach ($managers AS $manager) {
+				if ($manager->getPref('org.manager_auto_add')) {
+					$this->addParticipantPerson($manager);
+				}
+			}
 		}
 	}
 

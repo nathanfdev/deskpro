@@ -204,6 +204,53 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			});
 		}, this);
 
+		this.getEl('members_list').on('click', '.organization-manager-icon', function(ev) {
+			ev.stopPropagation();
+
+			var $this = $(this), line = $this.closest('.line');
+
+			line.toggleClass('is-manager');
+
+			$.ajax({
+				url: $this.data('save-url'),
+				type: 'POST',
+				data: { organization_manager: line.hasClass('is-manager') ? 1 : 0 }
+			});
+
+			$(this).qtip('hide', ev);
+		});
+
+		this.getEl('members_list').on('mouseover', '.organization-manager-icon', function(ev) {
+			if ($(this).is('.tipped-inited')) {
+				return;
+			}
+
+			var qtipOptions = {
+				content: {
+					text: function() {
+						var $this = $(this), line = $this.closest('.line');
+
+						if (line.hasClass('is-manager')) {
+							return $this.data('is-manager');
+						} else {
+							return $this.data('not-manager');
+						}
+					}
+				},
+				position: {
+					my: 'top center',
+					at: 'bottom center',
+					viewport: $(window)
+				},
+				style: {
+					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
+				}
+			};
+
+			$(this).qtip(qtipOptions).qtip('show', ev);
+			$(this).addClass('tipped-inited');
+		});
+
 		this.getEl('members_list').on('click', '.position-edit-trigger', function(ev) {
 			ev.stopPropagation();
 
@@ -240,7 +287,8 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 						done();
 					}
 				});
-				$(document).on('click', done);
+				var closest = input.closest('.popover-wrapper');
+				$(closest.length ? closest : document).on('click', done);
 			}
 		});
 

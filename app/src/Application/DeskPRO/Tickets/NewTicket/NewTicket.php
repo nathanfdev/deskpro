@@ -469,8 +469,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 		if (!$ticket->hasParticipantPerson($cc_person)) {
 			$part = $ticket->addParticipantPerson($cc_person);
-
-			App::getOrm()->persist($part);
+			if ($part) {
+				App::getOrm()->persist($part);
+			}
 		}
 
 		return $cc_person;

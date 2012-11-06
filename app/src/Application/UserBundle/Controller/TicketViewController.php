@@ -142,12 +142,23 @@ class TicketViewController extends AbstractController
 	{
         $is_pdf = $this->in->getBool('pdf');
 
-		if ($this->person->id != $ticket->person->id && !$ticket->hasParticipantPerson($this->person->id)) {
+		$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
+		$is_org_manager = (
+			$ticket->organization
+			&& $this->person->organization
+			&& $ticket->organization->id == $this->person->organization->id
+			&& $this->person->organization_manager
+		);
+
+		if (!$is_participant && !$is_org_manager) {
 			return $this->renderStandardError(null, null, 403);
 		}
 
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
+
+		$vars['is_participant'] = $is_participant;
+		$vars['is_org_manager'] = $is_org_manager;
 
 		$newreply_form = $this->get('form.factory')->create(new NewTicketReplyType());
 		$vars['newreply_form'] = $newreply_form->createView();

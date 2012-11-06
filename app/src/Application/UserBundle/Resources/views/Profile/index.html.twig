@@ -75,6 +75,17 @@
 				</div>
 			{% endfor %}
 
+			{% if form.language_id %}
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>Organization Settings</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						<label><input type="checkbox" name="org_manager_auto_add" style="display:inline" value="1" {% if org_manager_auto_add %}checked="checked"{% endif %} /> Automatically join {{ app.user.organization.name }}'s tickets when they're created</label>
+					</div>
+				</div>
+			{% endif %}
+
 			<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
 		</div>
 	</section>

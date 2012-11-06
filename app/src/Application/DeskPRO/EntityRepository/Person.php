@@ -322,7 +322,7 @@ class Person extends AbstractEntityRepository
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
 			WHERE p.organization = ?1
-			ORDER BY p.last_name ASC, p.first_name ASC
+			ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
 		")->execute(array(1=> $org));
 	}
 

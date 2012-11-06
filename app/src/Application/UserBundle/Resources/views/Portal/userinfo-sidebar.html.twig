@@ -19,6 +19,12 @@
 						<a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.view_your_x_tickets', {count: ticket_count })}}</a>
 					</li>
 				{% endif %}
+				{% if org_ticket_count %}
+					<li>
+						<i class="dp-icon-inbox"></i>
+						<a href="{{ path('user_tickets_organization') }}">{{ phrase('user.tickets.view_organization_x_tickets', {organization: app.user.organization.name, count: org_ticket_count })}}</a>
+					</li>
+				{% endif %}
 				{% if app.user.is_agent and app.user.can_agent %}
 					<li>
 						<i class="dp-icon-asterisk"></i>

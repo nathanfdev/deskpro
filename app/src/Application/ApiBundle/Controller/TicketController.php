@@ -740,7 +740,9 @@ class TicketController extends AbstractController
 			}
 
 			$part = $ticket->addParticipantPerson($person);
-			$this->em->persist($part);
+			if ($part) {
+				$this->em->persist($part);
+			}
 			$this->em->persist($ticket);
 			$this->em->flush();
 

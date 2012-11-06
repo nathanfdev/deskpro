@@ -489,6 +489,7 @@ class PersonController extends AbstractController
 				if ($org) {
 					$person->organization = $org;
 					$person->organization_position = $this->in->getString('position');
+					$person->organization_manager = $this->in->getBool('manager');
 
 					$this->em->persist($person);
 

@@ -3,6 +3,7 @@
 	'agent.tickets.active_tickets_term_explain'         => 'You can only create filters on active tickets. Active tickets are awaiting user, awaiting agent or resolved. Archived or hidden tickets are cannot be filtered on. You can still find archived and hidden tickets by performing a search from the search bar.',
 	'agent.tickets.add_attachments'                     => 'Add attachments',
 	'agent.tickets.add_labels_action'                   => 'Add labels: {{labels}}',
+	'agent.tickets.add_org_managers_action'             => 'Add organization managers to ticket',
 	'agent.tickets.add_parts_action'                    => 'CC users: {{parts}}',
 	'agent.tickets.add_reply_action'                    => 'Add reply',
 	'agent.tickets.add_reply_x_action'                  => 'Add reply {{desc}}',

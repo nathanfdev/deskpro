@@ -251,6 +251,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $organization_position = '';
 
 	/**
+	 * True if the person is a manager of their organization
+	 *
+	 * @var bool
+	 */
+	protected $organization_manager = false;
+
+	/**
 	 * The timezone associated with this user.
 	 *
 	 * @var string
@@ -948,6 +955,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$pref['value'] = $value;
+		$this->_pref_loaded[] = $pref_name;
 		$this->_pref_values[$pref_name] = $value;
 
 		return $pref;
@@ -1765,8 +1773,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Organization $org
 	 * @param string $position
+	 * @param bool $manager
 	 */
-	public function setOrganization(Organization $org = null, $position = '')
+	public function setOrganization(Organization $org = null, $position = '', $manager = false)
 	{
 		$this->_updated_org = true;
 		if (!$org) {
@@ -1776,6 +1785,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->setModelField('organization', $org);
 		$this->setModelField('organization_position', $position);
+		$this->setModelField('organization_manager', $manager);
 	}
 
 
@@ -2116,6 +2126,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
 		$metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position', ));
+		$metadata->mapField(array( 'fieldName' => 'organization_manager', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_manager', ));
 		$metadata->mapField(array( 'fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'timezone', ));
 		$metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false, ));
 		$metadata->mapField(array( 'fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_scheme', 'dpqlAccess' => false, 'dpApi' => false, ));

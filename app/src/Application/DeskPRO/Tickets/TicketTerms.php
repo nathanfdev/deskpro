@@ -1093,6 +1093,23 @@ class TicketTerms
 				}
 				break;
 
+			case 'org_manager':
+				if (!$org) {
+					if ($op == self::OP_IS) {
+						return false;
+					}
+				} else {
+					$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($org);
+					$exists = count($managers) > 0;
+
+					if ($op == self::OP_IS && !$exists) {
+						return false;
+					} else if ($op == self::OP_NOT && $exists) {
+						return false;
+					}
+				}
+				break;
+
 			default:
 				$e = new \InvalidArgumentException("Unknown trigger criteria: " . $term);
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);

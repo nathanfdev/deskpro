@@ -54,6 +54,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
 		$field_manager = $this->container->getSystemService('person_fields_manager');
 
+		$is_org_manager = ($this->person->organization && $this->person->organization_manager);
+
 		$invalid_name = false;
 		$profile_saved = false;
 		$invalid_custom_fields = array();
@@ -73,9 +75,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$errors = $field->getHandler()->validateFormData($custom_fields ?	: array());
 				foreach ($errors as $code) {
 					$invalid_custom_fields['field_' . $field->getId()] = true;
-					$invalid_custom_fields['field_' . $field->getId() . '.' . $code] = true;
+					$invalid_custom_fields[$code] = true;
 					$is_valid = false;
 				}
+			}
+
+			if ($is_org_manager) {
+				$this->person->setPreference('org.manager_auto_add', $this->in->getBool('org_manager_auto_add') ? 1 : 0);
 			}
 
 			if ($is_valid) {
@@ -101,6 +107,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'profile_saved'      => $profile_saved,
 			'custom_fields'      => $custom_fields,
 			'invalid_custom_fields' => $invalid_custom_fields,
+			'is_org_manager'     => $is_org_manager,
+			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add'))
 		));
 	}
 

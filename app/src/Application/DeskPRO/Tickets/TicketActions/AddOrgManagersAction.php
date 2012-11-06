@@ -29,74 +29,70 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-use Orb\Util\Numbers;
-
-class TicketAccessCode extends AbstractEntityRepository
+class AddOrgManagersAction extends AbstractAction
 {
-	public function findByAccessCode($access_code)
+	public function __construct() {}
+
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
 	{
-		$info = Entity\TicketAccessCode::decodeAccessCode($access_code);
-		if (!$info) {
-			return null;
+		if (!$ticket->organization) {
+			return;
 		}
 
-		try {
-			$rec = $this->getEntityManager()->createQuery("
-				SELECT tac
-				FROM DeskPRO:TicketAccessCode tac
-				WHERE tac.id = :access_code_id AND tac.auth = :auth
-			")->setParameters($info)->setMaxResults(1)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
+		$managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($ticket->organization);
+		foreach ($managers AS $manager) {
+			$ticket->addParticipantPerson($manager);
 		}
-
-		return $rec;
 	}
 
-	public function getTacArrayFromAccessCode($access_code)
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
 	{
-		$info = Entity\TicketAccessCode::decodeAccessCode($access_code);
-		if (!$info) {
-			return null;
-		}
-
-		$tac = App::getDb()->fetchAssoc("
-			SELECT *
-			FROM ticket_access_codes
-			WHERE id = ? AND auth = ?
-		", array($info['access_code_id'], $info['auth']));
-
-		if (!$tac) {
-			return null;
-		}
-
-		return $tac;
+		return array(
+			array('action' => 'add_org_managers')
+		);
 	}
 
-	public function findByTicketAndPerson($ticket, $person)
-	{
-		if (!$person->id || !$ticket->id) {
-			return null;
-		}
-		try {
-			$rec = $this->getEntityManager()->createQuery("
-				SELECT tac
-				FROM DeskPRO:TicketAccessCode tac
-				WHERE tac.ticket = ?1 AND tac.person = ?2
-			")->setParameters(array(1=>$ticket, 2=>$person))->setMaxResults(1)->getSingleResult();
 
-			return $rec;
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		$tr = App::getTranslator();
+
+		return $tr->phrase('agent.tickets.add_org_managers_action');
 	}
 }
