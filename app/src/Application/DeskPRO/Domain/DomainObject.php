@@ -51,6 +51,13 @@ abstract class DomainObject extends BasicDomainObject
 
 	protected $_api_mode = self::API_MODE_OPT_OUT;
 
+	/**
+	 * Causes error to be logged when the object is persisted.
+	 *
+	 * @var bool
+	 */
+	private $_no_persist = false;
+
 
 	/**
 	 * @return \Doctrine\ORM\EntityRepository
@@ -186,5 +193,14 @@ abstract class DomainObject extends BasicDomainObject
 		}
 
 		return $values;
+	}
+
+	public function _setNoPersist()
+	{
+		$this->_no_persist = true;
+	}
+	public function _isNoPersist()
+	{
+		return $this->_no_persist;
 	}
 }

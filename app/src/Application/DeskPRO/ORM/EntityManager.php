@@ -37,6 +37,7 @@ namespace Application\DeskPRO\ORM;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Configuration;
 use Doctrine\Common\EventManager;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\ORM\UnitOfWork;
 use Application\DeskPRO\ORM\Proxy\ProxyFactory;
 use Application\DeskPRO\ORM\Unprivate\UnprivateEntityManager;
@@ -74,6 +75,14 @@ class EntityManager extends UnprivateEntityManager
 			$id    = isset($entity['id']) ? $entity['id'] : '0';
 			$trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace(debug_backtrace());
 			$logger->logDebug("Persist: $type :: $id\n$trace\n\n");
+		}
+
+		if ($entity instanceof DomainObject) {
+			if ($entity->_isNoPersist()) {
+				$e = new \InvalidArgumentException("Entity marked as no persist: " . get_class($entity) . " (id: " . $entity->getId());
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
+				return;
+			}
 		}
 
 		parent::persist($entity);

@@ -400,6 +400,7 @@ class TicketChangeTracker extends ChangeTracker
 
 		$this->original_ticket = clone $this->ticket;
 		$this->original_ticket->id = null;
+		$this->original_ticket->_setNoPersist();
 
 		foreach ($this->getAllChangedProperties() as $prop => $info) {
 			$action = null;
