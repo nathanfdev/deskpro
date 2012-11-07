@@ -566,6 +566,11 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		// Dont send logs about bad file attachments
+		if (strpos($errstr, 'failed to open stream') !== false && (strpos($errstr, '/FileDescriptor/Filesystem.php') !== false || strpos($errstr, '\\FileDescriptor\\Filesystem.php') !== false)) {
+			$no_send_error = true;
+		}
+
 		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
