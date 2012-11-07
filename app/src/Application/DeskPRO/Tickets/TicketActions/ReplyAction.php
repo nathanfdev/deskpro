@@ -82,6 +82,29 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->person_context) {
+			if ($ticket->agent) {
+				$this->person_context = $ticket->agent;
+			} else {
+				// Try to find last agent to replied in tikcet
+				$agent_id = App::getDb()->fetchColumn("
+					SELECT tickets_messages.person_id
+					FROM tickets_messages
+					LEFT JOIN people ON (people.id = tickets_messages.person_id)
+					WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
+					ORDER BY tickets_messages.id DESC
+				");
+
+				if ($agent_id) {
+					$this->person_context = App::getDataService('Agent')->get($agent_id);
+				}
+			}
+		}
+
+		if (!$this->person_context) {
+			return;
+		}
+
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
 		$message['message'] = $this->reply_text;
