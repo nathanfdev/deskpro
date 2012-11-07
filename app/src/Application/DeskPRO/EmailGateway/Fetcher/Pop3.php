@@ -49,6 +49,11 @@ class Pop3 extends AbstractFetcher
 	protected $message_list = null;
 
 	/**
+	 * @var array
+	 */
+	protected $message_list_ids = array();
+
+	/**
 	 * Initiates the connection
 	 *
 	 * @return \Zend\Mail\Storage\Pop3
@@ -91,14 +96,58 @@ class Pop3 extends AbstractFetcher
 			return;
 		}
 
-		$list = $this->getStorage()->getSize();
+		if ($this->gateway->keep_read) {
+			if (!$this->getStorage()->canUniqueId()) {
+				$this->logger->log("Gateway does not support unique but keep_read is enabled. Capabilities: " . implode(', ', $this->getStorage()->getProtocolCapabilities()), 'debug');
 
-		$this->message_list = array();
-		foreach ($list as $num => $size) {
-			$this->message_list[] = array('num' => $num, 'size' => $size);
+				$e = new \InvalidArgumentException("Gateway does not support uniqueid");
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				$einfo['no_send_error'] = true;
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+
+				$this->message_list = array();
+				return;
+			}
+
+			$id_to_num = array_flip($this->getStorage()->getUniqueId());
+
+			$this->logger->log("Server has " . count($id_to_num) . " messages", 'debug');
+
+			$read_ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM email_uids
+				WHERE gateway_id = ?
+			", array($this->gateway->getId()));
+
+			$this->logger->log("System has " . count($read_ids) . " tracked IDs", 'debug');
+
+			foreach ($read_ids as $id) {
+				unset($id_to_num[$id]);
+			}
+
+			$this->message_list_ids  = array_flip($id_to_num);
+
+			$list = $this->getStorage()->getSize();
+
+			$this->message_list = array();
+			foreach ($list as $num => $size) {
+				if (isset($this->message_list_ids[$num])) {
+					$this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => $this->message_list_ids[$num]);
+				}
+			}
+
+			$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
+
+		} else {
+			$list = $this->getStorage()->getSize();
+
+			$this->message_list = array();
+			foreach ($list as $num => $size) {
+				$this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => null);
+			}
+
+			$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
 		}
-
-		$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
 	}
 
 	/**
@@ -121,13 +170,15 @@ class Pop3 extends AbstractFetcher
 
 		$message_size = $next['size'];
 		$message_num  = $next['num'];
+		$message_id   = $next['uid'];
 
 		$start_time = microtime(true);
 
 		$this->logger->log("Fetching message $message_num", 'debug');
 
 		$raw_message = new RawMessage();
-		$raw_message->id = $message_num;
+		$raw_message->id   = $message_num;
+		$raw_message->uid  = $message_id;
 		$raw_message->size = $message_size;
 
 		$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
@@ -150,7 +201,7 @@ class Pop3 extends AbstractFetcher
 			$raw_message->too_big = true;
 		}
 
-		$this->logger->log(sprintf("Got message [1]. Took %0.2f seconds.", microtime(true) - $start_time), 'debug');
+		$this->logger->log(sprintf("Got message %d %s. Took %0.2f seconds.", $message_num, $message_id, microtime(true) - $start_time), 'debug');
 
 		return $raw_message;
 	}

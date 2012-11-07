@@ -78,6 +78,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * The message UID.
+	 *
+	 * @var null
+	 */
+	protected $uid = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Blob
 	 */
 	protected $blob = null;
@@ -272,6 +279,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid' ));
 		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
 		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
 		$metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));

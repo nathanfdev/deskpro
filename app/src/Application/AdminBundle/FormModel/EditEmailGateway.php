@@ -48,6 +48,7 @@ class EditEmailGateway
 
 	public $gateway_type = 'tickets';
 	public $is_enabled = true;
+	public $keep_read = false;
 	public $address = '';
 
 	/**
@@ -81,6 +82,7 @@ class EditEmailGateway
 
 		$this->gateway_type = $gateway->gateway_type;
 		$this->is_enabled = $gateway->is_enabled;
+		$this->keep_read = $gateway->keep_read;
 
 		if ($gateway->linked_transport) {
 			$this->define_transport = true;

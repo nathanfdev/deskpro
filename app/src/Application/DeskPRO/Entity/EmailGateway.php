@@ -90,6 +90,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * @var bool
+	 */
+	protected $keep_read = false;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $addresses;
@@ -267,6 +272,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'connection_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'connection_options', ));
 		$metadata->mapField(array( 'fieldName' => 'gateway_type', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gateway_type', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
+		$metadata->mapField(array( 'fieldName' => 'keep_read', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'keep_read', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_check', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToMany(array( 'fieldName' => 'addresses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'gateway', 'orderBy' => array('run_order' => 'ASC') ));

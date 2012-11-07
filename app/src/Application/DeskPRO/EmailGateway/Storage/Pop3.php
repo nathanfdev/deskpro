@@ -42,6 +42,11 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 	const ERR_CONNECT = 1;
 	const ERR_LOGIN = 2;
 
+	/**
+	 * @var array
+	 */
+	protected $capa_res = null;
+
 	public function __construct($params)
     {
         if (is_array($params)) {
@@ -86,6 +91,24 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 			throw $new_e;
 		}
     }
+
+	public function getProtocolCapabilities()
+	{
+		if ($this->capa_res !== null) {
+			return $this->capa_res;
+		}
+
+		$this->capa_res = $this->getProtocol()->capa();
+		$this->capa_res = \Orb\Util\Arrays::func($this->capa_res, 'trim');
+		$this->capa_res = \Orb\Util\Arrays::removeFalsey($this->capa_res);
+
+		return $this->capa_res;
+	}
+
+	public function canUniqueId()
+	{
+		return in_array('UIDL', $this->getProtocolCapabilities());
+	}
 
 	public function getProtocol()
 	{

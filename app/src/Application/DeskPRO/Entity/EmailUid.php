@@ -29,53 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
+ * @category Entities
  */
 
-namespace Application\AdminBundle\Form;
+namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
-use Orb\Util\Arrays;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
-
-class EditEmailGateway extends AbstractType
+/**
+ * Stores the IDs of messages we've already processed
+ */
+class EmailUid extends \Application\DeskPRO\Domain\DomainObject
 {
+	/**
+	 * @var int
+	 */
+	protected $id = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 */
+	protected $gateway = null;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_created;
+
 	public function __construct()
 	{
-
+		$this->date_created = new \DateTime();
 	}
 
-	public function buildForm(FormBuilder $builder, array $options)
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$builder->add('connection_type', 'text');
-		$builder->add('gateway_type', 'text');
-		$builder->add('is_enabled', 'checkbox', array('required' => false));
-		$builder->add('keep_read', 'checkbox', array('required' => false));
-		$builder->add('define_transport', 'checkbox', array('required' => false));
-		$builder->add('address', 'text', array('required' => false));
-
-		$options_form = $builder->create('pop3_options', 'form');
-		$options_form->add('host', 'text', array('required' => false));
-		$options_form->add('username', 'text', array('required' => false));
-		$options_form->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
-		$options_form->add('port', 'text', array('required' => false));
-		$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
-		$builder->add($options_form);
-
-		$options_form = $builder->create('gmail_options', 'form');
-		$options_form->add('username', 'text', array('required' => false));
-		$options_form->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
-		$builder->add($options_form);
-	}
-
-	public function getName()
-	{
-		return 'gateway';
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array(
+			'name' => 'email_uids'
+		));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array( 'fieldName' => 'gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'gateway_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

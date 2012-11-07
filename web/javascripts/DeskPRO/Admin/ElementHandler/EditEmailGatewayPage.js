@@ -14,9 +14,18 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 
 		$('input.connection-type').on('click', function(ev) {
 			if ($(this).val() == 'pop3') {
-
+				self.el.find('.show-pop3').show();
+				self.el.find('.hide-pop3').hide();
+			} else if ($(this).val() == 'gmail') {
+				self.el.find('.show-gmail').show();
+				self.el.find('.hide-gmail').hide();
+			} else if ($(this).val() == 'mail') {
+				self.el.find('.show-phpmail').show();
+				self.el.find('.hide-phpmail').hide();
 			}
 		});
+
+		DP.select($('#linked_department_id'));
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#test_gateway_settings_overlay'),

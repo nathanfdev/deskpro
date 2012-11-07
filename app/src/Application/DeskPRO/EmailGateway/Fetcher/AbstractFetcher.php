@@ -205,6 +205,16 @@ abstract class AbstractFetcher
 			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_message->headers) ?: '';
 			$source->object_type    = 'ticket';
 
+			if ($raw_message->uid) {
+				$source->uid = $raw_message->uid;
+
+				App::getDb()->insert('email_uids', array(
+					'id'           => $raw_message->uid,
+					'gateway_id'   => $this->gateway->getId(),
+					'date_created' => date('Y-m-d H:i:s')
+				));
+			}
+
 			if ($raw_message->too_big) {
 				$desc = App::getSystemService('filestorage')->createRandomPath();
 				$desc->write($raw_message->content, array(

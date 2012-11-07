@@ -38,7 +38,15 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
  */
 class RawMessage
 {
+	/**
+	 * @var int
+	 */
 	public $id;
+
+	/**
+	 * @var string
+	 */
+	public $uid;
 
 	/**
 	 * Just the header portion of the message

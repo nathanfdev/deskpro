@@ -203,7 +203,7 @@
 					</div>
 
 					{% if get_instance_ability('can_use_google_apps') %}
-					<div class="dp-input-group">
+					<div class="dp-input-group hide-pop3">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
 							{{ phrase('admin.general.google_apps') }}
@@ -242,12 +242,25 @@
 		</div>
 	</div>
 
+	<div class="dp-form-row show-pop3 hide-gmail">
+		<div class="dp-form-label">
+			<label>Keep Messages</label>
+		</div>
+		<div class="dp-form-input">
+			<label>
+				{{ form_widget(form.keep_read) }}
+				When this option is enabled, processed messages will not be deleted off of the mail server.
+				For efficiency reasons,	it is recommended keep this option <em>off</em>, especially for mailboxes with large volumes of mail.
+			</label>
+		</div>
+	</div>
+
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>Linked Department</label>
 		</div>
 		<div class="dp-form-input">
-			<select name="department_id">
+			<select name="department_id" id="linked_department_id">
 				<option value="0" {% if not gateway.department and not selected_department_id %}selected="selected"{% endif %}>Do not link a department</option>
 				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
 					{% if dep.children|length %}
