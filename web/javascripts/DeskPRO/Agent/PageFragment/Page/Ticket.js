@@ -861,6 +861,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	doTicketSpam: function(doBan) {
 		var self = this;
 
+		this.getEl('actions_loading').show();
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/spam',
 			type: 'POST',
@@ -869,6 +871,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				ban: doBan ? 1 : 0
 			},
 			success: function(data) {
+				self.getEl('actions_loading').hide();
+
 				DeskPRO_Window.removePage(self);
 
 				// Reload the ticket page
