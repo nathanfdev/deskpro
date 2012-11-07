@@ -43,8 +43,8 @@ unset($mem_size);
 
 define('DP_REAL_MAX_EXEC_TIME', @ini_get('max_execution_time'));
 $max_time = DP_REAL_MAX_EXEC_TIME;
-if (!$max_time || $max_time < 40) {
-	@set_time_limit(40);
+if (!$max_time || $max_time < 60) {
+	@set_time_limit(60);
 }
 unset($max_time);
 

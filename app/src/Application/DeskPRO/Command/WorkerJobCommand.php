@@ -64,6 +64,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		@ini_set('track_errors', true);
+		@set_time_limit(600);
+
 		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
 
 		if ($input->getOption('info')) {
