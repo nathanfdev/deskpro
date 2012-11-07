@@ -237,22 +237,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$success = false;
 			}
 
-			if (!$success) {
-				try {
-					$backup_tr = $this->getTransportForMessage($message, true);
-
-					if ($backup_tr) {
-
-						$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Trying backup transport: %s", get_class($backup_tr)));
-
-						if (!$backup_tr->isStarted()) $backup_tr->start();
-						$success = $backup_tr->send($message, $failedRecipients);
-					}
-				} catch (\Swift_TransportException $e) {
-					$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Backup send failed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
-					$success = false;
-				}
-			}
 
 			if (!$success) {
 				$this->getLogger()->logInfo("[DelegatingTransport] Send failed");
@@ -289,10 +273,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 * Given a message, inspect the 'From' address to see which transport we sholud use to send it.
 	 *
 	 * @param \Swift_Mime_Message $message
-	 * @param bool $get_backup_transport
 	 * @return \Swift_MailTransport
 	 */
-	public function getTransportForMessage(\Swift_Mime_Message $message, $get_backup_transport = false)
+	public function getTransportForMessage(\Swift_Mime_Message $message)
 	{
 		$from_address_model = $message->getFrom();
 		$from_address = array_keys($from_address_model);
@@ -312,7 +295,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		$address = $matcher->getMatchingAddress($from_address);
 
 		// See if it matches a gateway account which can be linked to transport
-		if (!$get_backup_transport && $gateway_address = $matcher->getMatchingAddress($from_address)) {
+		if ($gateway_address = $matcher->getMatchingAddress($from_address)) {
 			$gateway = $gateway_address->gateway;
 			if ($gateway && $gateway->linked_transport) {
 				$this->getLogger()->logDebug("[DelegatingTransport] Matched gateway account {$gateway->id} with linked transport {$gateway->linked_transport->id}");
@@ -340,7 +323,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 				// We have an address, but that address might not have a transport. So we do this here
 				// to decide if we need to revert back to a default gateway address which is figured out next
-				$tr = $this->getTransportForFromAddress($from_address, $get_backup_transport, true);
+				$tr = $this->getTransportForFromAddress($from_address, true);
 				if ($tr) {
 					$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Got transport"));
 					return $tr;
@@ -367,16 +350,15 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 		$this->getLogger()->logDebug("[DelegatingTransport] From address is $from_address");
 
-		return $this->getTransportForFromAddress($from_address, $get_backup_transport);
+		return $this->getTransportForFromAddress($from_address);
 	}
 
 
 	/**
 	 * @param string $from_address
-	 * @param bool $get_backup_transport
 	 * @return null|\Swift_MailTransport
 	 */
-	public function getTransportForFromAddress($from_address, $get_backup_transport = false, $no_default = false)
+	public function getTransportForFromAddress($from_address, $no_default = false)
 	{
 		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage finding address: %s", $from_address));
 
@@ -385,11 +367,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage found transport %s", $from_account->getId()));
 
-			if ($get_backup_transport) {
-				$tr = null;
-			} else {
-				$tr = $from_account->getTransport();
-			}
+			$tr = $from_account->getTransport();
 		} else {
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] getTransportForMessage NO ACCOUNT FOUND"));
 

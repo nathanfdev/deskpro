@@ -31,7 +31,6 @@
 			<tr>
 				<th style="text-align:left">&nbsp; {{ phrase('admin.gateway.use_criteria') }}</th>
 				<th style="text-align:left">{{ phrase('admin.general.account') }}</th>
-				<th style="text-align:left">{{ phrase('admin.gateway.backup_account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>
@@ -45,17 +44,6 @@
 						{% elseif transport.match_type == 'all' %}{{ phrase('agent.general.default') }}{% endif %}
 					</td>
 					<td>{{ transport.title }}</td>
-					<td>
-						{% if transport.backup_transport_type %}
-							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
-							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.gateway.from_google', {'pattern':transport.backup_transport_options.username}) }}
-							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.general.php_mail') }}
-							{% else %}{{ transport.backup_transport_type }}
-							{% endif %}
-						{% else %}
-							{{ phrase('agent.general.none') }}
-						{% endif %}
-					</td>
 					<td style="padding: 3px 3px 0 0">
 						{% if transport.match_type == 'all' %}
 							<a href="{{ path('admin_emailtrans_setup') }}"><span class="btn-edit-gear"></span></a>

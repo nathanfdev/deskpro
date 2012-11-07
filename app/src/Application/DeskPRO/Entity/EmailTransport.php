@@ -90,19 +90,6 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	protected $transport_options = array();
 
 	/**
-	 * The type of transport
-	 *
-	 * @var string
-	 */
-	protected $backup_transport_type = '';
-
-	/**
-	 * Options for the transport
-	 *
-	 */
-	protected $backup_transport_options = array();
-
-	/**
 	 * @var int
 	 */
 	protected $run_order = 0;
@@ -111,11 +98,6 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Swift_Transport
 	 */
 	protected $_transport = null;
-
-	/**
-	 * @var \Swift_Transport
-	 */
-	protected $_backup_transport = null;
 
 	/**
 	 * @return int
@@ -141,17 +123,6 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_transport;
-	}
-
-	/**
-	 * @return \Swift_Transport
-	 */
-	public function getBackupTransport()
-	{
-		if (!$this->backup_transport_type) return null;
-		if ($this->_backup_transport !== null) return $this->_backup_transport;
-		$this->_backup_transport = self::createTransport($this->backup_transport_type, $this->backup_transport_options);
-		return $this->_backup_transport;
 	}
 
 
@@ -256,8 +227,6 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'match_pattern', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'match_pattern', ));
 		$metadata->mapField(array( 'fieldName' => 'transport_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'transport_type', ));
 		$metadata->mapField(array( 'fieldName' => 'transport_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'transport_options', ));
-		$metadata->mapField(array( 'fieldName' => 'backup_transport_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'backup_transport_type', ));
-		$metadata->mapField(array( 'fieldName' => 'backup_transport_options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'backup_transport_options', ));
 		$metadata->mapField(array( 'fieldName' => 'run_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_order', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}

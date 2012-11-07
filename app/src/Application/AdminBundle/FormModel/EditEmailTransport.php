@@ -50,11 +50,6 @@ class EditEmailTransport
 	public $smtp_options = array();
 	public $gmail_options = array();
 
-	public $use_backup;
-	public $backup_transport_type;
-	public $backup_smtp_options = array();
-	public $backup_gmail_options = array();
-
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailTransport
 	 */
@@ -79,14 +74,7 @@ class EditEmailTransport
 			$this->gmail_options = $transport->transport_options;
 		}
 
-		if ($transport->backup_transport_type == 'smtp') {
-			$this->backup_smtp_options = $transport->backup_transport_options;
-		} elseif ($transport->backup_transport_type == 'gmail') {
-			$this->backup_gmail_options = $transport->backup_transport_options;
-		}
-
 		if (!isset($this->smtp_options['port'])) $this->smtp_options['port'] = 25;
-		if (!isset($this->backup_smtp_options['port'])) $this->backup_smtp_options['port'] = 25;
 	}
 
 	public function apply()
@@ -110,21 +98,6 @@ class EditEmailTransport
 			$this->transport->transport_options = $this->gmail_options;
 		} else {
 			$this->transport->title = 'PHP mail()';
-		}
-
-		if ($this->backup_transport_type && $this->use_backup) {
-			$this->transport->backup_transport_type = $this->backup_transport_type;
-			if ($this->backup_transport_type == 'smtp') {
-				$this->transport->backup_transport_options = $this->backup_smtp_options;
-			} elseif ($this->backup_transport_type == 'gmail') {
-				$this->transport->backup_transport_options = $this->backup_gmail_options;
-			} else {
-				$this->transport->backup_transport_type = 'mail';
-				$this->transport->backup_transport_options = array();
-			}
-		} else {
-			$this->transport->backup_transport_type = '';
-			$this->transport->backup_transport_options = array();
 		}
 
 		if ($this->match_type == 'any') {

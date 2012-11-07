@@ -176,11 +176,7 @@ class EmailTransportsController extends AbstractController
 		$edittrans->apply();
 
 		try {
-			if ($this->in->getBool('backup')) {
-				$tr = $transport->getBackupTransport();
-			} else {
-				$tr = $transport->getTransport();
-			}
+			$tr = $transport->getTransport();
 
 			$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.default_from_email' => $this->in->getString('send_from')));
 
