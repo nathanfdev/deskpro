@@ -2,6 +2,18 @@
  # The form displayed to get user feedback of a ticket message. This is in a popup window.
  ##}
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	{% if setrating %}
+		<script type="text/javascript">
+		$(document).ready(function() {
+			$.ajax({
+				url: '{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, 'rating': feedback.rating, 'save': 1})|replace({'&amp;': '&'})|raw }}',
+				type: 'GET'
+			});
+		});
+		</script>
+	{% endif %}
+{% endblock %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>

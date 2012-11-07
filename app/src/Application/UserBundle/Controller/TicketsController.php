@@ -382,20 +382,27 @@ class TicketsController extends AbstractController
 		if ($rating !== null) {
 			$feedback->setRating($this->in->getInt('rating'));
 
-			$last_message_id = App::getDb()->fetchColumn("
-				SELECT message_id FROM ticket_feedback
-				WHERE ticket_id = ?
-				ORDER BY message_id DESC
-				LIMIT 1
-			", array($ticket->getId()));
+			if ($this->in->getBool('save')) {
+				$last_message_id = App::getDb()->fetchColumn("
+					SELECT message_id FROM ticket_feedback
+					WHERE ticket_id = ?
+					ORDER BY message_id DESC
+					LIMIT 1
+				", array($ticket->getId()));
 
-			if (!$last_message_id || $message->getId() >= $last_message_id) {
-				$ticket->feedback_rating = $feedback->rating;
-				$this->em->persist($ticket);
+				if (!$last_message_id || $message->getId() >= $last_message_id) {
+					$ticket->feedback_rating = $feedback->rating;
+					$this->em->persist($ticket);
+				}
+
+				$this->em->persist($feedback);
+				$this->em->flush();
+
+				// AJAX request used to auto-save rating as soon as user clicked link
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array('success' => true));
+				}
 			}
-
-			$this->em->persist($feedback);
-			$this->em->flush();
 		}
 
 		return $this->render('UserBundle:Tickets:feedback.html.twig', array(
