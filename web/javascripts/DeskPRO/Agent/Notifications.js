@@ -32,7 +32,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			return;
 		}
 
-		$('time.timeago', row).text('').attr('datetime', (new Date()).toUTCString());
+		$('time.timeago', row).text('').attr('datetime', (new Date()).toISOString());
 		DeskPRO_Window.initInterfaceServices(row);
 
 		var ev = { row: row, type: type };
