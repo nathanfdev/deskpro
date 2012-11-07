@@ -28,13 +28,23 @@
 
 {% if is_setup %}
 	{{ design.helpbox() }}
-		<p>
-            {{ phrase('admin.gateway.notice_1') }}
-		</p>
-
-		<p>
-            {{ phrase('admin.gateway.notice_2') }}
-		</p>
+		<div style="padding: 10px;">
+			<p>
+				<em>
+					To manage turning incoming email into tickets, please visit the <a href="{{ path('admin_emailgateways') }}">Ticket Email Accounts</a> configuration page.
+				</em>
+			</p>
+			<p>
+				The default mail account is used to send automated emails to users. Examples of the type of emails sent include:<br/>
+				&bull; Password reset links<br/>
+				&bull; Email confirmations from the feedback system<br/>
+				&bull; Registration confirmation emails<br/>
+			</p>
+			<p>
+				You may wish to set the default mail account as an unmonitored account, for example no-reply@{{ app.getSetting('core.deskpro_url')|url_domain }}.
+				Alternatively, you may want to set it as a mail account you have <a href="{{ path('admin_emailgateways') }}">setup to read incoming email</a> from. If you do you should be prepared to receive occasional bounced emails from users creating tickets.
+			</p>
+		</div>
 	{{ design.helpbox_end() }}
 {% endif %}
 
