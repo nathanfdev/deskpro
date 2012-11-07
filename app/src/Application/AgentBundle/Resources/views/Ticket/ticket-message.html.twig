@@ -48,7 +48,7 @@
 			{%endif%}
 			<div class="fade-bar"></div>
 		</div>
-		{% if all_feedback[message.id] %}
+		{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">
                 {{ feedback.person.display_name }} rated this message as

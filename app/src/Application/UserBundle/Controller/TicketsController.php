@@ -510,7 +510,7 @@ class TicketsController extends AbstractController
 				")->setParameter(0, $ticket)->setMaxResults(1)->getOneOrNullResult();
 			}
 
-			if (!$ticket->date_feedback_rating && $ticket_message) {
+			if (App::getSetting('core.tickets.enable_feedback') && !$ticket->date_feedback_rating && $ticket_message) {
 				return $this->redirectRoute('user_tickets_feedback', array('resolved' => 1, 'ticket_ref' => $ticket->getPublicId(), 'auth' => $ticket->getAuth(), 'message_id' => $ticket_message->getId()));
 			} else {
 				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));

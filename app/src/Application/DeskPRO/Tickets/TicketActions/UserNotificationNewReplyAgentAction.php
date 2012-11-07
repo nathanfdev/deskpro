@@ -82,7 +82,9 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			|| !$this->via_message->person->is_agent
 			|| $this->via_message->person->getId() == $ticket->person->getId()
 		) {
-			$vars['show_rating_link'] = false;
+			if (App::getSetting('core.tickets.enable_feedback')) {
+				$vars['show_rating_link'] = false;
+			}
 		}
 
 		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-agent.html.twig');
