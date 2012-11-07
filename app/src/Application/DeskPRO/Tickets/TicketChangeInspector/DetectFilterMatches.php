@@ -214,6 +214,12 @@ class DetectFilterMatches
 
 		foreach ($filters as $filter) {
 
+			// If the filter is the recycle bin and we are nuking the ticket,
+			// then dont show it entering the list
+			if ($filter->sys_name == 'archive_deleted' && $this->tracker->isExtraSet('is_physical_delete')) {
+				continue;
+			}
+
 			$changed[$filter->id] = array(
 				'add' => array(),
 				'del' => array(),

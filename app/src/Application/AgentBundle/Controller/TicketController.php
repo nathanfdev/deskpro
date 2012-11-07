@@ -1890,6 +1890,21 @@ class TicketController extends AbstractController
 			'date_created' => date('Y-m-d H:i:s')
 		));
 
+		$this->em->getConnection()->beginTransaction();
+
+		if ($this->in->getBool('ban')) {
+			$ticket->getTicketLogger()->recordExtra('is_physical_delete', true);
+		}
+
+		try {
+			$ticket->setStatus('hidden.deleted');
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
 		if ($this->in->getBool('ban')) {
 			foreach ($ticket->person->emails as $email) {
 				$email_addy = strtolower($email->email);
@@ -1903,17 +1918,6 @@ class TicketController extends AbstractController
 			$edit_manager = $this->container->getSystemService('person_edit_manager');
 			$edit_manager->setPersonContext($this->person);
 			$edit_manager->deleteUser($person);
-		} else {
-			$this->em->getConnection()->beginTransaction();
-
-			try {
-				$ticket->setStatus('hidden.deleted');
-				$this->em->flush();
-				$this->em->getConnection()->commit();
-			} catch (\Exception $e) {
-				$this->em->getConnection()->rollback();
-				throw $e;
-			}
 		}
 
 		return $this->createJsonResponse(array(
