@@ -7,6 +7,8 @@ pageMeta.ticket_id = 0;
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer_new') %}true{% else %}false{% endif %};
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -226,6 +228,46 @@ pageMeta.baseId = '{{ baseId }}';
 		</article>
 	</section>
 </div>
+
+{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_new') %}
+<div class="profile-box-container reply-box-wrap" style="position: relative">
+	<header>
+		<h4>Billing</h4>
+	</header>
+	<section class="ticketreply">
+		<article id="{{baseId}}_headerbox_box_billing" class="headerbox">
+			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form" id="{{ baseId }}_billing_form">
+			<tr>
+				<th width="80">Charge</th>
+				<td>
+					<ul class="billing-types">
+						<li>
+							<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />Amount:</label>
+							<input type="text" id="{{ baseId }}_billing_amount" name="newticket[billing_amount]" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
+						</li>
+						<li>
+							<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />Time:</label>
+							<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
+								<input type="text" id="{{ baseId }}_billing_hours" name="newticket[billing_hours]" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="newticket[billing_minutes]" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="newticket[billing_seconds]" size="2" placeholder="S" maxlength="2" />
+							</span>
+							<span class="billing-form-buttons">
+								<button class="clean-white" id="{{ baseId }}_billing_stop">Stop</button>
+								<button class="clean-white" id="{{ baseId }}_billing_reset">Reset</button>
+							</span>
+						</li>
+						<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="newticket[billing_type]" value="time" />
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th>Comment</th>
+				<td><input type="text" id="{{ baseId }}_billing_comment" name="newticket[billing_comment]" style="width: 98%" maxlength="255" /></td>
+			</tr>
+			</table>
+		</article>
+	</section>
+</div>
+{% endif %}
 
 <div class="profile-box-container reply-box-wrap" style="position: relative" id="{{baseId}}_message_box">
 	<div class="ticket-sending-overlay" style="display: none">

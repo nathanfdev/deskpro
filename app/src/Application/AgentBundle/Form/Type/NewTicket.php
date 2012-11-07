@@ -73,6 +73,13 @@ class NewTicket extends AbstractType
 		$builder->add('workflow_id', 'text', array('required' => false));
 		$builder->add('product_id', 'text', array('required' => false));
 
+		$builder->add('billing_type', 'hidden', array('required' => false));
+		$builder->add('billing_amount', 'hidden', array('required' => false));
+		$builder->add('billing_hours', 'hidden', array('required' => false));
+		$builder->add('billing_minutes', 'hidden', array('required' => false));
+		$builder->add('billing_seconds', 'hidden', array('required' => false));
+		$builder->add('billing_comment', 'hidden', array('required' => false));
+
 		$builder->add('add_cc_person', 'collection', array(
 			'type' => 'hidden',
 			'required' => false,

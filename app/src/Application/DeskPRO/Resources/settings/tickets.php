@@ -12,6 +12,8 @@
 	'core_tickets.enable_billing' => 0,
 	'core_tickets.billing_on_reply' => 0,
 	'core_tickets.billing_auto_timer' => 0,
+	'core_tickets.billing_on_new' => 0,
+	'core_tickets.billing_auto_timer_new' => 0,
 	'core_tickets.billing_currency' => 'USD',
 
 	'core_tickets.enable_agent_rte' => true,

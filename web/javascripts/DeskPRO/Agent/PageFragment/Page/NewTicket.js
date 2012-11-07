@@ -25,6 +25,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 
+		var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
+			auto_start_bill: this.meta.auto_start_bill
+		});
+
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		//------------------------------

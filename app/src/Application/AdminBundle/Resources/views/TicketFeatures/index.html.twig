@@ -145,12 +145,23 @@
 			<div class="field_row">
 				<label>
 					<input type="checkbox" name="settings[core_tickets.billing_auto_timer]" {% if app.getSetting('core_tickets.billing_auto_timer') %}checked="checked"{% endif %} id="bill_auto_opt" />
-					Automatically start billing timer
+					Automatically start billing timer when viewing a ticket
 				</label>
 
 				<div id="show_reply_bill" style="margin-left: 15px; {% if not app.getSetting('core_tickets.billing_auto_timer') %}display: none;{% endif %}">
 					<label><input type="checkbox" name="settings[core_tickets.billing_on_reply]" {% if app.getSetting('core_tickets.billing_on_reply') %}checked="checked"{% endif %} />
 					Show billing on reply form</label>
+				</div>
+			</div>
+			<div class="field_row">
+				<label>
+					<input type="checkbox" name="settings[core_tickets.billing_on_new]" {% if app.getSetting('core_tickets.billing_on_new') %}checked="checked"{% endif %} id="billing_on_new" />
+					Show billing on new ticket
+				</label>
+
+				<div id="billing_auto_timer_new" style="margin-left: 15px; {% if not app.getSetting('core_tickets.billing_on_new') %}display: none;{% endif %}">
+					<label><input type="checkbox" name="settings[core_tickets.billing_auto_timer_new]" {% if app.getSetting('core_tickets.billing_auto_timer_new') %}checked="checked"{% endif %} />
+					Automatically start billing timer</label>
 				</div>
 			</div>
 			<div class="field_row">
@@ -163,6 +174,8 @@
 	<input type="hidden" name="set_settings[]" value="core_tickets.billing_on_reply" />
 	<input type="hidden" name="set_settings[]" value="core_tickets.billing_currency" />
 	<input type="hidden" name="set_settings[]" value="core_tickets.billing_auto_timer" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.billing_on_new" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.billing_auto_timer_new" />
 </div>
 
 <div class="setting_field_row">
@@ -462,6 +475,15 @@ $(document).ready(function() {
 		} else {
 			$('#show_reply_bill').slideUp();
 			$('#show_reply_bill').find(':checkbox').prop('checked', false);
+		}
+	});
+
+	$('#billing_on_new').on('click', function() {
+		if (this.checked) {
+			$('#billing_auto_timer_new').slideDown();
+		} else {
+			$('#billing_auto_timer_new').slideUp();
+			$('#billing_auto_timer_new').find(':checkbox').prop('checked', false);
 		}
 	});
 

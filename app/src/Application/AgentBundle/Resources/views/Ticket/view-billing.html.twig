@@ -20,12 +20,12 @@
 		<ul class="billing-types">
 			<li>
 				<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />Amount:</label>
-				<input type="text" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
+				<input type="text" id="{{ baseId }}_billing_amount" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
 			</li>
 			<li>
 				<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />Time:</label>
 				<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-					<input type="text" name="hours" size="2" placeholder="H" />:<input type="text" name="minutes" size="2" placeholder="M" maxlength="2" />:<input type="text" name="seconds" size="2" placeholder="S" maxlength="2" />
+					<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="minutes" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="seconds" size="2" placeholder="S" maxlength="2" />
 				</span>
 				<span class="billing-form-buttons">
 					<button class="clean-white" id="{{ baseId }}_billing_stop">Stop</button>
@@ -33,12 +33,12 @@
 				</span>
 			</li>
 		</ul>
-		<input type="hidden" name="billing_type" value="time" />
+		<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="billing_type" value="time" />
 	</td>
 </tr>
 <tr>
 	<th>Comment</th>
-	<td><input type="text" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+	<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
 </tr>
 <tr>
 	<th>&nbsp;</th>

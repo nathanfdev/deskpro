@@ -59,6 +59,13 @@ class NewTicket
 	public $workflow_id = 0;
 	public $product_id = 0;
 
+	public $billing_type = '';
+	public $billing_amount = 0;
+	public $billing_hours = 0;
+	public $billing_minutes = 0;
+	public $billing_seconds = 0;
+	public $billing_comment = '';
+
 	public $add_cc_person = array();
 	public $add_cc_newperson = array();
 	public $attach = array();
@@ -236,6 +243,20 @@ class NewTicket
 		$message->convertEmbeddedImagesToInlineAttach();
 
 		$ticket->addMessage($message);
+
+		switch ($this->billing_type) {
+			case 'amount':
+				$ticket->addCharge($this->_person_context, null, floatval($this->billing_amount), $this->billing_comment);
+				break;
+
+			case 'time':
+				$time = (
+					3600 * $this->billing_hours
+					+ 60 * $this->billing_minutes
+					+ $this->billing_seconds
+				);
+				$ticket->addCharge($this->_person_context, $time, null, $this->billing_comment);
+		}
 
 		$this->_em->persist($ticket);
 
