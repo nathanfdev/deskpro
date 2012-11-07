@@ -187,8 +187,11 @@
 								<thead>
 									<tr>
 										<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
-										<th width="60">
-											<a href="#" id="ticketdep_toggle_all" style="font-size:9px">Toggle All</a>
+										<th width="80">
+											<a href="#" id="ticketdep_toggle_all_full" class="tipped" title="Provides the agent full access to the department's tickets. Click to toggle all.">Full Access</a>
+										</th>
+										<th width="80">
+											<a href="#" id="ticketdep_toggle_all_assign" class="tipped" title="If full access is not provided, this controls whether agents can create or assign tickets to this department. Click to toggle all.">Assignment</a>
 										</th>
 									</tr>
 								</thead>
@@ -198,10 +201,14 @@
 											{% if dep.children|length %}
 												<td class="title title-group">{{ dep.title }}</td>
 												<td class="prop">&nbsp;</td>
+												<td class="prop">&nbsp;</td>
 											{% else %}
 												<td class="title">{{ dep.title }}</td>
 												<td class="prop ticket-choice">
 													<input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" />
+												</td>
+												<td class="prop ticket-assign-choice">
+													<input class="onoff-slider" type="checkbox" {% if agent_deps_assign[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ dep.id }}][tickets]" value="1" />
 												</td>
 											{% endif %}
 										</tr>
@@ -211,6 +218,9 @@
 													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
 													<td class="prop ticket-choice">
 														<input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" />
+													</td>
+													<td class="prop ticket-assign-choice">
+														<input class="onoff-slider" type="checkbox" {% if agent_deps_assign[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments_assign][{{ subdep.id }}][tickets]" value="1" />
 													</td>
 												</tr>
 											{% endfor %}

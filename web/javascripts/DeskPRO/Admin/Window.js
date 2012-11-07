@@ -111,6 +111,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		$.fn.qtip.zindex = 999999999;
+
 		var side = $('#dp_admin_page_sidebar, #dp_admin_page_sidebar_right').first();
 		if (side.length) {
 			$('#dp_admin_page_inner').css('min-height', side.outerHeight() + 150);

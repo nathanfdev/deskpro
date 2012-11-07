@@ -122,17 +122,20 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 		});
 	},
 
-	saveAgentPermissions: function(department_id, app, agent_ids) {
+	saveAgentPermissions: function(department_id, app, agents) {
 		var url = BASE_URL + 'admin/departments/' + department_id + '/save-agents.json';
 
 		var postData = [];
 		postData.push({name: 'app', value: app});
-		Array.each(agent_ids, function(id) {
-			postData.push({
-				name: 'agent_ids[]',
-				value: id
-			});
-		});
+
+		for (var i in agents) {
+			for (var j = 0; j < agents[i].length; j++) {
+				postData.push({
+					name: 'agents[' + i + '][]',
+					value: agents[i][j]
+				});
+			}
+		}
 
 		$.ajax({
 			url: url,

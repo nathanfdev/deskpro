@@ -26,7 +26,25 @@ DeskPRO.Admin.Departments.AgentSelector = new Orb.Class({
 
 				btn.text(words.join(', '));
 
-				self.fireEvent('updated', [self.department_id, self.el.data('app'), optionbox.getSelected('agents'), self]);
+				var agents = {};
+
+				var selected = optionbox.getSelected('agents');
+				for (var i = 0; i < selected.length; i++) {
+					if (!agents[selected[i]]) {
+						agents[selected[i]] = [];
+					}
+					agents[selected[i]].push('full');
+				}
+
+				selected = optionbox.getSelected('agents_assign');
+				for (var i = 0; i < selected.length; i++) {
+					if (!agents[selected[i]]) {
+						agents[selected[i]] = [];
+					}
+					agents[selected[i]].push('assign');
+				}
+
+				self.fireEvent('updated', [self.department_id, self.el.data('app'), agents, self]);
 			}
 		});
 	},

@@ -339,7 +339,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						});
 					}
 
-					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+					if (data.can_view) {
+						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+					}
 					this.closeSelf();
 				}
 			}

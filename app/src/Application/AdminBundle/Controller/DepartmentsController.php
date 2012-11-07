@@ -69,8 +69,9 @@ class DepartmentsController extends AbstractController
 		$teams      = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
 
-		$current_options_tickets = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('tickets');
-		$current_options_chat    = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('chat');
+		$current_options_tickets = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('tickets', 'full', 1);
+		$current_options_tickets_assign = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('tickets', 'assign', 1);
+		$current_options_chat    = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('chat', 'full', 1);
 
 		// Filter out non-agents
 		$filter_outer = function(&$array) use ($agents) {
@@ -98,6 +99,7 @@ class DepartmentsController extends AbstractController
 			'type' => $type,
 			'usergroups' => $usergroups,
 			'current_options_tickets' => $current_options_tickets,
+			'current_options_tickets_assign' => $current_options_tickets_assign,
 			'current_options_chat' => $current_options_chat,
 			'gateway_accounts' => $gateway_accounts,
 		));
@@ -134,17 +136,26 @@ class DepartmentsController extends AbstractController
 		$this->db->executeUpdate("
 			DELETE
 			FROM department_permissions
-			WHERE department_id = ? AND app = ? AND person_id IS NOT NULL
+			WHERE department_id = ?
+				AND app = ?
+				AND person_id IS NOT NULL
+				AND name IN ('full', 'assign') AND value = 1
 		", array($department_id, $app));
 
-		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+		$agents = $this->in->getCleanValueArray('agents', 'raw', 'uint');
 
-		if ($agent_ids) {
+		if ($agents) {
 			$this->db->beginTransaction();
 
-			if ($agent_ids) {
-				foreach ($agent_ids as $agent_id) {
-					$this->db->insert('department_permissions', array('department_id' => $department->id, 'person_id' => $agent_id, 'app' => $app));
+			foreach ($agents as $agent_id => $perms) {
+				foreach ($perms AS $perm) {
+					$this->db->insert('department_permissions', array(
+						'department_id' => $department->id,
+						'person_id' => $agent_id,
+						'app' => $app,
+						'name' => $perm,
+						'value' => 1
+					));
 				}
 			}
 
@@ -242,14 +253,26 @@ class DepartmentsController extends AbstractController
 						'department_id' => $department->getId(),
 						'usergroup_id' => null,
 						'person_id' => $aid,
-						'app' => 'tickets'
+						'app' => 'tickets',
+						'name' => 'full',
+						'value' => 1
+					);
+					$dep_perms[] = array(
+						'department_id' => $department->getId(),
+						'usergroup_id' => null,
+						'person_id' => $aid,
+						'app' => 'tickets',
+						'name' => 'assign',
+						'value' => 1
 					);
 				} else {
 					$dep_perms[] = array(
 						'department_id' => $department->getId(),
 						'usergroup_id' => null,
 						'person_id' => $aid,
-						'app' => 'chat'
+						'app' => 'chat',
+						'name' => 'full',
+						'value' => 1
 					);
 				}
 			}
@@ -259,14 +282,18 @@ class DepartmentsController extends AbstractController
 					'department_id' => $department->getId(),
 					'usergroup_id' => 1,
 					'person_id' => null,
-					'app' => 'tickets'
+					'app' => 'tickets',
+					'name' => 'full',
+					'value' => 1
 				);
 			} else {
 				$dep_perms[] = array(
 					'department_id' => $department->getId(),
 					'usergroup_id' => 1,
 					'person_id' => null,
-					'app' => 'chat'
+					'app' => 'chat',
+					'name' => 'full',
+					'value' => 1
 				);
 			}
 

@@ -60,13 +60,13 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 		if (DP_INTERFACE == 'agent') {
 			$res = App::getDb()->fetchAll("
-				SELECT department_id, app
+				SELECT department_id, app, name, value
 				FROM department_permissions
 				WHERE person_id = {$this->person->getId()}
 			");
 		} else {
 			$res = App::getDb()->fetchAll("
-				SELECT department_id, app
+				SELECT department_id, app, name, value
 				FROM department_permissions
 				WHERE usergroup_id IN($in)
 			");
@@ -80,16 +80,12 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 				continue;
 			}
 
-			$this->allowed_cats[$d['app']][$d['department_id']] = $d['department_id'];
+			$this->allowed_cats[$d['app']][$d['department_id']][$d['name']] = $d['value'];
 
 			// With departments, if a child is allowed, then the parent is too since its just a wrapper
 			if ($dep && $dep->parent) {
-				$this->allowed_cats[$d['app']][$dep->parent->getId()] = $dep->parent->getId();
+				$this->allowed_cats[$d['app']][$dep->parent->getId()]['full'] = 1;
 			}
-		}
-
-		foreach ($this->allowed_cats as &$_x) {
-			$_x = array_unique($_x);
 		}
 	}
 
@@ -98,10 +94,15 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 	 *
 	 * @return bool
 	 */
-	public function isAllowed($id, $app)
+	public function isAllowed($id, $app, $permission = 'full')
 	{
 		$this->_init();
-		return isset($this->allowed_cats[$app][$id]);
+
+		if (!empty($this->allowed_cats[$app][$id]['full'])) {
+			return true;
+		};
+
+		return !empty($this->allowed_cats[$app][$id][$permission]);
 	}
 
 
@@ -110,10 +111,18 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 	 *
 	 * @return array
 	 */
-	public function getAllowed($app)
+	public function getAllowed($app, $permission = 'full')
 	{
 		$this->_init();
-		return $this->allowed_cats[$app];
+
+		$ids = array();
+		foreach ($this->allowed_cats[$app] AS $id => $perms) {
+			if (!empty($perms[$permission]) || !empty($perms['full'])) {
+				$ids[$id] = $id;
+			}
+		}
+
+		return $ids;
 	}
 
 

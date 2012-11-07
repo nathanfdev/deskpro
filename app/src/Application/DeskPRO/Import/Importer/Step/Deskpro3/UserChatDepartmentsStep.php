@@ -127,7 +127,9 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 		$this->getDb()->insert('department_permissions', array(
 			'usergroup_id' => 1,
 			'department_id' => $dep->id,
-			'app' => 'chat'
+			'app' => 'chat',
+			'name' => 'full',
+			'value' => 1
 		));
 
 		$this->saveMappedId('chat_dep', $chat_dep['id'], $dep->id);

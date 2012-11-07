@@ -336,7 +336,9 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			$this->getDb()->replace('department_permissions', array(
 				'usergroup_id' => $ug_id,
 				'department_id' => $v,
-				'app' => 'tickets'
+				'app' => 'tickets',
+				'name' => 'full',
+				'value' => 1
 			));
 		}
 

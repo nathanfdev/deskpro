@@ -145,7 +145,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% include 'AgentBundle:Common:select-department.html.twig' with {
 							'name': "newticket[department_id]",
 							'id': baseId ~ '_dep',
-							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets')
+							'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [], 'assign')
 						} %}
 					</td>
 				</tbody>

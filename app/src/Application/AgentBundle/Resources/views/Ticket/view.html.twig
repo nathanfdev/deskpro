@@ -166,7 +166,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 								'class': department_id,
 								'selected': ticket.department.id|default(0),
 								'id': baseId ~ '_department_id',
-								'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)])
+								'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 							} %}
 						{% else %}
 							<input type="hidden" name="department_id" value="{{ticket.department.id|default(0) }}" />

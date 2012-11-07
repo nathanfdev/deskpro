@@ -111,6 +111,8 @@ class UsergroupsController extends AbstractController
 		#------------------------------
 
 		if ($this->in->getBool('process')) {
+			$department_selections = $this->in->getCleanValueArray('department_permissions', 'raw', 'uint');
+
 			$this->ensureRequestToken('edit_usergroup');
 
 			$this->em->getConnection()->beginTransaction();
@@ -127,7 +129,11 @@ class UsergroupsController extends AbstractController
 				#---
 
 				if (!$is_new) {
-					$this->db->delete('department_permissions', array('usergroup_id' => $usergroup->id));
+					$this->db->delete('department_permissions', array(
+						'usergroup_id' => $usergroup->id,
+						'name' => 'full',
+						'value' => 1
+					));
 				}
 
 				$department_selections = $this->in->getCleanValueArray('department_permissions', 'raw', 'uint');
@@ -137,7 +143,9 @@ class UsergroupsController extends AbstractController
 							$this->db->insert('department_permissions', array(
 								'department_id' => $dep_id,
 								'usergroup_id' => $usergroup->id,
-								'app' => $app
+								'app' => $app,
+								'name' => 'full',
+								'value' => 1
 							));
 						}
 					}
@@ -193,6 +201,7 @@ class UsergroupsController extends AbstractController
 			SELECT department_id, app
 			FROM department_permissions
 			WHERE usergroup_id = ?
+				AND name = 'full' AND value = 1
 		", array($usergroup->id), 'department_id', 'app', 'app');
 
 		$permissions = $this->db->fetchAllKeyValue("
@@ -209,6 +218,7 @@ class UsergroupsController extends AbstractController
 				SELECT department_id, app
 				FROM department_permissions
 				WHERE usergroup_id = ?
+					AND name = 'full' AND value = 1
 			", array(1), 'department_id', 'app', 'app');
 
 			$ug_permissions_everyone = $this->db->fetchAllKeyValue("

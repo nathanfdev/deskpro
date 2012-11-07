@@ -218,6 +218,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			this.ticketPage.wrapper.removeClass(classname);
 		}).delay(650, this);
 
+		var self = this;
+
 		if (this.updateUrl) {
 			DeskPRO_Window.util.ajaxWithClientMessages({
 				type: 'POST',
@@ -278,6 +280,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				this.ticketPage.wrapper.removeClass(classname);
 			}
 		}).delay(650, this);
+
+		var self = this;
 
 		if (this.updateUrl) {
 			DeskPRO_Window.util.ajaxWithClientMessages({

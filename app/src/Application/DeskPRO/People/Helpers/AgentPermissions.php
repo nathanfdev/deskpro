@@ -129,6 +129,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			SELECT app, department_id
 			FROM department_permissions
 			WHERE person_id = ?
+				AND name = 'full' AND value = 1
 		", array($this->person->id));
 
 		$this->_allowed_ids = array();

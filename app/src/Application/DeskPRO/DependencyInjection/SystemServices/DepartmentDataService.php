@@ -155,7 +155,7 @@ class DepartmentDataService extends BaseRepositoryService
 		return $this->getByIds($ids);
 	}
 
-	public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app, array $allow_ids = array())
+	public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app, array $allow_ids = array(), $permission = 'full')
 	{
 		$key = md5($person_context->getId() . '.' . $app);
 
@@ -175,11 +175,11 @@ class DepartmentDataService extends BaseRepositoryService
 			$allow_ids = array_combine(array_values($allow_ids), array_values($allow_ids));
 		}
 
-		$filter = function ($c) use ($person_context, $app, $allow_ids) {
+		$filter = function ($c) use ($person_context, $app, $allow_ids, $permission) {
 			if (isset($allow_ids[$c->getId()])) {
 				return true;
 			}
-			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), $app);
+			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), $app, $permission);
 		};
 
 		if (!$allow_ids) {

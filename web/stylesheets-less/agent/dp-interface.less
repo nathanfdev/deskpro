@@ -2181,6 +2181,10 @@ a.clean-white {
 	overflow: auto;
 }
 
+.optionbox.two-column {
+	min-width: 300px;
+}
+
 .backdrop.optionbox-backdrop {
 	z-index: 50000;
 }
@@ -2207,6 +2211,16 @@ a.clean-white {
 
 .optionbox section {
 	.border-radius(7px, 7px, 7px, 7px);
+}
+
+.optionbox.two-column section {
+	width: 50%;
+	float: left;
+
+	&:first-child {
+		width: 49.5%;
+		margin-right: 0.5%;
+	}
 }
 
 .optionbox section header:first-child {

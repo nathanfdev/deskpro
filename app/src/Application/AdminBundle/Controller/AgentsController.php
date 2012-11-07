@@ -141,7 +141,16 @@ class AgentsController extends AbstractController
 
 		$agents_to_deps = $this->db->fetchAllGrouped("
 			SELECT department_id, person_id
-			FROM department_permissions WHERE person_id IS NOT NULL
+			FROM department_permissions
+			WHERE person_id IS NOT NULL
+				AND name = 'full' AND value = 1
+		", array(), 'person_id', null, 'department_id');
+
+		$agents_to_deps_assign = $this->db->fetchAllGrouped("
+			SELECT department_id, person_id
+			FROM department_permissions
+			WHERE person_id IS NOT NULL
+				AND name = 'assign' AND value = 1
 		", array(), 'person_id', null, 'department_id');
 
 		$overrides_counts = $this->db->fetchAllKeyValue("
@@ -179,6 +188,7 @@ class AgentsController extends AbstractController
 			'agent_to_groups' => $agent_to_groups,
 			'agent_to_teams' => $agent_to_teams,
 			'agents_to_deps' => $agents_to_deps,
+			'agents_to_deps_assign' => $agents_to_deps_assign,
 			'all_teams'      => $all_teams,
 			'all_usergroups' => $all_usergroups,
 			'all_departments' => $all_departments,
@@ -424,6 +434,14 @@ class AgentsController extends AbstractController
 			SELECT department_id, app
 			FROM department_permissions
 			WHERE person_id = ?
+				AND name = 'full' AND value = 1
+		", array($agent->id), 'department_id', 'app', 'app');
+
+		$agent_deps_assign = $this->db->fetchAllGrouped("
+			SELECT department_id, app
+			FROM department_permissions
+			WHERE person_id = ?
+				AND name = 'assign' AND value = 1
 		", array($agent->id), 'department_id', 'app', 'app');
 
 		$all = $this->db->fetchAll("
@@ -456,6 +474,7 @@ class AgentsController extends AbstractController
 			'override_perms' => $override_perms,
 			'departments' => $departments,
 			'agent_deps' => $agent_deps,
+			'agent_deps_assign' => $agent_deps_assign,
 			'random_password' => Strings::randomPronounceable(10)
 		));
 	}
@@ -627,12 +646,40 @@ class AgentsController extends AbstractController
 			#------------------------------
 
 			$dep_matrix = $this->in->getCleanValueArray('agent.departments', 'raw', 'uint');
+			$dep_assign_matrix = $this->in->getCleanValueArray('agent.departments_assign', 'raw', 'uint');
 
-			$this->db->delete('department_permissions', array('person_id' => $agent->id));
+			$this->db->delete('department_permissions', array(
+				'person_id' => $agent->id,
+				'name' => 'full',
+				'value' => 1
+			));
+			$this->db->delete('department_permissions', array(
+				'person_id' => $agent->id,
+				'name' => 'assign',
+				'value' => 1
+			));
 			foreach ($dep_matrix as $dep_id => $apps) {
 				foreach ($apps as $app => $v) {
 					if (!$v) continue;
-					$this->db->insert('department_permissions', array('department_id' => $dep_id, 'person_id' => $agent->id, 'app' => $app));
+					$this->db->insert('department_permissions', array(
+						'department_id' => $dep_id,
+						'person_id' => $agent->id,
+						'app' => $app,
+						'name' => 'full',
+						'value' => 1
+					));
+				}
+			}
+			foreach ($dep_assign_matrix as $dep_id => $apps) {
+				foreach ($apps as $app => $v) {
+					if (!$v) continue;
+					$this->db->insert('department_permissions', array(
+						'department_id' => $dep_id,
+						'person_id' => $agent->id,
+						'app' => $app,
+						'name' => 'assign',
+						'value' => 1
+					));
 				}
 			}
 

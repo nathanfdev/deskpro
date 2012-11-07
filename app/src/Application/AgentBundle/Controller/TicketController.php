@@ -802,7 +802,10 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createJsonResponse(array('success' => 1));
+		return $this->createJsonResponse(array(
+			'success' => 1,
+			'can_view' => $this->person->PermissionsManager->TicketChecker->canView($ticket)
+		));
 	}
 
 
@@ -1554,6 +1557,8 @@ class TicketController extends AbstractController
 		if ($client_messages) {
 			$data['client_messages'] = $client_messages;
 		}
+
+		$data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
 
 		return $this->createJsonResponse($data);
 	}
@@ -2379,6 +2384,7 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array(
 				'success' => true,
 				'ticket_id' => $ticket['id'],
+				'can_view' => $this->person->PermissionsManager->TicketChecker->canView($ticket),
 				'comment_id' => $comment_id,
 				'comment_type' => $comment_type
 			));

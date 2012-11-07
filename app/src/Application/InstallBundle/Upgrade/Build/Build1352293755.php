@@ -29,58 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Util\Arrays;
-
-use Application\DeskPRO\App;
-use Doctrine\ORM\EntityRepository;
-use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
-use Orb\Util\Numbers;
-
-class DepartmentPermission extends AbstractEntityRepository
+class Build1352293755 extends AbstractBuild
 {
-	/**
-	 * Get an array of department IDs this user has permission to see
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return int[]
-	 */
-	public function getDepartmentIdsForPerson(PersonEntity $person)
+	public function run()
 	{
-		$wheres = array();
-		$params = array();
+		$this->out("Change department permissions to support multiple");
+		$this->execMutateSql("ALTER TABLE department_permissions ADD name VARCHAR(50) NOT NULL, ADD value LONGTEXT DEFAULT NULL");
 
-		$wheres[] = "person_id = ?";
-		$params[] = $person->id;
-
-		$wheres[] = "name = 'full'";
-		$wheres[] = "value = 1";
-
-		$wheres = implode(' AND ', $wheres);
-		$sql = "
-			SELECT department_id
+		// existing rows indicate viewing permissions
+		$this->execMutateSql("UPDATE department_permissions SET name = 'full', value = 1");
+		$this->execMutateSql("
+			INSERT IGNORE INTO department_permissions
+				(department_id, usergroup_id, person_id, app, name, value)
+			SELECT department_id, null, person_id, app, 'assign', 1
 			FROM department_permissions
-			WHERE $wheres
-		";
-
-		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAllPersonPermissionsForAllDepartments($app, $name, $value)
-	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT department_id, person_id
-			FROM department_permissions
-			WHERE app = ? AND person_id IS NOT NULL
-				AND name = ? AND value = ?
-		", array($app, $name, $value), 'department_id', null, 'person_id');
+			WHERE person_id IS NOT NULL AND app = 'tickets' AND name = 'full' AND value = 1
+		");
 	}
 }

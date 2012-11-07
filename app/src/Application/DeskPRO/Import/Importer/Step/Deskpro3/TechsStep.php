@@ -320,6 +320,8 @@ class TechsStep extends AbstractDeskpro3Step
 						'department_id' => $did,
 						'person_id' => $agent->id,
 						'app' => 'tickets',
+						'name' => 'full',
+						'value' => 1,
 					));
 				}
 
@@ -329,6 +331,8 @@ class TechsStep extends AbstractDeskpro3Step
 						'department_id' => $did,
 						'person_id' => $agent->id,
 						'app' => 'chat',
+						'name' => 'full',
+						'value' => 1
 					));
 				}
 
