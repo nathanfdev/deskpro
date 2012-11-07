@@ -41,6 +41,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 {
 	protected $default_email_address = null;
 	protected $email_addresses_map = array();
+	protected $keep_on_server = false;
 
 	public static function getTitle()
 	{
@@ -54,6 +55,8 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		if (!$count) {
 			return;
 		}
+
+		$this->keep_on_server = (bool)$this->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = 'gateway_no_del_msg'");
 
 		#------------------------------
 		# Map ticket accounts (email addresses) to their gateway accounts
@@ -136,6 +139,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		);
 		$new_gateway->gateway_type = 'tickets';
 		$new_gateway->is_enabled = false;
+		$new_gateway->keep_read  = $this->keep_on_server;
 
 		$this->getEm()->persist($new_gateway);
 		$this->getEm()->flush();
@@ -159,5 +163,29 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('gateway_account', $account['id'], $new_gateway->id);
+
+		#------------------------------
+		# Copy email ids
+		#------------------------------
+
+		if ($this->keep_on_server) {
+			$date = date('Y-m-d H:i:s');
+			$email_uids = $this->getOldDb()->fetchAllCol("
+				SELECT uid
+				FROM gateway_email_uid
+				WHERE account_id = ?
+			", array($account['id']));
+
+			$email_uids = array_chunk($email_uids, 1000, false);
+
+			foreach ($email_uids as $batch) {
+				$ins = array();
+				foreach ($batch as $uid) {
+					$ins[] = array('id' => $uid, 'gateway_id' => $new_gateway->id, 'date_created' => $date);
+				}
+
+				$this->getDb()->batchInsert('email_uids', $ins);
+			}
+		}
 	}
 }
