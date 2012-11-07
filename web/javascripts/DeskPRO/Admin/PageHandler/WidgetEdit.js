@@ -31,7 +31,9 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 				var $this = $(this);
 				if ($this.data('page') == page) {
 					$this.show();
-					visibles.push($this);
+					if ($this.data('page') != '') {
+						visibles.push($this);
+					}
 					if (!firstVisible) {
 						firstVisible = $this;
 					}
