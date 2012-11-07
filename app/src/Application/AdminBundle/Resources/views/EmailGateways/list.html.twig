@@ -21,25 +21,89 @@
 	.select2-container .select2-choice span {
 		text-align: left;
 	}
+
+	.select2-results .select2-result-label .dep-opt em {
+		visibility: hidden;
+		margin-left: 8px;
+		float: right;
+	}
+
+	.select2-results .select2-result-label .dep-opt.disabled {
+		opacity: 0.5;
+
+	}
+
+	.select2-results .select2-result-label .dep-opt.disabled em {
+		visibility: visible;
+		font-size: 9px;
+		text-transform: uppercase;
+		font-style: normal;
+	}
 </style>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	DP.select($('select.change-linked-dep'));
+	var sels = $('select.change-linked-dep');
 
-	$('select.change-linked-dep').on('change', function() {
+	sels.each(function() {
+		$(this).width($(this).width() + 100);
+	});
+
+	DP.select(sels, {
+		formatResult: function(result) {
+			return '<div class="dep-opt dep-' + result.id + '">' + result.text + ' <em>In use</em></div>';
+		}
+	});
+	sels.on('open', function() {
+		updateSelected();
+		window.setTimeout(function() {
+			updateSelected();
+		}, 150);
+	});
+
+	function updateSelected() {
+		$('.dep-opt').removeClass('disabled');
+		$('select.change-linked-dep').each(function() {
+			var id = parseInt($(this).val());
+			if (!id) {
+				return;
+			}
+
+			$('.dep-' + id).addClass('disabled');
+		});
+	}
+
+	function findUsed(depid) {
+		sels.each(function() {
+			if ($(this).val() == depid) {
+				return $(this).data('gateway-id');
+			}
+		});
+
+		return null;
+	}
+
+	updateSelected();
+
+	sels.on('change', function() {
 		var gateway_id = $(this).data('gateway-id');
 		var dep_id = $(this).val();
 		var el = $(this);
 		var me = this;
 
 		if (dep_id != '0') {
-			$('select.change-linked-dep').each(function() {
-				if (this != me && $(this).val() == dep_id) {
-					$(this).select2('val', '0');
-					DeskPRO_Window.util.showSavePuff($(this).prev());
+
+			var inUse = findUsed(dep_id);
+			if (inUse && inUse != gateway_id) {
+				if (confirm('This department is already in use by another gateway. Do you want to switch it to this gateway instead? The old gateway will unset.')) {
+					$('select.change-linked-dep').each(function() {
+						if (this != me && $(this).val() == dep_id) {
+							$(this).select2('val', '0');
+							DeskPRO_Window.util.showSavePuff($(this).prev());
+						}
+					});
 				}
-			});
+			}
 		}
 
 		$.ajax({
@@ -53,6 +117,8 @@ $(document).ready(function() {
 				DeskPRO_Window.util.showSavePuff(el.prev());
 			}
 		});
+
+		updateSelected();
 	});
 });
 </script>
@@ -79,7 +145,7 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th style="text-align:left; padding-left:0;" colspan="2">{{ phrase('agent.general.email_address') }}</th>
-				<th style="text-align:left">Department</th>
+				<th style="text-align:left" width="50">Department</th>
 			</tr>
 		</thead>
 		<tbody>
