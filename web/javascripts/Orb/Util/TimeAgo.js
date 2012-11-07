@@ -108,6 +108,10 @@ Orb.Util.TimeAgo = {
 				var ago = true;
 				if (el.data('timeago-no-ago') == "1") {
 					ago = false;
+				} else {
+					if (data.datetime > (new Date())) {
+						ago = false;
+					}
 				}
                 var text = self.get(data.datetime, ago);
 				el.text(text);
@@ -237,7 +241,13 @@ Orb.Util.TimeAgo = {
 	getDateDiff: function(date, secs) {
 		var now_ts  = (new Date()).getTime();
 		var date_ts = date.getTime();
-		var diff    = now_ts - date_ts;
+		var diff;
+
+		if (now_ts < date_ts) {
+			diff = date_ts - now_ts;
+		} else {
+			diff = now_ts - date_ts;
+		}
 
 		if (diff < 0) {
 			return 0;
