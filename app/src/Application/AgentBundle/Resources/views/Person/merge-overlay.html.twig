@@ -136,6 +136,13 @@
 				</td>
 			{% endif %}
 		</tr>
+		{% if other_person and (other_person.is_agent or person.is_agent) %}
+		<tr class="always-keep">
+			<th>Agent Status</th>
+			<td>{% if person.is_agent %}Is an agent{% endif %}</td>
+			<td>{% if other_person.is_agent %}Is an agent{% endif %}</td>
+		</tr>
+		{% endif %}
 		</tbody>
 		</table>
 
