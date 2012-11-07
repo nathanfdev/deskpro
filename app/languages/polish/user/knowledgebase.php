@@ -5,7 +5,7 @@
 	'user.knowledgebase.knowledgebase'                                     => 'Baza Wiedzy',
 	'user.knowledgebase.link_view-all'                                     => 'Zobacz 1 artykuł|Zobacz wszystkie artykuły: {{count}}',
 	'user.knowledgebase.related_articles'                                  => 'Powiązane artykuły',
-	'user.knowledgebase.sidebar_description'                               => 'Nasza Baza Wiedzy zawiera 1 pytanie, napisane przez naszą ekipę, żeby pomóc Ci odpowiedzieć na Twoje pytanie|Nasza Baza Wiedzy zawiera pytań - {{count}}, napisanych przez naszą ekipę, żeby pomóc Ci odpowiedzieć na Twoje pytanie',
+	'user.knowledgebase.sidebar_description'                               => 'Nasza Baza Wiedzy zawiera 1 artykuł, napisane przez naszych pracowników, żeby pomóc Ci odpowiedzieć na Twoje pytanie|Nasza Baza Wiedzy zawiera artykułów - {{count}}, napisanych przez naszych pracowników, żeby pomóc Ci znaleźć odpowiedzi na swoje pytania',
 	'user.knowledgebase.title'                                             => 'Baza Wiedzy',
 	'user.knowledgebase.title-articles'                                    => 'Znaleziony 1 artykuł|Znalezionych artykułów - {{count}}',
 	'user.knowledgebase.title-articles-paged'                              => 'Pokazano artykuły od {{first}} do {{last}} z {{total}}',

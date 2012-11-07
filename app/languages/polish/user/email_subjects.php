@@ -1,11 +1,11 @@
 <?php return array(
 	'user.email_subjects.chat_transcript'                                  => 'Log czatu',
-	'user.email_subjects.comment-approved'                                 => 'Twój komentarz został zatwierdzony',
+	'user.email_subjects.comment-approved'                                 => 'Twój komentarz został zaakceptowany',
 	'user.email_subjects.comment-confirmation'                             => 'Dziękujemy za Twój komentarz',
 	'user.email_subjects.comment-deleted'                                  => 'Twój komentarz został przeczytany przez naszych pracowników',
-	'user.email_subjects.email_new-confirm'                                => 'Potwierdź Twój adres email',
+	'user.email_subjects.email_new-confirm'                                => 'Potwierdź swój adres email',
 	'user.email_subjects.feedback_new'                                     => 'Dziękujemy za wysłaną opinię',
-	'user.email_subjects.feedback_new-approved'                            => 'Twoja opinia została zatwierdzona',
+	'user.email_subjects.feedback_new-approved'                            => 'Twoja opinia została zaakceptowana',
 	'user.email_subjects.feedback_new-comment'                             => 'Nowy komentarz pojawił się na "{{title}}"',
 	'user.email_subjects.feedback_new-confirm'                             => 'Dziękujemy za wysłanie Twojej opinii (potwierdzenie jest wymagane)',
 	'user.email_subjects.feedback_new-disapproved'                         => 'Twoja opinia została odrzucona',
@@ -15,5 +15,5 @@
 	'user.email_subjects.re'                                               => 'ODP: {{subject}}',
 	'user.email_subjects.ticket-rate'                                      => 'Oceń naszą pomoc, dotyczącą petycji "{{subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'Nowa osoba została dodana do Twojej petycji',
-	'user.email_subjects.validate-email'                                   => 'Potwierdź Twój adres email',
+	'user.email_subjects.validate-email'                                   => 'Potwierdź swój adres email',
 );

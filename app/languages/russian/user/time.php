@@ -41,7 +41,7 @@
 	'user.time.time-ago_1_hour'                                            => '1 час назад',
 	'user.time.time-ago_1_minute'                                          => '1 минуту назад',
 	'user.time.time-ago_1_month'                                           => '1 месяц назад',
-	'user.time.time-ago_1_second'                                          => '1 секунды назад',
+	'user.time.time-ago_1_second'                                          => '1 секунду назад',
 	'user.time.time-ago_1_week'                                            => '1 неделю назад',
 	'user.time.time-ago_1_year'                                            => '1 год назад',
 	'user.time.time-ago_less_second'                                       => 'меньше секунды назад',

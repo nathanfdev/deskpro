@@ -21,5 +21,5 @@
 	'user.defaults.news_category_general'                                  => 'Podstawowa',
 	'user.defaults.news_example_content'                                   => 'To jest przykładowy post z aktualnościami. Możesz edytować go albo usunąć z intefejsu użytkownika.',
 	'user.defaults.news_example_title'                                     => 'Przykładowy post z aktualnościami',
-	'user.defaults.trigger_warn_autoclose'                                 => 'Nie odpowiedziałeś na Twoją petycję w ciągu 3 dni. Jeżeli rozwiązałeś Twój problem, po prostu zignoruj tę wiadomość i Twoja petycja zostanie zamknięta automatycznie w ciągu dwóch dni. Jeżeli nadal potrzebujesz pomocy, odpowiedz na tę wiadomość, żeby Twoja petycja dalej była aktywna.',
+	'user.defaults.trigger_warn_autoclose'                                 => 'Nie dostaliśmy odpowiedzi od Ciebie na Twoją petycję w ciągu 3 dni. Jeżeli Twój problem został rozwiązany, po prostu zignoruj tę wiadomość i Twoja petycja zostanie zamknięta automatycznie w ciągu dwóch dni. Jeżeli nadal potrzebujesz pomocy, odpowiedz na tę wiadomość, żeby Twoja petycja dalej była aktywna.',
 );
