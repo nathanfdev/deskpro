@@ -22,7 +22,9 @@
 				{% if not trigger.isUneditable() %}
 					<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
 				{% endif %}
-				<li class="dp-move"><span></span></li>
+				{% if not trigger.sys_name %}
+					<li class="dp-remove"><a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}"><span></span></a></li>
+				{% endif %}
 				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.on') }}</span></li>
 			</ul>
 		</div>
