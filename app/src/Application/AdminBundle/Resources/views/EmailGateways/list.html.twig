@@ -86,17 +86,20 @@ $(document).ready(function() {
 			{% for pattern,gateway in all_gateways_byemail %}
 				<tr>
 					<td style="vertical-align: top;" width="10">
-						<input
-							type="checkbox"
-							class="onoff-slider gateway-toggle-{{ gateway.id }}"
-							{% if gateway.is_enabled %}checked="checked"{% endif %}
-							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
-							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
-							data-state-property="is_enabled"
-						/>
+						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');" style="position:relative;top:1px;"><span class="btn-remove"></span></a>
 					</td>
 					<td>
 						<strong>{{ pattern }}</strong>
+						<div style="position:relative; top: -2px; display: inline">
+							<input
+								type="checkbox"
+								class="onoff-slider gateway-toggle-{{ gateway.id }}"
+								{% if gateway.is_enabled %}checked="checked"{% endif %}
+								data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
+								data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
+								data-state-property="is_enabled"
+							/>
+						</div>
 						<ul class="small-detail-list">
 							<li>
 								Incoming Account:
