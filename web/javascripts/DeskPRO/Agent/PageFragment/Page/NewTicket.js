@@ -25,9 +25,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 
-		var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
-			auto_start_bill: this.meta.auto_start_bill
-		});
+
+		if (this.getEl('headerbox_box_billing').length) {
+			var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
+				auto_start_bill: this.meta.auto_start_bill
+			});
+			this.addEvent('activate', function() {
+				if (this.meta.auto_start_bill) {
+					billing.startBillingTimer(true);
+				}
+			});
+			this.addEvent('deactivate', function() {
+				billing.stopBillingTimer(true);
+			});
+		}
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 

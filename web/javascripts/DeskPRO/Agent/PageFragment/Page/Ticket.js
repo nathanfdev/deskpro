@@ -522,12 +522,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			},
 			onComplete: function() {
 				var image = $('#cboxLoadedContent img');
-				console.log(image);
 				if (image.length) {
 					$('#cboxLoadedContent').append(
 						$('<a />').attr('href', $(this).attr('href')).attr('target', '_blank').append(image)
 					);
-					console.log('append');
 				}
 			},
 			width: '50%',

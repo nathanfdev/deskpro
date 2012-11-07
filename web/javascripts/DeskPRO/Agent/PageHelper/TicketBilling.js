@@ -11,7 +11,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.billingStart = new Date();
+		this.billingStart = false;
+		this.billingExtraTime = 0;
 		this.billingTimer = null;
 
 		var self = this;
@@ -32,10 +33,25 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		this.getEl('billing_stop').click(function() {
 			self.stopBillingTimer(false);
+			$(this).hide();
+			self.getEl('billing_start').show();
+		});
+		this.getEl('billing_start').click(function() {
+			if (self.getEl('billing_type_hidden').val() != 'time') {
+				return;
+			}
+
+			self.startBillingTimer(false);
+			$(this).hide();
+			self.getEl('billing_stop').show();
 		});
 		this.getEl('billing_reset').click(function() {
 			if (typeInputs.filter(':checked').val() == 'time') {
-				self.startBillingTimer(true);
+				if (self.getEl('billing_stop').is(':visible')) {
+					self.startBillingTimer(true);
+				} else {
+					self.stopBillingTimer(true);
+				}
 			} else {
 				self.stopBillingTimer(true);
 			}
@@ -82,11 +98,13 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			}
 		});
 
-		if (!this.options.auto_start_bill) {
-			if (this.billingTimer) {
-				window.clearTimeout(this.billingTimer);
-				this.billingTimer = null;
-			}
+		if (this.options.auto_start_bill) {
+			this.getEl('billing_start').hide();
+			this.getEl('billing_stop').show();
+		} else {
+			this.getEl('billing_stop').hide();
+			this.getEl('billing_start').show();
+			this.stopBillingTimer(true);
 		}
 	},
 
@@ -113,27 +131,32 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			var replyBillingRow = false;
 		}
 
-		if (this.billingTimer) {
-			this.billingTimer = null;
-			clearInterval(this.billingTimer);
-		}
+		this.clearTimer();
 
 		if (val == 'time') {
-			if (this.options.auto_start_bill) {
+			if (this.getEl('billing_stop').is(':visible')) {
+				// "stop" means it was running, so start it again
 				this.startBillingTimer(reset);
 			}
+
 			if (replyBillingRow) {
 				replyBillingRow.show();
 				replyBillingRow.find('input[type=checkbox]').attr('disabled', false);
 			}
 		} else {
-			if (this.options.auto_start_bill) {
-				this.stopBillingTimer(reset);
-			}
+			this.stopBillingTimer(reset);
+
 			if (replyBillingRow) {
 				replyBillingRow.hide();
 				replyBillingRow.find('input[type=checkbox]').attr('disabled', true);
 			}
+		}
+	},
+
+	clearTimer: function() {
+		if (this.billingTimer) {
+			clearInterval(this.billingTimer);
+			this.billingTimer = null;
 		}
 	},
 
@@ -152,10 +175,16 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 	startBillingTimer: function(reset) {
 		if (reset) {
-			this.billingStart  = new Date();
+			this.billingStart = new Date();
+			this.billingExtraTime = 0;
+		} else {
+			if (this.billingStart) {
+				this.billingExtraTime = Math.floor((new Date() - this.billingStart) / 1000) + this.billingExtraTime;
+			}
+			this.billingStart = new Date();
 		}
 
-		clearInterval(this.billingTimer);
+		this.clearTimer();
 		this.updateBillingTimer(true, true);
 
 		var self = this;
@@ -164,17 +193,27 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 	stopBillingTimer: function(reset) {
 		if (reset) {
-			this.billingStart = new Date();
+			this.billingStart = false;
+			this.billingExtraTime = 0;
+		} else {
+			if (this.billingStart) {
+				this.billingExtraTime = Math.floor((new Date() - this.billingStart) / 1000) + this.billingExtraTime;
+			}
+			this.billingStart = false;
 		}
 
-		clearInterval(this.billingTimer);
-		this.billingTimer = false;
+		this.clearTimer();
 		this.updateBillingTimer(true);
 	},
 
 	updateBillingTimer: function(force, showZero) {
-		var seconds = Math.floor((new Date() - this.billingStart) / 1000),
-			rawSeconds = seconds,
+		var seconds = 0;
+		if (this.billingStart) {
+			seconds = Math.floor((new Date() - this.billingStart) / 1000);
+		}
+		seconds += this.billingExtraTime;
+
+		var rawSeconds = seconds,
 			hours = 0,
 			minutes = 0;
 
