@@ -1,4 +1,4 @@
-<tr class="line-1 member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
+<tr class="line-1 member-row member-{{ person.id }} {% if person.is_disabled %}disabled{% endif %}" data-person-id="{{ person.id }}">
 	<td>
 		<div class="fade-container">
 			<div class="line {% if person.organization_manager %}is-manager{% endif %}">
