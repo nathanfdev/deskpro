@@ -21,9 +21,9 @@
 	<table width="100%">
 	<thead>
 	<tr>
-		<th>&nbsp;</th>
-		<th style="text-align: left">Name</th>
-		<th style="text-align: left">Developer</th>
+		<th style="text-align: left; width: 10%">&nbsp;</th>
+		<th style="text-align: left; width: 20%">Name</th>
+		<th style="text-align: left; width: 20%">Developer</th>
 		<th style="text-align: left; width: 50%">Description</th>
 	</tr>
 	</thead>
@@ -40,7 +40,7 @@
 				{% if plugin.enabled %}checked="checked"{% endif %}
 			/></td>
 			<td><a href="{{ path('admin_plugins_plugin', {'plugin_id': plugin.id}) }}">{{info.title}}</a></td>
-			<td>{{info.developer}}</td>
+			<td><a href="{{ info.developer_url }}" target="_blank">{{info.developer}}</a></td>
 			<td>{{info.description|raw}}</td>
 		</tr>
 		{% else %}
@@ -58,6 +58,7 @@
 
 	{{ form_token() }}
 </form>
+<div style="font-size: 11px">Disabled plugins can be re-enabled with no loss of data. Uninstalling a plugin will remove all associated data.</div>
 
 <br />
 
@@ -66,21 +67,21 @@
 <table width="100%">
 	<thead>
 	<tr>
-		<th style="text-align: left">Name</th>
-		<th style="text-align: left">Developer</th>
+		<th style="text-align: left; width: 10%">&nbsp;</th>
+		<th style="text-align: left; width: 20%">Name</th>
+		<th style="text-align: left; width: 20%">Developer</th>
 		<th style="text-align: left; width: 50%">Description</th>
-		<th>&nbsp;</th></th>
 	</tr>
 	</thead>
 	<tbody>
 	{% for plugin in available_plugins %}
 	<tr>
-		<td>{{plugin.title}}</td>
-		<td>{{plugin.developer}}</td>
-		<td>{{plugin.description|raw}}</td>
-		<td style="text-align: right">
-			<a href="{{ path('admin_plugins_install', {'plugin_id': plugin.name}) }}">{{ phrase('admin.plugins.install') }}</a>
+		<td>
+			<a href="{{ path('admin_plugins_install', {'plugin_id': plugin.name}) }}" class="btn">{{ phrase('admin.plugins.install') }}</a>
 		</td>
+		<td>{{plugin.title}}</td>
+		<td><a href="{{ plugin.developer_url }}" target="_blank">{{plugin.developer}}</a></td>
+		<td>{{plugin.description|raw}}</td>
 	</tr>
 	{% else %}
 	<tr><td colspan="4">{{ phrase('admin.plugins.no_plugins_available') }}</td></tr>

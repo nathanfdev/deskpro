@@ -191,6 +191,16 @@ abstract class AbstractPluginPackage implements \ArrayAccess
 		return '';
 	}
 
+	/**
+	 * Get the  developer's URL
+	 *
+	 * @return string
+	 */
+	public function getDeveloperUrl()
+	{
+		return '';
+	}
+
 	public function offsetGet($offset)
 	{
 		switch ($offset)
@@ -200,6 +210,7 @@ abstract class AbstractPluginPackage implements \ArrayAccess
 			case 'version': return $this->getVersion();
 			case 'description': return $this->getDescription();
 			case 'developer': return $this->getDeveloper();
+			case 'developer_url': return $this->getDeveloperUrl();
 			case 'is_available': return $this->isAvailable();
 			default: return null;
 		}

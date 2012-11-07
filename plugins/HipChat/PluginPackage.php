@@ -83,4 +83,9 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 	{
 		return 'DeskPRO';
 	}
+
+	public function getDeveloperUrl()
+	{
+		return 'https://www.deskpro.com/integrations/hipchat/';
+	}
 }

@@ -149,6 +149,11 @@ class PluginPackage extends CorePluginPackage\AbstractPluginPackage
 		return 'DeskPRO';
 	}
 
+	public function getDeveloperUrl()
+	{
+		return 'https://www.deskpro.com/integrations/salesforce/';
+	}
+
 	public function renderConfig(AbstractController $controller, Plugin $plugin, array $errors)
 	{
 		$widgets = App::getEntityRepository('DeskPRO:Widget')->findBy(array('plugin' => $plugin));
