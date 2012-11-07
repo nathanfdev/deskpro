@@ -303,9 +303,8 @@ $(document).ready(function() {
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left" width="10">&nbsp;</th>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
-				<th style="text-align:right">Department</th>
+				<th style="text-align:left" colspan="2">{{ phrase('agent.general.email_address') }}</th>
+				<th style="text-align:left">Department</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -341,7 +340,7 @@ $(document).ready(function() {
 							</li>
 						</ul>
 					</td>
-					<td  style="text-align:right">
+					<td>
 						<select class="change-linked-dep" data-gateway-id="{{ gateway.id }}">
 							<option value="0" {% if not gateway.department %}selected="selected"{% endif %}>None</option>
 							{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
@@ -362,6 +361,10 @@ $(document).ready(function() {
 		</tbody>
 	</table>
 </div>
+
+<br />
+
+{% include 'AdminBundle:EmailGateways:list-fwd-list.html.twig' %}
 
 <div id="newcat_overlay" style="width: 400px; height: 180px; display: none;">
 	<div class="overlay-title">

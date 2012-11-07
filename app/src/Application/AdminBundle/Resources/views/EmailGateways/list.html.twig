@@ -25,26 +25,6 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	var container = $('#email_forward_list');
-
-	container.on('click', 'button.remove-trigger', function(ev) {
-		ev.preventDefault();
-		$(this).parent().parent().parent().hide().find('input').remove();
-	});
-
-	container.find('button.add-trigger').on('click', function(ev) {
-		ev.preventDefault();
-		var html = '<tr><td><div style="float: right"><button class="clean-white remove-trigger">Remove</button></div><input type="text" name="helpdesk_emails[]" placeholder="Email address or a full domain name" value="" /></td></tr>';
-		container.find('tbody').find('tr').last().before(html);
-	});
-
-	$('#fwd_emails_savebtn').on('click', function(ev) {
-		ev.preventDefault();
-		$('#email_forward_form').submit();
-		$(this).hide();
-		$('#fwd_emails_loading').show();
-	});
-
 	DP.select($('select.change-linked-dep'));
 
 	$('select.change-linked-dep').on('change', function() {
@@ -73,11 +53,6 @@ $(document).ready(function() {
 				DeskPRO_Window.util.showSavePuff(el.prev());
 			}
 		});
-	});
-
-	var overlay = new DeskPRO.UI.Overlay({
-		triggerElement: $('#fwd_emails_overlay_trigger'),
-		contentElement: $('#fwd_emails_overlay')
 	});
 });
 </script>
@@ -165,74 +140,6 @@ $(document).ready(function() {
 
 <br />
 
-<strong>
-	<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If you want to <em>forward</em> email into any of your defined email account, you need to list the original &quot;From&quot; addresses here.<br /><br />Failing to add the addresses here will result in the helpdesk thinking the unknown email address is a user account. This means any ticket sent to the forward address will have that addresses added as a CC user."></span>
-	<span id="fwd_emails_overlay_trigger" class="editable-link"><span>
-		Forarded Email Addresses
-	</span></span>
-</strong>
-{% if helpdesk_emails %}
-<ul class="small-detail-list">
-	{% for addr in helpdesk_emails %}
-		<li>{{ addr }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-
-<div id="fwd_emails_overlay" style="width: 700px; height: 600px; display: none;">
-	<div class="overlay-title">
-		<span class="close-overlay"></span>
-		<h4>Forwarded Email Addresses</h4>
-	</div>
-	<div class="overlay-content">
-		<p style="margin-bottom: 8px">
-			If you want to <em>forward</em> email into any of your defined email account, you need to list the original &quot;From&quot; addresses here.
-		</p>
-		<p style="margin-bottom: 8px">
-			For example, if you wanted to configure your email server with an alias <em>example-alias@{{ app.getSetting('core.deskpro_url')|url_domain }}</em>
-			to your email account <em>example@{{ app.getSetting('core.deskpro_url')|url_domain }}</em>, then you need to add <em>example-alias@{{ app.getSetting('core.deskpro_url')|url_domain }}</em>
-			to this list so the system knows how to properly map the address.
-		</p>
-
-		<form action="{{ path('admin_emailgateways_savehdaddr') }}" method="POST" id="email_forward_form">
-			<input type="hidden" name="process" value="1" />
-			<div class="check-grid item-list" id="email_forward_list">
-				<table width="100%">
-					<thead>
-						<tr>
-							<th style="text-align:left">Forwarded Email Addresses</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for addr in helpdesk_emails %}
-							<tr>
-								<td>
-									<div style="float: right">
-										<button class="clean-white remove-trigger">Remove</button>
-									</div>
-									<input type="text" name="helpdesk_emails[]" value="{{ addr }}" placeholder="Email address or a full domain name" />
-								</td>
-							</tr>
-						{% endfor %}
-
-						<tr>
-							<td>
-								<button class="clean-white add-trigger">Add New Address</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</form>
-	</div>
-	<div class="overlay-footer">
-		<div id="setout_save_wrap">
-			<button class="clean-white" id="fwd_emails_savebtn">Save Changes</button>
-		</div>
-		<div id="fwd_emails_loading" style="display: none;">
-			<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-		</div>
-	</div>
-</div>
+{% include 'AdminBundle:EmailGateways:list-fwd-list.html.twig' %}
 
 {% endblock %}

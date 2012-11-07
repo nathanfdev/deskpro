@@ -60,6 +60,7 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		")->getResult();
 
 		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
+		$helpdesk_emails = Arrays::removeFalsey($helpdesk_emails);
 
 		return $this->render('@list.html.twig', array(
 			'all_gateways' => $all_gateways,
