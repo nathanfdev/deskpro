@@ -69,6 +69,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_activate');
 		});
 
+		this.addEvent('destroy', function() {
+			console.log('destroy');
+			if (self.meta.unlockOnClose && self.getEl('locked_message').data('locked-self')) {
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/release-lock.json',
+					type: 'POST'
+				});
+			}
+		}, false, false, true);
+
 		if (this.meta.ticket_perms['delete']) {
 			if (this.meta.isDeleted) {
 				$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
@@ -734,6 +744,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('unlock_ticket').on('click', function() {
 			self.wrapper.find('.lock-overlay').remove();
 			self.getEl('locked_message').hide();
+			self.getEl('locked_message').data('locked-self', false);
 			self.getEl('lock_ticket').show();
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
@@ -747,6 +758,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('lock_ticket').on('click', function() {
 			self.wrapper.find('.lock-overlay').remove();
+			self.getEl('locked_message').data('locked-self', true);
 			self.getEl('locked_message').show();
 			self.getEl('locked_message_self').show();
 			self.getEl('locked_message_other').hide();

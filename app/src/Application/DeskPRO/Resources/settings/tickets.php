@@ -60,4 +60,8 @@
 	 * Process FW agent emails as forwards
 	 */
 	'core_tickets.process_agent_fwd' => true,
+
+	'core_tickets.lock_on_view' => false,
+	'core_tickets.unlock_on_close' => false,
+	'core_tickets.lock_lifetime' => 3600,
 );

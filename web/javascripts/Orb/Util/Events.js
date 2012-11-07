@@ -18,7 +18,7 @@ Orb.Util.Events = {
 		return type.toLowerCase().replace(/^on/, '');
 	},
 
-	addEvent: function(type, fn, context, tags){
+	addEvent: function(type, fn, context, tags, beginning){
 
 		this.__initEventsObj();
 
@@ -30,7 +30,18 @@ Orb.Util.Events = {
 		if (!this.__events[type]) {
 			this.__events[type] = [];
 		}
-		this.__events[type].push([fn, context]);
+
+		if (beginning && this.__events[type].length) {
+			var newVal = [];
+			newVal.push([fn, context]);
+			for (var i = 0; i < this.__events[type].length; i++) {
+				newVal.push(this.__events[type][i]);
+			}
+
+			this.__events[type] = newVal;
+		} else {
+			this.__events[type].push([fn, context]);
+		}
 
 		if (context && context.OBJ_ID) {
 			tags = (tags || []).push(context.OBJ_ID);

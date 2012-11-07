@@ -28,8 +28,9 @@ pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
 {% if ticket.isLocked(app.user) %}
 	pageMeta.isLocked = true;
 {% else %}
-	pageMeta.isLocked = true;
+	pageMeta.isLocked = false;
 {% endif %}
+pageMeta.unlockOnClose = {{ app.getSetting('core_tickets.unlock_on_close') ? 'true' : 'false' }};
 
 {% if ticket.person.organization %}
 	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
@@ -45,7 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
 pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
-pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %};
+{# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 
 </script>
@@ -251,13 +252,15 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 					</td>
 				</tr></table>
 			{% endif %}
-			<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %}>
+			{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
+			<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
 				<div class="sep">-</div>
 				<div class="locked-message">
-					<div id="{{baseId}}_locked_message_self" {% if not (not ticket.locked_by_agent or (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id)) %}style="display: none"{% endif %}>
+					<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
 						You have locked this ticket. Other agents will not be able to edit the ticket unless it is unlocked first.
+						{% if app.getSetting('core_tickets.unlock_on_close') %}This lock will automatically be released when you close this ticket.{% endif %}
 					</div>
-					{% if not (not ticket.locked_by_agent or (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id)) %}
+					{% if ticket.locked_by_agent and not locked_self %}
 						<div id="{{baseId}}_locked_message_other">
 							{{ ticket.locked_by_agent.display_name }} has locked this ticket. To edit this ticket you must first unlock it.
 						</div>

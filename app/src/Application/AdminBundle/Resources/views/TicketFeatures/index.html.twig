@@ -234,6 +234,46 @@
 </div>
 
 <div class="setting_field_row">
+	<h4>Ticket Locking</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core_tickets.lock_on_view]" {% if app.getSetting('core_tickets.lock_on_view') %}checked="checked"{% endif %} />
+				Automatically lock tickets when agents view them</label>
+		</div>
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core_tickets.unlock_on_close]" {% if app.getSetting('core_tickets.unlock_on_close') %}checked="checked"{% endif %} />
+				Automatically unlock tickets when the lock owner stops viewing the ticket</label>
+		</div>
+		<div class="field_row">
+			{% set options = {
+				900: "15 minutes",
+				1800: "30 minutes",
+				3600: "1 hour",
+				7200: "2 hours",
+				14400: "4 hours",
+				28000: "8 hours",
+				86400: "1 day",
+				259200: "3 days",
+				432000: "5 days",
+				604800: "1 week",
+				1209600: "2 weeks"
+			} %}
+			<label>Automatically unlock tickets after:</label>
+			<select name="settings[core_tickets.lock_lifetime]">
+				{% for k,v in options %}
+					<option value="{{ k }}" {% if app.getSetting('core_tickets.lock_lifetime') == k %}selected="selected"{% endif %}>{{ v }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<input type="hidden" name="set_settings[]" value="core_tickets.lock_on_view" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.lock_on_view" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.unlock_on_close" />
+	<input type="hidden" name="set_settings_falseable[]" value="core_tickets.unlock_on_close" />
+	<input type="hidden" name="set_settings[]" value="core_tickets.lock_lifetime" />
+</div>
+
+<div class="setting_field_row">
 	<h4>Suggestions</h4>
 	<div class="setting_fields">
 		<div class="field_row">
@@ -344,7 +384,7 @@
 						259200: "3 days",
 						432000: "5 days",
 						604800: "1 week",
-						172800: "2 weeks",
+						1209600: "2 weeks",
 						1814400: "3 weeks",
 						2419000: "1 month",
 						4838000: "2 months",

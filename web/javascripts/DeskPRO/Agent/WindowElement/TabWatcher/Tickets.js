@@ -14,6 +14,8 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', function(info) {
 			var ticketId = info.ticket_id;
+			alert('called');
+			console.log(info);
 			Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
 				if (tab.page.getMetaData('ticket_id') == ticketId && tab.page.ticketLocked) {
 					tab.page.ticketLocked.unlock();

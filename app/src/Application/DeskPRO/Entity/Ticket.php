@@ -2401,7 +2401,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'tickets',
 			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created'))
+				'date_created_idx' => array('columns' => array('date_created')),
+				'date_locked_idx' => array('columns' => array('date_locked')),
 			),
 			'uniqueConstraints' => array(
 				'ref_idx' => array('columns' => array('ref'))

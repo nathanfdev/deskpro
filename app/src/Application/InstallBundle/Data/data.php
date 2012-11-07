@@ -1097,6 +1097,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupDrafts::DEFAULT_I
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.cleanup_ticket_locks##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_ticket_locks';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Ticket Locks';
+$j['description'] = 'Cleans up ticket locks';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTicketLocks';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTicketLocks::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

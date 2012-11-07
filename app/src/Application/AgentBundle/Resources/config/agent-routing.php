@@ -1019,6 +1019,13 @@ $collection->add('agent_ticket_unlock', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_release_lock', new Route(
+	'/tickets/{ticket_id}/release-lock.json',
+	array('_controller' => 'AgentBundle:Ticket:releaseLock'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_split', new Route(
 	'/tickets/split/{message_id}',
 	array('_controller' => 'AgentBundle:Ticket:split'),

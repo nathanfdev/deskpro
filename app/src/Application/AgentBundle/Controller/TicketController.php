@@ -219,6 +219,13 @@ class TicketController extends AbstractController
 
 		$draft = $this->em->getRepository('DeskPRO:Draft')->getDraft('ticket', $ticket->id);
 
+		if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
+			$ticket->setLockedByAgent($this->person);
+
+			$this->em->persist($ticket);
+			$this->em->flush();
+		}
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
@@ -2468,6 +2475,17 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array('error' => true));
 		}
 
+		$lock_cm = new ClientMessage();
+		$lock_cm->fromArray(array(
+			'channel' => 'agent-notification.tickets.locked',
+			'data' => array(
+				'ticket_id' => $ticket['id'],
+				'agent_id' => $ticket['id'],
+			),
+			'created_by_client' => $this->session->getEntity()->getId(),
+		));
+		$this->em->persist($lock_cm);
+
 		$ticket->setLockedByAgent($this->person);
 		$this->em->persist($ticket);
 		$this->em->flush();
@@ -2483,9 +2501,44 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array('success' => true));
 		}
 
+		$lock_cm = new ClientMessage();
+		$lock_cm->fromArray(array(
+			'channel' => 'agent-notification.tickets.unlocked',
+			'data' => array(
+				'ticket_id' => $ticket['id'],
+				'agent_id' => $ticket['id'],
+			),
+			'created_by_client' => $this->session->getEntity()->getId(),
+		));
+		$this->em->persist($lock_cm);
+
 		$ticket->setLockedByAgent(null);
 		$this->em->persist($ticket);
 		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function releaseLockAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if ($ticket->hasLock() && $ticket->locked_by_agent->id == $this->person->id) {
+			$lock_cm = new ClientMessage();
+			$lock_cm->fromArray(array(
+				'channel' => 'agent-notification.tickets.unlocked',
+				'data' => array(
+					'ticket_id' => $ticket['id'],
+					'agent_id' => $ticket['id'],
+				),
+				'created_by_client' => $this->session->getEntity()->getId(),
+			));
+			$this->em->persist($lock_cm);
+
+			$ticket->setLockedByAgent(null);
+			$this->em->persist($ticket);
+			$this->em->flush();
+		}
 
 		return $this->createJsonResponse(array('success' => true));
 	}
