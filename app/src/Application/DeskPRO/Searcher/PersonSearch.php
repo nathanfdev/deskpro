@@ -765,6 +765,10 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_LABEL:
+
+					if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+					elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
 					$any = false;
 					if (isset($choice['label'])) {
 						$choice = $choice['label'];

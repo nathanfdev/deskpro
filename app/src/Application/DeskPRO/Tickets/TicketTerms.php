@@ -775,6 +775,10 @@ class TicketTerms
 				if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $choice)) return false;
 				break;
 			case TicketSearch::TERM_LABEL:
+
+				if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+				elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
 				$any = false;
 				foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
 					if (strpos(strtolower($label), strtolower($choice)) !== false) {
@@ -1055,6 +1059,10 @@ class TicketTerms
 				break;
 
 			case OrganizationSearch::TERM_LABEL:
+
+				if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+				elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
 				if (!$org) {
 					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 						return false;
