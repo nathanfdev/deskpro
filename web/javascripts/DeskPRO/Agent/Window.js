@@ -3279,6 +3279,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				var html = this.getFragmentHtml(pastedFrag);
+
+				// since <p> only counts as one line break, we need to fix that
+				html = html.replace(/<\/p>/g, '</p><p>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+
 				this.pasteCleanUp(html);
 
 				this.pasteRunning = false;

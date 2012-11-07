@@ -1321,7 +1321,7 @@ var RLANG = {
 
 				if (cmd === 'inserthtml')
 				{
-					if ($.browser.msie)
+					if ($.browser.msie/*&& false*/)
 					{
 						this.$editor.focus();
 						document.selection.createRange().pasteHTML(param);
