@@ -73,12 +73,12 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $snippet;
+	protected $snippet = '';
 
 	/**
 	 * @var string
 	 */
-	protected $snippet_html;
+	protected $snippet_html = '';
 
 	/**
 	 * @return int
