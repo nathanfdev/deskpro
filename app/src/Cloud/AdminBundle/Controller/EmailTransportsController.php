@@ -41,6 +41,11 @@ use Application\AdminBundle\Controller\EmailTransportsController as BaseEmailTra
 
 class EmailTransportsController extends BaseEmailTransportsController
 {
+	public function listAction()
+	{
+		return $this->redirectRoute('admin_emailgateways');
+	}
+
 	public function editAccountAction($id)
 	{
 		return parent::editAccountAction($id);
