@@ -226,7 +226,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
-                <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1}) }}"><button class="clean-white">{{ phrase('agent.general.download_pdf') }}</button></a>
+                <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}"><button class="clean-white">{{ phrase('agent.general.download_pdf') }}</button></a>
 			</div>
 		</div>
 	</section>
