@@ -25,7 +25,9 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		function updateSize() {
 			if (!element) return;
 			initScroll();
-			element.tinyscrollbar_update();
+			if (element.tinyscrollbar_update) {
+				element.tinyscrollbar_update();
+			}
 		}
 
 		function restorePosition() {
