@@ -30,6 +30,15 @@
 						<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
 						<i>{{ cat.title }}</i>
 					</span>
+				{% elseif grouping_var == 'agent' %}
+					{% set agent = app.getDataRepository('Agent').get(cat.id) %}
+					{% if agent %}
+						<span
+							style="background: url('{{ agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
+						>{{ cat.title }}</span>
+					{% else %}
+						{{ cat.title }}
+					{% endif %}
 				{% else %}
 					{{ cat.title }}
 				{% endif %}
