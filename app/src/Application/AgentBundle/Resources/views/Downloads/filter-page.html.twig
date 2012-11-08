@@ -33,6 +33,11 @@
 			{% if display_fields|length %}
 				<div class="extra-fields">
 					<ul>
+						<li>
+							<span class="prop-title">
+								{{ phrase('agent.publish.status_' ~ download.status_code|replace({'.':'_'})) }}
+							</span>
+						</li>
 						{% for field in display_fields %}
 							{% if field == 'category' %}
 								<li>
