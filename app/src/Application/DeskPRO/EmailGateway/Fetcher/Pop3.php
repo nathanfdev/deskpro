@@ -213,6 +213,10 @@ class Pop3 extends AbstractFetcher
 	 */
 	protected function _doneRead($id)
 	{
+		if ($this->gateway->keep_read) {
+			return;
+		}
+
 		$this->logger->log("Marking message as deleted: $id", 'debug');
 		try {
 			$this->getStorage()->removeMessage($id);

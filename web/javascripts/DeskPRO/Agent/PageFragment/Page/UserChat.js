@@ -751,11 +751,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			window.clearTimeout(this._saveLabelsTimeout);
 		}
 
+		this._labelsData = this.labelsInput.getFormData();
 		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
 	},
 
 	_doSaveLabels: function() {
-		var data = this.labelsInput.getFormData();
+		var data = this._labelsData;
 
 		$.ajax({
 			url: BASE_URL + 'agent/chat/' + this.meta.conversation_id + '/ajax-save-labels',
