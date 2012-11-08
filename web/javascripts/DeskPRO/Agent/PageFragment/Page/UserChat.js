@@ -319,28 +319,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		// Department
 		//------------------------------
 
-		var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
-		this.departmentOptionBox = new DeskPRO.UI.OptionBox({
-			element: el,
-			trigger: this.getEl('dep_btn'),
-			onClose: function(ob) {
-				var depId = parseInt(ob.getSelected('department'));
+		var dep = this.getEl('department_id');
+		DP.select(dep);
 
-				// The same
-				if (depId == parseInt(self.getEl('dep_btn').data('department-id'))) {
-					return;
-				}
+		dep.on('change', function() {
+			var depId = parseInt($(this).val());
 
-				var name = DeskPRO_Window.getDisplayName('department_full', depId);
-				$('.label-department-id', self.getEl('dep_btn')).text(name);
-				self.getEl('dep_btn').data('department-id', depId)
-
-				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'agent/chat/change-props/' + self.meta.conversation_id,
-					data: [{ name: 'props[department_id]', value: depId }],
-					type: 'POST'
-				});
-			}
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/chat/change-props/' + self.meta.conversation_id,
+				data: [{ name: 'props[department_id]', value: depId }],
+				type: 'POST'
+			});
 		});
 	},
 

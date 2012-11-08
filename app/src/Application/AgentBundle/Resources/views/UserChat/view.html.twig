@@ -47,7 +47,14 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="meta-line">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr>
 			<td style="white-space: nowrap; vertical-align: middle;" nowrap="nowrap" width="100">
-				<div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.general.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
+					{% if not ticket.department %}{% set blank_option = true %}{% endif %}
+					{% include 'AgentBundle:Common:select-department.html.twig' with {
+						'name': "department_id",
+						'blank_title': 'None',
+						'selected': convo.department.id|default(0),
+						'id': baseId ~ '_department_id',
+						'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'chat', [convo.department.id|default(0)])
+					} %}
 			</td>
 			<td style="vertical-align: middle; padding-left: 8px;">
 				<div class="labels-line">
