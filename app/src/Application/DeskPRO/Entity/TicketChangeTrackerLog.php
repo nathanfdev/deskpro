@@ -26,116 +26,66 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Log
+ * @package DeskPRO
+ * @category Entities
  */
 
-namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
+namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-
-/**
- * A writer that calls other writers
- */
-class WriterChain extends AbstractWriter implements \Countable, \IteratorAggregate
+class TicketChangeTrackerLog extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * An array of writers
-	 * @var array
+	 * @var int
 	 */
-	protected $_writers = array();
-
-
+	protected $id = null;
 
 	/**
-	 * Add a new filter to the chain
-	 *
-	 * @param FilterInterface $writer
+	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
-	public function addWriter(AbstractWriter $writer)
-	{
-		$this->_writers[] = $writer;
-	}
-
-
+	protected $ticket = null;
 
 	/**
-	 * Add a new filter to the chain
-	 *
-	 * @param FilterInterface $writer
+	 * @var string
 	 */
-	public function removeWriter(AbstractWriter $writer)
-	{
-		if (($k = array_search($writer, $this->_writers, true)) !== false) {
-			array_splice($this->_writers, $k, 1);
-		}
-	}
-
-
+	protected $log = '';
 
 	/**
-	 * Get the writers currently set.
-	 *
-	 * @return array
+	 * @var \DateTime
 	 */
-	public function getWriters()
+	protected $date_created;
+
+	public function __construct()
 	{
-		return $this->_writers;
+		$this->setModelField('date_created', new \DateTime());
 	}
-
-
 
 	/**
-     * Write a log message
-     *
-     * @param  LogItem $event
-     * @return bool
-     */
-    public function _write(LogItem $log_item)
-	{
-		foreach ($this->_writers as $writer) {
-			$writer->write($log_item);
-		}
-
-		return true;
-	}
-
-
-
-    /**
-     * Perform shutdown activities
-     *
-     * @return void
-     */
-    public function shutdown()
-	{
-		foreach ($this->_writers as $writer) {
-			$writer->shutdown();
-		}
-	}
-
-
-
-	/**
-	 * Count how many writers there are.
-	 *
 	 * @return int
 	 */
-	public function count()
+	public function getId()
 	{
-		return count($this->_writers);
+		return $this->id;
 	}
 
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
 
-
-	/**
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		return new \ArrayIterator($this->_writers);
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'ticket_changetracker_logs', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'log', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

@@ -1257,6 +1257,13 @@ $collection->add('agent_ticket_message_emaillog', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_changetrackerlog', new Route(
+	'/tickets/{ticket_id}/message-details/{message_id}/changetracker-log',
+	array('_controller' => 'AgentBundle:Ticket:viewChangeTrackerLog'),
+	array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_ticket_message_unformatted', new Route(
 	'/tickets/{ticket_id}/message-details/{message_id}/unformatted',
 	array('_controller' => 'AgentBundle:Ticket:viewUnformattedMessage'),

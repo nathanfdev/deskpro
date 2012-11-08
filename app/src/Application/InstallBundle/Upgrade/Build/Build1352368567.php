@@ -26,116 +26,20 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @subpackage Log
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
+namespace Application\InstallBundle\Upgrade\Build;
 
-
-
-/**
- * A writer that calls other writers
- */
-class WriterChain extends AbstractWriter implements \Countable, \IteratorAggregate
+class Build1352368567 extends AbstractBuild
 {
-	/**
-	 * An array of writers
-	 * @var array
-	 */
-	protected $_writers = array();
-
-
-
-	/**
-	 * Add a new filter to the chain
-	 *
-	 * @param FilterInterface $writer
-	 */
-	public function addWriter(AbstractWriter $writer)
+	public function run()
 	{
-		$this->_writers[] = $writer;
-	}
-
-
-
-	/**
-	 * Add a new filter to the chain
-	 *
-	 * @param FilterInterface $writer
-	 */
-	public function removeWriter(AbstractWriter $writer)
-	{
-		if (($k = array_search($writer, $this->_writers, true)) !== false) {
-			array_splice($this->_writers, $k, 1);
-		}
-	}
-
-
-
-	/**
-	 * Get the writers currently set.
-	 *
-	 * @return array
-	 */
-	public function getWriters()
-	{
-		return $this->_writers;
-	}
-
-
-
-	/**
-     * Write a log message
-     *
-     * @param  LogItem $event
-     * @return bool
-     */
-    public function _write(LogItem $log_item)
-	{
-		foreach ($this->_writers as $writer) {
-			$writer->write($log_item);
-		}
-
-		return true;
-	}
-
-
-
-    /**
-     * Perform shutdown activities
-     *
-     * @return void
-     */
-    public function shutdown()
-	{
-		foreach ($this->_writers as $writer) {
-			$writer->shutdown();
-		}
-	}
-
-
-
-	/**
-	 * Count how many writers there are.
-	 *
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->_writers);
-	}
-
-
-
-	/**
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->_writers);
+		$this->out("Add ticket_changetracker_logs");
+		$this->execMutateSql("CREATE TABLE ticket_changetracker_logs (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, log LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F2205216700047D2 (ticket_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+		$this->execMutateSql("ALTER TABLE ticket_changetracker_logs ADD CONSTRAINT FK_F2205216700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
 	}
 }

@@ -197,6 +197,24 @@ class Logger
 	}
 
 
+	/**
+	 * @param Writer\AbstractWriter $writer
+	 */
+	public function removeWriter(\Orb\Log\Writer\AbstractWriter $writer)
+	{
+		$this->_writer_chain->removeWriter($writer);
+	}
+
+
+	/**
+	 * @return null|Writer\WriterChain
+	 */
+	public function getWriterChain()
+	{
+		return $this->_writer_chain;
+	}
+
+
 
 	/**
 	 * Some writers are able to use a sesson name or ID to group a number of related

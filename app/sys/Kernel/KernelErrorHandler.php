@@ -192,6 +192,17 @@ class KernelErrorHandler
 
 
 	/**
+	 * @param \Exception $exception
+	 */
+	public static function logException(\Exception $exception)
+	{
+		$einfo = self::getExceptionInfo($exception);
+		$einfo['no_send_error'] = true;
+		self::logErrorInfo($einfo);
+	}
+
+
+	/**
 	 * Tries to clean up before dieing after a fatal error.
 	 */
 	public static function tryCleanup()

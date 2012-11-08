@@ -1741,6 +1741,31 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function viewChangeTrackerLogAction($message_id)
+	{
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		$logs = App::getDb()->fetchAllCol("
+			SELECT log
+			FROM ticket_changetracker_logs
+			WHERE ticket_id = ?
+			ORDER BY id ASC
+		", array($message->ticket->getId()));
+
+		if ($this->in->getBool('download')) {
+			$res = new Response(implode("\n\n\n", $logs), 200);
+			$res->headers->set('Content-Type', 'plain/text');
+			$res->headers->set('Content-Disposition', 'attachment');
+			return $res;
+		}
+
+		return $this->render('AgentBundle:Ticket:message-details-tracker-log.html.twig', array(
+			'message' => $message,
+			'ticket'  => $message['ticket'],
+			'logs'    => $logs,
+		));
+	}
+
 	public function ajaxGetMessageQuoteAction($message_id)
 	{
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);

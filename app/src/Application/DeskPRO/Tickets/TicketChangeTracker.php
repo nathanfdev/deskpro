@@ -119,6 +119,11 @@ class TicketChangeTracker extends ChangeTracker
 	protected $start_time = 0;
 
 	/**
+	 * @var \Orb\Log\Writer\ArrayWriter
+	 */
+	protected $arr_writer;
+
+	/**
 	 * Fields that shouldnt trigger the full logger and filter inspections
 	 * THey are still recoreded and may still be used as criteria, but they are always
 	 * accompanied by a real trigger such as a status change etc. So by themselves
@@ -139,8 +144,9 @@ class TicketChangeTracker extends ChangeTracker
 
 	public function __construct(Ticket $ticket)
 	{
-		$this->entity = $ticket;
-		$this->ticket = $ticket;
+		$this->entity     = $ticket;
+		$this->ticket     = $ticket;
+		$this->arr_writer = new \Orb\Log\Writer\ArrayWriter();
 
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
 			$this->person_context = null;
@@ -186,6 +192,7 @@ class TicketChangeTracker extends ChangeTracker
 	public function getLog()
 	{
 		if ($this->log) return $this->log;
+
 		if (App::getConfig('debug.ticket_change_logger')) {
 			$logger = new \Orb\Log\Logger();
 			$writer = new \Orb\Log\Writer\Stream(App::getContainer()->getLogDir() . '/ticket-change-tracker.log');
@@ -197,14 +204,34 @@ class TicketChangeTracker extends ChangeTracker
 			}
 
 			$this->log = $logger;
+		} else {
+			$logger = new \Orb\Log\Logger();
+			$this->log = $logger;
 		}
+
+		$this->log->addWriter($this->arr_writer);
+
 		return $this->log;
+	}
+
+	protected function _cleanOldWriters()
+	{
+		if ($this->log) {
+			foreach ($this->log->getWriterChain()->getWriters() as $wr) {
+				if ($wr instanceof \Orb\Log\Writer\ArrayWriter) {
+					$this->log->removeWriter($wr);
+				}
+			}
+		}
 	}
 
 
 	public function setLogger(\Orb\Log\Logger $logger)
 	{
 		$this->log = $logger;
+		$this->_cleanOldWriters();
+
+		$this->log->addWriter($this->arr_writer);
 	}
 
 	/**
@@ -736,6 +763,21 @@ class TicketChangeTracker extends ChangeTracker
 
 		$total_time = sprintf("%.4f", microtime(true) - $this->start_time);
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
+
+		$this->_cleanOldWriters();
+
+		$log = implode("\n", $this->arr_writer->getMessages());
+		if ($log) {
+			try {
+				App::getDb()->insert('ticket_changetracker_logs', array(
+					'ticket_id'    => $this->ticket['id'],
+					'log'          => $log,
+					'date_created' => date('Y-m-d H:i:s')
+				));
+			} catch (\Exception $e) {
+				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+			}
+		}
 
 		$this->running = false;
 

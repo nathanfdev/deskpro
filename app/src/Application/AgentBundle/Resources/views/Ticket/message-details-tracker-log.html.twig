@@ -1,0 +1,9 @@
+{% extends 'AgentBundle:Ticket:message-details-layout.html.twig' %}
+{% block current_page "changetracker-log" %}
+{% block body %}
+<textarea style="font-family: 'Monaco', 'Courier New', monospace; font-size: 9pt;" class="fill">{% for log in logs %}{{ log }}
+
+
+{% endfor %}
+</textarea>
+{% endblock %}

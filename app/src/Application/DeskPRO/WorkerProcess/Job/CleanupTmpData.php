@@ -54,8 +54,8 @@ class CleanupTmpData extends AbstractJob
 
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM tmp_data
-			WHERE date_expire > ?",
-		array($datetime));
+			WHERE date_expire > ?
+		", array($datetime));
 
 		if ($num) {
 			$this->logStatus("Cleaned up $num stale user temp data entries");
@@ -67,8 +67,8 @@ class CleanupTmpData extends AbstractJob
 
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM people_prefs
-			WHERE date_expire > ?",
-		array($datetime));
+			WHERE date_expire > ?
+		", array($datetime));
 
 		if ($num) {
 			$this->logStatus("Cleaned up $num stale user preference entries");
@@ -80,14 +80,20 @@ class CleanupTmpData extends AbstractJob
 
 		$datecut = date('Y-m-d H:i:s', time() - 259200);
 		$num = App::getDb()->executeUpdate("
-			DELETE FROM log_items
+			DELETE FROM ticket_changetracker_logs
 			WHERE date_created < ?
-		",
-		array($datecut));
+		", array($datecut));
 
 		if ($num) {
-			$this->logStatus("Cleaned up $num old log items");
+			$this->logStatus("Cleaned up $num old ticket change tracker logs");
 		}
+
+		#------------------------------
+		# Ticket change logs
+		#------------------------------
+
+		$datecut = date('Y-m-d H:i:s', time() - 2592000); // 30 days
+
 
 		#------------------------------
 		# Try to delete old update status file
