@@ -1129,11 +1129,13 @@ article.content-message .content header {
 	overflow: hidden;
 }
 
-article.content-message.note-message .content {
+article.content-message.note-message .content,
+article.content-message.note-message.agent-message .content {
 	border: 1px dashed #ACB2BF;
 }
 
-article.content-message.note-message .content header {
+article.content-message.note-message .content header,
+article.content-message.note-message.agent-message .content header {
 	background: #EDEDED;
 	.border-radius(3px, 3px, 0, 0);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
