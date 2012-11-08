@@ -175,11 +175,11 @@ Orb.Util.TimeAgo = {
 			if (info.mins <= 15) {
 				fraction = '';
 			} else if (info.mins <= 30) {
-				fraction = '1/4';
+				fraction = '¼';
 			} else if (info.mins <= 45) {
-				fraction = '1/2';
+				fraction = '½';
 			} else if (info.mins <= 60) {
-				fraction = '3/4';
+				fraction = '¾';
 			}
 
 			var phrase_num = info.hours;
@@ -188,10 +188,10 @@ Orb.Util.TimeAgo = {
 			// Inc to override plural for ex 1 1/2 hours
 			if (fraction !== '') {
 				phrase_num += 1;
-				phrase_hours += ' ' + fraction;
+				phrase_hours = (info.hours || 1) + '' + fraction;
 			}
 
-			return this.getPhraseFor('hour', phrase_hours, ago);
+			return this.getPhraseFor('hour', phrase_hours, ago, phrase_num);
 
 		// less than 3 days: 2 days 2 hours
 		} else if (total_secs <= 259200) {
@@ -265,7 +265,11 @@ Orb.Util.TimeAgo = {
 	 * @param string type
 	 * @param int num
 	 */
-	getPhraseFor: function(type, num, ago) {
+	getPhraseFor: function(type, num, ago, num_exact) {
+
+		if (!num_exact) {
+			num_exact = num;
+		}
 
 		if (window.Orb_Util_TimeAgo_getPhraseFor) {
 			if (num < 0) {
@@ -275,12 +279,12 @@ Orb.Util.TimeAgo = {
 			return window.Orb_Util_TimeAgo_getPhraseFor(type, num, ago);
 		}
 
-		if (type == 'sec' && num <= 0) {
+		if (type == 'sec' && num_exact <= 0) {
 			return this.phrases['sec_less'];
 		}
 
 		var k = type;
-		if (num != 1) {
+		if (num_exact != 1) {
 			k += 's';
 		}
 
