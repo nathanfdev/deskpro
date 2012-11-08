@@ -23,6 +23,9 @@
 				<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
 				{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
 			</div>
+			{% if ticket.agent %}
+				<span class="tipped agent-inline-icon" title="{{ ticket.agent.display_name }}" style="background: url('{{ ticket.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px;"></span>
+			{% endif %}
 			{% if ticket_display.getFlaggedColor(ticket) %}
 				<i class="flag {{ ticket_display.getFlaggedColor(ticket) }}"></i>
 			{% endif %}
