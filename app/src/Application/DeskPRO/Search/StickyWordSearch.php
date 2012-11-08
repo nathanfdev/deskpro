@@ -173,6 +173,9 @@ class StickyWordSearch implements PersonContextInterface
 			if (!isset($results_ranked[$ka]) && isset($results_ranked[$kb])) {
 				return 1;
 			}
+			if (!isset($results_ranked[$ka]) && !isset($results_ranked[$kb])) {
+				return 0;
+			}
 
 			if ($results_ranked[$ka]['count'] == $results_ranked[$kb]['count']) {
 				return 0;
