@@ -80,7 +80,7 @@
 	at <a href="http://support.deskpro.com/">support.deskpro.com</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
 </p>
 
-{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or app.getSetting('core.error_unable_allocate_memory') %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
@@ -95,6 +95,14 @@
 				<tr>
 					<td>
 						There are <a href="{{ path('admin_server_error_logs') }}">{{ error_count }} logged errors</a> that you should investigate.
+					</td>
+				</tr>
+			{% endif %}
+			{% if app.getSetting('core.error_unable_allocate_memory') %}
+				<tr>
+					<td>
+						<a href="#" class="hide-setting-error close-icon" data-setting="core.error_unable_allocate_memory">Hide</a>
+						APC has been unable to allocate memory for use by PHP. This indicates a misconfiguration with the APC PHP extension. <a href="http://www.cyberciti.biz/faq/linux-unix-php-warning-unable-to-allocate-memory-for-pool/" target="_blank">Learn more.</a>
 					</td>
 				</tr>
 			{% endif %}
@@ -227,5 +235,32 @@
 {% endif %}
 
 <br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+<script>
+$(function() {
+	$('.hide-setting-error').click(function() {
+		var $this = $(this);
+		if ($this.closest('tbody').find('tr').length <= 1) {
+			$this.closest('.content-table').remove();
+		} else {
+			$this.closest('td').remove();
+		}
+
+		var postData = [
+			{
+				name: 'set_settings[]',
+				value: $this.data('setting')
+			}
+		];
+
+		$.ajax({
+			url: '{{ path('admin_settings_saveform', {type: 'error_hide', auth: security_token('settings_error_hide')}) }}',
+			data: postData,
+			type: 'POST',
+			dataType: 'json'
+		});
+	});
+});
+</script>
 
 {% endblock %}

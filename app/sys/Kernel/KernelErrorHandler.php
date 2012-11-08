@@ -257,6 +257,12 @@ class KernelErrorHandler
 			$errinfo['email'] = true;
 		}
 
+		if (!empty($errinfo['set_setting'])) {
+			try {
+				App::getContainer()->getSettingsHandler()->setSetting($errinfo['set_setting'], 1);
+			} catch (\Exception $e) {}
+		}
+
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
@@ -539,6 +545,7 @@ class KernelErrorHandler
 		}
 
 		$context_data = '';
+		$set_setting = '';
 
 		$display = true;
 		$no_send_error = false;
@@ -550,6 +557,7 @@ class KernelErrorHandler
 		if ($display && strpos($errstr, 'Unable to allocate memory for pool') !== false) {
 			$display = false;
 			$no_send_error = true;
+			$set_setting = 'core.error_unable_allocate_memory';
 		}
 
 		// Dont send in general perm errors
@@ -598,6 +606,7 @@ class KernelErrorHandler
 			'error_time'     => microtime(true),
 			'time_to_error'  => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
 			'no_send_error'  => $no_send_error,
+			'set_setting'    => $set_setting
 		);
 	}
 

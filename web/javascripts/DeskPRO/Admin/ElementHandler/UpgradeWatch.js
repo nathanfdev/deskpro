@@ -174,9 +174,6 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 			case 'updating_db_start':
 				$('li.step-install-db').addClass('done on');
 				break;
-			case 'updating_db_start':
-				$('li.step-install-db').addClass('done on');
-				break;
 			case 'file_backup_loc':
 				$('#backup_path').show().find('em').text(message);
 				$('#file_backup_loc').text(message);
