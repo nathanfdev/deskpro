@@ -991,6 +991,13 @@ $collection->add('agent_ticket_savemessagetext', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_setmessagenote', new Route(
+	'/tickets/messages/{message_id}/set-message-note.json',
+	array('_controller' => 'AgentBundle:Ticket:ajaxSetNote'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticket_view', new Route(
 	'/tickets/{ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:view'),

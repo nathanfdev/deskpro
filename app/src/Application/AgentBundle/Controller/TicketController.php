@@ -1455,6 +1455,31 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function ajaxSetNoteAction($message_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$message->is_agent_note = $this->in->getBool('is_note');
+
+		$this->em->persist($message);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'message_id' => $message->getId(),
+			'ticket_id'  => $ticket->getId(),
+			'is_note'    => $message->is_agent_note
+		));
+	}
+
 	############################################################################
 	# ajax-save-actions
 	############################################################################

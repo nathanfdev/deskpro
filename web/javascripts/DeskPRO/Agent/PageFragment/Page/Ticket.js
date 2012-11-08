@@ -917,11 +917,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initMessageActionsMenu: function() {
 		var self = this;
+		var menuElement = $('.ticket-message-edit-menu', this.wrapper);
 		this.messageActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: null,
-			menuElement: $('.ticket-message-edit-menu', this.wrapper),
+			menuElement: menuElement,
+			onBeforeMenuOpened: function(info) {
+				if ($(info.menu.getOpenTriggerElement()).closest('article.message').hasClass('note-message')) {
+					menuElement.find('li.set-as-message').show();
+					menuElement.find('li.set-as-note').hide();
+				} else {
+					menuElement.find('li.set-as-message').hide();
+					menuElement.find('li.set-as-note').show();
+				}
+			},
 			onItemClicked: function(info) {
-				DP.console.log($(info.menu.getOpenTriggerElement()));
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
@@ -987,6 +996,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
 				this.focusOnReply();
+
+				break;
+
+			case 'setnote.note':
+			case 'setnote.message':
+
+				var is_note = optionId == 'setnote.note' ? '1' : '0';
+				var row = this.wrapper.find('article.message-' + messageId);
+				row.addClass('gear-loading');
+
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/messages/'+messageId+'/set-message-note.json',
+					data: {
+						is_note: is_note
+					},
+					complete: function() {
+						row.removeClass('gear-loading');
+					},
+					success: function(info) {
+						if (info.is_note) {
+							row.addClass('note-message');
+						} else {
+							row.removeClass('note-message');
+						}
+					}
+				});
 
 				break;
 
