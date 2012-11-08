@@ -119,8 +119,6 @@ class SettingsStep extends AbstractDeskpro3Step
 			'match_pattern'              => '',
 			'transport_type'             => $type,
 			'transport_options'          => serialize($transport_options),
-			'backup_transport_type'      => '',
-			'backup_transport_options'   => 'a:0:{}',
 			'run_order'                  => 0
 		);
 
