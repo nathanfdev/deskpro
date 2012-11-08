@@ -48,11 +48,27 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 	protected function configure()
 	{
 		$this->setName('dpdev:gen-build-class');
+		$this->addOption('out', null, InputOption::VALUE_NONE, 'Output code instead of writing it');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$time = time();
+
+		$diff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql(App::getOrm());
+
+		if ($diff) {
+			$defaultcode = array();
+
+			foreach ($diff as $sql) {
+				$defaultcode[] = "\t\t\$this->execMutateSql(\"".addslashes($sql)."\");";
+			}
+
+			$defaultcode = implode("\n", $defaultcode);
+
+		} else {
+			$defaultcode = "\t\t//\$this->execMutateSql(\"...\");";
+		}
 
 		$tpl = <<<CODE
 <?php
@@ -96,16 +112,22 @@ class Build$time extends AbstractBuild
 	public function run()
 	{
 		\$this->out("My Upgrade Class");
-		//\$this->execMutateSql("...");
+$defaultcode
 	}
 }
 CODE;
 
 		$path = DP_ROOT . "/src/Application/InstallBundle/Upgrade/Build/Build$time.php";
 
-		file_put_contents($path, $tpl);
+		if ($input->getOption('out')) {
+			echo $tpl;
+			echo "\n";
+		} else {
+			file_put_contents($path, $tpl);
 
-		echo "Wrote file: $path\n";
+			echo "Wrote file: $path\n";
+		}
+
 		return 0;
 	}
 }
