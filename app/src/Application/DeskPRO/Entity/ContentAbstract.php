@@ -317,7 +317,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_authors = array();
-		$this->_authors[$this->person['id']] = $this->person;
+
+		if ($this->person) {
+			$this->_authors[$this->person['id']] = $this->person;
+		}
 
 		$ent = $this->getEntityName() . 'Revision';
 		$field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
@@ -331,7 +334,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		")->setParameter(1, $this)->execute();
 
 		foreach ($revs as $r) {
-			$this->_authors[$r->person->id] = $r->person;
+			if ($r->person) {
+				$this->_authors[$r->person->id] = $r->person;
+			}
 		}
 
 		return $this->_authors;
