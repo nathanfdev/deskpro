@@ -3035,6 +3035,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			observeImages: false,
 			cleanup: false,
 			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
+			uploadFields: {
+				_rt: window.DP_REQUEST_TOKEN
+			},
 			imageUploadCallback: function(obj, json) {
 				if (inlineHiddenPosition) {
 					inlineHiddenPosition.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
