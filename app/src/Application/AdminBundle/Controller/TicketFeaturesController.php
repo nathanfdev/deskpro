@@ -50,8 +50,10 @@ class TicketFeaturesController extends AbstractController
 
 	public function indexAction()
 	{
-		return $this->render('AdminBundle:TicketFeatures:index.html.twig', array(
+		$message_templates = $this->container->getDataService('TicketMessageTemplate')->getAll();
 
+		return $this->render('AdminBundle:TicketFeatures:index.html.twig', array(
+			'message_templates' => $message_templates
 		));
 	}
 

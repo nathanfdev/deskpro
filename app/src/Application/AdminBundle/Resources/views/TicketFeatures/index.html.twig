@@ -20,6 +20,7 @@
 <input type="hidden" name="set_settings_falseable[]" value="core.show_ticket_suggestions" />
 <input type="hidden" name="set_settings[]" value="core.ref_pattern" />
 <input type="hidden" name="set_settings[]" value="core.tickets.use_ref" />
+<input type="hidden" name="set_settings[]" value="core.tickets.use_ref" />
 <input type="hidden" name="set_settings[]" value="core_tickets.use_archive" />
 <input type="hidden" name="set_settings[]" value="core_tickets.auto_archive_time" />
 <input type="hidden" name="set_settings[]" value="core_tickets.reply_status" />
@@ -44,6 +45,8 @@
 		</div>
 	</div>
 </div>
+
+{% include 'AdminBundle:TicketFeatures:message-templates-bit.html.twig' %}
 
 <div class="setting_field_row">
 	<h4>Ticket Defaults</h4>

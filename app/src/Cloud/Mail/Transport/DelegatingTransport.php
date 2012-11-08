@@ -52,15 +52,22 @@ class DelegatingTransport extends BaseDelegatingTransport
 	 * @param bool $get_backup_transport
 	 * @return null|\Swift_MailTransport
 	 */
-	public function getTransportForFromAddress($from_address, $get_backup_transport = false, $no_default = false)
+	public function getTransportForFromAddress($from_address, $no_default = false)
 	{
 		// Always use our default transport from the @xxx.deskpro.com addresses
 		$re_domain = preg_quote(DPC_SITE_DOMAIN, '#');
 		if (preg_match("#@$re_domain$#", $from_address)) {
-			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport()->getTransport();
-			return $tr;
+			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
+			if (!$tr) {
+				$tr = new \Application\DeskPRO\Entity\EmailTransport();
+				$tr->match_type = 'all';
+				$tr->title = 'contact';
+				$tr->transport_type = 'mail';
+			}
+
+			return $tr->getTransport();
 		}
 
-		return parent::getTransportForFromAddress($from_address, $get_backup_transport, $no_default);
+		return parent::getTransportForFromAddress($from_address, $no_default);
 	}
 }

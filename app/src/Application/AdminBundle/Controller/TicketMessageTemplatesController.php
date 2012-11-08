@@ -46,11 +46,7 @@ class TicketMessageTemplatesController extends AbstractController
 
 	public function indexAction()
 	{
-		$message_templates = $this->container->getDataService('TicketMessageTemplate')->getAll();
-
-		return $this->render('AdminBundle:TicketMessageTemplates:index.html.twig', array(
-			'message_templates' => $message_templates
-		));
+		return $this->redirectRoute('admin_features');
 	}
 
 
@@ -84,7 +80,7 @@ class TicketMessageTemplatesController extends AbstractController
 				throw $e;
 			}
 
-			return $this->redirectRoute('admin_ticket_msgtpl');
+			return $this->redirectRoute('admin_features');
 		}
 
 		return $this->render('AdminBundle:TicketMessageTemplates:edit.html.twig', array(
@@ -108,6 +104,6 @@ class TicketMessageTemplatesController extends AbstractController
 		$this->em->remove($message_template);
 		$this->em->flush();
 
-		return $this->redirectRoute('admin_ticket_msgtpl');
+		return $this->redirectRoute('admin_features');
 	}
 }
