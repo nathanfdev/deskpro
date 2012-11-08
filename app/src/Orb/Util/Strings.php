@@ -943,7 +943,7 @@ class Strings
 	public static function autoLink($text, $short = true)
 	{
 		$pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
-		$callback = function($matches) {
+		$callback = function($matches) use ($short) {
 			$url       = array_shift($matches);
 
 			$text = parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH);

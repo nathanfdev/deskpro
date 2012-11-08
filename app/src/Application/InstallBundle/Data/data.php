@@ -1160,6 +1160,14 @@ $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
+##BEGIN:create_portal_block.twitter_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'twitter';
+$b->is_enabled = false;
+$em->persist($b);
+$em->flush();
+
 
 ################################################################################
 # Agent Teams

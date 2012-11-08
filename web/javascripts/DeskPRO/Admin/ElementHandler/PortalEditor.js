@@ -286,6 +286,35 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				overlay.open();
 				break;
 
+			case 'edit_twitter_sidebar_block':
+				var controller = data.controller;
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					destroyOnClose: true,
+					contentAjax: {
+						url: BASE_URL + 'admin/portal/get-editor/twitter-sidebar'
+					},
+					onContentSet: function(ev) {
+						var wrapper = ev.wrapperEl;
+						$('.save-trigger').on('click', function() {
+							$.ajax({
+								url: BASE_URL + 'admin/portal/save-editor/twitter_sidebar',
+								type: 'POST',
+								data: {
+									twitter_name: wrapper.find('input.twitter_name').val(),
+									max_items: wrapper.find('input.max_items').val()
+								}
+							});
+
+							ev.overlay.close();
+
+							controller.update()
+						});
+					}
+				});
+				overlay.open();
+				break;
+
 			case 'new_sidebar_block':
 				this.showHtmlEditor('NEW_SIDEBAR_BLOCK', function(action, data) {
 					switch (action) {

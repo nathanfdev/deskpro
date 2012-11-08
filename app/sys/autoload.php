@@ -62,6 +62,11 @@ $loader->registerClassNames(array(
 	'Text_LanguageDetect_Exception'   => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
 	'Text_LanguageDetect_ISO639'      => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
 	'Text_LanguageDetect_Parser'      => DP_ROOT.'/vendor/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
+
+	'EpiCurl'                         => DP_ROOT.'/vendor/twitter-async/EpiCurl.php',
+	'EpiOAuth'                        => DP_ROOT.'/vendor/twitter-async/EpiOAuth.php',
+	'EpiOSequence'                    => DP_ROOT.'/vendor/twitter-async/EpiOSequence.php',
+	'EpiTwitter'                      => DP_ROOT.'/vendor/twitter-async/EpiTwitter.php',
 ));
 
 spl_autoload_register(function($classname) {

@@ -106,6 +106,34 @@ class PortalPageDisplay extends PageDisplayAbstract
 	 */
 	protected $is_enabled = 0;
 
+	protected $id;
+
+	protected $section = 'sidebar';
+
+	protected $data = array();
+
+	public function addData($key, $value)
+	{
+		$old = $this->data;
+		$this->data[$key] = $value;
+		$this->_onPropertyChanged('data', $old, $this->data);
+	}
+
+	public function removeData($key)
+	{
+		$old = $this->data;
+		unset($this->data[$key]);
+		$this->_onPropertyChanged('data', $old, $this->data);
+	}
+
+	public function deleteCachedPages()
+	{
+		$cache_id = "d.portal.block.block.portal_{$this->section}_" . str_replace('\\', '', get_class($this));
+		App::getDb()->executeUpdate('
+			DELETE FROM cache WHERE id LIKE ?
+		', array("$cache_id%"));
+	}
+
 
 
 	############################################################################

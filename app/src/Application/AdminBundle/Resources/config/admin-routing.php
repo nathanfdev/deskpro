@@ -489,6 +489,13 @@ $collection->add('admin_portal_save_editor', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_twitter_oauth', new Route(
+	'/portal/twitter-oauth',
+	array('_controller' => 'AdminBundle:Portal:twitterOauth'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_settings', new Route(
 	'/portal/settings',
 	array('_controller' => 'AdminBundle:Portal:settings'),

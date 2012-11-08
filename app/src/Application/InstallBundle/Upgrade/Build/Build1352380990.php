@@ -29,93 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage PageDisplay
+ * @subpackage
  */
 
-namespace Application\DeskPRO\PageDisplay\Item\Portal;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PortalPageDisplay;
-
-use Orb\Util\Strings;
-
-class Twitter extends PortalItemAbstract implements CacheableItem
+class Build1352380990 extends AbstractBuild
 {
-	public function getCacheOptions()
+	public function run()
 	{
-		return array(
-			'lifetime' => 1800, // 30 minutes
-			'user_indifferent' => true
-		);
-	}
-
-	public function getHtml()
-	{
-		if ($this->section == 'sidebar') {
-			return $this->getSidebarHtml();
-		}
-
-		return '';
-	}
-
-	public function getSidebarHtml()
-	{
-		$twitter_name = $this->getOption('twitter_name');
-		if (!$twitter_name) {
-			$twitter_name = 'deskpro';
-		}
-
-		$max_items = $this->getOption('max_items');
-		if ($max_items <= 0) {
-			$max_items = 5;
-		}
-
-		$token = $this->getOption('token');
-		$secret = $this->getOption('secret');
-
-		if ($token && $secret) {
-			$twitter = new \EpiTwitter(
-				\Orb\Service\Twitter\Oauth::getConsumerKey(),
-				\Orb\Service\Twitter\Oauth::getConsumerSecret(),
-				$token,
-				$secret
-			);
-
-			$feed_items = array();
-
-			try {
-				$tweets = $twitter->get_statusesUser_timeline(array(
-					'screen_name' => $twitter_name,
-					'count' => $max_items
-				));
-				foreach ($tweets AS $tweet) {
-					$date = new \DateTime($tweet->created_at);
-
-					$feed_items[] = array(
-						'id' => $tweet->id_str,
-						'text' => $this->parseText($tweet->text),
-						'date' => $date,
-						'screen_name' => $tweet->user->screen_name,
-						'name' => $tweet->user->name
-					);
-				}
-			} catch (\Exception $e) {}
-		} else {
-			$feed_items = array();
-		}
-
-		return $this->renderView('UserBundle:Portal:twitter-sidebar.html.twig', array(
-			'twitter_name' => $twitter_name,
-			'feed_items' => $feed_items
-		));
-	}
-
-	protected function parseText($text)
-	{
-		$text = htmlspecialchars($text);
-		$text = Strings::autoLink($text, false);
-		$text = preg_replace('#(^|\W)(@([a-zA-Z0-9]+))(\W|$)#', '$1<a href="http://twitter.com/$3">$2</a>$4', $text);
-
-		return $text;
+		$this->out("Add support for Twitter feeds on the portal sidebar");
+		$this->execMutateSql("
+			INSERT INTO `portal_page_display` (`type`, `display_order`, `is_enabled`, `section`, `data`)
+			VALUES ('twitter', 70, 0, 'sidebar', 0x613a303a7b7d)
+		");
 	}
 }

@@ -178,6 +178,9 @@ var PortalAdmin = {
 		wrapper.find('.dp-p.dp-sidebarblocksimple').each(function() {
 			var controller = new PortalAdmin_SidebarBlockSimples($(this));
 		});
+		wrapper.find('.dp-p.dp-twitter').each(function() {
+			var controller = new PortalAdmin_TwitterSidebarBlock($(this));
+		});
 
 		$('#dp_custom_sidebar_add').on('click', function() {
 			self.tellAdmin('new_sidebar_block');
@@ -610,5 +613,55 @@ var PortalAdmin_Placeholder = new Orb.Class({
 			this.place.hide();
 			this.wrap.show();
 		}
+	}
+});
+
+/**
+ * @type {Orb.Class}
+ */
+var PortalAdmin_TwitterSidebarBlock = new Orb.Class({
+	initialize: function(el) {
+		this.el = el;
+		this.el.data('dp-controller', this);
+		this.id = el.data('dp-pid');
+
+		this._initContent();
+	},
+
+	_initContent: function() {
+		var self = this;
+
+		this.el.find('.dp-block-controls ul').append($('<li class="dp-edit-html"><span>edit</span></li>'));
+
+		this.el.find('.dp-block-controls').on('click', '.dp-edit-html', function(ev) {
+			ev.preventDefault();
+			self.clickEdit();
+		});
+	},
+
+	clickEdit: function() {
+		PortalAdmin.tellAdmin('edit_twitter_sidebar_block', {
+			pid: this.id,
+			controller: this
+		});
+	},
+
+	update: function() {
+		$.ajax({
+			url: BASE_URL + 'admin-render-template/block:' + this.id,
+			context: this,
+			success: function(content) {
+				this.setContent(content);
+			}
+		});
+	},
+
+	setContent: function(html) {
+		var data = $(html);
+		this.el.find('.dp-sidebar-block').html(data.html());
+	},
+
+	getEl: function() {
+		return this.el;
 	}
 });

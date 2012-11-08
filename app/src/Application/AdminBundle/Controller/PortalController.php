@@ -91,6 +91,17 @@ class PortalController extends AbstractController
 			case 'portal-title':
 				return $this->render('AdminBundle:Portal:portal-title-editor.html.twig');
 				break;
+
+			case 'twitter-sidebar':
+				$twitter = $this->em->getRepository('DeskPRO:PortalPageDisplay')->findOneByType('twitter');
+				if ($twitter) {
+					$data = $twitter->data;
+				} else {
+					$data = array();
+				}
+
+				return $this->render('AdminBundle:Portal:twitter-sidebar-editor.html.twig', array('data' => $data));
+				break;
 		}
 
 		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -142,6 +153,20 @@ class PortalController extends AbstractController
 				$this->container->getSettingsHandler()->setSetting('user.portal_title', $this->in->getString('title'));
 				break;
 
+			case 'twitter_sidebar':
+				$twitter = $this->em->getRepository('DeskPRO:PortalPageDisplay')->findOneByType('twitter');
+				if ($twitter) {
+					$twitter->addData('twitter_name', $this->in->getString('twitter_name'));
+					$twitter->addData('max_items', $this->in->getUint('max_items'));
+
+					$this->em->beginTransaction();
+					$this->em->persist($twitter);
+					$twitter->deleteCachedPages();
+					$this->em->flush();
+					$this->em->commit();
+				}
+				break;
+
 			case 'toggle_tab':
 				if ($this->in->getBool('on')) {
 					$val = 1;
@@ -160,6 +185,40 @@ class PortalController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function twitterOauthAction()
+	{
+		$twitter = $this->em->getRepository('DeskPRO:PortalPageDisplay')->findOneByType('twitter');
+		if ($twitter) {
+			$api = new \EpiTwitter(
+				\Orb\Service\Twitter\Oauth::getConsumerKey(),
+				\Orb\Service\Twitter\Oauth::getConsumerSecret()
+			);
+
+			if ($this->in->getBool('start')) {
+				$api->setCallback($this->generateUrl('admin_portal_twitter_oauth', array(), true));
+				return $this->redirect($api->getAuthenticateUrl());
+			}
+
+
+			try {
+				$api->setToken($this->in->getString('oauth_token'));
+				$access = $api->getAccessToken();
+				if ($access->oauth_token && $access->oauth_token_secret) {
+					$twitter->addData('token', $access->oauth_token);
+					$twitter->addData('secret', $access->oauth_token_secret);
+
+					$this->em->beginTransaction();
+					$this->em->persist($twitter);
+					$twitter->deleteCachedPages();
+					$this->em->flush();
+					$this->em->commit();
+				}
+			} catch (\EpiOAuthException $e) {}
+		}
+
+		return $this->redirectRoute('admin_portal');
 	}
 
 	public function deleteCustomBlockSimpleAction($pid = 0)
