@@ -137,9 +137,24 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 
+		static $done_pcheck;
+		if (!$done_pcheck) {
+			$done_pcheck = true;
+			if (!$this->sectionPermissionCheck()) {
+				return $this->renderLoginOrPermissionError();
+			}
+		}
+
+		$tpl_globals = $this->container->get('templating.globals');
+		if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
+			$tpl_globals->setVariable('admin_portal_controls', true);
+			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+		}
+
 		if (
 			!($this instanceof LoginController)
 			AND !$this->person->HelpdeskUser->canDoAnything()
+			AND !$tpl_globals->getVariable('admin_portal_controls')
 		) {
 			// If they're already logged in and they cant do anything, then we have to show the generic
 			// no permission page.
@@ -155,20 +170,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 			return $this->redirect($redirect_url);
-		}
-
-		static $done_pcheck;
-		if (!$done_pcheck) {
-			$done_pcheck = true;
-			if (!$this->sectionPermissionCheck()) {
-				return $this->renderLoginOrPermissionError();
-			}
-		}
-
-		$tpl_globals = $this->container->get('templating.globals');
-		if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
-			$tpl_globals->setVariable('admin_portal_controls', true);
-			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {

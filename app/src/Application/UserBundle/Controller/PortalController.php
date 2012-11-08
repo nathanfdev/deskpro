@@ -69,27 +69,27 @@ class PortalController extends AbstractController
 			$ctrl = null;
 			switch ($page) {
 				case 'news':
-					if ($this->container->getSetting('user.portal_tab_news')) {
+					if ($admin_controls || $this->container->getSetting('user.portal_tab_news')) {
 						$ctrl = 'UserBundle:News:browse';
 					}
 					break;
 				case 'articles':
-					if ($this->container->getSetting('user.portal_tab_articles') && ($admin_controls || $this->person->hasPerm('articles.use'))) {
+					if ($admin_controls || ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use'))) {
 						$ctrl = 'UserBundle:Articles:browse';
 					}
 					break;
 				case 'feedback':
-					if ($this->container->getSetting('user.portal_tab_feedback') && ($admin_controls || $this->person->hasPerm('feedback.use'))) {
+					if ($admin_controls || ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use'))) {
 						$ctrl = 'UserBundle:Feedback:filter';
 					}
 					break;
 				case 'downloads':
-					if ($this->container->getSetting('user.portal_tab_downloads') && ($admin_controls || $this->person->hasPerm('downloads.use'))) {
+					if ($admin_controls || ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use'))) {
 						$ctrl = 'UserBundle:Downloads:browse';
 					}
 					break;
 				case 'newticket':
-					if ($this->container->getSetting('user.portal_tab_tickets') && ($admin_controls || $this->person->hasPerm('tickets.use'))) {
+					if ($admin_controls || ($this->container->getSetting('user.portal_tab_tickets') && $this->person->hasPerm('tickets.use'))) {
 						$ctrl = 'UserBundle:NewTicket:new';
 					}
 					break;
