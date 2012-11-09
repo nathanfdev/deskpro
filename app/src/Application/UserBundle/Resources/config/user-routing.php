@@ -419,6 +419,13 @@ $collection->add('user_articles_article', new Route(
 	array()
 ));
 
+$collection->add('user_articles_article_agent_iframe', new Route(
+	'/kb/articles/agent-iframe/{article_id}',
+	array('_controller' => 'UserBundle:Articles:articleAgentIframe'),
+	array('article_id' => '\\d+'),
+	array()
+));
+
 $collection->add('user_articles_newcomment', new Route(
 	'/kb/new-comment/{article_id}',
 	array('_controller' => 'UserBundle:Articles:newComment'),

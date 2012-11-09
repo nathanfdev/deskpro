@@ -23,6 +23,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.article_id = this.getMetaData('article_id');
 
 		this._initBasic();
+		this._initArticleArea();
 
 		this._initLabels();
 		this._initCommentForm();
@@ -646,6 +647,27 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	//#################################################################
+	//# Article body
+	//#################################################################
+
+	_initArticleArea: function() {
+		var loader = this.wrapper.find('.article-loading');
+
+		loader.show();
+
+		var iframe = this.wrapper.find('.article-iframe');
+		var iframeLoad = function() {
+			if (this.contentWindow && this.contentWindow.document) {
+				loader.hide();
+				$(this).css('overflow', 'hidden');
+				$(this).height($(this.contentWindow.document).height());
+			}
+		};
+		iframe.on('load', iframeLoad);
+		iframeLoad.call(iframe);
+	},
+
+	//#################################################################
 	//# Editor
 	//#################################################################
 
@@ -734,6 +756,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				success: function(data) {
 					this.getEl('content_ed').html(data.content_html);
 					this._initPostArea();
+					this._initArticleArea();
 					this.handleUnloadRevisions(data.revision_id);
 
 					showSaved.show().fadeOut(2000);

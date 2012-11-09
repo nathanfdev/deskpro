@@ -1,6 +1,7 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap content-post-wrap">
-		{{ content|raw }}
+		<span class="article-loading">Loading...</span>
+		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U')}) }}" style="width: 100%" class="article-iframe"></iframe>
 		{% if article.attachments|length %}
 		<ul class="attachment-list">
 			{% for attach in article.attachments %}
