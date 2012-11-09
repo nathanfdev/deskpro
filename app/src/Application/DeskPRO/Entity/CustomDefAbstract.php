@@ -394,6 +394,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
 
 	/**
+	 * Is the field required?
+	 *
+	 * @return bool
+	 */
+	public function isRequired()
+	{
+		return $this->getOption('required', false);
+	}
+
+
+	/**
 	 * Get the phrasename for the handler class. This is just
 	 * the key of the phrase when showing this fields type.
 	 * For example, for phrases like "Text box" or "Checkbox" etc listed in the admin interface.
