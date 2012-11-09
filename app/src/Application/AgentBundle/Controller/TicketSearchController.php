@@ -629,6 +629,10 @@ class TicketSearchController extends AbstractController
 		$helper = new Helper\TicketResults($this);
 		$helper->setTicketIds($results);
 
+		if ($order_by) {
+			$helper->setGroupOrderBy($order_by);
+		}
+
 		// Or if the user has their own
 		$group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
 
