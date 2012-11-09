@@ -106,6 +106,9 @@ DeskPRO.Admin.ElementHandler.LabelsPage = new Orb.Class({
 
 	updateDefCounts: function(def_counts) {
 		Object.each(def_counts, function(v,k) {
+			if (k == "TOTAL") {
+				k = 'all';
+			}
 			$('#labels_count_' + k).text(v);
 		});
 	}
