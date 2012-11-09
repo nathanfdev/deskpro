@@ -18,6 +18,7 @@
 	'user.emails.feedback_votes'                                           => 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:|Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:',
 	'user.emails.greeting'                                                 => 'Hej {{name}},',
 	'user.emails.label_view-online'                                        => 'Visa Online',
+	'user.emails.message-clipped'                                          => '(Meddelandet har klippts)',
 	'user.emails.password_agent-reset'                                     => 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:',
 	'user.emails.password_reset'                                           => 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:',
 	'user.emails.profile_email-new-confirm'                                => 'För att slutföra registreringen av din sekundära e-postadress så klickar du på följande länk för att bekfräfta den:',
@@ -31,6 +32,10 @@ Innan du har möjlighet att börja använda det så måste du bekräfta din e-po
 För att skydda vår helpdesk mot loopar med autosvar så kommer vi inte längre att skicka dig några notifieringar via e-post.',
 	'user.emails.ticket_message_title'                                     => '{{date}} klockan {{time}} skrev {{author}}:',
 	'user.emails.ticket_no-autoresponse'                                   => 'Varning: Bekräftelsemail är avstängt',
+	'user.emails.ticket_rate-negative'                                     => 'Nej',
+	'user.emails.ticket_rate-neutral'                                      => 'Det var OK',
+	'user.emails.ticket_rate-positive'                                     => 'Ja',
+	'user.emails.ticket_rate-question'                                     => 'Var detta meddelande till någon hjälp?',
 	'user.emails.ticket_received'                                          => 'Ditt ärende har registrerats. En av våra agenter kommer att kontakta dig inom kort.',
 	'user.emails.ticket_reply-confirm'                                     => 'Tack för ditt svar. En av våra agenter kommer att kontakta dig inom kort.',
 	'user.emails.ticket_validate'                                          => 'Tack för att du kontaktar oss.

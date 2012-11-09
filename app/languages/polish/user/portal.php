@@ -20,7 +20,7 @@
 	'user.portal.sidebar_staff-description'                                => 'Nasi pracownicy są gotowi Ci pomóc.',
 	'user.portal.sidebar_welcome-user'                                     => 'Witamy z powrotem, {{name}}',
 	'user.portal.tab_downloads'                                            => 'Pliki do pobrania',
-	'user.portal.tab_downloads-description'                                => 'Przejrzyj nasze pliki do pobrania',
+	'user.portal.tab_downloads-description'                                => 'Przejrzyj nasze pliki',
 	'user.portal.tab_feedback'                                             => 'Opinia',
 	'user.portal.tab_feedback-description'                                 => 'Sugestie użytkowników',
 	'user.portal.tab_knowledgebase'                                        => 'Baza Wiedzy',

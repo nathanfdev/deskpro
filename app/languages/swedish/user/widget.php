@@ -35,4 +35,5 @@
 	'user.widget.ticket_form_subject'                                      => 'Ämne',
 	'user.widget.ticket_form_submit'                                       => 'Skicka E-Post',
 	'user.widget.ticket_form_upload-drag'                                  => 'Drag din fil hit för att ladda upp den',
+	'user.widget.website_link'                                             => 'Se mer på {{url}}',
 );

@@ -1,5 +1,6 @@
 <?php return array(
 	'user.prifle.ticket_validated-message'                                 => 'Våra agenter kommer nu läsa och svara på alla dina meddelanden',
+	'user.profile.account_disabled_message'                                => 'Ditt konto är för närvarande inaktiverat. Du får inte logga in eller interagera via ärenden eller chatten.',
 	'user.profile.add_email_address'                                       => 'Lägg till en e-postadress till ditt konto',
 	'user.profile.awaiting_validation'                                     => '(inväntar validering)',
 	'user.profile.change_email'                                            => 'Ändra E-Postadress',

@@ -13,6 +13,7 @@
 	'user.email_subjects.password_agent-reset'                             => 'En agent har återställt ditt lösenord',
 	'user.email_subjects.password_reset'                                   => 'Återställ lösenordet',
 	'user.email_subjects.re'                                               => 'SV: {{subject}}',
+	'user.email_subjects.ticket-rate'                                      => 'Betygsätt vår support på ditt ärende "{{subject}}"',
 	'user.email_subjects.ticket_new-participant'                           => 'En ny person har blivit tillagd till ditt ärende',
 	'user.email_subjects.validate-email'                                   => 'Bekräfta din e-postadress',
 );

@@ -22,7 +22,7 @@
 	'user.error.not-found'                                                 => 'Strona, której szukasz, nie została znaleziona.',
 	'user.error.not-found-title'                                           => 'Nie znaleziono',
 	'user.error.permission-denied'                                         => 'Przepraszamy, czyn, który wykonujesz, nie jest dozwolony.',
-	'user.error.permission-denied-login'                                   => 'Nadal jesteś wylogowany. <a href="{{login_url}}">Zaloguj się</a> i spróbuj ponownie.',
-	'user.error.permission-denied-title'                                   => 'Nie masz uprawnień, żeby to robić',
+	'user.error.permission-denied-login'                                   => 'W tej chwili jesteś wylogowany(a). <a href="{{login_url}}">Zaloguj się</a> i spróbuj ponownie.',
+	'user.error.permission-denied-title'                                   => 'Nie masz uprawnień do tego działania',
 	'user.error.server-error'                                              => 'Wystąpił błąd serwera, który nie pozwolił stronie się załadować. Spróbuj ponownie.',
 );

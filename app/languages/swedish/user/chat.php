@@ -1,6 +1,7 @@
 <?php return array(
 	'user.chat.email'                                                      => 'Din E-Postadress',
 	'user.chat.ended-no-agent'                                             => 'Vi beklagar. Just nu finns det ingen agent tillgänglig. Skicka oss ett mail eller försök igen senare',
+	'user.chat.error'                                                      => 'Chat fel',
 	'user.chat.form_chat_button-submit'                                    => 'Skicka',
 	'user.chat.form_chat_send-file'                                        => 'Ladda upp en fil',
 	'user.chat.form_create_button-submit'                                  => 'Starta Chatten',
@@ -37,6 +38,7 @@
 	'user.chat.window_cancel'                                              => 'Avbryt',
 	'user.chat.window_cancel-confirm'                                      => 'Är du säker på att du vill avsluta chatten?',
 	'user.chat.window_close'                                               => 'Nej tack, stäng bara fönstret',
+	'user.chat.window_close_only'                                          => 'Stäng fönstret',
 	'user.chat.window_end-chat'                                            => 'Avsluta Chatten',
 	'user.chat.window_open-new'                                            => 'Öppna den här chatten i ett nytt fönster',
 	'user.chat.window_resume-button'                                       => 'Öppna din chatt',
