@@ -748,15 +748,38 @@ class Translate implements PersonContextInterface
 	public function replaceVarsInString($phrase_text, array $vars = array())
 	{
 		if ($vars) {
-			$keys = array_keys($vars);
-			$values = array_values($vars);
+			$phrase_text = preg_replace_callback('#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#', function ($m) use ($vars) {
+				$name = $m[1];
 
-			array_walk($keys, function (&$val) {
-				$val = '{{' . $val . '}}';
-			});
+				if (isset($vars[$name])) {
+					return $vars[$name];
+				} elseif (isset($vars['_context'][$name])) {
+					return $vars[$name];
+				}
 
-			$vars = array_combine($keys, $values);
-			$phrase_text = strtr($phrase_text, $vars);
+				return '';
+			}, $phrase_text);
+
+			$phrase_text = preg_replace_callback('#\{\{\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*\}\}#', function ($m) use ($vars) {
+				$name = $m[1];
+				$prop = $m[2];
+
+				if (isset($vars[$name])) {
+					if (isset($vars[$name][$prop])) {
+						return $vars[$name][$prop];
+					} elseif (isset($vars[$name]->$prop)) {
+						return $vars[$name]->$prop;
+					}
+				} elseif (isset($vars['_context'][$name])) {
+					if (isset($vars['_context'][$name][$prop])) {
+						return $vars['_context'][$name][$prop];
+					} elseif (isset($vars['_context'][$name]->$prop)) {
+						return $vars['_context'][$name]->$prop;
+					}
+				}
+
+				return '';
+			}, $phrase_text);
 		}
 
 		return $phrase_text;

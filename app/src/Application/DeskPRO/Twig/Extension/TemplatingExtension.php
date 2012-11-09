@@ -66,7 +66,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
 			'constant'                         => new \Twig_Function_Method($this, 'getConstant', array()),
-			'phrase'                           => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'))),
+			'phrase'                           => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'), 'needs_context' => true)),
 			'has_phrase'                       => new \Twig_Function_Method($this, 'hasPhrase', array('is_safe' => array('html'))),
 			'phrase_object'                    => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'phrase_dev'                       => new \Twig_Function_Method($this, 'getPhraseDev'),
@@ -751,19 +751,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function urlFull($name, array $parameters = array())
 	{
-		// The last param of generate when true gives a full URL.
-		// But this is based off of 1) The current URL and 2) doesnt work in console
-		// So we use this for when we need to generate a helpdesk URL based on the setting
-
-		$url = $this->container->get('router')->getGenerator()->generatePath($name, $parameters, false);
-
-		// Make sure index.php is in links
-		$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-		if (!App::getSetting('core.rewrite_urls') && !preg_match('#index\.php$#', $deskpro_url)) {
-			$deskpro_url .= '/index.php';
-		}
-
-		return $deskpro_url . $url;
+		return $this->container->get('router')->getGenerator()->generateUrl($name, $parameters, false);
 	}
 
 	public function helpdeskUrl($path)
@@ -867,13 +855,16 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
 	}
 
-	public function getPhrase($phrase_name, array $vars = array(), $raw = false)
+	public function getPhrase($context, $phrase_name, array $vars = array(), $raw = false)
 	{
 		if (!$raw) {
 			foreach ($vars as &$v) {
 				$v = htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
 			}
 		}
+
+		$vars['_context'] = $context;
+
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
 	}
 
