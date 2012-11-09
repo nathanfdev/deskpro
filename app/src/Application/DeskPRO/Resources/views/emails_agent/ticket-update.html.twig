@@ -11,43 +11,38 @@
 	{% endif %}
 	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}
 </dp:subject>
-<dp:body>
-	<dp:section>
-		{% if action_performer and action_performer.getId() %}
-			{{ action_performer.getDisplayContact() }}
-		{% else %}
-			System
-		{% endif %} updated the ticket "{{ ticket.subject }}"
+{% if action_performer and action_performer.getId() %}
+	{{ action_performer.getDisplayContact() }}
+{% else %}
+	System
+{% endif %} updated the ticket "{{ ticket.subject }}"
 
-		{% if type_flag == 'assigned' %}
-			and assigned it to you.
-		{% elseif type_flag == 'assigned_team' %}
-			and assigned it to your team "{{ ticket.agent_team.name }}".
-		{% elseif type_flag == 'added_part' %}
-			and added you as a new follower.
-		{% endif %}
-	</dp:section>
+{% if type_flag == 'assigned' %}
+	and assigned it to you.
+{% elseif type_flag == 'assigned_team' %}
+	and assigned it to your team "{{ ticket.agent_team.name }}".
+{% elseif type_flag == 'added_part' %}
+	and added you as a new follower.
+{% endif %}
 
-	<dp:section>
-		<dp:section-header>Ticket</dp:section-header>
-		{% for log in ticket_logs %}
-			{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
-		{% endfor %}
+<br /><br />
 
-		<br /><br />
+<dp:section-header>Ticket</dp:section-header>
+{% for log in ticket_logs %}
+	{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
+{% endfor %}
 
-		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
-	</dp:section>
+<br /><br />
 
-	<dp:section>
-		<dp:section-header>{{ phrase('agent.general.message_history') }}</dp:section-header>
-		{% for message in messages|slice(1) %}
-			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-				message: message,
-				show_author_email: true,
-				is_to_agent: true
-			} %}
-			<dp:spacer />
-		{% endfor %}
-	</dp:section>
-</dp:body>
+{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
+
+<br /><br />
+
+<h1>{{ phrase('agent.general.message_history') }}</h1>
+{% for message in messages|slice(1) %}
+	{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+		message: message,
+		show_author_email: true,
+		is_to_agent: true
+	} %}
+{% endfor %}

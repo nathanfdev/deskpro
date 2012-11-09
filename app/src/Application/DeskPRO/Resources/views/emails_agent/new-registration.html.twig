@@ -1,9 +1,5 @@
-<dp:is-noreply />
 <dp:subject>
 	New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
 </dp:subject>
 <dp:body>
-	<dp:section>
-		New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
-	</dp:section>
-</dp:body>
+New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}

@@ -1,21 +1,14 @@
-<dp:is-noreply />
-<dp:subject>
-	Error with your forwarded email: {{ subject }}
-</dp:subject>
-<dp:body>
-	<dp:section>
-		We have detected the email you just sent as a forwarded message.
-		However, we were unable to determine the original email or original author so no new
-		ticket was created.
+<dp:subject>Error with your forwarded email: {{ subject }}</dp:subject>
+We have detected the email you just sent as a forwarded message.
+However, we were unable to determine the original email or original author so no new
+ticket was created.
 
-		<br /><br />
+<br /><br />
 
-		If you need to start a new ticket for a user, please use the agent web interface
-		at <a href="{{ app.getSetting('core.deskpro_url') }}agent/">{{ app.getSetting('core.deskpro_url') }}agent/</a>
+If you need to start a new ticket for a user, please use the agent web interface
+at <a href="{{ app.getSetting('core.deskpro_url') }}agent/">{{ app.getSetting('core.deskpro_url') }}agent/</a>
 
-		<br /><br />
+<br /><br />
 
-		If you did NOT want to create a new ticket on behalf of a user, you can re-send the email without the 'FW:' or 'FWD:' prefix
-		in the subject line. This will create a new ticket from you instead.
-	</dp:section>
-</dp:body>
+If you did NOT want to create a new ticket on behalf of a user, you can re-send the email without the 'FW:' or 'FWD:' prefix
+in the subject line. This will create a new ticket from you instead.

@@ -46,6 +46,11 @@ class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
 		return parent::setOptions($options);
 	}
 
+	public function generateUrl($name, $parameters = array())
+	{
+		return $this->getGenerator()->generateUrl($name, $parameters);
+	}
+
 
 	/**
 	 * Read the ID in a slug: 123-some-title will return 123

@@ -1,9 +1,4 @@
-<dp:is-noreply />
 <dp:subject>{{ phrase('user.email_subjects.re', {subject: subject}) }}</dp:subject>
-<dp:body>
-	<dp:section>
-		{{ phrase('user.emails.greeting', {name: name}) }}<br>
-		<br>
-		{{ phrase('user.profile.account_disabled_message') }}
-	</dp:section>
-</dp:body>
+{{ phrase('user.emails.greeting', {name: name}) }}<br>
+<br />
+{{ phrase('user.profile.account_disabled_message') }}

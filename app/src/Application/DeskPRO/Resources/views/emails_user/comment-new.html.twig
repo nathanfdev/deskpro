@@ -1,15 +1,10 @@
-<dp:is-noreply />
 <dp:subject>{{ phrase('user.email_subjects.comment-confirmation') }}</dp:subject>
-<dp:body>
-	<dp:section>
-		{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
-		{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}
+{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
+{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}
 
-		<br /><br />
+<br /><br />
 
-		{% if validating %}
-			{{ phrase('user.emails.comment_validate-email') }}
-			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
-		{% endif %}
-	</dp:section>
-</dp:body>
+{% if validating %}
+	{{ phrase('user.emails.comment_validate-email') }}
+	{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+{% endif %}

@@ -1,11 +1,6 @@
-<dp:is-noreply />
 <dp:subject>{{ phrase('user.email_subjects.validate-email') }}</dp:subject>
-<dp:body>
-	<dp:section>
-		{{ phrase('user.emails.register-confirm') }}:
+{{ phrase('user.emails.register-confirm') }}:
 
-		<br /><br />
+<br /><br />
 
-		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}</a>
-	</dp:section>
-</dp:body>
+<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}</a>

@@ -2389,6 +2389,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $string;
 	}
 
+	public function getPath()
+	{
+		return App::getRouter()->generate('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+	}
+
+	public function getLink()
+	{
+		return App::getRouter()->generateUrl('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
+	}
 
 	############################################################################
 	# Doctrine Metadata

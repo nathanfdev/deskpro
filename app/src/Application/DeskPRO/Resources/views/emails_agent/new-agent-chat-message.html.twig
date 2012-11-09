@@ -1,11 +1,4 @@
-<dp:is-noreply />
-<dp:subject>
-	New chat message from {{ message.author.getDisplayName() }}
-</dp:subject>
-<dp:body>
-	<dp:section>
-		{{ message.author.getDisplayContact() }} sent you a chat message:
-		<br /><br />
-		{{ message.getContentHtml()|raw }}
-	</dp:section>
-</dp:body>
+<dp:subject>New chat message from {{ message.author.getDisplayName() }}</dp:subject>
+{{ message.author.getDisplayContact() }} sent you a chat message:
+<br /><br />
+{{ message.getContentHtml()|raw }}

@@ -1,4 +1,3 @@
-<dp:is-noreply />
 <dp:subject>
 	{% if success %}
 		{{ phrase('agent.emails.alert_successful_login') }}
@@ -6,18 +5,14 @@
 		{{ phrase('agent.emails.alert_failed_login') }}
 	{% endif %}
 </dp:subject>
-<dp:body>
-	<dp:section>
-		{% if success %}
-			{{ phrase('agent.emails.notice_account_login') }}<br />
-		{% else %}
-			{{ phrase('agent.emails.notice_login_attempt') }}<br />
-		{% endif %}
+{% if success %}
+	{{ phrase('agent.emails.notice_account_login') }}<br />
+{% else %}
+	{{ phrase('agent.emails.notice_login_attempt') }}<br />
+{% endif %}
 
-		{{ phrase('agent.emails.user_ip') }}: {{ session.visitor.ip_address }}<br />
-		{{ phrase('agent.general.user_agent') }}: {{ session.visitor.user_agent }}<br />
-		{{ phrase('agent.emails.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
-		{{ phrase('agent.general.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
-		{{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
-	</dp:section>
-</dp:body>
+{{ phrase('agent.emails.user_ip') }}: {{ session.visitor.ip_address }}<br />
+{{ phrase('agent.general.user_agent') }}: {{ session.visitor.user_agent }}<br />
+{{ phrase('agent.emails.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
+{{ phrase('agent.general.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
+{{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />

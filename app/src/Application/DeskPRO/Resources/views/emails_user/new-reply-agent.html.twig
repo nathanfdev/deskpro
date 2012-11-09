@@ -1,31 +1,14 @@
-<dp:is-noreply />
 <dp:subject>{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}</dp:subject>
-<dp:body>
-	<dp:section>
-		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
-		{% if show_rating_link %}
-			{% set message = messages|first %}
-			<div class="rate-link">
-				{{ phrase('user.emails.ticket_rate-question') }}
-				<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, setrating: 1}) }}">&nbsp;&nbsp;{{ phrase('user.emails.ticket_rate-positive') }}&nbsp;&nbsp;</a>
-				<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, setrating: 0}) }}">&nbsp;&nbsp;{{ phrase('user.emails.ticket_rate-neutral') }}&nbsp;&nbsp;</a>
-				<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id, setrating: -1}) }}">&nbsp;&nbsp;{{ phrase('user.emails.ticket_rate-negative') }}&nbsp;&nbsp;</a>
-			</div>
-		{% endif %}
-	</dp:section>
 
-	<dp:section>
-		{% for message in messages|slice(1) %}
-			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-				message: message
-			} %}
-			<dp:spacer />
-		{% endfor %}
-	</dp:section>
-</dp:body>
-<dp:bottom>
-	{{ phrase('user.emails.ticket_access_ticket_online') }}
-	<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
-		{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
-	</a>
-</dp:bottom>
+<dp:agent-reply />
+
+{% if show_rating_link %}<dp:ticket-rating-links />{% endif %}
+
+<br /><br />
+
+<dp:ticket-history />
+
+<br /><br />
+
+{{ phrase('user.emails.ticket_access_ticket_online') }}
+<a href="{{ ticket.link }}">{{ ticket.link }}</a>

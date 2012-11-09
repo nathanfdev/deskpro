@@ -137,7 +137,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		if (strpos($name, 'DeskPRO:emails_') !== false) {
 			$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-			$source = $proc->process($source);
+			$source = $proc->process($source, $str_name);
 		}
 
 		return $source;

@@ -6,37 +6,23 @@
 		{{ phrase('agent.emails.new_agent_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
 	{% endif %}
 </dp:subject>
-<dp:body>
-	<dp:section>
-		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
-	</dp:section>
+{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: messages|first} %}
 
-	<dp:section>
-		<dp:section-header>Ticket</dp:section-header>
+<br /><br />
 
-		{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
+<h1>Ticket</h1>
+{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
 
-		<br /><br />
+<br /><br />
 
-		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
-	</dp:section>
+<dp:ticket-properties-table />
 
-	<dp:section>
-		<dp:section-header>Ticket Changes</dp:section-header>
-		{% for log in ticket_logs %}
-			{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
-		{% endfor %}
-	</dp:section>
+<br /><br />
 
-	<dp:section>
-		<dp:section-header>{{ phrase('agent.general.message_history') }}</dp:section-header>
-		{% for message in messages|slice(1) %}
-			{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-				message: message,
-				show_author_email: true,
-				is_to_agent: true
-			} %}
-			<dp:spacer />
-		{% endfor %}
-	</dp:section>
-</dp:body>
+<h1>Ticket Changes</h1>
+<dp:ticket-logs />
+
+<br /><br />
+
+<h1>{{ phrase('agent.general.message_history') }}</h1>
+<dp:agent-ticket-history />

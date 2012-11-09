@@ -1,26 +1,4 @@
 {##
-# Wrapper around sections in emails
-##}
-{% macro section(content) %}
-	<div class="dp-layout-section">
-		{{content}}
-	</div>
-	<br /><br />
-{% endmacro %}
-
-{##
-# Wrapper around sections in emails
-##}
-{% macro sectionHeader(content) %}
-	<div class="dp-layout-section-header"><div class="dp-layout-section-header-title">{{ content }}</div></div>
-{% endmacro %}
-
-{##
-# The spacer inserts small whitespace between two elements
-##}
-{% macro spacer() %}<div class="dp-spacer">&nbsp;</div>{% endmacro %}
-
-{##
 # Styling applied to ticket log actiontext
 ##}
 {% macro actiontext_style(type) %}{% spaceless %}
@@ -32,13 +10,6 @@
 {% endspaceless %}{% endmacro %}
 
 {##
-# A horizontal rule that is used to separate the footer
-##}
-{% macro hr() %}
-	<div class="dp-hr">&nbsp;</div>
-{% endmacro %}
-
-{##
 # Invisible code tracking that is appended to the bottom of emails
 ##}
 {% macro replycode(code) %}
@@ -46,8 +17,46 @@
 {% endmacro %}
 
 {##
-# Standard greeting text for a user
+# Shows the first message of the messages array (a new reply)
 ##}
-{% macro greeting(person) %}
-	{{ phrase('user.emails.greeting', {'name': person.display_name_user}) }}<br /><br />
+{% macro show_first_message(context) %}
+	{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: context.messages|first} %}
+{% endmacro %}
+
+{##
+# Shows the rest of the mssages array other than the first (eg the rest of the thread)
+##}
+{% macro show_rest_message(context) %}
+	{% for message in context.messages|slice(1) %}
+		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+			message: message
+		} %}
+	{% endfor %}
+{% endmacro %}
+
+{% macro show_rest_message_agent(context) %}
+	{% for message in context.messages|slice(1) %}
+		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+			message: message,
+			show_author_email: true,
+			is_to_agent: true
+		} %}
+	{% endfor %}
+{% endmacro %}
+
+{##
+# Shows ratings links for the current reply
+##}
+{% macro show_rating_links(context) %}
+	{% set message = context.messages|first %}
+	{% include 'DeskPRO:emails_user:ticket-rating-links.html.twig' with {message: mssage} %}
+{% endmacro %}
+
+{##
+# Shows tikcet logs
+##}
+{% macro show_ticket_logs(context) %}
+	{% for log in context.ticket_logs %}
+		{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
+	{% endfor %}
 {% endmacro %}

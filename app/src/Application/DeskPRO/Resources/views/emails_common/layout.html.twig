@@ -157,11 +157,7 @@
 	<tr>
 		<td valign="top" class="dp-layout-bottom">
 			<div class="dp-layout-bottom">
-				{{ layout.hr() }}
-				{% ifblock footer_content %}
-					{% block footer_content %}{% endblock %}
-					<br /><br />
-				{% endifblock %}
+				<div class="dp-hr">&nbsp;</div>
 				{% if app.getSetting('core.site_name') and app.getSetting('core.site_url') %}
 					<a href="{{ app.getSetting('core.site_url') }}">{{ app.getSetting('core.site_name') }}</a> &middot;
 				{% elseif app.getSetting('core.site_url') %}

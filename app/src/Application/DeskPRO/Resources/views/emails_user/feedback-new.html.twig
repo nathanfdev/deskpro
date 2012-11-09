@@ -1,4 +1,3 @@
-<dp:is-noreply />
 <dp:subject>
 	{% if validating == 'existing' or validating == 'new' %}
 		{{ phrase('user.email_subjects.feedback_new-confirm') }}
@@ -6,21 +5,17 @@
 		{{ phrase('user.email_subjects.feedback_new') }}
 	{% endif %}
 </dp:subject>
-<dp:body>
-	<dp:section>
-		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
 
-		<br /><br />
+<br /><br />
 
-		{% if feedback.status_code == 'hidden.validating' %}
-			{{ phrase('user.emails.feedback_agent-validation') }}
+{% if feedback.status_code == 'hidden.validating' %}
+	{{ phrase('user.emails.feedback_agent-validation') }}
 
-			<br /><br />
-		{% endif %}
+	<br /><br />
+{% endif %}
 
-		{% if validating %}
-			{{ phrase('user.emails.feedback_validate-email') }}
-			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
-		{% endif %}
-	</dp:section>
-</dp:body>
+{% if validating %}
+	{{ phrase('user.emails.feedback_validate-email') }}
+	{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+{% endif %}

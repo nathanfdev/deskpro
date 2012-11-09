@@ -42,28 +42,35 @@ class EmailPreProcessor extends AbstractPreProcessor
 	 * @param string $source
 	 * @return string
 	 */
-	public function process($source)
+	public function process($source, $name = null)
 	{
+		if (strpos($name, 'DeskPRO:emails_common:') === 0) {
+			return $source;
+		}
+
 		if (strpos($source, '{% extends') === false && strpos($source, '<dp:subject>') !== false) {
 			$source = $this->getPrepend() . $source;
 		} else {
 			$source = preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $source);
 		}
 
-		$source = $this->processIfblock($source);
-
 		$source = $this->processTagAsBlock($source, 'subject', 'email_subject');
-		$source = $this->processTagAsBlock($source, 'top', 'header_content');
-		$source = $this->processTagAsBlock($source, 'bottom', 'footer_content');
-		$source = $this->processTagAsBlock($source, 'body', 'content');
+		if (strpos($source, '{%- endblock email_subject -%}') !== null) {
+			$source = str_replace('{%- endblock email_subject -%}', '{%- endblock email_subject -%}{%- block content -%}', $source);
+		} else {
+			$source = str_replace('{% import \'DeskPRO:emails_common:layout-macros.html.twig\' as layout %}', '{%- block content -%}', $source);
+		}
 
-		$source = $this->processSelfTagAsMacro($source, 'spacer', 'spacer');
-		$source = $this->processSelfTagAsMacro($source, 'hr', 'hr');
+		$source .= '{%- endblock content -%}';
 
-		$source = $this->processSetFlags($source);
+		$source = $this->processSelfTagAsMacro($source, 'agent-reply', 'show_first_message');
+		$source = $this->processSelfTagAsMacro($source, 'user-reply', 'show_first_message');
+		$source = $this->processSelfTagAsMacro($source, 'ticket-history', 'show_rest_message');
+		$source = $this->processSelfTagAsMacro($source, 'agent-ticket-history', 'show_rest_message_agent');
+		$source = $this->processSelfTagAsMacro($source, 'ticket-logs', 'show_ticket_logs');
+		$source = $this->processSelfTagAsMacro($source, 'ticket-rating-links', 'show_rating_links');
 
-		$source = $this->processTagAsMacro($source, 'section', 'section');
-		$source = $this->processTagAsMacro($source, 'section-header', 'sectionHeader');
+		$source = $this->processTagAsTpl($source, 'ticket-properties-table', 'DeskPRO:emails_agent:ticket-props-table.html.twig');
 
 		return $source;
 	}
@@ -126,7 +133,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 	public function processSelfTagAsMacro($source, $tagname, $tplname)
 	{
 		$source = preg_replace_callback("#<dp:$tagname\s*/>#", function($m) use ($tplname) {
-			$new = "{{ layout.$tplname() }}";
+			$new = "{{ layout.$tplname(_context) }}";
 			return $new;
 		}, $source);
 
@@ -189,23 +196,6 @@ class EmailPreProcessor extends AbstractPreProcessor
 			$new = "{%- endset -%}{% if block('$tagname')|trim %}{{ $set_id }}{% endif %}";
 			return $new;
 		}, $source);
-
-		return $source;
-	}
-
-
-	/**
-	 * Processes self-closing tags as flags
-	 *
-	 * @param string $source
-	 * @return string
-	 */
-	public function processSetFlags($source)
-	{
-		if (preg_match('#<dp:is-noreply\s*/>\s*#s', $source)) {
-			$source = '{% set is_noreply = true %}' . $source;
-			$source = preg_replace('#<dp:is-noreply\s*/>#', '', $source);
-		}
 
 		return $source;
 	}

@@ -8,18 +8,14 @@
 		{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
 	{% endif %}
 </dp:subject>
-<dp:body>
-	<dp:section>
-		{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: new_message} %}
-	</dp:section>
+{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: new_message} %}
 
-	<dp:section>
-		<dp:section-header>Ticket</dp:section-header>
+<br /><br />
 
-		{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
+<h1>Ticket</h1>
 
-		<br /><br />
+{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
 
-		{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
-	</dp:section>
-</dp:body>
+<br /><br />
+
+<dp:ticket-properties-table />

@@ -92,6 +92,19 @@ class UrlGenerator extends BaseUrlGenerator
 		}
 	}
 
+	public function generateUrl($name, $parameters = array())
+	{
+		$url = $this->generatePath($name, $parameters, false);
+
+		// Make sure index.php is in links
+		$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+		if (!App::getSetting('core.rewrite_urls') && !preg_match('#index\.php$#', $deskpro_url)) {
+			$deskpro_url .= '/index.php';
+		}
+
+		return $deskpro_url . $url;
+	}
+
 	/**
 	 * This is like generate() except it returns JUST the route. Nothing to do with the current base
 	 * path etc is added. This will begin with a slash.
