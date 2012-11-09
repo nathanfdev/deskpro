@@ -143,6 +143,7 @@ class SettingsProfile
 			if ($this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
 				if ($this->is_html_signature && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
 					$signature_html = App::get('deskpro.core.input_cleaner')->clean($this->ticket_signature, 'html_core');
+					$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
 
 					foreach ($this->_blob_inline_ids AS $blob_id) {
 						$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
@@ -163,6 +164,9 @@ class SettingsProfile
 				} else {
 					$signature = $this->ticket_signature;
 					$signature_html = nl2br(htmlspecialchars($signature));
+					if ($signature_html) {
+						$signature_html = '<p class="dp-signature-start">' . $signature . '</p>';
+					}
 				}
 				$person->setPreference('agent.ticket_signature', $signature);
 				$person->setPreference('agent.ticket_signature_html', $signature_html);

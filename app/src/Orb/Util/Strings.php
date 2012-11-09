@@ -271,7 +271,7 @@ class Strings
 		if (is_array($needle)) {
 			foreach ($needle as $n) {
 				if (self::isIn($n, $haystack)) {
-					if ($and_needle) {
+					if ($any_needle) {
 						return true;
 					}
 				} else {
@@ -1107,11 +1107,12 @@ class Strings
 			$string = trim($string);
 
 			// Leading whitespace in a leading div wrapper
-			$string = preg_replace('#^\s*(<div[^>]*>)\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '$1', $string);
+			$string = preg_replace('#^\s*(<div[^>]*>)\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '$1', $string);
+			$string = preg_replace('#^\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|&nsbp;)\s*#iu', '', $string);
 
 			// Trailing whitespace in a trailing div wrapper
-			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
-			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
+			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
+			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
 
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
@@ -1749,6 +1750,39 @@ class Strings
 		$html = preg_replace('#<br\s*/?>\s*#', "\n", $html);
 
 		return trim(htmlspecialchars_decode(strip_tags($html)));
+	}
+
+	/**
+	 * Compares 2 HTML strings to see if they the same (or nearly the same)
+	 *
+	 * @param string $html1
+	 * @param string $html2
+	 *
+	 * @return bool
+	 */
+	public static function compareHtml($html1, $html2)
+	{
+		return ($html1 == $html2 || self::_prepareCompareHtml($html1) == self::_prepareCompareHtml($html2));
+	}
+
+	protected static function _prepareCompareHtml($html)
+	{
+		$replace = array(
+			'<br />' => '<br>',
+			'<div' => '<p',
+			'</div>' => '</p>'
+		);
+		$html = str_replace(array_keys($replace), $replace, $html);
+
+		// try to normalize whitespace
+		$html = preg_replace('#>\s+#', '>', $html);
+		$html = preg_replace('#\s+#', ' ', $html);
+		$html = trim($html);
+
+		$html = preg_replace('#^<[^>]+>#', '', $html);
+		$html = preg_replace('#<[^>]+>$#', '', $html);
+
+		return trim($html);
 	}
 
 

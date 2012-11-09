@@ -260,12 +260,16 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setSnippet($snippet)
 	{
+		$snippet = trim($snippet);
+
 		$this->setModelField('snippet', $snippet);
 		$this->setModelField('snippet_html', nl2br(htmlspecialchars($snippet)));
 	}
 
 	public function setSnippetHtml($snippet)
 	{
+		$snippet = \Orb\Util\Strings::trimHtml($snippet);
+
 		$this->setModelField('snippet_html', $snippet);
 		$this->setModelField('snippet', \Orb\Util\Strings::convertWysiwygHtmlToText($snippet));
 	}

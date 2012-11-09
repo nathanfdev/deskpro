@@ -1021,11 +1021,11 @@ class TicketController extends AbstractController
 		$message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
 		if ($this->in->getBool('is_html_reply')) {
-			$message_text = $this->in->getHtmlCore('message');
+			$message_text = Strings::trimHtml($this->in->getHtmlCore('message'));
 
 			$message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_text);
-			$message_test = trim(preg_replace('#^(\s*<p>(<br\s*/?>)?</p>)+#i', '', $message_test));
-			if (!$message_test) {
+			$message_test = Strings::trimHtml($message_test);
+			if (!$message_test || Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
 				return $this->createJsonResponse(array('error' => 'no_message'));
 			}
 
@@ -1423,6 +1423,7 @@ class TicketController extends AbstractController
 		$old_full_message = $message->message_full;
 
 		$new_message = $this->in->getHtmlCore('message_html');
+		$new_message = Strings::trimHtml($new_message);
 		$new_message = Strings::prepareWysiwygHtml($new_message);
 		$message->setMessageHtml($new_message);
 

@@ -314,7 +314,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	 */
 	public function getSignature()
 	{
-		$sig = $this->person->getPref('agent.ticket_signature');
+		$sig = trim($this->person->getPref('agent.ticket_signature'));
 		if ($sig) {
 			return $sig;
 		}
@@ -338,7 +338,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		if (!$sig_html) {
 			$sig = $this->person->getPref('agent.ticket_signature');
 			if ($sig) {
-				$sig_html = nl2br(htmlspecialchars($sig));
+				$sig_html = '<p class="dp-signature-start">' . nl2br(htmlspecialchars(trim($sig))) . '</p>';
 			}
 		}
 

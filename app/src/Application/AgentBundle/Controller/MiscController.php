@@ -447,12 +447,12 @@ JS;
 	{
 		$inserted = false;
 
-		$message = urldecode($this->in->getString('message'));
+		$message = Strings::trimHtml($this->in->getString('message'));
 		if ($message) {
 			$message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message);
-			$message_test = trim(preg_replace('#^(\s*<p>(<br\s*/?>)?</p>)+#i', '', $message_test));
+			$message_test = Strings::trimHtml($message_test);
 
-			if ($message_test && $message_test != $this->person->getSignatureHtml()) {
+			if ($message_test && !Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
 				$draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft($content_type, $content_id, $message);
 				$inserted = $draft->id;
 			}
