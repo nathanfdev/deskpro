@@ -134,6 +134,7 @@
 				<!-- PERMISSION:agent_people.reset_password -->{{ col.perm_col(phrase('admin.agents.widget_reset_passwords', {'subphrase':phrase_part}, true), usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
 				<!-- PERMISSION:agent_people.notes -->{{ col.perm_col(phrase('admin.agents.add_notes'), usergroup_values, 'agent_people', 'notes') }}
 				<!-- PERMISSION:agent_people.delete -->{{ col.perm_col(phrase('admin.agents.delete_people'), usergroup_values, 'agent_people', 'delete') }}
+				<!-- PERMISSION:agent_people.disable -->{{ col.perm_col('Disable people', usergroup_values, 'agent_people', 'disable') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_org.create -->{{ col.perm_col(phrase('admin.agents.create_organizations'), usergroup_values, 'agent_org', 'create') }}

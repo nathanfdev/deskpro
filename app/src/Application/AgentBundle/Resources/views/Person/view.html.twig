@@ -94,7 +94,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		{% if perms.edit %}
+		{% if perms.disable %}
 			{% if person.is_disabled %}
 				<li data-action="enable-user" data-flip="Disable Account">Enable Account</li>
 			{% else %}
