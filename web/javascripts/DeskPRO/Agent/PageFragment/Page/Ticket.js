@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTasks();
 		this._initEditName();
 
-		var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
+		this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
 			auto_start_bill: this.meta.auto_start_bill
 		});
 
@@ -474,12 +474,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.find('ul.cc-row-list').empty().html(data.cc_list);
 		}
 
-		if (data.charge_html) {
-			this.addBillingRow(data.charge_html);
-			this.updateBillingForm(true);
-			this.resetBillingForm();
-		} else if (this.hasBilling) {
-			this.updateBillingForm(false);
+		var billing = this.billing;
+		if (billing.hasBilling) {
+			if (data.charge_html) {
+				billing.addBillingRow(data.charge_html);
+				billing.updateBillingForm(true);
+				billing.resetBillingForm();
+			} else {
+				billing.updateBillingForm(false);
+			}
 		}
 
 		window.setTimeout(this.updateUi.bind(this), 450);
