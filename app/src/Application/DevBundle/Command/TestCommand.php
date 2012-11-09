@@ -59,20 +59,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$em = App::getOrm();
-
-		$ticket = $em->find('DeskPRO:Ticket', 21);
-		$agent  = $em->find('DeskPRO:Person', 4);
-
-		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $agent);
-
-		$vars['agent'] = $agent;
-		$vars['ticket'] = $ticket;
-		$vars['ticketdisplay'] = $ticketdisplay;
-		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
-
-		$tpl = App::getTemplating()->render('DeskPRO:emails_user:new-reply-agent.html.twig', $vars);
-		echo $tpl;
 		echo "\n";
 	}
 }

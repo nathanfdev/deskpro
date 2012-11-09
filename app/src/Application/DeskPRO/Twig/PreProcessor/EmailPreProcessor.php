@@ -70,7 +70,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 		$source = $this->processSelfTagAsMacro($source, 'ticket-logs', 'show_ticket_logs');
 		$source = $this->processSelfTagAsMacro($source, 'ticket-rating-links', 'show_rating_links');
 
-		$source = $this->processTagAsTpl($source, 'ticket-properties-table', 'DeskPRO:emails_agent:ticket-props-table.html.twig');
+		$source = $this->processTagAsTpl($source, 'ticket-properties-table', 'DeskPRO:emails_common:ticket-props-table.html.twig');
 
 		return $source;
 	}
@@ -114,7 +114,12 @@ class EmailPreProcessor extends AbstractPreProcessor
 
 		$source = preg_replace_callback("#</dp:$tagname>#", function($m) use ($tplname, &$set_id_stack) {
 			$set_id = array_shift($set_id_stack);
-			$new = "{%- endset -%}{{ include 'DeskPRO:emails_common:$tplname.html.twig' with {content: $set_id} }}";
+			$new = "{%- endset -%}{% include '$tplname' with {content: $set_id} %}";
+			return $new;
+		}, $source);
+
+		$source = preg_replace_callback("#<dp:$tagname\s*/>#", function($m) use ($tplname) {
+			$new = "{% include '$tplname' %}";
 			return $new;
 		}, $source);
 

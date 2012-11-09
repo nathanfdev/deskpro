@@ -27,22 +27,15 @@
 
 <br /><br />
 
-<dp:section-header>Ticket</dp:section-header>
-{% for log in ticket_logs %}
-	{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
-{% endfor %}
+<h1>Ticket</h1>
+
+{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
 
 <br /><br />
 
-{% include 'DeskPRO:emails_agent:ticket-props-table.html.twig' %}
+<dp:ticket-properties-table />
 
 <br /><br />
 
 <h1>{{ phrase('agent.general.message_history') }}</h1>
-{% for message in messages|slice(1) %}
-	{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-		message: message,
-		show_author_email: true,
-		is_to_agent: true
-	} %}
-{% endfor %}
+<dp:agent-ticket-history />
