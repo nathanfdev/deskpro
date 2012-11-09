@@ -2464,6 +2464,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this.updateWindowUrlFragment();
+		if (this.openSection) {
+			this.openSection.updateUi();
+			if (this.listPage) {
+				this.listPage.updateUi();
+			}
+		}
 	},
 
 	getOpenSection: function() {
