@@ -425,6 +425,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/HeaderSetupGuide.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/TaskQueueStatus.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/ChoiceBuilder.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/SimpleHierarchyBuilder.js',

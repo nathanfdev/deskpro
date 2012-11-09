@@ -1,7 +1,4 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TaskQueueStatus.js') }}"></script>
-{% endblock %}
 {% block pagebar %}
 <ul>
 	<li>Import Users from CSV File</li>
@@ -15,12 +12,12 @@
 	{% elseif error == 'no_move' %}
 		<div class="alert-message block-message error">A server error occurred when trying to move the file. Please try again later.</div>
 	{% endif %}
-	{% if success == 'inserted' %}
+	{% if show_task_status %}
 		<div class="alert-message block-message success">
-			Your CSV import request has been started. The records will be imported in the background.<br />
+			Your CSV import request has been started. The records will be imported in the background even if you are not connected.<br />
 			<br />
 			The current import status will be updated here periodically:
-			<span data-element-handler="DeskPRO.Admin.ElementHandler.TaskQueueStatus" data-task-id="{{ task_id }}">Updating...</span>
+			<span data-element-handler="DeskPRO.Admin.ElementHandler.TaskQueueStatus" data-task-group="data_import" style="font-weight: bold">Updating...</span>
 		</div>
 	{% endif %}
 

@@ -82,6 +82,10 @@
 					<a href="{{ path('admin_server_error_logs') }}">{{ phrase('admin.general.error_logs') }}</a>
 					<p>{{ phrase('admin.menu.view_logged_errors') }}</p>
 				</li>
+				<li class="link-logs">
+					<a href="{{ path('admin_server_task_queue_logs') }}">Task Queue Logs</a>
+					<p>View the logs for background tasks that have been triggered.</p>
+				</li>
 			</ul>
 		</div>
 	{% endif %}

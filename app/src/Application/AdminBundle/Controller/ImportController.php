@@ -45,12 +45,14 @@ class ImportController extends AbstractController
 	{
 		$error = $this->in->getString('error');
 		$success = $this->in->getString('success');
-		$task_id = $this->in->getUint('task');
+
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import');
+		$show_task_status = count($tasks) > 0;
 
 		return $this->render('AdminBundle:Import:csv-upload.html.twig', array(
 			'error' => $error,
 			'success' => $success,
-			'task_id' => $task_id
+			'show_task_status' => $show_task_status
 		));
 	}
 
@@ -71,7 +73,7 @@ class ImportController extends AbstractController
 			return $this->redirectRoute('admin_import', array('error' => 'no_move'));
 		}
 
-		return $this->_renderCsvConfigureForm($filename);
+		return $this->_renderCsvConfigureForm($filename, $file->getClientOriginalName());
 	}
 
 	public function csvImportAction()
@@ -80,6 +82,7 @@ class ImportController extends AbstractController
 
 		$field_maps = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
 		$filename = $this->in->getString('filename');
+		$user_filename = $this->in->getString('user_filename');
 		$skip_first = $this->in->getBool('skip_first');
 
 		$has_email = false;
@@ -91,7 +94,7 @@ class ImportController extends AbstractController
 		}
 
 		if (!$has_email) {
-			return $this->_renderCsvConfigureForm($filename);
+			return $this->_renderCsvConfigureForm($filename, $user_filename);
 		}
 
 		$welcome_email = $this->in->getBool('welcome_email') && !defined('DPC_IS_CLOUD');
@@ -100,7 +103,8 @@ class ImportController extends AbstractController
 			'filename' => $filename,
 			'field_maps' => $field_maps,
 			'skip_first' => $skip_first,
-			'welcome_email' => $welcome_email
+			'welcome_email' => $welcome_email,
+			'user_filename' => $user_filename
 		);
 
 		if ($welcome_email) {
@@ -116,10 +120,10 @@ class ImportController extends AbstractController
 			'data_import'
 		);
 
-		return $this->redirectRoute('admin_import', array('success' => 'inserted', 'task' => $task->id));
+		return $this->redirectRoute('admin_import', array('success' => 'inserted'));
 	}
 
-	protected function _renderCsvConfigureForm($filename)
+	protected function _renderCsvConfigureForm($filename, $user_filename)
 	{
 		$csv_path = dp_get_tmp_dir() . '/' . $filename;
 
@@ -161,6 +165,7 @@ class ImportController extends AbstractController
 
 		return $this->render('AdminBundle:Import:csv-configure.html.twig', array(
 			'filename' => $filename,
+			'user_filename' => $user_filename,
 			'columns' => $columns,
 			'examples' => $examples,
 			'custom_fields' => $custom_fields,

@@ -38,6 +38,15 @@ use Application\DeskPRO\App;
 
 class TaskQueue extends AbstractEntityRepository
 {
+	public function getAllTasks($newest_first = true)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT tq
+			FROM DeskPRO:TaskQueue tq
+			ORDER BY tq.date_runnable " . ($newest_first ? 'DESC' : 'ASC') . "
+		")->execute();
+	}
+
 	public function getRunningTask()
 	{
 		return $this->getEntityManager()->createQuery("
@@ -71,6 +80,39 @@ class TaskQueue extends AbstractEntityRepository
 		}
 
 		return null;
+	}
+
+	public function countTasksBefore(\Application\DeskPRO\Entity\TaskQueue $task)
+	{
+		$count = $this->getEntityManager()->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM task_queue
+			WHERE status NOT IN ('completed', 'errored')
+				AND date_runnable <= ?
+		", array($task->date_runnable->format('Y-m-d H:i:s')));
+
+		return $count - 1; // -1 takes out this one
+	}
+
+	public function getTasksInGroup($group, $include_ended = false)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT tq
+			FROM DeskPRO:TaskQueue tq
+			WHERE tq.task_group = ?0
+				" . (!$include_ended ? "AND tq.status NOT IN ('completed', 'errored')" : '') . "
+			ORDER BY tq.date_runnable
+		")->execute(array($group));
+	}
+
+	public function getPendingTasks()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT tq
+			FROM DeskPRO:TaskQueue tq
+			WHERE tq.status NOT IN ('completed', 'errored')
+			ORDER BY tq.date_runnable
+		")->execute();
 	}
 
 	public function enqueueTask($runner_class, array $data = array(), $task_group = null)

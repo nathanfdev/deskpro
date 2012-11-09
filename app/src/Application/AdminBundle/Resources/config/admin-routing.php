@@ -55,6 +55,13 @@ $collection->add('admin_check_task_queue', new Route(
 	array()
 ));
 
+$collection->add('admin_check_task_queue_group', new Route(
+	'/misc/check-task/group/{task_group}',
+	array('_controller' => 'AdminBundle:Main:checkTaskQueueGroup'),
+	array(),
+	array()
+));
+
 $collection->add('admin_skip_setup_todo', new Route(
 	'/misc/skip-setup-todo',
 	array('_controller' => 'AdminBundle:Main:skipSetupStep'),
@@ -2196,6 +2203,13 @@ $collection->add('admin_server_attach', new Route(
 $collection->add('admin_server_attach_switch', new Route(
 	'/server/attachments/switch',
 	array('_controller' => 'AdminBundle:Server:attachmentsSwitch'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_task_queue_logs', new Route(
+	'/server/task-queue/logs',
+	array('_controller' => 'AdminBundle:TaskQueue:logs'),
 	array(),
 	array()
 ));

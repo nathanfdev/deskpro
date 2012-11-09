@@ -89,6 +89,21 @@ class CleanupTmpData extends AbstractJob
 		}
 
 		#------------------------------
+		# Task queue logs Items
+		#------------------------------
+
+		$cutoff = 86400 * 14;
+		$datecut = date('Y-m-d H:i:s', time() - $cutoff);
+		$num = App::getDb()->executeUpdate("
+			DELETE FROM task_queue
+			WHERE status = 'completed' AND date_completed < ?
+		", array($datecut));
+
+		if ($num) {
+			$this->logStatus("Cleaned up $num task queue logs");
+		}
+
+		#------------------------------
 		# Ticket change logs
 		#------------------------------
 

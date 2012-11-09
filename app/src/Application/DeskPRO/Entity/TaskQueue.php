@@ -75,6 +75,11 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
 		return new $class($this['task_data'], $this, $logger);
 	}
 
+	public function getTitle()
+	{
+		return $this->getRunner()->getTitle();
+	}
+
 	public function runTask($max_time = 15, \Application\DeskPRO\Log\Logger $logger = null)
 	{
 		if ($this['status'] == 'completed') {

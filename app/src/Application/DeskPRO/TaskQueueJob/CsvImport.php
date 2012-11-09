@@ -44,6 +44,15 @@ class CsvImport extends AbstractJob
 	 */
 	protected $_custom_fields;
 
+	public function getTitle()
+	{
+		if ($this->_data['user_filename']) {
+			return 'CSV Import: ' . $this->_data['user_filename'];
+		} else {
+			return 'CSV Import';
+		}
+	}
+
 	protected function _getDefaultData()
 	{
 		return array(
@@ -59,6 +68,7 @@ class CsvImport extends AbstractJob
 			'imported' => 0,
 			'lines_done' => 0,
 			'fseek' => 0,
+			'user_filename' => ''
 		);
 	}
 

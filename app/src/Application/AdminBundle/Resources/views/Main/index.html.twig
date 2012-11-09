@@ -136,6 +136,15 @@
 <br />
 {% endif %}
 
+{% if show_task_status %}
+	<div class="alert-message block-message success">
+		There are currently tasks running in the background. These will run even if you are not connected to DeskPRO.<br />
+		<br />
+		The current background task status will be updated here periodically:
+		<span data-element-handler="DeskPRO.Admin.ElementHandler.TaskQueueStatus" data-task-group="data_import" style="font-weight: bold">Updating...</span>
+	</div>
+{% endif %}
+
 
 <div class="content-table">
 	<table width="100%">

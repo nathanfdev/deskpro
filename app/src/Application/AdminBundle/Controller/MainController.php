@@ -81,6 +81,9 @@ class MainController extends AbstractController
 
 		$last_login = $this->em->getRepository('DeskPRO:LoginLog')->getLast($this->person);
 
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);
+		$show_task_status = count($tasks) > 0;
+
 		return $this->render('AdminBundle:Main:index.html.twig', array(
 			'lic'                => License::getLicense(),
 			'notice_items'       => $notice_items,
@@ -91,6 +94,7 @@ class MainController extends AbstractController
 			'is_cron_crash'      => $is_cron_crash,
 			'cron_running_time'  => $cron_running_time,
 			'last_login'         => $last_login,
+			'show_task_status'   => $show_task_status
 		));
 	}
 
@@ -177,14 +181,47 @@ class MainController extends AbstractController
 		));
 	}
 
-	public function checkTaskQueueAction($task_queue_id)
+	public function checkTaskQueueAction($task_queue_id = 0)
 	{
-		$task = $this->em->getRepository('DeskPRO:TaskQueue')->find($task_queue_id);
-		if (!$task) {
-			return $this->createJsonResponse(array('exists' => false));
+		if ($task_queue_id) {
+			$task = $this->em->getRepository('DeskPRO:TaskQueue')->find($task_queue_id);
+			if (!$task) {
+				return $this->createJsonResponse(array('exists' => false));
+			} else {
+				$runner = $task->getRunner();
+
+				return $this->createJsonResponse(array(
+					'exists' => true,
+					'title' => $runner->getTitle(),
+					'status' => $task->status,
+					'run_status' => $task->run_status,
+					'error_text' => $task->error_text
+				));
+			}
 		} else {
+			$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks();
+			return $this->_getMultipleTaskQueueStatusResponse($tasks);
+		}
+	}
+
+	public function checkTaskQueueGroupAction($task_group)
+	{
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup($task_group);
+		return $this->_getMultipleTaskQueueStatusResponse($tasks);
+	}
+
+	protected function _getMultipleTaskQueueStatusResponse($tasks)
+	{
+		if (!count($tasks)) {
+			return $this->createJsonResponse(array('count' => 0));
+		} else {
+			$task = reset($tasks);
+			$runner = $task->getRunner();
+
 			return $this->createJsonResponse(array(
-				'exists' => true,
+				'count' => count($tasks),
+				'count_waiting' => $this->em->getRepository('DeskPRO:TaskQueue')->countTasksBefore($task),
+				'title' => $runner->getTitle(),
 				'status' => $task->status,
 				'run_status' => $task->run_status,
 				'error_text' => $task->error_text
