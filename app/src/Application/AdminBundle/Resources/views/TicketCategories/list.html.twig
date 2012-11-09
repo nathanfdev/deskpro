@@ -123,7 +123,7 @@
 				{% for itm in all_categories %}
 					{% if itm.children|length %}
 						<optgroup label="{{ itm.title }}">
-							{% for sub_itm in itm.children %}
+							{% for sub_itm in itm.children_ordered %}
 								<option value="{{ sub_itm.id }}" {% if app.getSetting('core.default_ticket_cat') == sub_itm.id %}selected="selected"{% endif %}>{{ sub_itm.title }}</option>
 							{% endfor %}
 						</optgroup>

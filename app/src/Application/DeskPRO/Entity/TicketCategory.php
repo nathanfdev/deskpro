@@ -166,6 +166,24 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	}
 
 
+	/**
+	 * @return array
+	 */
+	public function getChildrenOrdered()
+	{
+		$children = $this->children->toArray();
+		uasort($children, function($a, $b) {
+			if ($a->display_order == $b->display_order) {
+				return 0;
+			}
+
+			return ($a->display_order < $b->display_order) ? -1 : 1;
+		});
+
+		return $children;
+	}
+
+
 
 	/**
 	 * Get all children down the entire tree
@@ -232,6 +250,6 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => 'parent',  'orderBy' => array( 'title' => 'ASC', ), ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
 	}
 }
