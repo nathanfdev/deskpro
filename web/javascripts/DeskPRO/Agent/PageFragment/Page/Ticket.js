@@ -224,6 +224,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		self.getEl('messages_wrap').on('click', 'article.message', function(ev) {
 			$(this).toggleClass('message-expanded');
 		});
+
+		this.getEl('people_box_agent').find('.select2-container-multi').css('width', '90%').find('input.select2-input').css('width', '90%');
 	},
 
 	showLockAlert: function() {
