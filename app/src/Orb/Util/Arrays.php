@@ -744,7 +744,7 @@ class Arrays
 	    return $new_array;
 	}
 
-	protected static function _flattenHierarcy(array &$new_array, array $array, $index_key, $child_key, $depth_key, $current_depth = 0, &$count = 0)
+	protected static function _flattenHierarcy(array &$new_array, $array, $index_key, $child_key, $depth_key, $current_depth = 0, &$count = 0)
 	{
 	    foreach ($array as $arr) {
 	        if ($index_key !== null) {
@@ -756,11 +756,14 @@ class Arrays
 	        $count++;
 
 	        $new_array[$index] = $arr;
-			unset($new_array[$index][$child_key]);
 	        $new_array[$index]['depth'] = $current_depth;
 
 	        if (isset($arr[$child_key]) AND $arr[$child_key]) {
-	            self::_flattenHierarcy($new_array, $arr[$child_key], $index_key, $child_key, $depth_key, $current_depth+1, $count);
+				$sub_array = $arr[$child_key];
+				if (!is_array($sub_array)) {
+					$sub_array = iterator_to_array($sub_array);
+				}
+	            self::_flattenHierarcy($new_array, $sub_array, $index_key, $child_key, $depth_key, $current_depth+1, $count);
 	        }
 	    }
 	}
@@ -778,6 +781,9 @@ class Arrays
 	 */
 	public static function selectArrayFromHierarchy($array, $index_key = 'id', $title_key = 'title', $indent = '--')
 	{
+		if (!is_array($array)) {
+			$deps = iterator_to_array($array);
+		}
 		$flat = self::flattenHierarchy($array);
 
 		$options = array();

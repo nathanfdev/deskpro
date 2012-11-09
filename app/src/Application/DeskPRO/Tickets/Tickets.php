@@ -86,8 +86,6 @@ class Tickets
 			}
 		}
 
-		$options['departments_hierarchy'] = App::getDataService('Department')->getInHierarchy();
-		$options['departments_full'] = App::getDataService('Department')->getFullNames(null, false);
 		$options['departments'] = App::getDataService('Department')->getNames(null, false);
 		$options['gateway_addresses'] = App::getDataService('EmailGatewayAddress')->getOptions();
 		$options['gateway_accounts'] = App::getDataService('EmailGateway')->getGatewayNames();

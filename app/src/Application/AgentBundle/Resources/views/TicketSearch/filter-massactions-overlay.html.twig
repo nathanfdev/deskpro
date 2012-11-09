@@ -121,7 +121,7 @@
 									'with_blank': true,
 									'with_blank2': true,
 									'blank_title': '',
-									'departments': ticket_options.departments_hierarchy,
+									'departments': app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign'),
 									'add_classname': 'dpe_select',
 									'with_blank_value': '-1'
 								} %}

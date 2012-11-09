@@ -70,9 +70,9 @@ class EditTicketType extends AbstractType
 
 		$ticket_builder->add('subject', 'text');
 
-		if (!empty($ticket_options['departments_hierarchy'])) {
+		if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
 			$ticket_builder->add('department_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['departments_hierarchy'], 'id', 'title'),
+				'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
 				'required' => false
 			));
 		}

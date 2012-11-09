@@ -162,7 +162,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
+	{% if 'department' not in no_show_fields and app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
 		<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="builder-op">
 				<select name="op" class="op">
@@ -179,7 +179,7 @@
 			</div>
 			<div class="builder-options">
 				<select name="department">
-					{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+					{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
 						{% if dep.children|length %}
 							<optgroup label="{{ dep.title }}">
 								{% for subdep in dep.children %}
