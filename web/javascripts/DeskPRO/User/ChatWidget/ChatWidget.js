@@ -436,32 +436,99 @@ var DpChatWidget = new (function() {
 			}
 		}
 
-		var css = [];
-		css.push('position: fixed');
-		css.push('bottom: 0');
-		css.push((isRtl ? 'left' : 'right') + ': 150px');
-		css.push('margin: 0');
-		css.push('padding: 0 15px');
-		css.push('height: 18px');
-		css.push('line-height: 100%');
-		css.push('box-shadow: none');
-		css.push('color: #fff');
-		css.push('font-family: Arial, sans-serif');
-		css.push('font-weight: bold');
-		css.push('font-size: 12px');
-		css.push('cursor: pointer');
-		css.push('display: none');
-		css.push('background: ' + bgColor);
-		css.push('background: ' + bgColorA);
-		css.push('border: ' + border);
-		css.push('border-bottom: none');
-		css.push('border-' + (isRtl ? 'left' : 'right') + ': none');
-		css.push('border-top: none');
-		css.push('text-shadow: 0px 0px 2px #000000');
-		css.push('opacity: 0.85');
-		css = css.join(';');
+		var css = "\
+			#dpchat_wrap { \
+			  position: fixed; \
+			  bottom: 0; \
+			  right: 20px; \
+			  cursor: pointer; \
+			  z-index: 10000; \
+			  opacity: 0.85; \
+			  width: 225px; \
+			} \
+			 \
+			#dpchat_wrap:hover { \
+			  opacity: 1; \
+			} \
+			 \
+			#dpchat_border_table, #dpchat_border_table tbody, #dpchat_border_table tr, #dpchat_border_table td { \
+			  border-collapse: collapse; \
+			  padding: 0; \
+			  margin: 0; \
+			} \
+			#dpchat_border_table td#dpchat_border_11 div { \
+			  background: rgb(63,63,63); \
+			  border: 2px solid #727272; \
+			  border-bottom: none; \
+			  border-radius: 6px 6px 0 0; \
+			  height: 6px; \
+			  overflow: hidden; \
+			} \
+			#dpchat_border_table td#dpchat_border_12 div { \
+			  height: 6px; \
+			  overflow: hidden; \
+			} \
+			#dpchat_border_table td#dpchat_border_21 div { \
+			  background: rgb(63,63,63); \
+			  border: 2px solid #727272; \
+			  border-top: none; \
+			  border-bottom: none; \
+			  height: 11px; \
+			  overflow: hidden; \
+			  color: transparent; \
+			  white-space: nowrap; \
+			} \
+			 \
+			#dpchat_border_table td#dpchat_border_21 div em { \
+			  font-family: Arial, sans-serif; \
+			  font-size: 12px; \
+			  font-weight: bold; \
+			  color: transparent; \
+			  padding: 0 15px; \
+			} \
+			 \
+			#dpchat_border_table td#dpchat_border_22 div { \
+			  height: 11px; \
+			  overflow: hidden; \
+			} \
+			 \
+			#dpchat_border_table td#dpchat_border_31 div { \
+			  background: rgb(63,63,63); \
+			  border-left: 2px solid #727272; \
+			  height: 9px; \
+			  overflow: hidden; \
+			} \
+			 \
+			#dpchat_border_table td#dpchat_border_32 div { \
+			  background: rgb(63,63,63); \
+			  border: 2px solid #727272; \
+			  border-bottom: none; \
+			  border-left: none; \
+			  height: 7px; \
+			  overflow: hidden; \
+			  border-radius: 0 6px 0 0; \
+			} \
+			 \
+			#dpchat_btn_text { \
+			  position: absolute; \
+			  left: 0; \
+			  bottom: 5px; \
+			  color: #fff; \
+			  text-align: center; \
+			  padding: 0 16px; \
+			} \
+			#dpchat_btn_text em { \
+			  display: block; \
+			  text-align: center; \
+			  font-style: normal; \
+			  font-family: Arial, sans-serif; \
+			  font-size: 12px; \
+			  font-weight: bold; \
+			  text-shadow: 0px 1px 2px #000000; \
+			} \
+		";
 
-		util.addStyleEl('#dpchat_btn { '+css+ '}');
+		util.addStyleEl(css);
 
 		var isIE  = (navigator && navigator.appName && navigator.appName == 'Microsoft Internet Explorer');
 		var ieVer = 0;
@@ -470,102 +537,31 @@ var DpChatWidget = new (function() {
 			if (re.exec(navigator.userAgent) != null) ieVer = parseFloat(RegExp.$1);
 		}
 
-		var css = [];
-		css.push('position: fixed');
-		css.push('bottom: 0');
-		css.push((isRtl ? 'left' : 'right') + ': 20px');
-		css.push('margin: 0');
-		css.push('height: 7px');
-		css.push('padding: 0');
-		css.push('line-height: 100%');
-		css.push('box-shadow: none');
-		css.push('-webkit-border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
-		css.push('-moz-border-radius-top' + (isRtl ? 'left' : 'right') + ': 9px');
-		if (isRtl && !isIE) {
-			// IE has a bug where the background bleeds through the border radius in RTL
-			css.push('border-top-' + (isRtl ? 'left' : 'right') + '-radius: 9px');
-		}
-		css.push('cursor: pointer');
-		css.push('background: ' + bgColor);
-		css.push('background: ' + bgColorA);
-		css.push('border: ' + border);
-		css.push('border-bottom: none');
-		css.push('border-' + (isRtl ? 'right' : 'left') + ': 0 none');
-		css = css.join(';');
-
-		util.addStyleEl('#dpchat_btn_btm { '+css+ '}');
-
-		var css = [];
-		css.push('position: absolute');
-		css.push('top: 0px');
-		css.push('bottom: 0');
-		css.push((isRtl ? 'left' : 'right') + ': -6px');
-		css.push('width: 6px');
-		css.push('margin: 0');
-		css.push('height: 9px');
-		css.push('padding: 0');
-		css.push('line-height: 100%');
-		css.push('box-shadow: none');
-		css.push('-webkit-border-bottom-' + (isRtl ? 'right' : 'left') + '-radius: 6px');
-		css.push('-moz-border-radius-bottom' + (isRtl ? 'right' : 'left') + ': 6px');
-		css.push('border-bottom-' + (isRtl ? 'right' : 'left') + '-radius: 6px')
-		css.push('cursor: pointer');
-		css.push('display: block');
-		css.push('background: transparent');
-		css.push('border: ' + border);
-		css.push('border-top: none');
-		css.push('border-' + (isRtl ? 'left' : 'right') + ': none');
-		css.push('z-index: 1');
-		css = css.join(';');
-
-		util.addStyleEl('#dpchat_btn_inner2 { '+css+ '}');
-
-		var css = [];
-		css.push('position: absolute');
-		css.push('top: -11px');
-		css.push('height: 6px');
-		css.push((isRtl ? 'left' : 'right') + ': 0');
-		css.push((isRtl ? 'right' : 'left') + ': -2px');
-		css.push('margin: 0');
-		css.push('height: 9px');
-		css.push('padding: 0');
-		css.push('line-height: 100%');
-		css.push('box-shadow: none');
-		css.push('-webkit-border-top-left-radius: 9px');
-		css.push('-webkit-border-top-right-radius: 9px');
-		css.push('-moz-border-radius-topleft: 9px');
-		css.push('-moz-border-radius-topright: 9px');
-		css.push('border-top-left-radius: 9px');
-		css.push('border-top-right-radius: 9px');
-		css.push('cursor: pointer');
-		css.push('display: block');
-		css.push('background: ' + bgColor);
-		css.push('background: ' + bgColorA);
-		css.push('border: ' + border);
-		css.push('border-bottom: none');
-		css = css.join(';');
-
-		util.addStyleEl('#dpchat_btn_inner { '+css+ '}');
-
-		var css = [];
-		css.push('position: absolute');
-		css.push('bottom: 0');
-		css.push('height: 9px');
-		css.push('width: 7px');
-		css.push('overflow: hidden');
-		css.push((isRtl ? 'right' : 'left') + ': -7px');
-		css.push('margin: 0');
-		css.push('padding: 0');
-		css.push('line-height: 100%');
-		css.push('box-shadow: none');
-		css.push('cursor: pointer');
-		css.push('display: block');
-		css.push('background: ' + bgColor);
-		css.push('background: ' + bgColorA);
-		css.push('border: none');
-		css = css.join(';');
-
-		util.addStyleEl('#dpchat_btn_btm_shade { '+css+ '}');
+		var tpl = '<div id="dpchat_wrap"> \
+			  <table id="dpchat_border_table" cellspacing="0" cellborder="0" border="0" width="100%"> \
+				<tbody> \
+				  <tr> \
+					<td id="dpchat_border_11"><div>&nbsp;</div></td> \
+					<td id="dpchat_border_12"><div>&nbsp;</div></td> \
+				  </tr> \
+				  <tr> \
+					<td id="dpchat_border_21" width="100"><div> \
+					  <em id="dpchat_btn_label_start-chat">PHRASE1</em> \
+					  <em id="dpchat_btn_label_open-chat" style="display:none;">PHRASE2</em> \
+					</div></td> \
+					<td id="dpchat_border_22"><div>&nbsp;</div></td> \
+				  </tr> \
+				  <tr> \
+					<td id="dpchat_border_31"><div>&nbsp;</div></td> \
+					<td id="dpchat_border_32"><div>&nbsp;</div></td> \
+				  </tr> \
+				</tbody> \
+			  </table> \
+			  <div id="dpchat_btn_text"> \
+				<em id="dpchat_btn_label_start-chat2">PHRASE1</em> \
+				<em id="dpchat_btn_label_open-chat2" style="display: none;">PHRASE2</em> \
+			  </div> \
+			</div>';
 
 		var phrase1 = 'Chat with us';
 		var phrase2 = 'Open your chat';
@@ -578,7 +574,10 @@ var DpChatWidget = new (function() {
 			}
 		}
 
-		openBtn = util.createEl('<div id="dpchat_btn" class="dp-hide-print"><div id="dpchat_btn_inner"></div><div id="dpchat_btn_inner2"></div><div id="dpchat_btn_label" style="position:relative;top:-1px;"><span id="dpchat_btn_label_start-chat" class="start-chat">'+phrase1+'</span><span id="dpchat_btn_label_open-chat" class="open-chat" style="display: none">'+phrase2+'</span></div><div id="dpchat_btn_btm" class="dp-hide-print"><div id="dpchat_btn_btm_shade"></div></div></div>');
+		tpl = tpl.replace(/PHRASE1/g, phrase1);
+		tpl = tpl.replace(/PHRASE2/g, phrase2);
+
+		openBtn = util.createEl(tpl);
 		if (isRtl) {
 			util.addClass(openBtn, 'rtl');
 		}
@@ -586,9 +585,6 @@ var DpChatWidget = new (function() {
 			util.hideEl(openBtn);
 		}
 		body.appendChild(openBtn);
-
-		var w = util.getElWidth(document.getElementById('dpchat_btn'));
-		document.getElementById('dpchat_btn_btm').style.width = (w - 20 + 150 - w - 8) + "px";
 
 		util.bind(openBtn, 'click', function(ev) {
 			if (ev && ev.preventDefault) ev.preventDefault();
@@ -648,7 +644,9 @@ var DpChatWidget = new (function() {
 		switch (messageId) {
 			case 'started':
 				util.hideEl(document.getElementById('dpchat_btn_label_start-chat'));
+				util.hideEl(document.getElementById('dpchat_btn_label_start-chat2'));
 				util.showEl(document.getElementById('dpchat_btn_label_open-chat'));
+				util.showEl(document.getElementById('dpchat_btn_label_open-chat2'));
 
 				// The button might be hidden because of doResume above,
 				// but we want to show it all the time (its overlapped anyway)
