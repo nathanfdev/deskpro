@@ -1,0 +1,83 @@
+{% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
+{% extends 'AdminBundle:Templates:emails-list-common.html.twig' %}
+{% block pagetabs %}
+<ul>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a></li>
+	<li class="on"><a href="{{ path('admin_templates_email', {list_type: 'user'}) }}">User Emails</a></li>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a></li>
+</ul>
+{% endblock %}
+{% block dp_full_page %}
+
+	<div class="dp_admin_page with-pagetabs">
+		<div class="dp-page-box">
+			<div class="page-content">
+				These are emails that are sent to agents.
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Tickets #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Tickets</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('New Ticket Notification', 'DeskPRO:emails_agent:new-ticket.html.twig') }}
+				{{ tplmacro.email_template_row('Ticket Updated Notification', 'DeskPRO:emails_agent:ticket-update.html.twig') }}
+				{{ tplmacro.email_template_row('New User Reply', 'DeskPRO:emails_agent:new-reply-user.html.twig') }}
+				{{ tplmacro.email_template_row('New Agent Reply', 'DeskPRO:emails_agent:new-reply-agent.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# General #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>General</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('New Chat Message', 'DeskPRO:emails_agent:new-agent-chat-message.html.twig') }}
+				{{ tplmacro.email_template_row('New User Comment', 'DeskPRO:emails_agent:new-comment.html.twig') }}
+				{{ tplmacro.email_template_row('New Feedback', 'DeskPRO:emails_agent:new-feedback.html.twig') }}
+				{{ tplmacro.email_template_row('New Registration', 'DeskPRO:emails_agent:new-registration.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Content #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Alerts and Errors</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('Login Alerts', 'DeskPRO:emails_agent:login-alert.html.twig') }}
+				{{ tplmacro.email_template_row('Agent Welcome Email', 'DeskPRO:emails_agent:agent-welcome.html.twig') }}
+				{{ tplmacro.email_template_row('Account Merged', 'DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig') }}
+				{{ tplmacro.email_template_row('Admin Reset Password', 'DeskPRO:emails_agent:admin-noreset-password.html.twig') }}
+				{{ tplmacro.email_template_row('Invalid Forward', 'DeskPRO:emails_agent:error-invalid-forward.html.twig') }}
+				{{ tplmacro.email_template_row('Missing Marker', 'DeskPRO:emails_agent:error-marker-missing.html.twig') }}
+				{{ tplmacro.email_template_row('Unknown From', 'DeskPRO:emails_agent:error-unknown-from.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

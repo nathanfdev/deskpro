@@ -317,7 +317,7 @@ class DeskproContainer extends Container
 	/**
 	 * Get the templating service
 	 *
-	 * @return \Symfony\Component\Templating\EngineInterface
+	 * @return \Application\DeskPRO\Templating\Engine
 	 */
 	public function getTemplating()
 	{

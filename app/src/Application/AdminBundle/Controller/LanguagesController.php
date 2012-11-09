@@ -451,6 +451,18 @@ class LanguagesController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function getPhraseTextAction()
+	{
+		$language_id = $this->in->getUint('language_id') ?: 1;
+		$phrase_id = $this->in->getString('phrase_id');
+
+		$lang = $this->getLanguageOr404($language_id);
+
+		return $this->createJsonResponse(array(
+			'phrase_text' => App::getTranslator()->getPhraseText($phrase_id, $lang)
+		));
+	}
+
 	############################################################################
 	# settings
 	############################################################################

@@ -450,7 +450,7 @@ class App
 	/**
 	 * Get the templating service
 	 *
-	 * @return \Symfony\Component\Templating\EngineInterface
+	 * @return \Application\DeskPRO\Templating\Engine
 	 */
 	public static function getTemplating()
 	{

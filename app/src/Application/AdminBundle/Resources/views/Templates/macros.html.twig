@@ -62,3 +62,43 @@
 		</div>
 	</div>
 {% endmacro %}
+
+{% macro email_template_row(title, template_name, options) %}
+	<div class="content-table template-dir template-editor-row" style="margin-bottom: 6px;">
+		<table width="100%" class="simple">
+			<thead>
+				<tr>
+					<th class="single-title" colspan="10">
+						<h1 class="toggle-section">{{ title }} <i class="flat-spinner" style="display: none;"></i></h1>
+					</th>
+				</tr>
+			</thead>
+			<tbody style="display: none;">
+				{% if not options.no_subject %}
+					<tr>
+						<td class="subject-cell">
+							Subject:<br />
+							<textarea name="subject" class="template-editor subject"></textarea>
+						</td>
+					</tr>
+				{% endif %}
+				<tr>
+					<td class="template-cell">
+						<div class="template-editor-wrap"><textarea class="template-editor template" data-template-name="{{ template_name }}"></textarea></div>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot style="display: none">
+				<tr>
+					<td>
+						<div class="is-not-loading">
+							<button class="clean-white save-trigger">Save</button>
+							<button class="clean-white revert-trigger">Revert</button>
+						</div>
+						<div class="is-loading" style="text-align: center"><i class="flat-spinner"></i></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+{% endmacro %}

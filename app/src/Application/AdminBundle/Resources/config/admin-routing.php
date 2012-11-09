@@ -952,8 +952,8 @@ $collection->add('admin_templates_user', new Route(
 ));
 
 $collection->add('admin_templates_email', new Route(
-	'/templates/email',
-	array('_controller' => 'AdminBundle:Templates:emailList'),
+	'/templates/email/{list_type}',
+	array('_controller' => 'AdminBundle:Templates:emailList', 'list_type' => 'layout'),
 	array(),
 	array()
 ));
@@ -1111,6 +1111,13 @@ $collection->add('admin_langs_newphrase', new Route(
 	'/languages/{language_id}/add-custom',
 	array('_controller' => 'AdminBundle:Languages:addCustomPhrase'),
 	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_langs_getphrasetext', new Route(
+	'/languages/get-phrase-text.json',
+	array('_controller' => 'AdminBundle:Languages:getPhraseText'),
+	array(),
 	array()
 ));
 

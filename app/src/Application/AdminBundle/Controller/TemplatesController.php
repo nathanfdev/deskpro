@@ -100,37 +100,6 @@ class TemplatesController extends AbstractController
 
 
 	####################################################################################################################
-	# email-list
-	####################################################################################################################
-
-	/**
-	 * Lists agent and admin templates
-	 */
-	public function emailListAction()
-	{
-		$tplfiles = new TemplateFiles();
-		$map = $tplfiles->getEmailTemplates();
-
-		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
-
-		$list = $this->groupMap($map, $custom_templates);
-
-		$real_list = array(
-			'DeskPRO' => array(
-				'Layout' => $list['DeskPRO']['emails_common'],
-				'User Emails' => $list['DeskPRO']['emails_user'],
-				'Agent Emails' => $list['DeskPRO']['emails_agent'],
-			)
-		);
-
-		return $this->render('AdminBundle:Templates:email-templates.html.twig', array(
-			'list' => $real_list,
-			'custom_templates' => $custom_templates,
-		));
-	}
-
-
-	####################################################################################################################
 	# get-template-code
 	####################################################################################################################
 
@@ -140,8 +109,6 @@ class TemplatesController extends AbstractController
 	 */
 	public function getTemplateCodeAction()
 	{
-		$tplfiles = new TemplateFiles();
-		$map = $tplfiles->getTemplateMap();
 		$name = $this->in->getString('name');
 
 		if ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
@@ -153,15 +120,7 @@ class TemplatesController extends AbstractController
 			$name = $page_display->data['tpl'];
 		}
 
-		$code = $this->db->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($name));
-		$custom = true;
-		if (!$code && isset($map[$name])) {
-			$custom = false;
-			$code = file_get_contents($map[$name]['path']);
-		}
-		if (!$code) {
-			$code = '';
-		}
+		$code = App::getTemplating()->getSource($name);
 
 		if ($this->in->getBool('info')) {
 			return $this->createJsonResponse(array(
@@ -190,7 +149,9 @@ class TemplatesController extends AbstractController
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 
-		return $this->createJsonResponse(array('success' => true, 'name' => $name));
+		$code = App::getTemplating()->getSource($name);
+
+		return $this->createJsonResponse(array('success' => true, 'name' => $name, 'code' => $code));
 	}
 
 
@@ -487,5 +448,46 @@ class TemplatesController extends AbstractController
 		$body = '<html><body>' . ($subject ? 'Subject: ' . htmlspecialchars($subject) . '<hr />' : '') . $html . '</body></html>';
 
 		return $this->createResponse($body);
+	}
+
+
+	####################################################################################################################
+	# email-list
+	####################################################################################################################
+
+	/**
+	 * Lists agent and admin templates
+	 */
+	public function emailListAction($list_type = 'layout')
+	{
+		switch ($list_type) {
+			case 'user':
+				return $this->emailListUserAction();
+			case 'agent':
+				return $this->emailListAgentAction();
+			default:
+				return $this->emailListLayoutAction();
+		}
+	}
+
+	public function emailListLayoutAction()
+	{
+		$vars = array();
+
+		return $this->render('@emails-list-layout.html.twig', $vars);
+	}
+
+	public function emailListUserAction()
+	{
+		$vars = array();
+
+		return $this->render('@emails-list-user.html.twig', $vars);
+	}
+
+	public function emailListAgentAction()
+	{
+		$vars = array();
+
+		return $this->render('@emails-list-agent.html.twig', $vars);
 	}
 }

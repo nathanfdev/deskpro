@@ -1,0 +1,23 @@
+{% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
+{% extends 'AdminBundle:Templates:emails-list-common.html.twig' %}
+{% block pagetabs %}
+<ul>
+	<li class="on"><a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a></li>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'user'}) }}">User Emails</a></li>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a></li>
+</ul>
+{% endblock %}
+{% block dp_full_page %}
+
+<div class="dp_admin_page with-pagetabs">
+	<div class="dp-page-box">
+		<div class="page-content">
+			{{ tplmacro.email_template_row('Email Header', 'DeskPRO:emails_common:email-header.html.twig', {no_subject: true}) }}
+			{{ tplmacro.email_template_row('Email Footer', 'DeskPRO:emails_common:email-footer.html.twig', {no_subject: true}) }}
+			{{ tplmacro.email_template_row('Custom CSS', 'DeskPRO:emails_common:email-custom-css.css.twig', {no_subject: true}) }}
+			{{ tplmacro.email_template_row('Main CSS', 'DeskPRO:emails_common:email-css.css.twig', {no_subject: true}) }}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

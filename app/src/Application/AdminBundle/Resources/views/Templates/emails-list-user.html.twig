@@ -1,0 +1,91 @@
+{% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
+{% extends 'AdminBundle:Templates:emails-list-common.html.twig' %}
+{% block pagetabs %}
+<ul>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a></li>
+	<li class="on"><a href="{{ path('admin_templates_email', {list_type: 'user'}) }}">User Emails</a></li>
+	<li><a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a></li>
+</ul>
+{% endblock %}
+{% block dp_full_page %}
+
+	<div class="dp_admin_page with-pagetabs">
+		<div class="dp-page-box">
+			<div class="page-content">
+				These are emails that are sent to users.
+			</div>
+		</div>
+	</div>
+
+
+
+	{##################################################################################################################}
+	{# Tickets #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Tickets</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('New Ticket Confirmation', 'DeskPRO:emails_user:new-ticket.html.twig') }}
+				{{ tplmacro.email_template_row('New Ticket Confirmation (Awaiting Validation)', 'DeskPRO:emails_user:new-ticket-validate.html.twig') }}
+				{{ tplmacro.email_template_row('New Ticket Created By Agent', 'DeskPRO:emails_user:new-ticket-agent.html.twig') }}
+				{{ tplmacro.email_template_row('New Agent Reply', 'DeskPRO:emails_user:new-reply-agent.html.twig') }}
+				{{ tplmacro.email_template_row('User Reply Auto-Reponse', 'DeskPRO:emails_user:new-reply-user.html.twig') }}
+				{{ tplmacro.email_template_row('Ticket Rating Request', 'DeskPRO:emails_user:ticket-rate.html.twig') }}
+				{{ tplmacro.email_template_row('New Ticket Denied (Registration Closed)', 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig') }}
+				{{ tplmacro.email_template_row('Autoresponder Warning', 'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# Content #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Content Submission</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('New Comment Confirmation', 'DeskPRO:emails_user:comment-new.html.twig') }}
+				{{ tplmacro.email_template_row('Comment Approved', 'DeskPRO:emails_user:comment-approved.html.twig') }}
+				{{ tplmacro.email_template_row('Comment Deleted', 'DeskPRO:emails_user:comment-deleted.html.twig') }}
+				{{ tplmacro.email_template_row('New Feedback Confirmation', 'DeskPRO:emails_user:feedback-disapproved.html.twig') }}
+				{{ tplmacro.email_template_row('New Feedback Comment Notification', 'DeskPRO:emails_user:feedback-new-comment.html.twig') }}
+				{{ tplmacro.email_template_row('Feedback Updated Notification', 'DeskPRO:emails_user:feedback-updated.html.twig') }}
+				{{ tplmacro.email_template_row('Feedback Approved', 'DeskPRO:emails_user:feedback-approved.html.twig') }}
+				{{ tplmacro.email_template_row('Feedback Deleted', 'DeskPRO:emails_user:feedback-disapproved.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+	{##################################################################################################################}
+	{# General #}
+	{##################################################################################################################}
+
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>General</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp-page-box">
+			<div class="page-content">
+				{{ tplmacro.email_template_row('Register (Validate)', 'DeskPRO:emails_user:register-validate.html.twig') }}
+				{{ tplmacro.email_template_row('Reset Password', 'DeskPRO:emails_user:reset-password.html.twig') }}
+				{{ tplmacro.email_template_row('Validate Additonal Email', 'DeskPRO:emails_user:new-email-validate.html.twig') }}
+				{{ tplmacro.email_template_row('Account Disabled', 'DeskPRO:emails_user:account-disabled.html.twig') }}
+				{{ tplmacro.email_template_row('Chat Transcript', 'DeskPRO:emails_user:chat-transcript.html.twig') }}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
