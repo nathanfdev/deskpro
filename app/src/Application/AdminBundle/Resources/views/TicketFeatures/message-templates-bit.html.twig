@@ -9,7 +9,7 @@
 				{% for msgtpl in message_templates %}
 					<li>
 						<a class="editable-link" href="{{ path('admin_ticket_msgtpl_edit', {id: msgtpl.id}) }}"><span>
-							{{ gateway.title|default('(untitled)') }}
+							{{ msgtpl.title|default('(untitled)') }}
 							{% if msgtpl.department %}(Department: {{ msgtpl.department.full_title }}){% endif %}
 						</span></a>
 					</li>
