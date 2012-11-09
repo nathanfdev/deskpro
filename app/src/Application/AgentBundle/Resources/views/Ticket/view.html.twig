@@ -55,7 +55,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 	<button class="cancel" id="macro_cancel_btn">{{ phrase('agent.general.cancel') }}</button>
 </div>
 
-<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
 <div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
