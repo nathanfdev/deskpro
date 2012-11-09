@@ -8,7 +8,8 @@
 		{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
 	{% endif %}
 </dp:subject>
-{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: new_message} %}
+
+<dp:user-reply />
 
 <br /><br />
 
