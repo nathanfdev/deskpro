@@ -84,7 +84,7 @@ class LanguagePhrases
 
 		$phrases = array();
 		foreach ($groups as $group) {
-			$phrases = array_merge($phrases, $this->getGroupPhrases($groups));
+			$phrases = array_merge($phrases, $this->getGroupPhrases('user.' . $group));
 		}
 
 		return $phrases;

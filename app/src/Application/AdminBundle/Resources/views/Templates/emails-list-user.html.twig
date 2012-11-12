@@ -7,7 +7,37 @@
 	<li><a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a></li>
 </ul>
 {% endblock %}
+{% block html_head %}
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpTplSearch.js') }}"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		new DpTplSearch('emails_user');
+	});
+	</script>
+{% endblock %}
 {% block content %}
+
+	<div class="page-content">
+		<div class="content-table">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th class="single-title">Find in emails</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							Search for: <input type="text" id="tplsearch_term" name="search" value="" placeholder="Enter a string to search for" style="width: 200px; padding: 3px;" />
+							<button id="tplsearch_trigger" class="clean-white">Find</button>
+							<i id="tplsearch_loading" class="flat-spinner" style="display: none;"></i>
+							<span id="tplsearch_status" style="display: none;"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 	{% set list = [
 		'DeskPRO:emails_user:new-ticket.html.twig',

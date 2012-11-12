@@ -574,4 +574,145 @@ class TemplatesController extends AbstractController
 			return $this->redirectRoute('admin_templates_email', array('list_type' => 'agent'));
 		}
 	}
+
+	####################################################################################################################
+	# search-templates
+	####################################################################################################################
+
+	public function searchTemplatesAction()
+	{
+		$term = $this->in->getString('term');
+		$is_regex = $this->in->getBool('is_regex');
+		if ($is_regex) {
+			$term = \Orb\Util\Strings::getInputRegexPattern($term);
+		}
+
+		#------------------------------
+		# Find results in phrases
+		#------------------------------
+
+		$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+		$phrases = $groups_reader->getAllUserPhrases();
+
+		$matched_phrases = array();
+		foreach ($phrases as $phrase_id => $phrase_text) {
+			if ($is_regex) {
+				if (preg_match($term, $phrase_text)) {
+					$matched_phrases[] = $phrase_id;
+				}
+			} else {
+				if (stripos($phrase_text, $term) !== false) {
+					$matched_phrases[] = $phrase_id;
+				}
+			}
+		}
+
+		dpdev_log($matched_phrases);
+
+		#------------------------------
+		# Now try to find it in templates
+		#------------------------------
+
+		$set = array();
+		$set_map = array();
+
+		switch ($this->in->getString('template_set')) {
+			case 'emails_user':
+				$set = array(
+					'DeskPRO:emails_user:new-ticket.html.twig',
+					'DeskPRO:emails_user:new-ticket-validate.html.twig',
+					'DeskPRO:emails_user:new-ticket-agent.html.twig',
+					'DeskPRO:emails_user:new-reply-agent.html.twig',
+					'DeskPRO:emails_user:new-reply-user.html.twig',
+					'DeskPRO:emails_user:ticket-rate.html.twig',
+					'DeskPRO:emails_user:new-ticket-reg-closed.html.twig',
+					'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig',
+					'DeskPRO:emails_user:chat-transcript.html.twig',
+					'DeskPRO:emails_user:comment-new.html.twig',
+					'DeskPRO:emails_user:comment-approved.html.twig',
+					'DeskPRO:emails_user:comment-deleted.html.twig',
+					'DeskPRO:emails_user:feedback-new.html.twig',
+					'DeskPRO:emails_user:feedback-new-comment.html.twig',
+					'DeskPRO:emails_user:feedback-updated.html.twig',
+					'DeskPRO:emails_user:feedback-approved.html.twig',
+					'DeskPRO:emails_user:feedback-disapproved.html.twig',
+					'DeskPRO:emails_user:register-validate.html.twig',
+					'DeskPRO:emails_user:reset-password.html.twig',
+					'DeskPRO:emails_user:new-email-validate.html.twig',
+					'DeskPRO:emails_user:account-disabled.html.twig',
+
+					'DeskPRO:emails_common:ticket-rating-links.html.twig',
+				);
+
+				$set_map = array(
+					'DeskPRO:emails_common:ticket-rating-links.html.twig' => array(
+						'DeskPRO:emails_user:new-reply-agent.html.twig',
+						'DeskPRO:emails_user:new-ticket-agent.html.twig',
+					)
+				);
+
+				break;
+
+			case 'emails_agent';
+				$set = array(
+					'DeskPRO:emails_agent:new-ticket.html.twig',
+					'DeskPRO:emails_agent:ticket-update.html.twig',
+					'DeskPRO:emails_agent:new-reply-user.html.twig',
+					'DeskPRO:emails_agent:new-agent-user.html.twig',
+					'DeskPRO:emails_agent:new-agent-chat-message.html.twig',
+					'DeskPRO:emails_agent:new-comment.html.twig',
+					'DeskPRO:emails_agent:new-feedback.html.twig',
+					'DeskPRO:emails_agent:new-registration.html.twig',
+					'DeskPRO:emails_agent:login-alert.html.twig',
+					'DeskPRO:emails_agent:agent-welcome.html.twig',
+					'DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig',
+					'DeskPRO:emails_agent:admin-noreset-password.html.twig',
+					'DeskPRO:emails_agent:error-invalid-forward.html.twig',
+					'DeskPRO:emails_agent:error-marker-missing.html.twig',
+					'DeskPRO:emails_agent:error-unknown-from.html.twig'
+				);
+				break;
+		}
+
+		$matching_templates = array();
+		foreach ($set as $tpl) {
+			$source = App::getTemplating()->getSource($tpl);
+
+			$match = false;
+			if ($is_regex) {
+				if (preg_match($term, $source)) {
+					$match = true;
+				}
+			} else {
+				if (stripos($source, $term) !== false) {
+					$match = true;
+				}
+			}
+
+			if (!$match && $matched_phrases) {
+				foreach ($matched_phrases as $phrase_id) {
+					if (strpos($source, $phrase_id) !== false) {
+						$match = true;
+						break;
+					}
+				}
+			}
+
+			if ($match) {
+				if (isset($set_map[$tpl])) {
+					foreach ($set_map[$tpl] as $map_tpl) {
+						$matching_templates[] = $map_tpl;
+					}
+				} else {
+					$matching_templates[] = $tpl;
+				}
+			}
+		}
+
+		$matching_templates = array_unique($matching_templates);
+
+		return $this->createJsonResponse(array(
+			'matches' => $matching_templates,
+		));
+	}
 }

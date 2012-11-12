@@ -951,6 +951,13 @@ $collection->add('admin_templates_user', new Route(
 	array()
 ));
 
+$collection->add('admin_templates_search', new Route(
+	'/templates/search.json',
+	array('_controller' => 'AdminBundle:Templates:searchTemplates'),
+	array(),
+	array()
+));
+
 $collection->add('admin_templates_email', new Route(
 	'/templates/email/{list_type}',
 	array('_controller' => 'AdminBundle:Templates:emailList', 'list_type' => 'layout'),

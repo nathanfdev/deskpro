@@ -130,7 +130,7 @@
 {% endmacro %}
 
 {% macro render_emailist_row(tpl, variations) %}
-	<tr>
+	<tr class="{{ tpl|lower|replace({'.':'_', ':':'_'}) }}" data-template-name="{{ tpl }}">
 		<td>
 			<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
 				{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
