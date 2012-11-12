@@ -24,13 +24,22 @@
 			<a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a>
 		{% endif %}
 	</li>
-	<li>
-		{{ phrase(phrase_key ~ '_title') }}
-	</li>
-	{% if is_custom %}
+	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' %}
+		<li>
+			Custom Template
+		</li>
 		<li>
 			{{ template.getBaseName() }}
 		</li>
+	{% else %}
+		<li>
+			{{ phrase(phrase_key ~ '_title') }}
+		</li>
+		{% if is_custom %}
+			<li>
+				{{ template.getBaseName() }}
+			</li>
+		{% endif %}
 	{% endif %}
 </ul>
 {% endblock %}
@@ -72,14 +81,19 @@ $(document).ready(function() {
 {% endif %}
 {% block page %}
 
-	{% if is_custom %}
-		<h3>Custom Variation of {{ phrase(phrase_key ~ '_title') }}: {{ template.getBaseName() }}</h3>
+	{% if template.variant_of == 'DeskPRO:emails_user:blank.html.twig' %}
+		<h3>Custom Template: {{ template.getBaseName() }}</h3>
+		<br/>
 	{% else %}
-		<h3>{{ phrase(phrase_key ~ '_title') }}</h3>
+		{% if is_custom %}
+			<h3>Custom Variation of {{ phrase(phrase_key ~ '_title') }}: {{ template.getBaseName() }}</h3>
+		{% else %}
+			<h3>{{ phrase(phrase_key ~ '_title') }}</h3>
+		{% endif %}
+		<p>
+			{{ phrase(phrase_key ~ '_desc') }}
+		</p>
 	{% endif %}
-	<p>
-		{{ phrase(phrase_key ~ '_desc') }}
-	</p>
 
 	<div class="template-edit-row">
 		<div class="template-editor-label"><strong>Subject:</strong></div>

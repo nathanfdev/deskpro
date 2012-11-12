@@ -436,7 +436,7 @@ class Translate implements PersonContextInterface
 	 * @param  Language|int $language The Language entity to use, or its id
 	 * @return string
 	 */
-	public function getPhraseText($phrase_name, $language = null)
+	public function getPhraseText($phrase_name, $language = null, $null_on_notfound = false)
 	{
 		if ($language === null) $language = $this->_language;
 		if (!$phrase_name) return '';
@@ -456,6 +456,10 @@ class Translate implements PersonContextInterface
 
 				$this->_loadPendingPhraseGroups();
 				return $this->getPhraseText($phrase_name, $language_id);
+			}
+
+			if ($null_on_notfound) {
+				return null;
 			}
 
 			return $this->_noPhrase($phrase_name, $language);
@@ -856,7 +860,7 @@ class Translate implements PersonContextInterface
 	 */
 	public function hasPhrase($phrase_name, $language = null)
 	{
-		if ($this->getPhraseText($phrase_name, $language)) {
+		if ($this->getPhraseText($phrase_name, $language, true) !== null) {
 			return true;
 		}
 

@@ -501,6 +501,12 @@ class TemplatesController extends AbstractController
 			WHERE name LIKE 'DeskPRO:emails_user:%'
 		", array(), 'variant_of', null);
 
+		$vars['custom_templates'] = App::getDb()->fetchAllCol("
+			SELECT name
+			FROM templates
+			WHERE name LIKE 'DeskPRO:emails_user:custom_%' AND variant_of = 'DeskPRO:emails_user:blank.html.twig'
+		");
+
 		return $this->render('@emails-list-user.html.twig', $vars);
 	}
 

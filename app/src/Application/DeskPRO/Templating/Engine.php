@@ -59,6 +59,7 @@ class Engine extends BaseEngine
 		'DeskPRO:emails_user:new-reply-user.html.twig',
 		'DeskPRO:emails_user:new-ticket-agent.html.twig',
 		'DeskPRO:emails_user:new-ticket.html.twig',
+		'DeskPRO:emails_user:blank.html.twig',
 	);
 
 	protected function _initTemplateFilesMap()

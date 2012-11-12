@@ -130,13 +130,20 @@
 {% endmacro %}
 
 {% macro render_emailist_row(tpl, variations) %}
+	{% set phrase_key = 'admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) %}
 	<tr class="{{ tpl|lower|replace({'.':'_', ':':'_'}) }}" data-template-name="{{ tpl }}">
 		<td>
 			<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
-				{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
+				{% if has_phrase(phrase_key ~ '_title') %}
+					{{ phrase(phrase_key ~ '_title') }}
+				{% else %}
+					{{  tpl|replace({'DeskPRO:emails_user:':'', '.html.twig':''}) }}
+				{% endif %}
 			</span></a></strong>
 			<div class="tpl-desc">
-				{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
+				{% if has_phrase(phrase_key ~ '_desc') %}
+					{{ phrase(phrase_key ~ '_desc') }}
+				{% endif %}
 				{% if variations %}
 					<div style="margin-top: 5px; font-size: 11px;">
 						Variations:
