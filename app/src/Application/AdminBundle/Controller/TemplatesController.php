@@ -490,4 +490,16 @@ class TemplatesController extends AbstractController
 
 		return $this->render('@emails-list-agent.html.twig', $vars);
 	}
+
+	public function emailEditAction($name)
+	{
+		$vars = array();
+
+		$source = App::getTemplating()->getSplitSource($name);
+
+		$vars['name']   = $name;
+		$vars['source'] = $source;
+
+		return $this->render('@email-edit.html.twig', $vars);
+	}
 }

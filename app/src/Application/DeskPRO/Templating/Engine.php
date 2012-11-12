@@ -136,4 +136,25 @@ class Engine extends BaseEngine
 
 		return $source ?: '';
 	}
+
+
+	/**
+	 * @param string $name
+	 * @return array
+	 */
+	public function getSplitSource($name)
+	{
+		$source = $this->getSource($name);
+
+		$parts = array(
+			'source' => $source
+		);
+
+		if (preg_match('#^(.*?)<dp:subject>(.*?)</dp:subject>(.*?)$#is', $source, $m)) {
+			$parts['body'] = trim($m[1] . $m[3]);
+			$parts['subject'] = trim($m[2]);
+		}
+
+		return $parts;
+	}
 }

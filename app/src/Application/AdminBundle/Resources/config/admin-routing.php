@@ -958,6 +958,13 @@ $collection->add('admin_templates_email', new Route(
 	array()
 ));
 
+$collection->add('admin_templates_editemail', new Route(
+	'/templates/email/edit/{name}',
+	array('_controller' => 'AdminBundle:Templates:emailEdit'),
+	array(),
+	array()
+));
+
 $collection->add('admin_templates_other', new Route(
 	'/templates/other',
 	array('_controller' => 'AdminBundle:Templates:otherList'),
@@ -1174,6 +1181,13 @@ $collection->add('admin_langs_editphrases_save', new Route(
 	'/languages/{language_id}/phrases-save',
 	array('_controller' => 'AdminBundle:Languages:savePhrases'),
 	array('language_id' => '\\d+', '_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_langs_editphrases_savearray', new Route(
+	'/languages/phrases-save-array.json',
+	array('_controller' => 'AdminBundle:Languages:savePhraseArray'),
+	array('_method' => 'POST'),
 	array()
 ));
 

@@ -7,84 +7,259 @@
 	<li><a href="{{ path('admin_templates_email', {list_type: 'agent'}) }}">Agent Emails</a></li>
 </ul>
 {% endblock %}
-{% block dp_full_page %}
+{% block content %}
 
-	<div class="dp_admin_page with-pagetabs">
-		<div class="dp-page-box">
-			<div class="page-content">
-				These are emails that are sent to users.
-			</div>
+	<div class="page-content">
+		<div class="content-table">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th class="single-title">Tickets</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-ticket.html.twig'}) }}"><span>
+								New Ticket Confirmation
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is an automatic reply sent to the user to confirm that the helpdesk recieved their ticket.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-ticket-validate.html.twig'}) }}"><span>
+								New Ticket Confirmation (Awaiting Validation)
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is an automatic reply sent to the user to tell them that they must validate their email address before their ticket will be read by the helpdesk agents.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-ticket-agent.html.twig'}) }}"><span>
+								New Ticket Created By Agent
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is the notification email sent to the user to tell them about a new ticket created by an agent.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-reply-agent.html.twig'}) }}"><span>
+								New Agent Reply
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is the notification email sent to the user to tell them about a new agent reply.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-reply-user.html.twig'}) }}"><span>
+								User Reply Auto-Reponse
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is an automatic reply sent to the user to tell them that the system recieved their ticket reply.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:ticket-rate.html.twig'}) }}"><span>
+								Ticket Rating Request
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is the email sent to the user after their ticket has been resolved to ask them to rate their support and submit feedback.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig'}) }}"><span>
+								New Ticket Denied (Registration Closed)
+							</span></a></strong>
+							<div class="tpl-desc">
+								If you have disabled registration, this is the email users will recieve if they send an email to helpdesk without already having an account.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig'}) }}"><span>
+								Autoresponder Warning
+							</span></a></strong>
+							<div class="tpl-desc">
+								This is the warning email sent to the user when they have sent to many emails in a short amount of time.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:chat-transcript.html.twig'}) }}"><span>
+								Chat Transcript
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when they request a chat transcript at the end of a chat.
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
-
-
-	{##################################################################################################################}
-	{# Tickets #}
-	{##################################################################################################################}
-
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>Tickets</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page">
-		<div class="dp-page-box">
-			<div class="page-content">
-				{{ tplmacro.email_template_row('New Ticket Confirmation', 'DeskPRO:emails_user:new-ticket.html.twig') }}
-				{{ tplmacro.email_template_row('New Ticket Confirmation (Awaiting Validation)', 'DeskPRO:emails_user:new-ticket-validate.html.twig') }}
-				{{ tplmacro.email_template_row('New Ticket Created By Agent', 'DeskPRO:emails_user:new-ticket-agent.html.twig') }}
-				{{ tplmacro.email_template_row('New Agent Reply', 'DeskPRO:emails_user:new-reply-agent.html.twig') }}
-				{{ tplmacro.email_template_row('User Reply Auto-Reponse', 'DeskPRO:emails_user:new-reply-user.html.twig') }}
-				{{ tplmacro.email_template_row('Ticket Rating Request', 'DeskPRO:emails_user:ticket-rate.html.twig') }}
-				{{ tplmacro.email_template_row('New Ticket Denied (Registration Closed)', 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig') }}
-				{{ tplmacro.email_template_row('Autoresponder Warning', 'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig') }}
-			</div>
+	<div class="page-content">
+		<div class="content-table">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th class="single-title">Content Submission</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:comment-new.html.twig'}) }}"><span>
+								New Comment Confirmation
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user to thank them for their new comment. If email validation is enabled, this email also includes a validation link
+								the user must click.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:comment-approved.html.twig'}) }}"><span>
+								Comment Approved
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent approves their comment for public display.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:comment-deleted.html.twig'}) }}"><span>
+								Comment Deleted
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent deletes their comment that was awaiting validation.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:feedback-disapproved.html.twig'}) }}"><span>
+								New Feedback Confirmation
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to thank the user for their feedback submission. If email validation is enabled, this email also includes a validation link
+								the user must click.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:feedback-new-comment.html.twig'}) }}"><span>
+								New Feedback Comment Notification
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when a new comment is made to one of their submissions.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:feedback-updated.html.twig'}) }}"><span>
+								Feedback Updated Notification
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent updates one of their submissions. For example, when an agent marks it as completed.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:feedback-approved.html.twig'}) }}"><span>
+								Feedback Approved
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent approves one of their submissions.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:feedback-disapproved.html.twig'}) }}"><span>
+								Feedback Deleted
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent deletes one of their submissions awaiting validation.
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
-	{##################################################################################################################}
-	{# Content #}
-	{##################################################################################################################}
-
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>Content Submission</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page">
-		<div class="dp-page-box">
-			<div class="page-content">
-				{{ tplmacro.email_template_row('New Comment Confirmation', 'DeskPRO:emails_user:comment-new.html.twig') }}
-				{{ tplmacro.email_template_row('Comment Approved', 'DeskPRO:emails_user:comment-approved.html.twig') }}
-				{{ tplmacro.email_template_row('Comment Deleted', 'DeskPRO:emails_user:comment-deleted.html.twig') }}
-				{{ tplmacro.email_template_row('New Feedback Confirmation', 'DeskPRO:emails_user:feedback-disapproved.html.twig') }}
-				{{ tplmacro.email_template_row('New Feedback Comment Notification', 'DeskPRO:emails_user:feedback-new-comment.html.twig') }}
-				{{ tplmacro.email_template_row('Feedback Updated Notification', 'DeskPRO:emails_user:feedback-updated.html.twig') }}
-				{{ tplmacro.email_template_row('Feedback Approved', 'DeskPRO:emails_user:feedback-approved.html.twig') }}
-				{{ tplmacro.email_template_row('Feedback Deleted', 'DeskPRO:emails_user:feedback-disapproved.html.twig') }}
-			</div>
-		</div>
-	</div>
-
-	{##################################################################################################################}
-	{# General #}
-	{##################################################################################################################}
-
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>General</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page">
-		<div class="dp-page-box">
-			<div class="page-content">
-				{{ tplmacro.email_template_row('Register (Validate)', 'DeskPRO:emails_user:register-validate.html.twig') }}
-				{{ tplmacro.email_template_row('Reset Password', 'DeskPRO:emails_user:reset-password.html.twig') }}
-				{{ tplmacro.email_template_row('Validate Additonal Email', 'DeskPRO:emails_user:new-email-validate.html.twig') }}
-				{{ tplmacro.email_template_row('Account Disabled', 'DeskPRO:emails_user:account-disabled.html.twig') }}
-				{{ tplmacro.email_template_row('Chat Transcript', 'DeskPRO:emails_user:chat-transcript.html.twig') }}
-			</div>
+	<div class="page-content">
+		<div class="content-table">
+			<table width="100%">
+				<thead>
+					<tr>
+						<th class="single-title">General</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:register-validate.html.twig'}) }}"><span>
+								Register (Validate)
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when they register and need to validate their email address.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:reset-password.html.twig'}) }}"><span>
+								Reset Password
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when they request a password reset.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:new-email-validate.html.twig'}) }}"><span>
+								Validate Additonal Email
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when they add an additional email address on their account and need to valdiate it.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_user:account-disabled.html.twig'}) }}"><span>
+								Account Disabled
+							</span></a></strong>
+							<div class="tpl-desc">
+								This email is sent to the user when an agent disables their account.
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 

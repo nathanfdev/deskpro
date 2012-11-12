@@ -451,16 +451,68 @@ class LanguagesController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function savePhraseArrayAction()
+	{
+		$phrases = $this->container->getIn()->getCleanValueArray('lang_phrase', 'raw', 'string');
+		$phrase_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+
+		foreach ($phrases as $phrase_id => $lang_phrase) {
+			foreach ($lang_phrase as $lang_id => $phrase_text) {
+				$language = App::getDataService('Language')->get($lang_id);
+				if (!$language) {
+					continue;
+				}
+
+				$phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $language);
+				if (!$phrase) {
+					$phrase = new \Application\DeskPRO\Entity\Phrase();
+					$phrase->language = $language;
+					$phrase->name = $phrase_id;
+					$master_phrase = $phrase_reader->getMasterPhrase($phrase_id);
+					if (!$master_phrase) {
+						$master_phrase = '';
+					}
+					$phrase->original_phrase = $master_phrase;
+					$phrase->original_hash = $phrase_reader->generatePhraseHash($master_phrase);
+				}
+
+				if ($phrase_text == $phrase->original_phrase || !$phrase_text) {
+					if ($phrase->id) {
+						$this->em->remove($phrase);
+					}
+					continue;
+				}
+
+				$phrase->phrase = $phrase_text;
+
+				$this->em->persist($phrase);
+			}
+
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	public function getPhraseTextAction()
 	{
-		$language_id = $this->in->getUint('language_id') ?: 1;
 		$phrase_id = $this->in->getString('phrase_id');
 
-		$lang = $this->getLanguageOr404($language_id);
+		$languages = App::getDataService('Language')->getAll();
 
-		return $this->createJsonResponse(array(
-			'phrase_text' => App::getTranslator()->getPhraseText($phrase_id, $lang)
-		));
+		$data = array();
+		$data['phrase_id'] = $phrase_id;
+
+		foreach ($languages as $lang) {
+			$lang_row = array();
+			$lang_row['language_id']     = $lang->getId();
+			$lang_row['language_title']  = $lang->getTitle();
+			$lang_row['phrase']          = App::getTranslator()->getPhraseText($phrase_id, $lang);
+
+			$data['langs'][] = $lang_row;
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################
