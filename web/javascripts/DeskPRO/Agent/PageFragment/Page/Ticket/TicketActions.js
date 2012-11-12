@@ -306,7 +306,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			type: 'POST',
 			dataType: 'json',
 			context: this,
-			success: function() {
+			success: function(data) {
+
+				if (data.error) {
+					DeskPRO_Window.showAlert("The macro was not applied because you do not have permission to perform one or more of the defined actions.");
+					return;
+				}
+
 				this.page.closeSelf();
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/' + this.ticketId);
 			}

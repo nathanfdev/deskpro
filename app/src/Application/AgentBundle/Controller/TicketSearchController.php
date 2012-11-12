@@ -1282,6 +1282,10 @@ class TicketSearchController extends AbstractController
 
 					$this->db->beginTransaction();
 					try {
+						if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
+							$permission_errors[] = $ticket->getId();
+							continue;
+						}
 						$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 						$this->em->persist($ticket);
 						$this->em->flush();

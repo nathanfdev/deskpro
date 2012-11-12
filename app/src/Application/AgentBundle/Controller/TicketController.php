@@ -1660,15 +1660,29 @@ class TicketController extends AbstractController
 
 		$actions_collection = $macro->getActionsCollection($ticket);
 
+		$permission_errors = false;
 		$this->db->beginTransaction();
 		try {
-			$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-			$this->em->persist($ticket);
-			$this->em->flush();
-			$ticket->getTicketLogger()->done();
-			$this->db->commit();
+			if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
+				$permission_errors = true;
+			} else {
+				$actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+				$this->em->persist($ticket);
+				$this->em->flush();
+				$ticket->getTicketLogger()->done();
+				$this->db->commit();
+			}
 		} catch (\Exception $e) {
 			$this->db->rollback();
+		}
+
+		if ($permission_errors) {
+			return $this->createJsonResponse(array(
+				'ticket_id' => $ticket->getId(),
+				'macro_id' => $macro->getId(),
+				'success' => false,
+				'error' => 'permissions'
+			));
 		}
 
 		return $this->createJsonResponse(array(
