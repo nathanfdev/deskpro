@@ -44,6 +44,23 @@ class Engine extends BaseEngine
 	 */
 	protected $_template_files_map;
 
+	/**
+	 * List of templates who are allowed to have variants
+	 *
+	 * @var array
+	 */
+	protected static $varied_templates = array(
+		'DeskPRO:emails_agent:ticket-update.html.twig',
+		'DeskPRO:emails_agent:new-ticket.html.twig',
+		'DeskPRO:emails_agent:new-reply-user.html.twig',
+		'DeskPRO:emails_agent:new-reply-agent.html.twig',
+
+		'DeskPRO:emails_agent:new-reply-agent.html.twig',
+		'DeskPRO:emails_agent:new-reply-user.html.twig',
+		'DeskPRO:emails_agent:new-ticket-agent.html.twig',
+		'DeskPRO:emails_agent:new-ticket.html.twig',
+	);
+
 	protected function _initTemplateFilesMap()
 	{
 		if ($this->_template_files_map !== null) {
@@ -156,5 +173,14 @@ class Engine extends BaseEngine
 		}
 
 		return $parts;
+
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getVariedTemplateNames()
+	{
+		return self::$varied_templates;
 	}
 }

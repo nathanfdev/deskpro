@@ -26,16 +26,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						<tr>
-							<td>
-								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
-								</span></a></strong>
-								<div class="tpl-desc">
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
-								</div>
-							</td>
-						</tr>
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -58,16 +49,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						<tr>
-							<td>
-								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
-								</span></a></strong>
-								<div class="tpl-desc">
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
-								</div>
-							</td>
-						</tr>
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -93,16 +75,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						<tr>
-							<td>
-								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
-								</span></a></strong>
-								<div class="tpl-desc">
-									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
-								</div>
-							</td>
-						</tr>
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
 					{% endfor %}
 				</tbody>
 			</table>

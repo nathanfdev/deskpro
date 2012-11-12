@@ -1,4 +1,4 @@
-function DpEmailEditor() {
+function DpEmailEditor(name) {
 	var codeHints = new DpCodeHints();
 	var activeEditorArea = null;
 
@@ -59,7 +59,7 @@ function DpEmailEditor() {
 			context: this,
 			type: 'POST',
 			data: {
-				name: '{{ name }}',
+				name: name,
 				code: code
 			},
 			complete: function() {
@@ -80,7 +80,7 @@ function DpEmailEditor() {
 		saveCtrl.addClass('loading');
 		$.ajax({
 			type: 'POST',
-			url: BASE_URL + 'admin/templates/revert-template.json?name={{ name }}',
+			url: BASE_URL + 'admin/templates/revert-template.json?name=' + name,
 			success: function() {
 				window.location.reload(false);
 			}

@@ -143,7 +143,21 @@ class TemplatesController extends AbstractController
 	public function revertTemplateAction()
 	{
 		$name = $this->in->getString('name');
-		$this->db->delete('templates', array('name' => $name));
+
+		$template = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
+		if ($template && $template->variant_of) {
+			$code = App::getTemplating()->getSource($template->variant_of);
+
+			$twig = $this->container->get('twig');
+			$compiled = $twig->compileSource($code, $template->variant_of);
+
+			$template->setTemplate($code, $compiled);
+			$this->em->persist($template);
+			$this->em->flush();
+		} else {
+			$this->db->delete('templates', array('name' => $name));
+		}
+
 
 		if ($name == 'UserBundle:Css:main.css.twig' || $name == 'UserBundle:Css:custom.css.twig') {
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
@@ -481,12 +495,24 @@ class TemplatesController extends AbstractController
 	{
 		$vars = array();
 
+		$vars['variations'] = App::getDb()->fetchAllGrouped("
+			SELECT name, variant_of
+			FROM templates
+			WHERE name LIKE 'DeskPRO:emails_user:%'
+		", array(), 'variant_of', null);
+
 		return $this->render('@emails-list-user.html.twig', $vars);
 	}
 
 	public function emailListAgentAction()
 	{
 		$vars = array();
+
+		$vars['variations'] = App::getDb()->fetchAllGrouped("
+			SELECT name, variant_of
+			FROM templates
+			WHERE name LIKE 'DeskPRO:emails_agent:%'
+		", array(), 'variant_of', null);
 
 		return $this->render('@emails-list-agent.html.twig', $vars);
 	}
@@ -497,9 +523,30 @@ class TemplatesController extends AbstractController
 
 		$source = App::getTemplating()->getSplitSource($name);
 
-		$vars['name']   = $name;
-		$vars['source'] = $source;
+		$vars['name']       = $name;
+		$vars['source']     = $source;
+		$vars['is_custom']  = strpos($name, ':custom_') !== false;
+		$vars['template']   = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
 
 		return $this->render('@email-edit.html.twig', $vars);
+	}
+
+	public function deleteCustomTemplateAction($name)
+	{
+		$this->ensureRequestToken('delete_template');
+
+		$template = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
+		if (!$template || !$template->isCustom()) {
+			throw $this->createNotFoundException();
+		}
+
+		$this->em->remove($template);
+		$this->em->flush();
+
+		if (strpos($name, ':emails_user:') !== false) {
+			return $this->redirectRoute('admin_templates_email', array('list_type' => 'user'));
+		} else {
+			return $this->redirectRoute('admin_templates_email', array('list_type' => 'agent'));
+		}
 	}
 }

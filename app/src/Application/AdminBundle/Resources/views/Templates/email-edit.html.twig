@@ -1,6 +1,13 @@
 {% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
+{% if is_custom %}
+	<nav>
+		<ul>
+			<li class="delete"><a href="{{ path('admin_templates_deletecustom', {name: name, _dp_security_token: security_token('delete_template') }) }}" onclick="return confirm('Are you sure?');">{{ phrase('agent.general.delete') }}</a></li>
+		</ul>
+	</nav>
+{% endif %}
 <ul>
 	<li>Emails</li>
 	<li>
@@ -15,6 +22,11 @@
 	<li>
 		{{ phrase(phrase_key ~ '_title') }}
 	</li>
+	{% if is_custom %}
+		<li>
+			{{ template.getBaseName() }}
+		</li>
+	{% endif %}
 </ul>
 {% endblock %}
 {% block html_head %}
@@ -32,14 +44,22 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	var editor = new DpEmailEditor();
+	var editor = new DpEmailEditor('{{ name }}');
 });
 </script>
 {% endblock %}
-{% set phrase_key = 'admin.emailtpl_desc.' ~ name|lower|replace({'.':'_', ':':'_'}) %}
+{% if is_custom %}
+	{% set phrase_key = 'admin.emailtpl_desc.' ~ template.variant_of|lower|replace({'.':'_', ':':'_'}) %}
+{% else %}
+	{% set phrase_key = 'admin.emailtpl_desc.' ~ name|lower|replace({'.':'_', ':':'_'}) %}
+{% endif %}
 {% block page %}
 
-	<h3>{{ phrase(phrase_key ~ '_title') }}</h3>
+	{% if is_custom %}
+		<h3>Custom Variation of {{ phrase(phrase_key ~ '_title') }}: {{ template.getBaseName() }}</h3>
+	{% else %}
+		<h3>{{ phrase(phrase_key ~ '_title') }}</h3>
+	{% endif %}
 	<p>
 		{{ phrase(phrase_key ~ '_desc') }}
 	</p>

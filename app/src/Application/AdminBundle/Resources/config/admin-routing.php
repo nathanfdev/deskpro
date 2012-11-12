@@ -965,6 +965,13 @@ $collection->add('admin_templates_editemail', new Route(
 	array()
 ));
 
+$collection->add('admin_templates_deletecustom', new Route(
+	'/templates/email/delete-custom/{name}',
+	array('_controller' => 'AdminBundle:Templates:deleteCustomTemplate'),
+	array(),
+	array()
+));
+
 $collection->add('admin_templates_other', new Route(
 	'/templates/other',
 	array('_controller' => 'AdminBundle:Templates:otherList'),

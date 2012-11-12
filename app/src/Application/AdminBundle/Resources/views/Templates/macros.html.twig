@@ -128,3 +128,30 @@
 		</div>
 	</div>
 {% endmacro %}
+
+{% macro render_emailist_row(tpl, variations) %}
+	<tr>
+		<td>
+			<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
+				{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
+			</span></a></strong>
+			<div class="tpl-desc">
+				{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
+				{% if variations %}
+					<div style="margin-top: 5px; font-size: 11px;">
+						Variations:
+						<ul class="small-detail-list">
+							{% for var_tpl in variations %}
+								<li>
+									<a class="editable-link" href="{{ path('admin_templates_editemail', {name: var_tpl.name}) }}"><span>
+										{{ var_tpl.name|replace({'DeskPRO:emails_user:': '', 'DeskPRO:emails_agent:': '', '.html.twig': ''}) }}
+									</span></a>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+		</td>
+	</tr>
+{% endmacro %}
