@@ -139,6 +139,10 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('updated_at', new \DateTime());
 	}
 
+	public function __toString()
+	{
+		return $this->phrase;
+	}
 
 
 	############################################################################

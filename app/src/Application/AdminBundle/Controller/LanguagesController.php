@@ -367,11 +367,11 @@ class LanguagesController extends AbstractController
 			");
 			$vars['lang_phrases']['original'] = array_merge($vars['lang_phrases']['original'], $custom_phrases);
 
-			$vars['lang_phrases']['custom'] = array_merge($vars['lang_phrases']['custom'], App::getDb()->fetchAllKeyValue("
+			$vars['lang_phrases']['custom'] = array_merge($vars['lang_phrases']['custom'], App::getDb()->fetchAllKeyed("
 				SELECT name, phrase
 				FROM phrases
 				WHERE groupname = 'custom' AND language_id = $language_id
-			"));
+			", array(), 'name'));
 
 			$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
 			$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);

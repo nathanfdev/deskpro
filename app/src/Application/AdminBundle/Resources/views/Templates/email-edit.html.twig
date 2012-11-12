@@ -28,81 +28,11 @@
 <script type="text/javascript" src="{{ asset('vendor/codemirror/mode/htmlmixed/htmlmixed.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpCodeHints.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpEmailEditor.js') }}"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	var codeHints = new DpCodeHints();
-
-	$('.template-editor-wrap').each(function() {
-
-		$(this).on('click', function(ev) {
-			ev.stopPropagation();
-		});
-
-		var textarea  = $(this).find('textarea.template-editor');
-		var codeCm = CodeMirror.fromTextArea(textarea.get(0), {
-			mode: textarea.data('mode') || 'htmlmixed',
-			lineNumbers: true,
-			indentWithTabs: true,
-			onCursorActivity: function() {
-				codeHints.show(codeCm, textarea);
-			},
-			onFocus: function() {
-				codeHints.hide();
-			}
-		});
-	});
-
-	$(document).on('click', function(ev) {
-		var targetTip = $(ev.target).closest('.code-tip');
-		if (targetTip[0]) {
-			return;
-		}
-		codeHints.hide();
-	});
-
-	var saveCtrl = $('#save_control');
-	saveCtrl.find('button.save-trigger').on('click', function(ev) {
-		ev.preventDefault();
-
-		var subject = $('textarea.subject').val();
-		var body    = $('textarea.template').val();
-
-		var code = "<dp:subject>" + subject + "</dp:subject>\n" + body;
-
-		saveCtrl.addClass('loading');
-		$.ajax({
-			url: BASE_URL + 'admin/templates/save-template.json',
-			context: this,
-			type: 'POST',
-			data: {
-				name: '{{ name }}',
-				code: code
-			},
-			complete: function() {
-				saveCtrl.removeClass('loading');
-			},
-			success: function(data) {
-				if (data.error) {
-					alert(data.error_message + "\n\nLine: " + data.error_line);
-					return;
-				}
-			}
-		});
-	});
-
-	saveCtrl.find('button.revert-trigger').on('click', function(ev) {
-		ev.preventDefault();
-
-		saveCtrl.addClass('loading');
-		$.ajax({
-			type: 'POST',
-			url: BASE_URL + 'admin/templates/revert-template.json?name={{ name }}',
-			success: function() {
-				window.location.reload(false);
-			}
-		});
-	});
+	var editor = new DpEmailEditor();
 });
 </script>
 {% endblock %}
@@ -119,8 +49,8 @@ $(document).ready(function() {
 		<div class="template-editor-wrap subject">
 			<div class="template-toolbar">
 				<ul>
-					<li data-action="new-phrase"><span>Add new phrase</span></li>
-					<li data-action="find-phrase"><span>Insert phrase</span></li>
+					<li class="new-phrase" data-action="new-phrase"><span>Add new phrase</span></li>
+					<li class="find-phrase" data-action="find-phrase"><span>Insert phrase</span></li>
 				</ul>
 			</div>
 			<textarea name="subject" class="template-editor subject">{{ source.subject }}</textarea>
@@ -132,8 +62,8 @@ $(document).ready(function() {
 		<div class="template-editor-wrap">
 			<div class="template-toolbar">
 				<ul>
-					<li data-action="new-phrase"><span>Add new phrase</span></li>
-					<li data-action="find-phrase"><span>Insert phrase</span></li>
+					<li class="new-phrase" data-action="new-phrase"><span>Add new phrase</span></li>
+					<li class="find-phrase" data-action="find-phrase"><span>Insert phrase</span></li>
 				</ul>
 			</div>
 			<textarea class="template-editor template" data-template-name="{{ name }}">{{ source.body }}</textarea>
@@ -151,4 +81,5 @@ $(document).ready(function() {
 	</footer>
 
 	{{ tplmacro.render_editor_overlay() }}
+	{{ tplmacro.render_addphrase_overlay() }}
 {% endblock %}
