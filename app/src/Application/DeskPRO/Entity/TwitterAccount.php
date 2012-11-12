@@ -444,11 +444,11 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return \Zend\Oauth\Token\Access
+	 * @return \Zend\OAuth\Token\Access
 	 */
 	public function getOauthAccessToken()
 	{
-		$accessToken = new \Zend\Oauth\Token\Access();
+		$accessToken = new \Zend\OAuth\Token\Access();
 		$accessToken->setToken($this['oauth_token']);
 		$accessToken->setTokenSecret($this['oauth_token_secret']);
 

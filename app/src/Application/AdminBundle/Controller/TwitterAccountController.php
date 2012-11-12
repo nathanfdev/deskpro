@@ -85,7 +85,7 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * @return \Zend\Oauth\Consumer
+	 * @return \Zend\OAuth\Consumer
 	 */
 	protected function getConsumer()
 	{

@@ -39,10 +39,10 @@ class Twitter extends \Zend\Service\Twitter
 {
 	/**
 	 * @param \Zend\Oauth\Token\Access $accessToken
-	 * @param \Zend\Oauth\Consuner $consumer (optional)
-	 * @return \Zend\Service\Twitter
+	 * @param \Zend\OAuth\Consuner $consumer (optional)
+	 * @return \Zend\OAuth\Twitter
 	 */
-	static public function getTwitterService(\Zend\Oauth\Token\Access $accessToken, \Zend\Oauth\Consumer $consumer = null)
+	static public function getTwitterService(\Zend\OAuth\Token\Access $accessToken, \Zend\Oauth\Consumer $consumer = null)
 	{
 		if (null === $consumer) {
 			$consumer = Oauth::getConsumer();

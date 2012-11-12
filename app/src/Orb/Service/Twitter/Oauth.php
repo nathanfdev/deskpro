@@ -38,7 +38,7 @@ use \Application\DeskPRO\App;
 class Oauth
 {
 	/**
-	 * @var \Zend\Oauth\Consumer
+	 * @var \Zend\OAuth\Consumer
 	 */
 	static protected $consumer;
 
@@ -87,7 +87,7 @@ class Oauth
 		}
 
 		// create Zend Oauth Consumer
-		self::$consumer = new \Zend\Oauth\Consumer($config);
+		self::$consumer = new \Zend\OAuth\Consumer($config);
 
 		return self::$consumer;
 	}

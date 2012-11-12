@@ -90,7 +90,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
 		try {
 			$token = $oauth->getRequestToken();
-		} catch (\Zend\Oauth\Exception $e) {
+		} catch (\Zend\OAuth\Exception $e) {
 			if ($this->logger) {
 				$this->logger->log("[Twitter] authenticateInitialize exception: {$e->getCode()} {$e->getMessage()}", 'ERR');
 			}
@@ -182,7 +182,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	 */
 	public function getOauthConsumer()
 	{
-		return new \Zend\Oauth\Consumer($this->getOauthConfig());
+		return new \Zend\OAuth\Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
