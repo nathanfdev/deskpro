@@ -1,10 +1,15 @@
 {% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-{% if is_custom %}
+{% if is_custom or allow_variation %}
 	<nav>
 		<ul>
-			<li class="delete"><a href="{{ path('admin_templates_deletecustom', {name: name, _dp_security_token: security_token('delete_template') }) }}" onclick="return confirm('Are you sure?');">{{ phrase('agent.general.delete') }}</a></li>
+			{% if is_custom %}
+				<li class="delete"><a href="{{ path('admin_templates_deletecustom', {name: name, _dp_security_token: security_token('delete_template') }) }}" onclick="return confirm('Are you sure?');">{{ phrase('agent.general.delete') }}</a></li>
+			{% endif %}
+			{% if allow_variation %}
+				<li class="add" id="add_variation_trigger"><a>Create Variation</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 {% endif %}
@@ -102,4 +107,30 @@ $(document).ready(function() {
 
 	{{ tplmacro.render_editor_overlay() }}
 	{{ tplmacro.render_addphrase_overlay() }}
+
+	<div id="add_variation_overlay" class="edit-phrase-overlay" style="width: 725px; height: 200px; display: none;">
+		<div class="overlay-title">
+			<span class="close-trigger close-overlay"></span>
+			<h4>Add Template Variation</h4>
+		</div>
+		<div class="overlay-content">
+			<section class="phrase-section custom">
+
+				You can create mutliple variations of an email and use triggers to change the template
+				you want to send to users based on any criteria you want.
+				<br />
+				<br />
+
+				<header>
+					<h4>Unique Template ID</h4>
+				</header>
+				<article>
+					custom_<input type="text" class="template_name" name="template_name" placeholder="Enter a unique ID that will be used to identify this template" style="width: 350px;" />
+				</article>
+			</section>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white save-trigger">Create Variation</button>
+		</div>
+	</div>
 {% endblock %}

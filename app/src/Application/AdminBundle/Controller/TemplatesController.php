@@ -521,12 +521,37 @@ class TemplatesController extends AbstractController
 	{
 		$vars = array();
 
+		$template = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
+
+		// A new variation
+		if (!$template && $this->in->getString('variant_of') && in_array($this->in->getString('variant_of'), App::getTemplating()->getVariedTemplateNames())) {
+			$template = new Template();
+			$template->style = $this->container->getSystemService('style');
+			$template->variant_of = $this->in->getString('variant_of');
+
+			$name = preg_replace('#[^a-zA-Z0-9\-_]#', '_', $name);
+			$nameparts = explode(':', $template->variant_of);
+			array_pop($nameparts);
+
+			$name = implode(':', $nameparts) . ':custom_' . $name;
+			$template->name = $name;
+
+			$code = App::getTemplating()->getSource($template->variant_of);
+			$twig = $this->container->get('twig');
+			$compiled = $twig->compileSource($code, $name);
+			$template->setTemplate($code, $compiled);
+
+			$this->em->persist($template);
+			$this->em->flush();
+		}
+
 		$source = App::getTemplating()->getSplitSource($name);
 
-		$vars['name']       = $name;
-		$vars['source']     = $source;
-		$vars['is_custom']  = strpos($name, ':custom_') !== false;
-		$vars['template']   = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
+		$vars['name']            = $name;
+		$vars['source']          = $source;
+		$vars['is_custom']       = strpos($name, ':custom_') !== false;
+		$vars['template']        = $template;
+		$vars['allow_variation'] = in_array($name, App::getTemplating()->getVariedTemplateNames());
 
 		return $this->render('@email-edit.html.twig', $vars);
 	}

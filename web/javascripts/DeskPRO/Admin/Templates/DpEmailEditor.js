@@ -118,4 +118,31 @@ function DpEmailEditor(name) {
 		addOverlay.open();
 		activeEditorArea = $(this).closest('.template-edit-row').find('textarea.template-editor');
 	});
+
+	//##################################################################################################################
+	//# Adding new variation
+	//##################################################################################################################
+
+	var variationOverlayEl = $('#add_variation_overlay');
+	var variationOverlay = new DeskPRO.UI.Overlay({
+		contentElement: variationOverlayEl,
+		triggerElement: $('#add_variation_trigger'),
+		onBeforeOverlayOpened: function() {
+			variationOverlayEl.find('input.template_name').val('');
+		}
+	});
+
+	variationOverlayEl.find('button.save-trigger').on('click', function(ev) {
+		var new_name = variationOverlayEl.find('input.template_name').val();
+		new_name = new_name.replace(/[^a-zA-Z0-9_\-]/g, '_');
+
+		if (!new_name) {
+			alert('Please enter a unique ID');
+			return;
+		}
+
+		var url = BASE_URL + 'admin/templates/email/edit/' + encodeURIComponent(new_name) + '?variant_of=' + encodeURIComponent(name);
+
+		window.location = url;
+	});
 }

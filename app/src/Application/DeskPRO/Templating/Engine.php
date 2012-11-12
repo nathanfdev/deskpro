@@ -55,10 +55,10 @@ class Engine extends BaseEngine
 		'DeskPRO:emails_agent:new-reply-user.html.twig',
 		'DeskPRO:emails_agent:new-reply-agent.html.twig',
 
-		'DeskPRO:emails_agent:new-reply-agent.html.twig',
-		'DeskPRO:emails_agent:new-reply-user.html.twig',
-		'DeskPRO:emails_agent:new-ticket-agent.html.twig',
-		'DeskPRO:emails_agent:new-ticket.html.twig',
+		'DeskPRO:emails_user:new-reply-agent.html.twig',
+		'DeskPRO:emails_user:new-reply-user.html.twig',
+		'DeskPRO:emails_user:new-ticket-agent.html.twig',
+		'DeskPRO:emails_user:new-ticket.html.twig',
 	);
 
 	protected function _initTemplateFilesMap()
