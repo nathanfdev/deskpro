@@ -95,6 +95,7 @@ function DpEmailEditor(name) {
 	var addOverlay = new DeskPRO.UI.Overlay({
 		contentElement: addOverlayEl,
 		onBeforeOverlayOpened: function() {
+			codeHints.hide();
 			addOverlayEl.find('textarea.custom_phrase, input.phrase_id').val('');
 		}
 	});
@@ -128,6 +129,7 @@ function DpEmailEditor(name) {
 		contentElement: variationOverlayEl,
 		triggerElement: $('#add_variation_trigger'),
 		onBeforeOverlayOpened: function() {
+			codeHints.hide();
 			variationOverlayEl.find('input.template_name').val('');
 		}
 	});
@@ -144,5 +146,74 @@ function DpEmailEditor(name) {
 		var url = BASE_URL + 'admin/templates/email/edit/' + encodeURIComponent(new_name) + '?variant_of=' + encodeURIComponent(name);
 
 		window.location = url;
+	});
+
+	//##################################################################################################################
+	//# Lang overlay
+	//##################################################################################################################
+
+	var langOverlayEl = $('#lang_overlay');
+	var langOveralyContentEl = $('#lang_overlay_content');
+	var langHasLoaded = false;
+	var langHasNav = false;
+	var langOverlay = new DeskPRO.UI.Overlay({
+		contentElement: langOverlayEl,
+		onBeforeOverlayOpened: function() {
+			codeHints.hide();
+			if (!langHasLoaded) {
+				langHasLoaded = true;
+				loadLangSection('user.general');
+			}
+		}
+	});
+
+	function loadLangSection(group, langId) {
+		langId = langId || 1;
+		langOveralyContentEl.empty();
+		langOveralyContentEl.html('<i class="flat-spinner"></i>');
+
+		$.ajax({
+			url: BASE_URL + 'admin/languages/'+langId+'/phrases/' + group + '?_partial=overlay',
+			dataType: 'html',
+			success: function(html) {
+				langOveralyContentEl.html(html);
+				DeskPRO.ElementHandler_Exec(langOveralyContentEl);
+
+				if (!langHasNav) {
+					langHasNav = true;
+					var nav = $('#lang_overlay_nav');
+
+					var langSel = langOveralyContentEl.find('select.lang-langs-nav');
+					langSel.detach().appendTo(nav);
+
+					var groupSel = langOveralyContentEl.find('select.lang-groups-nav');
+					groupSel.detach().appendTo(nav);
+
+					function update() {
+						var langId = langSel.val();
+						var groupId = groupSel.val();
+
+						loadLangSection(groupId, langId);
+					}
+
+					langSel.on('change', update);
+					groupSel.on('change', update);
+
+					DP.select(langSel);
+					DP.select(groupSel);
+				}
+			}
+		});
+	}
+
+	$('.template-toolbar .phrase-editor').on('click', function() {
+		langOverlay.open();
+		activeEditorArea = $(this).closest('.template-edit-row').find('textarea.template-editor');
+	});
+
+	langOverlayEl.on('click', '.insert-phrase-id-trigger', function() {
+		var phraseId = $(this).data('phrase-id') || '';
+		langOverlay.close();
+		activeEditorArea.data('cm').replaceSelection('{{ phrase(\'' + phraseId + '\') }}');
 	});
 }

@@ -35,6 +35,8 @@
 </ul>
 {% endblock %}
 {% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditPhrasesPage.js') }}"></script>
+
 <script type="text/javascript" src="{{ asset('vendor/codemirror/lib/codemirror.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('vendor/codemirror/lib/codemirror.css') }}" type="text/css" />
 
@@ -46,6 +48,16 @@
 
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpCodeHints.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Templates/DpEmailEditor.js') }}"></script>
+
+<style type="text/css">
+#lang_overlay_nav {
+	margin-top: 3px;
+}
+
+#lang_overlay_nav .select2-container {
+	margin-right: 6px;
+}
+</style>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -74,8 +86,8 @@ $(document).ready(function() {
 		<div class="template-editor-wrap subject">
 			<div class="template-toolbar">
 				<ul>
-					<li class="new-phrase" data-action="new-phrase"><span>Add new phrase</span></li>
-					<li class="find-phrase" data-action="find-phrase"><span>Insert phrase</span></li>
+					<li class="new-phrase"><span>Add Phrase</span></li>
+					<li class="phrase-editor"><span>Phrase Editor</span></li>
 				</ul>
 			</div>
 			<textarea name="subject" class="template-editor subject">{{ source.subject }}</textarea>
@@ -87,8 +99,8 @@ $(document).ready(function() {
 		<div class="template-editor-wrap">
 			<div class="template-toolbar">
 				<ul>
-					<li class="new-phrase" data-action="new-phrase"><span>Add new phrase</span></li>
-					<li class="find-phrase" data-action="find-phrase"><span>Insert phrase</span></li>
+					<li class="new-phrase"><span>Add Phrase</span></li>
+					<li class="phrase-editor"><span>Phrase Editor</span></li>
 				</ul>
 			</div>
 			<textarea class="template-editor template" data-template-name="{{ name }}">{{ source.body }}</textarea>
@@ -131,6 +143,17 @@ $(document).ready(function() {
 		</div>
 		<div class="overlay-footer">
 			<button class="clean-white save-trigger">Create Variation</button>
+		</div>
+	</div>
+
+
+	<div id="lang_overlay" class="edit-phrase-overlay" style="width: 850px; height: 685px; display: none;">
+		<div class="overlay-title">
+			<span class="close-trigger close-overlay"></span>
+			<div id="lang_overlay_nav"></div>
+		</div>
+		<div class="overlay-content">
+			<div id="lang_overlay_content"></div>
 		</div>
 	</div>
 {% endblock %}

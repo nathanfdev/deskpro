@@ -77,6 +77,19 @@ class LanguagePhrases
 		return $groups;
 	}
 
+	public function getAllUserPhrases()
+	{
+		$groups = $this->getGroups();
+		$groups = $groups['user'];
+
+		$phrases = array();
+		foreach ($groups as $group) {
+			$phrases = array_merge($phrases, $this->getGroupPhrases($groups));
+		}
+
+		return $phrases;
+	}
+
 	public function getGroupPhrases($group)
 	{
 		$file = str_replace('.', DIRECTORY_SEPARATOR, $group) . '.php';

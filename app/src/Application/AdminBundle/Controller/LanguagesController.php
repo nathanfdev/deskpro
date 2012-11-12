@@ -330,6 +330,7 @@ class LanguagesController extends AbstractController
 	{
 		$vars = $this->getLangInfo($language_id);
 		$vars['group'] = $group;
+		$vars['showinggroup'] = $group;
 
 		$vars['lang_phrases'] = array('custom' => array(), 'original' => array());
 		$vars['lang_phrases']['custom'] = $this->em->getRepository('DeskPRO:Phrase')->getCustomPhrases($vars['language']);
@@ -375,6 +376,10 @@ class LanguagesController extends AbstractController
 
 			$vars['master_phrases'] = array_merge($vars['master_phrases'], $custom_phrases);
 			$vars['master_phrases'] = array_merge($vars['master_phrases'], $vars['lang_phrases']['custom']);
+		}
+
+		if (App::getRequest()->isPartialRequest() == 'overlay') {
+			return $this->render('AdminBundle:Languages:lang-phrases-overlay.html.twig', $vars);
 		}
 
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
