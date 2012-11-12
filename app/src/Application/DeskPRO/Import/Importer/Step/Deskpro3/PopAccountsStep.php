@@ -176,15 +176,12 @@ class PopAccountsStep extends AbstractDeskpro3Step
 				WHERE account_id = ?
 			", array($account['id']));
 
-			$email_uids = array_chunk($email_uids, 1000, false);
-
-			foreach ($email_uids as $batch) {
-				$ins = array();
-				foreach ($batch as $uid) {
-					$ins[] = array('id' => $uid, 'gateway_id' => $new_gateway->id, 'date_created' => $date);
-				}
-
-				$this->getDb()->batchInsert('email_uids', $ins);
+			foreach ($email_uids as $uid) {
+				$this->getDb()->replace('email_uids', array(
+					'id' => $uid,
+					'gateway_id' => $new_gateway->id,
+					'date_created' => $date
+				));
 			}
 		}
 	}
