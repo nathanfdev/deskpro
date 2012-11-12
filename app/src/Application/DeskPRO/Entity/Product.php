@@ -106,6 +106,24 @@ class Product extends CategoryAbstract implements HasPhraseName
 	}
 
 
+	/**
+	 * @return array
+	 */
+	public function getChildrenOrdered()
+	{
+		$children = $this->children->toArray();
+		uasort($children, function($a, $b) {
+			if ($a->display_order == $b->display_order) {
+				return 0;
+			}
+
+			return ($a->display_order < $b->display_order) ? -1 : 1;
+		});
+
+		return $children;
+	}
+
+
 	public function __toString()
 	{
 		return $this->getFullTitle();
