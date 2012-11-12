@@ -9,6 +9,13 @@
 {% endblock %}
 {% block content %}
 
+	{% set list = [
+		'DeskPRO:emails_agent:new-ticket.html.twig',
+		'DeskPRO:emails_agent:ticket-update.html.twig',
+		'DeskPRO:emails_agent:new-reply-user.html.twig',
+		'DeskPRO:emails_agent:new-agent-user.html.twig']
+	%}
+
 	<div class="page-content">
 		<div class="content-table">
 			<table width="100%">
@@ -18,51 +25,29 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-ticket.html.twig'}) }}"><span>
-								New Ticket Notification
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new tickets.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:ticket-update.html.twig'}) }}"><span>
-								Ticket Updated Notification
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of changes to tickets.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-reply-user.html.twig'}) }}"><span>
-								New User Reply
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new replies by users.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-agent-user.html.twig'}) }}"><span>
-								New Agent Reply
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new replies by another agent.
-							</div>
-						</td>
-					</tr>
+					{% for tpl in list %}
+						<tr>
+							<td>
+								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
+								</span></a></strong>
+								<div class="tpl-desc">
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 	</div>
 
+	{% set list = [
+		'DeskPRO:emails_agent:new-agent-chat-message.html.twig',
+		'DeskPRO:emails_agent:new-comment.html.twig',
+		'DeskPRO:emails_agent:new-feedback.html.twig',
+		'DeskPRO:emails_agent:new-registration.html.twig'
+	] %}
 	<div class="page-content">
 		<div class="content-table">
 			<table width="100%">
@@ -72,51 +57,32 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-agent-chat-message.html.twig'}) }}"><span>
-								New Chat Message
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of chat messages sent to them while they were offline.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-comment.html.twig'}) }}"><span>
-								New User Comment
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new user comments on articles, news or downloads.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-feedback.html.twig'}) }}"><span>
-								New Feedback
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new user feedback submissions.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:new-registration.html.twig'}) }}"><span>
-								New Registration
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of new user registrations.
-							</div>
-						</td>
-					</tr>
+					{% for tpl in list %}
+						<tr>
+							<td>
+								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
+								</span></a></strong>
+								<div class="tpl-desc">
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 	</div>
 
+	{% set list = [
+		'DeskPRO:emails_agent:login-alert.html.twig',
+		'DeskPRO:emails_agent:agent-welcome.html.twig',
+		'DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig',
+		'DeskPRO:emails_agent:admin-noreset-password.html.twig',
+		'DeskPRO:emails_agent:error-invalid-forward.html.twig',
+		'DeskPRO:emails_agent:error-marker-missing.html.twig',
+		'DeskPRO:emails_agent:error-unknown-from.html.twig'
+	] %}
 	<div class="page-content">
 		<div class="content-table">
 			<table width="100%">
@@ -126,76 +92,18 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:login-alert.html.twig'}) }}"><span>
-								Login Alerts
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents to notify them of logins or attempted logins using their account.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:agent-welcome.html.twig'}) }}"><span>
-								Agent Welcome Email
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to newly created agents.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig'}) }}"><span>
-								Account Merged
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to an agent whose account was merged with another user.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:admin-noreset-password.html.twig'}) }}"><span>
-								Admin Reset Password
-							</span></a></strong>
-							<div class="tpl-desc">
-								This email is sent to agents when an admin resets their password.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:error-invalid-forward.html.twig'}) }}"><span>
-								Invalid Forward
-							</span></a></strong>
-							<div class="tpl-desc">
-								The auto-reply sent to an agent who has forwarded an email to the helpdesk that the helpdesk cannot parse.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:error-marker-missing.html.twig'}) }}"><span>
-								Missing Marker
-							</span></a></strong>
-							<div class="tpl-desc">
-								The auto-reply sent to an agent who has replied by email to a ticket but the reply is missing the standard marker line.
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: 'DeskPRO:emails_agent:error-unknown-from.html.twig'}) }}"><span>
-								Unknown From
-							</span></a></strong>
-							<div class="tpl-desc">
-								The auto-reply sent to the an agent who has sent a reply by email from an unknown "From" address.
-							</div>
-						</td>
-					</tr>
+					{% for tpl in list %}
+						<tr>
+							<td>
+								<strong><a class="editable-link" href="{{ path('admin_templates_editemail', {name: tpl}) }}"><span>
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_title') }}
+								</span></a></strong>
+								<div class="tpl-desc">
+									{{ phrase('admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) ~ '_desc') }}
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>

@@ -13,7 +13,7 @@
 		{% endif %}
 	</li>
 	<li>
-		{{ name }}
+		{{ phrase(phrase_key ~ '_title') }}
 	</li>
 </ul>
 {% endblock %}
@@ -106,7 +106,13 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
+{% set phrase_key = 'admin.emailtpl_desc.' ~ name|lower|replace({'.':'_', ':':'_'}) %}
 {% block page %}
+
+	<h3>{{ phrase(phrase_key ~ '_title') }}</h3>
+	<p>
+		{{ phrase(phrase_key ~ '_desc') }}
+	</p>
 
 	<div class="template-edit-row">
 		<div class="template-editor-label"><strong>Subject:</strong></div>
