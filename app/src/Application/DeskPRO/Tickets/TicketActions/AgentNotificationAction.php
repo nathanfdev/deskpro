@@ -261,9 +261,7 @@ class AgentNotificationAction extends AbstractAction
 			}
 		}
 
-		if ($this->getFromName($ticket)) {
-			$from_name = $this->getFromName($ticket);
-		}
+		$from_name = $this->getFromName($ticket);
 
 		$agent_change = $this->tracker->getChangedProperty('agent');
 		$team_change  = $this->tracker->getChangedProperty('agent_team');
