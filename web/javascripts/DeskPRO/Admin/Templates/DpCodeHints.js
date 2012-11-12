@@ -172,7 +172,7 @@ function DpCodeHints() {
 			var template_name = name	;
 			var overlay = new DeskPRO.UI.Overlay({
 				contentElement: el,
-				destroyOnClose: true,
+				destroyOnClose: false,
 				fullScreen: true,
 				onBeforeOverlayOpened: function() {
 					if (el.is('.has-init')) return;
