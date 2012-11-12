@@ -700,9 +700,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
-
-			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_basicclean');
-			$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
 		}
 
 		if ($email_info['body_is_html']) {
@@ -719,6 +716,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('no cut was made, no body_full needed');
 			$email_info['body_full'] = '';
 		}
+
+		$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email_basicclean');
+		$email_info['body_full'] = $this->cleaner->clean($email_info['body_full'], 'html_email');
 
 		// The cut message is blank, fallback to using the full message
 		if (!trim(strip_tags($email_info['body']))) {
