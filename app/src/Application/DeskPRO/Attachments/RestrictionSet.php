@@ -108,6 +108,9 @@ class RestrictionSet
 	 */
 	public function setAllowedExts(array $allowed_exts = null)
 	{
+		if ($allowed_exts) {
+			$allowed_exts = \Orb\Util\Arrays::func($allowed_exts, 'trim');
+		}
 		$this->allowed_exts = $allowed_exts;
 		return $this;
 	}
@@ -127,6 +130,9 @@ class RestrictionSet
 	 */
 	public function setDisallowedExts(array $disallowed_exts = null)
 	{
+		if ($disallowed_exts) {
+			$disallowed_exts = \Orb\Util\Arrays::func($disallowed_exts, 'trim');
+		}
 		$this->disallowed_exts = $disallowed_exts;
 		return $this;
 	}
