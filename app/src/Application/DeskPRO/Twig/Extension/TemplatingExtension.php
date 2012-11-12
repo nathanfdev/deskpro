@@ -127,6 +127,7 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widget_tabs_header'            => new \Twig_Function_Method($this, 'getWidgetTabsHeader', array('is_safe' => array('html'))),
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
+			'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
         );
     }
 
@@ -168,6 +169,14 @@ class TemplatingExtension extends \Twig_Extension
 			'lower'                  => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getBaseTemplateName($name)
+	{
+		$parts = explode(':', $name);
+		$name = array_pop($parts);
+		$name = str_replace('.html.twig', '', $name);
+		return $name;
+	}
 
 	public function getConstant($name = '')
 	{

@@ -197,6 +197,12 @@ class TemplatesController extends AbstractController
 			$name = $page_display->data['tpl'];
 		}
 
+		$old_template_variant = App::getDb()->fetchColumn("
+			SELECT variant_of
+			FROM templates
+			WHERE name = ?
+			LIMIT 1
+		", array($name));
 		$this->db->delete('templates', array('name' => $name));
 
 		$code = $this->in->getRaw('code');
@@ -247,6 +253,9 @@ class TemplatesController extends AbstractController
 		$template->style = $this->container->getSystemService('style');
 		$template->name = $name;
 		$template->setTemplate($code, $compiled);
+		if ($old_template_variant) {
+			$template->variant_of = $old_template_variant;
+		}
 
 		$ret_data = array(
 			'success' => true,

@@ -395,4 +395,112 @@
 			{% endif %}
 		{% endfor %}
 	{% endif %}
+
+	{% if event_trigger == 'new.email.user' or event_trigger == 'new.web.user' %}
+		<div class="builder-type" title="Change 'New Ticket Confirmation' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+		<div class="builder-type" title="Change 'New Ticket Confirmation (Awaiting Validation)' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket_validate" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-validate.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+		<div class="builder-type" title="Change 'New Ticket' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newticket">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+	{% endif %}
+	{% if event_trigger == 'new.web.agent.portal' %}
+		<div class="builder-type" title="Change 'New Ticket Created By Agent' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-agent.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+		<div class="builder-type" title="Change 'New Ticket' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newticket" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+	{% endif %}
+	{% if event_trigger == 'update.agent' %}
+		<div class="builder-type" title="Change 'New Agent Reply' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newreply_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-agent.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+		<div class="builder-type" title="Change 'New Agent Reply' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newreply_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-agent.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+	{% endif %}
+	{% if event_trigger == 'update.user' %}
+		<div class="builder-type" title="Change 'New User Reply' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newreply_user" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-user.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+		<div class="builder-type" title="Change 'New User Reply' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newreply_user" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+			<div class="builder-options">
+				<select class="template_name" name="template_name">
+					<option value="NEW">Create a new template</option>
+					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-user.html.twig') %}
+						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+			</div>
+		</div>
+	{% endif %}
 </div>
