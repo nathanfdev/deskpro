@@ -16,6 +16,25 @@ function DpCodeHints() {
 		var token    = cm.getTokenAt(cursor);
 		var textarea = $(textarea);
 		var tokenId  = textarea.attr('id') + ' ' + (token.start + ' ' + token.end);
+		var phraseMatch = null;
+
+		var cursor = cm.getCursor();
+		var pos = cm.cursorCoords(false, 'page');
+
+		if (token.string) {
+			switch (token.string) {
+				default:
+					phraseMatch = token.string.match(/(\{\{\s*phrase\(')(.*?)\'.*?\)\s*\}\}/);
+					if (phraseMatch && !(cursor.ch >= (token.start+phraseMatch[1].length) && cursor.ch <= (token.start+phraseMatch[1].length+phraseMatch[2].length))) {
+						if (lastTip) {
+							lastTip.remove();
+							lastTip = null;
+							lastToken = null;
+						}
+						return;
+					}
+			}
+		}
 
 		// The cursor changed but we are viewing the same token,
 		// so dont need to do anything
@@ -31,8 +50,6 @@ function DpCodeHints() {
 		}
 
 		lastToken = tokenId;
-
-		var pos = cm.cursorCoords(false, 'page');
 
 		if (token.string) {
 			switch (token.string) {
@@ -65,9 +82,9 @@ function DpCodeHints() {
 					break;
 
 				default:
-					var m = token.string.match(/\{\{\s*phrase\('(.*?)\'.*?\)\s*\}\}/);
-					if (m) {
-						var phraseId = m[1];
+					if (phraseMatch) {
+
+						var phraseId = phraseMatch[2];
 						var el = $('<div class="code-tip phrase"><i class="flat-spinner"></i></div>');
 						lastTip = el;
 						lastTip.appendTo('body');
