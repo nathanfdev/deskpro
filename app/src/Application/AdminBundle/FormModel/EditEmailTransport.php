@@ -98,6 +98,7 @@ class EditEmailTransport
 			$this->transport->transport_options = $this->gmail_options;
 		} else {
 			$this->transport->title = 'PHP mail()';
+			$this->transport->transport_options = array();
 		}
 
 		if ($this->match_type == 'any') {

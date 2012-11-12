@@ -103,6 +103,9 @@ class EmailGatewaysController extends AbstractController
 	public function editAccountAction($id)
 	{
 		if ($id) {
+			$is_new = false;
+			$is_new_tr = false;
+
 			$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
 			if (!$gateway) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -112,8 +115,8 @@ class EmailGatewaysController extends AbstractController
 				$transport = $gateway->linked_transport;
 			} else {
 				$transport = new \Application\DeskPRO\Entity\EmailTransport();
+				$is_new_tr = true;
 			}
-			$is_new = false;
 		} else {
 			$is_new = true;
 			$gateway = new \Application\DeskPRO\Entity\EmailGateway();
@@ -213,9 +216,15 @@ class EmailGatewaysController extends AbstractController
 						$gateway->department = null;
 					}
 
+					$this->em->persist($gateway);
+					$this->em->flush();
+
 					if ($editgateway->define_transport) {
 						$edittrans->save();
+						$this->em->persist($transport);
+
 						$gateway->linked_transport = $transport;
+						$this->em->persist($gateway);
 					} else {
 						if ($editgateway->connection_type == 'gmail') {
 							if (!$gateway->linked_transport) {
@@ -237,6 +246,18 @@ class EmailGatewaysController extends AbstractController
 					}
 
 					$this->em->flush();
+
+					if ($gateway->linked_transport && !$is_new_tr) {
+						$this->db->update('email_transports', array(
+							'title' => $gateway->linked_transport->title,
+							'match_type' => $gateway->linked_transport->match_type,
+							'match_pattern' => $gateway->linked_transport->match_pattern,
+							'transport_type' => $gateway->linked_transport->transport_type,
+							'transport_options' => serialize($gateway->linked_transport->transport_options),
+							'run_order' => $gateway->linked_transport->run_order,
+						), array('id' => $gateway->linked_transport->getId()));
+					}
+
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
 					$this->em->getConnection()->rollback();
