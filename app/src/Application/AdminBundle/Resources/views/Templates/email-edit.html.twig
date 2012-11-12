@@ -62,9 +62,11 @@ $(document).ready(function() {
 	});
 
 	var saveCtrl = $('#save_control');
-	saveCtrl.find('button').on('click', function() {
-		var subject = $('textarea.subject');
-		var body    = $('textarea.template');
+	saveCtrl.find('button.save-trigger').on('click', function(ev) {
+		ev.preventDefault();
+
+		var subject = $('textarea.subject').val();
+		var body    = $('textarea.template').val();
 
 		var code = "<dp:subject>" + subject + "</dp:subject>\n" + body;
 
@@ -88,6 +90,19 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+	saveCtrl.find('button.revert-trigger').on('click', function(ev) {
+		ev.preventDefault();
+
+		saveCtrl.addClass('loading');
+		$.ajax({
+			type: 'POST',
+			url: BASE_URL + 'admin/templates/revert-template.json?name={{ name }}',
+			success: function() {
+				window.location.reload(false);
+			}
+		});
+	});
 });
 </script>
 {% endblock %}
@@ -98,7 +113,7 @@ $(document).ready(function() {
 		<div class="template-editor-wrap subject">
 			<div class="template-toolbar">
 				<ul>
-					<li data-action="new-phrase"><span>Add new phrase</span</li>
+					<li data-action="new-phrase"><span>Add new phrase</span></li>
 					<li data-action="find-phrase"><span>Insert phrase</span></li>
 				</ul>
 			</div>
@@ -111,7 +126,7 @@ $(document).ready(function() {
 		<div class="template-editor-wrap">
 			<div class="template-toolbar">
 				<ul>
-					<li data-action="new-phrase"><span>Add new phrase</span</li>
+					<li data-action="new-phrase"><span>Add new phrase</span></li>
 					<li data-action="find-phrase"><span>Insert phrase</span></li>
 				</ul>
 			</div>
@@ -121,7 +136,8 @@ $(document).ready(function() {
 
 	<footer class="controls" id="save_control">
 		<div class="is-not-loading">
-			<button class="clean-white">Save Template</button>
+			<button class="clean-white save-trigger">Save Template</button>
+			<button class="clean-white revert-trigger">Revert Template</button>
 		</div>
 		<div class="is-loading">
 			<div class="loading-icon-flat">&nbsp;</div>
