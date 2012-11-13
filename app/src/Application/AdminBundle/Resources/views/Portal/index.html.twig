@@ -35,7 +35,14 @@
 	<div id="dp_fauxbrowser_top"><div><div>
 		<em class="address">{{ app.getSetting('core.deskpro_url') }}{{ portal_path }}</em>
 	</div></div></div>
-	<div id="dp_fauxbrowser_middle"><div>
+	<div id="dp_fauxbrowser_middle">
+		{% if viewing_page == 'new-ticket' %}
+			<div class="page-note">
+				Customize the fields to display and their order using the <a href="{{ path('admin_tickets_editor') }}">Ticket Layout Editor &rarr;</a>
+				<div class="shadow"></div>
+			</div>
+		{% endif %}
+	<div>
 
 {% include 'AdminBundle:Portal:portal-color-editor.html.twig' %}
 

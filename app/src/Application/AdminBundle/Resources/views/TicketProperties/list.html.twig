@@ -18,9 +18,13 @@
 	data-set-field-url="{{ path('admin_customdeftickets_setenabled', {'field_id': '00000'})|replace({'00000': '_FIELD_ID_'}) }}"
 >
 
-<div style="background-color: #EDF4FD; border: 1px solid #D0D2D2; border-radius: 6px; margin: 10px 15px 5px 8px; padding: 10px;">
-	Customize display orders, layouts and per-department fields using the <a class="clean-white" href="{{ path('admin_tickets_editor') }}">Layout Editor &rarr;</a>
-</div>
+	<div class="page-content" style="margin-bottom: 0;">
+		{{ design.helpbox() }}
+			<p>
+				Customize display orders, layouts and per-department fields using the <a class="clean-white" href="{{ path('admin_tickets_editor') }}">Layout Editor &rarr;</a>
+			</p>
+		{{ design.helpbox_end() }}
+	</div>
 
 <ul class="field-dual-list">
 	<li>

@@ -2195,7 +2195,6 @@ footer.setting_field_row {
 
 	position: absolute;
 	z-index: 999999999999;
-	background-color: #fff;
 	top: 0;
 	right: 0;
 	left: 0;
@@ -3138,21 +3137,28 @@ nav.admin-object-nav li:hover {
 .dp-pagehelp > span {
 	.iconbase(32px, 32px);
 	float: left;
-	margin-top: 8px;
+	margin-top: 3px;
 	background-image: url(../../images/admin/icons/question.png);
 }
 
 .dp-pagehelp > section {
     margin-left: 45px;
-	.gradient(darken(#eff3f6, 3%), darken(#e0e5e9, 3%));
-	border: 1px solid #C0C6CD;
-	border-top-width: 5px;
-	border-bottom-width: 5px;
+	.gradient(#E1EFF5, #E9F8FF);
+	border: 1px solid #CAD8DD;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+
+	color: #4D5356;
+	a {
+		color: #4D5356;
+		text-decoration: none;
+		border-bottom: 1px solid #B8C6CD;
+	}
 
 	.inner-shadow-color();
 
 	> article p {
-		padding: 4px;
+		padding: 8px;
 		margin-bottom: 8px;
 
 		&:last-child {
@@ -3448,6 +3454,32 @@ nav.admin-object-nav li:hover {
 	top: 0;
 	left: 8px;
 	right: 9px;
+
+	.page-note {
+		background-color: #F8EA94;
+		padding: 15px;
+		overflow: hidden;
+		position: relative;
+
+		font-size: 10pt;
+		text-align: center;
+		text-shadow: 1px 1px 1px rgba(255,255,255,0.3);
+
+		a {
+			color: #000;
+			text-decoration: underline;
+		}
+
+		.shadow {
+			position: absolute;
+			bottom: -10px;
+			left: 0;
+			right: 0;
+			height: 10px;
+			-webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.5);
+        	box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.5);
+		}
+	}
 }
 
 #dp_fauxbrowser_bottom {

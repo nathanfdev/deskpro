@@ -50,9 +50,15 @@ class PortalController extends AbstractController
 			$portal_path = ltrim($this->in->getString('portal_path'), '/');
 		}
 
+		$viewing_page = null;
+		if (strpos($portal_path, 'new-ticket') !== false) {
+			$viewing_page = 'new-ticket';
+		}
+
 		return $this->render('AdminBundle:Portal:index.html.twig', array(
 			'default_portal_style' => $default_portal_style,
 			'portal_path'          => $portal_path,
+			'viewing_page'         => $viewing_page,
 		));
 	}
 

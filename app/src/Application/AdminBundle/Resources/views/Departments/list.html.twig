@@ -70,6 +70,11 @@ $(document).ready(function() {
 <div class="page-content" data-element-handler="DeskPRO.Admin.Departments.AjaxSave" data-reorder-url="{{ path('admin_departments_updateorders') }}">
 	{{ design.helpbox() }}
 	    <p>{{ phrase('admin.departments.notice_dept_default_grouping') }}</p>
+		{% if type == 'tickets' %}
+			<p>
+				You can customize the ticket form layout for each department using the <a href="{{ path('admin_tickets_editor') }}">Ticket Layout Editor &rarr;</a>
+			</p>
+		{% endif %}
 	{{ design.helpbox_end() }}
 
 	{{ design.dpgrid({class: 'dep-list'}) }}
