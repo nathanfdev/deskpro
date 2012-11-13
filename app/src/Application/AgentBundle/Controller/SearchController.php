@@ -84,6 +84,27 @@ class SearchController extends AbstractController
 			}
 		}
 
+		// Check for IDs too
+		if (is_numeric($q)) {
+			$exact = array(
+				'ticket'       => $this->em->find('DeskPRO:Ticket', $q),
+				'person'       => $this->em->find('DeskPRO:Person', $q),
+				'organization' => $this->em->find('DeskPRO:Organization', $q),
+				'article'      => $this->em->find('DeskPRO:Article', $q),
+				'news'         => $this->em->find('DeskPRO:News', $q),
+				'download'     => $this->em->find('DeskPRO:Download', $q),
+				'feedback'     => $this->em->find('DeskPRO:Feedback', $q)
+			);
+			foreach ($exact as $type => $obj) {
+				if ($obj) {
+					if (!isset($results[$type])) {
+						$results[$type] = array();
+					}
+					$results[$type][] = $obj;
+				}
+			}
+		}
+
 		return $this->render('AgentBundle:Search:search.json.jsonphp', array(
 			'router' => App::getRouter(),
 			'results' => $results,
