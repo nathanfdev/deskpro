@@ -118,11 +118,19 @@ class SettingsController extends AbstractController
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 
-		return $this->render('@Settings:settings.html.twig', array(
+		$vars = array(
 			'max_uploadsize' => $max_filesize,
 			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize),
 			'timezone_options' => $timezone_options,
-		));
+		);
+
+		$vars['outgoing_email'] = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:EmailTransport t
+			WHERE t.match_type = 'all'
+		")->getOneOrNullResult();
+
+		return $this->render('@Settings:settings.html.twig', $vars);
 	}
 
 	public function settingsSaveFormAction($type, $auth)

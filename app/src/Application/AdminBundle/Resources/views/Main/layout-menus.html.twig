@@ -1,39 +1,4 @@
 <div id="menus_container">
-	{#############################
-	 # Setup Menu
-	 #############################}
-
-	<div id="setup_menu">
-		<ul>
-			<li class="link-settings">
-				<a href="{{ path('admin_settings') }}">{{ phrase('agent.general.settings') }}</a>
-				<p>{{ phrase('admin.menu.change_settings') }}</p>
-			</li>
-			{% if not app.isCloud() %}
-				<li class="link-email">
-					<a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.menu.outgoing_email_account') }}</a>
-					<p>{{ phrase('admin.menu.set_email_methods') }}</p>
-				</li>
-			{% endif %}
-			<li class="link-portal">
-				<a href="{{ path('admin_portal') }}">{{ phrase('admin.menu.portal_and_site_integration') }}</a>
-				<p>{{ phrase('admin.menu.change_homepage') }}</p>
-			</li>
-			<li class="link-languages">
-				<a href="{{ path('admin_langs') }}">{{ phrase('admin.general.languages') }}</a>
-				<p>{{ phrase('admin.menu.manage_internationalization') }}</p>
-			</li>
-			<li>
-				<a href="{{ path('admin_templates_user') }}">{{ phrase('admin.menu.page_templates') }}</a>
-				<p>{{ phrase('admin.menu.edit_html') }}</p>
-			</li>
-			<li>
-				<a href="{{ path('admin_templates_email') }}">{{ phrase('admin.general.email_templates') }}</a>
-				<p>{{ phrase('admin.menu.edit_user_agent_emails') }}</p>
-			</li>
-		</ul>
-	</div>
-
 
 	{#############################
 	 # Server Menu
@@ -179,6 +144,7 @@
 			<li><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
 			<li><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 			<li><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
+			<li><a href="{{ path('admin_langs_editlang', {language_id: app.getDataRepository('Language').getDefault().getId()}) }}">Phrases</a></li>
 		</ul>
 	</div>
 

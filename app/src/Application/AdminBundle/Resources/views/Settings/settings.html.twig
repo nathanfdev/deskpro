@@ -10,10 +10,6 @@
 {% endblock %}
 {% block page %}
 
-<div class="setting_section_head">
-	<a href="#" id="adv_settings_btn">{{ phrase('admin.settings.advanced_settings_view') }}</a>
-</div>
-
 <form action="{{ path('admin_settings') }}" method="POST" id="settings_form">
 <input type="hidden" name="process" value="1" />
 
@@ -66,6 +62,43 @@
 		</div>
 	</div>
 </div>
+
+{% if not app.isCloud() %}
+	<div class="setting_field_row">
+		<h4>Outgoing Email</h4>
+		<div class="setting_fields">
+			<div class="field_row">
+				Default mail sent from {{ app.getSetting('core.default_from_email') }} (via {{ outgoing_email.title }}).
+				<br />
+				<a class="clean-white" href="{{ path('admin_emailtrans_setup') }}">Edit outgoing mail account &rarr;</a>
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+<div class="setting_field_row">
+	<h4>Languages</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			{% if app.getDataRepository('Language').isMultiLang() %}
+				There are {{ app.getDataRepository('Language').getTitles()|length }} languages installed:
+				<ul class="small-detail-list">
+					{% for id,title in app.getDataRepository('Language').getTitles() %}
+						<li>
+							<a class="editable-link" href="{{ path('admin_langs_editlang', {language_id: id}) }}"><span>
+								{{ title }}
+							</span></a>
+						</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				Only English is installed.
+			{% endif %}
+			<a class="clean-white" href="{{ path('admin_langs') }}">Manage langauges &rarr;</a>
+		</div>
+	</div>
+</div>
+
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.attachments') }}</h4>
 	<div class="setting_fields">
@@ -233,6 +266,10 @@
 	<div class="overlay-footer">
 		<a href="{{ path('admin_settings_adv') }}" class="clean-white">{{ phrase('admin.settings.continue_to_advanced_settings') }}</a>
 	</div>
+</div>
+
+<div style="position:absolute; bottom: 5px; right: 8px; font-size: 10px;">
+	<a href="#" id="adv_settings_btn">Advanced &rarr;</a>
 </div>
 
 {% endblock %}
