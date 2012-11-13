@@ -1,536 +1,240 @@
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
-		<div class="row">
-		<div class="term">
-			<table cellpadding="0" cellspacing="0" width="100%" border="0" class="term-table"><tbody><tr>
-				<td style="vertical-align: middle; text-align: center;" width="11"><div class="builder-remove">-</div></td>
-				<td class="builder-controls" style="vertical-align: middle;">
-					<table cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr>
-						<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-type-choice"></div></td>
-						<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-op"></div></td>
-						<td style="vertical-align: middle;"><div class="builder-options"></div></td>
-					</tr></tbody></table>
-				</td>
-			</tr></tbody></table>
-		</div>
+<div class="row">
+	<div class="term">
+		<table cellpadding="0" cellspacing="0" width="100%" border="0" class="term-table"><tbody><tr>
+			<td style="vertical-align: middle; text-align: center;" width="11"><div class="builder-remove">-</div></td>
+			<td class="builder-controls" style="vertical-align: middle;">
+				<table cellpadding="0" cellspacing="0" width="100%" border="0"><tbody><tr>
+					<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-type-choice"></div></td>
+					<td style="vertical-align: middle;" width="10" nowrap="nowrap"><div class="builder-op"></div></td>
+					<td style="vertical-align: middle;"><div class="builder-options"></div></td>
+				</tr></tbody></table>
+			</td>
+		</tr></tbody></table>
 	</div>
+</div>
 
-	{% if app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
-		<div class="builder-type" title="Set Gateway Address" data-rule-type="set_gateway_address">
-			<div class="builder-options">
-				<select name="gateway_address_id">
-					<option value="department">Linked account for department</option>
-					{% for addr in app.getDataRepository('EmailGatewayAddress').getEmailAddresses() %}
-						<option value="{{ addr.id }}">{{ addr.match_pattern }}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
+{##################################################################################################################}
+{# Ticket Properties #}
+{##################################################################################################################}
 
-	<div class="builder-type" title="Set initial From name on emails" data-rule-type="set_initial_from_name">
-		<div class="builder-options">
-			<input type="text" name="from_name" />
-			<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="This sets the default From name on email notifications sent during the update if one has not already been set before.<br/><br/>You can usee variables in this name such as: {{'{{'}}ticket.department{{'}}'}} or {{'{{'}}agent.name{{'}}'}} or {{'{{'}}performer.name{{'}}'}}"></span>
-			<br />
-			<select name="to_whom">
-				<option value="0">On both user and agent emails</option>
-				<option value="agent">On agent emails only</option>
-				<option value="user">On user emails only</option>
-			</select>
-		</div>
+<div class="builder-type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="agent">
+			<option value="-1">Performer</option>
+			{% for agent in app.getDataRepository('Agent').getAgents() %}
+				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+			{% endfor %}
+		</select>
 	</div>
+</div>
 
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }} (user emails)" data-rule-type="set_from_address">
-		<div class="builder-options">
-			<input type="text" name="email_address" />
-		</div>
-	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }} (user emails)" data-rule-type="set_from_name">
-		<div class="builder-options">
-			<input type="text" name="name" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_address') }} (agent emails)" data-rule-type="set_from_address_agent">
-		<div class="builder-options">
-			<input type="text" name="email_address" />
-		</div>
-	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_notifs_from_name') }} (agent emails)" data-rule-type="set_from_name_agent">
-		<div class="builder-options">
-			<input type="text" name="name" />
-		</div>
-	</div>
-
-	{% if event_group != 'macro' %}
-		<div class="builder-type" title="{{ phrase('agent.general.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
-			<div class="builder-options">
-				<input type="hidden" name="stop_actions" value="1" />
-			</div>
-		</div>
-	{% endif %}
-
-	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
-		<div class="builder-type" title="{{ phrase('agent.general.email_user_auto_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket">(click to set)</span>
-			</div>
-		</div>
-		<div class="builder-type" title="{{ phrase('agent.general.email_user_validation_alert') }}" data-rule-type="set_email_template_user_new_ticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_validate" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate">(click to set)</span>
-			</div>
-		</div>
-		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket">(click to set)</span>
-			</div>
-		</div>
-	{% endif %}
-	{% if event_group in ['new_ticket.agent'] %}
-		<div class="builder-type" title="{{ phrase('agent.general.email_user_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_agent" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-agent">(click to set)</span>
-			</div>
-		</div>
-		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket">(click to set)</span>
-			</div>
-		</div>
-	{% endif %}
-	{% if event_group in ['new_reply.web_person', 'new_reply.gateway_person'] %}
-		<div class="builder-type" title="{{ phrase('agent.general.email_user_auto_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_user" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-user">(click to set)</span>
-			</div>
-		</div>
-		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_user" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-reply-user">(click to set)</span>
-			</div>
-		</div>
-	{% endif %}
-	{% if event_group in ['new_reply.agent'] %}
-		<div class="builder-type" title="{{ phrase('agent.general.email_user_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_agent" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-agent">(click to set)</span>
-			</div>
-		</div>
-		<div class="builder-type" title="{{ phrase('agent.general.email_agent_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="builder-options newline" style="display: block">
-				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_agent" />
-				<input type="hidden" name="tpl" class="tpl-name" value="" />
-				<span class="status-value menu-trigger" data-tpldir="email_agent" data-tplprefix="new-reply-agent">(click to set)</span>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'new_ticket' in event_group %}
-	<div class="builder-type" title="{{ phrase('agent.general.force_email_validation') }}" data-rule-type="force_email_validation">
-		<div class="builder-options">
-			<input type="hidden" name="force_email_validation" value="1" />
-		</div>
-	</div>
-	{% endif %}
-
-	<div class="builder-type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent">
-		<div class="builder-options">
-			<select name="agent">
-				<option value="-1">Performer</option>
-				{% for id,title in term_options.agents %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-	{% if term_options.agent_teams %}
-	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team">
+{% if app.getDataRepository('AgentTeam').getTeamNames()|length %}
+	<div class="builder-type" title="{{ phrase('agent.general.set_agent_team') }}" data-rule-type="agent_team" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="agent_team">
 				<option value="-1">Performer's Team</option>
-				{% for id,title in term_options.agent_teams %}
+				{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
 			</select>
 		</div>
 	</div>
-	{% endif %}
-	<div class="builder-type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status">
-		<div class="builder-options">
-			<select name="status">
-				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-			</select>
-		</div>
+{% endif %}
+
+<div class="builder-type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="status">
+			<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+			<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+			<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+		</select>
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete">
-		<div class="builder-options">
-			<input type="hidden" name="delete_ticket" value="1" />
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.delete_ticket') }}" data-rule-type="delete" data-rule-group="Ticket">
+	<div class="builder-options">
+		<input type="hidden" name="delete_ticket" value="1" />
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department">
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="department">
+			<option value="email_account">Linked department for email account</option>
+			{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
+				{% if dep.children|length %}
+					<optgroup label="{{ dep.title }}">
+						{% for subdep in dep.children %}
+							<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+						{% endfor %}
+					</optgroup>
+				{% else %}
+					<option value="{{dep.id}}">{{dep.title}}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+{% if app.getSetting('core.use_ticket_category') %}
+	<div class="builder-type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category" data-rule-group="Ticket">
 		<div class="builder-options">
-			<select name="department">
-				<option value="email_account">Linked department for email account</option>
-				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
-					{% if dep.children|length %}
-						<optgroup label="{{ dep.title }}">
-							{% for subdep in dep.children %}
-								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">{{subdep.title}}</option>
+			<select name="category">
+				{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+					{% if cat.children|length %}
+						<optgroup label="{{ cat.title }}">
+							{% for subcat in cat.children %}
+								<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
 							{% endfor %}
 						</optgroup>
 					{% else %}
-						<option value="{{dep.id}}">{{dep.title}}</option>
+						<option value="{{ cat.id }}">{{ cat.title }}</option>
 					{% endif %}
 				{% endfor %}
 			</select>
 		</div>
 	</div>
-	{% if term_options.ticket_categories %}
-		<div class="builder-type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category">
-			<div class="builder-options">
-				<select name="category">
-					{% for id,label in term_options.ticket_categories %}
-						<option value="{{id}}">{{label}}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-	{% if term_options.products %}
-	<div class="builder-type" title="{{ phrase('agent.general.set_product') }}" data-rule-type="product">
+{% endif %}
+
+{% if app.getSetting('core.use_product') %}
+	<div class="builder-type" title="{{ phrase('agent.general.set_product') }}" data-rule-type="product" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="product">
-				{% for id,title in term_options.products %}
-					<option value="{{id}}">{{title}}</option>
+				{% for id,title in app.getDataRepository('Product').getNames() %}
+					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
 			</select>
 		</div>
 	</div>
-	{% endif %}
-	{% if term_options.priorities %}
-	<div class="builder-type" title="{{ phrase('agent.general.set_priority') }}" data-rule-type="priority">
+{% endif %}
+
+{% if app.getSetting('core.use_ticket_priority') %}
+	<div class="builder-type" title="{{ phrase('agent.general.set_priority') }}" data-rule-type="priority" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="priority">
-				{% for id,title in term_options.priorities %}
-					<option value="{{id}}">{{title}}</option>
+				{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+					<option value="{{ id }}">{{ title }}</option>
 				{% endfor %}
 			</select>
 		</div>
 	</div>
-	{% endif %}
-	{% if term_options.ticket_workflows%}
-	<div class="builder-type" title="{{ phrase('agent.general.set_workflow') }}" data-rule-type="workflow">
+{% endif %}
+
+{% if app.getSetting('core.use_ticket_workflow') %}
+	<div class="builder-type" title="{{ phrase('agent.general.set_workflow') }}" data-rule-type="workflow" data-rule-group="Ticket">
 		<div class="builder-options">
 			<select name="workflow">
-				{% for id,title in term_options.ticket_workflows %}
-					<option value="{{id}}">{{title}}</option>
+				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
 			</select>
 		</div>
 	</div>
-	{% endif %}
-	<div class="builder-type" title="{{ phrase('agent.general.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
-		<div class="builder-options">
-			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
-		</div>
+{% endif %}
+
+<div class="builder-type" title="{{ phrase('agent.general.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-rule-group="Ticket">
+	<div class="builder-options">
+		{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
-		<div class="builder-options">
-			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-rule-group="Ticket">
+	<div class="builder-options">
+		{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 	</div>
-	<div class="builder-type" title="Add organization managers to ticket" data-rule-type="add_org_managers">
-		<div class="builder-options" style="display:block">
-			<input type="hidden" name="x" value="DP_ALLOW_BLANK" />
-		</div>
+</div>
+
+<div class="builder-type" title="Add organization managers to ticket" data-rule-type="add_org_managers" data-rule-group="Ticket">
+	<div class="builder-options" style="display:block">
+		<input type="hidden" name="x" value="DP_ALLOW_BLANK" />
 	</div>
-	<div class="builder-type" title="Send the organization managers an email" data-rule-type="send_org_managers_email">
-		<div class="builder-options" style="display:block">
-			<textarea name="message" cols="80" rows="4"></textarea>
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.set_flag') }}" data-rule-type="flag" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="flag">
+			<option value="blue">{{ phrase('agent.general.flag_blue') }}</option>
+			<option value="green">{{ phrase('agent.general.flag_green') }}</option>
+			<option value="orange">{{ phrase('agent.general.flag_orange') }}</option>
+			<option value="pink">{{ phrase('agent.general.flag_pink') }}</option>
+			<option value="purple">{{ phrase('agent.general.flag_purple') }}</option>
+			<option value="red">{{ phrase('agent.general.flag_red') }}</option>
+			<option value="yellow">{{ phrase('agent.general.flag_yellow') }}</option>
+		</select>
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_flag') }}" data-rule-type="flag">
-		<div class="builder-options">
-			<select name="flag">
-				<option value="blue">{{ phrase('agent.general.flag_blue') }}</option>
-				<option value="green">{{ phrase('agent.general.flag_green') }}</option>
-				<option value="orange">{{ phrase('agent.general.flag_orange') }}</option>
-				<option value="pink">{{ phrase('agent.general.flag_pink') }}</option>
-				<option value="purple">{{ phrase('agent.general.flag_purple') }}</option>
-				<option value="red">{{ phrase('agent.general.flag_red') }}</option>
-				<option value="yellow">{{ phrase('agent.general.flag_yellow') }}</option>
-			</select>
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.increase_decrease_urgency') }}" data-rule-type="urgency" data-rule-group="Ticket">
+	<div class="builder-options">
+		<input type="text" name="num" /><small>{{ phrase('agent.general.urgency_enter_negative_number') }}</small>
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.increase_decrease_urgency') }}" data-rule-type="urgency">
-		<div class="builder-options">
-			<input type="text" name="num" /><small>{{ phrase('agent.general.urgency_enter_negative_number') }}</small>
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.set_urgency') }}" data-rule-type="urgency_set" data-rule-group="Ticket">
+	<div class="builder-options">
+		<input type="text" name="num" style="width: 50px" />
+		{% if event_trigger != 'new_ticket' %}
+		<select name="allow_lower">
+			<option value="0">{{ phrase('agent.general.notice_only_when_urgency_lower') }}</option>
+			<option value="1">{{ phrase('agent.general.always_set_this_urgency') }}</option>
+		</select>
+		{% endif %}
 	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.set_urgency') }}" data-rule-type="urgency_set">
-		<div class="builder-options">
-			<input type="text" name="num" style="width: 50px" />
-			{% if event_trigger != 'new_ticket' %}
-			<select name="allow_lower">
-				<option value="0">{{ phrase('agent.general.notice_only_when_urgency_lower') }}</option>
-				<option value="1">{{ phrase('agent.general.always_set_this_urgency') }}</option>
-			</select>
-			{% endif %}
-		</div>
+</div>
+
+<div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply" data-rule-group="Ticket">
+	<div class="builder-options" style="display:block">
+		<textarea name="reply_text" cols="80" rows="4"></textarea>
 	</div>
-	<div class="builder-type" title="Send the user an email message relating to the ticket" data-rule-type="send_ticket_email">
-		<div class="builder-options" style="display:block">
-			<textarea name="message" cols="80" rows="4"></textarea>
-		</div>
-	</div>
-	<div class="builder-type" title="Send the user an email requesting feedback" data-rule-type="send_feedback_email">
-		<div class="builder-options">
-			<input type="hidden" name="do" value="1" />
-		</div>
-	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply">
-		<div class="builder-options" style="display:block">
-			<textarea name="reply_text" cols="80" rows="4"></textarea>
-		</div>
-	</div>
-	{% if term_options.web_hooks %}
-		<div class="builder-type" title="Call Web Hook" data-rule-type="call_webhook">
+</div>
+
+{% for field in app.getTicketFieldManager().getDisplayArray() %}
+	{% if field.field_def.isFormField() %}
+		<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="builder-options">
-				<select name="webhook_id">
-				{% for id,title in term_options.web_hooks %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-				</select>
+				{{ form_widget(field.formView) }}
 			</div>
 		</div>
 	{% endif %}
-	{% if 'time_' not in event_group and event_group != 'macro' %}
-	<div class="builder-type" title="{{ phrase('agent.general.disable_all_notifications') }}" data-rule-type="disable_notifications">
-		<div class="builder-options" style="display:block">
-			<input type="hidden" name="disable_notifications" value="1" />
-		</div>
-	</div>
-	{% endif %}
-	{% if event_group in ['new_reply', 'new_reply.web_person', 'new_reply.gateway_person'] %}
-	<div class="builder-type" title="Enable auto-response email confirmation" data-rule-type="enable_user_notification_new_reply_user">
-		<div class="builder-options" style="display:block">
-			<input type="hidden" name="enablde" value="1" />
-		</div>
-	</div>
-	{% endif %}
-	{% if 'time_' not in event_group and event_group != 'macro' %}
-	<div class="builder-type" title="{{ phrase('agent.general.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
-		<div class="builder-options" style="display:block">
-			<input type="hidden" name="disable_user_notifications" value="1" />
-		</div>
-	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.disable_agent_notifications') }}" data-rule-type="disable_agent_notifications">
-		<div class="builder-options" style="display:block">
-			<input type="hidden" name="disable_agent_notifications" value="1" />
-		</div>
-	</div>
-	<div class="builder-type" title="{{ phrase('agent.general.always_notify_agents') }}" data-rule-type="add_agent_notify">
-		<div class="builder-options" style="display:block">
-			<select name="codes[]" multiple="multiple" style="display: block">
-				<optgroup label="Agents">
-					<option value="all_agents">All Agents</option>
-					<option value="assigned_agent">{{ phrase('agent.general.assigned_agent') }}</option>
-					{% for k,v in term_options.agents %}
-						<option value="agent.{{k}}">{{v}}</option>
-					{% endfor %}
-				</optgroup>
-				<optgroup label="Teams">
-					<option value="assigned_agent_team">{{ phrase('agent.general.assigned_team') }}</option>
-					{% for k,v in term_options.agent_teams %}
-						<option value="agent_team.{{k}}">{{v}}</option>
-					{% endfor %}
-				</optgroup>
-			</select>
-		</div>
-	</div>
-	{% endif %}
+{% endfor %}
 
-	{% if term_options.plugin_actions is not empty %}
-		{% for plugin_event_type, object in term_options.plugin_actions %}
-			{% include object.getActionTemplate() %}
-		{% endfor %}
-	{% endif %}
+{##################################################################################################################}
+{# Person Properties #}
+{##################################################################################################################}
 
-	{% for field in app.getTicketFieldManager().getDisplayArray() %}
+{% if term_options.custom_people_fields %}
+	{% for field in term_options.custom_people_fields %}
 		{% if field.field_def.isFormField() %}
-			<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
-				<div class="builder-options">
-					{{ form_widget(field.formView) }}
-				</div>
+		<div class="builder-type" title="{{ phrase('agent.general.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="Person"  data-rule-type="people_field[{{field.field_def.id}}]">
+			<div class="builder-options">
+				{{ form_widget(field.formView) }}
 			</div>
+		</div>
 		{% endif %}
 	{% endfor %}
-	{% if term_options.custom_people_fields %}
-		{% for field in term_options.custom_people_fields %}
-			{% if field.field_def.isFormField() %}
-			<div class="builder-type" title="{{ phrase('agent.general.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
-				<div class="builder-options">
-					{{ form_widget(field.formView) }}
-				</div>
-			</div>
-			{% endif %}
-		{% endfor %}
-	{% endif %}
+{% endif %}
 
-	<div class="builder-type" title="Send an email to the user" data-rule-group="User Email Templates"  data-rule-type="send_user_email" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+{##################################################################################################################}
+{# Integrations #}
+{##################################################################################################################}
+
+{% if term_options.web_hooks %}
+	<div class="builder-type" title="Call Web Hook" data-rule-type="call_webhook" data-rule-group="Integrations">
 		<div class="builder-options">
-			<select class="template_name" name="template_name">
-				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
-					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-				{% endfor %}
-			</select>
-			<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-		</div>
-	</div>
-	<div class="builder-type" title="Send an email to agents" data-rule-group="Agent Email Templates"  data-rule-type="send_agent_email" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-		<div class="builder-options">
-			<select class="template_name" name="template_name">
-				<option value="NEW">Create a new template</option>
-				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
-					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-				{% endfor %}
-			</select>
-			<input type="text" class="new_option" name="new_option" value="" style="display: none; margin-top: 3px; margin-bottom: 3px;" placeholder="Enter a unique name for your new template" />
-			<br />
-			Send to:<br /><select name="agents[]" class="agents" multiple="multiple" style="width: 80%;">
-				<option value="-1">Performer</option>
-				{% for id,title in term_options.agents %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
+			<select name="webhook_id">
+			{% for id,title in term_options.web_hooks %}
+				<option value="{{id}}">{{title}}</option>
+			{% endfor %}
 			</select>
 		</div>
 	</div>
+{% endif %}
 
-	{% if event_trigger == 'new.email.user' or event_trigger == 'new.web.user' %}
-		<div class="builder-type" title="Change 'New Ticket Confirmation' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-		<div class="builder-type" title="Change 'New Ticket Confirmation (Awaiting Validation)' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket_validate" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-validate.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-		<div class="builder-type" title="Change 'New Ticket' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newticket">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-	{% endif %}
-	{% if event_trigger == 'new.web.agent.portal' %}
-		<div class="builder-type" title="Change 'New Ticket Created By Agent' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-ticket-agent.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-		<div class="builder-type" title="Change 'New Ticket' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newticket" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-ticket.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-	{% endif %}
-	{% if event_trigger == 'update.agent' %}
-		<div class="builder-type" title="Change 'New Agent Reply' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newreply_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-agent.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-		<div class="builder-type" title="Change 'New Agent Reply' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newreply_agent" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-agent.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-	{% endif %}
-	{% if event_trigger == 'update.user' %}
-		<div class="builder-type" title="Change 'New User Reply' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newreply_user" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:new-reply-user.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-		<div class="builder-type" title="Change 'New User Reply' agent email" data-rule-group="Agent Email Templates"  data-rule-type="set_agent_email_template_newreply_user" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
-			<div class="builder-options">
-				<select class="template_name" name="template_name">
-					<option value="NEW">Create a new template</option>
-					{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_agent:new-reply-user.html.twig') %}
-						<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
-					{% endfor %}
-				</select>
-				<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
-			</div>
-		</div>
-	{% endif %}
+{% if term_options.plugin_actions is not empty %}
+	{% for plugin_event_type, object in term_options.plugin_actions %}
+		{% include object.getActionTemplate() %}
+	{% endfor %}
+{% endif %}
+
 </div>

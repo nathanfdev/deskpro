@@ -69,7 +69,11 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 			this.typeSel = null;
 		}
 
-		var html = ['<select name="type" style="max-width: 320px;"><option>&nbsp;</option>'];
+		if (document.getElementById('dp_admin_page')) {
+			var html = ['<select name="type" style="max-width: 400px;"><option>&nbsp;</option>'];
+		} else {
+			var html = ['<select name="type" style="max-width: 320px;"><option>&nbsp;</option>'];
+		}
 		$('.builder-type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
 			if ($(el).data('type-off') && !self.enableTypes[type]) {

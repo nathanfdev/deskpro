@@ -141,7 +141,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 	'event_trigger_sub': trigger.getSubEvent(),
 } %}
 
-{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {
+{% include 'AdminBundle:TicketTriggers:actions.html.twig' with {
 	'classname': 'actions-tpl',
 	'term_options': term_options,
 	'trigger': trigger,
