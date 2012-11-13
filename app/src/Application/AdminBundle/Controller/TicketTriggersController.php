@@ -216,12 +216,68 @@ class TicketTriggersController extends AbstractController
 		$trigger->terms_any = $term_rules->readForm($this->in->getCleanValueArray('terms_any', 'raw' , 'discard'));
 
 		$action_rules = RuleBuilder::newActionsBuilder();
-		$trigger->actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
+		$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
+
+		$redirect_to = null;
+		$tpl_types = array(
+			'set_user_email_template_newticket' => 1,
+			'set_user_email_template_newticket_validate' => 1,
+			'set_agent_email_template_newticket' => 1,
+			'set_user_email_template_newticket_agent' => 1,
+			'set_user_email_template_newreply_agent' => 1,
+			'set_agent_email_template_newreply_agent' => 1,
+			'set_user_email_template_newreply_user' => 1,
+			'set_agent_email_template_newreply_user' => 1,
+			'send_user_email' => 1,
+			'send_agent_email' => 1,
+		);
+		foreach ($actions as &$_info) {
+			if (isset($tpl_types[$_info['type']])) {
+				if (isset($_info['options']['new_option'])) {
+					$new_name = $_info['options']['new_option'];
+					$new_name = preg_replace('#[^a-zA-Z0-9\-_]#', '_', $new_name);
+					if (!$new_name) {
+						$new_name = 'custom_template';
+					}
+
+					unset($_info['options']['new_option']);
+
+					if (strpos($_info['type'], 'set_user_') !== false || strpos($_info['type'], 'send_user_email') !== false || strpos($_info['type'], 'send_agent_email') !== false) {
+						$_info['options']['template_name'] = 'DeskPRO:emails_user:custom_' . $new_name . '.html.twig';
+					} else {
+						$_info['options']['template_name'] = 'DeskPRO:emails_agent:custom_' . $new_name . '.html.twig';
+					}
+
+					$variant = null;
+
+					switch ($_info['type']) {
+						case 'set_user_email_template_newticket': $variant = 'DeskPRO:emails_user:new-ticket.html.twig'; break;
+						case 'set_user_email_template_newticket_validate': $variant = 'DeskPRO:emails_user:new-ticket-validate.html.twig'; break;
+						case 'set_agent_email_template_newticket': $variant = 'DeskPRO:emails_agent:new-ticket.html.twig'; break;
+						case 'set_user_email_template_newticket_agent': $variant = 'DeskPRO:emails_user:new-ticket-agent.html.twig'; break;
+						case 'set_user_email_template_newreply_agent': $variant = 'DeskPRO:emails_user:new-reply-agent.html.twig'; break;
+						case 'set_agent_email_template_newreply_agent': $variant = 'DeskPRO:emails_agent:new-reply-agent.html.twig'; break;
+						case 'set_user_email_template_newreply_user': $variant = 'DeskPRO:emails_user:new-reply-user.html.twig'; break;
+						case 'set_agent_email_template_newreply_user': $variant = 'DeskPRO:emails_agent:new-reply-user.html.twig'; break;
+						case 'send_user_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
+						case 'send_agent_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
+					}
+
+					$redirect_to = $this->generateUrl('admin_templates_editemail', array('name' => $new_name, 'variant_of' => $variant));
+				}
+			}
+		}
+
+		$trigger->actions = $actions;
 
 		$this->em->beginTransaction();
 		$this->em->persist($trigger);
 		$this->em->flush();
 		$this->em->commit();
+
+		if ($redirect_to) {
+			return $this->redirect($redirect_to);
+		}
 
 		if ($trigger->getTriggerType() == 'escalation') {
 			return $this->redirectRoute('admin_ticketescalations');

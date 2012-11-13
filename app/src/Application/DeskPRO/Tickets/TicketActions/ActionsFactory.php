@@ -219,6 +219,25 @@ class ActionsFactory
 				$options = array('message' => $value['message']);
 				break;
 
+			case 'send_user_email':
+				$options = array('template_name' => $value['template_name']);
+				break;
+
+			case 'send_agent_email':
+				$options = array('template_name' => $value['template_name'], 'agents' => $value['agents'] ?: array());
+				break;
+
+			case 'set_user_email_template_newticket':
+			case 'set_user_email_template_newticket_validate':
+			case 'set_agent_email_template_newticket':
+			case 'set_user_email_template_newticket_agent':
+			case 'set_user_email_template_newreply_agent':
+			case 'set_agent_email_template_newreply_agent':
+			case 'set_user_email_template_newreply_user':
+			case 'set_agent_email_template_newreply_user':
+				$options = array('template_name' => $value['template_name']);
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

@@ -396,6 +396,36 @@
 		{% endfor %}
 	{% endif %}
 
+	<div class="builder-type" title="Send an email to the user" data-rule-group="User Email Templates"  data-rule-type="send_user_email" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+		<div class="builder-options">
+			<select class="template_name" name="template_name">
+				<option value="NEW">Create a new template</option>
+				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
+					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+				{% endfor %}
+			</select>
+			<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+		</div>
+	</div>
+	<div class="builder-type" title="Send an email to agents" data-rule-group="Agent Email Templates"  data-rule-type="send_agent_email" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+		<div class="builder-options">
+			<select class="template_name" name="template_name">
+				<option value="NEW">Create a new template</option>
+				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:blank.html.twig') %}
+					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+				{% endfor %}
+			</select>
+			<input type="text" class="new_option" name="new_option" value="" style="display: none; margin-top: 3px; margin-bottom: 3px;" placeholder="Enter a unique name for your new template" />
+			<br />
+			Send to:<br /><select name="agents[]" class="agents" multiple="multiple" style="width: 80%;">
+				<option value="-1">Performer</option>
+				{% for id,title in term_options.agents %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
 	{% if event_trigger == 'new.email.user' or event_trigger == 'new.web.user' %}
 		<div class="builder-type" title="Change 'New Ticket Confirmation' user email" data-rule-group="User Email Templates"  data-rule-type="set_user_email_template_newticket" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
 			<div class="builder-options">

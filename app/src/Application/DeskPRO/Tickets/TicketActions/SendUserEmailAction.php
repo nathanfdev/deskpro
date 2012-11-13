@@ -36,11 +36,12 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\App;
 
-abstract class SetEmailTemplateAbstract extends AbstractAction
+class SendUserEmailAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
@@ -58,11 +59,27 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 		$this->template = $template;
 	}
 
+	public function getFromAddress(Ticket $ticket)
+	{
+		if ($ticket->notify_email) {
+			$from_email = $ticket->notify_email;
+		} else {
+			$from_email = App::getSetting('core.default_from_email');
+		}
+
+		if ($ticket->notify_email_name) {
+			$from_name = $ticket->notify_email_name;
+		} else {
+			$from_name = App::getSetting('core.deskpro_name');
+		}
+
+		return array($from_email => $from_name);
+	}
+
 	/**
-	 * Apply the action to the ticket
+	 * Apply the property to the ticket
 	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return void
 	 */
 	public function apply(Ticket $ticket)
 	{
@@ -70,11 +87,65 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 			return;
 		}
 
-		$this->tracker->recordExtra('email_template_' . $this->getType(), $this->template);
+		$change_info = array(
+			'type' => 'ticket_email_message',
+			'template' => $this->template,
+			'emailed' => array(),
+			'cced' => array()
+		);
+
+		$person = $ticket->person;
+		$parts  = $ticket->getUserParticipants();
+
+		$change_info['emailed'] = array($person);
+		$change_info['cced'] = $parts;
+
+		$vars['ticket'] = $ticket;
+		$vars['person'] = $person;
+		$vars['participants'] = $parts;
+		$vars['participants'] = $parts;
+		$vars['access_code'] = $ticket->getAccessCode();
+
+		$from_address = $this->getFromAddress($ticket);
+
+		$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
+		$vars['ticketdisplay'] = $ticketdisplay;
+		$vars['messages']      = array_reverse($ticketdisplay->getMessages(), true);
+
+		$template_name = $this->template;
+
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($template_name, $vars, $from_address, $ticket, $person, $parts) {
+
+			$email = $person->getPrimaryEmailAddress();
+			if(!$email && $ticket->person_email_validating) {
+				$email = $ticket->person_email_validating;
+			}
+
+			if (!$email) {
+				return;
+			}
+
+			$message = App::getMailer()->createMessage();
+			$message->setContextId('ticket_gateway');
+			$message->setTemplate($template_name, $vars);
+
+			$message->setTo($email, $person->getDisplayName());
+
+			foreach ($parts as $part) {
+				if ($part['email_address']) {
+					$message->addCc($part['email_address'], $part->person->getDisplayName());
+				}
+			}
+			$message->setFrom($from_address);
+			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+
+			App::getMailer()->send($message);
+		});
+
+		if ($this->tracker) {
+			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+		}
 	}
-
-
-	abstract public function getType();
 
 
 	/**
@@ -85,7 +156,7 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'set_email_template', 'template' => $this->template)
+			array('action' => 'send_user_email', 'template' => $this->template)
 		);
 	}
 
@@ -95,11 +166,7 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		$parts = explode(':', $this->template);
-		$name = array_pop($parts);
-		$name = str_replace('.html.twig', '', $name);
-
-		return 'Change the email template to ' . $name;
+		return 'Send an email to the user using template ' . $this->template;
 	}
 
 
@@ -110,10 +177,5 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
-	}
-
-	public function doPrepend()
-	{
-		return true;
 	}
 }

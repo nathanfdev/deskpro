@@ -548,7 +548,7 @@ class TemplatesController extends AbstractController
 			$nameparts = explode(':', $template->variant_of);
 			array_pop($nameparts);
 
-			$name = implode(':', $nameparts) . ':custom_' . $name;
+			$name = implode(':', $nameparts) . ':custom_' . $name . '.html.twig';
 			$template->name = $name;
 
 			$code = App::getTemplating()->getSource($template->variant_of);
