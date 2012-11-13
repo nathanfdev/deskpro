@@ -119,6 +119,7 @@ class EmailGatewaysController extends AbstractController
 			}
 		} else {
 			$is_new = true;
+			$is_new_tr = false;
 			$gateway = new \Application\DeskPRO\Entity\EmailGateway();
 			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
