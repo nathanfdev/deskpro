@@ -181,22 +181,30 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 			$message = array('message' => $message);
 		}
 
-		$item = new \Application\DeskPRO\Entity\QueueItem();
-		$item['groupname'] = $queue->getName();
+		$item = array(
+			'groupname'   => $queue->getName(),
+			'created_at'  => date('Y-m-d H:i:s'),
+			'priority'    => 0,
+			'delay_until' => null,
+			'ttr'         => 60,
+			'is_ready'    => 1,
+			'is_dataonly' => 0,
+			'is_ignored'  => 0,
+			'reserved_at' => 0,
+			'timeout_at'  => null,
+		);
 
 		foreach (array('is_ready', 'is_ignored', 'priority', 'delay_until', 'ttr') as $k) {
 			if (isset($message[$k])) {
-				$item->$k = $message[$k];
+				$item[$k] = $message[$k];
 				unset($message[$k]);
 			}
 		}
 
-		$item['data'] = $message;
+		$item['data'] = serialize($message);
+		$this->db->insert('queue_items', $item);
 
-		$this->em->persist($item);
-		$this->em->flush();
-
-		$message['qi_id'] = $item->id;
+		$message['qi_id'] = $this->db->lastInsertId();
 
 		$options = array(
 			'queue' => $queue,

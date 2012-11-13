@@ -301,7 +301,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 						} elseif ($v === null) {
 							$params[] = 'NULL';
 						} elseif (is_array($v)) {
-							$params[] = 'array:' . count($v);
+							$params[] = substr(\DeskPRO\Kernel\KernelErrorHandler::varToString($v), 0, 200);
 						} elseif (is_object($v)) {
 							$params[] = get_class($v);
 						} else {
