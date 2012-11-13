@@ -221,6 +221,7 @@ class TicketTriggersController extends AbstractController
 		$redirect_to = null;
 		$tpl_types = array(
 			'set_user_email_template_newticket' => 1,
+			'user_newticket_agent' => 1,
 			'set_user_email_template_newticket_validate' => 1,
 			'set_agent_email_template_newticket' => 1,
 			'set_user_email_template_newticket_agent' => 1,
@@ -252,6 +253,7 @@ class TicketTriggersController extends AbstractController
 
 					switch ($_info['type']) {
 						case 'set_user_email_template_newticket': $variant = 'DeskPRO:emails_user:new-ticket.html.twig'; break;
+						case 'user_newticket_agent': $variant = 'DeskPRO:emails_user:new-ticket-agent.html.twig'; break;
 						case 'set_user_email_template_newticket_validate': $variant = 'DeskPRO:emails_user:new-ticket-validate.html.twig'; break;
 						case 'set_agent_email_template_newticket': $variant = 'DeskPRO:emails_agent:new-ticket.html.twig'; break;
 						case 'set_user_email_template_newticket_agent': $variant = 'DeskPRO:emails_user:new-ticket-agent.html.twig'; break;

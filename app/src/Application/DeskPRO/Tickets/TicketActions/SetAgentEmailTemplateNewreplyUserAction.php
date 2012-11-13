@@ -33,7 +33,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-class SetAgentEmailTemplateNewreplyUser extends SetEmailTemplateAbstract
+class SetAgentEmailTemplateNewreplyUserAction extends SetEmailTemplateAbstract
 {
 	public function getType()
 	{

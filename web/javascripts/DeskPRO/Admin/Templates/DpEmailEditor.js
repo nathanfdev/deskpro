@@ -48,8 +48,8 @@ function DpEmailEditor(name) {
 	saveCtrl.find('button.save-trigger').on('click', function(ev) {
 		ev.preventDefault();
 
-		var subject = $('textarea.subject').val();
-		var body    = $('textarea.template').val();
+		var subject = $('textarea.subject').data('cm').getValue();
+		var body    = $('textarea.template').data('cm').getValue();
 
 		var code = "<dp:subject>" + subject + "</dp:subject>\n" + body;
 

@@ -52,6 +52,11 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if ($this->tracker->isExtraSet('email_template_user_newreply_agent')) {
+			$this->setEmailTemplate('user_new_reply_agent', $this->tracker->getExtra('email_template_user_newreply_agent'));
+			$this->tracker->logMessage("[UserNotificationNewReplyAgent] Set newreply_agent template: " . $this->tracker->getExtra('email_template_user_newreply_agent'));
+		}
+
 		// Agents can supress user notifications by unticking the option in the replybox
 		if ($this->tracker->isExtraSet('suppress_user_notify')) {
 			return;
@@ -87,7 +92,7 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			}
 		}
 
-		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-agent.html.twig');
+		$tpl = $this->getTemplate('user_new_reply_agent', 'DeskPRO:emails_user:new-reply-agent.html.twig');
 		$this->doSend($tpl, $vars, $ticket, $change_info);
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);

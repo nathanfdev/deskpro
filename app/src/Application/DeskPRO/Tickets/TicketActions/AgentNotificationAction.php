@@ -207,6 +207,19 @@ class AgentNotificationAction extends AbstractAction
 			return;
 		}
 
+		if ($this->tracker->isExtraSet('email_template_agent_newticket')) {
+			$this->newticket_email_tpl = $this->tracker->getExtra('email_template_agent_newticket');
+			$this->tracker->logMessage("[AgentNotification] Set newticket template: " . $this->newticket_email_tpl);
+		}
+		if ($this->tracker->isExtraSet('email_template_agent_newreply_agent')) {
+			$this->newreply_agent_email_tpl = $this->tracker->getExtra('email_template_agent_newreply_agent');
+			$this->tracker->logMessage("[AgentNotification] Set newticket template: " . $this->newreply_agent_email_tpl);
+		}
+		if ($this->tracker->isExtraSet('email_template_agent_newreply_user')) {
+			$this->newreply_user_email_tpl = $this->tracker->getExtra('email_template_agent_newreply_user');
+			$this->tracker->logMessage("[AgentNotification] Set newticket template: " . $this->newreply_user_email_tpl);
+		}
+
 		$this->tracker->logMessage("[AgentNotificationAction] Agents: " . implode(', ', $this->notify_agents));
 
 		$change_info = array(

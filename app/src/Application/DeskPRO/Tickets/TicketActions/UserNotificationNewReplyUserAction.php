@@ -84,6 +84,11 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if ($this->tracker->isExtraSet('user_newreply_user')) {
+			$this->setEmailTemplate('user_new_reply_user', $this->tracker->getExtra('email_template_user_newreply_user'));
+			$this->tracker->logMessage("[UserNotificationNewReplyUser] Set newreply_user template: " . $this->tracker->getExtra('email_template_user_newreply_user'));
+		}
+
 		if (!$this->isEnabled()) {
 			return;
 		}
