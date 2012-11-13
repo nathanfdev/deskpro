@@ -354,11 +354,6 @@ class PortalController extends AbstractController
 	# Portal Sections
 	############################################################################
 
-	public function settingsAction()
-	{
-		return $this->render('AdminBundle:Portal:settings.html.twig');
-	}
-
 	public function feedbackSettingsAction()
 	{
 		return $this->render('AdminBundle:Portal:feedback-settings.html.twig');

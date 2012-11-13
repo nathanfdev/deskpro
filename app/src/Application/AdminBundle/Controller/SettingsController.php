@@ -72,7 +72,8 @@ class SettingsController extends AbstractController
 				$url = 'http://' . $url;
 			}
 
-			$update_settings = array(
+			$update_settings = $this->in->getCleanValueArray('settings', 'string', 'str_simple');
+			$update_settings = array_merge($update_settings, array(
 				'core.deskpro_name'            => $_POST['settings']['core.deskpro_name'],
 				'core.deskpro_url'             => $url,
 				'core.site_name'               => $_POST['settings']['core.site_name'],
@@ -100,8 +101,23 @@ class SettingsController extends AbstractController
 				'core.date_day'    => $_POST['settings']['core.date_day'],
 				'core.date_day_short'    => $_POST['settings']['core.date_day_short'],
 				'core.date_time'    => $_POST['settings']['core.date_time'],
-			);
+			));
 			array_walk($update_settings, 'trim');
+
+			$set_settings_keys = $this->in->getCleanValueArray('set_settings', 'str_simple', 'discard');
+
+			// set_settings contains an array of names that should be set
+			// If no value, it means its a null value (aka to be unset/set to default)
+			foreach ($this->in->getCleanValueArray('set_settings_falseable', 'str_simple', 'discard') as $k) {
+				if (!isset($update_settings[$k])) {
+					$update_settings[$k] = 0;
+				}
+			}
+			foreach ($set_settings_keys as $k) {
+				if (!isset($update_settings[$k])) {
+					$update_settings[$k] = null;
+				}
+			}
 
 			foreach ($update_settings as $k => $v) {
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);

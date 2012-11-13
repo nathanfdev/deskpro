@@ -503,13 +503,6 @@ $collection->add('admin_portal_twitter_oauth', new Route(
 	array()
 ));
 
-$collection->add('admin_portal_settings', new Route(
-	'/portal/settings',
-	array('_controller' => 'AdminBundle:Portal:settings'),
-	array(),
-	array()
-));
-
 $collection->add('admin_website_embeds', new Route(
 	'/website-embeds',
 	array('_controller' => 'AdminBundle:Portal:widgets'),

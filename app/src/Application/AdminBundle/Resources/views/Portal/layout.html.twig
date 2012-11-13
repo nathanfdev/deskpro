@@ -8,7 +8,6 @@
 		<article>
 			<ul>
 				<li class="{% if this_page == 'portal_editor' %}on{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
-				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
 				<li><a href="{{ path('admin_templates_user', {open: 'UserBundle:Css:custom.css.twig'}) }}">Edit Custom CSS</a></li>
 			</ul>

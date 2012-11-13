@@ -142,7 +142,6 @@
 	<div id="portal_menu">
 		<ul>
 			<li><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
-			<li><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 			<li><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
 			<li><a href="{{ path('admin_langs_editlang', {language_id: app.getDataRepository('Language').getDefault().getId()}) }}">Phrases</a></li>
 		</ul>

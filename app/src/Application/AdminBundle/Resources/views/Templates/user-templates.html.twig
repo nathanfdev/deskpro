@@ -29,6 +29,26 @@
 
 {% block page %}
 
+<div class="content-table template-dir">
+	<table width="100%">
+		<thead class="">
+		<tr>
+			<th class="single-title" colspan="10">
+				<span class="count">4 Templates</span>
+				<h1 class="toggle-section expanded">Custom Templates</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+			{{ tplmacro.render_tpl('UserBundle::custom-header.html.twig', {shortname: 'custom-header.html'}) }}
+			{{ tplmacro.render_tpl('UserBundle::custom-footer.html.twig', {shortname: 'custom-footer.html'}) }}
+			{{ tplmacro.render_tpl('UserBundle::custom-headinclude.html.twig', {shortname: 'custom-headinclude.html'}) }}
+			{{ tplmacro.render_tpl('UserBundle:Css:custom.css.twig', {shortname: 'custom.css'}) }}
+		</tbody>
+	</table>
+</div>
+<br />
+
 {% for bundle_name,dirs in list %}
 	{% for dirname,dirinfo in dirs %}{% if dirname != 'Test' %}
 		{{ tplmacro.render_dir(bundle_name, dirname, dirinfo) }}
