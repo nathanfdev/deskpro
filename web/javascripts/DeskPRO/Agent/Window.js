@@ -1838,6 +1838,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_showAjaxError: function(message, type) {
 
+		if (DPC_IS_CLOUD) {
+			if (message.indexOf('http://www.cloudflare.com/') !== -1 && message.indexOf('<title>Website is currently unreachable</title>') !== -1) {
+				if (DpErrorLog) {
+					DpErrorLog.hasSentReport = true; // dont ask to report
+					DpErrorLog.logError(
+						"CloudFlare Network Error: " + message,
+						'',
+						'agent',
+						1
+					);
+				}
+				return;
+			}
+		}
+
 		var self = this;
 		$('#global_ajax_error_info').empty();
 		if (message) {
