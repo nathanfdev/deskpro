@@ -347,6 +347,38 @@ Orb.arrayChunk = function(array, size) {
 	return newArray;
 };
 
+(function() {
+	var cleanupCallbacks = [];
+	var origRemove = jQuery.fn.remove;
+	var origEmpty = jQuery.fn.empty;
+
+	jQuery.addElementCleanupCallback = function(fn) {
+		cleanupCallbacks.push(fn);
+	};
+
+	jQuery.fn.empty = function() {
+		var i;
+		if (this.length) {
+			for (i = 0; i < cleanupCallbacks.length; i++) {
+				cleanupCallbacks[i](this, 'empty');
+			}
+		}
+
+		return origEmpty.apply(this, arguments);
+	};
+
+	jQuery.fn.remove = function() {
+		var i;
+		if (this.length) {
+			for (i = 0; i < cleanupCallbacks.length; i++) {
+				cleanupCallbacks[i](this, 'remove');
+			}
+		}
+
+		return origRemove.apply(this, arguments);
+	};
+})();
+
 
 /**
  * Cancel an event. Stops bubbling and prevents default.

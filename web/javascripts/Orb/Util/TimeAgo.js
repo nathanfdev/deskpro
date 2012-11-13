@@ -4,6 +4,8 @@ Orb.Util.TimeAgo = {
 
 	_watchEls: [],
 	_watchTimer: null,
+	_hasInit: false,
+	_cleanupEls: [],
 
 	/**
 	 * How often to update the elements
@@ -46,10 +48,59 @@ Orb.Util.TimeAgo = {
 	 * @param $els
 	 */
 	applyToElements: function(els) {
+
 		var self = this;
+
+		if (!this._hasInit) {
+			this._hasInit = true;
+			if ($.addElementCleanupCallback) {
+				$.addElementCleanupCallback(function(coll, mode) {
+					var i, x, tmp, removeColl = [], found;
+					for (i = 0; i < coll.length; i++) {
+						if (mode != 'empty' && coll[i].className.indexOf('with-timeago') !== -1) {
+							removeColl.push(coll[i]);
+						} else {
+							if (coll[i].getElementsByClassName) {
+								tmp = coll[i].getElementsByClassName('with-timeago');
+							} else {
+								tmp = coll[i].getElementsByTagName('*');
+							}
+							for (x = 0; x < tmp.length; x++) {
+								if (tmp[x].className.indexOf('with-timeago') !== -1) {
+									removeColl.push(tmp[x]);
+								}
+							}
+						}
+					}
+
+					if (removeColl.length) {
+						tmp = [];
+						for (i = 0; i < self._watchEls.length; i++) {
+							found = false;
+							for (x = 0; x < removeColl.length; x++) {
+								if (removeColl[x] == self._watchEls[i]) {
+									found = true;
+									break;
+								}
+							}
+
+							if (!found) {
+								tmp.push(self._watchEls[i]);
+							}
+						}
+
+						self._watchEls = tmp;
+					}
+				});
+			}
+		}
+
+		els.each(function(el) {
+			self._watchEls.push(el);
+		});
+
 		els.each(function(el) {
 			self._refreshElements([el]);
-			self._watchEls.push(el);
 		});
 
 		if (this._watchTimer === null) {
@@ -82,6 +133,7 @@ Orb.Util.TimeAgo = {
 			}
 
 			el = $(el);
+			el.addClass('with-timeago');
 
 			if (!el.data("timeago")) {
 
