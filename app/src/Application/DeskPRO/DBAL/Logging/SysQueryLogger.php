@@ -214,6 +214,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	{
 		$this->last_query['time_end']   = microtime(true);
 		$this->last_query['time_taken'] = $this->last_query['time_end'] - $this->last_query['time_start'];
+		$this->last_query['memory']     = memory_get_usage();
 		$this->queries[] = $this->last_query;
 
 		$this->query_count++;
@@ -248,7 +249,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
 			}
 
-			$write[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d\n", $total_time, $php_time, $db_time, $this->query_count);
+			$write[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d\n", $total_time, $php_time, $db_time, $this->query_count, memory_get_peak_usage());
 
 			$hashes_to_name = array();
 			$count = 0;
@@ -329,7 +330,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				if (!isset($q['trans_level'])) {
 					$q['trans_level'] = 0;
 				}
-				$write[] = sprintf("%s> Query %.4f %s$table: %s \t\t Query_Params: %s\n", str_repeat('=', $q['trans_level']+1), $q['time_taken'], $name, $sql, implode(', ', $params));
+
+				$memory = $q['memory'] / 1024;
+
+				$write[] = sprintf("%s> Query %.4f %4dK %s$table: %s \t\t Query_Params: %s\n", str_repeat('=', $q['trans_level']+1), $q['time_taken'], $memory, $name, $sql, implode(', ', $params));
 				if (isset($q['trace'])) {
 					$write[] = \Orb\Util\Strings::modifyLines($q['trace'], "   ", '', true);
 					$write[] = "\n";
