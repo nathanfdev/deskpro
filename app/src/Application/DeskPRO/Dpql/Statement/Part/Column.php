@@ -71,6 +71,7 @@ class Column extends AbstractPart
 		'languages' => array('id', 'title'),
 		'organizations' => array('id', 'name', 'organization'),
 		'people' => array('id', 'name', 'person'),
+		'slas' => array('id', 'title'),
 		'tickets' => array('id', 'subject', 'ticket'),
 		'ticket_categories' => array('id', 'title'),
 		'ticket_priorities' => array('id', 'title'),
@@ -86,7 +87,8 @@ class Column extends AbstractPart
 		'custom_data_feedback' => '%1$s.root_field_id = %2$s',
 		'custom_data_organizations' => '%1$s.root_field_id = %2$s',
 		'custom_data_person' => '%1$s.root_field_id = %2$s',
-		'custom_data_ticket' => '%1$s.root_field_id = %2$s'
+		'custom_data_ticket' => '%1$s.root_field_id = %2$s',
+		'ticket_slas' => '%1$s.sla_id = %2$s',
 	);
 
 	/**
@@ -340,6 +342,11 @@ class Column extends AbstractPart
 				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
 				return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
+			} else if ($assocTable == 'ticket_slas') {
+				$call = new Column(array_merge($this->parts, array('sla')));
+				$prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+				return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
 			} else if (preg_match('/^custom_data_/', $assocTable)) {
 				$call = new FunctionCall('if', array(
 					new Column(array_merge($this->parts, array('value'))),

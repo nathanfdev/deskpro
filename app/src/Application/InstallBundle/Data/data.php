@@ -1084,6 +1084,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketTriggers::DEFAULT_
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.ticket_slas##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'ticket_slas';
+$j['worker_group'] = 'ticket_slas';
+$j['title'] = 'Ticket SLAs';
+$j['description'] = 'Updates ticket SLA status';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketSlas';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketSlas::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ##BEGIN:create_jobs.article_publish_state##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'update_view_counts';

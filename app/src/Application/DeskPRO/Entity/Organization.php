@@ -388,6 +388,49 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
+	public function addSla(Sla $sla)
+	{
+		foreach ($this->slas AS $org_sla) {
+			if ($org_sla->id == $sla->id) {
+				return false;
+			}
+		}
+
+		$this->slas->add($sla);
+
+		return true;
+	}
+
+	public function removeSla(Sla $sla)
+	{
+		foreach ($this->slas AS $k => $org_sla) {
+			if ($org_sla->id == $sla->id) {
+				$this->slas->remove($k);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function removeAllSlas()
+	{
+		foreach ($this->slas AS $k => $null) {
+			$this->slas->remove($k);
+		}
+	}
+
+	public function hasSla(Sla $sla)
+	{
+		foreach ($this->slas AS $org_sla) {
+			if ($org_sla->id == $sla->id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Add a label
@@ -460,5 +503,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
+		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'organizations'));
 	}
 }

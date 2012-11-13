@@ -368,6 +368,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $subject;
 
 	/**
+	 * @var string|null
+	 */
+	protected $worst_sla_status = null;
+
+	/**
+	 * @var array
+	 */
+	protected $waiting_times = array();
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $participants;
@@ -386,6 +396,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $charges;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $ticket_slas;
+
+	/**
+	 * @var bool
+	 */
+	protected $_recalculate_slas = false;
 
 	/**
 	 * Ticket logger
@@ -431,6 +451,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->charges = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->ticket_slas = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this['date_created'] = new \DateTime();
 		$this['date_status'] = new \DateTime();
@@ -995,6 +1016,56 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $charge;
 	}
 
+	public function addSla(Sla $sla)
+	{
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			if ($ticket_sla->sla->id == $sla->id) {
+				return $ticket_sla;
+			}
+		}
+
+		$ticket_sla = new TicketSla();
+		$ticket_sla->ticket = $this;
+		$ticket_sla->sla = $sla;
+
+		$this->ticket_slas->add($ticket_sla);
+
+		return $ticket_sla;
+	}
+
+	public function removeSla(Sla $sla)
+	{
+		foreach ($this->ticket_slas AS $k => $ticket_sla) {
+			if ($ticket_sla->sla->id == $sla->id) {
+				$this->ticket_slas->remove($k);
+				$this->updateWorstSlaStatus();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function removeAllSlas()
+	{
+		foreach ($this->ticket_slas AS $k => $ticket_sla) {
+			$this->ticket_slas->remove($k);
+		}
+
+		$this->setModelField('worst_sla_status', null);
+	}
+
+	public function hasSla(Sla $sla)
+	{
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			if ($ticket_sla->sla->id == $sla->id) {
+				return $ticket_sla;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Add a message to this ticket.
@@ -1014,6 +1085,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 			if (!$this->date_first_agent_reply) {
 				$this['date_first_agent_reply'] = $now;
+				$this->_recalculate_slas = true; // may have a "first reply" sla
 
 				$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
 			}
@@ -1716,12 +1788,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$old_status  = $this->status;
 
-		if ($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
+		if (
+			($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting)
+			|| ($status == 'closed' && $old_status == 'awaiting_user' && $this->date_user_waiting)
+			|| ($status == 'resolved' && $old_status == 'awaiting_user' && $this->date_user_waiting)
+		) {
 			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
+			$this->addWaitingTimeRecord('user', $this->date_user_waiting);
 			$this->setModelField('date_user_waiting', null);
-		} else if ($status == 'closed' && $old_status == 'awaiting_user' && $this->date_user_waiting) {
-			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
-			$this->setModelField('date_user_waiting', null);
+		} else if (
+			($status == 'awaiting_agent' && $old_status == 'awaiting_user' && $this->date_agent_waiting)
+			|| ($status == 'closed' && $old_status == 'awaiting_agent' && $this->date_agent_waiting)
+			|| ($status == 'resolved' && $old_status == 'awaiting_agent' && $this->date_user_waiting)
+		) {
+			$this->addWaitingTimeRecord('agent', $this->date_agent_waiting);
+			$this->setModelField('date_user_waiting', new \DateTime());
 		} else if ($status == 'awaiting_agent') {
 			$this->setModelField('date_user_waiting', new \DateTime());
 		} else if ($status == 'closed') {
@@ -1791,6 +1872,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
+
+		$this->_recalculate_slas = true;
 	}
 
 	public function setHiddenStatus($hstatus)
@@ -1807,6 +1890,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getStatusCode()
 	{
 		return $this->status . ($this->hidden_status ? ".{$this->hidden_status}" : '');
+	}
+
+	public function recalculateSlaDates()
+	{
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			$ticket_sla->calculateSlaDates();
+		}
 	}
 
 
@@ -1861,6 +1951,51 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		App::getOrm()->persist($del);
 		App::getOrm()->flush($del);
 		App::getOrm()->persist($this);
+	}
+
+	public function updateWorstSlaStatus()
+	{
+		if (!count($this->ticket_slas)) {
+			$this->setModelField('worst_sla_status', null);
+			return null;
+		}
+
+		$status = null;
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			if (!$status) {
+				$status = $ticket_sla->sla_status;
+			} else if ($ticket_sla->sla_status == 'fail') {
+				$status = 'fail';
+			} else if ($ticket_sla->sla_status == 'warning' && $status !== 'fail') {
+				$status = 'warning';
+			}
+		}
+
+		$this->setModelField('worst_sla_status', $status);
+		return $status;
+	}
+
+	public function addWaitingTimeRecord($type, $start_ts, $end_ts = null)
+	{
+		$start_ts = ($start_ts instanceof \DateTime ? $start_ts->getTimestamp() : intval($start_ts));
+		$end_ts = ($end_ts instanceof \DateTime ? $end_ts->getTimestamp() : intval($end_ts));
+
+		if (!$end_ts) {
+			$end_ts = time();
+		}
+
+		if ($end_ts <= $start_ts) {
+			return;
+		}
+
+		$old = $this->waiting_times;
+		$this->waiting_times[] = array(
+			'type' => $type,
+			'start' => $start_ts,
+			'end' => $end_ts,
+			'length' => ($end_ts - $start_ts)
+		);
+		$this->_onPropertyChanged('waiting_times', $old, $this->waiting_times);
 	}
 
 
@@ -2133,6 +2268,44 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 					$this->addParticipantPerson($manager);
 				}
 			}
+		}
+
+		$this->_applySlas();
+	}
+
+	public function _preUpdate()
+	{
+		if ($this->_recalculate_slas) {
+			// this is deferred until all changes are done to ensure everything is correct
+			$this->recalculateSlaDates();
+		}
+	}
+
+	protected function _applySlas()
+	{
+		$slas = App::getEntityRepository('DeskPRO:Sla')->getAllSlas();
+		foreach ($slas AS $sla) {
+			if ($sla->apply_all) {
+				$this->addSla($sla);
+				continue;
+			}
+
+			if ($sla->apply_priority && $this->priority && $sla->apply_priority->id == $this->priority->id) {
+				$this->addSla($sla);
+				continue;
+			}
+
+			if ($sla->appliesToPerson($this->person)) {
+				$this->addSla($sla);
+				continue;
+			}
+
+			if ($this->organization && $sla->appliesToOrganization($this->organization)) {
+				$this->addSla($sla);
+				continue;
+			}
+
+			// don't need to do the apply trigger here - it will be handled elsewhere
 		}
 	}
 
@@ -2421,6 +2594,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_initTicketLogger', 'postLoad');
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');
 		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
+		$metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'prePersist');
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
 		$metadata->addLifecycleCallback('_saveTicketLogs', 'postPersist');
@@ -2459,6 +2633,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_locked', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_locked', ));
 		$metadata->mapField(array( 'fieldName' => 'has_attachments', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_attachments', ));
 		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
+		$metadata->mapField(array( 'fieldName' => 'worst_sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worst_sla_status', ));
+		$metadata->mapField(array( 'fieldName' => 'waiting_times', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'waiting_times', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
@@ -2483,5 +2659,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToOne(array( 'fieldName' => 'locked_by_agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'locked_by_agent', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'charges', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCharge', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true, 'dpApiDeep' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'ticket_slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSla', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'dpApi' => true ));
 	}
 }

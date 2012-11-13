@@ -57,6 +57,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTicketLocking();
 		this._initTasks();
 		this._initEditName();
+		this._initSlas();
 
 		this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
 			auto_start_bill: this.meta.auto_start_bill
@@ -1337,6 +1338,107 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		};
 	},
+
+	//#################################################################
+	//# Slas
+	//#################################################################
+
+	_initSlas: function() {
+		var self = this;
+		var form = this.getEl('sla_form');
+		var idSelect = form.find('select[name=sla_id]');
+		var rows = this.getEl('sla_rows');
+
+		var addSlaRow = function(html) {
+			var add = $(html);
+
+			rows.append(add);
+			add.find('.timeago').timeago();
+			rows.closest('table').show();
+		};
+
+		var getVisibleOptions = function(options) {
+			return options.filter(function() {
+				return $(this).css('display') !== 'none';
+			});
+		};
+
+		rows.on('click', 'a.sla-delete', function(e) {
+			var $this = $(this);
+
+			e.preventDefault();
+
+			if (confirm(rows.data('delete-confirm'))) {
+				$.ajax({
+					url: $this.attr('href'),
+					type: 'POST',
+					dataType: 'json'
+				}).done(function (json) {
+					if (json.success) {
+						var slaId = $this.closest('tr').data('sla-id');
+						var table = $this.closest('table');
+
+						$this.closest('tr').remove();
+						if (!table.find('tbody tr').length) {
+							table.hide();
+						}
+
+						if (idSelect.length) {
+							idSelect.find('option[value="' + slaId + '"]').show();
+							if (getVisibleOptions(idSelect.find('option')).length > 1) {
+								form.show();
+							}
+						}
+					}
+				});
+			}
+		});
+
+		if (form.length) {
+			if (getVisibleOptions(idSelect.find('option')).length <= 1) {
+				// only the empty option
+				form.hide();
+			}
+
+			var progress = this.getEl('sla_save_progress');
+
+			DP.select(idSelect, {
+				// todo: try to get it to hide hidden select elements
+			});
+
+			form.on('click', 'button', function() {
+				var val = idSelect.val();
+				if (val.length && val != '0') {
+					progress.show();
+
+					$.ajax({
+						url: form.data('submit-url'),
+						data: form.find('input, textarea, select').serialize(),
+						type: 'POST',
+						dataType: 'json'
+					}).done(function(json) {
+						if (json.inserted) {
+							addSlaRow(json.html);
+
+							idSelect.find('option[value="' + val + '"]').hide();
+							if (getVisibleOptions(idSelect.find('option')).length <= 1) {
+								// only the empty option
+								form.hide();
+							} else {
+								idSelect.val('0');
+							}
+						}
+					}).always(function() {
+						progress.hide();
+					});
+				}
+			});
+		}
+	},
+
+	//#################################################################
+	//# Edit name
+	//#################################################################
 
 	_initEditName: function() {
 		var self = this;

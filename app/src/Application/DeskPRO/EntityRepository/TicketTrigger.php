@@ -269,6 +269,35 @@ class TicketTrigger extends AbstractEntityRepository
 		return $ret;
 	}
 
+	public function getTriggerTermOptions()
+	{
+		$container = App::getContainer();
+		$em = $this->getEntityManager();
+
+		$term_options = App::getApi('tickets')->getTicketOptions(App::getCurrentPerson());
+		$term_options['people_term_options']  = array();
+		$term_options['people_term_options']  = array();
+		$term_options['people_term_options']['organizations']  = $container->getDataService('Organization')->getOrganizationNames();
+		$term_options['people_term_options']['usergroups']     = $container->getDataService('Usergroup')->getUsergroupNames();
+		$term_options['email_gateway_addresses'] = $em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
+
+		if ($container->getDataService('Language')->isMultiLang()) {
+			$term_options['people_term_options']['languages']  = $container->getDataService('Language')->getTitles();
+		}
+
+		$term_options['web_hooks']  = $container->getDataService('WebHook')->getHookTitles();
+		$term_options['api_keys']  = $container->getDataService('ApiKey')->getApiKeyTitles();
+		$term_options['slas']  = $container->getDataService('Sla')->getSlaTitles();
+
+		$term_options['plugin_actions'] = $container->getDataService('TicketTriggerPluginActions')->getSetupObjects();
+		foreach ($term_options['plugin_actions'] AS $object) {
+			$term_options = $object->alterTermOptionData($term_options);
+		}
+
+		return $term_options;
+	}
+
+
 
 	public function getTemplateVariantMap()
 	{

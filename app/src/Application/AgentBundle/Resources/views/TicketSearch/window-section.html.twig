@@ -89,6 +89,39 @@
 	</article>
 </section>
 
+{% if slas %}
+	<section class="source-section sla-section">
+		<header>
+			<h1>
+				SLAs
+				{% if sla_filter == 'agent' %}(My Tickets)
+				{% elseif sla_filter == 'team' %}(My Teams' Tickets){% endif %}
+			</h1>
+			<!--<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>-->
+		</header>
+		<article id="sla_list_wrap">
+			<ul class="source-list">
+			{% for sla in slas %}
+				<li
+					class="sla sla-{{sla.id}}"
+					data-sla-id="{{sla.id}}"
+				>
+					<h3
+						class="is-nav-item title "
+						data-route="listpane:{{ path('agent_ticketsearch_runsla', {'sla_id': sla.id}) }}"
+					>
+						<span class="list-counter fail" id="ticket_sla_{{sla.id}}_count_fail">{{ sla_counts[sla.id].fail|default(0) }}</span>
+						<span class="list-counter warning" id="ticket_sla_{{sla.id}}_count_warning">{{ sla_counts[sla.id].warning|default(0) }}</span>
+						<span class="list-counter ok" id="ticket_sla_{{sla.id}}_count_ok">{{ sla_counts[sla.id].ok|default(0) }}</span>
+						<label>{{ sla.title }}</label>
+					</h3>
+				</li>
+			{% endfor %}
+			</ul>
+		</article>
+	</section>
+{% endif %}
+
 <section class="source-tabs" id="tickets_outline_tabstrip">
 	<ul>
 		<li class="archive" data-tab-for="#tickets_outline_archive"><span>Tickets</span></li>

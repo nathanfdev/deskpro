@@ -2163,7 +2163,8 @@ header.page-header .edit-name-gear {
 	font-size: 13px;
 }
 
-.contact-list ul li.ug-row {
+.contact-list ul li.ug-row,
+.contact-list ul li.sla-row{
 	padding-left:0;
 }
 
@@ -3320,6 +3321,7 @@ article.content-message .content .body-text .fade-bar {
 			background: url(../../images/agent/icons/cross.png);
 			text-indent: 100px;
 			cursor: pointer;
+			vertical-align: text-bottom;
 		}
 	}
 }
@@ -3350,6 +3352,52 @@ article.content-message .content .body-text .fade-bar {
 
 		button.clean-white {
 			margin-right: 0;
+		}
+	}
+}
+
+
+
+
+.sla-table {
+	.sla-status-icon {
+		text-align: right;
+		span {
+			.iconbase(16px, 16px);
+			text-indent: 100px;
+			vertical-align: text-bottom;
+		}
+
+		.ok {
+			background-image: url(../../images/agent/icons/bullet_green.png);
+		}
+		.warning {
+			background-image: url(../../images/agent/icons/bullet_orange.png);
+		}
+		.fail {
+			background-image: url(../../images/agent/icons/bullet_red.png);
+		}
+	}
+
+	.delete {
+		text-align: right;
+		a {
+			.iconbase(16px, 16px);
+			background: url(../../images/agent/icons/cross.png);
+			text-indent: 100px;
+			cursor: pointer;
+			vertical-align: text-bottom;
+		}
+	}
+
+	.completed {
+		text-align: right;
+		a {
+			.iconbase(10px, 10px);
+			background: url(../../images/agent/checkbox-checked.png) no-repeat;
+			text-indent: 100px;
+			cursor: pointer;
+			vertical-align: middle;
 		}
 	}
 }

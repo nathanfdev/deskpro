@@ -900,6 +900,13 @@ $collection->add('agent_ticketsearch_runnamedfilter', new Route(
 	array('fragment_name' => 'inbox', 'fragment_type' => 'list')
 ));
 
+$collection->add('agent_ticketsearch_runsla', new Route(
+	'/ticket-search/sla/{sla_id}',
+	array('_controller' => 'AgentBundle:TicketSearch:runSla'),
+	array('sla_id' => '\\d+'),
+	array('fragment_name' => 'sla', 'fragment_type' => 'list')
+));
+
 $collection->add('agent_ticketsearch_ajax_get_macro', new Route(
 	'/ticket-search/ajax-get-macro',
 	array('_controller' => 'AgentBundle:TicketSearch:ajaxGetMacro'),
@@ -1310,6 +1317,20 @@ $collection->add('agent_ticket_chargedelete', new Route(
 	'/ticket/{ticket_id}/charge/{charge_id}/delete/{security_token}',
 	array('_controller' => 'AgentBundle:Ticket:deleteCharge'),
 	array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_addsla', new Route(
+	'/ticket/{ticket_id}/add-sla',
+	array('_controller' => 'AgentBundle:Ticket:addSla'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_sladelete', new Route(
+	'/ticket/{ticket_id}/sla/{sla_id}/delete/{security_token}',
+	array('_controller' => 'AgentBundle:Ticket:deleteSla'),
+	array('ticket_id' => '\\d+', 'sla_id' => '\\d+'),
 	array()
 ));
 

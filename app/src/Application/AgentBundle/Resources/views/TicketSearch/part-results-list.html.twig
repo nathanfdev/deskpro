@@ -2,7 +2,7 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 	<tr
-		class="row-item ticket-{{ticket.id}} {% if ticket.status == 'awaiting_agent' %}urgency-{{ticket.urgency}}{% endif %} {% if ticket.is_locked %}locked{% endif %}"
+		class="row-item ticket-{{ticket.id}} {% if ticket.worst_sla_status %}sla-status-{{ ticket.worst_sla_status }}{% endif %} {% if ticket.status == 'awaiting_agent' %}urgency-{{ticket.urgency}}{% endif %} {% if ticket.is_locked %}locked{% endif %}"
 		data-ticket-id="{{ticket.id}}"
 		data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
 		data-route-title="@selector(.subject-link span)"

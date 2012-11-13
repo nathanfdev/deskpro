@@ -90,6 +90,15 @@ class TicketSearchController extends AbstractController
 		", array($this->person->id));
 
 		#------------------------------
+		# SLAs
+		#------------------------------
+
+		$sla_filter = $this->person->getPref('agent.ui.ticket-sla.filter', 'all');
+
+		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+		$sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCounts($slas, $sla_filter);
+
+		#------------------------------
 		# Misc
 		#------------------------------
 
@@ -118,7 +127,11 @@ class TicketSearchController extends AbstractController
 			'filter_show_options' => $filter_show_options,
 			'labels_index' => $index,
 			'labels_cloud' => $cloud,
-			'initial_inbox_grouping' => $initial_inbox_grouping
+			'initial_inbox_grouping' => $initial_inbox_grouping,
+
+			'slas' => $slas,
+			'sla_counts' => $sla_counts,
+			'sla_filter' => $sla_filter
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;
@@ -688,6 +701,101 @@ class TicketSearchController extends AbstractController
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
 		return $this->runFilterAction($filter['id']);
+	}
+
+	public function runSlaAction($sla_id)
+	{
+        $view_type = $this->in->getString('view_type');
+
+		/** @var $sla \Application\DeskPRO\Entity\Sla */
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+
+		if (!$sla) {
+			throw $this->createNotFoundException();
+		}
+
+		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+		$searcher->setPerson($this->person);
+
+		$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA, 'is', $sla_id);
+
+		$order_by = $this->in->getString('order_by');
+		if (!$order_by) {
+			$order_by = $this->person->getPref('agent.ui.ticket-sla-order-by.' . $sla['id']);
+		}
+
+		if ($order_by) {
+			$searcher->setOrderByCode($order_by);
+		}
+
+        if ($view_type == 'csv') {
+            $searcher->setLimit(0);
+        }
+
+		$set_group_term = null;
+		$set_group_option = null;
+		if ($this->in->getString('set_group_term')) {
+			$set_group_term = $this->in->getString('set_group_term');
+			$set_group_option = $this->in->getString('set_group_option');
+
+			$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+			if ($term) {
+				$type = $term['type'];
+				$op = $term['op'];
+				$choice = $term;
+				unset($choice['type'], $choice['op']);
+
+				$searcher->addTerm($type, $op, $choice);
+			}
+		}
+
+		$results = $searcher->getMatches();
+
+		$results = Arrays::castToType($results, 'integer');
+
+		$helper = new Helper\TicketResults($this);
+		$helper->setTicketIds($results);
+
+		// Or if the user has their own
+		$group_by = $this->person->getPref('agent.ui.ticket-sla-group-by.' . $sla['id']);
+
+		if ($this->in->getString('group_by')) {
+			$group_by = $this->in->getString('group_by');
+
+			App::getEntityRepository('DeskPRO:PersonPref')->savePref(
+				$this->person,
+				'agent.ui.ticket-sla-group-by.' . $sla['id'],
+				$group_by
+			);
+		}
+
+		if ($group_by) {
+			$helper->setGroupField($group_by);
+		}
+
+		$needs_urgency = $searcher->needsUrgency();
+
+		$vars = array(
+			'sla' => $sla,
+			'sla_id' => $sla->id,
+			'needs_urgency' => $needs_urgency,
+			'order_by_summary' => $searcher->getOrderBySummary(),
+			'terms_summary' => $searcher->getSummary(),
+			'set_group_term' => $set_group_term,
+			'set_group_option' => $set_group_option,
+			'ticket_ids' => $results,
+            'order_by' => $searcher->getOrderBy(),
+		);
+
+		$pref_display_fields = $this->person->getPref('agent.ui.ticket-sla-display-fields.' . $sla['id']);
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			// Default display fields based on the filter
+			$vars['display_fields'] = $this->_suggestedDisplayFields($searcher);
+		}
+
+		return $this->_getResponseForTickets('sla', $sla['id'], $helper, $vars);
 	}
 
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())

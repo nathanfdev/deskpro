@@ -313,6 +313,18 @@ ul.source-list li .list-counter {
     padding: 0 5px;
 	background-color: #6c89a6;
 	position: relative;
+
+	&.ok {
+		background-color: #008c00;
+	}
+
+	&.warning {
+		background-color: #e7893e;
+	}
+
+	&.fail {
+		background-color: #a50000;
+	}
 }
 
 /* list counters are the bubbles with numbers */
@@ -322,6 +334,18 @@ ul.source-list li > .title.nav-selected .list-counter,
 ul.source-list li > .item-wrap > .title.nav-selected .list-counter,
 ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 	background-color: #2F4B67;
+
+	&.ok {
+		background-color: #005300;
+	}
+
+	&.warning {
+		background-color: #c2792c;
+	}
+
+	&.fail {
+		background-color: #690000;
+	}
 }
 
 ul.source-list li .list-counter.loading {

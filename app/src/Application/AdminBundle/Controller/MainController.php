@@ -228,4 +228,122 @@ class MainController extends AbstractController
 			));
 		}
 	}
+
+	public function quickPersonSearchAction()
+	{
+		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
+		}
+
+		$agent_sql = ' p.is_agent = 0 AND ';
+		if ($this->in->getBool('with_agents')) {
+			$agent_sql = '';
+		}
+
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 20;
+		$limit = min($limit, 100);
+
+		$not_in_org = $this->in->getUint('exclude_org');
+
+		if (!$q && $this->in->getBool('start_with')) {
+			$people_list = $this->db->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
+				WHERE $agent_sql
+				" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
+				ORDER BY p.name ASC
+				LIMIT $limit
+			");
+		} else {
+			$people_list = $this->db->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
+				WHERE
+					$agent_sql
+					(e.email LIKE ?
+					OR p.name LIKE ?
+					OR p.first_name LIKE ?
+					OR p.last_name LIKE ?)
+					" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
+				GROUP BY p.id
+				ORDER BY p.date_last_login DESC, p.id DESC
+				LIMIT $limit
+			", array("%$q%", "%$q%", "%$q%", "%$q%"));
+		}
+
+		$json = array();
+
+		foreach ($people_list as $person) {
+			if (!empty($person['first_name']) AND !empty($person['last_name'])) {
+				$name = $person['first_name'] . ' ' . $person['last_name'];
+			} elseif (!empty($person['name'])) {
+				$name = $person['name'];
+			} elseif (!empty($person['last_name'])) {
+				$name = $person['last_name'];
+			} elseif (!empty($person['first_name'])) {
+				$name = $person['first_name'];
+			} elseif (!empty($person['email'])) {
+				$name = $person['email'];
+			} else {
+				$name = 'User ' . $person['id'];
+			}
+
+			if (!$name) {
+				continue;
+			}
+
+			$json[] = array(
+				'id' => $person['id'],
+				'value' => $person['id'],
+				'name' =>  $name,
+				'email' => $person['email'],
+				'label' => $name . ($person['email'] ? " <{$person['email']}>" : '')
+			);
+		}
+
+		return $this->createJsonResponse($json);
+	}
+
+	public function quickOrganizationSearchAction()
+	{
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 20;
+
+		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
+		}
+
+		if ($q) {
+			$orgs_list = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:Organization o
+				WHERE o.name LIKE ?1
+				ORDER BY o.name ASC
+			")->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
+		} else {
+			$orgs_list = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:Organization o
+				ORDER BY o.name ASC
+			")->setMaxResults($limit)->getResult();
+		}
+
+		$json = array();
+
+		foreach ($orgs_list as $org) {
+			$json[] = array(
+				'id' => $org['id'],
+				'name' => $org['name'],
+				'value' => $org['name'],
+				'label' => $org['name']
+			);
+		}
+
+		return $this->createJsonResponse($json);
+	}
 }

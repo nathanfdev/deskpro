@@ -136,6 +136,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% include 'AdminBundle:TicketTriggers:criteria.html.twig' with {
 	'classname': 'criteria-tpl',
+	'term_options': term_options,
 	'event_trigger': trigger.event_trigger,
 	'event_trigger_master': trigger.getMasterEvent(),
 	'event_trigger_sub': trigger.getSubEvent(),

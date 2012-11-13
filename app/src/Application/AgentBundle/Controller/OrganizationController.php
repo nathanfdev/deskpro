@@ -305,6 +305,22 @@ class OrganizationController extends AbstractController
 				}
 				break;
 
+			case 'set-slas':
+				$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint', 'discard');
+				$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+
+
+				foreach ($slas AS $sla) {
+					if (in_array($sla->id, $sla_ids)) {
+						$sla->addOrganization($org);
+					} else {
+						$sla->removeOrganization($org);
+					}
+					$this->em->persist($sla);
+				}
+
+				break;
+
 			default:
 				return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
 				break;

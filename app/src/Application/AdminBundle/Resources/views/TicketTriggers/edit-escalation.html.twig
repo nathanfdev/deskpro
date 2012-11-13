@@ -45,6 +45,7 @@ function TicketTriggerEditPage_init()
 {% elseif trigger.event_trigger == 'time.total_user_waiting' %}When a user has been waiting for a reply for a total of
 {% elseif trigger.event_trigger == 'time.agent_waiting' %}When an agent has been waiting for a reply for
 {% elseif trigger.event_trigger == 'time.resolved' %}When the ticket has been resolved for
+{% elseif trigger.event_trigger == 'sla.warning' or trigger.event_trigger == 'sla.fail' %}When the ticket is not resolved in
 {% endif %}
 	<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 	<input type="text" name="event_trigger_time" value="{{ trigger.getOptionTime() }}" size="10" style="width: 80px; position:relative; top: 1px;" class="small" />
@@ -53,4 +54,6 @@ function TicketTriggerEditPage_init()
 			<option {% if trigger.getOptionScale() == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
 		{% endfor %}
 	</select>
+{% if trigger.event_trigger == 'sla.warning' %} of SLA countable time, the ticket is close to failing the SLA.{% endif %}
+{% if trigger.event_trigger == 'sla.fail' %} of SLA countable time, the ticket has failed the SLA.{% endif %}
 {% endblock %}

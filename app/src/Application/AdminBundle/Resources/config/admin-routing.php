@@ -62,6 +62,20 @@ $collection->add('admin_check_task_queue_group', new Route(
 	array()
 ));
 
+$collection->add('admin_quick_person_search', new Route(
+	'/misc/quick-person-search',
+	array('_controller' => 'AdminBundle:Main:quickPersonSearch'),
+	array(),
+	array()
+));
+
+$collection->add('admin_quick_organization_search', new Route(
+	'/misc/quick-organization-search',
+	array('_controller' => 'AdminBundle:Main:quickOrganizationSearch'),
+	array(),
+	array()
+));
+
 $collection->add('admin_skip_setup_todo', new Route(
 	'/misc/skip-setup-todo',
 	array('_controller' => 'AdminBundle:Main:skipSetupStep'),
@@ -412,6 +426,34 @@ $collection->add('admin_ticketworks_updateorders', new Route(
 	'/tickets/workflows/update-orders',
 	array('_controller' => 'AdminBundle:TicketWorkflows:updateOrders'),
 	array(),
+	array()
+));
+
+$collection->add('admin_tickets_slas', new Route(
+	'/tickets/slas',
+	array('_controller' => 'AdminBundle:TicketSlas:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_slas_new', new Route(
+	'/tickets/slas/new',
+	array('_controller' => 'AdminBundle:TicketSlas:edit', 'sla_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_sla_edit', new Route(
+	'/tickets/slas/{sla_id}/edit',
+	array('_controller' => 'AdminBundle:TicketSlas:edit'),
+	array('sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_tickets_sla_delete', new Route(
+	'/tickets/slas/{sla_id}/delete',
+	array('_controller' => 'AdminBundle:TicketSlas:delete'),
+	array('sla_id' => '\\d+'),
 	array()
 ));
 

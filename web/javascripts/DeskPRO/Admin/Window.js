@@ -212,6 +212,12 @@ DeskPRO.Admin.Window = new Orb.Class({
 			}
 		});
 
+		$(document).on('click', '.click-confirm', function(ev) {
+			if (!confirm($(this).data('confirm'))) {
+				ev.preventDefault();
+			}
+		});
+
 		DeskPRO.ElementHandler_Exec();
 
 		$('time.timeago').timeago();

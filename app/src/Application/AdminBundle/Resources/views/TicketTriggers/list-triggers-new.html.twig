@@ -91,6 +91,41 @@
 			<tr>
 				<th class="single-title" colspan="10">
 					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new'}) }}">Add New Trigger</a>
+					</div>
+					<h1 class="noexpand">
+						New ticket has been created
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% for trigger in triggers['new'] %}
+							{{ _self.trigger_row(loop.index, trigger, 'new') }}
+						{% else %}
+							<li>
+								You have not defined any triggers for all new tickets.
+								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new'}) }}">Create one now</a>.
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
 						<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Add New Trigger</a>
 					</div>
 					<h1 class="noexpand">
@@ -104,7 +139,7 @@
 				<td>
 					<ul class="item-list trigger-set">
 						{% for trigger in triggers['new.email.user'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+							{{ _self.trigger_row(loop.index, trigger, 'new.email.user') }}
 						{% else %}
 							<li>
 								You have not defined any triggers for new ticket emails sent by a user.
@@ -139,7 +174,7 @@
 				<td>
 					<ul class="item-list trigger-set">
 						{% for trigger in triggers['new.web.user_any'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+							{{ _self.trigger_row(loop.index, trigger, 'new.web.user_any') }}
 						{% else %}
 							<li>
 								You have not defined any triggers for new tickets made by an agent via the agent interface.
@@ -175,7 +210,7 @@
 				<td>
 					<ul class="item-list trigger-set">
 						{% for trigger in triggers['new.email.agent'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+							{{ _self.trigger_row(loop.index, trigger, 'new.email.agent') }}
 						{% else %}
 							<li>
 								You have not defined any triggers for new ticket emails sent by an agent.
@@ -211,7 +246,7 @@
 				<td>
 					<ul class="item-list trigger-set">
 						{% for trigger in triggers['new.web.agent.portal'] %}
-							{{ _self.trigger_row(loop.index, trigger, type) }}
+							{{ _self.trigger_row(loop.index, trigger, 'new.web.agent.portal') }}
 						{% else %}
 							<li>
 								You have not defined any triggers for new tickets made by an agent via the agent interface.
@@ -247,7 +282,7 @@
 					<td>
 						<ul class="item-list trigger-set">
 							{% for trigger in triggers['new.web.api'] %}
-								{{ _self.trigger_row(loop.index, trigger, type) }}
+								{{ _self.trigger_row(loop.index, trigger, 'new.web.api') }}
 							{% else %}
 								<li>
 									You have not defined any triggers for new tickets made via the API.

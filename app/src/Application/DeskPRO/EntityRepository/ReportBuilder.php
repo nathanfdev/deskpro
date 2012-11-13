@@ -193,6 +193,8 @@ class ReportBuilder extends AbstractEntityRepository
 					'category' => array('category', '%s.category'),
 					'priority' => array('priority', '%s.priority'),
 					'workflow' => array('workflow', '%s.workflow'),
+					'sla' => array('SLA', '%s.ticket_slas'),
+					'sla_status' => array('SLA status', '%s.ticket_slas.sla_status'),
 					// todo: ticket rating
 					'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
 					'day_week_created' => array('day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'),

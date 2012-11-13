@@ -69,6 +69,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_TIME_AGENT_WAITING         = 'time.agent_waiting';
 	const EVENT_TIME_RESOLVED              = 'time.resolved';
 
+	const EVENT_SLA_WARNING = 'sla.warning';
+	const EVENT_SLA_FAIL    = 'sla.fail';
+
 	/**
 	 * @var int
 	 */
@@ -389,6 +392,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public function getTriggerType()
 	{
 		if (strpos($this->event_trigger, 'time.') === 0) {
+			return 'escalation';
+		} else if (strpos($this->event_trigger, 'sla.') === 0) {
 			return 'escalation';
 		} else {
 			return 'trigger';

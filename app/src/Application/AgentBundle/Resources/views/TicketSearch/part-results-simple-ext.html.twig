@@ -4,7 +4,7 @@
 {% set ticket_person = ticket.person %}
 {% set ticket_agent = ticket.agent %}
 
-<article class="row-item ticket-{{ ticket.id }} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+<article class="row-item ticket-{{ ticket.id }} {% if ticket.worst_sla_status %}sla-status-{{ ticket.worst_sla_status }}{% endif %} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
 	<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">

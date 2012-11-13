@@ -932,6 +932,50 @@ class TicketTerms
 				}
 				break;
 
+			case TicketSearch::TERM_SLA:
+				$sla_id = $choice['sla_id'];
+
+				if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+				elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
+				$any = false;
+				foreach ($ticket->ticket_slas as $ticket_sla) {
+					if ($ticket_sla->sla->id == $sla_id) {
+						$any = true;
+						if ($op == self::OP_NOTCONTAINS) {
+							return false;
+						}
+					}
+				}
+
+				if ($op == self::OP_CONTAINS AND !$any) {
+					return false;
+				}
+				break;
+
+			case TicketSearch::TERM_SLA_STATUS:
+				$sla_status = $choice['sla_status'];
+				$sla_id = $choice['sla_id'];
+
+				if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+				elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+
+				$any = false;
+				foreach ($ticket->ticket_slas as $ticket_sla) {
+					if ($ticket_sla->sla_status == $sla_status && (!$sla_id || $ticket_sla->sla->id = $sla_id)) {
+						$any = true;
+						if ($op == self::OP_NOTCONTAINS) {
+							return false;
+						}
+					}
+				}
+
+				if ($op == self::OP_CONTAINS AND !$any) {
+					return false;
+				}
+				break;
+				break;
+
 			case PersonSearch::TERM_EMAIL:
 			case PersonSearch::TERM_EMAIL_DOMAIN:
 			case PersonSearch::TERM_DATE_CREATED:

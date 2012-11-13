@@ -274,6 +274,21 @@ class TermSummary
 				}
 				break;
 
+			case 'sla':
+				$sla = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
+				$summary = "Ticket has SLA " . ($sla ? $sla->title : '[unknown]');
+				break;
+
+			case 'sla_status':
+				// todo: phrase the status
+				if (empty($choice['sla_id'])) {
+					$summary = "Ticket has SLA status " . $choice['sla_status'] . " for any SLA";
+				} else {
+					$sla = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
+					$summary = "Ticket has SLA status " . $choice['sla_status'] . " for SLA " . ($sla ? $sla->title : '[unknown]');
+				}
+				break;
+
 			case 'ticket_hold':
 				$summary = $tr->phrase('agent.tickets.tickets_on_hold');
 				break;

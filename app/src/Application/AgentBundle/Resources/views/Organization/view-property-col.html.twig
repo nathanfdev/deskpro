@@ -74,6 +74,48 @@
 
 {{ dp_widgets(baseId, 'organization', 'email_assoc', 'below', org_api) }}
 
+{# SLAs Box #}
+{{ dp_widgets(baseId, 'organization', 'slas', 'above', org_api) }}
+
+{% if app.getDataRepository('Sla').getAllSlas() %}
+	<div class="profile-box-container summary" id="{{baseId}}_sla_box">
+		<header>
+			<div class="controls">
+				<span class="edit-gear edit-trigger"></span>
+				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+				<button class="cancel cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
+				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
+			</div>
+			{{ dp_widget_tabs_header(baseId, 'organization', 'slas', {
+				(baseId ~ '_sla_body'): 'SLAs'
+			}) }}
+		</header>
+		<section id="{{baseId}}_sla_body">
+			<div id="{{baseId}}_sla_display_box" class="contact-list">
+				<ul>
+				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+					<li class="sla-row sla-row-{{ sla.id }}" {% if not organization.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
+				{% endfor %}
+				<li class="no-slas" style="padding-left: 0; {% if organization.slas|length %}display: none;{% endif %}}">No SLAs are being automatically applied to this organization.</li>
+				</ul>
+			</div>
+			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
+				<ul>
+				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+					<li class="sla-row">
+						<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if organization.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</section>
+		{{ dp_widget_tabs(baseId, 'organization', 'slas', 'section', org_api) }}
+	</div>
+{% endif %}
+
+{{ dp_widgets(baseId, 'organization', 'slas', 'below', org_api) }}
+{# /SLAs Box#}
+
 {# Usergroup Box #}
 {{ dp_widgets(baseId, 'organization', 'usergroups', 'above', org_api) }}
 

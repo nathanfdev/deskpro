@@ -46,9 +46,11 @@ function TicketTriggerEditPage_init()
 		<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 	{% endif %}
 
-	{% if trigger.event_trigger == 'new.email.user' %}When a user creates a ticket via email
+	{% if trigger.event_trigger == 'new' %}When a new ticket is created
+	{% elseif trigger.event_trigger == 'new.email.user' %}When a user creates a ticket via email
 	{% elseif trigger.event_trigger == 'new.email.agent' %}When an agent forwards a user email via email
 	{% elseif trigger.event_trigger == 'new.web.agent.portal' %}When an agent creates a new ticket via the agent interface
+	{% elseif trigger.event_trigger == 'new.web.api' %}When a new ticket is created via the API
 	{% elseif 'new.web.user' in trigger.event_trigger %}
 		When a user creates a new ticket via
 		<select name="trigger[event_trigger]" id="event_trigger">

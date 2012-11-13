@@ -81,6 +81,8 @@ class TicketSearch extends SearcherAbstract
 	const TERM_SENT_TO_ADDRESS           = 'sent_to_address';
 	const TERM_DAY_CREATED               = 'day_created';
 	const TERM_FEEDBACK_RATING           = 'feedback_rating';
+	const TERM_SLA                       = 'sla';
+	const TERM_SLA_STATUS                = 'sla_status';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -1037,6 +1039,138 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						break;
+
+					case self::TERM_SLA:
+
+						$choice = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : $choice);
+						if (!$choice) {
+							break;
+						}
+
+						$this->affected_fields[] = 'ticket.sla';
+
+						$choices_in = array();
+						foreach ($choice as $c) {
+							$choices_in[] = $db->quote($c);
+						}
+						$choices_in = implode(',', $choices_in);
+
+						$this->summary[] = $this->_choiceSummary('SLA', $op, $choice, function($choice) {
+							$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$choice);
+							return $titles;
+						});
+
+						switch ($op) {
+							case self::OP_IS:
+							case self::OP_CONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)"
+								);
+								$wheres[] = "$join_name.sla_id IN ($choices_in)";
+								break;
+
+							case self::OP_NOT:
+							case self::OP_NOTCONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.sla_id IN ($choices_in))"
+								);
+								$wheres[] = "$join_name.ticket_id IS NULL";
+								break;
+						}
+						break;
+
+					case self::TERM_SLA_STATUS:
+
+						if (isset($choice['sla_status'])) {
+							$statuses = (array)$choice['sla_status'];
+							$sla_ids = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : array());
+						} else {
+							$statuses = (array)$choice;
+							$sla_ids = array();
+						}
+						if (!$statuses && !$sla_ids) {
+							break;
+						}
+
+						if (!$statuses) {
+							$statuses = array('ok', 'warning', 'fail');
+							$status_summary = false;
+						} else {
+							$status_summary = true;
+						}
+
+						$this->affected_fields[] = 'ticket.sla_status';
+						if ($sla_ids) {
+							$this->affected_fields[] = 'ticket.sla_id';
+						}
+
+						$statuses_in = array();
+						$sla_ids_in = array();
+
+						foreach ($statuses as $c) {
+							$statuses_in[] = $db->quote($c);
+						}
+						foreach ($sla_ids as $c) {
+							if ($c) {
+								$sla_ids_in[] = $db->quote($c);
+							}
+						}
+						$statuses_in = implode(',', $statuses_in);
+						$sla_ids_in = implode(',', $sla_ids_in);
+
+						if ($status_summary) {
+							$this->summary[] = $this->_choiceSummary('SLA status', $op, $statuses, function($statuses) {
+								$titles = array();
+								foreach ($statuses AS $status) {
+									switch ($status) {
+										case 'ok': $value = 'OK'; break;
+										case 'warning': $value = 'Warning'; break;
+										case 'fail': $value = 'Failed'; break;
+										default: $value = '';
+									}
+
+									if ($value) {
+										$titles[$status] = $value;
+									}
+								}
+
+								return $titles;
+							});
+						}
+
+						if ($sla_ids) {
+							$this->summary[] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
+								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles($sla_ids);
+								return $titles;
+							});
+						}
+
+						switch ($op) {
+							case self::OP_IS:
+							case self::OP_CONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)"
+								);
+								$wheres[] = "$join_name.sla_status IN ($statuses_in)"
+									. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '');
+								break;
+
+							case self::OP_NOT:
+							case self::OP_NOTCONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
+										. "AND $join_name.sla_status IN ($statuses_in)"
+										. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
+								);
+								$wheres[] = "$join_name.ticket_id IS NULL";
+								break;
+						}
+						break;
+
 					case self::TERM_LANGUAGE:
 						$this->affected_fields[] = 'ticket.language_id';
 						if (count($choice) == 1) {

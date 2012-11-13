@@ -1987,6 +1987,49 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('organization_position', $organization_position);
 	}
 
+	public function addSla(Sla $sla)
+	{
+		foreach ($this->slas AS $person_sla) {
+			if ($person_sla->id == $sla->id) {
+				return false;
+			}
+		}
+
+		$this->slas->add($sla);
+
+		return true;
+	}
+
+	public function removeSla(Sla $sla)
+	{
+		foreach ($this->slas AS $k => $person_sla) {
+			if ($person_sla->id == $sla->id) {
+				$this->slas->remove($k);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function removeAllSlas()
+	{
+		foreach ($this->slas AS $k => $null) {
+			$this->slas->remove($k);
+		}
+	}
+
+	public function hasSla(Sla $sla)
+	{
+		foreach ($this->slas AS $person_sla) {
+			if ($person_sla->id == $sla->id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * @return string
@@ -2146,5 +2189,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
+		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'people'));
 	}
 }

@@ -200,6 +200,7 @@ class Display
 		'ticket_attachments' => 'DeskPRO:TicketAttachment',
 		'ticket_charges' => 'DeskPRO:TicketCharge',
 		'ticket_feedback' => 'DeskPRO:TicketFeedback',
+		'ticket_slas' => 'DeskPRO:TicketSla',
 	);
 
 	/**

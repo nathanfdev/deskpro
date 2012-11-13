@@ -108,7 +108,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.open') }}
 						{% else %}
 							<li>
-								You have not defiend any escalations based on the time a ticket has been open for.
+								You have not defined any escalations based on the time a ticket has been open for.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.open'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -143,7 +143,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.user_waiting') }}
 						{% else %}
 							<li>
-								You have not defiend any escalations based on the time a user has been waiting for a reply.
+								You have not defined any escalations based on the time a user has been waiting for a reply.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.user_waiting'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -178,7 +178,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.total_user_waiting') }}
 						{% else %}
 							<li>
-								You have not defiend any escalations based on the total time a user has been waiting for replies.
+								You have not defined any escalations based on the total time a user has been waiting for replies.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.total_user_waiting'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -213,7 +213,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.agent_waiting') }}
 						{% else %}
 							<li>
-								You have not defiend any escalations based on the time an agent has been waiting for the user to reply.
+								You have not defined any escalations based on the time an agent has been waiting for the user to reply.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.agent_waiting'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -248,10 +248,50 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.resolved') }}
 						{% else %}
 							<li>
-								You have not defiend any escalations based on the time a ticket has been resolved for.
+								You have not defined any escalations based on the time a ticket has been resolved for.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.resolved'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="10">
+					<div style="float: right">
+						<a class="clean-white" href="{{ path('admin_tickets_slas_new') }}">Add New SLA</a>
+					</div>
+					<h1 class="noexpand">
+						When a ticket reaches an SLA warning or failure threshold
+					</h1>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="item-list trigger-set">
+						{% if triggers['sla.warning'] or triggers['sla.fail']  %}
+							{% for trigger in triggers['sla.warning'] %}
+								{{ _self.trigger_row(loop.index, trigger, 'sla.warning') }}
+							{% endfor %}
+							{% for trigger in triggers['sla.fail'] %}
+								{{ _self.trigger_row(loop.index, trigger, 'sla.fail') }}
+							{% endfor %}
+						{% else %}
+							<li>
+								You have not defined any SLAs.
+								<a href="{{ path('admin_tickets_slas_new') }}">Create one now</a>.
+							</li>
+						{% endif %}
 					</ul>
 				</td>
 			</tr>

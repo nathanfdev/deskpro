@@ -219,6 +219,22 @@ class ActionsFactory
 				$options = array('message' => $value['message']);
 				break;
 
+			case 'add_sla':
+				$options = array('sla_id' => $value['sla_id']);
+				break;
+
+			case 'remove_sla':
+				$options = array('sla_id' => $value['sla_id']);
+				break;
+
+			case 'set_sla_status':
+				$options = array('sla_status' => $value['sla_status'], 'sla_id' => $value['sla_id']);
+				break;
+
+			case 'recalculate_sla_status':
+				$options = array();
+				break;
+
 			case 'send_user_email':
 				$options = array('template' => $value['template_name']);
 				break;

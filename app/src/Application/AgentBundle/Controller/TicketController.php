@@ -165,6 +165,7 @@ class TicketController extends AbstractController
 
 		$tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
 
+		$addable_slas = $this->em->getRepository('DeskPRO:Sla')->getAddableSlas($ticket);
 		$ticket_api = array();
 		foreach (array(
 			'id', 'subject', 'ref', 'status', 'hidden_status', 'creation_system', 'is_hold',
@@ -262,7 +263,9 @@ class TicketController extends AbstractController
 	        'tickets_by_user' => $tickets_by_user,
 
             'agent_signature' => $this->person->getSignature(),
-	        'agent_signature_html' => $this->person->getSignatureHtml()
+	        'agent_signature_html' => $this->person->getSignatureHtml(),
+
+			'addable_slas' => $addable_slas
         );
 
         if($is_pdf)
@@ -315,7 +318,7 @@ class TicketController extends AbstractController
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
 		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 
-		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
+		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
@@ -1935,6 +1938,64 @@ class TicketController extends AbstractController
 		}
 
 		$this->em->remove($charge);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	############################################################################
+	# add-sla
+	############################################################################
+
+	public function addSlaAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($this->in->getUint('sla_id'));
+		if (!$sla || !$sla->allow_agent_manual) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$ticket_sla = $ticket->addSla($sla);
+		if ($ticket_sla && !$ticket_sla->id) {
+			$this->em->persist($ticket);
+			$this->em->flush();
+
+			return $this->createJsonResponse(array(
+				'inserted' => true,
+				'html' => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
+					'ticket' => $ticket,
+					'ticket_sla' => $ticket_sla
+				))
+			));
+		} else {
+			return $this->createJsonResponse(array('inserted' => false));
+		}
+	}
+
+	public function deleteSlaAction($ticket_id, $sla_id, $security_token)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla || !$sla->allow_agent_manual) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->ensureAuthToken('delete_sla', $security_token);
+
+		$ticket->removeSla($sla);
+		$this->em->persist($ticket);
 		$this->em->flush();
 
 		return $this->createJsonResponse(array(

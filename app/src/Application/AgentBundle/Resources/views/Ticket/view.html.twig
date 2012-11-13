@@ -448,6 +448,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 		{{ dp_widget_tabs_header(baseId, 'ticket', 'properties', {
 			(baseId ~ '_fields_display_main_wrap'): 'Fields',
 			(baseId ~ '_tasks_wrap'): 'Tasks (<span id="' ~ baseId ~ '_task_count">' ~ tasks|length ~ '</span>) &amp; Flag (<span id="' ~ baseId ~ '_flag_count">' ~ (ticket_flagged ? '1' : '0') ~ '</span>)',
+			(baseId ~ '_sla_wrap'): (((addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty) ? 'SLAs' : false),
 			(baseId ~ '_billing_wrap'): (app.getSetting('core_tickets.enable_billing') ? 'Billing' : false)
 		}) }}
 	</header>
@@ -460,6 +461,11 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 		<article id="{{baseId}}_tasks_wrap">
 			{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
 		</article>
+		{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
+			<article id="{{baseId}}_sla_wrap">
+				{% include 'AgentBundle:Ticket:view-slas.html.twig' %}
+			</article>
+		{% endif %}
 		{% if app.getSetting('core_tickets.enable_billing') %}
 			<article id="{{baseId}}_billing_wrap">
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}

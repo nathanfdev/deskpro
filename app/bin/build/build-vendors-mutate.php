@@ -83,7 +83,10 @@ class VendorMutate
 			$orig_ns = trim($m[1]);
 
 			$source = preg_replace('#class ([a-zA-Z0-9_])#', 'class ' . $unprivate_class['target_classname'] . ' extends \\\\' . $orig_ns . '\\\\$1', $source, 1);
-			$source = preg_replace('#\s+implements.*#', '', $source, 1);
+			if ($unprivate_class['target_classname'] != 'UnprivateProxyFactory') {
+				// proxy factory needs to create proxies that implement the doctrine Proxy class
+				$source = preg_replace('#\s+implements.*#', '', $source, 1);
+			}
 			$source = preg_replace('#namespace(.*?);#', "namespace {$unprivate_class['target_namespace']};{$unprivate_class['custom_pre']}", $source, 1);
 
 			if (isset($unprivate_class['callback'])) {

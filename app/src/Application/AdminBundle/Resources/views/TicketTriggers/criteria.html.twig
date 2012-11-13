@@ -227,10 +227,10 @@
 {% endif %}
 
 {##################################################################################################################}
-{# New Via Web #}
+{# New Via Web (or any) #}
 {##################################################################################################################}
 
-{% if event_trigger_sub == 'web' %}
+{% if event_trigger_sub == 'web' or event_trigger_sub == '' %}
 	<div class="builder-type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm">
 		<div class="builder-op">
 			<select name="op" class="op">
@@ -1014,6 +1014,10 @@
 {% endif %}
 {% endfor %}
 
+{##################################################################################################################}
+{# Ticket terms #}
+{##################################################################################################################}
+
 <div class="builder-type" title="{{ phrase('agent.general.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status" data-rule-group="Ticket">
 	<div class="builder-op">
 		<select name="op" class="op">
@@ -1153,6 +1157,51 @@
 		</select>
 	</div>
 </div>
+
+{% if term_options.slas %}
+	{% if 'sla' not in no_show_fields %}
+		<div class="builder-type" title="SLA" data-rule-group="Ticket" data-rule-type="sla" data-term-type="GenericMenuTerm">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="sla_id">
+					{% for id,title in term_options.slas %}
+						<option value="{{ id }}">{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
+	{% if 'sla_status' not in no_show_fields %}
+		<div class="builder-type" title="SLA Status" data-rule-group="Ticket" data-rule-type="sla_status" data-term-type="GenericMenuTerm">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="sla_status">
+					<option value="ok">OK</option>
+					<option value="warn">Warning</option>
+					<option value="fail">Fail</option>
+				</select>
+				for SLA
+				<select name="sla_id">
+					<option value="0">Any</option>
+				{% for id,title in term_options.slas %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
 
 {% if id or classname %}
 </div>
