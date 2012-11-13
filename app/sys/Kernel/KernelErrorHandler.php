@@ -680,6 +680,11 @@ class KernelErrorHandler
 		}
 
 		$trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
+		$trace = preg_replace_callback('#Pop3::__construct(.*?)$#m', function ($m) {
+			$ret = $m[0];
+			$ret = preg_replace('#password => .*?, ssl#', 'password => \'***\', ssl', $ret);
+			return $ret;
+		}, $trace);
 
 		return trim($trace);
 	}
