@@ -227,7 +227,28 @@ $(document).ready(function() {
 		<button class="clean-white">Update</button>
 	</form>
 </div>
-{% else %}
+{% endif %}
+
+{% if type == 'tickets' %}
+<div style="padding: 0 10px 10px 15px;">
+	<form action="{{ path('admin_departments_setphrase') }}" method="POST">
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Enter a new word for 'Department' that users will see. For example, 'Category' or 'Region' or 'Type.'"></span> Change the name of the department field:<br />
+		<div style="padding-left: 11px;">
+			<table cellspacing="0" cellpadding="3" border="0">
+				<tr>
+					<td style="vertical-align:middle;">Singular:</td><td><input style="padding: 1px 2px;" type="text" name="phrase_singular" value="{{ app.getSetting('core.phrase_department_singular')|default('Department') }}" /></td>
+				</tr>
+				<tr>
+					<td style="vertical-align:middle;">Plural:</td><td><input style="padding: 1px 2px;" type="text" name="phrase_plural" value="{{ app.getSetting('core.phrase_department_plural')|default('Departments') }}" /><br /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><button class="clean-white">Update</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
 {% endif %}
 
 </div>

@@ -336,6 +336,66 @@ class DepartmentsController extends AbstractController
 		return $this->redirectRoute('admin_departments', array('type' => $type));
 	}
 
+	public function setPhraseAction()
+	{
+		$phrase_singular   = strtolower($this->in->getString('phrase_singular'));
+		$phrase_plural     = strtolower($this->in->getString('phrase_plural'));
+		$phrase_singular_c = ucwords($phrase_singular);
+		$phrase_plural_c   = ucwords($phrase_plural);
+
+		$this->container->getSettingsHandler()->setSetting('core.phrase_department_singular', $phrase_singular);
+		$this->container->getSettingsHandler()->setSetting('core.phrase_department_plural', $phrase_plural);
+
+		$groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+		$phrases = $groups_reader->getAllUserPhrases();
+
+		$batch = array();
+		$ids = array();
+
+		$d = date('Y-m-d H:i:s');
+
+		foreach ($phrases as $phrase_id => $phrase_text) {
+			$new_phrase = str_replace(
+				array('departments', 'Departments', 'department', 'Department'),
+				array($phrase_plural, $phrase_plural_c, $phrase_singular, $phrase_singular_c),
+				$phrase_text
+			);
+
+			if ($new_phrase != $phrase_text) {
+				$group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
+				$batch[] = array(
+					'language_id' => 1,
+					'name'        => $phrase_id,
+					'groupname'   => $group,
+					'phrase'      => $new_phrase,
+					'created_at'  => $d,
+					'updated_at'  => $d
+				);
+
+				$ids[] = $phrase_id;
+			}
+		}
+
+		if ($ids) {
+			$this->db->beginTransaction();
+			try {
+				$this->db->executeQuery("
+					DELETE FROM phrases
+					WHERE name IN (" . $this->db->quoteIn($ids) . ") AND language_id = 1
+				");
+
+				$this->db->batchInsert('phrases', $batch);
+
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+		}
+
+		return $this->redirectRoute('admin_departments', array('type' => 'tickets'));
+	}
+
 	############################################################################
 	# delete
 	############################################################################

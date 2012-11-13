@@ -388,6 +388,53 @@ class Connection extends \Doctrine\DBAL\Connection
 
 
 	/**
+	 * Delete all records from table with an $field id in $ids.
+	 *
+	 * @param string $table
+	 * @param array $ids
+	 * @param string $field
+	 * @return int
+	 */
+	public function deleteIn($table, array $ids, $field = 'id')
+	{
+		if (!$ids) {
+			return 0;
+		}
+
+		return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` IN (" . $this->quoteIn($ids) . ")");
+	}
+
+
+	/**
+	 * Update all records with $data with a $field id in $ids.
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @param array $ids
+	 * @param string $field
+	 * @param array $types
+	 * @return int
+	 */
+	public function updateIn($table, array $data, array $ids, $field = 'id', array $types = array())
+	{
+		if (!$ids) {
+			return 0;
+		}
+
+        $set = array();
+        foreach ($data as $columnName => $value) {
+            $set[] = $columnName . ' = ?';
+        }
+
+        $params = array_values($data);
+
+		$sql = "UPDATE `$table` SET " . implode(', ', $set) . " WHERE `$field` IN (" . $this->quoteIn($ids) . ")";
+
+        return $this->executeUpdate($sql, $params, $types);
+	}
+
+
+	/**
 	 * @param string $statement
 	 * @return int
 	 */

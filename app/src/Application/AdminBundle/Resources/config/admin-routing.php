@@ -1663,6 +1663,13 @@ $collection->add('admin_departments_setdefault', new Route(
 	array()
 ));
 
+$collection->add('admin_departments_setphrase', new Route(
+	'/departments/set-phrase',
+	array('_controller' => 'AdminBundle:Departments:setPhrase'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_departments_saveusergroups', new Route(
 	'/departments/{department_id}/save-usergroups.json',
 	array('_controller' => 'AdminBundle:Departments:saveUsergroups'),
