@@ -24,7 +24,7 @@ if (!$IMPORT_INSTALL) {
 	$q = new \Application\DeskPRO\Entity\Department();
 	$q['title'] = $translate->phrase('user.defaults.department_support');
 	$q['is_tickets_enabled'] = true;
-	$q['is_chat_enabled'] = true;
+	$q['is_chat_enabled'] = false;
 	$em->persist($q);
 	$em->flush();
 }
@@ -34,6 +34,26 @@ if (!$IMPORT_INSTALL) {
 	$q = new \Application\DeskPRO\Entity\Department();
 	$q['title'] = $translate->phrase('user.defaults.department_sales');
 	$q['is_tickets_enabled'] = true;
+	$q['is_chat_enabled'] = false;
+	$em->persist($q);
+	$em->flush();
+}
+
+##BEGIN:create_department.department3##
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\Department();
+	$q['title'] = $translate->phrase('user.defaults.department_support');
+	$q['is_tickets_enabled'] = false;
+	$q['is_chat_enabled'] = true;
+	$em->persist($q);
+	$em->flush();
+}
+
+##BEGIN:create_department.department4##
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\Department();
+	$q['title'] = $translate->phrase('user.defaults.department_sales');
+	$q['is_tickets_enabled'] = false;
 	$q['is_chat_enabled'] = true;
 	$em->persist($q);
 	$em->flush();
