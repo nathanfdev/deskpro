@@ -268,4 +268,55 @@ class TicketTrigger extends AbstractEntityRepository
 
 		return $ret;
 	}
+
+
+	public function getTemplateVariantMap()
+	{
+		$triggers = App::getDb()->fetchAll("
+			SELECT id, title, actions
+			FROM ticket_triggers
+			ORDER BY title ASC, id ASC
+		");
+
+		$map = array();
+
+		foreach ($triggers as $trigger) {
+			$trigger['actions'] = @unserialize($trigger['actions']);
+			if (!$trigger['actions']) {
+				continue;
+			}
+
+			foreach ($trigger['actions'] as $info) {
+				switch ($info['type']) {
+					case 'set_user_email_template_newticket':
+					case 'user_newticket_agent':
+					case 'set_user_email_template_newticket_validate':
+					case 'set_agent_email_template_newticket':
+					case 'set_user_email_template_newticket_agent':
+					case 'set_user_email_template_newreply_agent':
+					case 'set_agent_email_template_newreply_agent':
+					case 'set_user_email_template_newreply_user':
+					case 'set_agent_email_template_newreply_user':
+					case 'send_user_email':
+					case 'send_agent_email':
+						$template_name = !empty($info['options']['template_name']) ? $info['options']['template_name'] : null;
+
+						if ($template_name) {
+							if (!isset($map[$template_name])) {
+								$map[$template_name] = array();
+							}
+
+							$map[$template_name][] = array(
+								'id' => $trigger['id'],
+								'title' => $trigger['title']
+							);
+						}
+
+						break;
+				}
+			}
+		}
+
+		return $map;
+	}
 }

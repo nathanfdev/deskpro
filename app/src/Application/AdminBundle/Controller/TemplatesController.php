@@ -516,6 +516,8 @@ class TemplatesController extends AbstractController
 			WHERE name LIKE 'DeskPRO:emails_user:custom_%' AND variant_of = 'DeskPRO:emails_user:blank.html.twig'
 		");
 
+		$vars['trigger_map'] = $this->em->getRepository('DeskPRO:TicketTrigger')->getTemplateVariantMap();
+
 		return $this->render('@emails-list-user.html.twig', $vars);
 	}
 
@@ -528,6 +530,8 @@ class TemplatesController extends AbstractController
 			FROM templates
 			WHERE name LIKE 'DeskPRO:emails_agent:%'
 		", array(), 'variant_of', null);
+
+		$vars['trigger_map'] = $this->em->getRepository('DeskPRO:TicketTrigger')->getTemplateVariantMap();
 
 		return $this->render('@emails-list-agent.html.twig', $vars);
 	}
@@ -621,8 +625,6 @@ class TemplatesController extends AbstractController
 				}
 			}
 		}
-
-		dpdev_log($matched_phrases);
 
 		#------------------------------
 		# Now try to find it in templates

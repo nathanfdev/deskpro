@@ -83,7 +83,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -110,7 +110,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -133,7 +133,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -155,7 +155,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in custom_templates %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% else %}
 						<tr><td>
 							You have not created any custom templates yet.

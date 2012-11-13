@@ -56,7 +56,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -79,7 +79,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -105,7 +105,7 @@
 				</thead>
 				<tbody>
 					{% for tpl in list %}
-						{{ tplmacro.render_emailist_row(tpl, variations[tpl]) }}
+						{{ tplmacro.render_emailist_row(tpl, variations[tpl], trigger_map) }}
 					{% endfor %}
 				</tbody>
 			</table>

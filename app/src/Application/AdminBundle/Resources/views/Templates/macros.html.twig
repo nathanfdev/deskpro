@@ -129,7 +129,7 @@
 	</div>
 {% endmacro %}
 
-{% macro render_emailist_row(tpl, variations) %}
+{% macro render_emailist_row(tpl, variations, trigger_map) %}
 	{% set phrase_key = 'admin.emailtpl_desc.' ~ tpl|lower|replace({'.':'_', ':':'_'}) %}
 	<tr class="{{ tpl|lower|replace({'.':'_', ':':'_'}) }}" data-template-name="{{ tpl }}">
 		<td>
@@ -140,6 +140,15 @@
 					{{  tpl|replace({'DeskPRO:emails_user:':'', '.html.twig':''}) }}
 				{% endif %}
 			</span></a></strong>
+			{%- if trigger_map[tpl] -%}
+				<span class="small-secondary-links">
+					(Used by triggers:&nbsp;
+						{%- for tr in trigger_map[tpl] -%}
+							<a href="{{ path('admin_tickettriggers_edit', {id: tr.id}) }}">{{ tr.title|default("Trigger #" ~ tr.id) }}</a>{% if not loop.last %}, {% endif %}
+						{%- endfor -%}
+					)
+				</span>
+			{%- endif -%}
 			<div class="tpl-desc">
 				{% if has_phrase(phrase_key ~ '_desc') %}
 					{{ phrase(phrase_key ~ '_desc') }}
@@ -153,6 +162,15 @@
 									<a class="editable-link" href="{{ path('admin_templates_editemail', {name: var_tpl.name}) }}"><span>
 										{{ var_tpl.name|replace({'DeskPRO:emails_user:': '', 'DeskPRO:emails_agent:': '', '.html.twig': ''}) }}
 									</span></a>
+									{%- if trigger_map[var_tpl.name] -%}
+										<span class="small-secondary-links">
+											(Used by triggers:&nbsp;
+												{%- for tr in trigger_map[var_tpl.name] -%}
+													<a href="{{ path('admin_tickettriggers_edit', {id: tr.id}) }}">{{ tr.title|default("Trigger #" ~ tr.id) }}</a>{% if not loop.last %}, {% endif %}
+												{%- endfor -%}
+											)
+										</span>
+									{%- endif -%}
 								</li>
 							{% endfor %}
 						</ul>
