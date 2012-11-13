@@ -35,7 +35,12 @@
 {% endmacro %}
 
 {% macro show_rest_message_agent(context) %}
-	{% for message in context.messages|slice(1) %}
+	{% if context.is_new_user_reply or context.is_new_agent_reply %}
+		{% set messages = context.messages|slice(1) %}
+	{% else %}
+		{% set messages = context.messages %}
+	{% endif %}
+	{% for message in messages %}
 		{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
 			message: message,
 			show_author_email: true,
