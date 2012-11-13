@@ -124,7 +124,6 @@ class TemplatesController extends AbstractController
 
 		if ($this->in->getBool('info')) {
 			return $this->createJsonResponse(array(
-				'custom' => $custom,
 				'code' => $code,
 			));
 		}
