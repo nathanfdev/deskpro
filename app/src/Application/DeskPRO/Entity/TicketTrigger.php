@@ -362,6 +362,9 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->actions as $action_info) {
 			$action = $factory->createFromInfo($action_info);
 			if ($action) {
+				if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\AbstractAction) {
+					$action->setTrigger($this);
+				}
 				$actions_collection->add($action);
 			}
 		}

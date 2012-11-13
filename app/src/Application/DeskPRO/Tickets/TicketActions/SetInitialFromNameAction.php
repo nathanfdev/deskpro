@@ -132,17 +132,41 @@ class SetInitialFromNameAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		$desc = 'Any notifications are sent from ' . ($as_html ? htmlspecialchars($this->pattern) : $this->pattern);
-
 		if (!$this->to_agent || !$this->to_user) {
 			if ($this->to_agent) {
-				$desc .= ' (on agent emails only)';
+				$desc = 'Emails sent to agents have the "From" name set to ';
 			} else {
-				$desc .= ' (on user emails only)';
+				$desc = 'Emails sent to users have the "From" name set to ';
+			}
+		} else {
+			$desc = 'Emails have the "From" name set to ';
+		}
+
+		$desc .= ($as_html ? htmlspecialchars($this->pattern) : $this->pattern);
+
+		$performer_friendly = 'the name of the action performer';
+
+		if ($this->trigger) {
+			switch ($this->trigger->event_trigger) {
+				case 'new.email.user':
+				case 'new.web.user':
+					$performer_friendly = 'the name of the user creating the ticket';
+					break;
+				case 'update.agent':
+					$performer_friendly = 'the name of the user';
+					break;
+
+				case 'new.email.agent':
+				case 'new.web.agent.portal':
+					$performer_friendly = 'the name of the agent creating the ticket';
+					break;
+				case 'update.agent':
+					$performer_friendly = 'the name of the agent';
+					break;
 			}
 		}
 
-		$desc = str_replace('{{performer.name}}', 'name of action performer', $desc);
+		$desc = str_replace('{{performer.name}}', $performer_friendly, $desc);
 
 		return $desc;
 	}

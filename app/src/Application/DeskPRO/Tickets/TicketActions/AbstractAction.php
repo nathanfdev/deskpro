@@ -36,13 +36,27 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 
 abstract class AbstractAction implements ActionInterface
 {
 	/**
+	 * @var \Application\DeskPRO\Entity\TicketTrigger
+	 */
+	protected $trigger;
+
+	/**
 	 * @var array
 	 */
 	protected $metadata = array();
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TicketTrigger $trigger
+	 */
+	public function setTrigger(TicketTrigger $trigger)
+	{
+		$this->trigger = $trigger;
+	}
 
 	/**
 	 * @param array $metadata
@@ -53,12 +67,26 @@ abstract class AbstractAction implements ActionInterface
 		$this->metadata = $metadata;
 	}
 
+
+	/**
+	 * @param string $k
+	 * @param mixedd $v
+	 */
+	public function addMetaData($k, $v)
+	{
+		$this->metadata[$k] = $v;
+	}
+
 	/**
 	 * @return array
 	 */
-	public function getMetaData()
+	public function getMetaData($k = null, $default = null)
 	{
-		return $this->metadata;
+		if ($k === null) {
+			return $this->metadata;
+		}
+
+		return isset($this->metadata[$k]) ? $this->metadata[$k] : $default;
 	}
 
 	/**
