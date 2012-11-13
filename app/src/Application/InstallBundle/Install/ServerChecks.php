@@ -624,17 +624,25 @@ class ServerChecks
 		# db_iis_localhost
 		#------------------------------
 
-		if ($db_server && !empty($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+		if ($db_server && \Orb\Util\Env::isWindows()) {
 			$this->getLogger()->log("[CHECK] Checking if IIS and DB is connecing through localhost", Logger::DEBUG);
 			if ($db_server != 'localhost') {
 				$this->getLogger()->log("[OK] Not connecting through localhost", Logger::DEBUG);
 			} else {
+
+				// recommended for existing users to show notice in admin,
+				// fatal during install
+				$level = 'recommended';
+				if (isset($GLOBALS['DP_IS_IMPORTING']) || (defined('DP_INTERFACE') && DP_INTERFACE == 'install')) {
+					$level = 'fatal';
+				}
+
 				$this->has_fatal_server_errors = true;
-				$msg = "We recommend connecting to MySQL through 127.0.0.1 due to very poor performance on some IIS servers when connecting through localhost.";
+				$msg = "Connecting through MySQL through 'localhost' causes very poor performance on Windows servers. Change the database server to 127.0.0.1 instead.";
 				$this->getLogger()->log("$msg", Logger::INFO);
-				$this->server_errors['db_iis_localhost'] = array(
+				$this->server_errors['db_win_localhost'] = array(
 					'message' => $msg,
-					'level' => 'recommended'
+					'level' => $level
 				);
 			}
 		}

@@ -196,7 +196,7 @@
 
 <br />
 
-{% if notice_items.db_iis_localhost or notice_items.apc_check or notice_items.openssl_ext or notice_items.magic_quotes_gpc_check %}
+{% if notice_items.db_win_localhost or notice_items.apc_check or notice_items.openssl_ext or notice_items.magic_quotes_gpc_check %}
 	<div class="content-table">
 		<table width="100%">
 			<thead>
@@ -205,7 +205,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% if notice_items.db_iis_localhost %}
+				{% if notice_items.db_win_localhost %}
 					<tr>
 						<td>
 							We recommend changing your MySQL host to 127.0.0.1 in config.php. On some versions of IIS, connecting through localhost

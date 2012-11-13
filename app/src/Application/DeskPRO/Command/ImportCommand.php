@@ -81,6 +81,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$GLOBALS['DP_NOSQL_LOG'] = true;
 		$GLOBALS['DP_INDEX_NOINDEX'] = true;
 		$GLOBALS['DP_ERR_NOSHOWTRACE'] = true;
+		$GLOBALS['DP_IS_IMPORTING'] = true;
 
 		#----------------------------------------
 		# Figure out our run mode

@@ -397,7 +397,25 @@
 		</td>
 	</tr>
 
-		<?php if (!isset($errors['db_connect'])): ?>
+	<?php if (isset($errors['db_win_localhost'])): ?>
+		<tr>
+			<td>
+				<?php $failed = true ?>
+				<span class="label important" style="float:right">FAIL</span>
+				Check database connection is not through localhost
+				<div class="alert-message block-message error">
+					<p>
+						You are connecting to the database through <code>localhost</code> which causes very poor performance on Window.
+					</p>
+					<p>
+						Edit your config.php file to change the <code>DP_DATABASE_HOST</code> value to <code>127.0.0.1</code> instead.
+					</p>
+				</div>
+			</td>
+		</tr>
+	<?php endif; ?>
+
+	<?php if (!isset($errors['db_connect'])): ?>
 	<tr>
 		<td>
 			<?php $failed = false ?>
