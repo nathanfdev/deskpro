@@ -57,6 +57,10 @@ Orb.Util.TimeAgo = {
 				$.addElementCleanupCallback(function(coll, mode) {
 					var i, x, tmp, removeColl = [], found;
 					for (i = 0; i < coll.length; i++) {
+						if (!coll[i].className) {
+							// Could be a text node...
+							continue;
+						}
 						if (mode != 'empty' && coll[i].className.indexOf('with-timeago') !== -1) {
 							removeColl.push(coll[i]);
 						} else {
