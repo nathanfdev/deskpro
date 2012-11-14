@@ -471,7 +471,7 @@ class TicketSearch extends SearcherAbstract
 			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
 		}
 
-		if ($this->is_filter_search) {
+		if ($this->is_filter_search && !$this->is_archive) {
 			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
 		}
 
@@ -640,7 +640,7 @@ class TicketSearch extends SearcherAbstract
 			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
 		}
 
-		if ($this->is_filter_search) {
+		if ($this->is_filter_search && !$this->is_archive) {
 			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
 		}
 
@@ -975,24 +975,27 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
 						break;
 					case self::TERM_DATE_RESOLVED:
+						$this->enableArchiveSearch();
 						$this->affected_fields[] = 'ticket.date_resolved';
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
-						$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('resolved'));
 						break;
 					case self::TERM_DATE_CLOSED:
 						$this->enableArchiveSearch();
 						$this->affected_fields[] = 'ticket.date_closed';
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
-						$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('closed'));
 						break;
 					case self::TERM_DATE_LAST_USER_REPLY:
+						$this->enableArchiveSearch();
 						$this->affected_fields[] = 'ticket.date_last_user_reply';
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
 						break;
 					case self::TERM_DATE_LAST_AGENT_REPLY:
+						$this->enableArchiveSearch();
 						$this->affected_fields[] = 'ticket.date_last_agent_reply';
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
