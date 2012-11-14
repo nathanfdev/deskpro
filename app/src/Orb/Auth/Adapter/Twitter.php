@@ -137,7 +137,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 		unset($state['orb_oauth_twitter_rtoken']);
 
 		$client = $access_token->getHttpClient($this->getOauthConfig());
-		$client->setUri('http://api.twitter.com/account/verify_credentials.json');
+		$client->setUri('https://api.twitter.com/1/account/verify_credentials.json');
 		$client->setMethod(\Zend\Http\Request::METHOD_GET);
 		$response = $client->send();
 
@@ -189,7 +189,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	{
 		return array(
 			'callbackUrl' => $this->getCallbackUrl(),
-			'siteUrl' => 'http://api.twitter.com/oauth',
+			'siteUrl' => 'https://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
 			'consumerSecret' => $this->consumer_secret,
 		);

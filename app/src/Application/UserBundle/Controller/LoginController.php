@@ -557,7 +557,7 @@ HTML;
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$adapter->setCallbackUrl(
-				$this->container->getSetting('core.helpdesk_url') .
+				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
 				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
 			);
 		}
