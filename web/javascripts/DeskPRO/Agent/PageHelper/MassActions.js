@@ -90,7 +90,6 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		}
 
         $('.dp-radio-expander-form', this.wrapper).on('click', this.updatePositions.bind(this));
-		console.log(this.wrapper);
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());

@@ -1713,7 +1713,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		console.log(arguments);
 		// status of 0 means aborted
 		// eg. the user hit escape
 		if (!xhr || (xhr.status == 0 && xhr.statusText != 'timeout')) {
