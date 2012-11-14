@@ -62,6 +62,6 @@
 ##}
 {% macro show_ticket_logs(context) %}
 	{% for log in context.ticket_logs %}
-		{% include 'DeskPRO:emails_agent:ticket-log-actiontext.html.twig' %}
+		{% include 'DeskPRO:emails_common:ticket-log-actiontext.html.twig' %}
 	{% endfor %}
 {% endmacro %}
