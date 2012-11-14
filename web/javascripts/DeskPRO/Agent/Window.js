@@ -1759,11 +1759,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			data = null;
 		}
 
-		if (xhr && xhr.status && xhr.status == '403' && (!data || !data.error || (data.error && data.error != 'session_expired'))) {
-			this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
-			return;
-		}
-
 		if (xhr && xhr.status && xhr.status == '503' && data && data.error && data.error == 'update_running') {
 			this.showUpdateRunning();
 			return;
@@ -1780,7 +1775,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				ajaxOptions.error = null;
 				ajaxOptions.complete = null;
 
-				this.showAlert('Your session has timed out, you must log in');
+				$('#reload_overlay').show();
 
 				return;
 			}
@@ -1788,6 +1783,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (data && data.error && data.error == 'not_allowed') {
 				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
 				return;
+			} else {
+				this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
 			}
 		}
 
