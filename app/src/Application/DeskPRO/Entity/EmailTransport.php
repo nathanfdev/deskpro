@@ -180,6 +180,8 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 					$tr->setPassword($options['password']);
 				}
 
+				$tr->setTimeout(120);
+
 				break;
 
 			case 'gmail':
@@ -191,6 +193,7 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 				$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
 				$tr->setUsername($options['username']);
 				$tr->setPassword($options['password']);
+				$tr->setTimeout(120);
 
 				break;
 

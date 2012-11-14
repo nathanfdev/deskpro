@@ -145,6 +145,11 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		// Reset max exec time when sending a message
+		if (isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
+			set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
+		}
+
 		$time_top = microtime(true);
 		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Begin message :: %s %s", implode(',', (array)$message->getTo()), $message->getSubject()));
 

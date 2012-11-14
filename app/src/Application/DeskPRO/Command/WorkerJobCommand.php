@@ -64,7 +64,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		@ini_set('track_errors', true);
-		@set_time_limit(600);
+
+		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 1000;
+		@set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
 
 		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
 
