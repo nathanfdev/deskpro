@@ -174,9 +174,9 @@ class PersonController extends AbstractController
 		$perms = array(
 			'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
 			'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
-			'disable'          => $is_editable && $this->person->hasPerm('agent_people.disable'),
+			'disable'          => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.disable'),
 			'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
-			'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
+			'reset_password'   => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.reset_password'),
 			'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
 			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
 		);
@@ -1059,7 +1059,7 @@ class PersonController extends AbstractController
 	{
 		$person = $this->getPersonOr404($person_id);
 
-		if (!$this->person->hasPerm('agent_people.delete') || !$this->isPersonEditable($person)) {
+		if ($person->is_agent || !$this->person->hasPerm('agent_people.delete') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 

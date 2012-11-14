@@ -85,7 +85,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if perms.delete %}
 					<li class="merge menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.merge') }} <em></em></a></li>
 				{% endif %}
-				{% if perms.reset_password or perms.delete or perms.edit %}
+				{% if not person.is_agent and (perms.reset_password or perms.delete or perms.edit) %}
 					<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 				{% endif %}
 			</ul>
