@@ -1699,8 +1699,23 @@ section.dp-overlay > article.no-footer {
 .listing-tag {
 	line-height: 100%;
 	background-color: lighten(#E2E6F0, 2%);
+	background-repeat: no-repeat;
+	background-position: -3px;
 	display: inline-block;
 	padding: 0 3px 0 3px;
+}
+
+.listing-tag.sla-status-ok {
+	padding-left: 10px;
+	background-image: url(../../images/agent/icons/bullet_green.png);
+}
+.listing-tag.sla-status-warning {
+	padding-left: 10px;
+	background-image: url(../../images/agent/icons/bullet_orange.png);
+}
+.listing-tag.sla-status-fail {
+	padding-left: 10px;
+	background-image: url(../../images/agent/icons/bullet_red.png);
 }
 
 .table-result-list .listing-tag {

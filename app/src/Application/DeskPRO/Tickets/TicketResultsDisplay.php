@@ -74,6 +74,11 @@ class TicketResultsDisplay implements PersonContextInterface
 	/**
 	 * @var array
 	 */
+	protected $all_ticket_slas;
+
+	/**
+	 * @var array
+	 */
 	protected $people;
 
 	/**
@@ -181,6 +186,55 @@ class TicketResultsDisplay implements PersonContextInterface
 	{
 		$this->getAllLabels();
 		return !empty($this->all_labels[$ticket->id]);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAllTicketSlas()
+	{
+		if ($this->all_ticket_slas !== null) return $this->all_ticket_slas;
+
+		if (!$this->ticket_count) {
+			$this->all_ticket_slas = array();
+			return $this->all_ticket_slas;
+		}
+
+		$ticket_ids = implode(',', $this->ticket_ids);
+
+		$this->all_ticket_slas = $this->db->fetchAllGrouped("
+			SELECT ticket_slas.*, slas.title
+			FROM ticket_slas
+			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
+			WHERE ticket_slas.ticket_id IN ($ticket_ids)
+		", array(), 'ticket_id', 'id');
+
+		return $this->all_ticket_slas;
+	}
+
+
+	/**
+	 * Get an array of labels applied to a ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return array
+	 */
+	public function getTicketSlas(Ticket $ticket)
+	{
+		$this->getAllTicketSlas();
+		return empty($this->all_ticket_slas[$ticket->id]) ? array() : $this->all_ticket_slas[$ticket->id];
+	}
+
+	/**
+	 * Check if a ticket has an SLA
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return bool
+	 */
+	public function hasTicketSlas(Ticket $ticket)
+	{
+		$this->getAllTicketSlas();
+		return !empty($this->all_ticket_slas[$ticket->id]);
 	}
 
 

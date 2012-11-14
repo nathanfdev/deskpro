@@ -154,8 +154,17 @@
 					{% endif %}
 					</span>
 				</li>
+			{% elseif field == 'slas' and (ticket_display.hasTicketSlas(ticket) or changed_fields[ticket.id].slas) %}
+				<li class="{{field}} {% if changed_fields[ticket.id].slas %}changed{% endif %}">
+					<span class="prop-title">SLAs:</span>
+					<span class="prop-val labels">
+						{% for ticket_slas in ticket_display.getTicketSlas(ticket) %}
+							<span class="listing-tag sla-status-{{ticket_slas.sla_status}}">{{ ticket_slas.title }}</span>
+						{% endfor %}
+					</span>
+				</li>
 			{% elseif field == 'labels' and (ticket_display.hasTicketLabels(ticket) or changed_fields[ticket.id].labels) %}
-				<li class="{{field}} {% if changed_fields[ticket.id].product %}changed{% endif %}">
+				<li class="{{field}} {% if changed_fields[ticket.id].labels %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 					<span class="prop-val labels">
 						{% for label in ticket_display.getTicketLabels(ticket) %}

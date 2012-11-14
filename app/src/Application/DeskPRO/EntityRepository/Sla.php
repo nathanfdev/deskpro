@@ -79,6 +79,11 @@ class Sla extends AbstractEntityRepository
 		return $output;
 	}
 
+	public function hasSlas()
+	{
+		return count($this->getAllSlas()) > 0;
+	}
+
 	public function doesSlaApplyToPerson(Entity\Sla $sla, Entity\Person $person)
 	{
 		$id = $this->getEntityManager()->getConnection()->fetchColumn('
