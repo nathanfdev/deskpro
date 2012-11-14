@@ -4,6 +4,13 @@
 	</div>
 
 	<div class="overlay-content">
+
+		<div class="simple-help-box">
+			<p>
+				This tool allows you to merge two users into one user. Tickets, chats, notes and a number of other objects from the deleted user will be added to the user that you are keeping. The other user will be permantely deleted.
+			</p>
+		</div>
+
 		<form>
 			<div
 				class="person-finder"
@@ -42,8 +49,8 @@
 		<thead>
 		<tr>
 			<th>&nbsp;</th>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ person.id }}" data-keep="1">Keep this</a></td>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_person.id }}">Merge this</a></td>
+			<td><a class="clean-white merge-target-button" data-merge-id="{{ person.id }}" data-keep="1">Master User (User will remain)</a></td>
+			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_person.id }}">Merged User (User will be deleted)</a></td>
 		</tr>
 		</thead>
 		{% endif %}
