@@ -46,23 +46,48 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			return;
 		}
 
+		var ins_order, i, x, d, messages;
+		var ordered = {};
+		var orders = [];
+
 		if (data.messages && data.messages.length) {
-			Array.each(data.messages, function(d) {
+			for (x = 0; x < data.messages.length; x++) {
+				d = data.messages[x];
 				if (d[0] && (d[0] <= this.lastMessageId) && (!d[3] || !d[3]['offline_messsage'])) {
 					console.debug("%o Dropping message older than lastMessageId %d", d, this.lastMessageId);
 					return;
 				}
 
+				var ins_order = 50;
+				if (d[1] == 'agent.ticket-updated') {
+					ins_order = 55;
+				}
+
+				if (!ordered[ins_order]) {
+					ordered[ins_order] = [];
+					orders.push(ins_order);
+				}
+
+				ordered[ins_order].push(d);
+
 				if (d[0] && d[0] > this.lastMessageId) {
 					this.lastMessageId = d[0];
 				}
+			}
+		}
+
+		orders.sort(function(a,b){return a - b});
+		for (i = 0; i < orders.length; i++) {
+			messages = ordered[orders[i]];
+			for (x = 0; x < messages.length; x++) {
+				d = messages[x];
 
 				try {
 					this.sendMessage(d[1], d[2]);
 				} catch (err) {
 					DpErrorLog.logError('[AjaxChanneler] ' + err, '', '', '');
 				}
-			}, this);
+			}
 		}
 
 		if (typeof data.last_id != 'undefined' && parseInt(data.last_id) > this.lastMessageId) {
