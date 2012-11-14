@@ -3094,7 +3094,7 @@ article.content-message .content .body-text .fade-bar {
 }
 .snippets-overlay .snippet-sections li .content.show .fadeaway .unexpand {
 	display: none;
-	position: absolute;
+	position: static;
 	right: 0; bottom: 0; left: 0;
 	height: 7px;
 
@@ -3108,6 +3108,10 @@ article.content-message .content .body-text .fade-bar {
 .snippets-overlay .snippet-sections li .content.long.expanded { padding-bottom: 15px; }
 .snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .expand { display: none; }
 .snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .unexpand { display: block; }
+
+.snippets-overlay .snippet-sections li .content.expanded .fadeaway {
+	position: static;
+}
 
 .snippets-overlay .snippet-sections li .content.show .nobreak { display: none; }
 .snippets-overlay .snippet-sections li .content.show-nobreak .nobreak { display: block; }
