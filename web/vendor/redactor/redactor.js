@@ -4208,4 +4208,65 @@ var RLANG = {
  * updated: Imperavi Inc.
  *
  */
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(5($){$.1.4.7={t:5(0,v){$(2).0("8",c);$(2).0("r",0);$(2).l(\'g\',$.1.4.7.b)},u:5(0){$(2).w(\'g\',$.1.4.7.b)},b:5(1){9 0=$(2).0("r");9 3=$.1.4.7.f(0).h();6(3!=\'\'){$(2).0("8",x);1.j="7";1.3=3;$.1.i.m(2,k)}},f:5(0){9 3=\'\';6(q.e)3=q.e();o 6(d.e) 3=d.e();o 6(d.p)3=d.p.B().3;A 3}};$.1.4.a={t:5(0,v){$(2).0("n",0);$(2).0("8",c);$(2).l(\'g\',$.1.4.a.b);$(2).l(\'D\',$.1.4.a.s)},u:5(0){$(2).w(\'g\',$.1.4.a.b)},b:5(1){6($(2).0("8")){9 0=$(2).0("n");9 3=$.1.4.7.f(0).h();6(3==\'\'){$(2).0("8",c);1.j="a";$.1.i.m(2,k)}}},s:5(1){6($(2).0("8")){9 0=$(2).0("n");9 3=$.1.4.7.f(0).h();6((1.y=z)&&(3==\'\')){$(2).0("8",c);1.j="a";$.1.i.m(2,k)}}}}})(C);',40,40,'data|event|this|text|special|function|if|textselect|textselected|var|textunselect|handler|false|rdocument|getSelection|getSelectedText|mouseup|toString|handle|type|arguments|bind|apply|rttt|else|selection|rwindow|ttt|handlerKey|setup|teardown|namespaces|unbind|true|keyCode|27|return|createRange|jQuery|keyup'.split('|'),0,{}))
+(function ($) {
+    $.event.special.textselect = {
+        setup: function (data, namespaces) {
+            $(this).data("textselected", false);
+            $(this).data("ttt", data);
+            $(this).bind('mouseup', $.event.special.textselect.handler)
+        },
+        teardown: function (data) {
+            $(this).unbind('mouseup', $.event.special.textselect.handler)
+        },
+        handler: function (event) {
+            var data = $(this).data("ttt");
+            var text = $.event.special.textselect.getSelectedText(data).toString();
+            if (text != '') {
+                $(this).data("textselected", true);
+                event.type = "textselect";
+                event.text = text;
+                $.event.handle.apply(this, arguments)
+            }
+        },
+        getSelectedText: function (data) {
+            var text = '';
+            if (rwindow.getSelection) text = rwindow.getSelection();
+            else if (rdocument.getSelection) text = rdocument.getSelection();
+            else if (rdocument.selection) text = rdocument.selection.createRange().text;
+            return text
+        }
+    };
+    $.event.special.textunselect = {
+        setup: function (data, namespaces) {
+            $(this).data("rttt", data);
+            $(this).data("textselected", false);
+            $(this).bind('mouseup', $.event.special.textunselect.handler);
+            $(this).bind('keyup', $.event.special.textunselect.handlerKey)
+        },
+        teardown: function (data) {
+            $(this).unbind('mouseup', $.event.special.textunselect.handler)
+        },
+        handler: function (event) {
+            if ($(this).data("textselected")) {
+                var data = $(this).data("rttt");
+                var text = $.event.special.textselect.getSelectedText(data).toString();
+                if (text == '') {
+                    $(this).data("textselected", false);
+                    event.type = "textunselect";
+                    $.event.handle.apply(this, arguments)
+                }
+            }
+        },
+        handlerKey: function (event) {
+            if ($(this).data("textselected")) {
+                var data = $(this).data("rttt");
+                var text = $.event.special.textselect.getSelectedText(data).toString();
+                if ((event.keyCode = 27) && (text == '')) {
+                    $(this).data("textselected", false);
+                    event.type = "textunselect";
+                    $.event.handle.apply(this, arguments)
+                }
+            }
+        }
+    }
+})(jQuery);
