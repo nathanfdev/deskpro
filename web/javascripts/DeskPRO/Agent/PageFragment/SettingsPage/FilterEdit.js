@@ -91,7 +91,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 
-					if (ticketsSection) {
+					if (ticketsSection && data) {
 						if (data.is_new) {
 							ticketsSection.addCustomFilter(data.filter_id, data.filter_title);
 						} else {

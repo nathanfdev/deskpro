@@ -217,7 +217,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 */
 	_handleAjaxSuccess: function (data, sent_info) {
 
-		if (data.request_token) {
+		if (data && data.request_token) {
 			window.DP_REQUEST_TOKEN = data.request_token;
 		}
 
