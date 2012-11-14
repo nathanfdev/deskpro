@@ -1,9 +1,9 @@
 {% set agent_reply_above_line = true %}
 <dp:subject>
 	{% if new_message.is_agent_note %}
-		{{ phrase('agent.emails.new_note_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+		{{ phrase('agent.emails.new_note_ticket_subject') }}
 	{% else %}
-		{{ phrase('agent.emails.new_agent_reply_ticket_subject', { ticket_subject: ticket.subject, ticket_id: ticket.id }) }}
+		{{ phrase('agent.emails.new_agent_reply_ticket_subject') }}
 	{% endif %}
 </dp:subject>
 

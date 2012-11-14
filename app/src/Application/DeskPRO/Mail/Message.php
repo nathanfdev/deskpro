@@ -62,6 +62,11 @@ class Message extends \Orb\Mail\Message
 	protected $template_vars;
 
 	/**
+	 * @var null
+	 */
+	protected $set_to = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Blob[]
 	 */
 	protected $attach_blobs = array();
@@ -100,6 +105,12 @@ class Message extends \Orb\Mail\Message
 	public function doPrepare()
 	{
 		if ($this->template) {
+			if ($this->set_to) {
+				$this->template_vars['to_email']   = $this->set_to['email'];
+				$this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
+				$this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
+			}
+
 			$content = $this->template_engine->render($this->template, $this->template_vars);
 			if (strpos($content, '___DP___SUBJECT___SEP___') !== false) {
 				list ($subject, $body) = explode('___DP___SUBJECT___SEP___', $content, 2);
@@ -254,6 +265,30 @@ class Message extends \Orb\Mail\Message
 	public function setToPerson(Person $person)
 	{
 		$this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+	}
+
+
+	/**
+	 * @param array $addresses
+	 * @param null $name
+	 * @return \Swift_Mime_SimpleMessage|void
+	 */
+	public function setTo($addresses, $name = null)
+	{
+		if (is_array($addresses)) {
+			reset($addresses);
+			$this->set_to = array(
+				'name'  => \Orb\Util\Arrays::getFirstKey($addresses),
+				'email' =>\Orb\Util\Arrays::getFirstItem($addresses),
+			);
+		} else {
+			$this->set_to = array(
+				'name'  => $name,
+				'email' => $addresses,
+			);
+		}
+
+		return parent::setTo($addresses, $name);
 	}
 
 

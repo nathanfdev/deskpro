@@ -13,7 +13,8 @@
 	'user.email_subjects.password_agent-reset'     => 'An agent has reset your password',
 	'user.email_subjects.password_reset'           => 'Reset Password',
 	'user.email_subjects.re'                       => 'RE: {{subject}}',
+	'user.email_subjects.tickets_re'               => 'RE: {{ticket.subject}}',
 	'user.email_subjects.ticket_new-participant'   => 'A new person has been added to your ticket',
 	'user.email_subjects.validate-email'           => 'Validate your email address',
-	'user.email_subjects.ticket-rate'              => 'Rate your support experience on your ticket "{{subject}}"',
+	'user.email_subjects.ticket-rate'              => 'Rate your support experience on your ticket "{{ticket.subject}}"',
 );

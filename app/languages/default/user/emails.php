@@ -15,7 +15,7 @@
 	'user.emails.feedback_validate-email'     => 'Please validate your email address online by clicking the following link:',
 	'user.emails.feedback_new-comment'        => '{{name}} posted a new comment:',
 	'user.emails.feedback_votes'              => 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:|Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:',
-	'user.emails.greeting'                    => 'Dear {{name}},',
+	'user.emails.greeting'                    => 'Dear {{to_name}},',
 	'user.emails.label_view-online'           => 'View Online',
 	'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
 	'user.emails.password_reset'              => 'You requested a password reset. To reset your password, click on the link below:',
