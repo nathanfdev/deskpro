@@ -332,6 +332,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usersource_assoc;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $slas;
+
+	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -474,6 +479,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->slas                   = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
