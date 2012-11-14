@@ -124,11 +124,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage("Is bounced");
 			$ticket	= $bounce_detector->getGuessedTicket();
 			if ($ticket) {
-				$person = $ticket->person;
 				$this->is_bounce = true;
 			}
 		}
 
+		$detector = null;
 		if (!$ticket) {
 			if (!$ticket) {
 				$detector = new CodeTicketDetector();
@@ -193,7 +193,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
-		if ($ticket AND !$person AND $detector->canAddUnknownPerson()) {
+		if ($ticket AND !$person AND (!$detector || $detector->canAddUnknownPerson())) {
 
 			$this->logMessage('[TicketGatewayProcessor] Could not find user, creating new');
 
