@@ -383,14 +383,16 @@ class DeskPRO_Cloud_ProcMail
 			$use_url = $urlinfo['scheme'] . '://' . DP_CLOUD_SAVEMAIL_IP . $urlinfo['path'] . '?' . $urlinfo['query'];
 
 			$this->log(sprintf("uploadToSite: ip(%s)   use_url(%s)", DP_CLOUD_SAVEMAIL_IP, $use_url));
-
-			$cmd = sprintf("curl -F mailfile=@%s -H \"%s\" %s", escapeshellarg($this->savepath), escapeshellarg($urlinfo['host']), escapeshellarg($use_url));
+			$cmd = sprintf("curl -s -S -F mailfile=@%s -H %s %s", escapeshellarg($this->savepath), escapeshellarg('Host: ' . $urlinfo['host']), escapeshellarg($use_url));
 		} else {
 			$this->log(sprintf("uploadToSite: url(%s)", $url));
-			$cmd = sprintf("curl -F mailfile=@%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
+			$cmd = sprintf("curl -s -S -F mailfile=@%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
 		}
 
-		$ret = $out = null;
+		$this->log("uploadToSite: curl: $cmd");
+
+		$ret = null;
+		$out = array();
 		exec($cmd, $out, $ret);
 
 		if (!$out) {
@@ -406,9 +408,7 @@ class DeskPRO_Cloud_ProcMail
 			$this->markUnknown();
 			$this->exit_string = "Site has no such defined address";
 			$this->exit_code = 3;
-		}
-
-		if (strpos($out, 'DP_MAIL_ACCEPT') === false) {
+		} elseif (strpos($out, 'DP_MAIL_ACCEPT') === false) {
 			$this->log("uploadToSite: Site rejected the message");
 			$this->markFailed();
 			$this->exit_string = "Message was rejected";
@@ -419,18 +419,24 @@ class DeskPRO_Cloud_ProcMail
 
 	protected function markFailed()
 	{
-		if ($this->is_retry && $this->is_retry < DP_CLOUD_RETRY_LIMIT) {
+		if (!$this->is_retry || $this->is_retry < DP_CLOUD_RETRY_LIMIT) {
 			$dir = DP_CLOUD_MAILSTORE . '/_failed_retry';
+			$this->log("markFailed: failed_retry");
 		} else {
 			$dir = DP_CLOUD_MAILSTORE . '/_failed';
+			$this->log("markFailed: failed");
 		}
 
 		if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
+			$this->log("markFailed: failed to make dir: $dir", self::ERR);
 			return;
 		}
 
+		$path = $dir . '/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml');
+		$this->log("markFailed: path: $path", self::ERR);
+
 		file_put_contents(
-			$dir . '/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml'),
+			$path,
 			$this->getFailedLogString()
 		);
 	}
@@ -465,7 +471,7 @@ class DeskPRO_Cloud_ProcMail
 			'to_domain'   => $this->to_domain,
 			'savepath'    => $this->savepath,
 			'is_retry'    => $this->is_retry
-		), \JSON_PRETTY_PRINT);
+		));
 		$write_string .= "</dp:data>\n";
 		$write_string .= "<dp:log>\n";
 		$write_string .= $this->logAsString();
@@ -521,6 +527,7 @@ class DeskPRO_Cloud_ProcMail
 		}
 
 		$write = implode("\n", $write);
+		$write .= "\n";
 
 		$fp = fopen(DP_CLOUD_MAILLOG_PATH, 'a');
 		if (!$fp) {

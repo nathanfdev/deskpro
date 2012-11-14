@@ -97,6 +97,8 @@ class DeskPRO_Cloud_ProcMailRetry
 
 	private function __construct()
 	{
+		error_reporting(E_ALL);
+		ini_set('display_errors', 'On');
 		date_default_timezone_set('UTC');
 
 		if (!is_dir(DP_CLOUD_RETRY_DIR)) {
@@ -156,7 +158,7 @@ class DeskPRO_Cloud_ProcMailRetry
 			throw new \RuntimeException("Could not unlink retry file: " . $file);
 		}
 
-		if (!preg_match('#<dp:data>(.*?)</dp:data>#', $content, $m)) {
+		if (!preg_match('#<dp:data>(.*?)</dp:data>#s', $content, $m)) {
 			throw new \RuntimeException("Retry file has invalid data: " . $content);
 		}
 
@@ -164,7 +166,7 @@ class DeskPRO_Cloud_ProcMailRetry
 		$data = json_decode($data, true);
 
 		if (!$data) {
-			throw new \RuntimeException("Retry file has invalid data: " . $content);
+			throw new \RuntimeException("Retry file has invalid data after unserialize: " . $content);
 		}
 
 		if (!is_file($data['savepath'])) {
