@@ -1,3 +1,6 @@
+{% if not in_body %}
+	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+{% endif %}
 {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
 	{{ dp_asset_html('agent_vendors_css') }}
 	{{ dp_asset_html('agent_interface_css') }}

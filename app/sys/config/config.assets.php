@@ -59,7 +59,6 @@ $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
 		'vendor/modernizr.min.js',
-		'vendor/html5shiv.min.js',
 		'javascripts/Orb/modernizr-ext.js',
 
 		'vendor/jquery/jquery.min.js',
