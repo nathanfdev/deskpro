@@ -3313,8 +3313,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				html = html.replace(/<div/gi, '<p').replace(/<\/div>/g, '</p>');
 				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
 
-				console.log(html);
-
 				this.pasteCleanUp(html);
 
 				this.pasteRunning = false;
