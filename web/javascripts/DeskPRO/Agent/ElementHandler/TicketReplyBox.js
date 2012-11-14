@@ -73,7 +73,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('is_note').val('0');
 
 			if (sigTrimmed) {
-				if (isWysiwyg) {
+				if (isWysiwyg && textarea.data('redactor')) {
 					var reply = textarea.getCode();
 					if (sig.length) {
 						reply = reply.replace(/\s*(<p>(<br\s*\/?>)?<\/p>\s*)*$/, '');
@@ -106,7 +106,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 
-			if (isWysiwyg) {
+			if (isWysiwyg && textarea.data('redactor')) {
 				var reply = textarea.getCode();
 				var newReply = reply.replace(/<(p|div) class="dp-signature-start">[\w\W]*$/, '');
 				if (newReply != reply) {
@@ -255,7 +255,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			viewUrl: this.el.data('snippet-viewer-url'),
 			triggerElement: this.getElById('text_snippets_btn'),
 			onBeforeOpen: function() {
-				if (isWysiwyg) {
+				if (isWysiwyg && textarea.data('redactor')) {
 					textarea.data('redactor').saveSelection();
 				}
 			},
@@ -264,7 +264,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return;
 				}
 
-				if (isWysiwyg) {
+				if (isWysiwyg && textarea.data('redactor')) {
 					textarea.data('redactor').restoreSelection();
 					textarea.data('redactor').insertHtml(info.snippetHtml);
 				} else {
@@ -337,7 +337,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			if (isWysiwyg) {
+			if (isWysiwyg && textarea.data('redactor')) {
 				textarea.data('redactor').syncCode();
 			}
 
