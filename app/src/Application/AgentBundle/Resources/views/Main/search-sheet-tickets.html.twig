@@ -113,6 +113,19 @@
 		</li>
 		{% endif %}
 
+		{% if app.getDataRepository('Sla').hasSlas() %}
+		<li class="ob">
+			<label>SLA</label>
+			<div class="values">
+				<select name="set_term[sla][]" multiple="multiple">
+					{% for sla in app.getDataRepository('Sla').getAllSlas %}
+						<option value="{{ sla.id }}">{{ sla.title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</li>
+		{% endif %}
+
 		{% if ticket_options.people_organizations %}
 		<li class="ob">
 			<label>{{ phrase('agent.general.organization') }}</label>

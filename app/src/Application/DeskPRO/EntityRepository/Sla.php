@@ -42,13 +42,24 @@ use Orb\Util\Numbers;
 
 class Sla extends AbstractEntityRepository
 {
+	protected $_all_slas = null;
+
 	public function getAllSlas()
 	{
-		return $this->getEntityManager()->createQuery('
-			SELECT s
-			FROM DeskPRO:Sla s INDEX BY s.id
-			ORDER BY s.title
-		')->execute();
+		if ($this->_all_slas === null) {
+			$this->_all_slas = $this->getEntityManager()->createQuery('
+				SELECT s
+				FROM DeskPRO:Sla s INDEX BY s.id
+				ORDER BY s.title
+			')->execute();
+		}
+
+		return $this->_all_slas;
+	}
+
+	public function clearSlaCache()
+	{
+		$this->_all_slas = null;
 	}
 
 	public function getAddableSlas(Entity\Ticket $ticket)

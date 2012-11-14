@@ -487,6 +487,7 @@ class TicketSearchController extends AbstractController
 				'workflow'      => array('op' => 'contains', 'options' => array()),
 				'organization'  => array('op' => 'contains', 'options' => array()),
 				'language'      => array('op' => 'contains', 'options' => array()),
+				'sla'           => array('op' => 'contains', 'options' => array()),
 			);
 
 			foreach ($set_terms_map as $name => $info) {
