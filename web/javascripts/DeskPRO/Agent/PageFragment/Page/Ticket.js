@@ -958,20 +958,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (textarea.data('redactor')) {
 				// save the selection - but don't focus the editor as that can break this
 				$.proxy(function() {
-					this.savedSel = null;
-					this.savedSelObj = null;
-
-					if ($.browser.msie && parseInt($.browser.version, 10) < 9)
-					{
-						var node = this.$editor.get(0);
-						this.savedSel = window.Selection.getOrigin(node);
-						this.savedSelObj = window.Selection.getFocus(node);
-					}
-					else
-					{
-						this.savedSel = window.Selection.getOrigin(window);
-						this.savedSelObj = window.Selection.getFocus(window);
-					}
+					this.savedSel = this.getOrigin();
+					this.savedSelObj = this.getFocus();
 				}, textarea.data('redactor'))();
 			}
 		});
