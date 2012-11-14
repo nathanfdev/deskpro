@@ -354,6 +354,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
 		'javascripts/DeskPRO/Agent/Widget/FilterGroupEditor.js',
 		'javascripts/DeskPRO/Agent/Widget/FilterOptionsPop.js',
+		'javascripts/DeskPRO/Agent/Widget/SlaOptionsPop.js',
 
 		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
 

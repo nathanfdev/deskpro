@@ -26,6 +26,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('ticket-section.list-activated', function (info) {
 			var allId = $('#tickets_awaiting_agent_navitem').data('filter-id');
+			if (info.listType != 'filter') {
+				return;
+			}
 			if (info.id == allId && $('#tickets_awaiting_agent_navitem').hasClass('nav-selected')) {
 				// Dont switch away from 'awaiting agent' under archive which is same as 'all'
 				return;
@@ -194,6 +197,74 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('.launch-customfilters-settings', this.contentEl).on('click', function() {
 			$('#settingswin').trigger('dp_open', 'filters');
 		});
+
+		if ($('#ticket_slas_header').length) {
+			var description = $('#ticket_slas_description');
+
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', this.getUpdatedSlaCounts, this);
+
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
+				var refresh = false;
+
+				for (var i = 0; i < info.changed_fields.length; i++) {
+					switch (info.changed_fields[i]) {
+						case 'agent':
+							if (description.data('sla-filter') == 'agent') {
+								refresh = true;
+							}
+							break;
+
+						case 'agent_team':
+							if (description.data('sla-filter') == 'team') {
+								refresh = true;
+							}
+					}
+				}
+
+				if (refresh) {
+					self.getUpdatedSlaCounts();
+				}
+			});
+
+			this.updateSlaDescriptionRow();
+
+			this.slaGroupEditor = new DeskPRO.Agent.Widget.SlaOptionsPop({
+				containerElement: '#tickets_outline .scroll-content',
+				listElement: '#ticket_slas_header',
+				triggerElement: $('.launch-sla-editor', this.contentEl),
+
+				onClose: function(ed) {
+					var postData = [];
+					var row = ed.controlRealEl;
+
+					postData.push({
+						name: 'prefs[agent.ui.sla.ticket-filter]',
+						value: row.find('.ticket-filter').val()
+					});
+					postData.push({
+						name: 'prefs[agent.ui.sla.requirements]',
+						value: row.find('.sla-requirements').val()
+					});
+
+					var gear = $('#ticket_slas_header .settings');
+
+					gear.addClass('loading');
+
+					$.ajax({
+						type: 'POST',
+						url: BASE_URL + 'agent/misc/ajax-save-prefs',
+						data: postData
+					}).done(function() {
+						self.getUpdatedSlaCounts(function() {
+							gear.removeClass('loading');
+						});
+					}).fail(function() {
+						gear.removeClass('loading');
+					});
+
+				}
+			});
+		}
 
 		DeskPRO.ElementHandler_Exec(this.wrapper);
 
@@ -930,5 +1001,78 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		$('#tickets_outline_custom_filters').append(row);
 		$('#tickets_outline_custom_filters').find('li.no-data').hide();
+	},
+
+	updateSlaDescriptionRow: function() {
+		var row = $('#ticket_slas_description');
+		var filter = row.data('sla-filter'), requirements = row.data('sla-filter-requirements');
+
+		var haveFilter = false, haveRequirements = false;
+
+		row.find('.sla-ticket-filter').hide();
+		if (filter.length && row.find('.sla-ticket-filter.' + filter).length) {
+			haveFilter = true;
+			row.find('.sla-ticket-filter.' + filter).show();
+		}
+
+		row.find('.sla-requirements').hide();
+		if (requirements.length && row.find('.sla-requirements.' + requirements).length) {
+			haveRequirements = true
+			row.find('.sla-requirements.' + requirements).show();
+		}
+
+		if (haveFilter && haveRequirements) {
+			row.find('.sla-separator').show();
+		} else {
+			row.find('.sla-separator').hide();
+		}
+
+		if (haveFilter || haveRequirements) {
+			row.show();
+		} else {
+			row.hide();
+		}
+	},
+
+	getUpdatedSlaCounts: function(callback) {
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/get-sla-counts.json',
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				this.updateSlaCounts(data);
+				if ($.isFunction(callback)) {
+					callback(data);
+				}
+			}
+		});
+	},
+
+	updateSlaCounts: function(data) {
+		if (!data.counts) {
+			return;
+		}
+
+		var description = $('#ticket_slas_description');
+		description.data('sla-filter', data.sla_filter);
+		description.data('sla-filter-requirements', data.sla_requirements_filter);
+		this.updateSlaDescriptionRow();
+
+		Object.each(data.counts, function (counts, sla_id) {
+			this.setSlaCounts(sla_id, counts.ok, counts.warning, counts.fail);
+		}, this);
+	},
+
+	setSlaCounts: function(sla_id, ok, warning, fail) {
+		sla_id = parseInt(sla_id);
+
+		var list = $('#tickets_outline_slas');
+		var row = list.find('.sla-' + sla_id);
+
+		if (row.length) {
+			row.find('.list-counter.ok').text(ok || 0);
+			row.find('.list-counter.warning').text(warning || 0);
+			row.find('.list-counter.fail').text(fail || 0);
+		}
 	}
 });

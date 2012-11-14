@@ -101,6 +101,10 @@ section.source-section header span.settings {
 	cursor: pointer;
 }
 
+section.source-section header span.settings.loading {
+	background-image: url("../../images/spinners/loading-arrows-xsmall-whitebg.gif") !important;
+}
+
 section.source-section header span.add {
 	display: block;
 	position: absolute;
@@ -121,6 +125,15 @@ section.source-section header span.add {
 
 section.source-section header span.add.solo {
 	right: 0;
+}
+
+section.source-section > .description {
+	text-align: center;
+	font-weight: bold;
+	font-family: @source-heading-font;
+	font-size: 11px;
+	color: #6C7680;
+	padding: 3px 0 2px 10px;
 }
 
 /*****************************************************************************
@@ -801,7 +814,8 @@ section.source-labels-cloud ul li.nav-selected span {
 
 #chat_filter_group_editor,
 #ticket_filter_group_editor,
-#ticket_customfilter_group_editor {
+#ticket_customfilter_group_editor,
+#ticket_sla_group_editor {
 	position: absolute;
 	overflow: hidden;
 	z-index: 30001;
@@ -896,6 +910,17 @@ section.source-labels-cloud ul li.nav-selected span {
 	right: -6px;
 	display: block;
 	z-index: 30010;
+}
+
+#ticket_sla_group_editor .filter-group-editor {
+	padding-left: 10px;
+	padding-top: 2px;
+	width: 420px;
+	box-sizing: border-box;
+	select {
+		width: auto;
+		margin: 0;
+	}
 }
 
 

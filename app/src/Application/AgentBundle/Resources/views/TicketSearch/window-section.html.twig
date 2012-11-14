@@ -91,16 +91,21 @@
 
 {% if slas %}
 	<section class="source-section sla-section">
-		<header>
+		<header id="ticket_slas_header" data-sla-filter="{{ sla_filter }}" data-sla-filter-requirements="{{ sla_requirements_filter }}">
 			<h1>
 				SLAs
-				{% if sla_filter == 'agent' %}(My Tickets)
-				{% elseif sla_filter == 'team' %}(My Teams' Tickets){% endif %}
 			</h1>
-			<!--<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>-->
+			<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>
 		</header>
+		<div class="description" id="ticket_slas_description" data-sla-filter="{{ sla_filter }}" data-sla-filter-requirements="{{ sla_requirements_filter }}">
+			<span class="sla-ticket-filter agent">My Tickets</span>
+			<span class="sla-ticket-filter team">My Teams' Tickets</span>
+			<span class="sla-separator">-</span>
+			<span class="sla-requirements completed">Completed</span>
+			<span class="sla-requirements not_completed">Not Completed</span>
+		</div>
 		<article id="sla_list_wrap">
-			<ul class="source-list">
+			<ul id="tickets_outline_slas" class="source-list">
 			{% for sla in slas %}
 				<li
 					class="sla sla-{{sla.id}}"
@@ -119,6 +124,24 @@
 			{% endfor %}
 			</ul>
 		</article>
+		<div id="ticket_sla_group_editor" style="display:none">
+			<div class="sla-group-editor filter-group-editor">
+				<span class="close"></span>
+				<select class="ticket-filter">
+					<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All tickets</option>
+					<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My tickets</option>
+					{% if app.user.getAgentTeamIds()|length %}
+						<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My teams' tickets</option>
+					{% endif %}
+				</select>
+				with SLA requirements
+				<select class="sla-requirements">
+					<option value="any" {% if sla_requirements_filter == 'any' %}selected="selected"{% endif %}>in any state</option>
+					<option value="completed" {% if sla_requirements_filter == 'completed' %}selected="selected"{% endif %}>completed</option>
+					<option value="not_completed" {% if sla_requirements_filter == 'not_completed' %}selected="selected"{% endif %}>not completed</option>
+				</select>
+			</div>
+		</div>
 	</section>
 {% endif %}
 

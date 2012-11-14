@@ -83,6 +83,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_FEEDBACK_RATING           = 'feedback_rating';
 	const TERM_SLA                       = 'sla';
 	const TERM_SLA_STATUS                = 'sla_status';
+	const TERM_SLA_COMPLETED             = 'sla_completed';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -1083,7 +1084,7 @@ class TicketSearch extends SearcherAbstract
 
 					case self::TERM_SLA_STATUS:
 
-						if (isset($choice['sla_status'])) {
+						if (is_array($choice) && isset($choice['sla_status'])) {
 							$statuses = (array)$choice['sla_status'];
 							$sla_ids = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : array());
 						} else {
@@ -1121,28 +1122,21 @@ class TicketSearch extends SearcherAbstract
 						$sla_ids_in = implode(',', $sla_ids_in);
 
 						if ($status_summary) {
-							$this->summary[] = $this->_choiceSummary('SLA status', $op, $statuses, function($statuses) {
-								$titles = array();
-								foreach ($statuses AS $status) {
-									switch ($status) {
-										case 'ok': $value = 'OK'; break;
-										case 'warning': $value = 'Warning'; break;
-										case 'fail': $value = 'Failed'; break;
-										default: $value = '';
-									}
-
-									if ($value) {
-										$titles[$status] = $value;
-									}
+							$this->summary[] = $this->_choiceSummary('SLA status', $op, $statuses, function($status) {
+								switch ($status) {
+									case 'ok': $value = 'OK'; break;
+									case 'warning': $value = 'Warning'; break;
+									case 'fail': $value = 'Failed'; break;
+									default: $value = '';
 								}
 
-								return $titles;
+								return $value;
 							});
 						}
 
 						if ($sla_ids) {
 							$this->summary[] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
-								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles($sla_ids);
+								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$sla_ids);
 								return $titles;
 							});
 						}
@@ -1164,6 +1158,88 @@ class TicketSearch extends SearcherAbstract
 									'ticket_slas',
 									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
 										. "AND $join_name.sla_status IN ($statuses_in)"
+										. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
+								);
+								$wheres[] = "$join_name.ticket_id IS NULL";
+								break;
+						}
+						break;
+
+					case self::TERM_SLA_COMPLETED:
+
+						if (is_array($choice) && isset($choice['is_completed'])) {
+							$completed = (array)$choice['is_completed'];
+							$sla_ids = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : array());
+						} else {
+							$completed = (array)$choice;
+							$sla_ids = array();
+						}
+						if (!$completed && !$sla_ids) {
+							break;
+						}
+
+						if (!$completed) {
+							$completed = array(1, 0);
+							$status_summary = false;
+						} else {
+							$status_summary = true;
+						}
+
+						$this->affected_fields[] = 'ticket.sla_completed';
+						if ($sla_ids) {
+							$this->affected_fields[] = 'ticket.sla_id';
+						}
+
+						$completed_in = array();
+						$sla_ids_in = array();
+
+						foreach ($completed as $c) {
+							$completed_in[] = $db->quote($c);
+						}
+						foreach ($sla_ids as $c) {
+							if ($c) {
+								$sla_ids_in[] = $db->quote($c);
+							}
+						}
+						$completed_in = implode(',', $completed_in);
+						$sla_ids_in = implode(',', $sla_ids_in);
+
+						if ($status_summary) {
+							$this->summary[] = $this->_choiceSummary('SLA requirement', $op, $completed, function($status) {
+								switch ($status) {
+									case 1: $value = 'Completed'; break;
+									case 0: $value = 'Not Completed'; break;
+									default: $value = '';
+								}
+
+								return $value;
+							});
+						}
+
+						if ($sla_ids) {
+							$this->summary[] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
+								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$sla_ids);
+								return $titles;
+							});
+						}
+
+						switch ($op) {
+							case self::OP_IS:
+							case self::OP_CONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)"
+								);
+								$wheres[] = "$join_name.is_completed IN ($completed_in)"
+									. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '');
+								break;
+
+							case self::OP_NOT:
+							case self::OP_NOTCONTAINS:
+								$joins[] = array(
+									'ticket_slas',
+									"LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
+										. "AND $join_name.is_completed IN ($completed_in)"
 										. ($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '') . ")"
 								);
 								$wheres[] = "$join_name.ticket_id IS NULL";

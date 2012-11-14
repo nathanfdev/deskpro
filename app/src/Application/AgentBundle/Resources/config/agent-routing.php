@@ -837,6 +837,13 @@ $collection->add('agent_ticketsearch_getfiltercounts', new Route(
 	array()
 ));
 
+$collection->add('agent_ticketsearch_getslacounts', new Route(
+	'/ticket-search/get-sla-counts.json',
+	array('_controller' => 'AgentBundle:TicketSearch:getSlaCounts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticketsearch_grouptickets', new Route(
 	'/ticket-search/group-tickets.json',
 	array('_controller' => 'AgentBundle:TicketSearch:groupTickets'),

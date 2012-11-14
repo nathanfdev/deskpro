@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 
 class TicketSla extends AbstractEntityRepository
 {
-	public function getTicketSlaCounts(array $slas, $filter = 'all', Entity\Person $person_context = null)
+	public function getTicketSlaCounts(array $slas, $filter = 'all', $requirements_filter = 'any', Entity\Person $person_context = null)
 	{
 		if (!$slas) {
 			return array();
@@ -100,6 +100,16 @@ class TicketSla extends AbstractEntityRepository
 				} else {
 					$where .= " AND 0";
 				}
+				break;
+		}
+
+		switch ($requirements_filter) {
+			case 'completed':
+				$where .= " AND ticket_slas.is_completed = 1";
+				break;
+
+			case 'not_completed':
+				$where .= " AND ticket_slas.is_completed = 0";
 				break;
 		}
 
