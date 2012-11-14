@@ -3366,20 +3366,17 @@ article.content-message .content .body-text .fade-bar {
 
 .sla-table {
 	.sla-status-icon {
-		text-align: right;
-		span {
-			.iconbase(16px, 16px);
-			text-indent: 100px;
-			vertical-align: text-bottom;
-		}
+		.iconbase(16px, 16px);
+		text-indent: 100px;
+		vertical-align: text-bottom;
 
-		.ok {
+		&.ok {
 			background-image: url(../../images/agent/icons/bullet_green.png);
 		}
-		.warning {
+		&.warning {
 			background-image: url(../../images/agent/icons/bullet_orange.png);
 		}
-		.fail {
+		&.fail {
 			background-image: url(../../images/agent/icons/bullet_red.png);
 		}
 	}

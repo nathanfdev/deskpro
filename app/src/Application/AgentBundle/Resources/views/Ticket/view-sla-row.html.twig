@@ -1,10 +1,12 @@
 <tr data-sla-id="{{ticket_sla.sla.id}}">
-	<td class="sla-status-icon"><span class="{{ ticket_sla.sla_status }} tipped"
-		{% if ticket_sla.sla_status == 'ok' %}title="SLA Status: Ok"
-		{% elseif ticket_sla.sla_status == 'warning' %}title="SLA Status: Warning"
-		{% elseif ticket_sla.sla_status == 'fail' %}title="SLA Status: Failed"{% endif %}
-	></span></td>
-	<td>{{ ticket_sla.sla.title }}</td>
+	<td>
+		<span class="sla-status-icon {{ ticket_sla.sla_status }} tipped"
+			{% if ticket_sla.sla_status == 'ok' %}title="SLA Status: Ok"
+			{% elseif ticket_sla.sla_status == 'warning' %}title="SLA Status: Warning"
+			{% elseif ticket_sla.sla_status == 'fail' %}title="SLA Status: Failed"{% endif %}
+		></span>
+		{{ ticket_sla.sla.title }}
+	</td>
 	<td>{{ ticket_sla.warn_date ? ticket_sla.warn_date|date('fulltime') : 'N/A' }}</td>
 	<td>{{ ticket_sla.fail_date ? ticket_sla.fail_date|date('fulltime') : 'N/A' }}</td>
 	{% if ticket_sla.sla.allow_agent_manual %}
