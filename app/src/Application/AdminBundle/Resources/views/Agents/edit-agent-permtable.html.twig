@@ -133,7 +133,8 @@
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_reset_user_secure') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_people.reset_password -->{{ col.perm_col(phrase('admin.agents.widget_reset_passwords', {'subphrase':phrase_part}, true), usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
 				<!-- PERMISSION:agent_people.notes -->{{ col.perm_col(phrase('admin.agents.add_notes'), usergroup_values, 'agent_people', 'notes') }}
-				<!-- PERMISSION:agent_people.delete -->{{ col.perm_col(phrase('admin.agents.delete_people'), usergroup_values, 'agent_people', 'delete') }}
+				{% set phrase_part %} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Deleting people is a very powerful operation. When a person is deleted, all of their associated objects such as tickets and messages are deleted too. If you grant this permission, you are essentially giving the agent the ability to delete many other things as well. It is usually desired to leave this permission disabled."></span>{% endset %}
+				<!-- PERMISSION:agent_people.delete -->{{ col.perm_col(phrase('admin.agents.delete_people') ~ phrase_part, usergroup_values, 'agent_people', 'delete') }}
 				<!-- PERMISSION:agent_people.disable -->{{ col.perm_col('Disable people', usergroup_values, 'agent_people', 'disable') }}
 			</tbody>
 			<tbody>
