@@ -55,7 +55,7 @@ Orb.Compat.WebForms.placeholder = function(input) {
 			}
 		});
 
-		if (input.get(0).form) {
+		if (input.get(0) && input.get(0).form) {
 			$(input.get(0).form).submit(function() {
 				if (input.is('.placeholder-visible')) {
 					input.val('');
