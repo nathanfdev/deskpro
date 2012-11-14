@@ -3307,11 +3307,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var html = this.getFragmentHtml(pastedFrag);
 
 				// since <p> only counts as one line break, we need to fix that
-				html = html.replace(/<\/p>/g, '</p><p>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+				html = html.replace(/<\/p>/gi, '</p><p>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
 
 				// convert divs to p's and keep empty ones
-				html = html.replace(/<div/g, '<p').replace(/<\/div>/g, '</p>');
-				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/g, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+				html = html.replace(/<div/gi, '<p').replace(/<\/div>/g, '</p>');
+				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+
+				console.log(html);
 
 				this.pasteCleanUp(html);
 
