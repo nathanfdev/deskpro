@@ -277,8 +277,8 @@
 		</div>
 		<div class="dp-form-input sla-selection">
 			<ul id="apply_list">
+				<li><label><input type="checkbox" name="allow_agent_manual" id="allow_agent_manual" value="1" {% if sla.allow_agent_manual %}checked="checked"{% endif %} /> Allow agents to manually assign/remove this SLA</label></li>
 				<li><label><input type="checkbox" name="apply_all" id="apply_all" value="1" {% if sla.apply_all %}checked="checked"{% endif %} /> Apply to all tickets</label></li>
-				<li><label><input type="checkbox" name="allow_agent_manual" value="1" {% if sla.allow_agent_manual %}checked="checked"{% endif %} /> Allow agents to manually assign/remove this SLA</label></li>
 				<li><label><input type="checkbox" class="force-checked" checked="checked" /> Apply to the following people:</label>
 					<div style="margin-left: 22px"><input type="hidden" name="person_ids" id="person_ids" data-select-width="auto" value="{% for id,null in selected_people %}{{ id }},{% endfor %}" data-selected="{{ selected_people|json_encode }}" /></div>
 				</li>

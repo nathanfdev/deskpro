@@ -276,9 +276,9 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 		var applyAllChange = function() {
 			var checked = $('#apply_all').is(':checked');
 			if (checked) {
-				$('#apply_list :checkbox:not(#apply_all)').attr('disabled', true);
+				$('#apply_list :checkbox:not(#apply_all, #allow_agent_manual)').attr('disabled', true);
 			} else {
-				$('#apply_list :checkbox:not(#apply_all)').attr('disabled', false);
+				$('#apply_list :checkbox:not(#apply_all, #allow_agent_manual)').attr('disabled', false);
 			}
 		};
 		 $('#apply_all').change(applyAllChange);
