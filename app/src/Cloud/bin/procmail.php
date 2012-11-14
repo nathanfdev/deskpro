@@ -51,6 +51,10 @@ if (php_sapi_name() != 'cli') {
 # For example, if you were to call this command manually to test:
 #     cat mymailmessage.txt | procmail.php contact@test.deskpro.com
 #
+# Failed messages are put into a _failed_retry directory where the companion script procmail-retry.php
+# is used to execute commands like:
+#    cate retry-message.txt | procmail.php contact@test.deskpro.com retry 1
+#
 # If the message could not be inserted into the target database, a new file
 # entry is created in DP_CLOUD_MAILSTORE/_failed whose contents is the full path to the
 # email that failed.
@@ -68,6 +72,27 @@ define('DP_CLOUD_MAILSTORE', __DIR__ . '/mailstore');
  * The web script to PUT the email to
  */
 define('DP_CLOUD_SAVEMAIL_URL', 'http://{DOMAIN}/index.php?_sys=savemail&auth=dWso6yWsKDfZe5AJOFJYNTrkylLFHN&{PARAMS}');
+
+/**
+ * If set, then this IP address will be used. This means DNS is bypassed when sending
+ * the result to the server.
+ */
+define('DP_CLOUD_SAVEMAIL_IP', null);
+
+/**
+ * Path to the mail log file
+ */
+define('DP_CLOUD_MAILLOG_PATH', __DIR__ . '/procmail.log');
+
+/**
+ * When a message in a request has at least this level, then log will be written
+ */
+define('DP_CLOUD_MAILLOG_LEVEL', 5);
+
+/**
+ * How many times to retry before giving up
+ */
+define('DP_CLOUD_RETRY_LIMIT', 3);
 
 /**
  * Database details for the cloud database to
@@ -110,6 +135,18 @@ define('DP_CLOUD_DATABASE_MAXPACKET', 16777216);
 
 class DeskPRO_Cloud_ProcMail
 {
+	/**@#+ Standard log levels */
+	const EMERG   = 0;
+    const ALERT   = 1;
+    const CRIT    = 2;
+    const ERR     = 3;
+    const WARN    = 4;
+    const NOTICE  = 5;
+    const INFO    = 6;
+    const DEBUG   = 7;
+    const STRICT   = 8;
+	/**@#-*/
+
 	/**
 	 * @var string
 	 */
@@ -145,6 +182,22 @@ class DeskPRO_Cloud_ProcMail
 	 */
 	protected $exit_code = 0;
 
+	/**
+	 * @var array
+	 */
+	protected $log_messages = array();
+
+	/**
+	 * @var string
+	 */
+	protected $session_id;
+
+	/**
+	 * If this is a retry, and if so, the attempt number
+	 * @var int
+	 */
+	protected $is_retry = 0;
+
 	public static function exec()
 	{
 		new self();
@@ -152,12 +205,19 @@ class DeskPRO_Cloud_ProcMail
 
 	private function __construct()
 	{
+		$this->session_id = uniqid();
+
 		date_default_timezone_set('UTC');
 
 		if (!is_writable(DP_CLOUD_MAILSTORE)) {
 			trigger_error("MAILSTORE is not writable: " . DP_CLOUD_MAILSTORE, E_USER_ERROR);
 			exit(1);
 		}
+
+		$that = $this;
+		register_shutdown_function(function() use ($that) {
+			$that->flushLogIfLevel(DP_CLOUD_MAILLOG_LEVEL);
+		});
 
 		$this->run();
 
@@ -178,6 +238,13 @@ class DeskPRO_Cloud_ProcMail
 			$this->to_addr = $this->to_mailbox = $this->to_domain = 'UNKNOWN';
 		}
 
+		$this->log(sprintf("to_mailbox(%s)   to_domain(%s)", $this->to_mailbox, $this->to_domain));
+
+		if (isset($_SERVER['argv'][2]) && $_SERVER['argv'][2] == 'retry' && isset($_SERVER['argv'][3])) {
+			$this->is_retry = (int)$_SERVER['argv'][3];
+			$this->log(sprintf("is_retry(%s)", $this->is_retry));
+		}
+
 		$this->saveToFilesystem();
 		$this->saveToTarget();
 	}
@@ -191,14 +258,18 @@ class DeskPRO_Cloud_ProcMail
 	{
 		$this->savedir = DP_CLOUD_MAILSTORE . '/' . date('Y-m-d');
 
+		$this->log(sprintf("saveToFilesystem: savedir(%s)", $this->savedir));
+
 		if (!is_dir($this->savedir)) {
 			if (!mkdir($this->savedir, 0755, true)) {
+				$this->log("saveToFilesystem: Could not create MAILSTORE_DIR", self::ERR);
 				trigger_error("Could not create MAILSTORE_DIR: $this->savedir", E_USER_ERROR);
 				exit(1);
 			}
 		}
 
 		$this->savepath = $this->savedir . '/' . date('H-i-s') . '-' . $this->to_domain . '.' . mt_rand(100000000,999999999) . '.eml';
+		$this->log(sprintf("saveToFilesystem: savepath(%s)", $this->savepath));
 
 		$fp = fopen($this->savepath, 'w');
 
@@ -217,6 +288,7 @@ class DeskPRO_Cloud_ProcMail
 	protected function saveToTarget()
 	{
 		if ($this->to_domain == "UNKNOWN") {
+			$this->log("savetoTarget: to_domain unknown, do not know where to route message");
 			$this->markUnknown();
 			return;
 		}
@@ -224,13 +296,15 @@ class DeskPRO_Cloud_ProcMail
 		try {
 			$cloudsite = $this->findCloudSite();
 			if (!$cloudsite) {
+				$this->log("savetoTarget: could not find cloud site, do not know where to route message");
 				$this->markUnknown();
 				return;
 			}
 
 			// If the site is cancelled or demo expired, bounce
 			if ($cloudsite['is_cancelled'] || ($cloudsite['is_demo'] && $cloudsite['date_demo_expire'] < time())) {
-				$this->markFailed();
+				$this->log("savetoTarget: cloud site is cancelled or demo expired, message bounce");
+				$this->markUnknown();
 				$this->exit_string = "Site is cancelled or demo expired";
 				$this->exit_code = 2;
 				return;
@@ -238,6 +312,8 @@ class DeskPRO_Cloud_ProcMail
 
 			$this->uploadToSite($cloudsite);
 		} catch (\Exception $e) {
+
+			$this->log("savetoTarget: exception: " . $e->getMessage());
 
 			// If the DB failed we can still upload to remote site,
 			// The site check is just to make sure theres a real site. But
@@ -297,7 +373,22 @@ class DeskPRO_Cloud_ProcMail
 		$url = str_replace('{PARAMS}', 'cat=' . urlencode($this->to_addr), DP_CLOUD_SAVEMAIL_URL);
 		$url = str_replace('{DOMAIN}', $this->to_domain, $url);
 
-		$cmd = sprintf("curl -F mailfile=@%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
+		if (DP_CLOUD_SAVEMAIL_IP) {
+			$urlinfo = parse_url($url);
+			if (empty($urlinfo['scheme'])) $urlinfo['scheme']  = 'https';
+			if (empty($urlinfo['path']))   $urlinfo['path']    = '/';
+			if (empty($urlinfo['query']))  $urlinfo['query']   = '';
+			if (empty($urlinfo['host']))   $urlinfo['host']    = '';
+
+			$use_url = $urlinfo['scheme'] . '://' . DP_CLOUD_SAVEMAIL_IP . $urlinfo['path'] . '?' . $urlinfo['query'];
+
+			$this->log(sprintf("uploadToSite: ip(%s)   use_url(%s)", DP_CLOUD_SAVEMAIL_IP, $use_url));
+
+			$cmd = sprintf("curl -F mailfile=@%s -H \"%s\" %s", escapeshellarg($this->savepath), escapeshellarg($urlinfo['host']), escapeshellarg($use_url));
+		} else {
+			$this->log(sprintf("uploadToSite: url(%s)", $url));
+			$cmd = sprintf("curl -F mailfile=@%s %s", escapeshellarg($this->savepath), escapeshellarg($url));
+		}
 
 		$ret = $out = null;
 		exec($cmd, $out, $ret);
@@ -308,16 +399,19 @@ class DeskPRO_Cloud_ProcMail
 
 		$out = implode("\n", $out);
 
-		if (strpos($out, 'DP_UNKNOWN_CAT') === false) {
-			$this->markFailed();
+		$this->log(sprintf("uploadToSite: out: %s", $out));
+
+		if (strpos($out, 'DP_UNKNOWN_CAT') !== false) {
+			$this->log("uploadToSite: Site has no defiend address");
+			$this->markUnknown();
 			$this->exit_string = "Site has no such defined address";
 			$this->exit_code = 3;
 		}
 
 		if (strpos($out, 'DP_MAIL_ACCEPT') === false) {
+			$this->log("uploadToSite: Site rejected the message");
 			$this->markFailed();
 			$this->exit_string = "Message was rejected";
-			error_log($out);
 		}
 	}
 
@@ -325,11 +419,20 @@ class DeskPRO_Cloud_ProcMail
 
 	protected function markFailed()
 	{
-		if (!is_dir(DP_CLOUD_MAILSTORE . '/_failed') && !mkdir(DP_CLOUD_MAILSTORE . '/_failed', 0755, true)) {
+		if ($this->is_retry && $this->is_retry < DP_CLOUD_RETRY_LIMIT) {
+			$dir = DP_CLOUD_MAILSTORE . '/_failed_retry';
+		} else {
+			$dir = DP_CLOUD_MAILSTORE . '/_failed';
+		}
+
+		if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
 			return;
 		}
 
-		file_put_contents(DP_CLOUD_MAILSTORE . '/_failed/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml'), $this->savepath);
+		file_put_contents(
+			$dir . '/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml'),
+			$this->getFailedLogString()
+		);
 	}
 
 	protected function markUnknown()
@@ -338,7 +441,95 @@ class DeskPRO_Cloud_ProcMail
 			return;
 		}
 
-		file_put_contents(DP_CLOUD_MAILSTORE . '/_unknown/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml'), $this->savepath);
+		file_put_contents(
+			DP_CLOUD_MAILSTORE . '/_unknown/' . date('Y-m-d') . '-' . basename($this->savepath, '.eml'),
+			$this->getFailedLogString()
+		);
+	}
+
+	protected function log($message, $level = self::DEBUG)
+	{
+		$this->log_messages[] = array(
+			'time'    => time(),
+			'message' => $message,
+			'level'   => $level
+		);
+	}
+
+	public function getFailedLogString()
+	{
+		$write_string = "<dp:data>\n";
+		$write_string .= json_encode(array(
+			'to_addr'     => $this->to_addr,
+			'to_mailbox'  => $this->to_mailbox,
+			'to_domain'   => $this->to_domain,
+			'savepath'    => $this->savepath,
+			'is_retry'    => $this->is_retry
+		), \JSON_PRETTY_PRINT);
+		$write_string .= "</dp:data>\n";
+		$write_string .= "<dp:log>\n";
+		$write_string .= $this->logAsString();
+		$write_string .= "</dp:log>\n";
+
+		return $write_string;
+	}
+
+	public function logAsString()
+	{
+		$write = array();
+		foreach ($this->log_messages as $info) {
+			$write[] = sprintf("<%s> [%s] %s", $this->session_id, date('Y-m-d H:i:s', $info['time']), $info['message']);
+		}
+
+		$write = implode("\n", $write);
+
+		return $write;
+	}
+
+	public function flushLogIfLevel($level)
+	{
+		$do = false;
+		foreach ($this->log_messages as $info) {
+			if ($info['level'] >= $level) {
+				$do = true;
+				break;
+			}
+		}
+
+		if ($do) {
+			$this->flushLog();
+		}
+	}
+
+	public function flushLog()
+	{
+		if (!DP_CLOUD_MAILLOG_PATH) {
+			return;
+		}
+
+		$write = array();
+		foreach ($this->log_messages as $info) {
+			if (!empty($info['_written'])) {
+				continue;
+			}
+
+			$write[] = sprintf("<%s> [%s] %s", $this->session_id, date('Y-m-d H:i:s', $info['time']), $info['message']);
+		}
+
+		if (!$write) {
+			return;
+		}
+
+		$write = implode("\n", $write);
+
+		$fp = fopen(DP_CLOUD_MAILLOG_PATH, 'a');
+		if (!$fp) {
+			return;
+		}
+
+		fwrite($fp, $write);
+		fflush($fp);
+		fclose($fp);
 	}
 }
 
