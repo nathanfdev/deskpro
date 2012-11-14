@@ -1,4 +1,4 @@
-.redactor_box {	     
+.redactor_box {
 	position: relative;
 	border: 1px solid #ddd;
 	overflow: visible;
@@ -18,12 +18,12 @@ body .redactor_air {
 	Fullscreen
 */
 body .redactor_box_fullscreen {
-    left: 0 ;
+    left: 0;
     position: fixed;
     overflow: hidden;
     top: 0;
     width: 100%;
-    z-index: 2000; 
+    z-index: 2000;
 }
 
 .redactor_box textarea {
@@ -35,11 +35,11 @@ body .redactor_box_fullscreen {
 	padding: 0;
 	display: block;
 	position: relative;
-	z-index: 1004; 
-	outline: none;	
+	z-index: 1004;
+	outline: none;
 	border: none;
 	width: 100%;
-	white-space: normal;	
+	white-space: normal;
 }
 
 .redactor_editor, .redactor_editor:focus {
@@ -77,9 +77,9 @@ body .redactor_box_fullscreen {
 	background: none !important;
 	margin: 0 !important;
 	margin-bottom: 15px !important;
-	border: none;	
+	border: none;
 }
-.redactor_editor iframe, 
+.redactor_editor iframe,
 .redactor_editor object,
 .redactor_editor hr {
 	margin-bottom: 15px !important;
@@ -87,15 +87,15 @@ body .redactor_box_fullscreen {
 .redactor_editor blockquote {
 	margin-left: 3em !important;
 	font-style: italic !important;
-	color: #777;	
+	color: #777;
 }
-.redactor_editor ul, 
+.redactor_editor ul,
 .redactor_editor ol {
-	padding-left: 2em !important;	
+	padding-left: 2em !important;
 }
-.redactor_editor ul ul, 
-.redactor_editor ol ol, 
-.redactor_editor ul ol, 
+.redactor_editor ul ul,
+.redactor_editor ol ol,
+.redactor_editor ul ol,
 .redactor_editor ol ul {
 	border: none;
 	margin: 2px !important;
@@ -118,14 +118,10 @@ body .redactor_box_fullscreen {
 	border-bottom: 2px solid #000 !important;
 	font-weight: bold !important;
 }
-.redactor_editor code, 
-.redactor_editor pre {
-	font-family: Menlo, Monaco, monospace, sans-serif !important;
-}
 .redactor_editor code {
 	background-color: #d8d7d7 !important;
 }
-.redactor_editor pre { 
+.redactor_editor pre {
 	font-size: 90% !important;
 	background: #f8f8f8 !important;
 	border: 1px solid #ddd !important;
@@ -141,17 +137,16 @@ body .redactor_box_fullscreen {
   border-top: 1px solid #ccc;
 }
 
-.redactor_editor h1, 
-.redactor_editor h2, 
-.redactor_editor h3, 
+.redactor_editor h1,
+.redactor_editor h2,
+.redactor_editor h3,
 .redactor_editor h4,
 .redactor_editor h5 {
-	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
 	color: #000;
-	background: none;	
+	background: none;
 	margin: 0 !important;
 	padding: 0 !important;
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 .redactor_editor h1 {
@@ -190,9 +185,9 @@ body .redactor_box_fullscreen {
 .redactor_editor_wym table,
 .redactor_editor_wym dl,
 .redactor_editor_wym pre,
-.redactor_editor_wym h1, 
-.redactor_editor_wym h2, 
-.redactor_editor_wym h3, 
+.redactor_editor_wym h1,
+.redactor_editor_wym h2,
+.redactor_editor_wym h3,
 .redactor_editor_wym h4,
 .redactor_editor_wym h5,
 .redactor_editor_wym blockquote {
@@ -211,7 +206,7 @@ body .redactor_box_fullscreen {
 	TOOLBAR
 */
 .redactor_toolbar {
-	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important; 
+	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
 	position: relative;
 	left: 0;
 	top: 0;
@@ -238,16 +233,17 @@ body .redactor_air .redactor_toolbar {
 }
 .redactor_toolbar li {
 	float: left !important;
-	margin: 0 !important;	
+	margin: 0 !important;
 	padding: 3px 1px;
 	padding-right: 0;
 	list-style: none !important;
+	outline: none;
 }
 .redactor_toolbar li.redactor_separator {
-	float: left;		
+	float: left;
 	height: 34px;
 	border-left: 1px solid #d3d3d3;
-	border-right: 1px solid #f1f1f1;	
+	border-right: 1px solid #f1f1f1;
 	padding: 0;
 	margin: 0 2px 0 3px !important;
 }
@@ -255,14 +251,15 @@ body .redactor_air .redactor_toolbar {
 	width: 25px;
 	height: 25px;
 	border: 1px solid transparent;
-	* border: 1px solid #eee; 
+	* border: 1px solid #eee;
 	display: block;
 	line-height: 0;
 	font-size: 0;
 	cursor: pointer;
 	zoom: 1;
+	outline: none;
 	text-decoration: none;
-}	
+}
 .redactor_toolbar li.redactor_btn_right {
 	float: none;
 	float: right !important;
@@ -278,18 +275,20 @@ body .redactor_air .redactor_toolbar {
 
 	.redactor_toolbar li a {
 		background-image: url(redactor-toolbar-retina.png);
-		background-size: auto 25px;	
+		background-size: auto 25px;
 	}
 
 }
-	
+
 .redactor_toolbar li a:hover {
 	border-color: #98a6ba;
 	background-color: #dde4ef;
+	outline: none;
 }
 .redactor_toolbar li a:active, .redactor_toolbar li a.redactor_act {
 	border-color: #b5b5b5;
 	background-color: #ddd;
+	outline: none;
 }
 
 
@@ -301,14 +300,14 @@ body .redactor_toolbar li a.redactor_btn_html				{ background-position: 0px; }
 body .redactor_toolbar li a.redactor_btn_formatting		    { background-position: -25px; }
 body .redactor_toolbar li a.redactor_btn_bold				{ background-position: -50px; }
 body .redactor_toolbar li a.redactor_btn_italic			    { background-position: -75px; }
-body .redactor_toolbar li a.redactor_btn_deleted		 	{ background-position: -500px; }	
-body .redactor_toolbar li a.redactor_btn_unorderedlist 	    { background-position: -100px; }		
+body .redactor_toolbar li a.redactor_btn_deleted		 	{ background-position: -500px; }
+body .redactor_toolbar li a.redactor_btn_unorderedlist 	    { background-position: -100px; }
 body .redactor_toolbar li a.redactor_btn_orderedlist   	    { background-position: -125px; }
 body .redactor_toolbar li a.redactor_btn_outdent	 		{ background-position: -150px; }
 body .redactor_toolbar li a.redactor_btn_indent		 	  	{ background-position: -175px; }
 body .redactor_toolbar li a.redactor_btn_image		 		{ background-position: -200px; }
 body .redactor_toolbar li a.redactor_btn_video		 		{ background-position: -225px; }
-body .redactor_toolbar li a.redactor_btn_file		 		{ background-position: -250px; }	
+body .redactor_toolbar li a.redactor_btn_file		 		{ background-position: -250px; }
 body .redactor_toolbar li a.redactor_btn_table		 		{ background-position: -275px; }
 body .redactor_toolbar li a.redactor_btn_link		 		{ background-position: -300px; }
 body .redactor_toolbar li a.redactor_btn_fontcolor		 	{ background-position: -325px; }
@@ -329,39 +328,39 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 /*
 	Toolbar classes
 */
-.redactor_format_blockquote {	
-	font-style: italic; 
-	color: #666 !important; 
+.redactor_format_blockquote {
+	font-style: italic;
+	color: #666 !important;
 	padding-left: 10px;
 }
 .redactor_format_pre {
-	font-family: monospace, sans-serif;	
+	font-family: monospace, sans-serif;
 }
 .redactor_format_h1, .redactor_format_h2, .redactor_format_h3, .redactor_format_h4 {
 	font-weight: bold;
 }
 .redactor_format_h1 {
 	font-size: 30px;
-	line-height: 36px;		
+	line-height: 36px;
 }
 .redactor_format_h2 {
 	font-size: 24px;
-	line-height: 36px;		
+	line-height: 36px;
 }
 .redactor_format_h3 {
 	font-size: 20px;
-	line-height: 30px;		
+	line-height: 30px;
 }
 .redactor_format_h4 {
 	font-size: 16px;
-	line-height: 26px;		
+	line-height: 26px;
 }
 
 /*
 	DROPDOWN
 */
 .redactor_dropdown {
-	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif; 
+	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif;
 	top: 28px;
 	left: 0;
 	z-index: 2004;
@@ -371,13 +370,13 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	border: 1px solid #ccc;
 	font-size: 13px;
 	-webkit-box-shadow: 0 2px 4px #ccc;
-	-moz-box-shadow: 0 2px 4px #ccc;	
-	box-shadow: 0 2px 4px #ccc;	
-	line-height: 21px;	
-	padding: 10px;	
+	-moz-box-shadow: 0 2px 4px #ccc;
+	box-shadow: 0 2px 4px #ccc;
+	line-height: 21px;
+	padding: 10px;
 }
 .redactor_separator_drop {
-	border-top: 1px solid #ddd;;
+	border-top: 1px solid #ddd;
 	padding: 0 !important;
 	line-height: 0;
 	font-size: 0;
@@ -392,7 +391,7 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	color: #444 !important;
 	text-decoration: none;
 	background-color: #dde4ef;
-}		
+}
 
 /* ColorPicker */
 .redactor_color_link {
@@ -420,11 +419,11 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	width: 100%;
 	height: 100%;
 	z-index: 50000;
-	
+
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	filter:alpha(opacity=50);
 	opacity: 0.50;
-	
+
 	background-color: #333 !important;
 }
 
@@ -443,21 +442,21 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	top: 50%;
 	left: 50%;
 	box-shadow: 0px 5px 60px #000;
-  	border-radius: 3px;  	  	  		
-  	z-index: 50001;	
-	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif;      
-	font-size: 12px !important;	
+  	border-radius: 3px;
+  	z-index: 50001;
+	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif;
+	font-size: 12px !important;
 	color: #000;
 }
 #redactor_modal_header {
 	padding: 11px 30px 0 15px;
 	font-size: 12px;
-	border-radius: 3px 3px 0 0;	
+	border-radius: 3px 3px 0 0;
 	font-weight: bold;
 }
 #redactor_modal_content {
 	padding: 20px 30px;
-	
+
 }
 #redactor_modal_close {
 	position: absolute;
@@ -487,13 +486,13 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	font-size: 14px;
 }
 .redactor_modal_box {
-	height: 350px; 
-	overflow: auto; 
+	height: 350px;
+	overflow: auto;
 	margin-bottom: 10px;
 }
 #redactor_image_box {
-	height: 270px; 
-	overflow: auto; 
+	height: 270px;
+	overflow: auto;
 	margin-bottom: 10px;
 }
 #redactor_image_box_select {
@@ -520,7 +519,7 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	color: #000;
 	line-height: 1;
 	border-radius: 10px;
-	margin-right: 5px;	
+	margin-right: 5px;
 }
 #redactor_tabs a:hover, #redactor_tabs a.redactor_tabs_act {
 	background-color: #ddd;
@@ -583,7 +582,7 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	display: inline-block;
 	text-align: center;
 	text-decoration: none;
-	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif; 
+	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif;
 	line-height: 1;
 	font-size: 12px;
 	font-weight: normal;
@@ -619,13 +618,13 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 .redactor_droparea {
 	position: relative;
     width: 100%;
-    margin: auto;	
+    margin: auto;
     margin-bottom: 5px;
 }
-.redactor_droparea .redactor_dropareabox {    
+.redactor_droparea .redactor_dropareabox {
 	z-index: 1;
 	position: relative;
-    text-align: center;    
+    text-align: center;
     width: 99%;
     background-color: #fff;
     padding: 60px 0;
