@@ -1056,7 +1056,7 @@ class TicketSearch extends SearcherAbstract
 						}
 						$choices_in = implode(',', $choices_in);
 
-						$this->summary[] = $this->_choiceSummary('SLA', $op, $choice, function($choice) {
+						$this->summary['sla'] = $this->_choiceSummary('SLA', $op, $choice, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$choice);
 							return $titles;
 						});
@@ -1122,7 +1122,7 @@ class TicketSearch extends SearcherAbstract
 						$sla_ids_in = implode(',', $sla_ids_in);
 
 						if ($status_summary) {
-							$this->summary[] = $this->_choiceSummary('SLA status', $op, $statuses, function($status) {
+							$this->summary['sla_status'] = $this->_choiceSummary('SLA status', $op, $statuses, function($status) {
 								switch ($status) {
 									case 'ok': $value = 'OK'; break;
 									case 'warning': $value = 'Warning'; break;
@@ -1135,7 +1135,7 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						if ($sla_ids) {
-							$this->summary[] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
+							$this->summary['sla'] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
 								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$sla_ids);
 								return $titles;
 							});
@@ -1205,7 +1205,7 @@ class TicketSearch extends SearcherAbstract
 						$sla_ids_in = implode(',', $sla_ids_in);
 
 						if ($status_summary) {
-							$this->summary[] = $this->_choiceSummary('SLA requirement', $op, $completed, function($status) {
+							$this->summary['sla_requirement'] = $this->_choiceSummary('SLA requirement', $op, $completed, function($status) {
 								switch ($status) {
 									case 1: $value = 'Completed'; break;
 									case 0: $value = 'Not Completed'; break;
@@ -1217,7 +1217,7 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						if ($sla_ids) {
-							$this->summary[] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
+							$this->summary['sla'] = $this->_choiceSummary('SLA', $op, $sla_ids, function($sla_ids) {
 								$titles = App::getEntityRepository('DeskPRO:Sla')->getSlaTitles((array)$sla_ids);
 								return $titles;
 							});

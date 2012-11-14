@@ -740,7 +740,7 @@ class TicketSearchController extends AbstractController
 		return $this->runFilterAction($filter['id']);
 	}
 
-	public function runSlaAction($sla_id)
+	public function runSlaAction($sla_id, $sla_status = '')
 	{
         $view_type = $this->in->getString('view_type');
 
@@ -785,6 +785,13 @@ class TicketSearchController extends AbstractController
 			));
 		} else {
 			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA, 'is', $sla_id);
+		}
+
+		if ($sla_status) {
+			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', array(
+				'sla_status' => $sla_status,
+				'sla_id' => $sla_id
+			));
 		}
 
 		$order_by = $this->in->getString('order_by');
@@ -846,6 +853,7 @@ class TicketSearchController extends AbstractController
 		$vars = array(
 			'sla' => $sla,
 			'sla_id' => $sla->id,
+			'sla_status' => $sla_status,
 			'needs_urgency' => $needs_urgency,
 			'order_by_summary' => $searcher->getOrderBySummary(),
 			'terms_summary' => $searcher->getSummary(),

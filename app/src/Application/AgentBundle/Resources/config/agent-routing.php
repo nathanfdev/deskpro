@@ -908,8 +908,8 @@ $collection->add('agent_ticketsearch_runnamedfilter', new Route(
 ));
 
 $collection->add('agent_ticketsearch_runsla', new Route(
-	'/ticket-search/sla/{sla_id}',
-	array('_controller' => 'AgentBundle:TicketSearch:runSla'),
+	'/ticket-search/sla/{sla_id}/{sla_status}',
+	array('_controller' => 'AgentBundle:TicketSearch:runSla', 'sla_status' => ''),
 	array('sla_id' => '\\d+'),
 	array('fragment_name' => 'sla', 'fragment_type' => 'list')
 ));

@@ -71,7 +71,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.addEvent('destroy', function() {
-			console.log('destroy');
 			if (self.meta.unlockOnClose && self.getEl('locked_message').data('locked-self')) {
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/release-lock.json',
