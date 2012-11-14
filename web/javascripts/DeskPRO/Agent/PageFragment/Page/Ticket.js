@@ -838,6 +838,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
+
+		if (doBan) {
+			this.getEl('delete_user_list').show();
+		} else {
+			this.getEl('delete_user_list').hide();
+		}
+
 		this.deleteOverlay.openOverlay();
 	},
 

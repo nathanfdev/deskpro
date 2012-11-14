@@ -319,8 +319,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						}
 					);
 				} else if (action == 'delete') {
+					var el = self.getEl('delete_confirm').clone();
 					DeskPRO_Window.showConfirm(
-						$('<div>Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>. Their tickets and other resources will be completely removed.</div>'),
+						el,
 						function() {
 							$.ajax({
 								url: $(info.itemEl).data('delete-url'),
@@ -330,11 +331,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								}
 							});
 							self.closeSelf();
-						}
+						},
+						null,
+						null, null,
+						400, 260
 					);
 				} else if (action == 'ban') {
+					var el = self.getEl('ban_confirm').clone();
 					DeskPRO_Window.showConfirm(
-						$('<div>Are you sure you want to ban this user?</div>'),
+						el,
 						function() {
 							$.ajax({
 								url: $(info.itemEl).data('delete-url'),
@@ -344,7 +349,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								}
 							});
 							self.closeSelf();
-						}
+						},
+						null,
+						null, null,
+						400, 260
 					);
 				} else if (action == 'enable-user') {
 					$.ajax({
@@ -847,7 +855,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 	},
-	
+
 	initSlaEditor: function() {
 		var self = this;
 		var slaBox = this.getEl('sla_box');

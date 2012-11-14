@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 
@@ -462,5 +463,21 @@ class Person extends AbstractEntityRepository
 	}
 
 
+	/**
+	 * Count the number of things the user owns
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return array
+	 */
+	public function getPersonObjectCounts(PersonEntity $person)
+	{
+		$pid = $person->getId();
 
+		$counts = array(
+			'chats'    => $this->_em->getConnection()->fetchColumn("SELECT COUNT(*) FROM chat_conversations WHERE person_id = ?", array($pid)),
+			'tickets'  => $this->_em->getConnection()->fetchColumn("SELECT COUNT(*) FROM tickets WHERE person_id = ?", array($pid)),
+		);
+
+		return $counts;
+	}
 }

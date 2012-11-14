@@ -220,9 +220,19 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 							{% endif %}
 
 							<ul style="display:none" id="{{baseId}}_remove_menu">
-								<li data-action="spam">Set as Spam</li>
-								<li data-action="delete">Delete Ticket</li>
-								{% if app.user.hasPerm('agent_people.delete') %}<li data-action="delete.ban">Delete Ticket, Delete User &amp; Ban Email</li>{% endif %}
+								<li data-action="spam">Set Ticket as Spam</li>
+								<li data-action="delete">Delete this Ticket</li>
+								{% if app.user.hasPerm('agent_people.delete') %}
+									{% if person_object_counts.tickets > 1 or person_object_counts.chats > 0 %}
+										{% if person_object_counts.tickets > 1 %}
+											<li data-action="delete.ban">Permanently Delete User and their {{ person_object_counts.tickets }} Tickets</li>
+										{% else %}
+											<li data-action="delete.ban">Permanently Delete User and their other content</li>
+										{% endif %}
+									{% else %}
+										<li data-action="delete.ban">Permanently Delete User and this Ticket</li>
+									{% endif %}
+								{% endif %}
 							</ul>
 						{% endif %}
 						<a class="clean-white" id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>Lock Ticket</a>

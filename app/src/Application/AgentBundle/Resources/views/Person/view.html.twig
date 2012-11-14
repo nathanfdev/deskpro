@@ -142,6 +142,26 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ dp_widgets(baseId, 'profile', '', '', person_api) }}
 
+<div style="display: none">
+	<div id="{{ baseId }}_delete_confirm">
+		Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>.
+		{% if person_object_counts.tickets or person_object_counts.chats %}
+			<br/><br/>The users other associated content will be deleted too:<br/>
+			{% if person_object_counts.tickets %}&bull; {{ person_object_counts.tickets }} Tickets<br/>{% endif %}
+			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+		{% endif %}
+	</div>
+
+	<div id="{{ baseId }}_ban_confirm">
+		Are you sure you want to ban this user? <strong class="warning">The user will be permanantly deleted</strong> and their email address banned.
+		{% if person_object_counts.tickets or person_object_counts.chats %}
+			<br/><br/>The users other associated content will be deleted too:<br/>
+			{% if person_object_counts.tickets %}&bull; {{ person_object_counts.tickets }} Tickets<br/>{% endif %}
+			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+		{% endif %}
+	</div>
+</div>
+
 {# Page Containers #}
 </div>
 {% if with_warn_for_email %}

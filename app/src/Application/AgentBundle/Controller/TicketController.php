@@ -265,7 +265,8 @@ class TicketController extends AbstractController
             'agent_signature' => $this->person->getSignature(),
 	        'agent_signature_html' => $this->person->getSignatureHtml(),
 
-			'addable_slas' => $addable_slas
+			'addable_slas' => $addable_slas,
+			'person_object_counts' => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($ticket->person)
         );
 
         if($is_pdf)

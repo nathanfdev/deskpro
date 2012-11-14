@@ -20,6 +20,15 @@
 
 	<div class="overlay-content">
 		{{ phrase('agent.general.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
+
+		{% if person_object_counts.tickets > 1 or person_object_counts.chats %}
+		<div id="{{ baseId }}_delete_user_list" style="display: none;">
+			<br/>
+			Deleting the user will also delete their other related content:<br />
+			&bull; {{ person_object_counts.tickets }} Tickets<br/>
+			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
+		</div>
+		{% endif %}
 	</div>
 
 	<div class="overlay-footer">

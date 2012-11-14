@@ -306,6 +306,7 @@ class PersonController extends AbstractController
 			'perms' => $perms,
 			'is_person_editable' => $is_editable,
 			'reg_group' => $reg_group,
+			'person_object_counts' => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person)
 		));
 	}
 

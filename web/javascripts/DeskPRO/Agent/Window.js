@@ -891,14 +891,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._alertOverlay.openOverlay();
 	},
 
-	showConfirm: function(msg, callback_yes, callback_no, phrase_yes, phrase_no) {
+	showConfirm: function(msg, callback_yes, callback_no, phrase_yes, phrase_no, w, h) {
 		this._initConfirmOverlay();
+
+		w = w || 350;
+		h = h || 150;
 
 		phrase_yes = phrase_yes || 'Okay';
 		phrase_no = phrase_no || 'Cancel';
 
 		this._confirmOverlay_callback_yes = callback_yes || function() { };
 		this._confirmOverlay_callback_no = callback_no || function() { };
+
+		$('#confirm_overlay').find('> .confirm-overlay').width(w).height(h);
 
 		$('#confirm_overlay_msg').html(msg);
 		$('#confirm_overlay .okay-trigger').text(phrase_yes);
