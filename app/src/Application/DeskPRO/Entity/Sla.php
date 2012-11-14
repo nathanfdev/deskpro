@@ -120,14 +120,14 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
-	protected $apply_all = false;
+	protected $apply_all = true;
 
 	/**
 	 * If true, allows agents to apply this SLA manually
 	 *
 	 * @var bool
 	 */
-	protected $allow_agent_manual = true;
+	protected $allow_agent_manual = false;
 
 	/**
 	 * @var TicketTrigger

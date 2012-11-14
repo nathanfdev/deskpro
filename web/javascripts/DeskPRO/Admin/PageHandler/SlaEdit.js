@@ -261,6 +261,29 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 
 		updateVisibleHolidays();
 
+		// types
+		var typeChange = function() {
+			var val = $('input[name=sla_type]:checked').val();
+			$('.sla-type-text').hide();
+			if (val) {
+				$('.sla-type-text.' + val).show();
+			}
+		};
+		$('input[name=sla_type]').change(typeChange);
+		typeChange();
+
+		// apply list
+		var applyAllChange = function() {
+			var checked = $('#apply_all').is(':checked');
+			if (checked) {
+				$('#apply_list :checkbox:not(#apply_all)').attr('disabled', true);
+			} else {
+				$('#apply_list :checkbox:not(#apply_all)').attr('disabled', false);
+			}
+		};
+		 $('#apply_all').change(applyAllChange);
+		applyAllChange();
+
 		// terms/criteria init
 		if (window.SlaEditPage_initTerms) {
 			window.SlaEditPage_initTerms.call(this);

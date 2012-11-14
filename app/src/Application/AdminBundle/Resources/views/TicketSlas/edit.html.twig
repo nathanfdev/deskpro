@@ -87,7 +87,7 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group">
+	<div class="dp-form-row-group" style="margin-top: 30px" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>SLA Type</label>
@@ -109,7 +109,7 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+	<div class="dp-form-row-group" style="margin-top: 30px" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Hours</label>
@@ -221,54 +221,63 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row">
+	<div class="dp-form-row" style="margin-top: 30px">
 		<div class="dp-form-label">
 			<label>SLA Warning</label>
 		</div>
 		<div class="dp-form-input">
-			When a ticket is not resolved in
-				<input type="text" name="sla_warning_time" value="{{ sla.warning_trigger ? sla.warning_trigger.getOptionTime() : 30 }}" size="10" style="width: 40px; position:relative; top: 2px;" class="small" />
-				<select name="sla_warning_scale" class="select2">
-					{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
-						<option {% if (sla.warning_trigger ? sla.warning_trigger.getOptionScale() : 'minutes') == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
-					{% endfor %}
-				</select> of SLA countable time, the ticket is close to failing the SLA.
-				<div class="dp-sub-section" style="border-top: none; margin-top: 2px">
-					<div class="terms-wrap trigger-actions">
-						<div class="terms-input" id="warning_action_terms"></div>
-						<div class="term-row add-term-row" data-name="warning_actions"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Action</div>
-					</div>
+			<span class="sla-type-text first_response">When a ticket has not received a response in</span>
+			<span class="sla-type-text resolution">When a ticket is not resolved in</span>
+			<span class="sla-type-text waiting_time">When a user has been waiting more than</span>
+
+			<input type="text" name="sla_warning_time" value="{{ sla.warning_trigger ? sla.warning_trigger.getOptionTime() : 30 }}" size="10" style="width: 40px; position:relative; top: 2px;" class="small" />
+			<select name="sla_warning_scale" class="select2">
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					<option {% if (sla.warning_trigger ? sla.warning_trigger.getOptionScale() : 'minutes') == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+			of SLA countable time, the ticket is close to failing the SLA.
+			<div class="dp-sub-section" style="border-top: none; margin-top: 2px">
+				<div class="terms-wrap trigger-actions">
+					<div class="terms-input" id="warning_action_terms"></div>
+					<div class="term-row add-term-row" data-name="warning_actions"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Action</div>
 				</div>
+			</div>
 		</div>
 	</div>
 
-	<div class="dp-form-row">
+	<div class="dp-form-row" style="margin-top: 30px">
 		<div class="dp-form-label">
 			<label>SLA Criteria</label>
 		</div>
 		<div class="dp-form-input">
-			When a ticket is not resolved in <input type="text" name="sla_fail_time" value="{{ sla.fail_trigger ? sla.fail_trigger.getOptionTime() : 60 }}" size="10" style="width: 40px; position:relative; top: 2px;" class="small" />
-				<select name="sla_fail_scale" class="select2">
-					{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
-						<option {% if (sla.fail_trigger ? sla.fail_trigger.getOptionScale() : 'minutes') == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
-					{% endfor %}
-				</select> of SLA countable time, the ticket has failed the SLA.
-				<div class="dp-sub-section" style="border-top: none; margin-top: 2px">
-					<div class="terms-wrap trigger-actions">
-						<div class="terms-input" id="fail_action_terms"></div>
-						<div class="term-row add-term-row" data-name="fail_actions"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Action</div>
-					</div>
+			<span class="sla-type-text first_response">When a ticket has not received a response in</span>
+			<span class="sla-type-text resolution">When a ticket is not resolved in</span>
+			<span class="sla-type-text waiting_time">When a user has been waiting more than</span>
+
+			<input type="text" name="sla_fail_time" value="{{ sla.fail_trigger ? sla.fail_trigger.getOptionTime() : 60 }}" size="10" style="width: 40px; position:relative; top: 2px;" class="small" />
+			<select name="sla_fail_scale" class="select2">
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					<option {% if (sla.fail_trigger ? sla.fail_trigger.getOptionScale() : 'minutes') == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+			of SLA countable time, the ticket has failed the SLA.
+			<div class="dp-sub-section" style="border-top: none; margin-top: 2px">
+				<div class="terms-wrap trigger-actions">
+					<div class="terms-input" id="fail_action_terms"></div>
+					<div class="term-row add-term-row" data-name="fail_actions"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Action</div>
 				</div>
+			</div>
 		</div>
 	</div>
 
-	<div class="dp-form-row">
+	<div class="dp-form-row" style="margin-top: 30px">
 		<div class="dp-form-label">
 			<label>SLA Selection</label>
 		</div>
 		<div class="dp-form-input sla-selection">
-			<ul>
-				<li><label><input type="checkbox" name="apply_all" value="1" {% if sla.apply_all %}checked="checked"{% endif %} /> Apply to all tickets</label></li>
+			<ul id="apply_list">
+				<li><label><input type="checkbox" name="apply_all" id="apply_all" value="1" {% if sla.apply_all %}checked="checked"{% endif %} /> Apply to all tickets</label></li>
 				<li><label><input type="checkbox" name="allow_agent_manual" value="1" {% if sla.allow_agent_manual %}checked="checked"{% endif %} /> Allow agents to manually assign/remove this SLA</label></li>
 				<li><label><input type="checkbox" class="force-checked" checked="checked" /> Apply to the following people:</label>
 					<div style="margin-left: 22px"><input type="hidden" name="person_ids" id="person_ids" data-select-width="auto" value="{% for id,null in selected_people %}{{ id }},{% endfor %}" data-selected="{{ selected_people|json_encode }}" /></div>
@@ -277,7 +286,7 @@
 					<div style="margin-left: 22px"><input type="hidden" name="organization_ids" id="organization_ids" data-select-width="auto" value="{% for id,null in selected_organizations %}{{ id }},{% endfor %}" data-selected="{{ selected_organizations|json_encode }}" /></div>
 				</li>
 				{% if priorities %}
-				<li><label style="margin-right: 0"><input type="checkbox" name="apply_priority" id="apply_priority" value="1" {% if sla.apply_priority %}checked="checked"{% endif %} /> Apply when a user submits a ticket with priority...</label>
+				<li><label style="margin-right: 0"><input type="checkbox" name="apply_priority" id="apply_priority" value="1" {% if sla.apply_priority %}checked="checked"{% endif %} /> Apply when a user submits a ticket with priority</label>
 					<span id="apply_priority_id_container" style="{% if not sla.apply_priority %}display: none;{% endif %}">
 						<select name="apply_priority_id" class="select2" data-select-width="auto">
 						{% for priority_id,name in priorities %}
@@ -287,7 +296,7 @@
 					</span>
 				</li>
 				{% endif %}
-				<li><label><input type="checkbox" name="apply_trigger" id="apply_trigger" value="1" {% if sla.apply_trigger %}checked="checked"{% endif %} /> Apply to new tickets when meeting criteria...</label>
+				<li><label><input type="checkbox" name="apply_trigger" id="apply_trigger" value="1" {% if sla.apply_trigger %}checked="checked"{% endif %} /> Apply to new tickets when meeting criteria</label>
 					<div id="apply_trigger_container" class="dp-sub-section" style="border-top: none; margin-left: 22px; {% if not sla.apply_trigger %} display: none;{% endif %}">
 						<div class="terms-wrap trigger-criteria">
 							<div class="terms-input" id="apply_trigger_terms"></div>
