@@ -358,10 +358,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				this.getReplyTextArea().data('disable-autosave', false);
 			},
-			error: function() {
+			error: function(event, xhr, ajaxOptions, errorThrown, force) {
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 				var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
 				loadingEl.hide();
+
+				DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
 			},
 			success: function(result) {
 
