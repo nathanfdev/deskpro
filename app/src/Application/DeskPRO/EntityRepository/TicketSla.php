@@ -186,7 +186,7 @@ class TicketSla extends AbstractEntityRepository
 
 		$graphs = array(
 			'today' => $today,
-			'yesterday' => $yesterday,
+			'yesterday' => array($yesterday, $today - 1),
 			'this_week' => $week_start,
 			'this_month' => gmmktime(0, 0, 0, $month, 1, $year),
 			'this_year' => gmmktime(0, 0, 0, 1, 1, $year)
@@ -194,7 +194,12 @@ class TicketSla extends AbstractEntityRepository
 
 		$output = array();
 		foreach ($graphs AS $title => $start) {
-			$data = $this->getTicketSlaStatusData($start);
+			if (is_array($start)) {
+				list($start, $end) = $start;
+			} else {
+				$end = null;
+			}
+			$data = $this->getTicketSlaStatusData($start, $end);
 			if ($data) {
 				$output[$title] = array(
 					'ok' => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#008c00'),
