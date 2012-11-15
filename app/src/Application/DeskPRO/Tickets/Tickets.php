@@ -114,6 +114,8 @@ class Tickets
 			$options['products_hierarchy']  = array();
 		}
 
+		$options['slas']  = App::getDataService('Sla')->getSlaTitles();
+
 		if (App::getSetting('core.use_ticket_priority')) {
 			$options['priorities']  = App::getDataService('TicketPriority')->getNames();
 		} else {

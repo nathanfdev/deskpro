@@ -497,6 +497,51 @@
 	</div>
 	{% endif %}
 
+{% if term_options.slas %}
+	{% if 'sla' not in no_show_fields %}
+		<div class="builder-type" title="SLA" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="sla_id">
+					{% for id,title in term_options.slas %}
+						<option value="{{ id }}">{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
+	{% if 'sla_status' not in no_show_fields %}
+		<div class="builder-type" title="SLA Status" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="sla_status">
+					<option value="ok">OK</option>
+					<option value="warn">Warning</option>
+					<option value="fail">Fail</option>
+				</select>
+				for SLA
+				<select name="sla_id">
+					<option value="0">Any</option>
+				{% for id,title in term_options.slas %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
+
 	<div class="builder-type" title="User Waiting Time" data-rule-type="user_waiting">
 		<div class="builder-op">
 			<select name="op" class="op">
