@@ -10,6 +10,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+shift+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
 		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
+		$(document).bind('keydown', 'shift+t', this.goTabTop.bind(this));
 
 		function getActiveListNav() {
 			var listNav = null;
@@ -102,6 +103,13 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	//#########################################################################
 	//# Global Shortcuts
 	//#########################################################################
+
+	goTabTop: function() {
+		var page = DeskPRO_Window.getCurrentTabPage();
+		if (page) {
+			page.goTabTop();
+		}
+	},
 
 	showNewTicket: function(ev) {
 		DeskPRO_Window.newTicketLoader.toggle();

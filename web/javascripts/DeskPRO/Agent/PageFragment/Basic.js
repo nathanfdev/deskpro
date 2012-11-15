@@ -367,6 +367,26 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	},
 
 
+	/**
+	 * Sroll to top
+	 */
+	goTabTop: function() {
+		if (this.wrapper) {
+			this.wrapper.find('div.layout-content').trigger('goscrolltop');
+		}
+	},
+
+
+	/**
+	 * Scroll to bottom
+	 */
+	goTabBottom: function() {
+		if (this.wrapper) {
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		}
+	},
+
+
 	destroy: function() {
 
 	}
