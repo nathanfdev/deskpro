@@ -331,21 +331,21 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						</li>
 						{% if app.getDataRepository('TicketMessageTemplate').getTitles() %}
-						<li class="with-select2">
+						<li class="with-select2" id="{{ baseId }}_message_template_holder_row">
 							<label>Template:</label>
 							<div id="{{baseId}}_message_template_holder" style="visibility: hidden;">
 								<div style="display: none">
 									<select id="{{baseId}}_message_template_orig">
 										<option value="0">Blank Message</option>
 										{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
-											<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+											<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
 										{% endfor %}
 									</select>
 								</div>
 								<select id="{{baseId}}_message_template" name="using_template">
 									<option value="0">Blank Message</option>
 									{% for tpl in app.getDataRepository('TicketMessageTemplate').getAll() %}
-										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title }}</option>
+										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
 									{% endfor %}
 								</select>
 							</div>

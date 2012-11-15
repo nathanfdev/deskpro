@@ -248,6 +248,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				tplSel.append('<option value="0" selected="selected">Blank</option>');
 				tplSel.append(opts);
 				tplHolder.show();
+				self.getEl('message_template_holder_row').show();
 
 				var selectedOpt = tplSel.find('[value="'+selected+'"]');
 
@@ -260,6 +261,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			} else {
 				tplSel.empty();
 				tplHolder.hide();
+				self.getEl('message_template_holder_row').hide();
 			}
 
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
