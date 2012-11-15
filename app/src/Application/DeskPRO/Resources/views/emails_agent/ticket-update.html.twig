@@ -9,10 +9,12 @@
 	{% else %}
 		{% set action = 'UPDATED' %}
 	{% endif %}
-	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}
+	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}{% if sla and sla_status == 'warning' %} (SLA WARNING){% elseif sla and sla_status == 'fail' %} (SLA FAILED){% endif %}
 </dp:subject>
 {% if action_performer and action_performer.getId() %}
 	{{ action_performer.getDisplayContact() }}
+{% elseif sla %}
+	SLA {{ sla.title }}{% if sla_status == 'warning' %} (Warning){% elseif sla_status == 'fail' %} (Failed){% endif %}
 {% else %}
 	System
 {% endif %} updated the ticket "{{ ticket.subject }}"

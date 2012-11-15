@@ -171,8 +171,20 @@ class SendAgentEmailAction extends AbstractAction
 				continue;
 			}
 
+			$performer = App::getCurrentPerson();
+			$sla = null;
+			$sla_status = null;
+
+			if ($this->tracker && $this->tracker->getExtra('sla')) {
+				$performer = null;
+				$sla = $this->tracker->getExtra('sla');
+				$sla_status = $this->tracker->getExtra('sla_status');
+			}
+
 			$vars = array(
-				'action_performer'   => App::getCurrentPerson(),
+				'action_performer'   => $performer,
+				'sla'                => $sla,
+				'sla_status'         => $sla_status,
 				'ticket_logs'        => $ticket_logs,
 				'agent'              => $agent,
 				'custom_fields'      => $custom_fields,

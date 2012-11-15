@@ -356,12 +356,24 @@ class AgentNotificationAction extends AbstractAction
 
 			$this->tracker->logMessage("[AgentNotificationAction] Type flag: " . $type_flag);
 
+			$performer = App::getCurrentPerson();
+			$sla = null;
+			$sla_status = null;
+
+			if ($this->tracker->getExtra('sla')) {
+				$performer = null;
+				$sla = $this->tracker->getExtra('sla');
+				$sla_status = $this->tracker->getExtra('sla_status');
+			}
+
 			$vars = array(
 				'type_flag'          => $type_flag,
 				'is_new_ticket'      => $is_new_ticket,
 				'is_new_agent_reply' => $is_new_agent_reply,
 				'is_new_user_reply'  => $is_new_user_reply,
-				'action_performer'   => App::getCurrentPerson(),
+				'action_performer'   => $performer,
+				'sla'                => $sla,
+				'sla_status'         => $sla_status,
 				'ticket_logs'        => $ticket_logs,
 				'new_message'        => $new_message,
 				'agent'              => $agent,
