@@ -378,6 +378,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		// Already open
 		if (this.isOpen()) {
+			if (this.page && !this.page.IS_ACTIVE) {
+				// The initial active after the page has been init
+				this.page.fireEvent('activate', [this.page]);
+				this.page.fireEvent('popover-open', [this]);
+			}
 			return;
 		}
 
