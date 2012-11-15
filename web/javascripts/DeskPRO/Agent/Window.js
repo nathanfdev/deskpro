@@ -192,7 +192,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				options.dataType = 'json';
 
 				DeskPRO_Window.getMessageChanneler().poller.pause();
-				$.ajax(options);
+				return $.ajax(options);
 			},
 
 			slugify: function(str) {

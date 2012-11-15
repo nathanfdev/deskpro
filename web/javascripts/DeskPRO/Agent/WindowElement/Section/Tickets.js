@@ -202,8 +202,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var header = $('#ticket_slas_header');
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
-				DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
 				self.getUpdatedSlaCounts();
+				if (self.listPage && self.listPage.updateSlaDisplay) {
+					self.listPage.updateSlaDisplay(info);
+				}
 			});
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
@@ -234,6 +236,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				if (refresh) {
 					self.getUpdatedSlaCounts();
+					if (self.listPage && self.listPage.refreshSlaTicketList && self.listPage.meta.sla_id && $.inArray(self.listPage.meta.sla_id, info.sla_ids) != -1) {
+						self.listPage.refreshSlaTicketList();
+					}
 				}
 			});
 

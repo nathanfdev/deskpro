@@ -4,6 +4,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSla = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults,
 
 	initializeProperties: function() {
+		this.parent();
 		this.TYPENAME = 'ticket-sla';
 
 		this.resultTypeName = 'sla';
@@ -27,5 +28,19 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSla = new Orb.Class({
 		if (this.getMetaData('sla_id')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('sla.view-deactivated', this.getMetaData('sla_id'));
 		}
+	},
+
+	updateSlaDisplay: function(info) {
+		if (!info.ticket_id || !info.sla_id) {
+			return;
+		}
+
+		if (info.sla_id == this.getMetaData('sla_id')) {
+			this.refreshSlaTicketList();
+		}
+	},
+
+	refreshSlaTicketList: function() {
+		DeskPRO_Window.loadListPane(this.meta.refreshUrl);
 	}
 });

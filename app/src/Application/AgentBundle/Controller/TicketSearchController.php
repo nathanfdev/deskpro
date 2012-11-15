@@ -814,6 +814,7 @@ class TicketSearchController extends AbstractController
 			'sla' => $sla,
 			'sla_id' => $sla->id,
 			'sla_status' => $sla_status,
+			'sla_filter' => $sla_filter,
 			'needs_urgency' => $needs_urgency,
 			'order_by_summary' => $searcher->getOrderBySummary(),
 			'terms_summary' => $searcher->getSummary(),

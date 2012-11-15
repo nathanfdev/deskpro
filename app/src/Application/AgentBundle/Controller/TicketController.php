@@ -1968,16 +1968,31 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 			$this->em->flush();
 
-			return $this->createJsonResponse(array(
+			$data = array(
 				'inserted' => true,
 				'html' => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
 					'ticket' => $ticket,
 					'ticket_sla' => $ticket_sla
 				))
-			));
+			);
 		} else {
-			return $this->createJsonResponse(array('inserted' => false));
+			$data = array('inserted' => false);
 		}
+
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since')) {
+			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
+		if ($client_messages) {
+			$data['client_messages'] = $client_messages;
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 	public function deleteSlaAction($ticket_id, $sla_id, $security_token)
@@ -1999,9 +2014,24 @@ class TicketController extends AbstractController
 		$this->em->persist($ticket);
 		$this->em->flush();
 
-		return $this->createJsonResponse(array(
+		$data = array(
 			'success' => true
-		));
+		);
+
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since')) {
+			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
+		if ($client_messages) {
+			$data['client_messages'] = $client_messages;
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################

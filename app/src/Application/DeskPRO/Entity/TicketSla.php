@@ -251,13 +251,15 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			'date_created' => date('Y-m-d H:i:s'),
 			'data' => serialize(array(
 				'ticket_id'      => $this->ticket->getId(),
+				'ticket_agent_id' => $this->ticket->agent ? $this->ticket->agent->id : null,
+				'ticket_agent_team_id' => $this->ticket->agent_team ? $this->ticket->agent_team->id : null,
 				'sla_id'         => $this->sla->id,
 				'sla_status'     => $this->sla_status,
 				'original_status' => $this->getOriginalStatus(),
 				'warn_date'      => $this->warn_date ? $this->warn_date->format('c') : null,
 				'fail_date'      => $this->fail_date ? $this->fail_date->format('c') : null,
 				'is_completed'   => $this->is_completed,
-				'original_is_completed'   => $this->getOriginalIsCompleted(),
+				'original_is_completed' => $this->getOriginalIsCompleted(),
 				'removed'        => $removed,
 				'via_person'     => $person_id
 			)),

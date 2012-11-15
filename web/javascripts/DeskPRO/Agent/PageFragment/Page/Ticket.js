@@ -1399,7 +1399,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			e.preventDefault();
 
 			if (confirm(rows.data('delete-confirm'))) {
-				$.ajax({
+				DeskPRO_Window.util.ajaxWithClientMessages({
 					url: $this.attr('href'),
 					type: 'POST',
 					dataType: 'json'
@@ -1433,9 +1433,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (val.length && val != '0') {
 					progress.show();
 
-					$.ajax({
+					DeskPRO_Window.util.ajaxWithClientMessages({
 						url: form.data('submit-url'),
-						data: form.find('input, textarea, select').serialize(),
+						data: form.find('input, textarea, select').serializeArray(),
 						type: 'POST',
 						dataType: 'json'
 					}).done(function(json) {
