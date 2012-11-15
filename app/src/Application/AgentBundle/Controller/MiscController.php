@@ -205,7 +205,7 @@ JS;
 			App::getDb()->replace('people_prefs', array(
 				'person_id'   => $this->person->getId(),
 				'name'        => $pref_name,
-				'date_expire' => $pref->date_expire,
+				'date_expire' => $pref->date_expire ? $pref->date_expire->format('Y-m-d H:i:s') : null,
 				'value_str'   => $pref->value_str,
 				'value_array' => $pref->value_array ? serialize($pref->value_array) : null,
 			));
