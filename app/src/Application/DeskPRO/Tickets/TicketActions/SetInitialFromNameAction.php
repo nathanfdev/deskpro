@@ -167,6 +167,9 @@ class SetInitialFromNameAction extends AbstractAction
 		}
 
 		$desc = str_replace('{{performer.name}}', $performer_friendly, $desc);
+		$desc = str_replace('{{ticket.department}}', 'Department', $desc);
+		$desc = str_replace('{{ticket.category}}', 'Category', $desc);
+		$desc = str_replace('{{ticket.product}}', 'Product', $desc);
 
 		return $desc;
 	}

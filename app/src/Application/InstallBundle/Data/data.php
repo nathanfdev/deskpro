@@ -817,7 +817,11 @@ VALUES
 	(NULL, 'setfrom.newemail_user', '', 'new.email.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
 	(NULL, 'setfrom.newweb_user', '', 'new.web.user', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
 	(NULL, 'setfrom.newemail_agent', '', 'new.email.agent', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
-	(NULL, 'setfrom.newweb_agent', '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}');
+	(NULL, 'setfrom.newweb_agent', '', 'new.web.agent.portal', 1, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:18:\"{{performer.name}}\";s:7:\"to_whom\";s:1:\"0\";}}}', 0, '2012-10-24 14:14:05', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newemail_user_str', '', 'new.email.user', 0, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:8:\"Helpdesk\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-11-15 10:43:35', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newemail_user_dep', '', 'new.email.user', 0, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:21:\"{{ticket.department}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-11-15 10:44:02', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newweb_user_str', '', 'new.web.user', 0, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:8:\"Helpdesk\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-11-15 10:43:35', 'a:0:{}', 'a:0:{}'),
+	(NULL, 'setfrom.newweb_user_dep', '', 'new.web.user', 0, 'a:0:{}', 'a:1:{i:0;a:2:{s:4:\"type\";s:21:\"set_initial_from_name\";s:7:\"options\";a:2:{s:9:\"from_name\";s:21:\"{{ticket.department}}\";s:7:\"to_whom\";s:5:\"agent\";}}}', 0, '2012-11-15 10:44:02', 'a:0:{}', 'a:0:{}')
 ");
 
 ##BEGIN:create_style.master##
