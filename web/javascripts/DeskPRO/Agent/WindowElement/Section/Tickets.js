@@ -199,7 +199,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		if ($('#ticket_slas_header').length) {
-			var description = $('#ticket_slas_description');
+			var header = $('#ticket_slas_header');
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
 				DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
@@ -207,18 +207,26 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
+				if (!info.sla_ids || !info.sla_ids.length) {
+					return;
+				}
+
 				var refresh = false;
 
 				for (var i = 0; i < info.changed_fields.length; i++) {
 					switch (info.changed_fields[i]) {
+						case 'status':
+							refresh = true;
+							break;
+
 						case 'agent':
-							if (description.data('sla-filter') == 'agent') {
+							if (header.data('sla-filter') == 'agent') {
 								refresh = true;
 							}
 							break;
 
 						case 'agent_team':
-							if (description.data('sla-filter') == 'team') {
+							if (header.data('sla-filter') == 'team') {
 								refresh = true;
 							}
 					}
@@ -229,7 +237,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 			});
 
-			this.updateSlaDescriptionRow();
+			this.updateSlaDescription();
 
 			this.slaGroupEditor = new DeskPRO.Agent.Widget.SlaOptionsPop({
 				containerElement: '#tickets_outline .scroll-content',
@@ -243,10 +251,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					postData.push({
 						name: 'prefs[agent.ui.sla.ticket-filter]',
 						value: row.find('.ticket-filter').val()
-					});
-					postData.push({
-						name: 'prefs[agent.ui.sla.requirements]',
-						value: row.find('.sla-requirements').val()
 					});
 
 					var gear = $('#ticket_slas_header .settings');
@@ -1006,35 +1010,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#tickets_outline_custom_filters').find('li.no-data').hide();
 	},
 
-	updateSlaDescriptionRow: function() {
-		var row = $('#ticket_slas_description');
-		var filter = row.data('sla-filter'), requirements = row.data('sla-filter-requirements');
+	updateSlaDescription: function() {
+		var row = $('#ticket_slas_header');
+		var filter = row.data('sla-filter');
 
-		var haveFilter = false, haveRequirements = false;
-
-		row.find('.sla-ticket-filter').hide();
-		if (filter.length && row.find('.sla-ticket-filter.' + filter).length) {
-			haveFilter = true;
-			row.find('.sla-ticket-filter.' + filter).show();
-		}
-
-		row.find('.sla-requirements').hide();
-		if (requirements.length && row.find('.sla-requirements.' + requirements).length) {
-			haveRequirements = true
-			row.find('.sla-requirements.' + requirements).show();
-		}
-
-		if (haveFilter && haveRequirements) {
-			row.find('.sla-separator').show();
-		} else {
-			row.find('.sla-separator').hide();
-		}
-
-		if (haveFilter || haveRequirements) {
-			row.show();
-		} else {
-			row.hide();
-		}
+		row.find('h1 span').hide();
+		$('#ticket_sla_filter_' + filter).show();
 	},
 
 	getUpdatedSlaCounts: function(callback) {
@@ -1056,10 +1037,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			return;
 		}
 
-		var description = $('#ticket_slas_description');
-		description.data('sla-filter', data.sla_filter);
-		description.data('sla-filter-requirements', data.sla_requirements_filter);
-		this.updateSlaDescriptionRow();
+		var header = $('#ticket_slas_header');
+		header.data('sla-filter', data.sla_filter);
+		this.updateSlaDescription();
 
 		Object.each(data.counts, function (counts, sla_id) {
 			this.setSlaCounts(sla_id, counts.ok, counts.warning, counts.fail);

@@ -1480,6 +1480,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 										: 'N/A'
 								);
 
+								if (info.is_completed) {
+									row.find('.delete').addClass('completed').removeClass('delete');
+								} else {
+									row.find('.completed').addClass('delete').removeClass('completed');
+								}
+
 								tabHeader.find('.sla-pip').each(function() {
 									var pip = $(this);
 									if (pip.data('sla-id') == info.sla_id) {

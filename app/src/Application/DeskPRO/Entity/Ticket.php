@@ -408,6 +408,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $_recalculate_slas = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $_reset_slas = false;
+
+	/**
 	 * Ticket logger
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
@@ -1064,6 +1069,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+	public function getSlaIds()
+	{
+		$ids = array();
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			$ids[] = $ticket_sla->sla->id;
+		}
+
+		return $ids;
 	}
 
 
@@ -1872,7 +1887,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
-
+		$this->_reset_slas = true;
 		$this->_recalculate_slas = true;
 	}
 
@@ -2282,8 +2297,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_recalculate_slas) {
 			// this is deferred until all changes are done to ensure everything is correct
+			if ($this->_reset_slas) {
+				foreach ($this->ticket_slas AS $ticket_sla) {
+					$ticket_sla->is_completed = false;
+				}
+			}
+			$this->_reset_slas = false;
+
+
 			$this->recalculateSlaDates();
 		}
+		$this->_recalculate_slas = false;
 	}
 
 	protected function _applySlas()

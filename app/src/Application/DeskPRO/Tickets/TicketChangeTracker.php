@@ -805,6 +805,7 @@ class TicketChangeTracker extends ChangeTracker
 				'data' => serialize(array(
 					'ticket_id'      => $this->ticket->getId(),
 					'changed_fields' => $this->getAllChangedPropertyNames(),
+					'sla_ids'        => $this->ticket->getSlaIds(),
 					'via_person'     => $person_id
 				)),
 				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'

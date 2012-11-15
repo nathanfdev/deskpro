@@ -182,6 +182,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function changedLoggable()
+	{
+		return ($this->sla_status != $this->getOriginalStatus() || $this->is_completed != $this->getOriginalIsCompleted());
+	}
+
 	protected function _runTrigger(TicketTrigger $trigger = null, $status, \DateTime $date = null)
 	{
 		if (!$trigger) {
@@ -252,6 +257,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				'warn_date'      => $this->warn_date ? $this->warn_date->format('c') : null,
 				'fail_date'      => $this->fail_date ? $this->fail_date->format('c') : null,
 				'is_completed'   => $this->is_completed,
+				'original_is_completed'   => $this->getOriginalIsCompleted(),
 				'removed'        => $removed,
 				'via_person'     => $person_id
 			)),
@@ -282,7 +288,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			$this->_ticket_log = $ticket_log;
+			App::getOrm()->delayedPersist($ticket_log);
 		}
 	}
 
@@ -299,7 +305,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			$this->_ticket_log = $ticket_log;
+			App::getOrm()->delayedPersist($ticket_log);
 		}
 	}
 
@@ -317,32 +323,8 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			$this->_ticket_log = $ticket_log;
+			App::getOrm()->delayedPersist($ticket_log);
 		}
-	}
-
-	public function _preFlush()
-	{
-		App::getOrm()->getEventManager()->addEventListener('postFlush', $this);
-	}
-
-	protected $_post_flush_running = false;
-
-	public function postFlush()
-	{
-		if ($this->_post_flush_running) {
-			return;
-		}
-		$this->_post_flush_running = true;
-
-		if ($this->_ticket_log) {
-			$log = $this->_ticket_log;
-			$this->_ticket_log = null;
-			App::getOrm()->persist($log);
-			App::getOrm()->flush();
-		}
-
-		$this->_post_flush_running = false;
 	}
 
 	############################################################################
@@ -364,7 +346,6 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_postInsert', 'postPersist');
 		$metadata->addLifecycleCallback('_postUpdate', 'postUpdate');
 		$metadata->addLifecycleCallback('_postRemove', 'postRemove');
-		$metadata->addLifecycleCallback('_preFlush', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sla_status', ));

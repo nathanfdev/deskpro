@@ -93,21 +93,9 @@ class TicketSearchController extends AbstractController
 		# SLAs
 		#------------------------------
 
-		$sla_show_options = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE person_id = ? AND name LIKE 'agent.ui.sla.%'
-		", array($this->person->id));
-
-		$sla_filter = isset($sla_show_options['agent.ui.sla.ticket-filter'])
-			? $sla_show_options['agent.ui.sla.ticket-filter']
-			: 'all';
-		$sla_requirements_filter = isset($sla_show_options['agent.ui.sla.requirements'])
-			? $sla_show_options['agent.ui.sla.requirements']
-			: 'any';
-
+		$sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
 		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
-		$sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCounts($slas, $sla_filter, $sla_requirements_filter);
+		$sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
 
 		#------------------------------
 		# Misc
@@ -142,8 +130,7 @@ class TicketSearchController extends AbstractController
 
 			'slas' => $slas,
 			'sla_counts' => $sla_counts,
-			'sla_filter' => $sla_filter,
-			'sla_requirements_filter' => $sla_requirements_filter
+			'sla_filter' => $sla_filter
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;
@@ -198,26 +185,13 @@ class TicketSearchController extends AbstractController
 
 	public function getSlaCountsAction()
 	{
-		$sla_show_options = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE person_id = ? AND name LIKE 'agent.ui.sla.%'
-		", array($this->person->id));
-
-		$sla_filter = isset($sla_show_options['agent.ui.sla.ticket-filter'])
-			? $sla_show_options['agent.ui.sla.ticket-filter']
-			: 'all';
-		$sla_requirements_filter = isset($sla_show_options['agent.ui.sla.requirements'])
-			? $sla_show_options['agent.ui.sla.requirements']
-			: 'any';
-
+		$sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
 		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
-		$sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCounts($slas, $sla_filter, $sla_requirements_filter);
+		$sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
 
 		return $this->createJsonResponse(array(
 			'counts' => $sla_counts,
-			'sla_filter' => $sla_filter,
-			'sla_requirements_filter' => $sla_requirements_filter
+			'sla_filter' => $sla_filter
 		));
 	}
 
@@ -755,44 +729,29 @@ class TicketSearchController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 		$searcher->setPerson($this->person);
 
-		$sla_show_options = $this->db->fetchAllKeyValue("
-			SELECT name, value_str
-			FROM people_prefs
-			WHERE person_id = ? AND name LIKE 'agent.ui.sla.%'
-		", array($this->person->id));
-
-		$sla_filter = isset($sla_show_options['agent.ui.sla.ticket-filter'])
-			? $sla_show_options['agent.ui.sla.ticket-filter']
-			: 'all';
-		$sla_requirements_filter = isset($sla_show_options['agent.ui.sla.requirements'])
-			? $sla_show_options['agent.ui.sla.requirements']
-			: 'any';
-
+		$sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
 		if ($sla_filter == 'agent') {
 			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT, 'is', $this->person->id);
 		} else if ($sla_filter == 'team') {
 			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
 		}
 
-		if ($sla_requirements_filter == 'completed') {
-			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
-				'is_completed' => 1,
-				'sla_id' => $sla_id
-			));
-		} else if ($sla_requirements_filter == 'not_completed') {
-			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
-				'is_completed' => 0,
-				'sla_id' => $sla_id
-			));
-		} else {
-			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA, 'is', $sla_id);
-		}
+		$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
+			'is_completed' => 0,
+			'sla_id' => $sla_id
+		));
 
 		if ($sla_status) {
 			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', array(
 				'sla_status' => $sla_status,
 				'sla_id' => $sla_id
 			));
+		}
+
+		if ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME) {
+			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+		} else {
+			$searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', array('awaiting_agent', 'awaiting_user'));
 		}
 
 		$order_by = $this->in->getString('order_by');

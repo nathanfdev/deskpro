@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 
 class TicketSla extends AbstractEntityRepository
 {
-	public function getTicketSlaCounts(array $slas, $filter = 'all', $requirements_filter = 'any', Entity\Person $person_context = null)
+	public function getTicketSlaCountsForAgentInterface(array $slas, $filter = 'all', Entity\Person $person_context = null)
 	{
 		if (!$slas) {
 			return array();
@@ -103,15 +103,8 @@ class TicketSla extends AbstractEntityRepository
 				break;
 		}
 
-		switch ($requirements_filter) {
-			case 'completed':
-				$where .= " AND ticket_slas.is_completed = 1";
-				break;
-
-			case 'not_completed':
-				$where .= " AND ticket_slas.is_completed = 0";
-				break;
-		}
+		$where .= " AND ticket_slas.is_completed = 0";
+		$where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type <> 'waiting_time' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
 
 		$ids = array();
 		foreach ($slas AS $sla) {
@@ -123,6 +116,7 @@ class TicketSla extends AbstractEntityRepository
 		$results = $this->getEntityManager()->getConnection()->fetchAll("
 			SELECT ticket_slas.sla_id, ticket_slas.sla_status, COUNT(*) AS count
 			FROM ticket_slas
+			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
 			INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
 			LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)
 			WHERE $where

@@ -47,6 +47,8 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateEntityManager;
  */
 class EntityManager extends UnprivateEntityManager
 {
+	protected $_delayedPersist = array();
+
 	protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
 	{
 		parent::__construct($conn, $config, $eventManager);
@@ -86,5 +88,35 @@ class EntityManager extends UnprivateEntityManager
 		}
 
 		parent::persist($entity);
+	}
+
+	/**
+	 * Sets an entity to be persisted after the next flush call completes.
+	 * This is mostly useful when trying to persist an entity in a pre/post
+	 * persist/update/remove event, where the managed entities are already setup.
+	 *
+	 * @param $entity
+	 */
+	public function delayedPersist($entity)
+	{
+		$oid = spl_object_hash($entity);
+
+        if (!isset($this->_delayedPersist[$oid])) {
+			$this->_delayedPersist[$oid] = $entity;
+        }
+	}
+
+	public function flush($entity = null)
+	{
+		parent::flush($entity);
+
+		if (!$entity && $this->_delayedPersist) {
+			foreach ($this->_delayedPersist AS $persist) {
+				$this->persist($persist);
+			}
+			$this->_delayedPersist = array();
+
+			parent::flush();
+		}
 	}
 }
