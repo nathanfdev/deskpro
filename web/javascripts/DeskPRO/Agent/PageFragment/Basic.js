@@ -16,18 +16,21 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	},
 
 	updateUi: function() {
+		var x;
+		if (!this.IS_ACTIVE) {
+			return;
+		}
 		if (this.wrapper) {
 			if (!this.scrollHandlers) {
 				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
 			}
-			this.scrollHandlers.each(function() {
-				var sh = $(this).data('scroll_handler');
+			for (x = 0; x < this.scrollHandlers.length; x++) {
+				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
 				if (sh && sh.updateSize) {
 					sh.updateSize();
 				}
-			});
+			};
 		}
-		this.fireEvent('updateUi');
 	},
 
 	initialize: function(html) {
@@ -36,6 +39,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.pageUid = Orb.uuid();
 		this.ZONE = 'agent';
 		this.TYPENAME = 'basic';
+		this.IS_ACTIVE = false;
 
 		this.allowDupe = false;
 		this.scripts = [];
@@ -62,20 +66,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}
 
 		this.addEvent('activate', function() {
+			this.IS_ACTIVE = true;
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
-			if (this.wrapper) {
-				this.wrapper.find('.with-scroll-handler').each(function() {
-					var sh = $(this).data('scroll_handler');
-					if (sh && sh.restorePosition) {
-						sh.restorePosition();
-					}
-					if (sh && sh.updateSize) {
-						sh.updateSize();
-					}
-				});
-			}
+			this.updateUi();
 		}, this);
 		this.addEvent('deactivate', function() {
+			this.IS_ACTIVE = false;
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
 			if (this.wrapper) {
 				this.wrapper.find('.with-handler').trigger('dp_hide');
@@ -109,6 +105,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.init();
 
 		this.addEvent('destroy', function() {
+			this.scrollHandlers = [];
 			if (self.resizerInterval) {
 				window.clearInterval(self.resizerInterval);
 			}

@@ -484,8 +484,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				billing.updateBillingForm(false);
 			}
 		}
+	},
 
-		window.setTimeout(this.updateUi.bind(this), 450);
+	updateUi: function() {
+		var x;
+		if (this.wrapper) {
+			if (!this.scrollHandlers) {
+				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
+			}
+			for (x = 0; x < this.scrollHandlers.length; x++) {
+				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
+				if (sh && sh.updateSize) {
+					sh.updateSize();
+				}
+			};
+
+			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			this.doScrollBottom = false;
+		}
 	},
 
 	displayNewMessage: function(html, slideCallback) {
