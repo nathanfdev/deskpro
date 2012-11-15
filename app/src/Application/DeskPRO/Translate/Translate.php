@@ -758,7 +758,7 @@ class Translate implements PersonContextInterface
 				if (isset($vars[$name])) {
 					return $vars[$name];
 				} elseif (isset($vars['_context'][$name])) {
-					return $vars[$name];
+					return $vars['_context'][$name];
 				}
 
 				return '';
