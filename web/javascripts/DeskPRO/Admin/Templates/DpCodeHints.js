@@ -110,8 +110,12 @@ function DpCodeHints() {
 									label.text(info.language_title);
 									label.appendTo(phraseRow);
 
-									var input = $('<div class="phrase-input"><input type="text" class="phrase-txt" /></div>');
-									input.find('input').val(info.phrase).attr('name', "lang_phrase[" + phraseId + "][" + info.language_id + "]");
+									if (info.phrase.indexOf("\n") !== -1 || info.phrase.indexOf("\r") !== -1) {
+										var input = $('<div class="phrase-input"><textarea class="phrase-txt"></textarea></div>');
+									} else {
+										var input = $('<div class="phrase-input"><input type="text" class="phrase-txt" /></div>');
+									}
+									input.find('.phrase-txt').val(info.phrase).attr('name', "lang_phrase[" + phraseId + "][" + info.language_id + "]");
 									input.appendTo(phraseRow);
 
 									phraseRow.appendTo(row);
@@ -130,7 +134,7 @@ function DpCodeHints() {
 									saveBtn.hide();
 									spinner.show();
 
-									var postData = el.find('input').serializeArray();
+									var postData = el.find('input, textarea').serializeArray();
 
 									$.ajax({
 										url: BASE_URL + 'admin/languages/phrases-save-array.json',
