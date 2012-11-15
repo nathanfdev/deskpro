@@ -64,6 +64,8 @@ class QueryListener
 		$updates = array_flip($this->updates);
 		$this->updates = array();
 
+		$this->is_executing = true;
+
 		if (isset($updates['publish_structure_cache'])) {
 			App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		}
@@ -71,6 +73,8 @@ class QueryListener
 		if (isset($updates['permissions'])) {
 			App::getDb()->exec("TRUNCATE TABLE permissions_cache");
 		}
+
+		$this->is_executing = false;
 	}
 
 	public function handleQuery($sql, array $params)
