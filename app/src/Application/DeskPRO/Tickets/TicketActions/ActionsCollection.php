@@ -296,12 +296,19 @@ class ActionsCollection
 			if ($ticket_tracker && isset($metadata['trigger'])) {
 				$ticket_tracker->setApplyingTrigger($metadata['trigger']);
 			}
+			if ($ticket_tracker && isset($metadata['sla'])) {
+				$sla_status = isset($metadata['sla_status']) ? $metadata['sla_status'] : null;
+				$ticket_tracker->setApplyingSla($metadata['sla'], $sla_status);
+			}
 
 			try {
 				$action->apply($ticket);
 
 				if ($ticket_tracker && isset($metadata['trigger'])) {
 					$ticket_tracker->setApplyingTrigger(null);
+				}
+				if ($ticket_tracker && isset($metadata['sla'])) {
+					$ticket_tracker->setApplyingSla(null, null);
 				}
 			} catch (\Exception $e) {
 				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);

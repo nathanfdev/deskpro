@@ -29,40 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-abstract class AbstractLogAction implements LogActionInterface
+class Build1352971738 extends AbstractBuild
 {
-	/**
-	 * @var array
-	 */
-	protected $metadata = array();
-
-	/**
-	 * @param array $metadata
-	 * @return mixed
-	 */
-	public function setMetaData(array $metadata)
+	public function run()
 	{
-		$this->metadata = $metadata;
-	}
-
-	public function addMetaData($key, $value)
-	{
-		$this->metadata[$key] = $value;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getMetaData()
-	{
-		return $this->metadata;
+		$this->out("Add support for indicating that ticket changes are from an SLA");
+		$this->execMutateSql("ALTER TABLE tickets_logs ADD sla_id INT DEFAULT NULL, ADD sla_status VARCHAR(20) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F410817A2CC8C4 FOREIGN KEY (sla_id) REFERENCES slas (id) ON DELETE SET NULL");
+		$this->execMutateSql("CREATE INDEX IDX_F5F410817A2CC8C4 ON tickets_logs (sla_id)");
 	}
 }

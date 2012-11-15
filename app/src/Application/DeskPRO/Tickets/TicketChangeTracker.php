@@ -104,9 +104,19 @@ class TicketChangeTracker extends ChangeTracker
 	protected $running = false;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketTrigger
+	 * @var \Application\DeskPRO\Entity\TicketTrigger|null
 	 */
 	protected $applying_trigger = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Sla\null
+	 */
+	protected $applying_sla = null;
+
+	/**
+	 * @var string|null
+	 */
+	protected $applying_sla_status = null;
 
 	/**
 	 * @var \Orb\Log\Logger
@@ -251,6 +261,38 @@ class TicketChangeTracker extends ChangeTracker
 	public function getApplyingTrigger()
 	{
 		return $this->applying_trigger;
+	}
+
+	/**
+	 * If a SLA trigger is being applied, then this sets it so ticket log and future actions
+	 * know that the SLA is causing the changes.
+	 *
+	 * @param \Application\DeskPRO\Entity\Sla|null $sla
+	 */
+	public function setApplyingSla(\Application\DeskPRO\Entity\Sla $sla = null, $sla_status = null)
+	{
+		$this->applying_sla = $sla;
+		$this->applying_sla_status = $sla_status;
+	}
+
+	/**
+	 * Get the applying SLA if there is one
+	 *
+	 * @return \Application\DeskPRO\Entity\Sla|null
+	 */
+	public function getApplyingSla()
+	{
+		return $this->applying_sla;
+	}
+
+	/**
+	 * Get the applying SLA status if there is one
+	 *
+	 * @return string|null
+	 */
+	public function getApplyingSlaStatus()
+	{
+		return $this->applying_sla_status;
 	}
 
 
@@ -545,6 +587,12 @@ class TicketChangeTracker extends ChangeTracker
 
 		if ($this->applying_trigger) {
 			$data['trigger_id'] = $this->applying_trigger->getId();
+		}
+		if ($this->applying_sla) {
+			$data['sla_id'] = $this->applying_sla->getId();
+			if ($this->applying_sla_status) {
+				$data['sla_status'] = $this->applying_sla_status;
+			}
 		}
 
 		return $data;

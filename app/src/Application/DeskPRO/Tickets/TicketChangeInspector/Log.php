@@ -235,7 +235,13 @@ class Log
 
 				if ($action) {
 					if (isset($info['trigger_id'])) {
-						$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+						$action->addMetaData('trigger_id', $info['trigger_id']);
+					}
+					if (isset($info['sla_id'])) {
+						$action->addMetaData('sla_id', $info['sla_id']);
+						if (isset($info['sla_status'])) {
+							$action->addMetaData('sla_status', $info['sla_status']);
+						}
 					}
 					$actions[] = $action;
 
@@ -309,7 +315,13 @@ class Log
 				}
 
 				if (isset($info['trigger_id'])) {
-					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+					$action->addMetaData('trigger_id', $info['trigger_id']);
+				}
+				if (isset($info['sla_id'])) {
+					$action->addMetaData('sla_id', $info['sla_id']);
+					if (isset($info['sla_status'])) {
+						$action->addMetaData('sla_status', $info['sla_status']);
+					}
 				}
 
 				$actions[] = $action;
@@ -331,7 +343,13 @@ class Log
 				}
 
 				if (isset($info['trigger_id'])) {
-					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+					$action->addMetaData('trigger_id', $info['trigger_id']);
+				}
+				if (isset($info['sla_id'])) {
+					$action->addMetaData('sla_id', $info['sla_id']);
+					if (isset($info['sla_status'])) {
+						$action->addMetaData('sla_status', $info['sla_status']);
+					}
 				}
 
 				$actions[] = $action;
@@ -349,7 +367,13 @@ class Log
 				$action = new LogActions\CustomField($old_val, $new_val);
 
 				if (isset($info['trigger_id'])) {
-					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+					$action->addMetaData('trigger_id', $info['trigger_id']);
+				}
+				if (isset($info['sla_id'])) {
+					$action->addMetaData('sla_id', $info['sla_id']);
+					if (isset($info['sla_status'])) {
+						$action->addMetaData('sla_status', $info['sla_status']);
+					}
 				}
 
 				$actions[] = $action;
@@ -372,7 +396,13 @@ class Log
 				$action = new $classname($info);
 
 				if (isset($info['trigger_id'])) {
-					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+					$action->addMetaData('trigger_id', $info['trigger_id']);
+				}
+				if (isset($info['sla_id'])) {
+					$action->addMetaData('sla_id', $info['sla_id']);
+					if (isset($info['sla_status'])) {
+						$action->addMetaData('sla_status', $info['sla_status']);
+					}
 				}
 
 				$actions[] = $action;
@@ -463,6 +493,12 @@ class Log
 		$metadata = $action->getMetaData();
 		if (isset($metadata['trigger_id'])) {
 			$ticket_log['trigger_id'] = $metadata['trigger_id'];
+		}
+		if (isset($metadata['sla_id'])) {
+			$ticket_log['sla_id'] = $metadata['sla_id'];
+			if (isset($metadata['sla_status'])) {
+				$ticket_log['sla_status'] = $metadata['sla_status'];
+			}
 		}
 
 		if ($ticket_log['details']) {

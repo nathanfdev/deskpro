@@ -119,11 +119,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($call_triggers) {
 			if ($current_status == self::STATUS_OK && in_array($status, array(self::STATUS_WARNING, self::STATUS_FAIL))) {
-				$this->_runTrigger($this->sla->warning_trigger, $this->warn_date);
+				$this->_runTrigger($this->sla->warning_trigger, 'warning', $this->warn_date);
 			}
 
 			if (in_array($current_status, array(self::STATUS_OK, self::STATUS_WARNING)) && $status == self::STATUS_FAIL) {
-				$this->_runTrigger($this->sla->fail_trigger, $this->fail_date);
+				$this->_runTrigger($this->sla->fail_trigger, 'fail', $this->fail_date);
 			}
 		}
 
@@ -157,13 +157,16 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	protected function _runTrigger(TicketTrigger $trigger = null, \DateTime $date = null)
+	protected function _runTrigger(TicketTrigger $trigger = null, $status, \DateTime $date = null)
 	{
 		if (!$trigger) {
 			return;
 		}
 
 		$tracker = $this->ticket->getTicketLogger();
+		$tracker->recordExtraMulti('trigger', $trigger);
+		$tracker->recordExtra('sla', $this->sla);
+		$tracker->recordExtra('sla_status', $status);
 
 		$trigger_log = array(
 			'ticket_id'     => $this->ticket->id,
@@ -181,13 +184,15 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($trigger->actions as $action_info) {
 			$action = $factory->createFromInfo($action_info);
 			if ($action) {
-
 				if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ExecutionContextAware) {
 					$action->setExecutionContext('trigger');
 				}
 
-				$actions_collection->add($action, array('trigger' => $trigger));
-				$tracker->recordExtraMulti('trigger', $trigger);
+				$actions_collection->add($action, array(
+					'trigger' => $trigger,
+					'sla' => $this->sla,
+					'sla_status' => $status
+				));
 			}
 		}
 
