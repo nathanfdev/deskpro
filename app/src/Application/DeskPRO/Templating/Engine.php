@@ -164,18 +164,28 @@ class Engine extends BaseEngine
 	{
 		$source = $this->getSource($name);
 
+		return $this->splitSource($source);
+	}
+
+
+	/**
+	 * @param string $source
+	 * @return array
+	 */
+	public function splitSource($source)
+	{
 		$parts = array(
 			'source' => $source
 		);
 
-		if (preg_match('#^(.*?)<dp:subject>(.*?)</dp:subject>(.*?)$#is', $source, $m)) {
-			$parts['body'] = trim($m[1] . $m[3]);
-			$parts['subject'] = trim($m[2]);
+		if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
+			$parts['subject'] = trim($m[1]);
+			$parts['body'] = trim(str_replace($m[0], '', $source));
 		}
 
 		return $parts;
-
 	}
+
 
 	/**
 	 * @return array

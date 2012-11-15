@@ -74,17 +74,20 @@ function DpEmailEditor(name) {
 		});
 	});
 
-	saveCtrl.find('button.revert-trigger').on('click', function(ev) {
+	$('.reset-default').on('click', function(ev) {
 		ev.preventDefault();
+		var part = $(this).data('part') || '';
 
-		saveCtrl.addClass('loading');
-		$.ajax({
-			type: 'POST',
-			url: BASE_URL + 'admin/templates/revert-template.json?name=' + name,
-			success: function() {
-				window.location.reload(false);
-			}
-		});
+		if (confirm('Are you sure you want to reset back to the default?')) {
+			saveCtrl.addClass('loading');
+			$.ajax({
+				type: 'POST',
+				url: BASE_URL + 'admin/templates/revert-template.json?name=' + name + '&part=' + part,
+				success: function() {
+					window.location = window.location;
+				}
+			});
+		}
 	});
 
 	//##################################################################################################################
@@ -118,6 +121,24 @@ function DpEmailEditor(name) {
 	$('.template-toolbar .new-phrase').on('click', function() {
 		addOverlay.open();
 		activeEditorArea = $(this).closest('.template-edit-row').find('textarea.template-editor');
+	});
+
+	$('.template-toolbar .view-default').on('click', function() {
+		var part = $(this).data('part');
+
+		if (part == 'subject') {
+			var codeTxt = $('textarea.subject-default-code');
+			var targetCm = $('textarea.subject').data('cm');
+		} else {
+			var codeTxt = $('textarea.body-default-code');
+			var targetCm = $('textarea.template').data('cm');
+		}
+
+		var tmp = codeTxt.val();
+		codeTxt.val(targetCm.getValue());
+		targetCm.setValue(tmp);
+
+		$(this).toggleClass('on');
 	});
 
 	//##################################################################################################################

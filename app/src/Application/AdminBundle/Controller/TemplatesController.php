@@ -150,10 +150,58 @@ class TemplatesController extends AbstractController
 	public function revertTemplateAction()
 	{
 		$name = $this->in->getString('name');
+		$part = $this->in->getString('part');
 
 		$template = $this->em->getRepository('DeskPRO:Template')->findOneBy(array('name' => $name));
+
+		$revert_part = function($my_code, $default_code) use ($part) {
+			if (!$part) {
+				return $default_code;
+			}
+
+			$my_subj_code = '';
+			$my_body_code = $my_code;
+			$default_subj_code = '';
+			$default_body_code = $default_code;
+
+			$has_subj = strpos($default_code, '<dp:subject>') !== false;
+			if ($has_subj) {
+				if (preg_match('#<dp:subject>(.*?)</dp:subject>#s', $my_code, $m)) {
+					$my_subj_code = trim($m[1]);
+					$my_body_code = trim(str_replace($m[0], '', $my_code));
+				}
+
+				if (preg_match('#<dp:subject>(.*?)</dp:subject>#s', $default_code, $m)) {
+					$default_subj_code = trim($m[1]);
+					$default_body_code = trim(str_replace($m[0], '', $default_code));
+				}
+			}
+
+			$set_subj_code = $default_subj_code;
+			$set_body_code = $default_body_code;
+
+			if ($part == 'subject') {
+				// Only reset subject, so keep body
+				$set_body_code = $my_body_code;
+			} elseif ($part == 'body') {
+				// Only reset body, so keep subj
+				$set_subj_code = $my_subj_code;
+			}
+
+			if ($has_subj) {
+				$set_code = '<dp:subject>' . $set_subj_code . '</dp:subject>' . $set_body_code;
+			} else {
+				$set_code = $set_body_code;
+			}
+
+			return $set_code;
+		};
+
 		if ($template && $template->variant_of) {
-			$code = App::getTemplating()->getSource($template->variant_of);
+			$code = $revert_part(
+				$template->template_code,
+				App::getTemplating()->getSource($template->variant_of)
+			);
 
 			$twig = $this->container->get('twig');
 			$compiled = $twig->compileSource($code, $template->variant_of);
@@ -162,7 +210,22 @@ class TemplatesController extends AbstractController
 			$this->em->persist($template);
 			$this->em->flush();
 		} else {
-			$this->db->delete('templates', array('name' => $name));
+
+			if (!$part) {
+				$this->db->delete('templates', array('name' => $name));
+			} else {
+				$code = $revert_part(
+					$template->template_code,
+					App::getTemplating()->getDefaultSource($template->name)
+				);
+
+				$twig = $this->container->get('twig');
+				$compiled = $twig->compileSource($code, $template->variant_of);
+
+				$template->setTemplate($code, $compiled);
+				$this->em->persist($template);
+				$this->em->flush();
+			}
 		}
 
 
@@ -578,6 +641,16 @@ class TemplatesController extends AbstractController
 		$vars['is_custom']       = strpos($name, ':custom_') !== false;
 		$vars['template']        = $template;
 		$vars['allow_variation'] = in_array($name, App::getTemplating()->getVariedTemplateNames());
+
+		if ($template && $template->variant_of != 'DeskPRO:emails_user:blank.html.twig') {
+			if ($template->variant_of) {
+				$vars['default_template'] = $template->variant_of;
+			} else {
+				$vars['default_template'] = $template->name;
+			}
+
+			$vars['default_source'] = App::getTemplating()->splitSource(App::getTemplating()->getDefaultSource($vars['default_template']));
+		}
 
 		return $this->render('@email-edit.html.twig', $vars);
 	}

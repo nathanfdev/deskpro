@@ -103,9 +103,14 @@ $(document).ready(function() {
 				<ul>
 					<li class="new-phrase"><span>Add Phrase</span></li>
 					<li class="phrase-editor"><span>Phrase Editor</span></li>
+					{% if default_template %}
+						<li class="view-default" data-part="subject"><span>View Default</span></li>
+						<li class="reset-default" data-part="subject"><span>Reset To Default</span></li>
+					{% endif %}
 				</ul>
 			</div>
 			<textarea name="subject" class="template-editor subject">{{ source.subject }}</textarea>
+			{% if default_template %}<textarea class="subject-default-code" style="display: none;">{{ default_source.subject }}</textarea>{% endif %}
 		</div>
 	</div>
 
@@ -116,16 +121,20 @@ $(document).ready(function() {
 				<ul>
 					<li class="new-phrase"><span>Add Phrase</span></li>
 					<li class="phrase-editor"><span>Phrase Editor</span></li>
+					{% if default_template %}
+						<li class="view-default" data-part="body"><span>View Default</span></li>
+						<li class="reset-default" data-part="body"><span>Reset To Default</span></li>
+					{% endif %}
 				</ul>
 			</div>
 			<textarea class="template-editor template" data-template-name="{{ name }}">{{ source.body }}</textarea>
+			{% if default_template %}<textarea class="body-default-code" style="display: none;">{{ default_source.body }}</textarea>{% endif %}
 		</div>
 	</div>
 
 	<footer class="controls" id="save_control">
 		<div class="is-not-loading">
 			<button class="clean-white save-trigger">Save Template</button>
-			<button class="clean-white revert-trigger">Revert Template</button>
 		</div>
 		<div class="is-loading">
 			<div class="loading-icon-flat">&nbsp;</div>
