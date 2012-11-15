@@ -91,41 +91,6 @@
 			<tr>
 				<th class="single-title" colspan="10">
 					<div style="float: right">
-						<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new'}) }}">Add New Trigger</a>
-					</div>
-					<h1 class="noexpand">
-						New ticket has been created
-					</h1>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<ul class="item-list trigger-set">
-						{% for trigger in triggers['new'] %}
-							{{ _self.trigger_row(loop.index, trigger, 'new') }}
-						{% else %}
-							<li>
-								You have not defined any triggers for all new tickets.
-								<a href="{{ path('admin_tickettriggers_new', {trigger_type: 'new'}) }}">Create one now</a>.
-							</li>
-						{% endfor %}
-					</ul>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-
-<br />
-
-<div class="content-table template-dir trigger-dir">
-	<table width="100%" class="simple">
-		<thead>
-			<tr>
-				<th class="single-title" colspan="10">
-					<div style="float: right">
 						<a class="clean-white" href="{{ path('admin_tickettriggers_new', {trigger_type: 'new.email.user'}) }}">Add New Trigger</a>
 					</div>
 					<h1 class="noexpand">
