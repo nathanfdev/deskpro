@@ -1342,6 +1342,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var form = this.getEl('sla_form');
 		var idSelect = form.find('select[name=sla_id]');
 		var rows = this.getEl('sla_rows');
+		var tabHeader = this.getEl('sla_wrap_tab');
 
 		var addSlaRow = function(html) {
 			var add = $(html);
@@ -1349,6 +1350,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			rows.append(add);
 			add.find('.timeago').timeago();
 			rows.closest('table').show();
+
+			tabHeader.append(
+				$('<span />')
+					.addClass('sla-pip')
+					.addClass(add.data('sla-status'))
+					.data('sla-id', add.data('sla-id'))
+			);
 		};
 
 		var getVisibleOptions = function(options) {
@@ -1383,6 +1391,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								form.show();
 							}
 						}
+
+						tabHeader.find('.sla-pip').each(function() {
+							var $this = $(this);
+							if ($this.data('sla-id') == slaId) {
+								$this.remove();
+							}
+						});
 					}
 				});
 			}

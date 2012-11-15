@@ -1,4 +1,4 @@
-<tr data-sla-id="{{ticket_sla.sla.id}}">
+<tr data-sla-id="{{ticket_sla.sla.id}}" data-sla-status="{{ ticket_sla.sla_status }}">
 	<td>
 		<span class="sla-status-icon {{ ticket_sla.sla_status }} tipped"
 			{% if ticket_sla.sla_status == 'ok' %}title="SLA Status: Ok"
