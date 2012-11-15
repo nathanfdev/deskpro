@@ -2109,6 +2109,7 @@
 
             val.push(id);
             this.setVal(val);
+			this.search.val('');
         },
 
         // multi
