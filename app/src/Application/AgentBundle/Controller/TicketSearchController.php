@@ -1262,9 +1262,15 @@ class TicketSearchController extends AbstractController
         return $response;
     }
 
-	public function getSingleTicketRowAction($filter_id)
+	public function getSingleTicketRowAction($content_type, $content_id)
 	{
-		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+		if ($content_type == 'sla') {
+			$sla = $this->em->getRepository('DeskPRO:Sla')->find($content_id);
+			$filter = null;
+		} else {
+			$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($content_id);
+			$sla = null;
+		}
 
 		$ticket_id = $this->in->getUint('ticket_id');
 		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
@@ -1277,6 +1283,7 @@ class TicketSearchController extends AbstractController
 			'page' => -1,
 			'tickets' => array($ticket),
 			'filter' => $filter,
+			'sla' => $sla
 		);
 
 		$view_type = $this->in->getString('view_type');
@@ -1286,6 +1293,8 @@ class TicketSearchController extends AbstractController
 
 		if ($this->in->getString('view_name')) {
 			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.name_' . $this->in->getString('view_name'));
+		} elseif ($sla) {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-sla-display-fields.' . $sla['id']);
 		} elseif ($filter) {
 			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
 		} else {

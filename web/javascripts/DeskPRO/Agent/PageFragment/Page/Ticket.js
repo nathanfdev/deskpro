@@ -1365,6 +1365,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		};
 
+		var rowRemoved = function() {
+			if (!table.find('tbody tr').length) {
+				table.hide();
+			}
+
+			if (idSelect.length) {
+				idSelect.find('option[value="' + slaId + '"]').show();
+				if (getVisibleOptions(idSelect.find('option')).length > 1) {
+					form.show();
+				}
+			}
+
+			tabHeader.find('.sla-pip').each(function() {
+				var $this = $(this);
+				if ($this.data('sla-id') == slaId) {
+					$this.remove();
+					return false;
+				}
+			});
+		};
+
 		rows.on('click', 'a.sla-delete', function(e) {
 			var $this = $(this);
 
@@ -1381,23 +1402,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						var table = $this.closest('table');
 
 						$this.closest('tr').remove();
-						if (!table.find('tbody tr').length) {
-							table.hide();
-						}
 
-						if (idSelect.length) {
-							idSelect.find('option[value="' + slaId + '"]').show();
-							if (getVisibleOptions(idSelect.find('option')).length > 1) {
-								form.show();
-							}
-						}
-
-						tabHeader.find('.sla-pip').each(function() {
-							var $this = $(this);
-							if ($this.data('sla-id') == slaId) {
-								$this.remove();
-							}
-						});
+						rowRemoved();
 					}
 				});
 			}
@@ -1442,6 +1448,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				}
 			});
+
+			// manage sla updates to the ticket
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
+				if (info.ticket_id == self.getMetaData('ticket_id')) {
+					rows.find('tr').each(function() {
+						var row = $(this);
+						if (row.data('sla-id') == info.sla_id) {
+							if (info.removed) {
+								row.remove();
+								rowRemoved();
+							} else {
+								row.find('.sla-status-icon').removeClass(info.original_status).addClass(info.sla_status);
+								row.data('sla-status', info.sla_status);
+
+								row.find('.warn-date').html(
+									info.warn_date
+										? $('<time class="timeago" datetime="' + info.warn_date + '"></time>').timeago()
+										: 'N/A'
+								);
+								row.find('.fail-date').html(
+									info.fail_date
+										? $('<time class="timeago" datetime="' + info.fail_date + '"></time>').timeago()
+										: 'N/A'
+								);
+
+								tabHeader.find('.sla-pip').each(function() {
+									var pip = $(this);
+									if (pip.data('sla-id') == info.sla_id) {
+										pip.removeClass(info.original_status).addClass(info.sla_status);
+										return false;
+									}
+								});
+							}
+
+							return false;
+						}
+					});
+				}
+			}, this.pageUid);
 		}
 	},
 

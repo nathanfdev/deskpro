@@ -87,6 +87,8 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $sla;
 
+	protected $_original_status = null;
+
 	public function evaluateSlaDates($call_triggers = true)
 	{
 		if ($this->is_completed) {
@@ -106,6 +108,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setSlaStatus($status, $call_triggers = true)
 	{
+		if ($this->_original_status === null) {
+			$this->_original_status = $this->sla_status;
+		}
+
 		$current_status = $this->sla_status;
 
 		$this->setModelField('sla_status', $status);
@@ -144,6 +150,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				$this->setModelField('fail_date', null);
 			}
 		}
+	}
+
+	public function getOriginalStatus()
+	{
+		return $this->_original_status ?: $this->sla_status;
 	}
 
 	public function calculateSlaDates($call_triggers = true)
@@ -191,7 +202,8 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				$actions_collection->add($action, array(
 					'trigger' => $trigger,
 					'sla' => $this->sla,
-					'sla_status' => $status
+					'sla_status' => $status,
+					'original_status' => $this->getOriginalStatus()
 				));
 			}
 		}
@@ -205,7 +217,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function _sendClientMessages()
+	public function _sendClientMessages($removed = false)
 	{
 		$person_id = 0;
 		try {
@@ -222,10 +234,20 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				'ticket_id'      => $this->ticket->getId(),
 				'sla_id'         => $this->sla->id,
 				'sla_status'     => $this->sla_status,
+				'original_status' => $this->getOriginalStatus(),
+				'warn_date'      => $this->warn_date ? $this->warn_date->format('c') : null,
+				'fail_date'      => $this->fail_date ? $this->fail_date->format('c') : null,
+				'is_completed'   => $this->is_completed,
+				'removed'        => $removed,
 				'via_person'     => $person_id
 			)),
 			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 		));
+	}
+
+	public function _sendClientMessagesRemoved()
+	{
+		$this->_sendClientMessages(true);
 	}
 
 	############################################################################
@@ -246,7 +268,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('calculateSlaDates', 'prePersist');
 		$metadata->addLifecycleCallback('_sendClientMessages', 'postPersist');
 		$metadata->addLifecycleCallback('_sendClientMessages', 'postUpdate');
-		$metadata->addLifecycleCallback('_sendClientMessages', 'postRemove');
+		$metadata->addLifecycleCallback('_sendClientMessagesRemoved', 'postRemove');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sla_status', ));

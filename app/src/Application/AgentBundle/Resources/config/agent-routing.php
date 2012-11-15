@@ -887,9 +887,9 @@ $collection->add('agent_ticketsearch_quicksearch', new Route(
 ));
 
 $collection->add('agent_ticketsearch_singleticketrow', new Route(
-	'/ticket-search/single-ticket-row/{filter_id}',
+	'/ticket-search/single-ticket-row/{content_type}/{content_id}',
 	array('_controller' => 'AgentBundle:TicketSearch:getSingleTicketRow'),
-	array('filter_id' => '\\d+'),
+	array('content_id' => '\\d+'),
 	array()
 ));
 

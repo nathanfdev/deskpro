@@ -1015,7 +1015,7 @@ class TicketSearch extends SearcherAbstract
 						break;
 					case self::TERM_FEEDBACK_RATING:
 
-						$choice = isset($choice['rating']) ? $choice['rating'] : 'set';
+						$choice = (is_array($choice) && isset($choice['rating'])) ? $choice['rating'] : 'set';
 
 						if ($choice == 'set') {
 							if ($op == self::OP_IS) {
@@ -1046,10 +1046,11 @@ class TicketSearch extends SearcherAbstract
 
 					case self::TERM_SLA:
 
-						$choice = (array)(isset($choice['sla_id']) ? $choice['sla_id'] : $choice);
+						$choice = (array)((is_array($choice) && isset($choice['sla_id'])) ? $choice['sla_id'] : $choice);
 						if (!$choice) {
 							break;
 						}
+
 
 						$this->affected_fields[] = 'ticket.sla';
 
@@ -1543,7 +1544,7 @@ class TicketSearch extends SearcherAbstract
 
 						$search_type = $field->getHandler()->getSearchType();
 
-						if (isset($choice['custom_fields']['field_' . $term_id])) {
+						if (is_array($choice) && isset($choice['custom_fields']['field_' . $term_id])) {
 							$choice = $choice['custom_fields']['field_' . $term_id];
 						}
 
@@ -1763,7 +1764,7 @@ class TicketSearch extends SearcherAbstract
 						break;
 
 					case self::TERM_DAY_CREATED:
-						$days = isset($choice['days']) ? $choice['days'] : $choice;
+						$days = (is_array($choice) && isset($choice['days'])) ? $choice['days'] : $choice;
 						if (!$days || !is_array($days)) {
 							continue;
 						}

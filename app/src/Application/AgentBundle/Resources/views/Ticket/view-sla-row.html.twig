@@ -7,14 +7,14 @@
 		></span>
 		{{ ticket_sla.sla.title }}
 	</td>
-	<td>
+	<td class="warn-date">
 		{% if ticket_sla.warn_date %}
 			<time class="timeago" datetime="{{ticket_sla.warn_date|date('c', 'UTC')}}"></time>
 		{% else %}
 			N/A
 		{% endif %}
 	</td>
-	<td>
+	<td class="fail-date">
 		{% if ticket_sla.fail_date %}
 			<time class="timeago" datetime="{{ticket_sla.fail_date|date('c', 'UTC')}}"></time>
 		{% else %}
