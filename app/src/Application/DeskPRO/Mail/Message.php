@@ -111,6 +111,10 @@ class Message extends \Orb\Mail\Message
 				$this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
 			}
 
+			$this->template_vars['site_url']    = App::getSetting('core.site_url');
+			$this->template_vars['site_name']   = App::getSetting('core.site_name');
+			$this->template_vars['deskpro_url'] = App::getSetting('core.deskpro_url');
+
 			$content = $this->template_engine->render($this->template, $this->template_vars);
 			if (strpos($content, '___DP___SUBJECT___SEP___') !== false) {
 				list ($subject, $body) = explode('___DP___SUBJECT___SEP___', $content, 2);
