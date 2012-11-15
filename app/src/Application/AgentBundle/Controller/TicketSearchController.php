@@ -756,7 +756,7 @@ class TicketSearchController extends AbstractController
 
 		$order_by = $this->in->getString('order_by');
 		if (!$order_by) {
-			$order_by = $this->person->getPref('agent.ui.ticket-sla-order-by.' . $sla['id']);
+			$order_by = $this->person->getPref('agent.ui.ticket-sla-order-by.' . $sla['id'], 'ticket.sla_severity:desc');
 		}
 
 		if ($order_by) {
@@ -830,6 +830,9 @@ class TicketSearchController extends AbstractController
 		} else {
 			// Default display fields based on the filter
 			$vars['display_fields'] = $this->_suggestedDisplayFields($searcher);
+			if (!in_array('slas', $vars['display_fields'])) {
+				$vars['display_fields'][] = 'slas';
+			}
 		}
 
 		return $this->_getResponseForTickets('sla', $sla['id'], $helper, $vars);

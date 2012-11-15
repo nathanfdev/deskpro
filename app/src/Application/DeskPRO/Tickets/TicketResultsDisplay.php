@@ -207,6 +207,7 @@ class TicketResultsDisplay implements PersonContextInterface
 			FROM ticket_slas
 			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
 			WHERE ticket_slas.ticket_id IN ($ticket_ids)
+				AND ticket_slas.is_completed = 0
 		", array(), 'ticket_id', 'id');
 
 		return $this->all_ticket_slas;
@@ -235,6 +236,31 @@ class TicketResultsDisplay implements PersonContextInterface
 	{
 		$this->getAllTicketSlas();
 		return !empty($this->all_ticket_slas[$ticket->id]);
+	}
+
+	public function getNextSlaTriggerDate(array $ticket_sla)
+	{
+		$times = array();
+
+		if ($ticket_sla['sla_status'] == 'ok' && $ticket_sla['warn_date']) {
+			$time = new \DateTime($ticket_sla['warn_date'], new \DateTimeZone('UTC'));
+			if ($time->getTimestamp() > time()) {
+				$times[] = $time->getTimestamp();
+			}
+		}
+
+		if ($ticket_sla['sla_status'] != 'fail' && $ticket_sla['fail_date']) {
+			$time = new \DateTime($ticket_sla['fail_date'], new \DateTimeZone('UTC'));
+			if ($time->getTimestamp() > time()) {
+				$times[] = $time->getTimestamp();
+			}
+		}
+
+		if (!$times) {
+			return null;
+		}
+
+		return new \DateTime('@' . min($times));
 	}
 
 

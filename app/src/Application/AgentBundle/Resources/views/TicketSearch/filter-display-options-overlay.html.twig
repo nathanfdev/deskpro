@@ -10,6 +10,10 @@
 {% block other_options %}
 	<div style="display: none">
 		{{ phrase('agent.general.order_by') }}: <select name="order_by" class="sel-order-by">
+			{% if sla_id %}
+				<option class="sla_severity_desc" value="ticket.sla_severity:desc">SLA Severity (Highest-Lowest)</option>
+				<option class="sla_severity_asc" value="ticket.sla_severity:asc">SLA Severity (Lowest-HIghest)</option>
+			{% endif %}
 			<option class="urgency_desc" value="ticket.urgency:desc">{{ phrase('agent.tickets.urgency_highest_lowest') }}</option>
 			<option class="urgency_asc" value="ticket.urgency:asc">{{ phrase('agent.tickets.urgency_lowest_highest') }}</option>
 			<option class="date_created_desc" value="ticket.date_created:desc">{{ phrase('agent.tickets.date_opened_newerolder') }}</option>
@@ -18,10 +22,10 @@
 				<option class="priority_desc" value="ticket.priority:desc">{{ phrase('agent.tickets.priority_highestlowest') }}</option>
 				<option class="priority_asc" value="ticket.priority:asc">{{ phrase('agent.tickets.priority_lowesthighest') }}</option>
 			{% endif %}
-        <option class="time_waiting_desc" value="ticket.date_user_waiting:desc">&uarr; {{ phrase('agent.general.time_waiting') }}</option>
-        <option class="time_waiting_asc" value="ticket.date_user_waiting:asc">&darr; {{ phrase('agent.general.time_waiting') }}</option>
-        <option class="total_user_waiting_desc" value="ticket.total_user_waiting:desc">&darr; {{ phrase('agent.general.total_time_waiting') }}</option>
-        <option class="total_user_waiting_asc" value="ticket.total_user_waiting:asc">&uarr; {{ phrase('agent.general.total_time_waiting') }}</option>
+			<option class="time_waiting_desc" value="ticket.date_user_waiting:desc">&uarr; {{ phrase('agent.general.time_waiting') }}</option>
+			<option class="time_waiting_asc" value="ticket.date_user_waiting:asc">&darr; {{ phrase('agent.general.time_waiting') }}</option>
+			<option class="total_user_waiting_desc" value="ticket.total_user_waiting:desc">&darr; {{ phrase('agent.general.total_time_waiting') }}</option>
+			<option class="total_user_waiting_asc" value="ticket.total_user_waiting:asc">&uarr; {{ phrase('agent.general.total_time_waiting') }}</option>
 		</select>
 	</div>
 {% endblock %}

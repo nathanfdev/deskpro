@@ -161,6 +161,25 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getNextTriggerDate()
+	{
+		$times = array();
+
+		if ($this->sla_status == self::STATUS_OK && $this->warn_date && $this->warn_date->getTimestamp() > time()) {
+			$times[] = $this->warn_date->getTimestamp();
+		}
+
+		if (in_array($this->sla_status, array(self::STATUS_OK, self::STATUS_WARNING)) && $this->fail_date && $this->fail_date->getTimestamp() > time()) {
+			$times[] = $this->fail_date->getTimestamp();
+		}
+
+		if (!$times) {
+			return null;
+		}
+
+		return new \DateTime('@' . min($times));
+	}
+
 	public function getOriginalStatus()
 	{
 		return $this->_original_status === null ? $this->sla_status : $this->_original_status;

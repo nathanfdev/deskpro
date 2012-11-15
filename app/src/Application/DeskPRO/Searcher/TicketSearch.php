@@ -610,7 +610,8 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+			$order_join = $order_by[0];
+			$order_by = $order_by[1];
 
 			$sql .= " $order_join ";
 		}
@@ -743,6 +744,14 @@ class TicketSearch extends SearcherAbstract
 					$order_by = "ORDER BY tickets.priority_id $dir, tickets.id $dir";
 				}
 				$this->order_summary = $tr->phrase('agent.general.priority');
+				break;
+
+			case 'ticket.sla_severity':
+				$this->order_summary = 'SLA Severity';
+				$order_by = array(
+					"INNER JOIN ticket_slas AS sort_table ON (sort_table.ticket_id = tickets.id)",
+					"ORDER BY MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) $dir, IF(MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) <= 1, MIN(sort_table.warn_date), MIN(sort_table.fail_date)) $r_dir"
+				);
 				break;
 
 			case 'ticket.date_resolved':
@@ -1051,8 +1060,7 @@ class TicketSearch extends SearcherAbstract
 							break;
 						}
 
-
-						$this->affected_fields[] = 'ticket.sla';
+						$this->affected_fields[] = 'ticket.sla_id';
 
 						$choices_in = array();
 						foreach ($choice as $c) {

@@ -30,14 +30,17 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSla = new Orb.Class({
 		}
 	},
 
-	updateSlaDisplay: function(info) {
+	updateSlaListForTicket: function(info) {
 		if (!info.ticket_id || !info.sla_id) {
 			return;
 		}
 
-		if (info.sla_id == this.getMetaData('sla_id')) {
-			this.refreshSlaTicketList();
-		}
+		// run this for every SLA change, as a ticket may have multiple SLAs
+		// and the general status could change
+		// todo: in the future we could possibly resolve this without always
+		// refreshing if we look at the list and only update if there's a ticket
+		// with this SLA
+		this.refreshSlaTicketList();
 	},
 
 	refreshSlaTicketList: function() {

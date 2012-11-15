@@ -14,6 +14,10 @@
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
+		{% if sla_id %}
+			<li data-order-by="sla_severity_asc"><label class="label">SLA Severity</label> <i class="order-dir">ASC</i></li>
+			<li data-order-by="sla_severity_desc"><label class="label">SLA Severity</label> <i class="order-dir">DESC</i></li>
+		{% endif %}
         {% if needs_urgency %}
         <li data-order-by="urgency_asc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">ASC</i></li>
         <li data-order-by="urgency_desc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">DESC</i></li>

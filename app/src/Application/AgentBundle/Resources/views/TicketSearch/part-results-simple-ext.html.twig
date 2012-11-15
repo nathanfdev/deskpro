@@ -4,7 +4,7 @@
 {% set ticket_person = ticket.person %}
 {% set ticket_agent = ticket.agent %}
 
-<article class="row-item ticket-{{ ticket.id }} {% if ticket.worst_sla_status %}sla-status-{{ ticket.worst_sla_status }}{% endif %} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+<article class="row-item ticket-{{ ticket.id }} {% if ticket.getSlaIds() %}sla-status-{{ sla_id ? ticket.getSlaById(sla_id).sla_status : ticket.worst_sla_status }}{% endif %} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
 	<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
@@ -156,10 +156,14 @@
 				</li>
 			{% elseif field == 'slas' and (ticket_display.hasTicketSlas(ticket) or changed_fields[ticket.id].slas) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].slas %}changed{% endif %}">
-					<span class="prop-title">SLAs:</span>
 					<span class="prop-val labels">
-						{% for ticket_slas in ticket_display.getTicketSlas(ticket) %}
-							<span class="listing-tag sla-status-{{ticket_slas.sla_status}}">{{ ticket_slas.title }}</span>
+						{% for ticket_sla in ticket_display.getTicketSlas(ticket) %}
+							<span class="listing-tag sla-status-{{ticket_sla.sla_status}}">
+								{{ ticket_sla.title }}
+								{% if ticket_display.getNextSlaTriggerDate(ticket_sla) %}
+									(<time class="timeago" datetime="{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC') }}"></time>)
+								{% endif %}
+							</span>
 						{% endfor %}
 					</span>
 				</li>

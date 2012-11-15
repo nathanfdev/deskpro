@@ -1071,6 +1071,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
+	public function getSlaById($sla_id)
+	{
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			if ($ticket_sla->sla->id == $sla_id) {
+				return $ticket_sla;
+			}
+		}
+
+		return null;
+	}
+
 	public function getSlaIds()
 	{
 		$ids = array();
@@ -1983,6 +1994,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$status = null;
 		foreach ($this->ticket_slas AS $ticket_sla) {
+			if ($ticket_sla->is_completed) {
+				continue;
+			}
+
 			if (!$status) {
 				$status = $ticket_sla->sla_status;
 			} else if ($ticket_sla->sla_status == 'fail') {

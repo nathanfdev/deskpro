@@ -203,8 +203,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
 				self.getUpdatedSlaCounts();
-				if (self.listPage && self.listPage.updateSlaDisplay) {
-					self.listPage.updateSlaDisplay(info);
+				if (self.listPage && self.listPage.updateSlaListForTicket) {
+					self.listPage.updateSlaListForTicket(info);
+				} else {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: info.ticket_id });
 				}
 			});
 
