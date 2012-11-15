@@ -85,6 +85,7 @@ if (php_sapi_name() != 'cli') {
 # Init
 ########################################################################
 
+define('DP_TIME_START', time());
 require __DIR__.'/../CloudConfig.php';
 require __DIR__.'/../lib/Process.php';
 
@@ -265,8 +266,10 @@ $db = CloudConfig::getDb();
 
 if ($account_type) {
 	if ($account_type == 'demo') {
+		$runner_id = "demo_$range_start-$range_end";
 		$where = "cloud_accounts.is_demo = 1 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1 AND cloud_accounts.date_demo_expire > NOW()";
 	} else {
+		$runner_id = "paid_$range_start-$range_end";
 		$where = "cloud_accounts.is_demo = 0 AND cloud_sites.build_number > 0 AND cloud_sites.sys_disabled IS NULL AND cloud_sites.in_use = 1";
 	}
 	$st = $db->prepare("
@@ -301,6 +304,8 @@ if ($account_type) {
 	$sites = $st->fetchAll(\PDO::FETCH_ASSOC);
 
 } else {
+
+	$runner_id = "all_$range_start-$range_end";
 
 	$st = $db->prepare("
 		SELECT COUNT(*)
@@ -370,6 +375,25 @@ foreach ($sites as $siteinfo) {
 }
 
 dp_logf("--------------- CRON RUN END (ID %d-%d) : %s (took %.4f s) ---------------", $range_start, $range_end, date('M j Y H:i'), microtime(true) - $time_begin);
+
+define('DP_TIME_END', time());
+
+$date_start = new \DateTime('@' . DP_TIME_START);
+$date_start->setTime($date_start->format('H'), $date_start->format('i'), '0');
+$date_start = $date_start->format('Y-m-d H:i:s');
+$time_start = DP_TIME_START;
+$time_end   = DP_TIME_END;
+$time_total = DP_TIME_END - DP_TIME_START;
+
+$db->exec("
+	INSERT INTO cloud_cron_runs
+	SET
+		runner_id    = '$runner_id',
+		date_start   = '$date_start',
+		time_start   = '$time_start',
+		time_end     = '$time_end',
+		time_total   = '$time_total'
+");
 
 if ($DO_REPORT_LOG) {
 	$dp_log_messages = implode('', $dp_log_messages);
