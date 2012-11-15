@@ -22,7 +22,7 @@
 							<div class="input">
 								<select class="type" name="contact_data[{{ contact.id }}][type]">
 									{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax'} %}
-										<option value="{{ type }}" {% if contaxt.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
+										<option value="{{ type }}" {% if contact.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
 									{% endfor %}
 								</select>
 								+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
