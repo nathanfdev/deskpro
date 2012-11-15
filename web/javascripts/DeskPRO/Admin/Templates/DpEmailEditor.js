@@ -1,12 +1,14 @@
-function DpEmailEditor(name) {
+function DpEmailEditor(name, context) {
 	var codeHints = new DpCodeHints();
 	var activeEditorArea = null;
+
+	context = context || document;
 
 	//##################################################################################################################
 	//# Init the editors
 	//##################################################################################################################
 
-	$('.template-editor-wrap').each(function() {
+	$('.template-editor-wrap', context).each(function() {
 
 		$(this).on('click', function(ev) {
 			ev.stopPropagation();
@@ -44,14 +46,18 @@ function DpEmailEditor(name) {
 	//# Saving / reverting current template
 	//##################################################################################################################
 
-	var saveCtrl = $('#save_control');
+	var saveCtrl = $('.save-control, #save_control', context).first();
 	saveCtrl.find('button.save-trigger').on('click', function(ev) {
 		ev.preventDefault();
 
-		var subject = $('textarea.subject').data('cm').getValue();
-		var body    = $('textarea.template').data('cm').getValue();
-
-		var code = "<dp:subject>" + subject + "</dp:subject>\n" + body;
+		if ($('textarea.subject', context)[0]) {
+			var subject = $('textarea.subject', context).data('cm').getValue();
+			var body    = $('textarea.template', context).data('cm').getValue();
+			var code    = "<dp:subject>" + subject + "</dp:subject>\n" + body;
+		} else {
+			var body = $('textarea.template', context).data('cm').getValue();
+			var code = body;
+		}
 
 		saveCtrl.addClass('loading');
 		$.ajax({
@@ -70,11 +76,13 @@ function DpEmailEditor(name) {
 					alert(data.error_message + "\n\nLine: " + data.error_line);
 					return;
 				}
+
+				$('.view-default, .reset-default', context).show();
 			}
 		});
 	});
 
-	$('.reset-default').on('click', function(ev) {
+	$('.reset-default', context).on('click', function(ev) {
 		ev.preventDefault();
 		var part = $(this).data('part') || '';
 
@@ -94,7 +102,7 @@ function DpEmailEditor(name) {
 	//# Adding new phrases
 	//##################################################################################################################
 
-	var addOverlayEl = $('#add_phrase_overlay');
+	var addOverlayEl = $('.add_phrase_overlay, #add_phrase_overlay', context).first();
 	var addOverlay = new DeskPRO.UI.Overlay({
 		contentElement: addOverlayEl,
 		onBeforeOverlayOpened: function() {
@@ -118,20 +126,20 @@ function DpEmailEditor(name) {
 		});
 	});
 
-	$('.template-toolbar .new-phrase').on('click', function() {
+	$('.template-toolbar .new-phrase', context).on('click', function() {
 		addOverlay.open();
 		activeEditorArea = $(this).closest('.template-edit-row').find('textarea.template-editor');
 	});
 
-	$('.template-toolbar .view-default').on('click', function() {
+	$('.template-toolbar .view-default', context).on('click', function() {
 		var part = $(this).data('part');
 
 		if (part == 'subject') {
-			var codeTxt = $('textarea.subject-default-code');
-			var targetCm = $('textarea.subject').data('cm');
+			var codeTxt = $('textarea.subject-default-code', context);
+			var targetCm = $('textarea.subject', context).data('cm');
 		} else {
-			var codeTxt = $('textarea.body-default-code');
-			var targetCm = $('textarea.template').data('cm');
+			var codeTxt = $('textarea.body-default-code', context);
+			var targetCm = $('textarea.template', context).data('cm');
 		}
 
 		var tmp = codeTxt.val();
@@ -145,10 +153,10 @@ function DpEmailEditor(name) {
 	//# Adding new variation
 	//##################################################################################################################
 
-	var variationOverlayEl = $('#add_variation_overlay');
+	var variationOverlayEl = $('.add-variation-overlay, #add_variation_overlay', context);
 	var variationOverlay = new DeskPRO.UI.Overlay({
 		contentElement: variationOverlayEl,
-		triggerElement: $('#add_variation_trigger'),
+		triggerElement: $('.add-variation-overlay, #add_variation_trigger', context),
 		onBeforeOverlayOpened: function() {
 			codeHints.hide();
 			variationOverlayEl.find('input.template_name').val('');
@@ -173,8 +181,8 @@ function DpEmailEditor(name) {
 	//# Lang overlay
 	//##################################################################################################################
 
-	var langOverlayEl = $('#lang_overlay');
-	var langOveralyContentEl = $('#lang_overlay_content');
+	var langOverlayEl = $('.lang-overlay, #lang_overlay', context);
+	var langOveralyContentEl = $('.lang-overlay-content, #lang_overlay_content', context);
 	var langHasLoaded = false;
 	var langHasNav = false;
 	var langOverlay = new DeskPRO.UI.Overlay({
@@ -227,7 +235,7 @@ function DpEmailEditor(name) {
 		});
 	}
 
-	$('.template-toolbar .phrase-editor').on('click', function() {
+	$('.template-toolbar .phrase-editor', context).on('click', function() {
 		langOverlay.open();
 		activeEditorArea = $(this).closest('.template-edit-row').find('textarea.template-editor');
 	});

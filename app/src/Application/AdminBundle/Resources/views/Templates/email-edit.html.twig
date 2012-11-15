@@ -143,41 +143,6 @@ $(document).ready(function() {
 
 	{{ tplmacro.render_editor_overlay() }}
 	{{ tplmacro.render_addphrase_overlay() }}
-
-	<div id="add_variation_overlay" class="edit-phrase-overlay" style="width: 725px; height: 200px; display: none;">
-		<div class="overlay-title">
-			<span class="close-trigger close-overlay"></span>
-			<h4>Add Template Variation</h4>
-		</div>
-		<div class="overlay-content">
-			<section class="phrase-section custom">
-
-				You can create mutliple variations of an email and use triggers to change the template
-				you want to send to users based on any criteria you want.
-				<br />
-				<br />
-
-				<header>
-					<h4>Unique Template ID</h4>
-				</header>
-				<article>
-					custom_<input type="text" class="template_name" name="template_name" placeholder="Enter a unique ID that will be used to identify this template" style="width: 350px;" />
-				</article>
-			</section>
-		</div>
-		<div class="overlay-footer">
-			<button class="clean-white save-trigger">Create Variation</button>
-		</div>
-	</div>
-
-
-	<div id="lang_overlay" class="edit-phrase-overlay" style="width: 850px; height: 685px; display: none;">
-		<div class="overlay-title">
-			<span class="close-trigger close-overlay"></span>
-			<div id="lang_overlay_nav"></div>
-		</div>
-		<div class="overlay-content">
-			<div id="lang_overlay_content"></div>
-		</div>
-	</div>
+	{{ tplmacro.render_addvariation_overlay() }}
+	{{ tplmacro.render_lang_overlay() }}
 {% endblock %}
