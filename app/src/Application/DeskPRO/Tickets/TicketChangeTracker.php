@@ -175,10 +175,14 @@ class TicketChangeTracker extends ChangeTracker
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * @return \Application\DeskPRO\Entity\Person|null
 	 */
 	public function getPersonPerformer()
 	{
+		if ($this->isExtraSet('sla')) {
+			return null;
+		}
+
 		if ($this->person_context && $this->person_context->getId()) {
 			return $this->person_context;
 		}
@@ -789,6 +793,10 @@ class TicketChangeTracker extends ChangeTracker
 					$person_id = App::get('session')->getEntity()->person->getId();
 				}
 			} catch (\Exception $e) {}
+
+			if ($this->isExtraSet('sla')) {
+				$person_id = 0;
+			}
 
 			App::getDb()->insert('client_messages', array(
 				'channel' => 'agent.ticket-updated',
