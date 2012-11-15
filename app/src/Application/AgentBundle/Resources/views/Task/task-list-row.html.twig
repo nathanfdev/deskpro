@@ -21,15 +21,30 @@
 	<div class="task-sub-wrap">
 		<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
 			<ul>
-				<li class="noval opt-trigger assigned_agent">
-					<label>
-						{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
-						{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
-						{% else %}{{ phrase('agent.general.me') }}{% endif %}
-					</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}Public{% else %}Private{% endif %}</label><span class="drop-icon"></span></li>
-					<li class="comment-btn">
+					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
+						<label>
+							{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
+							{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
+							{% else %}{{ phrase('agent.general.me') }}{% endif %}
+						</label><span class="drop-icon"></span>
+						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
+							<optgroup label="Agents">
+								{% for agent in app.getDataRepository('Agent').getAgents() %}
+									<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+								{% endfor %}
+							</optgroup>
+							{% if app.getDataRepository('AgentTeam').getTeams()|length %}
+								<optgroup label="Teams">
+									{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+										<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
+									{% endfor %}
+								</optgroup>
+							{% endif %}
+						</select>
+					</li>
+					<li class="comment-btn" style="float:right;">
 						<label>{{ phrase('agent.general.add_comment') }}</label><span class="drop-icon"></span>
 					</li>
 			</ul>

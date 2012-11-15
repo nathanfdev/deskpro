@@ -31,9 +31,25 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="task-info">
 			<ul>
-				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger visibility"><label>Public</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
+					<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
+					<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
+						<optgroup label="Agents">
+							{% for agent in app.getDataRepository('Agent').getAgents() %}
+								<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endfor %}
+						</optgroup>
+						{% if app.getDataRepository('AgentTeam').getTeams()|length %}
+							<optgroup label="Teams">
+								{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+									<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
+								{% endfor %}
+							</optgroup>
+						{% endif %}
+					</select>
+				</li>
 			</ul>
 			<div class="linked-container" style="display:none">
 				<span class="linked-ticket" style="display:none">

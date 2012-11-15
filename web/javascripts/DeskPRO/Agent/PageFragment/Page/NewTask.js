@@ -21,31 +21,6 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			addTaskRow();
 		});
 
-		var assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('assign_ob'),
-			onClose: function(ob) {
-
-				var agentId = parseInt(ob.getSelected('agents') || 0);
-				var agentTeamId = parseInt(ob.getSelected('teams') || 0);
-
-				var obel = self.getEl('assign_ob');
-
-				if (agentId && agentId != DESKPRO_PERSON_ID) {
-					var val = 'agent:' + agentId;
-					var text = $('.agent-label-' + agentId).first().text().trim();
-				} else if (agentTeamId) {
-					var val = 'agent_team:' + agentTeamId;
-					var text = $('.agent-team-label-' + agentTeamId).first().text().trim();
-				} else {
-					var val = '';
-					var text = 'Me';
-				}
-
-				$('input.input-agent', openForEl).val(val);
-				$('.opt-trigger.assigned_agent label', openForEl).text(text);
-			}
-		});
-
 		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('menu_vis'),
 			onItemClicked: function(info) {
@@ -68,10 +43,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				self.updateUi();
 			});
 		});
-		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
-			openForEl = $(this).closest('.task-row');
-			assignOptionBox.open(ev);
-		});
+
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			statusMenu.open(ev);
@@ -146,6 +118,23 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			}
 
 			rowContainer.append(row);
+
+			var agent_sel = row.find('.agents_sel');
+			DP.select(agent_sel);
+
+			agent_sel.on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = 'Me';
+				}
+
+				row.find('.assigned_agent').find('label').text(label);
+				$('input.input-agent', row).val(val);
+			});
+
 			self.updateUi();
 		};
 

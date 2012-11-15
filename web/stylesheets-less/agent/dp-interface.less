@@ -578,6 +578,26 @@ input.tab-focus {
 	.select2-container {
 		vertical-align: middle;
 	}
+
+	.select2-container.invisible-trigger {
+		position: absolute;
+		top: 0;
+		left: 0;
+		.opacity(0);
+	}
+
+	.select2-drop.invisible-trigger, .select2-drop.invisible-trigger.select2-drop-above {
+		border-top: 1px solid #999999;
+		border-bottom: 1px solid #999999;
+		padding-top: 4px;
+		padding-bottom: 4px;
+		margin-top: -12px;
+	}
+
+	.select2-drop.invisible-trigger.select2-drop-above {
+		margin-top: 0;
+		margin-bottom: -12px;
+	}
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {

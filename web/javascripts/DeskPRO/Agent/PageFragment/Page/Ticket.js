@@ -499,8 +499,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			};
 
-			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
-			this.doScrollBottom = false;
+			if (this.doScrollBottom) {
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				this.doScrollBottom = false;
+			}
 		}
 	},
 
@@ -1198,33 +1200,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		var openForEl = null;
 
-		var assignOb2 = this.getEl('task_assign_ob').clone().appendTo(this.wrapper);
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
-
-		var assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('task_assign_ob'),
-			onClose: function(ob) {
-
-				var agentId = parseInt(ob.getSelected('agents') || 0);
-				var agentTeamId = parseInt(ob.getSelected('teams') || 0);
-
-				var obel = self.getEl('task_assign_ob');
-
-				if (agentId && agentId != DESKPRO_PERSON_ID) {
-					var val = 'agent:' + agentId;
-					var text = $('.agent-label-' + agentId).first().text().trim();
-				} else if (agentTeamId) {
-					var val = 'agent_team:' + agentTeamId;
-					var text = $('.agent-team-label-' + agentTeamId).first().text().trim();
-				} else {
-					var val = '';
-					var text = 'Me';
-				}
-
-				$('input.input-agent', openForEl).val(val);
-				$('.opt-trigger.assigned_agent label', openForEl).text(text);
-			}
-		});
 
 		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('task_menu_vis'),
@@ -1244,13 +1220,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.updateUi();
 			});
 		});
-		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
-			openForEl = $(this).closest('.task-row');
-			assignOptionBox.open(ev);
-		});
 		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			statusMenu.open(ev);
+		});
+		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
+			$(this).addClass('has-init');
+			var row = $(this).closest('.task-row');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = 'Me';
+				}
+
+				row.find('.assigned_agent').find('label').text(label);
+				$('input.input-agent', row).val(val);
+			});
 		});
 		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
@@ -1330,7 +1320,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var control = new DeskPRO.Agent.PageHelper.TaskListControl(this.wrapper, {
 			menuVis:  menuVis2,
-			assignOb: assignOb2,
 			completeCountEl: null
 		});
 

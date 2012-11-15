@@ -207,6 +207,11 @@ var DP = {
 
 		options.formatNoMatches = function() { return ''; }
 
+		if (el.data('invisible-trigger')) {
+			options.containerCssClass = (options.containerCssClass || '') + ' invisible-trigger';
+			options.dropdownCssClass = (options.dropdownCssClass || '') + ' invisible-trigger';
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}

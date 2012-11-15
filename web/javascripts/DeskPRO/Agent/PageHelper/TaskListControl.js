@@ -6,7 +6,6 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 	initialize: function(el, options) {
 		var self      = this;
 		var openForEl = null;
-		var assignOb  = options.assignOb;
 		var menuVis   = options.menuVis;
 		var completeCountEl = options.completeCountEl;
 
@@ -75,43 +74,6 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			});
 		};
 
-		var assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: assignOb,
-			onInit: function(ob) {
-				ob.el.find('li').on('click', function( ){
-					var sect = $(this).closest('section').get(0);
-					$('section', ob.el).each(function() {
-						if ($(this).get(0) != sect) {
-							$(this).find('li.on').removeClass('on');
-						}
-					});
-				});
-			},
-			onClose: function(ob) {
-
-				var agentId = parseInt(ob.getSelected('agents') || 0);
-				var agentTeamId = parseInt(ob.getSelected('teams') || 0);
-
-				var obel = assignOb;
-
-				if (agentId && agentId != DESKPRO_PERSON_ID) {
-					var val = 'agent:' + agentId;
-					var text = $('.agent-label-' + agentId).first().text().trim();
-				} else if (agentTeamId) {
-					var val = 'agent_team:' + agentTeamId;
-					var text = $('.agent-team-label-' + agentTeamId).first().text().trim();
-				} else {
-					var val = '';
-					var text = 'Me';
-				}
-
-				sendUpdate(openForEl, 'assigned', val, function() {
-					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
-				});
-				$('.opt-trigger.assigned_agent label', openForEl).text(text);
-			}
-		});
-
 		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: menuVis,
 			onItemClicked: function(info) {
@@ -143,9 +105,24 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 			updateUi();
 		});
-		el.on('click', '.opt-trigger.assigned_agent', function(ev) {
-			openForEl = $(this).closest('article.task');
-			assignOptionBox.open(ev);
+		el.find('li.assigned_agent select.agents_sel').not('.has-init').each(function() {
+			var row = $(this).closest('article.task');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = 'Me';
+				}
+
+				row.find('.assigned_agent').find('label').text(label);
+				sendUpdate(row, 'assigned', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
+			});
 		});
 		el.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('article.task');
