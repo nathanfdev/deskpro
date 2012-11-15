@@ -329,15 +329,33 @@ ul.source-list li .list-counter {
 	position: relative;
 
 	&.ok {
-		background-color: #008c00;
+		background-color: #abf3ae;
+		text-shadow: none;
+		color: #404040;
 	}
 
 	&.warning {
-		background-color: #e7893e;
+		background-color: #f3cf8d;
+		text-shadow: none;
+		color: #404040;
+
+		&.not-empty {
+			color: #fff;
+			text-shadow: 0 1px 0 #6c7680;
+			background-color: #f3b523;
+		}
 	}
 
 	&.fail {
-		background-color: #a50000;
+		background-color: #eaaba3;
+		text-shadow: none;
+		color: #404040;
+
+		&.not-empty {
+			color: #fff;
+			text-shadow: 0 1px 0 #6c7680;
+			background-color: #de5949;
+		}
 	}
 }
 
@@ -350,15 +368,33 @@ ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 	background-color: #2F4B67;
 
 	&.ok {
-		background-color: #005300;
+		background-color: #abf3ae;
+		text-shadow: none;
+		color: #404040;
 	}
 
 	&.warning {
-		background-color: #c2792c;
+		background-color: #f3cf8d;
+		text-shadow: none;
+		color: #404040;
+
+		&.not-empty {
+			color: #fff;
+			text-shadow: 0 1px 0 #6c7680;
+			background-color: #e5aa1f;
+		}
 	}
 
 	&.fail {
-		background-color: #690000;
+		background-color: #eaaba3;
+		text-shadow: none;
+		color: #404040;
+
+		&.not-empty {
+			color: #fff;
+			text-shadow: 0 1px 0 #6c7680;
+			background-color: #de5949;
+		}
 	}
 }
 

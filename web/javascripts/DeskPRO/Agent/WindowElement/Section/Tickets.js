@@ -1073,9 +1073,32 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var row = list.find('.sla-' + sla_id);
 
 		if (row.length) {
-			row.find('.list-counter.ok').text(ok || 0);
-			row.find('.list-counter.warning').text(warning || 0);
-			row.find('.list-counter.fail').text(fail || 0);
+			var okCount = row.find('.list-counter.ok');
+
+			okCount.text(ok || 0);
+			if (ok > 0) {
+				okCount.addClass('not-empty');
+			} else {
+				okCount.removeClass('not-empty');
+			}
+
+			var warningCount = row.find('.list-counter.warning');
+
+			warningCount.text(warning || 0);
+			if (warning > 0) {
+				warningCount.addClass('not-empty');
+			} else {
+				warningCount.removeClass('not-empty');
+			}
+
+			var failCount = row.find('.list-counter.fail');
+
+			failCount.text(fail || 0);
+			if (fail > 0) {
+				failCount.addClass('not-empty');
+			} else {
+				failCount.removeClass('not-empty');
+			}
 		}
 	}
 });
