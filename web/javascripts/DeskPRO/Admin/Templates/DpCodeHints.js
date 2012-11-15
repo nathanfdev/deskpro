@@ -102,6 +102,10 @@ function DpCodeHints() {
 								Array.each(data.langs, function(info) {
 									var phraseRow = $('<div class="phrase-row"></div>');
 
+									if (DP_DEFAULT_LANG_ID && info.language_id == DP_DEFAULT_LANG_ID) {
+										phraseRow.addClass('default-lang');
+									}
+
 									var label = $('<div class="phrase-label"></div>');
 									label.text(info.language_title);
 									label.appendTo(phraseRow);
@@ -112,6 +116,8 @@ function DpCodeHints() {
 
 									phraseRow.appendTo(row);
 								});
+
+								row.find('.default-lang').detach().prependTo(row);
 
 								row.appendTo(el);
 
