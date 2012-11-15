@@ -84,7 +84,10 @@ class MainController extends AbstractController
 		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);
 		$show_task_status = count($tasks) > 0;
 
+		$onboard = new \Application\AdminBundle\OnboardNotices();
+
 		return $this->render('AdminBundle:Main:index.html.twig', array(
+			'onboard'            => $onboard,
 			'lic'                => License::getLicense(),
 			'notice_items'       => $notice_items,
 			'online_agents'      => $online_agents,
@@ -95,6 +98,23 @@ class MainController extends AbstractController
 			'cron_running_time'  => $cron_running_time,
 			'last_login'         => $last_login,
 			'show_task_status'   => $show_task_status
+		));
+	}
+
+	public function onboardMarkCompleteAction($type, $id)
+	{
+		$onboard = new \Application\AdminBundle\OnboardNotices();
+
+		if ($type == 'done') {
+			$onboard->markFinished($id);
+		} else {
+			$onboard->markDismissed($id);
+		}
+
+		$onboard->save();
+
+		return $this->createJsonResponse(array(
+			'success' => true
 		));
 	}
 

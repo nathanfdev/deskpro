@@ -1,0 +1,44 @@
+<div class="welcome-box">
+	<article class="top">
+		<div class="picture" style="background-image: url({{ app.user.getPictureUrl(50) }});"></div>
+		<div class="content">
+			{% if last_login %}
+				Welcome back, {{ app.user.first_name|default(app.user.display_name) }}.
+				<span class="tipped" title="{{ last_login.date_created|date('fulltime') }} from {{ last_login.ip_address }}{% if last_login.hostname %} ({{ last_login.hostname }})">
+					You last logged in <time class="timeago" datetime="{{ last_login.date_created|date('c', 'UTC') }}"></time>{% endif %}.
+				</span>
+			{% else %}
+				Welcome to DeskPRO, {{ app.user.first_name|default(app.user.display_name) }}.
+			{% endif %}
+		</div>
+		<div style="clear:left; height:1px;overflow: hidden">&nbsp;</div>
+	</article>
+	<article id="admin_contact_form" data-submit-url="{{ path('admin_submit_deskpro_feedback') }}">
+		<div class="form-input">
+			<h3>Need help?</h3>
+			<p>
+				If you need help setting up DeskPRO, have a problem or just want to submit feedback, simply fill in this form below.
+			</p>
+			<div class="form">
+				<textarea class="message" style="width: 622px; height: 35px;" placeholder="Enter your message"></textarea>
+				<br />
+				<div class="email-addy-wrap" style="display: none;">
+					<div class="default-addy">
+						We'll reply to your email address at {{ app.user.primary_email_address }} (<span style="text-decoration: underline; cursor:pointer;">change</span>)
+					</div>
+					<div class="input-addy" style="display: none;">
+						We'll reply to your email address <input type="text" class="email_address" value="{{ app.user.primary_email_address }}" />
+					</div>
+				</div>
+				<i class="flat-spinner send-loading" style="display: none;"></i>
+				<button class="btn send-trigger">Send your message</button>
+			</div>
+		</div>
+		<div class="form-success" style="display: none">
+			<h3>Your message has been sent</h3>
+			<p>
+				Thank you for contacting DeskPRO. Your message was sent successfully. Our agents will reply to you as soon as they can.
+			</p>
+		</div>
+	</article>
+</div>

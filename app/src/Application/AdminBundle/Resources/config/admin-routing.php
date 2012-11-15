@@ -27,6 +27,13 @@ $collection->add('admin_submit_deskpro_feedback', new Route(
 	array()
 ));
 
+$collection->add('admin_onboard_complete', new Route(
+	'/onboard-mark-complete/{type}/{id}.json',
+	array('_controller' => 'AdminBundle:Main:onboardMarkComplete'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_welcome', new Route(
 	'/welcome',
 	array('_controller' => 'AdminBundle:Settings:quickSetup'),

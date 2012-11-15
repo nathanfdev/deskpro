@@ -1,0 +1,329 @@
+{% if onboard.countComplete() < 17 %}
+<div class="onboard-box">
+	<ul class="tasklist">
+
+		{#####################################################################}
+		{# Chat Embed  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('chat-embed') %}
+			<li data-task-id="chat-embed">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Add chat to my website?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to the <a href="{{ path('admin_website_embeds') }}">Integrate &rarr; Website Embeds</a> to get an HTML snippet you can paste into any web page.
+					</p>
+					<div class="figwrap">
+						<figure style="width: 237px;">
+							<a href="{{ path('admin_website_embeds') }}"><img src="{{ asset('images/instructions/chat-widget.png') }}" /></a>
+							<figcaption>
+								The chat button that you can add to your website
+							</figcaption>
+						</figure>
+					</div>
+					<p>
+						Go to <a href="{{ path('admin_departments', {type:'chat'}) }}">Chat &rarr; Departments</a> to manage the chat departments your users can connect to.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Website Tab Embed  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('support-tab-embed') %}
+			<li data-task-id="support-tab-embed">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Add a Feedback &amp; Support tab to my website?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to the <a href="{{ path('admin_website_embeds') }}">Integrate &rarr; Website Embeds</a> to get an HTML snippet you can paste into any web page.
+					</p>
+					<div class="figwrap">
+						<figure style="width: 237px;">
+							<a href="{{ path('admin_website_embeds') }}"><img src="{{ asset('images/instructions/support-tab.png') }}" /></a>
+							<figcaption>
+								The tab that is added to the side of your website
+							</figcaption>
+						</figure>
+					</div>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Departments and Fields  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('ticket-deps-fields') %}
+			<li data-task-id="ticket-deps-fields">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Add new departments and fields to tickets?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Define new departments from <a href="{{ path('admin_departments', {type:'tickets'}) }}">Tickets &rarr; Departments</a>, and
+						add new fields from <a href="{{ path('admin_tickets_fields') }}">Tickets &rarr; Fields</a>.
+					</p>
+					<p>
+						After you have created your departments and fields, you can use the <a href="{{ path('admin_tickets_editor') }}">Layout Editor</a>
+						to customize which fields display for specific departments.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Email Accounts  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('email-accounts') %}
+			<li data-task-id="email-accounts">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Add new email accounts?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_emailgateways') }}">Tickets &rarr; Email Accounts</a> to configure new POP3
+						email accounts. After your accounts are set up, DeskPRO will begin to process incoming email into
+						tickets and replies.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Customize Portal  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('customize-portal') %}
+			<li data-task-id="customize-portal">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Customize my helpdesk portal?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_portal') }}">Portal &rarr; Portal Editor</a> to customize
+						your portal. Using the Portal Editor you can:
+					</p>
+					<ul class="small-detail-list">
+						<li>Enable and disable sections</li>
+						<li>Add new sidebar blocks</li>
+						<li>Change your homepage</li>
+						<li>Customize your color scheme</li>
+						<li>Add a custom header or footer</li>
+						<li>Add custom CSS</li>
+					</ul>
+					<br/>
+					<p>
+						Go to <a href="{{ path('admin_templates_user') }}">Portal &rarr; Templates</a> to edit the
+						raw HTML behind every page.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Twitter/Facebook Login  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('twitter-facebook-login') %}
+			<li data-task-id="twitter-facebook-login">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Allow users to log in via Twitter or Facebook?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_userreg_options') }}">CRM &rarr; Registration</a> and click
+						the gear icon next to Twitter and Facebook to configure them.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Add Agents  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('add-agents') %}
+			<li data-task-id="add-agents">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Add another agent?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to the <a href="{{ path('admin_agents') }}">Agents</a> section to add or edit agents,
+						agent teams, and permission groups.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Change Emails  #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('change-email-templates') %}
+			<li data-task-id="add-agents">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Change emails sent to users?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_templates_email') }}">Tickets &rarr; Email Notification Templates</a>
+						to change emails sent to users and also agents.
+					</p>
+					<p>
+						Using triggers from <a href="{{ path('admin_tickettriggers') }}">Tickets &rarr; Triggers</a>,
+						you can set specific email templates to send under specific circumstances. For example,
+						you might decide to send a special email for tickets that come into a special email address.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Triggers #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('triggers') %}
+			<li data-task-id="triggers">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Automatically assign properties on tickets?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_tickettriggers') }}">Tickets &rarr; Triggers</a>
+						to configure triggers that will perform defined actions whenever a set
+						collection of criteria is met. For example, automatically place a ticket
+						into a certain department if it is sent to a specific email address.
+					</p>
+					<p>
+						Go to <a href="{{ path('admin_ticketescalations') }}">Tickets &rarr; Escalations</a>
+						to configure escalations, which are similar to triggers except they execute
+						based on time. For example, after a ticket has been open for two hours, increase
+						its urgency.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# SLAs #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('slas') %}
+			<li data-task-id="triggers">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Create SLA's?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Go to <a href="{{ path('admin_tickets_slas') }}">Tickets &rarr; SLA's</a>
+						to create SLA's.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+
+		{#####################################################################}
+		{# Reports #}
+		{#####################################################################}
+
+		{% if not onboard.isHidden('reports') %}
+			<li data-task-id="triggers">
+				<header>
+					<nav>
+						<button class="btn-dismiss"><span>Dismiss</span></button>
+						<button class="btn-done"><span>I've Done This</span></button>
+					</nav>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2>Generate graphs and tables for reports?</h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						From the top-right corner of your screen, use the interface switcher to
+						switch to the <a class="reports" href="{{ app.request.getBaseUrl() }}/reports">Reports Interface</a>.
+					</p>
+				</article>
+			</li>
+		{% endif %}
+	</ul>
+</div>
+{% endif %}

@@ -1,0 +1,115 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	var formWrap = $('#admin_contact_form');
+	var messageTxt = formWrap.find('textarea.message');
+	var emailTxt   = formWrap.find('input.email_address');
+	var submitUrl  = formWrap.data('submit-url');
+
+	messageTxt.one('focus', function() {
+		$(this).animate({height: '100px'}, 500);
+		formWrap.find('.email-addy-wrap').fadeIn(250);
+	});
+
+	formWrap.find('.default-addy').on('click', function() {
+		$(this).hide();
+		formWrap.find('.input-addy').show().find('input').focus();
+	})
+
+	formWrap.find('button.send-trigger').on('click', function(ev) {
+
+		ev.preventDefault();
+
+		if (!messageTxt.val().trim()) {
+			alert('Please enter a message');
+			return;
+		}
+
+		var me = $(this);
+		var load = formWrap.find('.send-loading');
+
+		me.hide();
+		load.show();
+		$.ajax({
+			url: submitUrl,
+			type: 'POST',
+			data: {
+				message: messageTxt.val(),
+				email_address: emailTxt.val()
+			},
+			complete: function() {
+				me.show();
+				load.hide();
+			},
+			success: function() {
+				formWrap.find('.form-input').fadeOut(600, function() {
+					formWrap.find('.form-success').fadeIn(300);
+				});
+			}
+		});
+	});
+
+	var onboard_box = $('.onboard-box');
+	var openArticle = null;
+
+	onboard_box.on('click', 'button.btn-dismiss, button.btn-done', function(ev) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		var row = $(this).closest('li');
+
+		if ($(this).hasClass('btn-done')) {
+			var type = 'done';
+		} else {
+			var type = 'dismiss';
+		}
+
+		var id = row.data('task-id');
+
+		$.ajax({
+			url: BASE_URL + 'admin/onboard-mark-complete/'+type+'/'+id+'.json',
+			type: 'POST'
+		});
+
+		if (row.hasClass('expanded')) {
+			row.removeClass('expanded');
+			openArticle = null;
+		}
+
+		row.slideUp('fast', function() {
+			row.remove();
+
+			if (!onboard_box.find('li')[0]) {
+				onboard_box.hide();
+			}
+		});
+	});
+
+	onboard_box.on('click', 'header', function(ev) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		var row = $(this).closest('li');
+		var togglingSelf = false;
+		var article = row.find('article').first();
+
+		if (openArticle) {
+			// Toggling self
+			if (openArticle.get(0) == article.get(0)) {
+				togglingSelf = true;
+			}
+
+			openArticle.slideUp('fast');
+			openArticle.closest('li').removeClass('expanded');
+			openArticle = null;
+
+			if (togglingSelf) {
+				return;
+			}
+		}
+
+		row.addClass('expanded');
+		article.slideDown('fast');
+		openArticle = article;
+	});
+});
+</script>
