@@ -1365,7 +1365,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		};
 
-		var rowRemoved = function() {
+		var rowRemoved = function(slaId) {
+			var table = rows.closest('table');
+
 			if (!table.find('tbody tr').length) {
 				table.hide();
 			}
@@ -1403,7 +1405,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 						$this.closest('tr').remove();
 
-						rowRemoved();
+						rowRemoved(slaId);
 					}
 				});
 			}
@@ -1457,7 +1459,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						if (row.data('sla-id') == info.sla_id) {
 							if (info.removed) {
 								row.remove();
-								rowRemoved();
+								rowRemoved(info.sla_id);
 							} else {
 								row.find('.sla-status-icon').removeClass(info.original_status).addClass(info.sla_status);
 								row.data('sla-status', info.sla_status);

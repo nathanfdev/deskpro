@@ -1,3 +1,8 @@
+{%- macro get_sla_status(status) -%}
+	{%- if status == 'ok' -%}OK
+	{%- elseif status == 'warning' -%}Warning
+	{%- elseif status == 'fail' -%}Failed{%- endif -%}
+{%- endmacro -%}
 {% if log.action_type == 'free' %}
 	{{ log.details.message }}
 {% elseif log.action_type == 'changed_agent' %}
@@ -100,6 +105,26 @@
 {% elseif log.action_type == 'changed_custom_field' %}
 	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{ log.details.value_before|default('(no value)') }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)') }}</span>
+{% elseif log.action_type == 'ticket_sla_added' %}
+	SLA added: <span class="new-val">{{ log.details.title }}</span>
+	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
+		({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}Requirements Complete{% endif %})
+	{% endif %}
+{% elseif log.action_type == 'ticket_sla_removed' %}
+	SLA removed: <span class="new-val">{{ log.details.title }}</span>
+	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
+		({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}Requirements Complete{% endif %})
+	{% endif %}
+{% elseif log.action_type == 'ticket_sla_updated' %}
+	SLA <span class="type">{{ log.details.title }}</span> updated.
+	{% if log.details.status_changed %}
+		<span class="type">Status</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{ _self.get_sla_status(log.details.original_status) }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ _self.get_sla_status(log.details.sla_status) }}</span>.
+	{% endif %}
+	{% if log.details.is_completed_changed %}
+		<span class="type">Requirements</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{ log.details.original_is_completed ? 'Complete' : 'Incomplete' }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.is_completed ? 'Complete' : 'Incomplete'  }}</span>.
+	{% endif %}
 {% elseif log.action_type == 'agent_notify' %}
 	<span class="new-val expand">{{ phrase('agent.tickets.count_agents', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.tickets.notified_of') }}
 

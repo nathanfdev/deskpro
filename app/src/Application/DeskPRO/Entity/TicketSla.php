@@ -88,6 +88,9 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 	protected $sla;
 
 	protected $_original_status = null;
+	protected $_original_is_completed = null;
+
+	protected $_ticket_log = null;
 
 	public function evaluateSlaDates($call_triggers = true)
 	{
@@ -141,7 +144,13 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setIsCompleted($value)
 	{
-		$this->setModelField('is_completed', (bool)$value);
+		$value = (bool)$value;
+
+		if ($this->_original_is_completed === null) {
+			$this->_original_is_completed = $this->is_completed;
+		}
+
+		$this->setModelField('is_completed', $value);
 		if ($this->is_completed) {
 			if ($this->sla_status == self::STATUS_OK) {
 				$this->setModelField('warn_date', null);
@@ -154,7 +163,12 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getOriginalStatus()
 	{
-		return $this->_original_status ?: $this->sla_status;
+		return $this->_original_status === null ? $this->sla_status : $this->_original_status;
+	}
+
+	public function getOriginalIsCompleted()
+	{
+		return $this->_original_is_completed === null ? $this->is_completed : $this->_original_is_completed;
 	}
 
 	public function calculateSlaDates($call_triggers = true)
@@ -245,9 +259,90 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		));
 	}
 
-	public function _sendClientMessagesRemoved()
+	public function _preInsert()
+	{
+		$this->calculateSlaDates();
+	}
+
+	public function _postInsert()
+	{
+		$this->_sendClientMessages();
+
+		$person = App::getCurrentPerson();
+		if ($person->id && !$person->is_agent) {
+			// only agents are the ones to manually apply an SLA
+			$person = null;
+		}
+		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaAdded($this);
+
+		$ticket_log = new TicketLog();
+		$ticket_log['person'] = ($person && $person->id) ? $person : null;
+		$ticket_log['ticket'] = $this->ticket;
+		$ticket_log['action_type'] = $action->getLogName();
+		$ticket_log['details'] = $action->getLogDetails();
+
+		if ($ticket_log['details']) {
+			$this->_ticket_log = $ticket_log;
+		}
+	}
+
+	public function _postUpdate()
+	{
+		$this->_sendClientMessages();
+
+		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaUpdated($this);
+
+		$ticket_log = new TicketLog();
+		$ticket_log['person'] = null; // SLA updates are always done by the system
+		$ticket_log['ticket'] = $this->ticket;
+		$ticket_log['action_type'] = $action->getLogName();
+		$ticket_log['details'] = $action->getLogDetails();
+
+		if ($ticket_log['details']) {
+			$this->_ticket_log = $ticket_log;
+		}
+	}
+
+	public function _postRemove()
 	{
 		$this->_sendClientMessages(true);
+
+		$person = App::getCurrentPerson();
+		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaRemoved($this);
+
+		$ticket_log = new TicketLog();
+		$ticket_log['person'] = $person->id ? $person : null;
+		$ticket_log['ticket'] = $this->ticket;
+		$ticket_log['action_type'] = $action->getLogName();
+		$ticket_log['details'] = $action->getLogDetails();
+
+		if ($ticket_log['details']) {
+			$this->_ticket_log = $ticket_log;
+		}
+	}
+
+	public function _preFlush()
+	{
+		App::getOrm()->getEventManager()->addEventListener('postFlush', $this);
+	}
+
+	protected $_post_flush_running = false;
+
+	public function postFlush()
+	{
+		if ($this->_post_flush_running) {
+			return;
+		}
+		$this->_post_flush_running = true;
+
+		if ($this->_ticket_log) {
+			$log = $this->_ticket_log;
+			$this->_ticket_log = null;
+			App::getOrm()->persist($log);
+			App::getOrm()->flush();
+		}
+
+		$this->_post_flush_running = false;
 	}
 
 	############################################################################
@@ -265,10 +360,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 				'status_completed_fail_date_idx' => array('columns' => array('sla_status', 'is_completed', 'fail_date')),
 			),
 		));
-		$metadata->addLifecycleCallback('calculateSlaDates', 'prePersist');
-		$metadata->addLifecycleCallback('_sendClientMessages', 'postPersist');
-		$metadata->addLifecycleCallback('_sendClientMessages', 'postUpdate');
-		$metadata->addLifecycleCallback('_sendClientMessagesRemoved', 'postRemove');
+		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
+		$metadata->addLifecycleCallback('_postInsert', 'postPersist');
+		$metadata->addLifecycleCallback('_postUpdate', 'postUpdate');
+		$metadata->addLifecycleCallback('_postRemove', 'postRemove');
+		$metadata->addLifecycleCallback('_preFlush', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sla_status', ));
