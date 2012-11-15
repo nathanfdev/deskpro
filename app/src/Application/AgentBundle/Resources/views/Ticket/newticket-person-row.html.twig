@@ -4,6 +4,7 @@
 			<th width="100">{{ phrase('agent.general.email_address') }}</th>
 			<td>
 				{% if person.id and person.primary_email and person.primary_email.email %}
+					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
 					{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">View Profile</a>
 				{% else %}
 					<input type="text" name="newticket[person][email_address]" class="email" value="" style="margin:0;" />

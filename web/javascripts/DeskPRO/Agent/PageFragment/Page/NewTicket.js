@@ -625,6 +625,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			fnCheck();
 			e.on('change', fnCheck);
 		}
+		var e = $('input.set_person_id', userfields);
+		if (e[0]) {
+			var person_id = e.val();
+			this.getEl('user_searchbox').find('input.person-id').val(person_id);
+		}
 
 		this.updateUi();
 	},
