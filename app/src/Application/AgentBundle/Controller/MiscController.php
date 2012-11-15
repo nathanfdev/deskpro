@@ -191,23 +191,25 @@ JS;
 
 		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 		{
-			$pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => $pref_name));
-			if (!$pref) {
-				$pref = new Entity\PersonPref();
-				$pref['name'] = $pref_name;
-				$this->person->addPreference($pref);
-			}
+			$pref        = new Entity\PersonPref();
+			$pref->name  = $pref_name;
+			$pref->value = $value;
 
 			if (isset($prefs_expire[$pref_name])) {
-				$date = new \DateTime($prefs_expire[$pref_name]);
-				$pref['date_expire'] = $date;
+				try {
+					$date = new \DateTime($prefs_expire[$pref_name]);
+					$pref->date_expire = $date;
+				} catch (\Exception $e) {}
 			}
 
-			$pref['value'] = $value;
-			$this->em->persist($pref);
+			App::getDb()->replace('people_prefs', array(
+				'person_id'   => $this->person->getId(),
+				'name'        => $pref_name,
+				'date_expire' => $pref->date_expire,
+				'value_str'   => $pref->value_str,
+				'value_array' => $pref->value_array ? serialize($pref->value_array) : null,
+			));
 		}
-
-		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true
