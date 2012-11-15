@@ -20,6 +20,13 @@ $collection->add('admin_test', new Route(
 	array()
 ));
 
+$collection->add('admin_submit_deskpro_feedback', new Route(
+	'/submit-deskpro-feedback.json',
+	array('_controller' => 'AdminBundle:Main:submitDeskproFeedback'),
+	array(),
+	array()
+));
+
 $collection->add('admin_welcome', new Route(
 	'/welcome',
 	array('_controller' => 'AdminBundle:Settings:quickSetup'),
