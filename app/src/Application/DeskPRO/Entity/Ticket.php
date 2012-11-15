@@ -1955,8 +1955,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function updateWorstSlaStatus()
 	{
+		$status = $this->getWorstSlaStatus();
+		$this->setModelField('worst_sla_status', $status);
+		return $status;
+	}
+
+	public function getWorstSlaStatus()
+	{
 		if (!count($this->ticket_slas)) {
-			$this->setModelField('worst_sla_status', null);
 			return null;
 		}
 
@@ -1971,7 +1977,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$this->setModelField('worst_sla_status', $status);
 		return $status;
 	}
 
