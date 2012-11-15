@@ -181,7 +181,11 @@ class Pop3 extends AbstractFetcher
 		$raw_message->uid  = $message_id;
 		$raw_message->size = $message_size;
 
-		$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+		if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
+			$raw_message->content = $this->getStorage()->getProtocol()->top($message_num) . "\n\n";
+		} else {
+			$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+		}
 		$headers = null;
 
 		$EOL = "\n";
@@ -196,6 +200,10 @@ class Pop3 extends AbstractFetcher
 		}
 
 		$raw_message->headers = $headers;
+
+		if (!$raw_message->size) {
+			$raw_message->size = strlen($raw_message->content);
+		}
 
 		if ($this->max_size && $raw_message->size > $this->max_size) {
 			$raw_message->too_big = true;
