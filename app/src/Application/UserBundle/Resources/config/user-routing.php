@@ -420,7 +420,7 @@ $collection->add('user_articles_article', new Route(
 ));
 
 $collection->add('user_articles_article_agent_iframe', new Route(
-	'/kb/articles/agent-iframe/{article_id}',
+	'/kb/articles/agent-iframe/{article_id}/{agent_session_id}',
 	array('_controller' => 'UserBundle:Articles:articleAgentIframe'),
 	array('article_id' => '\\d+'),
 	array()

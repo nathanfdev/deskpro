@@ -295,8 +295,21 @@ class ArticlesController extends AbstractController
 		));
 	}
 
-	public function articleAgentIframeAction($article_id)
+	public function articleAgentIframeAction($article_id, $agent_session_id)
 	{
+		$agent_session = null;
+
+		if (!$this->person->is_agent) {
+			$agent_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($agent_session_id);
+			if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
+				$agent_session = null;
+			}
+		}
+
+		if ($agent_session) {
+			$this->person = $agent_session->person;
+		}
+
 		if (!$this->person->is_agent) {
 			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
 		}
