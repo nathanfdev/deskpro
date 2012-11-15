@@ -178,6 +178,16 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 		}, 150);
 	},
 
+	stop: function() {
+		if (this.ajax) {
+			this.ajax.abort();
+		}
+		if (this.timer) {
+			window.clearTimeout(this.timer);
+			this.timer = null;
+		}
+	},
+
 	destroy: function() {
 		if (this.ajax) {
 			this.ajax.abort();

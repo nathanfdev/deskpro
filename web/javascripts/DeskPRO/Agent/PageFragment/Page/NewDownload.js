@@ -96,6 +96,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
+		this.stateSaver.stop();
 		this.wrapper.addClass('loading');
 
 		$.ajax({
