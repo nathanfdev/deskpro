@@ -3084,7 +3084,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		textarea.addClass('with-redactor');
 		textarea.redactor(options);
 
-		var api = textarea.data('redactor'), editor = textarea.getEditor();
+		var api = textarea.data('redactor');
+		if (!api) {
+			return false;
+		}
+
+		var editor = textarea.getEditor();
+		if (!editor) {
+			return false
+		}
 
 		api.$toolbar.find('a').attr('unselectable', 'on').attr('tabindex', '-1');
 		api.$editor.addClass('unreset');
@@ -3226,6 +3234,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				processData: false,
 				contentType: false,
 				success: function(json) {
+					if (!textarea.data('redactor')) {
+						return;
+					}
+
 					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
 					if (json.error) {
 						img.remove();

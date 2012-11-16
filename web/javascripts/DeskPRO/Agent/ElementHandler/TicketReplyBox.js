@@ -35,17 +35,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			});
 			this.getElById('is_html_reply').val(1);
 
-			var ed = textarea.getEditor();
-			var lastH = ed.height();
-			ed.on('keypress change', function() {
-				textarea.addClass('touched');
+			if (textarea.data('redactor')) {
+				var ed = textarea.getEditor();
+				var lastH = ed.height();
+				ed.on('keypress change', function() {
+					textarea.addClass('touched');
 
-				if (self.page && lastH != ed.height()) {
-					lastH = ed.height();
-					self.page.doScrollBottom = true;
-					window.setTimeout(function() { self.page.updateUi(); }, 50);
-				}
-			});
+					if (self.page && lastH != ed.height()) {
+						lastH = ed.height();
+						self.page.doScrollBottom = true;
+						window.setTimeout(function() { self.page.updateUi(); }, 50);
+					}
+				});
+			}
 		} else {
 			var sig = this.el.find('textarea.signature-value').val();
 			if (sig) {
