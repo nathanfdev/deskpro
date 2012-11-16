@@ -152,7 +152,7 @@ class SetInitialFromNameAction extends AbstractAction
 				case 'new.web.user':
 					$performer_friendly = 'the name of the user creating the ticket';
 					break;
-				case 'update.agent':
+				case 'update.user':
 					$performer_friendly = 'the name of the user';
 					break;
 
