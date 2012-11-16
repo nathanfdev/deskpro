@@ -831,7 +831,7 @@ $collection->add('admin_agents', new Route(
 $collection->add('admin_mass_add', new Route(
 	'/agents/mass-add-agents.json',
 	array('_controller' => 'AdminBundle:Agents:massAddAgents'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 

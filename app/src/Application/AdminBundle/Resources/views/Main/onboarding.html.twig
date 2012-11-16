@@ -1,6 +1,7 @@
 {% import 'AdminBundle:Main:onboard-macro.html.twig' as onb %}
 {% if onboard.countComplete() < 15 %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/Onboarding.js') }}"></script>
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html"
+		src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/Onboarding.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	DeskPRO.ElementHandler_Exec(document.getElementById('onboard_wrap'));
@@ -31,10 +32,33 @@ $(document).ready(function() {
 
 			{{ onb.begin(onboard, 'add-agents', 'Add my colleagues to the system') }}
 				<p>
-					Go to <a href="{{ path('admin_emailgateways') }}">Tickets &rarr; Email Accounts</a> to configure new POP3
-					email accounts. After your accounts are set up, DeskPRO will begin to process incoming email into
-					tickets and replies.
+					Manage agent accounts <a href="{{ path('admin_agents') }}">Agents</a> section
+					or just use the form below to add them now.
 				</p>
+
+				<h4>Invite your collegaues</h4>
+				<p>
+					Enter the email addresses of the collegaues you want to invite (separate each address by a comma).
+					A new agent account will be created for them and they will get a welcome email.
+				</p>
+				<div class="agent-input">
+					<textarea class="address-list" placeholder="Enter email addresses separated by commans. For example: example@example.com, another@example.com"></textarea>
+					<button class="btn submit-trigger" data-submit-url="{{ path('admin_mass_add') }}"><em>Create accounts</em></button>
+				</div>
+				<div class="agents-result agents-loading" style="display: none;">
+					Please wait while we set up new accounts for your collegues. <em class="flat-spinner"></em>
+				</div>
+				<div class="agents-result agents-done" style="display: none;">
+					<p>We created new accounts for your collegues:</p>
+					<ul class="small-detail-list"></ul>
+				</div>
+			<div class="agents-result agents-error" style="display: none;">
+					<p class="error-text no_emails">Please enter valid email addresses into the text box</p>
+					<p class="error-text no_new_agents">The email addresses you entered all belong to existing agents</p>
+					<p class="error-text too_many">Please enter a maximum of 20 email addresses at a time.</p>
+					<p class="error-text license">Your license does not allow you to create any more agents. Go to your <a href="{{ app.request.getBaseUrl() }}/billing">Billing Interface</a> to add more.</p>
+				</div>
+
 			{{ onb.end() }}
 
 			{#####################################################################}

@@ -422,7 +422,7 @@ class AgentsController extends AbstractController
 			return $this->createJsonResponse(array('error' => 'no_new_agents'));
 		}
 
-		if (count($emails) > 30) {
+		if (count($emails) > 20) {
 			return $this->createJsonResponse(array('error' => 'too_many'));
 		}
 
@@ -439,7 +439,7 @@ class AgentsController extends AbstractController
 
 		foreach ($emails as $email) {
 			// In case they are an existing account already
-			$agent = $this->em->getRepository('Person')->findOneByEmail($email);
+			$agent = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
 			if (!$agent) {
 				$agent = new \Application\DeskPRO\Entity\Person();
@@ -456,6 +456,7 @@ class AgentsController extends AbstractController
 			list ($name,) = explode('@', $email->email, 2);
 			$name = str_replace('_', ' ', $name);
 			$name = str_replace('.', ' ', $name);
+			$name = str_replace('+', ' ', $name);
 			$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
 
 			$name = Strings::utf8_ucwords($name);
