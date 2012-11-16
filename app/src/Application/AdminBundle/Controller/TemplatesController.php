@@ -130,6 +130,11 @@ class TemplatesController extends AbstractController
 
 		$code = App::getTemplating()->getSource($name);
 
+		// Show default welcome block code
+		if (!$code && $name == 'UserBundle:Portal:welcome-block.html.twig') {
+			$code = App::getTemplating()->getDefaultSource($name);
+		}
+
 		if ($this->in->getBool('info')) {
 
 			$default_code = App::getTemplating()->getDefaultSource($name);
@@ -230,6 +235,23 @@ class TemplatesController extends AbstractController
 				$this->em->persist($template);
 				$this->em->flush();
 			}
+		}
+
+		// Revert means blank in this thec ase of the welcome block
+		if ($name == 'UserBundle:Portal:welcome-block.html.twig') {
+
+			if (!$template) {
+				$template = new Template();
+				$template->style = $this->container->getSystemService('style');
+				$template->name = $name;
+			}
+
+			$twig = $this->container->get('twig');
+			$compiled = $twig->compileSource('', $name);
+
+			$template->setTemplate('', $compiled);
+			$this->em->persist($template);
+			$this->em->flush();
 		}
 
 
