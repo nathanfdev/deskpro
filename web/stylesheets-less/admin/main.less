@@ -5044,12 +5044,40 @@ ul.small-detail-list li {
 	color: #535353;
 }
 
+.onboard-box-wrap {
+	position: relative;
+	top: -10px;
+	margin-bottom: 20px;
+
+	> header {
+		background-color: #BAC4D4;
+		border-radius: 8px;
+		-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2), 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+		box-shadow: inset 0px 0px 20px 0px rgba(255, 255, 255, 0.5), 0px 0px 1px 0px rgba(175,184,199,0.5);
+		padding: 8px;
+
+		position: relative;
+		top: 10px;
+		z-index: 1;
+		padding-bottom: 15px;
+		border: 1px solid #B4C0D0;
+
+		h2 {
+			font-size: 10pt;
+			font-weight: normal;
+			color: #000;
+			text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.40);
+		}
+	}
+}
+
 .onboard-box {
+	position: relative;
+	z-index: 2;
 	background-color: #f3f5f7;
 	border: 1px solid #c1ccd9;
-	border-radius: 6px;
-	margin-bottom: 20px;
-	-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2), 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	-webkit-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.2), 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
 	box-shadow: inset 0px 0px 4px 0px rgba(255, 255, 255, 0.6), 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
 	overflow: hidden;
 
@@ -5060,7 +5088,7 @@ ul.small-detail-list li {
 		.border-radius(5px, 5px, 0, 0);
 	}
 	ul.tasklist li:last-child {
-		.border-radius(0, 0, 5px, 5px);
+		.border-radius(0, 0, 7px, 7px);
 		border-bottom: none;
 	}
 	ul.tasklist > li {
@@ -5083,16 +5111,47 @@ ul.small-detail-list li {
 		}
 
 		header .title {
-			padding: 15px;
+			padding-top: 5px;
+			padding-left: 10px;
+			padding-bottom: 10px;
 		}
 
 		header h2 {
-			font-size: 16px;
+			font-size: 17px;
 			line-height: 20px;
 			font-weight: normal;
 			font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial;
-			display: inline-block;
+			display: block;
+			line-height: 33px;
+			height: 32px;
+			vertical-align: middle;
 		}
+
+		header h2 i {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
+			vertical-align: top;
+			margin-right: 8px;
+		}
+
+		&.onboard-email-accounts header h2 i { background-image: url(../../images/admin/onboard/mail.png); }
+		&.onboard-add-agents  header h2 i { background-image: url(../../images/admin/onboard/people.png); }
+		&.onboard-agent-interface  header h2 i { background-image: url(../../images/admin/onboard/laptop.png); }
+		&.onboard-ticket-fields  header h2 i { background-image: url(../../images/admin/onboard/department.png); }
+		&.onboard-portal  header h2 i { background-image: url(../../images/admin/onboard/portal.png); }
+		&.onboard-email-templates  header h2 i { background-image: url(../../images/admin/onboard/email-content.png); }
+		&.onboard-embed-form  header h2 i { background-image: url(../../images/admin/onboard/website-form.png); }
+		&.onboard-embed-tab  header h2 i { background-image: url(../../images/admin/onboard/link.png); }
+		&.onboard-agent-kb  header h2 i { background-image: url(../../images/admin/onboard/folder.png); }
+		&.onboard-feedback  header h2 i { background-image: url(../../images/admin/onboard/feedback.png); }
+		&.onboard-embed-chat  header h2 i { background-image: url(../../images/admin/onboard/chat.png); }
+		&.onboard-triggers  header h2 i { background-image: url(../../images/admin/onboard/automation.png); }
+		&.onboard-agent-notifications header h2 i { background-image: url(../../images/admin/onboard/doc.png); }
+		&.onboard-slas  header h2 i { background-image: url(../../images/admin/onboard/clock.png); }
+		&.onboard-reports header h2 i { background-image: url(../../images/admin/onboard/reports.png); }
 
 		header:hover h2 {
 			text-decoration: underline;
@@ -5104,7 +5163,7 @@ ul.small-detail-list li {
 			font-weight: normal;
 			font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial;
 			color: #62656A;
-			display: inline-block;
+			display: block;
 		}
 
 		header:hover {
@@ -5112,9 +5171,8 @@ ul.small-detail-list li {
 				.opacity(100);
 			}
 		}
-		header nav {
-			float: right;
-			text-align: center;
+		nav {
+			text-align: right;
 			padding: 12px 8px 0 0;
 
 			button {
@@ -5180,7 +5238,18 @@ ul.small-detail-list li {
 		}
 
 		&.expanded {
-			header nav button { .opacity(100); }
+			.opacity(100) !important;
+			nav button { .opacity(100); }
+		}
+	}
+
+	ul.tasklist > li.finished, ul.tasklist > li.dismissed {
+		.opacity(50);
+		nav { display: none; }
+		header h3 { display: none; }
+		header h2 { font-size: 12px; }
+		.title {
+			padding: 3px 0 3px 10px;
 		}
 	}
 }
