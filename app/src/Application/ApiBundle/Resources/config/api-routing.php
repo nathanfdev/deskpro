@@ -209,6 +209,34 @@ $collection->add('api_tickets_ticket_billing_charge_delete', new Route(
 	array()
 ));
 
+$collection->add('api_tickets_ticket_slas', new Route(
+	'/tickets/{ticket_id}/slas',
+	array('_controller' => 'ApiBundle:Ticket:getTicketSlas'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_slas_post', new Route(
+	'/tickets/{ticket_id}/slas',
+	array('_controller' => 'ApiBundle:Ticket:postTicketSlas'),
+	array('_method' => 'POST', 'ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_sla', new Route(
+	'/tickets/{ticket_id}/slas/{ticket_sla_id}',
+	array('_controller' => 'ApiBundle:Ticket:getTicketSla'),
+	array('_method' => 'GET', 'ticket_id' => '\\d+', 'ticket_sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_ticket_sla_delete', new Route(
+	'/tickets/{ticket_id}/slas/{ticket_sla_id}',
+	array('_controller' => 'ApiBundle:Ticket:deleteTicketSla'),
+	array('_method' => 'DELETE', 'ticket_id' => '\\d+', 'ticket_sla_id' => '\\d+'),
+	array()
+));
+
 $collection->add('api_tickets_ticket_participants', new Route(
 	'/tickets/{ticket_id}/participants',
 	array('_controller' => 'ApiBundle:Ticket:getParticipants'),
@@ -304,6 +332,34 @@ $collection->add('api_tickets_workflows', new Route(
 	'/tickets/workflows',
 	array('_controller' => 'ApiBundle:Ticket:getWorkflows'),
 	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_slas', new Route(
+	'/tickets/slas',
+	array('_controller' => 'ApiBundle:Ticket:getSlas'),
+	array('_method' => 'GET'),
+	array()
+));
+
+$collection->add('api_tickets_sla', new Route(
+	'/tickets/slas/{sla_id}',
+	array('_controller' => 'ApiBundle:Ticket:getSla'),
+	array('_method' => 'GET', 'sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_sla_people', new Route(
+	'/tickets/slas/{sla_id}/people',
+	array('_controller' => 'ApiBundle:Ticket:getSlaPeople'),
+	array('_method' => 'GET', 'sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_tickets_sla_organizations', new Route(
+	'/tickets/slas/{sla_id}/organizations',
+	array('_controller' => 'ApiBundle:Ticket:getSlaOrganizations'),
+	array('_method' => 'GET', 'sla_id' => '\\d+'),
 	array()
 ));
 
@@ -459,6 +515,34 @@ $collection->add('api_people_person_reset_password', new Route(
 	'/people/{person_id}/reset-password',
 	array('_controller' => 'ApiBundle:Person:resetPassword'),
 	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_slas', new Route(
+	'/people/{person_id}/slas',
+	array('_controller' => 'ApiBundle:Person:getPersonSlas'),
+	array('_method' => 'GET', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_slas_post', new Route(
+	'/people/{person_id}/slas',
+	array('_controller' => 'ApiBundle:Person:postPersonSlas'),
+	array('_method' => 'POST', 'person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_sla', new Route(
+	'/people/{person_id}/slas/{sla_id}',
+	array('_controller' => 'ApiBundle:Person:getPersonSla'),
+	array('_method' => 'GET', 'person_id' => '\\d+', 'sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_people_person_sla_delete', new Route(
+	'/people/{person_id}/slas/{sla_id}',
+	array('_controller' => 'ApiBundle:Person:deletePersonSla'),
+	array('_method' => 'DELETE', 'person_id' => '\\d+', 'sla_id' => '\\d+'),
 	array()
 ));
 
@@ -673,6 +757,34 @@ $collection->add('api_organizations_organization_chats', new Route(
 	'/organizations/{organization_id}/chats',
 	array('_controller' => 'ApiBundle:Organization:getOrganizationChats'),
 	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_slas', new Route(
+	'/organizations/{organization_id}/slas',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationSlas'),
+	array('_method' => 'GET', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_slas_post', new Route(
+	'/organizations/{organization_id}/slas',
+	array('_controller' => 'ApiBundle:Organization:postOrganizationSlas'),
+	array('_method' => 'POST', 'organization_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_sla', new Route(
+	'/organizations/{organization_id}/slas/{sla_id}',
+	array('_controller' => 'ApiBundle:Organization:getOrganizationSla'),
+	array('_method' => 'GET', 'organization_id' => '\\d+', 'sla_id' => '\\d+'),
+	array()
+));
+
+$collection->add('api_organizations_organization_delete', new Route(
+	'/organizations/{organization_id}/slas/{sla_id}',
+	array('_controller' => 'ApiBundle:Organization:deleteOrganizationSla'),
+	array('_method' => 'DELETE', 'organization_id' => '\\d+', 'sla_id' => '\\d+'),
 	array()
 ));
 

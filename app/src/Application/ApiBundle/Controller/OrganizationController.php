@@ -478,6 +478,72 @@ class OrganizationController extends AbstractController
 		));
 	}
 
+	public function getOrganizationSlasAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		return $this->createApiResponse(array(
+			'slas' => $this->getApiData($org->slas)
+		));
+	}
+
+	public function postOrganizationSlasAction($organization_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
+
+		$sla_id = $this->in->getUint('sla_id');
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$sla->addOrganization($org);
+		$this->em->persist($sla);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $sla->id),
+			$this->generateUrl('api_organizations_organization_sla', array('organization_id' => $org->id, 'sla_id' => $sla->id), true)
+		);
+	}
+
+	public function getOrganizationSlaAction($organization_id, $sla_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id);
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$exists = false;
+
+		foreach ($org->slas AS $sla) {
+			if ($sla->id == $sla_id) {
+				$exists = true;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => $exists));
+	}
+
+	public function deleteOrganizationSlaAction($organization_id, $sla_id)
+	{
+		$org = $this->_getOrganizationOr404($organization_id, 'edit');
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$sla->removeOrganization($org);
+		$this->em->persist($sla);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getOrganizationNotesAction($organization_id)
 	{
 		$org = $this->_getOrganizationOr404($organization_id);

@@ -60,13 +60,16 @@ class TicketSearchController extends AbstractController
 			'subject'         => TicketSearch::TERM_SUBJECT,
 			'urgency'         => TicketSearch::TERM_URGENCY,
 			'workflow_id'     => TicketSearch::TERM_WORKFLOW,
+			'sla_id'          => TicketSearch::TERM_SLA,
+			'sla_status'      => TicketSearch::TERM_SLA_STATUS,
+			'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED
 		);
 
 		$terms = array();
 
 		foreach ($search_map AS $input => $search_key) {
 			$value = $this->in->getCleanValueArray($input, 'raw', 'discard');
-			if ($value) {
+			if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
 				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
 			}
 		}

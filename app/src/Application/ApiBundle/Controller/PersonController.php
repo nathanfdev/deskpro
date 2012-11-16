@@ -810,6 +810,72 @@ class PersonController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getPersonSlasAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		return $this->createApiResponse(array(
+			'slas' => $this->getApiData($person->slas)
+		));
+	}
+
+	public function postPersonSlasAction($person_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$sla_id = $this->in->getUint('sla_id');
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$sla->addPerson($person);
+		$this->em->persist($sla);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $sla->id),
+			$this->generateUrl('api_people_person_sla', array('person_id' => $person->id, 'sla_id' => $sla->id), true)
+		);
+	}
+
+	public function getPersonSlaAction($person_id, $sla_id)
+	{
+		$person = $this->_getPersonOr404($person_id);
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$exists = false;
+
+		foreach ($person->slas AS $sla) {
+			if ($sla->id == $sla_id) {
+				$exists = true;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => $exists));
+	}
+
+	public function deletePersonSlaAction($person_id, $sla_id)
+	{
+		$person = $this->_getPersonOr404($person_id, 'edit');
+
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+
+		$sla->removePerson($person);
+		$this->em->persist($sla);
+		$this->em->flush();
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getPersonNotesAction($person_id)
 	{
 		$person = $this->_getPersonOr404($person_id);

@@ -51,41 +51,6 @@ class TicketController extends AbstractController
 		$person = false;
 		$org = false;
 
-		if ($this->in->checkIsset('person_id')) {
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
-			if (!$person) {
-				$errors['person_id'] = array('invalid_person', 'Invalid person ID');
-			}
-		} else if ($this->in->checkIsset('person_email')) {
-			$email = $this->in->getString('person_email');
-
-			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
-				$errors['person_email'] = array('invalid_email', 'Invalid email address');
-			} else {
-				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-				if (!$person) {
-					$person = new \Application\DeskPRO\Entity\Person();
-					$person->setEmail($email);
-					$person->setName($this->in->getString('person_name'));
-
-					if ($this->in->checkIsset('person_organization')) {
-						$orgName = $this->in->getString('person_organization');
-
-						$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($orgName);
-						if (!$org) {
-							$org = new \Application\DeskPRO\Entity\Organization();
-							$org['name'] = $orgName;
-						}
-
-						$person->organization = $org;
-						$person->organization_position = $this->in->getString('person_organization_position');
-					}
-				}
-			}
-		} else {
-			$errors['person_id'] = array('required_field', 'person_id or person_email missing');
-		}
-
 		$subject = $this->in->getString('subject');
 		if ($subject === '') {
 			$errors['subject'] = array('required_field', 'subject missing or empty');
@@ -139,22 +104,67 @@ class TicketController extends AbstractController
 			$ticket->department = $this->em->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
 		}
 
-		if ($errors) {
-			return $this->createApiMultipleErrorResponse($errors);
+		$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint');
+		if ($sla_ids) {
+			$slas = $this->em->getRepository('DeskPRO:Sla')->getByIds($sla_ids);
+			foreach ($slas AS $sla) {
+				if ($sla->allow_agent_manual) {
+					$ticket->addSla($sla);
+				}
+			}
 		}
 
 		$ticket->creation_system = Ticket::CREATED_WEB_API;
-		$ticket->language = $person->getRealLanguage();
-
-		$ticket->person = $person;
-		if (!$person->id) {
-			$ticket->person_email = $person->getPrimaryEmail();
-		}
-
 		$ticket->subject = $subject;
 		$ticket->status = $this->in->getString('status') ?: 'awaiting_agent';
 		if ($agentId) {
 			$ticket->agent_id = $agentId;
+		}
+
+		// make this check as late as possible to reduce race conditions
+		if ($this->in->checkIsset('person_id')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
+			if (!$person) {
+				$errors['person_id'] = array('invalid_person', 'Invalid person ID');
+			}
+		} else if ($this->in->checkIsset('person_email')) {
+			$email = $this->in->getString('person_email');
+
+			if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+				$errors['person_email'] = array('invalid_email', 'Invalid email address');
+			} else {
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+				if (!$person) {
+					$person = new \Application\DeskPRO\Entity\Person();
+					$person->setEmail($email);
+					$person->setName($this->in->getString('person_name'));
+
+					if ($this->in->checkIsset('person_organization')) {
+						$orgName = $this->in->getString('person_organization');
+
+						$org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($orgName);
+						if (!$org) {
+							$org = new \Application\DeskPRO\Entity\Organization();
+							$org['name'] = $orgName;
+						}
+
+						$person->organization = $org;
+						$person->organization_position = $this->in->getString('person_organization_position');
+					}
+				}
+			}
+		} else {
+			$errors['person_id'] = array('required_field', 'person_id or person_email missing');
+		}
+
+		if ($errors) {
+			return $this->createApiMultipleErrorResponse($errors);
+		}
+
+		$ticket->language = $person->getRealLanguage();
+		$ticket->person = $person;
+		if (!$person->id) {
+			$ticket->person_email = $person->getPrimaryEmail();
 		}
 
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
@@ -690,6 +700,74 @@ class TicketController extends AbstractController
 		return $this->createSuccessResponse();
 	}
 
+	public function getTicketSlasAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		return $this->createApiResponse(array(
+			'ticket_slas' => $this->getApiData($ticket->ticket_slas)
+		));
+	}
+
+	public function postTicketSlasAction($ticket_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$sla_id = $this->in->getUint('sla_id');
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
+		}
+		if (!$sla->allow_agent_manual) {
+			return $this->createApiErrorResponse('invalid_argument.sla_id', 'no permission to add that SLA');
+		}
+
+		$ticket_sla = $ticket->addSla($sla);
+		$this->em->persist($ticket);
+		$this->em->flush();
+
+		return $this->createApiCreateResponse(
+			array('id' => $ticket_sla->id),
+			$this->generateUrl('api_tickets_ticket_sla', array('ticket_id' => $ticket->id, 'ticket_sla_id' => $ticket_sla->id), true)
+		);
+	}
+
+	public function getTicketSlaAction($ticket_id, $ticket_sla_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		$exists = false;
+
+		foreach ($ticket->ticket_slas AS $ticket_sla) {
+			if ($ticket_sla->id == $ticket_sla_id) {
+				$exists = true;
+				break;
+			}
+		}
+
+		return $this->createApiResponse(array('exists' => $exists));
+	}
+
+	public function deleteTicketSlaAction($ticket_id, $ticket_sla_id)
+	{
+		$ticket = $this->_getTicketOr404($ticket_id);
+
+		foreach ($ticket->ticket_slas AS $key => $ticket_sla) {
+			if ($ticket_sla->id == $ticket_sla_id) {
+				if (!$ticket_sla->sla->allow_agent_manual) {
+					return $this->createApiErrorResponse('invalid_argument', 'do not have permission to remove ticket SLA ' . $ticket_sla_id);
+				}
+
+				$ticket->ticket_slas->remove($key);
+				$this->em->persist($ticket);
+				$this->em->flush();
+				break;
+			}
+		}
+
+		return $this->createSuccessResponse();
+	}
+
 	public function getParticipantsAction($ticket_id)
 	{
 		$ticket = $this->_getTicketOr404($ticket_id);
@@ -916,6 +994,43 @@ class TicketController extends AbstractController
 		")->execute();
 
 		return $this->createApiResponse(array('workflows' => $this->getApiData($workflows)));
+	}
+
+	public function getSlasAction()
+	{
+		$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+
+		return $this->createApiResponse(array('slas' => $this->getApiData($slas)));
+	}
+
+	public function getSlaAction($sla_id)
+	{
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
+		}
+
+		return $this->createApiResponse(array('sla' => $sla->toApiData()));
+	}
+
+	public function getSlaPeopleAction($sla_id)
+	{
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
+		}
+
+		return $this->createApiResponse(array('people' => $this->getApiData($sla->people)));
+	}
+
+	public function getSlaOrganizationsAction($sla_id)
+	{
+		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+		if (!$sla) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
+		}
+
+		return $this->createApiResponse(array('organizations' => $this->getApiData($sla->organizations)));
 	}
 
 	/**
