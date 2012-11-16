@@ -52,13 +52,16 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		$tpl = $this->getTemplate('user_new_reply_agent', 'DeskPRO:emails_user:new-reply-agent.html.twig');
+
 		if ($this->tracker->isExtraSet('email_template_user_newreply_agent')) {
-			$this->setEmailTemplate('user_new_reply_agent', $this->tracker->getExtra('email_template_user_newreply_agent'));
+			$tpl = $this->tracker->getExtra('email_template_user_newreply_agent');
 			$this->tracker->logMessage("[UserNotificationNewReplyAgent] Set newreply_agent template: " . $this->tracker->getExtra('email_template_user_newreply_agent'));
 		}
 
 		// Agents can supress user notifications by unticking the option in the replybox
 		if ($this->tracker->isExtraSet('suppress_user_notify')) {
+			$this->tracker->logMessage("[UserNotificationNewReplyAgent] Notification suppressed");
 			return;
 		}
 
@@ -66,6 +69,7 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 
 		// Users arent notified of notes ofc
 		if ($this->via_message->is_agent_note) {
+			$this->tracker->logMessage("[UserNotificationNewReplyAgent] No notify of agent note");
 			return;
 		}
 
@@ -88,11 +92,11 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			|| $this->via_message->person->getId() == $ticket->person->getId()
 		) {
 			if (App::getSetting('core.tickets.enable_feedback')) {
+				$this->tracker->logMessage("[UserNotificationNewReplyAgent] No rating links");
 				$vars['show_rating_link'] = false;
 			}
 		}
 
-		$tpl = $this->getTemplate('user_new_reply_agent', 'DeskPRO:emails_user:new-reply-agent.html.twig');
 		$this->doSend($tpl, $vars, $ticket, $change_info);
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);

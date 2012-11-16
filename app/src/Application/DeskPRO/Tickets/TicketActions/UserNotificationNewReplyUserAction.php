@@ -84,8 +84,10 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-user.html.twig');
+
 		if ($this->tracker->isExtraSet('user_newreply_user')) {
-			$this->setEmailTemplate('user_new_reply_user', $this->tracker->getExtra('email_template_user_newreply_user'));
+			$tpl = $this->tracker->getExtra('email_template_user_newreply_user');
 			$this->tracker->logMessage("[UserNotificationNewReplyUser] Set newreply_user template: " . $this->tracker->getExtra('email_template_user_newreply_user'));
 		}
 
@@ -109,7 +111,6 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 			'action' => 'new_user_reply',
 		);
 
-		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-user.html.twig');
 		$this->doSend($tpl, $vars, $ticket, $change_info);
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
