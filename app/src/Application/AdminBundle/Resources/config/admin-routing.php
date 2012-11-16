@@ -828,6 +828,13 @@ $collection->add('admin_agents', new Route(
 	array()
 ));
 
+$collection->add('admin_mass_add', new Route(
+	'/agents/mass-add-agents.json',
+	array('_controller' => 'AdminBundle:Agents:massAddAgents'),
+	array(),
+	array()
+));
+
 $collection->add('admin_agents_killsession', new Route(
 	'/agents/kill-session/{agent_id}',
 	array('_controller' => 'AdminBundle:Agents:killAgentSession'),

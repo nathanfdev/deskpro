@@ -387,6 +387,173 @@ class AgentsController extends AbstractController
 	}
 
 	############################################################################
+	# mass-add
+	############################################################################
+
+	public function massAddAgentsAction()
+	{
+		#------------------------------
+		# Get and verify addresses
+		#------------------------------
+
+		$emails = $this->in->getString('email_addresses');
+		$emails = explode(',', $emails);
+		$emails = Arrays::func($emails, 'trim');
+		$emails = Arrays::func($emails, 'strtolower');
+
+		// Filter out non-addresses
+		$emails = array_filter($emails, function($email) {
+			return \Orb\Validator\StringEmail::isValueValid($email);
+		});
+
+		if (!$emails) {
+			return $this->createJsonResponse(array('error' => 'no_emails'));
+		}
+
+		// Filter out addresses that are already agents
+		$agent_emails = Arrays::flattenToIndex($this->container->getDataService('Agent')->getAgents(), 'primary_email_address');
+		$agent_emails = array_combine($agent_emails, $agent_emails);
+
+		$emails = array_filter($emails, function($email) use ($agent_emails) {
+			return !isset($agent_emails[$email]);
+		});
+
+		if (!$emails) {
+			return $this->createJsonResponse(array('error' => 'no_new_agents'));
+		}
+
+		if (count($emails) > 30) {
+			return $this->createJsonResponse(array('error' => 'too_many'));
+		}
+
+		$res = $this->_preMassAddAgents($emails);
+		if ($res) {
+			return $res;
+		}
+
+		#------------------------------
+		# Create the accounts
+		#------------------------------
+
+		$new_agents = array();
+
+		foreach ($emails as $email) {
+			// In case they are an existing account already
+			$agent = $this->em->getRepository('Person')->findOneByEmail($email);
+
+			if (!$agent) {
+				$agent = new \Application\DeskPRO\Entity\Person();
+			}
+
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
+			$agent->is_agent = true;
+			$agent->setPassword(Strings::random(20));
+
+			$email = $agent->addEmailAddressString($email);
+
+			// Attempt to figure out name from email address
+			list ($name,) = explode('@', $email->email, 2);
+			$name = str_replace('_', ' ', $name);
+			$name = str_replace('.', ' ', $name);
+			$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+			$name = Strings::utf8_ucwords($name);
+			$agent->setName($name);
+
+			try {
+
+				$this->em->persist($agent);
+				$this->em->flush();
+
+				// Default to non-destructive perm group, or if thats deleted, the default all perms group
+				$has_ug = App::getDb()->fetchColumn("SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC");
+				if ($has_ug) {
+					$this->db->insert('person2usergroups', array(
+						'person_id' => $agent->getId(),
+						'usergroup_id' => $has_ug
+					));
+				}
+
+				// Default access to all departments
+				$batch = array();
+				foreach (App::getDataService('Department')->getAll() as $dep) {
+					$batch[] = array(
+						'department_id' => $dep->getId(),
+						'person_id'     => $agent->getId(),
+						'app'           => $dep->is_tickets_enabled ? 'tickets' : 'chat',
+						'name'          => 'full',
+						'value'         => 1
+					);
+				}
+				$this->db->batchInsert('department_permissions', $batch);
+
+				// Default notifications
+				$agent_id = $agent->getId();
+				$this->db->executeUpdate("
+					INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
+					VALUES
+						(NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+						(NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+				");
+
+				$this->db->executeUpdate("
+					INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
+					VALUES
+						($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_comment_validate.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_feedback_validate.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user_validate.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
+				");
+
+				$new_agents[] = $agent;
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+		}
+
+		$agents_data = array();
+		foreach ($new_agents as $agent) {
+			$agents_data[] = array(
+				'id'    => $agent->getId(),
+				'name'  => $agent->getName(),
+				'email' => $agent->primary_email_address
+			);
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'agents' => $agents_data
+		));
+	}
+
+	protected function _preMassAddAgents(array $emails)
+	{
+		$new_total = $this->num_agents + count($emails);
+
+		if ($new_total > $this->max_agents) {
+			return $this->createJsonResponse(array(
+				'error' => 'license'
+			));
+		}
+
+		return null;
+	}
+
+	############################################################################
 	# edit-agent
 	############################################################################
 
