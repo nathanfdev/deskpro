@@ -348,6 +348,39 @@ class Connection extends \Doctrine\DBAL\Connection
 
 
 	/**
+	 * Fetch a COUNT(*) on $tableName with $where condition
+	 *
+	 * @param string $tableName
+	 * @param string|array $where A string where or an array of field=>value
+	 */
+	public function count($tableName, $where = null)
+	{
+		$this->connect();
+
+		$sql = "SELECT COUNT(*) FROM `$tableName`";
+
+		$params = array();
+
+		if ($where) {
+			if (is_array($where)) {
+				$placeholders = array();
+
+				foreach ($where as $columnName => $value) {
+					$params[] = $value;
+					$placeholders[] = $columnName . ' = ?';
+				}
+
+				$sql .= " WHERE " . implode(" AND ", $placeholders);
+			} else {
+				$sql .= " WHERE $where";
+			}
+		}
+
+		return $this->fetchColumn($sql, $params);
+	}
+
+
+	/**
 	 * @param string $query
 	 * @param array $params
 	 * @param array $types
