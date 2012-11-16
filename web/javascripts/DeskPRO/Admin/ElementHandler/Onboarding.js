@@ -13,6 +13,15 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 		var onboard_box = this.el;
 		var openArticle = null;
 
+		$('#onboard_wrap').find('.dismiss-all').on('click', function() {
+			$('#onboard_wrap').fadeOut('fast');
+
+			$.ajax({
+				url: BASE_URL + 'admin/onboard-mark-complete/dismiss/hide_all.json',
+				type: 'POST'
+			});
+		});
+
 		onboard_box.on('click', 'button.btn-dismiss, button.btn-done', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();

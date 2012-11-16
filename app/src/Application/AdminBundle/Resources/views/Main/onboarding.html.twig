@@ -1,7 +1,6 @@
 {% import 'AdminBundle:Main:onboard-macro.html.twig' as onb %}
-{% if onboard.countComplete() < 15 %}
-<script type="text/javascript" xmlns="http://www.w3.org/1999/html"
-		src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/Onboarding.js') }}"></script>
+{% if not onboard.isHideAll() and onboard.countComplete() < 15 %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/Onboarding.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	DeskPRO.ElementHandler_Exec(document.getElementById('onboard_wrap'));
@@ -9,6 +8,7 @@ $(document).ready(function() {
 </script>
 <div id="onboard_wrap" class="onboard-box-wrap">
 	<header>
+		<span class="dismiss-all">Dismiss All</span>
 		<h2>Getting Started</h2>
 	</header>
 	<div class="onboard-box" data-element-handler="DeskPRO.Admin.ElementHandler.Onboarding">

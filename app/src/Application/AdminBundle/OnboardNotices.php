@@ -59,6 +59,11 @@ class OnboardNotices
 	protected $newly_dismissed = array();
 
 	/**
+	 * @var bool
+	 */
+	protected $hide_all = false;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\DataStore;
 	 */
 	protected $dataobj;
@@ -68,6 +73,36 @@ class OnboardNotices
 		$this->dataobj   = App::getOrm()->getRepository('DeskPRO:DataStore')->getByName('admin.onboard_notices', true);
 		$this->dismissed = $this->dataobj->getData('dismissed', array());
 		$this->finished  = $this->dataobj->getData('finished', array());
+		$this->hide_all  = $this->dataobj->getData('hide_all', false);
+	}
+
+
+	/**
+	 * Hides all
+	 */
+	public function hideAll()
+	{
+		$this->hide_all = true;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isHideAll()
+	{
+		return $this->hide_all;
+	}
+
+
+	/**
+	 * Reset all notices
+	 */
+	public function reset()
+	{
+		$this->hide_all  = false;
+		$this->dismissed = array();
+		$this->finished  = array();
 	}
 
 
@@ -180,6 +215,7 @@ class OnboardNotices
 	{
 		$this->dataobj->setData('dismissed', $this->dismissed);
 		$this->dataobj->setData('finished', $this->finished);
+		$this->dataobj->setData('hide_all', $this->hide_all);
 
 		App::getOrm()->persist($this->dataobj);
 		App::getOrm()->flush($this->dataobj);

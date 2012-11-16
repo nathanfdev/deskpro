@@ -105,10 +105,14 @@ class MainController extends AbstractController
 	{
 		$onboard = new \Application\AdminBundle\OnboardNotices();
 
-		if ($type == 'done') {
-			$onboard->markFinished($id);
+		if ($id == 'hide_all') {
+			$onboard->hideAll();
 		} else {
-			$onboard->markDismissed($id);
+			if ($type == 'done') {
+				$onboard->markFinished($id);
+			} else {
+				$onboard->markDismissed($id);
+			}
 		}
 
 		$onboard->save();
