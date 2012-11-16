@@ -245,7 +245,11 @@ class DetectFilterMatches
 				$agent_scopes = array($filter->person);
 			}
 
-			$this->logMessage("-- Affected agents: " . count($agent_scopes));
+			$affected_agent_ids = array();
+			foreach ($agent_scopes as $a) {
+				$affected_agent_ids[] = $a->getId();
+			}
+			$this->logMessage("-- Affected agents: " . implode(', ', $affected_agent_ids));
 
 			if (!$agent_scopes) {
 				continue;
