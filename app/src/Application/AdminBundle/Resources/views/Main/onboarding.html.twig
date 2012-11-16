@@ -262,6 +262,22 @@ $(document).ready(function() {
 				</div>
 			{{ onb.end() }}
 
+			<li id="onboard_question" class="onboard-info" data-submit-url="{{ path('admin_submit_deskpro_feedback') }}">
+				<header>
+					<div class="title">
+						<h3>How Do I...</h3>
+						<h2><i></i><input type="text" class="input-question" placeholder="Enter your question here" value="" /> <button class="btn submit-trigger"><em>Search</em></button></h2>
+					</div>
+				</header>
+				<article>
+					<p>
+						Sorry, we couldn't find anything about that.
+					</p>
+					<p>
+						But we sent a message to our agents for you. One of them will get back to you soon at {{ app.user.primary_email_address }}.
+					</p>
+				</article>
+			</li>
 		</ul>
 	</div>
 </div>

@@ -4,6 +4,11 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {
+		this.initTasks();
+		this.initAsk();
+	},
+
+	initTasks: function() {
 		var onboard_box = this.el;
 		var openArticle = null;
 
@@ -41,10 +46,16 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 		});
 
 		onboard_box.on('click', 'header', function(ev) {
+			var row = $(this).closest('li');
+			if (!row.data('task-id')) {
+				return;
+			}
+
+			$('#onboard_question').removeClass('expanded').find('article').hide();
+
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var row = $(this).closest('li');
 			var togglingSelf = false;
 			var article = row.find('article').first();
 
@@ -66,6 +77,53 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 			row.addClass('expanded');
 			article.slideDown('fast');
 			openArticle = article;
+		});
+	},
+
+	initAsk: function() {
+		var sent = [];
+
+		var row   = $('#onboard_question');
+		var input = row.find('input.input-question');
+		var btn   = row.find('button.submit-trigger');
+
+		btn.on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var text = input.val().trim();
+			var dupecheck = text.toLowerCase().replace(/\s+/g, '');
+			if (!text) {
+				return;
+			}
+
+			if (sent.indexOf(dupecheck) !== -1) {
+				row.addClass('expanded');
+				row.find('article').slideDown('fast');
+				return;
+			}
+
+			sent.push(dupecheck);
+
+			row.removeClass('expanded');
+			row.find('article').hide();
+
+			btn.find('em').addClass('flat-spinner');
+			$.ajax({
+				url: row.data('submit-url'),
+				type: 'POST',
+				data: {
+					message: text
+				},
+				complete: function() {
+					btn.find('em').removeClass('flat-spinner');
+				},
+				success: function() {
+					btn.find('em').removeClass('flat-spinner');
+					row.addClass('expanded');
+					row.find('article').slideDown('fast');
+				}
+			});
 		});
 	}
 });

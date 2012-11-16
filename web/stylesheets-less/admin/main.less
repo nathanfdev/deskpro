@@ -5152,6 +5152,21 @@ ul.small-detail-list li {
 		&.onboard-agent-notifications header h2 i { background-image: url(../../images/admin/onboard/doc.png); }
 		&.onboard-slas  header h2 i { background-image: url(../../images/admin/onboard/clock.png); }
 		&.onboard-reports header h2 i { background-image: url(../../images/admin/onboard/reports.png); }
+		&.onboard-info header h2 i { background-image: url(../../images/admin/onboard/info.png); }
+
+		&.onboard-info header:hover h2 {
+			text-decoration: none;
+			cursor: default;
+		}
+		&.onboard-info header input[type="text"] {
+			width: 75%;
+		}
+
+		&.onboard-info header button {
+			padding: 4px 14px 4px;
+
+			em {font-style: normal;}
+		}
 
 		header:hover h2 {
 			text-decoration: underline;
