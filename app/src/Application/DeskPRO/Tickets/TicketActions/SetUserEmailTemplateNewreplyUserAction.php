@@ -39,4 +39,12 @@ class SetUserEmailTemplateNewreplyUserAction extends SetEmailTemplateAbstract
 	{
 		return 'user_newreply_user';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Change the user reply auto-response email: ' . $this->getDescriptionEmailName();
+	}
 }

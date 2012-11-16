@@ -39,4 +39,12 @@ class SetUserEmailTemplateNewticketAction extends SetEmailTemplateAbstract
 	{
 		return 'user_newticket';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Change the user new ticket confirmation email: ' . $this->getDescriptionEmailName();
+	}
 }

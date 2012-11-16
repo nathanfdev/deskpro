@@ -90,16 +90,12 @@ abstract class SetEmailTemplateAbstract extends AbstractAction
 	}
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
+	public function getDescriptionEmailName()
 	{
 		$parts = explode(':', $this->template);
 		$name = array_pop($parts);
 		$name = str_replace('.html.twig', '', $name);
-
-		return 'Change the email template to ' . $name;
+		return $name;
 	}
 
 

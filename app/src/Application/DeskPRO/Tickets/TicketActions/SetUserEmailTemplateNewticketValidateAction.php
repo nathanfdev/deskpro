@@ -39,4 +39,12 @@ class SetUserEmailTemplateNewticketValidateAction extends SetEmailTemplateAbstra
 	{
 		return 'user_newticket_validate';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Change the user email for new tickets requiring validation: ' . $this->getDescriptionEmailName();
+	}
 }

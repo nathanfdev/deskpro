@@ -39,4 +39,12 @@ class SetAgentEmailTemplateNewreplyAgentAction extends SetEmailTemplateAbstract
 	{
 		return 'agent_newreply_agent';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Change the agent notification email for a new agent reply to: ' . $this->getDescriptionEmailName();
+	}
 }

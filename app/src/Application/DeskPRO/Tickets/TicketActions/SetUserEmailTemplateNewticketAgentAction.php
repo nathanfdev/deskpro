@@ -39,4 +39,12 @@ class SetUserEmailTemplateNewticketAgentAction extends SetEmailTemplateAbstract
 	{
 		return 'user_newticket_agent';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
+	{
+		return 'Change the user email for a new ticket created by an agent: ' . $this->getDescriptionEmailName();
+	}
 }
