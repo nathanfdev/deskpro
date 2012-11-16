@@ -408,6 +408,16 @@ class DepartmentsController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		$type_prop = $department->is_tickets_enabled ? 'is_tickets_enabled' : 'is_chat_enabled';
+
+		$count = $this->db->count('departments', array($type_prop => 1));
+		if ($count < 2) {
+			return $this->render('AdminBundle:Departments:no-delete.html.twig', array(
+				'department' => $department,
+				'type_prop' => $type_prop
+			));
+		}
+
 		$tree_ids = $this->em->getRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
 		$tree_ids = implode(',', $tree_ids);
 
@@ -435,14 +445,11 @@ class DepartmentsController extends AbstractController
 	{
 		$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
 
-		$type_prop = 'is_tickets_enabled';
-		if ($department) {
-			$type_prop = $department->is_tickets_enabled ? 'is_tickets_enabled' : 'is_chat_enabled';
-		}
-
-		if (!$department || !$department[$type_prop]) {
+		if (!$department) {
 			throw $this->createNotFoundException();
 		}
+
+		$type_prop = $department->is_tickets_enabled ? 'is_tickets_enabled' : 'is_chat_enabled';
 
 		$move_department = null;
 
@@ -464,7 +471,7 @@ class DepartmentsController extends AbstractController
 
 		if ($has_data) {
 			$move_department = $this->em->getRepository('DeskPRO:Department')->find($this->in->getUint('move_to_department'));
-			if (!$move_department) {
+			if (!$move_department || !$move_department[$type_prop]) {
 				return $this->renderStandardError('You need to choose a department to move existing data into.');
 			} elseif (count($move_department->children)) {
 				return $this->renderStandardError('You chose an invalid department to move existing data into. The new department cannot have children.');
