@@ -206,7 +206,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			linkUrls: function(string) {
 				string = string||'';
-				return Orb.linkUrls(string);
+				string = Orb.linkUrls(string);
+				string = string.replace(/<a /g, '<a target="_blank" ');
+				return string;
 			},
 
 			dpCheckbox: function(input) {
