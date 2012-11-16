@@ -22,7 +22,7 @@
 	'user.widget.search_button'                                            => 'Suchen',
 	'user.widget.search_no-results'                                        => 'Wir konnten nichts finden',
 	'user.widget.search_related_title'                                     => 'Vielleicht hilft dieser Inhalt?',
-	'user.widget.tab_chat'                                                 => 'Cahtten Sie mit uns',
+	'user.widget.tab_chat'                                                 => 'Chatten Sie mit uns',
 	'user.widget.tab_feedback'                                             => 'Feedback absenden',
 	'user.widget.tab_ticket'                                               => 'Mailen sie uns',
 	'user.widget.ticket_form_completed'                                    => 'Vielen Dank für Ihre Ticket. Unsere Agenten werden sich mit Ihnen so bald wie möglich in Verbindung setzen.',
