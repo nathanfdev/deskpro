@@ -178,7 +178,7 @@ function dpTwoSelectInit(el, options) {
 
 		parentOptInfo = structure[idx[0]];
 
-		if (idx[1]) {
+		if (idx && idx[1] !== null && typeof idx[1] !== 'undefined') {
 			childOptInfo = parentOptInfo.subs[idx[1]];
 		}
 
