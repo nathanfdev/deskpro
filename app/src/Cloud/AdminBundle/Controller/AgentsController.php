@@ -51,7 +51,26 @@ class AgentsController extends BaseAgentsController
 		return parent::canAddAgent($context);
 	}
 
-	public function authorizePlanIncrease()
+	protected function _preMassAddAgents(array $emails)
+	{
+		$new_total = $this->num_agents + count($emails);
+
+		if ($this->person->can_billing) {
+			if ($new_total > $this->max_agents) {
+				$diff = $new_total - $this->max_agents;
+
+				try {
+					$this->authorizePlanIncrease($diff);
+				} catch (\Exception $e) {
+					return parent::_preMassAddAgents($emails);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public function authorizePlanIncrease($num_agents = 1)
 	{
 		if (!$this->person->can_billing) {
 			return;
@@ -61,7 +80,7 @@ class AgentsController extends BaseAgentsController
 			return;
 		}
 
-		$set = max($this->num_agents + 1, $this->max_agents + 1);
+		$set = max($this->num_agents + $num_agents, $this->max_agents + $num_agents);
 
 		$tmpdata = new \Application\DeskPRO\Entity\TmpData();
 		$tmpdata->setType('dpc_set_plan');
