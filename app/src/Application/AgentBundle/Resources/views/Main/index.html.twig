@@ -62,6 +62,10 @@
 					console.log("Time offset is ignored");
 				}
 			}
+
+			{% if is_first_login %}
+				DESKPRO_TIME_OUT_OF_SYNC = null;
+			{% endif %}
 		})();
 	</script>
 
@@ -224,6 +228,10 @@
 		</footer>
 	</form>
 </div>
+
+{% if is_first_login %}
+	{% include 'AgentBundle:settings:welcome.html.twig' %}
+{% endif %}
 
 {% include 'AgentBundle:Main:resources.html.twig' with {'in_body': true} %}
 {% include 'AgentBundle:Settings:settings-window.html.twig' %}

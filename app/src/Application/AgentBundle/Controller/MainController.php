@@ -117,24 +117,34 @@ class MainController extends AbstractController
 			WHERE p.is_agent = true AND s.date_last > ?
 		", array($cutoff));
 
+		$is_first_login = false;
+		$is_first_login_name = false;
+
+		if ($this->person->getPref('agent.first_login')) {
+			$is_first_login = true;
+			$is_first_login_name = $this->person->getPref('agent.first_login_name');
+		}
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
-			'has_raw_assets' => $has_raw_assets,
-			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
-			'agent_names' => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
-			'online_agent_ids' => $online_agent_ids,
-			'is_demo' => $this->in->checkIsset('show-demo-bar'),
-			'last_message_id' => $last_message_id,
-			'js_debug' => App::getConfig('debug.js', array()),
-			'titles' => $titles,
-			'people_fields' => $people_fields,
-			'org_fields' => $org_fields,
-			'ticket_options' => $ticket_options,
-			'agents' => $agents,
-			'agent_teams' => $agent_teams,
-			'phone_country_info' => $phone_country_info,
-			'open_chats' => $open_chats,
-			'people_options' => $people_options,
-			'org_options' => $org_options,
+			'has_raw_assets'      => $has_raw_assets,
+			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
+			'agent_names'         => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
+			'online_agent_ids'    => $online_agent_ids,
+			'is_demo'             => $this->in->checkIsset('show-demo-bar'),
+			'last_message_id'     => $last_message_id,
+			'js_debug'            => App::getConfig('debug.js', array()),
+			'titles'              => $titles,
+			'people_fields'       => $people_fields,
+			'org_fields'          => $org_fields,
+			'ticket_options'      => $ticket_options,
+			'agents'              => $agents,
+			'agent_teams'         => $agent_teams,
+			'phone_country_info'  => $phone_country_info,
+			'open_chats'          => $open_chats,
+			'people_options'      => $people_options,
+			'org_options'         => $org_options,
+			'is_first_login'      => $is_first_login,
+			'is_first_login_name' => $is_first_login_name,
 		));
 	}
 

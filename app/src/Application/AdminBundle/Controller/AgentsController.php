@@ -519,6 +519,28 @@ class AgentsController extends AbstractController
 						($agent_id, 'agent_notif.new_user_validate.email', '1', X'4E3B', NULL)
 				");
 
+				// Add pref for first login marker
+				$this->db->insert('people_prefs', array(
+					'person_id'   => $agent_id,
+					'name'        => 'agent.first_login',
+					'value_str'   => 1,
+					'value_array' => null,
+					'date_expire' => null
+				));
+				$this->db->insert('people_prefs', array(
+					'person_id'   => $agent_id,
+					'name'        => 'agent.first_login_name',
+					'value_str'   => 1,
+					'value_array' => null,
+					'date_expire' => null
+				));
+
+				// Send welcome email
+				$message = $this->container->getMailer()->createMessage();
+				$message->setToPerson($agent);
+				$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+				$this->container->getMailer()->send($message);
+
 				$new_agents[] = $agent;
 			} catch (\Exception $e) {
 				$this->db->rollback();
@@ -961,6 +983,15 @@ class AgentsController extends AbstractController
 			$this->container->getMailer()->send($message);
 
 			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
+
+			// Add pref for first login marker
+			$this->db->insert('people_prefs', array(
+				'person_id'   => $agent->getId(),
+				'name'        => 'agent.first_login',
+				'value_str'   => 1,
+				'value_array' => null,
+				'date_expire' => null
+			));
 		}
 
 		$this->session->setFlash('saved_agent', 1);

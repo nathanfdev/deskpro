@@ -132,6 +132,35 @@ class SettingsController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function profileSaveWelcomeAction()
+	{
+		if ($this->in->getString('name')) {
+			$this->person->setName($this->in->getString('name'));
+		}
+
+		if ($blob_id = $this->in->getString('new_blob_id')) {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($blob_id);
+			if ($blob) {
+				$this->person->picture_blob = $blob;
+			}
+		}
+
+		$this->em->persist($this->person);
+		$this->em->flush();
+
+		$this->db->delete('people_prefs', array(
+			'person_id' => $this->person->getId(),
+			'name' => 'agent.first_login'
+		));
+		$this->db->delete('people_prefs', array(
+			'person_id' => $this->person->getId(),
+			'name' => 'agent.first_login_name'
+		));
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	public function updateTimezoneAction()
 	{
 		$tz = $this->in->getString('timezone');
