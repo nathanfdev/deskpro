@@ -21,7 +21,7 @@
 			N/A
 		{% endif %}
 	</td>
-	{% if ticket_sla.sla.allow_agent_manual %}
+	{% if ticket_sla.sla.allow_agent_manual and ticket_perms.modify_slas %}
 		{% if ticket_sla.is_completed %}
 			<td class="completed"><a href="{{ path('agent_ticket_sladelete', {ticket_id: ticket.id, sla_id: ticket_sla.sla.id, security_token: security_token('delete_sla'), '_rt': security_token('request_token', 10800)}) }}" class="sla-delete tipped" title="SLA requirements complete. Click to remove SLA."></a></td>
 		{% else %}

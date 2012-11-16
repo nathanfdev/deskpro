@@ -44,6 +44,7 @@
 	'admin.agents.edit_others_content'                  => 'Edit other\'s content',
 	'admin.agents.edit_people'                          => 'Edit people',
 	'admin.agents.edit_permission_group'                => 'Edit Permission Group',
+	'admin.agents.edit_slas'                            => 'Edit SLAs',
 	'admin.agents.edit_team'                            => 'Edit Team',
 	'admin.agents.enable_vacation_mode_name'            => 'Enable vacation mode for {{name}}',
 	'admin.agents.explain_agent_deleted'                => 'When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.',

@@ -478,7 +478,7 @@ class TicketController extends AbstractController
 
 	public function claimTicketAction($ticket_id)
 	{
-		$ticket = $this->_getTicketOr404($ticket_id, 'assign_self');
+		$ticket = $this->_getTicketOr404($ticket_id, 'modify_assign_self');
 
 		$ticket->agent_id = $this->person->id;
 		$this->em->persist($ticket);
@@ -711,7 +711,7 @@ class TicketController extends AbstractController
 
 	public function postTicketSlasAction($ticket_id)
 	{
-		$ticket = $this->_getTicketOr404($ticket_id);
+		$ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
 
 		$sla_id = $this->in->getUint('sla_id');
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
@@ -750,7 +750,7 @@ class TicketController extends AbstractController
 
 	public function deleteTicketSlaAction($ticket_id, $ticket_sla_id)
 	{
-		$ticket = $this->_getTicketOr404($ticket_id);
+		$ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
 
 		foreach ($ticket->ticket_slas AS $key => $ticket_sla) {
 			if ($ticket_sla->id == $ticket_sla_id) {

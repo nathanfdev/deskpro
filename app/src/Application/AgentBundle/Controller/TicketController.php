@@ -1952,7 +1952,7 @@ class TicketController extends AbstractController
 
 	public function addSlaAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($this->in->getUint('sla_id'));
 		if (!$sla || !$sla->allow_agent_manual) {
@@ -1997,7 +1997,7 @@ class TicketController extends AbstractController
 
 	public function deleteSlaAction($ticket_id, $sla_id, $security_token)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
 		if (!$sla || !$sla->allow_agent_manual) {
