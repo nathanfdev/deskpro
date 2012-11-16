@@ -102,5 +102,8 @@ class Build1353057097 extends AbstractBuild
 				WHERE department_id IN (" . implode(',', $chat_deps) . ") OR department_id IS NULL
 			", array($default_department));
 		}
+
+		// Clean permissions too
+		\Application\DeskPRO\People\PermissionUtil::cleanPermissions();
 	}
 }

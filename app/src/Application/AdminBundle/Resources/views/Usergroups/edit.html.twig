@@ -32,6 +32,30 @@
 					return false;
 				});
 			});
+
+			$('#permgroup_tickets, #permgroup_chat').each(function() {
+				var row = $(this);
+				var masterCheck = row.find('input.master-check');
+				var depChecks   = row.find('input.dep-check');
+
+				masterCheck.on('change', function() {
+					if (this.checked) {
+						if (!depChecks.filter(':checked')[0]) {
+							depChecks.prop('checked', true);
+						}
+					} else {
+						depChecks.prop('checked', false);
+					}
+				});
+
+				depChecks.on('change', function() {
+					if (!depChecks.filter(':checked')[0]) {
+						masterCheck.prop('checked', false);
+					} else {
+						masterCheck.prop('checked', true);
+					}
+				});
+			});
 		});
 	</script>
 {% endblock %}

@@ -70,6 +70,10 @@ class QueryListener
 			App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		}
 
+		if (isset($updates['department_permissions'])) {
+			\Application\DeskPRO\People\PermissionUtil::cleanPermissions();
+		}
+
 		if (isset($updates['permissions'])) {
 			App::getDb()->exec("TRUNCATE TABLE permissions_cache");
 		}
@@ -95,6 +99,7 @@ class QueryListener
 			case 'update_department_permissions':
 			case 'insert_department_permissions':
 			case 'delete_department_permissions':
+				$this->updates[] = 'department_permissions';
 			case 'update_usergroups':
 			case 'insert_usergroups':
 			case 'delete_usergroups':

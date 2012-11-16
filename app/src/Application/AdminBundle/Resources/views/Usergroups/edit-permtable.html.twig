@@ -10,7 +10,7 @@
 </nav>
 
 <div id="permgroup_tickets" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:tickets.use --><input class="onoff-slider {% if permissions_everyone['tickets.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['tickets.use'] or permissions_everyone['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> {{ phrase('admin.user_groups.can_use_tickets') }}
+	<!-- PERMISSION:tickets.use --><input class="onoff-slider master-check {% if permissions_everyone['tickets.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['tickets.use'] or permissions_everyone['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> {{ phrase('admin.user_groups.can_use_tickets') }}
 	<div class="check-grid">
 		<table width="100%">
 			<thead>
@@ -27,14 +27,14 @@
 							<td class="prop">&nbsp;</td>
 						{% else %}
 							<td class="title">{{ dep.title }}</td>
-							<td class="prop"><input class="onoff-slider {% if ug_deps_everyone[dep.id].tickets %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].tickets or ug_deps_everyone[dep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][tickets]" value="1" /></td>
+							<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[dep.id].tickets %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].tickets or ug_deps_everyone[dep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][tickets]" value="1" /></td>
 						{% endif %}
 					</tr>
 					{% if dep.children %}
 						{% for subdep in dep.children %}
 							<tr>
 								<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-								<td class="prop"><input class="onoff-slider {% if ug_deps_everyone[subdep.id].tickets %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].tickets or ug_deps_everyone[subdep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][tickets]" value="1" /></td>
+								<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[subdep.id].tickets %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].tickets or ug_deps_everyone[subdep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][tickets]" value="1" /></td>
 							</tr>
 						{% endfor %}
 					{% endif %}
@@ -45,7 +45,7 @@
 </div>
 
 <div id="permgroup_chat" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:chat.use --><input class="onoff-slider {% if permissions_everyone['chat.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['chat.use'] or permissions_everyone['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.user_groups.can_use_chat') }}
+	<!-- PERMISSION:chat.use --><input class="onoff-slider master-check {% if permissions_everyone['chat.use'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['chat.use'] or permissions_everyone['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.user_groups.can_use_chat') }}
 	<div class="check-grid">
 		<table width="100%">
 			<thead>
@@ -64,14 +64,14 @@
 							<td class="prop">&nbsp;</td>
 						{% else %}
 							<td class="title">{{ dep.title }}</td>
-							<td class="prop"><input class="onoff-slider {% if ug_deps_everyone[dep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].chat or ug_deps_everyone[dep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][chat]" value="1" /></td>
+							<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[dep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[dep.id].chat or ug_deps_everyone[dep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][chat]" value="1" /></td>
 						{% endif %}
 					</tr>
 					{% if dep.children %}
 						{% for subdep in dep.children %}
 							<tr>
 								<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-								<td class="prop"><input class="onoff-slider {% if ug_deps_everyone[subdep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].chat or ug_deps_everyone[subdep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][chat]" value="1" /></td>
+								<td class="prop"><input class="dep-check onoff-slider {% if ug_deps_everyone[subdep.id].chat %}everyone-on{% endif %}" type="checkbox" {% if ug_deps[subdep.id].chat or ug_deps_everyone[subdep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][chat]" value="1" /></td>
 							</tr>
 						{% endfor %}
 					{% endif %}
