@@ -67,7 +67,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	/**
 	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
 	 */
-	public function __construct($time_cutoff = 1728000 /* 20 days */)
+	public function __construct($time_cutoff = 7776000 /* 90 days */)
 	{
 		$this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
 	}

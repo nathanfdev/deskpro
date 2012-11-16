@@ -105,7 +105,7 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 					$this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in headers: " . $m[2]);
 				}
 
-				$search_text[] = '(#' . $m[1] . ')';
+				$search_text[] = '(#' . $m[2] . ')';
 			}
 		}
 
