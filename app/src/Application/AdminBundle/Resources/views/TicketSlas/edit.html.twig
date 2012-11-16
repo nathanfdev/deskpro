@@ -308,6 +308,11 @@
 		</div>
 	</div>
 
+	<div class="alert-message block-message note">
+		This SLA will not be automatically applied to existing tickets. It will only be automatically applied to new tickets that meet your selections.
+		{% if sla.id %}If you change SLA types or time settings, these changes will not be fully applied to existing tickets with this SLA until the SLA is removed and readded or the ticket's state changes.{% endif %}
+	</div>
+
 	<footer class="controls">
 		<button class="clean-white">Save SLA</button>
 	</footer>

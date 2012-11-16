@@ -155,18 +155,16 @@
 					</span>
 				</li>
 			{% elseif field == 'slas' and (ticket_display.hasTicketSlas(ticket) or changed_fields[ticket.id].slas) %}
-				<li class="{{field}} {% if changed_fields[ticket.id].slas %}changed{% endif %}">
-					<span class="prop-val labels">
-						{% for ticket_sla in ticket_display.getTicketSlas(ticket) %}
-							<span class="listing-tag sla-status-{{ticket_sla.sla_status}}">
-								{{ ticket_sla.title }}
-								{% if ticket_display.getNextSlaTriggerDate(ticket_sla) %}
-									(<time class="timeago" datetime="{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC') }}"></time>)
-								{% endif %}
-							</span>
-						{% endfor %}
-					</span>
-				</li>
+				{% for ticket_sla in ticket_display.getTicketSlas(ticket) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].slas %}changed{% endif %}">
+						<span class="prop-val sla-status-{{ticket_sla.sla_status}}">
+							{{ ticket_sla.title }}
+							{% if ticket_display.getNextSlaTriggerDate(ticket_sla) %}
+								(<time class="timeago" datetime="{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC') }}"></time>)
+							{% endif %}
+						</span>
+					</li>
+				{% endfor %}
 			{% elseif field == 'labels' and (ticket_display.hasTicketLabels(ticket) or changed_fields[ticket.id].labels) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].labels %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
