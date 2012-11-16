@@ -65,7 +65,7 @@ class MiscController extends AbstractController
 			return $this->createApiErrorResponse('no_session', 'session could not be found or could not be validated');
 		}
 
-		if ($session->person) {
+		if ($session->person && $session->person->id) {
 			return $this->createApiResponse(array('person' => $session->person->toApiData()));
 		} else {
 			return $this->createApiResponse(array('person' => false));

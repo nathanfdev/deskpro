@@ -55,7 +55,7 @@ class TaskController extends AbstractController
 
 		foreach ($search_map AS $input => $search_key) {
 			$value = $this->in->getCleanValueArray($input, 'raw', 'discard');
-			if ($value) {
+			if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
 				$terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
 			}
 		}
