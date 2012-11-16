@@ -66,6 +66,13 @@
 		$(document).ready(function() {
 			window.DeskPRO_Window.initPage();
 			ChatWin.initPage();
+
+			$('.dp-copy a').on('click', function(ev) {
+				ev.preventDefault();
+
+				var href = $(this).attr('href');
+				window.open(href);
+			})
 		});
 	</script>
 </head>
@@ -162,6 +169,10 @@
 			<button class="dp-btn dp-btn-success" id="dp_chat_start_go">{{ phrase('user.chat.form_create_button-submit') }}</button>
 		</div>
 	</article>
+
+	<footer class="dp-chat-footer">
+		{{ dp_copyright() }}
+	</footer>
 </section>
 
 <section class="dp-chat-active-state" id="dp_chat_finding_agent" style="display: none">
