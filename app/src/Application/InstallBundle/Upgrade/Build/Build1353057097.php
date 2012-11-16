@@ -69,6 +69,15 @@ class Build1353057097 extends AbstractBuild
 			}
 
 			$this->container->getDb()->batchInsert('department_permissions', $batch);
+
+			// Give 'everyone' access too
+			$this->container->getDb()->insert('department_permissions', array(
+				'department_id' => $default_department,
+				'usergroup_id'  => 1,
+				'app'           => 'tickets',
+				'name'          => 'full',
+				'value'         => 1,
+			));
 		} else {
 			$default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
 			$default_department = $default_department->id;
