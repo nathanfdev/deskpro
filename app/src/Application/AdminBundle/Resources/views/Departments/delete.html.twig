@@ -33,19 +33,17 @@
 	<p>
 		{{ phrase('admin.departments.choose_destination_dept') }}:
 		<select name="move_to_department">
-			{% for d in departments %}
-				{% if d.id != department.id %}
-					{% if d.children|length %}
-						<optgroup label="{{ d.title }}" class="dep-{{ d.id }}">
-						{% for sd in d.children %}
-							{% if sd.id != department.id %}
-								<option value="{{ sd.id }}">{{ sd.title }}</option>
-							{% endif %}
-						{% endfor %}
-						</optgroup>
-					{% else %}
-						<option value="{{ d.id }}">{{ d.title }}</option>
-					{% endif %}
+			{% for d in departments if d[type_prop] and d.id != department.id %}
+				{% if d.children|length %}
+					<optgroup label="{{ d.title }}" class="dep-{{ d.id }}">
+					{% for sd in d.children %}
+						{% if sd.id != department.id %}
+							<option value="{{ sd.id }}">{{ sd.title }}</option>
+						{% endif %}
+					{% endfor %}
+					</optgroup>
+				{% else %}
+					<option value="{{ d.id }}">{{ d.title }}</option>
 				{% endif %}
 			{% endfor %}
 		</select>

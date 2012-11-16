@@ -423,10 +423,11 @@ class DepartmentsController extends AbstractController
 		$departments = $this->container->getDataService('Department')->getAll();
 
 		return $this->render('AdminBundle:Departments:delete.html.twig', array(
-			'department'  => $department,
+			'department'   => $department,
+			'type_prop'    => $department->is_tickets_enabled ? 'is_tickets_enabled' : 'is_chat_enabled',
 			'ticket_count' => $ticket_count,
-			'chat_count' => $chat_count,
-			'departments' => $departments
+			'chat_count'   => $chat_count,
+			'departments'  => $departments
 		));
 	}
 
@@ -434,7 +435,12 @@ class DepartmentsController extends AbstractController
 	{
 		$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
 
-		if (!$department) {
+		$type_prop = 'is_tickets_enabled';
+		if ($department) {
+			$type_prop = $department->is_tickets_enabled ? 'is_tickets_enabled' : 'is_chat_enabled';
+		}
+
+		if (!$department || !$department[$type_prop]) {
 			throw $this->createNotFoundException();
 		}
 
