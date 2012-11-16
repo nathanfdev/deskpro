@@ -75,13 +75,10 @@
 				</div>
 			{% endfor %}
 
-			{% if form.language_id %}
+			{% if is_org_manager %}
 				<div class="dp-control-group">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.profile.invalid_name') }}</label>
-					</div>
 					<div class="dp-controls dp-fill">
-						<label><input type="checkbox" name="org_manager_auto_add" style="display:inline" value="1" {% if org_manager_auto_add %}checked="checked"{% endif %} /> {{ phrase('user.profile.automatically_join_xs_tickets', {organization: app.user.organization.name }) }}</label>
+						<label><input type="checkbox" name="org_manager_auto_add" style="display:inline; position: relative; top: -2px" value="1" {% if org_manager_auto_add %}checked="checked"{% endif %} /> {{ phrase('user.profile.automatically_join_xs_tickets', {organization: app.user.organization.name }) }}</label>
 					</div>
 				</div>
 			{% endif %}
