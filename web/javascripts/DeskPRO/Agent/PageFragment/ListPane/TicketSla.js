@@ -44,6 +44,16 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSla = new Orb.Class({
 	},
 
 	refreshSlaTicketList: function() {
-		DeskPRO_Window.loadListPane(this.meta.refreshUrl);
+		var self = this;
+
+		if (this.isRefreshing) {
+			return;
+		}
+		this.isRefreshing = true;
+
+		setTimeout(function() {
+			self.isRefreshing = false;
+			DeskPRO_Window.loadListPane(self.meta.refreshUrl);
+		}, 0);
 	}
 });
