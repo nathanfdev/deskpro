@@ -272,7 +272,9 @@
 		</p>
 
 		<div style="padding-bottom: 20px;">
-			<button class="dp-btn dp-btn-success cancel-and-newticket-trigger">{{ phrase('user.chat.submit-ticket-button') }}</button>
+			{% if app.getSetting('user.portal_enabled') %}
+				<button class="dp-btn dp-btn-success cancel-and-newticket-trigger">{{ phrase('user.chat.submit-ticket-button') }}</button>
+			{% endif %}
 			<span class="dp-link" id="dp_chat_end_real_unassigned">{{ phrase('user.chat.window_close') }}</span>
 		</div>
 	</article>
