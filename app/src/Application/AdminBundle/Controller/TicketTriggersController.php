@@ -213,7 +213,7 @@ class TicketTriggersController extends AbstractController
 		);
 		foreach ($actions as &$_info) {
 			if (isset($tpl_types[$_info['type']])) {
-				if (isset($_info['options']['new_option'])) {
+				if (isset($_info['options']['new_option']) && !empty($_info['options']['new_option'])) {
 					$new_name = $_info['options']['new_option'];
 					$new_name = preg_replace('#[^a-zA-Z0-9\-_]#', '_', $new_name);
 					if (!$new_name) {
