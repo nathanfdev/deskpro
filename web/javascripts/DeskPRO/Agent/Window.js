@@ -1786,6 +1786,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			} else {
 				this.showAlert($('<div><strong>No Permission</strong><br />You do not have permission to view the requested page. If you think this is a mistake, you should contact your administrator.</div>'));
+				return;
 			}
 		}
 
