@@ -97,6 +97,11 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $dirty_caches = array();
 
 	/**
+	 * @var bool
+	 */
+	protected $admin_god_mode = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function __construct(Person $person)
@@ -145,6 +150,16 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		\DpShutdown::add(array($this, 'flushCache'));
 	}
 
+
+	/**
+	 * Admin mode enables all permissions when viewing the user interface (usually through the portal editor).
+	 *
+	 * @return bool
+	 */
+	public function enableAdminMode()
+	{
+		$this->admin_god_mode = true;
+	}
 
 
 	/**
@@ -318,6 +333,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function hasPerm($name)
 	{
+		if ($this->admin_god_mode && in_array($name, array('articles.use', 'feedback.use', 'downloads.use', 'news.use', 'chat.use'))) {
+			return true;
+		}
+
 		if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
 			return false;
 		}

@@ -69,7 +69,7 @@ class PortalController extends AbstractController
 			$ctrl = null;
 			switch ($page) {
 				case 'news':
-					if ($admin_controls || $this->container->getSetting('user.portal_tab_news')) {
+					if ($admin_controls || ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use'))) {
 						$ctrl = 'UserBundle:News:browse';
 					}
 					break;
