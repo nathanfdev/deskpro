@@ -241,7 +241,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 		if ($this->enable_notify) {
 
-			if ($ticket->creation_system == Ticket::CREATED_WEB_AGENT) {
+			if ($ticket->isAgentCreated()) {
 				$tpl = $this->newticket_agent_email_tpl;
 			} else {
 				$tpl = $this->newticket_email_tpl;
@@ -249,7 +249,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 			$change_info = array(
 				'type' => 'user_notify',
-				'notify_type' => ($ticket->creation_system == Ticket::CREATED_WEB_AGENT) ? 'newticket_agent' : 'newticket',
+				'notify_type' => $ticket->isAgentCreated() ? 'newticket_agent' : 'newticket',
 				'emailed' => array($ticket->person),
 				'cced' => array()
 			);

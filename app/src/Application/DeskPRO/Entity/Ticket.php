@@ -2616,6 +2616,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return App::getRouter()->generateUrl('user_tickets_view', array('ticket_ref' => $this->getAccessCode()));
 	}
 
+	public function isAgentCreated()
+	{
+		return strpos($this->creation_system, '.agent') !== false;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
