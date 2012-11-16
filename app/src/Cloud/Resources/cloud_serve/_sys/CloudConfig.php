@@ -86,7 +86,7 @@ class CloudConfig
 		self::getConfig(null);
 
 		if (!empty($_SERVER['HTTP_HOST'])) {
-			$siteinfo = self::getSiteInfoFromDomain($_SERVER['HTTP_HOST']);
+			$siteinfo = self::getSiteInfoFromDomain(rtrim($_SERVER['HTTP_HOST'], '.'));
 		} else {
 			$siteinfo = null;
 		}
