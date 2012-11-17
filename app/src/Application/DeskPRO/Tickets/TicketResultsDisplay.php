@@ -244,16 +244,14 @@ class TicketResultsDisplay implements PersonContextInterface
 
 		if ($ticket_sla['sla_status'] == 'ok' && $ticket_sla['warn_date']) {
 			$time = new \DateTime($ticket_sla['warn_date'], new \DateTimeZone('UTC'));
-			if ($time->getTimestamp() > time()) {
+			if ($time->getTimestamp() > time() || !$ticket_sla['fail_date']) {
 				$times[] = $time->getTimestamp();
 			}
 		}
 
-		if ($ticket_sla['sla_status'] != 'fail' && $ticket_sla['fail_date']) {
+		if ($ticket_sla['fail_date']) {
 			$time = new \DateTime($ticket_sla['fail_date'], new \DateTimeZone('UTC'));
-			if ($time->getTimestamp() > time()) {
-				$times[] = $time->getTimestamp();
-			}
+			$times[] = $time->getTimestamp();
 		}
 
 		if (!$times) {
