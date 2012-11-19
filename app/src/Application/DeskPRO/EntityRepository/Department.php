@@ -94,6 +94,27 @@ class Department extends AbstractCategoryRepository
 		return $dep;
 	}
 
+	public function getChildDepartments($context)
+	{
+		switch ($context) {
+			case 'ticket':
+				$check_field = 'is_tickets_enabled';
+				break;
+			case 'chat':
+				$check_field = 'is_chat_enabled';
+				break;
+			default:
+				throw new \InvalidArgumentException("Unknown context `$context`");
+		}
+
+		return $this->getEntityManager()->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d
+			WHERE d.parent IS NOT NULL
+				AND d.$check_field = 1
+		")->execute();
+	}
+
 
 	/**
 	 * Get deps that arent linked up to a gateway

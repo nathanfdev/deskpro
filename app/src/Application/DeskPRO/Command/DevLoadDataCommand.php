@@ -1,0 +1,439 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace Application\DeskPRO\Command;
+
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+
+class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+{
+	protected function configure()
+	{
+		$this->setName('dpdev:load-data');
+		$this->addOption('count', null, InputOption::VALUE_REQUIRED, 'Amount of data for each type to create', 0);
+		$this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
+	}
+
+	protected $_dataCache = array();
+
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled");
+			return 1;
+		}
+
+		// todo: usergroup, person_field, sla, ticket_field, filter, feedback_status, feedback_type, article_category
+		// todo: news_category, download_category
+
+		$available_types = array(
+			'organization', 'usergroup',
+			'person_field', 'person',
+			'sla', 'ticket_field', 'ticket', 'filter',
+			'feedback_status', 'feedback_type', 'feedback',
+			'article_category','article',
+			'news_category','news',
+			'download_category', 'download',
+			'glossary',
+			'task'
+		);
+		// agent creation?, chat
+
+		$amount = intval($input->getOption('count'));
+		if ($amount <= 0) {
+			$amount = 100;
+		}
+
+		$type_input = $input->getOption('types');
+		if ($type_input === '*') {
+			$types = $available_types;
+		} else {
+			$types = preg_split('/,\s*/', $type_input, -1, PREG_SPLIT_NO_EMPTY);
+		}
+
+		if (!$types) {
+			echo "No types given. Cannot continue. Available types:\n\t" . implode(', ', $available_types) . "\n";
+			return;
+		}
+
+		$db = App::getDb();
+
+		$this->_dataCache['agents'] = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$this->_dataCache['agent_teams'] = App::getEntityRepository('DeskPRO:AgentTeam')->getTeams();
+		$this->_dataCache['random_people_ids'] = $db->fetchAllCol('
+			SELECT id
+			FROM people
+			WHERE is_agent = 0
+			ORDER BY RAND()
+			LIMIT 1000
+		');
+		if (!$this->_dataCache['random_people_ids']) {
+			$this->_dataCache['random_people_ids'] = array_keys($this->_dataCache['agents']);
+		}
+
+		$this->_dataCache['random_org_ids'] = $db->fetchAllCol('
+			SELECT id
+			FROM organizations
+			ORDER BY RAND()
+			LIMIT 1000
+		');
+
+		$total = count($types);
+
+		// loop through all to keep the order the same as we create some dependent stuff first
+		foreach ($available_types AS $i => $type) {
+			if (!in_array($type, $types)) {
+				continue;
+			}
+
+			$start = microtime(true);
+			$count = $i+1;
+
+			$method = '_load' . str_replace('_', '', $type);
+			if (!method_exists($this, $method)) {
+				echo str_pad(
+					sprintf("[%02d/%02d] %s is unknown, skipping.", $count, $total, $type),
+					60
+				) . "\n";
+				continue;
+			}
+
+			echo str_pad(
+				sprintf("[%02d/%02d] %s... 0/%d", $count, $total, $type, $amount),
+				60
+			) . "\r";
+
+			for ($i = 0; $i < $amount; $i++) {
+				$this->$method();
+
+				if ($i > 0 && $i % 10 == 0) {
+					$time = microtime(true) - $start;
+					echo str_pad(
+						sprintf("[%02d/%02d] %s... %d/%d (%.2f seconds)", $count, $total, $type, $i, $amount, $time),
+						60
+					) . "\r";
+				}
+			}
+
+			$time = microtime(true) - $start;
+			echo str_pad(
+				sprintf("[%02d/%02d] %s... completing (%.2f seconds)", $count, $total, $type, $time),
+				60
+			) . "\r";
+
+			App::getOrm()->flush();
+
+			$complete_method = '_complete' . str_replace('_', '', $type);
+			if (method_exists($this, $complete_method)) {
+				$this->$complete_method();
+			}
+
+			$time = microtime(true) - $start;
+			echo str_pad(
+				sprintf("[%02d/%02d] %s... Done, inserted %d (%.2f seconds)", $count, $total, $type, $amount, $time),
+				60
+			) . "\n";
+		}
+
+		echo "\nData load completed.\n";
+	}
+
+	protected function _loadOrganization()
+	{
+		$org = new Entity\Organization();
+		$org->name = $this->_getRandomText(rand(1, 3));
+
+		// todo: contact data, groups, fields
+
+		App::getOrm()->persist($org);
+		$this->_applyLabels($org);
+	}
+
+	protected function _completeOrganization()
+	{
+		$this->_dataCache['random_org_ids'] = App::getDb()->fetchAllCol('
+			SELECT id
+			FROM organizations
+			ORDER BY RAND()
+			LIMIT 1000
+		');
+	}
+
+	protected function _loadPerson()
+	{
+		$person = new Entity\Person();
+		$person->name = $this->_getRandomText(2);
+		$person->setEmail($this->_getRandomText(1) . microtime(true) . '@example.com', true);
+		if (rand(1, 3) == 1) {
+			$person->setOrganizationId($this->_getRandomFromCache('random_org_ids'));
+		}
+
+		// todo: contact data, groups, secondary emails, custom fields
+
+		App::getOrm()->persist($person);
+		$this->_applyLabels($person);
+	}
+
+	protected function _completePerson()
+	{
+		$this->_dataCache['random_people_ids'] = App::getDb()->fetchAllCol('
+			SELECT id
+			FROM people
+			WHERE is_agent = 0
+			ORDER BY RAND()
+			LIMIT 1000
+		');
+	}
+
+	protected function _loadTicket()
+	{
+		if (!isset($this->_dataCache['ticket_departments'])) {
+			$this->_dataCache['ticket_departments'] = App::getEntityRepository('DeskPRO:Department')->getChildDepartments('ticket');
+		}
+
+		$ticket = new Entity\Ticket(false);
+		$ticket->subject = $this->_getRandomText(rand(2, 6));
+		$ticket->setPersonId($this->_getRandomFromCache('random_people_ids'));
+		if (rand(0, 2) == 0) {
+			$ticket->setAgentId($this->_getRandomFromCache('agents')->id);
+		}
+		$ticket->setDepartment($this->_getRandomFromCache('ticket_departments'));
+		$ticket->creation_system = Entity\Ticket::CREATED_WEB_API;
+		$ticket->status = (rand(0, 1) ? 'awaiting_user' : 'awaiting_agent');
+		$ticket->language = $ticket->person->getRealLanguage();
+
+		$message = new Entity\TicketMessage();
+		$message->person = $ticket->person;
+		$message->creation_system = Entity\TicketMessage::CREATED_WEB_API;
+		$message->setMessageText($this->_getRandomText(rand(50, 500)));
+
+		$ticket->addMessage($message);
+
+		// todo: attachments, custom field values, message notes
+
+		$message_count = rand(0, 10);
+		if ($message_count > 0) {
+			for ($i = 0; $i < $message_count; $i++) {
+				$message = new Entity\TicketMessage();
+				$message->person = ($ticket->agent && rand(0, 1)) ? $ticket->agent : $ticket->person;
+				$message->creation_system = Entity\TicketMessage::CREATED_WEB_API;
+				$message->setMessageText($this->_getRandomText(rand(50, 500)));
+			}
+		}
+
+		App::getOrm()->persist($ticket);
+		$this->_applyLabels($ticket);
+	}
+
+	protected function _loadFeedback()
+	{
+		if (!isset($this->_dataCache['feedback_types'])) {
+			$this->_dataCache['feedback_types'] = App::getEntityRepository('DeskPRO:FeedbackCategory')->findAll();
+		}
+		if (!isset($this->_dataCache['feedback_statuses'])) {
+			$this->_dataCache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
+		}
+
+		$feedback = new Entity\Feedback();
+		$feedback->title = $this->_getRandomText(rand(2, 6));
+		$feedback->content = htmlspecialchars($this->_getRandomText(30));
+		if (rand(1, 3) == 1) {
+			$feedback->setStatusCode('new');
+		} else {
+			$status = $this->_getRandomFromCache('feedback_statuses');
+			$feedback->setStatusCode($status->status_type . '.' . $status->id);
+		}
+		$feedback->category = $this->_getRandomFromCache('feedback_types');
+		$feedback->person = $this->_getPerson($this->_getRandomFromCache('random_people_ids'));
+
+		// todo: attachments, user categories, validation?, comments
+
+		App::getOrm()->persist($feedback);
+		$this->_applyLabels($feedback);
+	}
+
+	protected function _loadArticle()
+	{
+		if (!isset($this->_dataCache['article_categories'])) {
+			$this->_dataCache['article_categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->findAll();
+		}
+
+		$article = new Entity\Article();
+		$article->title = $this->_getRandomText(rand(2, 6));
+		$article->content = htmlspecialchars($this->_getRandomText(30));
+		$article->setStatus('published');
+		$article->addToCategory($this->_getRandomFromCache('article_categories'));
+		$article->person = $this->_getPerson($this->_getRandomFromCache('random_people_ids'));
+
+		// todo: products, attachments, custom fields, comments (with validation), varied statuses
+
+		App::getOrm()->persist($article);
+		$this->_applyLabels($article);
+	}
+
+	protected function _loadNews()
+	{
+		if (!isset($this->_dataCache['news_categories'])) {
+			$this->_dataCache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
+		}
+
+		$news = new Entity\News();
+		$news->title = $this->_getRandomText(rand(2, 6));
+		$news->content = htmlspecialchars($this->_getRandomText(30));
+		$news->setStatus('published');
+		$news->category = $this->_getRandomFromCache('news_categories');
+		$news->person = $this->_getPerson($this->_getRandomFromCache('random_people_ids'));
+
+		// todo: attachments, comments (with validation)
+
+		App::getOrm()->persist($news);
+		$this->_applyLabels($news);
+	}
+
+	protected function _loadDownload()
+	{
+		if (!isset($this->_dataCache['download_categories'])) {
+			$this->_dataCache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
+		}
+
+		$download = new Entity\Download();
+		$download->title = $this->_getRandomText(rand(2, 6));
+		$download->content = htmlspecialchars($this->_getRandomText(30));
+		$download->setStatus('published');
+		$download->category = $this->_getRandomFromCache('download_categories');
+		$download->person = $this->_getPerson($this->_getRandomFromCache('random_people_ids'));
+
+		// todo: attachments, comments (with validation)
+
+		App::getOrm()->persist($download);
+		$this->_applyLabels($download);
+	}
+
+	protected function _loadGlossary()
+	{
+		$def = new Entity\GlossaryWordDefinition();
+		$def->definition = $this->_getRandomText(rand(5, 10));
+		$word_count = rand(1, 5);
+		for ($i = 0; $i < $word_count; $i++) {
+			$start = chr(rand(64, 90)); // @ and A-Z
+			$def->addWord($start . $this->_getRandomText(1));
+		}
+
+		if (count($def->words)) {
+			App::getOrm()->persist($def);
+			App::getOrm()->flush(); // need to flush each as might get a dupe error
+		}
+	}
+
+	protected function _loadTask()
+	{
+		$task = new Entity\Task();
+		$task->title = $this->_getRandomText(rand(2, 8));
+		$task->person = $this->_getRandomFromCache('agents');
+		$task->setVisibility(rand(1, 3) == 1 ? 0 : 1);
+		if (rand(0, 1)) {
+			$task->due_date = time() + rand(10000, 10000000);
+		}
+		if (rand(1, 3) == 1) {
+			$task->assigned_agent = $this->_getRandomFromCache('agents');
+		} else if (rand(1, 3) == 1) {
+			$task->assigned_agent_team = $this->_getRandomFromCache('agent_teams');
+		}
+
+		$task->setCompleted(rand(1, 3) == 1);
+
+		// todo: comments, ticket linking
+
+		App::getOrm()->persist($task);
+		$this->_applyLabels($task);
+	}
+
+	protected function _getRandomFromCache($key)
+	{
+		if (!isset($this->_dataCache[$key]) || empty($this->_dataCache[$key])) {
+			return null;
+		}
+
+		$rand = array_rand($this->_dataCache[$key]);
+		return $this->_dataCache[$key][$rand];
+	}
+
+	protected function _applyLabels($entity)
+	{
+		if (!method_exists($entity, 'getLabelManager')) {
+			return;
+		}
+
+		/** @var $manager \Application\DeskPRO\Labels\LabelManager */
+		$manager = $entity->getLabelManager();
+
+		$labels = rand(0, 4);
+		if ($labels) {
+			App::getOrm()->flush(); // must generate an ID first
+
+			for ($i = 0; $i < $labels; $i++) {
+				$label = $manager->addLabel($this->_getRandomText(1));
+				App::getOrm()->persist($label);
+			}
+		}
+	}
+
+	protected $_words = null;
+
+	protected function _getRandomText($word_length = 1)
+	{
+		if (!is_array($this->_words)) {
+			$this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat a venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque a risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis a mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur a nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis a massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam a ornare tortor Vestibulum a tellus in orci ultrices semper Aenean sit amet libero a ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices a adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla a metus a augue viverra placerat dapibus ac lacus Integer lectus metus laoreet a semper eget dictum at purus Sed');
+		}
+
+		$output = array();
+		for ($i = 0; $i < $word_length; $i++) {
+			$key = array_rand($this->_words);
+			$output[] = $this->_words[$key];
+		}
+
+		return implode(' ', $output);
+	}
+
+	protected function _getPerson($id)
+	{
+		return App::getEntityRepository('DeskPRO:Person')->find($id);
+	}
+}
