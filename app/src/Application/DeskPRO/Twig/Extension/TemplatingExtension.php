@@ -187,7 +187,9 @@ class TemplatingExtension extends \Twig_Extension
 			'DPC_SITE_DOMAIN'       => true,
 			'DPC_SITE_DOMAIN_ALT'   => true,
 			'DPC_SITE_BUILD_NUM'    => true,
-			'DPC_ACCOUNT_ID'        => true
+			'DPC_ACCOUNT_ID'        => true,
+			'DPC_BILL_OVERDUE'      => true,
+			'DPC_BILL_DATE'         => true,
 		);
 
 		if (!$name || !defined($name) || !isset($whitelist[$name])) {

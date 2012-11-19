@@ -366,6 +366,19 @@
 	</section>
 {% endif %}
 
+{% if app.isCloud() and constant('DPC_BILL_OVERDUE') %}
+	<section class="demo-notice failed-bill">
+		<article>
+			We failed to charge your credit-card for another month of service. To ensure uninterupted service, please go to the billing interface
+			to settle the overdue bill.
+
+			<div class="enter-wrap">
+				<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary warn">Enter your billing information now &rarr;</a>
+			</div>
+		</article>
+	</section>
+{% endif %}
+
 {% if is_post_install %}
 {% if not is_cron_page and app.getSetting('core.setup_initial') and not app.getSetting('core.last_cron_run') and app.getSetting('core.install_timestamp') and ( ('now'|date('U') - 600) > app.getSetting('core.install_timestamp')) %}
 	<div class="cron-warn">

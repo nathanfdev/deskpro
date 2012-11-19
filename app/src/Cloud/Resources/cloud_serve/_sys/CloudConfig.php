@@ -158,6 +158,8 @@ class CloudConfig
 		define('DP_DATABASE_PASSWORD',   $siteinfo['db_password']);
 		define('DP_DATABASE_NAME',       $siteinfo['db_name']);
 		define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
+		define('DPC_BILL_DATE',          $siteinfo['next_bill_at']);
+		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] < time());
 
 		if (!is_dir(DPC_SITE_DATADIR)) {
 			mkdir(DPC_SITE_DATADIR, 0777, true);
@@ -313,7 +315,7 @@ class CloudConfig
 		$stmt = self::getDb()->prepare("
 			SELECT
 				cloud_sites.*,
-				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 			WHERE cloud_sites.id = ? AND cloud_sites.build_number > 0 AND cloud_accounts.is_offline = 0
@@ -342,7 +344,7 @@ class CloudConfig
 		$stmt = self::getDb()->prepare("
 			SELECT
 				cloud_sites.*,
-				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at
+				cloud_accounts.id AS account_id, cloud_accounts.agents, cloud_accounts.is_demo, UNIX_TIMESTAMP(cloud_accounts.date_demo_expire) AS demo_expire_at, UNIX_TIMESTAMP(cloud_accounts.date_next_bill) AS next_bill_at
 			FROM cloud_sites
 			LEFT JOIN cloud_accounts ON cloud_accounts.cloud_site_id = cloud_sites.id
 			LEFT JOIN cloud_site_domains ON (cloud_site_domains.cloud_site_id = cloud_sites.id)
