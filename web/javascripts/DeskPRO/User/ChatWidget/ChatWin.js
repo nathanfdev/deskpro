@@ -219,7 +219,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			dropZone: $(document),
 			autoUpload: true,
 			formData: {
-				security_token: this.options.uploadSecurityToken
+				security_token: this.options.uploadSecurityToken,
+				_rt: DP_REQUEST_TOKEN
 			},
 			start: function() {
 				$('document').find('li.attach-error').remove();

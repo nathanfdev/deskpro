@@ -10,6 +10,7 @@
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
 		var DESKPRO_SESSION_ID = '{{ app.session.getId() }}';
+		var DP_REQUEST_TOKEN = '{{ security_token('request_token', 10800) }}';
 
 		{% if constant('DP_DEBUG') %}
 			DP_DEBUG = true;
