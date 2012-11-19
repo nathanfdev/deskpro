@@ -61,6 +61,7 @@ class TicketSlas extends AbstractJob
 		foreach ($ticket_slas as $ticket_sla) {
 			$ticket_sla->evaluateSlaDates();
 			$em->persist($ticket_sla);
+			$em->flush();
 
 			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_FAIL) {
 				$count_failed++;
@@ -71,6 +72,7 @@ class TicketSlas extends AbstractJob
 		foreach ($ticket_slas as $ticket_sla) {
 			$ticket_sla->evaluateSlaDates();
 			$em->persist($ticket_sla);
+			$em->flush();
 
 			if ($ticket_sla->sla_status == \Application\DeskPRO\Entity\TicketSla::STATUS_WARNING) {
 				$count_warning++;
@@ -80,7 +82,5 @@ class TicketSlas extends AbstractJob
 		if ($count_warning || $count_failed) {
 			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
 		}
-
-		$em->flush();
 	}
 }
