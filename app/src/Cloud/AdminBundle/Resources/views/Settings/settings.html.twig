@@ -1,4 +1,25 @@
 {% extends 'AdminBundle:Settings:settings.html.twig' %}
+{% block post_basics_x %}
+	<input type="hidden" name="set_settings[]" value="core.cloud_custom_domain" />
+	<div class="setting_field_row">
+		<h4>Custom Domain</h4>
+		<div class="setting_fields">
+			<div class="field_row">
+				{% if not app.getSetting('core.cloud_custom_domain') %}
+					<p>
+						To use a custom domain or sub-domain, create a <var style="background-color: #D7DEE6; font-family: Consolas, Monaco, monospace; font-style: normal;">CNAME</var> record that points to <var style="background-color: #D7DEE6; font-family: Consolas, Monaco, monospace; font-style: normal;">{{ constant('DPC_SITE_DOMAIN') }}.</var>
+					</p>
+					<p>
+						After you have done that you can set your custom domain here: <input type="text" name="settings[core.cloud_custom_domain]" value="{{ app.getSetting('core.cloud_custom_domain') }}" style="width: 200px;" placeholder="Enter your custom domain name" />
+					</p>
+				{% else %}
+					Your custom domain:<br/>
+					<input type="text" name="settings[core.cloud_custom_domain]" value="{{ app.getSetting('core.cloud_custom_domain') }}" style="width: 200px;" placeholder="Enter your custom domain name" />
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
 {% block attach_user_filesize_row %}
 	Maximum allowed upload size: 25 MB<br />
 	Maximum allowed email: 25 MB

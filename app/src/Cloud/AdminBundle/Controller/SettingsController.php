@@ -37,5 +37,32 @@ use Application\AdminBundle\Controller\SettingsController as BaseSettingsControl
 
 class SettingsController extends BaseSettingsController
 {
+	/**
+	 * @var string
+	 */
+	protected $old_domain = null;
 
+	public function settingsAction()
+	{
+		$this->old_domain = $this->container->getSetting('core.cloud_custom_domain');
+		return parent::settingsAction();
+	}
+
+	protected function _postSaveSettings()
+	{
+		$new_domain = $this->container->getSetting('core.cloud_custom_domain');
+		if ($new_domain && (!preg_match('#^[a-z\d](-*[a-z\d])*$#', $new_domain) || preg_match('#\.deskpro\.com$#', $new_domain))) {
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.cloud_custom_domain', null);
+			$this->container->getSettingsHandler()->setTemporarySettingValues('core.cloud_custom_domain', null);
+		}
+
+		if ($new_domain != $this->old_domain) {
+
+		}
+	}
+
+	public function changeCustomDomains()
+	{
+
+	}
 }

@@ -1,7 +1,6 @@
 {% set this_page = 'dashboard' %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% block html_head %}{% include 'AdminBundle:Main:index-html-head.html.twig' %}{% endblock %}
 {% block pagebar %}
 <ul>
 	<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
@@ -58,7 +57,7 @@
 {% block page %}
 
 {% include 'AdminBundle:Main:welcome-box.html.twig' %}
-{% include 'AdminCloudBundle:Main:onboarding.html.twig' %}
+{% include 'CloudAdminBundle:Main:onboarding.html.twig' %}
 
 <div class="content-table">
 	<table width="100%">

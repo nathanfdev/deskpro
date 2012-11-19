@@ -67,6 +67,7 @@ class SettingsController extends AbstractController
 		};
 
 		if ($this->in->getBool('process')) {
+
 			$url = rtrim(preg_replace('#index\.php/?$#', '', $_POST['settings']['core.deskpro_url']), '/') . '/';
 			if (!preg_match('#^https?://#', $url)) {
 				$url = 'http://' . $url;
@@ -121,11 +122,14 @@ class SettingsController extends AbstractController
 
 			foreach ($update_settings as $k => $v) {
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);
+				$this->container->getSettingsHandler()->setTemporarySettingValues($k, $v);
 			}
 
 			if (!$update_settings['core.helpdesk_disabled'] && file_exists(dp_get_data_dir().'/helpdesk-offline.trigger')) {
 				unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
 			}
+
+			$this->_postSaveSettings();
 
 			return $this->redirectRoute('admin_settings');
 		}
@@ -147,6 +151,11 @@ class SettingsController extends AbstractController
 		")->getOneOrNullResult();
 
 		return $this->render('@Settings:settings.html.twig', $vars);
+	}
+
+	protected function _postSaveSettings()
+	{
+
 	}
 
 	public function settingsSaveFormAction($type, $auth)
