@@ -317,13 +317,46 @@
 	<section class="demo-notice">
 		<article>
 			{% if app.isCloud() %}
-				Your DeskPRO demo expires <em class="days">{% if app.getLicense().getExpireDays() == 1 %}TODAY{% elseif app.getLicense().getExpireDays() == 2 %}TOMORROW{% else %}in {{ app.getLicense().getExpireDays() }} days{% endif %}</em>. To dismiss this notice and ensure uninterupted access, please enter your billing information.
+				Your DeskPRO demo expires
+				<em class="days">
+					{% if app.getLicense().getExpireDays() == 1 %}
+						TODAY
+					{% elseif app.getLicense().getExpireDays() == 2 %}
+						TOMORROW
+					{% elseif app.getLicense().getExpireDays() == 0 %}
+						{% if app.getLicense().getExpireTime('hours') == 0 %}
+							{{ app.getLicense().getExpireTime('mins') }} minutes
+						{% else %}
+							{{ app.getLicense().getExpireTime('hours') }} hours
+						{% endif %}
+					{% else %}
+						in {{ app.getLicense().getExpireDays() }} days
+					{% endif %}
+				</em>.
+
+				To dismiss this notice and ensure uninterupted access, please enter your billing information.
 
 				<div class="enter-wrap">
 					<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
 				</div>
 			{% else %}
-				Your DeskPRO demo expires <em class="days">{% if app.getLicense().getExpireDays() == 1 %}TODAY{% elseif app.getLicense().getExpireDays() == 2 %}TOMORROW{% else %}in {{ app.getLicense().getExpireDays() }} days{% endif %}</em>. To dismiss this notice and keep your helpdesk operational, you need to purchase a license.
+				Your DeskPRO demo expire
+				<em class="days">
+					{% if app.getLicense().getExpireDays() == 1 %}
+						TODAY
+					{% elseif app.getLicense().getExpireDays() == 2 %}
+						TOMORROW
+					{% elseif app.getLicense().getExpireDays() == 0 %}
+						{% if app.getLicense().getExpireTime('hours') == 0 %}
+							{{ app.getLicense().getExpireTime('mins') }} minutes
+						{% else %}
+							{{ app.getLicense().getExpireTime('hours') }} hours
+						{% endif %}
+					{% else %}
+						in {{ app.getLicense().getExpireDays() }} days
+					{% endif %}
+				</em>.
+				To dismiss this notice and keep your helpdesk operational, you need to purchase a license.
 
 				<div class="enter-wrap">
 					<a href="https://www.deskpro.com/members/buy" class="btn primary">Purchase a license now &rarr;</a>

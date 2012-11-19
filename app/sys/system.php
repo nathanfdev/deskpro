@@ -568,12 +568,26 @@ final class License
 
 	public function getExpireDays()
 	{
+		return $this->getExpireTime('days');
+	}
+
+	public function getExpireTime($unit)
+	{
 		$d = $this->getExpireDate();
 		if (!$d) {
 			return null;
 		}
 
-		return $d->diff(new \DateTime())->days;
+		switch ($unit) {
+			case 'days':
+				return $d->diff(new \DateTime())->days;
+			case 'hours':
+				return $d->diff(new \DateTime())->h;
+			case 'mins':
+				return $d->diff(new \DateTime())->i;
+		}
+
+		return 0;
 	}
 
 	public function isPastExpireDate()
