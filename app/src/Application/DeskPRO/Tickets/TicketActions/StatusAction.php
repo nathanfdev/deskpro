@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
  * Sets status
@@ -46,9 +47,15 @@ class StatusAction extends AbstractAction implements PermissionableAction
 {
 	protected $status;
 
-	public function __construct($status)
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 */
+	protected $tracker;
+
+	public function __construct($status, TicketChangeTracker $tracker = null)
 	{
 		$this->setStatus($status);
+		$this->tracker = $tracker;
 	}
 
 	public function setStatus($status)
@@ -108,6 +115,31 @@ class StatusAction extends AbstractAction implements PermissionableAction
 			$ticket->setHiddenStatus($hidden_status);
 		} else {
 			$ticket->setStatus($status);
+		}
+
+		if ($ticket->hidden_status == 'deleted') {
+			$delete_person = null;
+			if ($this->tracker && $this->tracker->getPersonPerformer()) {
+				$delete_person = $this->tracker->getPersonPerformer();
+			} elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && App::getCurrentPerson()) {
+				$delete_person = App::getCurrentPerson();
+			}
+
+			if ($delete_person) {
+				$del = $ticket->getDeletionRecord();
+				if (!$del) {
+					$del = new \Application\DeskPRO\Entity\TicketDeleted();
+				}
+
+				$del['ticket_id']     = $ticket->getId();
+				$del['old_ptac']      = $ticket->auth;
+				$del['by_person']     = $delete_person;
+				$del['new_ticket_id'] = 0;
+				$del['reason']        = '';
+
+				App::getOrm()->persist($del);
+				App::getOrm()->flush();
+			}
 		}
 	}
 
