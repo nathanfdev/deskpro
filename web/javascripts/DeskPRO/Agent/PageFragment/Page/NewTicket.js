@@ -398,6 +398,26 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.updateUi();
 	},
 
+	updateUi: function() {
+		var x;
+		if (this.wrapper) {
+			if (!this.scrollHandlers) {
+				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
+			}
+			for (x = 0; x < this.scrollHandlers.length; x++) {
+				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
+				if (sh && sh.updateSize) {
+					sh.updateSize();
+				}
+			};
+
+			if (this.doScrollBottom) {
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				this.doScrollBottom = false;
+			}
+		}
+	},
+
 	insertMessageText: function(content) {
 		var textarea = this.getEl('message');
 
@@ -723,6 +743,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				inlineHiddenPosition: this.getEl('is_html_reply')
 			});
 			this.getEl('is_html_reply').val(1);
+
+			var ed = textarea.getEditor();
+			var lastH = ed.height();
+			ed.on('keypress change', function() {
+				textarea.addClass('touched');
+
+				if (lastH != ed.height()) {
+					lastH = ed.height();
+					self.doScrollBottom = true;
+					window.setTimeout(function() { self.page.updateUi(); }, 50);
+				}
+			});
 		} else {
 			var sig = this.getEl('signature_value').val();
 			if (sig) {
