@@ -115,6 +115,13 @@ $collection->add('admin_dash_versioninfo', new Route(
 	array()
 ));
 
+$collection->add('admin_dash_versionnotice', new Route(
+	'/dashboard/load-version-notice.html',
+	array('_controller' => 'AdminBundle:Main:dashVersionNotice'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Upgrade
 ################################################################################

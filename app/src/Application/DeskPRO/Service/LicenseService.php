@@ -80,6 +80,32 @@ class LicenseService
 
 
 	/**
+	 * Get version notice info
+	 *
+	 * Data returned:
+	 * - link: <url>
+	 * - message: <text>
+	 * - level: notice/warning/critical
+	 *
+	 * @return array
+	 */
+	public static function getVersionNotice()
+	{
+		static $data = null;
+
+		if ($data === null) {
+			try {
+				$data = self::fetchServiceResult('build/version-notice.json', array('my_build' => DP_BUILD_TIME));
+			} catch (\Exception $e) {
+				$data = array();
+			}
+		}
+
+		return $data;
+	}
+
+
+	/**
 	 * @param string $endpoint
 	 * @param array $post_data
 	 * @return array

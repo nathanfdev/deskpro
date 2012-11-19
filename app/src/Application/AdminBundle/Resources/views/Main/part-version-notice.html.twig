@@ -1,0 +1,14 @@
+{% if version_notice %}
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>NOTICE</h4>
+			</header>
+			<article>
+				{{ version_notice.text }}
+				<br/><br/>
+				<a href="{{ version_notice.link }}">Read More</a>
+			</article>
+		</div>
+	</div>
+{% endif %}

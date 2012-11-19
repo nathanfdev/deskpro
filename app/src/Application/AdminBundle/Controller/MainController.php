@@ -380,4 +380,21 @@ class MainController extends AbstractController
 
 		return $this->createJsonResponse($json);
 	}
+
+	public function dashVersionNoticeAction()
+	{
+		try {
+			$version_notice = \Application\DeskPRO\Service\LicenseService::getVersionNotice();
+		} catch (\Exception $e) {
+			$version_info = null;
+		}
+
+		if (!$version_notice || empty($version_notice['message'])) {
+			return $this->createResponse('');
+		}
+
+		return $this->render('AdminBundle:Main:part-version-notice.html.twig', array(
+			'version_notice' => $version_notice
+		));
+	}
 }
