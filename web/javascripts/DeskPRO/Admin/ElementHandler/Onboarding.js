@@ -171,7 +171,8 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 				url: row.data('submit-url'),
 				type: 'POST',
 				data: {
-					message: text
+					message: text,
+					type: 'ask'
 				},
 				complete: function() {
 					btn.find('em').removeClass('flat-spinner');
