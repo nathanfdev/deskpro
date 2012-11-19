@@ -824,7 +824,7 @@ class TicketChangeTracker extends ChangeTracker
 		$this->_cleanOldWriters();
 
 		$log = implode("\n", $this->arr_writer->getMessages());
-		if ($log) {
+		if ($log && $this->ticket && $this->ticket->getId() && !$this->ticket->_isRemoved && !$this->isExtraSet('bare_delete')) {
 			try {
 				App::getDb()->insert('ticket_changetracker_logs', array(
 					'ticket_id'    => $this->ticket['id'],
