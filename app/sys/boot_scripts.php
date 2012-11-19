@@ -43,42 +43,51 @@ switch ($_GET['_sys']) {
 		break;
 
 	case 'memtest':
+		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/memtest.php';
 		break;
 
 	case 'errorlog':
+		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/errorlog.php';
 		break;
 
 	case 'check':
+		if (defined('DPC_IS_CLOUD')) exit;
 		require DP_ROOT . '/sys/scripts/check.php';
 		break;
 
 	case 'phpinfo':
+		if (defined('DPC_IS_CLOUD')) exit;
 		require DP_ROOT . '/sys/scripts/phpinfo.php';
 		break;
 
 	case 'apc':
+		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/apc.php';
 		break;
 
 	case 'apcclear':
+		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/apcclear.php';
 		break;
 
 	case 'checkurl':
+		if (defined('DPC_IS_CLOUD')) exit;
 		require DP_ROOT . '/sys/scripts/checkurl.php';
 		break;
 
 	case 'checkurlpath':
+		if (defined('DPC_IS_CLOUD')) exit;
 		require DP_ROOT . '/sys/scripts/checkurlpath.php';
 		break;
 
 	case 'dev_run_migrations':
+		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/dev_run_migrations.php';
 		break;
