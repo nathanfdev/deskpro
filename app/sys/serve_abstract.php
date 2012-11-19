@@ -135,7 +135,7 @@ abstract class LoaderAbstract
 	/**
 	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
-	protected function bootFullSystem()
+	protected function bootFullSystem($kernel_class = null)
 	{
 		static $container;
 
@@ -156,7 +156,9 @@ abstract class LoaderAbstract
 			// so it doesnt try and connect twice
 			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->getPdo();
 
-			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
+			if (!$kernel_class) {
+				$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
+			}
 			define('DP_INTERFACE', 'sys');
 
 			$kernel = new $kernel_class($env, $debug);

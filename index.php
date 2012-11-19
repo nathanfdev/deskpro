@@ -42,6 +42,7 @@ switch (DP_BOOT_MODE) {
 	case 'web':             require DP_ROOT.'/sys/boot_web.php';         break;
 	case 'serve_file':      require DP_ROOT.'/sys/serve_file.php';       break;
 	case 'serve_widget':    require DP_ROOT.'/sys/serve_widget.php';     break;
+	case 'get_messages':    require DP_ROOT.'/sys/get_messages.php';     break;
 	case 'import':          require DP_ROOT.'/sys/boot_import.php';      break;
 	case 'upgrade':         require DP_ROOT.'/sys/boot_upgrade.php';     break;
 }
