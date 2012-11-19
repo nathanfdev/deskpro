@@ -57,7 +57,27 @@ class SettingsController extends BaseSettingsController
 		}
 
 		if ($new_domain != $this->old_domain) {
+			$set = $new_domain;
 
+			$tmpdata = new \Application\DeskPRO\Entity\TmpData();
+			$tmpdata->setType('dpc_set_domain');
+			$tmpdata->setData('by_person', $this->person->getId());
+			$tmpdata->setData('set_domain', $set);
+			$tmpdata->date_expire = new \DateTime('+30 minutes');
+
+			$this->em->persist($tmpdata);
+			$this->em->flush();
+
+			$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+
+			try {
+				$client = new \Zend\Http\Client(null, array('timeout' => 10));
+				$client->setMethod(\Zend\Http\Request::METHOD_GET);
+				$client->setUri($url);
+				$r = $client->send();
+			} catch (\Exception $e) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+			}
 		}
 	}
 
