@@ -88,25 +88,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			));
 
 			$val = array_unique($val);
-			$setting_map = array(
-				'articles'  => App::getSetting('user.portal_tab_articles'),
-				'news'      => App::getSetting('user.portal_tab_news'),
-				'feedback'  => App::getSetting('user.portal_tab_feedback'),
-				'downloads' => App::getSetting('user.portal_tab_downloads'),
-				'newticket' => App::getSetting('user.portal_tab_tickets')
-			);
-
-			usort($val, function($a, $b) use ($setting_map) {
-				$a_on = $setting_map[$a];
-				$b_on = $setting_map[$b];
-
-				if ($a_on == $b_on) {
-					return 0;
-				}
-
-				return $a_on ? -1 : 1;
-			});
-
 			$tpl_globals->setVariable('portal_tabs_order', $val);
 		}
 	}
