@@ -73,6 +73,11 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	protected $disabled = false;
 
+	/**
+	 * @var int
+	 */
+	protected $umask = 0111;
+
 
 	/**
 	 * @param string $cache_file
@@ -280,11 +285,25 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 		$this->dirty = false;
 
+		$changed_umask = null;
+		if (!file_exists($this->cache_file)) {
+			$changed_umask = umask($this->umask);
+		}
+
 		if (file_put_contents($this->cache_file, $php, \LOCK_EX) != $size) {
+
+			if ($changed_umask !== null) {
+				umask($changed_umask);
+			}
+
 			// The file is probably invalid now, delete it
 			@unlink($this->cache_file);
 
 			throw new \RuntimeException("Failed to write $size bytes");
+		}
+
+		if ($changed_umask !== null) {
+			umask($changed_umask);
 		}
 	}
 
