@@ -1105,15 +1105,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$now = new \DateTime();
 		if ($message->person['is_agent']) {
-			if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
-				$this['date_last_agent_reply'] = $now;
-			}
+			if (!$message->is_agent_note) {
+				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
+					$this['date_last_agent_reply'] = $now;
+				}
 
-			if (!$this->date_first_agent_reply) {
-				$this['date_first_agent_reply'] = $now;
-				$this->_recalculate_slas = true; // may have a "first reply" sla
+				if (!$this->date_first_agent_reply) {
+					$this['date_first_agent_reply'] = $now;
+					$this->_recalculate_slas = true; // may have a "first reply" sla
 
-				$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
+					$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
+				}
 			}
 		} else {
 			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
