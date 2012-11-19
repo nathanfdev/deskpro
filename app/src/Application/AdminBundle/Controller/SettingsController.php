@@ -515,7 +515,7 @@ class SettingsController extends AbstractController
 			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', rtrim(str_replace('index.php', '', $url), '/') . '/');
 		}
 
-		if ($this->container->getSetting('core.app_secret') == 'APP_SERCRET') {
+		if ($this->container->getSetting('core.app_secret') == 'APP_SECRET') {
 			$this->container->get('deskpro.core.settings')->setSetting('core.app_secret', Strings::random(50, Strings::CHARS_ALPHANUM_IU));
 		}
 
