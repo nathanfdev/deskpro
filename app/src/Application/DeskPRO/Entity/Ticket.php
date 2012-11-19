@@ -1900,6 +1900,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
+
 		$this->_reset_slas = true;
 		$this->_recalculate_slas = true;
 	}
@@ -2320,7 +2321,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				}
 			}
 			$this->_reset_slas = false;
-
 
 			$this->recalculateSlaDates();
 		}

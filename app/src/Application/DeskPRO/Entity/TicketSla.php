@@ -213,9 +213,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$tracker = $this->ticket->getTicketLogger();
-		$tracker->recordExtraMulti('trigger', $trigger);
-		$tracker->recordExtra('sla', $this->sla);
-		$tracker->recordExtra('sla_status', $status);
+		if ($tracker) {
+			$tracker->recordExtraMulti('trigger', $trigger);
+			$tracker->recordExtra('sla', $this->sla);
+			$tracker->recordExtra('sla_status', $status);
+		}
 
 		$trigger_log = array(
 			'ticket_id'     => $this->ticket->id,
@@ -226,7 +228,9 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		App::getDb()->insert('ticket_trigger_logs', $trigger_log);
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
-		$factory->addGlobalOption('tracker', $tracker);
+		if ($tracker) {
+			$factory->addGlobalOption('tracker', $tracker);
+		}
 		$factory->addGlobalOption('ticket', $this->ticket);
 
 		$actions_collection = new \Application\DeskPRO\Tickets\TicketActions\ActionsCollection();
