@@ -132,6 +132,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if (!$ticket) {
 			if (!$ticket) {
 				$detector = new CodeTicketDetector();
+				if ($this->is_bounce) {
+					$detector->enableBouncedMode();
+				}
 				if ($this->logger) $detector->setLogger($this->logger);
 				$ticket = $detector->findExistingTicket($this->reader);
 
@@ -166,6 +169,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				// Finally try subject string match
 				$detector = new SubjectMatchDetector();
 				if ($this->logger) $detector->setLogger($this->logger);
+
+				if ($this->is_bounce) {
+					$detector->enableBouncedMode();
+				}
+
 				$ticket = $detector->findExistingTicket($this->reader);
 
 				$this->logMessage('[TicketGatewayProcessor] SubjectMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));

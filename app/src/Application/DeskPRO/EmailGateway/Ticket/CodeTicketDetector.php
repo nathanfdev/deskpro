@@ -70,6 +70,21 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 	protected $logger;
 
 	/**
+	 * @var bool
+	 */
+	protected $is_bounce_mode = false;
+
+	/**
+	 * Enable bounce mode if the message is or is suspected ot be a bounced message.
+	 * This will look for PTAC/TAC 'headers' in the body text.
+	 */
+	public function enableBouncedMode()
+	{
+		$this->is_bounce_mode = true;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public function findExistingTicket(AbstractReader $reader)
@@ -92,6 +107,27 @@ class CodeTicketDetector implements TicketDetectorInterface, Loggable
 		if ($reader->getHeader('References')) {
 			foreach ($reader->getHeader('References')->getAllParts() as $part) {
 				$check_headers[] = $part;
+			}
+		}
+
+		// If its a bounced message, then the headers might be included in readable-text
+		if ($this->is_bounce_mode) {
+			$body = $reader->getBodyText()->getBody();
+			if (!$body) {
+				$body = strip_tags($reader->getBodyHtml()->getBody());
+			}
+
+			$m = null;
+			if (preg_match_all('<#(P?)TAC\-([A-Za-z0-9]+)\.#', $body, $m, \PREG_SET_ORDER)) {
+				foreach ($m as $match) {
+					if ($m[1]) {
+						$this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: " . $m[2]);
+					} else {
+						$this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: " . $m[2]);
+					}
+
+					$search_text[] = '(#' . $m[2] . ')';
+				}
 			}
 		}
 

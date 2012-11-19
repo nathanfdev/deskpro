@@ -65,6 +65,20 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	protected $logger;
 
 	/**
+	 * @var bool
+	 */
+	protected $is_bounce_mode = false;
+
+	/**
+	 * Enable bounce mode if the message is or is suspected ot be a bounced message.
+	 * This will look for PTAC/TAC 'headers' in the body text.
+	 */
+	public function enableBouncedMode()
+	{
+		$this->is_bounce_mode = true;
+	}
+
+	/**
 	 * @param int $time_cutoff Max age of a ticket before the subject match wont work
 	 */
 	public function __construct($time_cutoff = 7776000 /* 90 days */)
@@ -77,14 +91,28 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
+		$ticket = $this->_findExistingTicket($reader, $reader->getSubject()->getSubjectUtf8());
+
+		if (!$ticket && $this->is_bounce_mode && $body = $reader->getBodyText()->getBody()) {
+			$body_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $body);
+			if ($body_subject) {
+				$ticket = $this->_findExistingTicket($reader, $body_subject);
+			}
+		}
+
+		return $ticket;
+	}
+
+	public function _findExistingTicket(AbstractReader $reader, $subject)
+	{
 		$this->getLogger()->logDebug("[SubjectMatchDetector] Finding ticket");
 
 		$this->_found_person = null;
 
-		$subject = trim($reader->getSubject()->getSubjectUtf8());
+		$subject = trim($subject);
 		$subject_orig = $subject;
 
-		if (!preg_match('#^(RE|VS|AW|SV):\s*#i', $reader->getSubject()->getSubjectUtf8())) {
+		if (!preg_match('#^(RE|VS|AW|SV):\s*#i', $subject)) {
 			return null;
 		}
 
