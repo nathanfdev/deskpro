@@ -300,7 +300,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$this->_sendClientMessages();
 
 		$person = App::getCurrentPerson();
-		if ($person->id && !$person->is_agent) {
+		if ($person && $person->id && !$person->is_agent) {
 			// only agents are the ones to manually apply an SLA
 			$person = null;
 		}
@@ -342,7 +342,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaRemoved($this);
 
 		$ticket_log = new TicketLog();
-		$ticket_log['person'] = $person->id ? $person : null;
+		$ticket_log['person'] = ($person && $person->id) ? $person : null;
 		$ticket_log['ticket'] = $this->ticket;
 		$ticket_log['action_type'] = $action->getLogName();
 		$ticket_log['details'] = $action->getLogDetails();
