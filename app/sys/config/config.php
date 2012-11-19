@@ -126,6 +126,15 @@ $definition->setArguments(array(
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
+// doctrine.orm.default_query_cache
+$definition = new Definition();
+$definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
+$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array('dql'));
+$definition->addMethodCall('registerShutdownCommit');
+$container->setDefinition('doctrine.orm.default_query_cache', $definition);
+
 // deskpro.exception_logger
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\HttpKernel\ExceptionListener');

@@ -68,6 +68,11 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	protected $auto_write = false;
 
+	/**
+	 * @var bool
+	 */
+	protected $disabled = false;
+
 
 	/**
 	 * @param string $cache_file
@@ -77,6 +82,22 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 		$this->cache_file = $cache_file;
 	}
 
+
+	/**
+	 * Dont load anything new and dont commit
+	 */
+	public function disable()
+	{
+		$this->disabled	 = true;
+	}
+
+	/**
+	 * Disable caching and updating
+	 */
+	public function enable()
+	{
+		$this->disabled	 = false;
+	}
 
 	/**
 	 * Register a shutdown function to save the cache on exit if there are changes
@@ -92,7 +113,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 		$has_reg = true;
 
-		register_shutdown_function(array($this, 'commitIfDirty'));
+		register_shutdown_function(array($this, 'commitIfDirty'), true);
 	}
 
 
@@ -105,8 +126,15 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 			$this->data = array();
 		}
 
+		if ($this->disabled) {
+			return;
+		}
+
 		if (file_exists($this->cache_file)) {
-			$load_data = require($this->cache_file);
+			$load_data = @require($this->cache_file);
+			if (!$load_data) {
+				$load_data = array();
+			}
 
 			$time = time();
 
@@ -229,6 +257,10 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	public function commit()
 	{
+		if ($this->disabled) {
+			return;
+		}
+
 		// Always reload
 		$this->reloadData();
 
@@ -244,21 +276,32 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 		$this->data = $result;
 
 		$php = "<?php\nreturn " . var_export($result, true) . ";\n";
+		$size = strlen($php);
 
 		$this->dirty = false;
 
-		file_put_contents($this->cache_file, $php);
-		file_put_contents($this->cache_file, php_strip_whitespace($this->cache_file));
+		if (file_put_contents($this->cache_file, $php, \LOCK_EX) != $size) {
+			// The file is probably invalid now, delete it
+			@unlink($this->cache_file);
+
+			throw new \RuntimeException("Failed to write $size bytes");
+		}
 	}
 
 
 	/**
 	 * Commit if there have been changes to the cache
 	 */
-	public function commitIfDirty()
+	public function commitIfDirty($quiet = false)
 	{
 		if ($this->dirty) {
-			$this->commit();
+			try {
+				$this->commit();
+			} catch (\Exception $e) {
+				if (!$quiet) {
+					throw $e;
+				}
+			}
 		}
 	}
 

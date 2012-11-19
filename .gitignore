@@ -27,6 +27,7 @@
 /data/chat_is_available.trigger
 /data/cli-server-reqs-check.dat
 /data/cli-phpinfo.html
+/data/dql.cache.php
 /data/logs/*
 /data/logs/emails/*
 /data/debug/*
