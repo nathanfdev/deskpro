@@ -24,6 +24,7 @@
 
 /data/last-email_error.dat
 /data/is_installed.dat
+/data/chat_is_available.trigger
 /data/cli-server-reqs-check.dat
 /data/cli-phpinfo.html
 /data/logs/*

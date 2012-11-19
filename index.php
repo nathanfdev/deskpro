@@ -37,10 +37,11 @@ require DP_ROOT . '/sys/preboot.php';
 
 if (!defined('DP_BOOT_MODE')) define('DP_BOOT_MODE', 'web');
 switch (DP_BOOT_MODE) {
-	case 'cron':        require DP_ROOT.'/sys/boot_cron.php';    break;
-	case 'cli':         require DP_ROOT.'/sys/boot_cli.php';     break;
-	case 'web':         require DP_ROOT.'/sys/boot_web.php';     break;
-	case 'serve_file':  require DP_ROOT.'/sys/serve_file.php';   break;
-	case 'import':      require DP_ROOT.'/sys/boot_import.php';  break;
-	case 'upgrade':     require DP_ROOT.'/sys/boot_upgrade.php'; break;
+	case 'cron':            require DP_ROOT.'/sys/boot_cron.php';        break;
+	case 'cli':             require DP_ROOT.'/sys/boot_cli.php';         break;
+	case 'web':             require DP_ROOT.'/sys/boot_web.php';         break;
+	case 'serve_file':      require DP_ROOT.'/sys/serve_file.php';       break;
+	case 'serve_widget':    require DP_ROOT.'/sys/serve_widget.php';     break;
+	case 'import':          require DP_ROOT.'/sys/boot_import.php';      break;
+	case 'upgrade':         require DP_ROOT.'/sys/boot_upgrade.php';     break;
 }

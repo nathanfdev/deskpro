@@ -148,7 +148,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			);
 		}
 
-		$current_page = App::getRequest()->getUri();
+		if (App::getContainer()->isScopeActive('request')) {
+			$current_page = App::getRequest()->getUri();
+		} else {
+			$current_page = null;
+		}
 		$ref_page = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 
 		if (!empty($_GET['_1'])) {
@@ -165,18 +169,22 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$vis['ref_page'] = $ref_page;
 		}
 
-		$path = App::getRequest()->getPathInfo();
-		if (!App::getRequest()->isXmlHttpRequest() && !preg_match('#^/(internal\-data/|widget/|chat/poll|chat/send\-message|download/|favicon\.ico|dp/)#', $path)) {
-			$vis['last_page'] = $current_page;
+		$path = '';
+		if (App::getContainer()->isScopeActive('request')) {
+			$path = App::getRequest()->getPathInfo();
+			if (!App::getRequest()->isXmlHttpRequest() && !preg_match('#^/(internal\-data/|widget/|chat/poll|chat/send\-message|download/|favicon\.ico|dp/)#', $path)) {
+				$vis['last_page'] = $current_page;
 
-			if ($this->getEntity()->getIsNew() || !$vis['session_landing_page']) {
-				$vis['session_landing_page'] = $current_page;
-			}
+				if ($this->getEntity()->getIsNew() || !$vis['session_landing_page']) {
+					$vis['session_landing_page'] = $current_page;
+				}
 
-			if (!$vis['landing_page']) {
-				$vis['landing_page'] = $current_page;
+				if (!$vis['landing_page']) {
+					$vis['landing_page'] = $current_page;
+				}
 			}
 		}
+
 		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
 		$vis['date_last'] = new \DateTime();
 

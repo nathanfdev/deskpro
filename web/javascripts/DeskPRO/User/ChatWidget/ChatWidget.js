@@ -364,7 +364,7 @@ var DpChatWidget = new (function() {
 		// DeskPRO script that sets/gets session and initial messages
 		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
 
-		var url = DpChatWidget_Options.deskproUrl + 'chat/chat-session?_1=';
+		var url = DpChatWidget_Options.deskproUrl + 'serve-widget.php/chat/is-available.js?_1=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
 			url += DpChatWidget_Options.currentPageUrl;
 		} else {
@@ -412,6 +412,10 @@ var DpChatWidget = new (function() {
 
 		if (sessionId) {
 			setCookie('dpchat_sid', sessionId, 7);
+			DESKPRO_SESSION_ID = sessionId;
+		} else {
+			// No session also means no chat, so make sure to unset the chat cookie
+			setCookie('dpchatid', 0, -7);
 		}
 
 		DpConsole.log('DpChatWidget.initWidget');
@@ -651,6 +655,12 @@ var DpChatWidget = new (function() {
 				// The button might be hidden because of doResume above,
 				// but we want to show it all the time (its overlapped anyway)
 				util.showEl(openBtn);
+
+				if (data[0]) {
+					setCookie('dpchat_sid', data[0], 7);
+					DESKPRO_SESSION_ID = data[0];
+				}
+
 				break;
 
 			case 'hide':

@@ -82,6 +82,18 @@ class ChatPingTimeout extends AbstractJob
 			$this->logger->log("Agent {$agent->id} {$agent->display_name} timed out in chat {$chat->id}", Logger::INFO);
 		}
 
+		$is_chat_available = false;
+		if (App::getSetting('core.apps_chat') && App::getOrm()->getRepository('DeskPRO:Session')->hasAvailableAgents(true)) {
+			$is_chat_available = true;
+		}
+
+		$trigger_File = dp_get_data_dir() . '/chat_is_available.trigger';
+		if ($is_chat_available) {
+			file_put_contents($trigger_File, time());
+		} elseif (is_file($trigger_File)) {
+			unlink($trigger_File);
+		}
+
 		#------------------------------
 		# User timeouts
 		#------------------------------

@@ -557,6 +557,13 @@ $collection->add('user_chat_initsession', new Route(
 	array()
 ));
 
+$collection->add('user_chat_widgetisavail', new Route(
+	'/serve-widget.php/chat/is-available.js',
+	array('_controller' => '(see: serve_widget.php)'),
+	array(),
+	array()
+));
+
 $collection->add('user_chat_poll', new Route(
 	'/chat/poll/{session_code}',
 	array('_controller' => 'UserBundle:Chat:poll'),

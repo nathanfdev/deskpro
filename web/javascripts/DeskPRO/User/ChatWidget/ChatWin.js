@@ -122,7 +122,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			};
 		});
 
-		self.tellParent('started', []);
+		self.tellParent('started', [DESKPRO_SESSION_ID]);
 		$('#dp_chatwin_min').on('click', function(ev) {
 			ev.preventDefault();
 			self.tellParent('hide', []);

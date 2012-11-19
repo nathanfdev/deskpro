@@ -265,6 +265,18 @@ class WidgetController extends AbstractController
 		$sessionObj = $this->get('session');
 		$session = $sessionObj->getEntity();
 
+		// User is blocked
+		$blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked($this->getRequest()->getClientIp(), $session->visitor);
+
+		if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
+			$blocked = true;
+		}
+
+		if ($blocked) {
+			$response = $this->createResponse('');
+			return $response;
+		}
+
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
 		$convo = $chat_manager->getChat();
 
@@ -310,6 +322,13 @@ class WidgetController extends AbstractController
 			'is_window_mode' => $is_window
 		);
 
+		if ($convo) {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+		} else {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+		}
+
+		$cookie->send();
 		return $this->render('UserBundle:Chat:chat.html.twig', $vars);
 	}
 }

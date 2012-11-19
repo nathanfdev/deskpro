@@ -155,6 +155,14 @@ class ChatController extends AbstractController
 			$data['conversation_id'] = $convo->id;
 		}
 
+		if ($convo) {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+		} else {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+		}
+
+		$cookie->send();
+
 		return $this->createJsonResponse($data);
 	}
 
@@ -195,6 +203,14 @@ class ChatController extends AbstractController
 		}
 
 		$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
+		if ($convo) {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+		} else {
+			$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+		}
+
+		$cookie->send();
 
 		$response = $this->createJsonResponse(array(
 			'conversation_id' => $convo['id'],
@@ -378,6 +394,9 @@ class ChatController extends AbstractController
 			// set this flag so the JS knows though
 			$sent_transcript = ((($convo->person && $convo->person->getPrimaryEmailAddress()) || $convo->person_email) && $convo->date_first_agent_message);
 		}
+
+		$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+		$cookie->send();
 
 		return $this->createJsonResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
 	}
