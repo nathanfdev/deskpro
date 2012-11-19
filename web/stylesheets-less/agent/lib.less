@@ -101,9 +101,16 @@
 
 .opacity(@opacity: 100) {
 	filter: e(%("alpha(opacity=%d)", @opacity));
-	-khtml-opacity: @opacity / 100;
-	-moz-opacity: @opacity / 100;
-	opacity: @opacity / 100;
+	-khtml-opacity: (@opacity / 100);
+	-moz-opacity: (@opacity / 100);
+	opacity: (@opacity / 100);
+}
+
+.opacity-important(@opacity: 100) {
+	filter: e(%("alpha(opacity=%d)", @opacity)) !important;
+	-khtml-opacity: (@opacity / 100) !important;
+	-moz-opacity: (@opacity / 100) !important;
+	opacity: (@opacity / 100) !important;
 }
 
 /**
