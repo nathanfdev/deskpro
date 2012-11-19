@@ -211,7 +211,7 @@ class DataController extends AbstractController
 			'error_text' => $error_text,
 		);
 
-		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-error-manual', array('error_summary' => 'Manually submitted error report', 'log' => $info), 10);
+		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-error-manual', array('error_summary' => 'Manually submitted error report', 'log' => $info), 15);
 
 		return $this->createJsonResponse(array('success' => true));
 	}

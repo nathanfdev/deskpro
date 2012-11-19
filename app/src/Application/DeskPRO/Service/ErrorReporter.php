@@ -232,7 +232,7 @@ class ErrorReporter
 		$info['error_info'] = $send_info;
 
 		if (!self::shouldThrottleReport($info['local_hash'])) {
-			self::sendReport('report-error', $info, 6);
+			self::sendReport('report-error', $info, 10);
 		}
 	}
 
@@ -257,7 +257,7 @@ class ErrorReporter
 		$info['error_info'] = $errinfo;
 
 		if (!self::shouldThrottleReport($info['local_hash'])) {
-			self::sendReport('report-error', $info, $timeout = 6);
+			self::sendReport('report-error', $info, 10);
 		}
 	}
 
@@ -309,7 +309,7 @@ class ErrorReporter
 	 * @param array $data
 	 * @param int $timeout
 	 */
-	public static function sendReport($service, array $data = array(), $timeout = 5)
+	public static function sendReport($service, array $data = array(), $timeout = 8)
 	{
 		$data = array_merge(self::getBasicData(), $data);
 
@@ -328,18 +328,18 @@ class ErrorReporter
 		}
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json');
+
+			$url = \DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json';
+			$client->setUri($url);
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
 
 			if (!$r->isSuccess()) {
-				error_log($r->getBody());
+				error_log("URL retrned code " . $r->getStatusCode() . ": " . $url);
 			}
-		} catch (\Exception $e) {
-			error_log(sprintf("sendReport %s %s", $e->getCode(), $e->getMessage()));
-		}
+		} catch (\Exception $e) {}
 	}
 
 
