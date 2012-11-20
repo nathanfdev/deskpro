@@ -105,6 +105,10 @@ abstract class LoaderAbstract
 		#------------------------------
 
 		$this->runAction();
+
+		if (session_id() != '') {
+			session_write_close();
+		}
 	}
 
 
