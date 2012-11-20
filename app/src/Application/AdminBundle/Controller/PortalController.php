@@ -190,6 +190,9 @@ class PortalController extends AbstractController
 				break;
 		}
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 

@@ -259,6 +259,9 @@ class TemplatesController extends AbstractController
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		$code = App::getTemplating()->getSource($name);
 
 		return $this->createJsonResponse(array('success' => true, 'name' => $name, 'code' => $code));
@@ -379,6 +382,9 @@ class TemplatesController extends AbstractController
 		if ($name == 'UserBundle:Css:main.css.twig' || $name == 'UserBundle:Css:custom.css.twig') {
 			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
 
 		return $this->createJsonResponse($ret_data);
 	}
