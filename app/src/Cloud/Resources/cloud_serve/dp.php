@@ -9,4 +9,4 @@ if (php_sapi_name() == 'cli') {
 	\Cloud\CloudConfig::loadFromWeb();
 }
 
-require(DP_WEB_ROOT.'/serve-widget.php');
+require(DP_WEB_ROOT.'/dp.php');

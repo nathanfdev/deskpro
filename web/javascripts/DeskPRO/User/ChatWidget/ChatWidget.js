@@ -364,7 +364,7 @@ var DpChatWidget = new (function() {
 		// DeskPRO script that sets/gets session and initial messages
 		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
 
-		var url = DpChatWidget_Options.deskproUrl.replace(/index\.php\//, '') + 'serve-widget.php/chat/is-available.js?_1=';
+		var url = DpChatWidget_Options.deskproUrl.replace(/index\.php\//, '') + 'dp.php/chat/is-available.js?_1=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
 			url += DpChatWidget_Options.currentPageUrl;
 		} else {

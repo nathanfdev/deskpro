@@ -551,8 +551,8 @@ $collection->add('user_chat_initsession', new Route(
 ));
 
 $collection->add('user_chat_widgetisavail', new Route(
-	'/serve-widget.php/chat/is-available.js',
-	array('_controller' => '(see: serve_widget.php)'),
+	'/dp.php/chat/is-available.js',
+	array('_controller' => '(see: serve_dp.php)'),
 	array(),
 	array()
 ));

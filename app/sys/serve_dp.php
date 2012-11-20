@@ -53,7 +53,13 @@ class DpLoader extends LoaderAbstract
 		try {
 			$pathinfo = $this->getPathInfo();
 
-			if (preg_match('#^/session-ping\.json#', $pathinfo)) {
+			if (preg_match('#^/chat/is-available\.js#', $pathinfo)) {
+				$this->isChatAvailableAction();
+
+			} elseif (preg_match('#^/request-session\.(json|js)#', $pathinfo)) {
+				$this->requestSessionAction();
+
+			} elseif (preg_match('#^/session-ping\.json#', $pathinfo)) {
 				$this->sessionPingAction();
 
 			} else {
@@ -74,7 +80,7 @@ class DpLoader extends LoaderAbstract
 	}
 
 	####################################################################################################################
-	# requestSession
+	# sessionPing
 	####################################################################################################################
 
 	protected function sessionPingAction()
@@ -127,6 +133,138 @@ class DpLoader extends LoaderAbstract
 		header("Content-Type: application/json; filename=session-ping.json");
 		header('Content-Length: ' . strlen($content));
 		header("Content-Disposition: inline; filename=session-ping.json");
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Cache-Control: max-age=0,private');
+		echo $content;
+	}
+
+	####################################################################################################################
+	# requestSession
+	####################################################################################################################
+
+	protected function requestSessionAction()
+	{
+		$container = $this->bootFullSystem();
+
+		$sessionObj = $container->get('session');
+		$session_id = $sessionObj->getId();
+		$session = $sessionObj->getEntity();
+
+		$callback_name = false;
+		if (isset($_GET['callback'])) {
+			$callback_name = preg_replace('#[^a-zA-Z0-9_]#', '', $_GET['callback']);
+		}
+
+		$json = "{\"session_id\": \"$session_id\"}";
+
+		if ($callback_name) {
+			$content  = "$callback_name($json);";
+			$filename = 'request-session.js';
+			$filetype = 'text/javascript';
+		} else {
+			$content  = $json;
+			$filename = 'request-session.json';
+			$filetype = 'application/json';
+		}
+
+		header("Content-Type: $filetype; filename=$filename");
+		header('Content-Length: ' . strlen($content));
+		header("Content-Disposition: inline; filename=$filename");
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+		header('Cache-Control: max-age=0,private');
+		echo $content;
+	}
+
+	####################################################################################################################
+	# isChatAvailableAction
+	####################################################################################################################
+
+	protected function isChatAvailableAction()
+	{
+		#------------------------------
+		# Chat is available
+		#------------------------------
+
+		$online_time = 0;
+		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
+			$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+		}
+
+		if ($online_time && $online_time > time() - 900) {
+
+			$session_id = isset($_GET['__sid']) ? $_GET['__sid'] : null;
+			if (!$session_id) {
+				$session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+			}
+
+			$chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
+
+			// they already have a chat active, load up system to get read to resume
+			if ($session_id && $chat_id) {
+				$to_login_page = false;
+
+				$container = $this->bootFullSystem();
+
+				$sessionObj = $container->get('session');
+				$session_id = $sessionObj->getId();
+				$session = $sessionObj->getEntity();
+				$chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
+
+				// True to allow fetching of chats w/ timeout
+				$convo = $chat_manager->getChat(true);
+
+				// If the user is on a new page, tell the agent
+				if ($convo) {
+					// If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
+					if ($convo['status'] == 'ended') {
+						$chat_manager->reopenTimoutChat($convo);
+					}
+
+					$chat_manager->addUserTrack($convo, $session->getVisitor()->getLastPage());
+					$container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
+					$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+					$cookie->send();
+				} else {
+					$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+					$cookie->send();
+				}
+			} else {
+				$to_login_page = false;
+				$convo = false;
+				$session_id = null;
+			}
+
+			$content = '';
+			if ($convo) {
+				$content .= "DpChatWidget.doResume = true;\n";
+				if ($convo->is_window) {
+					$content .= "DpChatWidget.isWindowChat = true;\n";
+				}
+			}
+			if ($to_login_page) {
+				$content .= "DpChatWidget.toLoginPage = true;\n";
+			}
+
+			if ($session_id) {
+				$content .= "DpChatWidget.initWidget('$session_id');";
+			} else {
+				$content .= "DpChatWidget.initWidget(null);";
+			}
+
+		#------------------------------
+		# Chat unavailable
+		#------------------------------
+
+		} else {
+			$content = "DpChatWidget.setNotAvailable();\n";
+		}
+
+		header('Content-Type: text/javascript; filename=is-chat-available.js');
+		header('Content-Length: ' . strlen($content));
+		header('Content-Disposition: inline; filename=is-chat-available.js');
 		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
 		header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
 		header('Cache-Control: max-age=0,private');

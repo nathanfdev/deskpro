@@ -14,8 +14,8 @@
 	RewriteRule ^agent/.*$ index.php [NC,L]
 
 	# Old chat URLs that might be called from clients using cached JS
-	RewriteRule ^chat/chat\-session serve-widget.php/chat/is-available.js [NC,L]
-	RewriteRule ^index\.php/chat/chat\-session serve-widget.php/chat/is-available.js [NC,L]
+	RewriteRule ^chat/chat\-session dp.php/chat/is-available.js [NC,L]
+	RewriteRule ^index\.php/chat/chat\-session dp.php/chat/is-available.js [NC,L]
 
 	RewriteRule ^__checkurlrewrite$ index.php?_sys=checkurl [NC,L]
 	RewriteRule ^__checkurlrewrite/path$ index.php?_sys=checkurlpath [NC,L]
