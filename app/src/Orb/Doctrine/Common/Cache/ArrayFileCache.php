@@ -78,6 +78,15 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	protected $umask = 0111;
 
+	/**
+	 * @var callable
+	 */
+	protected $filter;
+
+	/**
+	 * @var int
+	 */
+	protected $limit = 0;
 
 	/**
 	 * @param string $cache_file
@@ -85,6 +94,30 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	public function __construct($cache_file)
 	{
 		$this->cache_file = $cache_file;
+	}
+
+	/**
+	 * Function to be called when a new item is being added. Return true
+	 * to allow the add, or false to discard the add.
+	 *
+	 * Called with: $data, $lifeTime, $id
+	 *
+	 * @param callable $fn
+	 */
+	public function setFilter($fn)
+	{
+		$this->filter = $fn;
+	}
+
+
+	/**
+	 * Maximum number of entries to add
+	 *
+	 * @param $limit
+	 */
+	public function setLimit($limit)
+	{
+		$this->limit = $limit;
 	}
 
 
@@ -203,7 +236,16 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doSave($id, $data, $lifeTime = 0)
     {
+		if ($this->filter) {
+			if (!call_user_func($this->filter, $data, $lifeTime, $id)) {
+				return true;
+			}
+		}
 		if ($this->data === null) $this->reloadData();
+
+		if ($this->limit && count($this->data) >= $this->limit) {
+			return true;
+		}
 
 		if (is_scalar($data)) {
 			$this->data[$id] = array(

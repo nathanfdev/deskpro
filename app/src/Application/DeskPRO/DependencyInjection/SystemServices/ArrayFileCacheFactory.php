@@ -58,6 +58,28 @@ class ArrayFileCacheFactory
 
 		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
 
+		if ($cache_name == 'dql') {
+			// Filters out queries with 'IN' components that can pollute the cache
+			$cache->setFilter(function($data) {
+				/** @var $data \Doctrine\ORM\Query\ParserResult */
+				$s = $data->getSqlExecutor()->getSqlStatements();
+				if (is_string($s)) {
+					// Hard-coded IDs
+					if (preg_match('#IN \(\d#', $s)) {
+						return false;
+					// More than 10 segments
+					} elseif (preg_match('#IN \([?, ]{10,}#', $s)) {
+						return false;
+					}
+				}
+
+				return true;
+			});
+
+			// Makes sure it doesnt get too big
+			$cache->setLimit(250);
+		}
+
 		return $cache;
 	}
 
