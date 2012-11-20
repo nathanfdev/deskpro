@@ -107,41 +107,8 @@ class CleanupTmpData extends AbstractJob
 		# Page cache
 		#------------------------------
 
-		$cache_dir = dp_get_tmp_dir() . '/page-cache';
-		if (is_dir($cache_dir)) {
-			$files = array();
-			$sizes = array();
-			$total_size = 0;
-			$dir = opendir($cache_dir);
-			while (($file = readdir($dir)) !== false) {
-				if ($file == 'index.html') {
-					continue;
-				}
-
-				$path = "$cache_dir/$file";
-				if (is_file($path) && is_readable($path)) {
-					$files[$path] = filemtime($path);
-					$sizes[$path] = filesize($path);
-					$total_size += $sizes[$path];
-				}
-			}
-
-			$cutoff = time() - App::getSetting('core.page_cache_ttl');
-			$max_size = App::getSetting('core.page_cache_max_size');
-
-			ksort($files);
-			foreach ($files AS $path => $mtime) {
-				if ($mtime < $cutoff || $total_size >= $max_size) {
-					@unlink($path);
-					$size = $sizes[$path];
-					$total_size -= $size;
-				}
-
-				if ($mtime >= $cutoff && $total_size < $max_size) {
-					break;
-				}
-			}
-		}
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->cleanup();
 
 		#------------------------------
 		# Ticket change logs

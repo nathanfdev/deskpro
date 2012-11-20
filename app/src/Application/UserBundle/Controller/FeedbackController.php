@@ -247,6 +247,8 @@ class FeedbackController extends AbstractController
 				App::getSession()->set('submitted_feedback', $submitted_feedback);
 				App::getSession()->save();
 
+				App::setSkipCache(true);
+
 				if ($newfeedback->require_login) {
 					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
 				} elseif ($feedback->getStatusCode() == 'hidden.user_validating') {
@@ -336,6 +338,8 @@ class FeedbackController extends AbstractController
 			);
 			$this->em->flush();
 			$this->em->commit();
+
+			App::setSkipCache(true);
 		}
 
 		if ($this->request->isXmlHttpRequest()) {
@@ -373,6 +377,8 @@ class FeedbackController extends AbstractController
 			$this->em->flush();
 
 			$this->em->getConnection()->commit();
+
+			App::setSkipCache(true);
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;
@@ -509,6 +515,8 @@ class FeedbackController extends AbstractController
 
 			if ($form->isValid() && !$validator->checkDupe($new_comment)) {
 				$comment = $new_comment->save();
+
+				App::setSkipCache(true);
 
 				if ($new_comment->require_login) {
 					return $this->redirectRoute('user_newcomment_finishlogin', array(

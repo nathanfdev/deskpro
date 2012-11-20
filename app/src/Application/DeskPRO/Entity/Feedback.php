@@ -334,6 +334,12 @@ class Feedback extends ContentAbstract
 		$attach->feedback = $this;
 	}
 
+	public function _invalidatePageCache()
+	{
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateRegex('/_feedback(-|_)/');
+	}
+
 
 
 
@@ -365,6 +371,7 @@ class Feedback extends ContentAbstract
 				'status_idx' => array('columns' => array('status')),
 			),
 		));
+		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));

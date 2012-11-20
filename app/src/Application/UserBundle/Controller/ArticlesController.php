@@ -373,6 +373,8 @@ class ArticlesController extends AbstractController
 
 			$comment = $new_comment->save();
 
+			App::setSkipCache(true);
+
 			if ($new_comment->require_login) {
 				$return_url = $this->generateUrl('user_newcomment_finishlogin', array(
 					'comment_type' => 'article',

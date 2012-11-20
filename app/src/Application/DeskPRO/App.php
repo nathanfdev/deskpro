@@ -133,6 +133,13 @@ class App
 	 */
 	protected static $_standard_loggers = null;
 
+	/**
+	 * If true, will make sure that guest page caching is disable going ahead
+	 *
+	 * @var bool
+	 */
+	protected static $_skip_caching = false;
+
 
 	/**
 	 * Set the person who is making the request, or the person who is authorizing
@@ -756,6 +763,16 @@ class App
 		}
 
 		return $is_cli;
+	}
+
+	public static function setSkipCache($val)
+	{
+		self::$_skip_caching = (bool)$val;
+	}
+
+	public static function isCacheSkipped()
+	{
+		return self::$_skip_caching;
 	}
 
 

@@ -55,6 +55,7 @@ class TicketsController extends AbstractController
 
 		if ($this->session->get('ticket_access')) {
 			$this->session_allowed = $this->session->get('ticket_access');
+			App::setSkipCache(true);
 		}
 	}
 
@@ -272,6 +273,8 @@ class TicketsController extends AbstractController
 			$newreply->save();
 
 			$ticket_message = $newreply->getNewMessage();
+
+			App::setSkipCache(true);
 		} else {
 			$errors = $validator->getErrors(true);
 			$error_fields = $validator->getErrorGroups(true);
@@ -325,6 +328,8 @@ class TicketsController extends AbstractController
 
 			if ($newpart_form->isValid()) {
 				$newpart->save();
+
+				App::setSkipCache(true);
 			}
 		}
 
@@ -345,6 +350,8 @@ class TicketsController extends AbstractController
 			$em->persist($ticket);
 			$em->flush();
 		});
+
+		App::setSkipCache(true);
 
 		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
 	}
@@ -398,6 +405,8 @@ class TicketsController extends AbstractController
 				$this->em->persist($feedback);
 				$this->em->flush();
 
+				App::setSkipCache(true);
+
 				// AJAX request used to auto-save rating as soon as user clicked link
 				if ($this->request->isXmlHttpRequest()) {
 					return $this->createJsonResponse(array('success' => true));
@@ -450,6 +459,8 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
+		App::setSkipCache(true);
+
 		return $this->render('UserBundle:Tickets:feedback-thank.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
@@ -485,6 +496,8 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
+		App::setSkipCache(true);
+
 		return $this->render('UserBundle:Tickets:feedback-close.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
@@ -505,6 +518,8 @@ class TicketsController extends AbstractController
 				$em->persist($ticket);
 				$em->flush();
 			});
+
+			App::setSkipCache(true);
 
 			$ticket_message = null;
 			if (!$ticket->date_feedback_rating) {

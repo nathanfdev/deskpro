@@ -249,6 +249,14 @@ class Article extends ContentAbstract
 		$attach['article'] = $this;
 	}
 
+	public function _invalidatePageCache()
+	{
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateRegex('/_kb(-|_articles_' . intval($this->getId()) . '-|_\d+)/');
+	}
+
+
+
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -277,6 +285,7 @@ class Article extends ContentAbstract
 				'status_idx' => array('columns' => array('status')),
 			),
 		));
+		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_end', ));
 		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'end_action', ));

@@ -57,100 +57,114 @@ class UserKernel extends AbstractKernel
 			return $res;
 		}
 
+		$use_cache = false;
+		$language_id = null;
+		$cache_time = 0;
+
 		if ($request->getMethod() == 'GET' && !isset($_GET['admin_portal_controls']) && !preg_match('#/widget/chat.html#', $request->getPathInfo())) {
 			if (!empty($_COOKIE['dp-guest-cache']) || (empty($_COOKIE['dpsid']) && empty($_COOKIE['dpreme']))) {
-				$language_id = null;
-				if (!empty($_COOKIE['dp-guest-cache'])) {
-					$parts = explode('-', $_COOKIE['dp-guest-cache']);
-					if (!empty($parts[1])) {
-						$language_id = intval($parts[1]);
+				if (!isset($_COOKIE['dpsid-agent']) && !isset($_COOKIE['dpsid-admin'])) {
+					$use_cache = true;
+
+					if (!empty($_COOKIE['dp-guest-cache'])) {
+						$parts = explode('-', $_COOKIE['dp-guest-cache']);
+						if (!empty($parts[1])) {
+							$language_id = intval($parts[1]);
+						}
+
+						$cache_time = intval($parts[0]);
+						if ($cache_time < time()) {
+							$use_cache = false;
+						}
 					}
 				}
+			}
+		}
 
-				if (!$language_id && isset($_COOKIE['dplid'])) {
-					$language_id = intval($_COOKIE['dplid']);
+		if ($use_cache) {
+			if (!$language_id && isset($_COOKIE['dplid'])) {
+				$language_id = intval($_COOKIE['dplid']);
+			}
+
+			if (!$language_id) {
+				$data = App::getDataService('Language');
+				$languages = $data->getAll();
+				$default_id = $data->getDefaultId();
+
+				$locales = array('');
+				foreach ($languages AS $language) {
+					$locales[] = $language->locale;
+				}
+
+				try {
+					// get the highest priority language if available
+					$locale = $request->getPreferredLanguage($locales);
+					$accept_languages = $request->getLanguages();
+				} catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
+					// the request may not be available, so use the default lang
+					$locale = '';
+					$accept_languages = array();
+				}
+
+				if ($locale) {
+					// we have an exact locale match
+					foreach ($languages AS $language) {
+						if ($language->locale === $locale) {
+							$language_id = $language->getId();
+							break;
+						}
+					}
+				} else {
+					// look for a language match (as there isn't an exact locale match)
+					foreach ($accept_languages AS $accept_language) {
+						$accept_language = substr($accept_language, 0, 2);
+						foreach ($languages AS $language) {
+							if (substr($language->locale, 0, 2) == $accept_language) {
+								$language_id = $language->getId();
+								break 2;
+							}
+						}
+					}
 				}
 
 				if (!$language_id) {
-					$data = App::getDataService('Language');
-					$languages = $data->getAll();
-					$default_id = $data->getDefaultId();
+					$language_id = $default_id;
+				}
+			}
 
-					$locales = array('');
-					foreach ($languages AS $language) {
-						$locales[] = $language->locale;
-					}
+			$ttl = App::getSetting('core.page_cache_ttl');
+			if ($ttl) {
+				$cache_dir = dp_get_tmp_dir() . '/page-cache';
+				$uri = $request->getRequestUri();
+				$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $uri), 0, 35);
+				$cache_filename = $language_id . '-' . $base . '-' . md5($request->getRequestUri()) . '.cache';
+				$cache_file = $cache_dir . '/' . $cache_filename;
 
-					try {
-						// get the highest priority language if available
-						$locale = $request->getPreferredLanguage($locales);
-						$accept_languages = $request->getLanguages();
-					} catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
-						// the request may not be available, so use the default lang
-						$locale = '';
-						$accept_languages = array();
-					}
-
-					if ($locale) {
-						// we have an exact locale match
-						foreach ($languages AS $language) {
-							if ($language->locale === $locale) {
-								$language_id = $language->getId();
-								break;
-							}
-						}
+				if (file_exists($cache_file)) {
+					$use_cache = false;
+					if (time() - filemtime($cache_file) <= $ttl) {
+						$use_cache = true;
 					} else {
-						// look for a language match (as there isn't an exact locale match)
-						foreach ($accept_languages AS $accept_language) {
-							$accept_language = substr($accept_language, 0, 2);
-							foreach ($languages AS $language) {
-								if (substr($language->locale, 0, 2) == $accept_language) {
-									$language_id = $language->getId();
-									break 2;
-								}
-							}
-						}
-					}
-
-					if (!$language_id) {
-						$language_id = $default_id;
-					}
-				}
-
-				$ttl = App::getSetting('core.page_cache_ttl');
-				if ($ttl) {
-					$cache_dir = dp_get_tmp_dir() . '/page-cache';
-					$uri = $request->getRequestUri();
-					$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $uri), 0, 25);
-					$cache_filename = $language_id . '-' . $base . '-' . md5($request->getRequestUri()) . '.cache';
-					$cache_file = $cache_dir . '/' . $cache_filename;
-
-					if (file_exists($cache_file)) {
-						$use_cache = false;
-						if (time() - filemtime($cache_file) <= $ttl) {
+						$cache_slam_file = $this->cache_file . '.slam';
+						if (file_exists($cache_slam_file) && time() - filemtime($cache_slam_file) < 30) {
+							// someone else is going to write it, use the stale data for a bit
 							$use_cache = true;
-						} else {
-							$cache_slam_file = $this->cache_file . '.slam';
-							if (file_exists($cache_slam_file) && time() - filemtime($cache_slam_file) < 30) {
-								// someone else is going to write it, use the stale data for a bit
-								$use_cache = true;
-							}
-						}
-
-						if ($use_cache) {
-							$output = @unserialize(file_get_contents($cache_file));
-							if (is_array($output)) {
-								if ($output['compressed']) {
-									$output['content'] = gzuncompress($output['content']);
-								}
-
-								return new Response($output['content'], $output['status'], $output['headers']);
-							}
 						}
 					}
 
-					$this->cache_file = $cache_file;
+					if ($use_cache) {
+						$output = @unserialize(file_get_contents($cache_file));
+						if (is_array($output)) {
+							if ($output['compressed']) {
+								$output['content'] = gzuncompress($output['content']);
+							}
+
+							return new Response($output['content'], $output['status'], $output['headers']);
+						}
+					}
 				}
+
+				$this->cache_file = $cache_file;
 			}
 		}
 
@@ -164,19 +178,31 @@ class UserKernel extends AbstractKernel
 
 		$person = App::getCurrentPerson();
 		$logged_in = ($person && $person->getId());
+		$skip_cache = true;
 
 		if ($logged_in) {
 			if (!empty($_COOKIE['dp-guest-cache'])) {
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 			}
 		} else {
-			$value = '0-' . App::getLanguage()->getId();
+			if ($skip_cache) {
+				$cache_time = time() + App::getSetting('core.page_cache_ttl');
+			} else {
+				$cache_time = !empty($_COOKIE['dp-guest-cache']) ? intval($_COOKIE['dp-guest-cache']) : 0;
+				if ($cache_time < time()) {
+					$cache_time = 0;
+				}
+			}
+
+			$skip_cache = ($cache_time > 0);
+
+			$value = $cache_time . '-' . App::getLanguage()->getId();
 			if (empty($_COOKIE['dp-guest-cache']) || $value !== $_COOKIE['dp-guest-cache']) {
 				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dp-guest-cache', $value, 0)->send();
 			}
 		}
 
-		if (!$logged_in && $this->cache_file && $response->headers->get('Content-Type') == 'text/html') {
+		if (!$logged_in && !$skip_cache && $this->cache_file && $response->headers->get('Content-Type') == 'text/html') {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			if (!is_dir($cache_dir)) {
 				@mkdir($cache_dir, 0777);

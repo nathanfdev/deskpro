@@ -167,6 +167,8 @@ class NewTicketController extends AbstractController
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
 
+				App::setSkipCache(true);
+
 				// Its no longer a preticket, so we can delete the record
 				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
 					$preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
@@ -317,6 +319,8 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		App::setSkipCache(true);
+
 		$this->session->set('preticket_id', $preticket->getId());
 
 		return $this->createJsonResponse(array(
@@ -361,6 +365,8 @@ class NewTicketController extends AbstractController
 		$this->em->persist($preticket);
 		$this->em->flush();
 		$this->em->commit();
+
+		App::setSkipCache(true);
 
 		$this->session->remove('preticket_id');
 
@@ -412,6 +418,8 @@ class NewTicketController extends AbstractController
 		$this->em->persist($preticket);
 		$this->em->flush();
 		$this->em->commit();
+
+		App::setSkipCache(true);
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -473,6 +481,8 @@ class NewTicketController extends AbstractController
 			$this->em->flush();
 
 			$this->em->getConnection()->commit();
+
+			App::setSkipCache(true);
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;

@@ -299,6 +299,8 @@ class DownloadsController extends AbstractController
 			if ($form->isValid()) {
 				$comment = $new_comment->save();
 
+				App::setSkipCache(true);
+
 				if ($new_comment->require_login) {
 					return $this->redirectRoute('user_newcomment_finishlogin', array(
 						'comment_type' => 'article',

@@ -119,6 +119,8 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			if ($is_valid) {
 				$person = $register->save();
 
+				App::setSkipCache(true);
+
 				$this->session->setFlash('register_done', 1);
 
 				if (!$person->primary_email) {

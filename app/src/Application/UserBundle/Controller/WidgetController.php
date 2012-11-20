@@ -184,6 +184,8 @@ class WidgetController extends AbstractController
 			$ticket = $newticket->save();
 			$person = $ticket['person'];
 
+			App::setSkipCache(true);
+
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
 				'email' => $newticket->person->email
@@ -241,6 +243,8 @@ class WidgetController extends AbstractController
 			} else {
 				$feedback_id = $dupe;
 			}
+
+			App::setSkipCache(true);
 
 			return $this->createJsonResponse(array(
 				'feedback_id' => $feedback_id

@@ -157,6 +157,12 @@ class Download extends ContentAbstract
 		return $content;
 	}
 
+	public function _invalidatePageCache()
+	{
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateRegex('/_downloads(-|_files_' . intval($this->getId()) . '-|_\d+)/');
+	}
+
 
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -195,6 +201,7 @@ class Download extends ContentAbstract
 				'status_idx' => array('columns' => array('status')),
 			)
 		));
+		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'num_downloads', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_downloads', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
