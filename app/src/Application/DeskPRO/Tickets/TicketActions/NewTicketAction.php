@@ -284,10 +284,48 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				}
 			}
 
+			$first = \Orb\Util\Arrays::getFirstItem($messages);
+
+			$ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $person);
+			$vars['ticketdisplay'] = $ticketdisplay;
+
+			$attach_attachments = array();
+			if ($first) {
+				$max = App::getSetting('core.sendemail_attach_maxsize');
+				$max_embed = App::getSetting('core.sendemail_embed_maxsize');
+				$size = 0;
+				$attachments = $ticketdisplay->getMessageAttachments($first, true);
+				if ($attachments) {
+					foreach ($ticketdisplay->getMessageAttachments($first, true) as $attach) {
+						if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
+							continue;
+						}
+
+						if ($size + $attach->blob->filesize > $max) {
+							break;
+						}
+
+						$attach_attachments[$attach->blob->getDownloadUrl(true)] = $attach;
+					}
+				}
+
+				foreach ($first->getUsedSignatureImageBlobs() AS $blob) {
+					if ($blob->filesize > $max_embed) {
+						continue;
+					}
+
+					if ($size + $blob->filesize > $max) {
+						break;
+					}
+
+					$attach_attachments[$blob->getDownloadUrl(true)] = $blob;
+				}
+			}
+
 			if ($person->getPrimaryEmailAddress()) {
 				$parts = $ticket->getUserParticipants();
 
-				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts) {
+				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $attach_attachments) {
 					$message = App::getMailer()->createMessage();
 					$message->setContextId('ticket_gateway');
 					$message->setTemplate($tpl, $vars);
@@ -300,6 +338,17 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 					$message->setFrom($from_address);
 					$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 					$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+
+					if ($attach_attachments) {
+						foreach ($attach_attachments as $src => $attach) {
+							if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
+								// signature image being attached
+								$message->attachBlob($attach, $src, true);
+							} else {
+								$message->attachBlob($attach->blob, $src, $attach->is_inline);
+							}
+						}
+					}
 
 					App::getMailer()->send($message);
 				});
