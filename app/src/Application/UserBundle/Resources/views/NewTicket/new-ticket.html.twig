@@ -11,35 +11,17 @@ var ticketReader = {
 		var cat = $('select.category_id');
 		var catId = cat.val();
 
-		var subCat = $('.sub-options-category_id.sub-options-' + catId);
-		if (subCat.length) {
-			var subCatId = $('select', subCat).val();
-			return parseInt(subCatId) || 0;
-		}
-
 		return parseInt(catId) || 0;
 	},
 	getPriorityId: function() {
 		var cat = $('select.priority_id');
 		var catId = cat.val();
 
-		var subCat = $('.sub-options-priority_id.sub-options-' + catId);
-		if (subCat.length) {
-			var subCatId = $('select', subCat).val();
-			return parseInt(subCatId) || 0;
-		}
-
 		return parseInt(catId) || 0;
 	},
 	getProductId: function() {
 		var cat = $('select.product_id');
 		var catId = cat.val();
-
-		var subCat = $('.sub-options-product_id.sub-options-' + catId);
-		if (subCat.length) {
-			var subCatId = $('select', subCat).val();
-			return parseInt(subCatId) || 0;
-		}
 
 		return parseInt(catId) || 0;
 	},

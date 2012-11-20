@@ -89,7 +89,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		});
 		this.depSelect.data('original-name', this.depSelect.attr('name'));
 
-		$('select.category_id, select.priority_id, select.product_id').on('change', function() {
+		$('select.category_id, select.priority_id, select.product_id, .dp-two-select select').on('change', function() {
 			self.runChecks();
 		});
 
@@ -165,13 +165,13 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			if (item.check(ticketReader)) {
 				if (!el.is(':visible')) {
 					changed = true;
-					el.show();
 				}
+				el.show();
 			} else {
 				if (el.is(':visible')) {
 					changed = true;
-					el.hide();
 				}
+				el.hide();
 			}
 		});
 

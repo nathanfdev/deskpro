@@ -169,7 +169,7 @@ function dpTwoSelectInit(el, options) {
 			if (blankOption) {
 				placeholder.removeClass('dp-show-child');
 				parentEl.find('option').first().prop('selected', true);
-				el.find('option[value=""]').prop('selected', true).trigger('change');
+				el.find('option[value=""], option:not([value])').first().prop('selected', true).trigger('change');
 			} else {
 				setValue(parentEl.find('option').first().data('dp-id'));
 			}
