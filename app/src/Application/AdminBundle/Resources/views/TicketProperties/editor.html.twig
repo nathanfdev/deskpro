@@ -429,7 +429,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</tr></tbody></table>
 		</div>
 	</div>
-	{% if term_options.products %}
+	{% if app.getSetting('core.use_product') %}
 		<div class="builder-type" title="{{ phrase('agent.general.product') }}" data-rule-type="product">
 			<div class="builder-op">
 				<select name="op">
@@ -439,14 +439,22 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="product">
-					{% for id,label in term_options.products %}
-						<option value="{{id}}">{{label}}</option>
+					{% for cat in app.getDataRepository('Product').getRootNodes() %}
+						{% if cat.children|length %}
+							<optgroup label="{{ cat.title }}">
+								{% for subcat in cat.children %}
+									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
+								{% endfor %}
+							</optgroup>
+						{% else %}
+							<option value="{{ cat.id }}">{{ cat.title }}</option>
+						{% endif %}
 					{% endfor %}
 				</select>
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.ticket_categories_full %}
+	{% if app.getSetting('core.use_ticket_category') %}
 		<div class="builder-type" title="{{ phrase('agent.general.category') }}" data-rule-type="category">
 			<div class="builder-op">
 				<select name="op">
@@ -456,14 +464,22 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="category">
-					{% for id,label in term_options.ticket_categories_full %}
-						<option value="{{id}}">{{label}}</option>
+					{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+						{% if cat.children|length %}
+							<optgroup label="{{ cat.title }}">
+								{% for subcat in cat.children %}
+									<option data-full-title="{{ cat.title }} &gt; {{ subcat.title }}" value="{{ subcat.id }}">{{ subcat.title }}</option>
+								{% endfor %}
+							</optgroup>
+						{% else %}
+							<option value="{{ cat.id }}">{{ cat.title }}</option>
+						{% endif %}
 					{% endfor %}
 				</select>
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.priorities %}
+	{% if app.getSetting('core.use_ticket_priority') %}
 		<div class="builder-type" title="{{ phrase('agent.general.priority') }}" data-rule-type="priority">
 			<div class="builder-op">
 				<select name="op">
@@ -475,14 +491,14 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="priority">
-					{% for id,label in term_options.priorities %}
-						<option value="{{id}}">{{label}}</option>
+					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
+						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
 				</select>
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.ticket_workflows %}
+	{% if app.getSetting('core.use_ticket_workflow') %}
 		<div class="builder-type" title="{{ phrase('agent.general.workflow') }}" data-rule-type="workflow">
 			<div class="builder-op">
 				<select name="op">
@@ -492,8 +508,8 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</div>
 			<div class="builder-options">
 				<select name="workflow">
-					{% for id,label in term_options.ticket_workflows %}
-						<option value="{{id}}">{{label}}</option>
+					{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+						<option value="{{ work.id }}">{{ work.title }}</option>
 					{% endfor %}
 				</select>
 			</div>
