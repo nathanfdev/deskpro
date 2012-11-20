@@ -86,7 +86,17 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			'tickets_messages' => 'Individual messages in tickets',
 			'ticket_attachments' => 'Attachments to tickets',
 			'ticket_charges' => 'Ticket billing charges',
-			'ticket_feedback' => 'Feedback on ticket responses'
+			'ticket_feedback' => 'Feedback on ticket responses',
+			'ticket_slas' => 'SLA status records for tickets'
+		);
+
+		$conditionResolvers = array(
+			'custom_data_article' => array('#', ' (Gets data for the article field with ID #)'),
+			'custom_data_feedback' => array('#', ' (Gets data for the feedback field with ID #)'),
+			'custom_data_organizations' => array('#', ' (Gets data for the organization field with ID #)'),
+			'custom_data_person' => array('#', ' (Gets data for the person field with ID #)'),
+			'custom_data_ticket' => array('#', ' (Gets data for the ticket field with ID #)'),
+			'ticket_slas' => array('#', ' (Gets ticket SLA data for the SLA with ID #)'),
 		);
 
 		$tableEntities = \Application\DeskPRO\Dpql\Statement\Display::getTableEntityList();
@@ -177,6 +187,12 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 				}
 
 				$associations[$association['fieldName']] = $target;
+
+				$childTable = $childRepository->getTableName();
+				if (isset($conditionResolvers[$childTable])) {
+					$condition = $conditionResolvers[$childTable];
+					$associations[$association['fieldName'] . "[$condition[0]]"] = array($target, $condition[1]);
+				}
 			}
 
 			uksort($fields, 'strnatcasecmp');
@@ -189,6 +205,9 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 			);
 
 			foreach ($associations AS $toProcessAssociation) {
+				if (is_array($toProcessAssociation)) {
+					$toProcessAssociation = $toProcessAssociation[0];
+				}
 				if (!isset($entityMap[$toProcessAssociation])) {
 					$toProcess[] = $toProcessAssociation;
 				}
@@ -221,8 +240,14 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 				$columnList[] = '<tr><td>' . $fieldId . '</td><td>' . $fieldInfo['type'] . '</td></tr>';
 			}
 			foreach ($info['associations'] AS $fieldId => $associationEntity) {
+				if (is_array($associationEntity)) {
+					list($associationEntity, $append) = $associationEntity;
+				} else {
+					$append = '';
+				}
+
 				$columnList[] = '<tr><td>' . $fieldId . '</td><td><a href="#dp-user-' . $this->_getEntityHtmlId($associationEntity) . '">'
-					. $this->_getDataTypeName($associationEntity) . '</a></td></tr>';
+					. $this->_getDataTypeName($associationEntity) . '</a>' . $append . '</td></tr>';
 			}
 
 			$html .= '<div class="dpql-data-type"><h3 id="' . $this->_getEntityHtmlId($entityName) . '">'
