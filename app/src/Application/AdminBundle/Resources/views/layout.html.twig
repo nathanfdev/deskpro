@@ -81,6 +81,7 @@
 
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
 		var BASE_URL = '{{ app.request.getBaseUrl() }}/';
+		var BASE_PATH = '{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 

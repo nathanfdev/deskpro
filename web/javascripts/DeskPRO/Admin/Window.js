@@ -329,7 +329,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 	sessionPing: function() {
 		var self = this;
 		$.ajax({
-			url: BASE_URL + 'admin/session-ping.json',
+			url: BASE_PATH + 'dp.php/session-ping.json?i=aa',
 			cache: false,
 			complete: function() {
 				window.setTimeout(function() {

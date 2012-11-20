@@ -5,14 +5,6 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('admin_session_ping', new Route(
-	'/session-ping.json',
-	array('_controller' => 'AdminBundle:Main:sessionPing'),
-	array(),
-	array()
-));
-
-
 $collection->add('admin_test', new Route(
 	'/test',
 	array('_controller' => 'AdminBundle:Test:index'),

@@ -45,4 +45,5 @@ switch (DP_BOOT_MODE) {
 	case 'get_messages':    require DP_ROOT.'/sys/get_messages.php';     break;
 	case 'import':          require DP_ROOT.'/sys/boot_import.php';      break;
 	case 'upgrade':         require DP_ROOT.'/sys/boot_upgrade.php';     break;
+	case 'dp':              require DP_ROOT.'/sys/serve_dp.php';         break;
 }

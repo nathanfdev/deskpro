@@ -4,6 +4,7 @@
  ##}
 <script type="text/javascript">
 	var BASE_URL = '{{ path('user') }}';
+	var BASE_PATH = '{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
 	var DESKPRO_SESSION_ID = '{{ app.getSession().getEntity().getSessionCode() }}';

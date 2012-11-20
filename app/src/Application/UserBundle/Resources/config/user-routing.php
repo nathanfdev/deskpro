@@ -12,13 +12,6 @@ $collection->add('user', new Route(
 	array()
 ));
 
-$collection->add('user_session_ping', new Route(
-	'/session-ping.json',
-	array('_controller' => 'UserBundle:Main:sessionPing'),
-	array(),
-	array()
-));
-
 $collection->add('user_admin_rendertpl', new Route(
 	'/admin-render-template/{type}',
 	array('_controller' => 'UserBundle:Main:adminRenderTemplate'),

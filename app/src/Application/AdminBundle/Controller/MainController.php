@@ -207,14 +207,6 @@ class MainController extends AbstractController
 		return $this->redirectRoute('admin');
 	}
 
-	public function sessionPingAction()
-	{
-		return $this->createJsonResponse(array(
-			'okay' => 1,
-			'request_token' => App::getSession()->getEntity()->generateSecurityToken('request_token', 10800)
-		));
-	}
-
 	public function checkTaskQueueAction($task_queue_id = 0)
 	{
 		if ($task_queue_id) {

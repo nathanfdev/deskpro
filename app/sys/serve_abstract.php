@@ -57,6 +57,11 @@ abstract class LoaderAbstract
 	 */
 	protected $pdo;
 
+	/**
+	 * @var array
+	 */
+	protected $settings;
+
 	public function run()
 	{
 		#------------------------------
@@ -188,6 +193,45 @@ abstract class LoaderAbstract
 		$this->pdo->exec("SET NAMES 'UTF8'");
 
 		return $this->pdo;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllSettings()
+	{
+		if ($this->settings !== null) {
+			return $this->settings;
+		}
+
+		$this->settings = array();
+
+		$q = $this->getPdo()->prepare("
+			SELECT name, value
+			FROM settings
+		");
+		$q->execute();
+		while ($row = $q->fetch(\PDO::FETCH_NUM)) {
+			$this->settings[$row[0]] = $row[1];
+		}
+
+		return $this->settings;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param null $default
+	 * @return null
+	 */
+	public function getSetting($name, $default = null)
+	{
+		if ($this->settings === null) {
+			$this->getAllSettings();
+		}
+
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
 	}
 
 

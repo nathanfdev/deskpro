@@ -348,16 +348,4 @@ HTML;
 
 		return $this->redirectRoute('user');
 	}
-
-
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function sessionPingAction()
-	{
-		return $this->createJsonResponse(array(
-			'okay' => 1,
-			'request_token' => App::getSession()->getEntity()->generateSecurityToken('request_token', 10800)
-		));
-	}
 }

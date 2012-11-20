@@ -1,5 +1,6 @@
 <script type="text/javascript">
 	var BASE_URL = '{{ path('user') }}';
+	var BASE_PATH = '{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	var ASSETS_BASE_URL_FULL = '{{ asset_full('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id }};

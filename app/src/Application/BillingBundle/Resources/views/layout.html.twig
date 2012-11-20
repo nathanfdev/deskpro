@@ -31,6 +31,7 @@
 
     <script type="text/javascript" charset="utf-8">
 		var BASE_URL = '{{ app.request.getBaseUrl() }}/';
+		var BASE_PATH = '{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 
 		window.DeskPRO_Window = new DeskPRO.Admin.Window();
