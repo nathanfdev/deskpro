@@ -181,9 +181,10 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 		var listEl = this.listElement;
 
 		var listHeight = listEl.outerHeight();
+		this.lastListElHeight = listHeight;
 
 		this.controlRealEl.css({
-			height: listHeight,
+			'min-height': listHeight,
 			top: 0,
 			left: 0
 		});
@@ -203,17 +204,13 @@ DeskPRO.Agent.Widget.SlaOptionsPop = new Orb.Class({
 	 */
 	syncScroll: function() {
 
-		var h = this.listElement.height();
+		var h = this.listElement.outerHeight();
 		if (!this.lastListElHeight || h != this.lastListElHeight) {
 			this.updatePositions();
 		}
 
 		var containerTop = this.containerElement.position().top;
-		var listTop = this.listElement.position().top;
-
-		var realTop = containerTop;
-
-		this.controlRealEl.css('top', realTop + 'px');
+		this.controlRealEl.css('top', containerTop + 'px');
 	},
 
 

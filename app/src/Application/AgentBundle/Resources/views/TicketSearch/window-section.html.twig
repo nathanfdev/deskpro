@@ -93,7 +93,7 @@
 	<section class="source-section sla-section">
 		<header id="ticket_slas_header" data-sla-filter="{{ sla_filter }}">
 			<h1>
-				SLAs<span id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: My Tickets</span><span id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: My Teams' Tickets</span>
+				<span style="text-transform: none">SLAs</span><span class="sla-filter-type" id="ticket_sla_filter_agent" {% if sla_filter != 'agent' %}style="display:none"{% endif %}>: My Tickets</span><span class="sla-filter-type" id="ticket_sla_filter_team" {% if sla_filter != 'team' %}style="display:none"{% endif %}>: My Teams' Tickets</span>
 			</h1>
 			<span id="ticket_sla_launch_editor" class="settings launch-sla-editor"></span>
 		</header>
@@ -121,12 +121,15 @@
 			<div class="sla-group-editor filter-group-editor">
 				<span class="close"></span>
 				<select class="ticket-filter">
-					<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All tickets</option>
-					<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My tickets</option>
+					<option value="all" {% if sla_filter == 'all' %}selected="selected"{% endif %}>All Tickets</option>
+					<option value="agent" {% if sla_filter == 'agent' %}selected="selected"{% endif %}>My Tickets</option>
 					{% if app.user.getAgentTeamIds()|length %}
-						<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My teams' tickets</option>
+						<option value="team" {% if sla_filter == 'team' %}selected="selected"{% endif %}>My Team's Tickets</option>
 					{% endif %}
 				</select>
+				{% if app.user.can_admin and false %}
+					<div class="manage-slas"><a href="{{ app.request.getBaseUrl() }}/admin/tickets/slas">Manage SLAs</a></div>
+				{% endif %}
 			</div>
 		</div>
 	</section>

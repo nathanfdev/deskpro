@@ -202,6 +202,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		if (this.isOpen()) return;
 		this._initControl();
 
+		this.fireEvent('preOpen', [this]);
+
 		this.controlElement.addClass('open');
 
 		var containPos    = this.containerElement.offset();

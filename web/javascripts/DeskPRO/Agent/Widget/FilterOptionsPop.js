@@ -227,6 +227,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 		var listEl = this.listElement;
 
 		var listHeight = listEl.outerHeight();
+		this.lastListElHeight = listHeight;
 
 		this.controlRealEl.css({
 			height: listHeight,
@@ -262,7 +263,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 	 */
 	syncScroll: function() {
 
-		var h = this.listElement.height();
+		var h = this.listElement.outerHeight();
 		if (!this.lastListElHeight || h != this.lastListElHeight) {
 			this.updatePositions();
 		}

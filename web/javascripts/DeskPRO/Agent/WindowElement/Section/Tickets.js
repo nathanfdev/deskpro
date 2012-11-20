@@ -105,6 +105,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			boundListElement: '#tickets_outline_sys_hold_filters',
 			triggerElement: '#ticket_filter_launch_editor',
 			controlElement: '#ticket_filter_group_editor',
+			onPreOpen: function(ed) {
+				if (self.customFilterGroupEditor) {
+					self.customFilterGroupEditor.close();
+				}
+				if (self.slaGroupEditor) {
+					self.slaGroupEditor.close();
+				}
+			},
 			onGroupingChanged: function(filterId) {
 				self.refreshFilterGrouping([filterId], true);
 			}
@@ -151,6 +159,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 			},
 			onPreOpen: function(ed) {
+				if (self.slaGroupEditor) {
+					self.slaGroupEditor.close();
+				}
+				if (self.filterGroupEditor) {
+					self.filterGroupEditor.close();
+				}
+
 				$('#tickets_outline_custom_filters li.filter-hidden').show();
 				$('#tickets_outline_custom_filters').addClass('ed-open');
 
@@ -246,14 +261,33 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			this.updateSlaDescription();
 
+			var slaVal;
+
 			this.slaGroupEditor = new DeskPRO.Agent.Widget.SlaOptionsPop({
 				containerElement: '#tickets_outline .scroll-content',
 				listElement: '#ticket_slas_header',
 				triggerElement: $('.launch-sla-editor', this.contentEl),
 
+				onPreOpen: function(ed) {
+					if (self.customFilterGroupEditor) {
+						self.customFilterGroupEditor.close();
+					}
+					if (self.filterGroupEditor) {
+						self.filterGroupEditor.close();
+					}
+
+					var row = ed.controlRealEl;
+					slaVal = row.find('.ticket-filter').val();
+				},
+
 				onClose: function(ed) {
 					var postData = [];
 					var row = ed.controlRealEl;
+					var val = row.find('.ticket-filter').val();
+
+					if (val == slaVal) {
+						return;
+					}
 
 					postData.push({
 						name: 'prefs[agent.ui.sla.ticket-filter]',
@@ -1021,7 +1055,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var row = $('#ticket_slas_header');
 		var filter = row.data('sla-filter');
 
-		row.find('h1 span').hide();
+		row.find('h1 span.sla-filter-type').hide();
 		$('#ticket_sla_filter_' + filter).show();
 	},
 
