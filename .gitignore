@@ -32,6 +32,9 @@
 /data/logs/emails/*
 /data/debug/*
 /data/tmp/*
+!/data/tmp/page-cache
+/data/tmp/page-cache/*
+!/data/tmp/page-cache/index.html
 !/data/tmp/swiftmailer-cache
 /data/tmp/swiftmailer-cache/*
 !/data/tmp/swiftmailer-cache/index.html

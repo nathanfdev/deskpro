@@ -60,6 +60,7 @@ class CarryAdminSession
 
 				if ($admin_session) {
 					$this->controller->session->set('auth_person_id', $admin_session->person->id);
+					\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 					$this->controller->session->set('dp_interface', DP_INTERFACE);
 
 					// Set their status to available by default

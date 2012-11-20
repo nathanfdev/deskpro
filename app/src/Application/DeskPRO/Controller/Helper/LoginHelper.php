@@ -188,6 +188,8 @@ class LoginHelper
 			$this->em->flush();
 		}
 
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+
 		return $this->_redirectLoginSuccess();
 	}
 
@@ -229,6 +231,7 @@ class LoginHelper
 				$person = $login_processor->getPerson();
 
 				$this->controller->session->set('auth_person_id', $person['id']);
+				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 				return $this->_redirectLoginSuccess();
 
 			// Error, go back to login
@@ -280,6 +283,7 @@ class LoginHelper
 			$person = $login_processor->getPerson();
 
 			$this->controller->session->set('auth_person_id', $person['id']);
+			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 			return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix, array()));
 
 		// Error, go back to login

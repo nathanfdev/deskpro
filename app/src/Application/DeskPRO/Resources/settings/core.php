@@ -335,4 +335,14 @@
 	 * How long, in seconds, are drafts valid for?
 	 */
 	'core.drafts_lifetime' => 604800, // 1 week
+
+	/**
+	 * Length in seconds page cache data is valid for
+	 */
+	'core.page_cache_ttl' => 900,
+
+	/**
+	 * The maximum size (in bytes) of the page cache data (trimmed down to this during cleanup)
+	 */
+	'core.page_cache_max_size' => 10000000,
 );

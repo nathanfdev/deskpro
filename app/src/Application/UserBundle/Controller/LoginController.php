@@ -133,6 +133,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		}
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplogout', 1, 0)->send();
+		// delete this, we'll recreate it as some settings may have changed
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 	}
 
 	public function logoutAction($auth)
@@ -297,6 +299,7 @@ HTML;
 		}
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
 		if ($return) {
 			return $this->redirect($return);
@@ -760,6 +763,7 @@ HTML;
 		$this->em->flush();
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
 		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
 
@@ -824,5 +828,6 @@ HTML;
 		$this->session->save();
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
+		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 	}
 }
