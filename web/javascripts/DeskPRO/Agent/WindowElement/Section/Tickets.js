@@ -384,7 +384,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					return false;
 				});
 
-				if (tab) {
+				if (tab && data.changed_fields) {
 					tab.page.doTicketUpdate();
 				}
 			}
