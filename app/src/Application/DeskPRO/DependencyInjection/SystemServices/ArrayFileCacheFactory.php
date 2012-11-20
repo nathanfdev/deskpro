@@ -49,7 +49,12 @@ class ArrayFileCacheFactory
 		}
 
 		$cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
-		$path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache.php';
+
+		if ($cache_name == 'dql' && defined('DPC_IS_CLOUD')) {
+			$path = DP_ROOT.'/sys/cache/' . $cache_name . '.cache.php';
+		} else {
+			$path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache.php';
+		}
 
 		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
 
