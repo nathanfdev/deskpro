@@ -228,6 +228,15 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			return;
 		}
 
+		if (isset($DP_CONFIG['debug']['slow_page_log_ignorenourl']) && $DP_CONFIG['debug']['slow_page_log_ignorenourl'] && (!defined('DP_REQUEST_URL') || !DP_REQUEST_URL)) {
+			return;
+		}
+
+		if (isset($DP_CONFIG['debug']['enable_slow_page_log_simplelog']) && $DP_CONFIG['debug']['enable_slow_page_log_simplelog']) {
+			$this->writeLogSimple();
+			return;
+		}
+
 		if (defined('DP_START_TIME')) {
 			$start_time = DP_START_TIME;
 		} else {
@@ -354,7 +363,54 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$write = trim($write);
 			$write .= "\n";
 
-			file_put_contents(dp_get_log_dir().'/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
+			$path = dp_get_log_dir().'/slow-page-log.log';
+			if (isset($DP_CONFIG['debug']['enable_slow_page_log_filepath']) && $DP_CONFIG['debug']['enable_slow_page_log_filepath']) {
+				$path = $DP_CONFIG['debug']['enable_slow_page_log_filepath'];
+			}
+
+			file_put_contents($path, $write, \FILE_APPEND | \LOCK_EX);
 		}
+	}
+
+	public function writeLogSimple()
+	{
+		global $DP_CONFIG;
+
+		if (defined('DP_START_TIME')) {
+			$start_time = DP_START_TIME;
+		} else {
+			$start_time = $this->obj_start_time;
+		}
+
+		$total_time = microtime(true) - $start_time;
+		$db_time    = $this->total_time;
+		$php_time   = $total_time - $db_time;
+
+		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log']) {
+			return;
+		}
+
+		$url = '';
+		if (defined('DP_REQUEST_URL')) {
+			$url = DP_REQUEST_URL;
+		}
+		if (!$url) {
+			return;
+		}
+
+		// Trim off _rt
+		$url = preg_replace('#(\?|&)_rt=[a-zA-Z0-9]+\-[a-zA-Z0-9]+\-[a-f0-9]+&?#', '', $url);
+
+		// Trim of _=1434343 cache buster
+		$url = preg_replace('#(\?|&)_=([0-9]+)(&|$)#', '', $url);
+
+		$write = sprintf("[%s] Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d    URL: %s\n", date('Y-m-d H:i:s'), $total_time, $php_time, $db_time, $this->query_count, memory_get_peak_usage(), $url);
+
+		$path = dp_get_log_dir().'/slow-page-simplelog.log';
+		if (isset($DP_CONFIG['debug']['enable_slow_page_log_filepath']) && $DP_CONFIG['debug']['enable_slow_page_log_filepath']) {
+			$path = $DP_CONFIG['debug']['enable_slow_page_log_filepath'];
+		}
+
+		file_put_contents($path, $write, \FILE_APPEND | \LOCK_EX);
 	}
 }
