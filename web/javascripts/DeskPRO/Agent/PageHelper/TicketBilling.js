@@ -66,7 +66,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
-				if (json.inserted) {
+				if (json.inserted && self.addBillingRow) {
 					self.addBillingRow(json.html);
 					self.resetBillingForm();
 				}
