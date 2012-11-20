@@ -170,7 +170,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 		if (file_exists($this->cache_file)) {
 			$load_data = @require($this->cache_file);
-			if (!$load_data) {
+			if (!$load_data || !is_array($load_data)) {
 				$load_data = array();
 			}
 

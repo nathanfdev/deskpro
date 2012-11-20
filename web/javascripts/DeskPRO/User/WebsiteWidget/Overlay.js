@@ -601,6 +601,10 @@ var DpOverlayWidget = new (function() {
 			util.extend(options, window.DpOverlayWidget_Options);
 		}
 
+		if (!options.staticUrl) {
+			options.staticUrl = options.deskproUrl.replace(/index\.php\//, 'web/');
+		}
+
 		var bgColor  = 'rgb(63,63,63)';
 		var border   = '2px solid #727272';
 

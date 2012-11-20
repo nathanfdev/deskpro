@@ -106,7 +106,6 @@ var DpChatWidget = new (function() {
 
 	var options = {
 		protocol: null,
-		staticUrl: null,
 		deskproUrl: null,
 		btnClass: 'dp-chat-btn'
 	};
