@@ -100,6 +100,13 @@ var ticketReader = {
 				</div>
 			</div>
 
+			<div class="dp-its-a-trap">
+				{# Spam trap: If these fields contain values when submitted, the system knows a bot submitted the form #}
+				<input type="text" name="first_name" value="" />
+				<input type="text" name="last_name" value="" />
+				<input type="text" name="email" value="" />
+			</div>
+
 			<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 		</form>
 	</article>

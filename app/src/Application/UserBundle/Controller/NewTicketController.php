@@ -163,7 +163,12 @@ class NewTicketController extends AbstractController
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
 
-			if ($validator->isValid($newticket)) {
+			$trap_fail = false;
+			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+				$trap_fail = true;
+			}
+
+			if ($validator->isValid($newticket) && !$trap_fail) {
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
 
