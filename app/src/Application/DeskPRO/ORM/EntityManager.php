@@ -47,7 +47,8 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateEntityManager;
  */
 class EntityManager extends UnprivateEntityManager
 {
-	protected $_delayedPersist = array();
+	protected $_delayedInsert = array();
+	protected $_delayedUpdate = array();
 
 	protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
 	{
@@ -91,32 +92,79 @@ class EntityManager extends UnprivateEntityManager
 	}
 
 	/**
-	 * Sets an entity to be persisted after the next flush call completes.
-	 * This is mostly useful when trying to persist an entity in a pre/post
-	 * persist/update/remove event, where the managed entities are already setup.
+	 * Sets an entity to be insert after the next flush call completes.
+	 * This is mostly useful when trying to insert an entity in a pre/post-update
+	 * event, where the managed entities are already setup. This only works
+	 * when inserting an entity.
 	 *
 	 * @param $entity
 	 */
-	public function delayedPersist($entity)
+	public function delayedInsert($entity)
 	{
 		$oid = spl_object_hash($entity);
 
-        if (!isset($this->_delayedPersist[$oid])) {
-			$this->_delayedPersist[$oid] = $entity;
+        if (!isset($this->_delayedInsert[$oid])) {
+			$this->_delayedInsert[$oid] = $entity;
         }
+	}
+
+	/**
+	 * When you need to update another entity in a pre/post-update event, the entity
+	 * cannot be updated directly as it may not be saved. This method takes the code
+	 * to do the update and delays it until after the flush completes and immediately
+	 * does the update.
+	 *
+	 * @param callable $closure
+	 * @param string|null $unique_key
+	 */
+	public function delayedUpdate(\Closure $closure, $unique_key = null)
+	{
+		if ($unique_key) {
+			$this->_delayedUpdate[$unique_key] = $closure;
+		} else {
+			$this->_delayedUpdate[] = $closure;
+		}
 	}
 
 	public function flush($entity = null)
 	{
-		parent::flush($entity);
-
-		if (!$entity && $this->_delayedPersist) {
-			foreach ($this->_delayedPersist AS $persist) {
+		if (!$entity && $this->_delayedInsert) {
+			foreach ($this->_delayedInsert AS $persist) {
 				$this->persist($persist);
 			}
-			$this->_delayedPersist = array();
+			$this->_delayedInsert = array();
+		}
+		if (!$entity && $this->_delayedUpdate) {
+			foreach ($this->_delayedUpdate AS $closure) {
+				$closure($this);
+			}
+			$this->_delayedUpdate = array();
+		}
 
-			parent::flush();
+		parent::flush($entity);
+
+		if (!$entity) {
+			$flush_again = false;
+
+			if ($this->_delayedInsert) {
+				foreach ($this->_delayedInsert AS $persist) {
+					$this->persist($persist);
+				}
+				$this->_delayedInsert = array();
+				$flush_again = true;
+			}
+
+			if ($this->_delayedUpdate) {
+				foreach ($this->_delayedUpdate AS $closure) {
+					$closure($this);
+				}
+				$this->_delayedUpdate = array();
+				$flush_again = true;
+			}
+
+			if ($flush_again) {
+				$this->flush();
+			}
 		}
 	}
 }

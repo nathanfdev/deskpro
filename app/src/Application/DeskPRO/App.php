@@ -373,7 +373,7 @@ class App
 	/**
 	 * Get the ORM entity manager.
 	 *
-	 * @return \Doctrine\ORM\EntityManager
+	 * @return \Application\DeskPRO\ORM\EntityManager
 	 */
 	public static function getOrm()
 	{

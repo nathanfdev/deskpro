@@ -1928,6 +1928,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function resetSlaStatuses()
+	{
+		foreach ($this->ticket_slas AS $ticket_sla) {
+			$ticket_sla->is_completed = false;
+		}
+	}
+
 
 	/**
 	 * Undelete a ticket.
@@ -2313,17 +2320,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _preUpdate()
 	{
-		if ($this->_recalculate_slas) {
-			// this is deferred until all changes are done to ensure everything is correct
-			if ($this->_reset_slas) {
-				foreach ($this->ticket_slas AS $ticket_sla) {
-					$ticket_sla->is_completed = false;
-				}
-			}
-			$this->_reset_slas = false;
+		$self = $this;
+		$reset = $this->_reset_slas;
 
-			$this->recalculateSlaDates();
+		if ($this->_recalculate_slas) {
+			App::getOrm()->delayedUpdate(function($em) use ($self, $reset) {
+				// this is deferred until all changes are done to ensure everything is correct
+				if ($reset) {
+					$self->resetSlaStatuses();
+				}
+				$self->recalculateSlaDates();
+			});
 		}
+
+		$this->_reset_slas = false;
 		$this->_recalculate_slas = false;
 	}
 
