@@ -109,6 +109,17 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		return $this->id;
 	}
 
+	public function isType($type)
+	{
+		if ($type == 'tickets' && $this->is_tickets_enabled) {
+			return true;
+		} elseif ($type == 'chat' && $this->is_chat_enabled) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function getRealUserTitle()
 	{
 		return $this->user_title;

@@ -242,6 +242,28 @@ class DepartmentDataService extends BaseRepositoryService
 		return $this->cats[$this->default_id];
 	}
 
+	public function getFullNames($type = 'tickets')
+	{
+		$names = array();
+		foreach ($this->getRootNodes() as $dep) {
+
+			if (!$dep->isType($type)) {
+				continue;
+			}
+
+			$names[$dep->getId()] = $dep->title;
+
+			foreach ($this->getChildren($dep) as $subdep) {
+				if (!$subdep->isType($type)) {
+					continue;
+				}
+
+				$names[$subdep->getId()] = $dep->title . ' > ' . $subdep->title;
+			}
+		}
+
+		return $names;
+	}
 
 	public function __call($method, array $args = array())
 	{

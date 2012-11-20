@@ -229,7 +229,7 @@ class GroupingField
 
 		switch ($this->field) {
 			case self::DEPARTMENT:
-				$this->titles = App::getDataService('Department')->getFullNames();
+				$this->titles = App::getDataService('Department')->getFullNames('tickets');
 				break;
 
 			case self::AGENT:
