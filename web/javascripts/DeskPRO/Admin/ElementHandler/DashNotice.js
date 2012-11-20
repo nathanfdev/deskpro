@@ -7,10 +7,11 @@ DeskPRO.Admin.ElementHandler.DashNotice = new Orb.Class({
 		var el = this.el;
 		$.ajax({
 			url: BASE_URL + 'admin/dashboard/load-version-notice.html',
-			dataType: 'json',
+			dataType: 'html',
 			success: function(html) {
 				if (html) {
 					el.html(html);
+					el.show();
 				}
 			}
 		});

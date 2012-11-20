@@ -376,17 +376,17 @@ class MainController extends AbstractController
 	public function dashVersionNoticeAction()
 	{
 		try {
-			$version_notice = \Application\DeskPRO\Service\LicenseService::getVersionNotice();
+			$version_notices = \Application\DeskPRO\Service\LicenseService::getVersionNotices();
 		} catch (\Exception $e) {
-			$version_info = null;
+			$version_notices = null;
 		}
 
-		if (!$version_notice || empty($version_notice['message'])) {
+		if (!$version_notices || !count($version_notices)) {
 			return $this->createResponse('');
 		}
 
 		return $this->render('AdminBundle:Main:part-version-notice.html.twig', array(
-			'version_notice' => $version_notice
+			'version_notices' => $version_notices
 		));
 	}
 }

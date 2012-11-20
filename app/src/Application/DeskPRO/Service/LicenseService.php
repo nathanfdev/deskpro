@@ -89,13 +89,13 @@ class LicenseService
 	 *
 	 * @return array
 	 */
-	public static function getVersionNotice()
+	public static function getVersionNotices()
 	{
 		static $data = null;
 
 		if ($data === null) {
 			try {
-				$data = self::fetchServiceResult('build/version-notice.json', array('my_build' => DP_BUILD_TIME));
+				$data = self::fetchServiceResult('build/version-notices.json', array('my_build_num' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0));
 			} catch (\Exception $e) {
 				$data = array();
 			}
