@@ -14,6 +14,7 @@
 			<ul class="dp-post-info">
 				<li class="dp-author"><i class="dp-icon-user"></i> {{ news.person.display_name_user }}</li>
 				<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_news', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a></li>
+				{% if app.getSetting('user.publish_comments') %}<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="{{ path('user_news_view', {'slug': news.url_slug}) }}#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[news.id]|default(0)}) }}</a></li>{% endif %}
 			</ul>
 		</header>
 		<article>
