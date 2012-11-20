@@ -73,7 +73,7 @@ class UserKernel extends AbstractKernel
 						}
 
 						$cache_time = intval($parts[0]);
-						if ($cache_time < time()) {
+						if ($cache_time && $cache_time < time()) {
 							$use_cache = false;
 						}
 					}
@@ -185,7 +185,7 @@ class UserKernel extends AbstractKernel
 				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 			}
 		} else {
-			if ($skip_cache) {
+			if (App::isCacheSkipped()) {
 				$cache_time = time() + App::getSetting('core.page_cache_ttl');
 			} else {
 				$cache_time = !empty($_COOKIE['dp-guest-cache']) ? intval($_COOKIE['dp-guest-cache']) : 0;
