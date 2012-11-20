@@ -57,7 +57,7 @@ class UserKernel extends AbstractKernel
 			return $res;
 		}
 
-		if ($request->getMethod() == 'GET' && !isset($_GET['admin_portal_controls']) && !preg_match('#/widget/#', $request->getPathInfo())) {
+		if ($request->getMethod() == 'GET' && !isset($_GET['admin_portal_controls']) && !preg_match('#/widget/chat.html#', $request->getPathInfo())) {
 			if (!empty($_COOKIE['dp-guest-cache']) || (empty($_COOKIE['dpsid']) && empty($_COOKIE['dpreme']))) {
 				$language_id = null;
 				if (!empty($_COOKIE['dp-guest-cache'])) {
@@ -65,6 +65,10 @@ class UserKernel extends AbstractKernel
 					if (!empty($parts[1])) {
 						$language_id = intval($parts[1]);
 					}
+				}
+
+				if (!$language_id && isset($_COOKIE['dplid'])) {
+					$language_id = intval($_COOKIE['dplid']);
 				}
 
 				if (!$language_id) {
