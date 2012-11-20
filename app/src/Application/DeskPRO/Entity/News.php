@@ -137,6 +137,15 @@ class News extends ContentAbstract
 		$this->labels->add($label);
 	}
 
+	public function _invalidatePageCache()
+	{
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateRegex('/_news(-|_view_' . intval($this->getId()) . '-|_\d+)/');
+	}
+
+
+
+
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -165,6 +174,7 @@ class News extends ContentAbstract
 				'status_idx' => array('columns' => array('status')),
 			)
 		));
+		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));
