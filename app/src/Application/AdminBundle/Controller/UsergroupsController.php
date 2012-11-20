@@ -76,6 +76,7 @@ class UsergroupsController extends AbstractController
 
 		$member_counts[0] = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM people
+			WHERE is_agent = 0
 		");
 
 		return $this->render('AdminBundle:Usergroups:list.html.twig', array(
