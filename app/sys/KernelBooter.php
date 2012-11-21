@@ -389,13 +389,14 @@ class KernelBooter
 
 				$cache_slam_file = $lang_cache_file . '.slam';
 				if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
-					$slam_fp = @fopen($cache_slam_file, 'a+');
-					if ($slam_fp && flock($slam_fp, LOCK_EX)) {
-						touch($cache_slam_file);
-						@file_put_contents($lang_cache_file, serialize($languages));
-						flock($slam_fp, LOCK_UN);
-						fclose($slam_fp);
-						unlink($cache_slam_file);
+					$slam_fp = @fopen($cache_slam_file, 'w');
+					if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
+						@file_put_contents($lang_cache_file, serialize($languages), \LOCK_EX);
+						@flock($slam_fp, \LOCK_UN);
+						@fclose($slam_fp);
+						@unlink($cache_slam_file);
+					} else {
+						@fclose($slam_fp);
 					}
 				}
 
@@ -510,10 +511,8 @@ class KernelBooter
 
 			$cache_slam_file = self::$_cache_file . '.slam';
 			if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
-				$slam_fp = @fopen($cache_slam_file, 'a+');
-				if ($slam_fp && flock($slam_fp, LOCK_EX)) {
-					touch($cache_slam_file);
-
+				$slam_fp = @fopen($cache_slam_file, 'w');
+				if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
 					// don't take any of the cookies - they'll be things like sessions etc
 					$store = array(
 						'headers' => $response->headers->all(),
@@ -525,10 +524,12 @@ class KernelBooter
 						$store['compressed'] = true;
 					}
 
-					@file_put_contents(self::$_cache_file, serialize($store));
-					flock($slam_fp, LOCK_UN);
-					fclose($slam_fp);
-					unlink($cache_slam_file);
+					@file_put_contents(self::$_cache_file, serialize($store), \LOCK_EX);
+					@flock($slam_fp, \LOCK_UN);
+					@fclose($slam_fp);
+					@unlink($cache_slam_file);
+				} else {
+					@fclose($slam_fp);
 				}
 			}
 		}
