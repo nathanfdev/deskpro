@@ -39,6 +39,15 @@
 					{% else %}
 						{{ cat.title }}
 					{% endif %}
+				{% elseif grouping_var == 'language' %}
+					{% set language = app.getDataRepository('Language').get(cat.id) %}
+					{% if language and language.flag_image %}
+						<span
+							style="background: url('{{ asset('images/flags/' ~ language.flag_image) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
+						>{{ cat.title }}</span>
+					{% else %}
+						{{ cat.title }}
+					{% endif %}
 				{% else %}
 					{{ cat.title }}
 				{% endif %}

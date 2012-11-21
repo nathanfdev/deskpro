@@ -78,7 +78,13 @@
 					<span class="prop-title">Language:</span>
 					<span class="prop-val language_id" data-prop-value="{{ticket.language.id}}">
 					{% if ticket.language %}
-						{{ticket.language.title}}
+						{% if ticket.language.flag_image %}
+							<span
+								style="background: url('{{ asset('images/flags/' ~ ticket.language.flag_image) }}') no-repeat 0 50%; height: 16px; padding-left: 19px;"
+							>{{ticket.language.title}}</span>
+						{% else %}
+							{{ticket.language.title}}
+						{% endif %}
 					{% else %}
 						{{ phrase('agent.general.none') }}
 					{% endif %}
