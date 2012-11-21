@@ -160,6 +160,9 @@ class Manager
 
 		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 		$cache->invalidateLanguageCache();
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
+		$cache->invalidateAll();
 	}
 
 

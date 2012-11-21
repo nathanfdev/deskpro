@@ -399,8 +399,6 @@ class KernelBooter
 						@fclose($slam_fp);
 					}
 				}
-
-				@file_put_contents($lang_cache_file, serialize($languages));
 			}
 
 			$locales = array('');

@@ -37,9 +37,9 @@
 {% endif %}
 
 {% if app.isDebug() %}
-	<script src="{{ path('dp_user_lang', { v: security_token('lang') } ) }}"></script>
+	<script src="{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/dp.php/user-lang-{{ app.language.id }}.js?nocache=1&v={{ security_token('lang') }}"></script>
 {% else %}
-	<script src="{{ path('dp_user_lang', { v: app.getSetting('core.deskpro_build') } ) }}"></script>
+	<script src="{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/dp.php/user-lang-{{ app.language.id }}.js?v={{ app.getSetting('core.deskpro_build') }}"></script>
 {% endif %}
 
 <link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />

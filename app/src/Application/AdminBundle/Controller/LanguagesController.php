@@ -407,6 +407,9 @@ class LanguagesController extends AbstractController
 		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 		$cache->invalidateAll();
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
+		$cache->invalidateLanguage($language_id);
+
 		return $this->createJsonResponse(array(
 			'success'   => true,
 			'phrase_id' => $phrase_id,
@@ -454,6 +457,9 @@ class LanguagesController extends AbstractController
 
 			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
 			$cache->invalidateAll();
+
+			$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
+			$cache->invalidateLanguage($language_id);
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
@@ -500,10 +506,13 @@ class LanguagesController extends AbstractController
 			}
 
 			$this->em->flush();
-
-			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-			$cache->invalidateAll();
 		}
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
+		$cache->invalidateAll();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
