@@ -66,12 +66,15 @@ class MainController extends BaseMainController
 
 		$last_login = $this->em->getRepository('DeskPRO:LoginLog')->getLast($this->person);
 
+		$onboard = new \Application\AdminBundle\OnboardNotices();
+
 		return $this->render('@index.html.twig', array(
 			'lic'                => License::getLicense(),
 			'online_agents'      => $online_agents,
 			'count_online_users' => $count_online_users,
 			'stats'              => $stats,
 			'last_login'         => $last_login,
+			'onboard'            => $onboard,
 		));
 	}
 }
