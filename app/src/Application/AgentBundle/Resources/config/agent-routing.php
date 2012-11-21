@@ -1090,7 +1090,7 @@ $collection->add('agent_ticket_changeuser_overlay_preview', new Route(
 ));
 
 $collection->add('agent_ticket_changeuser', new Route(
-	'/tickets/{ticket_id}/change-user/{new_person_id}',
+	'/tickets/{ticket_id}/change-user',
 	array('_controller' => 'AgentBundle:Ticket:changeUser'),
 	array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
 	array()

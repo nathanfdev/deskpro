@@ -29,11 +29,42 @@
 						<ul class="results-list">
 
 						</ul>
+						<footer>
+							<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
+						</footer>
 					</section>
 				</div>
 			</div>
 		</form>
 
 		<div class="person-preview-content"></div>
+
+		<div class="new-user-fields dp-form" style="display: none; margin-top: 1em">
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>{{ phrase('agent.general.email') }}</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="email" value="" class="email" />
+				</div>
+			</div>
+
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>{{ phrase('agent.general.name') }}</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="name" value="" class="name" />
+				</div>
+			</div>
+		</div>
+
+		<div class="submit-row" style="display:none; margin-top: 1em">
+			<div><label><input type="checkbox" class="participant-check" checked="checked" /> Send CC to {{ ticket.person.name }}</label></div>
+
+			<div style="text-align: center; margin-top: 1em">
+				<button class="clean-white change-user-trigger">Change Person</button>
+			</div>
+		</div>
 	</div>
 </div>

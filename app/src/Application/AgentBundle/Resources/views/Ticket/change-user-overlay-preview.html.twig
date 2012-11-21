@@ -1,5 +1,4 @@
-<br />
-<table width="100%">
+<table width="100%" style="margin-top: 1em">
 	<tr>
 		<td width="15" style="padding-right: 10px; vertical-align: middle;">
 			<img src="{{ new_person.getPictureUrl(80) }}" width="80" height="80" />
@@ -15,11 +14,3 @@
 		</td>
 	</tr>
 </table>
-
-<br />
-<div><label><input type="checkbox" class="participant-check" checked="checked" /> Send CC to {{ ticket.person.name }}</label></div>
-
-<br />
-<center>
-	<button class="clean-white change-user-trigger" data-person-id="{{ new_person.id }}">Change Person</button>
-</center>

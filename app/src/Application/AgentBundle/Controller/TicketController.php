@@ -2157,14 +2157,35 @@ class TicketController extends AbstractController
 		));
 	}
 
-	public function changeUserAction($ticket_id, $new_person_id)
+	public function changeUserAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
 
 		$old_person = $ticket->person;
-		$new_person = $this->em->find('DeskPRO:Person', $new_person_id);
-		if (!$new_person) {
-			throw $this->createNotFoundException();
+
+		$new_person_id = $this->in->getUint('new_person_id');
+		if ($new_person_id) {
+			$new_person = $this->em->find('DeskPRO:Person', $new_person_id);
+			if (!$new_person) {
+				throw $this->createNotFoundException();
+			}
+		} else {
+			$name = $this->in->getString('name');
+			$email = $this->in->getString('email');
+
+			if (!$email || !\Orb\Validator\StringEmail::isValueValid($email)) {
+				return $this->createJsonResponse(array(
+					'success' => false,
+					'error' => 'Please enter a valid email address',
+				));
+			}
+
+			$new_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if (!$new_person) {
+				$new_person = new Person();
+				$new_person->name = $name;
+				$new_person->setEmail($email, true);
+			}
 		}
 
 		$ticket->person = $new_person;
@@ -2173,6 +2194,10 @@ class TicketController extends AbstractController
 		try {
 			if ($this->in->getBool('keep')) {
 				$ticket->addParticipantPerson($old_person);
+			}
+
+			if (!$new_person->getId()) {
+				$this->em->persist($new_person);
 			}
 
 			$this->em->persist($ticket);
