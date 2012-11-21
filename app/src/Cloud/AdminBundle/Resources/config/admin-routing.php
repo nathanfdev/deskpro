@@ -362,6 +362,13 @@ $collection->add('admin_agents', new Route(
 	array()
 ));
 
+$collection->add('admin_mass_add', new Route(
+	'/agents/mass-add-agents.json',
+	array('_controller' => 'CloudAdminBundle:Agents:massAddAgents'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_agents_deleted', new Route(
 	'/agents/deleted',
 	array('_controller' => 'CloudAdminBundle:Agents:deletedAgents'),
