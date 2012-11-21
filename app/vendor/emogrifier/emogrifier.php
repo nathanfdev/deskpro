@@ -8,6 +8,7 @@
  * - Removed cache
  * - libxml_use_internal_errors(true)
  * - always assume utf8
+ * - use of preg_replace_callback instead of /e
  */
 
 class Emogrifier {
@@ -70,7 +71,9 @@ class Emogrifier {
         $vistedNodes = $vistedNodeRef = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
-            $normalizedOrigStyle = preg_replace('/[A-z\-]+(?=\:)/Se',"strtolower('\\0')", $node->getAttribute('style'));
+  			$normalizedOrigStyle = preg_replace_callback('/[A-z\-]+(?=\:)/S', function($match) {
+				return strtolower($match[0]);
+			}, $node->getAttribute('style'));
 
             // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
             $nodeKey = md5($node->getNodePath());
@@ -198,9 +201,6 @@ class Emogrifier {
                                '/([^\/]+):last-child/i', // last-child pseudo-selector
                                '/(\w)\[(\w+)\]/', // Matches element with attribute
                                '/(\w)\[(\w+)\=[\'"]?(\w+)[\'"]?\]/', // Matches element with EXACT attribute
-                               '/(\w+)?\#([\w\-]+)/e', // Matches id attributes
-                               '/(\w+|[\*\]])?((\.[\w\-]+)+)/e', // Matches class attributes
-
             );
             $replace = array(
                                '/',
@@ -210,11 +210,24 @@ class Emogrifier {
                                '*[last()]/self::\\1',
                                '\\1[@\\2]',
                                '\\1[@\\2="\\3"]',
-                               "(strlen('\\1') ? '\\1' : '*').'[@id=\"\\2\"]'",
-                               "(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
             );
 
-            $css_selector = '//'.preg_replace($search, $replace, $css_selector);
+            $css_selector = preg_replace($search, $replace, $css_selector);
+
+			// Matches id attributes
+			$css_selector = preg_replace_callback('/(\w+)?\#([\w\-]+)/', function($match) {
+				return (strlen($match[1]) ? $match[1] : '*') . '[@id="' . $match[2] . '"]';
+			}, $css_selector);
+
+			// Matches class attributes
+			$css_selector = preg_replace_callback('/(\w+|[\*\]])?((\.[\w\-]+)+)/', function($match) {
+				return (strlen($match[1]) ? $match[1] : '*')
+					. '[contains(concat(" ",@class," "),concat(" ","'
+					. implode('"," "))][contains(concat(" ",@class," "),concat(" ","', explode('.', substr($match[2], 1)))
+					. '"," "))]';
+			}, $css_selector);
+
+			$css_selector = '//'.$css_selector;
 
             $this->caches[0][$xpathkey] = $css_selector;
         }

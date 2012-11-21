@@ -74,7 +74,9 @@ class Elastica_Util
 	 * @return string CamelCase string
 	 */
 	public static function toCamelCase($string) {
-		return preg_replace('/_([a-z])/e', 'strtoupper("$1")', ucfirst($string));
+		return preg_replace_callback('/_([a-z])/', function($match) {
+			return strtoupper($match[1]);
+		}, ucfirst($string));
 	}
 
 	/**
@@ -86,7 +88,9 @@ class Elastica_Util
 	 * @return string SnakeCase string
 	 */
 	public static function toSnakeCase($string) {
-		$string = preg_replace('/([A-Z])/e', 'strtolower("_$1")', $string);
+		$string = preg_replace_callback('/([A-Z])/', function($match) {
+			return strtolower("_$match[1]");
+		}, $string);
 		return substr($string, 1);
 	}
 

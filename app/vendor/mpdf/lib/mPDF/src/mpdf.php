@@ -823,6 +823,8 @@ var $innerblocktags;
 
 function mPDF($mode='',$format='A4',$default_font_size=0,$default_font='',$mgl=15,$mgr=15,$mgt=16,$mgb=16,$mgh=9,$mgf=9, $orientation='P') {
 
+	// PHP 5.5 doesn't like the /e modifier in regexes
+	error_reporting(error_reporting() & ~E_DEPRECATED);
 		// mPDF 5.3.89 5.3.99
 /*-- BACKGROUNDS --*/
 		if (!class_exists('grad', false)) { include(_MPDF_PATH.'classes/grad.php'); }

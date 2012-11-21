@@ -781,7 +781,9 @@ function dp_html($text) {
  * @return string The text with the filter applied
  */
 function un_dp_html($text) {
-	$text = preg_replace('/&#([0-9]+);/e', "chr_uni('\\1')", $text);
+	$text = preg_replace_callback('/&#([0-9]+);/', function($match) {
+		return chr_uni($match[1]);
+	}, $text);
 	return str_replace(array('&lt;', '&gt;', '&quot;', '&amp;'), array('<', '>', '"', '&'), $text);
 }
 
