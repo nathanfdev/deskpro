@@ -297,6 +297,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _postInsert()
 	{
+		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
+			return;
+		}
+
 		$this->_sendClientMessages();
 
 		$person = App::getCurrentPerson();
@@ -319,6 +323,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _postUpdate()
 	{
+		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
+			return;
+		}
+
 		$this->_sendClientMessages();
 
 		$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\TicketSlaUpdated($this);
@@ -336,6 +344,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _postRemove()
 	{
+		if (!$this->ticket || $this->ticket->isLoggingDisabled()) {
+			return;
+		}
+
 		$this->_sendClientMessages(true);
 
 		$person = App::getCurrentPerson();

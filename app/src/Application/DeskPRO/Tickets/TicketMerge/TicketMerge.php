@@ -301,5 +301,11 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
+
+		App::getDb()->executeUpdate("
+			UPDATE IGNORE ticket_slas
+			SET ticket_id = ?
+			WHERE ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
 	}
 }
