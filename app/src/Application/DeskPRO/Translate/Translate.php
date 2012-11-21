@@ -440,6 +440,7 @@ class Translate implements PersonContextInterface
 	{
 		if ($language === null) $language = $this->_language;
 		if (!$phrase_name) return '';
+		if (!is_string($phrase_name)) return '(' . gettype($phrase_name) . ')';
 
 		if (Numbers::isInteger($language)) {
 			$language_id = $language;
