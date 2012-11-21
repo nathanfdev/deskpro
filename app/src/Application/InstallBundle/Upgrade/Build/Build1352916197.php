@@ -51,16 +51,24 @@ class Build1352916197 extends AbstractBuild
 			$name         = $tpl['name'];
 			$compile_code = $tpl['template_code'];
 
-			if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-				$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-				$compile_code = $proc->process($compile_code, $name);
+			try {
+				if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
+					$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+					$compile_code = $proc->process($compile_code, $name);
+				}
+
+				$compiled = $twig->compileSource($compile_code, $name);
+
+				$this->container->getDb()->update('templates', array(
+					'template_compiled' => $compiled,
+				), array('id' => $tpl['id']));
+			} catch (\Exception $e) {
+				@file_put_contents(
+					dp_get_backup_dir() . DIRECTORY_SEPARATOR . 'tpl-backup-' . str_replace(':', '_', $tpl['name']),
+					$tpl['template_code']
+				);
+				$this->container->getDb()->delete('templates', array('id' => $tpl['id']));
 			}
-
-			$compiled = $twig->compileSource($compile_code, $name);
-
-			$this->container->getDb()->update('templates', array(
-				'template_compiled' => $compiled,
-			), array('id' => $tpl['id']));
 		}
 	}
 }
