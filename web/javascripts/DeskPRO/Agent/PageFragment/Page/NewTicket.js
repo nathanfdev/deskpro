@@ -412,7 +412,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			};
 
 			if (this.doScrollBottom) {
-				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
 		}
@@ -767,7 +767,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.updateUi();
 				window.setTimeout(function() {
 					if (self.wrapper) {
-						self.wrapper.find('div.layout-content').trigger('goscrollbottom');
+						self.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 					}
 				}, 250);
 			});

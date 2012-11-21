@@ -149,6 +149,15 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
 				oWrapper.data('dp-scroll-pos', iScroll);
+				oScrollbar.obj.addClass('stuck-btm');
+			}
+			function goscrollbottom_stick() {
+				// No scrolling, there is no bottom
+				if (oScrollbar.obj.hasClass('disable') || !oScrollbar.obj.hasClass('stuck-btm')) {
+					return;
+				}
+
+				goscrollbottom();
 			}
 			function restorescroll() {
 				iScroll = parseInt(oWrapper.data('dp-scroll-pos'));
@@ -224,6 +233,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 			});
 			oWrapper.on('goscrollto', goscrollto);
 			oWrapper.on('goscrollbottom', goscrollbottom);
+			oWrapper.on('goscrollbottom_stick', goscrollbottom_stick);
 			oWrapper.on('restorescroll', restorescroll);
 
 			var oViewport = { obj: $('.scroll-viewport', oWrapper).first() };
@@ -297,6 +307,12 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					oContent.obj.css(sDirection, -iScroll);
 					oWrapper.data('dp-scroll-pos', iScroll);
 
+					if (iScroll == oContent[options.axis] - oViewport[options.axis]) {
+						oScrollbar.obj.addClass('stuck-btm');
+					} else {
+						oScrollbar.obj.removeClass('stuck-btm');
+					}
+
 					oEvent = $.event.fix(oEvent);
 					oEvent.preventDefault();
 
@@ -312,6 +328,13 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				$(document).unbind('mousemove', drag);
 				$(document).unbind('mouseup', end);
 				oThumb.obj.unbind('mouseup', end);
+
+				if (iScroll == oContent[options.axis] - oViewport[options.axis]) {
+					oScrollbar.obj.addClass('stuck-btm');
+				} else {
+					oScrollbar.obj.removeClass('stuck-btm');
+				}
+
 				return false;
 			};
 			function drag(oEvent){
@@ -319,7 +342,13 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					iPosition.now = Math.min((oTrack[options.axis] - oThumb[options.axis]), Math.max(0, (iPosition.start + ((sAxis ? oEvent.pageX : oEvent.pageY) - iMouse.start))));
 					iScroll = iPosition.now * oScrollbar.ratio;
 					oContent.obj.css(sDirection, -iScroll);
-					oThumb.obj.css(sDirection, iPosition.now);;
+					oThumb.obj.css(sDirection, iPosition.now);
+
+					if (iScroll >= oContent[options.axis] - oViewport[options.axis]) {
+						oScrollbar.obj.addClass('stuck-btm');
+					} else {
+						oScrollbar.obj.removeClass('stuck-btm');
+					}
 				}
 				return false;
 			};

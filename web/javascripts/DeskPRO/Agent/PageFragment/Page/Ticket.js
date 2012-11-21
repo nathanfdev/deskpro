@@ -502,7 +502,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			};
 
 			if (this.doScrollBottom) {
-				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
 		}
@@ -672,7 +672,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.insertTextInReply(content);
 
 		// Scroll down
-		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 
 		this.focusOnReply();
 
