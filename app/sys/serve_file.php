@@ -646,12 +646,7 @@ class FilestorageLoader extends LoaderAbstract
 		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
 			header("X-Sendfile: $filepath");
 		} else {
-			$fh = fopen($filepath, 'r');
-			while (!feof($fh)) {
-				echo fread($fh, 8192);
-				flush();
-			}
-			fclose($fh);
+			readfile($filepath);
 		}
 	}
 
@@ -806,12 +801,7 @@ class FilestorageLoader extends LoaderAbstract
 		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
 			header("X-Sendfile: $filepath");
 		} else {
-			$fh = fopen($filepath, 'r');
-			while (!feof($fh)) {
-				echo fread($fh, 8192);
-				flush();
-			}
-			fclose($fh);
+			readfile($filepath);
 		}
 	}
 
