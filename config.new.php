@@ -45,7 +45,7 @@ define('DP_TECHNICAL_EMAIL', '');
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // do not edit the next line
-$DP_CONFIG = array('debug' => array());
+$DP_CONFIG = array('debug' => array(), 'cache' => array());
 
 # ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
 
