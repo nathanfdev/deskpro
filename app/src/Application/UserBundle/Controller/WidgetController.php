@@ -156,7 +156,9 @@ class WidgetController extends AbstractController
 
 	public function newTicketAction()
 	{
-		$this->ensureRequestToken('newticket_widget');
+		if ($this->person->getId()) {
+			$this->ensureRequestToken('newticket_widget');
+		}
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_WEB_PERSON_WIDGET,

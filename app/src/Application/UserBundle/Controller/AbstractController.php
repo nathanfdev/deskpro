@@ -98,6 +98,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function requireRequestToken($action, $arguments = null)
 	{
 		if ($this->request->getMethod() == 'POST') {
+			global $DP_CONFIG;
+			if (!empty($DP_CONFIG['cache']['page_cache']['enable']) && (!$this->person || !$this->person->getId())) {
+				return false;
+			}
+
 			return true;
 		}
 	}

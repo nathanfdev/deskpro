@@ -309,7 +309,9 @@ HTML;
 
 	public function quickSetLanguageAction()
 	{
-		$this->ensureRequestToken('lang_chooser');
+		if ($this->person->getId()) {
+			$this->ensureRequestToken('lang_chooser');
+		}
 
 		$lang_id = $this->in->getUint('language_id');
 		$lang = $this->container->getDataService('Language')->get($lang_id);
@@ -320,6 +322,7 @@ HTML;
 		}
 
 		$this->person->language = $lang;
+		App::getTranslator()->setLanguage($lang);
 
 		$this->db->beginTransaction();
 		try {

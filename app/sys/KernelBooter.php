@@ -441,7 +441,8 @@ class KernelBooter
 
 		$cache_dir = dp_get_tmp_dir() . '/page-cache';
 		$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request_uri), 0, 35);
-		$cache_filename = $language_id . '-' . $base . '-' . md5($request_uri) . '.cache';
+		$cache_base_filename = $base . '-' . md5($request_uri) . '.cache';
+		$cache_filename = $language_id . '-' . $cache_base_filename;
 		$cache_file = $cache_dir . '/' . $cache_filename;
 
 		if (file_exists($cache_file)) {
@@ -468,7 +469,7 @@ class KernelBooter
 			}
 		}
 
-		self::$_cache_file = $cache_file;
+		self::$_cache_file = $cache_base_filename;
 
 		return null;
 	}
@@ -507,7 +508,9 @@ class KernelBooter
 				@mkdir($cache_dir, 0777);
 			}
 
-			$cache_slam_file = self::$_cache_file . '.slam';
+			$cache_filename = $cache_dir . '/' . App::getLanguage()->getId() . '-' . self::$_cache_file;
+
+			$cache_slam_file = $cache_filename . '.slam';
 			if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
 				$slam_fp = @fopen($cache_slam_file, 'w');
 				if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -522,7 +525,7 @@ class KernelBooter
 						$store['compressed'] = true;
 					}
 
-					@file_put_contents(self::$_cache_file, serialize($store), \LOCK_EX);
+					@file_put_contents($cache_filename, serialize($store), \LOCK_EX);
 					@flock($slam_fp, \LOCK_UN);
 					@fclose($slam_fp);
 					@unlink($cache_slam_file);
