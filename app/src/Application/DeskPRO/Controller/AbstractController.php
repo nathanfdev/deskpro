@@ -106,31 +106,29 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
 
 	/**
-	 * Checks a request token in a form, and if its valid, also "consumes" it on the session so it cant be used again.
+	 * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
+	 * returns true.
 	 *
 	 * @param string $name
-	 * @param string $field_name
 	 * @return bool
 	 */
-	public function consumeRequestToken($name = '', $field_name = '_dp_security_token')
+	public function consumeRequest($name = '')
 	{
-		if (empty($_REQUEST[$field_name])) {
-			return false;
-		}
-
-		$token = $_REQUEST[$field_name];
-		$valid = $this->session->getEntity()->checkSecurityToken($name, $token);
-
-		if (!$valid) {
-			return false;
+		$hash = md5($name . App::getRequest()->getUri());
+		if (App::getRequest()->getMethod() == 'POST') {
+			$fp = @fopen('php://input', 'r');
+			while (!@feof($fp)) {
+				$hash = md5($hash . @fread($fp, 10240));
+			}
+			@fclose($fp);
 		}
 
 		$used = $this->session->get('consumed_tokens', array());
-		if (in_array($token, $used)) {
+		if (in_array($hash, $used)) {
 			return false;
 		}
 
-		$used[] = $token;
+		$used[] = $hash;
 
 		while (count($used) > 100) {
 			array_shift($used);

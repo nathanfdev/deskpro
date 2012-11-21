@@ -154,7 +154,7 @@ class NewTicketController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
-			if (!$this->consumeRequestToken('newticket')) {
+			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
 			}
 
