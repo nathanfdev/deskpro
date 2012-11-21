@@ -123,6 +123,13 @@ var DP = {
 			return;
 		}
 
+		if (el.length && el.length > 1) {
+			el.each(function() {
+				DP.select($(this), options);
+			});
+			return;
+		}
+
 		var options = options || {};
 
 		if (el.data('style-type')) {

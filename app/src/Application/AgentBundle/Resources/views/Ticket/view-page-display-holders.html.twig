@@ -12,11 +12,14 @@
 			<tr class="mode-edit">
 				<th width="80">Language:</th>
 				<td>
-					<select name="ticket[language_id]" id="{{baseId}}_ticket_language_id" data-prop-id="language_id" class="prop-input-language_id">
-						{% for id,title in app.getDataRepository('Language').getTitles() %}
-							<option {% if ticket.language.id == id %}selected="selected"{% endif %} value="{{ id }}">{{ title }}</option>
-						{% endfor %}
-					</select>
+					{% include 'AgentBundle:Common:select-language.html.twig' with {
+						'name': 'ticket[language_id]',
+						'id': '{{baseId}}_ticket_language_id',
+						'selected': ticket.language.id,
+						'languages': app.getDataRepository('Language').getAll(),
+						'add_classname': 'prop-input-language_id',
+						'add_attr': 'data-prop-id="language_id"'
+					} %}
 				</td>
 			</tr>
 		</tbody>
