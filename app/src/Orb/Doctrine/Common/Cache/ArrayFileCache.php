@@ -89,6 +89,16 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	protected $limit = 0;
 
 	/**
+	 * @var int
+	 */
+	protected $slam_timeout = 10;
+
+	/**
+	 * @var resource
+	 */
+	protected $slam_fp;
+
+	/**
 	 * @param string $cache_file
 	 */
 	public function __construct($cache_file)
@@ -169,9 +179,16 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 		}
 
 		if (file_exists($this->cache_file)) {
-			$load_data = @require($this->cache_file);
+			$load_data = @file_get_contents($this->cache_file);
+			if ($load_data) {
+				$load_data = @unserialize($load_data);
+			}
+
 			if (!$load_data || !is_array($load_data)) {
-				$load_data = array();
+				// If we got here, it means we read the file but it appears to be invalid
+				// So it probably means we read during the file being written, so just disable cache this time
+				$this->disabled = true;
+				return;
 			}
 
 			$time = time();
@@ -304,12 +321,13 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 	 */
 	public function commit()
 	{
-		if ($this->disabled) {
+		if ($this->disabled || $this->hasSlam()) {
 			return;
 		}
 
-		// Always reload
-		$this->reloadData();
+		if (!$this->obtainSlam()) {
+			return;
+		}
 
         $result = array();
 		$time = time();
@@ -322,8 +340,8 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 		$this->data = $result;
 
-		$php = "<?php\nreturn " . var_export($result, true) . ";\n";
-		$size = strlen($php);
+		$contents = serialize($result);
+		$size = strlen($contents);
 
 		$this->dirty = false;
 
@@ -332,7 +350,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 			$changed_umask = umask($this->umask);
 		}
 
-		if (file_put_contents($this->cache_file, $php, \LOCK_EX) != $size) {
+		if (file_put_contents($this->cache_file, $contents, \LOCK_EX) != $size) {
 
 			if ($changed_umask !== null) {
 				umask($changed_umask);
@@ -340,6 +358,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
 			// The file is probably invalid now, delete it
 			@unlink($this->cache_file);
+			$this->releaseSlam();
 
 			throw new \RuntimeException("Failed to write $size bytes");
 		}
@@ -347,6 +366,8 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 		if ($changed_umask !== null) {
 			umask($changed_umask);
 		}
+
+		$this->releaseSlam();
 	}
 
 
@@ -386,4 +407,61 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     {
         return null;
     }
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasSlam()
+	{
+		if (file_exists($this->cache_file . '.slam') && filemtime($this->cache_file . '.slam') < time() - $this->slam_timeout) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return resource
+	 */
+	public function obtainSlam()
+	{
+		if ($this->hasSlam()) {
+			return false;
+		}
+
+		if ($this->slam_fp) {
+			return $this->slam_fp;
+		}
+
+		$this->slam_fp = @fopen($this->cache_file . '.slam', 'w');
+		if (!$this->slam_fp) {
+			$this->slam_fp = null;
+			return false;
+		}
+
+		if (!@flock($this->slam_fp, \LOCK_EX)) {
+			@fclose($this->slam_fp);
+			return false;
+		}
+
+		register_shutdown_function(array($this, 'releaseSlam'));
+
+		return $this->slam_fp;
+	}
+
+
+	/**
+	 * @return void
+	 */
+	public function releaseSlam()
+	{
+		if ($this->slam_fp) {
+			@flock($this->slam_fp, \LOCK_UN);
+			@fclose($this->slam_fp);
+			@unlink($this->cache_file . '.slam');
+			$this->slam_fp = null;
+		}
+	}
 }

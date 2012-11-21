@@ -50,10 +50,10 @@ class ArrayFileCacheFactory
 
 		$cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
-		if ($cache_name == 'dql' && defined('DPC_IS_CLOUD')) {
-			$path = DP_ROOT.'/sys/cache/' . $cache_name . '.cache.php';
+		if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
+			$path = DP_ROOT.'/sys/cache/' . $cache_name . '.cache';
 		} else {
-			$path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache.php';
+			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
 		}
 
 		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
@@ -77,7 +77,7 @@ class ArrayFileCacheFactory
 			});
 
 			// Makes sure it doesnt get too big
-			$cache->setLimit(250);
+			$cache->setLimit(350);
 		}
 
 		return $cache;
