@@ -178,12 +178,18 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Get the name for the person who made the comment, trying
 	 * the person record first if it exists.
 	 *
+	 * @param $force_user If true, forces the user display name
+	 *
 	 * @return string
 	 */
-	public function getUserName()
+	public function getUserName($force_user = false)
 	{
 		if ($this->person) {
-			return $this->person->getDisplayName();
+			if (DP_INTERFACE == 'user' || $force_user) {
+				return $this->person->getDisplayNameUser();
+			} else {
+				return $this->person->getDisplayName();
+			}
 		} elseif ($this->name) {
 			return $this->name;
 		} else {
