@@ -751,7 +751,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				if (lastH != ed.height()) {
 					lastH = ed.height();
 					self.doScrollBottom = true;
-					window.setTimeout(function() { self.page.updateUi(); }, 50);
+					window.setTimeout(function() {
+						if (self.page) {
+							self.page.updateUi();
+						}
+					}, 50);
 				}
 			});
 		} else {

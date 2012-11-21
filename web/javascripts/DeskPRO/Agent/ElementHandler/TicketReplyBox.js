@@ -44,7 +44,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					if (self.page && lastH != ed.height()) {
 						lastH = ed.height();
 						self.page.doScrollBottom = true;
-						window.setTimeout(function() { self.page.updateUi(); }, 50);
+						window.setTimeout(function() {
+							if (self.page) {
+								self.page.updateUi();
+							}
+						}, 50);
 					}
 				});
 			}
