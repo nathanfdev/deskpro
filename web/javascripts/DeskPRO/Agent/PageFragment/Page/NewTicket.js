@@ -25,7 +25,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 		this._initCcSelection();
 
-
 		if (this.getEl('headerbox_box_billing').length) {
 			var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
 				auto_start_bill: this.meta.auto_start_bill
@@ -84,7 +83,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
 					btn.appendTo( buttonPane );
 
-					$(input).datepicker("widget").css('z-index', 30001);
+					$(input).datepicker("widget").css('z-index', 30002);
 				},1);
 			}
 		});
