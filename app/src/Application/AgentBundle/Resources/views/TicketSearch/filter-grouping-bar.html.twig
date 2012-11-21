@@ -61,7 +61,6 @@
 						{% set subcount = grouped_info.counts[subcat.id].total %}
 						{% if subcount > 0 %}
 							<li class="subList {% if grouping_option == subcat.id %}on{% endif %}" {% if grouping_option == subcat.id %}id="{{baseId}}_total_grouped_count"{% endif %} data-grouping-option="{{ subcat.id }}">
-								<span class="borderLink"></span>
 								<a data-route="{{ grouping_url ~ subcat.id }}">
 									{{ cat.title }} &gt;
 									{{ subcat.title }}
