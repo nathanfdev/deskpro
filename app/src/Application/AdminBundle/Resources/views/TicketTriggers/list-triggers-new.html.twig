@@ -32,11 +32,13 @@
 			<div class="trigger-desc">
 				<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="400">
 					<div class="terms">
+						<span class="field-id" style="float: none; top: -2px; margin-right: 2px">ID: {{ trigger.id }}</span>
 						{% if trigger.sys_name and trigger.sys_name == trigger.title and has_phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) %}
-							{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}<br />
+							{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
 						{% elseif trigger.title %}
-							{{ trigger.title }}<br />
+							{{ trigger.title }}
 						{% endif %}
+						<br />
 
 						{% if trigger.event_trigger == 'new.web.user.portal' %}<em class="op">SUBMITTED VIA PORTAL</em><br />
 						{% elseif trigger.event_trigger == 'new.web.user.widget' %}<em class="op">SUBMITTED VIA WIDGET</em><br />
