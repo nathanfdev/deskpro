@@ -193,6 +193,10 @@ class SettingsController extends AbstractController
 		$this->session->setFlash('saved_settings', 1);
 		$this->session->save();
 
+		// may have changed the default language
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateLanguageCache();
+
 		if (in_array('core_tickets.use_archive', $set_settings_keys)) {
 			if (isset($set_settings['core_tickets.use_archive']) && $set_settings['core_tickets.use_archive']) {
 				// Enabled
@@ -377,6 +381,11 @@ class SettingsController extends AbstractController
 
 		if ($setting_name && (!$this->in->getRaw('value') && file_exists(dp_get_data_dir().'/helpdesk-offline.trigger'))) {
 			unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
+		}
+
+		if ($setting_name == 'core.default_language_id') {
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateLanguageCache();
 		}
 
 		if ($this->getRequest()->isXmlHttpRequest()) {

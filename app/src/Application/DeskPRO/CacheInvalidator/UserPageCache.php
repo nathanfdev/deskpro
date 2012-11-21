@@ -90,11 +90,12 @@ class UserPageCache
 
 	public function cleanup($ttl = null, $max_size = null)
 	{
+		global $DP_CONFIG;
 		if ($ttl === null) {
-			$ttl = App::getSetting('core.page_cache_ttl');
+			$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
 		}
 		if ($max_size === null) {
-			$max_size = App::getSetting('core.page_cache_max_size');
+			$max_size = isset($DP_CONFIG['cache']['page_cache']['max_size']) ? $DP_CONFIG['cache']['page_cache']['max_size'] : 10000000;
 		}
 
 		$cache_dir = $this->_cache_dir;
@@ -133,5 +134,10 @@ class UserPageCache
 				}
 			}
 		}
+	}
+
+	public function invalidateLanguageCache()
+	{
+		@unlink(dp_get_data_dir() . '/languages.cache');
 	}
 }

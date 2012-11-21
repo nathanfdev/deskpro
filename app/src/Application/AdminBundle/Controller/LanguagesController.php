@@ -404,6 +404,9 @@ class LanguagesController extends AbstractController
 			'updated_at'    => date('Y-m-d H:i:s')
 		));
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->createJsonResponse(array(
 			'success'   => true,
 			'phrase_id' => $phrase_id,
@@ -448,6 +451,9 @@ class LanguagesController extends AbstractController
 
 			$this->em->flush();
 			$this->em->commit();
+
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateAll();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
@@ -494,6 +500,9 @@ class LanguagesController extends AbstractController
 			}
 
 			$this->em->flush();
+
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateAll();
 		}
 
 		return $this->createJsonResponse(array('success' => true));

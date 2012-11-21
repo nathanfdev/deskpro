@@ -240,3 +240,17 @@ $DP_CONFIG['debug']['mail']['enable_mail_log'] = false;
 $DP_CONFIG['debug']['mail']['save_to_file'] = false;
 $DP_CONFIG['debug']['mail']['disable_send'] = false;
 $DP_CONFIG['debug']['mail']['force_to'] = '';
+
+######################################################
+# OPTIONAL : Caching                                 #
+#                                                    #
+# Configure how and whether user interface pages are #
+# cached for increased performance.                  #
+######################################################
+
+$DP_CONFIG['cache']['page_cache'] = array();
+$DP_CONFIG['cache']['page_cache']['enable'] = true;
+$DP_CONFIG['cache']['page_cache']['ttl'] = 900;
+$DP_CONFIG['cache']['page_cache']['max_size'] = 10000000;
+$DP_CONFIG['cache']['page_cache']['enable_hit_log'] = false;
+$DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';

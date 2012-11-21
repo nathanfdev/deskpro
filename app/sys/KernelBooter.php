@@ -36,8 +36,12 @@ namespace DeskPRO\Kernel;
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
+use Application\DeskPRO\App;
+
 class KernelBooter
 {
+	protected static $_cache_file = null;
+
 	/**
 	 * Builds the main $DP_CONFIG array from config.php
 	 *
@@ -168,19 +172,21 @@ class KernelBooter
 		}
 
 		self::ensureEnvFiles($env);
-		self::bootstrapLib($debug);
-		self::bootstrapEnv();
+		// defer lib loading until we know we're not serving a cache
 
-		if (!$request) {
-			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
+		if ($request) {
+			$path = $request->getPathInfo();
+			$base_path = $request->getBasePath();
+			$request_uri = $request->getRequestUri();
+			$request_method = $request->getMethod();
+		} else {
+			$path = self::getPathInfo();
+			$base_path = self::getBasePath();
+			$request_uri = self::getRequestUri();
+			$request_method = self::getMethod();
 		}
 
-		if (isset($DP_CONFIG['trust_proxy_data']) && $DP_CONFIG['trust_proxy_data']) {
-			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
-			\Symfony\Component\HttpFoundation\Request::trustProxyData();
-		}
-
-		$path = $request->getPathInfo();
+		$kernel = false;
 
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
@@ -211,20 +217,57 @@ class KernelBooter
 			define('DP_INTERFACE', 'install');
 
 			// Always force full URL with trailing slash
-			if (strpos($request->getRequestUri(), '/index.php/install/') === false) {
-				header('Location: ' . $request->getBasePath() . '/index.php/install/');
+			if (strpos($request_uri, '/index.php/install/') === false) {
+				header('Location: ' . $base_path . '/index.php/install/');
 				exit;
 			}
 
 		} elseif (preg_match('#^/tech(/|\?|$)#i', $path)) {
-			header('Location: ' . $request->getBasePath() . '/agent');
+			header('Location: ' . $base_path . '/agent');
 			exit;
 		} elseif (preg_match('#^/admincp(/|\?|$)#i', $path)) {
-			header('Location: ' . $request->getBasePath() . '/admin');
+			header('Location: ' . $base_path . '/admin');
 			exit;
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
+
+			$res = self::_getCachedPageIfAvailable($request, $request_uri, $path, $request_method, function() use ($kernel_class, $env, $debug, &$kernel) {
+				if (!$kernel) {
+					KernelBooter::bootstrapLib($debug);
+					KernelBooter::bootstrapEnv();
+
+					$kernel = new $kernel_class($env, $debug);
+				}
+				return $kernel;
+			});
+
+			if ($res) {
+				global $DP_CONFIG;
+				if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
+					if (empty($DP_CONFIG['cache']['page_cache']['hit_log_file'])) {
+						$hit_log = dp_get_log_dir() . '/user-page-cache-hit.log';
+					} else {
+						$hit_log = $DP_CONFIG['cache']['page_cache']['hit_log_file'];
+					}
+
+					$fp = @fopen($hit_log, 'a');
+
+					$scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
+
+					fwrite($fp, "$scheme_host$request_uri\n");
+					fclose($fp);
+				}
+
+				header('HTTP/1.1 200 OK');
+				foreach ($res['headers'] AS $key => $headers) {
+					foreach ($headers AS $val) {
+						header("$key: $val");
+					}
+				}
+				echo $res['content'];
+				exit;
+			}
 		}
 
 		// No access to install or dev from cloud
@@ -236,11 +279,31 @@ class KernelBooter
 		# Handle request
 		#------------------------------
 
+		if (!$kernel) {
+			self::bootstrapLib($debug);
+			self::bootstrapEnv();
+		}
+
+		if (!$request) {
+			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
+		}
+
+		if (isset($DP_CONFIG['trust_proxy_data']) && $DP_CONFIG['trust_proxy_data']) {
+			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
+			\Symfony\Component\HttpFoundation\Request::trustProxyData();
+		}
+
 		define('DP_REQUEST_URL', $request->getUri());
 
 		try {
-			$kernel = new $kernel_class($env, $debug);
-			$kernel->handle($request)->send();
+			if (!$kernel) {
+				$kernel = new $kernel_class($env, $debug);
+			}
+			$response = $kernel->handle($request);
+			if (DP_INTERFACE == 'user') {
+				self::_updateCachedFile($response);
+			}
+			$response->send();
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
@@ -250,6 +313,224 @@ class KernelBooter
 				exit;
 			}
 			throw $e;
+		}
+	}
+
+	protected static function _getCachedPageIfAvailable($request, $request_uri, $path, $request_method, \Closure $get_kernel)
+	{
+		global $DP_CONFIG;
+		if (!isset($DP_CONFIG['cache']['page_cache']['enable'])) {
+			// on by default
+			$DP_CONFIG['cache']['page_cache']['enable'] = true;
+		}
+
+		if (!$DP_CONFIG['cache']['page_cache']['enable']) {
+			// turned off, don't check anything else
+			return null;
+		}
+
+		$use_cache = false;
+		$language_id = null;
+		$cache_time = 0;
+
+		if ($request_method == 'GET' && !isset($_GET['admin_portal_controls']) && !preg_match('#/widget/chat.html#', $path)) {
+			if (!empty($_COOKIE['dp-guest-cache']) || (empty($_COOKIE['dpsid']) && empty($_COOKIE['dpreme']))) {
+				if (!isset($_COOKIE['dpsid-agent']) && !isset($_COOKIE['dpsid-admin'])) {
+					$use_cache = true;
+
+					if (!empty($_COOKIE['dp-guest-cache'])) {
+						$parts = explode('-', $_COOKIE['dp-guest-cache']);
+						if (!empty($parts[1])) {
+							$language_id = intval($parts[1]);
+						}
+
+						$cache_time = intval($parts[0]);
+						if ($cache_time && $cache_time < time()) {
+							$use_cache = false;
+						}
+					}
+				}
+			}
+		}
+
+		if (!$use_cache) {
+			return null;
+		}
+
+		if (!$language_id && !empty($_COOKIE['dplid'])) {
+			$language_id = intval($_COOKIE['dplid']);
+		}
+
+		if (!$language_id) {
+			$languages = null;
+			$lang_cache_file = dp_get_data_dir() . '/languages.cache';
+			if (file_exists($lang_cache_file)) {
+				$languages = @unserialize(file_get_contents($lang_cache_file));
+			}
+
+			if (!$languages) {
+				try {
+					$kernel = $get_kernel();
+					$kernel->boot();
+					$default = App::getSetting('core.default_language_id');
+					$languages = App::getDb()->fetchAllKeyed("
+						SELECT *
+						FROM languages
+					", array(), 'id');
+					if (isset($languages[$default])) {
+						$lang = $languages[$default];
+						unset($languages[$default]);
+						$languages = array($default => $lang) + $languages;
+					}
+				} catch (\Exception $e) {
+					// errored - don't pull from the cache, probably not installed
+					return null;
+				}
+
+				$cache_slam_file = $lang_cache_file . '.slam';
+				if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
+					$slam_fp = @fopen($cache_slam_file, 'a+');
+					if ($slam_fp && flock($slam_fp, LOCK_EX)) {
+						touch($cache_slam_file);
+						@file_put_contents($lang_cache_file, serialize($languages));
+						flock($slam_fp, LOCK_UN);
+						fclose($slam_fp);
+						unlink($cache_slam_file);
+					}
+				}
+
+				@file_put_contents($lang_cache_file, serialize($languages));
+			}
+
+			$locales = array('');
+			foreach ($languages AS $language) {
+				$locales[] = $language['locale'];
+			}
+
+			$accept_languages = $request ? $request->getLanguages() : self::getLanguages();
+
+			$locale = self::getPreferredLanguage($accept_languages, $locales);
+
+			if ($locale) {
+				// we have an exact locale match
+				foreach ($languages AS $language) {
+					if ($language['locale'] === $locale) {
+						$language_id = $language['id'];
+						break;
+					}
+				}
+			} else {
+				// look for a language match (as there isn't an exact locale match)
+				foreach ($accept_languages AS $accept_language) {
+					$accept_language = substr($accept_language, 0, 2);
+					foreach ($languages AS $language) {
+						if (substr($language['locale'], 0, 2) == $accept_language) {
+							$language_id = $language['id'];
+							break 2;
+						}
+					}
+				}
+			}
+
+			if (!$language_id) {
+				$lang = reset($languages);
+				$language_id = $lang ? $lang['id'] : 0;
+			}
+		}
+
+		$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
+
+		$cache_dir = dp_get_tmp_dir() . '/page-cache';
+		$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request_uri), 0, 35);
+		$cache_filename = $language_id . '-' . $base . '-' . md5($request_uri) . '.cache';
+		$cache_file = $cache_dir . '/' . $cache_filename;
+
+		if (file_exists($cache_file)) {
+			$use_cache = false;
+			if (time() - filemtime($cache_file) <= $ttl) {
+				$use_cache = true;
+			} else {
+				$cache_slam_file = $cache_file . '.slam';
+				if (file_exists($cache_slam_file) && time() - filemtime($cache_slam_file) <= 30) {
+					// someone else is going to write it, use the stale data for a bit
+					$use_cache = true;
+				}
+			}
+
+			if ($use_cache) {
+				$output = @unserialize(file_get_contents($cache_file));
+				if (is_array($output)) {
+					if ($output['compressed']) {
+						$output['content'] = gzuncompress($output['content']);
+					}
+
+					return $output;
+				}
+			}
+		}
+
+		self::$_cache_file = $cache_file;
+
+		return null;
+	}
+
+	protected static function _updateCachedFile(\Symfony\Component\HttpFoundation\Response $response)
+	{
+		$person = App::getCurrentPerson();
+		$logged_in = ($person && $person->getId());
+		$skip_cache = true;
+
+		if ($logged_in) {
+			if (!empty($_COOKIE['dp-guest-cache'])) {
+				\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+			}
+		} else {
+			if (App::isCacheSkipped()) {
+				$cache_time = time() + App::getSetting('core.page_cache_ttl');
+			} else {
+				$cache_time = !empty($_COOKIE['dp-guest-cache']) ? intval($_COOKIE['dp-guest-cache']) : 0;
+				if ($cache_time < time()) {
+					$cache_time = 0;
+				}
+			}
+
+			$skip_cache = ($cache_time > 0);
+
+			$value = $cache_time . '-' . App::getLanguage()->getId();
+			if (empty($_COOKIE['dp-guest-cache']) || $value !== $_COOKIE['dp-guest-cache']) {
+				\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dp-guest-cache', $value, 0)->send();
+			}
+		}
+
+		if (!$logged_in && !$skip_cache && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
+			$cache_dir = dp_get_tmp_dir() . '/page-cache';
+			if (!is_dir($cache_dir)) {
+				@mkdir($cache_dir, 0777);
+			}
+
+			$cache_slam_file = self::$_cache_file . '.slam';
+			if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
+				$slam_fp = @fopen($cache_slam_file, 'a+');
+				if ($slam_fp && flock($slam_fp, LOCK_EX)) {
+					touch($cache_slam_file);
+
+					// don't take any of the cookies - they'll be things like sessions etc
+					$store = array(
+						'headers' => $response->headers->all(),
+						'content' => $response->getContent(),
+						'compressed' => false
+					);
+					if (function_exists('gzcompress')) {
+						$store['content'] = gzcompress($store['content']);
+						$store['compressed'] = true;
+					}
+
+					@file_put_contents(self::$_cache_file, serialize($store));
+					flock($slam_fp, LOCK_UN);
+					fclose($slam_fp);
+					unlink($cache_slam_file);
+				}
+			}
 		}
 	}
 
@@ -601,6 +882,375 @@ HTML;
 			}
 			exit;
 		}
+	}
+	
+	####################################################################################################################
+	# Request Helpers
+	####################################################################################################################
+	
+	/**
+	 * @var string
+	 */
+	protected static $base_url;
+
+	/**
+	 * @var string
+	 */
+	protected static $base_path;
+
+	/**
+	 * @var string
+	 */
+	protected static $path_info;
+
+	/**
+	 * @var string
+	 */
+	protected static $request_uri;
+	
+	/**
+	 * @var string
+	 */
+	protected static $method;
+	
+	/**
+	 * @var string
+	 */
+	protected static $languages;
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getPathInfo()
+	{
+		if (self::$path_info !== null) {
+			return self::$path_info;
+		}
+
+		$baseUrl = self::getBaseUrl();
+
+		if (null === ($requestUri = self::getRequestUri())) {
+			return '/';
+		}
+
+		$pathInfo = '/';
+
+		// Remove the query string from REQUEST_URI
+		if ($pos = strpos($requestUri, '?')) {
+			$requestUri = substr($requestUri, 0, $pos);
+		}
+
+		if ((null !== $baseUrl) && (false === ($pathInfo = substr(urldecode($requestUri), strlen(urldecode($baseUrl)))))) {
+			// If substr() returns false then PATH_INFO is set to an empty string
+			return '/';
+		} elseif (null === $baseUrl) {
+			return $requestUri;
+		}
+
+		self::$path_info = (string)$pathInfo;
+		return self::$path_info;
+	}
+
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getBaseUrl()
+	{
+		if (self::$base_url !== null) {
+			return self::$base_url;
+		}
+
+		$filename = basename((isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null));
+
+		if (basename((isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null)) === $filename) {
+			$baseUrl = (isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null);
+		} elseif (basename((isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : null)) === $filename) {
+			$baseUrl = (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : null);
+		} elseif (basename((isset($_SERVER['ORIG_SCRIPT_NAME']) ? $_SERVER['ORIG_SCRIPT_NAME'] : null)) === $filename) {
+			$baseUrl = (isset($_SERVER['ORIG_SCRIPT_NAME']) ? $_SERVER['ORIG_SCRIPT_NAME'] : null); // 1and1 shared hosting compatibility
+		} else {
+			// Backtrack up the script_filename to find the portion matching
+			// php_self
+			$path	= (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '');
+			$file	= (isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '');
+			$segs	= explode('/', trim($file, '/'));
+			$segs	= array_reverse($segs);
+			$index   = 0;
+			$last	= count($segs);
+			$baseUrl = '';
+			do {
+				$seg	 = $segs[$index];
+				$baseUrl = '/'.$seg.$baseUrl;
+				++$index;
+			} while (($last > $index) && (false !== ($pos = strpos($path, $baseUrl))) && (0 != $pos));
+		}
+
+		// Does the baseUrl have anything in common with the request_uri?
+		$requestUri = self::getRequestUri();
+
+		if ($baseUrl && 0 === strpos($requestUri, $baseUrl)) {
+			// full $baseUrl matches
+			return $baseUrl;
+		}
+
+		if ($baseUrl && 0 === strpos($requestUri, dirname($baseUrl))) {
+			// directory portion of $baseUrl matches
+			return rtrim(dirname($baseUrl), '/');
+		}
+
+		$truncatedRequestUri = $requestUri;
+		if (($pos = strpos($requestUri, '?')) !== false) {
+			$truncatedRequestUri = substr($requestUri, 0, $pos);
+		}
+
+		$basename = basename($baseUrl);
+		if (empty($basename) || !strpos($truncatedRequestUri, $basename)) {
+			// no match whatsoever; set it blank
+			return '';
+		}
+
+		// If using mod_rewrite or ISAPI_Rewrite strip the script filename
+		// out of baseUrl. $pos !== 0 makes sure it is not matching a value
+		// from PATH_INFO or QUERY_STRING
+		if ((strlen($requestUri) >= strlen($baseUrl)) && ((false !== ($pos = strpos($requestUri, $baseUrl))) && ($pos !== 0))) {
+			$baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
+		}
+
+		self::$base_url = rtrim($baseUrl, '/');
+		return self::$base_url;
+	}
+	
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getBasePath()
+	{
+		if (self::$base_path !== null) {
+			return self::$base_path;
+		}
+
+		$filename = isset($_SERVER['SCRIPT_FILENAME']) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
+		$baseUrl = self::getBaseUrl();
+		if (empty($baseUrl)) {
+			return '';
+		}
+
+		if (basename($baseUrl) === $filename) {
+			$basePath = dirname($baseUrl);
+		} else {
+			$basePath = $baseUrl;
+		}
+
+		if ('\\' === DIRECTORY_SEPARATOR) {
+			$basePath = str_replace('\\', '/', $basePath);
+		}
+
+		return rtrim($basePath, '/');
+	}
+
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getRequestUri()
+	{
+		if (self::$request_uri !== null) {
+			return self::$request_uri;
+		}
+
+		$requestUri = '';
+
+		if ((isset($_SERVER['X_REWRITE_URL']) ? $_SERVER['X_REWRITE_URL'] : null) && false !== stripos(PHP_OS, 'WIN')) {
+			// check this first so IIS will catch
+			$requestUri = (isset($_SERVER['X_REWRITE_URL']) ? $_SERVER['X_REWRITE_URL'] : null);
+		} elseif ((isset($_SERVER['IIS_WasUrlRewritten']) ? $_SERVER['IIS_WasUrlRewritten'] : null) == '1' && (isset($_SERVER['UNENCODED_URL']) ? $_SERVER['UNENCODED_URL'] : null) != '') {
+			// IIS7 with URL Rewrite: make sure we get the unencoded url (double slash problem)
+			$requestUri = (isset($_SERVER['UNENCODED_URL']) ? $_SERVER['UNENCODED_URL'] : null);
+		} elseif (isset($_SERVER['REQUEST_URI'])) {
+			$requestUri = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null);
+			// HTTP proxy reqs setup request uri with scheme and host [and port] + the url path, only use url path
+			$schemeAndHttpHost = self::getScheme().'://'.self::getHttpHost();
+			if (strpos($requestUri, $schemeAndHttpHost) === 0) {
+				$requestUri = substr($requestUri, strlen($schemeAndHttpHost));
+			}
+		} elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
+			// IIS 5.0, PHP as CGI
+			$requestUri = (isset($_SERVER['ORIG_PATH_INFO']) ? $_SERVER['ORIG_PATH_INFO'] : null);
+			if ((isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null)) {
+				$requestUri .= '?'.(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : null);
+			}
+		}
+
+		self::$request_uri = $requestUri;
+		return self::$request_uri;
+	}
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getScheme()
+	{
+		return self::isSecure() ? 'https' : 'http';
+	}
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function isSecure()
+	{
+		return (
+			(strtolower((isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null)) == 'on' || (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null) == 1)
+			||
+			((isset($_SERVER['SSL_HTTPS']) ? $_SERVER['SSL_HTTPS'] : null) == 1)
+		);
+	}
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getHttpHost()
+	{
+		$scheme = self::getScheme();
+		$port   = self::getPort();
+
+		if (('http' == $scheme && $port == 80) || ('https' == $scheme && $port == 443)) {
+			return self::getHost();
+		}
+
+		return self::getHost().':'.$port;
+	}
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getPort()
+	{
+		return (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null);
+	}
+
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getHost()
+	{
+		if (!$host = (isset($_SERVER['HOST']) ? $_SERVER['HOST'] : null)) {
+			if (!$host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null)) {
+				$host = (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '');
+			}
+		}
+
+		// Remove port number from host
+		$host = preg_replace('/:\d+$/', '', $host);
+
+		return trim($host);
+	}
+	
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getMethod()
+	{
+		if (null === self::$method) {
+			self::$method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+			if ('POST' === self::$method) {
+				if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+					self::$method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+				} else if (isset($_GET['_method'])) {
+					self::$method = strtoupper($_GET['_method']);
+				}
+			}
+		}
+
+		return self::$method;
+	}
+	
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getLanguages()
+	{
+		if (null !== self::$languages) {
+			return self::$languages;
+		}
+
+		$languages = self::splitHttpAcceptHeader(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '');
+		self::$languages = array();
+		foreach ($languages as $lang => $q) {
+			if (strstr($lang, '-')) {
+				$codes = explode('-', $lang);
+				if ($codes[0] == 'i') {
+					// Language not listed in ISO 639 that are not variants
+					// of any listed language, which can be registered with the
+					// i-prefix, such as i-cherokee
+					if (count($codes) > 1) {
+						$lang = $codes[1];
+					}
+				} else {
+					for ($i = 0, $max = count($codes); $i < $max; $i++) {
+						if ($i == 0) {
+							$lang = strtolower($codes[0]);
+						} else {
+							$lang .= '_'.strtoupper($codes[$i]);
+						}
+					}
+				}
+			}
+
+			self::$languages[] = $lang;
+		}
+
+		return self::$languages;
+	}
+	
+	/**
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function splitHttpAcceptHeader($header)
+	{
+		if (!$header) {
+			return array();
+		}
+
+		$values = array();
+		foreach (array_filter(explode(',', $header)) as $value) {
+			// Cut off any q-value that might come after a semi-colon
+			if (preg_match('/;\s*(q=.*$)/', $value, $match)) {
+				$q	 = (float) substr(trim($match[1]), 2);
+				$value = trim(substr($value, 0, -strlen($match[0])));
+			} else {
+				$q = 1;
+			}
+
+			if (0 < $q) {
+				$values[trim($value)] = $q;
+			}
+		}
+
+		arsort($values);
+		reset($values);
+
+		return $values;
+	}
+	
+	/**
+	 * Modified to take 2 args
+	 *
+	 * @see \Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getPreferredLanguage(array $preferredLanguages, array $locales = null)
+	{
+		if (empty($locales)) {
+			return isset($preferredLanguages[0]) ? $preferredLanguages[0] : null;
+		}
+
+		if (!$preferredLanguages) {
+			return $locales[0];
+		}
+
+		$preferredLanguages = array_values(array_intersect($preferredLanguages, $locales));
+
+		return isset($preferredLanguages[0]) ? $preferredLanguages[0] : $locales[0];
 	}
 
 

@@ -157,6 +157,9 @@ class Manager
 		if ($auto_install) {
 			$this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
 		}
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateLanguageCache();
 	}
 
 

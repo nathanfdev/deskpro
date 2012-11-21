@@ -61,8 +61,6 @@ class AdvancedSettings extends SettingFiles
 			'core_chat.require_department',
 			'core.bcc_all_emails',
 			'core.drafts_lifetime',
-			'core.page_cache_ttl',
-			'core.page_cache_max_size',
 			'core.store_sent_mail_days',
 			'core.site_id',
 			'core.sessions_lifetime',

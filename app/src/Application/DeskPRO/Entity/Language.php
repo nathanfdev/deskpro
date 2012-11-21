@@ -126,6 +126,15 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
+	public function _invalidateLanguageCache()
+	{
+		App::getOrm()->delayedUpdate(function($em) {
+			// defer this until after the flush to avoid a race condition and make sure it's updated after insert
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateLanguageCache();
+		});
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -136,6 +145,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
 		$metadata->setPrimaryTable(array( 'name' => 'languages', ));
+		$metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name', ));
