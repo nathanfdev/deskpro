@@ -48,12 +48,30 @@ class SettingsController extends BaseSettingsController
 		return parent::settingsAction();
 	}
 
+	public function setCustomDomainAction()
+	{
+		$this->old_domain = $this->container->getSetting('core.cloud_custom_domain');
+
+		$update_settings = array(
+			'core.cloud_custom_domain' => $this->in->getString('custom_domain') ?: null,
+		);
+
+		foreach ($update_settings as $k => $v) {
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);
+		}
+		$this->container->getSettingsHandler()->setTemporarySettingValues($update_settings);
+
+		$this->_postSaveSettings();
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	protected function _postSaveSettings()
 	{
-		$new_domain = $this->container->getSetting('core.cloud_custom_domain');
-		if ($new_domain && (!preg_match('#^[a-z\d](-*[a-z\d])*$#', $new_domain) || preg_match('#\.deskpro\.com$#', $new_domain))) {
+		$new_domain = strtolower($this->container->getSetting('core.cloud_custom_domain'));
+		if ($new_domain && (!preg_match('#^[a-z0-9\-\.]+$#', $new_domain) || preg_match('#\.deskpro\.com$#', $new_domain))) {
+			$new_domain = '';
 			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.cloud_custom_domain', null);
-			$this->container->getSettingsHandler()->setTemporarySettingValues('core.cloud_custom_domain', null);
+			$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.cloud_custom_domain' => null));
 		}
 
 		if ($new_domain != $this->old_domain) {
@@ -78,6 +96,12 @@ class SettingsController extends BaseSettingsController
 			} catch (\Exception $e) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 			}
+		}
+
+		// Make sure the master domain is set correctly if the custom domain was removed
+		$master_domain = @parse_url($this->container->getSetting('core.deskpro_url'));
+		if ($master_domain && $master_domain['host'] == $this->old_domain) {
+			$this->container->getSetting('core.deskpro_url', 'http://' . DPC_SITE_DOMAIN . '/');
 		}
 	}
 

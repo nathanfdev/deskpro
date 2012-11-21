@@ -75,13 +75,36 @@ $(document).ready(function() {
 			{# Custom Domain  #}
 			{#####################################################################}
 
-			{#
 			{{ onb.begin(onboard, 'cloud-custom-domain', 'Use a custom domain') }}
-				<p>
-					Go to <a href="{{ path('admin_settings') }}">Settings</a> to change set a custom domain name.
-				</p>
+				<div class="custom_domain_done" style="{% if not app.getSetting('core.cloud_custom_domain') %}display: none{% endif %}">
+					<p>
+						Your custom domain name (<span class="custom_domain_label">{{ app.getSetting('core.cloud_custom_domain') }}</span>) is set up. Go
+						to the <a href="{{ path('admin_settings') }}">Settings</a> section if you want to remove or change it.
+					</p>
+					<p>
+						Note that custom domain changes take a few minutes to start working.
+					</p>
+				</div>
+				{% if not app.getSetting('core.cloud_custom_domain') %}
+					<div class="custom_domain_form">
+						<p>
+							To use a custom domain with your helpdesk:
+						</p>
+						<p>
+							1. Set up a DNS <var style="background-color: #D7DEE6; font-family: Consolas, Monaco, monospace; font-style: normal;">CNAME</var> record that points to <var style="background-color: #D7DEE6; font-family: Consolas, Monaco, monospace; font-style: normal;">{{ constant('DPC_SITE_DOMAIN') }}.</var>
+						</p>
+						<p>
+							2. Enter your custom domain name here:
+							<input type="text" class="custom_domain" value="{{ app.getSetting('core.cloud_custom_domain') }}" style="width: 200px;" placeholder="Enter your custom domain name" />
+							<button class="btn custom_domain_save" data-submit-url="{{ path('admin_settings_setcustomdomain') }}">Save</button>
+							<i class="flat-spinner custom_domain_loading" style="display: none"></i>
+						</p>
+						<p>
+							Please note that it may take a few minutes before your custom domain name starts working.
+						</p>
+					</div>
+				{% endif %}
 			{{ onb.end() }}
-			#}
 
 			{#####################################################################}
 			{# Ticket Fields #}

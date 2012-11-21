@@ -7,6 +7,7 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 		this.initTasks();
 		this.initAsk();
 		this.initAgents();
+		this.initCloudCustomDomain();
 	},
 
 	initTasks: function() {
@@ -181,6 +182,40 @@ DeskPRO.Admin.ElementHandler.Onboarding = new Orb.Class({
 					btn.find('em').removeClass('flat-spinner');
 					row.addClass('expanded');
 					row.find('article').slideDown('fast');
+				}
+			});
+		});
+	},
+
+	initCloudCustomDomain: function() {
+		var el = this.el.find('li.onboard-cloud-custom-domain');
+
+		var btn   = el.find('button.custom_domain_save');
+		var load  = el.find('i.custom_domain_loading');
+		var done  = el.find('.custom_domain_done');
+		var form  = el.find('.custom_domain_form');
+		var input = form.find('input.custom_domain');
+
+		btn.on('click', function(ev) {
+			ev.preventDefault();
+
+			var val = input.val();
+
+			btn.hide();
+			load.show();
+			$.ajax({
+				url: btn.data('submit-url'),
+				type: 'POST',
+				data: {
+					custom_domain: val
+				},
+				complete: function() {
+					btn.show();
+					load.hide();
+				},
+				success: function() {
+					done.show().find('.custom_domain_label').text(val);
+					form.hide();
 				}
 			});
 		});

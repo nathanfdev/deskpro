@@ -27,6 +27,13 @@ $collection->add('admin_settings', new Route(
 	array()
 ));
 
+$collection->add('admin_settings_setcustomdomain', new Route(
+	'/settings/set-custom-domain.json',
+	array('_controller' => 'CloudAdminBundle:Settings:setCustomDomain'),
+	array(),
+	array()
+));
+
 $collection->add('admin_settings_saveform', new Route(
 	'/settings/save-settings/{type}/{auth}',
 	array('_controller' => 'CloudAdminBundle:Settings:settingsSaveForm'),

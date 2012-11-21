@@ -122,8 +122,8 @@ class SettingsController extends AbstractController
 
 			foreach ($update_settings as $k => $v) {
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);
-				$this->container->getSettingsHandler()->setTemporarySettingValues($k, $v);
 			}
+			$this->container->getSettingsHandler()->setTemporarySettingValues($update_settings);
 
 			if (!$update_settings['core.helpdesk_disabled'] && file_exists(dp_get_data_dir().'/helpdesk-offline.trigger')) {
 				unlink(dp_get_data_dir().'/helpdesk-offline.trigger');
