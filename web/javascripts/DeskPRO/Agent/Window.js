@@ -327,6 +327,67 @@ DeskPRO.Agent.Window = new Orb.Class({
 					options.filesContainer.show();
 				};
 
+				// Same as default except added check for 'that' still exists
+				options.done = function (e, data) {
+					var that = $(this).data('fileupload'),
+						template,
+						preview;
+
+					// Means the widget is no longer visible (eg tab closed before upload finished)
+					if (!that) {
+						return;
+					}
+
+					if (data.context) {
+						data.context.each(function (index) {
+							var file = ($.isArray(data.result) &&
+									data.result[index]) || {error: 'emptyResult'};
+							if (file.error) {
+								that._adjustMaxNumberOfFiles(1);
+							}
+							that._transition($(this)).done(
+								function () {
+									var node = $(this);
+									template = that._renderDownload([file])
+										.css('height', node.height())
+										.replaceAll(node);
+									that._forceReflow(template);
+									that._transition(template).done(
+										function () {
+											data.context = $(this);
+											that._trigger('completed', e, data);
+										}
+									);
+								}
+							);
+						});
+					} else {
+						template = that._renderDownload(data.result)
+							.appendTo(that.options.filesContainer);
+						that._forceReflow(template);
+						that._transition(template).done(
+							function () {
+								data.context = $(this);
+								that._trigger('completed', e, data);
+							}
+						);
+					}
+				};
+
+				// Same as default except added check for 'that' still exists
+				options.stop = function (e) {
+					var that = $(this).data('fileupload');
+					if (!that) {
+						return;
+					}
+					that._transition($(this).find('.fileupload-buttonbar .progress')).done(
+						function () {
+							$(this).find('.bar').css('width', '0%');
+							that._trigger('stopped', e);
+						}
+					);
+				},
+
 				$(el).on('click', '.remove-attach-trigger', function(ev) {
 					// Ignore .delete as they may be items rendered with the page,
 					// eg. the list handles delete of existing attachments on its own
