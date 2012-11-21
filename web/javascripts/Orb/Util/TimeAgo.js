@@ -222,8 +222,8 @@ Orb.Util.TimeAgo = {
 			return this.getPhraseFor('sec', total_secs, ago);
 
 		// less than 120 minutes: 20 minutes
-		} else if (total_secs <= 1200) {
-			return this.getPhraseFor('min', info.mins, ago);
+		} else if (total_secs <= 7200) {
+			return this.getPhraseFor('min', info.mins + (info.hours * 60), ago);
 
 		// less than 24 hours: 2 1/2 hours
 		} else if (total_secs <= 86400) {
