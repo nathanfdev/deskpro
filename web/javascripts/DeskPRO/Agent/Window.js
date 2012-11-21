@@ -3190,6 +3190,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// setup autosave
 		if (autosaveUrl) {
+			var autosaveContent = api.getCode();
+
 			var autosaveTimer = setInterval($.proxy(function() {
 				if (!textarea.data('redactor')) {
 					clearInterval(autosaveTimer);
@@ -3205,10 +3207,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
+				var newContent = this.getCode();
+				if (newContent == autosaveContent) {
+					return;
+				}
+
+				autosaveContent = newContent;
+
 				$.ajax({
 					url: autosaveUrl,
 					type: 'post',
-					data: this.$el.attr('name') + '=' + encodeURIComponent(this.getCode()),
+					data: this.$el.attr('name') + '=' + encodeURIComponent(newContent),
 					success: $.proxy(function(data) {
 						if (typeof this.opts.autosaveCallback === 'function') {
 							this.opts.autosaveCallback(data, this);
