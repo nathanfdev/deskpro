@@ -243,6 +243,14 @@ class KernelBooter
 			});
 
 			if ($res) {
+				header('HTTP/1.1 200 OK');
+				foreach ($res['headers'] AS $key => $headers) {
+					foreach ($headers AS $val) {
+						header("$key: $val");
+					}
+				}
+				echo $res['content'];
+
 				global $DP_CONFIG;
 				if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
 					if (empty($DP_CONFIG['cache']['page_cache']['hit_log_file'])) {
@@ -255,17 +263,11 @@ class KernelBooter
 
 					$scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
 
-					fwrite($fp, "$scheme_host$request_uri\n");
+					$time = sprintf('%.4f', microtime(true) - DP_START_TIME);
+					fwrite($fp, "[" . gmdate('Y-m-d H:i:s') . "] $scheme_host$request_uri (time: $time)\n");
 					fclose($fp);
 				}
 
-				header('HTTP/1.1 200 OK');
-				foreach ($res['headers'] AS $key => $headers) {
-					foreach ($headers AS $val) {
-						header("$key: $val");
-					}
-				}
-				echo $res['content'];
 				exit;
 			}
 		}
