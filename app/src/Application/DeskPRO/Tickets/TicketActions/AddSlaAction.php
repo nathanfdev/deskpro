@@ -45,11 +45,11 @@ use Orb\Util\Arrays;
  */
 class AddSlaAction extends AbstractAction
 {
-	protected $sla_id;
+	protected $sla_ids = array();
 
 	public function __construct($sla_id)
 	{
-		$this->sla_id = $sla_id;
+		$this->sla_ids = (array)$sla_id;
 	}
 
 
@@ -60,13 +60,15 @@ class AddSlaAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if (!$this->sla_id) {
+		if (!$this->sla_ids) {
 			return;
 		}
 
-		$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-		if ($sla) {
-			$ticket->addSla($sla);
+		foreach ($this->sla_ids AS $sla_id) {
+			$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
+			if ($sla) {
+				$ticket->addSla($sla);
+			}
 		}
 	}
 
@@ -79,17 +81,17 @@ class AddSlaAction extends AbstractAction
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'add_sla', 'sla_id' => $this->sla_id)
+			array('action' => 'add_sla', 'sla_ids' => $this->sla_ids)
 		);
 	}
 
 
 	/**
-	 * @return integer
+	 * @return array
 	 */
-	public function getSlaId()
+	public function getSlaIds()
 	{
-		return $this->sla_id;
+		return $this->sla_ids;
 	}
 
 
@@ -99,7 +101,9 @@ class AddSlaAction extends AbstractAction
 	 */
 	public function merge(ActionInterface $other_action)
 	{
-		return $other_action;
+		$this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
+		$this->sla_ids = array_unique($this->sla_ids);
+		return $this;
 	}
 
 
@@ -108,9 +112,14 @@ class AddSlaAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-        $tr = App::getTranslator();
-		$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
+		$tr = App::getTranslator();
+		$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
-		return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $sla ? $sla->title : '[unknown]'));
+		$titles = array();
+		foreach ($slas AS $sla) {
+			$titles[] = $sla->title;
+		}
+
+		return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
 	}
 }
