@@ -500,8 +500,9 @@ class Connection extends \Doctrine\DBAL\Connection
 		if ($this->transaction_logger) {
 			$e = new \Exception();
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
-			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION BEGIN\n$backtrace");
+			$level = $this->getTransactionNestingLevel();
+			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
+			$this->transaction_logger->logDebug("(Level $level)\n" . str_repeat("\t\t", $level) . "TRANSACTION BEGIN\n$backtrace");
 		}
 	}
 
@@ -520,8 +521,8 @@ class Connection extends \Doctrine\DBAL\Connection
 		if ($this->transaction_logger) {
 			$e = new \Exception();
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
-			$this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
+			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
+			$this->transaction_logger->logDebug("(Level $level)\n" . str_repeat("\t\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
 		}
 
 		if (!$level) {
