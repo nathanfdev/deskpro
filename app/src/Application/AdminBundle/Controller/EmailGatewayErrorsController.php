@@ -58,10 +58,10 @@ class EmailGatewayErrorsController extends AbstractController
 		$pageinfo = Numbers::getPaginationPages($count, $p, $per_page, 5);
 
 		$sources = $this->em->getRepository('DeskPRO:EmailSource')
-		                 ->createQueryForTypeAndStatus(array('ticket', 'ticketmessage'), 'error')
-		                 ->setFirstResult(($p - 1) * $per_page)
-		                 ->setMaxResults($per_page)
-		                 ->execute();
+			 ->createQueryForTypeAndStatus(array('ticket', 'ticketmessage'), 'error')
+			 ->setFirstResult(($p - 1) * $per_page)
+			 ->setMaxResults($per_page)
+			 ->execute();
 
 		return $this->render('AdminBundle:EmailGatewayErrors:index.html.twig', array(
 			'pageinfo'  => $pageinfo,

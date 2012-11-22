@@ -58,21 +58,21 @@
 	</table>
 </div><br />
 
-{% if pagination.pages|length > 1 %}
+{% if pageinfo.pages|length > 1 %}
 <div class="page_nav">
 	<ul>
-		{% if pagination.curpage != pagination.first %}
-		<li><a href="{{ path('admin_emailgateway_errors', {'p': pagination.first}) }}">{{ phrase('admin.general.first') }}</a></li>
-		<li><a href="{{ path('admin_emailgateway_errors', {'p': pagination.prev}) }}">{{ phrase('agent.general.prev') }}</a></li>
+		{% if pageinfo.curpage != pageinfo.first %}
+		<li><a href="{{ path('admin_emailgateway_errors', {'p': pageinfo.first}) }}">{{ phrase('admin.general.first') }}</a></li>
+		<li><a href="{{ path('admin_emailgateway_errors', {'p': pageinfo.prev}) }}">{{ phrase('agent.general.prev') }}</a></li>
 		{% endif %}
 
-		{% for i in pagination.pages %}
-		<li {% if i == pagination.curpage %}class="cur_page"{% endif %}><a href="{{ path('admin_emailgateway_errors', {'p': i}) }}">{{i}}</a></li>
+		{% for i in pageinfo.pages %}
+		<li {% if i == pageinfo.curpage %}class="cur_page"{% endif %}><a href="{{ path('admin_emailgateway_errors', {'p': i}) }}">{{i}}</a></li>
 		{% endfor %}
 
-		{% if pagination.curpage != pagination.last %}
-		<li><a href="{{ path('admin_emailgateway_errors', {'p': pagination.next}) }}">{{ phrase('admin.general.next') }}</a></li>
-		<li><a href="{{ path('admin_emailgateway_errors', {'p': pagination.last}) }}">{{ phrase('admin.general.last') }}</a></li>
+		{% if pageinfo.curpage != pageinfo.last %}
+		<li><a href="{{ path('admin_emailgateway_errors', {'p': pageinfo.next}) }}">{{ phrase('admin.general.next') }}</a></li>
+		<li><a href="{{ path('admin_emailgateway_errors', {'p': pageinfo.last}) }}">{{ phrase('admin.general.last') }}</a></li>
 		{% endif %}
 	</ul>
 </div>
