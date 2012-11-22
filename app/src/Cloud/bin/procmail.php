@@ -439,6 +439,13 @@ class DeskPRO_Cloud_ProcMail
 			$path,
 			$this->getFailedLogString()
 		);
+
+		// Also append ongoing log
+		@file_put_contents(
+			DP_CLOUD_MAILSTORE . '/retry-log.log',
+			sprintf("[%s] Sent To: %s    Attempts: %d    Save Path: %s", date('Y-m-d H:i:s'), $this->to_addr, $this->is_retry, $this->to_mailbox),
+			\FILE_APPEND
+		);
 	}
 
 	protected function markUnknown()
