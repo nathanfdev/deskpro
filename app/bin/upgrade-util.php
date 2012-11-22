@@ -1088,6 +1088,8 @@ class Upgrade
 				@file_put_contents('', $path);
 			}
 		}
+
+		@unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
 	}
 
 	####################################################################################################################
