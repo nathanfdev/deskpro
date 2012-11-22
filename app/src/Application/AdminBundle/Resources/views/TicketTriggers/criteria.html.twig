@@ -563,7 +563,7 @@
 			<div class="builder-options">
 				<select name="priority">
 					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
-						<option value="{{ id }}">{{ title }}</option>
+						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -684,7 +684,7 @@
 			<div class="builder-options">
 				<select name="priority">
 					{% for id,name in app.getDataRepository('TicketPriority').getNames() %}
-						<option value="{{ id }}">{{ title }}</option>
+						<option value="{{ id }}">{{ name }}</option>
 					{% endfor %}
 				</select>
 			</div>
