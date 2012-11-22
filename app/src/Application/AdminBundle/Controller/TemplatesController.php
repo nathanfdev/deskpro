@@ -213,7 +213,7 @@ class TemplatesController extends AbstractController
 			);
 
 			$twig = $this->container->get('twig');
-			$compiled = $twig->compileSource($code, $template->variant_of);
+			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->variant_of);
 
 			$template->setTemplate($code, $compiled);
 			$this->em->persist($template);
@@ -229,7 +229,7 @@ class TemplatesController extends AbstractController
 				);
 
 				$twig = $this->container->get('twig');
-				$compiled = $twig->compileSource($code, $template->variant_of);
+				$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $template->variant_of);
 
 				$template->setTemplate($code, $compiled);
 				$this->em->persist($template);
@@ -320,7 +320,7 @@ class TemplatesController extends AbstractController
 				$compile_code = $proc->process($compile_code, $name);
 			}
 
-			$compiled = $twig->compileSource($compile_code, $name);
+			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($compile_code), $name);
 		} catch (\Twig_Error_Syntax $e) {
 			return $this->createJsonResponse(array(
 				'error' => true,
@@ -472,7 +472,7 @@ class TemplatesController extends AbstractController
 		try {
 			/** @var $twig \Application\DeskPRO\Twig\Environment */
 			$twig = $this->container->get('twig');
-			$compiled = $twig->compileSource($code, $name);
+			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $name);
 		} catch (\Twig_Error_Syntax $e) {
 			return $this->createJsonResponse(array(
 				'error' => true,
@@ -659,7 +659,7 @@ class TemplatesController extends AbstractController
 
 			$code = App::getTemplating()->getSource($template->variant_of);
 			$twig = $this->container->get('twig');
-			$compiled = $twig->compileSource($code, $name);
+			$compiled = $twig->compileSource($this->_preProcessCustomTemplate($code), $name);
 			$template->setTemplate($code, $compiled);
 
 			$this->em->persist($template);
@@ -843,5 +843,11 @@ class TemplatesController extends AbstractController
 		return $this->createJsonResponse(array(
 			'matches' => $matching_templates,
 		));
+	}
+
+	protected function _preProcessCustomTemplate($code)
+	{
+		$code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $code);
+		return $code;
 	}
 }

@@ -57,6 +57,7 @@ class Build1352916197 extends AbstractBuild
 					$compile_code = $proc->process($compile_code, $name);
 				}
 
+				$compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
 				$compiled = $twig->compileSource($compile_code, $name);
 
 				$this->container->getDb()->update('templates', array(
