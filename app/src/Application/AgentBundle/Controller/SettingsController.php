@@ -49,25 +49,15 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-		$signature_html = $this->person->getSignatureHtml();
-		$signature = $this->person->getSignature();
-
         return $this->render('AgentBundle:Settings:profile.html.twig', array(
 			'form' => $form->createView(),
-			'edit_profile' => $edit_profile,
-
-	        'signature' => $signature,
-	        'signature_html' => $signature_html,
-
-	        'can_signature' => $this->person->PermissionsManager->GeneralChecker->canSetSignature(),
-	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
+			'edit_profile' => $edit_profile
 		));
     }
 
 	public function profileSaveAction()
 	{
 		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
-		$edit_profile->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
@@ -109,7 +99,7 @@ class SettingsController extends AbstractController
 				// Send validation email
 				$message = $this->container->getMailer()->createMessage();
 				$message->setTemplate('DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig', $vars);
-				$message->setTo($edit_profile->email, $agent->getDisplayName());
+				$message->setTo($edit_profile->email, $this->person->getDisplayName());
 				$this->container->getMailer()->send($message);
 
 				// Pop the old email address back so it passes the dupe check validation,
@@ -159,6 +149,63 @@ class SettingsController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true
 		));
+	}
+
+	public function signatureAction()
+	{
+		if (!$this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+        return $this->render('AgentBundle:Settings:signature.html.twig', array(
+	        'signature' => $this->person->getSignature(),
+	        'signature_html' => $this->person->getSignatureHtml(),
+
+	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
+		));
+	}
+
+	public function signatureSaveAction()
+	{
+		if (!$this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($this->in->getBool('is_html_signature') && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
+			$signature_html = $this->in->getHtmlCore('ticket_signature');
+			$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
+
+			foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') AS $blob_id) {
+				$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
+				if ($blob) {
+					$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
+					$replace = $blob->getEmbedCode(true, 'signature_image');
+					$signature_html = preg_replace($regex, $replace, $signature_html);
+				}
+			}
+
+			$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
+			$signature_html = preg_replace($regex, '$1', $signature_html);
+
+			$signature_html = str_replace(array('<div', '</div>'), array('<p', '</p>'), $signature_html);
+			$signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
+
+			$signature = strip_tags($signature_html);
+		} else {
+			$signature = $this->in->getString('ticket_signature');
+			$signature_html = nl2br(htmlspecialchars($signature));
+			if ($signature_html) {
+				$signature_html = '<p class="dp-signature-start">' . $signature . '</p>';
+			}
+		}
+
+		$this->person->setPreference('agent.ticket_signature', $signature);
+		$this->person->setPreference('agent.ticket_signature_html', $signature_html);
+
+		$this->em->persist($this->person);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function updateTimezoneAction()

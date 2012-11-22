@@ -45,14 +45,10 @@ class SettingsProfile
 	public $timezone = 'UTC';
 	public $password = '';
 	public $password2 = '';
-	public $ticket_signature = '';
 	public $new_picture_blob_id = false;
-	public $is_html_signature = false;
 
 	public $ticket_close_reply = false;
 	public $ticket_close_note = false;
-
-	protected $_blob_inline_ids = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -77,11 +73,6 @@ class SettingsProfile
 
 		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
 		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', true);
-	}
-
-	public function setBlobInlineIds(array $ids)
-	{
-		$this->_blob_inline_ids = $ids;
 	}
 
 	public function getPerson()
@@ -138,38 +129,6 @@ class SettingsProfile
 
 			if ($this->password) {
 				$person->setPassword($this->password);
-			}
-
-			if ($this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
-				if ($this->is_html_signature && $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte()) {
-					$signature_html = App::get('deskpro.core.input_cleaner')->clean($this->ticket_signature, 'html_core');
-					$signature_html = \Orb\Util\Strings::trimHtml($signature_html);
-
-					foreach ($this->_blob_inline_ids AS $blob_id) {
-						$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
-						if ($blob) {
-							$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
-							$replace = $blob->getEmbedCode(true, 'signature_image');
-							$signature_html = preg_replace($regex, $replace, $signature_html);
-						}
-					}
-
-					$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
-					$signature_html = preg_replace($regex, '$1', $signature_html);
-
-					$signature_html = str_replace(array('<div', '</div>'), array('<p', '</p>'), $signature_html);
-					$signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
-
-					$signature = strip_tags($signature_html);
-				} else {
-					$signature = $this->ticket_signature;
-					$signature_html = nl2br(htmlspecialchars($signature));
-					if ($signature_html) {
-						$signature_html = '<p class="dp-signature-start">' . $signature . '</p>';
-					}
-				}
-				$person->setPreference('agent.ticket_signature', $signature);
-				$person->setPreference('agent.ticket_signature_html', $signature_html);
 			}
 
 			$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);

@@ -547,6 +547,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			$('#settingswin').trigger('dp_open', 'profile');
 		});
+		$('#user_settings_link_signature').on('click', function(ev) {
+			ev.preventDefault();
+			$('#settingswin').trigger('dp_open', 'signature');
+		});
 		$('#user_settings_link_ticketnotify').on('click', function(ev) {
 			ev.preventDefault();
 			$('#settingswin').trigger('dp_open', 'ticket-notify');

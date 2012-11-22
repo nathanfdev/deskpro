@@ -104,6 +104,7 @@ $CONFIG['agent_settingswin'] = array(
 	'files' => array(
 		'javascripts/DeskPRO/Agent/ElementHandler/SettingsWindow.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Signature.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Macros.js',

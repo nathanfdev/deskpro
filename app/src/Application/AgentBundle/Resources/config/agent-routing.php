@@ -339,6 +339,20 @@ $collection->add('agent_settings_profile_savewelcome', new Route(
 	array()
 ));
 
+$collection->add('agent_settings_signature', new Route(
+	'/settings/signature',
+	array('_controller' => 'AgentBundle:Settings:signature'),
+	array(),
+	array()
+));
+
+$collection->add('agent_settings_signature_save', new Route(
+	'/settings/signature/save.json',
+	array('_controller' => 'AgentBundle:Settings:signatureSave'),
+	array(),
+	array()
+));
+
 $collection->add('agent_settings_profile_updatetimezone', new Route(
 	'/settings/profile/update-timezone.json',
 	array('_controller' => 'AgentBundle:Settings:updateTimezone'),

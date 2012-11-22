@@ -20,6 +20,7 @@
 				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 				<li class="setting with-sub" id="user_settings_link"><a>{{ phrase('agent.general.settings') }}</a></li>
 				<li class="sub" id="user_settings_link_profile"><a>Profile</a></li>
+				{% if app.user.getPermissionsManager().get('GeneralChecker').canSetSignature() %}<li class="sub" id="user_settings_link_signature"><a>{{ phrase('agent.settings.ticket_signature') }}</a></li>{% endif %}
 				<li class="sub" id="user_settings_link_ticketnotify"><a>Ticket Notifications</a></li>
 				<li class="sub" id="user_settings_link_othernotify"><a>Other Notifications</a></li>
 				<li class="sub" id="user_settings_link_macros"><a>Macros</a></li>

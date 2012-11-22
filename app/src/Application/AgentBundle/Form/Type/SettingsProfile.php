@@ -49,8 +49,6 @@ class SettingsProfile extends AbstractType
 		));
 		$builder->add('password', 'password', array('required' => false));
 		$builder->add('password2', 'password', array('required' => false));
-		$builder->add('ticket_signature', 'textarea', array('required' => false));
-	    $builder->add('is_html_signature', 'hidden', array('required' => false));
 
 	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
 	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
