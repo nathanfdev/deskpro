@@ -1098,6 +1098,10 @@ section.main-content {
 
 article.content-message {
 	margin: 0 0 8px 0;
+
+	&.message-unselected {
+		.opacity(50);
+	}
 }
 
 article.content-message .message-toggle-btn {
@@ -2612,7 +2616,8 @@ padding: 30px;
 	display: none;
 }
 
-.page-ticket .profile-box-container.ticket-messages .message-counter {
+.page-ticket .profile-box-container.ticket-messages .message-counter,
+.split-overlay .ticket-messages .message-counter {
 	float: left;
 	font-size: 10px;
 	background: #E0E5EE;

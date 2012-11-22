@@ -49,32 +49,46 @@ class TicketSplit
 {
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketMessage
+	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
-	protected $message;
+	protected $ticket;
+
+	protected $old_ticket_deleted = false;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 
-	public function __construct(TicketMessage $message)
+	public function __construct(Ticket $ticket)
 	{
 		$this->em = App::getOrm();
 
-		$this->message = $message;
+		$this->ticket = $ticket;
+	}
+
+	public function wasOldTicketDeleted()
+	{
+		return $this->old_ticket_deleted;
 	}
 
 
-	public function split()
+	public function split($subject, array $message_ids)
 	{
-		$ticket = $this->message->ticket;
+		$ticket = $this->ticket;
+
+		if (!$message_ids) {
+			return;
+		}
 
 		$messages = $this->em->createQuery("
 			SELECT m
 			FROM DeskPRO:TicketMessage m
-			WHERE m.id >= ?1 AND m.ticket = ?2
-		")->execute(array(1=> $this->message['id'], 2=> $ticket['id']));
+			WHERE m.id IN (?1) AND m.ticket = ?2
+		")->execute(array(1=> $message_ids, 2=> $ticket['id']));
+		if (!count($messages)) {
+			return;
+		}
 
 		$new_ticket = $ticket->copy();
 		foreach ($messages as $m) {
@@ -86,16 +100,67 @@ class TicketSplit
 			}
 		}
 
-		$new_ticket['creation_system'] = Ticket::CREATED_WEB_AGENT;
+		$new_ticket->creation_system = Ticket::CREATED_WEB_AGENT;
+
+		if ($subject) {
+			$new_ticket->subject = $subject;
+		}
+
+		$has_owner = false;
+		foreach ($new_ticket->messages AS $message) {
+			if ($message->person->id == $new_ticket->person->id) {
+				$has_owner = true;
+				break;
+			}
+		}
+
+		if (count($messages) == 1 || !$has_owner) {
+			$message = reset($messages);
+			$new_ticket->person = $message->person;
+			$new_ticket->person_email = $message->person->primary_email;
+			$new_ticket->organization = $message->person->organization;
+		}
 
 		$new_ticket->resetTicketLogger();// we dont want any of the usual logs to do with new items etc
 		$new_ticket->getTicketLogger()->recordExtra('ticket_split', array('old_ticket' => $ticket)); // just the split
 
-		$new_ticket->subject .= " (2)";
+		if (count($ticket->messages) == 0) {
+			// Old ticket set to deleted so proper CM's are sent
+			$ticket->getTicketLogger()->recordExtra('bare_delete', 1);
+			$ticket->setStatus('hidden.deleted');
+			$this->em->persist($ticket);
+			$delete_ticket = true;
+		} else {
+			$this->em->persist($ticket);
+			$delete_ticket = false;
+		}
 
-		$this->em->persist($ticket);
 		$this->em->persist($new_ticket);
 		$this->em->flush();
+
+		if ($delete_ticket) {
+			$ticket->_markRemoved();
+			$ticket->setNoLog();
+			$ticket->unsetTicketLogger();
+
+			$this->em->remove($ticket);
+		} else {
+			// need to do this as we need the new ID
+			$person = App::getCurrentPerson();
+			$action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\SplitTo($new_ticket, $ticket);
+
+			$ticket_log = new \Application\DeskPRO\Entity\TicketLog();
+			$ticket_log['person'] = ($person && $person->id) ? $person : null;
+			$ticket_log['ticket'] = $ticket;
+			$ticket_log['action_type'] = $action->getLogName();
+			$ticket_log['details'] = $action->getLogDetails();
+
+			$this->em->persist($ticket_log);
+		}
+
+		$this->em->flush();
+
+		$this->old_ticket_deleted = $delete_ticket;
 
 		return $new_ticket;
 	}

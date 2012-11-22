@@ -213,7 +213,8 @@
 	'agent.tickets.ticket_is_deleted'                   => 'Ticket is deleted',
 	'agent.tickets.ticket_is_marked_as_spam'            => 'This ticket has been marked as spam.',
 	'agent.tickets.ticket_log'                          => 'Ticket Log',
-	'agent.tickets.ticket_split_form'                   => 'Ticket split from',
+	'agent.tickets.ticket_split_from'                   => 'Ticket split from',
+	'agent.tickets.ticket_split_to'                     => 'Ticket split to',
 	'agent.tickets.tickets_on_hold'                     => 'On Hold',
 	'agent.tickets.unassign_action'                     => 'Unassign agent',
 	'agent.tickets.unassign_team'                       => 'Unassign team',
@@ -226,6 +227,7 @@
 	'agent.tickets.user_email'                          => 'User Email',
 	'agent.tickets.user_waiting_total_x'                => 'User has been waiting a total of <time>{{total}}</time> since the ticket started.',
 	'agent.tickets.user_waiting_x_and_total_y'          => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
+	'agent.tickets.x_messages_moved'                    => '1 message moved|{{count}} messages moved',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
 );

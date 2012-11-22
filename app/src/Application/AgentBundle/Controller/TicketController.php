@@ -2301,15 +2301,36 @@ class TicketController extends AbstractController
 	# split
 	############################################################################
 
-	public function splitAction($message_id)
+	public function splitAction($ticket_id, $message_id = 0)
 	{
-		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
 
-		$split = new TicketSplit($message);
+		if ($message_id) {
+			$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+			if (!$message || $message->ticket->id != $ticket->id) {
+				$message = null;
+			}
+		} else {
+			$message = null;
+		}
+
+		return $this->render('AgentBundle:Ticket:split-overlay.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message
+		));
+	}
+
+	public function splitSaveAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+		$message_ids = $this->in->getCleanValueArray('message_ids', 'uint', 'discard');
+		$subject = $this->in->getString('subject');
+
+		$split = new TicketSplit($ticket);
 
 		try {
 			$this->em->beginTransaction();
-			$new_ticket = $split->split();
+			$new_ticket = $split->split($subject, $message_ids);
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
@@ -2319,7 +2340,8 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'ticket_id' => $new_ticket['id']
+			'ticket_id' => $new_ticket ? $new_ticket['id'] : null,
+			'old_ticket_deleted' => $split->wasOldTicketDeleted()
 		));
 	}
 

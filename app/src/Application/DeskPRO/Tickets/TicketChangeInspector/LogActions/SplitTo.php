@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class Split extends AbstractLogAction
+class SplitTo extends AbstractLogAction
 {
 	protected $ticket;
 	protected $old_ticket;
@@ -50,7 +50,7 @@ class Split extends AbstractLogAction
 
 	public function getLogName()
 	{
-		return 'ticket_split';
+		return 'ticket_split_to';
 	}
 
 	public function getLogDetails()
@@ -59,12 +59,13 @@ class Split extends AbstractLogAction
 			'id_before' => $this->old_ticket['id'] ?: null,
 			'id_after'  => $this->ticket['id'] ?: null,
 
-			'from_ticket_id' => $this->old_ticket['id']
+			'to_ticket_id' => $this->ticket['id'],
+			'messages_moved' => count($this->ticket->messages)
 		);
 	}
 
 	public function getEventType()
 	{
-		return 'ticket_split';
+		return 'ticket_split_to';
 	}
 }

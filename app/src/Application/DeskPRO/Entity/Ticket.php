@@ -2433,10 +2433,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'category',
 			'product',
 			'workflow',
+			'language',
 			'organization',
 			'status',
 			'hidden_status',
-			'subject'
+			'subject',
+			'is_hold',
+			'urgency',
 		);
 
 		foreach ($load as $k) {

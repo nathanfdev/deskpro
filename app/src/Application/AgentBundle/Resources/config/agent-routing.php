@@ -1069,9 +1069,16 @@ $collection->add('agent_ticket_release_lock', new Route(
 ));
 
 $collection->add('agent_ticket_split', new Route(
-	'/tickets/split/{message_id}',
-	array('_controller' => 'AgentBundle:Ticket:split'),
-	array('message_id' => '\\d+'),
+	'/tickets/{ticket_id}/split/{message_id}',
+	array('_controller' => 'AgentBundle:Ticket:split', 'message_id' => 0),
+	array('ticket_id' => '\\d+'),
+	array()
+));
+
+$collection->add('agent_ticket_split_save', new Route(
+	'/tickets/{ticket_id}/split-save',
+	array('_controller' => 'AgentBundle:Ticket:splitSave'),
+	array('ticket_id' => '\\d+'),
 	array()
 ));
 

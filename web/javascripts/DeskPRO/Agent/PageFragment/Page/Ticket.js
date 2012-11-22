@@ -832,7 +832,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		this.getEl('print_trigger').click(function() { window.print(); });
+		var actionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('actions_menu_trigger'),
+			menuElement: this.getEl('actions_menu'),
+			onItemClicked: function(info) {
+
+				var it = $(info.itemEl);
+
+				switch(it.data('action')) {
+					case 'split':
+						self.showSplitOverlay('');
+						break;
+
+					case 'print':
+						window.print();
+						break;
+				}
+			}
+		});
 	},
 
 	_initDeleteOverlay: function() {
@@ -1051,27 +1068,82 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				break;
 
 			case 'split':
-				var msg = "Are you sure you want to split this ticket into two?";
-				DeskPRO_Window.showConfirm(msg, function() {
-					$.ajax({
-						url: BASE_URL + 'agent/tickets/split/' + messageId,
-						type: 'POST',
-						context: this,
-						dataType: 'json',
-						success: function(data) {
-							DP.console.log('Ticket split return %o', data);
-							if (data.success) {
-								DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + data.ticket_id);
-							}
-						}
-					});
-				});
+				this.showSplitOverlay(messageId);
 				break;
 
 			case 'edit':
 				this.showMessageEditor(messageId);
 				break;
 		}
+	},
+
+	showSplitOverlay: function(messageId) {
+		var self = this;
+		var overlay = new DeskPRO.UI.Overlay({
+			contentMethod: 'ajax',
+			contentAjax: { url: BASE_URL + 'agent/tickets/' + this.meta.ticket_id + '/split/' + messageId },
+			zIndex: 40000, // Above floating people windows
+			onAjaxDone: function() {
+				var wrapper = overlay.getWrapper(),
+					form = wrapper.find('form');
+
+				wrapper.on('click', '.body-text', function() {
+					var $this = $(this);
+					if ($this.find('.fade-bar').is(':visible')) {
+						$this.find('.fade-bar').hide();
+						$this.find('.body-text-message').css('max-height', '');
+					} else {
+						$this.find('.fade-bar').show();
+						$this.find('.body-text-message').css('max-height', '35px');
+					}
+				});
+
+				wrapper.on('change', '.message-id-checkbox', function() {
+					var $this = $(this), container = $this.closest('.content-message');
+					if ($this.is(':checked')) {
+						container.removeClass('message-unselected');
+					} else {
+						container.addClass('message-unselected');
+					}
+				});
+				wrapper.on('click', '.content header', function(e) {
+					if ($(e.srcElement).is('.message-id-checkbox')) {
+						return;
+					}
+
+					var cb = $(this).find('.message-id-checkbox');
+					cb.attr('checked', !cb.attr('checked'));
+					cb.trigger('change');
+				});
+
+				form.on('submit', function(e) {
+					e.preventDefault();
+
+					form.addClass('loading');
+
+					$.ajax({
+						url: form.attr('action'),
+						method: 'POST',
+						data: form.serializeArray(),
+						dataType: 'json'
+					}).always(function() {
+						form.removeClass('loading');
+					}).done(function(data) {
+						overlay.close();
+
+						if (data.ticket_id) {
+							DeskPRO_Window.removePage(self);
+							if (!data.old_ticket_deleted) {
+								DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+							}
+
+							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+						}
+					});
+				});
+			}
+		});
+		overlay.open();
 	},
 
 	showMessageEditor: function(message_id) {

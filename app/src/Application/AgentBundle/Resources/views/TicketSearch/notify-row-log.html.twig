@@ -10,7 +10,7 @@
 	Created ticket
 {% elseif log.action_type == 'subject' %}
 	Changed subject
-{% elseif log.action_type == 'ticket_split' %}
+{% elseif log.action_type == 'ticket_split' or log.action_type == 'ticket_split_to' %}
     Split ticket
 {% elseif log.action_type == 'merged' %}
 	Merged ticket
