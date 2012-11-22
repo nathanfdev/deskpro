@@ -63,6 +63,14 @@ class TicketSlasController extends AbstractController
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken();
 
+			$holidays = $this->in->getCleanValueArray('work_holidays', 'raw', 'discard');
+			$add_all_holidays = array();
+			foreach ($holidays AS $holiday) {
+				if (!empty($holiday['add_all'])) {
+					$add_all_holidays[] = $holiday;
+				}
+			}
+
 			$sla->title = $this->in->getString('title');
 			if (!$sla->title) {
 				$sla->title = 'No Title';
@@ -76,7 +84,7 @@ class TicketSlasController extends AbstractController
 				$sla->work_timezone = $this->in->getString('work_timezone');
 
 				$sla->resetHolidays();
-				foreach ($this->in->getCleanValueArray('work_holidays', 'raw', 'discard') AS $holiday) {
+				foreach ($holidays AS $holiday) {
 					$sla->addHoliday(
 						$holiday['name'],
 						$holiday['day'],
@@ -191,6 +199,28 @@ class TicketSlasController extends AbstractController
 
 			$this->em->persist($sla);
 			$this->em->flush();
+
+			if ($add_all_holidays) {
+				$add_slas = $this->_getSlaRepository()->getAllSlas();
+				foreach ($add_slas AS $add_sla) {
+					if ($add_sla->id == $sla->id) {
+						continue;
+					}
+
+					foreach ($add_all_holidays AS $holiday) {
+						$add_sla->addHoliday(
+							$holiday['name'],
+							$holiday['day'],
+							$holiday['month'],
+							$holiday['year']
+						);
+					}
+
+					$this->em->persist($add_sla);
+				}
+
+				$this->em->flush();
+			}
 
 			$this->em->commit();
 

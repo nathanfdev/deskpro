@@ -224,6 +224,12 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			$year = intval($year);
 		}
 
+		foreach ($this->work_holidays AS $k => $existing) {
+			if ($existing['day'] == $day && $existing['month'] == $month && $existing['year'] === $year) {
+				return $k;
+			}
+		}
+
 		$this->work_holidays[] = array(
 			'name' => $name,
 			'day' => intval($day),

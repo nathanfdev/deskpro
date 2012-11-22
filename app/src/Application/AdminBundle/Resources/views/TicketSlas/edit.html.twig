@@ -189,6 +189,7 @@
 									-
 									<span class="name">[name]</span>
 									<span class="repeat">(repeats annually)</span>
+									<span class="add-all">(adding to all SLAs)</span>
 								</li>
 							{% for key,holiday in sla.holidays_sorted %}
 								<li {% if holiday.year %}data-year="{{ holiday.year }}"{% endif %}
@@ -212,8 +213,15 @@
 								<input class="date" id="holiday_date" type="text" placeholder="Date" style="width: 75px" />
 								<input class="name" id="holiday_name" type="text" placeholder="Name" style="width: 150px" />
 								<label><input id="holiday_repeat" type="checkbox" value="1" /> Repeats annually</label>
+								<label><input id="holiday_add_all" type="checkbox" value="1" /> Add to all SLAs</label>
 								<button id="holiday_add" class="btn small">Add</button>
 							</div>
+						</li>
+
+
+						<li class="alert-message block-message note">
+							Time will only be logged towards the SLA warning or failure within working hours.
+							The warning and failure time units below should reflect the amount of time that passes during working hours only.
 						</li>
 					</ul>
 				</div>

@@ -44,6 +44,9 @@ class Sla extends AbstractEntityRepository
 {
 	protected $_all_slas = null;
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
 	public function getAllSlas()
 	{
 		if ($this->_all_slas === null) {
@@ -62,6 +65,9 @@ class Sla extends AbstractEntityRepository
 		$this->_all_slas = null;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
 	public function getPersonOrgAssociableSlas()
 	{
 		$slas = $this->getAllSlas();
@@ -74,6 +80,9 @@ class Sla extends AbstractEntityRepository
 		return $slas;
 	}
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Sla[]
+	 */
 	public function getAddableSlas(Entity\Ticket $ticket)
 	{
 		$slas = $this->getAllSlas();

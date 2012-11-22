@@ -102,6 +102,7 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 				callback(data);
 			}
 		});
+
 		// triggers and criteria
 		this.actionEditors = {};
 		this.criteriaEditors = {};
@@ -191,6 +192,7 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 			var date = $('#holiday_date').val();
 			var name = $('#holiday_name').val();
 			var repeat = $('#holiday_repeat').is(':checked');
+			var addAll = $('#holiday_add_all').is(':checked');
 
 			var list = $('#holiday_options');
 			var months = list.data('months');
@@ -213,6 +215,9 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 					li.data('year', year);
 					li.find('.repeat').remove();
 				}
+				if (!addAll) {
+					li.find('.add-all').remove();
+				}
 
 				li.data('month', dateParts[1]);
 				li.data('day', dateParts[0]);
@@ -224,6 +229,9 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 					li.append('<input type="hidden" name="work_holidays[' + id + '][year]" value="" />');
 				} else {
 					li.append('<input type="hidden" name="work_holidays[' + id + '][year]" value="' + year + '" />');
+				}
+				if (addAll) {
+					li.append('<input type="hidden" name="work_holidays[' + id + '][add_all]" value="1" />');
 				}
 
 				var added = false;
