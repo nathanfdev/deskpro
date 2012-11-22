@@ -72,6 +72,7 @@
 								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">
+								<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" /> {{ phrase('user.general.remember_me') }}</label>
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
