@@ -113,13 +113,14 @@ class Download extends AbstractEntityRepository
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:Download d
-				WHERE d.category = ?1
+				WHERE d.category = ?1 AND d.status = 'published'
 				ORDER BY d.id DESC
 			")->setParameter(1, $node)->setMaxResults($num)->execute();
 		} else {
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:Download d
+				WHERE d.status = 'published'
 				ORDER BY d.id DESC
 			")->setMaxResults($num)->execute();
 		}
