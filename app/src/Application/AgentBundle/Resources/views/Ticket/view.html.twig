@@ -193,7 +193,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 					</td>
 					<td>
 						<label>Urgency</label>
-						<select name="urgency" class="urgency" id="{{baseId}}_urgency">
+						<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency">
 							{% for i in 1..10 %}
 								<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
 							{% endfor %}

@@ -762,6 +762,42 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 { .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
 .status-pill.closed                    { .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
 
+.select2-result .urgency-1,
+.select2-choice .urgency-1 { .ticket_urgency_style_pill(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
+.select2-result .urgency-2,
+.select2-choice .urgency-2  { .ticket_urgency_style_pill(@urgency2_color, @urgency2_borderColor, @urgency2_textColor); }
+.select2-result .urgency-3,
+.select2-choice .urgency-3  { .ticket_urgency_style_pill(@urgency3_color, @urgency3_borderColor, @urgency3_textColor); }
+.select2-result .urgency-4,
+.select2-choice .urgency-4 { .ticket_urgency_style_pill(@urgency4_color, @urgency4_borderColor, @urgency4_textColor); }
+.select2-result .urgency-5,
+.select2-choice .urgency-5  { .ticket_urgency_style_pill(@urgency5_color, @urgency5_borderColor, @urgency5_textColor); }
+.select2-result .urgency-6,
+.select2-choice .urgency-6  { .ticket_urgency_style_pill(@urgency6_color, @urgency6_borderColor, @urgency6_textColor); }
+.select2-result .urgency-7,
+.select2-choice .urgency-7  { .ticket_urgency_style_pill(@urgency7_color, @urgency7_borderColor, @urgency7_textColor); }
+.select2-result .urgency-8,
+.select2-choice .urgency-8  { .ticket_urgency_style_pill(@urgency8_color, @urgency8_borderColor, @urgency8_textColor); }
+.select2-result .urgency-9,
+.select2-choice .urgency-9  { .ticket_urgency_style_pill(@urgency9_color, @urgency9_borderColor, @urgency9_textColor); }
+.select2-result .urgency-10,
+.select2-choice .urgency-10 { .ticket_urgency_style_pill(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }
+
+.select2-result .urgency,
+.select2-choice .urgency {
+	display: inline-block !important;
+	width: 18px;
+	padding: 0 !important;
+	text-align: center;
+	text-shadow: none;
+	.rounded(3px);
+	i { border-left: none !important; }
+}
+.select2-choice .urgency {
+	line-height: 20px;
+}
+
+
 header.page-header .meta-line .status span {
 	position: relative;
 	.gradient(#8bbe72, #71b058);

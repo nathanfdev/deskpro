@@ -173,6 +173,20 @@ var DP = {
 						}
 					};
 					break;
+
+				case 'urgency':
+					var formatter = function(data) {
+						var name = Orb.escapeHtml(data.text);
+						if (data.id <= 0) {
+							return name;
+						}
+
+						return '<span class="urgency urgency-' + data.id + '"><i>' + name + '</i></span>';
+					};
+
+					options.formatResult = formatter;
+					options.formatSelection = formatter;
+					break;
 			}
 		}
 
