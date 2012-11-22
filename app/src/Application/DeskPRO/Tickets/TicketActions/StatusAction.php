@@ -126,19 +126,17 @@ class StatusAction extends AbstractAction implements PermissionableAction
 			}
 
 			if ($delete_person) {
-				$del = $ticket->getDeletionRecord();
-				if (!$del) {
-					$del = new \Application\DeskPRO\Entity\TicketDeleted();
-				}
-
-				$del['ticket_id']     = $ticket->getId();
-				$del['old_ptac']      = $ticket->auth;
-				$del['by_person']     = $delete_person;
-				$del['new_ticket_id'] = 0;
-				$del['reason']        = '';
-
-				App::getOrm()->persist($del);
-				App::getOrm()->flush();
+				App::getDb()->executeUpdate("
+					INSERT INTO tickets_deleted
+						(ticket_id, by_person_id, new_ticket_id, date_created, reason, old_ptac)
+					VALUES
+						(?, ?, 0, ?, '', ?)
+					ON DUPLICATE KEY UPDATE
+						by_person_id = VALUES(by_person_id),
+						new_ticket_id = VALUES(new_ticket_id),
+						reason = VALUES(reason),
+						old_ptac = VALUES(old_ptac)
+				", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
 			}
 		}
 	}
