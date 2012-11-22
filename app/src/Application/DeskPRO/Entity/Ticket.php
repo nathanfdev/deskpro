@@ -2346,22 +2346,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$slas = App::getEntityRepository('DeskPRO:Sla')->getAllSlas();
 		foreach ($slas AS $sla) {
-			if ($sla->apply_all) {
+			if ($sla->apply_type == 'all') {
 				$this->addSla($sla);
 				continue;
 			}
 
-			if ($sla->apply_priority && $this->priority && $sla->apply_priority->id == $this->priority->id) {
+			if ($sla->apply_type == 'priority' && $sla->apply_priority && $this->priority && $sla->apply_priority->id == $this->priority->id) {
 				$this->addSla($sla);
 				continue;
 			}
 
-			if ($sla->appliesToPerson($this->person)) {
+			if ($sla->apply_type == 'people_orgs' && $sla->appliesToPerson($this->person)) {
 				$this->addSla($sla);
 				continue;
 			}
 
-			if ($this->organization && $sla->appliesToOrganization($this->organization)) {
+			if ($sla->apply_type == 'people_orgs' && $this->organization && $sla->appliesToOrganization($this->organization)) {
 				$this->addSla($sla);
 				continue;
 			}

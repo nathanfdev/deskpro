@@ -274,14 +274,11 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 
 		// apply list
 		var applyAllChange = function() {
-			var checked = $('#apply_all').is(':checked');
-			if (checked) {
-				$('#apply_list :checkbox:not(#apply_all, #allow_agent_manual)').attr('disabled', true);
-			} else {
-				$('#apply_list :checkbox:not(#apply_all, #allow_agent_manual)').attr('disabled', false);
-			}
+			var val = $('#apply_type_select').val();
+			$('.apply_type_row').hide();
+			$('#apply_type_show_' + val).show();
 		};
-		 $('#apply_all').change(applyAllChange);
+		 $('#apply_type_select').change(applyAllChange);
 		applyAllChange();
 
 		// terms/criteria init

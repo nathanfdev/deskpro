@@ -86,23 +86,27 @@ class TicketSlasController extends AbstractController
 				}
 			}
 
-			$sla->apply_all = $this->in->getBool('apply_all');
-			$sla->allow_agent_manual = $this->in->getBool('allow_agent_manual');
+			$sla->apply_type = $this->in->getString('apply_type');
 
-			if ($this->in->getBool('apply_priority')) {
+			if ($sla->apply_type == 'priority') {
 				$apply_priority_id = $this->in->getUint('apply_priority_id');
 				$sla->apply_priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($apply_priority_id);
 			} else {
 				$sla->apply_priority = null;
 			}
 
-			$person_ids = preg_split('/,\s*/', $this->in->getString('person_ids'), -1, PREG_SPLIT_NO_EMPTY);
-			$people = $this->em->getRepository('DeskPRO:Person')->getByIds($person_ids);
-			$sla->setPeople($people);
+			if ($sla->apply_type == 'people_orgs') {
+				$person_ids = preg_split('/,\s*/', $this->in->getString('person_ids'), -1, PREG_SPLIT_NO_EMPTY);
+				$people = $this->em->getRepository('DeskPRO:Person')->getByIds($person_ids);
+				$sla->setPeople($people);
 
-			$organization_ids = preg_split('/,\s*/', $this->in->getString('organization_ids'), -1, PREG_SPLIT_NO_EMPTY);
-			$organizations = $this->em->getRepository('DeskPRO:Organization')->getByIds($organization_ids);
-			$sla->setOrganizations($organizations);
+				$organization_ids = preg_split('/,\s*/', $this->in->getString('organization_ids'), -1, PREG_SPLIT_NO_EMPTY);
+				$organizations = $this->em->getRepository('DeskPRO:Organization')->getByIds($organization_ids);
+				$sla->setOrganizations($organizations);
+			} else {
+				$sla->setPeople(array());
+				$sla->setOrganizations(array());
+			}
 
 			$this->em->beginTransaction();
 
@@ -158,7 +162,7 @@ class TicketSlasController extends AbstractController
 			$this->em->persist($fail_trigger);
 
 			// setup apply trigger - must be done after saving as we need the ID
-			if ($this->in->getBool('apply_trigger')) {
+			if ($sla->apply_type == 'criteria') {
 				if (!$sla->apply_trigger) {
 					$apply_trigger = new Entity\TicketTrigger();
 					$sla->apply_trigger = $apply_trigger;

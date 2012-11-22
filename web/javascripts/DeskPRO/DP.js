@@ -195,7 +195,42 @@ var DP = {
 		}
 
 		if (el.data('select-width') == 'auto') {
-			options.width = el.parent().width() - 15 + 'px';
+			var shrink;
+			if (el.data('select-width-shrink')) {
+				shrink = parseInt(el.data('select-width-shrink'), 10);
+			} else {
+				shrink = 15;
+			}
+
+			if (el.parent().width()) {
+				options.width = el.parent().width() - shrink + 'px';
+			} else {
+				// hidden farther up the change so walk up until we can see something
+				// and then come back down
+				var path = [];
+				var shown = [];
+				var testEl = el.parent();
+				while (testEl && testEl.is(':hidden')) {
+					path.push(testEl);
+					testEl = testEl.parent();
+				}
+
+				if (testEl) {
+					// this is visible
+					for (var i = path.length - 1; i >= 0; i--) {
+						if (path[i].is(':hidden')) {
+							path[i].show();
+							shown.push(path[i]);
+						}
+					}
+
+					options.width = (el.parent().width() - shrink) + 'px';
+
+					for (var i = 0; i < shown.length; i++) {
+						shown[i].hide();
+					}
+				} // otherwise we didn't find something that wasn't hidden
+			}
 		} else {
 			options.width = 'resolve';
 		}

@@ -172,7 +172,7 @@
 {# SLAs Box #}
 {{ dp_widgets(baseId, 'profile', 'slas', 'above', person_api) }}
 
-{% if app.getDataRepository('Sla').getAllSlas() and (perms.edit or person.slas|length) %}
+{% if app.getDataRepository('Sla').getPersonOrgAssociableSlas() and (perms.edit or person.slas|length) %}
 	<div class="profile-box-container summary" id="{{baseId}}_sla_box">
 		<header>
 			{% if perms.edit %}
@@ -190,7 +190,7 @@
 		<section id="{{baseId}}_sla_body">
 			<div id="{{baseId}}_sla_display_box" class="contact-list">
 				<ul>
-				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+				{% for sla in app.getDataRepository('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row sla-row-{{ sla.id }}" {% if not person.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
 				{% endfor %}
 				<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">No SLAs are being automatically applied to this person.</li>
@@ -198,7 +198,7 @@
 			</div>
 			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
 				<ul>
-				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+				{% for sla in app.getDataRepository('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row">
 						<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if person.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
 					</li>

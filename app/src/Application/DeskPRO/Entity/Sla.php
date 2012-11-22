@@ -116,18 +116,11 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 	protected $work_holidays = array();
 
 	/**
-	 * If true, apply to all tickets
+	 * Controls how the SLA is applied to tickets
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	protected $apply_all = true;
-
-	/**
-	 * If true, allows agents to apply this SLA manually
-	 *
-	 * @var bool
-	 */
-	protected $allow_agent_manual = false;
+	protected $apply_type = 'all';
 
 	/**
 	 * @var TicketTrigger
@@ -694,8 +687,7 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'work_days', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_days', ));
 		$metadata->mapField(array( 'fieldName' => 'work_timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_timezone', ));
 		$metadata->mapField(array( 'fieldName' => 'work_holidays', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'work_holidays', ));
-		$metadata->mapField(array( 'fieldName' => 'apply_all', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'apply_all', ));
-		$metadata->mapField(array( 'fieldName' => 'allow_agent_manual', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'allow_agent_manual', ));
+		$metadata->mapField(array( 'fieldName' => 'apply_type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'apply_type', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'warning_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'warning_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'fail_trigger', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketTrigger', 'cascade' => array('remove'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'fail_trigger_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

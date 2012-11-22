@@ -77,7 +77,7 @@
 {# SLAs Box #}
 {{ dp_widgets(baseId, 'organization', 'slas', 'above', org_api) }}
 
-{% if app.getDataRepository('Sla').getAllSlas() %}
+{% if app.getDataRepository('Sla').getPersonOrgAssociableSlas() %}
 	<div class="profile-box-container summary" id="{{baseId}}_sla_box">
 		<header>
 			<div class="controls">
@@ -93,7 +93,7 @@
 		<section id="{{baseId}}_sla_body">
 			<div id="{{baseId}}_sla_display_box" class="contact-list">
 				<ul>
-				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+				{% for sla in app.getDataRepository('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row sla-row-{{ sla.id }}" {% if not organization.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
 				{% endfor %}
 				<li class="no-slas" style="padding-left: 0; {% if organization.slas|length %}display: none;{% endif %}}">No SLAs are being automatically applied to this organization.</li>
@@ -101,7 +101,7 @@
 			</div>
 			<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
 				<ul>
-				{% for sla in app.getDataRepository('Sla').getAllSlas() %}
+				{% for sla in app.getDataRepository('Sla').getPersonOrgAssociableSlas() %}
 					<li class="sla-row">
 						<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if organization.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
 					</li>

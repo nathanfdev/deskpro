@@ -108,7 +108,7 @@ class TicketController extends AbstractController
 		if ($sla_ids) {
 			$slas = $this->em->getRepository('DeskPRO:Sla')->getByIds($sla_ids);
 			foreach ($slas AS $sla) {
-				if ($sla->allow_agent_manual) {
+				if ($sla->apply_type == 'manual') {
 					$ticket->addSla($sla);
 				}
 			}
@@ -718,7 +718,7 @@ class TicketController extends AbstractController
 		if (!$sla) {
 			return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
 		}
-		if (!$sla->allow_agent_manual) {
+		if ($sla->apply_type != 'manual') {
 			return $this->createApiErrorResponse('invalid_argument.sla_id', 'no permission to add that SLA');
 		}
 
@@ -754,7 +754,7 @@ class TicketController extends AbstractController
 
 		foreach ($ticket->ticket_slas AS $key => $ticket_sla) {
 			if ($ticket_sla->id == $ticket_sla_id) {
-				if (!$ticket_sla->sla->allow_agent_manual) {
+				if ($ticket_sla->sla->apply_type != 'manual') {
 					return $this->createApiErrorResponse('invalid_argument', 'do not have permission to remove ticket SLA ' . $ticket_sla_id);
 				}
 

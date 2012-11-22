@@ -210,8 +210,7 @@ class DataInitializer
 			'work_days' => serialize(array(1 => true, 2 => true,3 => true, 4 => true, 5 => true)),
 			'work_timezone' => \Application\DeskPRO\App::getSetting('core.default_timezone'),
 			'work_holidays' => serialize(array()),
-			'apply_all' => 1,
-			'allow_agent_manual' => 0
+			'apply_type' => 'all',
 		));
 		$sla_id = $db->lastInsertId();
 

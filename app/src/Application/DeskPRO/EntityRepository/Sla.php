@@ -62,6 +62,18 @@ class Sla extends AbstractEntityRepository
 		$this->_all_slas = null;
 	}
 
+	public function getPersonOrgAssociableSlas()
+	{
+		$slas = $this->getAllSlas();
+		foreach ($slas AS $k => $sla) {
+			if ($sla->apply_type != 'people_orgs') {
+				unset($slas[$k]);
+			}
+		}
+
+		return $slas;
+	}
+
 	public function getAddableSlas(Entity\Ticket $ticket)
 	{
 		$slas = $this->getAllSlas();
@@ -70,7 +82,7 @@ class Sla extends AbstractEntityRepository
 		}
 
 		foreach ($slas AS $key => $sla) {
-			if (!$sla->allow_agent_manual) {
+			if ($sla->apply_type != 'manual') {
 				unset($slas[$key]);
 			}
 		}

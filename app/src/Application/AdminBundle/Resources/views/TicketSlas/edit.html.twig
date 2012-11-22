@@ -273,44 +273,50 @@
 
 	<div class="dp-form-row" style="margin-top: 30px">
 		<div class="dp-form-label">
-			<label>SLA Selection</label>
+			<label>SLA Application</label>
 		</div>
-		<div class="dp-form-input sla-selection">
-			<ul id="apply_list">
-				<li><label><input type="checkbox" name="allow_agent_manual" id="allow_agent_manual" value="1" {% if sla.allow_agent_manual %}checked="checked"{% endif %} /> Allow agents to manually assign/remove this SLA</label></li>
-				<li><label><input type="checkbox" name="apply_all" id="apply_all" value="1" {% if sla.apply_all %}checked="checked"{% endif %} /> Apply to all tickets</label></li>
-				<li><label><input type="checkbox" class="force-checked" checked="checked" /> Apply to the following people:</label>
-					<div style="margin-left: 22px"><input type="hidden" name="person_ids" id="person_ids" data-select-width="auto" value="{% for id,null in selected_people %}{{ id }},{% endfor %}" data-selected="{{ selected_people|json_encode }}" /></div>
-				</li>
-				<li><label><input type="checkbox" class="force-checked" checked="checked" /> Apply to the following organizations:</label>
-					<div style="margin-left: 22px"><input type="hidden" name="organization_ids" id="organization_ids" data-select-width="auto" value="{% for id,null in selected_organizations %}{{ id }},{% endfor %}" data-selected="{{ selected_organizations|json_encode }}" /></div>
-				</li>
-				{% if priorities %}
-				<li><label style="margin-right: 0"><input type="checkbox" name="apply_priority" id="apply_priority" value="1" {% if sla.apply_priority %}checked="checked"{% endif %} /> Apply when a user submits a ticket with priority</label>
-					<span id="apply_priority_id_container" style="{% if not sla.apply_priority %}display: none;{% endif %}">
-						<select name="apply_priority_id" class="select2" data-select-width="auto">
-						{% for priority_id,name in priorities %}
-							<option value="{{ priority_id }}" {% if sla.apply_priority and sla.apply_priority.id == priority_id %}selected="selected"{% endif %}>{{ name }}</option>
-						{% endfor %}
-						</select>
-					</span>
-				</li>
-				{% endif %}
-				<li><label><input type="checkbox" name="apply_trigger" id="apply_trigger" value="1" {% if sla.apply_trigger %}checked="checked"{% endif %} /> Apply to new tickets when meeting criteria</label>
-					<div id="apply_trigger_container" class="dp-sub-section" style="border-top: none; margin-left: 22px; {% if not sla.apply_trigger %} display: none;{% endif %}">
-						<div class="terms-wrap trigger-criteria">
-							<div class="terms-input" id="apply_trigger_terms"></div>
-							<div class="term-row add-term-row" data-name="apply_criteria"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Criteria</div>
-						</div>
+		<div class="dp-form-input">
+			<select name="apply_type" class="select2" id="apply_type_select">
+				<option value="all" {% if sla.apply_type == 'all' %}selected="selected"{% endif %}>Apply to all tickets</option>
+				<option value="priority" {% if sla.apply_type == 'priority' %}selected="selected"{% endif %}>Apply when a user submits a ticket with a specific priority</option>
+				<option value="criteria" {% if sla.apply_type == 'criteria' %}selected="selected"{% endif %}>Apply to new tickets with specific criteria</option>
+				<option value="manual" {% if sla.apply_type == 'manual' %}selected="selected"{% endif %}>Agents manually assign the SLA</option>
+				<option value="people_orgs" {% if sla.apply_type == 'people_orgs' %}selected="selected"{% endif %}>Apply to the following people and organizations</option>
+			</select>
+
+			<div class="apply_type_row" id="apply_type_show_priority" style="display:none; margin-top: 5px">
+				<select name="apply_priority_id" class="select2" data-select-width="auto">
+				{% for priority_id,name in priorities %}
+					<option value="{{ priority_id }}" {% if sla.apply_priority and sla.apply_priority.id == priority_id %}selected="selected"{% endif %}>{{ name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+
+			<div class="apply_type_row" id="apply_type_show_criteria" style="display:none; margin-top: 5px">
+				<div id="apply_trigger_container" class="dp-sub-section" style="border-top: none;">
+					<div class="terms-wrap trigger-criteria">
+						<div class="terms-input" id="apply_trigger_terms"></div>
+						<div class="term-row add-term-row" data-name="apply_criteria"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> Add Criteria</div>
 					</div>
-				</li>
-			</ul>
+				</div>
+			</div>
+
+			<div class="apply_type_row" id="apply_type_show_people_orgs" style="display:none; margin-top: 5px">
+				<div style="overflow: hidden">
+					<label style="float: left">People:</label>
+					<div style="margin-left: 100px;"><input type="hidden" name="person_ids" id="person_ids" data-select-width="auto" data-select-width-shrink="20" value="{% for id,null in selected_people %}{{ id }},{% endfor %}" data-selected="{{ selected_people|json_encode }}" /></div>
+				</div>
+				<div style="overflow: hidden; margin-top: 5px">
+					<label style="float: left">Organizations:</label>
+					<div style="margin-left: 100px;"><input type="hidden" name="organization_ids" id="organization_ids" data-select-width="auto" data-select-width-shrink="20" value="{% for id,null in selected_organizations %}{{ id }},{% endfor %}" data-selected="{{ selected_organizations|json_encode }}" /></div>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<div class="alert-message block-message note">
-		This SLA will not be automatically applied to existing tickets. It will only be automatically applied to new tickets that meet your selections.
-		{% if sla.id %}If you change SLA types or time settings, these changes will not be fully applied to existing tickets with this SLA until the SLA is removed and readded or the ticket's state changes.{% endif %}
+		This SLA will not be automatically applied to existing tickets. It will only be automatically applied to new tickets that meet your requirements.
+		{% if sla.id %}If you change SLA types or time settings, these changes will not be fully applied to existing tickets with this SLA until the SLA is removed and re-added or the ticket's state changes.{% endif %}
 	</div>
 
 	<footer class="controls">

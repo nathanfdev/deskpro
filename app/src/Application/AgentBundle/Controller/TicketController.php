@@ -1932,7 +1932,7 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($this->in->getUint('sla_id'));
-		if (!$sla || !$sla->allow_agent_manual) {
+		if (!$sla || $sla->apply_type != 'manual') {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -1977,7 +1977,7 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_slas');
 
 		$sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
-		if (!$sla || !$sla->allow_agent_manual) {
+		if (!$sla || $sla->apply_type != 'manual') {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
