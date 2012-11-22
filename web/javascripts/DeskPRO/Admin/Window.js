@@ -248,6 +248,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 			if (!a.attr('href')) {
 				return;
 			}
+
+			ev.preventDefault();
 			window.location = a.attr('href');
 		});
 
@@ -420,7 +422,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		if (!menuEl.hasClass('has-init')) {
 			menuEl.addClass('has-init');
-			menuEl.find('li').on('click', function() {
+			menuEl.find('li').on('click', function(ev) {
+				if ($(ev.target).is('a')) {
+					return;
+				}
+				ev.preventDefault();
 				window.location = $(this).find('a').first().attr('href');
 			})
 		}
