@@ -65,6 +65,16 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	protected $names_charset = 'UTF8';
 
+	/**
+	 * @var array
+	 */
+	protected $trans_ids = array();
+
+	/**
+	 * @var int
+	 */
+	protected $trans_count = 0;
+
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
 		if (!isset($params['driverOptions'])) {
@@ -501,15 +511,17 @@ class Connection extends \Doctrine\DBAL\Connection
 			$e = new \Exception();
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
 			$level = $this->getTransactionNestingLevel();
+			$trans_id = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
+			$this->trans_ids[] = $trans_id;
 			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-			$this->transaction_logger->logDebug("(Level $level)\n" . str_repeat("\t\t", $level) . "TRANSACTION BEGIN\n$backtrace");
+			$this->transaction_logger->logDebug("==> Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION BEGIN\n$backtrace");
 		}
 	}
 
 	public function commit()
 	{
-		parent::commit();
 		$level = $this->getTransactionNestingLevel();
+		parent::commit();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
 			$this->running_trans_event = true;
@@ -520,12 +532,13 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if ($this->transaction_logger) {
 			$e = new \Exception();
+			$trans_id = array_pop($this->trans_ids);
 			$backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
 			$backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-			$this->transaction_logger->logDebug("(Level $level)\n" . str_repeat("\t\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
+			$this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
 		}
 
-		if (!$level) {
+		if (!$this->getTransactionNestingLevel()) {
 			\DpShutdown::run('db_done_trans');
 		}
 	}
