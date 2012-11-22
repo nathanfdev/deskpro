@@ -292,6 +292,18 @@ class Runner
 
 		while (true) {
 
+			// Protection against nested transactions.
+			// This should not be needed, but its a safety against unclosed transactions.
+			// Without it, a mistake somewhere down the line can result in an entire
+			// process of emails being rolledback.
+			if (App::getDb()->isTransactionActive()) {
+				$e = new \Imagine\Exception\RuntimeException("WARNING: Unclosed transaction!");
+				KernelErrorHandler::logException($e);
+				while (App::getDb()->isTransactionActive()) {
+					App::getDb()->commit();
+				}
+			}
+
 			try {
 				$source = $fetcher->readNext();
 				if (!$source) {
@@ -390,6 +402,8 @@ class Runner
 					$source['status'] = 'error';
 					$source['error_code'] = $pre_processor->getErrorCode();
 					$source['source_info'] = $pre_processor->getSourceInfo();
+
+					App::getOrm()->commit();
 				}
 
 				if ($created_obj) {
