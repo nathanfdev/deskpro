@@ -1,5 +1,5 @@
 {% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
-{% extends 'AdminBundle:Templates:emails-list-common.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetabs %}
 <ul>
 	<li><a href="{{ path('admin_templates_email', {list_type: 'layout'}) }}">Email Layout</a></li>
