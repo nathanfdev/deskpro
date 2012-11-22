@@ -74,40 +74,4 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit);
 	}
-
-
-	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
-	{
-		$uof = $this->_em->getUnitOfWork();
-
-		if ($assoc['mappedBy'] == 'parent' && $sourceEntity->getId()) {
-			$persister = $uof->getEntityPersister($assoc['targetEntity']);
-			$classname = $assoc['targetEntity'];
-			$has = false;
-
-			if ($uof->isAddedPreloadedEntity($classname)) {
-				$uof->preloadEntitySet($classname);
-
-				if ($persister instanceof LookupBasicEntityPersister) {
-					$idmap = $uof->getIdentityMap();
-					if (isset($idmap[$classname])) {
-						foreach ($idmap[$classname] as $ent) {
-							if ($ent->__hasRunLoad__() && $ent->getId() && $ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
-								$has = true;
-								$coll->hydrateAdd($ent);
-							}
-						}
-					}
-
-					// We have any matches , or if its a prelaoded entyt
-					// (note that the resulting col might be legitimately empty)
-					if ($has || $uof->isAddedPreloadedEntity($classname)) {
-						return $coll;
-					}
-				}
-			}
-		}
-
-		return parent::loadOneToManyCollection($assoc, $sourceEntity, $coll);
-	}
 }
