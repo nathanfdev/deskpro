@@ -80,12 +80,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}, false, false, true);
 
 		if (this.meta.ticket_perms['delete']) {
-			if (this.meta.isDeleted) {
-				$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
-			}
-			if (this.meta.isSpam) {
-				$('button.unspam-trigger', this.wrapper).on('click', this.doTicketUnspam.bind(this));
-			}
+			this.wrapper.on('click', 'button.undelete-trigger', this.doTicketUndelete.bind(this));
+			this.wrapper.on('click', 'button.unspam-trigger', this.doTicketUnspam.bind(this));
 		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
@@ -893,12 +889,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-
 				self.deleteOverlay.closeOverlay();
-				DeskPRO_Window.removePage(self);
+				self.getEl('hold_container').hide();
+				self.getEl('remove_menu_trigger').hide();
 
-				// Reload the ticket page
-				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				if (data.hidden_html) {
+					self.getEl('page_header').before($(data.hidden_html));
+				} else {
+					DeskPRO_Window.removePage(self);
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				}
 			}
 		});
 	},
@@ -917,11 +917,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			},
 			success: function(data) {
 				self.getEl('actions_loading').hide();
+				self.getEl('hold_container').hide();
+				self.getEl('remove_menu_trigger').hide();
 
-				DeskPRO_Window.removePage(self);
-
-				// Reload the ticket page
-				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				if (data.hidden_html) {
+					self.getEl('page_header').before($(data.hidden_html));
+				} else {
+					DeskPRO_Window.removePage(self);
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+				}
 			}
 		});
 	},

@@ -113,30 +113,7 @@ class TicketController extends AbstractController
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
 
-		$hard_delete_time = null;
-		$ticket_deleted = false;
-		if ($ticket['hidden_status'] == 'deleted') {
-			$ticket_deleted = $ticket->getDeletionRecord();
-
-			$date_deleted = $ticket['date_created'];
-			if ($ticket_deleted['date_created']) {
-				$date_deleted = $ticket_deleted['date_created'];
-			}
-
-			$hard_delete_time = $date_deleted->getTimestamp() + $this->container->getSetting('core_tickets.hard_delete_time');
-			$hard_delete_time = max(0, $hard_delete_time - time());
-
-			if ($hard_delete_time) {
-				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
-			}
-		} elseif ($ticket['hidden_status'] == 'spam') {
-			$hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting('core_tickets.spam_delete_time');
-			$hard_delete_time = max(0, $hard_delete_time - time());
-
-			if ($hard_delete_time) {
-				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
-			}
-		}
+		$hidden_data = $this->_getHiddenBarData($ticket);
 
 		// Check if the search adapter
 		$show_related_content = false;
@@ -254,8 +231,8 @@ class TicketController extends AbstractController
 
             'ticket_messages_block' => $ticket_messages_block,
 
-            'ticket_deleted' => $ticket_deleted,
-            'hard_delete_time' => $hard_delete_time,
+            'ticket_deleted' => $hidden_data['ticket_deleted'],
+            'hard_delete_time' => $hidden_data['hard_delete_time'],
             'ticket_options' => $ticket_options,
             'ticket_flagged' => $ticket_flagged,
             'macros' => $macros,
@@ -2089,9 +2066,17 @@ class TicketController extends AbstractController
 			$edit_manager->deleteUser($person);
 		}
 
+		$hidden_data = $this->_getHiddenBarData($ticket);
+
 		return $this->createJsonResponse(array(
 			'success' => true,
-			'banned' => $this->in->getBool('ban')
+			'banned' => $this->in->getBool('ban'),
+			'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_perms' => $this->_getTicketPerms($ticket),
+				'ticket_deleted' => $hidden_data['ticket_deleted'],
+            	'hard_delete_time' => $hidden_data['hard_delete_time'],
+			))
 		));
 	}
 
@@ -2125,9 +2110,50 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$hidden_data = $this->_getHiddenBarData($ticket);
+
 		return $this->createJsonResponse(array(
-			'success' => true
+			'success' => true,
+			'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_perms' => $this->_getTicketPerms($ticket),
+				'ticket_deleted' => $hidden_data['ticket_deleted'],
+            	'hard_delete_time' => $hidden_data['hard_delete_time'],
+			))
 		));
+	}
+
+	protected function _getHiddenBarData(\Application\DeskPRO\Entity\Ticket $ticket)
+	{
+		$hard_delete_time = null;
+		$ticket_deleted = false;
+		if ($ticket['hidden_status'] == 'deleted') {
+			$ticket_deleted = $ticket->getDeletionRecord();
+
+			$date_deleted = $ticket['date_created'];
+			if ($ticket_deleted['date_created']) {
+				$date_deleted = $ticket_deleted['date_created'];
+			}
+
+			$hard_delete_time = $date_deleted->getTimestamp() + $this->container->getSetting('core_tickets.hard_delete_time');
+			$hard_delete_time = max(0, $hard_delete_time - time());
+
+			if ($hard_delete_time) {
+				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
+			}
+		} elseif ($ticket['hidden_status'] == 'spam') {
+			$hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting('core_tickets.spam_delete_time');
+			$hard_delete_time = max(0, $hard_delete_time - time());
+
+			if ($hard_delete_time) {
+				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
+			}
+		}
+
+		return array(
+			'hard_delete_time' => $hard_delete_time,
+			'ticket_deleted' => $ticket_deleted
+		);
 	}
 
 	############################################################################
