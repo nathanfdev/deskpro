@@ -1821,27 +1821,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$old_status  = $this->status;
 
-		if (
-			($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting)
-			|| ($status == 'closed' && $old_status == 'awaiting_user' && $this->date_user_waiting)
-			|| ($status == 'resolved' && $old_status == 'awaiting_user' && $this->date_user_waiting)
-		) {
+		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
 			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
 			$this->addWaitingTimeRecord('user', $this->date_user_waiting);
+		}
+		if ($status == 'awaiting_agent' && !$this->date_user_waiting) {
+			$this->setModelField('date_user_waiting', new \DateTime());
+		}
+		if ($status != 'awaiting_agent' && $this->date_user_waiting) {
 			$this->setModelField('date_user_waiting', null);
-		} else if (
-			($status == 'awaiting_agent' && $old_status == 'awaiting_user' && $this->date_agent_waiting)
-			|| ($status == 'closed' && $old_status == 'awaiting_agent' && $this->date_agent_waiting)
-			|| ($status == 'resolved' && $old_status == 'awaiting_agent' && $this->date_user_waiting)
-		) {
-			$this->addWaitingTimeRecord('agent', $this->date_agent_waiting);
-			$this->setModelField('date_user_waiting', new \DateTime());
-		} else if ($status == 'awaiting_agent') {
-			$this->setModelField('date_user_waiting', new \DateTime());
-		} else if ($status == 'closed') {
-			$this->setModelField('date_closed', new \DateTime());
 		}
 
+		if ($status != 'awaiting_user' && $old_status == 'awaiting_user' && $this->date_agent_waiting) {
+			$this->addWaitingTimeRecord('agent', $this->date_agent_waiting);
+		}
 		if ($status == 'awaiting_user' && !$this->date_agent_waiting) {
 			$this->setModelField('date_agent_waiting', new \DateTime());
 		}
@@ -1849,24 +1842,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('date_agent_waiting', null);
 		}
 
-		if ($status != 'awaiting_agent' && $this->date_user_waiting) {
-			$this->setModelField('date_user_waiting', null);
+		if ($status == 'closed' && !$this->date_closed) {
+			$this['date_closed'] = new \DateTime();
 		}
-
 		if ($status != 'closed' && $this->date_closed) {
 			$this->setModelField('date_closed', null);
 		}
 
-		if ($status == 'closed') {
-			$this['date_closed'] = new \DateTime();
-		} else {
-			$this['date_closed'] = null;
-		}
-
-		if ($status == 'resolved') {
+		if ($status == 'resolved' && !$this->date_resolved) {
 			$this['date_resolved'] = new \DateTime();
-		} else {
-			$this['date_resolved'] = null;
+		}
+		if ($status != 'resolved' && $this->date_resolved) {
+			$this->setModelField('date_resolved', null);
 		}
 
 		if ($status != 'awaiting_agent' && $this->is_hold) {
