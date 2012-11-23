@@ -116,11 +116,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	{
 		$hash = md5($name . App::getRequest()->getUri());
 		if (App::getRequest()->getMethod() == 'POST') {
-			$fp = @fopen('php://input', 'r');
-			while (!@feof($fp)) {
-				$hash = md5($hash . @fread($fp, 10240));
-			}
-			@fclose($fp);
+			$hash = md5($hash . serialize($_GET + $_POST));
 		}
 
 		$used = $this->session->get('consumed_tokens', array());
