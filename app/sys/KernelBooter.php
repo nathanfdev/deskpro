@@ -443,7 +443,8 @@ class KernelBooter
 
 		$cache_dir = dp_get_tmp_dir() . '/page-cache';
 		$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request_uri), 0, 35);
-		$cache_base_filename = $base . '-' . md5($request_uri) . '.cache';
+		$scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
+		$cache_base_filename = $base . '-' . md5($scheme_host . $request_uri) . '.cache';
 		$cache_filename = $language_id . '-' . $cache_base_filename;
 		$cache_file = $cache_dir . '/' . $cache_filename;
 
