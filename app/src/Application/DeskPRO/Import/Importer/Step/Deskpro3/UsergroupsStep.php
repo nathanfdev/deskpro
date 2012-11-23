@@ -142,6 +142,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		if (!$group_info['p_ticket']) {
 			unset($insert_perms['tickets.use']);
+			unset($insert_perms['tickets.reopen_resolved']);
 		}
 
 

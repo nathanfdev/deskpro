@@ -15,6 +15,22 @@
 		<table width="100%">
 			<thead>
 				<tr>
+					<th style="text-align: left;">{{ phrase('admin.general.permission') }}</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">Can re-open resolved tickets</td>
+					<!-- PERMISSION:tickets.reopen_resolved --><td class="prop"><input class="onoff-slider {% if permissions_everyone['tickets.reopen_resolved'] %}everyone-on{% endif %}" type="checkbox" {% if permissions['tickets.reopen_resolved'] or permissions_everyone['tickets.reopen_resolved'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.reopen_resolved]" value="1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="check-grid" style="margin-top: 10px">
+		<table width="100%">
+			<thead>
+				<tr>
 					<th style="text-align: left;">{{ phrase('admin.general.departments') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>

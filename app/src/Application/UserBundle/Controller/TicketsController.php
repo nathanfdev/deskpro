@@ -260,6 +260,10 @@ class TicketsController extends AbstractController
 			return $this->renderLoginOrPermissionError();
 		}
 
+		if ($ticket->status == 'resolved' && !$this->person->hasPerm('tickets.reopen_resolved')) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		$newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
 		$validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();

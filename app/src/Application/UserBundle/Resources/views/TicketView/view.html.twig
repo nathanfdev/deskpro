@@ -56,7 +56,7 @@
 		</article>
 	{% endif %}
 
-	{% if ticket.status not in ['awaiting_agent', 'awaiting_user', 'resolved'] %}
+	{% if ticket.status not in ['awaiting_agent', 'awaiting_user', 'resolved'] or (ticket.status == 'resolved' and not app.user.hasPerm('tickets.reopen_resolved')) %}
 		<article class="dp-reply-wrap dp-well dp-newreply-wrap">
 			<header>
 				<h4>{{ phrase('user.tickets.new_reply') }}</h4>

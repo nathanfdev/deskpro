@@ -250,6 +250,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		$reply_as_new = false;
+		if ($ticket AND $person AND $ticket->status == 'resolved' AND !$person->hasPerm('tickets.reopen_resolved')) {
+			// ticket is resolved and can't be reopend, so make a new ticket
+			$ticket = null;
+			$reply_as_new = true;
+		}
+
 		$ret = null;
 		if ($ticket AND $person) {
 
@@ -302,7 +309,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$ret = $this->runNewForwardedTicket($person);
 			} else {
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket');
-				$ret = $this->runNewTicket($person);
+				$ret = $this->runNewTicket($person, $reply_as_new);
 			}
 		}
 
@@ -921,7 +928,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	# New Ticket
 	############################################################################
 
-	protected function runNewTicket(Entity\Person $person)
+	protected function runNewTicket(Entity\Person $person, $run_reply_cutter = false)
 	{
 		$this->person = $person;
 
@@ -939,39 +946,44 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['subject'] = $this->reader->getSubject()->getSubject();
 		}
 
-		if ($this->reader->getBodyHtml()->getBody()) {
-			$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
-			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
-			if (!$email_info['body']) {
-				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
-				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
-			}
-			$email_info['body_is_html'] = true;
+		if ($run_reply_cutter) {
+			$this->logMessage('[TicketGatewayProcessor] runNewTicket running reply cutter (new ticket from reply)');
+			$email_info = array_merge($email_info, $this->getEmailBodyInfo());
 		} else {
-			$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
-			$txt = $this->reader->getBodyText()->getBodyUtf8();
-			if (!$txt && $this->reader->getBodyText()->getBody()) {
-				$txt = $this->reader->getBodyText()->getBody();
-				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+			if ($this->reader->getBodyHtml()->getBody()) {
+				$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
+				$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+				if (!$email_info['body']) {
+					$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+					$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+				}
+				$email_info['body_is_html'] = true;
+			} else {
+				$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
+				$txt = $this->reader->getBodyText()->getBodyUtf8();
+				if (!$txt && $this->reader->getBodyText()->getBody()) {
+					$txt = $this->reader->getBodyText()->getBody();
+					$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+				}
+
+				$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+				$email_info['body_is_html'] = false;
 			}
 
-			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
-			$email_info['body_is_html'] = false;
+			// Replace inline image tags with tokens
+			$email_info['body_raw'] = $email_info['body'];
+			$email_info['body'] = $inline_images->processTokens($email_info['body']);
+			$email_info['body_full'] = '';
+
+			if ($email_info['body_is_html']) {
+				// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+				$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
+				$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
+				$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+			}
+
+			$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 		}
-
-		// Replace inline image tags with tokens
-		$email_info['body_raw'] = $email_info['body'];
-		$email_info['body'] = $inline_images->processTokens($email_info['body']);
-		$email_info['body_full'] = '';
-
-		if ($email_info['body_is_html']) {
-			// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_preclean');
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_basicclean');
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
-		}
-
-		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 
 		$ev = $this->createGatewayEvent(array(
 			'person' => $person,
