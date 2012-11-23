@@ -248,13 +248,17 @@ class Settings implements \ArrayAccess
 		$this->db->beginTransaction();
 		try {
 
-			$this->db->delete('settings', array('name' => $setting));
-
 			if ($value !== null) {
-				$this->db->insert('settings', array(
-					'name' => $setting,
-					'value' => $value,
-				));
+				$this->db->executeUpdate("
+					INSERT INTO settings
+						(name, value)
+					VALUES
+						(?, ?)
+					ON DUPLICATE KEY UPDATE
+						value = VALUES(value)
+				", array($setting, $value));
+			} else {
+				$this->db->delete('settings', array('name' => $setting));
 			}
 
 			$this->db->commit();
