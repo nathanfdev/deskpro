@@ -602,7 +602,7 @@ var DpOverlayWidget = new (function() {
 		}
 
 		if (!options.staticUrl) {
-			options.staticUrl = options.deskproUrl.replace(/index\.php\//, 'web/');
+			options.staticUrl = options.deskproUrl.replace(/index\.php\//, '') + 'web/';
 		}
 
 		var bgColor  = 'rgb(63,63,63)';
