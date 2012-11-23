@@ -128,6 +128,10 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
 			'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
+
+			// override so we can suppress errors where templates are out of date
+			'url'  => new \Twig_Function_Method($this, 'getUrl'),
+            'path' => new \Twig_Function_Method($this, 'getPath'),
         );
     }
 
@@ -168,6 +172,30 @@ class TemplatingExtension extends \Twig_Extension
 			'upper'                  => new \Twig_Filter_Method($this, 'strUpper'),
 			'lower'                  => new \Twig_Filter_Method($this, 'strLower'),
         );
+    }
+
+	public function getPath($name, $parameters = array())
+    {
+		try {
+        	return App::getRouter()->generate($name, $parameters, false);
+		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+			if (App::isDebug()) {
+				throw $e;
+			}
+			return '';
+		}
+    }
+
+    public function getUrl($name, $parameters = array())
+    {
+		try {
+        	return App::getRouter()->generate($name, $parameters, true);
+		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+			if (App::isDebug()) {
+				throw $e;
+			}
+			return '';
+		}
     }
 
 	public function getBaseTemplateName($name)
