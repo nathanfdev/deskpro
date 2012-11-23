@@ -90,7 +90,7 @@ class CleanupClientMessages extends AbstractJob
 		# client_channel_subscriptions
 		#------------------------------
 
-		$datetime = date('Y-m-d H:i:s', time() - 20); // 10 minutes
+		$datetime = date('Y-m-d H:i:s', time() - 600); // 10 minutes
 		$num = App::getDb()->executeUpdate("DELETE FROM client_channel_subscriptions WHERE date_ping < ?", array($datetime));
 
 		if ($num) {
