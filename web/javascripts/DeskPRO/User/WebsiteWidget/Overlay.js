@@ -704,6 +704,7 @@ var DpOverlayWidget = new (function() {
 		(new Image()).src = options.staticUrl + 'images/spinners/loading-big-circle.gif';
 		(new Image()).src = options.staticUrl + 'images/user/widgetlogo.png';
 		(new Image()).src = options.staticUrl + 'images/user/widgetlogo-on.png';
+		(new Image()).src = options.staticUrl + 'images/user/widget/btn-close.png';
 
 		winWidth  = lastWinWidth  = util.getWindowSize().w;
 		winHeight = lastWinHeight = util.getWindowSize().h;
