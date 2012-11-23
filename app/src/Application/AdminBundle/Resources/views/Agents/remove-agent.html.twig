@@ -11,7 +11,7 @@
 
 <div class="alert-message block-message info">
 	<h1>Delete agent</h1>
-	<form action="{{ path('admin_agents_setdeleted', {person_id: agent.id, set_to: '0'}) }}" method="post">
+	<form action="{{ path('admin_agents_setdeleted', {person_id: agent.id, set_to: '1'}) }}" method="post">
 		{{ form_token() }}
 		This marks the agent as deleted. The user won't be able to log in anymore to either the user or agent interfaces.
 		You are able to restore the agent later.

@@ -1046,21 +1046,23 @@ class AgentsController extends AbstractController
 			if (!$this->canAddAgent('save_deleted')) return $this->showLicenseError();
 		}
 
-		$this->em->getConnection()->beginTransaction();
+		if ($set_to) {
+			$this->em->getConnection()->beginTransaction();
 
-		try {
+			try {
 
-			// Remove their permissions
-			App::getDb()->delete('department_permissions', array('person_id' => $agent->getId()));
-			App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
+				// Remove their permissions
+				App::getDb()->delete('department_permissions', array('person_id' => $agent->getId()));
+				App::getDb()->delete('permissions', array('person_id' => $agent->getId()));
 
-			$this->em->persist($agent);
-			$this->em->flush();
+				$this->em->persist($agent);
+				$this->em->flush();
 
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
 		}
 
 		if ($set_to) {
