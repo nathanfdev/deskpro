@@ -3330,6 +3330,42 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return true;
 		};
 
+		// since our <p> tags only have one linebreak, lets turn them into <divs> since
+		// that's how they act
+		textarea.getEditor().on('copy', function(e) {
+			api.saveSelection();
+
+			var html = api.getSelectedHtml();
+			html = html.replace(/<p/gi, '<p data-redactor="1"');
+			if (!$.browser.msie) {
+				html = html.replace(/<(p|div)[^>]><\/(p|div)>/i, '');
+			}
+
+			var div = $('<div data-redactor-wrapper="1" />').html(html).css({
+				position: 'absolute',
+				left: '-9999px'
+			});
+
+			$(document.body).append(div);
+
+			var sel = api.getSelection();
+			try {
+				sel.selectAllChildren(div.get(0));
+			} catch (e) {
+				if (document.createRange && sel.removeAllRanges && sel.addRange) {
+					var range = document.createRange();
+					range.selectNode(div.get(0));
+					sel.removeAllRanges();
+					sel.addRange(range);
+				}
+			}
+
+			setTimeout(function() {
+				div.remove();
+				api.restoreSelection();
+			}, 0);
+		});
+
 		textarea.getEditor().on('paste', $.proxy(function(ev) {
 			this.pasteRunning = true;
 
@@ -3395,11 +3431,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var html = this.getFragmentHtml(pastedFrag);
 
 				// since <p> only counts as one line break, we need to fix that
+				html = $.trim(html);
+				html = html.replace(/^<div[^>]* data-redactor-wrapper="1"[^>]*>([\w\W]+)<\/div>$/, '$1');
 				html = html.replace(/<\/p>/gi, '</p><p>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+				html = html.replace(/(<p[^>]* data-redactor="1"[^>]*>[\w\W]*?<\/p>)<p>(<br>)?<span><span><\/span><\/span><\/p>/ig, '$1');
+				html = html.replace(/<p>(<br>)?<span><span><\/span><\/span><\/p>$/, '');
 
 				// convert divs to p's and keep empty ones
 				html = html.replace(/<div/gi, '<p').replace(/<\/div>/g, '</p>');
 				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<p$1>' + ($.browser.msie ? '' : '<br>') + '<span><span></span></span></p>');
+				html = html.replace(/(<p[^>]*) data-redactor="1"/g, '$1');
 
 				this.pasteCleanUp(html);
 
