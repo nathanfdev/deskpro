@@ -1784,7 +1784,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$secs = $this->total_user_waiting;
 
-		if ($this->date_user_waiting) {
+		if ($this->date_user_waiting && $this->status == 'awaiting_agent') {
 			$secs += time() - $this->date_user_waiting->getTimestamp();
 		}
 
@@ -1849,14 +1849,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('date_agent_waiting', null);
 		}
 
+		if ($status != 'awaiting_agent' && $this->date_user_waiting) {
+			$this->setModelField('date_user_waiting', null);
+		}
+
 		if ($status != 'closed' && $this->date_closed) {
 			$this->setModelField('date_closed', null);
 		}
 
 		if ($status == 'closed') {
 			$this['date_closed'] = new \DateTime();
-		} elseif ($status == 'resolved') {
+		} else {
+			$this['date_closed'] = null;
+		}
+
+		if ($status == 'resolved') {
 			$this['date_resolved'] = new \DateTime();
+		} else {
+			$this['date_resolved'] = null;
 		}
 
 		if ($status != 'awaiting_agent' && $this->is_hold) {

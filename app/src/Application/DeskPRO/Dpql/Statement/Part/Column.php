@@ -167,7 +167,7 @@ class Column extends AbstractPart
 					$sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
 
 					if ($repository->getTableName() == 'tickets' && $field['columnName'] == 'total_user_waiting') {
-						$sql .= " + IF(`$sqlTable`.date_user_waiting, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0)";
+						$sql = "($sql + IF(`$sqlTable`.date_user_waiting AND `$sqlTable`.status = 'awaiting_agent', UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0))";
 					}
 
 					switch ($field['type']) {
