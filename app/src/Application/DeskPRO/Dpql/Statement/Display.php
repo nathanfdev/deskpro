@@ -244,6 +244,8 @@ class Display
 		$results = new Results();
 		$db = App::getDb();
 
+		$db->query("SET time_zone = '+0:00'");
+
 		try {
 			if ($this->_splitColumnMap) {
 				$this->_splitSql->setTable($this->_sql->getTable());
