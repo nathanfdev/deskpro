@@ -106,7 +106,7 @@ class TriggerExecutor
 
 		$event = TicketTrigger::getNewTicketEventName($this->ticket->creation_system);
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents(array($event));
-		array_unshift($all_triggers, $ticket_created_trigger);
+		$all_triggers[] = $ticket_created_trigger;
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 		$factory->addGlobalOption('tracker', $this->tracker);
@@ -308,7 +308,7 @@ class TriggerExecutor
 		#------------------------------
 
 		if ($ticket_created_trigger) {
-			array_unshift($all_triggers, $ticket_created_trigger);
+			$all_triggers[] = $ticket_created_trigger;
 		}
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();

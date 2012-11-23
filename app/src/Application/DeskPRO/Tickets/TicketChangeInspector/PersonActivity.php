@@ -44,7 +44,7 @@ use Application\DeskPRO\People\ActivityLogger\ActionType\NewTicketReply as NewTi
 class PersonActivity
 {
 	/**
-	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketListener
+	 * @var TicketChangeTracker
 	 */
 	protected $tracker;
 

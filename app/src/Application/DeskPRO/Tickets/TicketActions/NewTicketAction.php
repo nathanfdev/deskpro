@@ -439,8 +439,8 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 		} else {
 			$from_name = App::getSetting('core.deskpro_name');
 
-			if ($ticket->getTicketLogger() && $ticket->getTicketLogger()->isExtraSet('set_initial_from_touser')) {
-				$from_name = $ticket->getTicketLogger()->getExtra('set_initial_from_touser');
+			if ($this->tracker->isExtraSet('set_initial_from_touser')) {
+				$from_name = $this->tracker->getExtra('set_initial_from_touser');
 			}
 		}
 
