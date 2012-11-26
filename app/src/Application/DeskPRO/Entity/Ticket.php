@@ -1114,7 +1114,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$message->ticket = $this;
 
 		$now = new \DateTime();
-		if ($message->person['is_agent']) {
+		if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
 			if (!$message->is_agent_note) {
 				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
 					$this['date_last_agent_reply'] = $now;
