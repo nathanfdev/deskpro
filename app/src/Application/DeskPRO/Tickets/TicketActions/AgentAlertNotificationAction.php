@@ -123,6 +123,11 @@ class AgentAlertNotificationAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if ($this->tracker->isExtraSet('force_email_validation')) {
+			$this->tracker->logMessage("[AgentNotificationAction] Ticket validating, no notify");
+			return;
+		}
+
 		if (!$this->notify_agents) {
 			$this->tracker->logMessage("[AgentAlertNotificationAction] No agents");
 			return;

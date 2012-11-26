@@ -171,6 +171,10 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if ($this->tracker->isExtraSet('force_email_validation')) {
+			$this->enableValidation();
+		}
+
 		if ($this->tracker->isExtraSet('email_template_user_newticket')) {
 			$this->newticket_email_tpl = $this->tracker->getExtra('email_template_user_newticket');
 			$this->tracker->logMessage("[NewTicketAction] Set newticket template: " . $this->newticket_email_tpl);

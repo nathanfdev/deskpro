@@ -34,28 +34,67 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Entity\Ticket;
+
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\App;
 
-class ForceEmailValidationModifier implements CollectionModifierInterface
+class ForceEmailValidationAction extends AbstractAction
 {
-	public function __construct()
-	{
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 */
+	protected $tracker;
 
-	}
-
-	public function modifyCollection(ActionsCollection $collection)
+	public function __construct(TicketChangeTracker $tracker = null)
 	{
-		if ($collection->hasActionType('NewTicket')) {
-			$collection->getActionType('NewTicket')->enableValidation();
-		}
+		$this->tracker = $tracker;
 	}
 
 	/**
-	 * @return string
+	 * Apply the action to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return void
 	 */
+	public function apply(Ticket $ticket)
+	{
+		if ($ticket && (!$ticket->person->is_user && !$ticket->person->is_confirmed)) {
+			$this->tracker->recordExtra('force_email_validation', true);
+		}
+	}
+
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array(
+			array('action' => 'force_email_validation', 'do' => true)
+		);
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
+
 	public function getDescription($as_html = true)
 	{
-		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.force_email_validation_action');
+		return 'Enable email validation on new accounts';
+	}
+
+	public function doPrepend()
+	{
+		return true;
 	}
 }

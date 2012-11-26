@@ -129,7 +129,12 @@ class TriggerExecutor
 					// this pre action can be modified to force email validation
 					// Actual actions will be run next with the usual run()
 
-					if ($action && (!$trigger->id || $action instanceof \Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface)) {
+					if ($action &&
+							(!$trigger->id
+								|| $action instanceof \Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface
+								|| $action instanceof \Application\DeskPRO\Tickets\TicketActions\ForceEmailValidationAction
+							)
+					) {
 						$actions_collection->add($action);
 						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}

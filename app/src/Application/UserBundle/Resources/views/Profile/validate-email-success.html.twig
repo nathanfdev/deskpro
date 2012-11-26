@@ -7,11 +7,6 @@
 			{{ phrase('user.profile.you_have_validated') }}
 			{% if ticket_ids|length %}{{ phrase('user.prifle.ticket_validated-message') }}{% endif %}
 		</p>
-		{% if not app.user.id %}
-			<p>
-				<a class="dp-btn dp-btn-primary" href="{{ path('user_login') }}">{{ phrase('user.general.log_in') }}</a>
-			</p>
-		{% endif %}
 	</div>
 </section>
 {% endblock %}
