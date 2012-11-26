@@ -99,7 +99,7 @@ class TicketViewController extends AbstractController
 					if ($ticket) {
 						// If they arent a user they can register now
 						if ($ticket && $this->person->isGuest()) {
-							$this->session->set('ticket_from_ptac_register', $ticket->id);
+							$this->session->set('ticket_from_ptac_register', $ticket->getPublicId());
 							$this->session->save();
 
 							$tpl_globals = $this->container->get('templating.globals');

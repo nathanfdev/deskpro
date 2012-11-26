@@ -673,7 +673,8 @@ HTML;
 			return $this->createJsonResponse(array('success' =>1 ));
 		}
 
-		$this->_logoutPerson();
+		$this->session->remove('auth_person_id');
+		$this->session->save();
 
 		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
 	}
@@ -710,6 +711,18 @@ HTML;
 				});
 
 				$this->session->setFlash('password_reset', 1);
+
+				$this->session->set('auth_person_id', $person->getId());
+				$this->session->set('dp_interface', DP_INTERFACE);
+				$this->session->save();
+
+				if ($ticket_ref = $this->session->get('ticket_from_ptac_register')) {
+					$this->session->remove('ticket_from_ptac_register');
+					$this->session->save();
+
+					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+				}
+
 				return $this->redirectRoute($this->route_prefix . '_login');
 			}
 		}
