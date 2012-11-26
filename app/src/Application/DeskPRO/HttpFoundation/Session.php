@@ -131,6 +131,16 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			}
 		}
 
+		if (App::getContainer()->isScopeActive('request')) {
+			$user_ip = App::getRequest()->getClientIp();
+		} else {
+			$user_ip = \Orb\Util\Web::getUserIp();
+		}
+
+		if (!$user_ip) {
+			$user_ip = '';
+		}
+
 		// Also make sure the user is a visitor
 		$vis = null;
 		if ($this->getEntity()->visitor) {
@@ -143,7 +153,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 		if (!$vis) {
 			$vis = App::getEntityRepository('DeskPRO:Visitor')->smartFind(
-				App::getRequest()->getClientIp(),
+				$user_ip,
 				empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT']
 			);
 		}
@@ -164,7 +174,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if (!$vis) {
 			$vis = new Entity\Visitor();
-			$vis['ip_address'] = App::getRequest()->getClientIp() ?: '';
+			$vis['ip_address'] = $user_ip;
 			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
 			$vis['ref_page'] = $ref_page;
 		}
