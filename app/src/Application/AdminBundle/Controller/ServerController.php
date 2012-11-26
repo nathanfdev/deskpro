@@ -129,6 +129,11 @@ class ServerController extends AbstractController
 			$has_apc = true;
 		}
 
+		$has_wincache = false;
+		if (function_exists('wincache_ucache_clear') && ini_get('wincache.ocenabled')) {
+			$has_wincache = true;
+		}
+
 		$debug_settings = array();
 		foreach (dp_get_config('debug') as $k => $v) {
 			if (!$v) {
@@ -160,6 +165,7 @@ class ServerController extends AbstractController
 			'cli_php'        => $cli_php,
 			'config_hash'    => $config_hash,
 			'has_apc'        => $has_apc,
+			'has_wincache'   => $has_wincache,
 			'debug_settings' => $debug_settings,
 		));
 	}

@@ -68,6 +68,14 @@ class ServerStats
 			$stats['apc_version'] = 0;
 		}
 
+		if (function_exists('wincache_ucache_info')) {
+			$stats['php_has_wincache'] = 1;
+			$stats['wincache_version'] = phpversion('wincache');
+		} else {
+			$stats['php_has_wincache'] = 0;
+			$stats['wincache_version'] = 0;
+		}
+
 		if (function_exists('mb_get_info')) {
 			$stats['php_has_mbstring'] = 1;
 		} else {

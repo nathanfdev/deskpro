@@ -140,6 +140,31 @@
 	</div>
 {% endif %}
 
+{% if has_wincache %}
+	<br />
+
+	<div class="check-grid item-list">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left">&nbsp; WinCache</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>WinCache is installed and is enabled. Click the link below to view statistics and cache-controls for WinCache.</td>
+				</tr>
+				<tr>
+					<td>
+						{% set link %}{{ app.getSetting('core.deskpro_url') }}?_sys=wincache&amp;_={{ static_security_token_secret(config_hash ~ 'wincache', 86400) }}{% endset %}
+						<a href="{{ link }}" target="_blank">{{ link }}</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+{% endif %}
+
 <br />
 
 <div class="check-grid item-list">

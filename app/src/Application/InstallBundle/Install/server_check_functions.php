@@ -206,6 +206,12 @@ function deskpro_install_simple_data_submit($log)
 		$data['php_has_apc'] = 0;
 	}
 
+	if (function_exists('wincache_ucache_info')) {
+		$data['php_has_wincache'] = 1;
+	} else {
+		$data['php_has_wincache'] = 0;
+	}
+
 	if (function_exists('mb_get_info')) {
 		$data['php_has_mbstring'] = 1;
 	} else {

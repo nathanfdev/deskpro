@@ -1072,10 +1072,19 @@ class Upgrade
 
 	public function postUpgrade()
 	{
+		$touch_trigger = false;
+
 		if (function_exists('apc_clear_cache')) {
 			apc_clear_cache();
 			apc_clear_cache('user');
+			$touch_trigger = true;
+		}
+		if (function_exists('wincache_ucache_clear')) {
+			wincache_ucache_clear();
+			$touch_trigger = true;
+		}
 
+		if ($touch_trigger) {
 			// We need to trigger this on the web too, we do that
 			// by touching this trigger file that the web kernel uses
 			@touch(dp_get_tmp_dir() . '/apc-clear.trigger');

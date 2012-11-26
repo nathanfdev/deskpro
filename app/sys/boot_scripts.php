@@ -76,6 +76,12 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/apcclear.php';
 		break;
 
+	case 'wincache':
+		if (defined('DPC_IS_CLOUD')) exit;
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/wincache.php';
+		break;
+
 	case 'checkurl':
 		if (defined('DPC_IS_CLOUD')) exit;
 		require DP_ROOT . '/sys/scripts/checkurl.php';

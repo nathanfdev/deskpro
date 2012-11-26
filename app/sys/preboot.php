@@ -22,6 +22,9 @@ if (file_exists(dp_get_tmp_dir() . '/apc-clear.trigger')) {
 		apc_clear_cache();
 		apc_clear_cache('user');
 	}
+	if (function_exists('wincache_ucache_clear')) {
+		wincache_ucache_clear();
+	}
 	@unlink(dp_get_tmp_dir() . '/apc-clear.trigger');
 }
 
