@@ -117,6 +117,7 @@ class Queue extends ZendQueue
 		}
 
 		if (isset($message->qi_id)) {
+			$db = \Application\DeskPRO\App::getDb();
 			$db->beginTransaction();
 			try {
 				$db = $this->getOption('em')->getConnection();

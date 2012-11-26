@@ -190,7 +190,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 			'is_ready'    => 1,
 			'is_dataonly' => 0,
 			'is_ignored'  => 0,
-			'reserved_at' => 0,
+			'reserved_at' => null,
 			'timeout_at'  => null,
 		);
 
@@ -259,7 +259,8 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 				$msgs[] = array_merge($item->data, array('qi_id' => $item->id));
 
 				$item['reserved_at'] = $timenow;
-				$item['timeout_at'] = $timenow->add(new \DateInterval('PT' . $item['ttr'] . 'S'));
+				$reserved = clone $timenow;
+				$item['timeout_at'] = $reserved->add(new \DateInterval('PT' . $item['ttr'] . 'S'));
 				$this->em->persist($item);
 			}
 

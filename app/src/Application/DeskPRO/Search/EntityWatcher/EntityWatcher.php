@@ -194,10 +194,14 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
 		if ($update || $delete) {
 			foreach ($update as $ent) {
-				$this->updates['updates'][] = array('entity' => get_class($ent), 'id' => $ent->getId(), 'ent' => $ent);
+				$name = self::getEntityClassName($ent);
+				$id = $ent->getId();
+				$this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
 			}
 			foreach ($delete as $ent) {
-				$this->updates['deletes'][] = array('entity' => get_class($ent), 'id' => $ent->getId(), 'ent' => $ent);
+				$name = self::getEntityClassName($ent);
+				$id = $ent->getId();
+				$this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
 			}
 		}
 
@@ -238,11 +242,18 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 	 */
 	public static function isWatchedEntity($entity)
 	{
-		if (is_string($entity)) {
-			$name = $entity;
-		} else {
-			$name = get_class($entity);
-		}
+		$name = self::getEntityClassName($entity);
 		return isset(self::$watched_entities[$name]);
+	}
+
+	public static function getEntityClassName($entity)
+	{
+		if (is_string($entity)) {
+			return $entity;
+		} elseif ($entity instanceof \Doctrine\ORM\Proxy\Proxy) {
+			return get_parent_class($entity);
+		} else {
+			return get_class($entity);
+		}
 	}
 }
