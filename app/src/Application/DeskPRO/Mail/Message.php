@@ -162,6 +162,8 @@ class Message extends \Orb\Mail\Message
 		}
 		$this->attach_blobs = null;
 		$this->embed_only = true;
+
+		$this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
 	}
 
 	/**

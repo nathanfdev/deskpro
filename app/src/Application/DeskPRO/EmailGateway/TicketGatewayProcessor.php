@@ -561,6 +561,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 			$email_info['body_is_html'] = true;
 
+			// Sent from a DeskPRO instance, we should get the specific message by looking for our delims
+			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+				$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
+				if ($body) {
+					$email_info['body'] = $body;
+				}
+			}
+
 			$body_raw = $email_info['body'];
 
 			// If the document is too complex then htmlpurifier can crash.
@@ -977,6 +985,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 					$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 				}
+
+				// Send from a DeskPRO instance, we should get the specific message by looking for our delims
+				if ($this->reader->getHeader('X-DeskPRO-Build')) {
+					$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
+					if ($body) {
+						$email_info['body'] = $body;
+					}
+				}
+
 				$email_info['body_is_html'] = true;
 			} else {
 				$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
