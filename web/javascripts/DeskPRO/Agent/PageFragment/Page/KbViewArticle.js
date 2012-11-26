@@ -659,24 +659,66 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var iframeLoad = function() {
 			if (this.contentWindow && this.contentWindow.document) {
 				loader.hide();
-				$(this).css('overflow', 'hidden');
+				$(this).css({
+					overflow: 'hidden',
+					border: 'none',
+					padding: 0,
+					margin: 0
+				});
 				$(this).height($(this.contentWindow.document).height());
 
-				var doc = this.contentWindow.document;
+				var doc = this.contentWindow.document, iframeWindow = this.contentWindow;
 
-				if (doc.addEventListener){
-					var wheel = function(e) {
-						var proxyE = document.createEvent('MouseEvents');
-						proxyE.initMouseEvent(
-							e.type, e.bubbles, e.cancelable, window, e.detail,
-							e.screenX, e.screenY, e.clientX, e.clientY,
-							e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
-							null
-						);
+				var wheel = function(e) {
+					e = e || iframeWindow.event;
+					var scroller = iframe.closest('.with-scrollbar').get(0), proxyE;
+					if (scroller.dispatchEvent) {
+						try {
+							proxyE = document.createEvent('MouseWheelEvent');
+							proxyE.initMouseWheelEvent(
+								e.type, e.bubbles, e.cancelable, window, e.detail,
+								e.screenX, e.screenY, e.clientX, e.clientY,
+								e.button, null, '', e.wheelDelta
+							);
+						} catch (e) {
+							proxyE = null;
+						}
+
+						if (!proxyE) {
+							proxyE = document.createEvent('MouseEvent');
+							proxyE.initMouseEvent(
+								e.type, e.bubbles, e.cancelable, window, e.detail,
+								e.screenX, e.screenY, e.clientX, e.clientY,
+								e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
+								null
+							);
+						}
 						iframe.closest('.with-scrollbar').get(0).dispatchEvent(proxyE);
-					};
+					} else {
+						proxyE = document.createEventObject();
+						proxyE.view = window;
+						proxyE.type = e.type;
+						proxyE.detail = e.detail;
+						proxyE.screenX = e.screenX;
+						proxyE.screenY = e.screenY;
+						proxyE.clientX = e.clientX;
+						proxyE.clietnY = e.clientY;
+						proxyE.ctrlKey = e.ctrlKey;
+						proxyE.altKey = e.altKey;
+						proxyE.shiftKey = e.shiftKey;
+						proxyE.metaKey = e.metaKey;
+						proxyE.button = e.button;
+						proxyE.relatedTarget = null;
+						try {
+							iframe.closest('.with-scrollbar').get(0).fireEvent(e.type, proxyE);
+						} catch (e) {}
+					}
+				};
+				if (doc.addEventListener){
 					doc.addEventListener('DOMMouseScroll', wheel, false);
-					doc.addEventListener('mousewheel', wheel, false );
+					doc.addEventListener('mousewheel', wheel, false);
+				} else {
+					doc.onmousewheel = wheel;
 				}
 			}
 		};

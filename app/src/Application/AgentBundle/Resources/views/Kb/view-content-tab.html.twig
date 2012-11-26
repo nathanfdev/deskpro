@@ -1,7 +1,7 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap content-post-wrap">
 		<span class="article-loading">Loading...</span>
-		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId() }) }}" style="width: 100%" class="article-iframe"></iframe>
+		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId() }) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
 		{% if article.attachments|length %}
 		<ul class="attachment-list">
 			{% for attach in article.attachments %}
