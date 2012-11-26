@@ -78,6 +78,11 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_completed = false;
 
 	/**
+	 * @var null|integer
+	 */
+	protected $completed_time_taken = null;
+
+	/**
 	 * @var Ticket
 	 */
 	protected $ticket;
@@ -197,7 +202,16 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('fail_date', $this->sla->calculateFailDate($this->ticket));
 			$this->evaluateSlaDates($call_triggers);
 
-			$this->setIsCompleted($this->sla->calculateCompleted($this->ticket));
+			$completed_ts = $this->sla->calculateCompleted($this->ticket);
+			if ($completed_ts) {
+				$this->setIsCompleted(true);
+				$this->setModelField('completed_time_taken',
+					$this->sla->calculateSlaTimeUntil($completed_ts, $this->ticket)
+				);
+			} else {
+				$this->setIsCompleted(false);
+				$this->setModelField('completed_time_taken', null);
+			}
 		}
 	}
 
@@ -398,6 +412,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'warn_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'warn_date', ));
 		$metadata->mapField(array( 'fieldName' => 'fail_date', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'fail_date', ));
 		$metadata->mapField(array( 'fieldName' => 'is_completed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_completed', ));
+		$metadata->mapField(array( 'fieldName' => 'completed_time_taken', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'completed_time_taken', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'sla', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sla_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));

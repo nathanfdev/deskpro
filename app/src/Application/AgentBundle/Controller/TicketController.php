@@ -1949,7 +1949,8 @@ class TicketController extends AbstractController
 				'inserted' => true,
 				'html' => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', array(
 					'ticket' => $ticket,
-					'ticket_sla' => $ticket_sla
+					'ticket_sla' => $ticket_sla,
+					'ticket_perms' => $this->_getTicketPerms($ticket)
 				))
 			);
 		} else {

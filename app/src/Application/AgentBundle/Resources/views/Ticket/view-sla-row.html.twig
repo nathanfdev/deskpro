@@ -23,13 +23,13 @@
 	</td>
 	{% if ticket_sla.sla.apply_type == 'manual' and ticket_perms.modify_slas %}
 		{% if ticket_sla.is_completed %}
-			<td class="completed"><a href="{{ path('agent_ticket_sladelete', {ticket_id: ticket.id, sla_id: ticket_sla.sla.id, security_token: security_token('delete_sla'), '_rt': security_token('request_token', 10800)}) }}" class="sla-delete tipped" title="SLA requirements complete. Click to remove SLA."></a></td>
+			<td class="completed"><a href="{{ path('agent_ticket_sladelete', {ticket_id: ticket.id, sla_id: ticket_sla.sla.id, security_token: security_token('delete_sla'), '_rt': security_token('request_token', 10800)}) }}" class="sla-delete tipped" title="SLA requirements complete{% if ticket_sla.completed_time_taken %} ({{ ticket_sla.completed_time_taken|time_length }}){% endif %}. Click to remove SLA."></a></td>
 		{% else %}
 			<td class="delete"><a href="{{ path('agent_ticket_sladelete', {ticket_id: ticket.id, sla_id: ticket_sla.sla.id, security_token: security_token('delete_sla'), '_rt': security_token('request_token', 10800)}) }}" class="sla-delete tipped" title="Remove SLA"></a></td>
 		{% endif %}
 	{% else %}
 		{% if ticket_sla.is_completed %}
-			<td class="completed"><span class="tipped" title="SLA requirements complete."></span></td>
+			<td class="completed"><span class="tipped" title="SLA requirements complete{% if ticket_sla.completed_time_taken %} ({{ ticket_sla.completed_time_taken|time_length }}){% endif %}."></span></td>
 		{% else %}
 			<td>&nbsp;</td>
 		{% endif %}

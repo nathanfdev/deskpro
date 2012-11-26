@@ -377,6 +377,65 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds(), $ticket);
 	}
 
+	public function calculateSlaTimeUntil($end_ts, Ticket $ticket)
+	{
+		if ($this->sla_type == self::TYPE_WAITING_TIME) {
+			$time = 0;
+			foreach ($ticket->waiting_times AS $waiting) {
+				if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
+					$wait_end = min($end_ts, $waiting['end']);
+					if ($this->active_time == self::ACTIVE_24X7) {
+						$time += $this->_getWaitTimeWorkingLength($waiting['start'], $wait_end);
+					} else {
+						$time += $wait_end - $waiting['start'];
+					}
+				}
+			}
+
+			return $time;
+		} else {
+			if ($this->active_time == self::ACTIVE_24X7) {
+				return $end_ts - $ticket->date_created->getTimestamp();
+			} else {
+				$time = 0;
+
+				$work_day_length = $this->work_end - $this->work_start;
+				if ($work_day_length <= 0) {
+					return null;
+				}
+
+				$start_ts = $ticket->date_created->getTimestamp();
+				$date_test = clone $ticket->date_created;
+				if ($this->work_timezone) {
+					$date_test->setTimezone(new \DateTimeZone($this->work_timezone));
+				}
+
+				$time_remaining = null;
+				if ($this->_isInWorkDay($date_test, $time_remaining)) {
+					if ($end_ts - $start_ts > $time_remaining) {
+						$date_test->modify('+' . ($time_remaining + 1) . ' seconds');
+						$time += $time_remaining;
+					} else {
+						return $end_ts - $start_ts;
+					}
+				}
+
+				while ($date_test->getTimestamp() < $end_ts) {
+					$date_test = $this->_getNextWorkDayStart($date_test);
+					if ($end_ts - $date_test->getTimestamp() > $work_day_length) {
+						$date_test->modify('+' . ($work_day_length + 1) . ' seconds');
+						$time += $work_day_length;
+					} else {
+						$time += $end_ts - $date_test->getTimestamp();
+						return $time;
+					}
+				}
+
+				return $time;
+			}
+		}
+	}
+
 	protected function _calculateTriggerDate($delay, Ticket $ticket)
 	{
 		if ($this->sla_type == self::TYPE_FIRST_RESPONSE) {
@@ -644,15 +703,23 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 	public function calculateCompleted(Ticket $ticket)
 	{
+		$dates = array();
+
 		if ($ticket->status == 'resolved' || $ticket->status == 'hidden') {
-			return true;
+			if ($ticket->date_resolved) {
+				$dates[] = $ticket->date_resolved->getTimestamp();
+			}
 		}
 
 		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_first_agent_reply) {
-			return true;
+			$dates[] = $ticket->date_first_agent_reply->getTimestamp();
 		}
 
-		return false;
+		if ($dates) {
+			return min($dates);
+		}
+
+		return null;
 	}
 
 	public function getSlaTestTime(Ticket $ticket)
