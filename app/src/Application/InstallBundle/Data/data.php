@@ -553,24 +553,13 @@ $em->flush();
 # Triggers
 ################################################################################
 
-##BEGIN:create_trigger.email_validation_web##
+##BEGIN:create_trigger.email_validation_email##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'email_validation.email';
 $q->sys_name = 'email_validation.email';
-$q->event_trigger = 'new_ticket';
+$q->event_trigger = 'new.email.user';
 $q->is_enabled = 0;
-$q->terms = array(
-	array(
-		'type' => 'is_new_user',
-		'op' => 'is',
-		'options' => array('is_new_user' => '1'),
-	),
-	array(
-		'type' => 'creation_system',
-		'op' => 'is',
-		'options' => array('creation_system' => 'gateway.person'),
-	),
-);
+$q->terms = array();
 $q->actions = array(
 	array (
 		'type' => 'force_email_validation',
@@ -581,24 +570,13 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_trigger.email_validation_email##
+##BEGIN:create_trigger.email_validation_web##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'email_validation.web';
+$q->title = '';
 $q->sys_name = 'email_validation.web';
-$q->event_trigger = 'new_ticket';
+$q->event_trigger = 'new.web.user.portal';
 $q->is_enabled = 0;
-$q->terms = array(
-	array(
-		'type' => 'is_new_user',
-		'op' => 'is',
-		'options' => array('is_new_user' => '1'),
-	),
-	array(
-		'type' => 'creation_system',
-		'op' => 'is',
-		'options' => array('creation_system' => 'web.person'),
-	),
-);
+$q->terms = array();
 $q->actions = array(
 	array (
 		'type' => 'force_email_validation',
@@ -611,22 +589,11 @@ $em->flush();
 
 ##BEGIN:create_trigger.email_validation_widget##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'email_validation.widget';
+$q->title = '';
 $q->sys_name = 'email_validation.widget';
-$q->event_trigger = 'new_ticket';
+$q->event_trigger = 'new.web.user.widget';
 $q->is_enabled = 0;
-$q->terms = array(
-	array(
-		'type' => 'is_new_user',
-		'op' => 'is',
-		'options' => array('is_new_user' => '1'),
-	),
-	array(
-		'type' => 'creation_system',
-		'op' => 'is',
-		'options' => array('creation_system' => 'widget'),
-	),
-);
+$q->terms = array();
 $q->actions = array(
 	array (
 		'type' => 'force_email_validation',
