@@ -115,7 +115,9 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		var side = $('#dp_admin_page_sidebar, #dp_admin_page_sidebar_right').first();
 		if (side.length) {
-			$('#dp_admin_page_inner').css('min-height', side.outerHeight() + 150);
+			window.setInterval(function() {
+				$('#dp_admin_page_inner').css('min-height', side.outerHeight() + 25);
+			}, 300);
 		}
 
 		this.menuEls = $('#menus_container > div').addClass('header-menu').each(function() {
