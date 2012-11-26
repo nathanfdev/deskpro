@@ -140,6 +140,7 @@ class TemplatesController extends AbstractController
 			$default_code = App::getTemplating()->getDefaultSource($name);
 
 			return $this->createJsonResponse(array(
+				'custom' => App::getTemplating()->isCustomTemplate($name),
 				'code' => $code,
 				'default_code' => $default_code,
 			));
