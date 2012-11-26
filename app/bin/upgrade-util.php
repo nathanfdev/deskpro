@@ -2953,7 +2953,7 @@ class Zip_PHP implements DpZip
 		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
 
 		$zip = new \ZipArchive();
-		if (!$zip->open($out_filepath, \ZipArchive::CREATE)) {
+		if ($zip->open($out_filepath, \ZipArchive::CREATE) !== true) {
 			return false;
 		}
 
@@ -2986,7 +2986,7 @@ class Zip_PHP implements DpZip
 	public function decompressZip($path, $to = null)
 	{
 		$zip = new \ZipArchive();
-		if (!$zip->open($path)) {
+		if (!is_file($path) || $zip->open($path) !== true) {
 			return false;
 		}
 
