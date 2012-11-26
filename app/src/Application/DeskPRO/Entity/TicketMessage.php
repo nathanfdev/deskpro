@@ -203,7 +203,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// An email might have inline attachments and we tokenize them with these
 		// codes so we can now turn them into inline images or attachment links
-		$fn = function($m) {
+		$fn = function($m, $before = '') {
 			$download_url = App::getSetting('core.deskpro_url');
 			$download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
@@ -216,7 +216,19 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 				$url = App::getSetting('core.deskpro_url');
 				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350), false), '/');
 
-				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+				$do_link = true;
+
+				// If we arent balanced, then it means the image is within an <a>, so
+				// we shouldnt link the image ourselves
+				if (substr_count($before, '<a') != substr_count($before, '</a>')) {
+					$do_link = false;
+				}
+
+				if (!$do_link) {
+					$replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
+				} else {
+					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+				}
 			} else {
 				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image">%s</a>', $download_url, $m[3]);
 			}
@@ -224,7 +236,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			return $replace;
 		};
 
-		$message = preg_replace_callback('#\[attach:(.*?):(.*?):(.*?)\]#', $fn, $message);
+		$changed = true;
+		while ($changed) {
+			$m = null;
+			$changed = false;
+
+			if (preg_match('#\[attach:(.*?):(.*?):(.*?)\]#', $message, $m)) {
+				$changed = true;
+				$pos = strpos($message, $m[0]);
+				$before = substr($message, 0, $pos);
+				$message = str_replace($m[0], $fn($m, $before), $message);
+			}
+		}
 
 		return $message;
 	}
