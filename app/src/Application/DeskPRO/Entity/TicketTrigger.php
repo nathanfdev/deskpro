@@ -199,9 +199,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_OPEN:
-				$searcher->addTerm('status', 'is', array('awaiting_user', 'awaiting_agent'));
-				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
-
+				$searcher->addRawWhere('tickets.status IN (\'awaiting_user\', \'awaiting_agent\')');
 				$date_cut = new \DateTime('-' . $time_secs . ' seconds');
 				$searcher->addTerm('date_created', 'lte', array('date1' => $date_cut));
 
@@ -257,6 +255,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	{
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_OPEN:
+				return 'date_created';
+
 			case self::EVENT_TIME_USER_WAITING:
 			case self::EVENT_TIME_TOTAL_USER_WAITING:
 				return 'date_user_waiting';

@@ -138,6 +138,9 @@ class StatusAction extends AbstractAction implements PermissionableAction
 						old_ptac = VALUES(old_ptac)
 				", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
 			}
+		} else {
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
 		}
 	}
 
