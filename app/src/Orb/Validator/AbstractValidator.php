@@ -267,7 +267,7 @@ abstract class AbstractValidator implements ValidatorInterface
 	 */
 	public function removeError($code)
 	{
-		\Orb\Util\Arrays::removeValue($this->errors, $code);
+		$this->errors = \Orb\Util\Arrays::removeValue($this->errors, $code);
 		unset($this->errors_info[$code]);
 	}
 

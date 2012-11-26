@@ -80,6 +80,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		}
 
 		$register = new \Application\UserBundle\Form\Model\Register();
+		$tpl_globals = $this->container->get('templating.globals');
+		if ($tpl_globals->getVariable('login_with_email')) {
+			$register->email = $tpl_globals->getVariable('login_with_email');
+		}
+
 		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
 
@@ -532,6 +537,12 @@ HTML;
 		}
 
 		$register = new \Application\UserBundle\Form\Model\Register();
+
+		$tpl_globals = $this->container->get('templating.globals');
+		if ($tpl_globals->getVariable('login_with_email')) {
+			$register->email = $tpl_globals->getVariable('login_with_email');
+		}
+
 		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
 

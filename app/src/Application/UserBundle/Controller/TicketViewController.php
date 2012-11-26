@@ -112,7 +112,7 @@ class TicketViewController extends AbstractController
 
 							$type = 'login';
 							if (!$ticket->person->is_user) {
-								$type = 'reset';
+								$type = 'register';
 							}
 
 							return $this->renderLoginOrPermissionError($return, $type);

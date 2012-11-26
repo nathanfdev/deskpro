@@ -218,6 +218,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$act = 'UserBundle:Login:index';
 		if ($type == 'reset') {
 			$act = 'UserBundle:Login:resetPassword';
+		} elseif ($type == 'register') {
+			$act = 'UserBundle:Register:register';
 		}
 
 		return $this->forward($act, array(), array('return' => $return_url));

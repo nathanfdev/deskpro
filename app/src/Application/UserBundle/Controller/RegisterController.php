@@ -76,6 +76,11 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			$register->language_id = $this->session->get('language_id');
 		}
 
+		$tpl_globals = $this->container->get('templating.globals');
+		if ($tpl_globals->getVariable('login_with_email')) {
+			$register->email = $tpl_globals->getVariable('login_with_email');
+		}
+
 		$reg_formtype = new RegisterType();
 
 		$from_ticket = false;
