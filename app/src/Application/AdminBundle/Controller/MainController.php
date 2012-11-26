@@ -49,10 +49,8 @@ class MainController extends AbstractController
 		$agents_online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
 		$online_agents = array();
 		foreach ($agents_online_ids as $aid) {
-			$online_agents[] = $this->em->getRepository('DeskPRO:Person')->getAgent($aid);
+			$online_agents[$aid] = $this->em->getRepository('DeskPRO:Person')->getAgent($aid);
 		}
-
-		$count_online_users = $this->em->getRepository('DeskPRO:Session')->countOnlineUsers();
 
 		$stats = array();
 		$today = $this->person->getDateTime();
@@ -93,7 +91,6 @@ class MainController extends AbstractController
 			'lic'                 => License::getLicense(),
 			'notice_items'        => $notice_items,
 			'online_agents'       => $online_agents,
-			'count_online_users'  => $count_online_users,
 			'stats'               => $stats,
 			'error_count'         => $error_count,
 			'is_cron_crash'       => $is_cron_crash,
