@@ -2029,6 +2029,8 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$ticket_person = $ticket->person;
+
 		$this->db->replace('tickets_deleted', array(
 			'ticket_id' => $ticket->id,
 			'by_person_id' => $this->person->id,
@@ -2039,7 +2041,7 @@ class TicketController extends AbstractController
 
 		$this->em->getConnection()->beginTransaction();
 
-		if ($this->in->getBool('ban')) {
+		if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
 			$ticket->getTicketLogger()->recordExtra('is_physical_delete', true);
 		}
 
@@ -2052,7 +2054,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		if ($this->in->getBool('ban')) {
+		if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
 			foreach ($ticket->person->emails as $email) {
 				$email_addy = strtolower($email->email);
 				App::getDb()->replace('ban_emails', array(
@@ -2089,6 +2091,7 @@ class TicketController extends AbstractController
 	public function spamAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'delete');
+		$ticket_person = $ticket->person;
 
 		$this->em->getConnection()->beginTransaction();
 
@@ -2101,7 +2104,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		if ($this->in->getBool('ban')) {
+		if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
 			foreach ($ticket->person->emails as $email) {
 				$email_addy = strtolower($email->email);
 				App::getDb()->replace('ban_emails', array(
