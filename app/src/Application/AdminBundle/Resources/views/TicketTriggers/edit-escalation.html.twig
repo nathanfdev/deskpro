@@ -57,3 +57,10 @@ function TicketTriggerEditPage_init()
 {% if trigger.event_trigger == 'sla.warning' %} of SLA countable time, the ticket is close to failing the SLA.{% endif %}
 {% if trigger.event_trigger == 'sla.fail' %} of SLA countable time, the ticket has failed the SLA.{% endif %}
 {% endblock %}
+{% block footer_row %}
+	{% if not trigger.id %}
+		<div class="alert-message block-message note">
+			Note: This new escalation will only affect <strong>new</strong> tickets created from now on. Existing tickets will never match this escalation.
+		</div>
+	{% endif %}
+{% endblock %}
