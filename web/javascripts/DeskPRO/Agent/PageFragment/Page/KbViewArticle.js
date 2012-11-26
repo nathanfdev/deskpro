@@ -661,8 +661,26 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				loader.hide();
 				$(this).css('overflow', 'hidden');
 				$(this).height($(this.contentWindow.document).height());
+
+				var doc = this.contentWindow.document;
+
+				if (doc.addEventListener){
+					var wheel = function(e) {
+						var proxyE = document.createEvent('MouseEvents');
+						proxyE.initMouseEvent(
+							e.type, e.bubbles, e.cancelable, window, e.detail,
+							e.screenX, e.screenY, e.clientX, e.clientY,
+							e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
+							null
+						);
+						iframe.closest('.with-scrollbar').get(0).dispatchEvent(proxyE);
+					};
+					doc.addEventListener('DOMMouseScroll', wheel, false);
+					doc.addEventListener('mousewheel', wheel, false );
+				}
 			}
 		};
+
 		iframe.on('load', iframeLoad);
 		iframeLoad.call(iframe);
 	},
