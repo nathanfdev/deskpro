@@ -42,6 +42,11 @@ use Symfony\Component\Console\Output\Output;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+// Usage: php cmd.php dpdev:load-data --count=# --types=a,b,c
+// Count defaults to 100, types must be explicitly specified. If no
+// types are specified, a list of available ones is given. If you want
+// to insert into everythign, use --types=*
+
 class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
@@ -51,7 +56,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
 	}
 
-	protected $_dataCache = array();
+	protected $_data_cache = array();
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
@@ -60,13 +65,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			return 1;
 		}
 
-		// todo: usergroup, person_field, sla, ticket_field, filter, feedback_status, feedback_type, article_category
-		// todo: news_category, download_category
+		// todo: triggers, escalations, banned emails, banned IPs, agent teams, perm groups
+		// todo: macros, ticket snippets + categories, chat snippets + categories
 
 		$available_types = array(
-			'organization', 'usergroup',
+			'org_field', 'organization', 'usergroup',
 			'person_field', 'person',
-			'sla', 'ticket_field', 'ticket', 'filter',
+			'sla', 'ticket_department', 'ticket_field', 'ticket', 'ticket_filter',
+			'chat_department',
 			'feedback_status', 'feedback_type', 'feedback',
 			'article_category','article',
 			'news_category','news',
@@ -89,26 +95,27 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		if (!$types) {
+			sort($available_types);
 			echo "No types given. Cannot continue. Available types:\n\t" . implode(', ', $available_types) . "\n";
 			return;
 		}
 
 		$db = App::getDb();
 
-		$this->_dataCache['agents'] = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$this->_dataCache['agent_teams'] = App::getEntityRepository('DeskPRO:AgentTeam')->getTeams();
-		$this->_dataCache['random_people_ids'] = $db->fetchAllCol('
+		$this->_data_cache['agents'] = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$this->_data_cache['agent_teams'] = App::getEntityRepository('DeskPRO:AgentTeam')->getTeams();
+		$this->_data_cache['random_people_ids'] = $db->fetchAllCol('
 			SELECT id
 			FROM people
 			WHERE is_agent = 0
 			ORDER BY RAND()
 			LIMIT 1000
 		');
-		if (!$this->_dataCache['random_people_ids']) {
-			$this->_dataCache['random_people_ids'] = array_keys($this->_dataCache['agents']);
+		if (!$this->_data_cache['random_people_ids']) {
+			$this->_data_cache['random_people_ids'] = array_keys($this->_data_cache['agents']);
 		}
 
-		$this->_dataCache['random_org_ids'] = $db->fetchAllCol('
+		$this->_data_cache['random_org_ids'] = $db->fetchAllCol('
 			SELECT id
 			FROM organizations
 			ORDER BY RAND()
@@ -175,12 +182,44 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		echo "\nData load completed.\n";
 	}
 
+	protected function _loadOrgField()
+	{
+		$org_field = new Entity\CustomDefOrganization();
+		$org_field->title = $this->_getRandomText(2);
+		$org_field->description = $this->_getRandomText(rand(1, 10));
+		$org_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
+		App::getOrm()->persist($org_field);
+	}
+
 	protected function _loadOrganization()
 	{
+		if (!isset($this->_data_cache['usergroups'])) {
+			$this->_data_cache['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+		}
+		if (!isset($this->_data_cache['org_fields'])) {
+			$this->_data_cache['org_fields'] = App::getEntityRepository('DeskPRO:CustomDefOrganization')->findAll();
+		}
+
 		$org = new Entity\Organization();
 		$org->name = $this->_getRandomText(rand(1, 3));
 
-		// todo: contact data, groups, fields
+		if (rand(1, 4) == 1) {
+			$count = rand(1, 3);
+			for ($i = 0; $i < $count; $i++) {
+				$key = array_rand($this->_data_cache['usergroups']);
+				if (!$org->usergroups->contains($this->_data_cache['usergroups'][$key])) {
+					$org->usergroups->add($this->_data_cache['usergroups'][$key]);
+				}
+			}
+		}
+
+		foreach ($this->_data_cache['org_fields'] AS $field) {
+
+			//$org->addCustomData($data);
+		}
+
+		// todo: contact data, fields
 
 		App::getOrm()->persist($org);
 		$this->_applyLabels($org);
@@ -188,12 +227,31 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _completeOrganization()
 	{
-		$this->_dataCache['random_org_ids'] = App::getDb()->fetchAllCol('
+		$this->_data_cache['random_org_ids'] = App::getDb()->fetchAllCol('
 			SELECT id
 			FROM organizations
 			ORDER BY RAND()
 			LIMIT 1000
 		');
+	}
+
+	protected function _loadUsergroup()
+	{
+		$usergroup = new Entity\Usergroup();
+		$usergroup->title = $this->_getRandomText(2);
+		$usergroup->note = $this->_getRandomText(rand(1, 5));
+
+		App::getOrm()->persist($usergroup);
+	}
+
+	protected function _loadPersonField()
+	{
+		$field = new Entity\CustomDefPerson();
+		$field->title = $this->_getRandomText(2);
+		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
+		App::getOrm()->persist($field);
 	}
 
 	protected function _loadPerson()
@@ -213,7 +271,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _completePerson()
 	{
-		$this->_dataCache['random_people_ids'] = App::getDb()->fetchAllCol('
+		$this->_data_cache['random_people_ids'] = App::getDb()->fetchAllCol('
 			SELECT id
 			FROM people
 			WHERE is_agent = 0
@@ -222,10 +280,121 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		');
 	}
 
+	protected function _loadSla()
+	{
+		$sla = new Entity\Sla();
+		$sla->title = $this->_getRandomText(rand(1, 4));
+		$types = array(
+			\Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
+			\Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
+			\Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME
+		);
+		$sla->sla_type = $types[array_rand($types)];
+		$sla->active_time = \Application\DeskPRO\Entity\Sla::ACTIVE_24X7;
+		$sla->apply_type = rand(1, 6) == 1 ? 'all' : 'manual';
+
+		App::getOrm()->persist($sla);
+		App::getOrm()->flush();
+
+		$warning_trigger = new Entity\TicketTrigger();
+		$warning_trigger->title = $sla->title . " - SLA Warning";
+		$warning_trigger->event_trigger = 'sla.warning';
+		$warning_time = rand(30, 500);
+		$time = $warning_time . ' minutes';
+		$warning_trigger->setEventTriggerOption('time', $time);
+		$warning_trigger->terms = array(
+			array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warn', 'sla_id' => $sla->id)),
+		);
+		$warning_trigger->actions = array(
+			array('type' => 'recalculate_sla_status', 'options' => array())
+		);
+
+		App::getOrm()->persist($warning_trigger);
+
+		$fail_trigger = new Entity\TicketTrigger();
+		$fail_trigger->title = $sla->title . " - SLA Failure";
+		$fail_trigger->event_trigger = 'sla.fail';
+		$time = rand($warning_time, 600) . ' minutes';
+		$fail_trigger->setEventTriggerOption('time', $time);
+		$fail_trigger->terms = array(
+			array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'fail', 'sla_id' => $sla->id)),
+		);
+		$fail_trigger->actions = array(
+			array('type' => 'recalculate_sla_status', 'options' => array())
+		);
+
+		App::getOrm()->persist($fail_trigger);
+
+		$sla->warning_trigger = $warning_trigger;
+		$sla->fail_trigger = $fail_trigger;
+		App::getOrm()->persist($sla);
+	}
+
+	protected function _loadTicketField()
+	{
+		$field = new Entity\CustomDefTicket();
+		$field->title = $this->_getRandomText(2);
+		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
+		App::getOrm()->persist($field);
+	}
+
+	protected function _loadTicketDepartment()
+	{
+		$department = new Entity\Department();
+		$department->title = $this->_getRandomText(rand(2, 4));
+		$department->is_tickets_enabled = true;
+		$department->is_chat_enabled = false;
+		$department->display_order = rand(1, 1000000);
+		if (!empty($this->_data_cache['ticket_department_parent'])) {
+			$department->parent = $this->_data_cache['ticket_department_parent'];
+		}
+		
+		App::getOrm()->persist($department);
+		App::getOrm()->flush($department);
+
+		$dep_perms = array();
+
+		foreach ($this->_data_cache['agents'] AS $agent) {
+			$dep_perms[] = array(
+				'department_id' => $department->getId(),
+				'usergroup_id' => null,
+				'person_id' => $agent->getId(),
+				'app' => 'tickets',
+				'name' => 'full',
+				'value' => 1
+			);
+			$dep_perms[] = array(
+				'department_id' => $department->getId(),
+				'usergroup_id' => null,
+				'person_id' => $agent->getId(),
+				'app' => 'tickets',
+				'name' => 'assign',
+				'value' => 1
+			);
+		}
+
+		$dep_perms[] = array(
+			'department_id' => $department->getId(),
+			'usergroup_id' => 1,
+			'person_id' => null,
+			'app' => 'tickets',
+			'name' => 'full',
+			'value' => 1
+		);
+
+		App::getDb()->batchInsert('department_permissions', $dep_perms);
+
+		if (empty($this->_data_cache['ticket_department_parent'])) {
+			$this->_data_cache['ticket_department_parent'] = $department;
+		}
+	}
+
 	protected function _loadTicket()
 	{
-		if (!isset($this->_dataCache['ticket_departments'])) {
-			$this->_dataCache['ticket_departments'] = App::getEntityRepository('DeskPRO:Department')->getChildDepartments('ticket');
+		if (!isset($this->_data_cache['ticket_departments'])) {
+			$this->_data_cache['ticket_departments'] = App::getEntityRepository('DeskPRO:Department')->getChildDepartments('ticket');
 		}
 
 		$ticket = new Entity\Ticket(false);
@@ -262,13 +431,93 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($ticket);
 	}
 
+	protected function _loadTicketFilter()
+	{
+		$filter = new Entity\TicketFilter();
+		$filter->title = $this->_getRandomText(2);
+		$filter->is_global = true;
+		$filter->terms = array(
+			array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'))
+		);
+
+		App::getOrm()->persist($filter);
+	}
+
+	protected function _loadChatDepartment()
+	{
+		$department = new Entity\Department();
+		$department->title = $this->_getRandomText(rand(2, 4));
+		$department->is_tickets_enabled = false;
+		$department->is_chat_enabled = true;
+		$department->display_order = rand(1, 1000000);
+		if (!empty($this->_data_cache['chat_department_parent'])) {
+			$department->parent = $this->_data_cache['chat_department_parent'];
+		}
+
+		App::getOrm()->persist($department);
+		App::getOrm()->flush($department);
+
+		$dep_perms = array();
+
+		foreach ($this->_data_cache['agents'] AS $agent) {
+			$dep_perms[] = array(
+				'department_id' => $department->getId(),
+				'usergroup_id' => null,
+				'person_id' => $agent->getId(),
+				'app' => 'chat',
+				'name' => 'full',
+				'value' => 1
+			);
+		}
+
+		$dep_perms[] = array(
+			'department_id' => $department->getId(),
+			'usergroup_id' => 1,
+			'person_id' => null,
+			'app' => 'chat',
+			'name' => 'full',
+			'value' => 1
+		);
+
+		App::getDb()->batchInsert('department_permissions', $dep_perms);
+
+		if (empty($this->_data_cache['chat_department_parent'])) {
+			$this->_data_cache['chat_department_parent'] = $department;
+		}
+	}
+
+	protected function _loadFeedbackType()
+	{
+		$category = new Entity\FeedbackCategory();
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->display_order = rand(1, 1000000);
+
+		App::getOrm()->persist($category);
+		App::getOrm()->flush();
+
+		App::getDb()->insert('feedback_category2usergroup', array(
+			'category_id'  => $category->getId(),
+			'usergroup_id' => 1
+		));
+	}
+
+	protected function _loadFeedbackStatus()
+	{
+		$category = new Entity\FeedbackStatusCategory();
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->display_order = rand(1, 1000000);
+		$category->status_type = rand(1, 2) == 1 ? 'active' : 'closed';
+
+		App::getOrm()->persist($category);
+	}
+
 	protected function _loadFeedback()
 	{
-		if (!isset($this->_dataCache['feedback_types'])) {
-			$this->_dataCache['feedback_types'] = App::getEntityRepository('DeskPRO:FeedbackCategory')->findAll();
+		if (!isset($this->_data_cache['feedback_types'])) {
+			$this->_data_cache['feedback_types'] = App::getEntityRepository('DeskPRO:FeedbackCategory')->findAll();
 		}
-		if (!isset($this->_dataCache['feedback_statuses'])) {
-			$this->_dataCache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
+		if (!isset($this->_data_cache['feedback_statuses'])) {
+			$this->_data_cache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
 		}
 
 		$feedback = new Entity\Feedback();
@@ -289,10 +538,25 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($feedback);
 	}
 
+	protected function _loadArticleCategory()
+	{
+		$category = new Entity\ArticleCategory();
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->display_order = rand(1, 1000000);
+
+		App::getOrm()->persist($category);
+		App::getOrm()->flush();
+
+		App::getDb()->insert('article_category2usergroup', array(
+			'category_id'  => $category->getId(),
+			'usergroup_id' => 1
+		));
+	}
+
 	protected function _loadArticle()
 	{
-		if (!isset($this->_dataCache['article_categories'])) {
-			$this->_dataCache['article_categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->findAll();
+		if (!isset($this->_data_cache['article_categories'])) {
+			$this->_data_cache['article_categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->findAll();
 		}
 
 		$article = new Entity\Article();
@@ -308,10 +572,25 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($article);
 	}
 
+	protected function _loadNewsCategory()
+	{
+		$category = new Entity\NewsCategory();
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->display_order = rand(1, 1000000);
+
+		App::getOrm()->persist($category);
+		App::getOrm()->flush();
+
+		App::getDb()->insert('news_category2usergroup', array(
+			'category_id'  => $category->getId(),
+			'usergroup_id' => 1
+		));
+	}
+
 	protected function _loadNews()
 	{
-		if (!isset($this->_dataCache['news_categories'])) {
-			$this->_dataCache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
+		if (!isset($this->_data_cache['news_categories'])) {
+			$this->_data_cache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
 		}
 
 		$news = new Entity\News();
@@ -327,10 +606,25 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($news);
 	}
 
+	protected function _loadDownloadCategory()
+	{
+		$category = new Entity\DownloadCategory();
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->display_order = rand(1, 1000000);
+
+		App::getOrm()->persist($category);
+		App::getOrm()->flush();
+
+		App::getDb()->insert('download_category2usergroup', array(
+			'category_id'  => $category->getId(),
+			'usergroup_id' => 1
+		));
+	}
+
 	protected function _loadDownload()
 	{
-		if (!isset($this->_dataCache['download_categories'])) {
-			$this->_dataCache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
+		if (!isset($this->_data_cache['download_categories'])) {
+			$this->_data_cache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
 		}
 
 		$download = new Entity\Download();
@@ -387,12 +681,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _getRandomFromCache($key)
 	{
-		if (!isset($this->_dataCache[$key]) || empty($this->_dataCache[$key])) {
+		if (!isset($this->_data_cache[$key]) || empty($this->_data_cache[$key])) {
 			return null;
 		}
 
-		$rand = array_rand($this->_dataCache[$key]);
-		return $this->_dataCache[$key][$rand];
+		$rand = array_rand($this->_data_cache[$key]);
+		return $this->_data_cache[$key][$rand];
 	}
 
 	protected function _applyLabels($entity)
