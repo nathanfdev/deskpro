@@ -72,7 +72,7 @@ abstract class LoaderAbstract
 		date_default_timezone_set('UTC');
 		ini_set('default_charset', 'UTF-8');
 
-		require_once DP_ROOT.'/app/src/Orb/Util/Strings.php';
+		require_once DP_ROOT.'/src/Orb/Util/Strings.php';
 		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 
 		#------------------------------
