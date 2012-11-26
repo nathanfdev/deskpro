@@ -64,32 +64,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 		$tpl_globals->setVariable('search_query', $this->search_query);
-
-		#------------------------------
-		# Portal display order
-		#------------------------------
-
-		if (!$tpl_globals->getVariable('portal_tabs_order')) {
-			$val = App::getSetting('user.portal_tabs_order');
-
-			if ($val) {
-				$val = explode(',', $val);
-				$val = \Orb\Util\Arrays::removeFalsey($val);
-			} else {
-				$val = array();
-			}
-
-			$val = array_merge($val, array(
-				'articles',
-				'news',
-				'feedback',
-				'downloads',
-				'newticket'
-			));
-
-			$val = array_unique($val);
-			$tpl_globals->setVariable('portal_tabs_order', $val);
-		}
 	}
 
 	/**
@@ -177,6 +151,66 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 			return $this->redirect($redirect_url);
+		}
+
+		#------------------------------
+		# Portal display order
+		#------------------------------
+
+		if (!$tpl_globals->getVariable('portal_tabs_order')) {
+			$val = App::getSetting('user.portal_tabs_order');
+
+			if ($val) {
+				$val = explode(',', $val);
+				$val = \Orb\Util\Arrays::removeFalsey($val);
+			} else {
+				$val = array();
+			}
+
+			$val = array_merge($val, array(
+				'articles',
+				'news',
+				'feedback',
+				'downloads',
+				'newticket'
+			));
+
+			$val = array_unique($val);
+
+			$admin_controls = $tpl_globals->getVariable('admin_portal_controls');
+			foreach ($val as &$tabtype) {
+				switch ($tabtype) {
+					case 'news':
+						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')))) {
+							$tabtype = false;
+						}
+						break;
+					case 'articles':
+						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')))) {
+							$tabtype = false;
+						}
+						break;
+					case 'feedback':
+						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')))) {
+							$tabtype = false;
+						}
+						break;
+					case 'downloads':
+						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')))) {
+							$tabtype = false;
+						}
+						break;
+					case 'newticket':
+						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_tickets') && $this->person->hasPerm('tickets.use')))) {
+							$tabtype = false;
+						}
+						break;
+				}
+			}
+
+			$val = \Orb\Util\Arrays::removeFalsey($val);
+
+			$tpl_globals->setVariable('portal_tabs_order', $val);
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {

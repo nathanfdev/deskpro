@@ -131,12 +131,6 @@
 				</form>
 			</section>
 		</div>
-		{% set any_tabs = false %}
-		{% if app.user.hasPerm('news.use') and app.getSetting('user.portal_tab_news') %}{% set any_tabs = true %}{% endif %}
-		{% if app.user.hasPerm('articles.use') and app.getSetting('user.portal_tab_articles') %}{% set any_tabs = true %}{% endif %}
-		{% if app.user.hasPerm('feedback.use') and app.getSetting('user.portal_tab_feedback') %}{% set any_tabs = true %}{% endif %}
-		{% if app.user.hasPerm('downloads.use') and app.getSetting('user.portal_tab_downloads') %}{% set any_tabs = true %}{% endif %}
-		{% if app.getSetting('user.portal_tab_tickets') %}{% set any_tabs = true %}{% endif %}
 
 		<div id="dp_page_wrapper" {% if not any_tabs and not app.admin_portal_controls %}class="dp-no-tabs"{% endif %}>
 
@@ -152,11 +146,11 @@
 				</section>
 			</div>
 			<div id="dp_content_wrapper">
-				{% if any_tabs or app.admin_portal_controls %}
+				{% if app.getVariable('portal_tabs_order')|length %}
 					<nav id="dp_content_tabs">
 						<ul>
 							{% for tabtype in app.getVariable('portal_tabs_order') %}
-								{% if tabtype == 'news' and (app.user.hasPerm('news.use') and (app.admin_portal_controls or app.getSetting('user.portal_tab_news'))) %}
+								{% if tabtype == 'news' %}
 									<li data-tabtype="news" class="dp-tab-news {% if this_section == 'news' %}on{% endif %} {% if not app.getSetting('user.portal_tab_news') %}disabled{% endif %}" data-tab="news">
 										<a href="{% if loop.index == 1 %}{{ path('user') }}{% else %}{{ path('user_news') }}{% endif %}">
 											<i class="dp-icon-tasks"></i> <h3>{{ phrase('user.portal.tab_news') }}</h3>
@@ -164,7 +158,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if tabtype == 'articles' and (app.user.hasPerm('articles.use') and (app.admin_portal_controls or app.getSetting('user.portal_tab_articles'))) %}
+								{% if tabtype == 'articles' %}
 									<li data-tabtype="articles" class="dp-tab-articles {% if this_section == 'articles' %}on{% endif %} {% if not app.getSetting('user.portal_tab_articles') %}disabled{% endif %}" data-tab="articles">
 										<a href="{% if loop.index == 1 %}{{ path('user') }}{% else %}{{ path('user_articles') }}{% endif %}">
 											<i class="dp-icon-folder-open"></i> <h3>{{ phrase('user.portal.tab_knowledgebase') }}</h3>
@@ -172,7 +166,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if tabtype == 'feedback' and (app.user.hasPerm('feedback.use') and (app.admin_portal_controls or app.getSetting('user.portal_tab_feedback'))) %}
+								{% if tabtype == 'feedback' %}
 									<li data-tabtype="feedback" class="dp-tab-feedback {% if this_section == 'feedback' %}on{% endif %} {% if not app.getSetting('user.portal_tab_feedback') %}disabled{% endif %}" data-tab="feedback">
 										<a href="{% if loop.index == 1 %}{{ path('user') }}{% else %}{{ path('user_feedback') }}{% endif %}">
 											<i class="dp-icon-pencil"></i> <h3>{{ phrase('user.portal.tab_feedback') }}</h3>
@@ -180,7 +174,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if tabtype == 'downloads' and (app.user.hasPerm('downloads.use') and (app.admin_portal_controls or app.getSetting('user.portal_tab_downloads'))) %}
+								{% if tabtype == 'downloads' %}
 									<li data-tabtype="downloads" class="dp-tab-downloads {% if this_section == 'downloads' %}on{% endif %} {% if not app.getSetting('user.portal_tab_downloads') %}disabled{% endif %}" data-tab="downloads">
 										<a href="{% if loop.index == 1 %}{{ path('user') }}{% else %}{{ path('user_downloads_home') }}{% endif %}">
 											<i class="dp-icon-file"></i> <h3>{{ phrase('user.portal.tab_downloads') }}</h3>
@@ -188,7 +182,7 @@
 										</a>
 									</li>
 								{% endif %}
-								{% if tabtype == 'newticket' and (app.admin_portal_controls or app.getSetting('user.portal_tab_tickets')) %}
+								{% if tabtype == 'newticket' %}
 									<li data-tabtype="newticket" class="dp-tab-contact {% if this_section == 'tickets' %}on{% endif %} {% if not app.getSetting('user.portal_tab_tickets') %}disabled{% endif %}" data-tab="tickets">
 										<a href="{% if loop.index == 1 %}{{ path('user') }}{% else %}{{ path('user_tickets_new') }}{% endif %}">
 											<i class="dp-icon-inbox"></i> <h3>{{ phrase('user.portal.tab_tickets') }}</h3>
