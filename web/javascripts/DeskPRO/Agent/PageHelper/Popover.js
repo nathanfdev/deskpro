@@ -205,13 +205,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (!this.popover) return;
 
 		var self = this;
-		var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(this.pageSource);
 
-		this.page = DeskPRO_Window.createPageFragment(preparedOutput.html);
+
+		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
 		this.page.addEvent('updateUi', this.updatePositions.bind(this));
 
+		var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(this.page.getHtml());
 		this.popover.html(preparedOutput.html);
-
 		DeskPRO_Window.runWidgetedJs(this.page, preparedOutput.jsSource, preparedOutput.jsInline);
 
 		this.pageSource = null;
@@ -394,6 +394,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}, this);
 
 		this.popoverOuter.show();
+
+		var self = this;
+		setTimeout(function() {
+			self.updatePositions();
+		}, 1000);
 
 		if (this.page) {
 			this.page.fireEvent('activate', [this.page]);

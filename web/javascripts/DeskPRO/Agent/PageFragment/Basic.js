@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}
 		if (this.wrapper) {
 			if (!this.scrollHandlers) {
-				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
+				this.scrollHandlers = this.wrapper.find('div.with-scroll-handler');
 			}
 			for (x = 0; x < this.scrollHandlers.length; x++) {
 				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
@@ -31,6 +31,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				}
 			};
 		}
+
+		this.fireEvent('updateUi');
 	},
 
 	initialize: function(html) {

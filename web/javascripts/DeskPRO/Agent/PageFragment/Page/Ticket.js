@@ -486,9 +486,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	updateUi: function() {
 		var x;
+		if (!this.IS_ACTIVE) {
+			return;
+		}
 		if (this.wrapper) {
 			if (!this.scrollHandlers) {
-				this.scrollHandlers = this.wrapper.find('div..with-scroll-handler');
+				this.scrollHandlers = this.wrapper.find('div.with-scroll-handler');
 			}
 			for (x = 0; x < this.scrollHandlers.length; x++) {
 				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
