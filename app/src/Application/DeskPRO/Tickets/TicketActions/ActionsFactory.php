@@ -219,6 +219,10 @@ class ActionsFactory
 				$options = array('message' => $value['message']);
 				break;
 
+			case 'send_autoclose_warn_email':
+				$options = array('template_name' => $value['template_name']);
+				break;
+
 			case 'add_sla':
 				$options = array('sla_id' => $value['sla_id']);
 				break;

@@ -60,6 +60,7 @@ class Engine extends BaseEngine
 		'DeskPRO:emails_user:new-ticket-agent.html.twig',
 		'DeskPRO:emails_user:new-ticket.html.twig',
 		'DeskPRO:emails_user:blank.html.twig',
+		'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
 	);
 
 	protected function _initTemplateFilesMap()

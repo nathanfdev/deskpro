@@ -71,4 +71,6 @@
 'admin.emailtpl_desc.deskpro_emails_user_new-email-validate_html_twig_desc'            => 'This email is sent to the user when they add an additional email address on their account and need to valdiate it.',
 'admin.emailtpl_desc.deskpro_emails_user_account-disabled_html_twig_title'             => 'Account Disabled',
 'admin.emailtpl_desc.deskpro_emails_user_account-disabled_html_twig_desc'              => 'This email is sent to the user when an agent disables their account.',
+'admin.emailtpl_desc.deskpro_emails_user_ticket-autoclose-warn_html_twig_title'        => 'Ticket Auto-Close Warning',
+'admin.emailtpl_desc.deskpro_emails_user_ticket-autoclose-warn_html_twig_desc'         => 'The email sent to the user to warn them that their ticket will be automatically closed if they do not reply.',
 );

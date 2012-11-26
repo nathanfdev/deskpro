@@ -42,4 +42,5 @@ Before our agents will read and reply to your message, you must validate your em
 	'user.emails.ticket_rate-positive'        => 'Yes',
 	'user.emails.ticket_rate-neutral'         => 'It was OK',
 	'user.emails.ticket_rate-negative'        => 'No',
+	'user.emails.auto-close'                  => 'Your ticket "{{ticket.subject}}" will be closed automatically because you have not updated it lately. If you do not want your ticket to be closed, you can add a new reply so our agents can help you further.',
 );

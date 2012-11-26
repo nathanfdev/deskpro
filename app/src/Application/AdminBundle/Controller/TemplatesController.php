@@ -756,6 +756,7 @@ class TemplatesController extends AbstractController
 					'DeskPRO:emails_user:new-reply-user.html.twig',
 					'DeskPRO:emails_user:ticket-rate.html.twig',
 					'DeskPRO:emails_user:new-ticket-reg-closed.html.twig',
+					'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
 					'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig',
 					'DeskPRO:emails_user:chat-transcript.html.twig',
 					'DeskPRO:emails_user:comment-new.html.twig',

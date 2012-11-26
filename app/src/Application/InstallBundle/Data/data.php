@@ -736,9 +736,9 @@ $q->terms = array(
 );
 $q->actions = array(
 	array(
-		'type' => 'send_ticket_email',
+		'type' => 'send_autoclose_warn_email',
 		'options' => array(
-			'message' => $translate->phrase('user.defaults.trigger_warn_autoclose')
+			'template_name' => '',
 		)
 	)
 );

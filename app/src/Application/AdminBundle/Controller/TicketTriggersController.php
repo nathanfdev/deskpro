@@ -210,6 +210,7 @@ class TicketTriggersController extends AbstractController
 			'set_agent_email_template_newreply_user' => 1,
 			'send_user_email' => 1,
 			'send_agent_email' => 1,
+			'send_autoclose_warn_email' => 1,
 		);
 		foreach ($actions as &$_info) {
 			if (isset($tpl_types[$_info['type']])) {
@@ -222,7 +223,7 @@ class TicketTriggersController extends AbstractController
 
 					unset($_info['options']['new_option']);
 
-					if (strpos($_info['type'], 'set_user_') !== false || strpos($_info['type'], 'send_user_email') !== false || strpos($_info['type'], 'send_agent_email') !== false) {
+					if (strpos($_info['type'], 'set_user_') !== false || strpos($_info['type'], 'send_user_email') !== false || strpos($_info['type'], 'send_agent_email') !== false || $_info['type'] == 'send_autoclose_warn_email') {
 						$_info['options']['template_name'] = 'DeskPRO:emails_user:custom_' . $new_name . '.html.twig';
 					} else {
 						$_info['options']['template_name'] = 'DeskPRO:emails_agent:custom_' . $new_name . '.html.twig';
@@ -242,6 +243,7 @@ class TicketTriggersController extends AbstractController
 						case 'set_agent_email_template_newreply_user': $variant = 'DeskPRO:emails_agent:new-reply-user.html.twig'; break;
 						case 'send_user_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
 						case 'send_agent_email': $variant = 'DeskPRO:emails_user:blank.html.twig'; break;
+						case 'send_autoclose_warn_email': $variant = 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig'; break;
 					}
 
 					$redirect_to = $this->generateUrl('admin_templates_editemail', array('name' => $new_name, 'variant_of' => $variant));

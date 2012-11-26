@@ -541,4 +541,19 @@
 	{% endfor %}
 {% endif %}
 
+{% if event_trigger == 'time.user_waiting' or event_trigger == 'time.agent_waiting' %}
+	<div class="builder-type" title="Send auto-close warning email" data-rule-type="send_autoclose_warn_email" data-rule-group="Send Email" data-rule-handler="DeskPRO.Agent.RuleBuilder.SelectNewOption">
+		<div class="builder-options">
+			<select class="template_name" name="template_name">
+				<option value="DeskPRO:emails_user:ticket-autoclose-warn.html.twig">Default Template</option>
+				<option value="NEW">Create a new template</option>
+				{% for tpl in app.getDataRepository('Template').getCustomEmailsOfType('DeskPRO:emails_user:ticket-autoclose-warn.html.twig') %}
+					<option value="{{ tpl }}">{{ base_template_name(tpl) }}</option>
+				{% endfor %}
+			</select>
+			<input type="text" class="new_option" name="new_option" value="" style="display: none;" placeholder="Enter a unique name for your new template" />
+		</div>
+	</div>
+{% endif %}
+
 </div>
