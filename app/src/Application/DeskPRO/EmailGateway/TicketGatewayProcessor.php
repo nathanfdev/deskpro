@@ -108,6 +108,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	public function run()
 	{
+		// Better dupe checking based on the actual email being submitted.
+		if($this->reader->hasProperty('email_source') && $this->reader->getProperty('email_source')->uid) {
+			$has_processed = App::getDb()->fetchColumn("
+				SELECT id
+				FROM email_sources
+				WHERE uid = ? AND status = 'complete'
+				LIMIT 1
+			", array($this->reader->getProperty('email_source')->uid));
+
+			if ($has_processed) {
+				$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
+				$this->logMessage("Detected duplicate for source %d", $this->reader->getProperty('email_source')->uid);
+				return null;
+			}
+		}
+
+
 		$person_processor = new PersonFromEmailProcessor();
 
 		#-------------------------

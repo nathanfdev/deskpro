@@ -172,6 +172,12 @@ class Pop3 extends AbstractFetcher
 		$message_num  = $next['num'];
 		$message_id   = $next['uid'];
 
+		if (!$message_id) {
+			try {
+				$message_id = $this->getStorage()->getProtocol()->uniqueid($message_num);
+			} catch (\Exception $e) {}
+		}
+
 		$start_time = microtime(true);
 
 		$this->logger->log("Fetching message $message_num", 'debug');
