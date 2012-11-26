@@ -128,11 +128,15 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 
 	public function _invalidateLanguageCache()
 	{
-		App::getOrm()->delayedUpdate(function($em) {
-			// defer this until after the flush to avoid a race condition and make sure it's updated after insert
-			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-			$cache->invalidateLanguageCache();
-		});
+		$orm = App::getOrm();
+
+		if (method_exists($orm, 'delayedUpdate')) {
+			$orm->delayedUpdate(function($em) {
+				// defer this until after the flush to avoid a race condition and make sure it's updated after insert
+				$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+				$cache->invalidateLanguageCache();
+			});
+		}
 	}
 
 

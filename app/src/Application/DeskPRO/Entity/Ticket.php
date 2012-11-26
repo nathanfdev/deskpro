@@ -2326,13 +2326,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$reset = $this->_reset_slas;
 
 		if ($this->_recalculate_slas) {
-			App::getOrm()->delayedUpdate(function($em) use ($self, $reset) {
-				// this is deferred until all changes are done to ensure everything is correct
-				if ($reset) {
-					$self->resetSlaStatuses();
-				}
-				$self->recalculateSlaDates();
-			});
+			$orm = App::getOrm();
+
+			if (method_exists($orm, 'delayedUpdate')) {
+				$orm->delayedUpdate(function($em) use ($self, $reset) {
+					// this is deferred until all changes are done to ensure everything is correct
+					if ($reset) {
+						$self->resetSlaStatuses();
+					}
+					$self->recalculateSlaDates();
+				});
+			}
 		}
 
 		$this->_reset_slas = false;

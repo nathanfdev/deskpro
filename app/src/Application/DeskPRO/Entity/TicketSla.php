@@ -317,7 +317,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			App::getOrm()->delayedInsert($ticket_log);
+			$orm = App::getOrm();
+			if (method_exists($orm, 'delayedInsert')) {
+				App::getOrm()->delayedInsert($ticket_log);
+			}
 		}
 	}
 
@@ -338,7 +341,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			App::getOrm()->delayedInsert($ticket_log);
+			$orm = App::getOrm();
+			if (method_exists($orm, 'delayedInsert')) {
+				App::getOrm()->delayedInsert($ticket_log);
+			}
 		}
 	}
 
@@ -360,7 +366,10 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_log['details'] = $action->getLogDetails();
 
 		if ($ticket_log['details']) {
-			App::getOrm()->delayedInsert($ticket_log);
+			$orm = App::getOrm();
+			if (method_exists($orm, 'delayedInsert')) {
+				App::getOrm()->delayedInsert($ticket_log);
+			}
 		}
 	}
 
