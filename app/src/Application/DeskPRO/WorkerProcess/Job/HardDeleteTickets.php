@@ -74,10 +74,12 @@ class HardDeleteTickets extends AbstractJob
 			App::getDb()->beginTransaction();
 
 			try {
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket_id);
-				$ticket->setNoLog(true);
-				App::getOrm()->remove($ticket);
-				App::getOrm()->flush();
+				// Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
+				App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
+				App::getDb()->delete('tickets_search_message', array('id' => $ticket_id));
+				App::getDb()->delete('tickets_search_message_active', array('id' => $ticket_id));
+				App::getDb()->delete('tickets_search_subject', array('id' => $ticket_id));
+				App::getDb()->delete('tickets', array('id' => $ticket_id));
 				App::getDb()->commit();
 			} catch (\Exception $e) {
 				App::getDb()->rollback();
@@ -86,7 +88,7 @@ class HardDeleteTickets extends AbstractJob
 		}
 
 		if ($ticket_ids) {
-			$this->logStatus("Removed " . count($ticket_id) . " old soft-deleted tickets");
+			$this->logStatus("Removed " . count($ticket_ids) . " old soft-deleted tickets");
 		}
 	}
 }
