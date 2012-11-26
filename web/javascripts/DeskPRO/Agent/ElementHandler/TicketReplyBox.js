@@ -72,6 +72,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			});
 		}
 
+		var keepOpenBtn   = this.getElById('keep_open_toggle');
+		var keepOpenReply = this.el.data('close-reply') == '1' ? true : false;
+		var keepOpenNote  = this.el.data('close-note') == '1' ? true : false;
+
 		this.getElById('replybox_replytab_btn').on('click', function() {
 			self.el.removeClass('dp-note-on');
 			$(this).addClass('on');
@@ -79,6 +83,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-note:not(.is-hidden)', self.el).show();
 			$('.hide-reply', self.el).hide();
 			self.getElById('is_note').val('0');
+
+			if (keepOpenReply) {
+				keepOpenBtn.addClass('radio-on on');
+			} else {
+				keepOpenBtn.removeClass('radio-on on');
+			}
 
 			if (sigTrimmed) {
 				if (isWysiwyg && textarea.data('redactor')) {
@@ -113,6 +123,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-note', self.el).hide();
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
+
+			if (keepOpenNote) {
+				keepOpenBtn.addClass('radio-on on');
+			} else {
+				keepOpenBtn.removeClass('radio-on on');
+			}
 
 			if (isWysiwyg && textarea.data('redactor')) {
 				var reply = textarea.getCode();

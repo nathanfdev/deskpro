@@ -22,11 +22,6 @@
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<div class="ticket-sending-overlay" style="display: none;">
 		<strong><span class="hide-note">Sending your message</span><span class="hide-reply" style="display: none">Adding your note</span></strong>
-
-		<div class="close-tab-message">
-			<em>This tab will automatically close after your message is posted.</em>
-			<button class="keep-open-toggle clean-white" id="{{ replyBaseId }}_keep_open_toggle" data-keep-text="Click here to close this tab">Click here to keep this tab open</button>
-		</div>
 	</div>
 	<header>
 		<nav>
@@ -48,6 +43,10 @@
 			</ul>
 
 			<ul class="option-buttons right">
+				<li class="tipped closetab toggle keep_open_toggle {% if app.user.getPref('agent.ticket_close_reply', true) %}radio-on on{% endif %}" title="{{ phrase('agent.tickets.close_tab_after_reply') }}" id="{{ replyBaseId }}_keep_open_toggle">
+ 					<span>{{ phrase('agent.general.close_tab') }}<em class="check"></em></span>
+ 					<input type="checkbox" name="options[close_tab]" />
+ 				</li>
 				<li class="tipped article toggle hide-note" title="{{ phrase('agent.general.mark_as_pending_kb') }}">
 					<span><em class="check"></em></span>
 					<input type="checkbox" name="options[do_kbpending]"/>

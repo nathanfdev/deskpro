@@ -253,29 +253,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getReplyTextArea().data('disable-autosave', true);
 
 		var form = this.getEl('replybox_wrap').find('.ticket-reply-form');
-		var keepOpen = false;
-		if ($('#' + form.data('base-id') + '_is_note').val() == '1') {
-			keepOpen = (form.data('close-note') != '1');
-		} else {
-			keepOpen = (form.data('close-reply') != '1');
-		}
-
-		var keepToggle = this.getEl('replybox_wrap').find('.keep-open-toggle');
-		if (keepOpen) {
-			keepToggle.addClass('click-close');
-			if (!keepToggle.data('close-text')) {
-				keepToggle.data('close-text', keepToggle.text());
-			}
-			if (keepToggle.data('keep-text')) {
-				keepToggle.text(keepToggle.data('keep-text'));
-			}
-			keepToggle.siblings('em').hide();
-		} else {
-			keepToggle.removeClass('click-close');
-			if (keepToggle.data('close-text')) {
-				keepToggle.text(keepToggle.data('close-text'));
-			}
-			keepToggle.siblings('em').show();
+		var keepOpen = true;
+		if (this.getEl('replybox_wrap').find('.keep_open_toggle').hasClass('radio-on')) {
+			keepOpen = false;
 		}
 
 		var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
@@ -284,22 +264,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('replybox_wrap').find('textarea.touched').removeClass('touched');
 
 		DeskPRO_Window.getMessageChanneler().poller.pause();
-
-		window.setTimeout(function() {
-			closetabTimeoutHit = true;
-			if (ajaxHit) {
-				hitDone();
-			}
-		}, 3000);
-
 		function hitDone() {
 			hitRun = true;
 			DeskPRO_Window.getMessageChanneler().poller.unpause();
 
-			var el = self.getEl('replybox_wrap').find('.keep-open-toggle:first');
-			if ((el.hasClass('click-close') && el.hasClass('radio-on'))
-				|| (!el.hasClass('click-close') && !el.hasClass('radio-on'))
-			) {
+			if (!keepOpen) {
 				self.closeSelf();
 				return;
 			}
@@ -374,9 +343,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 
 				ajaxHit = result;
-				if (closetabTimeoutHit) {
-					hitDone();
-				}
+				hitDone();
 			}
 		});
 	},
