@@ -213,10 +213,12 @@
 		<div class="builder-options">
 			<select name="agent">
 				<option value="0">{{ phrase('agent.general.unassigned') }}</option>
-				<option value="-1">{{ phrase('agent.general.current_agent') }}</option>
-				{% for id,label in term_options.agents %}
-					<option value="{{id}}">{{label}}</option>
-				{% endfor %}
+				<option value="-1">Me</option>
+				<optgroup label="Agents">
+					{% for id,label in term_options.agents %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</optgroup>
 			</select>
 		</div>
 	</div>
@@ -240,10 +242,12 @@
 			<div class="builder-options">
 				<select name="agent_team">
 					<option value="0">{{ phrase('agent.general.no_team') }}</option>
-					<option value="-1">{{ phrase('agent.general.any_of_current_agents_teams') }}</option>
-					{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
-						<option value="{{id}}">{{title}}</option>
-					{% endfor %}
+					<option value="-1">Any of my teams</option>
+					<optgroup label="Teams">
+						{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
+							<option value="{{id}}">{{title}}</option>
+						{% endfor %}
+					</optgroup>
 				</select>
 			</div>
 		</div>
