@@ -188,6 +188,23 @@ var DP = {
 					options.formatSelection = formatter;
 					break;
 			}
+		} else {
+			var withFullTitle = el.find('option[data-full-title]');
+			if (withFullTitle[0]) {
+				withFullTitle.each(function() {
+					$(this).data('single-title', $(this).text().trim());
+					$(this).text($(this).data('full-title'));
+				});
+
+				options.formatResult = function(result) {
+					var opt = el.find('option[value="' + result.id + '"]');
+					if (!opt || !opt[0]) {
+						return result.text || '';
+					}
+					var name = Orb.escapeHtml(opt.data('single-title'));
+					return name;
+				};
+			}
 		}
 
 		if (el.data('select-nogrouptitle')) {
