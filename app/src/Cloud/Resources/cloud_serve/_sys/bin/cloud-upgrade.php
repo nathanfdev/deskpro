@@ -169,7 +169,7 @@ foreach ($sites as $siteinfo) {
 
 	$db->exec("UPDATE cloud_sites SET sys_disabled = 'upgrading' WHERE id = {$siteinfo['id']}");
 
-	$cmd = "php upgrade.php $pass_args_set";
+	$cmd = "/usr/bin/nice -n 9 /usr/bin/php upgrade.php $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $build_num);
 	$proc->run(function($type, $data) {

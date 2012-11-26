@@ -352,7 +352,7 @@ foreach ($sites as $siteinfo) {
 	$pass_args_set = $pass_args;
 	$pass_args_set = str_replace('%DPC_SITE_ID%', $siteinfo['id'], $pass_args_set);
 
-	$cmd = "php cron.php --verbose $pass_args_set";
+	$cmd = "/usr/bin/nice -n 3 /usr/bin/php cron.php --verbose $pass_args_set";
 	dp_log("\tCommand: $cmd");
 	$proc = new Process($cmd, CloudConfig::getBuildsPath() . '/' . $siteinfo['build_number']);
 	$proc->setTimeout(900);
