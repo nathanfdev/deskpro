@@ -62,9 +62,12 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
 		$helpdesk_emails = Arrays::removeFalsey($helpdesk_emails);
 
+		$rejection_count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus(array('ticket', 'ticketmessage'));
+
 		return $this->render('@list.html.twig', array(
 			'all_gateways' => $all_gateways,
 			'helpdesk_emails' => $helpdesk_emails,
+			'rejection_count' => $rejection_count,
 		));
 	}
 

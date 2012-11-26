@@ -47,9 +47,13 @@ class EmailGatewayErrorsController extends AbstractController
 	# index
 	####################################################################################################################
 
-	public function indexAction()
+	public function indexAction($type)
 	{
-		$count = $this->em->getRepository('DeskPRO:EmailSource')->countForStatus(array('ticket', 'ticketmessage'), 'error');
+		if ($type == 'errors') {
+			$count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+		} else {
+			$count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus(array('ticket', 'ticketmessage'));
+		}
 
 		$per_page = 25;
 		$p = $this->in->getUint('p');
@@ -57,16 +61,27 @@ class EmailGatewayErrorsController extends AbstractController
 
 		$pageinfo = Numbers::getPaginationPages($count, $p, $per_page, 5);
 
-		$sources = $this->em->getRepository('DeskPRO:EmailSource')
-			 ->createQueryForTypeAndStatus(array('ticket', 'ticketmessage'), 'error')
-			 ->setFirstResult(($p - 1) * $per_page)
-			 ->setMaxResults($per_page)
-			 ->execute();
+		if ($type == 'errors') {
+			$sources = $this->em->createQuery("
+				SELECT source
+				FROM DeskPRO:EmailSource source
+				WHERE source.object_type IN ('ticket','ticketmessage') AND source.status = 'error' AND source.error_code = 'server_error'
+				ORDER BY source.id DESC
+			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute();
+		} else {
+			$sources = $this->em->createQuery("
+				SELECT source
+				FROM DeskPRO:EmailSource source
+				WHERE source.object_type IN ('ticket','ticketmessage') AND source.status = 'error' AND source.error_code != 'server_error'
+				ORDER BY source.id DESC
+			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute();
+		}
 
 		return $this->render('AdminBundle:EmailGatewayErrors:index.html.twig', array(
 			'pageinfo'  => $pageinfo,
 			'count'     => $count,
-			'sources'   => $sources
+			'sources'   => $sources,
+			'type'      => $type,
 		));
 	}
 
@@ -87,9 +102,12 @@ class EmailGatewayErrorsController extends AbstractController
 			$data_structure = $source->getSourceInfoAsString();
 		}
 
+		$type = $source->error_code == 'server_error' ? 'errors' : 'rejections';
+
 		return $this->render('AdminBundle:EmailGatewayErrors:view.html.twig', array(
 			'source' => $source,
 			'data_structure' => $data_structure,
+			'type' => $type,
 		));
 	}
 
@@ -97,11 +115,15 @@ class EmailGatewayErrorsController extends AbstractController
 	# clear
 	####################################################################################################################
 
-	public function clearAction($security_token)
+	public function clearAction($type, $security_token)
 	{
 		$this->ensureAuthToken('clear_gateway_errors', $security_token);
 
-		$where = "object_type IN ('ticket', 'ticketmessage') AND status = 'error'";
+		if ($type == 'errors') {
+			$where = "object_type IN ('ticket', 'ticketmessage') AND status = 'error' AND error_code = 'server_error'";
+		} else {
+			$where = "object_type IN ('ticket', 'ticketmessage') AND status = 'error' AND error_code != 'server_error'";
+		}
 		$blob_ids = App::getDb()->fetchAllCol("SELECT blob_id FROM email_sources WHERE $where AND blob_id IS NOT NULL");
 
 		$this->db->executeUpdate("DELETE FROM email_sources WHERE $where");
@@ -111,7 +133,11 @@ class EmailGatewayErrorsController extends AbstractController
 			$desc->delete();
 		}
 
-		return $this->redirectRoute('admin_emailgateway_errors');
+		if ($type == 'errors') {
+			return $this->redirectRoute('admin_emailgateway_errors');
+		} else {
+			return $this->redirectRoute('admin_emailgateway_rejections');
+		}
 	}
 
 	####################################################################################################################
@@ -136,7 +162,11 @@ class EmailGatewayErrorsController extends AbstractController
 			$desc->delete();
 		}
 
-		return $this->redirectRoute('admin_emailgateway_errors');
+		if ($source->error_code == 'server_error') {
+			return $this->redirectRoute('admin_emailgateway_errors');
+		} else {
+			return $this->redirectRoute('admin_emailgateway_rejections');
+		}
 	}
 
 	####################################################################################################################
@@ -153,6 +183,8 @@ class EmailGatewayErrorsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$type = $source->error_code == 'server_error' ? 'errors' : 'rejections';
+
 		$source['status'] = 'inserted';
 		$source['error_code'] = null;
 
@@ -161,6 +193,7 @@ class EmailGatewayErrorsController extends AbstractController
 
 		return $this->render('AdminBundle:EmailGatewayErrors:reprocess-result.html.twig', array(
 			'source' => $source,
+			'type'   => $type,
 		));
 	}
 }

@@ -83,6 +83,50 @@ class EmailSource extends AbstractEntityRepository
 
 
 	/**
+	 * @param array $types
+	 * @return int
+	 */
+	public function countErrorStatus(array $types)
+	{
+		$params = array_values($types);
+		$params[] = 'error';
+		$params[] = 'server_error';
+
+		$types_place = implode(',', array_fill(0, count($types), '?'));
+
+		$count = $this->_em->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM {$this->getTableName()}
+			WHERE object_type IN ($types_place) AND status = ? AND error_code = ?
+		", $params);
+
+		return $count;
+	}
+
+
+	/**
+	 * @param array $types
+	 * @return int
+	 */
+	public function countRejectionStatus(array $types)
+	{
+		$params = array_values($types);
+		$params[] = 'error';
+		$params[] = 'server_error';
+
+		$types_place = implode(',', array_fill(0, count($types), '?'));
+
+		$count = $this->_em->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM {$this->getTableName()}
+			WHERE object_type IN ($types_place) AND status = ? AND error_code != ?
+		", $params);
+
+		return $count;
+	}
+
+
+	/**
 	 * Count the number of email sources with a particular type and status, grouped
 	 * by the error code.
 	 *

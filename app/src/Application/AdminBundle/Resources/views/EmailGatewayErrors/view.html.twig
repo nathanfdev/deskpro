@@ -2,7 +2,8 @@
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
-		<li><a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.general.gateway_error_logs') }}</a></li>
+		{% if type == 'errors' %}<li><a href="{{ path('admin_emailgateway_errors') }}">Errors</a></li>
+		{% else %}<li><a href="{{ path('admin_emailgateway_rejections') }}">Rejections</a></li>{% endif %}
 		<li>{{ phrase('admin.general.gateway_source_id', {id: source.id}) }}</li>
 	</ul>
 {% endblock %}

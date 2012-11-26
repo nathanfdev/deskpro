@@ -283,7 +283,7 @@ $(document).ready(function() {
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li style="margin-right: 8px;"><a href="{{ path('admin_emailgateway_errors') }}">View Rejections and Errors</a></li>
+			<li style="margin-right: 8px;"><a href="{{ path('admin_emailgateway_rejections') }}">View Rejections ({{ rejection_count|default('0') }})</a></li>
 			<li class="add"><a href="#" id="newcat_trigger">{{ phrase('admin.gateway.add_email_gateway') }}</a></li>
 		</ul>
 	</nav>

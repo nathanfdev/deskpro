@@ -75,7 +75,7 @@
 {% include 'AdminBundle:Main:welcome-box.html.twig' %}
 {% include 'AdminBundle:Main:onboarding.html.twig' %}
 
-{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or app.getSetting('core.error_unable_allocate_memory') %}
+{% if app.getVariable('cron_is_problem') or is_cron_crash or error_count or gateway_error_count or app.getSetting('core.error_unable_allocate_memory') %}
 <div class="content-table" style="border: 1px solid #A31612;">
 	<table width="100%">
 		<thead>
@@ -86,6 +86,13 @@
 			</tr>
 		</thead>
 		<tbody>
+			{% if gateway_error_count %}
+				<tr>
+					<td>
+						There are <a href="{{ path('admin_emailgateway_errors') }}">{{ gateway_error_count }} logged email gateway errors</a>. You should investigate these errors and try to re-process the failed emails.
+					</td>
+				</tr>
+			{% endif %}
 			{% if error_count %}
 				<tr>
 					<td>

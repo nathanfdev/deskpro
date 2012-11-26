@@ -2318,34 +2318,48 @@ $collection->add('admin_server_task_queue_logs', new Route(
 
 $collection->add('admin_emailgateway_errors', new Route(
 	'/email/gateway-errors',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:index'),
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'errors'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateway_rejections', new Route(
+	'/email/gateway-rejections',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'rejections'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_errors_clear', new Route(
 	'/email/gateway-errors/clear/{security_token}',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear'),
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'errors'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateway_rejections_clear', new Route(
+	'/email/gateway-rejections/clear/{security_token}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'rejections'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_errors_view', new Route(
-	'/email/gateway-errors/{id}',
+	'/email/gateway-sources/{id}',
 	array('_controller' => 'AdminBundle:EmailGatewayErrors:view'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_errors_delete', new Route(
-	'/email/gateway-errors/{id}/delete/{security_token}',
+	'/email/gateway-sources/{id}/delete/{security_token}',
 	array('_controller' => 'AdminBundle:EmailGatewayErrors:delete'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_reprocess', new Route(
-	'/email/gateway-errors/{id}/reprocess/{security_token}',
+	'/email/gateway-sources/{id}/reprocess/{security_token}',
 	array('_controller' => 'AdminBundle:EmailGatewayErrors:reprocess'),
 	array(),
 	array()

@@ -86,18 +86,21 @@ class MainController extends AbstractController
 
 		$onboard = new \Application\AdminBundle\OnboardNotices();
 
+		$gateway_error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+
 		return $this->render('AdminBundle:Main:index.html.twig', array(
-			'onboard'            => $onboard,
-			'lic'                => License::getLicense(),
-			'notice_items'       => $notice_items,
-			'online_agents'      => $online_agents,
-			'count_online_users' => $count_online_users,
-			'stats'              => $stats,
-			'error_count'        => $error_count,
-			'is_cron_crash'      => $is_cron_crash,
-			'cron_running_time'  => $cron_running_time,
-			'last_login'         => $last_login,
-			'show_task_status'   => $show_task_status
+			'onboard'             => $onboard,
+			'lic'                 => License::getLicense(),
+			'notice_items'        => $notice_items,
+			'online_agents'       => $online_agents,
+			'count_online_users'  => $count_online_users,
+			'stats'               => $stats,
+			'error_count'         => $error_count,
+			'is_cron_crash'       => $is_cron_crash,
+			'cron_running_time'   => $cron_running_time,
+			'last_login'          => $last_login,
+			'show_task_status'    => $show_task_status,
+			'gateway_error_count' => $gateway_error_count,
 		));
 	}
 

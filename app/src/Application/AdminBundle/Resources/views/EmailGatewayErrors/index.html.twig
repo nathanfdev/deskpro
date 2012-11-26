@@ -2,12 +2,20 @@
 {% block pagebar %}
 <nav>
 	<ul>
-		<li><a href="{{ path('admin_emailgateway_errors_clear', {security_token: security_token('clear_gateway_errors') }) }}">{{ phrase('admin.general.clear_logs') }}</a></li>
+		{% if type == 'errors' %}
+			<li><a href="{{ path('admin_emailgateway_errors_clear', {security_token: security_token('clear_gateway_errors') }) }}">Clear Errors</a></li>
+		{% else %}
+			<li><a href="{{ path('admin_emailgateway_rejections_clear', {security_token: security_token('clear_gateway_errors') }) }}">Clear Rejections</a></li>
+		{% endif %}
 	</ul>
 </nav>
 <ul>
 	<li><a href="{{ path('admin_emailgateways') }}">Email Accounts</a></li>
-	<li>{{ phrase('admin.general.gateway_error_logs') }}</li>
+	{% if type == 'errors' %}
+		<li>Errors</li>
+	{% else %}
+		<li>Rejections</li>
+	{% endif %}
 </ul>
 {% endblock %}
 {% block page %}
@@ -17,7 +25,9 @@
 		<tr>
 			<th style="text-align: center;" width="10">{{ phrase('agent.general.id') }}</th>
 			<th style="text-align: left;">{{ phrase('admin.general.email_info') }}</th>
-			<th style="text-align: right">{{ phrase('admin.general.error_type') }}</th>
+			{% if type == 'rejections' %}
+				<th style="text-align: right">Rejection Type</th>
+			{% endif %}
 		</tr>
 		</thead>
 		<tbody>
@@ -49,9 +59,30 @@
 								</div>
 							</td>
 						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<a class="clean-white tipped small" title="View information about the email source" href="{{ path('admin_emailgateway_errors_view', {id: source.id}) }}">View Details</a>
+								<a class="clean-white tipped small" title="Deletes this rejection log and the original email source." href="{{ path('admin_emailgateway_errors_delete', {id: source.id, security_token: security_token('delete_gateway_error')}) }}">{{ phrase('agent.general.delete') }}</a>
+								<a class="clean-white tipped small" title="Download the raw email source" href="{{ source.blob.getDownloadUrl() }}">Download Source ({{ source.blob.getReadableFilesize() }})</a>
+								<a class="clean-white tipped small" title="Attempts to reprocess the email." href="{{ path('admin_emailgateway_reprocess', {id: source.id, security_token: security_token('reprocess_gateway_error')}) }}">Reprocess Email</a>
+							</td>
+						</tr>
 					</table>
 				</td>
-				<td style="text-align: right; white-space: nowrap;" nowrap="nowrap">{{ source.error_code_title }}</td>
+				{% if type == 'rejections' %}
+					<td style="text-align: right; white-space: nowrap;" nowrap="nowrap">{{ source.error_code_title }}</td>
+				{% endif %}
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="10" style="text-align: center; padding: 20px;">
+					{% if type == 'errors' %}
+						There are no logged errors.
+					{% else %}
+						There are no logged rejections.
+					{% endif %}
+				</td>
 			</tr>
 		{% endfor %}
 		</tbody>
