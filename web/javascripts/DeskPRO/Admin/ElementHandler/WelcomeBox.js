@@ -10,7 +10,9 @@ DeskPRO.Admin.ElementHandler.WelcomeBox = new Orb.Class({
 		var submitUrl  = formWrap.data('submit-url');
 
 		messageTxt.one('focus', function() {
-			$(this).animate({height: '100px'}, 500);
+			$(this).animate({height: '100px', width: '622px'}, 500);
+			formWrap.find('button.send-mock').hide();
+			formWrap.find('button.send-trigger').fadeIn(250);
 			formWrap.find('.email-addy-wrap').fadeIn(250);
 		});
 
