@@ -58,6 +58,13 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
 			'ReportBundle:Chart:DeskPRO/detailedDrillDown.html.twig',
 			'ReportBundle:Chart:DeskPRO/simpleDrillDown.html.twig',
 			'ReportBundle:Chart:DeskPRO/simpleVariation.html.twig',
+
+			'Highrise:Admin:config.html.twig',
+			'HipChat:Admin:config.html.twig',
+			'HipChat:Admin:ticket-trigger-actions.html.twig',
+			'Magento:Admin:config.html.twig',
+			'Magento:Admin:usersource-edit-magento.html.twig',
+			'Salesforce:Admin:config.html.twig',
 		);
 
         foreach ($extra as $template_name) {
