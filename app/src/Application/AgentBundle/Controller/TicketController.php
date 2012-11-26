@@ -2805,9 +2805,20 @@ class TicketController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
-		$q = $this->em->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0");
-		$q->setFetchMode('DeskPRO:Person', 'person', 'EAGER');
-		$q->setFetchMode('DeskPRO:Person', 'agent', 'EAGER');
+		$q = $this->em->createQuery("
+			SELECT t, person, person_primary_email, agent,
+				agent_team, language, department, organization, locked_by_agent
+			FROM DeskPRO:Ticket t
+			LEFT JOIN t.person person
+			LEFT JOIN person.primary_email person_primary_email
+			LEFT JOIN t.agent agent
+			LEFT JOIN t.agent_team agent_team
+			LEFT JOIN t.language language
+			LEFT JOIN t.department department
+			LEFT JOIN t.organization organization
+			LEFT JOIN t.locked_by_agent locked_by_agent
+			WHERE t.id = ?0
+		");
 		$q->setParameters(array($ticket_id));
 
 		$ticket = $q->getOneOrNullResult();
