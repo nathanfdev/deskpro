@@ -119,7 +119,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		static $done_pcheck;
-		if (!$done_pcheck) {
+		if (!$done_pcheck && $action != 'articleAgentIframeAction') {
 			$done_pcheck = true;
 			if (!$this->sectionPermissionCheck()) {
 				return $this->renderLoginOrPermissionError();
