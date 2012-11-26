@@ -209,13 +209,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * Renders the login form if the user isn't logged in, or a standard permission error if they are already logged in.
 	 */
-	public function renderLoginOrPermissionError($return_url = '')
+	public function renderLoginOrPermissionError($return_url = '', $type = 'login')
 	{
 		if ($this->person->getId()) {
 			return $this->renderStandardError('@user.error.permission-denied');
 		}
 
-		return $this->forward('UserBundle:Login:index', array(), array('return' => $return_url));
+		$act = 'UserBundle:Login:index';
+		if ($type == 'reset') {
+			$act = 'UserBundle:Login:resetPassword';
+		}
+
+		return $this->forward($act, array(), array('return' => $return_url));
 	}
 
 

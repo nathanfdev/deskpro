@@ -101,7 +101,21 @@ class TicketViewController extends AbstractController
 						if ($ticket && $this->person->isGuest()) {
 							$this->session->set('ticket_from_ptac_register', $ticket->id);
 							$this->session->save();
-							return $this->renderLoginOrPermissionError($return);
+
+							$tpl_globals = $this->container->get('templating.globals');
+
+							if ($ticket->person_email) {
+								$tpl_globals->setVariable('login_with_email', $ticket->person_email->email);
+							} elseif ($ticket->person && $ticket->person->getPrimaryEmailAddress()) {
+								$tpl_globals->setVariable('login_with_email', $ticket->person->getPrimaryEmailAddress());
+							}
+
+							$type = 'login';
+							if (!$ticket->person->is_user) {
+								$type = 'reset';
+							}
+
+							return $this->renderLoginOrPermissionError($return, $type);
 						}
 
 						if ($ticket->person->getId() == $this->person->getId() || $ticket->hasParticipantPerson($this->person)) {
