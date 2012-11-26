@@ -19,8 +19,6 @@
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 
-	{% include 'UserBundle::layout-resources.html.twig' %}
-
 	{% if app.admin_portal_controls %}
 		<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
 		{{ dp_asset_html('agent_vendors') }}
@@ -28,6 +26,8 @@
 		{{ dp_asset_html('user_portaladmin') }}
 		{{ dp_asset_html('user_portaladmin_css') }}
 	{% endif %}
+
+	{% include 'UserBundle::layout-resources.html.twig' %}
 
 	{% block head %}{% endblock %}
 	{% include 'UserBundle::custom-headinclude.html.twig' %}
