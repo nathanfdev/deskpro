@@ -292,18 +292,10 @@
 	<script type="text/javascript">
 	var DpChatWidget_Options = DpChatWidget_Options || {};
 	DpChatWidget_Options.protocol        = 'https:' == document.location.protocol ? 'https' : 'http';
-	DpChatWidget_Options.staticUrl       = DpChatWidget_Options.protocol + '://{{ asset_url('')|url_trim_scheme }}';
 	DpChatWidget_Options.deskproUrl      = DpChatWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
 	DpChatWidget_Options.currentPageUrl  = window.location;
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
 	{% if constant('DP_DEBUG') %}var DpChatWidget_EnableDebug = true;{% endif %}
-	{% if app.getSetting('user.chat_intercept_leaving_domains') %}
-	DpChatWidget_Options.interceptLeavingDomains = [
-		{% for domain in app.getSetting('user.chat_intercept_leaving_domains')|explode(',') %}
-			{{ domain|json_encode|raw }}{% if not loop.last %},{% endif %}
-		{% endfor %}
-	];
-	{% endif %}
 
 	(function() {
 		var scr = document.createElement('script');

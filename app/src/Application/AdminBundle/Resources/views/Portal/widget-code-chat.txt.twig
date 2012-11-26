@@ -1,8 +1,8 @@
 <!-- DeskPRO Chat -->
 <script type="text/javascript">
 	var DpChatWidget_Options = DpChatWidget_Options || {};
-	DpChatWidget_Options.deskproUrl = '{{ url('user') }}';
 	DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	DpChatWidget_Options.deskproUrl = DpChatWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
 	DpChatWidget_Options.currentPageUrl = window.location;
 	DpChatWidget_Options.referrerPageUrl = document.referrer;
 
@@ -11,7 +11,7 @@
 			var scr   = document.createElement('script');
 			scr.type  = 'text/javascript';
 			scr.async = true;
-			scr.src   = '{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
+			scr.src   = '//{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js')|url_trim_scheme }}';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}

@@ -2,7 +2,8 @@
 <div id="dp_newticket_form" style="display: none;"></div>
 <script type="text/javascript">
 	var DpNewTicket_Options = DpNewTicket_Options || {};
-	DpNewTicket_Options.deskproUrl = '{{ url('user') }}';
+	DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
 	DpNewTicket_Options.initialHeight = 700;
 	DpNewTicket_Options.containerId = 'dp_newticket_form';
 	DpNewTicket_Options.departmentId = 0;
@@ -12,7 +13,7 @@
 			var scr   = document.createElement('script');
 			scr.type  = 'text/javascript';
 			scr.async = true;
-			scr.src   = '{{ asset_url('javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js') }}';
+			scr.src   = '//{{ asset_url('javascripts/DeskPRO/User/TicketFormWidget/TicketFormWidget.js')|url_trim_scheme }}';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}

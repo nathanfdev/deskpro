@@ -1,15 +1,15 @@
 <!-- DeskPRO Widget -->
 <script type="text/javascript">
 	var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
-	DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
 	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	DpOverlayWidget_Options.deskproUrl = DpOverlayWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
 
 	if (document.getElementsByTagName) {
 		(function() {
 			var scr   = document.createElement('script');
 			scr.type  = 'text/javascript';
 			scr.async = true;
-			scr.src = '{{ asset_url('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
+			scr.src = '//{{ asset_url('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js')|url_trim_scheme }}';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}
