@@ -29,37 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace DeskPRO\Kernel;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
-
-use Application\DeskPRO\App;
-
-class ApiKernel extends AbstractKernel
+class Build1353942295 extends AbstractBuild
 {
-	protected function registerAdditionalBundles()
+	public function run()
 	{
-		$bundles = array(
-			new \Application\ApiBundle\ApiBundle(),
-			new \Application\AgentBundle\AgentBundle(),
-		);
-
-		return $bundles;
-	}
-
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		$loader->load(DP_ROOT.'/sys/config/api/config_'.$this->getEnvironment().'.php');
+		$this->out("Add tickets.properties");
+		$this->execMutateSql("ALTER TABLE tickets ADD properties LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)'");
 	}
 }

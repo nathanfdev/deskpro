@@ -364,6 +364,17 @@ $collection->add('api_tickets_sla_organizations', new Route(
 ));
 
 ################################################################################
+# Open Ticket Controller
+################################################################################
+
+$collection->add('api_open_tickets_newticketmessage', new Route(
+	'/open/tickets/new-ticket-message',
+	array('_controller' => 'ApiBundle:OpenTicket:newTicketMessage'),
+	array('_method' => 'POST', 'sla_id' => '\\d+'),
+	array()
+));
+
+################################################################################
 # Ticket filters
 ################################################################################
 

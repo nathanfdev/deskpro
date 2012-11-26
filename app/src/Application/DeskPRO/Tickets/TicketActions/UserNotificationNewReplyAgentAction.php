@@ -97,7 +97,53 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			}
 		}
 
-		$this->doSend($tpl, $vars, $ticket, $change_info);
+		if ($ticket->getProperty('send_reply_service')) {
+			$this->tracker->logMessage("[UserNotificationNewReplyAgent] Send via send_reply_service");
+			try {
+				$client = new \Zend\Http\Client(null, array('timeout' => 30, 'strictredirects' => true));
+				$client->setMethod(\Zend\Http\Request::METHOD_POST);
+				$client->setUri($ticket->getProperty('send_reply_service'));
+
+				$data = array();
+				$data['subject'] = $ticket->getSubject();
+				$data['message'] = $this->via_message->getMessageHtml();
+				$data['email']   = $this->via_message->person->getPrimaryEmailAddress();
+				$data['name']    = $this->via_message->person->name;
+
+				if ($ticket->getProperty('send_reply_tac')) {
+					$data['tac'] = $ticket->getProperty('send_reply_tac');
+				}
+
+				$data['my_tac'] = $ticket->getAccessCode();
+				$data['my_reply_service'] = App::getRouter()->generateUrl('user') . 'api/open/tickets/new-ticket-message';
+
+				$client->getRequest()->post()->fromArray($data);
+				$r = $client->send();
+				$r = $r->getBody();
+
+				$data = null;
+				if ($r) {
+					$data = @json_decode($r, true);
+				}
+
+				$this->tracker->logMessage("[UserNotificationNewReplyAgent] send_reply_service result: " . $r);
+
+				if (!$data || !isset($data['success'])) {
+					$this->tracker->logMessage("[UserNotificationNewReplyAgent] Invalid result from send_reply_service");
+					throw new \InvalidArgumentException("Invalid result from send_reply_service");
+				}
+
+				$ticket->setProperty('send_reply_tac', $data['tac']);
+				App::getOrm()->persist($ticket);
+				App::getOrm()->flush();
+
+			} catch (\Exception $e) {
+				$this->tracker->logMessage("[UserNotificationNewReplyAgent] send_reply_service exception: " . $e->getMessage());
+				$this->doSend($tpl, $vars, $ticket, $change_info);
+			}
+		} else {
+			$this->doSend($tpl, $vars, $ticket, $change_info);
+		}
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}

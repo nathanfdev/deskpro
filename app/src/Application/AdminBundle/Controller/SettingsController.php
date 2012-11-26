@@ -481,6 +481,9 @@ class SettingsController extends AbstractController
 				}
 
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
+
+				\Application\InstallBundle\Data\DataInitializer::newDefaultTicket($this->person);
+
 				return $this->redirectRoute('admin');
 			}
 		}

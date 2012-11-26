@@ -34,7 +34,7 @@
 
 namespace Application\InstallBundle\Data;
 
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -265,57 +265,54 @@ class DataInitializer
 		if ($this->is_import) {
 			return;
 		}
+	}
 
-		#------------------------------
-		# Example ticket
-		#------------------------------
-
-		// FEATURE: sample ticket
-		return;
-
-		$department = $this->container->getEm()
-				->createQuery("SELECT d FROM DeskPRO:Department d ORDER BY d.id DESC")
-				->setMaxResults(1)
-				->getOneOrNullResult();
+	public static function newDefaultTicket($for_agent)
+	{
+		$department = App::getDataService('Department')->getDefaultTicketDepartment();
 
 		$user = Person::newContactPerson(array(
-			'name' => 'DeskPRO Support',
+			'name' => 'Christopher Padfield',
 			'email' => 'support@deskpro.com',
 			'is_confirmed' => true,
 		));
 		$user->getPrimaryEmail()->is_validated = true;
 
-		$this->container->getEm()->persist($user);
+		App::getOrm()->persist($user);
 
 		$ticket = new Ticket();
 		$ticket->getTicketLogger()->recordExtra('is_install', true);
 		$ticket->creation_system = Ticket::CREATED_WEB_PERSON;
 		$ticket->person          = $user;
-		$ticket->agent           = $this->getAdminUser();
+		$ticket->agent           = $for_agent;
 		$ticket->department      = $department;
 		$ticket->subject         = 'Welcome to DeskPRO';
 		$ticket->status          = Ticket::STATUS_AWAITING_AGENT;
+		$ticket->setProperty('send_reply_service', 'https://support.deskpro.com/api/open/tickets/new-ticket-message');
+		$ticket->setProperty('allow_send_reply_service', true);
 
-		$this->container->getEm()->persist($ticket);
+		App::getOrm()->persist($ticket);
+
+		$agent_name = $for_agent->getDisplayName();
 
 		$message = new TicketMessage();
 		$message->person  = $user;
 		$message->ticket  = $ticket;
 		$message->message = <<<STR
-Welcome to DeskPRO!<br /><br />
+Hello $agent_name, welcome to DeskPRO.<br /><br />
 
-This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to reply, close or delete this whenever you want.<br /><br />
+This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to close or delete this whenever you want.<br /><br />
 
-If you run into any problems or have any questions, you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.<br /><br />
+If you have any questions or run into any problems, you can simply reply to this ticket or you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.
 
 Best Regards,<br /><br />
 
-The DeskPRO Team
+Christopher Padfield
+<a href="http://www.deskpro.com/">www.deskpro.com</a>
 STR;
 		$ticket->addMessage($message);
 
-		$this->container->getEm()->persist($message);
-
-		$this->container->getEm()->flush();
+		App::getOrm()->persist($message);
+		App::getOrm()->flush();
 	}
 }

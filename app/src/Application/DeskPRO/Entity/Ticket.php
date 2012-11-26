@@ -368,6 +368,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $subject;
 
 	/**
+	 * @var array
+	 */
+	protected $properties = null;
+
+	/**
 	 * @var string|null
 	 */
 	protected $worst_sla_status = null;
@@ -2642,6 +2647,48 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return strpos($this->creation_system, '.agent') !== false;
 	}
 
+
+	/**
+	 * Get property from properties array
+	 *
+	 * @param string $key
+	 * @param mixed  $default
+	 * @return mixed
+	 */
+	public function getProperty($key, $default = null)
+	{
+		return ($this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default);
+	}
+
+
+	/**
+	 * Set properties
+	 *
+	 * @param  $key
+	 * @param  $value
+	 * @return void
+	 */
+	public function setProperty($key, $value)
+	{
+		$old = $this->properties;
+
+		if ($value === null) {
+			if ($this->properties) {
+				unset($this->properties[$key]);
+			}
+			if (!$this->properties) {
+				$this->properties = null;
+			}
+		} else {
+			if ($this->properties === null) {
+				$this->properties = array();
+			}
+			$this->properties[$key] = $value;
+		}
+
+		$this->_onPropertyChanged('properties', $old, $this->properties);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -2703,6 +2750,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_locked', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_locked', ));
 		$metadata->mapField(array( 'fieldName' => 'has_attachments', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_attachments', ));
 		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
+		$metadata->mapField(array( 'fieldName' => 'properties', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'properties', ));
 		$metadata->mapField(array( 'fieldName' => 'worst_sla_status', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'worst_sla_status', ));
 		$metadata->mapField(array( 'fieldName' => 'waiting_times', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'waiting_times', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

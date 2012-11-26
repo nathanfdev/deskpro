@@ -243,7 +243,7 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 		# send the auto-reply
 		#------------------------------
 
-		if ($this->enable_notify) {
+		if ($this->enable_notify && !$this->tracker->isExtraSet('suppress_user_notify')) {
 
 			if ($ticket->isAgentCreated()) {
 				$tpl = $this->newticket_agent_email_tpl;

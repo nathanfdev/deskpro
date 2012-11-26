@@ -992,6 +992,11 @@ class AgentsController extends AbstractController
 				'value_array' => null,
 				'date_expire' => null
 			));
+
+			// If still in demo mode, send the default ticket as well
+			if (\DeskPRO\Kernel\License::getLicense()->isDemo()) {
+				\Application\InstallBundle\Data\DataInitializer::newDefaultTicket($agent);
+			}
 		}
 
 		$this->session->setFlash('saved_agent', 1);
