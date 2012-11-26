@@ -746,9 +746,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		// Clean out PTAC's on this ticket to prevent mistakes with forwarding
-		foreach ($this->ticket->access_codes as $code) {
-			$email_info['body']      = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body']);
-			$email_info['body_full'] = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body_full']);
+		// (Check on ticket since this can still be called from newticket if the users original ticket was closed)
+		if ($this->ticket) {
+			foreach ($this->ticket->access_codes as $code) {
+				$email_info['body']      = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body']);
+				$email_info['body_full'] = str_replace('(#' . $code->getAccessCode() . ')', '', $email_info['body_full']);
+			}
 		}
 
 		$email_info['body_raw'] = $body_raw;
