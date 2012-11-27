@@ -345,21 +345,18 @@ class KernelErrorHandler
 		if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
 
 			$written = @fwrite($fh, $str);
-			@fclose($fh);
 
 			if ($written) {
 				self::$wrote_log_file = dp_get_log_dir() . '/error.log';
 
-				// Max 15MB
-				if (filesize(self::$wrote_log_file) > 15728640) {
-					$file = @file_get_contents(self::$wrote_log_file);
-					if ($file) {
-						$file = substr($file, -15728640);
-						@file_put_contents(self::$wrote_log_file, $file);
-						$file = null;
-					}
+				// Max 30MB
+				$stat = @fstat($fh);
+				if ($stat && $stat['size'] && $stat['size'] > 31457280) {
+					@ftruncate($fh, 31457280);
 				}
 			}
+
+			@fclose($fh);
 		}
 
 		if (
