@@ -31,28 +31,7 @@
 		</div>
 	</div>
 
-	<div class="dp-page-box">
-		<div class="resource-item-list">
-			<header>
-				<h4>Online Agents</h4>
-			</header>
-			<article>
-				<ul>
-					{% for agent in online_agents %}
-					<li style="line-height: 40px;">
-						<div style="background: url({{ agent.getPictureUrl(35) }}) no-repeat 0 50%; padding-left: 40px;">{{ agent.display_name }}</div>
-					</li>
-					{% endfor %}
-				</ul>
-				<div style="font-size: 11px; padding-top: 4px; text-align: right;">
-					And {{ count_online_users }} online users in the last hour.
-				</div>
-				<div style="text-align: center; padding-top: 4px;">
-					<a class="btn" href="{{ app.request.getBaseUrl() }}/reports/agent-activity">View tech activity</a>
-				</div>
-			</article>
-		</div>
-	</div>
+	{% include 'AdminBundle:Main:agents-box.html.twig' %}
 {% endblock %}
 {% block page %}
 
