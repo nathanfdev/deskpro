@@ -92,7 +92,7 @@ class CleanupTmpData extends AbstractJob
 		# Task queue logs Items
 		#------------------------------
 
-		$cutoff = 86400 * 14;
+		$cutoff = 86400 * 14; // 15 days
 		$datecut = date('Y-m-d H:i:s', time() - $cutoff);
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM task_queue
@@ -111,11 +111,33 @@ class CleanupTmpData extends AbstractJob
 		$cache->cleanup();
 
 		#------------------------------
-		# Ticket change logs
+		# Remove old email process logs
 		#------------------------------
 
-		$datecut = date('Y-m-d H:i:s', time() - 2592000); // 30 days
+		$datecut = date('Y-m-d H:i:s', time() - 1728000); // 20 days
+		$num = App::getDb()->executeUpdate("
+			UPDATE email_sources
+			SET source_info = NULL
+			WHERE date_created < ?
+		", array($datecut));
 
+		if ($num) {
+			$this->logStatus("Cleaned up $num email source process logs");
+		}
+
+		#------------------------------
+		# log_items
+		#------------------------------
+
+		$last_id = App::getDb()->fetchColumn("SELECT id FROM log_items ORDER BY id DESC LIMIT 1");
+		if ($last_id) {
+			$delete_before_id = $last_id - 25000; // approx 10 days worth of cron logs
+			$num = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
+
+			if ($num) {
+				$this->logStatus("Cleaned up $num cron log items");
+			}
+		}
 
 		#------------------------------
 		# Try to delete old update status file
