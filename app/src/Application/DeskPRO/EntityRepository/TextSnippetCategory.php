@@ -63,4 +63,14 @@ class TextSnippetCategory extends AbstractEntityRepository
 
 		return $coll;
 	}
+
+	public function getAllByType($typename)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:TextSnippetCategory c INDEX BY c.id
+			WHERE c.typename = ?0
+			ORDER BY c.title
+		")->execute(array($typename));
+	}
 }

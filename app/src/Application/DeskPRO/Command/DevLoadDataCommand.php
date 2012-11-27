@@ -66,15 +66,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		// todo: triggers, escalations, banned emails, banned IPs, agent teams, perm groups
-		// todo: macros, ticket snippets + categories, chat snippets + categories
 
 		$available_types = array(
 			'org_field', 'organization', 'usergroup',
 			'person_field', 'person',
 			'sla', 'ticket_department', 'ticket_field', 'ticket', 'ticket_filter',
+			'ticket_snippet_category', 'ticket_snippet', 'ticket_macro',
+			'chat_snippet_category', 'chat_snippet',
 			'chat_department',
 			'feedback_status', 'feedback_type', 'feedback',
-			'article_category','article',
+			'article_field', 'article_category','article',
 			'news_category','news',
 			'download_category', 'download',
 			'glossary',
@@ -215,11 +216,17 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		foreach ($this->_data_cache['org_fields'] AS $field) {
-
-			//$org->addCustomData($data);
+			if ($field->getTypeName() == 'text') {
+				$data = new Entity\CustomDataOrganization();
+				$data->field = $field;
+				$data->root_field = $field;
+				$data->value = 0;
+				$data->input = $this->_getRandomText(rand(1, 5));
+				$org->addCustomData($data);
+			}
 		}
 
-		// todo: contact data, fields
+		// todo: contact data
 
 		App::getOrm()->persist($org);
 		$this->_applyLabels($org);
@@ -256,6 +263,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _loadPerson()
 	{
+		if (!isset($this->_data_cache['usergroups'])) {
+			$this->_data_cache['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+		}
+		if (!isset($this->_data_cache['person_fields'])) {
+			$this->_data_cache['person_fields'] = App::getEntityRepository('DeskPRO:CustomDefPerson')->findAll();
+		}
+
 		$person = new Entity\Person();
 		$person->name = $this->_getRandomText(2);
 		$person->setEmail($this->_getRandomText(1) . microtime(true) . '@example.com', true);
@@ -263,7 +277,28 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$person->setOrganizationId($this->_getRandomFromCache('random_org_ids'));
 		}
 
-		// todo: contact data, groups, secondary emails, custom fields
+		if (rand(1, 4) == 1) {
+			$count = rand(1, 3);
+			for ($i = 0; $i < $count; $i++) {
+				$key = array_rand($this->_data_cache['usergroups']);
+				if (!$person->usergroups->contains($this->_data_cache['usergroups'][$key])) {
+					$person->usergroups->add($this->_data_cache['usergroups'][$key]);
+				}
+			}
+		}
+
+		foreach ($this->_data_cache['person_fields'] AS $field) {
+			if ($field->getTypeName() == 'text') {
+				$data = new Entity\CustomDataPerson();
+				$data->field = $field;
+				$data->root_field = $field;
+				$data->value = 0;
+				$data->input = $this->_getRandomText(rand(1, 5));
+				$person->addCustomData($data);
+			}
+		}
+
+		// todo: contact data, secondary emails
 
 		App::getOrm()->persist($person);
 		$this->_applyLabels($person);
@@ -396,6 +431,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if (!isset($this->_data_cache['ticket_departments'])) {
 			$this->_data_cache['ticket_departments'] = App::getEntityRepository('DeskPRO:Department')->getChildDepartments('ticket');
 		}
+		if (!isset($this->_data_cache['ticket_fields'])) {
+			$this->_data_cache['ticket_fields'] = App::getEntityRepository('DeskPRO:CustomDefTicket')->findAll();
+		}
 
 		$ticket = new Entity\Ticket(false);
 		$ticket->subject = $this->_getRandomText(rand(2, 6));
@@ -413,15 +451,28 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$message->creation_system = Entity\TicketMessage::CREATED_WEB_API;
 		$message->setMessageText($this->_getRandomText(rand(50, 500)));
 
+		foreach ($this->_data_cache['ticket_fields'] AS $field) {
+			if ($field->getTypeName() == 'text') {
+				$data = new Entity\CustomDataTicket();
+				$data->field = $field;
+				$data->root_field = $field;
+				$data->value = 0;
+				$data->input = $this->_getRandomText(rand(1, 5));
+				$ticket->addCustomData($data);
+			}
+		}
+
 		$ticket->addMessage($message);
 
-		// todo: attachments, custom field values, message notes
+		// todo: attachments
 
 		$message_count = rand(0, 10);
 		if ($message_count > 0) {
 			for ($i = 0; $i < $message_count; $i++) {
+				$is_agent = $ticket->agent && rand(0, 1);
 				$message = new Entity\TicketMessage();
-				$message->person = ($ticket->agent && rand(0, 1)) ? $ticket->agent : $ticket->person;
+				$message->person = $is_agent ? $ticket->agent : $ticket->person;
+				$message->is_agent_note = ($is_agent && rand(0, 1));
 				$message->creation_system = Entity\TicketMessage::CREATED_WEB_API;
 				$message->setMessageText($this->_getRandomText(rand(50, 500)));
 			}
@@ -441,6 +492,82 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		);
 
 		App::getOrm()->persist($filter);
+	}
+
+	protected function _loadTicketMacro()
+	{
+		$macro = new Entity\TicketMacro();
+		$macro->title = $this->_getRandomText(rand(2, 4));
+		$macro->is_global = (rand(0, 1) == 1);
+		$macro->is_enabled = true;
+		$macro->actions = array(
+			array('type' => 'agent', 'options' => array('agent' => '-1'))
+		);
+		$agent_id = array_rand($this->_data_cache['agents']);
+		$macro->person = $this->_data_cache['agents'][$agent_id];
+
+		App::getOrm()->persist($macro);
+	}
+
+	protected function _loadTicketSnippetCategory()
+	{
+		$category = new Entity\TicketSnippetCategory();
+		$category->is_global = true;
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$agent_id = array_rand($this->_data_cache['agents']);
+		$category->person = $this->_data_cache['agents'][$agent_id];
+
+		App::getOrm()->persist($category);
+	}
+
+	protected function _loadTicketSnippet()
+	{
+		if (!isset($this->_data_cache['ticket_snippet_categories'])) {
+			$this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->findAll();
+		}
+
+		$snippet = new Entity\TicketSnippet();
+		$snippet->title = $this->_getRandomText(rand(2, 5));
+		$text = $this->_getRandomText(rand(10, 200));
+		$snippet->snippet = $text;
+		$snippet->snippet_html = '<p>' . $text . '</p>';
+
+		$category_id = array_rand($this->_data_cache['ticket_snippet_categories']);
+		$snippet->category = $this->_data_cache['ticket_snippet_categories'][$category_id];
+		$agent_id = array_rand($this->_data_cache['agents']);
+		$snippet->person = $this->_data_cache['agents'][$agent_id];
+
+		App::getOrm()->persist($snippet);
+	}
+
+	protected function _loadChatSnippetCategory()
+	{
+		$category = new Entity\TextSnippetCategory();
+		$category->typename = 'chat';
+		$category->is_global = true;
+		$category->title = $this->_getRandomText(rand(1, 4));
+		$agent_id = array_rand($this->_data_cache['agents']);
+		$category->person = $this->_data_cache['agents'][$agent_id];
+
+		App::getOrm()->persist($category);
+	}
+
+	protected function _loadChatSnippet()
+	{
+		if (!isset($this->_data_cache['chat_snippet_categories'])) {
+			$this->_data_cache['chat_snippet_categories'] = App::getEntityRepository('DeskPRO:TextSnippetCategory')->getAllByType('chat');
+		}
+
+		$snippet = new Entity\TextSnippet();
+		$snippet->title = $this->_getRandomText(rand(2, 5));
+		$snippet->snippet = $this->_getRandomText(rand(10, 200));
+
+		$category_id = array_rand($this->_data_cache['chat_snippet_categories']);
+		$snippet->category = $this->_data_cache['chat_snippet_categories'][$category_id];
+		$agent_id = array_rand($this->_data_cache['agents']);
+		$snippet->person = $this->_data_cache['agents'][$agent_id];
+
+		App::getOrm()->persist($snippet);
 	}
 
 	protected function _loadChatDepartment()
@@ -538,6 +665,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($feedback);
 	}
 
+	protected function _loadArticleField()
+	{
+		$field = new Entity\CustomDefArticle();
+		$field->title = $this->_getRandomText(2);
+		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
+		App::getOrm()->persist($field);
+	}
+
 	protected function _loadArticleCategory()
 	{
 		$category = new Entity\ArticleCategory();
@@ -558,6 +695,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if (!isset($this->_data_cache['article_categories'])) {
 			$this->_data_cache['article_categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->findAll();
 		}
+		if (!isset($this->_data_cache['article_fields'])) {
+			$this->_data_cache['article_fields'] = App::getEntityRepository('DeskPRO:CustomDefArticle')->findAll();
+		}
 
 		$article = new Entity\Article();
 		$article->title = $this->_getRandomText(rand(2, 6));
@@ -566,7 +706,18 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$article->addToCategory($this->_getRandomFromCache('article_categories'));
 		$article->person = $this->_getPerson($this->_getRandomFromCache('random_people_ids'));
 
-		// todo: products, attachments, custom fields, comments (with validation), varied statuses
+		foreach ($this->_data_cache['article_fields'] AS $field) {
+			if ($field->getTypeName() == 'text') {
+				$data = new Entity\CustomDataArticle();
+				$data->field = $field;
+				$data->root_field = $field;
+				$data->value = 0;
+				$data->input = $this->_getRandomText(rand(1, 5));
+				$article->addCustomData($data);
+			}
+		}
+
+		// todo: products, attachments, comments (with validation), varied statuses
 
 		App::getOrm()->persist($article);
 		$this->_applyLabels($article);
