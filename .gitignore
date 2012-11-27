@@ -28,6 +28,7 @@
 /data/cli-server-reqs-check.dat
 /data/cli-phpinfo.html
 /data/dql.cache.php
+/data/log-analytics.sqlite
 /data/languages.cache
 /data/logs/*
 /data/logs/emails/*
