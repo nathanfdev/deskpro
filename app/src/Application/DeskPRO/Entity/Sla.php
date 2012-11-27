@@ -49,9 +49,6 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 	const TYPE_RESOLUTION = 'resolution';
 	const TYPE_WAITING_TIME = 'waiting_time';
 
-	const ACTIVE_24X7 = 'all';
-	const ACTIVE_WORK_HOURS = 'work_hours';
-
 	/**
 	 * The unique ID.
 	 *
@@ -74,10 +71,11 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Whether active all the time (all) or during work hours only (work_hours)
+	 * or use the default ticket-wide settings (default)
 	 *
 	 * @var string
 	 */
-	protected $active_time;
+	protected $active_time = 'default';
 
 	/**
 	 * When the work day starts. This is stored as the number of seconds after 00:00:00.
@@ -385,10 +383,19 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
-				$this->active_time, $this->work_start, $this->work_end,
-				$this->work_days, $this->work_timezone, $this->work_holidays
-			);
+			if ($this->active_time == 'default') {
+				$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
+				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
+					$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
+					$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
+					$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
+				);
+			} else {
+				$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
+					$this->active_time, $this->work_start, $this->work_end,
+					$this->work_days, $this->work_timezone, $this->work_holidays
+				);
+			}
 		}
 
 		return $this->_work_hours_set;
@@ -424,7 +431,9 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 				return null;
 			}
 
-			if ($this->active_time == self::ACTIVE_24X7) {
+			$work_hours_set = $this->getWorkHoursSet();
+
+			if ($work_hours_set->getActiveTime() == \Orb\Util\WorkHoursSet::ACTIVE_24X7) {
 				$wait_time = $ticket->total_user_waiting;
 				if ($ticket->date_user_waiting) {
 					$wait_time += time() - $ticket->date_user_waiting->getTimestamp();
@@ -436,8 +445,6 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 				if ($work_day_length <= 0) {
 					return null;
 				}
-
-				$work_hours_set = $this->getWorkHoursSet();
 
 				$wait_time = 0;
 				if ($ticket->waiting_times) {

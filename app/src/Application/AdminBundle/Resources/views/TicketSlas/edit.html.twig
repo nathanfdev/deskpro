@@ -115,9 +115,31 @@
 				<label>Hours</label>
 			</div>
 			<div class="dp-form-input">
-				<div class="dp-input-group {% if sla.active_time == 'all' or not sla.active_time %}on{% endif %}">
-					<label><input type="radio" class="option-trigger" name="active_time" value="all" {% if sla.active_time == 'all' or not sla.active_time %}checked="checked"{%endif%} />
-						24x7</label>
+				<div class="dp-input-group {% if sla.active_time == 'default' or not sla.active_time %}on{% endif %}">
+					<a style="float:right" href="{{ path('admin_features_work_hours') }}">Edit Default Working Hours</a>
+					<label><input type="radio" class="option-trigger" name="active_time" value="default" {% if sla.active_time == 'default' or not sla.active_time %}checked="checked"{%endif%} />
+						Default ticket working hours</label>
+					<div style="margin-left: 30px; margin-top: 3px">
+						{% if default_work_hours.active_time == 'all' %}
+							24 hours a day, 7 days a week
+						{% else %}
+							{{ "%02d:%02d - %02d:%02d"|format(default_work_hours.start_hour, default_work_hours.start_minute, default_work_hours.end_hour, default_work_hours.end_minute) }}
+							(time zone: {{ default_work_hours.timezone|default(app.getSetting('core.default_timezone')) }})
+							{%- for day,null in default_work_hours.days -%},
+								{% if day == 0 -%}{{ phrase('agent.time.long-day_sunday') }}
+								{%- elseif day == 1 -%}{{ phrase('agent.time.long-day_monday') }}
+								{%- elseif day == 2 -%}{{ phrase('agent.time.long-day_tuesday') }}
+								{%- elseif day == 3 -%}{{ phrase('agent.time.long-day_wednesday') }}
+								{%- elseif day == 4 -%}{{ phrase('agent.time.long-day_thursday') }}
+								{%- elseif day == 5 -%}{{ phrase('agent.time.long-day_friday') }}
+								{%- elseif day == 6 -%}{{ phrase('agent.time.long-day_saturday') }}{%- endif %}
+							{%- endfor %} (excluding holidays)
+						{% endif %}
+					</div>
+				</div>
+				<div class="dp-input-group {% if sla.active_time == 'all' %}on{% endif %}">
+					<label><input type="radio" class="option-trigger" name="active_time" value="all" {% if sla.active_time == 'all' %}checked="checked"{%endif%} />
+						24 hours a day, 7 days a week</label>
 				</div>
 				<div class="dp-input-group {% if sla.active_time == 'work_hours' %}on{% endif %}">
 					<label><input type="radio" class="option-trigger" name="active_time" value="work_hours" {% if sla.active_time == 'work_hours' %}checked="checked"{%endif%} />

@@ -41,8 +41,9 @@
 				{% if sla.sla_type == 'first_response' %}Time until first response
 				{% elseif sla.sla_type == 'resolution' %}Time until ticket resolution
 				{% elseif sla.sla_type == 'waiting_time' %}User waiting time until ticket resolution{% endif %}
-				{% if sla.active_time == 'all' %}(24x7)
-				{% elseif sla.active_time == 'work_hours' %}(working hours only){% endif %}
+				{% if sla.active_time == 'default' %}(default working hours)
+				{% elseif sla.active_time == 'all' %}(24x7)
+				{% elseif sla.active_time == 'work_hours' %}(working hours){% endif %}
 			</td>
 			<td>{{ sla.getWarningTimeText() }}</td>
 			<td>{{ sla.getFailTimeText() }}</td>

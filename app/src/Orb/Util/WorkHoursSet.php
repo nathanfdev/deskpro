@@ -40,6 +40,9 @@ namespace Orb\Util;
  */
 class WorkHoursSet
 {
+	const ACTIVE_24X7 = 'all';
+	const ACTIVE_WORK_HOURS = 'work_hours';
+
 	/**
 	 * Whether active all the time (all) or during work hours only (work_hours)
 	 *

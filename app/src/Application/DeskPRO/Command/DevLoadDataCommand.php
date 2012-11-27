@@ -325,7 +325,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			\Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME
 		);
 		$sla->sla_type = $types[array_rand($types)];
-		$sla->active_time = \Application\DeskPRO\Entity\Sla::ACTIVE_24X7;
+		$sla->active_time = \Orb\Util\WorkHoursSet::ACTIVE_24X7;
 		$sla->apply_type = rand(1, 6) == 1 ? 'all' : 'manual';
 
 		App::getOrm()->persist($sla);

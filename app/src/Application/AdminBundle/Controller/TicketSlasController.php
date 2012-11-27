@@ -248,6 +248,8 @@ class TicketSlasController extends AbstractController
 
 		$translator = App::getTranslator();
 
+		$default_work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
+
 		return $this->render('AdminBundle:TicketSlas:edit.html.twig', array(
 			'sla' => $sla,
 
@@ -259,6 +261,8 @@ class TicketSlasController extends AbstractController
 			'term_options' => $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggerTermOptions(),
 
 			'priorities' => $this->em->getRepository('DeskPRO:TicketPriority')->getNames(),
+
+			'default_work_hours' => $default_work_hours,
 
 			'years' => $years,
 			'months' => array(

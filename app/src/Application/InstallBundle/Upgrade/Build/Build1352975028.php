@@ -55,7 +55,7 @@ class Build1352975028 extends AbstractBuild
 		$db->insert('slas', array(
 			'title' => 'First Response',
 			'sla_type' => 'first_response',
-			'active_time' => 'all',
+			'active_time' => 'default',
 			'work_start' => 32400,
 			'work_end' => 61200,
 			'work_days' => serialize(array(1 => true, 2 => true,3 => true, 4 => true, 5 => true)),
