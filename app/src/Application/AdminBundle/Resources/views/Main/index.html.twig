@@ -63,7 +63,7 @@
 					<div class="icon-list" style="padding: 3px; padding-bottom: 0;">
 						<ul>
 							{% for agent in app.getDataRepository('Agent').getAgents() if not online_agents[agent.id] %}
-								<li><img src="{{ agent.getPictureUrl(35) }}" class="tipped" title="{{ agent.display_name }}" /></li>
+								<li><img src="{{ agent.getPictureUrl(16) }}" class="tipped" title="{{ agent.display_name }}" /></li>
 							{% endfor %}
 						</ul>
 						<br class="clear" />
