@@ -2,37 +2,32 @@
 	<div class="show">
 		<div class="controls">
 			<span class="edit-trigger"></span>
-			<div class="insertBtn snippet-trigger" data-snippet-id="{{ snippet.id }}"><a>{{ phrase('agent.general.insert') }}</a></div>
+			<span class="delete-trigger" data-snippet-id="{{ snippet.id }}" data-confirm="Are you sure you want to delete this snippet?"></span>
 		</div>
-		<label>{{ snippet.title }}</label>
-		<div class="content show">
-			{% if no_formatting %}
-				<div class="content raw">{{ snippet.snippet }}</div>
-			{% else %}
-				<div class="content formatted">
-					<div class="real">{{ snippet.formatPreviewHtml()|raw }}</div>
-					<div class="nobreak">{{ snippet.formatPreviewHtml()|strip_linebreaks|raw }}</div>
+		<div class="snippet-content tipped" title="Click to insert this snippet" data-snippet-id="{{ snippet.id }}">
+			<label>{{ snippet.title }}</label>
+			<div class="content show">
+				<div class="main-content">
+					{% if no_formatting %}
+						<div class="content raw">{{ snippet.snippet }}</div>
+					{% else %}
+						<div class="content formatted">
+							<div class="real">{{ snippet.formatPreviewHtml()|raw }}</div>
+							<div class="nobreak">{{ snippet.formatPreviewHtml()|strip_linebreaks|raw }}</div>
+						</div>
+						<textarea class="value formatted" style="display: none;">{{ snippet.format() }}</textarea>
+					{% endif %}
 				</div>
-				<textarea class="value formatted" style="display: none;">{{ snippet.format() }}</textarea>
-			{% endif %}
-			<div class="fadeaway">
-				<span class="expand"></span>
-				<span class="unexpand"></span>
+				<div class="fadeaway">
+					<span class="expand"></span>
+					<span class="unexpand"></span>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="edit" style="display: none">
-		<form>
+	<form class="edit" style="display: none">
 			<input type="hidden" name="snippet_id" value="{{ snippet.id }}" />
 			<label><input type="text" name="title" value="{{ snippet.title }}" /></label>
-			<div class="content">
-				<textarea name="snippet">{{ snippet.snippet }}</textarea>
-				<div style="float:right;font-size: 9px; color: #B60004;">
-					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">{{ phrase('agent.general.ucfirst_delete') }}</span>
-				</div>
-				<button class="clean-white save-snippet-trigger">{{ phrase('agent.general.update') }}</button>
-				<button class="clean-white cancel-snippet-trigger">{{ phrase('agent.general.cancel') }}</button>
-			</div>
-		</form>
-	</div>
+			<textarea name="snippet">{{ snippet.snippet }}</textarea>
+	</form>
 </li>

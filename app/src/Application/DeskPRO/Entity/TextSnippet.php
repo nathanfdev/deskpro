@@ -86,7 +86,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$options = new \Orb\Util\OptionsArray($options);
 		$options->setDefault('wrap_left', '');
 		$options->setDefault('wrap_right', '');
-		$options->setDefault('is_html', true);
+		$options->setDefault('is_html', false);
 
 		$person_context = $options->get('person_context');
 		if (!$person_context) {

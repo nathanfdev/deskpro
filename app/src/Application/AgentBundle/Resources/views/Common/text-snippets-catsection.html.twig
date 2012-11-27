@@ -1,21 +1,14 @@
-<article class="cat-{{ category.id }}" style="display:none;">
+<article class="cat-section cat-{{ category.id }}" data-category-id="{{ category.id }}" style="display:none;">
 	<ul>
+		<li class="new-snippet">
+			<button class="clean-white add-snippet-trigger">{{ phrase('agent.general.add_new_snippet') }}</button>
+		</li>
+		{% set has_snippets = true %}
 		{% for snippet in snippets %}
 			{% include 'AgentBundle:Common:text-snippets-row.html.twig' %}
+		{% else %}
+			{% set has_snippets = false %}
 		{% endfor %}
-		<li class="new-snippet">
-			<div class="display">
-				<button class="clean-white add-snippet-trigger">{{ phrase('agent.general.add_new_snippet') }}</button>
-			</div>
-			<div class="input" style="display: none;">
-				<form>
-					<input type="hidden" name="category_id" value="{{ category.id }}" />
-					<input type="hidden" name="snippet_id" value="0" />
-					<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" />
-					<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}"></textarea>
-					<button class="clean-white save-snippet-trigger">{{ phrase('agent.general.save') }}</button>
-				</form>
-			</div>
-		</li>
+		<li class="no-snippets" {% if has_snippets %}style="display: none"{% endif %}>This category has no snippets.</li>
 	</ul>
 </article>

@@ -1,6 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
-pageMeta.title = 'Text Snippets';
+pageMeta.title = 'Ticket Snippets';
 pageMeta.ticket_id = {{ ticket.id|default(0) }};
 
 {% set baseId = el_uid() %}
@@ -38,6 +38,31 @@ pageMeta.baseId = '{{ baseId }}';
         {# /Page Containers #}
 	</div>
 
+	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 550px; height: 400px; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay"></span>
+			<h4 class="is-new-snippet">New Snippet</h4>
+			<h4 class="is-edit-snippet">Edit Snippet</h4>
+		</div>
+		<div class="overlay-content">
+			<input type="hidden" name="snippet_id" value="0" />
+			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box" />
+			<div style="width: 100%">
+				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; height: 220px"></textarea>
+			</div>
+			<input type="hidden" name="is_html" value="0" />
+		</div>
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="clean-white small save-snippet-trigger is-new-snippet">{{ phrase('agent.general.add') }}</button>
+				<button class="clean-white small save-snippet-trigger is-edit-snippet">{{ phrase('agent.general.save') }}</button>
+			</div>
+			<div class="is-loading">
+				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+			</div>
+		</div>
+	</div>
+
 	<div id="{{baseId}}_new_snippet_cat" style="width: 360px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
@@ -71,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="is-loading">
 				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
-			<?div>
+			</div>
 		</div>
 	</div>
 </div>

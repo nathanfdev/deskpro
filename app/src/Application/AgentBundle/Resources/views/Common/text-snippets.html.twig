@@ -1,5 +1,9 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
+pageMeta.title = 'Text Snippets';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="ticket-snippets-overlay snippets-overlay">
 	<nav>
@@ -31,6 +35,61 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
         </div></div>
         </div>
         {# /Page Containers #}
+	</div>
+
+	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 500px; height: 280px; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay"></span>
+			<h4 class="is-new-snippet">New Snippet</h4>
+			<h4 class="is-edit-snippet">Edit Snippet</h4>
+		</div>
+		<div class="overlay-content">
+			<input type="hidden" name="snippet_id" value="0" />
+			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box" />
+			<div style="width: 100%">
+				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; height: 150px"></textarea>
+			</div>
+		</div>
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="clean-white small save-snippet-trigger is-new-snippet">{{ phrase('agent.general.add') }}</button>
+				<button class="clean-white small save-snippet-trigger is-edit-snippet">{{ phrase('agent.general.save') }}</button>
+			</div>
+			<div class="is-loading">
+				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+			</div>
+		</div>
+	</div>
+
+	<div class="new-snippet-category field-overlay" style="display: none">
+		<span class="close">{{ phrase('agent.general.close_lc') }}</span>
+		<dl>
+			<dt>{{ phrase('agent.general.title') }}:</dt>
+			<dd>
+				<input type="text" name="title" value="New Category" />
+				<input type="hidden" name="typename" value="{{ typename }}" />
+			</dd>
+
+			<dt>{{ phrase('agent.general.permissions') }}:</dt>
+			<dd>
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.general.teams') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
+			</dd>
+
+			<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
+			<dd class="perm-teams" style="display: none">
+				<select name="teams[]" multiple="multiple" size="6">
+					{% for team in agent_teams %}
+						<option value="{{ team.id }}">{{ team.name }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+
+		<div class="controls">
+			<button class="clean-white small new-cat-trigger">{{ phrase('agent.general.add') }}</button>
+		</div>
 	</div>
 
 	<div class="new-snippet-category field-overlay" style="display: none">
