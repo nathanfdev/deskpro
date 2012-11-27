@@ -1757,7 +1757,7 @@ var RLANG = {
 			var parent = this.getParentNode();
 
 			// clean up pre
-			if ($(parent).get(0).tagName === 'PRE')
+			if ($(parent).get(0) && $(parent).get(0).tagName === 'PRE')
 			{
 				html = this.cleanupPre(html);
 				this.pasteCleanUpInsert(html);
