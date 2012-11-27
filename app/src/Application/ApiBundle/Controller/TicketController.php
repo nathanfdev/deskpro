@@ -181,6 +181,9 @@ class TicketController extends AbstractController
 
 		$ticket->addMessage($message);
 
+		// need to ensure we treat things as the message owner
+		App::setCurrentPerson($message->person);
+
 		$this->db->beginTransaction();
 
 		try {
@@ -196,6 +199,8 @@ class TicketController extends AbstractController
 			$this->em->flush();
 			$this->em->persist($message);
 			$this->em->flush();
+
+			App::setCurrentPerson($this->person);
 
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$post_custom_fields = $this->getCustomFieldInput();
@@ -420,6 +425,9 @@ class TicketController extends AbstractController
 			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
 		}
 
+		// need to ensure we treat things as the message owner
+		App::setCurrentPerson($message->person);
+
 		$this->db->beginTransaction();
 
 		try {
@@ -430,6 +438,8 @@ class TicketController extends AbstractController
 			$this->db->rollback();
 			throw $e;
 		}
+
+		App::setCurrentPerson($this->person);
 
 		return $this->createApiCreateResponse(
 			array('message_id' => $message->id),
