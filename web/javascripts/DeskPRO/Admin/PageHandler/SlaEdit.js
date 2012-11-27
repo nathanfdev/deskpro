@@ -219,8 +219,8 @@ DeskPRO.Admin.PageHandler.SlaEdit = new Class({
 					li.find('.add-all').remove();
 				}
 
-				li.data('month', dateParts[1]);
-				li.data('day', dateParts[0]);
+				li.data('month', month);
+				li.data('day', day);
 
 				li.append('<input type="hidden" name="work_holidays[' + id + '][name]" value="' + name + '" />');
 				li.append('<input type="hidden" name="work_holidays[' + id + '][day]" value="' + day + '" />');

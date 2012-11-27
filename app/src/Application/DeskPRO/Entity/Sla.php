@@ -377,83 +377,45 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds(), $ticket);
 	}
 
+	protected $_work_hours_set;
+
+	/**
+	 * @return \Orb\Util\WorkHoursSet
+	 */
+	public function getWorkHoursSet()
+	{
+		if (!$this->_work_hours_set) {
+			$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
+				$this->active_time, $this->work_start, $this->work_end,
+				$this->work_days, $this->work_timezone, $this->work_holidays
+			);
+		}
+
+		return $this->_work_hours_set;
+	}
+
 	public function calculateSlaTimeUntil($end_ts, Ticket $ticket)
 	{
 		if ($this->sla_type == self::TYPE_WAITING_TIME) {
 			$time = 0;
+			$work_hours_set = $this->getWorkHoursSet();
 			foreach ($ticket->waiting_times AS $waiting) {
 				if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
-					$wait_end = min($end_ts, $waiting['end']);
-					if ($this->active_time == self::ACTIVE_24X7) {
-						$time += $this->_getWaitTimeWorkingLength($waiting['start'], $wait_end);
-					} else {
-						$time += $wait_end - $waiting['start'];
-					}
+					$time += $work_hours_set->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
 				}
 			}
 
 			return $time;
 		} else {
-			if ($this->active_time == self::ACTIVE_24X7) {
-				return $end_ts - $ticket->date_created->getTimestamp();
-			} else {
-				$time = 0;
-
-				$work_day_length = $this->work_end - $this->work_start;
-				if ($work_day_length <= 0) {
-					return null;
-				}
-
-				$start_ts = $ticket->date_created->getTimestamp();
-				$date_test = clone $ticket->date_created;
-				if ($this->work_timezone) {
-					$date_test->setTimezone(new \DateTimeZone($this->work_timezone));
-				}
-
-				$time_remaining = null;
-				if ($this->_isInWorkDay($date_test, $time_remaining)) {
-					if ($end_ts - $start_ts > $time_remaining) {
-						$date_test->modify('+' . ($time_remaining + 1) . ' seconds');
-						$time += $time_remaining;
-					} else {
-						return $end_ts - $start_ts;
-					}
-				}
-
-				while ($date_test->getTimestamp() < $end_ts) {
-					$date_test = $this->_getNextWorkDayStart($date_test);
-					if ($end_ts - $date_test->getTimestamp() > $work_day_length) {
-						$date_test->modify('+' . ($work_day_length + 1) . ' seconds');
-						$time += $work_day_length;
-					} else {
-						$time += $end_ts - $date_test->getTimestamp();
-						return $time;
-					}
-				}
-
-				return $time;
-			}
+			return $this->getWorkHoursSet()->getWorkTimeBetween($ticket->date_created, $end_ts);
 		}
 	}
 
 	protected function _calculateTriggerDate($delay, Ticket $ticket)
 	{
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE) {
-			if ($this->active_time == self::ACTIVE_24X7) {
-				$date = $ticket->date_created->getTimestamp() + $delay;
-				return new \DateTime("@$date");
-			} else {
-				return $this->_calculateWorkHoursDelay($ticket->date_created, $delay);
-			}
-		}
-
-		if ($this->sla_type == self::TYPE_RESOLUTION) {
-			if ($this->active_time == self::ACTIVE_24X7) {
-				$date = $ticket->date_created->getTimestamp() + $delay;
-				return new \DateTime("@$date");
-			} else {
-				return $this->_calculateWorkHoursDelay($ticket->date_created, $delay);
-			}
+		set_time_limit(1);
+		if ($this->sla_type == self::TYPE_FIRST_RESPONSE || $this->sla_type == self::TYPE_RESOLUTION) {
+			return $this->getWorkHoursSet()->calculateWorkHoursDelay($ticket->date_created, $delay);
 		}
 
 		if ($this->sla_type == self::TYPE_WAITING_TIME) {
@@ -475,240 +437,47 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 					return null;
 				}
 
+				$work_hours_set = $this->getWorkHoursSet();
+
 				$wait_time = 0;
 				if ($ticket->waiting_times) {
 					foreach ($ticket->waiting_times AS $waiting) {
 						if ($waiting['type'] == 'user') {
-							$wait_time += $this->_getWaitTimeWorkingLength($waiting['start'], $waiting['end']);
+							$wait_time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
 						}
 					}
 				}
 
-				if ($ticket->date_user_waiting) {
+				if ($ticket->date_user_waiting && $ticket->status == 'awaiting_agent') {
 					// ticket is waiting but we don't have an end so add that
-					$wait_time += $this->_getWaitTimeWorkingLength($ticket->date_user_waiting->getTimestamp());
+					$wait_time += $work_hours_set->getWorkTimeBetween($ticket->date_user_waiting);
 				}
 
-				return $this->_calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
+				return $work_hours_set->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
 			}
 		}
 
 		return null;
 	}
 
-	protected function _calculateWorkHoursDelay(\DateTime $date_start, $delay)
-	{
-		$work_day_length = $this->work_end - $this->work_start;
-		if ($work_day_length <= 0) {
-			return null;
-		}
-
-		if ($delay < 0) {
-			return $this->_calculateWorkHoursDelayPast($date_start, $delay);
-		}
-
-		$date_end = new \DateTime('@' . $date_start->getTimestamp());
-		if ($this->work_timezone) {
-			$date_end->setTimezone(new \DateTimeZone($this->work_timezone));
-		}
-
-		$time_remaining = null;
-		if ($this->_isInWorkDay($date_end, $time_remaining)) {
-			if ($delay > $time_remaining) {
-				$date_end->modify('+' . ($time_remaining + 1) . ' seconds');
-				$delay -= $time_remaining;
-			} else {
-				$date_end->modify('+' . $delay . ' seconds');
-				$delay = 0;
-			}
-		}
-
-		while ($delay > 0) {
-			$date_end = $this->_getNextWorkDayStart($date_end);
-			if ($delay > $work_day_length) {
-				$date_end->modify('+' . ($work_day_length + 1) . ' seconds');
-				$delay -= $work_day_length;
-			} else {
-				$date_end->modify('+' . $delay . ' seconds');
-				$delay = 0;
-			}
-		}
-
-		return new \DateTime('@' . $date_end->getTimestamp());
-	}
-
-	protected function _calculateWorkHoursDelayPast(\DateTime $date_start, $delay)
-	{
-		$work_day_length = $this->work_end - $this->work_start;
-		if ($work_day_length <= 0) {
-			return null;
-		}
-
-		$date_end = new \DateTime('@' . $date_start->getTimestamp());
-		if ($this->work_timezone) {
-			$date_end->setTimezone(new \DateTimeZone($this->work_timezone));
-		}
-
-		$time_remaining = null;
-		if ($this->_isInWorkDay($date_end, $time_remaining)) {
-			$time_past = $work_day_length - $time_remaining;
-			$date_end->modify('-' . ($time_past + 1) . ' seconds');
-			$delay += $time_past;
-		}
-
-		while ($delay < 0) {
-			$date_end = $this->_getNextWorkDayStart($date_end, true);
-			$delay += $work_day_length;
-		}
-
-		return $this->_calculateWorkHoursDelay($date_end, $delay);
-	}
-
-	protected function _isInWorkDay(\DateTime $date, &$time_remaining = null)
-	{
-		$time_remaining = null;
-
-		list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $date->format('w|Y|n|j|G|i|s'));
-		$dow = intval($dow);
-		$year = intval($year);
-		$month = intval($month);
-		$day = intval($day);
-		$hours = intval($hours);
-		$minutes = intval($minutes);
-		$seconds = intval($seconds);
-
-		if (!isset($this->work_days[$dow])) {
-			return false;
-		}
-
-		$day_offset = $hours * 3600 + $minutes * 60 + $seconds;
-		if ($day_offset < $this->work_start || $day_offset > $this->work_end) {
-			return false;
-		}
-
-		foreach ($this->work_holidays AS $holiday) {
-			if ($holiday['year'] && $year != $holiday['year']) {
-				continue;
-			}
-
-			if ($holiday['day'] == $day && $holiday['month'] == $month) {
-				return false;
-			}
-		}
-
-		$time_remaining = $this->work_end - $day_offset;
-		return true;
-	}
-
-	public function _getNextWorkDayStart(\DateTime $date, $backwards = false)
-	{
-		$work_date = clone $date;
-
-		$adjust = ($backwards ? '-1 day' : '+1 day');
-
-		do {
-			list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $work_date->format('w|Y|n|j|G|i|s'));
-			$dow = intval($dow);
-			$year = intval($year);
-			$month = intval($month);
-			$day = intval($day);
-			$hours = intval($hours);
-			$minutes = intval($minutes);
-			$seconds = intval($seconds);
-
-			if (!isset($this->work_days[$dow])) {
-				$work_date->modify($adjust);
-				$work_date->setTime(0, 0, 0);
-				continue;
-			}
-
-			foreach ($this->work_holidays AS $holiday) {
-				// is today a holiday?
-				if ($holiday['year'] && $year != $holiday['year']) {
-					continue;
-				}
-
-				if ($holiday['day'] == $day && $holiday['month'] == $month) {
-					$work_date->modify($adjust);
-					$work_date->setTime(0, 0, 0);
-					continue 2;
-				}
-			}
-
-			$day_offset = $hours * 3600 + $minutes * 60 + $seconds;
-			if ($day_offset > $this->work_start) {
-				$work_date->modify($adjust);
-				$work_date->setTime(0, 0, 0);
-				continue;
-			}
-
-			// today is a work day and we haven't passed the start, so shift to that
-			$work_date->setTime($this->getWorkStartHour(), $this->getWorkStartMinute());
-			break;
-		} while (true);
-
-		return $work_date;
-	}
-
-	protected function _getWaitTimeWorkingLength($start, $end = null)
-	{
-		$start = ($start instanceof \DateTime ? $start->getTimestamp() : intval($start));
-		$end = ($end instanceof \DateTime ? $end->getTimestamp() : intval($end));
-
-		if (!$end) {
-			$end = time();
-		}
-
-		$length = $end - $start;
-		$work_day_length = $this->work_end - $this->work_start;
-
-		$date = new \DateTime("@$start");
-		if ($this->work_timezone) {
-			$date->setTimezone(new \DateTimeZone($this->work_timezone));
-		}
-
-		$wait_time = 0;
-
-		$time_remaining = null;
-		if ($this->_isInWorkDay($date, $time_remaining)) {
-			if ($length <= $time_remaining) {
-				// waiting happened entirely in this work day
-				$wait_time += $length;
-				return $wait_time;
-			} else {
-				$wait_time += $time_remaining;
-				$date->modify('+' . ($time_remaining + 1) . ' seconds');
-			}
-		}
-
-		while ($date->getTimestamp() < $end) {
-			$date = $this->_getNextWorkDayStart($date);
-			if ($date->getTimestamp() >= $end) {
-				break;
-			}
-
-			$work_end = $date->getTimestamp() + $work_day_length;
-			if ($work_end >= $end) {
-				// waiting ended within a work day
-				$wait_time += $end - $date->getTimestamp();
-				break;
-			} else {
-				// work day ended, still waiting from beginning
-				$wait_time += $work_day_length;
-			}
-		}
-
-		return $wait_time;
-	}
-
 	public function calculateCompleted(Ticket $ticket)
 	{
 		$dates = array();
 
-		if ($ticket->status == 'resolved' || $ticket->status == 'hidden') {
+		if ($ticket->status == 'resolved') {
 			if ($ticket->date_resolved) {
 				$dates[] = $ticket->date_resolved->getTimestamp();
+			} else {
+				$dates[] = time();
 			}
+		}
+
+		if ($ticket->status == 'hidden') {
+			$dates[] = time();
+		}
+
+		if ($ticket->date_closed) {
+			$dates[] = $ticket->date_closed->getTimestamp();
 		}
 
 		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_first_agent_reply) {
@@ -730,7 +499,11 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			$times[] = $ticket->date_first_agent_reply->getTimestamp();
 		}
 
-		if ($ticket->date_resolved) {
+		if ($ticket->date_closed) {
+			$times[] = $ticket->date_closed->getTimestamp();
+		}
+
+		if ($ticket->status == 'resolved' && $ticket->date_resolved) {
 			$times[] = $ticket->date_resolved->getTimestamp();
 		}
 

@@ -142,20 +142,35 @@ public function getPersonData(array $misc_data)
 		App::getDb()->commit();
 	}
 
-	public static function getPrintableTimeLength($length)
+	public static function getPrintableTimeLength($length, $max_unit = null)
 	{
 		if ($length < 1) {
 			return '';
 		}
 
-		if ($length > 3600) {
+		$max_unit_list = array(
+			'seconds' => 1,
+			'minutes' => 2,
+			'hours' => 3,
+			'days' => 4
+		);
+		$max_unit_val = $max_unit && isset($max_unit_list[$max_unit]) ? $max_unit_list[$max_unit] : end($max_unit_list);
+
+		if ($length > 86400 && $max_unit_val >= $max_unit_list['days']) {
+			$days = floor($length / 86400);
+			$length -= $days * 86400;
+		} else {
+			$days = 0;
+		}
+
+		if ($length > 3600 && $max_unit_val >= $max_unit_list['hours']) {
 			$hours = floor($length / 3600);
 			$length -= $hours * 3600;
 		} else {
 			$hours = 0;
 		}
 
-		if ($length > 60) {
+		if ($length > 60 && $max_unit_val >= $max_unit_list['minutes']) {
 			$minutes = floor($length / 60);
 			$length -= $minutes * 60;
 		} else {
@@ -166,13 +181,16 @@ public function getPersonData(array $misc_data)
 
 		// TODO: translation
 		$parts = array();
-		if ($hours) {
+		if ($days && count($parts) <= 1) {
+			$parts[] = ($days > 1 ? "$days days" : '1 day');
+		}
+		if ($hours && count($parts) <= 1) {
 			$parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
 		}
-		if ($minutes) {
+		if ($minutes && count($parts) <= 1) {
 			$parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
 		}
-		if ($seconds) {
+		if ($seconds && count($parts) <= 1) {
 			$parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
 		}
 

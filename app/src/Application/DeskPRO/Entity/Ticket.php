@@ -444,6 +444,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
+	/**
+	 * @var \Orb\Util\WorkHoursSet|null
+	 */
+	protected $_work_hours_set = null;
+
 	public $_isRemoved;
 
 	/**
@@ -1781,6 +1786,51 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $secs;
 	}
 
+	public function getTotalUserWaitingWorkTime()
+	{
+		$work_hours_set = $this->getWorkHoursSet();
+
+		$time = 0;
+		foreach ($this->waiting_times AS $waiting) {
+			if ($waiting['type'] == 'user') {
+				$time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
+			}
+		}
+
+		if ($this->date_user_waiting && $this->status == 'awaiting_agent') {
+			$time += $work_hours_set->getWorkTimeBetween($this->date_user_waiting);
+		}
+
+		return $time;
+	}
+
+	public function getCurrentUserWaitingTime()
+	{
+		if ($this->date_user_waiting && $this->status == 'awaiting_agent') {
+			return time() - $this->date_user_waiting->getTimestamp();
+		}
+
+		return null;
+	}
+
+	public function getCurrentUserWaitingWorkTime()
+	{
+		if ($this->date_user_waiting && $this->status == 'awaiting_agent') {
+			return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_user_waiting);
+		}
+
+		return null;
+	}
+
+	public function getWorkTimeToFirstReply()
+	{
+		if ($this->date_first_agent_reply) {
+			return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_created, $this->date_first_agent_reply);
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * Get how long, in seconds, the ticket was open for. This only applies
@@ -1802,6 +1852,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$secs = $date->getTimestamp() - $this->date_created->getTimestamp();
 
 		return $secs;
+	}
+
+	public function getWorkTimeUntilResolution()
+	{
+		if (!$this->date_resolved && !$this->date_closed) {
+			return 0;
+		}
+
+		$date = $this->date_resolved;
+		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
+			$date = $this->date_closed;
+		}
+
+		return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_created, $date);
 	}
 
 
@@ -2630,6 +2694,20 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function isAgentCreated()
 	{
 		return strpos($this->creation_system, '.agent') !== false;
+	}
+
+	public function getWorkHoursSet()
+	{
+		if (!$this->_work_hours_set) {
+			$work_hours = unserialize(App::getSetting('core_tickets.work_hours'));
+			$this->_work_hours_set = new \Orb\Util\WorkHoursSet(
+				$work_hours['active_time'], $work_hours['start_hour'] * 3600 + $work_hours['start_minute'] * 60,
+				$work_hours['end_hour'] * 3600 + $work_hours['end_minute'] * 60,
+				$work_hours['days'], $work_hours['timezone'], $work_hours['holidays']
+			);
+		}
+
+		return $this->_work_hours_set;
 	}
 
 

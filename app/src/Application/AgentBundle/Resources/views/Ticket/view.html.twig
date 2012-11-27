@@ -488,17 +488,23 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
 			<tbody><tr>
-				<th width="200">Created</th>
+				<th width="200">Created:</th>
 				<td>
 					<time class="timeago" datetime="{{ticket.date_created|date('c', 'UTC')}}"></time>
 					({{ ticket.date_created|date('fulltime') }})
 				</td>
 			</tr></tbody>
+			{% set times_work_hours = (ticket.getWorkHoursSet().getActiveTime() != 'all') %}
 			{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
 			<tbody><tr>
 				<th>Current user waiting time:</th>
 				<td>
-					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
+					{% if times_work_hours %}
+						{{ ticket.current_user_waiting_work_time|time_length('hours') }}
+						<span class="tipped small-light-icon" title="Work hours only, real time: {{ ticket.current_user_waiting_time|time_length }}"></span>
+					{% else %}
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
+					{% endif %}
 					(since {{ ticket.date_user_waiting|date('fulltime') }})
 				</td>
 			</tr></tbody>
@@ -507,7 +513,12 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 			<tbody><tr>
 				<th>Total user waiting time:</th>
 				<td>
-					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+					{% if times_work_hours %}
+						{{ ticket.total_user_waiting_work_time|time_length('hours') }}
+						<span class="tipped small-light-icon" title="Work hours only, real time: {{ ticket.real_total_user_waiting|time_length }}"></span>
+					{% else %}
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+					{% endif %}
 				</td>
 			</tr></tbody>
 			{% endif %}
@@ -515,7 +526,12 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 				<tbody><tr>
 					<th>Waiting until first reply:</th>
 					<td>
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.total_to_first_reply|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+						{% if times_work_hours %}
+							{{ ticket.work_time_to_first_reply|time_length('hours') }}
+							<span class="tipped small-light-icon" title="Work hours only, real time: {{ ticket.total_to_first_reply|time_length }}"></span>
+						{% else %}
+							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_first_agent_reply|date('c', 'UTC') }}"></time>
+						{% endif %}
 					</td>
 				</tr></tbody>
 			{% endif %}
@@ -539,7 +555,12 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 			<tbody><tr>
 				<th>Time until resolution:</th>
 				<td>
-					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.getTimeUntilResolution()|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+					{% if times_work_hours %}
+						{{ ticket.work_time_until_resolution|time_length('hours') }}
+						<span class="tipped small-light-icon" title="Work hours only, real time: {{ ticket.time_until_resolution|time_length }}"></span>
+					{% else %}
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.time_until_resolution|default('1') ~ " seconds")|date('c', 'UTC') }}"></time>
+					{% endif %}
 				</td>
 			</tr></tbody>
 			{% endif %}

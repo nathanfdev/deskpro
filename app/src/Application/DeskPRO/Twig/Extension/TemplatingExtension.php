@@ -579,9 +579,9 @@ class TemplatingExtension extends \Twig_Extension
 		return $this->container->getTranslator()->date($format, $date, $prefix);
 	}
 
-	public function timeLength($length)
+	public function timeLength($length, $max_unit = null)
 	{
-		return \Application\DeskPRO\Util::getPrintableTimeLength($length);
+		return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')

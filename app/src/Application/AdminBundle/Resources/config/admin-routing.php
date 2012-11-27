@@ -1347,6 +1347,20 @@ $collection->add('admin_features', new Route(
 	array()
 ));
 
+$collection->add('admin_features_work_hours', new Route(
+	'/tickets/features/work-hours',
+	array('_controller' => 'AdminBundle:TicketFeatures:workHours'),
+	array(),
+	array()
+));
+
+$collection->add('admin_features_work_hours_save', new Route(
+	'/tickets/features/work-hours/save',
+	array('_controller' => 'AdminBundle:TicketFeatures:workHoursSave'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_ticketfeatures_regensearch', new Route(
 	'/tickets/features/regenerate-search',
 	array('_controller' => 'AdminBundle:TicketFeatures:regenSearch'),

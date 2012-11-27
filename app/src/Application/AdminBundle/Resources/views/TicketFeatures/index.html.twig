@@ -182,6 +182,30 @@
 </div>
 
 <div class="setting_field_row">
+	<h4>Working Hours</h4>
+	<div class="setting_fields">
+		{% if work_hours.active_time == 'all' %}
+			24 hours a day, 7 days a week
+		{% else %}
+			{{ "%02d:%02d - %02d:%02d"|format(work_hours.start_hour, work_hours.start_minute, work_hours.end_hour, work_hours.end_minute) }}
+			(time zone: {{ work_hours.timezone|default(app.getSetting('core.default_timezone')) }})
+			{%- for day,null in work_hours.days -%},
+				{% if day == 0 -%}{{ phrase('agent.time.long-day_sunday') }}
+				{%- elseif day == 1 -%}{{ phrase('agent.time.long-day_monday') }}
+				{%- elseif day == 2 -%}{{ phrase('agent.time.long-day_tuesday') }}
+				{%- elseif day == 3 -%}{{ phrase('agent.time.long-day_wednesday') }}
+				{%- elseif day == 4 -%}{{ phrase('agent.time.long-day_thursday') }}
+				{%- elseif day == 5 -%}{{ phrase('agent.time.long-day_friday') }}
+				{%- elseif day == 6 -%}{{ phrase('agent.time.long-day_saturday') }}{%- endif %}
+			{%- endfor %} (excluding holidays)
+		{% endif %}
+		<div>
+			<a class="clean-white" style="padding: 1px 6px" href="{{ path('admin_features_work_hours') }}">Edit Working Hours</a>
+		</div>
+	</div>
+</div>
+
+<div class="setting_field_row">
 	<h4>Rich Text Editor</h4>
 	<div class="setting_fields">
 		<div class="field_row">
