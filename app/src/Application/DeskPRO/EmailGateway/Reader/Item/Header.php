@@ -50,6 +50,10 @@ class Header
 
 	public function getHeader()
 	{
+		if (!$this->header_parts) {
+			return null;
+		}
+
 		return $this->header_parts[0];
 	}
 

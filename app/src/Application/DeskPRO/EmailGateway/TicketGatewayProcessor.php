@@ -562,7 +562,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = true;
 
 			// Sent from a DeskPRO instance, we should get the specific message by looking for our delims
-			if ($this->reader->getHeader('X-DeskPRO-Build')) {
+			if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 				$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
 				if ($body) {
 					$email_info['body'] = $body;
@@ -987,7 +987,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				}
 
 				// Send from a DeskPRO instance, we should get the specific message by looking for our delims
-				if ($this->reader->getHeader('X-DeskPRO-Build')) {
+				if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
 					$body = trim(\Orb\Util\Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info['body'], 1));
 					if ($body) {
 						$email_info['body'] = $body;
