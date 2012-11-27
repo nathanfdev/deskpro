@@ -1682,39 +1682,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Person $person
 	 * @param string $color
-	 * @return TicketFlagged
+	 * @return void
 	 */
 	public function setFlagForPerson($person, $color = null)
 	{
 		if ($color == 'none') $color = null;
 
-		$ticket_flagged = App::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
-			'ticket_id' => $this->id,
-			'person_id' => $person['id']
-		));
-		if (!$ticket_flagged) {
-
-			// doesnt exist, and no color, nothing to do
-			if (!$color) {
-				return null;
-			}
-
-			$ticket_flagged = new TicketFlagged();
-			$ticket_flagged['ticket_id'] = $this->id;
-			$ticket_flagged['person_id'] = $person['id'];
-		}
-
-		if (!$color) {
-			App::getOrm()->remove($ticket_flagged);
-			$ticket_flagged = null;
+		if ($color) {
+			App::getDb()->replace('tickets_flagged', array(
+				'person_id' => $person['id'],
+				'ticket_id' => $this->id,
+				'color'     => $color
+			));
 		} else {
-			App::getOrm()->persist($ticket_flagged);
-			$ticket_flagged['color'] = $color;
+			App::getDb()->delete('tickets_flagged', array(
+				'person_id' => $person['id'],
+				'ticket_id' => $this->id,
+			));
 		}
-
-		App::getOrm()->flush();
-
-		return $ticket_flagged;
 	}
 
 
