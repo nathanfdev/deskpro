@@ -1025,7 +1025,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$charge = new TicketCharge();
 		$charge->charge_time = $time;
 		$charge->amount = $amount;
-		$charge->comment = $comment;
+		$charge->comment = strval($comment);
 		$charge->ticket = $this;
 		$charge->person = $this->person;
 		$charge->organization = $this->organization;
