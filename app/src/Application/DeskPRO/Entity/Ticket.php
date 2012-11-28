@@ -2506,7 +2506,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$new_custom_data = clone $custom_data;
 			$new_custom_data->ticket = $alt_ticket;
 
-			$new_custom_data->addCustomData($new_custom_data);
+			$alt_ticket->addCustomData($new_custom_data);
 		}
 
 		return $alt_ticket;
