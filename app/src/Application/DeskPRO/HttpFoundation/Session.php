@@ -88,6 +88,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
 				$this->_setCurrentPerson($person);
+
+				// Set last login date
+				App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
 			}
 		}
 
