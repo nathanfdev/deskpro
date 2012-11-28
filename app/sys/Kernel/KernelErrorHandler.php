@@ -568,8 +568,14 @@ class KernelErrorHandler
 			$set_setting = 'core.error_unable_allocate_memory';
 		}
 
-		// Dont send in general perm errors
-		if (strpos($errstr, 'failed to open stream: Permission denied') !== false) {
+		$errstr  = self::stripPathPrefix($errstr);
+		$errfile = self::stripPathPrefix($errfile);
+
+		$backtrace = debug_backtrace();
+		$trace = self::formatBacktrace($backtrace);
+
+		// Dont send in general perm errors or things to do with the fs storage
+		if ((strpos($errstr, 'failed to open stream: Permission denied') !== false || strpos($errstr, 'failed to open stream: No such file or directory') !== false) && strpos($trace, 'FileDescriptor') !== false) {
 			$no_send_error = true;
 		}
 
@@ -586,12 +592,6 @@ class KernelErrorHandler
 		if (strpos($errstr, 'failed to open stream') !== false && (strpos($errstr, '/FileDescriptor/Filesystem.php') !== false || strpos($errstr, '\\FileDescriptor\\Filesystem.php') !== false)) {
 			$no_send_error = true;
 		}
-
-		$errstr  = self::stripPathPrefix($errstr);
-		$errfile = self::stripPathPrefix($errfile);
-
-		$backtrace = debug_backtrace();
-		$trace = self::formatBacktrace($backtrace);
 
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
