@@ -202,7 +202,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 				$url_no_nums = preg_replace('#search/articlecontent/.*?$#', 'search/articlecontent', $url);
 			} else {
 				$url_no_nums = preg_replace('#/[0-9]+$#', '', $url);
-				$url_no_nums = preg_replace('#/[0-9]+\-[a-zA-Z0-9_\-]+$#', '', $url);
+				$url_no_nums = preg_replace('#/[0-9]+\-[a-zA-Z0-9_\-]+$#', '', $url_no_nums);
 			}
 
 			$url_noaccount = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url);
