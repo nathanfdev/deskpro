@@ -54,7 +54,7 @@
 ##}
 {% macro show_rating_links(context) %}
 	{% set message = context.messages|first %}
-	{% include 'DeskPRO:emails_common:ticket-rating-links.html.twig' with {message: mssage} %}
+	{% include 'DeskPRO:emails_common:ticket-rating-links.html.twig' with {message: message, ticket: context.ticket} %}
 {% endmacro %}
 
 {##
