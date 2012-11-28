@@ -49,12 +49,6 @@ use \Zend\Queue\Message;
 class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 {
 	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
-
-	/**
 	 * Plain database connection for raw queries
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
@@ -70,15 +64,6 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 		parent::__construct($options, $queue);
 
 		$this->_queues = null;
-	}
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEm()
-	{
-		return $this->em;
 	}
 
 
@@ -242,29 +227,31 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 		$msgs = array();
 		if ($maxMessages > 0 ) {
 
-			$timenow = new \DateTime();
-			$results = $this->em->createQuery("
-				SELECT i
-				FROM DeskPRO:QueueItem i
+			$timenow = date('Y-m-d H:i:s');
+			$results = $this->db->fetchAll("
+				SELECT *
+				FROM queue_items
 				WHERE
-					i.is_dataonly = false
-					AND i.is_ignored = false
-					AND i.is_ready = true
-					AND (i.reserved_at IS NULL OR i.timeout_at < ?0)
-					AND (i.delay_until IS NULL OR i.delay_until < ?1)
-				ORDER BY i.priority DESC, i.id DESC
-			")->setParameters(array($timenow, $timenow))->setMaxResults($maxMessages)->execute();
+					is_dataonly = 0
+					AND is_ignored = false
+					AND is_ready = true
+					AND (reserved_at IS NULL OR reserved_at OR timeout_at < ?)
+					AND (delay_until IS NULL OR delay_until < ?)
+				ORDER BY priority DESC, id ASC
+				LIMIT $maxMessages
+			", array($timenow, $timenow));
 
 			foreach ($results as $item) {
-				$msgs[] = array_merge($item->data, array('qi_id' => $item->id));
+				$data = @unserialize($item['data']);
+				if (!$data) $data = array();
 
-				$item['reserved_at'] = $timenow;
-				$reserved = clone $timenow;
-				$item['timeout_at'] = $reserved->add(new \DateInterval('PT' . $item['ttr'] . 'S'));
-				$this->em->persist($item);
+				$msgs[] = array_merge($data, array('qi_id' => $item['id']));
+
+				$this->db->update('queue_items', array(
+					'reserved_at' => $timenow,
+					'timeout_at'  => date('Y-m-d H:i:s', time() + $item['ttr'])
+				), array('id' => $item['id']));
 			}
-
-			$this->em->flush();
 		}
 
 		$options = array(

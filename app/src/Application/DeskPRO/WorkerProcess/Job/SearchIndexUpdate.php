@@ -87,14 +87,22 @@ class SearchIndexUpdate extends AbstractJob
 					continue;
 				}
 
+				$idx = "{$info->entity_class}.{$info->id}";
+
 				if ($op == 'update') {
-					$entity = $this->em->find($info->entity_class, array('id' => $info->id ?: 0));
-					if ($entity) {
-						$update[] = $entity;
+					if (!isset($delete[$idx])) {
+						$entity = $this->em->find($info->entity_class, array('id' => $info->id ?: 0));
+						if ($entity) {
+							$update[$idx] = $entity;
+						}
 					}
 				} else {
 					$doc = new \Application\DeskPRO\Search\Indexer\Document($info->id, $info->entity_class);
-					$delete[] = $doc;
+					$delete[$idx] = $doc;
+
+					if (isset($update[$idx])) {
+						unset($update[$idx]);
+					}
 				}
 				$this->queue->deleteMessage($info);
 			}
