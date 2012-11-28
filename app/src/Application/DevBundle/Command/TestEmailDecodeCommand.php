@@ -59,6 +59,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
+		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,7 +80,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
-		if ($r->getBodyHtml()->getBodyUtf8()) {
+		if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
 			$body = $r->getBodyHtml()->getBodyUtf8();
 
 			if ($input->getOption('raw')) {

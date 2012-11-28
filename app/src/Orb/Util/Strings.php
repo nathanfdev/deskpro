@@ -1185,8 +1185,9 @@ class Strings
 			$qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
 			$changed = false;
 
+			/** @var $div \QueryPath\DOMQuery */
 			$div = $qp->top()->find('body > *');
-			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span'))) {
+			if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span')) && !trim($div->textBefore())) {
 				$changed = true;
 				$html = $div->html();
 				$html = trim($html);
