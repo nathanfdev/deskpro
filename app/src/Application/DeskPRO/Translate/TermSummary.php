@@ -105,6 +105,14 @@ class TermSummary
 				});
 				break;
 
+			case 'is_via_email':
+				return 'Update is triggered by an email reply';
+				break;
+
+			case 'is_via_interface':
+				return 'Update is triggered from the web interface';
+				break;
+
 			case 'user_performer_email':
 				$summary = $this->_stringMatchSummary("User performer email address", $op, $choice['user_email']);
 				break;

@@ -42,191 +42,6 @@
 {% endif %}
 
 {##################################################################################################################}
-{# New via Email #}
-{##################################################################################################################}
-
-{% if event_trigger_sub == 'email' %}
-	<div class="builder-type" title="Email Account" data-rule-type="gateway_account" data-term-type="GenericMenuTerm">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<select name="gateway_account">
-				{% for id,name in term_options.gateway_accounts %}
-				<option value="{{ id }}">{{ name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-
-	<div class="builder-type" title="To Email Address" data-rule-type="email_to_email">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="email_address" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="To Name" data-rule-type="email_to_name">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="name" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="CC'd Email Address" data-rule-type="email_cc_email">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="email_address" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="CC'd Name" data-rule-type="email_cc_name">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="name" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="Email Account was BCC" data-rule-type="email_account_bcc">
-		<div class="builder-op">
-			<input type="hidden" name="op" value="is" />
-		</div>
-		<div class="builder-options">
-			<input type="hidden" name="do" value="1" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="Email Subject" data-rule-type="email_subject">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="subject" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="Email Body" data-rule-type="email_body">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="message" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="Email Headers" data-rule-type="email_header">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="header_name" value="" placeholder="Name" style="width: 95%; margin-bottom: 3px;" />
-			<input type="text" name="header_value" value="" placeholder="Value" style="width: 95%;" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="From Email Address" data-rule-type="email_from_email">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="email_address" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="From Email Name" data-rule-type="email_from_name">
-		<div class="builder-op">
-			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.general.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.general.is') }}</option>
-				<option value="not">{{ phrase('agent.general.is_not') }}</option>
-				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
-				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
-			</select>
-		</div>
-		<div class="builder-options">
-			<input type="text" name="email_name" value="" />
-		</div>
-	</div>
-
-	<div class="builder-type" title="Email Has Attachment" data-rule-type="email_has_attach">
-		<div class="builder-op">
-			<input type="hidden" name="op" value="is" />
-		</div>
-		<div class="builder-options">
-			<input type="hidden" name="do" value="1" />
-		</div>
-	</div>
-{% endif %}
-
-{##################################################################################################################}
 {# New Via Web (or any) #}
 {##################################################################################################################}
 
@@ -442,6 +257,27 @@
 			</select>
 		</div>
 	</div>
+
+	{% if event_trigger == 'update.agent' or event_trigger == 'update.user' %}
+		<div class="builder-type" title="Updated by email reply" data-rule-type="is_via_email" data-term-type="GenericMenuTerm">
+			<div class="builder-op">
+				<input type="hidden" name="op" value="is" />
+			</div>
+			<div class="builder-options">
+				<input type="hidden" name="do" value="1" />
+				Update is triggered by an email reply
+			</div>
+		</div>
+		<div class="builder-type" title="Updated from the web interface" data-rule-type="is_via_interface" data-term-type="GenericMenuTerm">
+			<div class="builder-op">
+				<input type="hidden" name="op" value="is" />
+			</div>
+			<div class="builder-options">
+				<input type="hidden" name="do" value="1" />
+				Update is triggered from the web interface
+			</div>
+		</div>
+	{% endif %}
 
 	{% if event_trigger_sub == 'agent' %}
 	<div class="builder-type" title="Has new agent reply" data-rule-type="new_reply_agent" data-term-type="GenericMenuTerm">
@@ -1157,6 +993,191 @@
 		</select>
 	</div>
 </div>
+
+{##################################################################################################################}
+{# Email Options #}
+{##################################################################################################################}
+
+{% if event_trigger_sub == 'email' or event_trigger == 'update.agent' or event_trigger == 'update.user' %}
+	<div class="builder-type" title="Email Account" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<select name="gateway_account">
+				{% for id,name in term_options.gateway_accounts %}
+				<option value="{{ id }}">{{ name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="builder-type" title="To Email Address" data-rule-type="email_to_email" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="email_address" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="To Name" data-rule-type="email_to_name" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="name" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="CC'd Email Address" data-rule-type="email_cc_email" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="email_address" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="CC'd Name" data-rule-type="email_cc_name" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="name" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="Email Account was BCC" data-rule-type="email_account_bcc" data-rule-group="Email">
+		<div class="builder-op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="builder-options">
+			<input type="hidden" name="do" value="1" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="Email Subject" data-rule-type="email_subject" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="subject" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="Email Body" data-rule-type="email_body" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="message" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="Email Headers" data-rule-type="email_header" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="header_name" value="" placeholder="Name" style="width: 95%; margin-bottom: 3px;" />
+			<input type="text" name="header_value" value="" placeholder="Value" style="width: 95%;" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="From Email Address" data-rule-type="email_from_email" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="email_address" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="From Email Name" data-rule-type="email_from_name" data-rule-group="Email">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="is_regex">{{ phrase('agent.general.matches_regex') }}</option>
+				<option value="not_regex">{{ phrase('agent.general.not_matches_regex') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+			<input type="text" name="email_name" value="" />
+		</div>
+	</div>
+
+	<div class="builder-type" title="Email Has Attachment" data-rule-type="email_has_attach" data-rule-group="Email">
+		<div class="builder-op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="builder-options">
+			<input type="hidden" name="do" value="1" />
+		</div>
+	</div>
+{% endif %}
 
 {% if term_options.slas %}
 	{% if 'sla' not in no_show_fields %}

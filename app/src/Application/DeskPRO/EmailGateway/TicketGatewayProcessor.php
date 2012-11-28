@@ -1282,7 +1282,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->message = $body;
 
 		App::getOrm()->beginTransaction();
-		$ticket = $newticket->save(array('agent' => $agent));
+		$ticket = $newticket->save();
 
 		if ($this->reader->hasProperty('email_source')) {
 			$message = $newticket->new_message;

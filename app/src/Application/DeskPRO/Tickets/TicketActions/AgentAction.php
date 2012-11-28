@@ -156,8 +156,18 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         $tr = App::getTranslator();
 
 		if ($this->agent_id == -1) {
+			if ($this->trigger) {
+				switch ($this->trigger->event_trigger) {
+					case 'new.email.agent': return 'Assign the agent who forwarded the email';
+					case 'new.web.agent.portal': return 'Assign the agent who created the ticket';
+					case 'update.agent': return 'Assign the agent who made the change';
+				}
+			}
 			return $tr->phrase('agent.tickets.assign_current_action');
 		} elseif ($this->agent_id == 0) {
+			if ($this->trigger && $this->trigger->event_trigger == 'new.email.agent') {
+				return 'Do not assign ticket to anyone';
+			}
 			return $tr->phrase('agent.tickets.unassign_action');
 		} else {
 			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames(array($this->agent_id));

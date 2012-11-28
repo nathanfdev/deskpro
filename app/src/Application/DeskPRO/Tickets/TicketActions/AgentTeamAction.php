@@ -165,6 +165,13 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 		$tr = App::getTranslator();
 
 		if ($this->agent_team_id == -1) {
+			if ($this->trigger) {
+				switch ($this->trigger->event_trigger) {
+					case 'new.email.agent': return 'Assign the team of agent who forwarded the email';
+					case 'new.web.agent.portal': return 'Assign the team of the agent who created the ticket';
+					case 'update.agent': return 'Assign the team of the agent who made the change';
+				}
+			}
 			return $tr->phrase('agent.tickets.assign_current_team_action');
 		} elseif ($this->agent_team_id == 0) {
 			return $tr->phrase('agent.tickets.unassign_team');

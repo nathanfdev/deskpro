@@ -21,8 +21,14 @@
 <div class="builder-type" title="{{ phrase('agent.general.set_agent') }}" data-rule-type="agent" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="agent">
-			<option value="0">Unassigned</option>
-			{% if event_trigger_master != 'sla' %}<option value="-1">Performer</option>{% endif %}
+			<option value="0">
+				{% if event_trigger == 'new.email.agent' %}No one
+				{% else %}Unassigned
+				{% endif %}
+			</option>
+			{% if event_trigger == 'new.email.agent' %}<option value="-1">The agent who forwarded the email</option>{% endif %}
+			{% if event_trigger == 'new.web.agent.portal' %}<option value="-1">The agent who created the ticket</option>{% endif %}
+			{% if event_trigger == 'update.agent' %}<option value="-1">The agent who made the change</option>{% endif %}
 			{% for agent in app.getDataRepository('Agent').getAgents() %}
 				<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 			{% endfor %}
@@ -35,7 +41,9 @@
 		<div class="builder-options">
 			<select name="agent_team">
 				<option value="0">No Team</option>
-				{% if event_trigger_master != 'sla' %}<option value="-1">Performer's Team</option>{% endif %}
+				{% if event_trigger == 'new.email.agent' %}<option value="-1">The team of the agent who forwarded the email</option>{% endif %}
+				{% if event_trigger == 'new.web.agent.portal' %}<option value="-1">The team of the agent who created the ticket</option>{% endif %}
+				{% if event_trigger == 'update.agent' %}<option value="-1">The team of the agent who made the change</option>{% endif %}
 				{% for id,title in app.getDataRepository('AgentTeam').getTeamNames() %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}

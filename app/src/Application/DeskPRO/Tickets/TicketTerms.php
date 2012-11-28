@@ -339,6 +339,18 @@ class TicketTerms
 
 				break;
 
+			case 'is_via_email':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+				break;
+
+			case 'is_via_interface':
+				if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, array('user', 'agent'))) {
+					return false;
+				}
+				break;
+
 			case 'agent_performer':
 
 				$performer = $tracker ? $tracker->getPersonPerformer() : null;
