@@ -366,10 +366,34 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			DP.select(newLi.find('select'));
 		});
 
+		this.getEl('categories').on('change', function(ev) {
+			self.sendUpdateCats();
+		});
+
 		DP.select(this.getEl('categories').find('select'));
 	},
 
 	sendUpdateCats: function() {
+
+		if (this.sendingCatUpdate) {
+			this.resetCatUpdate = true;
+			return;
+		}
+		this.sendingCatUpdate = true;
+		this.resetCatUpdate = false;
+
+		var ids = [];
+		this.getEl('categories').find('select').each(function() {
+			var id = parseInt($(this).val());
+			if (id) {
+				if (ids.indexOf(id) !== -1) {
+					$(this).closest('li').remove()
+				} else {
+					ids.push(id);
+				}
+			}
+		});
+
 		var formData = $('select', this.getEl('categories')).serializeArray();
 
 		formData.push({
@@ -384,11 +408,16 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(data) {
+				this.sendingCatUpdate = false;
 				DeskPRO_Window.sections.publish_section.reload();
 
 				// First cat becomes selectable if there are more than one
 				if (data && data.category_ids && data.category_ids.length >= 2) {
 					this.getEl('categories').find('.remove').show();
+				}
+
+				if (this.resetCatUpdate) {
+					this.sendUpdateCats();
 				}
 			}
 		});
