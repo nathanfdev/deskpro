@@ -7,7 +7,9 @@ $(document).ready(function() {
 <div id="welcome_box_wrap" data-element-handler="DeskPRO.Admin.ElementHandler.WelcomeBox">
 <div class="welcome-box">
 	<article class="top">
-		<div class="picture" style="background-image: url({{ app.user.getPictureUrl(50) }});"></div>
+		<div class="picture tipped" title="Click to change your picture" style="cursor:pointer">
+			<img src="{{ app.user.getPictureUrl(50) }}" />
+		</div>
 		<div class="content">
 			{% if last_login %}
 				Welcome back, {{ app.user.first_name|default(app.user.display_name) }}.

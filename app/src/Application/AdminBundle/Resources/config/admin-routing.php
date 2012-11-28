@@ -47,6 +47,20 @@ $collection->add('admin_apps_toggle', new Route(
 	array()
 ));
 
+$collection->add('admin_change_picture', new Route(
+	'/misc/change-picture',
+	array('_controller' => 'AdminBundle:Main:changePicture'),
+	array(),
+	array()
+));
+
+$collection->add('admin_change_picture_save', new Route(
+	'/misc/change-picture/save',
+	array('_controller' => 'AdminBundle:Main:changePictureSave'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_networkcheck', new Route(
 	'/misc/network',
 	array('_controller' => 'AdminBundle:Settings:quickSetup'),

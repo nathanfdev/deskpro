@@ -201,6 +201,29 @@ class MainController extends AbstractController
 		)));
 	}
 
+	public function changePictureAction()
+	{
+		return $this->render('AdminBundle:Main:change-picture-overlay.html.twig', array(
+			'person' => $this->person
+		));
+	}
+
+	public function changePictureSaveAction()
+	{
+		$new_blob_id = $this->in->getUint('new_blob_id');
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($new_blob_id);
+
+		if ($blob) {
+			$this->person->setPictureBlob($blob);
+			$this->em->persist($this->person);
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	public function skipSetupStepAction()
 	{
 		$this->setup_guide->skipNextTask();
