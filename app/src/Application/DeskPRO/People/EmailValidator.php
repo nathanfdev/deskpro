@@ -208,10 +208,21 @@ class EmailValidator
 							break;
 						}
 
+						$perm_map = array(
+							'DeskPRO:ArticleComment'        => 'articles.no_comment_validate',
+							'DeskPRO:DownloadComment'       => 'downloads.no_comment_validate',
+							'DeskPRO:FeedbackComment'       => 'feedback.no_comment_validate',
+							'DeskPRO:NewsComment'           => 'news.no_comment_validate',
+						);
+
+						$validate_perm = $this->person->hasPerm($perm_map[$entity_name]);
+
 						$comment->validating = null;
 						if ($comment->status == 'user_validating') {
-							if ($this->person->is_agent_confirmed) {
+							if ($this->person->is_agent_confirmed && $validate_perm) {
 								$comment->setStatus('visible');
+							} else {
+								$comment->setStatus('validating');
 							}
 						}
 
