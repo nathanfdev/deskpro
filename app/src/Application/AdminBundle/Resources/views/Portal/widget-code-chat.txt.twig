@@ -11,7 +11,7 @@
 			var scr   = document.createElement('script');
 			scr.type  = 'text/javascript';
 			scr.async = true;
-			scr.src   = '//{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js')|url_trim_scheme }}';
+			scr.src   = DpChatWidget_Options.deskproUrl + 'web/javascripts/DeskPRO/User/ChatWidget/ChatWidget.js';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}
