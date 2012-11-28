@@ -1415,6 +1415,31 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Check if the user has an email address
+	 *
+	 * @param string $email_address
+	 * @return bool
+	 */
+	public function hasEmailAddress($email_address)
+	{
+		$email_address = strtolower($email_address);
+		if ($this->primary_email && $this->primary_email->email == $email_address) {
+			return true;
+		}
+
+		if ($this->emails) {
+			foreach ($this->emails as $email) {
+				if ($email->email == $email_address) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Get the primary email address ID
 	 *
 	 * @return int

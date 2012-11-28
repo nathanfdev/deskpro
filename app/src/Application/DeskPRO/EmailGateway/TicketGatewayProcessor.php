@@ -894,6 +894,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				continue;
 			}
 
+			if ($ticket->hasParticipantEmailAddress($cc_email)) {
+				$this->logMessage("Skipping cc: $cc_email (address already on ticket)");
+				continue;
+			}
+
 			$person_processor = new PersonFromEmailProcessor();
 
 			$cc_person = $person_processor->findPerson($cc);

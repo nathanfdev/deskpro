@@ -175,8 +175,12 @@ abstract class AbstractReader
 	{
 		$to = $this->getToAddresses();
 		$cc = $this->getCcAddresses();
+		$from = $this->getFromAddress();
 
 		$all = array_merge($to, $cc);
+		if ($from) {
+			$all[] = $from;
+		}
 
 		return $all;
 	}

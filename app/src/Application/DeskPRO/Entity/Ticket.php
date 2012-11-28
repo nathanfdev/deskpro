@@ -767,6 +767,31 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Check if there exists a person on this ticket with a particular email address.
+	 *
+	 * @param string $email_address
+	 * @return Person|bool
+	 */
+	public function hasParticipantEmailAddress($email_address)
+	{
+		if ($this->agent && $this->agent->hasEmailAddress($email_address)) {
+			return $this->agent;
+		}
+
+		if ($this->person && $this->person->hasEmailAddress($email_address)) {
+			return $this->person;
+		}
+
+		foreach ($this->participants as $p) {
+			if ($p->person->hasEmailAddress($email_address)) {
+				return $p->person;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Check if a person ID or a person object is current a participant.
