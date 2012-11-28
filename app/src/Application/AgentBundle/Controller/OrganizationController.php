@@ -368,7 +368,7 @@ class OrganizationController extends AbstractController
 	{
 		$org = $this->getOrgOr404($organization_id);
 
-		return $this->render('AgentBundle:Organization:change-person-picture.html.twig', array(
+		return $this->render('AgentBundle:Organization:change-org-picture.html.twig', array(
 			'org' => $org
 		));
 	}

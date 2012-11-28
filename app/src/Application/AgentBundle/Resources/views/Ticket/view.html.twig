@@ -75,8 +75,12 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer
 
 <header class="page-header" id="{{ baseId }}_page_header">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
+		{% if edit_person %}
+		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
+		{% else %}
 		<div class="person-picture-box">
-			<img src="{{ ticket.person.getPictureUrl(60) }}" />
+		{% endif %}
+			<img src="{{ ticket.person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
 			{% if ticket.person.is_disabled %}<span class="person-disabled"></span>{% endif %}
 		</div>
 	</td><td>

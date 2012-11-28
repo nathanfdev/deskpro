@@ -1,15 +1,15 @@
-<div class="change-picture-overlay {% if person.hasPicture() %}with-existing{% endif %} mass-actions-overlay">
+<div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %} mass-actions-overlay">
 	<div class="overlay-title">
 		<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
-		<h4>{{ phrase('agent.general.change_pic_for', {'name': person.display_name}) }}</h4>
+		<h4>{{ phrase('agent.general.change_pic_for', {'name': org.name}) }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_upload') }}</h1></div>
-		{% if person.hasPicture() %}
+		{% if org.hasPicture() %}
 		<div class="existing-picture">
 			<header><h3>{{ phrase('agent.general.existing_picture') }}</h3></header>
 			<section>
-				<img src="{{ person.getPictureUrl(60) }}" />
+				<img src="{{ org.getPictureUrl(60) }}" />
 			</section>
 		</div>
 		{% endif %}
@@ -17,12 +17,7 @@
 			<header><h3>Update Picture</h3></header>
 			<ul>
 				<li><label><input type="radio" name="set_pic_opt" value="nochange" checked="checked" /> Leave unchanged</label></li>
-				{% if person.primary_email and app.getSetting('core.use_gravatar') %}
-					<li>
-						<label><input type="radio" name="set_pic_opt" value="gravatar" /> Use picture from Gravatar</label>
-						<div><img src="{{ person.getGravatarUrl(60) }}" alt="" class="pic-gravatar" style="display:none" /></div>
-					</li>
-				{% elseif person.hasPicture() %}
+				{% if org.hasPicture() %}
 					<li>
 						<label><input type="radio" name="set_pic_opt" value="remove" /> Remove picture</label>
 						<div><img src="{{ path('serve_default_picture', {'s': 60, 'size-fit': 1}) }}" alt="" class="pic-default" style="display:none" /></div>
@@ -63,6 +58,57 @@
 				{{ '{% } %}' }}
 			</script>
 		</form>
-		<br class="clear" />
+
+
+
+
+
+		{# <div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_upload') }}</h1></div>
+		{% if org.picture_blob %}
+		<div class="existing-picture">
+			<header><h3>{{ phrase('agent.general.existing_picture') }}</h3></header>
+			<section>
+				<img src="{{ org.getPictureUrl(150) }}" />
+			</section>
+		</div>
+		{% endif %}
+		<div class="new-picture">
+			<header>
+				<div class="upload-control">
+					<input type="file" name="file-upload" />
+					<button class="clean-white small">{{ phrase('agent.general.upload') }}</button>
+				</div>
+				<h3>{{ phrase('agent.general.new_pic') }}</h3>
+			</header>
+			<section>
+				<p class="explain">
+					{{ phrase('agent.general.upload_explain') }}
+				</p>
+				<div class="files">
+				</div>
+
+				<script class="template-upload" type="text/x-tmpl">
+					{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+					<p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
+					{{ '{% } %}' }}
+				</script>
+				<script class="template-download" type="text/x-tmpl">
+					{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+					{{ '{% if (file.error) { %}'}}
+						<div class="error">
+							{{ '{%=file.error%}' }}
+						</div>
+					{{ '{% } else { %}'}}
+						<div>
+							<input type="hidden" name="new_blob_id" class="new_blob_id" value="{{ '{%=file.blob_id%}' }}" />
+							<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
+							<img src="{{ '{%=file.download_url%}' }}?s=150" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60" />
+							<div><button class="clean-white save-trigger small">{{ phrase('agent.general.set_new_pic') }}</button></div>
+						</div>
+					{{ '{% } %}' }}
+					{{ '{% } %}' }}
+				</script>
+			</section>
+		</div>#}
 	</div>
 </div>

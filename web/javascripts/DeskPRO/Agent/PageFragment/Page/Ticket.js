@@ -46,6 +46,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
+		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
+			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
+			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
+		});
+		this.ownObject(this.changePic);
+
 		this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
 		this.ownObject(this.ticketFields);
 

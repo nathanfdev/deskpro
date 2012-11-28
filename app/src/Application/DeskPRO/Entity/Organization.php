@@ -361,13 +361,15 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 			$url = App::get('router')->generate('serve_blob', array(
 				'blob_auth_id' => $this->picture_blob->getAuthId(),
 				'filename' => $this->picture_blob->filename,
-				's' => $size
+				's' => $size,
+				'size-fit' => 1,
 			), true);
 		}
 
 		if (!$url) {
 			$url = App::get('router')->generate('serve_org_picture_default', array(
 				's' => $size,
+				'size-fit' => 1,
 			), true);
 		}
 

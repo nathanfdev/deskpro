@@ -1,9 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page.PersonHelper');
 
-/**
- * Delete/spam things. Toggles visibility of status section, and notice bar,
- * and sens appropriate save ajax.
- */
 DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
@@ -65,29 +61,41 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			formData: [{
 				name: 'is_image',
 				value: 1
-			}]
+			}],
+			completed: function() {
+				$('.files .in', wrapper).css('height', 'auto');
+			}
 		}).bind('fileuploadstart', function() {
 			$('p.explain', wrapper).hide();
 		}).bind('fileuploadadd', function() {
 			$('.files', wrapper).empty();
+			$('input[name=set_pic_opt]', wrapper).each(function() {
+				$(this).attr('checked', $(this).val() == 'newpic');
+			})
 		});
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
 	},
 
-	_doSave: function() {
-		var type = $('.set_pic_opt', this.overlay.getWrapper()).val();
+	_doSave: function(e) {
+		e.preventDefault();
+
+		var type = $('input[name=set_pic_opt]:checked', this.overlay.getWrapper()).val();
 
 		var newImgSrc = null;
 		var action = null;
 
 		var formData = [];
 
-
 		switch (type) {
 			case 'nochange':
 				this.close();
 				return;
+
+			case 'remove':
+				formData.push({ name: 'action', value: 'delete-picture' });
+				newImgSrc = $('img.pic-default', this.wrapperEl).attr('src');
+				break;
 
 			case 'gravatar':
 				formData.push({ name: 'action', value: 'delete-picture' });

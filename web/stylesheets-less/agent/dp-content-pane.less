@@ -3852,18 +3852,18 @@ body.popup section.body textarea.fill {
 	color: #444;
 }
 
-.change-picture-overlay header .upload-control {
-	float: right;
+.change-picture-overlay .upload-control {
+	display: inline-block;
 	position: relative;
+	top: 8px;
 	width: 83px;
 	overflow: hidden;
-	text-align: right;
 	height: 20px;
 }
 
-.change-picture-overlay header .upload-control input {
+.change-picture-overlay .upload-control input {
 	position: absolute;
-	top: 0;
+	top: 0px;
 	right: 0;
 	width: 80px;
 	.opacity(0);
@@ -3874,21 +3874,40 @@ body.popup section.body textarea.fill {
 	margin:0;padding:0;
 }
 
-.change-picture-overlay header .upload-control button {
+.change-picture-overlay .upload-control button {
 	position: absolute;
 	top: 0;
-	right: 0;
+	left: 0;
 	z-index: 1;
 }
 
-.change-picture-overlay header .save-control {
+.change-picture-overlay .new-picture li {
+	margin-bottom: 3px;
+}
+
+.change-picture-overlay .files {
+	margin-left: 16px;
+}
+
+.change-picture-overlay .save-row {
+	border-top: 1px solid #cccccc;
+	text-align: center;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+
+.change-picture-overlay .save-control {
 	float: right;
 }
 
-.change-picture-overlay.with-existing .existing-picture,
+.change-picture-overlay.with-existing .existing-picture {
+	float: left;
+	width: 200px;
+}
+
 .change-picture-overlay.with-existing .new-picture {
 	float: left;
-	width: 225px;
+	width: 250px;
 }
 
 .change-picture-overlay.with-existing .existing-picture {

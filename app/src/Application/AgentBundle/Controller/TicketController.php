@@ -204,6 +204,13 @@ class TicketController extends AbstractController
 			$this->em->flush();
 		}
 
+		$edit_person = $this->person->hasPerm('agent_people.edit');
+		if ($edit_person) {
+			if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
+				$edit_person = false;
+			}
+		}
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
@@ -216,6 +223,8 @@ class TicketController extends AbstractController
 			'ticket_message_attachments' => $ticket_message_attachments,
 
             'draft' => $draft,
+
+			'edit_person' => $edit_person,
 
             'last_message_id' => $ticket_messages_blockcache['last_message_id'],
             'last_log_id' => $ticket_messages_blockcache['last_log_id'],

@@ -1704,16 +1704,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				), true);
 
 			} elseif (App::getSetting('core.use_gravatar') && $this->primary_email && $this->primary_email->getId()) {
-				$url = $this->primary_email->getGravatarUrl($secure);
-				if ($size != 80) {
-					$url .= '&s=' . $size;
-				}
-
-				if ($this->is_agent) {
-					$url .= '&d=mm';
-				} else {
-					$url .= '&d=mm';
-				}
+				$url = $this->getGravatarUrl($size, $secure);
 			}
 		}
 
@@ -1726,6 +1717,30 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($secure) {
 			$url = preg_replace('#^http:#', 'https:', $url);
+		}
+
+		return $url;
+	}
+
+	public function getGravatarUrl($size = 80, $secure = null)
+	{
+		// Null means detect
+		if ($secure === null AND App::isWebRequest()) {
+			$request = App::getRequest();
+			if ($request->isSecure()) {
+				$secure = true;
+			}
+		}
+
+		$url = $this->primary_email->getGravatarUrl($secure);
+		if ($size != 80) {
+			$url .= '&s=' . $size;
+		}
+
+		if ($this->is_agent) {
+			$url .= '&d=mm';
+		} else {
+			$url .= '&d=mm';
 		}
 
 		return $url;

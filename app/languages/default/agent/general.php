@@ -92,7 +92,7 @@
 	'agent.general.cc_address'                              => 'CC\'d Address',
 	'agent.general.change_notif_settings'                   => 'Change your notification settings',
 	'agent.general.change_password'                         => 'Change Password',
-	'agent.general.change_pic_for'                          => 'Change picture for for {{name}}',
+	'agent.general.change_pic_for'                          => 'Change picture for {{name}}',
 	'agent.general.change_property'                         => 'Change Property',
 	'agent.general.change_status'                           => 'Change Status',
 	'agent.general.change_user'                             => 'Change User',
