@@ -137,7 +137,17 @@ class ActionsCollection
 		$name = get_class($modifier);
 		$this->applied_modifier_types[$name] = $name;
 		$this->applied_modifiers[] = $modifier;
-		$modifier->modifyCollection($this);
+	}
+
+	/**
+	 * Applies all modifiers. Should be run when the collection is finalized
+	 * to ensure that the order of modifiers doesn't affect anything.
+	 */
+	public function applyAllModifiers()
+	{
+		foreach ($this->applied_modifiers AS $modifier) {
+			$modifier->modifyCollection($this);
+		}
 	}
 
 
@@ -284,6 +294,8 @@ class ActionsCollection
 	public function apply(TicketChangeTracker $ticket_tracker = null, Ticket $ticket, Person $person_context = null, $logger = null)
 	{
 		$this->was_stopped = false;
+
+		$this->applyAllModifiers();
 
 		foreach ($this->actions as $action) {
 			if ($person_context && $action instanceof PersonContextInterface) {
