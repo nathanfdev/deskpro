@@ -140,6 +140,9 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 					$this->session->set('auth_person_id', $person->id);
 					$this->session->set('dp_interface', DP_INTERFACE);
 
+					// Set last login date
+					App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+
 					if ($from_ticket) {
 						$this->session->remove('ticket_from_ptac_register');
 					}
