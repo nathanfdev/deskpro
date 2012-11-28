@@ -399,10 +399,13 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		}
 
 		// Trim off _rt
-		$url = preg_replace('#(\?|&)_rt=[a-zA-Z0-9]+\-[a-zA-Z0-9]+\-[a-f0-9]+&?#', '', $url);
+		$url = preg_replace('#(\??)&?_rt=[a-zA-Z0-9]+\-[a-zA-Z0-9]+\-[a-f0-9]+#', '$1', $url);
 
 		// Trim of _=1434343 cache buster
-		$url = preg_replace('#(\?|&)_=([0-9]+)(&|$)#', '', $url);
+		$url = preg_replace('#(\??)&?_=([0-9]+)#', '$1', $url);
+
+		// trim off single trailing ?
+		$url = rtrim($url, '?&');
 
 		$write = sprintf("[%s] Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d    URL: %s\n", date('Y-m-d H:i:s'), $total_time, $php_time, $db_time, $this->query_count, memory_get_peak_usage(), $url);
 
