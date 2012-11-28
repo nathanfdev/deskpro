@@ -55,6 +55,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$field_manager = $this->container->getSystemService('person_fields_manager');
 
 		$is_org_manager = ($this->person->organization && $this->person->organization_manager);
+		$new_blob_key = false;
 
 		$invalid_name = false;
 		$profile_saved = false;
@@ -84,6 +85,51 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$this->person->setPreference('org.manager_auto_add', $this->in->getBool('org_manager_auto_add') ? 1 : 0);
 			}
 
+			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+			$file = $this->request->files->get('new_picture');
+			if ($file && $file->getClientSize()) {
+				$accept = $this->container->getAttachmentAccepter();
+
+				$picture_error = $accept->getError($file, 'user');
+				if ($picture_error) {
+					switch ($picture_error['error_code']) {
+						case 'size': $phrase_id = 'user.error.attach_size'; break;
+						case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
+						case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
+						case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+						case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
+						case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+					}
+					$picture_error['error'] = $this->container->getTranslator()->phrase($phrase_id, $picture_error);
+				}
+				if (!$picture_error) {
+					$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+					$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+					$accept->addRestrictionSet('only_images', $set);
+					$picture_error = $accept->getError($file, 'only_images');
+				}
+
+				if (!$picture_error) {
+					$blob = $accept->accept($file);
+					$this->person->setPictureBlob($blob);
+					$new_blob_key = $blob->getId() . '-' . $blob->getAuthId();
+				}
+			} else {
+				$new_blob_key = $this->in->getString('new_blob_key');
+				if ($new_blob_key) {
+					list($id, $auth_code) = explode('-', $new_blob_key);
+					$blob = $this->em->getRepository('DeskPRO:Blob')->find($id);
+					if ($new_blob_key && $blob->getAuthId() == $auth_code) {
+						$this->person->setPictureBlob($blob);
+					}
+				}
+			}
+
+			if ($this->in->getBool('remove_picture')) {
+				$this->person->setPictureBlob(null);
+				$new_blob_key = false;
+			}
+
 			if ($is_valid) {
 				$this->em->persist($this->person);
 				$this->em->flush();
@@ -108,7 +154,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'custom_fields'      => $custom_fields,
 			'invalid_custom_fields' => $invalid_custom_fields,
 			'is_org_manager'     => $is_org_manager,
-			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add'))
+			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
+			'new_blob_key'       => $new_blob_key
 		));
 	}
 

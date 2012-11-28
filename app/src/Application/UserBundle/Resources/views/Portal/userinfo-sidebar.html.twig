@@ -5,6 +5,7 @@
 {% if app.user.id %}
 	<section class="dp-sidebar-block dp-userinfo">
 		<header>
+			<a href="{{ path('user_profile') }}" class="dp-profile-image"><img src="{{ app.user.getPictureUrl(16) }}" alt="" title="{{ phrase('user.general.click_to_change_picture') }}" /></a>
 			<h3>{{ phrase('user.portal.sidebar_welcome-user', {name: app.user.first_name|default(app.user.display_name_user)}) }}</h3>
 		</header>
 		<article class="dp-written">

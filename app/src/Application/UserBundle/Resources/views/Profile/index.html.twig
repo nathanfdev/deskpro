@@ -9,7 +9,7 @@
 {% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
 {% block content %}
 
-<form accept="{{ path('user_profile') }}" method="POST">
+<form accept="{{ path('user_profile') }}" method="POST" enctype="multipart/form-data">
 	{{ form_token() }}
 
 	<section class="dp-portal-section">
@@ -42,6 +42,24 @@
 				<div class="dp-controls dp-fill">
 					{{ form_widget(form.last_name) }}
 				</div>
+			</div>
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.picture') }}</label>
+				</div>
+				<div class="dp-controls dp-fill dp-picture-editor">
+					<img src="{{ app.user.getPictureUrl(60) }}" alt="{{ phrase('user.profile.current_picture') }}" title=alt="{{ phrase('user.profile.current_picture') }}" />
+					<div>
+						{{ phrase('user.profile.upload_new_picture') }}<br />
+						<input type="file" name="new_picture" />
+					</div>
+					{% if app.user.picture_blob %}
+						<div><label><input type="checkbox" name="remove_picture" value="1" /> {{ phrase('user.profile.remove_your_current_picture') }}</label></div>
+					{% endif %}
+				</div>
+				{% if new_blob_key %}
+					<input type="hidden" name="new_blob_key" value="{{ new_blob_key }}" />
+				{% endif %}
 			</div>
 			<div class="dp-control-group">
 				<div class="dp-control-label">

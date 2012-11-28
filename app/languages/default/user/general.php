@@ -1,6 +1,7 @@
 <?php return array(
 	'user.general.add'                           => 'Add',
 	'user.general.attachments'                   => 'Attachments',
+	'user.general.click_to_change_picture'       => 'Click to change your picture',
 	'user.general.comments_add-comment'          => 'Add a comment',
 	'user.general.comments_logged_in_as'         => 'Logged In As',
 	'user.general.comments_no_comments'          => 'There are no comments.',
@@ -26,6 +27,7 @@
 	'user.general.next'                          => 'Next',
 	'user.general.page'                          => 'Page',
 	'user.general.page_prev'                     => 'Prev',
+	'user.general.picture'                       => 'Picture',
 	'user.general.please_enter_your_email'       => 'Please enter your email address',
 	'user.general.please_enter_your_name'        => 'Please enter your name',
 	'user.general.post_comment_btn'              => 'Post Comment',
