@@ -232,15 +232,19 @@ class KernelBooter
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
 
-			$res = self::_getCachedPageIfAvailable($request, $request_uri, $path, $request_method, function() use ($kernel_class, $env, $debug, &$kernel) {
-				if (!$kernel) {
-					KernelBooter::bootstrapLib($debug);
-					KernelBooter::bootstrapEnv();
+			try {
+				$res = self::_getCachedPageIfAvailable($request, $request_uri, $path, $request_method, function() use ($kernel_class, $env, $debug, &$kernel) {
+					if (!$kernel) {
+						KernelBooter::bootstrapLib($debug);
+						KernelBooter::bootstrapEnv();
 
-					$kernel = new $kernel_class($env, $debug);
-				}
-				return $kernel;
-			});
+						$kernel = new $kernel_class($env, $debug);
+					}
+					return $kernel;
+				});
+			} catch (\Exception $e) {
+				$res = false;
+			}
 
 			if ($res) {
 				header('HTTP/1.1 200 OK');
@@ -303,7 +307,9 @@ class KernelBooter
 			}
 			$response = $kernel->handle($request);
 			if (DP_INTERFACE == 'user') {
-				self::_updateCachedFile($response);
+				try {
+					self::_updateCachedFile($response);
+				} catch (\Exception $e) {}
 			}
 			$response->send();
 		} catch (\PDOException $e) {
