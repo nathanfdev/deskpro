@@ -1816,9 +1816,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$work_hours_set = $this->getWorkHoursSet();
 
 		$time = 0;
-		foreach ($this->waiting_times AS $waiting) {
-			if ($waiting['type'] == 'user') {
-				$time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
+		if ($this->waiting_times) {
+			foreach ($this->waiting_times AS $waiting) {
+				if ($waiting['type'] == 'user') {
+					$time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
+				}
 			}
 		}
 
