@@ -2116,6 +2116,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return;
 		}
 
+		if (!is_array($this->waiting_times)) {
+			$this->waiting_times = array();
+		}
+
 		$old = $this->waiting_times;
 		$this->waiting_times[] = array(
 			'type' => $type,
@@ -2124,6 +2128,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'length' => ($end_ts - $start_ts)
 		);
 		$this->_onPropertyChanged('waiting_times', $old, $this->waiting_times);
+	}
+
+	public function getWaitingTimes()
+	{
+		if (!is_array($this->waiting_times)) {
+			return array();
+		} else {
+			return $this->waiting_times;
+		}
 	}
 
 
