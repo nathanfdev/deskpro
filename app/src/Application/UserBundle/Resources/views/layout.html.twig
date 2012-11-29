@@ -222,7 +222,8 @@
 								<em>{{ phrase('admin.designer.edit_header_section') }}</em>
 							</div>
 						{% else %}
-							{% include 'UserBundle:Portal:welcome-block.html.twig' %}
+							{% set welcome_block %}{% include 'UserBundle:Portal:welcome-block.html.twig' %}{% endset %}
+							{% if welcome_block|trim %}{{ welcome_block|raw }}{% else %}<br/>{% endif %}
 						{% endif %}
 					{% endif %}
 
