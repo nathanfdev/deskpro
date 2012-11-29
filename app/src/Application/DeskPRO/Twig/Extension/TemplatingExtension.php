@@ -425,6 +425,7 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$raw_packs = App::getConfig('debug.raw_assets', array());
 		$less_use_css = App::getConfig('debug.less_use_css_dir', false);
+		$disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
 		if ($raw_packs && (in_array($name, $raw_packs) OR in_array('all', $raw_packs) OR (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
 			$urls = $this->getAsseticRaw($name);
@@ -432,12 +433,13 @@ class TemplatingExtension extends \Twig_Extension
 			$urls = array($this->getAssetic($name));
 		}
 
+		$qs_append = ($disable_client_cache ? time() : DP_BUILD_TIME);
 		$html = array();
 
 		foreach ($urls as $url) {
 			$type = Strings::getExtension($url);
 
-			$url .= '?' . DP_BUILD_TIME;
+			$url .= '?' . $qs_append;
 
 			switch ($type) {
 				case 'js':
