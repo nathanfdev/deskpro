@@ -228,7 +228,25 @@ class DpLoader extends LoaderAbstract
 						$chat_manager->reopenTimoutChat($convo);
 					}
 
-					$chat_manager->addUserTrack($convo, $session->getVisitor()->getLastPage());
+					$current_page = !empty($_GET['current_page']) ? strval($_GET['current_page']) : false;
+					if (!$current_page) {
+						$current_page = $session->getVisitor()->getLastPage();
+					} else if ($current_page != $session->getVisitor()->getLastPage()) {
+						$vis = $session->getVisitor();
+						$vis['last_page'] = $current_page;
+
+						if ($session->getIsNew() || !$vis['session_landing_page']) {
+							$vis['session_landing_page'] = $current_page;
+						}
+
+						if (!$vis['landing_page']) {
+							$vis['landing_page'] = $current_page;
+						}
+						$container->getOrm()->persist($vis);
+						$container->getOrm()->flush();
+					}
+
+					$chat_manager->addUserTrack($convo, $current_page);
 					$container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 
 					$cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());

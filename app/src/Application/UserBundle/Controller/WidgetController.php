@@ -315,6 +315,23 @@ class WidgetController extends AbstractController
 
 		$departments = $this->container->getDataService('Department')->getPersonDepartments($sessionObj->getPerson() ?: $this->person, 'chat');
 
+		$current_page = $this->in->getString('parent_url');
+		$sessionObj = $this->session;
+		if ($current_page && $current_page != $sessionObj->getVisitor()->getLastPage()) {
+			$vis = $sessionObj->getVisitor();
+			$vis['last_page'] = $current_page;
+
+			if ($session->getIsNew() || !$vis['session_landing_page']) {
+				$vis['session_landing_page'] = $current_page;
+			}
+
+			if (!$vis['landing_page']) {
+				$vis['landing_page'] = $current_page;
+			}
+			$this->em->persist($vis);
+			$this->em->flush();
+		}
+
 		$vars = array(
 			'parent_url' => $this->in->getString('parent_url'),
 			'session_code' => $session->getSessionCode(),

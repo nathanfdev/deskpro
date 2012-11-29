@@ -380,6 +380,8 @@ var DpChatWidget = new (function() {
 			url += '&__sid=' + sid + '&';
 		}
 
+		url += 'current_page=' + window.location.href + '&';
+
 		if (DpChatWidget_Options && DpChatWidget_Options.referrerPageUrl) {
 			url += encodeURIComponent(document.location.href);
 		} else {

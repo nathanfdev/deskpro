@@ -179,6 +179,23 @@ class ChatController extends AbstractController
 			return $this->createResponse('');
 		}
 
+		$current_page = $this->in->getString('current_page');
+		$session = $this->session;
+		if ($current_page && $current_page != $session->getVisitor()->getLastPage()) {
+			$vis = $session->getVisitor();
+			$vis['last_page'] = $current_page;
+
+			if ($session->getEntity()->getIsNew() || !$vis['session_landing_page']) {
+				$vis['session_landing_page'] = $current_page;
+			}
+
+			if (!$vis['landing_page']) {
+				$vis['landing_page'] = $current_page;
+			}
+			$this->em->persist($vis);
+			$this->em->flush();
+		}
+
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
