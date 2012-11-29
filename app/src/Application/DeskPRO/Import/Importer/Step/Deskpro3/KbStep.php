@@ -181,6 +181,11 @@ class KbStep extends AbstractDeskpro3Step
 		} else {
 			$new_article->setStatusCode(Article::STATUS_HIDDEN . '.' . Article::HIDDEN_STATUS_UNPUBLISHED);
 		}
+
+		if ($article['title']) {
+			$article['title'] = \Orb\Util\Strings::htmlEntityDecodeUtf8($article['title'], false);
+		}
+
 		$new_article->person = $new_person;
 		$new_article->title = $article['title'] ?: 'Untitled';
 		$new_article->content = '<div class="dp-question">'.$article['question'].'</div>' . $article['answer'];
