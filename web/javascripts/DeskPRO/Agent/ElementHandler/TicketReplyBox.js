@@ -559,7 +559,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					lastAt = testText.lastIndexOf('@'),
 					matches = [];
 
-				if (lastAt != -1) {
+				if (lastAt != -1 && (lastAt == 0 || testText[lastAt - 1].match(/^(\s|[\.!?:;,()<>|/-])$/))) {
 					var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
 					if (afterAt.length >= 2 && afterAt.length < 75) {
