@@ -56,15 +56,19 @@ class Setting extends AbstractEntityRepository
 	 */
 	public function updateSetting($name, $value)
 	{
-		$this->_em->getConnection()->delete('settings', array('name' => $name));
+		$db = $this->_em->getConnection();
 
-		if ($value === null) {
-			return null;
+		if ($value !== null) {
+			$db->executeUpdate("
+				INSERT INTO settings
+					(name, value)
+				VALUES
+					(?, ?)
+				ON DUPLICATE KEY UPDATE
+					value = VALUES(value)
+			", array($name, $value));
+		} else {
+			$db->delete('settings', array('name' => $name));
 		}
-
-		$this->_em->getConnection()->insert('settings', array(
-			'name' => $name,
-			'value' => (string)$value
-		));
 	}
 }
