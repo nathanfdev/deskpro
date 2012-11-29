@@ -420,7 +420,6 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 
 	protected function _calculateTriggerDate($delay, Ticket $ticket)
 	{
-		set_time_limit(1);
 		if ($this->sla_type == self::TYPE_FIRST_RESPONSE || $this->sla_type == self::TYPE_RESOLUTION) {
 			return $this->getWorkHoursSet()->calculateWorkHoursDelay($ticket->date_created, $delay);
 		}
