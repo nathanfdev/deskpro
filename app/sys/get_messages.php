@@ -326,6 +326,8 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'chat.new';
 		$channels[] = 'chat.reassigned';
 		$channels[] = 'chat.unassigned';
+		$channels[] = 'chat.depchange';
+		$channels[] = 'chat.invited';
 		$channels[] = 'chat.ended';
 
 		$channels[] = 'agent_chat.new-message';
@@ -340,13 +342,6 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'agent.ui.new-pending';
 
 		$channels[] = 'agent.filter-update';
-		$channels[] = 'chat.new';
-		$channels[] = 'chat.reassigned';
-		$channels[] = 'chat.reassigned';
-		$channels[] = 'chat.unassigned';
-		$channels[] = 'chat.ended';
-		$channels[] = 'chat.depchange';
-		$channels[] = 'chat.invited';
 
 		$q = $this->getPdo()->prepare("
 			SELECT channel
@@ -364,7 +359,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			SELECT c.id
 			FROM chat_conversations c
 			LEFT JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
-			WHERE ()c.agent_id = ? OR c2p.person_id = ?)
+			WHERE (c.agent_id = ? OR c2p.person_id = ?)
 				AND c.date_ended IS NULL
 		");
 		$q->execute(array($person_id, $person_id));
