@@ -88,6 +88,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).hide();
 			self.getElById('is_note').val('0');
 			self.isNote = false;
+			self.hideAgentNotifyList();
 
 			if (keepOpenReply) {
 				keepOpenBtn.addClass('radio-on on');
@@ -129,6 +130,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 			self.isNote = true;
+			self.hideAgentNotifyList();
 
 			if (keepOpenNote) {
 				keepOpenBtn.addClass('radio-on on');
@@ -381,6 +383,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 	},
 
+	hideAgentNotifyList: function() {
+		if (this.agentNotifyList) {
+			this.agentNotifyList.empty().hide();
+		}
+	},
+
 	_initAgentNotifier: function(textarea) {
 		var api = textarea.data('redactor');
 		if (!api) {
@@ -404,7 +412,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					return;
 				}
 
-				hideNotifyList();
+				self.hideAgentNotifyList();
 
 				var focus = api.getFocus(),
 					focusNode = $(focus[0]),
@@ -432,17 +440,20 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId]) + '</span>&nbsp;');
 			};
 
-			var hideNotifyList = function() {
-				self.agentNotifyList.empty().hide();
-			};
-
 			this.agentNotifyList.on('mousedown', 'li', function(e) {
 				e.preventDefault();
 				insertAgentNotify($(this).data('agent-id'));
 			});
 
+			ed.on('click blur', function() {
+				if (self.isNote) {
+					self.hideAgentNotifyList();
+				}
+			});
+
 			ed.on('keydown', function(e) {
 				if (!self.isNote) {
+					self.hideAgentNotifyList();
 					return;
 				}
 
@@ -534,13 +545,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					case 36: // home
 					case 37: // left
 					case 39: // right
-						hideNotifyList();
+						self.hideAgentNotifyList();
 						return;
 
 					default:
 						// function keys and other special ones
 						if (e.keyCode >= 112 && e.keyCode <= 145) {
-							hideNotifyList();
+							self.hideAgentNotifyList();
 							return;
 						}
 				}
@@ -550,7 +561,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 				if (focus[0] != origin[0] || focus[1] != origin[1]) {
 					// selected multiple points, don't show
-					hideNotifyList();
+					self.hideAgentNotifyList();
 					return;
 				}
 
@@ -599,7 +610,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 					self.agentNotifyList.show();
 				} else {
-					hideNotifyList();
+					self.hideAgentNotifyList();
 				}
 			});
 
