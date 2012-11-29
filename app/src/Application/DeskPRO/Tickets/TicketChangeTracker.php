@@ -344,7 +344,7 @@ class TicketChangeTracker extends ChangeTracker
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			if ($message->person->is_agent && !$this->isExtraSet('is_user_reply')) {
+			if ($message && $message->person->is_agent && !$this->isExtraSet('is_user_reply')) {
 				return true;
 			}
 		}
@@ -363,7 +363,7 @@ class TicketChangeTracker extends ChangeTracker
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			if ($message->person->is_agent && !$this->isExtraSet('is_user_reply')) {
+			if ($message && $message->person->is_agent && !$this->isExtraSet('is_user_reply')) {
 				return $message;
 			}
 		}
@@ -382,7 +382,7 @@ class TicketChangeTracker extends ChangeTracker
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			if (!$message->person->is_agent || $this->isExtraSet('is_user_reply')) {
+			if ($message && !$message->person->is_agent || $this->isExtraSet('is_user_reply')) {
 				return $message;
 			}
 		}
@@ -402,7 +402,7 @@ class TicketChangeTracker extends ChangeTracker
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			if (!$message->person->is_agent || $this->isExtraSet('is_user_reply')) {
+			if ($message && !$message->person->is_agent || $this->isExtraSet('is_user_reply')) {
 				return true;
 			}
 		}
@@ -417,8 +417,13 @@ class TicketChangeTracker extends ChangeTracker
 	 */
 	public function hasNewReply()
 	{
-		if ($this->getChangedProperty('messages')) {
-			return true;
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if ($message) {
+				return true;
+			}
 		}
 
 		return false;
@@ -436,7 +441,9 @@ class TicketChangeTracker extends ChangeTracker
 		if ($messages) {
 			$message = array_shift($messages);
 			$message = $message['new'];
-			return $message;
+			if ($message) {
+				return $message;
+			}
 		}
 
 		return false;

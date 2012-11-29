@@ -1,6 +1,7 @@
 <ul class="ticket-message-edit-menu" style="display:none">
 	<li data-option-id="view-details">{{ phrase('agent.general.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
+	{% if ticket_perms.delete %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
 	<li class="set-as-note" data-option-id="setnote.note">Set as agent note</li>
 	<li class="set-as-message" data-option-id="setnote.message">Set as normal message</li>
 	{% if ticket_perms.modify_merge %}<li data-option-id="split">Split to new ticket</li>{% endif %}
@@ -30,6 +31,27 @@
 			{% if person_object_counts.chats %}&bull; {{ person_object_counts.chats }} Chats<br/>{% endif %}
 		</div>
 		{% endif %}
+	</div>
+
+	<div class="overlay-footer">
+		<div class="loading-off">
+			<button class="save-trigger clean-white">{{ phrase('agent.general.ucfirst_delete') }}</button>
+		</div>
+		<div class="loading-on" style="display:none">
+			<span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+		</div>
+	</div>
+</div>
+
+<div class="delete-message-overlay overlay" style="display:none">
+	<div class="overlay-title">
+		<h4>{{ phrase('agent.general.ucfirst_delete') }}</h4>
+	</div>
+
+	<div class="overlay-content">
+		Are you sure you want to delete this message?
+		<div class="ticket-messages"></div>
+		<input type="hidden" class="message-id" value="" />
 	</div>
 
 	<div class="overlay-footer">

@@ -66,7 +66,17 @@
 		{{ phrase('agent.tickets.from_email', {'address':log.details.email}) }}
 		{% endif %}
 	{% elseif log.action_type == 'message_removed' %}
-		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.message_deleted') }}</span> <span style="{{ layout.actiontext_style('old-val') }}">ID {{log.id_before}}</span>
+		{% if log.details.is_agent_note %}
+			<span class="{{ layout.actiontext_style('type') }}">Note deleted</span>
+		{% else %}
+			<span class="{{ layout.actiontext_style('type') }}">Message deleted</span>
+		{% endif %}
+		<span class="{{ layout.actiontext_style('old-val') }}l">ID {{log.details.message_id}}</span>
+		{% if log.details.is_agent_message %}
+			(written by agent {{ log.details.person_name }})
+		{% else %}
+			(written by {{ log.details.person_name }}, ID {{ log.details.person_id }})
+		{% endif %}
 	{% elseif log.action_type == 'changed_priority' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_priority_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_priority_title|default(phrase('agent.general.workflow'))}}</span>

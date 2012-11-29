@@ -1501,6 +1501,70 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function deleteMessageAction($message_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$message['is_agent_note']) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (count($ticket->messages) == 1) {
+			$this->db->replace('tickets_deleted', array(
+				'ticket_id' => $ticket->id,
+				'by_person_id' => $this->person->id,
+				'new_ticket_id' => 0,
+				'reason' => $this->in->getString('reason'),
+				'date_created' => date('Y-m-d H:i:s')
+			));
+
+			$ticket->setStatus('hidden.deleted');
+			$this->em->persist($ticket);
+
+			$hidden_data = $this->_getHiddenBarData($ticket);
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'ticket_deleted' => true,
+				'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', array(
+					'ticket' => $ticket,
+					'ticket_perms' => $this->_getTicketPerms($ticket),
+					'ticket_deleted' => $hidden_data['ticket_deleted'],
+					'hard_delete_time' => $hidden_data['hard_delete_time'],
+				))
+			));
+		} else {
+			$ticket_log = new TicketLog();
+			$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\MessageRemoved($message);
+			$ticket_log->ticket      = $ticket;
+			$ticket_log->person      = $this->person;
+			$ticket_log->action_type = $log_action->getLogName();
+			$ticket_log->id_object   = $message->getId();
+			$ticket_log->details     = $log_action->getLogDetails();
+
+			$this->em->persist($ticket_log);
+			$this->em->remove($message);
+			$this->em->flush();
+
+			return $this->createJsonResponse(array(
+				'success' => true
+			));
+		}
+	}
+
 	############################################################################
 	# ajax-save-actions
 	############################################################################

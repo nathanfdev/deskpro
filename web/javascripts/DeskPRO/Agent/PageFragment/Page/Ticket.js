@@ -955,9 +955,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if ($(info.menu.getOpenTriggerElement()).closest('article.message').hasClass('note-message')) {
 					menuElement.find('li.set-as-message').show();
 					menuElement.find('li.set-as-note').hide();
+					menuElement.find('li.delete-link').show();
 				} else {
 					menuElement.find('li.set-as-message').hide();
 					menuElement.find('li.set-as-note').show();
+					menuElement.find('li.delete-link').hide();
 				}
 			},
 			onItemClicked: function(info) {
@@ -1017,6 +1019,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				break;
 
+			case 'delete':
+				this.showDeleteMessageOverlay(messageId);
+				break;
+
 			case 'setnote.note':
 			case 'setnote.message':
 
@@ -1051,6 +1057,67 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.showMessageEditor(messageId);
 				break;
 		}
+	},
+
+	_initDeleteMessageOverlay: function() {
+		if (this.deleteMessageOverlay) return;
+
+		this.deleteMessageOverlayEl = $('.delete-message-overlay:first', this.wrapper);
+		this.deleteMessageOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.deleteMessageOverlayEl
+		});
+		this.ownObject(this.deleteMessageOverlay);
+
+		$('.save-trigger', this.deleteMessageOverlayEl).on('click', (function() {
+			this.doTicketMessageDelete();
+		}).bind(this));
+	},
+
+	showDeleteMessageOverlay: function(messageId) {
+		this._initDeleteMessageOverlay();
+		$('.message-id', this.deleteMessageOverlayEl).val(messageId);
+
+		this.deleteMessageOverlayEl.find('.ticket-messages').empty().html(
+			this.wrapper.find('article.message-' + messageId).clone()
+		);
+		this.deleteMessageOverlayEl.find('.ticket-messages .edit-gear').remove();
+		this.deleteMessageOverlay.openOverlay();
+	},
+
+	doTicketMessageDelete: function() {
+		$('.loading-off', this.deleteMessageOverlayEl).hide();
+		$('.loading-on', this.deleteMessageOverlayEl).show();
+
+		var messageId = $('.message-id', this.deleteMessageOverlayEl).val();
+		var self = this;
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/messages/' + messageId + '/delete',
+			type: 'POST',
+			dataType: 'json',
+			success: function(data) {
+				self.deleteMessageOverlay.closeOverlay();
+
+				if (data.ticket_deleted) {
+					self.getEl('hold_container').hide();
+					self.getEl('remove_menu_trigger').hide();
+
+					if (data.hidden_html) {
+						var html = $(data.hidden_html);
+						self.getEl('page_header').before(html);
+						html.closest('.with-scrollbar').trigger('goscrolltop');
+					} else {
+						DeskPRO_Window.removePage(self);
+						DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+					}
+				} else {
+					self.wrapper.find('article.message-' + messageId).remove();
+				}
+			}
+		}).always(function() {
+			$('.loading-off', this.deleteMessageOverlayEl).show();
+			$('.loading-on', this.deleteMessageOverlayEl).hide();
+		})
 	},
 
 	showSplitOverlay: function(messageId) {

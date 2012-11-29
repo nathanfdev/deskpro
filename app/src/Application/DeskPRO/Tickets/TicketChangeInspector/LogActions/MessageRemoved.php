@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 class MessageRemoved extends AbstractLogAction
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketAttachment
+	 * @var \Application\DeskPRO\Entity\TicketMessage
 	 */
 	protected $message;
 
@@ -65,6 +65,8 @@ class MessageRemoved extends AbstractLogAction
 		$details = array();
 		$details['id_after'] = $this->old_id;
 		$details['message_id'] = $this->old_id;
+		$details['person_id'] = $this->message->person->id;
+		$details['person_name'] = $this->message->person->getDisplayName();
 		$details['is_agent_note'] = $this->message->is_agent_note;
 		$details['is_agent_message'] = $this->message->person->is_agent;
 

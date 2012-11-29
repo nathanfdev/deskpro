@@ -1033,6 +1033,13 @@ $collection->add('agent_ticket_setmessagenote', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_message_delete', new Route(
+	'/tickets/messages/{message_id}/delete',
+	array('_controller' => 'AgentBundle:Ticket:deleteMessage'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('agent_ticket_view', new Route(
 	'/tickets/{ticket_id}',
 	array('_controller' => 'AgentBundle:Ticket:view'),

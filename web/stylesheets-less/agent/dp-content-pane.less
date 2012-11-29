@@ -2621,7 +2621,7 @@ padding: 30px;
 }
 
 .page-ticket .profile-box-container.ticket-messages .message-counter,
-.split-overlay .ticket-messages .message-counter {
+.ticket-messages .message-counter {
 	float: left;
 	font-size: 10px;
 	background: #E0E5EE;
@@ -5615,6 +5615,20 @@ article.task .new-comment .comment-input span {
 .delete-ticket-overlay {
 	width: 400px;
 	height: 250px;
+}
+
+.delete-message-overlay {
+	width: 500px;
+	height: 250px;
+
+	.ticket-messages {
+		margin-top: 10px;
+
+		.body-text-message {
+			max-height: 75px;
+			overflow: hidden;
+		}
+	}
 }
 
 
