@@ -98,13 +98,14 @@ class EzcReader extends AbstractReader
 		$emails = array();
 
 		foreach ($this->mail->cc as $cc) {
-			if (!$cc->charset) $cc->charset = 'us-ascii';
+			$charset = $cc->charset;
+			if (!$charset) $charset = 'us-ascii';
 
 			$email = new Item\EmailAddress();
 			$email->name = $cc->name;
-			$email->name_utf8 = Strings::convertToUtf8($cc->name, $cc->charset);
+			$email->name_utf8 = Strings::convertToUtf8($cc->name, $charset);
 			$email->email = $cc->email;
-			$email->original_charset = $cc->charset;
+			$email->original_charset = $charset;
 
 			$emails[] = $email;
 		}
@@ -117,13 +118,14 @@ class EzcReader extends AbstractReader
 		$emails = array();
 
 		foreach ($this->mail->to as $to) {
-			if (!$to->charset) $to->charset = 'us-ascii';
+			$charset = $to->charset;
+			if (!$charset) $charset = 'us-ascii';
 
 			$email = new Item\EmailAddress();
 			$email->name = $to->name;
-			$email->name_utf8 = Strings::convertToUtf8($to->name, $to->charset);
+			$email->name_utf8 = Strings::convertToUtf8($to->name, $charset);
 			$email->email = $to->email;
-			$email->original_charset = $to->charset;
+			$email->original_charset = $charset;
 
 			$emails[] = $email;
 		}
@@ -141,11 +143,12 @@ class EzcReader extends AbstractReader
 			return $email;
 		}
 
-		if (!$this->mail->from->charset) $this->mail->from->charset = 'us-ascii';
+		$charset = $this->mail->from->charset;
+		if (!$charset) $charset = 'us-ascii';
 
 		$email = new Item\EmailAddress();
 		$email->name = $this->mail->from->name;
-		$email->name_utf8 = Strings::convertToUtf8($this->mail->from->name, $this->mail->from->charset);
+		$email->name_utf8 = Strings::convertToUtf8($this->mail->from->name, $charset);
 		$email->email = $this->mail->from->email;
 
 		return $email;
@@ -161,12 +164,13 @@ class EzcReader extends AbstractReader
 			return $subject;
 		}
 
-		if (!$this->mail->subjectCharset) $this->mail->subjectCharset = 'us-ascii';
+		$charset = $this->mail->subjectCharset;
+		if (!$charset) $charset = 'us-ascii';
 
 		$subject = new Item\Subject();
 		$subject->subject = $this->mail->subject;
-		$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $this->mail->subjectCharset);
-		$subject->original_charset = $this->mail->subjectCharset;
+		$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $charset);
+		$subject->original_charset = $charset;
 
 		return $subject;
 	}
@@ -258,11 +262,12 @@ class EzcReader extends AbstractReader
 	{
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'html') {
-				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
+				$originalCharset = $part->originalCharset;
+				if (!$originalCharset) $originalCharset = 'us-ascii';
 
 				$body = new Item\BodyHtml();
 				$body->body = Strings::standardEol($part->text);
-				$body->body_utf8 = Strings::convertToUtf8(Strings::standardEol($part->text), $part->originalCharset);
+				$body->body_utf8 = Strings::convertToUtf8(Strings::standardEol($part->text), $originalCharset);
 				$body->original_charset = $part->originalCharset;
 
 				return $body;
@@ -281,12 +286,13 @@ class EzcReader extends AbstractReader
 	{
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'plain') {
-				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
+				$originalCharset = $part->originalCharset;
+				if (!$originalCharset) $originalCharset = 'us-ascii';
 
 				$body = new Item\BodyText();
 				$body->body = $part->text;
-				$body->body_utf8 = Strings::convertToUtf8($part->text, $part->originalCharset);
-				$body->original_charset = $part->originalCharset;
+				$body->body_utf8 = Strings::convertToUtf8($part->text, $originalCharset);
+				$body->original_charset = $originalCharset;
 
 				return $body;
 			}
