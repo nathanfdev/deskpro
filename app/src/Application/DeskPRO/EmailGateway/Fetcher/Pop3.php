@@ -88,6 +88,22 @@ class Pop3 extends AbstractFetcher
 	}
 
 	/**
+	 * Server supports uniqid?
+	 *
+	 * @return mixed
+	 */
+	protected function canUniqueId()
+	{
+		static $can = null;
+
+		if ($can === null) {
+			$can = $this->getStorage()->canUniqueId();
+		}
+
+		return $can;
+	}
+
+	/**
 	 * Get a list of message IDs
 	 */
 	protected function _initMessageList($reload = false)
@@ -97,7 +113,7 @@ class Pop3 extends AbstractFetcher
 		}
 
 		if ($this->gateway->keep_read) {
-			if (!$this->getStorage()->canUniqueId()) {
+			if (!$this->canUniqueId()) {
 				$this->logger->log("Gateway does not support unique but keep_read is enabled. Capabilities: " . implode(', ', $this->getStorage()->getProtocolCapabilities()), 'debug');
 
 				$e = new \InvalidArgumentException("Gateway does not support uniqueid");
@@ -172,7 +188,7 @@ class Pop3 extends AbstractFetcher
 		$message_num  = $next['num'];
 		$message_id   = $next['uid'];
 
-		if (!$message_id) {
+		if (!$message_id && $this->canUniqueId()) {
 			try {
 				$message_id = $this->getStorage()->getProtocol()->uniqueid($message_num);
 			} catch (\Exception $e) {}
