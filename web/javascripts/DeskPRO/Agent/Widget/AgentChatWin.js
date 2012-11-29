@@ -333,6 +333,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			message = message.replace(re, '<a data-route="page:'+info.url+'$1">'+info.title+' #$1</a>');
 		});
 
+		message = message.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
+
 		return message;
 	},
 

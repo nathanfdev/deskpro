@@ -49,6 +49,8 @@ pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% e
 {# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 
+pageMeta.agentMap = {{ agent_map|json_encode|raw }};
+
 </script>
 <div class="macro-controls">
 	<button class="save" id="macro_apply_btn">{{ phrase('agent.tickets.apply_macro') }}</button>

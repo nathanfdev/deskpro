@@ -92,7 +92,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			if ($new_since < 0) {
 				$new_since = 0;
 			}
-			$last_since = $agent_session['last_message_id'];
+			$last_since = intval($agent_session['last_message_id']);
 			$activity_time = isset($_GET['at']) ? intval($_GET['at']) : 0;
 			if ($activity_time < 0) {
 				$activity_time = 0;
@@ -259,7 +259,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			$all_messages = $this->getMessagesForClient($session_id, $person_id, $since);
 		}
 
-		if ($all_messages and $with_last_since) {
+		if (is_array($all_messages) and $with_last_since !== null) {
 			$all_messages = array_merge($all_messages, $this->getInitialMessagesForPerson($person_id, $with_last_since));
 		}
 

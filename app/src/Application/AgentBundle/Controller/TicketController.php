@@ -211,9 +211,16 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$agent_map = array();
+		foreach ($agents AS $agent) {
+			$agent_map[$agent->getId()] = $agent->getDisplayName();
+		}
+		unset($agent_map[$this->person->getId()]);
+
         $vars = array(
             'agents' => $agents,
             'agent_teams' => $agent_teams,
+			'agent_map' => $agent_map,
 			'tasks' => $tasks,
 
             'ticket_perms' => $this->_getTicketPerms($ticket),
@@ -1021,8 +1028,15 @@ class TicketController extends AbstractController
 
 			$message_text = Strings::prepareWysiwygHtml($message_text);
 			$message->message = $message_text;
+
+			$notify_agent_ids = array();
+			preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
+			foreach ($matches AS $match) {
+				$notify_agent_ids[] = $match[1];
+			}
 		} else {
 			$message->setMessageText($this->in->getString('message'));
+			$notify_agent_ids = array();
 		}
 
 		if ($this->in->getBool('options.is_note')) {
@@ -1188,6 +1202,22 @@ class TicketController extends AbstractController
 			$this->em->flush();
 
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft('ticket', $ticket->id);
+
+			if ($notify_agent_ids && $message['is_agent_note']) {
+				$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+
+				$notify_agent_ids = array_unique($notify_agent_ids);
+				foreach ($notify_agent_ids AS $k => $agent_id) {
+					if ($agent_id == $this->person->id || !isset($agents[$agent_id])) {
+						unset($notify_agent_ids[$k]);
+					}
+				}
+				if ($notify_agent_ids) {
+					$notify_text = $this->person->getDisplayName() . " alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
+					$agent_chat->sendAgentMessage($notify_text, $notify_agent_ids);
+				}
+			}
 
 			$this->db->commit();
 		} catch (\Exception $e) {

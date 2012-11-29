@@ -310,12 +310,10 @@ class ChatConversation extends AbstractEntityRepository
 		$sql = "
 			SELECT c.id
 			FROM chat_conversations c
-			LEFT JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
-			WHERE
-				" . ($date_limit ? "c.date_created > '$date_limit' AND" : '') . "
-				p.person_id IN (" . implode(',', $participant_ids) . ")
+			INNER JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
+			" . ($date_limit ? "WHERE c.date_created > '$date_limit'" : '') . "
 			GROUP BY c.id
-			HAVING COUNT(*) = $count
+			HAVING SUM(IF(p.person_id IN (" . implode(',', $participant_ids) . "), 1, 0)) = $count AND COUNT(*) = $count
 			ORDER BY c.id DESC
 			LIMIT 1
 		";
