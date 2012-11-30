@@ -161,7 +161,7 @@
 									{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 									<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 										{% for team in app.user.getAgent().getTeams() %}
-											<option value="{{ team.id }}" {% if app.getSetting(assign_opt) == 'assign' %}selected="selected"{% endif %}>{{ team.name }}</option>
+											<option value="{{ team.id }}" {% if app.getSetting(assign_opt) == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
 										{% endfor %}
 									</optgroup>
 									{% endif %}

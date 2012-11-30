@@ -4116,6 +4116,19 @@ body.popup section.body textarea.fill {
 	margin-top: 5px;
 }
 
+.inline-pipe-list {
+	display: inline;
+	li {
+		display: inline;
+		&:before {
+			content: " | ";
+		}
+		&:first-child:before {
+			content: "";
+		}
+	}
+}
+
 .check-grid {
 	border: 1px solid #D9DBDB;
 }

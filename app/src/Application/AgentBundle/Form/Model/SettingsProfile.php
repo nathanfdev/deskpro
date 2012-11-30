@@ -49,6 +49,7 @@ class SettingsProfile
 
 	public $ticket_close_reply = false;
 	public $ticket_close_note = false;
+	public $default_team_id = 0;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -73,6 +74,12 @@ class SettingsProfile
 
 		$this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
 		$this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', true);
+		$this->default_team_id = $person->getPref('agent.ticket_default_team_id');
+		if ($this->default_team_id === null) {
+			$teams = $person->getAgent()->getTeams();
+			$last_team = end($teams);
+			$this->default_team_id = $last_team ? $last_team->id : 0;
+		}
 	}
 
 	public function getPerson()
@@ -133,6 +140,15 @@ class SettingsProfile
 
 			$person->setPreference('agent.ticket_close_reply', $this->ticket_close_reply ? 1 : 0);
 			$person->setPreference('agent.ticket_close_note', $this->ticket_close_note ? 1 : 0);
+
+			$assign_team_setting = (
+				App::getSetting('core_tickets.new_assignteam') == 'assign'
+				|| App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
+				|| App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
+			);
+			if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
+				$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
+			}
 
 			$this->em->persist($person);
 			$this->em->flush();

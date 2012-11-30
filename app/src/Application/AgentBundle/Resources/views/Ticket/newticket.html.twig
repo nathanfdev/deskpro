@@ -304,18 +304,20 @@ pageMeta.baseId = '{{ baseId }}';
 									{% endfor %}
 								</select>
 
-								<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
-									<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') or not ticket.agent_team %}selected="selected"{% endif %}>No Team</option>
-									{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+								<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select x" data-select-nogrouptitle="1">
+									<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') %}selected="selected"{% endif %}>No Team</option>
+									{% if app.user.getAgent().getTeams()|length %}
 									<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 										{% for team in app.user.getAgent().getTeams() %}
-											<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' or ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+											<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
 										{% endfor %}
 									</optgroup>
 									{% endif %}
 
 									{% for id,name in app.getDataRepository('AgentTeam').getTeamNames() %}
-										<option value="{{ id }}" {% if ticket.agent_team.id == id %}selected="selected"{% endif %}>{{ name }}</option>
+										{% if id not in app.user.getAgent().getTeamIds() %}
+											<option value="{{ id }}">{{ name }}</option>
+										{% endif %}
 									{% endfor %}
 								</select>
 							</div>

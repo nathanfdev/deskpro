@@ -94,6 +94,27 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 					<label>{{ form_widget(form.ticket_close_note) }} adding a note</label>
 			</div>
 		</div>
+
+		{% set assign_team_setting = (app.getSetting('core_tickets.new_assignteam') == 'assign' or app.getSetting('core_tickets.reply_assignteam_assigned') == 'assign' or app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign') %}
+		{% if app.user.getAgent().getTeams()|length >= 2 and assign_team_setting %}
+			<div class="dp-form-row">
+				<div class="dp-form-label"><label>Default Team</label></div>
+				<div class="dp-form-input">
+					<select name="settings_profile[default_team_id]">
+					{% for team in app.user.getAgent().getTeams() %}
+						<option value="{{ team.id }}" {% if form.default_team_id.get('value') == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+					{% endfor %}
+					</select>
+					<br /><em class="desc">This will apply when:
+						<ul class="inline-pipe-list">
+						{% if app.getSetting('core_tickets.new_assignteam') == 'assign' %}<li>creating a new ticket</li>{% endif %}
+						{% if app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign' %}<li>replying to a ticket without a team</li>{% endif %}
+						{% if app.getSetting('core_tickets.reply_assignteam_assigned') == 'assign' %}<li>replying to a ticket with a team</li>{% endif %}
+						</ul>
+					</em>
+				</div>
+			</div>
+		{% endif %}
 	</div>
 
 	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
