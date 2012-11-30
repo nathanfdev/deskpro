@@ -271,14 +271,16 @@ class DataInitializer
 	{
 		$department = App::getDataService('Department')->getDefaultTicketDepartment();
 
-		$user = Person::newContactPerson(array(
-			'name' => 'Christopher Padfield',
-			'email' => 'support@deskpro.com',
-			'is_confirmed' => true,
-		));
-		$user->getPrimaryEmail()->is_validated = true;
-
-		App::getOrm()->persist($user);
+		$user = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail('support@deskpro.com');
+		if (!$user) {
+			$user = Person::newContactPerson(array(
+				'name' => 'Christopher Padfield',
+				'email' => 'support@deskpro.com',
+				'is_confirmed' => true,
+			));
+			$user->getPrimaryEmail()->is_validated = true;
+			App::getOrm()->persist($user);
+		}
 
 		$ticket = new Ticket();
 		$ticket->getTicketLogger()->recordExtra('is_install', true);
