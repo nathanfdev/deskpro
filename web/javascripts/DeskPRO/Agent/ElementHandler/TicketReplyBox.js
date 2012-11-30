@@ -399,224 +399,231 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var self = this;
 
 		var agentMap = (this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false);
-		if (agentMap) {
-			var agentMapLower = {};
-			for (var agentId in agentMap) {
-				agentMapLower[agentId] = agentMap[agentId].toLowerCase();
+		if (!agentMap) {
+			return;
+		}
+
+		var agentMapLower = {}, hasAgents = false;
+		Object.each(agentMap, function(name, agentId) {
+			hasAgents = true;
+			agentMapLower[agentId] = name.toLowerCase();
+		});
+
+		if (!hasAgents) {
+			return;
+		}
+
+		this.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
+
+		var insertAgentNotify = function(agentId) {
+			if (typeof agentMap[agentId] === 'undefined') {
+				return;
 			}
 
-			this.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
+			self.hideAgentNotifyList();
 
-			var insertAgentNotify = function(agentId) {
-				if (typeof agentMap[agentId] === 'undefined') {
-					return;
-				}
+			var focus = api.getFocus(),
+				focusNode = $(focus[0]),
+				testText;
 
+			if (focus[0].nodeType == 3) {
+				testText = focusNode.text().substring(0, focus[1]);
+			} else {
+				focus[0] = focusNode.contents().get(focus[1] - 1);
+				focusNode = $(focus[0]);
+				testText = focusNode.text();
+				focus[1] = testText.length;
+			}
+
+			var	lastAt = testText.lastIndexOf('@'),
+				matches = [];
+
+			if (lastAt != -1) {
+				api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+			}
+
+			// web kit handles content editable without an issue. this prevents the span
+			// from being extended unnecessarily
+			var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId]) + '</span>&nbsp;');
+		};
+
+		this.agentNotifyList.on('mousedown', 'li', function(e) {
+			e.preventDefault();
+			insertAgentNotify($(this).data('agent-id'));
+		});
+
+		ed.on('click blur', function() {
+			if (self.isNote) {
 				self.hideAgentNotifyList();
+			}
+		});
 
-				var focus = api.getFocus(),
-					focusNode = $(focus[0]),
-					testText;
+		ed.on('keydown', function(e) {
+			if (!self.isNote) {
+				self.hideAgentNotifyList();
+				return;
+			}
 
-				if (focus[0].nodeType == 3) {
-					testText = focusNode.text().substring(0, focus[1]);
+			switch (e.keyCode) {
+				case 38: // up
+				case 40: // down
+				case 13: // enter
+					if (!self.agentNotifyList.is(':visible')) {
+						return;
+					}
+					break;
+
+				default:
+					return;
+			}
+
+			e.preventDefault();
+
+			if (e.keyCode == 13) { // enter - inserting the selected
+				var li = self.agentNotifyList.find('li.selected');
+				if (!li.length) {
+					li = self.agentNotifyList.find('li:first');
+				}
+
+				insertAgentNotify(li.data('agent-id'));
+			} else if (e.keyCode == 40) { // down - moves down the list
+				var li = self.agentNotifyList.find('li.selected');
+				if (!li.length) {
+					self.agentNotifyList.find('li:first').addClass('selected');
 				} else {
-					focus[0] = focusNode.contents().get(focus[1] - 1);
-					focusNode = $(focus[0]);
-					testText = focusNode.text();
-					focus[1] = testText.length;
-				}
-
-				var	lastAt = testText.lastIndexOf('@'),
-					matches = [];
-
-				if (lastAt != -1) {
-					api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-				}
-
-				// web kit handles content editable without an issue. this prevents the span
-				// from being extended unnecessarily
-				var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-				api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId]) + '</span>&nbsp;');
-			};
-
-			this.agentNotifyList.on('mousedown', 'li', function(e) {
-				e.preventDefault();
-				insertAgentNotify($(this).data('agent-id'));
-			});
-
-			ed.on('click blur', function() {
-				if (self.isNote) {
-					self.hideAgentNotifyList();
-				}
-			});
-
-			ed.on('keydown', function(e) {
-				if (!self.isNote) {
-					self.hideAgentNotifyList();
-					return;
-				}
-
-				switch (e.keyCode) {
-					case 38: // up
-					case 40: // down
-					case 13: // enter
-						if (!self.agentNotifyList.is(':visible')) {
-							return;
-						}
-						break;
-
-					default:
-						return;
-				}
-
-				e.preventDefault();
-
-				if (e.keyCode == 13) { // enter - inserting the selected
-					var li = self.agentNotifyList.find('li.selected');
-					if (!li.length) {
-						li = self.agentNotifyList.find('li:first');
-					}
-
-					insertAgentNotify(li.data('agent-id'));
-				} else if (e.keyCode == 40) { // down - moves down the list
-					var li = self.agentNotifyList.find('li.selected');
-					if (!li.length) {
+					li.removeClass('selected');
+					var next = li.next('li');
+					if (next.length) {
+						next.addClass('selected');
+					} else {
 						self.agentNotifyList.find('li:first').addClass('selected');
-					} else {
-						li.removeClass('selected');
-						var next = li.next('li');
-						if (next.length) {
-							next.addClass('selected');
-						} else {
-							self.agentNotifyList.find('li:first').addClass('selected');
-						}
 					}
-				} else if (e.keyCode == 38) { // up - moves up the list
-					var li = self.agentNotifyList.find('li.selected');
-					if (!li.length) {
+				}
+			} else if (e.keyCode == 38) { // up - moves up the list
+				var li = self.agentNotifyList.find('li.selected');
+				if (!li.length) {
+					self.agentNotifyList.find('li:last').addClass('selected');
+				} else {
+					li.removeClass('selected');
+					var prev = li.prev('li');
+					if (prev.length) {
+						prev.addClass('selected');
+					} else {
 						self.agentNotifyList.find('li:last').addClass('selected');
-					} else {
-						li.removeClass('selected');
-						var prev = li.prev('li');
-						if (prev.length) {
-							prev.addClass('selected');
-						} else {
-							self.agentNotifyList.find('li:last').addClass('selected');
-						}
 					}
 				}
-			});
+			}
+		});
 
-			ed.on('keyup', function(e) {
-				if (!self.isNote) {
+		ed.on('keyup', function(e) {
+			if (!self.isNote) {
+				return;
+			}
+
+			if (e.ctrlKey || e.metaKey) {
+				return;
+			}
+
+			switch (e.keyCode) {
+				case 16: // shift
+				case 17: // ctrl
+				case 18: // alt
+				case 19: // pause/break
+				case 20: // caps lock
+				case 91: // left windows
+				case 92: // right windows
+				case 93: // select
+				case 224: // apple key
 					return;
-				}
 
-				if (e.ctrlKey || e.metaKey) {
+				case 13: // enter
+				case 38: // up
+				case 40: // down
+					// these don't hide as that messes up the keydown handler
+					e.stopImmediatePropagation();
+					e.preventDefault();
 					return;
-				}
 
-				switch (e.keyCode) {
-					case 16: // shift
-					case 17: // ctrl
-					case 18: // alt
-					case 19: // pause/break
-					case 20: // caps lock
-					case 91: // left windows
-					case 92: // right windows
-					case 93: // select
-					case 224: // apple key
-						return;
+				case 9: // tab
+				case 27: // esc
+				case 33: // page up
+				case 34: // page down
+				case 35: // end
+				case 36: // home
+				case 37: // left
+				case 39: // right
+					self.hideAgentNotifyList();
+					return;
 
-					case 13: // enter
-					case 38: // up
-					case 40: // down
-						// these don't hide as that messes up the keydown handler
-						e.stopImmediatePropagation();
-						e.preventDefault();
-						return;
-
-					case 9: // tab
-					case 27: // esc
-					case 33: // page up
-					case 34: // page down
-					case 35: // end
-					case 36: // home
-					case 37: // left
-					case 39: // right
+				default:
+					// function keys and other special ones
+					if (e.keyCode >= 112 && e.keyCode <= 145) {
 						self.hideAgentNotifyList();
 						return;
+					}
+			}
 
-					default:
-						// function keys and other special ones
-						if (e.keyCode >= 112 && e.keyCode <= 145) {
-							self.hideAgentNotifyList();
-							return;
-						}
-				}
+			var focus = api.getFocus(),
+				origin = api.getOrigin();
 
-				var focus = api.getFocus(),
-					origin = api.getOrigin();
+			if (focus[0] != origin[0] || focus[1] != origin[1]) {
+				// selected multiple points, don't show
+				self.hideAgentNotifyList();
+				return;
+			}
 
-				if (focus[0] != origin[0] || focus[1] != origin[1]) {
-					// selected multiple points, don't show
-					self.hideAgentNotifyList();
-					return;
-				}
+			var	focusNode = $(focus[0]),
+				testText = focus[0].nodeType == 3 ? focusNode.text().substring(0, focus[1]) : $(focusNode.contents().get(focus[1] - 1)).text(),
+				lastAt = testText.lastIndexOf('@'),
+				matches = [];
 
-				var	focusNode = $(focus[0]),
-					testText = focus[0].nodeType == 3 ? focusNode.text().substring(0, focus[1]) : $(focusNode.contents().get(focus[1] - 1)).text(),
-					lastAt = testText.lastIndexOf('@'),
-					matches = [];
+			if (lastAt != -1 && (lastAt == 0 || testText[lastAt - 1].match(/^(\s|[\.!?:;,()<>|/-])$/))) {
+				var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
-				if (lastAt != -1 && (lastAt == 0 || testText[lastAt - 1].match(/^(\s|[\.!?:;,()<>|/-])$/))) {
-					var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
-
-					if (afterAt.length >= 2 && afterAt.length < 75) {
-						for (var agentId in agentMap) {
-							if (agentMapLower[agentId].indexOf(afterAt) == 0) {
-								matches.push(agentId);
-							}
+				if (afterAt.length >= 2 && afterAt.length < 75) {
+					for (var agentId in agentMap) {
+						if (agentMapLower[agentId].indexOf(afterAt) == 0) {
+							matches.push(agentId);
 						}
 					}
 				}
+			}
 
-				if (matches.length) {
-					var selectedId = self.agentNotifyList.find('li:selected').data('agent-id');
+			if (matches.length) {
+				var selectedId = self.agentNotifyList.find('li:selected').data('agent-id');
 
-					self.agentNotifyList.empty();
-					for (var i = 0; i < matches.length; i++) {
-						var li = $('<li >').text(agentMap[matches[i]]).data('agent-id', matches[i]);
-						if (matches[i] === selectedId) {
-							li.addClass('selected');
-						}
-						self.agentNotifyList.append(li);
+				self.agentNotifyList.empty();
+				for (var i = 0; i < matches.length; i++) {
+					var li = $('<li >').text(agentMap[matches[i]]).data('agent-id', matches[i]);
+					if (matches[i] === selectedId) {
+						li.addClass('selected');
 					}
-
-					if (!self.agentNotifyList.find('li:selected').length) {
-						self.agentNotifyList.find('li:first').addClass('selected');
-					}
-
-					var containingNode = focus[0].nodeType == 3 ? focusNode.parent() : focusNode;
-					if (!containingNode.is('div, p, li, ul, ol, blockquote, table, body')) {
-						containingNode = containingNode.closest('div, p, li, ul, ol, blockquote, table, body');
-					}
-					var offset = containingNode.offset();
-					self.agentNotifyList.css({
-						top: offset.top - self.agentNotifyList.outerHeight() - 5,
-						left: offset.left
-					});
-
-					self.agentNotifyList.show();
-				} else {
-					self.hideAgentNotifyList();
+					self.agentNotifyList.append(li);
 				}
-			});
 
-			// this is important as I need this keyup handler to run before redactor's own because of new line handling
-			ed.data('events').keyup.reverse();
-		}
+				if (!self.agentNotifyList.find('li:selected').length) {
+					self.agentNotifyList.find('li:first').addClass('selected');
+				}
+
+				var containingNode = focus[0].nodeType == 3 ? focusNode.parent() : focusNode;
+				if (!containingNode.is('div, p, li, ul, ol, blockquote, table, body')) {
+					containingNode = containingNode.closest('div, p, li, ul, ol, blockquote, table, body');
+				}
+				var offset = containingNode.offset();
+				self.agentNotifyList.css({
+					top: offset.top - self.agentNotifyList.outerHeight() - 5,
+					left: offset.left
+				});
+
+				self.agentNotifyList.show();
+			} else {
+				self.hideAgentNotifyList();
+			}
+		});
+
+		// this is important as I need this keyup handler to run before redactor's own because of new line handling
+		ed.data('events').keyup.reverse();
 	},
 
 	getElById: function(id) {
