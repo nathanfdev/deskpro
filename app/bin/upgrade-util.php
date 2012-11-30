@@ -934,7 +934,7 @@ class Upgrade
 		$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 			'override'        => true,
 			'copy_on_windows' => true,
-			'exclude'         => array('/web.config')
+			'exclude'         => array('/web.config', '/.htaccess')
 		));
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
