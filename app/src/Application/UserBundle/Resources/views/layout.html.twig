@@ -227,6 +227,8 @@
 						{% endif %}
 					{% endif %}
 
+					{% if app.getVariable('is_homepage') and not breadcrumb %}<br/>{% endif %}
+
 					{% block content %}{% endblock %}
 				</section>
 			</div>
