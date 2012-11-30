@@ -180,7 +180,7 @@ $(document).ready(function() {
 									{% if gateway.linked_transport and gateway.linked_transport.transport_type != 'mail' %}
 										{{ gateway.linked_transport.title }}
 									{% else %}
-										Default (send through DeskPRO)
+										Send through PHP mail()
 									{% endif %}
 								</span></a>
 							</li>
