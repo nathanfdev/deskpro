@@ -215,7 +215,10 @@ class TicketController extends AbstractController
 
 		$agent_map = array();
 		foreach ($agents AS $agent) {
-			$agent_map[$agent->getId()] = $agent->getDisplayName();
+			$agent_map[$agent->getId()] = array(
+				'name' => $agent->getDisplayName(),
+				'picture_url' => $agent->getPictureUrl(20)
+			);
 		}
 		unset($agent_map[$this->person->getId()]);
 
