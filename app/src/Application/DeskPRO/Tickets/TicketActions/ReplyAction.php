@@ -107,7 +107,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
-		$message['message'] = $this->reply_text;
+		$message->message_text = $this->reply_text;
 		$ticket->addMessage($message);
 
 		if ($this->attach_ids) {
