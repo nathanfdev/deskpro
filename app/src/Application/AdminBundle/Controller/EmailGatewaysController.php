@@ -147,7 +147,7 @@ class EmailGatewaysController extends AbstractController
 
 			if (!$errors && $form->isValid()) {
 
-				$editgateway->define_transport = $this->in->getBool('gateway.define_transport');
+				$editgateway->define_transport = ($this->in->getBool('gateway.define_transport') || $gateway->connection_type != 'gmail');
 
 				$new_addresses_info = $this->in->getCleanValueArray('new_address', 'array', 'str_simple');
 				$new_addresses = array();
