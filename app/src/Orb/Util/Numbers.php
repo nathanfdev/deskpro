@@ -257,8 +257,12 @@ class Numbers
 		$num_pages = ceil($num_results / $per_page);
 		if (!$num_pages) $num_pages = 1;
 
-		$range_start = max(1, $page - $pad);
-		$range_end = min($num_pages, $range_start + 5);
+		$range_start = max(1, $page - floor(($pad-1) / 2));
+		$range_end = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
+
+		if ($range_end > $num_pages) {
+			$range_end = $num_pages;
+		}
 
 		$info['per_page'] = $per_page;
 		$info['pages'] = range($range_start, $range_end);
