@@ -137,60 +137,6 @@
 	</div>
 {% endif %}
 
-{% if term_options.slas %}
-	{% if 'add_sla' not in no_show_fields %}
-		<div class="builder-type" title="Add SLA" data-rule-type="add_sla">
-			<div class="builder-options">
-				<select name="sla_id">
-				{% for id,title in term_options.slas %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'remove_sla' not in no_show_fields %}
-		<div class="builder-type" title="Remove SLA" data-rule-type="remove_sla">
-			<div class="builder-options">
-				<select name="sla_id">
-					<option value="0">All</option>
-				{% for id,title in term_options.slas %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'set_sla_status' not in no_show_fields %}
-		<div class="builder-type" title="Set SLA Status" data-rule-type="set_sla_status">
-			<div class="builder-options">
-				<select name="sla_status">
-					<option value="ok">OK</option>
-					<option value="warn">Warning</option>
-					<option value="fail">Fail</option>
-				</select>
-				for SLA
-				<select name="sla_id">
-					<option value="0">All</option>
-				{% for id,title in term_options.slas %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if 'recalculate_sla_status' not in no_show_fields and event_trigger_master == 'sla' %}
-		<div class="builder-type" title="Recalculate SLA Status" data-rule-type="recalculate_sla_status">
-			<div class="builder-options">
-				<input type="hidden" name="x" value="DP_ALLOW_BLANK" />
-			</div>
-		</div>
-	{% endif %}
-{% endif %}
-
 <div class="builder-type" title="{{ phrase('agent.general.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-rule-group="Ticket">
 	<div class="builder-options">
 		{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}

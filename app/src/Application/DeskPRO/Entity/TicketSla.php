@@ -147,7 +147,7 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setIsCompleted($value)
+	public function setIsCompleted($value, $date = null)
 	{
 		$value = (bool)$value;
 
@@ -163,6 +163,19 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			} else if ($this->sla_status == self::STATUS_WARNING) {
 				$this->setModelField('fail_date', null);
 			}
+
+			if ($date === null) {
+				$date = time();
+			}
+			if ($date) {
+				$this->setModelField('completed_time_taken',
+					$this->sla->calculateSlaTimeUntil($date, $this->ticket)
+				);
+			} else {
+				$this->setModelField('completed_time_taken', null);
+			}
+		} else {
+			$this->setModelField('completed_time_taken', null);
 		}
 	}
 
@@ -204,13 +217,9 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 
 			$completed_ts = $this->sla->calculateCompleted($this->ticket);
 			if ($completed_ts) {
-				$this->setIsCompleted(true);
-				$this->setModelField('completed_time_taken',
-					$this->sla->calculateSlaTimeUntil($completed_ts, $this->ticket)
-				);
+				$this->setIsCompleted(true, $completed_ts);
 			} else {
 				$this->setIsCompleted(false);
-				$this->setModelField('completed_time_taken', null);
 			}
 		}
 	}

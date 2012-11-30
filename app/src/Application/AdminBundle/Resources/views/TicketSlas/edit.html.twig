@@ -2,7 +2,7 @@
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/SlaEdit.js') }}"></script>
 {% endblock %}
-{% set no_show_actions = ['add_sla', 'remove_sla', 'set_sla_status', 'recalculate_sla_status'] %}
+{% set no_show_actions = ['add_sla', 'remove_sla', 'set_sla_status', 'set_sla_complete', 'recalculate_sla_status'] %}
 {% set no_show_criteria = ['sla', 'sla_status'] %}
 {% block page_js_exec %}
 <script type="text/javascript" >

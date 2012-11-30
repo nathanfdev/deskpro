@@ -235,6 +235,10 @@ class ActionsFactory
 				$options = array('sla_status' => $value['sla_status'], 'sla_id' => $value['sla_id']);
 				break;
 
+			case 'set_sla_complete':
+				$options = array('sla_complete' => $value['sla_complete'], 'sla_id' => $value['sla_id']);
+				break;
+
 			case 'recalculate_sla_status':
 				$options = array();
 				break;

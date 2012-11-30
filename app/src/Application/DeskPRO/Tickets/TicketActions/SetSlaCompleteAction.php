@@ -41,16 +41,16 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 /**
- * Set SLA status
+ * Set SLA complete
  */
-class SetSlaStatusAction extends AbstractAction
+class SetSlaCompleteAction extends AbstractAction
 {
-	protected $sla_status;
+	protected $sla_complete;
 	protected $sla_id;
 
-	public function __construct($sla_status, $sla_id)
+	public function __construct($sla_complete, $sla_id)
 	{
-		$this->sla_status = $sla_status;
+		$this->sla_complete = $sla_complete;
 		$this->sla_id = $sla_id;
 	}
 
@@ -79,7 +79,7 @@ class SetSlaStatusAction extends AbstractAction
 		}
 
 		foreach ($ticket_slas AS $ticket_sla) {
-			$ticket_sla->setSlaStatus($this->sla_status, false);
+			$ticket_sla->setIsCompleted($this->sla_complete);
 		}
 	}
 
@@ -92,7 +92,7 @@ class SetSlaStatusAction extends AbstractAction
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id)
+			array('action' => 'set_sla_complete', 'sla_complete' => $this->sla_complete, 'sla_id' => $this->sla_id)
 		);
 	}
 
@@ -100,9 +100,9 @@ class SetSlaStatusAction extends AbstractAction
 	/**
 	 * @return integer
 	 */
-	public function getSlaStatus()
+	public function getSlaComplete()
 	{
-		return $this->sla_status;
+		return $this->sla_complete;
 	}
 
 
@@ -130,26 +130,24 @@ class SetSlaStatusAction extends AbstractAction
 	 */
 	public function getDescription($as_html = true)
 	{
-        $tr = App::getTranslator();
-
-		// todo: phrase
-		switch ($this->sla_status) {
-			case 'ok': $value = 'OK';
-			case 'warning': $value = 'Warning';
-			case 'fail': $value = 'Failed';
-			default: $value = '';
-		}
-
 		if ($this->sla_id) {
 			$sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
-			return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
-				'sla_status' => $value,
-				'sla' => $sla ? $sla->title : '[unknown]'
-			));
 		} else {
-			return $tr->phrase('agent.tickets.set_sla_status_action', array(
-				'sla_status' => $value
-			));
+			$sla = null;
+		}
+
+		if ($this->sla_complete) {
+			if ($this->sla_id) {
+				return 'Set SLA requirements to complete for SLA ' . ($sla ? $sla->title : '[unknown]');
+			} else {
+				return 'Set SLA requirements to complete';
+			}
+		} else {
+			if ($this->sla_id) {
+				return 'Set SLA requirements to incomplete for SLA ' . ($sla ? $sla->title : '[unknown]');
+			} else {
+				return 'Set SLA requirements to incomplete';
+			}
 		}
 	}
 }
