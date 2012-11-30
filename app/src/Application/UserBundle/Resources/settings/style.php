@@ -23,4 +23,6 @@
 	'user_style.foot_copy_color'                 => '#B2B2B2',
 
 	'user_style.meta_text_color'                 => '#898888',
+
+	'user_style.big_header_color'                => '#B2B1B1',
 );

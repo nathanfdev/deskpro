@@ -74,6 +74,8 @@
 	'admin.portal.color_sidebar_block_title_color_title'   => 'Sidebar Section Headings Text Color',
 	'admin.portal.color_text_color_desc'                   => 'The main text color',
 	'admin.portal.color_text_color_title'                  => 'Text Color',
+	'admin.portal.big_header_color_title'                  => 'Page Title Header Color',
+	'admin.portal.big_header_color_desc'                   => 'The color of the large page titles',
 	'admin.portal.comment_disable_anonymous'               => 'Require users to log in or register before they can comment',
 	'admin.portal.comment_require_email_validation'        => 'Require users to validate their email addresses before a comment is visible',
 	'admin.portal.comment_require_validation'              => 'Require all comments to be manually validated by agents',
