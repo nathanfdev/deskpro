@@ -1178,20 +1178,39 @@ article.content-message .content header {
 	overflow: hidden;
 }
 
-article.content-message.note-message .content,
-article.content-message.note-message.agent-message .content {
-	border: 1px dashed #ACB2BF;
+article.content-message.agent-draft-message,
+article.content-message.note-message,
+article.content-message.note-message.agent-message {
+	.content {
+		border: 1px dashed #ACB2BF;
+		header {
+			background: #EDEDED;
+			.border-radius(3px, 3px, 0, 0);
+			box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
+			border-bottom: 1px dotted #acb2bf;
+			position: relative;
+			color: #777;
+			line-height: 26px;
+		}
+	}
 }
 
-article.content-message.note-message .content header,
-article.content-message.note-message.agent-message .content header {
-	background: #EDEDED;
-	.border-radius(3px, 3px, 0, 0);
-	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
-	border-bottom: 1px dotted #acb2bf;
-	position: relative;
-	color: #777;
-	line-height: 26px;
+article.content-message.agent-draft-message {
+	.draft-block {
+		font-size: 10px;
+		background: #EDEDED;
+		border: 1px solid #ACB2BF;
+		.rounded(3px);
+		line-height: 100%;
+		padding: 2px 3px 2px;
+		margin: 2px 0;
+		color: #50575F;
+		text-align: center;
+	}
+
+	.body-text-message {
+		color: #777;
+	}
 }
 
 article.content-message.agent-message .content header {

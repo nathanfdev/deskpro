@@ -373,6 +373,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
 
+		if (data.active_drafts) {
+			this.wrapper.find('.agent-draft-message').remove();
+			if (data.active_drafts.length) {
+				var insertPos = this.wrapper.find('.ticket-messages .messages-wrap');
+				for (var i = 0; i < data.active_drafts.length; i++) {
+					insertPos.append(data.active_drafts[i]);
+				}
+			}
+		}
+
 		// Might be unloaded by the time this callback is called
 		if (!this.changeManager) {
 			return;
@@ -582,6 +592,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 		articles.each(function() {
 			var article = $(this);
+
+			if (article.is('.agent-draft-message')) {
+				return;
+			}
 
 			lastCount++;
 			article.find('.message-counter').text('#' + lastCount);

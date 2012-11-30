@@ -196,6 +196,8 @@ class TicketController extends AbstractController
 		}
 
 		$draft = $this->em->getRepository('DeskPRO:Draft')->getDraft('ticket', $ticket->id);
+		$active_drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
+		unset($active_drafts[$this->person->id]);
 
 		if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
 			$ticket->setLockedByAgent($this->person);
@@ -230,6 +232,7 @@ class TicketController extends AbstractController
 			'ticket_message_attachments' => $ticket_message_attachments,
 
             'draft' => $draft,
+			'active_drafts' => $active_drafts,
 
 			'edit_person' => $edit_person,
 
@@ -1310,6 +1313,9 @@ class TicketController extends AbstractController
 		} else {
 			$charge_html = false;
 		}
+
+		$drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
+		$data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
 
 		$data = array_merge($data, array(
 			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
@@ -2878,6 +2884,45 @@ class TicketController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function updateDraftsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
+		$drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket_ids);
+
+		$output = array();
+		foreach ($tickets AS $ticket) {
+			if (empty($drafts[$ticket->id])) {
+				continue;
+			}
+			if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+				continue;
+			}
+
+			$output[$ticket->id] = $this->_renderActiveDrafts($ticket, $drafts[$ticket->id]);
+		}
+
+		return $this->createJsonResponse(array(
+			'drafts' => $output
+		));
+	}
+
+	protected function _renderActiveDrafts(\Application\DeskPRO\Entity\Ticket $ticket, array $drafts)
+	{
+		$output = array();
+
+		unset($drafts[$this->person->id]);
+		foreach ($drafts AS $id => $draft) {
+			$output[] = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', array(
+				'draft' => $draft,
+				'ticket' => $ticket
+			));
+		}
+
+		return $output;
 	}
 
 	############################################################################

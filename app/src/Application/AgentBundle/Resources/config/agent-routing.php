@@ -998,9 +998,16 @@ $collection->add('agent_ticket_getmessagetpl', new Route(
 	array()
 ));
 
-$collection->add('agent_people_new_ajaxsave', new Route(
+$collection->add('agent_ticket_new_ajaxsave', new Route(
 	'/tickets/new-ajax-save',
 	array('_controller' => 'AgentBundle:Ticket:newAjaxSave'),
+	array(),
+	array()
+));
+
+$collection->add('agent_ticket_update_drafts', new Route(
+	'/tickets/update-drafts',
+	array('_controller' => 'AgentBundle:Ticket:updateDrafts'),
 	array(),
 	array()
 ));

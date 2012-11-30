@@ -490,6 +490,13 @@ pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 	</header>
 	<section class="messages-wrap show-type-controlled" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
+		{% if active_drafts %}
+			{% for active_draft in active_drafts %}
+				{% if active_draft.message_html %}
+					{% include 'AgentBundle:Ticket:ticket-message-draft.html.twig' with {draft: active_draft} %}
+				{% endif %}
+			{% endfor %}
+		{% endif %}
 	</section>
 	<section id="{{ baseId }}_times" style="display: none; padding: 0;">
 		<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">

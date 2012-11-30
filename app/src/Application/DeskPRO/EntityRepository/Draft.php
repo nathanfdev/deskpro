@@ -64,16 +64,52 @@ class Draft extends AbstractEntityRepository
 		')->setParameters(array($content_type, $content_id, $person))->getOneOrNullResult();
 	}
 
+	public function getActiveDrafts($content_type, $content_id, $update_offset = 600)
+	{
+		if (!$content_id) {
+			return array();
+		}
+
+		if (!is_array($content_id)) {
+			$single_set = $content_id;
+			$content_id = array($content_id);
+		} else {
+			$single_set = false;
+		}
+
+		$drafts = $this->getEntityManager()->createQuery('
+			SELECT d, p
+			FROM DeskPRO:Draft d
+			INNER JOIN d.person p
+			WHERE d.content_type = ?0
+				AND d.content_id IN (?1)
+				AND d.date_created >= ?2
+			ORDER BY d.date_created
+		')->execute(array($content_type, $content_id, new \DateTime("-$update_offset seconds")));
+
+		$output = array();
+		foreach ($drafts AS $draft) {
+			$output[$draft->content_id][$draft->person->getId()] = $draft;
+		}
+
+		if ($single_set) {
+			return isset($output[$single_set]) ? $output[$single_set] : array();
+		} else {
+			return $output;
+		}
+	}
+
 	/**
 	 * @param string $content_type
 	 * @param integer $content_id
 	 * @param string $message
+	 * @param string $message_html
 	 * @param array $extras
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 *
 	 * @return \Application\DeskPRO\Entity\Draft
 	 */
-	public function insertDraft($content_type, $content_id, $message, array $extras = array(), Entity\Person $person = null)
+	public function insertDraft($content_type, $content_id, $message, $message_html, array $extras = array(), Entity\Person $person = null)
 	{
 		if (!$person) {
 			$person = App::getCurrentPerson();
@@ -88,6 +124,7 @@ class Draft extends AbstractEntityRepository
 		$draft->content_type = $content_type;
 		$draft->content_id = $content_id;
 		$draft->message = $message;
+		$draft->message_html = $message_html;
 		$draft->extras = $extras;
 		$draft->person = $person;
 

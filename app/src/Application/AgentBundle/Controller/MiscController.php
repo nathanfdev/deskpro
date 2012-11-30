@@ -449,13 +449,17 @@ JS;
 	{
 		$inserted = false;
 
-		$message = Strings::trimHtml($this->in->getString('message'));
+		$message = $this->in->getString('message');
 		if ($message) {
-			$message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message);
-			$message_test = Strings::trimHtml($message_test);
+			$message_html = Strings::trimHtml($this->in->getHtmlCore('message'));
+			$message_html = Strings::prepareWysiwygHtml($message_html);
 
+			$message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_html);
+			$message_test = Strings::trimHtml($message_test);
 			if ($message_test && !Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
-				$draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft($content_type, $content_id, $message);
+				$draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
+					$content_type, $content_id, $message, $message_html
+				);
 				$inserted = $draft->id;
 			}
 		}
