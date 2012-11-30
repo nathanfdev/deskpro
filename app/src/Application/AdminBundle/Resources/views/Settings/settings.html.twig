@@ -233,6 +233,12 @@
 			<input type="hidden" name="set_settings_falseable[]" value="user.publish_captcha" />
 			<label><input type="checkbox" name="settings[user.publish_captcha]" {% if app.getSetting('user.publish_captcha') %}checked="checked"{% endif %} /> Enable captcha on new feedback and new comment forms</label>
 		</div>
+
+		<div class="field_row">
+			<label>Google Analytics Tracking ID</label>
+			<input type="text" name="settings[core.ga_property_id]" value="{{app.getSetting('core.ga_property_id')}}" size="25" />
+			<div>If you enter your Google Analytics tracking ID here, Google Analytics tracking code will be added on all user interface pages.</div>
+		</div>
 	</div>
 </div>
 <div class="setting_field_row">

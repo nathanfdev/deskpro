@@ -335,4 +335,9 @@
 	 * How long, in seconds, are drafts valid for?
 	 */
 	'core.drafts_lifetime' => 604800, // 1 week
+
+	/**
+	 * A Google Analytics property ID (UA-XXXXX-Y). If added, GA will be enabled on user pages.
+	 */
+	'core.ga_property_id' => ''
 );

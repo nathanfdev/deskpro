@@ -86,6 +86,7 @@ class SettingsController extends AbstractController
 				'core.rewrite_urls'            => empty($_POST['settings']['core.rewrite_urls']) ? 0 : 1,
 				'core.redirect_correct_url'    => empty($_POST['settings']['core.redirect_correct_url']) ? 0 : 1,
 				'core.default_timezone'        => empty($_POST['settings']['core.default_timezone']) ? "UTC" : $_POST['settings']['core.default_timezone'],
+				'core.ga_property_id'          => trim($_POST['settings']['core.ga_property_id']),
 
 				'core.attach_agent_maxsize'    => empty($_POST['settings']['core.attach_agent_maxsize']) ? 0 : (int)$_POST['settings']['core.attach_agent_maxsize'],
 				'core.attach_agent_must_exts'  => $format_exts($_POST['settings']['core.attach_agent_must_exts']),
@@ -130,6 +131,9 @@ class SettingsController extends AbstractController
 			}
 
 			$this->_postSaveSettings();
+
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateLanguageCache();
 
 			return $this->redirectRoute('admin_settings');
 		}
