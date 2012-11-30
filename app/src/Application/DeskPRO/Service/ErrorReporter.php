@@ -296,6 +296,7 @@ class ErrorReporter
 			$info['error_info'] = $send_info;
 		}
 
+		unset($info['local_hash']);
 		self::sendReport('report-install', $info, 12);
 	}
 

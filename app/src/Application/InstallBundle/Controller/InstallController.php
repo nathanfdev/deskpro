@@ -878,6 +878,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	{
 		if ($exception) {
 			$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+			unset($errinfo['exception']);
 		} else {
 			$errinfo = 0;
 		}

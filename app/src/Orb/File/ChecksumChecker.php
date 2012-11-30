@@ -119,7 +119,7 @@ class ChecksumChecker
 			$path = str_replace($this->base_dir, '', $file->getRealPath());
 
 			$file_contents = file_get_contents($file->getRealPath());
-			$file_contents = trim(str_replace("\n", '', $file_contents));
+			$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
 
 			$hash = md5($file_contents);
 			$this->checksums[$path] = $hash;

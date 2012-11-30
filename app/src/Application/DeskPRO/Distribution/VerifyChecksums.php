@@ -72,7 +72,7 @@ class VerifyChecksums
 			$filepath = $uproot.$f;
 			if (file_exists($filepath)) {
 				$file_contents = file_get_contents($filepath);
-				$file_contents = trim(str_replace("\n", '', $file_contents));
+				$file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
 				$chunk_hashes[$f] = md5($file_contents);
 			}
 		}
