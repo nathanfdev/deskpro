@@ -146,7 +146,7 @@ class TicketController extends AbstractController
 		$ticket_api = array();
 		foreach (array(
 			'id', 'subject', 'ref', 'status', 'hidden_status', 'creation_system', 'is_hold',
-			'urgency', 'total_user_waiting', 'total_to_first_reply', 'has_attachments'
+			'urgency', 'total_user_waiting', 'total_to_first_reply'
 		) AS $key) {
 			$ticket_api[$key] = $ticket->$key;
 		}
@@ -1569,6 +1569,97 @@ class TicketController extends AbstractController
 				'success' => true
 			));
 		}
+	}
+
+	public function getMessageAttachmentsAction($message_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->render('AgentBundle:Ticket:message-attachments-overlay.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message,
+			'attachments' => $message->attachments
+		));
+	}
+
+	public function deleteMessageAttachmentAction($message_id, $attachment_id)
+	{
+		/** @var $message \Application\DeskPRO\Entity\TicketMessage */
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		$ticket = null;
+		if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+			$ticket = $message->ticket;
+		}
+
+		if (!$ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$attachment = false;
+		foreach ($message->attachments AS $test_attachment) {
+			if ($test_attachment->id == $attachment_id) {
+				$attachment = $test_attachment;
+				break;
+			}
+		}
+
+		if (!$attachment) {
+			throw $this->createNotFoundException();
+		}
+
+		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$ticket_log = new TicketLog();
+		$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\AttachRemoved($attachment);
+		$ticket_log->ticket      = $ticket;
+		$ticket_log->person      = $this->person;
+		$ticket_log->action_type = $log_action->getLogName();
+		$ticket_log->id_object   = $message->getId();
+		$ticket_log->details     = $log_action->getLogDetails();
+
+		$this->em->persist($ticket_log);
+		$this->em->remove($attachment);
+
+		$embed_code = str_replace(':image:', ':[^:]*:', preg_quote($attachment->blob->getEmbedCode(true, 'image'), '/'));
+		$message->message = preg_replace("/$embed_code/i", '', $message->message);
+		$this->em->persist($message);
+
+		$this->em->flush();
+
+		// need this to be removed, but don't want to trigger a change log for it as we're inserting it manually
+		$message->attachments->removeElement($attachment);
+
+		$ticket_attachments = array();
+		$ticket_message_attachments = array();
+		foreach ($message->attachments AS $message_attach) {
+			$ticket_attachments[$message_attach->id] = $message_attach;
+			$ticket_message_attachments[$message->id][] = $message_attach->id;
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+				'message' => $message,
+				'ticket_message_attachments' => $ticket_message_attachments,
+				'ticket_attachments' => $ticket_attachments,
+				'ticket' => $ticket
+			))
+		));
 	}
 
 	############################################################################

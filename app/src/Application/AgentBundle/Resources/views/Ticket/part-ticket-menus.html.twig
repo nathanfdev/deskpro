@@ -2,6 +2,7 @@
 	<li data-option-id="view-details">{{ phrase('agent.general.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
 	{% if ticket_perms.delete %}<li class="delete-link" data-option-id="delete">Delete</li>{% endif %}
+	{% if ticket_perms.delete %}<li class="delete-attachments-link" data-option-id="delete-attachments">Delete attachments</li>{% endif %}
 	<li class="set-as-note" data-option-id="setnote.note">Set as agent note</li>
 	<li class="set-as-message" data-option-id="setnote.message">Set as normal message</li>
 	{% if ticket_perms.modify_merge %}<li data-option-id="split">Split to new ticket</li>{% endif %}

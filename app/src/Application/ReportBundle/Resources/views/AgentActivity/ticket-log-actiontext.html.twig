@@ -65,7 +65,11 @@
 {% elseif log.action_type == 'attach_added' %}
     <span class="type">{{ phrase('agent.tickets.new_attachment') }}</span> <span class="new-val">#{{log.details.attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'attach_removed' %}
-    <span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">#{{log.details.old_attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">ID {{log.details.old_attach_id}} {{ log.details.filename }}</span>
+	{% if log.details.message_id %}
+		from message <span class="old-val">ID {{log.details.message_id}}</span>
+		{% if log.details.message_person_name %}written by {{ log.details.message_person_name }}{% endif %}
+	{% endif %}
 {% elseif log.action_type == 'changed_status' %}
     {#  #}
 {% elseif log.action_type == 'changed_custom_field' %}

@@ -51,7 +51,7 @@ class AttachRemoved extends AbstractLogAction
 	 */
 	protected $old_blob_id;
 
-	public function __construct($attach)
+	public function __construct(\Application\DeskPRO\Entity\TicketAttachment $attach)
 	{
 		$this->attach = $attach;
 
@@ -63,7 +63,7 @@ class AttachRemoved extends AbstractLogAction
 
 	public function getLogName()
 	{
-		return 'attach_added';
+		return 'attach_removed';
 	}
 
 	public function getLogDetails()
@@ -78,6 +78,9 @@ class AttachRemoved extends AbstractLogAction
 		$details['blob_id']       = $this->attach->blob->id;
 		$details['filename']      = $this->attach->blob->filename;
 		$details['filesize']      = $this->attach->blob->filesize;
+		$details['message_id']    = $this->attach->message ? $this->attach->message->getId() : null;
+		$details['message_person_id'] = $this->attach->message ? $this->attach->message->person->getId() : null;
+		$details['message_person_name'] = $this->attach->message ? $this->attach->message->person->getDisplayName() : null;
 
 		return $details;
 	}

@@ -966,7 +966,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			triggerElement: null,
 			menuElement: menuElement,
 			onBeforeMenuOpened: function(info) {
-				if ($(info.menu.getOpenTriggerElement()).closest('article.message').hasClass('note-message')) {
+				var message = $(info.menu.getOpenTriggerElement()).closest('article.message');
+				if (message.hasClass('note-message')) {
 					menuElement.find('li.set-as-message').show();
 					menuElement.find('li.set-as-note').hide();
 					menuElement.find('li.delete-link').show();
@@ -974,6 +975,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					menuElement.find('li.set-as-message').hide();
 					menuElement.find('li.set-as-note').show();
 					menuElement.find('li.delete-link').hide();
+				}
+
+				if (message.hasClass('with-attach')) {
+					menuElement.find('li.delete-attachments-link').show();
+				} else {
+					menuElement.find('li.delete-attachments-link').hide();
 				}
 			},
 			onItemClicked: function(info) {
@@ -1035,6 +1042,51 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'delete':
 				this.showDeleteMessageOverlay(messageId);
+				break;
+
+			case 'delete-attachments':
+				var self = this;
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					contentAjax: { url: BASE_URL + 'agent/tickets/messages/' + messageId + '/attachments' },
+					zIndex: 40000, // Above floating people windows
+					onAjaxDone: function() {
+						var wrapper = overlay.getWrapper();
+
+						wrapper.on('click', '.delete-trigger', function(e) {
+							e.preventDefault();
+
+							var $this = $(this), attachmentId = $this.data('attachment-id');
+							var container = $this.closest('.overlay-content');
+							var row = $this.closest('.attachment-row');
+
+							if (!confirm(container.data('confirm'))) {
+								return;
+							}
+
+							row.addClass('loading');
+
+							$.ajax({
+								url: BASE_URL + 'agent/tickets/messages/' + messageId + '/attachments/' + attachmentId + '/delete',
+								type: 'POST',
+								dataType: 'json'
+							}).always(function() {
+								row.removeClass('loading');
+							}).done(function(data) {
+								if (data.message_html) {
+									self.wrapper.find('article.message-' + messageId).replaceWith(data.message_html);
+								}
+
+								row.remove();
+								if (!container.find('.attachment-row').length) {
+									overlay.close();
+								}
+							});
+						});
+					}
+				});
+				overlay.open();
+
 				break;
 
 			case 'setnote.note':
@@ -1180,7 +1232,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					$.ajax({
 						url: form.attr('action'),
-						method: 'POST',
+						type: 'POST',
 						data: form.serializeArray(),
 						dataType: 'json'
 					}).always(function() {

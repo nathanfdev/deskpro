@@ -93,6 +93,10 @@
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.new_attachment') }}</span> <span style="{{ layout.actiontext_style('new-val') }}">ID {{log.details.attach_id}} {{ log.details.filename }}</span>
 	{% elseif log.action_type == 'attach_removed' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span style="{{ layout.actiontext_style('old-val') }}">ID {{log.details.old_attach_id}} {{ log.details.filename }}</span>
+		{% if log.details.message_id %}
+			from message <span class="{{ layout.actiontext_style('old-val') }}">ID {{log.details.message_id}}</span>
+			{% if log.details.message_person_name %}written by {{ log.details.message_person_name }}{% endif %}
+		{% endif %}
 	{% elseif log.action_type == 'changed_status' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span style="{{ layout.actiontext_style('old-val') }}">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status|replace({'.': '_'})) }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'})) }}</span>

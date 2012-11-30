@@ -5663,6 +5663,52 @@ article.task .new-comment .comment-input span {
 	}
 }
 
+.message-attachments-delete-overlay {
+	width: 500px;
+	height: 350px;
+
+	.attachment-list {
+		margin: 0;
+	}
+
+	.attachment-list li {
+		height: 60px;
+		line-height: 60px;
+		margin: 5px 0;
+		overflow: hidden;
+		border-top: 1px solid #D7D9DB;
+
+		&:first-child {
+			margin-top: 0;
+			border-top: none;
+		}
+
+		img {
+			vertical-align: middle;
+			font-size: 1px;
+		}
+
+		.attachment-buttons {
+			float: right;
+		}
+
+		.delete-trigger {
+			.iconbase(16px, 16px);
+			background-repeat: no-repeat;
+			background-image: url(../../images/agent/icons/cross.png) /** sprite-ref: ui-v */;
+			margin-right: 4px;
+			margin-top: 4px;
+			float: left;
+			cursor: pointer;
+			.opacity(50);
+
+			&:hover {
+				.opacity(100);
+			}
+		}
+	}
+}
+
 
 .short-url-prev {
 	cursor: default;
