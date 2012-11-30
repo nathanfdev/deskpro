@@ -317,7 +317,7 @@
 	</div>
 </div>
 
-<div id="test_settings_overlay2" style="width: 400px; height: 200px; overflow:auto; display: none;">
+<div id="test_settings_overlay2" style="width: 600px; height: 280px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
 		<h4>{{ phrase('admin.general.test_outgoing_email') }}</h4>
@@ -334,7 +334,10 @@
 				<div class="error">
 					{{ phrase('admin.general.error_sending_test') }}
 					<a class="show-error-message">{{ phrase('admin.general.error_see_response') }}</a>
-					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;"></div>
+					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;">
+						<div class="error-msg-text"></div>
+						<textarea class="error-msg-log" style="width: 95%; height: 150px; font-size: 11px; font-family: Monaco, Courier, monospace; white-space: nowrap; overflow: auto;" wrap="off"></textarea>
+					</div>
 				</div>
 			</div>
 		</div>
