@@ -208,11 +208,10 @@ abstract class AbstractFetcher
 			if ($raw_message->uid) {
 				$source->uid = $raw_message->uid;
 
-				App::getDb()->insert('email_uids', array(
-					'id'           => $raw_message->uid,
-					'gateway_id'   => $this->gateway->getId(),
-					'date_created' => date('Y-m-d H:i:s')
-				));
+				App::getDb()->executeUpdate("
+					INSERT IGNORE INTO email_uids
+					SET id = ?, gateway_id = ?, date_created = ?
+				", array($raw_message->uid, $this->gateway->getId(), date('Y-m-d H:i:s')));
 			}
 
 			if ($raw_message->too_big) {
