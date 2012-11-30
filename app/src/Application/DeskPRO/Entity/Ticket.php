@@ -1976,7 +1976,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
 
-		if ($old_status_code == 'hidden.deleted' || $status_code != 'hidden.deleted') {
+		if ($old_status_code == 'hidden.deleted' && $status_code != 'hidden.deleted') {
 			$this->undeleteTicket();
 		}
 
