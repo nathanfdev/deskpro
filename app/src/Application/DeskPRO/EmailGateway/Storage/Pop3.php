@@ -80,7 +80,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		try {
 			$this->_protocol->connect($host, $port, $ssl, $logger);
 		} catch (Exception\RuntimeException $e) {
-			$new_e = new Exception\RuntimeException('There was an error connecting to the server', self::ERR_CONNECT, $e);
+			$new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
 			throw $new_e;
 		}
 
