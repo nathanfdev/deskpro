@@ -43,10 +43,10 @@ class AgentActivityController extends AbstractController
 		$dt = $this->person->getDateTime();
 		$dt->setTime(0,0,0);
 
-        return $this->listAction(0, $dt->format('Y-m-d'));
+        return $this->listAction('0', $dt->format('Y-m-d'));
     }
 
-    public function listAction($agent_id, $date)
+    public function listAction($agent_or_team_id, $date)
     {
         $em = $this->getDoctrine()->getEntityManager();
         $vars = array(
@@ -55,18 +55,24 @@ class AgentActivityController extends AbstractController
         $date = $this->createDateFromParamString($date);
         $all_agents = $em->getRepository('DeskPRO:Person')->getAgents();
 
-        if($agent_id) {
-            $agent_list = array($em->getRepository('DeskPRO:Person')->find($agent_id));
-        }
-        else {
+        if (preg_match('/^team-(\d+)$/', $agent_or_team_id, $match)) {
+			$agent_list = $em->getRepository('DeskPRO:AgentTeam')->getMembers($match[1]);
+		} else if ($agent_or_team_id && ctype_digit($agent_or_team_id)) {
+            $agent_list = array($em->getRepository('DeskPRO:Person')->find($agent_or_team_id));
+        } else {
+			$agent_list = false;
+		}
+
+		if (!$agent_list) {
+			$agent_or_team_id = '0';
             $agent_list = $all_agents;
         }
 
         $activity = array();
         $agents = array();
 
-        foreach($agent_list as $agent) {
-            $logs = array();
+        foreach ($agent_list as $agent) {
+           $logs = array();
             $chats = $this->getChatLogForAgent($agent, $date);
 
             if(!empty($chats)) {
@@ -104,8 +110,9 @@ class AgentActivityController extends AbstractController
 
         $vars['agents'] = $agents;
         $vars['activity'] = $activity;
-        $vars['agent_id'] = $agent_id;
+        $vars['agent_or_team_id'] = $agent_or_team_id;
         $vars['all_agents'] = $all_agents;
+		$vars['agent_teams'] = $em->getRepository('DeskPRO:AgentTeam')->getTeams();
         $vars['view_date'] = $date;
         $vars['today'] = new \DateTime('now', new \DateTimeZone('UTC'));
 
@@ -233,6 +240,13 @@ class AgentActivityController extends AbstractController
 
     private function createDateFromParamString($date_str)
     {
+		if (!preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', $date_str)) {
+			$dt = new \DateTime();
+			$dt->setTimezone($this->person->getDateTimezone());
+			$dt->setTime(0,0,0);
+			return $dt;
+		}
+
 		$dt = new \DateTime();
 		$dt->setTimezone($this->person->getDateTimezone());
 		$dt->setTime(0,0,0);

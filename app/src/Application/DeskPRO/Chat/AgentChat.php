@@ -127,7 +127,7 @@ class AgentChat
 				if ($part['id'] == $this->person['id']) {
 					continue;
 				}
-				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part);
+				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part, 30);
 
 				if (!$session && $part->getPref('agent_notif.chat_message.email')) {
 					$email_message = App::getMailer()->createMessage();

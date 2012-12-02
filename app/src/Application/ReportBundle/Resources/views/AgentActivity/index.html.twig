@@ -8,12 +8,19 @@
 		Showing Agent Activity for:
 		<form style="display: inline">
 			<select id="agent_selector">
-				<option {% if agent_id == 0 %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': 0, 'date':view_date|date('Y-m-d')}) }}">All Agents</option>
+				<option {% if agent_or_team_id == '0' %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_or_team_id': 0, 'date':view_date|date('Y-m-d')}) }}">All Agents</option>
 				{% for agent in all_agents %}
-					<option {% if agent_id == agent.id %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': agent.id, 'date':view_date|date('Y-m-d')}) }}">
+					<option {% if agent_or_team_id == '' ~ agent.id %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_or_team_id': agent.id, 'date':view_date|date('Y-m-d')}) }}">
 						{{ agent.name }}
 					</option>
 				{% endfor %}
+				{% if agent_teams|length %}
+					<optgroup label="Teams">
+					{% for team in agent_teams %}
+						<option value="{{ path('report_agent_activity_list', {'agent_or_team_id': 'team-' ~ team.id, 'date':view_date|date('Y-m-d')}) }}" {% if agent_or_team_id == 'team-' ~ team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+					{% endfor %}
+					</optgroup>
+				{% endif %}
 			</select>
 		</form>
 		on
@@ -92,7 +99,7 @@
         $('.datepicker > span').datepicker(
                 {
                     'onSelect': function(dateText) {
-                        document.location = "{{ path('report_agent_activity_list', {'agent_id': 0, 'date':''}) }}/" + dateText;
+                        document.location = "{{ path('report_agent_activity_list', {'agent_or_team_id': 0, 'date':''}) }}/" + dateText;
                     },
                     'dateFormat': 'yy-mm-dd',
                     'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }}),

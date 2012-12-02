@@ -404,9 +404,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 
 		var agentMapLower = {}, hasAgents = false;
-		Object.each(agentMap, function(name, agentId) {
+		Object.each(agentMap, function(data, agentId) {
 			hasAgents = true;
-			agentMapLower[agentId] = name.toLowerCase();
+			agentMapLower[agentId] = data.name.toLowerCase();
 		});
 
 		if (!hasAgents) {
@@ -445,7 +445,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			// web kit handles content editable without an issue. this prevents the span
 			// from being extended unnecessarily
 			var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId]) + '</span>&nbsp;');
+			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId].name) + '</span>&nbsp;');
 		};
 
 		this.agentNotifyList.on('mousedown', 'li', function(e) {
@@ -582,11 +582,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
 				if (afterAt.length >= 2 && afterAt.length < 75) {
-					for (var agentId in agentMap) {
+					Object.each(agentMap, function(data, agentId) {
 						if (agentMapLower[agentId].indexOf(afterAt) == 0) {
 							matches.push(agentId);
 						}
-					}
+					});
 				}
 			}
 
@@ -595,7 +595,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 				self.agentNotifyList.empty();
 				for (var i = 0; i < matches.length; i++) {
-					var li = $('<li >').text(agentMap[matches[i]]).data('agent-id', matches[i]);
+					var li = $('<li>')
+						.text(agentMap[matches[i]].name)
+						.css('background-image', 'url('+agentMap[matches[i]].picture_url+')')
+						.data('agent-id', matches[i]);
 					if (matches[i] === selectedId) {
 						li.addClass('selected');
 					}
@@ -612,7 +615,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 				var offset = containingNode.offset();
 				self.agentNotifyList.css({
-					top: offset.top - self.agentNotifyList.outerHeight() - 5,
+					top: offset.top - self.agentNotifyList.outerHeight() - 1,
 					left: offset.left
 				});
 

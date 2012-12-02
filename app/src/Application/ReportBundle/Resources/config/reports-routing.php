@@ -221,7 +221,7 @@ $collection->add('report_agent_activity_index', new Route(
 ));
 
 $collection->add('report_agent_activity_list', new Route(
-    '/agent-activity/list/{agent_id}/{date}',
+    '/agent-activity/list/{agent_or_team_id}/{date}',
     array('_controller' => 'ReportBundle:AgentActivity:list'),
     array(),
     array()

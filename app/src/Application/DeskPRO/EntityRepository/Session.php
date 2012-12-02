@@ -151,10 +151,14 @@ class Session extends AbstractEntityRepository
 	 * Get the latest active session for a particular user
 	 *
 	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param integer|null $offset Max number of seconds old the session's last page can be (null for session lifetime)
 	 */
-	public function getSessionForPerson(PersonEntity $person)
+	public function getSessionForPerson(PersonEntity $person, $offset = null)
 	{
-		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
+		if ($offset === null) {
+			$offset = App::getSetting('core.sessions_lifetime');
+		}
+		$datecut = date('Y-m-d H:i:s', time() - $offset);
 
 		return $this->getEntityManager()->createQuery("
 			SELECT s

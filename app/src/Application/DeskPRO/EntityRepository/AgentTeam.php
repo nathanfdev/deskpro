@@ -173,7 +173,7 @@ class AgentTeam extends AbstractEntityRepository
 			return array();
 		}
 
-		$agent_ids = implode(',', $team);
+		$agent_ids = implode(',', $agent_ids);
 
 		$agents = $this->getEntityManager()->createQuery("
 			SELECT p
