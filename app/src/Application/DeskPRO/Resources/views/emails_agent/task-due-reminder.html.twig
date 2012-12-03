@@ -1,0 +1,14 @@
+<dp:subject>Task {{ task.title }} due today</dp:subject>
+{% if task.assigned_agent %}
+
+The task {{ task.title }}, assigned to you, is due today.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">View your tasks</a>
+
+{% elseif task.assigned_agent_team %}
+
+The task {{ task.title }}, assigned to your team, is due today.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">View your team's tasks</a>
+
+{% endif %}

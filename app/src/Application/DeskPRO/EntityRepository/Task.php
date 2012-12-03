@@ -51,20 +51,19 @@ class Task extends AbstractEntityRepository
 	 * @param Person $person The person
 	 * @return array
 	 */
+	public function findPendingTasksForPerson(Entity\Person $person)
+	{
+		$qb = $this->getEntityManager()->createQueryBuilder();
+		$qb->select('t')
+		   ->from('DeskPRO:Task', 't')
+		   ->innerJoin('t.person', 'p')
+		   ->where('p.id= :person_id')
+		   ->setParameters(array('person_id' => $person['id']));
 
-        public function findPendingTasksForPerson(Entity\Person $person)
-        {
-            $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('t')
-			   ->from('DeskPRO:Task', 't')
-			   ->innerJoin('t.person', 'p')
-			   ->where('p.id= :person_id')
-			   ->setParameters(array('person_id' => $person['id']));
-
-            $query = $qb->getQuery();
-            $tasks = $query->getResult();
-            return $tasks;
-        }
+		$query = $qb->getQuery();
+		$tasks = $query->getResult();
+		return $tasks;
+	}
 
         /**
 	 * All completed tasks.
@@ -771,5 +770,16 @@ class Task extends AbstractEntityRepository
 		}
 
 		return $this->getByIds($task_ids, true);
+	}
+
+	public function getTasksDueOnDate($date)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Task t
+			WHERE t.date_due = ?0
+				AND t.is_completed = 0
+			ORDER BY t.id
+		")->execute(array($date));
 	}
 }

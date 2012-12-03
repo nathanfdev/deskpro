@@ -1122,6 +1122,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTicketLocks::DEFA
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.task_reminders##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'task_reminders';
+$j['worker_group'] = 'task_reminders';
+$j['title'] = 'Task Reminders';
+$j['description'] = 'Sends task reminder notifications';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TaskReminders';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TaskReminders::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

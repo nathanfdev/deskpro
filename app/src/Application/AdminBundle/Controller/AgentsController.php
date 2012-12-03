@@ -512,6 +512,8 @@ class AgentsController extends AbstractController
 						($agent_id, 'agent_notif.task_assign_team.alert', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.task_complete.email', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.task_complete.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_due.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_due.alert', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),
