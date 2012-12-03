@@ -91,7 +91,7 @@ class CloudConfig
 			$siteinfo = null;
 		}
 
-		if (!$siteinfo || $siteinfo['sys_disabled']) {
+		if (!$siteinfo || ($siteinfo['sys_disabled'] && $siteinfo['sys_disabled'] != 'upgrading')) {
 			header("Location: " . self::getVendorUrl());
 			exit();
 		}
@@ -160,6 +160,7 @@ class CloudConfig
 		define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
 		define('DPC_BILL_DATE',          $siteinfo['next_bill_at']);
 		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] < time());
+		define('DPC_SYS_DISABLED',       $siteinfo['sys_disabled']);
 
 		if (!is_dir(DPC_SITE_DATADIR)) {
 			mkdir(DPC_SITE_DATADIR, 0777, true);

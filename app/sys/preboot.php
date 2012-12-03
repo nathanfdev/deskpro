@@ -80,11 +80,19 @@ if (!DP_REAL_ERROR_LOG) {
 #------------------------------
 
 if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgrade')) {
-	if (file_exists(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
+	if (file_exists(DP_WEB_ROOT.'/auto-update-is-running.trigger') || (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED == 'upgrading')) {
 		if (php_sapi_name() == 'cli') {
 			echo "Currently installing updates";
 			die(0);
 		} else {
+
+			// The upgrade watcher check-started. We dont want to boot into full system to serve it from the UpgradeController::checkStartedAction
+			if (strpos($_SERVER['PHP_SELF'], 'check-started.json') !== false || strpos($_SERVER['REQUEST_URI'], 'check-started.json') !== false) {
+				header('Content-Type: application/json');
+				echo json_encode(array('started' => true));
+				exit;
+			}
+
 			if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 				header('HTTP/1.0 503 Service Unavailable');
 				header('Content-Type: application/json');
