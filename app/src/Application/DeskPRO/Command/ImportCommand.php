@@ -280,9 +280,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			} catch (\Exception $e) {}
 
 			if ($new_download) {
-				$logger->log(sprintf("A newer version of DeskPRO is available. You have version %s but version %s is available for download.", $this_build, $new_build), Logger::INFO);
-				echo "\n\n";
-				$logger->log(sprintf("You can download the new version from: %s", $new_download), Logger::INFO);
+				$output->writeln(sprintf("A newer version of DeskPRO is available. You have version %s but version %s is available for download.", $this_build, $new_build));
+				$output->writeln(sprintf("You can download the new version from: %s", $new_download));
 
 				try {
 					$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to abort? [Y/n]> ');
