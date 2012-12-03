@@ -49,6 +49,7 @@ class EditTicketProps
 	public $category_id   = 0;
 	public $priority_id   = 0;
 	public $product_id    = 0;
+	public $cc_emails = '';
 
 	public function __construct(Ticket $ticket)
 	{

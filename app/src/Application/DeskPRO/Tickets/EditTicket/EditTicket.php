@@ -57,7 +57,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 	protected $ticket_object;
 
 	/**
-	 * @var \Application\DeskPRO\Tickets\NewTicket\TicketProps
+	 * @var \Application\DeskPRO\Tickets\EditTicket\EditTicketProps
 	 */
 	public $ticket;
 
@@ -119,10 +119,84 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->persist($this->ticket_object);
 			App::getOrm()->flush();
 
+			if ($this->ticket->cc_emails) {
+				$ccs = explode(',', $this->ticket->cc_emails);
+
+				foreach ($ccs as &$_) {
+					$_ = trim(strtolower($_));
+					if (!\Orb\Validator\StringEmail::isValueValid($_)) {
+						$_ = null;
+					}
+				}
+
+				$ccs = array_unique($ccs);
+				$ccs = \Orb\Util\Arrays::removeFalsey($ccs);
+
+				if ($ccs) {
+					foreach ($ccs as $cc) {
+						$this->handleCc($this->ticket_object, $cc);
+					}
+					App::getOrm()->flush();
+				}
+			}
+
 			App::getDb()->commit();
 		} catch (\Exception $e) {
 			App::getDb()->rollback();
 			throw $e;
 		}
+	}
+
+	public function handleCc(Ticket $ticket, $cc_email)
+	{
+		$gateway_address_matcher = App::getSystemService('gateway_address_matcher');
+
+		if (!\Orb\Validator\StringEmail::isValueValid($cc_email)) {
+			return null;
+		}
+
+		$addr = $gateway_address_matcher->getMatchingAddress($cc_email);
+		if ($addr) {
+			return null;
+		}
+
+		$person_processor = new \Application\DeskPRO\EmailGateway\PersonFromEmailProcessor();
+
+		$cc = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
+		$cc->email = $cc_email;
+		$cc->name = '';
+		$cc->name_utf8 = '';
+
+		$cc_person = $person_processor->findPerson($cc);
+		if (!$cc_person) {
+			// Closed helpdesk and an unknown CC means we drop it
+			if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+				return null;
+			}
+
+			$cc_person = Person::newContactPerson();
+			App::getOrm()->persist($cc_person);
+
+			$cc_person_email = new \Application\DeskPRO\Entity\PersonEmail();
+			$cc_person_email->setEmail($cc_email);
+			$cc_person_email->person = $cc_person;
+			App::getOrm()->persist($cc_person_email);
+
+			$cc_person->addEmailAddress($cc_person_email);
+			App::getOrm()->persist($cc_person);
+		}
+
+		if (!$cc_person) {
+			return null;
+		}
+
+		if (!$ticket->hasParticipantPerson($cc_person)) {
+			$part = $ticket->addParticipantPerson($cc_person);
+			if ($part) {
+				App::getOrm()->persist($part);
+			}
+		}
+
+		return $cc_person;
 	}
 }

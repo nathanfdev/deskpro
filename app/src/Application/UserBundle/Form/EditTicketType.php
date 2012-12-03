@@ -98,6 +98,8 @@ class EditTicketType extends AbstractType
 			));
 		}
 
+		$ticket_builder->add('cc_emails', 'text', array('required' => false));
+
 		$builder->add($ticket_builder);
 
 		#------------------------------

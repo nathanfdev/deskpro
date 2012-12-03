@@ -245,7 +245,7 @@ class TicketViewController extends AbstractController
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('modify');
 			$ticket_display->setPersonContext($this->person);
 			$ticket_display->addPagesFromDb();
 			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
@@ -255,7 +255,7 @@ class TicketViewController extends AbstractController
 			if ($default_page) {
 				$default_page_data = $default_page->getPageDisplay('default')->data;
 				$page_data_field_ids = array();
-				foreach ($default_page->getPageDisplay('default')->data as $info) {
+				foreach ($default_page_data as $info) {
 					$page_data_field_ids[] = $info['id'];
 				}
 			} else {
