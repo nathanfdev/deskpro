@@ -288,4 +288,49 @@ class Generic implements ForwardDef, QuoteDef
 
 		return $body;
 	}
+
+
+	/**
+	 * Try to cut out text below the email as well
+	 *
+	 * @param string $body
+	 * @param bool $is_html
+	 * @return string
+	 */
+	public function cutBottomBlock($body, $is_html = false)
+	{
+		if (!$is_html) {
+			return '';
+		}
+
+		// Have cuts in the form of <div class="DP_BOTTOM_MARK"> or <!--DP_BOTTOM_MARK-->
+		$body_btm = '';
+		$pos = strpos($body, 'DP_BOTTOM_MARK');
+		if ($pos !== false) {
+			$body_btm = substr($body, $pos);
+			if ($is_html) {
+				$pos = strpos($body_btm, ">");
+				if ($pos) {
+					$body_btm = substr($body_btm, $pos+1);
+				}
+			}
+
+			if ($body_btm) {
+				$body_btm = preg_replace('#\s*</body>\s*</html>\s*#', '', $body_btm);
+
+				// The empty <a> used for the DP_BOTTOM_MARK marker
+				$body_btm = preg_replace('#\s*<a[^>]*>\s*</a>\s*#', '', $body_btm);
+			}
+
+			$body_btm = trim($body_btm);
+		}
+
+		if ($body_btm && (!$is_html || strip_tags($body_btm))) {
+			$body_btm = "\n\n" . $body_btm;
+		} else {
+			$body_btm = '';
+		}
+
+		return $body_btm;
+	}
 }

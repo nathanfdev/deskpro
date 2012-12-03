@@ -81,7 +81,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$r->setRawSource($source);
 
 		if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
-			$body = $r->getBodyHtml()->getBodyUtf8();
+			$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
 
 			if ($input->getOption('raw')) {
 				echo $body;
@@ -92,11 +92,16 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
 
 			if (!$input->getOption('no-cut')) {
+
+				$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+				$body = $generic_cutter->cutQuoteBlock($body, true);
+
 				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
 				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
 				$cutter->addPatterns($pattern_config->all());
 
 				$body = $cutter->cutQuoteBlock($body, true);
+				$body .= $generic_cutter->cutBottomBlock($raw_body, true);
 			}
 
 			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
