@@ -1,0 +1,14 @@
+<li
+	class="task task-row-{{ task.id }}"
+	data-class-id="task-row-{{ task.id }}"
+	data-type="tasks"
+	data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'total'}) }}"
+	data-route-notabreload="1"
+>
+	<em class="dismiss"></em>
+	<time class="timeago"></time>
+	<a><i class="row-icon"></i> {{ task.title }}</a>
+	<div class="info">
+		Task was completed by {{ performer.display_name }}
+	</div>
+</li>

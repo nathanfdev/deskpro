@@ -32,6 +32,12 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 				</tr>
 
 				<tr>
+					<td class="title">A task I delegated is completed</td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_complete.email]" value="1" {% if my_prefs['task_complete.email'] %}checked="checked"{% endif %} /></td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_complete.alert]" value="1" {% if my_prefs['task_complete.alert'] %}checked="checked"{% endif %} /></td>
+				</tr>
+
+				<tr>
 					<td class="title">{{ phrase('agent.settings.notif_new_feedback') }}</td>
 					<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.email]" value="1" {% if my_prefs['new_feedback.email'] %}checked="checked"{% endif %} /></td>
 					<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.alert]" value="1" {% if my_prefs['new_feedback.alert'] %}checked="checked"{% endif %} /></td>

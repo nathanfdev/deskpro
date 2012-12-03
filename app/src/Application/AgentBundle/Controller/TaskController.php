@@ -474,6 +474,11 @@ class TaskController extends AbstractController
 
 			case 'completed':
 				$task->setCompleted($this->in->getBool('value'));
+
+				if ($this->in->getBool('value')) {
+					$notify = new \Application\DeskPRO\Notifications\TaskCompleteNotification($task);
+					$notify->send();
+				}
 				break;
 
 			case 'assigned':

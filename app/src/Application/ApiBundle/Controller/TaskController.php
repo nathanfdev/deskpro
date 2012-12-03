@@ -243,6 +243,11 @@ class TaskController extends AbstractController
 
 		if ($this->in->checkIsset('completed')) {
 			$task->setCompleted($this->in->getBool('completed'));
+
+			if ($this->in->getBool('completed')) {
+				$notify = new \Application\DeskPRO\Notifications\TaskCompleteNotification($task);
+				$notify->send();
+			}
 		}
 
 		$send_cm = false;

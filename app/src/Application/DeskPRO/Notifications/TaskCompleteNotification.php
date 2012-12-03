@@ -32,54 +32,61 @@
  * @subpackage
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\Notifications;
 
-class Build1354547865 extends AbstractBuild
+use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+
+class TaskCompleteNotification extends AbstractAgentNotification
 {
-	public function run()
+	/**
+	 * @var \Application\DeskPRO\Entity\Task
+	 */
+	protected $task;
+
+	public function __construct(Task $task)
 	{
-		$this->out("Add task assignment notifications");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_self.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_self.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_team.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_assign_team.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_complete.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_complete.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.chat_message.email'
-		");
+		parent::__construct();
+		$this->task = $task;
+	}
+
+	public function shouldSendBrowserNotification(Person $agent)
+	{
+		if (App::getCurrentPerson()->id == $agent->id) {
+			return false;
+		}
+
+		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function shouldSendEmailNotification(Person $agent)
+	{
+		if (App::getCurrentPerson()->id == $agent->id) {
+			return false;
+		}
+
+		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.email')) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function send()
+	{
+		$this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
+			'task' => $this->task,
+			'performer' => App::getCurrentPerson(),
+			'notify_data' => array('notify_type' => 'tasks')
+		));
+		$this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
+			'task' => $this->task,
+			'performer' => App::getCurrentPerson(),
+		));
 	}
 }

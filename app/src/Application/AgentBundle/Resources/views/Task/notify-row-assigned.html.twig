@@ -14,9 +14,9 @@
 	<a><i class="row-icon"></i> {{ task.title }}</a>
 	<div class="info">
 		{% if task.assigned_agent %}
-			Assigned to this task by {{ performer.name }}
+			Assigned to this task by {{ performer.display_name }}
 		{% elseif task.assigned_agent_team %}
-			Your team was assigned to this task by {{ performer.name }}
+			Your team was assigned to this task by {{ performer.display_name }}
 		{% endif %}
 	</div>
 </li>

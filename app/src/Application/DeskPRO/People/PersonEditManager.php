@@ -102,6 +102,7 @@ class PersonEditManager implements PersonContextInterface
 			'chat_message.email',
 			'task_assign_self.email', 'task_assign_self.alert',
 			'task_assign_team.email', 'task_assign_team.alert',
+			'task_complete.email', 'task_complete.alert',
 			'new_feedback.email', 'new_feedback.alert',
 			'new_feedback_validate.email', 'new_feedback_validate.alert',
 			'new_comment.email', 'new_comment.alert',

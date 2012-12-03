@@ -175,6 +175,8 @@ class DataInitializer
 		$prefs['task_assign_self.alert'] = 1;
 		$prefs['task_assign_team.email'] = 1;
 		$prefs['task_assign_team.alert'] = 1;
+		$prefs['task_complete.email'] = 1;
+		$prefs['task_complete.alert'] = 1;
 		$prefs['new_feedback.email'] = 1;
 		$prefs['new_feedback.alert'] = 1;
 		$prefs['new_feedback_validate.email'] = 1;

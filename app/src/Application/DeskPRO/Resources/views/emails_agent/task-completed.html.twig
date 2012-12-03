@@ -1,0 +1,4 @@
+<dp:subject>Task {{ task.title }} completed</dp:subject>
+{{ performer.getDisplayContact() }} has completed the task {{ task.title }} created by you.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.tasks,tasks:delegate:total">View your delegated tasks</a>
