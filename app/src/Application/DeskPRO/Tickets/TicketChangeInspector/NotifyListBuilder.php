@@ -116,6 +116,10 @@ class NotifyListBuilder
 		$status_change  = $this->tracker->getChangedProperty('status');
 		$hstatus_change = $this->tracker->getChangedProperty('hidden_status');
 
+		$assign_change         = $this->tracker->getChangedProperty('agent');
+		$assign_team_change    = $this->tracker->getChangedProperty('agent_team');
+		$assign_follow_change  = $this->tracker->getChangedProperty('participants');
+
 		$notify_new         = false;
 		$notify_agent_reply = false;
 		$notify_user_reply  = false;
@@ -198,10 +202,22 @@ class NotifyListBuilder
 							$types[] = 'alert';
 						}
 					} else {
-						if ($sub->email_property_change || $sub->email_new) {
+						if (
+							$sub->email_property_change
+							|| (!$filter->sys_name && $sub->email_new)
+							|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->email_new)
+							|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->email_new)
+							|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->email_new)
+						) {
 							$types[] = 'email';
 						}
-						if ($sub->alert_property_change || $sub->alert_new) {
+						if (
+							$sub->alert_property_change
+							|| (!$filter->sys_name && $sub->alert_new)
+							|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->alert_new)
+							|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->alert_new)
+							|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->alert_new)
+						) {
 							$types[] = 'alert';
 						}
 					}
@@ -244,10 +260,20 @@ class NotifyListBuilder
 				// If orig matched but its not a new match,
 				// then we know it's left this list
 				if (!isset($new_match_agents[$agent->getId()])) {
-					if ($sub->email_leave) {
+					if (
+						(!$filter->sys_name && $sub->email_leave)
+						|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->email_leave)
+						|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->email_leave)
+						|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->email_leave)
+					) {
 						$types[] = 'email';
 					}
-					if ($sub->alert_leave) {
+					if (
+						(!$filter->sys_name && $sub->alert_leave)
+						|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $assign_change && $sub->alert_leave)
+						|| ($filter->sys_name == 'agent_team' && $assign_team_change && $sub->alert_leave)
+						|| ($filter->sys_name == 'participant' && $assign_follow_change && $sub->alert_leave)
+					) {
 						$types[] = 'email';
 					}
 				}
