@@ -46,6 +46,9 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 				{% if section == 'create' or section == 'modify' %}
 					<li class="draggable" data-item-id="ticket_cc_emails"><label>CC Emails</label></li>
 				{% endif %}
+				{% if section == 'modify' %}
+					<li class="draggable" data-item-id="ticket_remove_ccs"><label>Remove CCs</label></li>
+				{% endif %}
 				{% if term_options.ticket_categories_full %}<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.categories') }}</label></li>{% endif %}
 				{% if term_options.ticket_workflows %}<li class="draggable" data-item-id="ticket_workflow" data-edit-title="Edit Workflows" data-edit-url="{{ path('admin_ticketworks') }}"><label>Workflows</label></li>{% endif %}
 				{% if term_options.products %}<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>{% endif %}
@@ -279,6 +282,16 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<input type="text" />
 	</div>
 </script>
+
+{############################
+ # Remove CC
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_remove_ccs">
+	<div class="ticket_remove_ccs">
+		<ul><label><input type="checkbox" /> Name &lt;email@example.com&gt;</label></ul>
+	</div>
+</script>
+
 
 {############################
  # Department

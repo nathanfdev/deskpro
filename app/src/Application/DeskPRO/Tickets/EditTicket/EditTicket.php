@@ -116,6 +116,12 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$field_manager->saveFormToObject($post_custom_fields, $this->ticket_object);
 			}
 
+			if ($this->ticket->remove_ccs) {
+				foreach ($this->ticket->remove_ccs AS $remove_person_id) {
+					$this->ticket_object->removeParticipantPerson($remove_person_id);
+				}
+			}
+
 			App::getOrm()->persist($this->ticket_object);
 			App::getOrm()->flush();
 

@@ -99,6 +99,12 @@ class EditTicketType extends AbstractType
 		}
 
 		$ticket_builder->add('cc_emails', 'text', array('required' => false));
+		$ticket_builder->add('remove_ccs', 'collection', array(
+			'type' => 'hidden',
+			'required' => false,
+			'allow_add' => true,
+			'allow_delete' => true
+		));
 
 		$builder->add($ticket_builder);
 

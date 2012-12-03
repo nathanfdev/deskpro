@@ -283,6 +283,13 @@ class TicketViewController extends AbstractController
 
 				if ($validator->isValid($newticket)) {
 					$newticket->save();
+
+					$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
+					if (!$is_participant && !$is_org_manager) {
+						// removed self from the ticket, so redirect to the main page
+						return $this->redirectRoute('user');
+					}
+
 					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
 				} else {
 					$errors = $validator->getErrors(true);
