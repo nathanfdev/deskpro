@@ -10,8 +10,8 @@
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
 	data-base-id="{{replyBaseId}}"
-    data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', true) ? 1 : '' }}"
-    data-close-note="{{ app.user.getPref('agent.ticket_close_note', true) ? 1 : '' }}"
+    data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', false) ? 1 : '' }}"
+    data-close-note="{{ app.user.getPref('agent.ticket_close_note', false) ? 1 : '' }}"
 	{% if draft and draft.extras.is_note %}
 		data-default-is-note="1"
 	{% endif %}
@@ -46,7 +46,7 @@
 			</ul>
 
 			<ul class="option-buttons right">
-				<li class="tipped closetab toggle keep_open_toggle {% if app.user.getPref('agent.ticket_close_reply', true) %}radio-on on{% endif %}" title="{{ phrase('agent.tickets.close_tab_after_reply') }}" id="{{ replyBaseId }}_keep_open_toggle">
+				<li class="tipped closetab toggle keep_open_toggle {% if app.user.getPref('agent.ticket_close_reply', false) %}radio-on on{% endif %}" title="{{ phrase('agent.tickets.close_tab_after_reply') }}" id="{{ replyBaseId }}_keep_open_toggle">
  					<span>{{ phrase('agent.general.close_tab') }}<em class="check"></em></span>
  					<input type="checkbox" name="options[close_tab]" />
  				</li>

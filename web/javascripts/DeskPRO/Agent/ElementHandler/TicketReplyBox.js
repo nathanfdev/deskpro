@@ -283,6 +283,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		$('.option-buttons', this.el).on('click', 'li.toggle', function() {
+			if ($(this).hasClass('keep_open_toggle')) {
+				return;
+			}
 			var check = $(':checkbox', this);
 			if (!check.length) {
 				return;
@@ -398,7 +401,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.getElById('keep_open_toggle').on('click', function(ev) {
 			ev.preventDefault();
-			$(this).toggleClass('radio-on');
+			if ($(this).hasClass('radio-on')) {
+				$(this).removeClass('radio-on on');
+			} else {
+				$(this).addClass('radio-on on');
+			}
 		});
 	},
 
