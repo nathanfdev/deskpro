@@ -1,4 +1,4 @@
 <dp:subject>New chat message from {{ message.author.getDisplayName() }}</dp:subject>
 {{ message.author.getDisplayContact() }} sent you a chat message:
 <br /><br />
-{{ message.getContentHtml()|raw }}
+{{ message.getContentHtml()|safe_link_urls_html|link_agent_short_code_html }}

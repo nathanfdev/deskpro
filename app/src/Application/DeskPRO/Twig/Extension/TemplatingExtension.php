@@ -140,6 +140,7 @@ class TemplatingExtension extends \Twig_Extension
         return array(
 			'safe_link_urls'         => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
 			'safe_link_urls_html'    => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
+			'link_agent_short_code_html'  => new \Twig_Filter_Method($this, 'linkAgentShortCodeHtml', array('is_safe' => array('html'))),
 			'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
@@ -382,6 +383,31 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$text = htmlspecialchars($text);
 		return Strings::linkifyHtml($text, true);
+	}
+
+	public function linkAgentShortCodeHtml($html)
+	{
+		$id_map = array(
+			't' => array('Ticket', 'agent/#app.tickets,t.o:'),
+			'p' => array('Person', 'agent/#app.people,p.o:'),
+			'o' => array('Organization', 'agent/#app.people.orgs,o.o:'),
+			'a' => array('Article', 'agent/#app.publish,a.o:'),
+			'n' => array('News', 'agent/#app.publish,n.o:'),
+			'd' => array('Download', 'agent/#app.publish,d.o:'),
+			'i' => array('Feedback', 'agent/#app.feedback,i.o:'),
+		);
+
+		$url = App::getSetting('core.deskpro_url');
+
+		foreach ($id_map AS $prefix => $info) {
+			$html = preg_replace(
+				'/\{\{\s*' . $prefix . '-(\d+)\s*\}\}/',
+				'<a href="' . $url . $info[1] . '$1">' . $info[0] . ' #$1</a>',
+				$html
+			);
+		}
+
+		return $html;
 	}
 
 	public function getAssetic($name)

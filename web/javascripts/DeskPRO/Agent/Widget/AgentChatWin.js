@@ -322,7 +322,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		var idMap = {
 			't': {title: 'Ticket', url: BASE_URL + 'agent/tickets/'},
 			'p': {title: 'Person', url: BASE_URL + 'agent/people/'},
-			'o': {title: 'Organizaton', url: BASE_URL + 'agent/organizations/'},
+			'o': {title: 'Organization', url: BASE_URL + 'agent/organizations/'},
 			'a': {title: 'Article', url: BASE_URL + 'agent/kb/article/'},
 			'n': {title: 'News', url: BASE_URL + 'agent/news/post/'},
 			'd': {title: 'Download', url: BASE_URL + 'agent/downloads/file/'},
