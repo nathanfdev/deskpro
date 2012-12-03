@@ -661,7 +661,7 @@ class TicketSearchController extends AbstractController
 		// Or if the user has their own
 		$group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
 
-		if ($this->in->getString('group_by')) {
+		if ($this->in->checkIsset('group_by')) {
 			$group_by = $this->in->getString('group_by');
 
 			App::getEntityRepository('DeskPRO:PersonPref')->savePref(
