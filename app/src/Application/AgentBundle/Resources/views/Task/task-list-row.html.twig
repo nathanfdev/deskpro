@@ -23,7 +23,7 @@
 			<ul>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}Public{% else %}Private{% endif %}</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
+					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 110px; position: relative;">
 						<label>
 							{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
 							{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
