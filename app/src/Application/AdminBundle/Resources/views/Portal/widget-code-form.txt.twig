@@ -3,7 +3,7 @@
 <script type="text/javascript">
 	var DpNewTicket_Options = DpNewTicket_Options || {};
 	DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
+	DpNewTicket_Options.deskproUrl = DpNewTicket_Options.protocol + '://{{ widget_url|url_trim_scheme }}';
 	DpNewTicket_Options.initialHeight = 700;
 	DpNewTicket_Options.containerId = 'dp_newticket_form';
 	DpNewTicket_Options.departmentId = 0;

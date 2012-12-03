@@ -2,7 +2,7 @@
 <script type="text/javascript">
 	var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
 	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpOverlayWidget_Options.deskproUrl = DpOverlayWidget_Options.protocol + '://{{ url('user')|url_trim_scheme }}';
+	DpOverlayWidget_Options.deskproUrl = DpOverlayWidget_Options.protocol + '://{{ widget_url|url_trim_scheme }}';
 
 	if (document.getElementsByTagName) {
 		(function() {

@@ -397,6 +397,11 @@ class PortalController extends AbstractController
 			$department = $this->em->find('DeskPRO:Department', $dep_id);
 		}
 
+		$widget_url = $this->container->getSetting('core.deskpro_url');
+		if (defined('DPC_SITE_DOMAIN')) {
+			$widget_url = 'http://' + DPC_SITE_DOMAIN + '/';
+		}
+
 		return $this->render('AdminBundle:Portal:website-widgets.html.twig', array(
 			'articles'  => $articles,
 			'downloads' => $downloads,
@@ -404,6 +409,8 @@ class PortalController extends AbstractController
 
 			'selections' => $selections,
 			'department' => $department,
+
+			'widget_url' => $widget_url,
 
 			'article_cat_map'   => $article_cat_map,
 			'download_cat_map'  => $download_cat_map,
