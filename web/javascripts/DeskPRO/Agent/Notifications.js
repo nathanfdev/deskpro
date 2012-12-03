@@ -180,6 +180,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.modCount('tickets', '=', 0);
 			self.modCount('chat', '=', 0);
 			self.modCount('feedback', '=', 0);
+			self.modCount('tasks', '=', 0);
 			self.close();
 		});
 
