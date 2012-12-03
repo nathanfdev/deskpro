@@ -12,6 +12,9 @@
 	data-base-id="{{replyBaseId}}"
     data-close-reply="{{ app.user.getPref('agent.ticket_close_reply', true) ? 1 : '' }}"
     data-close-note="{{ app.user.getPref('agent.ticket_close_note', true) ? 1 : '' }}"
+	{% if draft and draft.extras.is_note %}
+		data-default-is-note="1"
+	{% endif %}
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />

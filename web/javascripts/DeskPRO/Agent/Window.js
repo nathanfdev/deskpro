@@ -3145,7 +3145,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		options = Object.merge(defaultOptions, options);
 
-		var autosaveUrl = options.autosave, autosaveInterval = options.interval || 30;
+		var autosaveUrl = options.autosave,
+			autosaveInterval = options.interval || 30,
+			preAutosaveCallback = options.preAutosaveCallback;
 
 		options.autosave = false;
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup
@@ -3211,17 +3213,36 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				var newContent = this.getCode();
+				var newContent = this.getCode(),
+					name = this.$el.attr('name');
+
+				var data = [];
+				data.push({
+					name: name,
+					value: newContent
+				});
+
+				if (preAutosaveCallback) {
+					data = preAutosaveCallback(textarea, data);
+					if (data.length) {
+						for (var i = 0; i < data.length; i++) {
+							if (data[i].name == name) {
+								newContent = data[i].value;
+								break;
+							}
+						}
+					}
+				}
+
 				if (newContent == autosaveContent) {
 					return;
 				}
-
 				autosaveContent = newContent;
 
 				$.ajax({
 					url: autosaveUrl,
 					type: 'post',
-					data: this.$el.attr('name') + '=' + encodeURIComponent(newContent),
+					data: data,
 					success: $.proxy(function(data) {
 						if (typeof this.opts.autosaveCallback === 'function') {
 							this.opts.autosaveCallback(data, this);

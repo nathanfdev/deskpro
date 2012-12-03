@@ -450,6 +450,7 @@ JS;
 		$inserted = false;
 
 		$message = $this->in->getString('message');
+		$extras = $this->in->getCleanValueArray('extras');
 		if ($message) {
 			$message_html = Strings::trimHtml($this->in->getHtmlCore('message'));
 			$message_html = Strings::prepareWysiwygHtml($message_html);
@@ -458,7 +459,7 @@ JS;
 			$message_test = Strings::trimHtml($message_test);
 			if ($message_test && !Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
 				$draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
-					$content_type, $content_id, $message, $message_html
+					$content_type, $content_id, $message, $message_html, $extras
 				);
 				$inserted = $draft->id;
 			}

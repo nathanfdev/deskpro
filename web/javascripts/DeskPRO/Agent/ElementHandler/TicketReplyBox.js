@@ -33,7 +33,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				defaultIsHtml: true,
 				inlineHiddenPosition: this.getElById('is_html_reply'),
 				autosaveContent: 'ticket',
-				autosaveContentId: (this.page ? this.page.meta.ticket_id : false)
+				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
+				preAutosaveCallback: function(textarea, data) {
+					data.push({
+						name: 'extras[is_note]',
+						value: self.isNote ? 1 : 0
+					});
+
+					return data;
+				}
 			});
 			this.getElById('is_html_reply').val(1);
 
@@ -161,6 +169,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				scroller.trigger('goscrollbottom');
 			}
 		});
+
+		if (this.el.data('default-is-note') == '1') {
+			this.el.addClass('dp-note-on');
+			this.getElById('replybox_notetab_btn').addClass('on');
+			this.getElById('replybox_replytab_btn').removeClass('on');
+			$('.hide-note', this.el).hide();
+			$('.hide-reply', this.el).show();
+			this.getElById('is_note').val('1');
+			this.isNote = true;
+			this.hideAgentNotifyList();
+		}
 
 		//------------------------------
 		// Expanding cc row
