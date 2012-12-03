@@ -1,6 +1,6 @@
 <div class="dp-control-group ticket_remove_ccs {% if error_fields['ticket.remove_ccs'] %}dp-error{% endif %}">
 	<div class="dp-control-label">
-		<label><strong>Remove CCed people</strong></label>
+		<label><strong>{{ phrase('user.tickets.label_remove_ccs') }}</strong></label>
 	</div>
 	<div class="dp-controls dp-fill">
 		{% for part in user_participants %}

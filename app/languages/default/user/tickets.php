@@ -43,6 +43,7 @@
 	'user.tickets.join_ticket'                         => 'Join Ticket',
 	'user.tickets.label_cced'                          => 'CCed',
 	'user.tickets.label_cc_emails'                     => 'CC other people into this ticket',
+	'user.tickets.label_remove_ccs'                    => 'Remove CCed people',
 	'user.tickets.last_reply'                          => 'Last Reply',
 	'user.tickets.lbl_what_is_your_question'           => 'What is your question?',
 	'user.tickets.leave_feedback_text_title'           => 'Do you have any feedback?',
