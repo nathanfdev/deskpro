@@ -453,7 +453,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			if ($importer instanceof \Application\DeskPRO\Import\Importer\Deskpro3Importer) {
 
 				if ($importer->isLargeDatabase()) {
-					$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttp://www.deskpro.com/g/import-large-db\n</info>");
+					$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttps://support.deskpro.com/kb/articles/115\n</info>");
 					try {
 						$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to continue with the import now? [Y/n]> ');
 					} catch (\Exception $e) {

@@ -155,7 +155,7 @@ class Deskpro3Importer extends AbstractImporter
 		$count_users   = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user");
 		$count_tickets = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket");
 
-		if ($count_users > 250000 || $count_tickets > 250000) {
+		if ($count_users > 500000 || $count_tickets > 500000) {
 			return true;
 		}
 
