@@ -410,6 +410,13 @@ final class License
 		if (strlen($license_code) < 300) {
 			$this->error_code = 'invalid_license_code_1';
 			$this->data = array('no_license' => true);
+
+			$fn = function() {
+				$__fail_message = 'invalid_license_code_1';
+				include dirname(__FILE__) . '/Resources/system-fail-func.php';
+			};
+			$fn();
+
 			return;
 		}
 
@@ -477,6 +484,13 @@ final class License
 		if (!$data) {
 			$this->error_code = 'invalid_license_code_2';
 			$this->data = array('no_license' => true);
+
+			$fn = function() {
+				$__fail_message = 'invalid_license_code_2';
+				include dirname(__FILE__) . '/Resources/system-fail-func.php';
+			};
+			$fn();
+
 			return;
 		}
 
