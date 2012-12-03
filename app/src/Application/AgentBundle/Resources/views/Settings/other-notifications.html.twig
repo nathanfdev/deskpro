@@ -20,6 +20,18 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 				</tr>
 
 				<tr>
+					<td class="title">A task is assigned to me</td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_assign_self.email]" value="1" {% if my_prefs['task_assign_self.email'] %}checked="checked"{% endif %} /></td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_assign_self.alert]" value="1" {% if my_prefs['task_assign_self.alert'] %}checked="checked"{% endif %} /></td>
+				</tr>
+
+				<tr>
+					<td class="title">A task is assigned to my team</td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_assign_team.email]" value="1" {% if my_prefs['task_assign_team.email'] %}checked="checked"{% endif %} /></td>
+					<td class="prop"><input type="checkbox" name="my_prefs[task_assign_team.alert]" value="1" {% if my_prefs['task_assign_team.alert'] %}checked="checked"{% endif %} /></td>
+				</tr>
+
+				<tr>
 					<td class="title">{{ phrase('agent.settings.notif_new_feedback') }}</td>
 					<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.email]" value="1" {% if my_prefs['new_feedback.email'] %}checked="checked"{% endif %} /></td>
 					<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.alert]" value="1" {% if my_prefs['new_feedback.alert'] %}checked="checked"{% endif %} /></td>

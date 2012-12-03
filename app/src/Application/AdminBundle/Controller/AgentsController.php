@@ -506,6 +506,10 @@ class AgentsController extends AbstractController
 					VALUES
 						($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.login_attempt_fail.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_assign_self.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_assign_self.alert', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_assign_team.email', '1', X'4E3B', NULL),
+						($agent_id, 'agent_notif.task_assign_team.alert', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment.alert', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment.email', '1', X'4E3B', NULL),
 						($agent_id, 'agent_notif.new_comment_validate.alert', '1', X'4E3B', NULL),

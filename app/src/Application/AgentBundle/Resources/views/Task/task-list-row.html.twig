@@ -32,13 +32,13 @@
 						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
 							<optgroup label="Agents">
 								{% for agent in app.getDataRepository('Agent').getAgents() %}
-									<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+									<option {% if (task.assigned_agent and agent.id == task.assigned_agent.id) or (not task.assigned_agent and not task.assigned_agent_team and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</optgroup>
 							{% if app.getDataRepository('AgentTeam').getTeams()|length %}
 								<optgroup label="Teams">
 									{% for team in app.getDataRepository('AgentTeam').getTeams() %}
-										<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
+										<option value="agent_team:{{ team.id }}" {% if task.assigned_agent_team and task.assigned_agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endfor %}
 								</optgroup>
 							{% endif %}

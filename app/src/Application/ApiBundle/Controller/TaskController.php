@@ -197,11 +197,8 @@ class TaskController extends AbstractController
 				$this->em->flush();
 			}
 
-			$cms = $this->_getCmForAssigned($task, true);
-			foreach ($cms as $cm) {
-				$this->em->persist($cm);
-			}
-			$this->em->flush();
+			$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
+			$notify->send();
 
 			$this->db->commit();
 		} catch (\Exception $e) {
@@ -274,11 +271,8 @@ class TaskController extends AbstractController
 		$this->em->flush();
 
 		if ($send_cm) {
-			$cms = $this->_getCmForAssigned($task, false);
-			foreach ($cms as $cm) {
-				$this->em->persist($cm);
-			}
-			$this->em->flush();
+			$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
+			$notify->send();
 		}
 
 		return $this->createSuccessResponse();
@@ -480,41 +474,6 @@ class TaskController extends AbstractController
 		$this->em->flush();
 
 		return $this->createSuccessResponse();
-	}
-
-	protected function _getCmForAssigned(Task $task, $is_new)
-	{
-		$cms = array();
-
-		$data = array(
-			'task_id' => $task->id,
-			'task_title' => $task->title,
-			'task_agent_id' => $task->assigned_agent ? $task->assigned_agent->id : 0,
-			'task_agent_team_id' => $task->assigned_agent_team ? $task->assigned_agent_team->id : 0,
-			'is_new' => $is_new
-		);
-
-		if ($task->assigned_agent && $task->assigned_agent->id != $this->person->id) {
-			$cm = new \Application\DeskPRO\Entity\ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'agent-notify.tasks',
-				'data' => $data,
-				'created_by_client' => 'api',
-			));
-			$cms[] = $cm;
-		} elseif ($task->assigned_agent_team) {
-			foreach ($task->assigned_agent_team->members as $agent) {
-				$cm = new \Application\DeskPRO\Entity\ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'agent-notify.tasks',
-					'data' => $data,
-					'created_by_client' => 'api',
-				));
-				$cms[] = $cm;
-			}
-		}
-
-		return $cms;
 	}
 
 	/**

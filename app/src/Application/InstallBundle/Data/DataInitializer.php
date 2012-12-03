@@ -171,6 +171,10 @@ class DataInitializer
 		$prefs = array();
 		$prefs['chat_message.email'] = 1;
 		$prefs['login_attempt_fail.email'] = 1;
+		$prefs['task_assign_self.email'] = 1;
+		$prefs['task_assign_self.alert'] = 1;
+		$prefs['task_assign_team.email'] = 1;
+		$prefs['task_assign_team.alert'] = 1;
 		$prefs['new_feedback.email'] = 1;
 		$prefs['new_feedback.alert'] = 1;
 		$prefs['new_feedback_validate.email'] = 1;

@@ -50,6 +50,11 @@ abstract class AbstractAgentNotification
 	 */
 	protected $notify_list;
 
+	/**
+	 * @var string
+	 */
+	protected $client = 'sys';
+
 	abstract public function shouldSendBrowserNotification(Person $person);
 	abstract public function shouldSendEmailNotification(Person $person);
 	abstract public function send();
@@ -59,6 +64,10 @@ abstract class AbstractAgentNotification
 		$this->em = App::getOrm();
 	}
 
+	public function setCreatedClient($client)
+	{
+		$this->client = $client;
+	}
 
 	/**
 	 * Build a list of agents to email and browser notify.
@@ -124,6 +133,7 @@ abstract class AbstractAgentNotification
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
 			$message->setToPerson($agent);
+			$message->setFrom(App::getSetting('core.default_from_email'), App::getSetting('core.deskpro_name'));
 			App::getMailer()->send($message);
 		}
 	}
@@ -157,7 +167,7 @@ abstract class AbstractAgentNotification
 				'channel' => 'agent-notify.' . $data['notify_type'],
 				'data' => $data,
 				'for_person'        => $agent,
-				'created_by_client' => 'sys'
+				'created_by_client' => $this->client
 			));
 			$this->em->persist($cm);
 		}

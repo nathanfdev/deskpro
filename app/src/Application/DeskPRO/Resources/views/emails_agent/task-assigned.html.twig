@@ -1,0 +1,14 @@
+<dp:subject>Task {{ task.title }} assigned to you by {{ performer.getDisplayName() }}</dp:subject>
+{% if task.assigned_agent %}
+
+{{ performer.getDisplayContact() }} has assigned the task {{ task.title }} to you.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">View your tasks</a>
+
+{% elseif task.assigned_agent_team %}
+
+{{ performer.getDisplayContact() }} has assigned the task {{ task.title }} to your team.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">View your team's tasks</a>
+
+{% endif %}

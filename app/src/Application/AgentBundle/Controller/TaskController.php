@@ -48,6 +48,7 @@ use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\AgentBundle\Form\Type\NewTask;
+use Application\DeskPRO\App;
 
 /**
  * Handles viewing and editing tasks
@@ -194,11 +195,10 @@ class TaskController extends AbstractController
 			$this->em->flush();
 
 			foreach ($tasks as $t) {
-				$cms = $this->getCmForAssigned($t,true);
-				foreach ($cms as $cm) {
-					$this->em->persist($cm);
-				}
+				$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($t);
+				$notify->send();
 			}
+			$this->em->flush();
 
 			$this->db->commit();
 
@@ -491,10 +491,8 @@ class TaskController extends AbstractController
 					}
 				}
 
-				$cms = $this->getCmForAssigned($task,false);
-				foreach ($cms as $cm) {
-					$this->em->persist($cm);
-				}
+				$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
+				$notify->send();
 
 				break;
 		}
@@ -545,7 +543,7 @@ class TaskController extends AbstractController
 	}
 
         /**
-	 * @return Application\DeskPRO\Entity\Task
+	 * @return \Application\DeskPRO\Entity\Task
 	 */
 	protected function getTaskOr404($task_id)
 	{
@@ -555,40 +553,5 @@ class TaskController extends AbstractController
 		}
 
 		return $task;
-	}
-
-	protected function getCmForAssigned(Task $task, $is_new)
-	{
-		$cms = array();
-
-		$data = array(
-			'task_id' => $task->id,
-			'task_title' => $task->title,
-			'task_agent_id' => $task->assigned_agent ? $task->assigned_agent->id : 0,
-			'task_agent_team_id' => $task->assigned_agent_team ? $task->assigned_agent_team->id : 0,
-			'is_new' => $is_new
-		);
-
-		if ($task->assigned_agent && $task->assigned_agent->id != $this->person->id) {
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => 'agent-notify.tasks',
-				'data' => $data,
-				'created_by_client' => $this->session->getId(),
-			));
-			$cms[] = $cm;
-		} elseif ($task->assigned_agent_team) {
-			foreach ($task->assigned_agent_team->members as $agent) {
-				$cm = new ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'agent-notify.tasks',
-					'data' => $data,
-					'created_by_client' => $this->session->getId(),
-				));
-				$cms[] = $cm;
-			}
-		}
-
-		return $cms;
 	}
 }

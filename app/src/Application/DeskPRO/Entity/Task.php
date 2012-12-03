@@ -357,6 +357,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this['assigned_agent'] = $agent;
+		if ($agent) {
+			$this->setModelField('assigned_agent_team', null);
+		}
 	}
 
 
@@ -392,6 +395,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this['assigned_agent_team'] = $agent_team;
+		if ($agent_team) {
+			$this->setModelField('assigned_agent', null);
+		}
 	}
 
 
