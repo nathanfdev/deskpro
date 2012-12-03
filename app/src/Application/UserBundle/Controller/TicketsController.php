@@ -68,6 +68,12 @@ class TicketsController extends AbstractController
 	 */
     public function listAction()
     {
+		if (!$this->person['id']) {
+			$return = $this->request->getRequestUri();
+			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
+			return $this->redirect($redirect_url);
+		}
+
 		$dql_join = '';
 		$sort = $this->in->getString('sort');
 		switch ($sort) {
