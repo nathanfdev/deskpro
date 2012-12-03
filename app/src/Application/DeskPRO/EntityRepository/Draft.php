@@ -140,11 +140,25 @@ class Draft extends AbstractEntityRepository
 			$person = App::getCurrentPerson();
 		}
 
-		App::getDb()->delete('drafts', array(
-			'content_type' => $content_type,
-			'content_id' => $content_id,
-			'person_id' => $person->id
-		));
+		$draft = $this->getDraft($content_type, $content_id, $person);
+		if ($draft) {
+			App::getOrm()->remove($draft);
+			App::getOrm()->flush();
+
+			if ($content_type == 'ticket') {
+				App::getDb()->insert('client_messages', array(
+					'channel' => 'agent.ticket-draft-updated',
+					'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+					'date_created' => date('Y-m-d H:i:s'),
+					'data' => serialize(array(
+						'ticket_id'      => $content_id,
+						'draft_html'     => false,
+						'via_person'     => $person->getId()
+					)),
+					'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+				));
+			}
+		}
 	}
 
 	public function deleteDraftsForContent($content_type, $content_id)

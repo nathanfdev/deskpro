@@ -468,7 +468,34 @@ JS;
 			$this->em->getRepository('DeskPRO:Draft')->deleteDraft($content_type, $content_id);
 		}
 
-		return $this->createJsonResponse(array('inserted' => $inserted));
+		if ($inserted && $content_type == 'ticket') {
+			$html = false;
+			if ($draft) {
+				$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($content_id);
+				if ($ticket) {
+					$html = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', array(
+						'draft' => $draft,
+						'ticket' => $ticket
+					));
+				}
+			}
+
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.ticket-draft-updated',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array(
+					'ticket_id'      => $content_id,
+					'draft_html'     => $html,
+					'via_person'     => $this->person->id
+				)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
+		}
+
+		return $this->createJsonResponse(array(
+			'inserted' => $inserted
+		));
 	}
 
     public function parseVCardAction()

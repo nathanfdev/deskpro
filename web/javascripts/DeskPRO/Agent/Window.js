@@ -475,7 +475,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initSections();
 		this._initInterfaceServices();
-		this.startDraftUpdates();
 
 		$('#dp_loading').remove();
 		$('#page_loading').remove();
@@ -2645,60 +2644,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return popover;
 	},
 
-	startDraftUpdates: function() {
-		if (!this.draftUpdateInterval) {
-			this.draftUpdateInterval = setInterval(
-				this.triggerDraftUpdate.bind(this),
-				1000 * 60 * 5
-			);
-		}
-	},
-
-	stopDraftUpdates: function() {
-		clearInterval(this.draftUpdateInterval);
-		this.draftUpdateInterval = false
-	},
-
-	triggerDraftUpdate: function() {
-		var wrappers = {}, data = [];
-
-		Object.each(DeskPRO_Window.TabBar.getTabs(), function(tab, id) {
-			if (tab.page && tab.page.wrapper && tab.page.TYPENAME == 'ticket' && tab.page.meta.ticket_id) {
-				wrappers[tab.page.meta.ticket_id] = tab.page.wrapper;
-				data.push({
-					name: 'ticket_ids[]',
-					value: tab.page.meta.ticket_id
-				});
-			}
-		});
-
-		if (!data.length) {
-			return;
-		}
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/update-drafts',
-			method: 'POST',
-			data: data,
-			success: function(json) {
-				if (!json.drafts) {
-					return;
-				}
-
-				for (var i = 0; i < data.length; i++) {
-					var wrapper = wrappers[data[i].value];
-					wrapper.find('.agent-draft-message').remove();
-					if (json.drafts[data[i].value]) {
-						var insertPos = wrapper.find('.ticket-messages .messages-wrap');
-						for (var j = 0; j < json.drafts[data[i].value].length; j++) {
-							insertPos.append(json.drafts[data[i].value][j]);
-						}
-					}
-				}
-			}
-		});
-	},
-
 	/**
 	 * Attaches central handlers on a layer. These handlers are added to the document,
 	 * but if you have a new layer that prevents propagation up to the document,
@@ -3195,12 +3140,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (options.autosaveContent && options.autosaveContentId) {
 			defaultOptions.autosave = BASE_URL + 'agent/misc/redactor-autosave/' + options.autosaveContent + '/' + options.autosaveContentId;
-			defaultOptions.interval = 60;
+			defaultOptions.interval = 30;
 		}
 
 		options = Object.merge(defaultOptions, options);
 
-		var autosaveUrl = options.autosave, autosaveInterval = options.interval || 60;
+		var autosaveUrl = options.autosave, autosaveInterval = options.interval || 30;
 
 		options.autosave = false;
 		options.cleanup = false; // must always be false for paste of images to work - code below implements default cleanup

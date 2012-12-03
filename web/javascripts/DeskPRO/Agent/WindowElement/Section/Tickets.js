@@ -314,6 +314,30 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 		}
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-draft-updated', function (data) {
+			var ticketId = data.ticket_id;
+
+			if (!data.via_person || data.via_person != DESKPRO_PERSON_ID) {
+				var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
+					if (tab && tab.page && tab.page.wrapper && tab.page.meta.ticket_id == ticketId) {
+						return true;
+					}
+
+					return false;
+				});
+
+				if (tab) {
+					var wrapper = tab.page.wrapper;
+					if (data.via_person) {
+						wrapper.find('.agent-draft-message.agent-' + data.via_person).remove();
+					}
+					if (data.draft_html) {
+						wrapper.find('.ticket-messages .messages-wrap').append(data.draft_html);
+					}
+				}
+			}
+		});
+
 		DeskPRO.ElementHandler_Exec(this.wrapper);
 
 		this.fireEvent('sectionInit');
