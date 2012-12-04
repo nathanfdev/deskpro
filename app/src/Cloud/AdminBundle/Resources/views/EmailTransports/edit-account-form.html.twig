@@ -1,4 +1,5 @@
-<div data-element-handler="DeskPRO.Admin.ElementHandler.EditEmailTransportPage">
+{% set baseId = el_uid() %}
+<div data-element-handler="DeskPRO.Admin.ElementHandler.EditEmailTransportPage" data-overlay-id="{{ baseId }}_test_settings_overlay">
 
 <form id="transport_form" action="{{ path('admin_emailtrans_editaccount', {'id': transport.id|default(0)}) }}" method="post">
 {{ form_token('edit_transport') }}
@@ -118,7 +119,7 @@
 	</div>
 </div>
 
-<div id="test_settings_overlay" style="width: 600px; height: 390px; overflow:auto; display: none;">
+<div id="{{ baseId }}_test_settings_overlay" style="width: 600px; height: 390px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
 		<h4>{{ phrase('admin.general.test_outgoing_email') }}</h4>
