@@ -478,7 +478,7 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if ($ticket->status == 'hidden') {
+		if ($ticket->status == 'hidden' && ($ticket->hidden_status == 'spam' || $ticket->hidden_status == 'deleted')) {
 			$dates[] = time();
 		}
 
