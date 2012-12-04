@@ -34,8 +34,28 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App;
+
 class MiscController extends AbstractController
 {
+	protected function _checkRateLimit($action, $arguments = null)
+	{
+		if ($action == 'getRateLimitAction') {
+			return null;
+		}
+
+		return parent::_checkRateLimit($action, $arguments);
+	}
+
+	protected function _updateRateLimit($action, $arguments = null)
+	{
+		if ($action == 'getRateLimitAction') {
+			return;
+		}
+
+		parent::_updateRateLimit($action, $arguments);
+	}
+
 	public function uploadAction()
 	{
 		$file = $this->request->files->get('file');
@@ -70,5 +90,23 @@ class MiscController extends AbstractController
 		} else {
 			return $this->createApiResponse(array('person' => false));
 		}
+	}
+
+	public function getRateLimitAction()
+	{
+		if (!App::getSetting('core.api_rate_limit')) {
+			return $this->createApiResponse(array(
+				'limit' => 0
+			));
+		}
+
+		$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+
+		return $this->createApiResponse(array(
+			'limit' => App::getSetting('core.api_rate_limit'),
+			'remaining' => max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']),
+			'reset_stamp' => $this->rate_info['reset_stamp'],
+			'reset_date' => gmdate('r', $this->rate_info['reset_stamp'])
+		));
 	}
 }

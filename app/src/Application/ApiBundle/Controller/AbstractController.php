@@ -95,6 +95,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $settings;
 
+	public $rate_info = null;
+
 
 	
 	protected function init()
@@ -159,6 +161,32 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if (!$this->person) {
 			return $this->createApiErrorResponse('invalid_person', 'Please provide a valid agent for this request', 403);
 		}
+
+		if (App::getSetting('core.api_rate_limit')) {
+			$error = $this->_checkRateLimit($action, $arguments);
+			if ($error) {
+				return $error;
+			}
+			$this->_updateRateLimit($action, $arguments);
+		}
+	}
+
+	protected function _checkRateLimit($action, $arguments = null)
+	{
+		$this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+		if ($this->rate_info['hits'] >= App::getSetting('core.api_rate_limit')) {
+			return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
+		}
+
+		return null;
+	}
+
+	protected function _updateRateLimit($action, $arguments = null)
+	{
+		$this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
+		if ($this->rate_info) {
+			$this->rate_info['hits']++;
+		}
 	}
 
 
@@ -200,7 +228,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		$_SERVER['HTTP_ACCEPT'] = 'application/json';
 
-		return $this->createJsonResponse($data, $status);
+		$response = $this->createJsonResponse($data, $status);
+
+		if ($this->rate_info) {
+			$response->headers->set('X-RateLimit-Limit', App::getSetting('core.api_rate_limit'));
+			$response->headers->set('X-RateLimit-Remaining', max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']));
+			$response->headers->set('X-RateLimit-Reset', $this->rate_info['reset_stamp']);
+		}
+
+		return $response;
 	}
 
 

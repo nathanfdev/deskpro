@@ -87,4 +87,43 @@ class ApiKey extends AbstractEntityRepository
 			FROM api_keys
 		');
 	}
+
+	public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
+	{
+		$rate_limit = App::getDb()->fetchAssoc("
+			SELECT *
+			FROM api_key_rate_limit
+			WHERE api_key_id = ?
+		", array($api_key->id));
+
+		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
+			App::getDb()->delete('api_key_rate_limit', array(
+				'api_key_id' => $api_key->id
+			));
+		}
+
+		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
+			$rate_limit = array(
+				'api_key_id' => $api_key->id,
+				'hits' => 0,
+				'created_stamp' => time(),
+				'reset_stamp' => time() + 3600
+			);
+		}
+
+		return $rate_limit;
+	}
+
+	public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
+	{
+		$time = time();
+
+		App::getDb()->executeUpdate("
+			INSERT INTO api_key_rate_limit
+				(api_key_id, hits, created_stamp, reset_stamp)
+			VALUES
+				(?, 1, ?, ?)
+			ON DUPLICATE KEY UPDATE hits = hits + 1
+		", array($api_key->id, $time, $time + 3600));
+	}
 }

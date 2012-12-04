@@ -65,6 +65,13 @@ $collection->add('api_misc_session_person', new Route(
 	array()
 ));
 
+$collection->add('api_misc_rate_limit', new Route(
+	'/misc/rate-limit',
+	array('_controller' => 'ApiBundle:Misc:getRateLimit'),
+	array('_method' => 'GET'),
+	array()
+));
+
 ################################################################################
 # Tickets
 ################################################################################

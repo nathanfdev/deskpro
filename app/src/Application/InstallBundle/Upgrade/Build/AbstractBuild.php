@@ -197,6 +197,17 @@ abstract class AbstractBuild
 		}
 	}
 
+	public function getDefaultCollation()
+	{
+		try {
+			$collation = \Application\DeskPRO\App::getSetting('core.db_collation');
+		} catch (\Exception $e) {
+			$collation = null;
+		}
+
+		return $collation ?: 'utf8_general_ci';
+	}
+
 
 	/**
 	 * @static

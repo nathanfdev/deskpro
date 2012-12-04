@@ -339,5 +339,10 @@
 	/**
 	 * A Google Analytics property ID (UA-XXXXX-Y). If added, GA will be enabled on user pages.
 	 */
-	'core.ga_property_id' => ''
+	'core.ga_property_id' => '',
+
+	/**
+	 * Number of allowed requests to the API per hour. 0 to disable.
+	 */
+	'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0
 );
