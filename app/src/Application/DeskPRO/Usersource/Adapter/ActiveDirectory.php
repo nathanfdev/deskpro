@@ -48,6 +48,7 @@ class ActiveDirectory extends AbstractAdapter
 			'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
 			'email'            => isset($info['email_address']) ? $info['email_address'] : '',
 			'email_confirmed'  => true,
+			'picture_data'     => isset($info['picture_data']) ? $info['picture_data'] : null,
 		);
 	}
 

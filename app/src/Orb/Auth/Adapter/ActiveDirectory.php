@@ -204,6 +204,12 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 				} elseif (\Orb\Validator\StringEmail::isValueValid($rec->getAttribute('userPrincipalName', 0))) {
 					$raw_info['email_address'] = $rec->getAttribute('userPrincipalName', 0);
 				}
+
+				if ($rec->getAttribute('jpegPhoto')) {
+					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('jpegPhoto'));
+				} else if ($rec->getAttribute('thumbnailPhoto')) {
+					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
+				}
 			}
 		} catch (\Exception $e) {}
 

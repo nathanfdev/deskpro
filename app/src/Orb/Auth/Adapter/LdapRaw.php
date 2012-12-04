@@ -211,6 +211,12 @@ class LdapRaw implements FormLoginInterface, Loggable
 				if ($rec->getAttribute('mail')) {
 					$raw_info['email_address'] = Arrays::getFirstItem($rec->getAttribute('mail'));
 				}
+
+				if ($rec->getAttribute('jpegPhoto')) {
+					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('jpegPhoto'));
+				} else if ($rec->getAttribute('thumbnailPhoto')) {
+					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
+				}
 			}
 		} catch (\Exception $e) {}
 

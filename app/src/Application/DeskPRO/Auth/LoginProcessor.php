@@ -48,25 +48,25 @@ class LoginProcessor
 {
 	/**
 	 * The users identity
-	 * @var Orb\Auth\Identity
+	 * @var \Orb\Auth\Identity
 	 */
 	protected $identity;
 
 	/**
 	 * The usersource
-	 * @var Application\DeskPRO\Entity\Usersource
+	 * @var \Application\DeskPRO\Entity\Usersource
 	 */
 	protected $usersource;
 
 	/**
 	 * The association
-	 * @var Application\DeskPRO\Entity\PersonUsersourceAssoc
+	 * @var \Application\DeskPRO\Entity\PersonUsersourceAssoc
 	 */
 	protected $assoc;
 
 	/**
 	 * The person the login represents
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 
@@ -126,6 +126,33 @@ class LoginProcessor
 				if (!$this->person[$k] && $mapped_fields->has($k)) {
 					$this->person[$k] = $mapped_fields->get($k);
 				}
+			}
+
+			if ($mapped_fields->has('picture_data') && !$this->person->picture_blob) {
+				$filename = tempnam(dp_get_tmp_dir(), 'picture');
+				$fp = @fopen($filename, 'w');
+				if ($fp) {
+					@fwrite($fp, $mapped_fields->get('picture_data'));
+					@fclose($fp);
+
+					$mime_map = array(
+						IMAGETYPE_GIF => array('gif', 'image/gif'),
+						IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
+						IMAGETYPE_PNG => array('png', 'image/png')
+					);
+					$image_info = getimagesize($filename);
+					if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
+						$mime = $mime_map[$image_info[2]];
+						$file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+							$filename, 'picture.' . $mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
+						);
+
+						$accept = App::getContainer()->getAttachmentAccepter();
+						$blob = $accept->accept($file);
+						$this->person->setPictureBlob($blob);
+					}
+				}
+				@unlink($filename);
 			}
 
 			$em->persist($this->person);
