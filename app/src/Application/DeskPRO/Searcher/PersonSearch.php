@@ -217,21 +217,21 @@ class PersonSearch extends SearcherAbstract
 
 			case 'people.email':
 				$order_by = array(
-					"INNER JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)",
+					"LEFT JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)",
 					"sort_table.email $dir"
 				);
 				break;
 
 			case 'people.organization':
 				$order_by = array(
-					"INNER JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)",
+					"LEFT JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)",
 					"sort_table.name $dir"
 				);
 				break;
 
 			case 'people.num_tickets':
 				$order_by = array(
-					"INNER JOIN tickets AS sort_table ON (sort_table.person_id = people.id)",
+					"LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)",
 					"COUNT(sort_table.id) $dir, people.id DESC"
 				);
 				break;
