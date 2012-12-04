@@ -662,6 +662,10 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_NAME:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
 					switch ($op) {
 						case self::OP_CONTAINS:
 							if (strpos(strtolower($person['name']), strtolower($choice)) === false) return false;
