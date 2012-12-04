@@ -113,5 +113,34 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 				}
 			});
 		});
+
+		if (window.webkitNotifications) {
+			var notificationsRow = el.find('.dp-desktop-notifications');
+			notificationsRow.show();
+
+			var permissionCallback = function() {
+				var permission = window.webkitNotifications.checkPermission();
+
+				if (permission == 0) {
+					// granted
+					notificationsRow.find('button').hide();
+					notificationsRow.find('.dp-desktop-notifications-enabled').show();
+				} else if (permission == 1) {
+					// no action
+					notificationsRow.find('button').show();
+					notificationsRow.find('.dp-desktop-notifications-enabled').hide();
+				} else {
+					// explicitly denied
+					notificationsRow.hide();
+				}
+			};
+
+			permissionCallback();
+
+			notificationsRow.find('button').click(function(e) {
+				e.preventDefault();
+				window.webkitNotifications.requestPermission(permissionCallback);
+			});
+		}
 	}
 });

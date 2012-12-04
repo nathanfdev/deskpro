@@ -1,4 +1,8 @@
-<li class="ticket" data-type="tickets" data-route="listpane:{{ path('agent_publish_validatingcomments') }}">
+<li class="ticket"
+	data-type="tickets"
+	data-route="listpane:{{ path('agent_publish_validatingcomments') }}"
+	data-icon="{{ asset('images/agent/app-nav/app-publish.png') }}"
+>
 	<em class="dismiss"></em>
 	<time class="timeago"></time>
 	<a>New comment on {{ comment.getObject().title }}</a>

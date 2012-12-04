@@ -1,4 +1,9 @@
-<li class="feedback" data-type="feedback" data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}" data-route-notabreload="1">
+<li class="feedback"
+	data-type="feedback"
+	data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}"
+	data-route-notabreload="1"
+	data-icon="{{ asset('images/agent/app-nav/app-feedback.png') }}"
+>
 	<em class="dismiss"></em>
 	<time class="timeago"></time>
 	<a>{{ feedback.title }}</a>

@@ -33,6 +33,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			return;
 		}
 
+		var self = this;
+
 		$('time.timeago', row).text('').attr('datetime', (new Date()).toISOString());
 		DeskPRO_Window.initInterfaceServices(row);
 
@@ -42,6 +44,24 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		$('#dp_notify_list').prepend(row);
 
 		this.modCount(type, '+');
+
+		if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
+
+			var notification = window.webkitNotifications.createNotification(
+				row.data('icon') || '', row.find('a:first').text() || 'DeskPRO', row.find('.info').text()
+			);
+			notification.onclick = function() {
+				DeskPRO_Window.runPageRouteFromElement(row);
+				self.removeRow(row);
+			};
+			notification.onclose = function() {
+				if (!self._isRemoving) {
+					self.removeRow(row);
+				}
+			};
+			notification.show();
+			row.data('notification', notification);
+		}
 	},
 
 	addMessage: function(type, message, route, id) {
@@ -72,9 +92,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	removeRow: function(row) {
+		this._isRemoving = true;
+
 		var type = row.data('type');
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');
+
+		if (row.data('notification')) {
+			row.data('notification').close();
+			row.data('notification', false);
+		}
 
 		row.remove();
 		this.modCount(type, '-');
@@ -90,6 +117,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		if (!$('#dp_notify_list').find('> li.msg-row').length) {
 			this.close();
 		}
+
+		this._isRemoving = false;
 	},
 
 	removeRowById: function(id) {
@@ -176,12 +205,27 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			$('#dp_notify_list li.msg-row').not('.dismissAll').remove();
+			self._isRemoving = true;
+
+			var rows = $('#dp_notify_list li.msg-row').not('.dismissAll');
+
+			rows.each(function() {
+				var row = $(this);
+				if (row.data('notification')) {
+					row.data('notification').close();
+					row.data('notification', false);
+				}
+			});
+
+			rows.remove();
+
 			self.modCount('tickets', '=', 0);
 			self.modCount('chat', '=', 0);
 			self.modCount('feedback', '=', 0);
 			self.modCount('tasks', '=', 0);
 			self.close();
+
+			self._isRemoving = false;
 		});
 
 		this.menu.on('click', '[data-route]', function(ev) {
