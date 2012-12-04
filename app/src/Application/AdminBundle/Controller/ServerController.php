@@ -337,6 +337,141 @@ class ServerController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# mysqlCollation
+	############################################################################
+
+	public function mysqlSortingAction()
+	{
+		$collation_results = $this->db->fetchAll("SHOW COLLATION WHERE charset = 'utf8'");
+
+		$collation_type_map = array(
+			'general' => 'General Purpose (Default)',
+			'unicode' => 'Unicode Default',
+			'icelandic' => 'Icelandic',
+			'latvian' => 'Latvian',
+			'romanian' => 'Romanian',
+			'slovenian' => 'Slovenian',
+			'polish' => 'Polish',
+			'estonian' => 'Estonian',
+			'spanish' => 'Spanish',
+			'spanish2' => 'Spanish (alternative)',
+			'swedish' => 'Swedish',
+			'turkish' => 'Turkish',
+			'czech' => 'Czech',
+			'danish' => 'Danish',
+			'lithuanian' => 'Lithuanian',
+			'slovak' => 'Slovak',
+			'roman' => 'Latin',
+			'persian' => 'Persian',
+			'esperanto' => 'Esperanto',
+			'hungarian' => 'Hungarian',
+			'sinhala' => 'Sinhalese',
+			'general_mysql500' => 'General Purpose (MySQL 5.0)'
+		);
+		$collations = array();
+		foreach ($collation_results AS $collation) {
+			if (preg_match('/^utf8_([a-z0-9_]+)_ci$/', $collation['Collation'], $match)) {
+				if (isset($collation_type_map[$match[1]])) {
+					$collations[$match[0]] = $collation_type_map[$match[1]];
+				} else {
+					$collations[$match[0]] = $match[1];
+				}
+			}
+		}
+
+		natcasesort($collations);
+
+		$current_collation = App::getSetting('core.db_collation');
+		if (!$current_collation) {
+			$current_collation = 'utf8_general_ci';
+		}
+
+		if (preg_match('/^utf8_([a-z0-9_]+)_ci$/', $current_collation, $match)) {
+			if (isset($collation_type_map[$match[1]])) {
+				$current_collation_name = $collation_type_map[$match[1]];
+			} else {
+				$current_collation_name = $match[1];
+			}
+		} else {
+			$current_collation_name = $current_collation;
+		}
+
+		$pending_collation = $this->in->getString('pending');
+		if (!$pending_collation) {
+			if (App::getSetting('core.db_collation_change')) {
+				$pending_collation = App::getSetting('core.db_collation_change');
+			} else if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
+				$line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
+				if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
+					$pending_collation = $match[2];
+				}
+			}
+		}
+
+		if ($pending_collation && preg_match('/^utf8_([a-z0-9_]+)_ci$/', $pending_collation, $match)) {
+			if (isset($collation_type_map[$match[1]])) {
+				$pending_collation_name = $collation_type_map[$match[1]];
+			} else {
+				$pending_collation_name = $match[1];
+			}
+		} else {
+			$pending_collation_name = null;
+		}
+
+
+		return $this->render('AdminBundle:Server:mysql-sorting.html.twig', array(
+			'collations' => $collations,
+			'current_collation' => $current_collation,
+			'current_collation_name' => $current_collation_name,
+			'pending_collation' => $pending_collation,
+			'pending_collation_name' => $pending_collation_name,
+			'selected_collation' => ($pending_collation ? $pending_collation : $current_collation)
+		));
+	}
+
+	public function mysqlSortingSaveAction()
+	{
+		$this->ensureRequestToken();
+
+		$new_collation = $this->in->getString('collation');
+		if (preg_match('/^utf8_([a-z0-9_]+)_ci$/', $new_collation)) {
+			App::getContainer()->getSettingsHandler()->setSetting('core.db_collation_change', $new_collation);
+		}
+
+		return $this->redirectRoute('admin_server_mysql_sorting', array('pending' => $new_collation));
+	}
+
+	public function mysqlSortingStatusAction()
+	{
+		$status = 'not_found';
+		$data = null;
+		$collation = null;
+
+		if (App::getSetting('core.db_collation_change')) {
+			$status = 'pending';
+			$collation = App::getSetting('core.db_collation_change');
+		}
+
+		if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
+			$line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
+			if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
+				$status = $match[3];
+				$collation = $match[2];
+				$data = array(
+					'time' => $match[1],
+					'message' => $match[4]
+				);
+			}
+		}
+
+		return $this->createJsonResponse(array(
+			'status' => $status,
+			'collation' => $collation,
+			'data' => $data
+		));
+	}
+
 
 	############################################################################
 	# error-logs

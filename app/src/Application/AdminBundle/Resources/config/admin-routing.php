@@ -2283,6 +2283,27 @@ $collection->add('admin_server_mysqlstatus', new Route(
 	array()
 ));
 
+$collection->add('admin_server_mysql_sorting', new Route(
+	'/server/mysql-sorting',
+	array('_controller' => 'AdminBundle:Server:mysqlSorting'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_mysql_sorting_save', new Route(
+	'/server/mysql-sorting/save',
+	array('_controller' => 'AdminBundle:Server:mysqlSortingSave'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_server_mysql_sorting_status', new Route(
+	'/server/mysql-sorting/status',
+	array('_controller' => 'AdminBundle:Server:mysqlSortingStatus'),
+	array(),
+	array()
+));
+
 $collection->add('admin_server_downloadschema', new Route(
 	'/server/database-schema.sql',
 	array('_controller' => 'AdminBundle:Server:downloadDatabaseSchema'),

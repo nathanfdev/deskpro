@@ -599,7 +599,21 @@ class KernelBooter
 			$argv = array();
 			array_unshift($argv, 'cron.php', 'dp:internal-upgrade-runner');
 		} else {
-			array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
+			$do_collation_change = false;
+			try {
+				if (\Application\DeskPRO\App::getSetting('core.db_collation_change')) {
+					$do_collation_change = \Application\DeskPRO\App::getSetting('core.db_collation_change');
+				}
+			} catch (\Exception $e) {throw $e;}
+
+			if ($do_collation_change) {
+				\Application\DeskPRO\App::getDb()->executeQuery("
+					DELETE FROM settings WHERE name = 'core.db_collation_change'
+				");
+				array_unshift($argv, 'cron.php', 'dp:db-collation-change', "--collation=$do_collation_change");
+			} else {
+				array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
+			}
 		}
 
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
