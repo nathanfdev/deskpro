@@ -313,11 +313,11 @@ Hello $agent_name, welcome to DeskPRO.<br /><br />
 
 This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to close or delete this whenever you want.<br /><br />
 
-If you have any questions or run into any problems, you can simply reply to this ticket or you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.
+If you have any questions or run into any problems, you can simply reply to this ticket or you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.<br /><br />
 
 Best Regards,<br /><br />
 
-Christopher Padfield
+Christopher Padfield<br />
 <a href="http://www.deskpro.com/">www.deskpro.com</a>
 STR;
 		$ticket->addMessage($message);
