@@ -30,9 +30,43 @@ if (!in_array(php_sapi_name(), array('cgi-fcgi', 'cgi', 'cli'))) {
 @set_time_limit(0);
 @ignore_user_abort(1);
 @ini_set('max_execution_time', 0);
-@ini_set('memory_limit', '128M');
 @ini_set('xdebug.max_nesting_level', 10000);
 @ini_set('display_errors', true);
+
+$mem_limit = @ini_get('memory_limit');
+
+if ($mem_limit == -1 || !$mem_limit) {
+	$mem_limit = 0;
+}
+
+if ($mem_limit) {
+	$mem_limit = trim($mem_limit);
+	$last = strtoupper($mem_limit[strlen($mem_limit)-1]);
+
+	// Already in bytes
+	if (ctype_digit($last)) {
+		return (int)$mem_limit;
+	}
+
+	$mem_limit = (int)$mem_limit;
+
+	if ($last != 'G' && $last != 'M' && $last != 'K') {
+		return 0;
+	}
+
+	switch($last) {
+		case 'G':
+			$mem_limit *= 1024;
+		case 'M':
+			$mem_limit *= 1024;
+		case 'K':
+			$mem_limit *= 1024;
+	}
+}
+
+if ($mem_limit && $mem_limit != '-1' && $mem_limit < 134217728/* 128 MB */) {
+	@ini_set('memory_limit', 134217728);
+}
 
 /***********
 * Initiate System
