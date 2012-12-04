@@ -64,6 +64,10 @@ abstract class AbstractAction implements ActionInterface
 	 */
 	public function setMetaData(array $metadata)
 	{
+		if ($this->metadata) {
+			$metadata = array_merge($this->metadata, $metadata);
+		}
+
 		$this->metadata = $metadata;
 	}
 

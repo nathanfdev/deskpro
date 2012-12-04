@@ -300,6 +300,11 @@ class TicketSearchController extends AbstractController
 
 			foreach ($actions as $name => $opt) {
 				$action = $factory->createFromForm($name, $opt);
+
+				if ($action instanceof \Application\DeskPRO\Tickets\TicketActions\ActionInterface) {
+					$action->setMetaData(array('is_preview' => true));
+				}
+
 				$collection->add($action);
 
 				$display_fields[] = $name;

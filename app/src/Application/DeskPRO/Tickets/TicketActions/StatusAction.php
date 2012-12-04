@@ -117,6 +117,10 @@ class StatusAction extends AbstractAction implements PermissionableAction
 			$ticket->setStatus($status);
 		}
 
+		if ($this->getMetaData('is_preview')) {
+			return;
+		}
+
 		if ($ticket->hidden_status == 'deleted') {
 			$delete_person = null;
 			if ($this->tracker && $this->tracker->getPersonPerformer()) {
