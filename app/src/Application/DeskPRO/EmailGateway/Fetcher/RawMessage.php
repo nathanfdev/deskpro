@@ -49,6 +49,11 @@ class RawMessage
 	public $uid;
 
 	/**
+	 * @var string
+	 */
+	public $server_uid;
+
+	/**
 	 * Just the header portion of the message
 	 *
 	 * @var string

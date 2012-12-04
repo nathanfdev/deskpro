@@ -201,15 +201,19 @@ class Runner
 			$created_obj = null;
 			if ($pre_processor->isValid()) {
 
+				$this->logger->log("Preprocessor complete", 'info');
+
 				try {
 					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 					$created_obj = $proc->run();
 
 					if ($proc->isValid()) {
+						$this->logger->log("Processor complete", 'info');
 						$source['status'] = 'complete';
 					} else {
 						$source['status'] = 'error';
 						$source['error_code'] = $proc->getErrorCode();
+						$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
 					}
 
 					$source['source_info'] = $proc->getSourceInfo();
@@ -217,6 +221,8 @@ class Runner
 					App::getOrm()->commit();
 
 				} catch (\Exception $e) {
+
+					$this->logger->log(sprintf("Processor exception: %s", $e->getMessage()), 'info');
 
 					if (App::getDb()->isTransactionActive()) {
 						App::getDb()->rollback();
@@ -242,6 +248,8 @@ class Runner
 				$source['status'] = 'error';
 				$source['error_code'] = $pre_processor->getErrorCode();
 				$source['source_info'] = $pre_processor->getSourceInfo();
+
+				$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
 			}
 
 			if ($created_obj) {
@@ -251,6 +259,9 @@ class Runner
 				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 			}
 		} catch (\Exception $e) {
+
+			$this->logger->log(sprintf("Preprocessor exception: %s", $e->getMessage()), 'info');
+
 			if (App::getDb()->isTransactionActive()) {
 				App::getDb()->rollback();
 			}
@@ -297,6 +308,7 @@ class Runner
 			// Without it, a mistake somewhere down the line can result in an entire
 			// process of emails being rolledback.
 			if (App::getDb()->isTransactionActive()) {
+				$this->logger->log("WARNING: Unclosed transaction!", 'info');
 				$e = new \Imagine\Exception\RuntimeException("WARNING: Unclosed transaction!");
 				KernelErrorHandler::logException($e);
 				while (App::getDb()->isTransactionActive()) {
@@ -310,6 +322,7 @@ class Runner
 					break;
 				}
 			} catch (\Exception $e) {
+				$this->logger->log(sprintf("readNext exception: %s", $e->getMessage()), 'info');
 				$einfo = KernelErrorHandler::getExceptionInfo($e);
 				KernelErrorHandler::logErrorInfo($einfo);
 				break;
@@ -360,15 +373,19 @@ class Runner
 				$created_obj = null;
 				if ($pre_processor->isValid()) {
 
+					$this->logger->log("Preprocessor complete", 'info');
+
 					try {
 						$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
 						$created_obj = $proc->run();
 
 						if ($proc->isValid()) {
+							$this->logger->log("Processor complete", 'info');
 							$source['status'] = 'complete';
 						} else {
 							$source['status'] = 'error';
 							$source['error_code'] = $proc->getErrorCode();
+							$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
 						}
 
 						$source['source_info'] = $proc->getSourceInfo();
@@ -376,6 +393,8 @@ class Runner
 						App::getOrm()->commit();
 
 					} catch (\Exception $e) {
+
+						$this->logger->log(sprintf("Processor exception: %s", $e->getMessage()), 'info');
 
 						if (App::getDb()->isTransactionActive()) {
 							App::getDb()->rollback();
@@ -403,18 +422,21 @@ class Runner
 					$source['error_code'] = $pre_processor->getErrorCode();
 					$source['source_info'] = $pre_processor->getSourceInfo();
 
+					$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
+
 					App::getOrm()->commit();
 				}
 
 				if ($created_obj) {
 					$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
 					$source['object_id'] = $created_obj->id;
-				}
 
-				if ($created_obj) {
 					$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 				}
 			} catch (\Exception $e) {
+
+				$this->logger->log(sprintf("Preprocessor exception: %s", $e->getMessage()), 'info');
+
 				if (App::getDb()->isTransactionActive()) {
 					App::getDb()->rollback();
 				}
@@ -453,6 +475,8 @@ class Runner
 	 */
 	protected function _updateSource($source)
 	{
+		$this->logger->log(sprintf("Updating source (status: %s %s)", $source['status'], $source['error_code']), 'info');
+
 		App::getDb()->update('email_sources', array(
 			'status'      => $source['status'],
 			'error_code'  => $source['error_code'],

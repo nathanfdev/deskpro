@@ -175,6 +175,7 @@ abstract class AbstractFetcher
 		try {
 			$raw_message = $this->_readNext();
 		} catch (\Exception $e) {
+			$this->logger->log(sprintf("_readNext exception: %s", $e->getMessage()), 'debug');
 			if ($this->storage) {
 				try { $this->storage->close(); } catch (\Exception $e) {}
 			}
@@ -212,6 +213,8 @@ abstract class AbstractFetcher
 					INSERT IGNORE INTO email_uids
 					SET id = ?, gateway_id = ?, date_created = ?
 				", array($raw_message->uid, $this->gateway->getId(), date('Y-m-d H:i:s')));
+
+				$this->logger->log(sprintf("Saved UID: %s", $raw_message->uid), 'debug');
 			}
 
 			if ($raw_message->too_big) {
@@ -246,6 +249,8 @@ abstract class AbstractFetcher
 
 			App::getOrm()->commit();
 
+			$this->logger->log(sprintf("Committed message source: %s", $source->getId()), 'debug');
+
 			#------------------------------
 			# Delete message on the server
 			#------------------------------
@@ -253,6 +258,7 @@ abstract class AbstractFetcher
 			$this->_doneRead($raw_message->id);
 
 		} catch (\Exception $e) {
+			$this->logger->log(sprintf("Save source error: %s", $e->getMessage()), 'debug');
 			App::getOrm()->rollback();
 			if ($this->storage) {
 				try { $this->storage->close(); } catch (\Exception $e) {}

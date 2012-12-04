@@ -138,7 +138,10 @@ class Pop3 extends AbstractFetcher
 			$this->logger->log("System has " . count($read_ids) . " tracked IDs", 'debug');
 
 			foreach ($read_ids as $id) {
-				unset($id_to_num[$id]);
+				if (isset($id_to_num[$id])) {
+					$this->logger->log(sprintf("Skipping message #%s because UID %s", $id_to_num[$id], $id), 'debug');
+					unset($id_to_num[$id]);
+				}
 			}
 
 			$this->message_list_ids  = array_flip($id_to_num);
@@ -152,7 +155,7 @@ class Pop3 extends AbstractFetcher
 				}
 			}
 
-			$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
+			$this->logger->log("Message list contains " . count($this->message_list) . " new messages", 'debug');
 
 		} else {
 			$list = $this->getStorage()->getSize();
@@ -196,7 +199,7 @@ class Pop3 extends AbstractFetcher
 
 		$start_time = microtime(true);
 
-		$this->logger->log("Fetching message $message_num", 'debug');
+		$this->logger->log("Fetching message #$message_num", 'debug');
 
 		$raw_message = new RawMessage();
 		$raw_message->id   = $message_num;
@@ -209,6 +212,12 @@ class Pop3 extends AbstractFetcher
 			$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
 		}
 		$headers = null;
+
+		$this->logger->log(sprintf("Message size: %s bytes", $message_size), 'debug');
+
+		if ($raw_message->uid) {
+			$this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
+		}
 
 		$EOL = "\n";
 		if (strpos($raw_message->content, $EOL . $EOL)) {
@@ -229,6 +238,7 @@ class Pop3 extends AbstractFetcher
 
 		if ($this->max_size && $raw_message->size > $this->max_size) {
 			$raw_message->too_big = true;
+			$this->logger->log("Setting too_big flag", 'debug');
 		}
 
 		$this->logger->log(sprintf("Got message %d %s. Took %0.2f seconds.", $message_num, $message_id, microtime(true) - $start_time), 'debug');
@@ -244,6 +254,7 @@ class Pop3 extends AbstractFetcher
 	protected function _doneRead($id)
 	{
 		if ($this->gateway->keep_read) {
+			$this->logger->log(sprintf("Done read, but keep_read is enabled"), 'debug');
 			return;
 		}
 

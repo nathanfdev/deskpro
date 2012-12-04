@@ -157,6 +157,7 @@ class TicketChangeTracker extends ChangeTracker
 		$this->entity     = $ticket;
 		$this->ticket     = $ticket;
 		$this->arr_writer = new \Orb\Log\Writer\ArrayWriter();
+		$this->arr_writer->_x_ticket_tracker = true;
 
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
 			$this->person_context = null;
@@ -232,7 +233,7 @@ class TicketChangeTracker extends ChangeTracker
 	{
 		if ($this->log) {
 			foreach ($this->log->getWriterChain()->getWriters() as $wr) {
-				if ($wr instanceof \Orb\Log\Writer\ArrayWriter) {
+				if ($wr instanceof \Orb\Log\Writer\ArrayWriter && isset($wr->_x_ticket_tracker)) {
 					$this->log->removeWriter($wr);
 				}
 			}
