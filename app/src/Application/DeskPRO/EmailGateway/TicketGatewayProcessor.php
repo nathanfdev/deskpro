@@ -220,13 +220,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($ticket AND !$person AND (!$detector || $detector->canAddUnknownPerson())) {
 
-			$this->logMessage('[TicketGatewayProcessor] Could not find user, creating new');
+			$this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user, creating new with email %s', $this->reader->getFromAddress()->getEmail()));
 
 			// If the detector didnt find a person, doesnt mean they dont exist
 			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
 
 			// But we'll create them now if they dont
 			if (!$person) {
+				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
 				$person = Entity\Person::newContactPerson(array('email' => $this->reader->getFromAddress()->getEmail()));
 			}
 
