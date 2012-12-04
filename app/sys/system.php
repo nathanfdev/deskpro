@@ -112,6 +112,36 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+		if ($this instanceof UserKernel && $this->isHelpdeskOffline()) {
+			$cache_dir = dp_get_tmp_dir() . '/page-cache';
+			$base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
+			$scheme_host = $request->getScheme().'://'.$request->getHttpHost();
+			$cache_base_filename = $base . '-' . md5($scheme_host . $request->getRequestUri()) . '.cache';
+			try {
+				$language = App::getLanguage();
+				$language_id = $language->id;
+			} catch (\Exception $e) {
+				$language_id = 1;
+			}
+			$cache_filename = $language_id . '-' . $cache_base_filename;
+			$cache_file = $cache_dir . '/' . $cache_filename;
+
+			if (file_exists($cache_file)) {
+				// helpdesk is offline - always serve this instead
+				$output = @unserialize(file_get_contents($cache_file));
+				if (is_array($output)) {
+					if ($output['compressed']) {
+						$output['content'] = gzuncompress($output['content']);
+					}
+
+					$message = HelpdeskOfflineMessage::getOfflineMessage();
+					$output['content'] = KernelBooter::prepareCachedOutputForOffline($output['content'], $message);
+
+					return new Response($output['content'], 200, $output['headers']);
+				}
+			}
+		}
+
 		// Make sure we arent banned ip
 		if (!preg_match('#^/admin/?#', $path)) {
 			$ip = $request->getClientIp();

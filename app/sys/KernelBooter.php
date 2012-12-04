@@ -253,6 +253,10 @@ class KernelBooter
 						header("$key: $val");
 					}
 				}
+
+				if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+					$res['content'] = KernelBooter::prepareCachedOutputForOffline($res['content']);
+				}
 				echo $res['content'];
 
 				global $DP_CONFIG;
@@ -543,6 +547,22 @@ class KernelBooter
 				}
 			}
 		}
+	}
+
+	public static function prepareCachedOutputForOffline($content, $message = null)
+	{
+		if ($message === null) {
+			$message = 'Our helpdesk is temporarily offline for maintanance.';
+		}
+
+		$content = str_replace('<!--DP_OFFLINE_CACHE_PAGE_NOTE-->', "<div id=\"dp-offline-cache-note\">" . ($message ? "$message<br /><br />" : '') . "This is a cached page. Live pages will automatically return when the helpdesk comes back online.</div>", $content);
+		$content = preg_replace(
+			'/<!--DP_OFFLINE_CACHE_REMOVE_START-->.*<!--DP_OFFLINE_CACHE_REMOVE_END-->/siU',
+			'',
+			$content
+		);
+
+		return $content;
 	}
 
 

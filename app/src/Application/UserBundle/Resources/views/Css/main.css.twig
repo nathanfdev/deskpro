@@ -1198,6 +1198,18 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	{{ _self.border_radius(6) }};
 }
 
+#dp-offline-cache-note {
+	margin: 20px 30px;
+	background-color: {{ stylevar.dark_well_bg_color }};
+	border: 1px solid #DADADA;
+	padding: 10px;
+	{{ _self.border_radius(6) }};
+}
+
+#dp_breadcrumb_wrap + #dp-offline-cache-note {
+	margin-top: 0;
+}
+
 /******************************
 * Content Listing: General styling applied to lists of content, like a listing of news posts
 ******************************/
