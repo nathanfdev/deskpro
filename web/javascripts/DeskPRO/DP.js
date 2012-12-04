@@ -201,7 +201,7 @@ var DP = {
 					if (!opt || !opt[0]) {
 						return result.text || '';
 					}
-					var name = Orb.escapeHtml(opt.data('single-title'));
+					var name = Orb.escapeHtml(opt.data('single-title') || result.text);
 					return name;
 				};
 			}
