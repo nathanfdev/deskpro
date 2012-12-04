@@ -145,10 +145,16 @@ class EmailValidator
 
 			$this->person->is_confirmed = true;
 
-			$this->db->update('people', array(
-				'is_confirmed' => 1,
-				'primary_email_id' => $email->getId()
-			), array('id' => $this->person->getId()));
+			if ($this->person->primary_email && $this->person->primary_email->getId() == $email->getId()) {
+				$this->db->update('people', array(
+					'is_confirmed' => 1,
+					'primary_email_id' => $email->getId()
+				), array('id' => $this->person->getId()));
+			} else {
+				$this->db->update('people', array(
+					'is_confirmed' => 1
+				), array('id' => $this->person->getId()));
+			}
 
 			// Find tickets with this email awaiting validation
 			if ($this->ticket_ids) {
