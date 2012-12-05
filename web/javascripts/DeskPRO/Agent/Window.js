@@ -3196,7 +3196,25 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// setup autosave
 		if (autosaveUrl) {
-			var autosaveContent = api.getCode();
+			var getAutosaveData = function(api) {
+				var newContent = api.getCode(),
+					name = api.$el.attr('name');
+
+				var data = [];
+				data.push({
+					name: name,
+					value: newContent
+				});
+
+				if (preAutosaveCallback) {
+					data = preAutosaveCallback(textarea, data);
+				}
+
+				return data;
+			};
+
+			var autosaveContent = api.getCode(),
+				autosaveData = getAutosaveData(api);
 
 			var autosaveTimer = setInterval($.proxy(function() {
 				if (!textarea.data('redactor')) {
@@ -3214,35 +3232,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				var newContent = this.getCode(),
-					name = this.$el.attr('name');
+					newData = getAutosaveData(this);
 
-				var data = [];
-				data.push({
-					name: name,
-					value: newContent
-				});
-
-				if (preAutosaveCallback) {
-					data = preAutosaveCallback(textarea, data);
-					if (data.length) {
-						for (var i = 0; i < data.length; i++) {
-							if (data[i].name == name) {
-								newContent = data[i].value;
-								break;
-							}
+				if (newData.length) {
+					for (var i = 0; i < newData.length; i++) {
+						if (newData[i].name == name) {
+							newContent = newData[i].value;
+							break;
 						}
 					}
 				}
 
-				if (newContent == autosaveContent) {
-					return;
+				if (window.JSON && window.JSON.stringify) {
+					if (JSON.stringify(newData) === JSON.stringify(autosaveData)) {
+						return;
+					}
+				} else {
+					if (newContent == autosaveContent) {
+						return;
+					}
 				}
+
 				autosaveContent = newContent;
+				autosaveData = newData;
 
 				$.ajax({
 					url: autosaveUrl,
 					type: 'post',
-					data: data,
+					data: newData,
 					success: $.proxy(function(data) {
 						if (typeof this.opts.autosaveCallback === 'function') {
 							this.opts.autosaveCallback(data, this);

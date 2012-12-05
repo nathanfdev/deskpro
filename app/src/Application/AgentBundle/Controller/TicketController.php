@@ -196,6 +196,12 @@ class TicketController extends AbstractController
 		}
 
 		$draft = $this->em->getRepository('DeskPRO:Draft')->getDraft('ticket', $ticket->id);
+		if ($draft && !empty($draft->extras['attach'])) {
+			$draft_attachments = $this->em->getRepository('DeskPRO:Blob')->getByIds($draft->extras['attach'], true);
+		} else {
+			$draft_attachments = array();
+		}
+
 		$active_drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
 		unset($active_drafts[$this->person->id]);
 
@@ -235,6 +241,7 @@ class TicketController extends AbstractController
 			'ticket_message_attachments' => $ticket_message_attachments,
 
             'draft' => $draft,
+			'draft_attachments' => $draft_attachments,
 			'active_drafts' => $active_drafts,
 
 			'edit_person' => $edit_person,

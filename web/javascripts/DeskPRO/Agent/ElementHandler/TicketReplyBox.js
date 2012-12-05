@@ -40,6 +40,20 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						value: self.isNote ? 1 : 0
 					});
 
+					self.el.find('input[name="attach[]"]').each(function() {
+						data.push({
+							name: 'extras[attach][]',
+							value: $(this).val()
+						});
+					});
+
+					self.el.find('input[name="blob_inline_ids[]"]').each(function() {
+						data.push({
+							name: 'extras[blob_inline_ids][]',
+							value: $(this).val()
+						});
+					});
+
 					return data;
 				}
 			});
