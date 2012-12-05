@@ -451,6 +451,26 @@ class Log
 			}
 		}
 
+		// Sort log items
+		$order = array(
+			'ticket_created'  => 100,
+			'message_created' => 200,
+			'user_notify'     => 900,
+			'agent_notify'    => 901,
+			'__default__'     => 1000
+		);
+
+		usort($log_items, function($a, $b) use ($order) {
+			$a_o = isset($order[$a->action_type]) ? $order[$a->action_type] : $order['__default__'];
+			$b_o = isset($order[$b->action_type]) ? $order[$b->action_type] : $order['__default__'];
+
+			if ($a_o == $b_o) {
+				return 0;
+			}
+
+			return $a_o < $b_o ? -1 : 1;
+		});
+
 		return $log_items;
 	}
 
