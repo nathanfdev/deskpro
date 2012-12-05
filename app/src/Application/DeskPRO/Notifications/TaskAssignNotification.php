@@ -53,7 +53,7 @@ class TaskAssignNotification extends AbstractAgentNotification
 
 	public function shouldSendBrowserNotification(Person $agent)
 	{
-		if (App::getCurrentPerson()->id == $agent->id) {
+		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
 			return false;
 		}
 
@@ -70,7 +70,7 @@ class TaskAssignNotification extends AbstractAgentNotification
 
 	public function shouldSendEmailNotification(Person $agent)
 	{
-		if (App::getCurrentPerson()->id == $agent->id) {
+		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
 			return false;
 		}
 

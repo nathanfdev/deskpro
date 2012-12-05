@@ -32,61 +32,19 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Notifications;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Task;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\App;
-
-class TaskCompleteNotification extends AbstractAgentNotification
+class Build1354713549 extends AbstractBuild
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Task
-	 */
-	protected $task;
-
-	public function __construct(Task $task)
+	public function run()
 	{
-		parent::__construct();
-		$this->task = $task;
-	}
-
-	public function shouldSendBrowserNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
-			return false;
-		}
-
-		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public function shouldSendEmailNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
-			return false;
-		}
-
-		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.email')) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public function send()
-	{
-		$this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-			'notify_data' => array('notify_type' => 'tasks')
-		));
-		$this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-		));
+		$this->out("Add preference to allow you to always receive notification when forwarding an email");
+		$this->execMutateSql("
+			INSERT IGNORE INTO people_prefs
+				(person_id, name, value_str, value_array)
+			SELECT id, 'agent_notify_override.all.email', '1', 'N;'
+			FROM people
+			WHERE is_agent = 1
+		");
 	}
 }

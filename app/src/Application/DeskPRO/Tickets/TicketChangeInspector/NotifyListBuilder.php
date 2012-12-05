@@ -53,7 +53,7 @@ use Orb\Log\Logger;
 class NotifyListBuilder
 {
 	/**
-	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketListener
+	 * @var TicketChangeTracker
 	 */
 	protected $tracker;
 
@@ -104,7 +104,7 @@ class NotifyListBuilder
 	 *
 	 * @return array
 	 */
-	public function getNotifyList()
+	public function getNotifyList($notify_type = null)
 	{
 		if ($this->notify_list !== null) {
 			return $this->notify_list;
@@ -157,7 +157,7 @@ class NotifyListBuilder
 
 		// We dont want to notify ourselves (that is, the one that performed whatever action prompted the changeset)
 		$person_context = App::getCurrentPerson();
-		if ($person_context && $person_context->id && !$this->tracker->isExtraSet('is_user_reply')) {
+		if ($person_context && $person_context->id && !$this->tracker->isExtraSet('is_user_reply') && !$person_context->getPref("agent_notify_override.all.$notify_type")) {
 			$agent_ids = array_filter($agent_ids, function($aid) use ($person_context) {
 				if ($aid == $person_context->id) {
 					return false;

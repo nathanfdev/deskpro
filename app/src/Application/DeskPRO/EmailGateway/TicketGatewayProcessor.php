@@ -1289,10 +1289,22 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$body = $fwd_cutter->getForwardedMessage();
 		$newticket->ticket->message = $body;
 
-		App::getOrm()->beginTransaction();
-		$ticket = $newticket->save();
+		$tracker_extras = array();
+		if ($agent->getPref("agent_notify_override.forward.email")) {
+			$tracker_extras['force_notify_email'] = array($agent->id);
+		}
+		if ($agent->getPref("agent_notify_override.forward.alert")) {
+			$tracker_extras['force_notify_alert'] = array($agent->id);
+		}
 
-		if ($this->reader->hasProperty('email_source')) {
+		App::getOrm()->beginTransaction();
+		$ticket = $newticket->save(array(), $tracker_extras);
+
+		if (!$newticket->new_message) {
+			$this->logMessage("[TicketGatewayProcessor] Found as duplicate of ticket: $ticket->id");
+		}
+
+		if ($this->reader->hasProperty('email_source') && $newticket->new_message) {
 			$message = $newticket->new_message;
 			$message['email'] = $fwd_cutter->getUserEmailItem()->getEmail();
 			$message['email_source'] = $this->reader->getProperty('email_source');
@@ -1302,7 +1314,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		// Add attachments to users message if no agent reply
-		if (!$agent_reply && $this->processBlobs()) {
+		if (!$agent_reply && $this->processBlobs() && $newticket->new_message) {
 			$this->logMessage('[TicketGatewayProcessor] Adding attachments to user message');
 			$message = $newticket->new_message;
 			foreach ($this->processBlobs() as $blob) {

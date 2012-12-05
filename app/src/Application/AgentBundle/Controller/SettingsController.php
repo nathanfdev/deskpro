@@ -264,6 +264,27 @@ class SettingsController extends AbstractController
 		$person_editor = $this->container->getSystemService('person_edit_manager');
 		$person_editor->saveFilterSubscriptions($this->person, $subs);
 
+		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+			$this->person,
+			'agent_notify_override.all.email',
+			$this->in->getBool('agent_notify_override_all_email') ? 1 : 0
+		);
+		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+			$this->person,
+			'agent_notify_override.forward.email',
+			$this->in->getBool('agent_notify_override_forward_email') ? 1 : 0
+		);
+		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+			$this->person,
+			'agent_notify_override.all.alert',
+			$this->in->getBool('agent_notify_override_all_alert') ? 1 : 0
+		);
+		$this->em->getRepository('DeskPRO:PersonPref')->savePref(
+			$this->person,
+			'agent_notify_override.forward.alert',
+			$this->in->getBool('agent_notify_override_forward_alert') ? 1 : 0
+		);
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 

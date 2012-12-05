@@ -97,7 +97,7 @@ class AgentNotificationAction extends AbstractAction
 	{
 		$this->tracker = $tracker;
 
-		$notify_list = $this->tracker->getNotifyListBuilder()->getNotifyList();
+		$notify_list = $this->tracker->getNotifyListBuilder()->getNotifyList('email');
 		foreach ($notify_list as $agent_id => $matches) {
 			$filters = array();
 			foreach ($matches as $filter_info) {
@@ -185,7 +185,7 @@ class AgentNotificationAction extends AbstractAction
 
 		// Dont notify about self action
 		$person_context = App::getCurrentPerson();
-		if ($person_context && $person_context->getId()) {
+		if ($person_context && $person_context->getId() && !$person_context->getPref("agent_notify_override.all.email")) {
 			$agent_ids = Arrays::removeValue($agent_ids, $person_context->getId());
 		}
 
@@ -205,6 +205,11 @@ class AgentNotificationAction extends AbstractAction
 		if ($this->tracker->isExtraSet('force_email_validation')) {
 			$this->tracker->logMessage("[AgentNotificationAction] Ticket validating, no notify");
 			return;
+		}
+
+		if ($this->tracker->isExtraSet('force_notify_email')) {
+			$this->notify_agents = array_merge($this->notify_agents, (array)$this->tracker->getExtra('force_notify_email'));
+			$this->notify_agents = array_unique($this->notify_agents);
 		}
 
 		if (!$this->notify_agents) {
@@ -303,7 +308,7 @@ class AgentNotificationAction extends AbstractAction
 
 			// Dont send an update notification to the agent for agent replies made by themselves
 			if ($change_info['notify_type'] == 'newreply') {
-				if ($new_message && !$this->tracker->isExtraSet('is_user_reply') && $new_message->person->getId() == $agent_id) {
+				if ($new_message && !$this->tracker->isExtraSet('is_user_reply') && $new_message->person->getId() == $agent_id && !$new_message->person->getPref("agent_notify_override.all.email")) {
 					$this->tracker->logMessage("[AgentNotificationAction] Skipping notify agent $agent_id of agent message by himself");
 					continue;
 				}

@@ -73,7 +73,7 @@ class AgentAlertNotificationAction extends AbstractAction
 	{
 		$this->tracker = $tracker;
 
-		$notify_list = $this->tracker->getNotifyListBuilder()->getNotifyList();
+		$notify_list = $this->tracker->getNotifyListBuilder()->getNotifyList('alert');
 		foreach ($notify_list as $agent_id => $matches) {
 			$filters = array();
 			foreach ($matches as $filter_info) {
@@ -106,7 +106,7 @@ class AgentAlertNotificationAction extends AbstractAction
 
 		// Dont notify about self action
 		$person_context = App::getCurrentPerson();
-		if ($person_context && $person_context->getId()) {
+		if ($person_context && $person_context->getId() && !$person_context->getPref("agent_notify_override.all.alert")) {
 			$agent_ids = Arrays::removeValue($agent_ids, $person_context->getId());
 		}
 
@@ -126,6 +126,11 @@ class AgentAlertNotificationAction extends AbstractAction
 		if ($this->tracker->isExtraSet('force_email_validation')) {
 			$this->tracker->logMessage("[AgentNotificationAction] Ticket validating, no notify");
 			return;
+		}
+
+		if ($this->tracker->isExtraSet('force_notify_alert')) {
+			$this->notify_agents = array_merge($this->notify_agents, (array)$this->tracker->getExtra('force_notify_alert'));
+			$this->notify_agents = array_unique($this->notify_agents);
 		}
 
 		if (!$this->notify_agents) {

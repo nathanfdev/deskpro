@@ -115,7 +115,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		}
 	}
 
-	public function save(array $set_extra = array())
+	public function save(array $set_extra = array(), array $tracker_extra = array())
 	{
 		// If we got all the way here without a subject
 		// (means an email where no validation), then give a default
@@ -367,10 +367,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket[$k] = $v;
 			}
 
+			foreach ($tracker_extra AS $k => $v) {
+				$ticket->getTicketLogger()->recordExtra($k, $v);
+			}
+
 			$ticket->recomputeHash();
 
 			if ($this->do_dupe_check) {
 				if ($dupe_ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+					$this->new_message = null;
+
 					$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
 					$e->ticket_id = $dupe_ticket->id;
 					throw $e;
