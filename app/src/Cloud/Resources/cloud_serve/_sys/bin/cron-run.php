@@ -193,7 +193,16 @@ if (($k = array_search('--proc-timeout', $args)) !== false && isset($args[$k+1])
 }
 
 #------------------------------
-# Proc file timeout
+# Alert threshold
+#------------------------------
+
+$alert_threshold = 60;
+if (($k = array_search('--alert-threshold', $args)) !== false && isset($args[$k+1])) {
+	$alert_threshold = $args[$k+1];
+}
+
+#------------------------------
+# Account type
 #------------------------------
 
 $account_type = null;
@@ -397,6 +406,10 @@ $db->exec("
 		time_end     = '$time_end',
 		time_total   = '$time_total'
 ");
+
+if ($alert_threshold && $time_total > $alert_threshold) {
+	$DO_REPORT_LOG = true;
+}
 
 if ($DO_REPORT_LOG) {
 	$dp_log_messages = implode('', $dp_log_messages);
