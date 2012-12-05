@@ -41,11 +41,11 @@ function TicketTriggerEditPage_init()
 {% endblock %}
 {% block event_row %}
 {% if trigger.event_trigger == 'time.open' %}When a ticket has been open for
-{% elseif trigger.event_trigger == 'time.user_waiting' %}When a user has been waiting for a reply for
-{% elseif trigger.event_trigger == 'time.total_user_waiting' %}When a user has been waiting for a reply for a total of
-{% elseif trigger.event_trigger == 'time.agent_waiting' %}When an agent has been waiting for a reply for
-{% elseif trigger.event_trigger == 'time.resolved' %}When the ticket has been resolved for
-{% elseif trigger.event_trigger == 'sla.warning' or trigger.event_trigger == 'sla.fail' %}When the ticket is not resolved in
+{% elseif trigger.event_trigger == 'time.user_waiting' %}The time a ticket has been Awaiting Agent is
+{% elseif trigger.event_trigger == 'time.total_user_waiting' %}The total time a ticket has been Awaiting Agent is
+{% elseif trigger.event_trigger == 'time.agent_waiting' %}The time a ticket has been Awaiting User is
+{% elseif trigger.event_trigger == 'time.resolved' %}When the ticket has been Resolved for
+{% elseif trigger.event_trigger == 'sla.warning' or trigger.event_trigger == 'sla.fail' %}When the ticket is not Resolved in
 {% endif %}
 	<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 	<input type="text" name="event_trigger_time" value="{{ trigger.getOptionTime() }}" size="10" style="width: 80px; position:relative; top: 1px;" class="small" />

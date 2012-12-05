@@ -97,7 +97,7 @@
 						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.open'}) }}">Add New Escalation</a>
 					</div>
 					<h1 class="noexpand">
-						Time ticket has been open for
+						Time a ticket has been open
 					</h1>
 				</th>
 			</tr>
@@ -132,7 +132,7 @@
 						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.user_waiting'}) }}">Add New Escalation</a>
 					</div>
 					<h1 class="noexpand">
-						Time a user has been waiting for a reply
+						Time a ticket has been Awaiting Agent
 					</h1>
 				</th>
 			</tr>
@@ -145,7 +145,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.user_waiting') }}
 						{% else %}
 							<li>
-								You have not defined any escalations based on the time a user has been waiting for a reply.
+								You have not defined any escalations based on the time a ticket has been Awaiting Agent.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.user_waiting'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -167,7 +167,7 @@
 						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.total_user_waiting'}) }}">Add New Escalation</a>
 					</div>
 					<h1 class="noexpand">
-						Total time the user has been waiting for replies
+						Total time a ticket has been Awaiting Agent
 					</h1>
 				</th>
 			</tr>
@@ -180,7 +180,7 @@
 							{{ _self.trigger_row(loop.index, trigger, 'time.total_user_waiting') }}
 						{% else %}
 							<li>
-								You have not defined any escalations based on the total time a user has been waiting for replies.
+								You have not defined any escalations based on the total Awaiting Agent time.
 								<a href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.total_user_waiting'}) }}">Create one now</a>.
 							</li>
 						{% endfor %}
@@ -202,7 +202,7 @@
 						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.agent_waiting'}) }}">Add New Escalation</a>
 					</div>
 					<h1 class="noexpand">
-						Time an agent has been waiting for the user to reply
+						Time a ticket has been Awaiting User
 					</h1>
 				</th>
 			</tr>
@@ -237,7 +237,7 @@
 						<a class="clean-white" href="{{ path('admin_ticketescalations_new', {trigger_type: 'time.resolved'}) }}">Add New Escalation</a>
 					</div>
 					<h1 class="noexpand">
-						Time a ticket has been resolved for
+						Time a ticket has been Resolved
 					</h1>
 				</th>
 			</tr>
