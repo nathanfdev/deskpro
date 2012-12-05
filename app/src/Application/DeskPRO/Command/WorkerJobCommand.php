@@ -63,12 +63,18 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$time_cron_start = microtime(true);
+
 		@ini_set('track_errors', true);
 
 		$GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 1000;
 		@set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
 
 		$is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
+
+		if ($is_verbose && defined('DP_START_TIME')) {
+			$output->writeln(sprintf("(Time to enter execute: %.4f)", $time_cron_start-DP_START_TIME));
+		}
 
 		if ($input->getOption('info')) {
 
@@ -321,6 +327,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		));
 
 		unset($GLOBALS['DP_CRON_ID']);
+
+		if ($is_verbose) {
+			$output->writeln(sprintf("(Time until execute end: %.4f)", microtime(true)-$time_cron_start));
+		}
 
 		return $ret;
 	}
