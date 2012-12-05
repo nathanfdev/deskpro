@@ -71,7 +71,38 @@
 					</table>
 				</td>
 				{% if type == 'rejections' %}
-					<td style="text-align: right; white-space: nowrap;" nowrap="nowrap">{{ source.error_code_title }}</td>
+					<td style="text-align: right; white-space: nowrap;" nowrap="nowrap">
+						{% if source.error_code == 'from_missing' %}
+							Missing "From"
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="There was no 'From' address in the email"></span>
+						{% elseif source.error_code == 'from_missing' %}
+							Invalid "From"
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The 'From' address in the email is not a valid email address"></span>
+						{% elseif source.error_code == 'from_gateway_address' %}
+							From Helpdesk
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email appears to be from the helpdesk itself, or from an address monitored by the helpdesk. It was not processed to prevent processing loops."></span>
+						{% elseif source.error_code == 'from_banned' %}
+							Banned
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The 'From' address in the email is banned"></span>
+						{% elseif source.error_code == 'from_disabled_user' %}
+							User Disabled
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The 'From' address in the email is a disabled user"></span>
+						{% elseif source.error_code == 'message_too_big' %}
+							Email Too Big
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The size of the email is larger than is allowed"></span>
+						{% elseif source.error_code == 'duplicate_message' %}
+							Duplicate
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The message has already been processed"></span>
+						{% elseif source.error_code == 'missing_marker' %}
+							Missing Cut Line
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The 'Reply Above' cut line was missing from an agent reply"></span>
+						{% elseif source.error_code == 'invalid_fwd' %}
+							Invalid Agent Forward
+							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="The email was detected as a forwarded message, but the format could not be parsed."></span>
+						{% else %}
+							{{ source.error_code_title }}
+						{% endif %}
+					</td>
 				{% endif %}
 			</tr>
 		{% else %}
