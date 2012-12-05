@@ -110,14 +110,14 @@ class TicketFeedback extends AbstractEntityRepository
     public function getFeedbackRatingsForAgent(PersonEntity $agent, $date_range)
     {
         $db = App::getDb();
-        $result = $db->fetchAll('
-            SELECT tf.rating AS rating
-            FROM ticket_feedback AS tf
-            INNER JOIN tickets_messages AS tm
-            ON tf.ticket_id = tm.id
-            WHERE tm.person_id = ?
-            AND tf.date_created BETWEEN ? AND ?',
-            array($agent['id'], $date_range['start'], $date_range['end']));
+		$result = $db->fetchAll('
+			SELECT tf.rating AS rating
+			FROM ticket_feedback AS tf
+			INNER JOIN tickets_messages AS tm
+			ON tf.ticket_id = tm.id
+			WHERE tm.person_id = ?
+			AND tf.date_created BETWEEN ? AND ?
+		', array($agent['id'], $date_range['start'], $date_range['end']));
 
         return $result;
     }
