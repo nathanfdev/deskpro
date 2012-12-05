@@ -96,7 +96,7 @@
 								</div>
 							</td>
 							<td {% if not ticket.agent %}colspan="2"{% endif %}>
-								<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }} tipped" style="float: right; position: relative; top: 0px;" title="{% if ticket.agent %}Assigned to {{ ticket.agent.display_name }}{% endif %}">
+								<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
 									<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
 									{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
 								</div>
@@ -134,7 +134,7 @@
 								</div>
 							</td>
 							<td {% if not ticket.agent %}colspan="2"{% endif %}>
-								<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }} tipped" style="float: right; position: relative; top: 0px;" title="{% if ticket.agent %}Assigned to {{ ticket.agent.display_name }}{% endif %}">
+								<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
 									<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
 									{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
 								</div>
