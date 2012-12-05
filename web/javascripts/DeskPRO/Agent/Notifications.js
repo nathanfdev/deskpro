@@ -47,10 +47,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
 
+			var icon = row.data('icon') || '';
+			if (icon) {
+				icon = ASSETS_BASE_URL + '/' + icon;
+			}
+
 			var notification = window.webkitNotifications.createNotification(
-				row.data('icon') || '', row.find('a:first').text() || 'DeskPRO', row.find('.info').text()
+				icon, row.find('a:first').text() || 'DeskPRO', row.find('.info').text()
 			);
 			notification.onclick = function() {
+				window.focus();
 				DeskPRO_Window.runPageRouteFromElement(row);
 				self.removeRow(row);
 			};
