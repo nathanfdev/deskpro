@@ -399,7 +399,7 @@ class PortalController extends AbstractController
 
 		$widget_url = $this->container->getSetting('core.deskpro_url');
 		if (defined('DPC_SITE_DOMAIN')) {
-			$widget_url = 'http://' + DPC_SITE_DOMAIN + '/';
+			$widget_url = 'http://' . DPC_SITE_DOMAIN . '/';
 		}
 
 		return $this->render('AdminBundle:Portal:website-widgets.html.twig', array(
