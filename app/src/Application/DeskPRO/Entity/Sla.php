@@ -490,6 +490,10 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			$dates[] = $ticket->date_first_agent_reply->getTimestamp();
 		}
 
+		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
+			$dates[] = $ticket->date_status->getTimestamp();
+		}
+
 		if ($dates) {
 			return min($dates);
 		}

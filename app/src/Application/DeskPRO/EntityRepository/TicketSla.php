@@ -104,7 +104,7 @@ class TicketSla extends AbstractEntityRepository
 		}
 
 		$where .= " AND ticket_slas.is_completed = 0";
-		$where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type <> 'waiting_time' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
+		$where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
 
 		$ids = array();
 		foreach ($slas AS $sla) {
