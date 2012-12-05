@@ -47,12 +47,14 @@ class EmailGatewayErrorsController extends AbstractController
 	# index
 	####################################################################################################################
 
-	public function indexAction($type)
+	public function indexAction($type, $object_type = 'ticket')
 	{
+		$objects = $this->getObjectsForType($object_type);
+
 		if ($type == 'errors') {
-			$count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+			$count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus($objects);
 		} else {
-			$count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus(array('ticket', 'ticketmessage'));
+			$count = $this->em->getRepository('DeskPRO:EmailSource')->countRejectionStatus($objects);
 		}
 
 		$per_page = 25;
@@ -65,16 +67,16 @@ class EmailGatewayErrorsController extends AbstractController
 			$sources = $this->em->createQuery("
 				SELECT source
 				FROM DeskPRO:EmailSource source
-				WHERE source.object_type IN ('ticket','ticketmessage') AND source.status = 'error' AND source.error_code = 'server_error'
+				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code = 'server_error'
 				ORDER BY source.id DESC
-			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute();
+			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
 		} else {
 			$sources = $this->em->createQuery("
 				SELECT source
 				FROM DeskPRO:EmailSource source
-				WHERE source.object_type IN ('ticket','ticketmessage') AND source.status = 'error' AND source.error_code != 'server_error'
+				WHERE source.object_type IN (?0) AND source.status = 'error' AND source.error_code != 'server_error'
 				ORDER BY source.id DESC
-			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute();
+			")->setFirstResult(($p - 1) * $per_page)->setMaxResults($per_page)->execute(array($objects));
 		}
 
 		return $this->render('AdminBundle:EmailGatewayErrors:index.html.twig', array(
@@ -82,6 +84,7 @@ class EmailGatewayErrorsController extends AbstractController
 			'count'     => $count,
 			'sources'   => $sources,
 			'type'      => $type,
+			'object_type' => $object_type
 		));
 	}
 
@@ -115,14 +118,20 @@ class EmailGatewayErrorsController extends AbstractController
 	# clear
 	####################################################################################################################
 
-	public function clearAction($type, $security_token)
+	public function clearAction($type, $security_token, $object_type = 'ticket')
 	{
 		$this->ensureAuthToken('clear_gateway_errors', $security_token);
 
+		$objects = $this->getObjectsForType($object_type);
+		$objects_quoted = array();
+		foreach ($objects AS $object) {
+			$objects_quoted[] = App::getDb()->quote($object);
+		}
+
 		if ($type == 'errors') {
-			$where = "object_type IN ('ticket', 'ticketmessage') AND status = 'error' AND error_code = 'server_error'";
+			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code = 'server_error'";
 		} else {
-			$where = "object_type IN ('ticket', 'ticketmessage') AND status = 'error' AND error_code != 'server_error'";
+			$where = "object_type IN (" . implode(',', $objects_quoted) . ") AND status = 'error' AND error_code != 'server_error'";
 		}
 		$blob_ids = App::getDb()->fetchAllCol("SELECT blob_id FROM email_sources WHERE $where AND blob_id IS NOT NULL");
 
@@ -134,9 +143,9 @@ class EmailGatewayErrorsController extends AbstractController
 		}
 
 		if ($type == 'errors') {
-			return $this->redirectRoute('admin_emailgateway_errors');
+			return $this->redirectRoute('admin_emailgateway_errors', array('object_type' => $object_type));
 		} else {
-			return $this->redirectRoute('admin_emailgateway_rejections');
+			return $this->redirectRoute('admin_emailgateway_rejections', array('object_type' => $object_type));
 		}
 	}
 
@@ -195,5 +204,14 @@ class EmailGatewayErrorsController extends AbstractController
 			'source' => $source,
 			'type'   => $type,
 		));
+	}
+
+	protected function getObjectsForType($object_type)
+	{
+		if ($object_type == 'article') {
+			return array('article');
+		} else {
+			return array('ticket', 'ticketmessage');
+		}
 	}
 }

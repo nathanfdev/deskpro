@@ -26,6 +26,7 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 		});
 
 		DP.select($('#linked_department_id'));
+		DP.select($('.category_id'));
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#test_gateway_settings_overlay'),

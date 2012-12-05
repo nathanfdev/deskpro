@@ -51,6 +51,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	const CONN_READDIR = 'directory';
 
 	const GATEWAY_TICKETS = 'tickets';
+	const GATEWAY_ARTICLES = 'articles';
 
 	/**
 	 * @var int
@@ -115,6 +116,8 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\Department
 	 */
 	protected $department = null;
+
+	protected $processor_extras = array();
 
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
@@ -216,6 +219,10 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 				$proc = new \Application\DeskPRO\EmailGateway\TicketGatewayProcessor($this, $reader, $options);
 				break;
 
+			case self::GATEWAY_ARTICLES:
+				$proc = new \Application\DeskPRO\EmailGateway\ArticleGatewayProcessor($this, $reader, $options);
+				break;
+
 			default:
 				throw new \InvalidArgumentException("Invalid gateway type `{$this->gateway_type}`");
 		}
@@ -223,6 +230,38 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		return $proc;
 	}
 
+	public function getSourceObjectType()
+	{
+		switch ($this->gateway_type) {
+			case self::GATEWAY_TICKETS: return 'ticket';
+			case self::GATEWAY_ARTICLES: return 'article';
+
+			default:
+				throw new \InvalidArgumentException("Invalid gateway type `{$this->gateway_type}`");
+		}
+	}
+
+	public function getProcessorExtra($name, $default = null)
+	{
+		if (is_array($this->processor_extras) && array_key_exists($name, $this->processor_extras)) {
+			return $this->processor_extras[$name];
+		} else {
+			return $default;
+		}
+	}
+
+	public function setProcessorExtra($name, $value)
+	{
+		if (!is_array($this->processor_extras)) {
+			$this->processor_extras = array();
+		}
+
+		if (!array_key_exists($name, $this->processor_extras) || $this->processor_extras[$name] !== $value) {
+			$old = $this->processor_extras;
+			$this->processor_extras[$name] = $value;
+			$this->_onPropertyChanged('processor_extras', $old, $this->processor_extras);
+		}
+	}
 
 	/**
 	 * Get an instance of the fetcher class
@@ -274,6 +313,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'keep_read', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'keep_read', ));
 		$metadata->mapField(array( 'fieldName' => 'date_last_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_check', ));
+		$metadata->mapField(array( 'fieldName' => 'processor_extras', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'processor_extras', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToMany(array( 'fieldName' => 'addresses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGatewayAddress', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'gateway', 'orderBy' => array('run_order' => 'ASC') ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'linked_transport', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailTransport', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_transport_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'SET NULL', 'columnDefinition' => NULL, ), ),  ));

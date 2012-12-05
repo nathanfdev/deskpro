@@ -33,132 +33,22 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Application\DeskPRO\Entity\Ticket;
-use Doctrine\ORM\EntityManager;
 
-class BounceDetector
+class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
-
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
-	 */
-	protected $reader;
-
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
-
-	/**
-	 * @var string[]
-	 */
-	protected $patterns;
-
 	/**
 	 * @var string
 	 */
 	protected $ptac_code;
 
-	/**
-	 * @var string
-	 */
-	protected $original_subject;
-
-	/**
-	 * @var string[]
-	 */
-	protected $guessed_email_addresses;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $guessed_ticket;
-
-	public function __construct(AbstractReader $reader, EntityManager $em)
-	{
-		$this->reader = $reader;
-		$this->em = $em;
-	}
-
-
-	/**
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getPatterns()
-	{
-		if ($this->patterns !== null) {
-			return $this->patterns;
-		}
-
-		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns');
-		$this->patterns = $pattern_config->all();
-
-		return $this->patterns;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isBounced()
-	{
-		// Subject check first, which also populates original_subject
-		// which is used again when detecting the ticket this belongs to
-
-		$subject = $this->reader->getSubject()->getSubjectUtf8();
-
-		foreach ($this->getPatterns() as $pattern) {
-			$m = null;
-			if (preg_match($pattern, $subject, $m)) {
-				if (isset($m['subject'])) {
-					$this->original_subject = $m['subject'];
-				}
-				if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
-				return true;
-			}
-		}
-
-		// Standard autoreply headers
-		if ($this->reader->isFromRobot()) {
-			if ($this->logger) $this->logger->logDebug('Is bounced based on isFromRobot');
-			return true;
-		}
-
-		// A "null address" in return path means its an automated message (bound or vacation)
-		// See rfc3834
-		if ($return_path = $this->reader->getHeader('Return-Path')) {
-			if ($return_path->getHeader() == '<>') {
-				if ($this->logger) $this->logger->logDebug('Is bounce based on null address in Return-Path');
-				return true;
-			}
-		}
-
-		$failed = $this->reader->getHeader('X-Failed-Recipients');
-		if ($failed && $failed->getHeader()) {
-			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
-			return true;
-		}
-
-		if ($this->logger) $this->logger->logDebug('Not a bounce');
-		return false;
-	}
-
 
 	/**
 	 * @return string
@@ -246,50 +136,5 @@ class BounceDetector
 		}
 
 		return $this->guessed_ticket;
-	}
-
-
-	/**
-	 * Try to find possible addresses to match on
-	 *
-	 * @return string[]
-	 */
-	public function getGuessedEmailAddresses()
-	{
-		if ($this->guessed_email_addresses !== null) {
-			return $this->guessed_email_addresses;
-		}
-
-		$this->guessed_email_addresses = array();
-
-		// The actual From address should be tried too
-		$this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();
-
-		if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
-			foreach ($failed->getAllParts() as $email) {
-				$this->guessed_email_addresses[] = strtolower($email);
-				if ($this->logger) $this->logger->logDebug('Found email via X-Failed-Recipients: ' . $email);
-			}
-		}
-
-		// Find original message part
-		$m = null;
-		if (preg_match_all('#^To: (.*?)$#imu', $this->reader->getBodyText()->getBodyUtf8(), $m, \PREG_SET_ORDER)) {
-			foreach ($m as $match) {
-				$email = Strings::extractRegexMatch('#<((.*?)@(.*?))>#', $match[1]);
-				if (!$email) {
-					$email = Strings::extractRegexMatch('#((.*?)@(.*?))#', $match[1]);
-				}
-
-				if ($email) {
-					$this->guessed_email_addresses[] = strtolower($email);
-					if ($this->logger) $this->logger->logDebug('Found email via body: ' . $email);
-				}
-			}
-		}
-
-		$this->guessed_email_addresses = array_unique($this->guessed_email_addresses);
-
-		return $this->guessed_email_addresses;
 	}
 }

@@ -285,7 +285,7 @@ class Runner
 	 * Note this check is done after processing of a message, it does not abort. This means that it's possible the time
 	 * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
 	 *
-	 * @param \Application\DeskPRO\EntityRepository\EmailGateway $gateway
+	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway
 	 * @param int $time_limit The max time spent processing email before we break.
 	 * @throws \Exception
 	 */
@@ -317,7 +317,7 @@ class Runner
 			}
 
 			try {
-				$source = $fetcher->readNext();
+				$source = $fetcher->readNext($gateway->getSourceObjectType());
 				if (!$source) {
 					break;
 				}

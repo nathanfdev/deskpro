@@ -30,7 +30,7 @@ $(document).ready(function(){
 <strong>
 	<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If you want to <em>forward</em> email into any of your defined email account, you need to list the original &quot;From&quot; addresses here.<br /><br />Failing to add the addresses here will result in the helpdesk thinking the unknown email address is a user account. This means any ticket sent to the forward address will have that addresses added as a CC user."></span>
 	<span id="fwd_emails_overlay_trigger" class="editable-link"><span>
-		Forarded Email Addresses
+		Forwarded Email Addresses
 	</span></span>
 </strong>
 {% if helpdesk_emails %}
@@ -58,6 +58,7 @@ $(document).ready(function(){
 
 		<form action="{{ path('admin_emailgateways_savehdaddr') }}" method="POST" id="email_forward_form">
 			<input type="hidden" name="process" value="1" />
+			<input type="hidden" name="redirect_route" value="{{ redirect_route }}" />
 			<div class="check-grid item-list" id="email_forward_list">
 				<table width="100%">
 					<thead>

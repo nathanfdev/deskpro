@@ -168,9 +168,11 @@ abstract class AbstractFetcher
 	 *
 	 * Returns null if there are no more messages.
 	 *
+	 * @param string $object_type
+	 *
 	 * @return \Application\DeskPRO\Entity\EmailSource
 	 */
-	public function readNext()
+	public function readNext($object_type = 'ticket')
 	{
 		try {
 			$raw_message = $this->_readNext();
@@ -204,7 +206,7 @@ abstract class AbstractFetcher
 			$source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_message->headers) ?: '';
 			$source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_message->headers) ?: '';
 			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_message->headers) ?: '';
-			$source->object_type    = 'ticket';
+			$source->object_type    = $object_type;
 
 			if ($raw_message->uid) {
 				$source->uid = $raw_message->uid;

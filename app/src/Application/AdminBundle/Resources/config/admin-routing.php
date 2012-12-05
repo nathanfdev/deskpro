@@ -2366,29 +2366,29 @@ $collection->add('admin_server_task_queue_logs', new Route(
 ################################################################################
 
 $collection->add('admin_emailgateway_errors', new Route(
-	'/email/gateway-errors',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'errors'),
+	'/email/gateway-errors/{object_type}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'errors', 'object_type' => 'ticket'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_rejections', new Route(
-	'/email/gateway-rejections',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'rejections'),
+	'/email/gateway-rejections/{object_type}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index', 'type' => 'rejections', 'object_type' => 'ticket'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_errors_clear', new Route(
-	'/email/gateway-errors/clear/{security_token}',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'errors'),
+	'/email/gateway-errors/clear/{security_token}/{object_type}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'errors', 'object_type' => 'ticket'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_emailgateway_rejections_clear', new Route(
-	'/email/gateway-rejections/clear/{security_token}',
-	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'rejections'),
+	'/email/gateway-rejections/clear/{security_token}/{object_type}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear', 'type' => 'rejections', 'object_type' => 'ticket'),
 	array(),
 	array()
 ));
@@ -2489,6 +2489,59 @@ $collection->add('admin_webhooks_test', new Route(
 	'/web-hooks/{webhook_id}/test/{security_token}',
 	array('_controller' => 'AdminBundle:WebHook:test'),
 	array(),
+	array()
+));
+
+################################################################################
+# KB/Articles
+################################################################################
+
+$collection->add('admin_kb_gateways', new Route(
+	'/kb/gateways',
+	array('_controller' => 'AdminBundle:Kb:gateways'),
+	array(),
+	array()
+));
+
+$collection->add('admin_kb_gateways_savehdaddr', new Route(
+	'/kb/gateways/save-helpdesk-addresses',
+	array('_controller' => 'AdminBundle:Kb:saveHelpdeskAddresses'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_kb_gateways_set_category', new Route(
+	'/kb/gateways/set-category.json',
+	array('_controller' => 'AdminBundle:Kb:setGatewayCategory'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('admin_kb_gateways_new', new Route(
+	'/kb/gateways/new',
+	array('_controller' => 'AdminBundle:Kb:editGateway', 'id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_kb_gateways_edit', new Route(
+	'/kb/gateways/{id}/edit',
+	array('_controller' => 'AdminBundle:Kb:editGateway'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_kb_gateways_quicktoggle', new Route(
+	'/kb/gateways/{id}/quick-toggle.json',
+	array('_controller' => 'AdminBundle:Kb:quickToggleGateway'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_kb_gateways_del', new Route(
+	'/kb/gateways/{id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:Kb:deleteGateway'),
+	array('id' => '\\d+'),
 	array()
 ));
 

@@ -58,6 +58,7 @@ class EmailGatewaysController extends AbstractController
 		$all_gateways = $this->em->createQuery("
 			SELECT g
 			FROM DeskPRO:EmailGateway g
+			WHERE g.gateway_type = 'tickets'
 			ORDER BY g.title ASC
 		")->getResult();
 
@@ -98,7 +99,12 @@ class EmailGatewaysController extends AbstractController
 
 		$this->container->getSettingsHandler()->setSetting('core.helpdesk_emails', $helpdesk_addresses);
 
-		return $this->redirectRoute('admin_emailgateways');
+		$redirect_route = $this->in->getString('redirect_route');
+		if (!$redirect_route) {
+			$redirect_route = 'admin_emailgateways';
+		}
+
+		return $this->redirectRoute($redirect_route);
 	}
 
 	############################################################################
