@@ -422,8 +422,11 @@ class TemplatingExtension extends \Twig_Extension
 		return $assetic_manager->getRawUrls($name);
 	}
 
-	public function implodeArray(array $array, $sep = ', ')
+	public function implodeArray($array, $sep = ', ')
 	{
+		if (!$array || !is_array($array)) {
+			return '';
+		}
 		return implode($array, $sep);
 	}
 
