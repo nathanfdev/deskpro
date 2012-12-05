@@ -134,9 +134,8 @@ $(document).ready(function() {
 				<div class="codebox">RewriteBase <i class="dp-base-path"></i></div>
 
 				<br />
-				This step is optional. If you continue without correcting the probelm, DeskPRO will still function perfectly without the clean URLs. You can go back
-				and enable clean URLs at any time.
-
+				This step is optional. If you continue without correcting the probelm, DeskPRO will still function perfectly without the clean URLs.
+				You can re-enable clean URLs at any time from the "Settings" section in the Admin Interface after installation.
 				<br />
 				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.url_rewriting') ?>" class="kb-read-more inline" target="_blank">Learn more about URL rewriting &rarr;</a>
 			</td>

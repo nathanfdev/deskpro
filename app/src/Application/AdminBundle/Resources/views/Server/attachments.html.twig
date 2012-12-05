@@ -130,10 +130,18 @@
 								<br/><br/>
 								The two most common reasons for this are:
 								<ul style="margin-top: 3px;">
-									<li style="margin-bottom: 3px;">
-										&bull; The temporary storage directory defiend in php.ini as displayed below is not set or is set to a directory
-										that the web server cannot write to. Correcting the directory or making it writable may solve the problem.
-									</li>
+									{% if not can_tmp_write %}
+										<li style="margin-bottom: 3px;">
+											&bull; The temporary storage directory (upload_tmp_dir in php.ini) is currently set to {{ php_vars.upload_tmp_dir_real }}. This directory
+											<strong>is not writable</strong> by the web server. This means uploads can not be saved and will always fail. Edit php.ini and specify a
+											path that is writable by the server, or change permissions on the directory so the server can write to it.
+										</li>
+									{% else %}
+										<li style="margin-bottom: 3px;">
+											&bull; The temporary storage directory defiend in php.ini as displayed below is not set or is set to a directory
+											that the web server cannot write to. Correcting the directory or making it writable may solve the problem.
+										</li>
+									{% endif %}
 									<li>
 										&bull; You have chosen a file that is larger than your server configuration allows. File limits are set using the
 										options in php.ini as displayed below. In addition to these limits, your web server (such as IIS or Apache)
@@ -185,8 +193,15 @@
 				<td>
 					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></h3>
 					<p>{{ phrase('admin.server.php_upload_location') }}</p>
+					{% if not php_vars.upload_tmp_dir %}
+						<p>
+							<strong>Note:</strong> There is currently no value set in php.ini for upload_tmp_dir. The value shown to the right
+							is your system temp directory which is used by default. If you are having problems uploading files, you should
+							edit php.ini and set a specific path for upload_tmp_dir.
+						</p>
+					{% endif %}
 				</td>
-				<td>{{ php_vars.upload_tmp_dir }}
+				<td>{{ php_vars.upload_tmp_dir|default(php_vars.upload_tmp_dir_real) }}
 			</tr>
 
 			<tr>

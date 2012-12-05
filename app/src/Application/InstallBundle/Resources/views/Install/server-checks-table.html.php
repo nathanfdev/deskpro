@@ -226,6 +226,26 @@
 <tr>
 	<td>
 		<?php $failed = false ?>
+		<?php if (!isset($errors['php_functions'])): ?>
+		<span class="label success" style="float:right">OK</span>
+		<?php else: $failed = true; $failed_phpini = true; ?>
+		<span class="label important" style="float:right">FAIL</span>
+		<?php endif ?>
+		Check for disabled functions
+		<?php if ($failed): ?>
+		<div class="alert-message block-message error">
+			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_disabled_functions') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+			We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?>.
+			These disabled functions are required for DeskPRO to function. You must edit your php.ini and remove the disable_functions directive.
+		</div>
+		<?php endif ?>
+	</td>
+</tr>
+
+
+<tr>
+	<td>
+		<?php $failed = false ?>
 		<?php if (!isset($errors['memory_limit'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; ?>
@@ -240,6 +260,27 @@
 		<?php endif ?>
 	</td>
 </tr>
+
+
+<tr>
+	<td>
+		<?php $failed = false ?>
+		<?php if (!isset($errors['upload_tmp_dir'])): ?>
+		<span class="label success" style="float:right">OK</span>
+		<?php else: $failed = true; $failed_phpini = true; ?>
+		<span class="label warning" style="float:right">WARNING</span>
+		<?php endif ?>
+		Check that the temporary upload directory is writable
+		<?php if ($failed): ?>
+		<div class="alert-message block-message error">
+			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_upload_tmp_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+			We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?> contains an invalid value.
+			The temporary upload directory must be writable by the web server for uploads to be accepted. If you do not fix this problem, you will not be able to add attachments to tickets or articles or upload any other kind of file.
+		</div>
+		<?php endif ?>
+	</td>
+</tr>
+
 
 <tr>
 	<td>

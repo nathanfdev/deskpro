@@ -182,20 +182,26 @@ class Env
 	 */
 	public static function isFunctionDisabled($func_name)
 	{
-		static $disabled = null;
-
-		if ($disabled === null) {
-			$disabled = explode(',', ini_get('disable_functions'));
-			foreach ($disabled as &$_v) {
-				$_v = trim(strtolower($_v));
-			}
-
-			$disabled = array_flip($disabled);
-		}
-
 		$func_name = strtolower($func_name);
 
+		$disabled = self::getDisabledFunctions();
 		return isset($disabled[$func_name]);
+	}
+
+
+	/**
+	 * Check if a class has been disabled in php.ini with 'disable_classes'
+	 *
+	 * @param string $class_name
+	 * @return bool
+	 */
+	public static function isClassDisabled($class_name)
+	{
+		$class_name = strtolower($class_name);
+		$class_name = trim($class_name, '\\');
+
+		$disabled = self::getDisabledClasses();
+		return isset($disabled[$class_name]);
 	}
 
 
@@ -238,5 +244,80 @@ class Env
 	public static function isWindows()
 	{
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
+
+
+	/**
+	 * Get the upload temp directory
+	 *
+	 * @return string
+	 */
+	public static function getUploadTempDir()
+	{
+		$dirname = ini_get('upload_tmp_dir');
+
+		if ($dirname) {
+			$dirname = realpath($dirname);
+		} else {
+			$dirname = realpath(sys_get_temp_dir());
+		}
+
+		return $dirname;
+	}
+
+
+	/**
+	 * Get an array of disabled functions
+	 *
+	 * @return array
+	 */
+	public static function getDisabledFunctions()
+	{
+		static $functions = null;
+
+		if ($functions === null) {
+			$functions = array();
+			$list = @ini_get('disable_functions') . ',' . @ini_get('suhosin.executor.func.blacklist');
+			$list = explode(',', $list);
+
+			foreach ($list as $f) {
+				$f = trim($f);
+				if ($f) {
+					$f = strtolower($f);
+					$functions[$f] = $f;
+				}
+			}
+		}
+
+		return $functions;
+	}
+
+
+	/**
+	 * Get an array of disabled classes
+	 *
+	 * @return array
+	 */
+	public static function getDisabledClasses()
+	{
+		static $classes = null;
+
+		if ($classes === null) {
+			$classes = array();
+			$list = @ini_get('disable_classes');
+			$list = explode(',', $list);
+
+			foreach ($list as $c) {
+				$c = trim($c);
+				if ($c) {
+					$c = strtolower($c);
+					$c = trim($c, '\\');
+
+					$classes[$c] = $c;
+				}
+			}
+		}
+
+		return $classes;
 	}
 }

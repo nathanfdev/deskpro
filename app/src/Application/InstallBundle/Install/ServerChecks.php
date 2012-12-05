@@ -311,6 +311,44 @@ class ServerChecks
 		}
 
 		#------------------------------
+		# php_functions
+		#------------------------------
+
+		if ($type == 'php_functions' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for disabled functions", Logger::DEBUG);
+
+			$check = array(
+				'escapeshellarg',
+				'exec',
+				'passthru',
+				'chdir',
+				'proc_open'
+			);
+
+			$has_disabled = array();
+			foreach ($check as $n) {
+				if (\Orb\Util\Env::isFunctionDisabled($n)) {
+					$has_disabled[] = $n;
+				}
+			}
+
+			if (!$has_disabled) {
+				$this->getLogger()->log("[OK] No common disabled functions", Logger::DEBUG);
+			} else {
+				$this->has_fatal_server_errors = true;
+				$has_disabled_str = implode(', ', $has_disabled);
+				$msg = "Edit php.ini and remove the disabled_functions line (Found these disabled functions: $has_disabled_str)";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['php_functions'] = array(
+					'message' => $msg,
+					'level' => 'fatal',
+					'has_disabled' => $has_disabled,
+					'has_disabled_str' => $has_disabled_str,
+				);
+			}
+		}
+
+		#------------------------------
 		# json_ext
 		#------------------------------
 
@@ -546,6 +584,24 @@ class ServerChecks
 				$this->server_errors['memory_limit'] = array(
 					'message' => $msg,
 					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# upload_tmp_dir
+		#------------------------------
+
+		if ($type == 'upload_tmp_dir' || ($type == 'all' && $this->mode != 'cron')) {
+			$this->getLogger()->log("[CHECK] Checking for writable upload_tmp_dir", Logger::DEBUG);
+			if (\Orb\Util\Env::getUploadTempDir() && is_writable(\Orb\Util\Env::getUploadTempDir())) {
+				$this->getLogger()->log("[OK] upload_tmp_dir is writable", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the session extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['upload_tmp_dir'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
 				);
 			}
 		}

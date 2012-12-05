@@ -562,7 +562,10 @@ class ServerController extends AbstractController
 			$php_vars[$var] = @ini_get($var);
 		}
 
+		$php_vars['upload_tmp_dir_real'] = \Orb\Util\Env::getUploadTempDir();
+
 		$failed = false;
+		$can_tmp_write = false;
 		$attach = false;
 		$has_uploaded = false;
 		if ($this->in->getBool('test')) {
@@ -572,6 +575,10 @@ class ServerController extends AbstractController
 
 			$error = $accept->getError($file, 'agent');
 			if ($error) {
+				if ($error['error_code'] == 'no_file') {
+					// Try to test uplaod dir writable by us
+					$can_tmp_write = \Orb\Util\Env::getUploadTempDir() && is_writable(\Orb\Util\Env::getUploadTempDir());
+				}
 				$failed = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 			} else {
 				$attach = $accept->accept($file);
@@ -617,6 +624,7 @@ class ServerController extends AbstractController
 			'has_uploaded' => $has_uploaded,
 			'attach' => $attach,
 			'failed' => $failed,
+			'can_tmp_write' => $can_tmp_write,
 			'php_ini' => $php_ini,
 			'effective_max' => $effective_max,
 			'effective_max_display' => $effect_max_display,
