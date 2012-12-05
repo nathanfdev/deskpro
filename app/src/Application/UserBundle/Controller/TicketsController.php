@@ -397,7 +397,7 @@ class TicketsController extends AbstractController
 		}
 
 		if ($rating !== null) {
-			$feedback->setRating($this->in->getInt('rating'));
+			$feedback->setRating($rating);
 
 			if ($this->in->getBool('save')) {
 				$last_message_id = App::getDb()->fetchColumn("
