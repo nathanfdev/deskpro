@@ -187,7 +187,7 @@ register_shutdown_function(function() use ($proc_file) {
 # Proc file timeout
 #------------------------------
 
-$proc_timeout = 900;
+$proc_timeout = 300;
 if (($k = array_search('--proc-timeout', $args)) !== false && isset($args[$k+1])) {
 	$proc_timeout = $args[$k+1];
 }
@@ -252,6 +252,9 @@ if (file_exists($proc_file)) {
 		unlink($proc_file);
 
 		$DO_REPORT_LOG = true;
+	} else {
+		// Exit to prevent it from running again
+		exit;
 	}
 }
 
