@@ -380,7 +380,18 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				return null;
 			}
 
-			$tr = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport()->getTransport();
+			$email_trans = App::getEntityRepository('DeskPRO:EmailTransport')->getDefaultTransport();
+			if ($email_trans) {
+				$tr = $email_trans->getTransport();
+			} else {
+				$tr = new \Application\DeskPRO\Entity\EmailTransport();
+				$tr->match_type = 'all';
+				$tr->title = '';
+				$tr->transport_type = 'mail';
+
+				$e = new \RuntimeException("No default transport found");
+				\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+			}
 		}
 
 		if ($tr) {
