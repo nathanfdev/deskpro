@@ -199,21 +199,21 @@ class OverviewController extends AbstractController
 				switch ($date_choice) {
 					case 'this_week':
 						if (date('D') == 'Mon') {
-							$date = $this->person->getDateTime();
+							$date = $this->person->getDateTime()->setTime(0,0,0);
 						} else {
-							$date = $this->person->getDateForTime('last monday');
+							$date = $this->person->getDateForTime('last monday')->setTime(0,0,0);
 						}
 
 						$date_group = 'weekday';
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate((int)$date->format('Y'), (int)$date->format('n'), 1);
+						$date->setDate((int)$date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
 						$date_group = 'day';
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), 1, 1)->setTime(0,0,0);
 						$date_group = 'month';
 						break;
 					default:
@@ -251,15 +251,15 @@ class OverviewController extends AbstractController
 					case 'this_week':
 						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
-						$date->sub($interval);
+						$date->sub($interval)->setTime(0,0,0);
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y') - 1, 1, 1);
+						$date->setDate($date->format('Y') - 1, 1, 1)->setTime(0,0,0);
 						break;
 					default:
 						$options->set('date_choice', 'today');
@@ -297,15 +297,15 @@ class OverviewController extends AbstractController
 					case 'this_week':
 						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
-						$date->sub($interval);
+						$date->sub($interval)->setTime(0,0,0);
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y') - 1, 1, 1);
+						$date->setDate($date->format('Y') - 1, 1, 1)->setTime(0,0,0);
 						break;
 					default:
 						$options->set('date_choice', 'today');
@@ -396,15 +396,15 @@ class OverviewController extends AbstractController
 					case 'this_week':
 						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
-						$date->sub($interval);
+						$date->sub($interval)->setTime(0,0,0);
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), 1, 1)->setTime(0,0,0);
 						break;
 					default:
 						$options->set('date_choice', 'today');
@@ -443,15 +443,15 @@ class OverviewController extends AbstractController
 					case 'this_week':
 						$date = $this->person->getDateTime();
 						$interval = new \DateInterval('P7D');
-						$date->sub($interval);
+						$date->sub($interval)->setTime(0,0,0);
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0,0,0);
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y') - 1, 1, 1);
+						$date->setDate($date->format('Y') - 1, 1, 1)->setTime(0,0,0);
 						break;
 					default:
 						$options->set('date_choice', 'today');
