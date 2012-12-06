@@ -222,14 +222,21 @@
 						</div>
 					{% endfor %}
 
-					<div class="dp-control-group">
-						<div class="dp-control-label">
-							<label>{{ phrase('user.general.label_captcha') }} *</label>
+					{% if captcha %}
+						<div class="dp-control-group {% if error_fields['captcha'] %}dp-error dp-error-static{% endif %}">
+							<div class="dp-control-label">
+								<label>{{ phrase('user.general.label_captcha') }} *</label>
+							</div>
+							<div class="dp-controls dp-fill">
+								{% include 'UserBundle:Common:recaptcha.html.twig' %}
+								{% if error_fields['captcha'] %}
+									<div class="dp-help-inline dp-error-explain">
+										{{ phrase('user.tickets.form_error_captcha_invalid') }}
+									</div>
+								{% endif %}
+							</div>
 						</div>
-						<div class="dp-controls dp-fill">
-							{% include 'UserBundle:Common:recaptcha.html.twig' %}
-						</div>
-					</div>
+					{% endif %}
 
 					<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 				</form>

@@ -53,6 +53,11 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			return $this->redirectRoute('user');
 		}
 
+		$captcha = null;
+		if ($this->container->getSetting('user.register_captcha')) {
+			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+		}
+
 		// Custom fields
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
@@ -99,6 +104,10 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
 			$validator = new \Application\UserBundle\Validator\RegisterValidator();
 			$validator->setCustomFields($fm->getFields());
+
+			if ($captcha) {
+				$validator->setCaptcha($captcha);
+			}
 
 			$is_valid = $validator->isValid($register);
 
@@ -168,6 +177,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 			'error_fields' => $error_fields,
 			'from_ticket' => $from_ticket,
 			'this_page' => 'register',
+			'captcha' => $captcha,
 		));
 	}
 }

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
+use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
 
 class RegisterValidator extends AbstractValidator
 {
@@ -48,6 +49,11 @@ class RegisterValidator extends AbstractValidator
 	protected $_custom_fields;
 
 	/**
+	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+	 */
+	protected $_captcha;
+
+	/**
 	 * @var \Application\UserBundle\Form\Model\Register
 	 */
 	protected $register;
@@ -55,6 +61,10 @@ class RegisterValidator extends AbstractValidator
 	protected function checkIsValid($register)
 	{
 		$this->register = $register;
+
+		if ($this->_captcha && !$this->_captcha->validate()) {
+			$this->addError('captcha.invalid');
+		}
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 2));
 		if (!$validator->isValid($this->register->name)) {
@@ -100,5 +110,13 @@ class RegisterValidator extends AbstractValidator
 	public function setCustomFields(array $custom_fields)
 	{
 		$this->_custom_fields = $custom_fields;
+	}
+
+	/**
+	 * @param CaptchaAbstract $captcha
+	 */
+	public function setCaptcha(CaptchaAbstract $captcha)
+	{
+		$this->_captcha = $captcha;
 	}
 }

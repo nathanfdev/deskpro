@@ -230,6 +230,10 @@
 			<label><input type="checkbox" name="settings[user.publish_comments]" {% if app.getSetting('user.publish_comments') %}checked="checked"{% endif %} /> Enable comments on articles, news and downloads</label>
 		</div>
 		<div class="field_row">
+			<input type="hidden" name="set_settings_falseable[]" value="user.register_captcha" />
+			<label><input type="checkbox" name="settings[user.register_captcha]" {% if app.getSetting('user.register_captcha') %}checked="checked"{% endif %} /> Enable captcha on registration form</label>
+		</div>
+		<div class="field_row">
 			<input type="hidden" name="set_settings_falseable[]" value="user.publish_captcha" />
 			<label><input type="checkbox" name="settings[user.publish_captcha]" {% if app.getSetting('user.publish_captcha') %}checked="checked"{% endif %} /> Enable captcha on new feedback and new comment forms</label>
 		</div>
