@@ -177,12 +177,6 @@ if (!is_dir(dirname($proc_file))) {
 	mkdir(dirname($proc_file), 0777, true);
 }
 
-register_shutdown_function(function() use ($proc_file) {
-	if (file_exists($proc_file)) {
-		@unlink($proc_file);
-	}
-});
-
 #------------------------------
 # Proc file timeout
 #------------------------------
@@ -266,6 +260,12 @@ if (file_exists($proc_file)) {
 		exit;
 	}
 }
+
+register_shutdown_function(function() use ($proc_file) {
+	if (file_exists($proc_file)) {
+		@unlink($proc_file);
+	}
+});
 
 file_put_contents($proc_file, time());
 
