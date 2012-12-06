@@ -53,11 +53,7 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 
 				$('.result', el).hide().removeClass('loading');
 				$('.success', el).hide();
-				$('.error, .error .error-msg', el).hide();
-				$('.show-error-message', el).show().on('click', function() {
-					$(this).hide();
-					el.find('.error-msg').show();
-				})
+				$('.error', el).hide();
 
 				if ($('#default_from_email')[0]) {
 					$('#test_send_from_tr').val($('#default_from_email').val());
@@ -118,9 +114,6 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 						$('.error', el).hide();
 						$('.success', el).show();
 					} else {
-						$('.error-msg', el).hide();
-						$('.show-error-message', el).show();
-
 						$('.success', el).hide();
 						$('.error', el).show();
 						$('.error-msg .error-msg-text', el).text('[' + data.error_code + '] ' + data.error_message);
