@@ -96,7 +96,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			die('no permission');
+			return $this->redirectRoute('user');
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
@@ -108,7 +108,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 				return $this->createJsonResponse($data, 403);
 			} else {
-				die('invalid security token');
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
 		}
 
