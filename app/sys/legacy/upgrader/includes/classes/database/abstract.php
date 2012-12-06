@@ -1,7 +1,15 @@
 <?php
-// | HEADER REPLACE
 // +-------------------------------------------------------------+
-// | $Id$
+// | DeskPRO v3
+// | Copyright (c) 2001 - 2012 DeskPRO Limited
+// | http://www.deskpro.com    |     support@deskpro.com
+// +-------------------------------------------------------------+
+// | DESKPRO IS NOT FREE SOFTWARE
+// | If you have downloaded this software from a website other
+// | than www.deskpro.com or if you have otherwise received
+// | this software from someone who is not a representative of
+// | this organization you are involved in an illegal activity.
+// | License agreement: http://www.deskpro.com/license
 // +-------------------------------------------------------------+
 // | File Details:
 // | - Abstract database access class
@@ -344,19 +352,112 @@ class DB_Abstract {
 			return false;
 		}
 
+		// get explain
+		if (!$this->nodebug AND !defined('INSTALLER') AND (defined('DESKPRO_DEBUG_DISPLAYQUERIES') OR defined('DESKPRO_DEBUG_LOGQUERIES')) AND strpos($query_string, 'SELECT') !== false) {
+			$explain = @$this->wrapper_query("EXPLAIN $query_string");
+			while ($res = @$this->row_array($explain)) {
+				$explain_log[] = $res;
+			}
+			$this->free($explain);
+		}
+
+		// start time
+		list ($userc, $sec) = explode(' ', microtime());
+		$this->start = ((float)$userc + (float)$sec);
+
 		// run query; get certain variables
 		$this->query_id = @$this->wrapper_query($query_string);
+
+		// log to gateway debug
+		if (defined('GATEWAYZONE') AND defined('GATEWAY_DEBUG_MYSQL')) {
+
+			global $debug;
+			if (is_object($debug)) {
+				$debug->add("Query : $query_string");
+			}
+		}
 
 		// if we have an error, deal with ith
 		if (!$this->query_id) {
 			$this->halt("Invalid SQL: $query_string");
 		}
 
+		// end time
+		list ($userc, $sec) = explode(' ', microtime());
+		$this->stop = ((float)$userc + (float)$sec);
+
+		// duration
+		$duration = $this->stop - $this->start;
+
 		$results = $this->wrapper_affected_rows($this->query_id);
+
+		// log query
+		if (defined('DESKPRO_DEBUG_LOGQUERIES') AND !defined('INSTALLER')) {
+
+			if (
+			DESKPRO_DEBUG_LOGQUERIES == 1
+			OR (DESKPRO_DEBUG_LOGQUERIES == 2 AND $duration > 0.1)
+			OR (DESKPRO_DEBUG_LOGQUERIES == 3 AND $duration > 0.5)
+			OR (DESKPRO_DEBUG_LOGQUERIES == 4 AND $duration > 5)
+			)
+			{
+
+				if ($duration > 5) {
+					$slow3 = 1;
+				} elseif ($duration > 0.5) {
+					$slow2 = 1;
+				} elseif ($duration > 0.1) {
+					$slow1 = 1;
+				}
+
+				$this->querylog[] = "
+					INSERT INTO query_log
+						(query, duration, matches, stamp, keytype,
+						slow1, slow2, slow3, explain_log, filename)
+					VALUES
+						('" . $this->escape($query_string) . "',
+						'$duration', '" . $this->escape($results) . "',
+						" . TIMENOW . ", '$data[key]', '$slow1',
+						'$slow2', '$slow3', '" . $this->escape(serialize($explain_log)) . "',
+						'" . $this->escape($_SERVER['SCRIPT_NAME']) . "'
+					)";
+			}
+		}
+
+		if ((defined('DESKPRO_DEBUG_DISPLAYQUERIES') AND !defined('INSTALLER') AND !defined('NODISPLAYQUERIES')) OR defined('DESKPRO_DEBUG_DEVELOPERMODE_FOOTER')) {
+
+			$datastore['query_count']++;
+			$datastore['query_log'][] = array(
+				'count' => $datastore['query_count'],
+				'duration' => $duration,
+				'query_string' => $query_string,
+				'explain_log' => $explain_log,
+				'memory' => $mem . ' => ' . filesize_display(memory_get_usage())
+			);
+			$datastore['query_time'] += $duration;
+		}
+
+		if (defined('DEVELOPERMODE')) {
+
+			if (substr($query_string, 0, 6) == 'UPDATE') {
+
+				// get the table
+				$table = preg_match("#UPDATE ([a-zA-Z_]+) #", $query_string, $matches);
+				$result = $this->query_return("SELECT COUNT(*) AS total FROM $matches[1]");
+				$total = $result['total'];
+
+				if ($total > 1 AND $total = $results) {
+					echo "We just updated every row. Good idea?";
+				}
+			}
+		}
 
 		return $this->query_id;
 
 	}
+
+
+
 
 
 	/**
@@ -562,7 +663,7 @@ class DB_Abstract {
         foreach ($wheres as $field => $val) {
             if (is_array($val) AND $val[0] == 'NULL') {
                 $val = 'NULL';
-            } elseif (!is_numeric($val)) {
+			} elseif (!is_int($val) AND (!ctype_digit(strval($val)) OR substr($val, 0, 1) === '0')) {
                 $val = "'" . $this->escape($val) . "'";
             }
             $where_bits[] = "$field = $val";
@@ -715,7 +816,7 @@ class DB_Abstract {
 	 * @return	array	List of field names in the table
 	 */
 	function field_names($table) {
-		return $this->wrapper_field_names($table);
+		return $this->query_return_table_columns($table);
 	}
 
 
@@ -854,6 +955,7 @@ class DB_Abstract {
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 		<html>
 		<head>
+			<meta http-equiv="X-UA-Compatible" content="IE=7" />
 			<title>Database Error</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 			<style type="text/css">
@@ -882,8 +984,8 @@ class DB_Abstract {
 		echo "Error  : " . $this->geterrdesc() . "\n";
 		echo "Error Number : " . $this->geterrno() . "\n";
 		echo "Date         : " . gmdate("M d Y H:i:s") . "\n";
-		echo "Script       : " . PATH . "\n";
-		echo "Referrer     : " . $_SERVER['HTTP_REFERER'] . "\n";
+		echo "Script       : " . htmlspecialchars(PATH) . "\n";
+		echo "Referrer     : " . htmlspecialchars($_SERVER['HTTP_REFERER']) . "\n";
 		echo "IP Address   : " . IPADDRESS . "\n";
 		echo "Username     : " . $user['username'] . "\n";
 		echo "\n\n";
@@ -904,8 +1006,8 @@ class DB_Abstract {
 				echo "Error  : " . $this->geterrdesc() . "\n";
 				echo "Error Number : " . $this->geterrno() . "\n";
 				echo "Date         : " . gmdate("M d Y H:i:s") . "\n";
-				echo "Script       : " . PATH . "\n";
-				echo "Referrer     : " . $_SERVER['HTTP_REFERER'] . "\n";
+				echo "Script       : " . htmlspecialchars(PATH) . "\n";
+				echo "Referrer     : " . htmlspecialchars($_SERVER['HTTP_REFERER']) . "\n";
 				echo "IP Address   : " . IPADDRESS . "\n";
 				echo "Username     : " . $user['username'] . "\n";
 				echo "\n\n";
@@ -976,14 +1078,14 @@ class DB_Abstract {
 				$html = "A database error has occurred\n"
 				      . "=============================\n\n"
 				      . "A database error at this point will most likely result in an incomplete install or upgrade, so you should stop the process and contact " . DP_NAME . " with these details.\n\n"
-				      . "Visit the helpdesk (http://helpdesk.deskpro.com/) or email support@deskpro.com\n\n"
+				      . "Visit the helpdesk (http://support.deskpro.com/) or email support@deskpro.com\n\n"
 				      . $this->error_simple($msg, true);
 
 			} else {
 				$html = '<div style="padding:5px;border:2px solid #A20000;background:#F0F0F0;">';
 				$html .= '<h3>A database error has occurred.</h3> A database error at this point will most likely
 				result in an incomplete install or upgrade, so you should stop the process and contact ' . DP_NAME . ' with these details. ';
-				$html .= 'Visit the <a href="http://helpdesk.deskpro.com/">' . DP_NAME . ' Helpdesk</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.<br /><br />Please do <strong>NOT</strong> continue. You will need to restart your install/upgrade.';
+				$html .= 'Visit the <a href="http://support.deskpro.com/">' . DP_NAME . ' Helpdesk</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.<br /><br />Please do <strong>NOT</strong> continue. You will need to restart your install/upgrade.';
 				$html .= '<hr /><textarea cols="48" rows="12" style="width:100%;">';
 				$html .= dp_html($this->error_simple($msg, true));
 				$html .= '</textarea></div>';
@@ -1244,7 +1346,7 @@ class DB_Abstract {
 
 
 	/**
-	 * Find a match using SELECT * LIMIT 1
+	 * Figure out how many matches
 	 *
 	 * @access	public
 	 *
@@ -1260,8 +1362,9 @@ class DB_Abstract {
 			$where = " WHERE $where";
 		}
 
-		$this->query("SELECT * FROM $table $where LIMIT 1");
-		return $this->num_rows();
+		$result = $this->query_return("SELECT COUNT(*) AS total FROM $table $where");
+
+		return $result['total'];
 	}
 
 
@@ -1452,6 +1555,59 @@ class DB_Abstract {
 		}
 
 		return $data;
+	}
+
+
+
+	/**
+	 * Check a table to see if it has a particular column.
+	 *
+	 * @param string $table The table name to check
+	 * @param string $check_col The column to check for
+	 * @return bool
+	 */
+	function query_table_has_column($table, $check_col)
+	{
+		return in_array($check_col, $this->query_return_table_columns($table));
+	}
+
+
+
+	/**
+	 * Fetch all columns that exist on a table.
+	 *
+	 * @param string $table The table to fetch info from
+	 * @return array
+	 */
+	function query_return_table_columns($table)
+	{
+		$q = $this->query("DESCRIBE `$table`");
+
+		$cols = array();
+		while ($res = $this->row_array($q, DB_RETURN_ASSOC)) {
+			$cols[] = $res['Field'];
+		}
+
+		return $cols;
+	}
+
+
+
+	/**
+	 * Check to see if a table exists.
+	 *
+	 * @param string $table The table name ot check for
+	 * @return bool
+	 */
+	function query_table_exists($table)
+	{
+		$q = $this->query("SHOW TABLES LIKE '$table'");
+
+		if ($this->row_array($q)) {
+			return true;
+		}
+
+		return false;
 	}
 }
 

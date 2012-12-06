@@ -1,7 +1,15 @@
 <?php
-// | HEADER REPLACE
 // +-------------------------------------------------------------+
-// | $Id: mysql.php 5306 2008-01-15 09:32:48Z chroder $
+// | DeskPRO v3
+// | Copyright (c) 2001 - 2012 DeskPRO Limited
+// | http://www.deskpro.com    |     support@deskpro.com
+// +-------------------------------------------------------------+
+// | DESKPRO IS NOT FREE SOFTWARE
+// | If you have downloaded this software from a website other
+// | than www.deskpro.com or if you have otherwise received
+// | this software from someone who is not a representative of
+// | this organization you are involved in an illegal activity.
+// | License agreement: http://www.deskpro.com/license
 // +-------------------------------------------------------------+
 // | File Details:
 // | - MySQL database access class
@@ -21,7 +29,7 @@ require_once(INC . 'classes/database/abstract.php');
  * processing.
  *
  * @package	DeskPRO
- * @version	$Id: mysql.php 5306 2008-01-15 09:32:48Z chroder $
+ * @version	$Id: mysql.php 7176 2012-07-13 14:48:34Z chroder $
  */
 class DB_MySQL extends DB_Abstract {
 

@@ -1,7 +1,15 @@
 <?php
-// | HEADER REPLACE
 // +-------------------------------------------------------------+
-// | $Id$
+// | DeskPRO v3
+// | Copyright (c) 2001 - 2012 DeskPRO Limited
+// | http://www.deskpro.com    |     support@deskpro.com
+// +-------------------------------------------------------------+
+// | DESKPRO IS NOT FREE SOFTWARE
+// | If you have downloaded this software from a website other
+// | than www.deskpro.com or if you have otherwise received
+// | this software from someone who is not a representative of
+// | this organization you are involved in an illegal activity.
+// | License agreement: http://www.deskpro.com/license
 // +-------------------------------------------------------------+
 // | File Details:
 // | - Abstract database access class
@@ -16,16 +24,16 @@ require_once(INC . 'functions/email_functions.php');
 class DB_PdoMysql extends DB_Abstract
 {
 	var $driver_name = 'PdoMysql';
-	
+
 	var $_last_errno = null;
 	var $_last_error = null;
-	
+
 	/**
-	 * Keeps track of querys 
+	 * Keeps track of querys
 	 * @see exec_query
 	 */
 	var $exec_row_counts = array();
-	
+
 	/**
 	 * The PDO connection. Uses 'link_id' because the DB_Abstract
 	 * uses it a lot for error testing etc. Easier to just use it.
@@ -39,14 +47,20 @@ class DB_PdoMysql extends DB_Abstract
 				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
 			));
 			$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-
-			$this->query_silent("SET sql_mode=''");
 		} catch (Exception $e) {
 			$this->_last_errno = $e->getCode();
 			$this->_last_error = $e->getMessage();
 			$pdo = false;
 		}
-		
+
+		if ($pdo) {
+			$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+			try {
+				$pdo->exec('SET SESSION sql_mode=""');
+			} catch (Exception $e) { }
+		}
+
 		return $pdo;
 	}
 
@@ -56,14 +70,17 @@ class DB_PdoMysql extends DB_Abstract
 	}
 
 	function wrapper_query($query_string) {
+
+		$query_string = trim($query_string);
+
 		// Need to use exec() for non-select type queries
-		if (!preg_match('#^\s*(SELECT|SHOW|DESCRIBE)#m', $query_string)) {
+		if (!preg_match('#^(SELECT|SHOW|REPAIR|OPTIMIZE|DESCRIBE)#', $query_string)) {
 			return $this->exec_query($query_string);
 		}
-		
+
 		$q = false;
 		try {
-			$q = $this->link_id->query($query_string);			
+			$q = $this->link_id->query($query_string);
 		} catch (Exception $e) {
 			$this->_last_errno = $e->getCode();
 			$this->_last_error = $e->getMessage();
@@ -76,10 +93,10 @@ class DB_PdoMysql extends DB_Abstract
 			$this->_last_error = $e[2];
 			return false;
 		}
-		
+
 		return $q;
 	}
-	
+
 	function exec_query($query_string)
 	{
 		// Because exec only returns a row count and not a
@@ -88,7 +105,7 @@ class DB_PdoMysql extends DB_Abstract
 		// and then we can look it up again in wrapper_affected_rows
 
 		$md5 = md5($query_string);
-		
+
 		try {
 			$q = $this->link_id->exec($query_string);
 		} catch (Exception $e) {
@@ -96,7 +113,7 @@ class DB_PdoMysql extends DB_Abstract
 			$this->_last_error = $e->getMessage();
 			return false;
 		}
-		
+
 		$this->exec_row_counts[$md5] = $q;
 
 		if ($q === false) {
@@ -105,7 +122,7 @@ class DB_PdoMysql extends DB_Abstract
 			$this->_last_error = $e[2];
 			return false;
 		}
-		
+
 		// If this is an update query, we should take care of invalidating caches
 		// for certain things
 		global $cache2;
@@ -115,17 +132,17 @@ class DB_PdoMysql extends DB_Abstract
 				$this->_cacheHandleUpdate($match[2]);
 			}
 		}
-		
+
 		return $md5;
 	}
-	
+
 	protected function _cacheHandleUpdate($table)
 	{
 		global $cache2;
-		
+
 		// no cache? we cant really do anything then
 		if (!$cache2) return;
-		
+
 		static $table_to_cacheid = array(
 			'user_company' => array('company_names'),
 			'tech' => array('techs'),
@@ -143,12 +160,12 @@ class DB_PdoMysql extends DB_Abstract
 			'user_company_role' => array('basic_user_props'),
 			'user_idea_categories' => array('useridea_categories'),
 		);
-		
+
 		// We dont care about this table if its not in the map
 		if (!isset($table_to_cacheid[$table])) {
 			return;
 		}
-		
+
 		// Otherwise we'll just delete the caches for each
 		try {
 			foreach ($table_to_cacheid[$table] as $cacheid) {
@@ -172,9 +189,9 @@ class DB_PdoMysql extends DB_Abstract
 				$type = PDO::FETCH_BOTH;
 				break;
 		}
-		
+
 		if (!is_object($query_id)) {
-			trigger_error('query_id is not a valid result object', E_USER_WARNING);
+			if ($this->error_halt) trigger_error('query_id is not a valid result object', E_USER_WARNING);
 			return false;
 		}
 
@@ -191,9 +208,9 @@ class DB_PdoMysql extends DB_Abstract
 		if (is_string($query_id)) {
 			return isset($this->exec_row_counts[$query_id]) ? $this->exec_row_counts[$query_id] : 0;
 		}
-		
+
 		if (!is_object($query_id)) {
-			trigger_error('query_id is not a valid result object', E_USER_WARNING);
+			if ($this->error_halt) trigger_error('query_id is not a valid result object', E_USER_WARNING);
 			return false;
 		}
 
@@ -219,19 +236,26 @@ class DB_PdoMysql extends DB_Abstract
 	function wrapper_num_rows($query_id) {
 
 		if (!is_object($query_id)) {
-			trigger_error('query_id is not a valid result object', E_USER_WARNING);
+			if ($this->error_halt) trigger_error('query_id is not a valid result object', E_USER_WARNING);
 			return false;
 		}
-		
+
 		try {
 			$c = $query_id->rowCount();
-			
+
 			// not all db's report a correct row count (ie newer MySQL)
-			// so for bc we'll just count an array
+			// and dont listen to unbuffered attr
+			// so for bc we'll just count an array on a cloned query
 			if (!$c) {
-				$c = count($query_id->fetchAll(PDO::FETCH_COLUMN, 0));
+				$clone = clone $query_id;
+				$data = $clone->fetchAll(PDO::FETCH_COLUMN, 0);
+				if ($data) {
+					$c = count($clone->fetchAll(PDO::FETCH_COLUMN, 0));
+				} else {
+					$c = 0;
+				}
 			}
-			
+
 			return $c;
 		} catch (Exception $e) {
 			$this->_last_errno = $e->getCode();
@@ -241,9 +265,9 @@ class DB_PdoMysql extends DB_Abstract
 	}
 
 	function wrapper_num_fields($query_id) {
-	
+
 		if (!is_object($query_id)) {
-			trigger_error('query_id is not a valid result object', E_USER_WARNING);
+			if ($this->error_halt) trigger_error('query_id is not a valid result object', E_USER_WARNING);
 			return false;
 		}
 
@@ -261,7 +285,10 @@ class DB_PdoMysql extends DB_Abstract
 	}
 
 	function wrapper_escape($str) {
-	
+
+		// We need a link_id to call quote on
+		$this->connect();
+
 		try {
 			$str = $this->link_id->quote($str);
 		} catch (Exception $e) {
@@ -269,7 +296,7 @@ class DB_PdoMysql extends DB_Abstract
 			$this->_last_error = $e->getMessage();
 			return false;
 		}
-		
+
 		// PDO adds single quotes around values, but all our code
 		// inserts its own. In other words we get stuff like
 		//     WHERE xxx = ''myquotedstring''
@@ -278,22 +305,23 @@ class DB_PdoMysql extends DB_Abstract
 		if ($str[0] == "'" AND $str[$len-1] == "'") {
 			$str = substr($str, 1, -1);
 		}
-		
+
 		// We also dont want to quote '%' and '_' by default, we do that ourselves
 		// with another funciton in DB_Abstract
 		if (strpos($str, "\\%") !== false OR strpos($str, "\\_") !== false) {
 			$str = str_replace(array("\\%", "\\_"), array("%", "_"), $str);
 		}
-		
+
 		return $str;
 	}
 
-	function wrapper_field_name($query_id, $offset) {
-		
-		if (defined('DESKPRO_DEBUG_DEVELOPERMODE')) {
-			log_error('php', 'Using wrapper_field_name', 'Code should not be fetching field names using this function, it is not portable.');
+	function wrapper_field_name($offset, $query_id) {
+
+		if (!is_object($query_id)) {
+			if ($this->error_halt) trigger_error('query_id is not a valid result object', E_USER_WARNING);
+			return false;
 		}
-		
+
 		try {
 			$info = $query_id->getColumnMeta($offset);
 		} catch (Exception $e) {
@@ -301,11 +329,11 @@ class DB_PdoMysql extends DB_Abstract
 			$this->_last_error = $e->getMessage();
 			return false;
 		}
-		
+
 		if ($info AND isset($info['name']) AND $info['name']) {
 			return $info['name'];
 		}
-		
+
 		return false;
 	}
 
@@ -319,7 +347,7 @@ class DB_PdoMysql extends DB_Abstract
 				return $e->getCode();
 			}
 		}
-		
+
 		// Otherwise form last query
 		return $this->_last_errno;
 	}
@@ -334,7 +362,7 @@ class DB_PdoMysql extends DB_Abstract
 				return $e->getMessage();
 			}
 		}
-		
+
 		return $this->_last_error;
 	}
 
@@ -344,7 +372,7 @@ class DB_PdoMysql extends DB_Abstract
 		foreach ($values as $v) {
 			$cols[] = $v['Field'];
 		}
-		
+
 		return $cols;
 	}
 

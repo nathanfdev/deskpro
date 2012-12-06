@@ -1,10 +1,18 @@
 <?php
 
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
+error_reporting(E_ALL & ~E_NOTICE & ~8192);
 
-// | HEADER REPLACE
 // +-------------------------------------------------------------+
-// | $Id: database_factory.php 6675 2010-03-09 11:03:58Z chroder $
+// | DeskPRO v3
+// | Copyright (c) 2001 - 2012 DeskPRO Limited
+// | http://www.deskpro.com    |     support@deskpro.com
+// +-------------------------------------------------------------+
+// | DESKPRO IS NOT FREE SOFTWARE
+// | If you have downloaded this software from a website other
+// | than www.deskpro.com or if you have otherwise received
+// | this software from someone who is not a representative of
+// | this organization you are involved in an illegal activity.
+// | License agreement: http://www.deskpro.com/license
 // +-------------------------------------------------------------+
 // | File Details:
 // | - Database factory
@@ -25,10 +33,42 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
  * @return	DB_Abstract	A database object
  */
 function &database_factory($type = 'pdomysql', $forcenew = false) {
-	
-	require_once(INC . 'classes/database/PdoMysql.php');
-	return new DB_PdoMysql();
 
+	static $object = null;
+
+	if(!$object OR $forcenew) {
+
+		$type = strtolower($type);
+		$db = null;
+
+		switch($type) {
+			case 'mssql':
+				require_once(INC . 'classes/database/mssql.php');
+				$db = new DB_MsSQL();
+				break;
+
+			case 'mysql':
+			case 'mysqli':
+			case 'pdomysql':
+				require_once(INC . 'classes/database/PdoMysql.php');
+				$db = new DB_PdoMysql();
+				break;
+
+
+			default:
+				$db = null;
+				break;
+		}
+
+		if ($forcenew) {
+			$db->force_new = true;
+			return $db;
+		} else {
+			$object = $db;
+		}
+	}
+
+	return $object;
 }
 
 function init_doctrine() {
