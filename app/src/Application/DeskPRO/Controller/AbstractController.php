@@ -146,8 +146,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	public function ensureRequestToken($name = '', $field_name = '_dp_security_token')
 	{
 		if (!$this->checkRequestToken($name, $field_name)) {
-			echo 'invalid security token';
-			exit;
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_request_token');
 		}
 	}
 
@@ -186,8 +185,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	public function ensureAuthToken($name, $token)
 	{
 		if (!$this->checkAuthToken($name, $token)) {
-			echo 'invalid security token';
-			exit;
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_auth_token');
 		}
 	}
 
