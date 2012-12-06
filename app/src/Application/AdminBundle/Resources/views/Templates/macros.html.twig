@@ -82,8 +82,8 @@
 									<ul>
 										<li class="new-phrase"><span>Add Phrase</span></li>
 										<li class="phrase-editor"><span>Phrase Editor</span></li>
-										<li class="view-default" data-part="body" style="{% if not options.default_template %}display:none;{% endif %}"><span>View Default</span></li>
-										<li class="reset-default" data-part="body" style="{% if not options.default_template %}display:none;{% endif %}"><span>Reset To Default</span></li>
+										<li class="view-default" style="{% if not options.default_template %}display:none;{% endif %}"><span>View Default</span></li>
+										<li class="reset-default" style="{% if not options.default_template %}display:none;{% endif %}"><span>Reset To Default</span></li>
 									</ul>
 								</div>
 								<textarea class="template-editor template" data-template-name="{{ template_name }}"></textarea>
