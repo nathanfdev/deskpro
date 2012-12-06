@@ -284,6 +284,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
+		var person_id = this.meta.person_id;
+
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
 			menuElement: this.getEl('more_actions_menu'),
@@ -327,6 +329,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								url: $(info.itemEl).data('delete-url'),
 								type: 'POST',
 								success: function() {
+									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
 									DeskPRO_Window.showAlert('The user was deleted');
 								}
 							});
@@ -345,6 +348,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								url: $(info.itemEl).data('delete-url'),
 								type: 'POST',
 								success: function() {
+									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
 									DeskPRO_Window.showAlert('The user was deleted and banned');
 								}
 							});
@@ -538,8 +542,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					url: BASE_URL + 'agent/people/validate/delete',
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
-						DeskPRO_Window.removePage(self);
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
+						DeskPRO_Window.removePage(self);
 					}
 				});
 			});
