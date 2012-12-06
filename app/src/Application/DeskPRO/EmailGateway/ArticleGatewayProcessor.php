@@ -119,6 +119,15 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 		if (!$person || !$person->is_agent || $person->is_deleted) {
 			$this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: ' . $this->reader->getFromAddress()->getEmail());
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
+
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_agent:error-agent-only.html.twig', array(
+				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+			));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+			App::getMailer()->send($message);
+
 			return null;
 		}
 
