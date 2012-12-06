@@ -284,7 +284,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		// Offline setting applies to all but admin
-		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin' && DP_INTERFACE != 'billing') {
 			return true;
 		}
 
