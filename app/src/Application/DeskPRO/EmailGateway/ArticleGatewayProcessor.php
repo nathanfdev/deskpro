@@ -120,6 +120,25 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: ' . $this->reader->getFromAddress()->getEmail());
 			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
 
+			if ($this->gateway) {
+				$cutoff_date = gmdate('Y-m-d H:i:s', time() - 86400);
+
+				$has_processed = App::getDb()->fetchColumn("
+					SELECT id
+					FROM email_sources
+					WHERE gateway_id = ?
+						AND date_created > ?
+						AND header_from LIKE ?
+						AND status = 'error'
+						AND error_code = 'perm_insufficient'
+					LIMIT 1
+				", array($this->gateway->getId(), $cutoff_date, '%' . $this->reader->getFromAddress()->getEmail() . '%'));
+
+				if ($has_processed) {
+					return null;
+				}
+			}
+
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate('DeskPRO:emails_agent:error-agent-only.html.twig', array(
 				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
