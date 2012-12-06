@@ -67,6 +67,8 @@ $loader->registerClassNames(array(
 	'EpiOAuth'                        => DP_ROOT.'/vendor/twitter-async/EpiOAuth.php',
 	'EpiOSequence'                    => DP_ROOT.'/vendor/twitter-async/EpiOSequence.php',
 	'EpiTwitter'                      => DP_ROOT.'/vendor/twitter-async/EpiTwitter.php',
+
+	'phpthumb_ico'                    => DP_ROOT.'/vendor/phpthumb/phpthumb.ico.php'
 ));
 
 spl_autoload_register(function($classname) {

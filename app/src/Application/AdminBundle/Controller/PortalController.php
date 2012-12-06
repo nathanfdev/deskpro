@@ -64,27 +64,59 @@ class PortalController extends AbstractController
 
 	public function uploadFaviconAction()
 	{
-		$file = $this->request->files->get('file');
-		$desc = App::getApi('filestorage')->createRandomPath();
+		if ($this->request->isPost()) {
+			if ($blob_auth = $this->in->getString('new_blob_auth_id')) {
+				$orig_blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($blob_auth);
 
-		$im = new \Imagick();
-		$im->readImage($file->getRealPath());
-		$im->scaleImage(16, 16, true);
-		$im->setImageFormat('ico');
+				if (!$orig_blob) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				}
 
-		$file_content = $im->getImageBlob();
+				$orig_desc = $this->container->getSystemService('filestorage')->getFileDescriptor($orig_blob['id']);
+				$file = $orig_desc->get();
 
-		$desc->write($file_content, array(
-			'content_type' => $file->getClientMimeType(),
-			'filename' => $file->getClientOriginalName()
-		));
+				$desc = App::getApi('filestorage')->createRandomPath();
 
-		$blob_id = $desc->getPath();
-		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+				if ($orig_blob->content_type != 'image/x-icon') {
+					if (class_exists('Imagick')) {
+						$im = new \Imagick();
+						$im->readimageblob($file, $orig_blob->getFilename());
+						$im->scaleImage(16, 16, true);
+						$im->setImageFormat('ico');
+						$file_content = $im->getImageBlob();
+					} else {
+						$gd = imagecreatefromstring($file);
+						$width = imagesx($gd);
+						$height = imagesy($gd);
 
-		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', $blob_id);
+						$gd_dest = imagecreatetruecolor(16, 16);
+						imagecopyresampled($gd_dest, $gd, 0, 0, 0, 0, 16, 16, $width, $height);
 
-		return $this->redirectRoute('admin_portal');
+						$file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
+					}
+				}
+
+				$desc->write($file_content, array(
+					'content_type' => 'image/x-icon',
+					'filename' => 'favicon.ico'
+				));
+
+				$blob_id = $desc->getPath();
+				$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+
+				$url = 'file.php/' . $blob->getAuthId() . '/' . $blob->getFilenameSafe();
+
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', $blob_id);
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_url', $url);
+			} else {
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', null);
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_url', null);
+			}
+
+			return $this->redirectRoute('admin_portal_uploadfavicon');
+		}
+
+		return $this->render('AdminBundle:Portal:change-favicon.html.twig');
 	}
 
 	public function getEditorAction($type)
