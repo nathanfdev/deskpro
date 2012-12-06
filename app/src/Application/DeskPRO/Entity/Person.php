@@ -1734,10 +1734,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if (!$url) {
-			$url = App::get('router')->generate('serve_default_picture', array(
-				's' => $size,
-				'size-fit' => 1,
-			), true);
+			if ($this->organization && $this->organization->hasPicture()) {
+				return $this->organization->getPictureUrl($size, $secure);
+			} else {
+				$url = App::get('router')->generate('serve_default_picture', array(
+					's' => $size,
+					'size-fit' => 1,
+				), true);
+			}
 		}
 
 		if ($secure) {
@@ -1762,10 +1766,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$url .= '&s=' . $size;
 		}
 
-		if ($this->is_agent) {
-			$url .= '&d=mm';
+		if ($this->organization && $this->organization->hasPicture()) {
+			$url .= "&d=" . urlencode($this->organization->getPictureUrl($size, $secure));
 		} else {
-			$url .= '&d=mm';
+			if ($this->is_agent) {
+				$url .= '&d=mm';
+			} else {
+				$url .= '&d=mm';
+			}
 		}
 
 		return $url;
