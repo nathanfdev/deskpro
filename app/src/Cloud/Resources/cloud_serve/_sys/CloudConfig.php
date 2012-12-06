@@ -159,7 +159,7 @@ class CloudConfig
 		define('DP_DATABASE_NAME',       $siteinfo['db_name']);
 		define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
 		define('DPC_BILL_DATE',          $siteinfo['next_bill_at']);
-		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] < time());
+		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] && $siteinfo['next_bill_at'] < time());
 		define('DPC_SYS_DISABLED',       $siteinfo['sys_disabled']);
 
 		if (!is_dir(DPC_SITE_DATADIR)) {
