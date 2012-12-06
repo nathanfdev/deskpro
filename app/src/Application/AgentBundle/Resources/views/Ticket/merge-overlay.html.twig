@@ -4,161 +4,165 @@
 	</div>
 
 	<div class="overlay-content">
-		<form>
-			<div
-				class="ticket-finder"
-				data-element-handler="DeskPRO.Agent.ElementHandler.TicketSearchBox"
-				data-search-url="{{ path('agent_ticketsearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
-				data-highlight-term="1"
-				data-touch-focus="1"
-				data-search-param="term"
-			>
-				<script type="text/x-deskpro-tmpl" class="ticket-row-tpl">
-					<li><a>
-						<span class="ticket-id pill">1234</span>
-						<span class="ticket-subject"></span>
-						<div class="bound-fade"></div>
-					</a></li>
-				</script>
-				<div class="input-wrapper">
-					<input type="text" style="width: 98%" class="term" placeholder="Find ticket..." class="user-input" />
-				</div>
-				<input type="hidden" name="ticket_id" class="ticket-id" value="" />
-				<div class="ticket-search-box person-search-box" style="display: none">
-					<section>
-						<ul class="results-list">
+		{% if other_ticket and other_ticket.id == ticket.id %}
+			You cannot merge a ticket with itself.
+		{% else %}
+			<form>
+				<div
+					class="ticket-finder"
+					data-element-handler="DeskPRO.Agent.ElementHandler.TicketSearchBox"
+					data-search-url="{{ path('agent_ticketsearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
+					data-highlight-term="1"
+					data-touch-focus="1"
+					data-search-param="term"
+				>
+					<script type="text/x-deskpro-tmpl" class="ticket-row-tpl">
+						<li><a>
+							<span class="ticket-id pill">1234</span>
+							<span class="ticket-subject"></span>
+							<div class="bound-fade"></div>
+						</a></li>
+					</script>
+					<div class="input-wrapper">
+						<input type="text" style="width: 98%" class="term" placeholder="Find ticket..." class="user-input" />
+					</div>
+					<input type="hidden" name="ticket_id" class="ticket-id" value="" />
+					<div class="ticket-search-box person-search-box" style="display: none">
+						<section>
+							<ul class="results-list">
 
-						</ul>
-					</section>
+							</ul>
+						</section>
+					</div>
 				</div>
-			</div>
-		</form>
+			</form>
 
-		<table class="merge-data" width="{% if other_ticket %}100%{% else %}63%{% endif %}">
-			<col width="25%" />
-			<col width="38%" />
-			<col width="37%" />
-		{% if other_ticket %}
-		<thead>
-		<tr>
-			<th>&nbsp;</th>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ ticket.id }}" data-keep="1">Keep this</a></td>
-			<td><a class="clean-white merge-target-button" data-merge-id="{{ other_ticket.id }}">Merge this</a></td>
-		</tr>
-		</thead>
-		{% endif %}
-		<tbody class="merge-data-rows">
-		<tr class="always-keep">
-			<th>ID</th>
-			<td>{{ ticket.id }}</td>
-			{% if other_ticket %}<td>{{ other_ticket.id }}</td>{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Subject</th>
-			<td>{{ ticket.subject }}</td>
-			{% if other_ticket %}<td>{{ other_ticket.subject }}</td>{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Person</th>
-			<td>{{ ticket.person.name }}</td>
-			{% if other_ticket %}<td>{{ other_ticket.person.name }}</td>{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Date Created</th>
-			<td>{{ ticket.date_created|date('fulltime') }}</td>
-			{% if other_ticket %}<td>{{ other_ticket.date_created|date('fulltime') }}</td>{% endif %}
-		</tr>
-		<tr>
-			<th>Department</th>
-			<td>{{ ticket.department ? ticket.department.full_title : '' }}</td>
+			<table class="merge-data" width="{% if other_ticket %}100%{% else %}63%{% endif %}">
+				<col width="25%" />
+				<col width="38%" />
+				<col width="37%" />
 			{% if other_ticket %}
-				<td>{{ other_ticket.department ? other_ticket.department.full_title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Status</th>
-			<td>{{ phrase('agent.tickets.status_' ~ ticket.status) }}</td>
-			{% if other_ticket %}<td>{{ phrase('agent.tickets.status_' ~ other_ticket.status) }}</td>{% endif %}
-		</tr>
-		<tr class="always-keep">
-			<th>Urgency</th>
-			<td>{{ ticket.urgency }}</td>
-			{% if other_ticket %}<td>{{ other_ticket.urgency }}</td>{% endif %}
-		</tr>
-		<tr>
-			<th>Language</th>
-			<td>{{ ticket.language ? ticket.language.title : '' }}</td>
-			{% if other_ticket %}
-				<td>{{ other_ticket.language ? other_ticket.language.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Category</th>
-			<td>{{ ticket.category ? ticket.category.title : '' }}</td>
-			{% if other_ticket %}
-				<td>{{ other_ticket.category ? other_ticket.category.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Priority</th>
-			<td>{{ ticket.priority ? ticket.priority.title : '' }}</td>
-			{% if other_ticket %}
-				<td>{{ other_ticket.priority ? other_ticket.priority.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Product</th>
-			<td>{{ ticket.product ? ticket.product.title : '' }}</td>
-			{% if other_ticket %}
-				<td>{{ other_ticket.product ? other_ticket.product.title : '' }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<th>Workflow</th>
-			<td>{{ ticket.workflow ? ticket.workflow.title : '' }}</td>
-			{% if other_ticket %}
-				<td>{{ other_ticket.workflow ? other_ticket.workflow.title : '' }}</td>
-			{% endif %}
-		</tr>
-		{% for k,f in custom_fields %}
+			<thead>
 			<tr>
-				<th>{{ f.title }}</th>
-				<td>{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+				<th>&nbsp;</th>
+				<td><a class="clean-white merge-target-button" data-merge-id="{{ ticket.id }}" data-keep="1">Keep this</a></td>
+				<td><a class="clean-white merge-target-button" data-merge-id="{{ other_ticket.id }}">Merge this</a></td>
+			</tr>
+			</thead>
+			{% endif %}
+			<tbody class="merge-data-rows">
+			<tr class="always-keep">
+				<th>ID</th>
+				<td>{{ ticket.id }}</td>
+				{% if other_ticket %}<td>{{ other_ticket.id }}</td>{% endif %}
+			</tr>
+			<tr class="always-keep">
+				<th>Subject</th>
+				<td>{{ ticket.subject }}</td>
+				{% if other_ticket %}<td>{{ other_ticket.subject }}</td>{% endif %}
+			</tr>
+			<tr class="always-keep">
+				<th>Person</th>
+				<td>{{ ticket.person.name }}</td>
+				{% if other_ticket %}<td>{{ other_ticket.person.name }}</td>{% endif %}
+			</tr>
+			<tr class="always-keep">
+				<th>Date Created</th>
+				<td>{{ ticket.date_created|date('fulltime') }}</td>
+				{% if other_ticket %}<td>{{ other_ticket.date_created|date('fulltime') }}</td>{% endif %}
+			</tr>
+			<tr>
+				<th>Department</th>
+				<td>{{ ticket.department ? ticket.department.full_title : '' }}</td>
 				{% if other_ticket %}
-					<td>{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+					<td>{{ other_ticket.department ? other_ticket.department.full_title : '' }}</td>
 				{% endif %}
 			</tr>
-		{% endfor %}
-		<tr class="mergeable">
-			<th>Labels</th>
-			<td>
-				{% if ticket.labels is not empty %}
-					<ul>
-						{% for label in ticket.labels %}
-							<li>{{ label.label }}</li>
-						{% endfor %}
-					</ul>
+			<tr class="always-keep">
+				<th>Status</th>
+				<td>{{ phrase('agent.tickets.status_' ~ ticket.status) }}</td>
+				{% if other_ticket %}<td>{{ phrase('agent.tickets.status_' ~ other_ticket.status) }}</td>{% endif %}
+			</tr>
+			<tr class="always-keep">
+				<th>Urgency</th>
+				<td>{{ ticket.urgency }}</td>
+				{% if other_ticket %}<td>{{ other_ticket.urgency }}</td>{% endif %}
+			</tr>
+			<tr>
+				<th>Language</th>
+				<td>{{ ticket.language ? ticket.language.title : '' }}</td>
+				{% if other_ticket %}
+					<td>{{ other_ticket.language ? other_ticket.language.title : '' }}</td>
 				{% endif %}
-			</td>
-			{% if other_ticket %}
+			</tr>
+			<tr>
+				<th>Category</th>
+				<td>{{ ticket.category ? ticket.category.title : '' }}</td>
+				{% if other_ticket %}
+					<td>{{ other_ticket.category ? other_ticket.category.title : '' }}</td>
+				{% endif %}
+			</tr>
+			<tr>
+				<th>Priority</th>
+				<td>{{ ticket.priority ? ticket.priority.title : '' }}</td>
+				{% if other_ticket %}
+					<td>{{ other_ticket.priority ? other_ticket.priority.title : '' }}</td>
+				{% endif %}
+			</tr>
+			<tr>
+				<th>Product</th>
+				<td>{{ ticket.product ? ticket.product.title : '' }}</td>
+				{% if other_ticket %}
+					<td>{{ other_ticket.product ? other_ticket.product.title : '' }}</td>
+				{% endif %}
+			</tr>
+			<tr>
+				<th>Workflow</th>
+				<td>{{ ticket.workflow ? ticket.workflow.title : '' }}</td>
+				{% if other_ticket %}
+					<td>{{ other_ticket.workflow ? other_ticket.workflow.title : '' }}</td>
+				{% endif %}
+			</tr>
+			{% for k,f in custom_fields %}
+				<tr>
+					<th>{{ f.title }}</th>
+					<td>{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+					{% if other_ticket %}
+						<td>{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+			<tr class="mergeable">
+				<th>Labels</th>
 				<td>
-					{% if other_ticket.labels is not empty %}
+					{% if ticket.labels is not empty %}
 						<ul>
-							{% for label in other_ticket.labels %}
+							{% for label in ticket.labels %}
 								<li>{{ label.label }}</li>
 							{% endfor %}
 						</ul>
 					{% endif %}
 				</td>
-			{% endif %}
-		</tr>
-		</tbody>
-		</table>
+				{% if other_ticket %}
+					<td>
+						{% if other_ticket.labels is not empty %}
+							<ul>
+								{% for label in other_ticket.labels %}
+									<li>{{ label.label }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</td>
+				{% endif %}
+			</tr>
+			</tbody>
+			</table>
 
-		{% if other_ticket %}
-			<div style="text-align: center">
-				<button class="clean-white merge-trigger">{{ phrase('agent.general.merge') }}</button>
-			</div>
+			{% if other_ticket %}
+				<div style="text-align: center">
+					<button class="clean-white merge-trigger">{{ phrase('agent.general.merge') }}</button>
+				</div>
+			{% endif %}
 		{% endif %}
 	</div>
 </div>
