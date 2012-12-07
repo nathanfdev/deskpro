@@ -93,7 +93,7 @@ class DbTablePhpPasswordCheckModel
 				if (!$this->table) {
 					$this->table = 'users';
 				}
-				if (!$this->password_php) {
+				if (!$this->password_php || defined('DPC_IS_CLOUD')) {
 					$this->password_php = '$pass = ($password_input == $userinfo_password);';
 				}
 			}
@@ -104,6 +104,10 @@ class DbTablePhpPasswordCheckModel
 	{
 		$this->_usersource->title = $this->title;
 		$this->_usersource->lost_password_url = $this->lost_password_url ?: '';
+
+		if (!$this->password_php || defined('DPC_IS_CLOUD')) {
+			$this->password_php = '$pass = ($password_input == $userinfo_password);';
+		}
 
 		$options = array(
 			'db_dsn'           => $this->db_dsn,
