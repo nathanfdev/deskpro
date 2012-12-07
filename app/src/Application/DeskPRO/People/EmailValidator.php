@@ -130,6 +130,9 @@ class EmailValidator
 				$this->em->persist($email);
 			} else {
 				$email = $exist_email;
+				$email->date_validated = new \DateTime();
+				$email->is_validated = true;
+				$this->em->persist($email);
 			}
 
 			$this->em->flush();

@@ -61,19 +61,23 @@ class Register
 
 	public function save()
 	{
+		// Depending on how we got here,
+		// the person might already exist based on an email
+		// address (eg theyre fully registrering from some validation linke)
+		$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->email);
+
+		if ($person) {
+			$person->addPropertyChangedListener(App::getOrm()->getUnitOfWork());
+		}
+
+		if (!$person) {
+			$person = Person::newRegularPerson();
+		}
+
 		$this->em = App::getOrm();
 		$this->em->getConnection()->beginTransaction();
 
 		try {
-
-			// Depending on how we got here,
-			// the person might already exist based on an email
-			// address (eg theyre fully registrering from some validation linke)
-			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->email);
-
-			if (!$person) {
-				$person = Person::newRegularPerson();
-			}
 
 			$email_validating = null;
 			if (!$person->findEmailAddress($this->email)) {
