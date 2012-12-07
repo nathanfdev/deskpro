@@ -51,6 +51,13 @@ class WidgetController extends AbstractController
 
 	public function renderLoginOrPermissionError($return_url = '', $type = 'login')
 	{
+		if (strpos($this->getRequest()->getRequestUri(), '/chat') !== false) {
+			// The login page also has code for no perm if theres already a user sess
+			return $this->render('UserBundle:Chat:chat-login.html.twig', array(
+				'parent_url' => $this->in->getString('parent_url')
+			));
+		}
+
 		if ($this->person->getId()) {
 			return $this->render('UserBundle:Widget:overlay-perm-error.html.twig', array(
 				'parent_url' => $this->in->getString('parent_url')

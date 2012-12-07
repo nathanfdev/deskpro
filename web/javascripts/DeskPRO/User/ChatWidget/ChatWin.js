@@ -113,6 +113,40 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		var loginForm;
+
+		if (loginForm = document.getElementById('overlay_login_form')) {
+			loginForm = $(loginForm);
+
+			loginForm.on('submit', function(ev) {
+				ev.preventDefault();
+
+				var postData = [];
+				postData.push({
+					name: 'email',
+					value: loginForm.find('input[name="email"]').val()
+				});
+				postData.push({
+					name: 'password',
+					value: loginForm.find('input[name="password"]').val()
+				});
+
+				loginForm.find('.login-loading').show();
+				loginForm.find('.submit-btn').hide();
+
+				$.ajax({
+					url: BASE_URL + 'login/inline-login',
+					type: 'POST',
+					data: postData,
+					dataType: 'json',
+					context: this,
+					success: function() {
+						location.reload(false);
+					}
+				})
+			});
+		}
+
 		$('.auth-popup').click(function(ev) {
 			ev.preventDefault();
 			window.open($(this).attr('href'),'dpauth','width=600,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=0');
