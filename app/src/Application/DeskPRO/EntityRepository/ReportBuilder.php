@@ -191,6 +191,7 @@ class ReportBuilder extends AbstractEntityRepository
 					'language' => array('language', '%s.language'),
 					'urgency' => array('urgency', '%s.urgency'),
 					'category' => array('category', '%s.category'),
+					'product' => array('product', '%s.product'),
 					'priority' => array('priority', '%s.priority'),
 					'workflow' => array('workflow', '%s.workflow'),
 					'sla' => array('SLA', '%s.ticket_slas'),

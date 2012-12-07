@@ -71,6 +71,7 @@ class Column extends AbstractPart
 		'languages' => array('id', 'title'),
 		'organizations' => array('id', 'name', 'organization'),
 		'people' => array('id', 'name', 'person'),
+		'products' => array('id', 'title'),
 		'slas' => array('id', 'title'),
 		'tickets' => array('id', 'subject', 'ticket'),
 		'ticket_categories' => array('id', 'title'),
