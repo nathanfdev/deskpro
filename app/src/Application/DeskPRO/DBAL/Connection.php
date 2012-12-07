@@ -547,16 +547,14 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function rollback()
 	{
-		if (!$this->isTransactionActive()) {
-			try {
-				parent::rollback();
-			} catch (\Exception $e) {
-				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
-			}
+		try {
+			parent::rollback();
+		} catch (\Exception $e) {
+			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
 			return;
 		}
-		parent::rollback();
+
 		$level = $this->getTransactionNestingLevel();
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
