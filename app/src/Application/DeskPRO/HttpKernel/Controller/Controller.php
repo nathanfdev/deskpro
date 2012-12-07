@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * The base controller
@@ -68,6 +69,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 */
 	protected $event_dispatcher;
 
+	/**
+	 * @var int
+	 */
+	public $request_type = HttpKernelInterface::MASTER_REQUEST;
+
 
 	public function __construct(ContainerInterface $container)
 	{
@@ -79,6 +85,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
 		$self=$this;
 		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', function($ev) use ($self) {
+			$self->request_type = $ev->get('request_type') ?: HttpKernelInterface::MASTER_REQUEST;
 			$self->DeskPRO_onControllerPreAction($ev);
 		});
 		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', function($ev) use ($self) {

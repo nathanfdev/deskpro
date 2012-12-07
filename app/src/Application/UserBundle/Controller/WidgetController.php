@@ -49,6 +49,19 @@ class WidgetController extends AbstractController
 		parent::init();
 	}
 
+	public function renderLoginOrPermissionError($return_url = '', $type = 'login')
+	{
+		if ($this->person->getId()) {
+			return $this->render('UserBundle:Widget:overlay-perm-error.html.twig', array(
+				'parent_url' => $this->in->getString('parent_url')
+			));
+		}
+
+		return $this->render('UserBundle:Widget:overlay-login.html.twig', array(
+			'parent_url' => $this->in->getString('parent_url')
+		));
+	}
+
 	################################################################################
 	# overlay
 	################################################################################

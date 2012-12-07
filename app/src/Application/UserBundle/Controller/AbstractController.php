@@ -35,6 +35,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -136,21 +137,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			!($this instanceof LoginController)
 			AND !$this->person->HelpdeskUser->canDoAnything()
 			AND !$tpl_globals->getVariable('admin_portal_controls')
+			AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
 		) {
-			// If they're already logged in and they cant do anything, then we have to show the generic
-			// no permission page.
-			if ($this->person->getId()) {
-				return $this->renderStandardError('@user.error.permission-denied');
-			}
-
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('user');
 			} else {
 				$return = $this->request->getRequestUri();
 			}
 
-			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
-			return $this->redirect($redirect_url);
+			return $this->renderLoginOrPermissionError($return);
 		}
 
 		#------------------------------
