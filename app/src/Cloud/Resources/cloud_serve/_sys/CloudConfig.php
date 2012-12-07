@@ -91,11 +91,7 @@ class CloudConfig
 			$siteinfo = null;
 		}
 
-		if (!$siteinfo || ($siteinfo['sys_disabled'] && $siteinfo['sys_disabled'] != 'upgrading')) {
-			header("Location: " . self::getVendorUrl());
-			exit();
-		}
-
+		define('DPC_LOAD_FROM_WEB', true);
 		self::setLoadedSite($siteinfo);
 		self::close();
 	}
@@ -131,6 +127,12 @@ class CloudConfig
 			$_SERVER['argv'][] = $v;
 		}
 
+		if (!$siteinfo) {
+			header("Location: " . self::getVendorUrl());
+			exit();
+		}
+
+		define('DPC_LOAD_FROM_CLI', true);
 		self::setLoadedSite($siteinfo);
 		self::close();
 	}
@@ -160,7 +162,6 @@ class CloudConfig
 		define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
 		define('DPC_BILL_DATE',          $siteinfo['next_bill_at']);
 		define('DPC_BILL_OVERDUE',       $siteinfo['next_bill_at'] && $siteinfo['next_bill_at'] < time());
-		define('DPC_SYS_DISABLED',       $siteinfo['sys_disabled']);
 
 		if (!is_dir(DPC_SITE_DATADIR)) {
 			mkdir(DPC_SITE_DATADIR, 0777, true);
@@ -176,6 +177,18 @@ class CloudConfig
 			define('DP_WEB_ROOT',  self::getBuildsPath() . '/' . $siteinfo['build_number']);
 
 			define('DP_CONFIG_FILE', __DIR__.'/dp-config.php');
+		}
+
+		if (!$siteinfo['sys_disabled'] && file_exists(DPC_SITE_DATADIR . '/sys_disabled.trigger')) {
+			$siteinfo['sys_disabled'] = trim(file_get_contents(DPC_SITE_DATADIR . '/sys_disabled.trigger'));
+			if (!$siteinfo['sys_disabled']) $siteinfo['sys_disabled'] = 'upgrading'; // default disabled state
+		}
+
+		define('DPC_SYS_DISABLED', $siteinfo['sys_disabled']);
+
+		if (DPC_SYS_DISABLED && DPC_SYS_DISABLED != 'upgrading' && defined('DPC_LOAD_FROM_WEB')) {
+			header("Location: " . self::getVendorUrl());
+			exit();
 		}
 	}
 
