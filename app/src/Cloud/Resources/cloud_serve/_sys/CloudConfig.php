@@ -91,6 +91,11 @@ class CloudConfig
 			$siteinfo = null;
 		}
 
+		if (!$siteinfo) {
+			header("Location: " . self::getVendorUrl());
+			exit();
+		}
+
 		define('DPC_LOAD_FROM_WEB', true);
 		self::setLoadedSite($siteinfo);
 		self::close();
@@ -125,11 +130,6 @@ class CloudConfig
 			}
 
 			$_SERVER['argv'][] = $v;
-		}
-
-		if (!$siteinfo) {
-			header("Location: " . self::getVendorUrl());
-			exit();
 		}
 
 		define('DPC_LOAD_FROM_CLI', true);
