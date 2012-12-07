@@ -150,13 +150,13 @@ $(document).ready(function() {
 			</tr>
 		</thead>
 		<tbody>
-			{% for pattern,gateway in all_gateways_byemail %}
+			{% for gateway in all_gateways %}
 				<tr>
 					<td style="vertical-align: top;" width="10">
 						<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');" style="position:relative;top:1px;"><span class="btn-remove"></span></a>
 					</td>
 					<td>
-						<strong>{{ pattern }}</strong>
+						<strong>{{ gateway.getMatchPatternDisplay() }}</strong>
 						<div style="position:relative; top: -2px; display: inline">
 							<input
 								type="checkbox"

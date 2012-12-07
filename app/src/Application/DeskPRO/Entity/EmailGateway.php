@@ -294,6 +294,21 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getMatchPatternDisplay()
+	{
+		$patterns = array();
+
+		foreach ($this->addresses as $adr) {
+			$patterns[] = $adr->match_pattern;
+		}
+
+		return implode(', ', $patterns);
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

@@ -68,13 +68,6 @@ class EmailGatewaysController extends AbstractController
 
 		$all_transports = $this->em->getRepository('DeskPRO:EmailTransport')->findAll();
 
-		$all_gateways_byemail = array();
-		foreach ($all_gateways as $gateway) {
-			foreach ($gateway->addresses as $addr) {
-				$all_gateways_byemail[$addr->match_pattern] = $gateway;
-			}
-		}
-
 		$helpdesk_emails = explode(',', $this->container->getSetting('core.helpdesk_emails'));
 		$helpdesk_emails = Arrays::removeFalsey($helpdesk_emails);
 
@@ -84,7 +77,6 @@ class EmailGatewaysController extends AbstractController
 		return $this->render('@list.html.twig', array(
 			'all_gateways'            => $all_gateways,
 			'all_transports'          => $all_transports,
-			'all_gateways_byemail'    => $all_gateways_byemail,
 			'helpdesk_emails'         => $helpdesk_emails,
 			'rejection_count'         => $rejection_count,
 			'error_count'             => $error_count,
