@@ -42,9 +42,10 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * Twitter Account following a User
+ * Twitter account status note
+ *
  */
-class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
+class TwitterAccountStatusNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -52,79 +53,52 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterAccount
+	 * @var \Application\DeskPRO\Entity\TwitterAccountStatus
 	 */
-	protected $account;
+	protected $account_status;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $user;
+	protected $person;
 
 	/**
-	 * @return integer
+	 * @var \Application\DeskPRO\Entity\Deal
 	 */
-	public function getAccountId()
+	//protected $deal;
+
+	/**
+	 * @var string
+	 */
+	protected $text;
+
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_created;
+
+	public function __construct()
 	{
-		if (null !== $this->account) {
-			return $this->account->getId();
-		}
-
-		return 0;
+		$this->date_created = new \DateTime('now');
 	}
-
-	/**
-	 * @param integer $id
-	 */
-	public function setAccountId($id)
-	{
-		if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-			$this->account = $account;
-		} else {
-			$this->account = null;
-		}
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getUserId()
-	{
-		if (null !== $this->user) {
-			return $this->user->getId();
-		}
-
-		return 0;
-	}
-
-	/**
-	 * @param integer $id
-	 */
-	public function setUserId($id)
-	{
-		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-			$this->user = $user;
-		} else {
-			$this->user = null;
-		}
-	}
-
 
 
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
 
-
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
+
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_friends', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), ));
+		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_statuses_notes', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'friend', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'friend', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'account_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => NULL, 'inversedBy' => 'notes', 'joinColumns' => array( 0 => array( 'name' => 'account_status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'twitter_status_notes', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		//$metadata->mapManyToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'mappedBy' => NULL, 'inversedBy' => 'twitter_status_notes', 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
 	}
 }

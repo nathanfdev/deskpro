@@ -30,6 +30,7 @@
 /data/dql.cache.php
 /data/log-analytics.sqlite
 /data/languages.cache
+/data/twitter.pid
 /data/logs/*
 /data/logs/emails/*
 /data/debug/*

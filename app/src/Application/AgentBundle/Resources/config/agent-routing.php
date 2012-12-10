@@ -1500,29 +1500,50 @@ $collection->add('agent_twitter_outgoing_list', new Route(
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_note', new Route(
-	'/twitter/status/ajax-note',
+	'/twitter/status/ajax-note.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveNote'),
 	array(),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_retweet', new Route(
-	'/twitter/status/ajax-retweet',
+	'/twitter/status/ajax-retweet.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveRetweet'),
 	array(),
 	array()
 ));
 
+$collection->add('agent_twitter_status_ajaxsave_unretweet', new Route(
+	'/twitter/status/ajax-unretweet.json',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveUnretweet'),
+	array(),
+	array()
+));
+
 $collection->add('agent_twitter_status_ajaxsave_reply', new Route(
-	'/twitter/status/ajax-reply',
+	'/twitter/status/ajax-reply.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveReply'),
 	array(),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_archive', new Route(
-	'/twitter/status/ajax-archive',
+	'/twitter/status/ajax-archive.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveArchive'),
+	array(),
+	array()
+));
+
+$collection->add('agent_twitter_status_ajaxsave_favorite', new Route(
+	'/twitter/status/ajax-favorite.json',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveFavorite'),
+	array(),
+	array()
+));
+
+$collection->add('agent_twitter_status_ajaxsave_assign', new Route(
+	'/twitter/status/ajax-assign.json',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveAssign'),
 	array(),
 	array()
 ));
@@ -1535,14 +1556,14 @@ $collection->add('agent_twitter_user', new Route(
 ));
 
 $collection->add('agent_twitter_user_ajaxsave_follow', new Route(
-	'/twitter/user/ajax-follow',
+	'/twitter/user/ajax-follow.json',
 	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveFollow'),
 	array(),
 	array()
 ));
 
 $collection->add('agent_twitter_user_ajaxsave_unfollow', new Route(
-	'/twitter/user/ajax-unfollow',
+	'/twitter/user/ajax-unfollow.json',
 	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveUnfollow'),
 	array(),
 	array()

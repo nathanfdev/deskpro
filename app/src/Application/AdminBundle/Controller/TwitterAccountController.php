@@ -37,16 +37,11 @@ namespace Application\AdminBundle\Controller;
 use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\TwitterAccount;
-use Application\DeskPRO\Entity\TwitterAccountFriend;
-use Application\DeskPRO\Entity\TwitterAccountFollower;
 use Application\DeskPRO\Entity\TwitterStatus;
 use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
 use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
-
-use Orb\Service\Twitter\Oauth,
-	\Orb\Service\Twitter\Twitter;
 
 use Application\AdminBundle\Form\EditTwitterAccountType;
 
@@ -55,27 +50,17 @@ use Application\AdminBundle\Form\EditTwitterAccountType;
  */
 class TwitterAccountController extends AbstractController
 {
-	const TWITTER_REQUEST_TOKEN = 'twitter_request_token';
-
-	/**
-	 * @var \Orb\Service\Twitter\Twitter
-	 */
-	protected $twitter;
-
 	/**
 	 * List of Twitter accounts.
 	 *
-	 * @return Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function listAction()
 	{
-		$accounts = App::getORM()->getRepository('DeskPRO:TwitterAccount')->findAll();
+		$accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->findAll();
 		$verified = array();
 		foreach ($accounts as $account) {
-			$credentials = Twitter::getTwitterService($account->getOauthAccessToken())
-				->account->verifyCredentials();
-
-			$verified[$account['id']] = !isset($credentials->error);
+			$verified[$account['id']] = $account->verifyCredentials();
 		}
 
 		return $this->render('AdminBundle:TwitterAccount:list.html.twig', array(
@@ -85,110 +70,55 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * @return \Zend\OAuth\Consumer
-	 */
-	protected function getConsumer()
-	{
-		$callbackUrl = $this->generateUrl('admin_twitter_accounts_authorize', array(), true);
-		$consumer	= \Orb\Service\Twitter\Oauth::getConsumer($callbackUrl);
-
-		return $consumer;
-	}
-
-	/**
 	 * Request permission from Twitter for DeskPRO application.
 	 *
-	 * @return Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function newAction()
 	{
-		// generate request token
-		$consumer	 = $this->getConsumer();
-		$requestToken = $consumer->getRequestToken();
+		$api = \Application\DeskPRO\Service\Twitter::getTwitterApi();
 
-		// store request token in session
-		$this->session->set(self::TWITTER_REQUEST_TOKEN, serialize($requestToken));
+		if ($this->in->getBool('start')) {
+			$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array(), true));
+			return $this->redirect($api->getAuthorizationUrl());
+		}
 
-		// redirect to Twitter authorization page
-		return $this->redirect($consumer->getRedirectUrl());
-	}
+		if ($this->in->getString('denied')) {
+			return $this->redirectRoute('admin_twitter_accounts');
+		}
 
-	/**
-	 * Callback from Twitter if authentication was granted.
-	 *
-	 * @return Symfony\Component\HttpFoundation\Response
-	 */
-	public function authorizeAction()
-	{
 		try {
-			// get OAuth access token
-			$consumer = $this->getConsumer();
-			$accessToken = $consumer->getAccessToken(
-				$this->request->query->all(),
-				unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN))
-			);
+			$api->setToken($this->in->getString('oauth_token'));
+			$access = $api->getAccessToken();
+			if ($access->oauth_token && $access->oauth_token_secret) {
+				$api->setToken($access->oauth_token, $access->oauth_token_secret);
 
-			// initialize Twitter service
-			$this->twitter = Twitter::getTwitterService($accessToken, $consumer);
+				// check if Twitter user already exists
+				$twitter_user = $api->get_usersShow(array('screen_name' => $access->screen_name));
+				$user = $this->getOrCreateUser($twitter_user);
 
-			// check if Twitter user already exists
-			$twitterUser = $this->twitter->user->show($accessToken->getParam('screen_name'));
-			$user = $this->getOrCreateUser($twitterUser);
+				$em = App::getOrm();
+				$em->persist($user);
 
-			$em = App::getOrm();
-			$em->persist($user);
-
-			// check if Twitter account already exists
-			$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
-			if (!$account) {
-				$account = new TwitterAccount();
-				$account['user'] = $user;
-			}
-
-			// update OAuth credentials, regardless if its a new or an old account
-			$account['oauth_token'] = $accessToken->getParam('oauth_token');
-			$account['oauth_token_secret'] = $accessToken->getParam('oauth_token_secret');
-
-			// add person to account
-			if (!in_array($this->person['id'], $account->getPersonIds())) {
-				$account['persons']->add($this->person);
-				$em->persist($this->person);
-			}
-
-			$em->persist($account);
-			$em->flush();
-
-			// fetch user timelines
-			$this->importTimeline($account, 'public');
-			$this->importTimeline($account, 'home');
-			$this->importTimeline($account, 'friends');
-			$this->importTimeline($account, 'user');
-
-			// fetch friends (following)
-			// @TODO check pagination (we only recieve 100 friends at once)
-			$friendIds = $account->getFriendIds();
-			foreach ($this->twitter->user->friends()->user as $user) {
-				if (!in_array((integer) $user->id, $friendIds)) {
-					$friend = new TwitterAccountFriend();
-					$friend['account'] = $account;
-					$friend['user'] = $this->getOrCreateUser($user);
-					$em->persist($friend);
+				// check if Twitter account already exists
+				$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
+				if (!$account) {
+					$account = new TwitterAccount();
+					$account['user'] = $user;
 				}
-			}
-			$em->flush();
 
-			// fetch followers
-			// @TODO check pagination (we only recieve 100 followers at once)
-			$followerIds = $account->getFollowerIds();
-			foreach ($this->twitter->user->followers()->user as $user) {
-				if (!in_array((integer) $user->id, $followerIds)) {
-					$follower = new TwitterAccountFollower();
-					$follower['account'] = $account;
-					$follower['user'] = $this->getOrCreateUser($user);
-					$em->persist($follower);
+				// update OAuth credentials, regardless if its a new or an old account
+				$account['oauth_token'] = $access->oauth_token;
+				$account['oauth_token_secret'] = $access->oauth_token_secret;
+
+				// add person to account
+				if (!$account->hasPerson($this->person)) {
+					$account['persons']->add($this->person);
 				}
+
+				$em->persist($account);
+				$em->flush();
 			}
-			$em->flush();
 		} catch (\Exception $e) {
 			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
 				'error' => array(
@@ -199,153 +129,66 @@ class TwitterAccountController extends AbstractController
 			));
 		}
 
-		return $this->createResponse('<script language="javascript">window.close()</script>');
+		return $this->redirectRoute('admin_twitter_accounts');
 	}
 
 	/**
-	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
-	 * @param string $timeline
-	 * @return void
-	 */
-	protected function importTimeline(TwitterAccount $account, $method)
-	{
-		$method = sprintf('status%sTimeline', ucfirst(strtolower($method)));
-		$timeline = call_user_func(
-			array($this->twitter, $method),
-			array('include_entities' => true)
-		);
-
-		foreach ($timeline->status as $status) {
-			$this->processStatus($status);
-		}
-
-		$this->em->flush();
-	}
-
-	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $status
-	 * @return \Application\DeskPRO\Entity\TwitterStatus
-	 */
-	protected function processStatus($status)
-	{
-		$em = App::getOrm();
-		$entity = $em->getRepository('DeskPRO:TwitterStatus')->find((string) $status->id);
-
-		if (!$entity) {
-			$entity = TwitterStatus::createFromXML($status);
-			$entity['user'] = $this->getOrCreateUser($status->user);
-			$em->persist($entity);
-
-			// retweet
-			if (!empty($status->retweeted_status)) {
-				$retweet = $this->processStatus($status->retweeted_status);
-				$entity['retweet'] = $retweet;
-				$em->persist($retweet);
-			}
-
-			// reply
-			if (!empty($status->in_reply_to_status_id)) {
-				$replyXml = $this->twitter->status->show(
-					(string) $status->in_reply_to_status_id,
-					array('include_entities' => true)
-				);
-
-				if (!isset($replyXml->error)) {
-					$reply = $this->processStatus($replyXml);
-					$entity['reply'] = $reply;
-					$em->persist($reply);
-				}
-			}
-
-			// mentions
-			if (!empty($status->entities->user_mentions)) {
-				foreach ($status->entities->user_mentions->user_mention as $mention) {
-					if (!($mentionUser = $em->getRepository('DeskPRO:TwitterUser')->find((string) $mention->id))) {
-						$mentionUserXml = $this->twitter->user->show((string) $mention->id);
-						$mentionUser = TwitterUser::createFromXML($mentionUserXml);
-						$em->persist($mentionUser);
-					}
-
-					$mention = TwitterStatusMention::createFromXML($mention);
-					$mention['status'] = $entity;
-					$mention['user'] = $mentionUser;
-					$em->persist($mention);
-				}
-			}
-
-			// tags
-			if (!empty($status->entities->hashtags)) {
-				foreach ($status->entities->hashtags->hashtag as $tag) {
-					$tag = TwitterStatusTag::createFromXML($tag);
-					$tag['status'] = $entity;
-					$em->persist($tag);
-				}
-			}
-
-			// urls
-			if (!empty($status->entities->urls)) {
-				foreach ($status->entities->urls->url as $url) {
-					$url = TwitterStatusUrl::createFromXML($url);
-					$url['status'] = $entity;
-					$em->persist($url);
-				}
-			}
-		}
-
-		return $entity;
-	}
-
-	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $user
+	 * @param object $user
 	 * @return \Application\DeskPRO\Entity\TwitterUser
 	 */
 	protected function getOrCreateUser($user)
 	{
-		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find((string) $user->id);
+		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find($user->id_str);
 		if (!$entity) {
-			$entity = TwitterUser::createFromXML($user);
+			$entity = TwitterUser::createFromJson($user);
 			$this->em->persist($entity);
 		}
 
 		return $entity;
 	}
 
-	/**
-	 * Modify a Twitter account.
-	 *
-	 * @param integer $account_id Twitter account ID
-	 * @return Symfony\Component\HttpFoundation\Response
-	 */
 	public function editAction($account_id)
 	{
-		if (!($account = App::getORM()->getRepository('DeskPRO:TwitterAccount')->find($account_id))) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Twitter Account "'.$account_id.'" not found.');
+		$account = $this->em->find('DeskPRO:TwitterAccount', $account_id);
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$form = $this->get('form.factory')->create(new EditTwitterAccountType(), $account);
-
-		$is_edited = false;
-		$row_html = false;
-
 		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
+			$this->ensureRequestToken();
 
-			if ($form->isValid()) {
-				$is_edited = true;
-				$this->em->persist($account);
-				$this->em->flush();
-
-				$row_html = $this->renderView('AdminBundle:TwitterAccount:list-row.html.twig', array(
-					'account' => $account
+			$db = App::getDb();
+			$db->delete('twitter_accounts_person', array(
+				'account_id' => $account->id
+			));
+			foreach ($this->in->getCleanValueArray('agents', 'uint') AS $agent_id) {
+				$db->insert('twitter_accounts_person', array(
+					'account_id' => $account->id,
+					'person_id' => $agent_id
 				));
 			}
+
+			return $this->redirectRoute('admin_twitter_accounts');
 		}
 
 		return $this->render('AdminBundle:TwitterAccount:edit.html.twig', array(
 			'account' => $account,
-			'form' => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html' => $row_html
+			'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents()
 		));
+	}
+
+	public function deleteAction($account_id, $security_token)
+	{
+		$this->ensureAuthToken('delete_twitter', $security_token);
+
+		$account = $this->em->find('DeskPRO:TwitterAccount', $account_id);
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->remove($account);
+		$this->em->flush();
+
+		return $this->redirectRoute('admin_twitter_accounts');
 	}
 }

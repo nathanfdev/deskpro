@@ -41,11 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-/**
- * Twitter Status Note
- *
- */
-abstract class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
+class TwitterStream extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -53,52 +49,28 @@ abstract class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObjec
 	protected $id;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterStatus
+	 * @var \Application\DeskPRO\Entity\TwitterAccount
 	 */
-	protected $status;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Deal
-	 */
-	protected $deal;
-
-	/**
-	 * @var string
-	 */
-	protected $text;
+	protected $account;
 
 	/**
 	 * @var \DateTime
 	 */
 	protected $date_created;
 
+	/**
+	 * @var string
+	 */
+	protected $event = 'unknown';
+
+	/**
+	 * @var object|null
+	 */
+	protected $data;
+
 	public function __construct()
 	{
-		$this->date_created = new \DateTime('now');
-	}
-
-	public function getStatusId()
-	{
-
-	}
-
-	public function setStatusId($id)
-	{
-	}
-
-	public function getPersonId()
-	{
-
-	}
-
-	public function setPersonId($id)
-	{
-
+		$this->date_created = new \DateTime();
 	}
 
 
@@ -107,18 +79,17 @@ abstract class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObjec
 	# Doctrine Metadata
 	############################################################################
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
-	{
 
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_notes', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text', ));
+		$metadata->setPrimaryTable(array( 'name' => 'twitter_stream', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'event', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'event', ));
+		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'object', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'notes', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'twitter_status_notes', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'mappedBy' => NULL, 'inversedBy' => 'twitter_status_notes', 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

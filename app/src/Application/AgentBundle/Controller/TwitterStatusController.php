@@ -37,10 +37,9 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\TwitterAccount,
-    \Application\DeskPRO\Entity\TwitterStatusNote;
-
-use Orb\Service\Twitter\Twitter;
+use Application\DeskPRO\Entity\TwitterAccount;
+use Application\DeskPRO\Entity\TwitterAccountStatus;
+use Application\DeskPRO\Entity\TwitterAccountStatusNote;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -55,14 +54,14 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
 		// fetch public timeline
-		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
+		$statuses = $account->getInbox($includeArchived, $includeAccount, $this->getSortByDate());
 
 		return $this->renderList($account, $statuses, 'agent_twitter_statuses_list');
 	}
@@ -75,13 +74,13 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listMessagesAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$messages = $account->getMessages($includeArchived, $this->getSortByDate());
+		$messages = $account->getMessages($includeArchived, $includeAccount, $this->getSortByDate());
 
 		return $this->renderList($account, $messages, 'agent_twitter_messages_list');
 	}
@@ -94,7 +93,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listRepliesAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
@@ -113,7 +112,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listMentionsAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
@@ -132,7 +131,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listRetweetsAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
@@ -151,7 +150,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function listOutgoingAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
@@ -189,7 +188,7 @@ class TwitterStatusController extends AbstractController
 			'twitter_list_route' => $route,
 			'account' => $account,
 			'statuses' => $statuses,
-            'person' => $this->getPerson(),
+			'person' => $this->getPerson(),
 		);
 
 		// check if is partial
@@ -203,18 +202,22 @@ class TwitterStatusController extends AbstractController
 
 	/**
 	 * @param integer $id
-	 * @return void
-	 * @see \Application\AgentBundle\Controller\TwitterController::checkAccountPermissions()
+	 * @return \Application\DeskPRO\Entity\TwitterAccountStatus
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function getStatus($id)
+	protected function getAccountStatusOr404($id, $check_perm = '')
 	{
-		$status = $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
+		$status = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->find($id);
 		if (!$status) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
 		}
 
-		// @TODO add account <-> person check for status (via timeline/followers)
+		$account = $status->account;
+		if (!$account || !$account->hasPerson($this->person)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
+		}
+
+		// todo: more fine grained permissions?
 
 		return $status;
 	}
@@ -227,16 +230,11 @@ class TwitterStatusController extends AbstractController
 	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function getAccount($id)
+	protected function getAccountOr404($id)
 	{
-		// check if account id is in persons account id list
-		if (!in_array($id, $this->person->getTwitterAccountIds())) {
-			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
-		}
-
 		// check if account exists
 		$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
-		if (!$account) {
+		if (!$account || !$account->hasPerson($this->person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
 		}
 
@@ -245,36 +243,40 @@ class TwitterStatusController extends AbstractController
 
 	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
 	 */
 	public function ajaxSaveNoteAction()
 	{
 		$success = false;
 		$error = null;
+		$html = null;
 
-		try {
-			$status = $this->getStatus($this->in->getValue('status_id'));
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'note');
 
-			$note = new TwitterStatusNote();
-			$note['status'] = $status;
-			$note['person'] = $this->person;
-			$note['text'] = $this->in->getValue('text');
+		$note = new TwitterAccountStatusNote();
+		$note['account_status'] = $account_status;
+		$note['person'] = $this->person;
+		$note['text'] = $this->in->getValue('text');
 
-			$em = App::getOrm();
-			$em->persist($note);
-			$em->flush();
+		$em = App::getOrm();
+		$em->persist($note);
+		$em->flush();
 
-			$success = true;
-		} catch (\Exception $e) {
-			$error = $e->getMessage();
-		}
+		$success = true;
 
-		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+		$html = $this->renderView('AgentBundle:TwitterStatus:note-li.html.twig', array(
+			'account_status' => $account_status,
+			'note' => $note
+		));
+
+		return $this->createJsonResponse(array(
+			'success' => $success,
+			'error' => $error,
+			'html' => $html
+		));
 	}
 
 	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
 	 */
 	public function ajaxSaveRetweetAction()
 	{
@@ -282,17 +284,38 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 
 		try {
-			$status = $this->getStatus($this->in->getValue('status_id'));
-			$account = $this->getAccount($this->in->getValue('account_id'));
+			$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
+			$account = $account_status->account;
 
-			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-			$response = $twitter->status->retweet($status['id']);
-			if (isset($response->error)) {
-				$error = (string) $response->error;
+			if (!$account_status->retweeted) {
+				$api = $account->getTwitterApi();
+				$response = $api->post("/statuses/retweet/{$account_status->status->id}.json");
+				if (!empty($response->error)) {
+					$error = $response->error;
+				} else {
+					$success = true;
+
+					$twitter_service = new \Application\DeskPRO\Service\Twitter();
+					$new_status = $twitter_service->processStatus($api, $response);
+
+					$new_account_status = new TwitterAccountStatus();
+					$new_account_status->status = $new_status;
+					$new_account_status->account = $account;
+					$new_account_status->status_type = 'sent';
+
+					$account_status->retweeted = $new_account_status;
+
+					$this->em->persist($new_status);
+					$this->em->persist($new_account_status);
+					$this->em->persist($account_status);
+					$this->em->flush();
+				}
 			} else {
 				$success = true;
 			}
-		} catch (\Exception $e) {
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
 			$error = $e->getMessage();
 		}
 
@@ -301,63 +324,193 @@ class TwitterStatusController extends AbstractController
 
 	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
+	 */
+	public function ajaxSaveUnretweetAction()
+	{
+		$success = false;
+		$error = null;
+
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
+		$account = $account_status->account;
+
+		try {
+			if ($account_status->retweeted) {
+				$account_retweet = $account_status->retweeted;
+
+				$response = $account->getTwitterApi()->post("/statuses/destroy/{$account_retweet->status->id}.json");
+				if (!empty($response->error)) {
+					$error = $response->error;
+				} else {
+					$success = true;
+
+					$this->em->remove($account_retweet);
+					$this->em->remove($account_retweet->status);
+					$this->em->flush();
+				}
+			} else {
+				$success = true;
+			}
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
+			$error = $e->getMessage();
+		}
+
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function ajaxSaveReplyAction()
 	{
 		$success = false;
 		$error = null;
+		$html = null;
+
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'));
+		$account = $account_status->account;
+
+		$text = $this->in->getString('text');
+		if (strlen($text)) {
+			try {
+				$type = $this->in->getValue('type');
+				if ($type == 'public') {
+					if (strpos($text, '@'.$account_status->status->user->screen_name) === false) {
+						$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+					}
+
+					if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
+						$error = 'Long statuses are todo'; // todo
+					} else {
+						$params = array(
+							'status' => $text
+						);
+						if (!$account_status->status->recipient) {
+							// only if not a DM
+							$params['in_reply_to_status_id'] = $account_status->status->id;
+						}
+
+						$api = $account->getTwitterApi();
+						$response = $api->post_statusesUpdate($params);
+						if (!empty($response->error)) {
+							$error = $response->error;
+						} else {
+							$success = true;
+
+							$twitter_service = new \Application\DeskPRO\Service\Twitter();
+							$new_status = $twitter_service->processStatus($api, $response);
+
+							$new_account_status = new TwitterAccountStatus();
+							$new_account_status->status = $new_status;
+							$new_account_status->account = $account;
+							$new_account_status->status_type = 'sent';
+							$new_account_status->in_reply_to = $account_status;
+
+							$this->em->persist($new_status);
+							$this->em->persist($new_account_status);
+							$this->em->flush();
+
+							$html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+								'account_status' => $account_status,
+								'reply' => $new_account_status
+							));
+						}
+					}
+				} else {
+					$error = 'Private responses are TODO'; // todo
+				}
+			} catch (\EpiTwitterException $e) {
+				$error = $e->getMessage();
+			}  catch (\EpiOAuthException $e) {
+				$error = $e->getMessage();
+			}
+		} else {
+			$error = 'No tweet specified.';
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => $success,
+			'html' => $html,
+			'error' => $error
+		));
+	}
+
+	public function ajaxSaveArchiveAction()
+	{
+		$success = false;
+		$error = null;
+
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'archive');
+
+		$account_status['is_archived'] = $this->in->getBool('archive');
+
+		$this->em->persist($account_status);
+		$this->em->flush();
+
+		$success = true;
+
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+	}
+
+	public function ajaxSaveFavoriteAction()
+	{
+		$success = false;
+		$error = null;
+
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');
 
 		try {
-			$status = $this->getStatus($this->in->getValue('status_id'));
-			$account = $this->getAccount($this->in->getValue('account_id'));
-			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
+			$api = $account_status->account->getTwitterApi();
 
-			$type = $this->in->getValue('type');
-			if ('private' == $type) {
-				$response = $twitter->directMessage->new($status['user']['id'], $this->in->getValue('text'));
-			} else {
-				$response = $twitter->status->update($this->in->getValue('text'), $status['id']);
+			$favorite = $this->in->getBool('favorite');
+
+			if (!$account_status->status->isMessage()) {
+				if ($favorite) {
+					$response = $api->post_favoritesCreate(array('id' => $account_status->status->id));
+				} else {
+					$response = $api->post_favoritesDestroy(array('id' => $account_status->status->id));
+				}
+				if (!empty($response->error)) {
+					$error = $response->error;
+				}
 			}
 
-			if (isset($response->error)) {
-				$error = (string) $response->error;
-			} else {
+			if (empty($error)) {
+				$account_status['is_favorited'] = $favorite;
+
+				$this->em->persist($account_status);
+				$this->em->flush();
+
 				$success = true;
 			}
-		} catch (\Exception $e) {
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
 			$error = $e->getMessage();
 		}
 
 		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
-	 */
-	public function ajaxSaveArchiveAction()
+	public function ajaxSaveAssignAction()
 	{
 		$success = false;
 		$error = null;
 
-		try {
-			$status = $this->getStatus($this->in->getValue('status_id'));
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
 
-			if ($status->isArchived()) {
-				$status['is_archived'] = false;
-			} else {
-				$status['is_archived'] = true;
-			}
-
-			$em = App::getOrm();
-			$em->persist($status);
-			$em->flush();
-
-			$success = true;
-		} catch (\Exception $e) {
-			$error = $e->getMessage();
+		list($type, $id) = explode(':', $this->in->getValue('assign'));
+		if ($type == 'agent') {
+			$account_status->setAgentId($id);
+		} else {
+			$account_status->setAgentTeamId($id);
 		}
+
+		$this->em->persist($account_status);
+		$this->em->flush();
+
+		$success = true;
 
 		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}

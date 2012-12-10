@@ -320,6 +320,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usergroups;
 
 	/**
+	 * Twitter accounts this user has access to
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $twitter_accounts;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $preferences;
@@ -473,6 +480,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->personscraper_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
@@ -1842,6 +1850,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('organization_manager', $manager);
 	}
 
+	public function getTwitterAccountIds()
+	{
+		$output = array();
+		foreach ($this->twitter_accounts AS $account) {
+			$output[] = $account['id'];
+		}
+		return $output;
+	}
+
+	/**
+	 * @return TwitterAccount[]
+	 */
+	public function getTwitterAccounts()
+	{
+		return $this->twitter_accounts;
+	}
 
 	public function __toString()
 	{
@@ -2212,5 +2236,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'slas', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla', 'cascade' => array('persist','merge'), 'mappedBy' => 'people', 'dpApi' => true));
+		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
 	}
 }

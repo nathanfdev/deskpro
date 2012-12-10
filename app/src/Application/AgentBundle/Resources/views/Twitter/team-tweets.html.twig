@@ -6,12 +6,7 @@ pageMeta.accountId = '{{ account.id|escape }}';
 pageMeta.pageIdentity = 'twitter:{{ type|escape }}:{{ account.id|escape }}';
 
 pageMeta.statusListUrl = '{{ path('agent_twitter_team_tweets_list') }}?partial=1';
-pageMeta.saveNoteUrl = '{{ path('agent_twitter_status_ajaxsave_note') }}';
-pageMeta.saveRetweetUrl = '{{ path('agent_twitter_status_ajaxsave_retweet') }}';
-pageMeta.saveReplyUrl = '{{ path('agent_twitter_status_ajaxsave_reply') }}';
-pageMeta.saveArchiveUrl = '{{ path('agent_twitter_status_ajaxsave_archive') }}';
-pageMeta.saveFollowUrl = '{{ path('agent_twitter_user_ajaxsave_follow') }}';
-pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
+{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
 
 {# scroll containers #}
@@ -21,9 +16,6 @@ pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
 {# /scroll containers #}
 
 <div class="layout-content twitter">
-	{% include 'AgentBundle:TwitterStatus:part-note.html.twig' %}
-	{% include 'AgentBundle:TwitterStatus:part-reply.html.twig' %}
-
 	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' with { 'twitter_list_route': 'agent_twitter_team_tweets_list' } %}
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 

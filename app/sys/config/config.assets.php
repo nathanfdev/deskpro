@@ -129,6 +129,7 @@ $CONFIG['agent_window_sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Deals.js',
 	)
 );
@@ -168,6 +169,9 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DealList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterAccountSearch.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
 	)
 );
 
@@ -231,6 +235,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
 
 	)
 );
@@ -254,6 +259,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 	)
 );
 

@@ -1133,6 +1133,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TaskReminders::DEFAULT_I
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.twitter_stream##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'twitter_stream';
+$j['worker_group'] = 'twitter_stream';
+$j['title'] = 'Twitter Stream';
+$j['description'] = 'Imports tweets from the Twitter stream';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TwitterStream';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TwitterStream::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

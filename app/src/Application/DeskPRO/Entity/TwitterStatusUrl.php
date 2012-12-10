@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status Url
  *
  */
-abstract class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
+class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -100,26 +100,12 @@ abstract class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $url
 	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
 	 */
-	static public function createFromXML($url)
+	static public function createFromJson($url)
 	{
 		$entity = new self();
-		$entity['url'] = (string) $url->url;
-		$entity['starts'] = (integer) $url->attributes()->start;
-		$entity['ends'] = (integer) $url->attributes()->end;
-
-		return $entity;
-	}
-
-	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $url
-	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
-	 */
-	static public function createFromJson(array $url)
-	{
-		$entity = new self();
-		$entity['url'] = $url['url'];
-		$entity['starts'] = $url['indices'][0];
-		$entity['ends'] = $url['indices'][1];
+		$entity['url'] = $url->url;
+		$entity['starts'] = $url->indices[0];
+		$entity['ends'] = $url->indices[1];
 
 		return $entity;
 	}
@@ -131,16 +117,16 @@ abstract class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	############################################################################
 
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_urls', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'url', ));
 		$metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
 		$metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

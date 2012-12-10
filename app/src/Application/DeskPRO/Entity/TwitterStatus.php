@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status
  *
  */
-abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
+class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -92,20 +92,11 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $recipient;
 
+
 	/**
 	 * @var Boolean
 	 */
 	protected $is_truncated = false;
-
-	/**
-	 * @var Boolean
-	 */
-	protected $is_favorited = false;
-
-	/**
-	 * @var Boolean
-	 */
-	protected $is_archived = false;
 
 	/**
 	 * @var \DateTime
@@ -126,16 +117,6 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $source;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $agent = null;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 */
-	protected $agent_team = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatusLong
@@ -160,7 +141,7 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
-	protected $notes;
+	protected $account_statuses;
 
 	/**
 	 * @var string
@@ -179,7 +160,7 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$this->tags = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->urls = new \Doctrine\Common\Collections\ArrayCollection();
 
-		$this->notes = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->account_statuses = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -209,9 +190,27 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return Boolean
 	 */
-	protected function hasLongVersion()
+	public function hasLongVersion()
 	{
 		return null !== $this->long_version;
+	}
+
+	public function addMention(TwitterStatusMention $mention)
+	{
+		$this->mentions->add($mention);
+		$this->_onPropertyChanged('mentions', null, $mention);
+	}
+
+	public function addTag(TwitterStatusTag $tag)
+	{
+		$this->tags->add($tag);
+		$this->_onPropertyChanged('tags', null, $tag);
+	}
+
+	public function addUrl(TwitterStatusUrl $url)
+	{
+		$this->urls->add($url);
+		$this->_onPropertyChanged('urls', null, $url);
 	}
 
 	/**
@@ -343,22 +342,6 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return Boolean
-	 */
-	public function isFavorited()
-	{
-		return (Boolean) $this->is_favorited;
-	}
-
-	/**
-	 * @return Boolean
-	 */
-	public function isArchived()
-	{
-		return (Boolean) $this->is_archived;
-	}
-
-	/**
 	 * Retrieve a parsed version of status' text.
 	 *
 	 * @return string
@@ -417,57 +400,45 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_parsed_text;
 	}
 
-	public function getClippedParsedText($length = null)
+	public function getClippedText($length = null)
 	{
-		$parsedText = $this->getParsedText();
-
-		if (true === is_null($length)) {
-			return $parsedText;
+		if (!$length || $length > \Orb\Util\Strings::utf8_strlen($this->text)) {
+			return $this->text;
+		} else {
+			return \Orb\Util\Strings::utf8_substr($this->text, 0, $length) . '...';
 		}
-		else {
-			return substr($parsedText, 0, $length);
-		}
-
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $status
+	 * @param object $status
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
-	static public function createFromXML($status)
+	static public function createFromJson($status)
 	{
-		// @!TODO check against \SimpleXMLElement & \Zend\Rest\Client\Result
-
 		$entity                 = new self();
-		$entity['id']           = (string) $status->id;
-		$entity['text']         = (string) $status->text;
-		$entity['is_truncated'] = (Boolean) (integer) $status->truncated;
-		$entity['is_favorited'] = (Boolean) (integer) $status->favorited;
-		$entity['is_archived']  = false;
-		$entity['date_created'] = new \DateTime((string) $status->created_at);
-		$entity['source']       = (string) $status->source;
+		$entity['id']           = $status->id_str;
+		$entity['text']         = $status->text;
+		$entity['is_truncated'] = $status->truncated;
+		$entity['date_created'] = new \DateTime($status->created_at);
+		$entity['source']       = $status->source;
 
 		// @!TODO add geo informations
-		// $entity['geo_latitude'] = (float) $status['geo'][];
-		// $entity['geo_longitude'] = (float) $status['geo'][];
+		// $entity['geo_latitude'] = $json['geo'][];
+		// $entity['geo_longitude'] = $json['geo'][];
 
 		return $entity;
 	}
 
 	/**
-	 * @param array $status
+	 * @param object $dm
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
-	static public function createFromJson(array $status)
+	static public function createFromDmJson($dm)
 	{
 		$entity                 = new self();
-		$entity['id']           = $status['id_str'];
-		$entity['text']         = $status['text'];
-		$entity['is_truncated'] = $status['truncated'];
-		$entity['is_favorited'] = $status['favorited'];
-		$entity['is_archived']  = false;
-		$entity['date_created'] = new \DateTime($status['created_at']);
-		$entity['source']       = $status['source'];
+		$entity['id']           = $dm->direct_message->id_str;
+		$entity['text']         = $dm->direct_message->text;
+		$entity['date_created'] = new \DateTime($dm->direct_message->created_at);
 
 		// @!TODO add geo informations
 		// $entity['geo_latitude'] = $json['geo'][];
@@ -483,17 +454,15 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	############################################################################
 
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterStatus';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text', ));
 		$metadata->mapField(array( 'fieldName' => 'is_truncated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_truncated', ));
-		$metadata->mapField(array( 'fieldName' => 'is_favorited', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_favorited', ));
-		$metadata->mapField(array( 'fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'geo_latitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_latitude', ));
 		$metadata->mapField(array( 'fieldName' => 'geo_longitude', 'type' => 'decimal', 'precision' => 10, 'scale' => 5, 'nullable' => true, 'columnName' => 'geo_longitude', ));
@@ -505,12 +474,10 @@ abstract class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'retweets', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'retweet',  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'in_reply_to_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'recipient', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'messages', 'joinColumns' => array( 0 => array( 'name' => 'recipient_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'long', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusLong', 'mappedBy' => 'status', 'inversedBy' => NULL, 'joinColumns' => array( ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'status',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'tags', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusTag', 'mappedBy' => 'status',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'urls', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusUrl', 'mappedBy' => 'status',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusNote', 'mappedBy' => 'status',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'account_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => 'status',  ));
 	}
 }

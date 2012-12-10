@@ -41,6 +41,13 @@
 					<a><span class="tasksNavIcon">{{ phrase('agent.general.tasks') }}</span></a>
 				</li>
 			{% endif %}
+
+			{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
+				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter">
+					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
+					<a><span class="twitterNavIcon">Twitter</span></a>
+				</li>
+			{% endif %}
 		</ul>
 		<div id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat" class="no-click-switch">
 			<span id="chat_online_count">0</span>

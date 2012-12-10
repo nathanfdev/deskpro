@@ -1821,35 +1821,33 @@ $collection->add('admin_departments_updateorders', new Route(
 # Twitter
 ################################################################################
 
-/*
 $collection->add('admin_twitter_accounts', new Route(
-	'/twitter/account',
+	'/twitter/accounts',
 	array('_controller' => 'AdminBundle:TwitterAccount:list'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_twitter_accounts_new', new Route(
-	'/twitter/account/new',
+	'/twitter/accounts/new',
 	array('_controller' => 'AdminBundle:TwitterAccount:new'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_twitter_accounts_authorize', new Route(
-	'/twitter/account/authorize',
-	array('_controller' => 'AdminBundle:TwitterAccount:authorize'),
-	array(),
-	array()
-));
-
 $collection->add('admin_twitter_accounts_edit', new Route(
-	'/twitter/account/{account_id}',
+	'/twitter/accounts/{account_id}/edit',
 	array('_controller' => 'AdminBundle:TwitterAccount:edit'),
 	array(),
 	array()
 ));
-*/
+
+$collection->add('admin_twitter_accounts_delete', new Route(
+	'/twitter/accounts/{account_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:TwitterAccount:delete'),
+	array(),
+	array()
+));
 
 ################################################################################
 # Plugins

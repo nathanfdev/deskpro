@@ -48,7 +48,7 @@ use Application\DeskPRO\Entity;
  * A Twitter Account contains twitter username and accesstoken
  *
  */
-abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
+class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -76,35 +76,22 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	protected $friends;
 
 	/**
-	 * @var array
-	 */
-	protected $_friend_ids;
-
-	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $followers;
-
-	/**
-	 * @var array
-	 */
-	protected $_follower_ids;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $searches;
 
-    /**
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-     * )
-     */
+	 * )
+	 */
 	protected $persons;
 
-	/**
-	 * @var array
-	 */
-	protected $_person_ids;
+	protected $_cache = array();
 
 	/**
 	 * Constructor
@@ -149,22 +136,22 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getFriendIds($cache = true)
 	{
-		if (true === $cache && is_array($this->_friend_ids)) {
-			return $this->_friend_ids;
+		if ($cache && isset($this->_cache['friend_ids'])) {
+			return $this->_cache['friend_ids'];
 		}
 
-		$this->_friend_ids = App::getDb()->fetchAllCol("
+		$this->_cache['friend_ids'] = App::getDb()->fetchAllCol("
 			SELECT user_id
 			FROM twitter_accounts_friends
 			WHERE account_id = ?
 			ORDER BY id DESC
 		", array($this['id']));
 
-		if (!is_array($this->_friend_ids)) {
-			$this->_friend_ids = array($this->_friend_ids);
+		if (!is_array($this->_cache['friend_ids'])) {
+			$this->_cache['friend_ids'] = array($this->_cache['friend_ids']);
 		}
 
-		return array_unique($this->_friend_ids);
+		return $this->_cache['friend_ids'];
 	}
 
 	/**
@@ -175,82 +162,96 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getFollowerIds($cache = true)
 	{
-		if (true === $cache && is_array($this->_follower_ids)) {
-			return $this->_follower_ids;
+		if ($cache && isset($this->_cache['follower_ids'])) {
+			return $this->_cache['follower_ids'];
 		}
 
-		$this->_follower_ids = App::getDb()->fetchAllCol("
+		$this->_cache['follower_ids'] = App::getDb()->fetchAllCol("
 			SELECT user_id
 			FROM twitter_accounts_followers
 			WHERE account_id = ?
 			ORDER BY id DESC
 		", array($this['id']));
 
-		if (!is_array($this->_follower_ids)) {
-			$this->_follower_ids = array($this->_follower_ids);
+		if (!is_array($this->_cache['follower_ids'])) {
+			$this->_cache['follower_ids'] = array($this->_cache['follower_ids']);
 		}
 
-		return array_unique($this->_follower_ids);
+		return $this->_cache['follower_ids'];
 	}
 
 	/**
 	 * Retrieve a list of associated Person ids.
 	 *
+	 * @param boolean $cache
+	 *
 	 * @return array
 	 */
-	public function getPersonIds()
+	public function getPersonIds($cache = true)
 	{
-		if (is_array($this->_person_ids)) {
-			return $this->_person_ids;
+		if (isset($this->_cache['person_ids'])) {
+			return $this->_cache['person_ids'];
 		}
 
-		$this->_person_ids = App::getDb()->fetchAllCol("
+		$this->_cache['person_ids'] = App::getDb()->fetchAllCol("
 			SELECT person_id
 			FROM twitter_accounts_person
 			WHERE account_id = ?
 		", array($this['id']));
 
-		if (!is_array($this->_person_ids)) {
-			$this->_person_ids = array($this->_person_ids);
+		if (!is_array($this->_cache['person_ids'])) {
+			$this->_cache['person_ids'] = array($this->_cache['person_ids']);
 		}
 
-		return $this->_person_ids;
+		return $this->_cache['person_ids'];
+	}
+
+	public function hasPerson($agent_id)
+	{
+		if ($agent_id instanceof Person) {
+			$agent_id = $agent_id->id;
+		}
+
+		$person_ids = $this->getPersonIds();
+		return in_array($agent_id, $person_ids);
 	}
 
 	public function getNewFollowers()
 	{
 		$query = App::getOrm()->createQuery("
 			SELECT f
-			FROM DeskPRO:TwitterAccountFriend f
+			FROM DeskPRO:TwitterAccountFollower f
 			WHERE f.account = :account_id
 			ORDER BY f.id DESC
 		");
 
 		$followers = $query
 			->setMaxResults(5)
-			->setParameters(array(
-				'account_id' => $this->getId(),
-			))
+			->setParameters(array('account_id' => $this->getId()))
 			->execute();
 
 		return $followers;
 	}
 
-	public function countNewFollowers()
+	public function countNewFollowers($cache = true)
 	{
+		if ($cache && isset($this->_cache['count_new_followers'])) {
+			return $this->_cache['count_new_followers'];
+		}
+
 		$query = App::getOrm()->createQuery("
 			SELECT COUNT(f.id)
-			FROM DeskPRO:TwitterAccountFriend f
+			FROM DeskPRO:TwitterAccountFollower f
 			WHERE f.account = :account_id
 			ORDER BY f.id DESC
 		");
 
-		return $query
+		$this->_cache['count_new_followers'] = $query
 			->setMaxResults(5)
-			->setParameters(array(
-				'account_id' => $this->getId(),
-			))
+			->setParameters(array('account_id' => $this->getId()))
 			->getSingleScalarResult();
+
+		return $this->_cache['count_new_followers'];
 	}
 
 	/**
@@ -261,18 +262,10 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param string $sortByDate (optional)
 	 * @return array
 	 */
-	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc')
+	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		// get ids of users account is following
-		$friendIds = $this->getFriendIds();
-
-		// include accounts' user id
-		if ($includeAccount) {
-			$friendIds[] = $this->getUserId();
-		}
-
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findByUserIds($friendIds, $includeArchived, $sortByDate);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
@@ -284,58 +277,64 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countTimeline($includeArchived = false, $includeAccount = false)
 	{
-		// get ids of users account is following
-		$friendIds = $this->getFriendIds();
-
-		// include accounts' user id
-		if ($includeAccount) {
-			$friendIds[] = $this->getUserId();
-		}
-
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countByUserIds($friendIds, $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived);
 	}
 
 	/**
-	 * Count the total inbox statuses
-     *
+	 * Retrieve a timeline for this account.
+	 *
 	 * @param Boolean $includeArchived (optional)
-	 * @return int
+	 * @param Boolean $includeAccount (optional)
+	 * @param string $sortByDate (optional)
+	 * @return array
 	 */
-	public function countInboxTotal($includeArchived = false)
+	public function getInbox($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return $this->countMessages()
-			   + $this->countReplies()
-			   + $this->countMentions()
-			   + $this->countRetweets()
-			   ;
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+	}
+
+	/**
+	 * Retrieve a count of the timeline for this account.
+	 *
+	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
+	 * @return array
+	 */
+	public function countInbox($includeArchived = false, $includeAccount = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of messages for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getMessages($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getMessages($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findMessagesForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'direct', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
 	 * Count the messages for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @return array
 	 */
-	public function countMessages($includeArchived = false)
+	public function countMessages($includeArchived = false, $includeAccount = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countMessagesForUserId($this->getUserId(), $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'direct', $includeAccount, $includeArchived);
 	}
 
 	/**
@@ -349,8 +348,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getReplies($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findRepliesForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'reply', false, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
@@ -361,8 +360,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countReplies($includeArchived = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countRepliesForUserId($this->getUserId(), $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'reply', false, $includeArchived);
 	}
 
 	/**
@@ -376,8 +375,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getMentions($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findMentionsForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'mention', false, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
@@ -387,8 +386,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countMentions($includeArchived = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countMentionsForUserId($this->getUserId(), $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'mention', false, $includeArchived);
 	}
 
 	/**
@@ -402,8 +401,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getRetweets($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findRetweetsForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'retweet', false, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
@@ -413,8 +412,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countRetweets($includeArchived = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countRetweetsForUserId($this->getUserId(), $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'retweet', false, $includeArchived);
 	}
 
 	/**
@@ -428,8 +427,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getOutgoing($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findOutgoingByUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->getTimelineForAccount($this, 'sent', true, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
@@ -439,8 +438,8 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countOutgoing($includeArchived = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->countOutgoingByUserId($this->getUserId(), $includeArchived);
+		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+			->countTimelineForAccount($this, 'sent', true, $includeArchived);
 	}
 
 	/**
@@ -460,22 +459,36 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countStarredStatuses($includeArchived = false)
 	{
-		$userIds = $this->getFriendIds();
-		$userIds[] = $this->getUserId();
+		return intval(App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM twitter_accounts_statuses
+			WHERE is_favorited = 1
+				" . ($includeArchived ? '' : ' AND is_archived = 0') . "
+		"));
+	}
 
-		$query = sprintf("
-			SELECT COUNT(s.id)
-			FROM twitter_statuses s
-			WHERE s.user_id IN (%s)
-			AND s.is_favorited = 1
-		", implode(',', $userIds));
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+	public function getTwitterApi()
+	{
+		$api = \Application\DeskPRO\Service\Twitter::getTwitterApi();
+		if ($this->oauth_token && $this->oauth_token_secret) {
+			$api->setToken($this->oauth_token, $this->oauth_token_secret);
 		}
 
-		return App::getDb()->fetchColumn($query);
+		return $api;
+	}
 
+	public function verifyCredentials()
+	{
+		$api = $this->getTwitterApi();
+
+		try {
+			$res = $api->get_accountVerify_credentials();
+			if ($res->id_str) {
+				return true;
+			}
+		} catch (\Exception $e) {}
+
+		return false;
 	}
 
 
@@ -485,20 +498,20 @@ abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	############################################################################
 
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'oauth_token', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'oauth_token', ));
 		$metadata->mapField(array( 'fieldName' => 'oauth_token_secret', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'oauth_token_secret', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'account', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'account', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFriend', 'mappedBy' => 'account',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountFollower', 'mappedBy' => 'account',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'searches', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => 'account',  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'persons', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'twitter_accounts_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), ), ));
+		$metadata->mapManyToMany(array( 'fieldName' => 'persons', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'twitter_accounts_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }

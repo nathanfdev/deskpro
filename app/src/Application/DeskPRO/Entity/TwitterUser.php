@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter User
  *
  */
-abstract class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
+class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -130,7 +130,7 @@ abstract class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $followers;
 
 	/**
-	 * @var Application\DeskPRO\EntityRepository\TwitterAccount
+	 * @var \Application\DeskPRO\Entity\TwitterAccount
 	 */
 	protected $account;
 
@@ -172,181 +172,38 @@ abstract class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return (Boolean) $this->is_geo_enabled;
 	}
 
-	/**
-	 * Count the total inbox statuses
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countInboxTotal($includeArchived = false)
+	public function getStatuses()
 	{
-		return $this->countMessages()
-			   + $this->countReplies()
-			   + $this->countMentions()
-			   + $this->countRetweets()
-			   ;
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findOutgoingForUserId($this->id, true, 'desc');
+	}
+
+	public function getMessages()
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMessagesForUserId($this->id, true, 'desc');
+	}
+
+	public function getMentions()
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, true, 'desc');
 	}
 
 	/**
-	 * Get the direct messages for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function getMessages($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->findMessagesForUserId(
-			$this->id, $includeArchived, $sortByDate, $limit, $page
-		);
-	}
-
-	/**
-	 * Count the direct messages for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countMessages($includeArchived = false)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMessagesForUserId(
-			$this->id, $includeArchived
-		);
-
-	}
-
-	/**
-	 * Get the replies for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function getReplies($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->findRepliesForUserId(
-			$this->id, $includeArchived, $sortByDate, $limit, $page
-		);
-	}
-
-	/**
-	 * Count the replies for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countReplies($includeArchived = false)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRepliesForUserId(
-			$this->id, $includeArchived
-		);
-
-	}
-
-	/**
-	 * Get the mentions for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function getMentions($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->findMentionsForUserId(
-			$this->id, $includeArchived, $sortByDate, $limit, $page
-		);
-	}
-
-	/**
-	 * Count the mentions for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countMentions($includeArchived = false)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMentionsForUserId(
-			$this->id, $includeArchived
-		);
-
-	}
-
-	/**
-	 * Get the retweets for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function getRetweets($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->findRetweetsForUserId(
-			$this->id, $includeArchived, $sortByDate, $limit, $page
-		);
-	}
-
-	/**
-	 * Count the retweets for a user
-     *
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countRetweets($includeArchived = false)
-	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRetweetsForUserId(
-			$this->id, $includeArchived
-		);
-
-	}
-
-	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $user
+	 * @param object $user
 	 * @return \Application\DeskPRO\Entity\TwitterUser
 	 */
-	static public function createFromXML($user)
-	{
-		// @!TODO check against \SimpleXMLElement & \Zend\Rest\Client\Result
-
-		$entity                      = new self();
-		$entity['id']                = (integer) $user->id;
-		$entity['name']              = (string) $user->name;
-		$entity['screen_name']       = (string) $user->screen_name;
-		$entity['profile_image_url'] = (string) $user->profile_image_url;
-		$entity['language']          = (string) $user->lang;
-		$entity['description'] 	     = (string) $user->description;
-		$entity['is_protected']      = (Boolean) (integer) $user->protected;
-		$entity['is_verified']       = (Boolean) (integer) $user->verified;
-		$entity['location']          = (string) $user->location;
-		$entity['is_geo_enabled']    = (Boolean) (integer) $user->geo_enabled;
-
-		return $entity;
-	}
-
-	/**
-	 * @param \array $user
-	 * @return \Application\DeskPRO\Entity\TwitterUser
-	 */
-	static public function createFromJson(array $user)
+	static public function createFromJson($user)
 	{
 		$entity                      = new self();
-		$entity['id']                = $user['id_str'];
-		$entity['name']              = $user['name'];
-		$entity['screen_name']       = $user['screen_name'];
-		$entity['profile_image_url'] = $user['profile_image_url'];
-		$entity['language']          = $user['lang'];
-		$entity['description']       = $user['description'];
-		$entity['is_protected']      = $user['protected'];
-		$entity['is_verified']       = $user['verified'];
-		$entity['location']          = $user['location'];
-		$entity['is_geo_enabled']    = $user['geo_enabled'];
+		$entity['id']                = $user->id_str;
+		$entity['name']              = $user->name;
+		$entity['screen_name']       = $user->screen_name;
+		$entity['profile_image_url'] = $user->profile_image_url;
+		$entity['language']          = $user->lang;
+		$entity['description']       = $user->description;
+		$entity['is_protected']      = $user->protected;
+		$entity['is_verified']       = $user->verified;
+		$entity['location']          = $user->location;
+		$entity['is_geo_enabled']    = $user->geo_enabled;
 
 		return $entity;
 	}
@@ -358,12 +215,12 @@ abstract class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	############################################################################
 
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUser';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_users', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'screen_name', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name', ));

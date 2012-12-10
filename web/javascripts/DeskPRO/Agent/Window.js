@@ -1100,8 +1100,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			sectionId = 'feedback_section';
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			sectionId = 'tickets_section';
-		}else if (testcl('.Task')) {
+		} else if (testcl('.Task')) {
 			sectionId = 'tasks_section';
+		} else if (testcl('.Twitter')) {
+			sectionId = 'twitter_section';
 		}
 
 		if (sectionId) {

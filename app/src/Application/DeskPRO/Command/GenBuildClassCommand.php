@@ -61,7 +61,9 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			$defaultcode = array();
 
 			foreach ($diff as $sql) {
-				$defaultcode[] = "\t\t\$this->execMutateSql(\"".addslashes($sql)."\");";
+				$sql = str_replace("\\'", "'", addslashes($sql));
+				$sql = str_replace('$', '\\$', $sql);
+				$defaultcode[] = "\t\t\$this->execMutateSql(\"".$sql."\");";
 			}
 
 			$defaultcode = implode("\n", $defaultcode);

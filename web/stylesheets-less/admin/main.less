@@ -246,7 +246,7 @@ span.label.notice{background-color:#62cffc;}
 	display: block;
 
 	float: left;
-	min-width: 63px;
+	min-width: 60px;
 	height: 54px;
 	cursor: pointer;
 	padding: 1px 3px 1px 3px;
@@ -373,9 +373,9 @@ span.label.notice{background-color:#62cffc;}
 }
 #dp_admin_nav_sections li a span.downloads {
 	background-repeat: no-repeat;
-	background-position: 14px 0;
+	background-position: 19px 0;
 	background-image: url(../../images/admin/app-nav/downloads.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 14px; sprite-margin-top: 0; sprite-margin-bottom: 38px; */;
-	width: 50px;
+	width: 60px;
 }
 #dp_admin_nav_sections li:hover a span.downloads {
 	background-image: url(../../images/admin/app-nav/downloads-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 14px; sprite-margin-top: 0; sprite-margin-bottom: 38px; */;
@@ -497,6 +497,15 @@ span.label.notice{background-color:#62cffc;}
 
 #dp_admin_nav_sections li:hover a span.server {
 	background-image: url(../../images/admin/app-nav/server-on.png);
+}
+
+#dp_admin_nav_sections li a span.twitter {
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/app-nav/app-twitter.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.twitter {
+    background-image: url(../../images/agent/app-nav/app-twitter-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 
 #dp_page_wrap {
@@ -4664,6 +4673,17 @@ ul.tabs {
 .delete-icon {
 	.iconbase(16px, 16px);
 	background: url(../../images/agent/icons/cross.png);
+	text-indent: 100px;
+	.opacity(50);
+
+	&:hover {
+		.opacity(100);
+	}
+}
+
+.edit-icon {
+	.iconbase(16px, 16px);
+	background: url(../../images/agent/icons/cog.png);
 	text-indent: 100px;
 	.opacity(50);
 

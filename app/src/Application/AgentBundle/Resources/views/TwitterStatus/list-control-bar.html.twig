@@ -1,18 +1,18 @@
 <header class="header">
-    <div class="list-control-bar">
-    	<ul class="order-by-menu" >
-            <li>{{ phrase('agent.general.sort_by') }}</li>
-            <li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
-    		<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
-        </ul>
+	<div class="list-control-bar">
+		<ul class="btn-controls">
+			<li class="display-options display-options-trigger"><a></a></li>
+			<li class="right"><span class="sep"></span></li>
+		</ul>
+		<ul class="order-by-menu" >
+			<li>{{ phrase('agent.general.sort_by') }}</li>
+			<li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
+			<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
+		</ul>
 
-        <span>
-            <input name="account" type="checkbox" />
-            <label data-for="account">Show @{{ account.user.screen_name }}'s tweets</label>
-        </span>
-        <span>
-            <input name="archived" type="checkbox" />
-            <label data-for="archived">{{ phrase('agent.twitter.show_archived_tweets') }}</label>
-        </span>
-    </div>
+		<ul style="display:none" class="display-options-menu">
+			{% if account %}<li><label><input name="account" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets</label></li>{% endif %}
+			<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
+		</ul>
+	</div>
 </header>

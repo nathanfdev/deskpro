@@ -1,0 +1,14 @@
+<li>
+	<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.status.user.id}) }}">
+		<img src="{{ reply.status.user.profile_image_url }}" width="24" height="24" border="0" />
+	</div>
+
+	<h6>
+		<span class="name">{{ reply.status.user.name }}</span>
+		<span class="screen-name">@{{ reply.status.user.screen_name }}</span>
+	</h6>
+
+	<div class="status-text">{{ reply.status.parsed_text|raw }}</div>
+
+	<time class="timeago" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.date_created|date('day')}}</time>
+</li>

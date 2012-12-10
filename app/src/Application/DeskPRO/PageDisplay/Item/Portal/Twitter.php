@@ -74,12 +74,7 @@ class Twitter extends PortalItemAbstract implements CacheableItem
 		$secret = $this->getOption('secret');
 
 		if ($token && $secret) {
-			$twitter = new \EpiTwitter(
-				\Orb\Service\Twitter\Oauth::getConsumerKey(),
-				\Orb\Service\Twitter\Oauth::getConsumerSecret(),
-				$token,
-				$secret
-			);
+			$twitter = \Application\DeskPRO\Service\Twitter::getTwitterApi($token, $secret);
 
 			$feed_items = array();
 

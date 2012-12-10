@@ -3,18 +3,263 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'twitter-status-list';
+	},
+
 	initPage: function(el) {
 		this.wrapper = $(el);
 
 		this.header = $('.header', this.wrapper);
 		this.content = $('.content', this.wrapper);
 
-		this.note = $('.form-note', this.wrapper);
-		this.reply = $('.form-reply', this.wrapper);
-
 		this._initHeader();
 		this._initContent();
 		this._initControls();
+
+		var self = this;
+
+		// user links
+		$('.photo', this.content).on('click', '.photo, .user', function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+			return false;
+		});
+
+		// status favorite/unfavorite
+		this.content.on('click', '.add-favorite', function(e) {
+			e.preventDefault();
+
+			$(this).addClass('favorited').removeClass('add-favorite');
+
+			var id = $(this).closest('.twitter-status').attr('data-status-id');
+			self.doFavorite(id, 1);
+		});
+		this.content.on('click', '.favorited', function(e) {
+			e.preventDefault();
+
+			$(this).addClass('add-favorite').removeClass('favorited');
+
+			var id = $(this).closest('.twitter-status').attr('data-status-id');
+			self.doFavorite(id, 0);
+		});
+
+		// status archive/unarchive
+		this.content.on('click', '.status-archive', function(e) {
+			e.preventDefault();
+
+			var row = $(this).closest('.twitter-status');
+
+			$(this).addClass('status-archived').removeClass('status-archive');
+			row.addClass('archived');
+
+			var id = row.attr('data-status-id');
+			self.doArchive(id, 1);
+
+			if (self.menuOptions && !self.menuOptions.filter('[name=archived]').is(':checked')) {
+				row.hide();
+			}
+		});
+		this.content.on('click', '.status-archived', function(e) {
+			e.preventDefault();
+
+			$(this).addClass('status-archive').removeClass('status-archived');
+			$(this).closest('.twitter-status').removeClass('archived');
+
+			var id = $(this).closest('.twitter-status').attr('data-status-id');
+			self.doArchive(id, 0);
+		});
+
+
+		// retweet/unretweet trigger
+		this.content.on('click', 'li.opt-trigger.retweet', function(e) {
+			e.preventDefault();
+
+			var link = $(this);
+
+			var id = link.closest('.twitter-status').attr('data-status-id');
+
+			if (confirm('Are you sure you want to retweet this?')) {
+				$.ajax({
+					url: self.getMetaData('saveRetweetUrl'),
+					dataType: 'json',
+					data: {
+						account_status_id: id
+					},
+					success: function(json) {
+						if (json.success) {
+							link.addClass('retweeted').removeClass('retweet');
+							link.find('label').text('Retweeted');
+						} else {
+							alert(json.error);
+						}
+					}
+				});
+			}
+		});
+		this.content.on('click', 'li.opt-trigger.retweeted', function(e) {
+			e.preventDefault();
+
+			var link = $(this);
+
+			var id = link.closest('.twitter-status').attr('data-status-id');
+
+			if (confirm('Are you sure you want to un-retweet this?')) {
+				$.ajax({
+					url: self.getMetaData('saveUnretweetUrl'),
+					dataType: 'json',
+					data: {
+						account_status_id: id
+					},
+					success: function(json) {
+						if (json.success) {
+							link.addClass('retweet').removeClass('retweeted');
+							link.find('label').text('Retweet');
+						} else {
+							alert(json.error);
+						}
+					}
+				});
+			}
+		});
+
+		// reply triggers
+		this.content.on('click', 'li.opt-trigger.reply', function(e) {
+			e.preventDefault();
+
+			var row = $(this).closest('.twitter-status');
+
+			var newReply = row.find('.new-reply');
+			if (newReply.is(':visible')) {
+				newReply.hide();
+			} else {
+				newReply.show();
+
+				var textarea = newReply.find('textarea');
+				if (!$.trim(textarea.val()).length && !row.hasClass('dm')) {
+					var name = row.find('.title .screen-name').text();
+
+					textarea.val(name + ' ');
+				}
+
+				textarea.focus();
+			}
+		});
+		this.content.on('click', '.new-reply .reply-type li', function() {
+			var $this = $(this);
+			var replyContainer = $this.closest('.new-reply');
+
+			replyContainer.find('.reply-type li').removeClass('on');
+			$this.addClass('on');
+			replyContainer.find('.reply-type-hidden').val($this.data('type'));
+		});
+		this.content.on('click', '.cancel-reply-trigger', function() {
+			var replyContainer = $(this).closest('.new-reply');
+			replyContainer.hide();
+		});
+		this.content.on('click', '.save-reply-trigger', function(e) {
+			e.preventDefault();
+
+			var row = $(this).closest('.twitter-status');
+			var id = row.attr('data-status-id');
+			var replyContainer = $(this).closest('.new-reply');
+
+			var val = $.trim(replyContainer.find('textarea').val());
+			if (!val.length) {
+				replyContainer.hide();
+				return;
+			}
+
+			var type = replyContainer.find('.reply-type-hidden').val();
+
+			replyContainer.addClass('loading');
+
+			$.ajax({
+				url: self.getMetaData('saveReplyUrl'),
+				dataType: 'json',
+				data: {
+					account_status_id: id,
+					text: val,
+					type: type
+				},
+				success: function(json) {
+					if (json.success) {
+						if (json.html) {
+							var html = $(json.html);
+							row.find('.twitter-replies').append(html);
+							$('.timeago', html).timeago();
+
+							row.find('.reply-list').show();
+						}
+
+						replyContainer.hide();
+						replyContainer.find('textarea').val('')
+					} else {
+						alert(json.error);
+					}
+				}
+			}).always(function() {
+				replyContainer.removeClass('loading');
+			});
+		});
+
+
+		// note triggers
+		this.content.on('click', '.note-btn', function() {
+			var newNote = $(this).closest('.twitter-status').find('.new-note');
+			if (newNote.is(':visible')) {
+				newNote.hide();
+			} else {
+				newNote.show();
+				newNote.find('textarea').focus();
+			}
+		});
+		this.content.on('click', '.cancel-note-trigger', function() {
+			var noteContainer = $(this).closest('.new-note');
+			noteContainer.hide();
+		});
+		this.content.on('click', '.save-note-trigger', function(e) {
+			e.preventDefault();
+
+			var row = $(this).closest('.twitter-status');
+			var id = row.attr('data-status-id');
+			var noteContainer = $(this).closest('.new-note');
+
+			var val = $.trim(noteContainer.find('textarea').val());
+			if (!val.length) {
+				noteContainer.hide();
+				return;
+			}
+
+			noteContainer.addClass('loading');
+
+			$.ajax({
+				url: self.getMetaData('saveNoteUrl'),
+				dataType: 'json',
+				data: {
+					account_status_id: id,
+					text: val
+				},
+				success: function(json) {
+					if (json.success) {
+						if (json.html) {
+							var html = $(json.html);
+							row.find('.note-list').append(html);
+							$('.timeago', html).timeago();
+
+							row.find('.notes-wrap').show();
+						}
+
+						noteContainer.hide();
+						noteContainer.find('textarea').val('')
+					} else {
+						alert(json.error);
+					}
+				}
+			}).always(function() {
+				noteContainer.removeClass('loading');
+			});
+		});
 	},
 
 	_afterLoading: function() {
@@ -28,18 +273,43 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initContent: function() {
-		this._initUserPageLinks();
-		this._initTimeago();
+		$('.timeago', this.content).timeago();
 	},
 
 	_initControls: function() {
-		this._initFollow();
-		this._initUnfollow();
-		this._initAddNote();
-		this._initAssign();
-		this._initRetweet();
-		this._initReply();
-		this._initArchive();
+		//this._initFollow();
+		//this._initUnfollow();
+
+		var self = this;
+
+		this.content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
+			var row = $(this).closest('article.twitter-status');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (val == 'agent:' + DESKPRO_PERSON_ID) {
+					label = 'Me';
+				}
+
+				row.find('li.opt-trigger.agent label').text(label);
+
+				var id = $(this).closest('.twitter-status').attr('data-status-id');
+
+				$.ajax({
+					url: self.getMetaData('saveAssignUrl'),
+					dataType: 'json',
+					data: { account_status_id: id, assign: val },
+					success: function(json) {
+						if (json.error) {
+							alert(json.error);
+						}
+					}
+				});
+			});
+		});
 	},
 
 	_initSortByFields: function() {
@@ -47,44 +317,39 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initIncludeFields: function() {
-		$('.list-control-bar input:checkbox', this.header).on('change', $.proxy(this.reload, this));
+		var self = this;
 
-		$('.list-control-bar label', this.header).each($.proxy(function(idx, el) {
-			var label = $(el),
-				input = $('.list-control-bar input[name='+label.data('for')+']', this.header),
-				id = Orb.getUniqueId('twitter_options_'+label.data('for'));
+		this.menuOptions = this.header.find('.display-options-menu input:checkbox');
 
-			input.attr('id', id);
-			label.attr('for', id);
-		}, this));
-	},
+		var timer = false;
 
-	_initUserPageLinks: function() {
-		$('.photo', this.content).on('click', function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-			return false;
+		var optionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.header.find('.display-options-trigger'),
+			menuElement: this.header.find('.display-options-menu'),
+			onItemClicked: function(info) {
+				// this can be called twice so use the timer to ensure only one run happens
+				if (timer) {
+					clearTimeout(timer);
+				}
+				timer = setTimeout(function() {
+					self.reload();
+				}, 0);
+			}
 		});
-
-		$('.user', this.content).on('click', function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-			return false;
-		});
-	},
-
-	_initTimeago: function() {
-		//this.initTimesOnCollection($('.timeago', this.content));
 	},
 
 	_getDisplayOptions: function() {
 		var options = {
-			sortbydate: $('.list-control-bar select[name=sortbydate] option:selected', this.header).val(),
+			//sortbydate: $('.list-control-bar select[name=sortbydate] option:selected', this.header).val(),
 			include: {}
 		};
 
-		$('.list-control-bar input:checkbox', this.header).each(function() {
-			var field = $(this);
-			options.include[field.attr('name')] = field.attr('checked') ? 1 : 0;
-		});
+		if (this.menuOptions) {
+			this.menuOptions.each(function() {
+				var field = $(this);
+				options.include[field.attr('name')] = field.attr('checked') ? 1 : 0;
+			});
+		}
 
 		return options;
 	},
@@ -103,15 +368,15 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	highlightStatus: function(id) {
-		$('.status', this.content).removeClass('highlight');
+		$('.twitter-status', this.content).removeClass('highlight');
 		$('.status-'+id, this.content).addClass('highlight');
 	},
 
 	downlightStatus: function(id) {
-		$('.status-'+id, this.content).removeClass('highlight');
+		$('.twitter-status-'+id, this.content).removeClass('highlight');
 	},
 
-	_initFollow: function() {
+	/*_initFollow: function() {
 		var buttons = $('.follow a', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
@@ -163,244 +428,31 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				}
 			}
 		});
-	},
+	},*/
 
-	_initAddNote: function() {
-		var buttons = $('.controls .status-note', this.content);
-
-		buttons.on('click', $.proxy(function(e) {
-			if ($('.form-note', $(e.target).parents('.status')).length) {
-				return false;
-			}
-
-			var status = $(e.target).parents('.status').attr('data-status-id'),
-				note = this.note.clone(),
-				area = $('textarea[name=text]', note);
-
-
-			$(e.target).parents('.controls-row').find('.forms').append(note);
-			this.highlightStatus(status);
-
-			// close on ESCAPE
-			var closeOnEscape = $.proxy(function(e) {
-				if (e.which != 27) {
-					return true;
-				}
-
-				this.downlightStatus(status);
-
-				note.remove();
-
-				// only once
-				$(document).unbind('keydown', closeOnEscape);
-
-				return true;
-			}, this);
-			$(document).on('keydown', closeOnEscape);
-
-			// submit on ENTER
-			area.on('keypress', $.proxy(function(e) {
-				if (e.which != 13) {
-					return true;
-				}
-
-				var text = area.val();
-				note.remove();
-
-				this.doAddNote(status, text);
-
-				e.preventDefault();
-				return false;
-			}, this));
-
-			note.show();
-			area.focus();
-
-			e.preventDefault();
-			return false;
-		}, this));
-	},
-
-	doAddNote: function(id, text) {
-		$.ajax({
-			url: this.getMetaData('saveNoteUrl'),
-			dataType: 'json',
-			data: {
-				status_id: id,
-				text: text
-			},
-			context: this,
-			success: function(json) {
-				if (json.success) {
-					this.reload();
-				} else {
-					alert(json.error);
-				}
-			}
-		});
-	},
-
-	_initAssign: function() {
-		var buttons = $('.controls .status-assign', this.content);
-
-		buttons.on('click', $.proxy(function(e) {
-			e.preventDefault();
-			alert("Todo");
-			return false;
-		}, this));
-	},
-
-	_initRetweet: function() {
-		var buttons = $('.controls .status-retweet', this.content);
-
-		buttons.on('click', $.proxy(function(e) {
-			this.doRetweet($(e.target).parents('.status').attr('data-status-id'));
-
-			e.preventDefault();
-			return false;
-		}, this));
-	},
-
-	doRetweet: function(id) {
-		$.ajax({
-			url: this.getMetaData('saveRetweetUrl'),
-			dataType: 'json',
-			data: {
-				status_id: id,
-				account_id: this.getMetaData('accountId')
-			},
-			context: this,
-			success: function(json) {
-				if (json.success) {
-					this.reload();
-				} else {
-					alert(json.error);
-				}
-			}
-		});
-	},
-
-	_initReply: function() {
-		var buttons = $('.controls .status-reply', this.content);
-
-		buttons.on('click', $.proxy(function(e) {
-			if ($('.form-reply', $(e.target).parents('.status')).length) {
-				return false;
-			}
-
-			var status = $(e.target).parents('.status').attr('data-status-id'),
-				reply = this.reply.clone(),
-				area = $('textarea[name=text]', reply);
-
-			$(e.target).parents('.controls-row').find('.forms').append(reply);
-			this.highlightStatus(status);
-
-			// close on ESCAPE
-			var closeOnEscape = $.proxy(function(e) {
-				if (e.which != 27) {
-					return true;
-				}
-
-				this.downlightStatus(status);
-
-				reply.remove();
-
-				// only once
-				$(document).unbind('keydown', closeOnEscape);
-
-				return true;
-			}, this);
-			$(document).on('keydown', closeOnEscape);
-
-			// submit on ENTER
-			reply.on('keypress', $.proxy(function(e) {
-				if (e.which != 13) {
-					return true;
-				}
-
-				var text = area.val(),
-					type = $('input[type=radio][name=type]:checked', reply).val(),
-					account_id = $('select[name=account] option:selected', reply).val();
-
-				reply.remove();
-
-				this.doReply(status, text, type, account_id);
-
-				e.preventDefault();
-				return false;
-			}, this));
-
-			reply.on('keyup', $.proxy(function(e) {
-				// Update character count display
-				var standardStatusLimit = this.getMetaData('standardStatusLimit') || 160;
-				var statusLength = area.val().length;
-				if (statusLength <= standardStatusLimit) {
-					var html = '<span>' + statusLength + '</span> characters';
-					$('.twitter-status-count span').html(html);
-				}
-				else {
-					var html = 'Reply too long for twitter, will be sent as a long message';
-					$('.twitter-status-count span').html(html);
-				}
-				e.preventDefault();
-				return false;
-			}, this));
-
-			reply.show();
-			area.focus();
-
-			e.preventDefault();
-			return false;
-		}, this));
-
-	},
-
-	doReply: function(id, text, type, account_id) {
-		$.ajax({
-			url: this.getMetaData('saveReplyUrl'),
-			dataType: 'json',
-			data: {
-				status_id: id,
-				account_id: this.getMetaData('accountId'),
-				text: text,
-				type: type
-			},
-			context: this,
-			success: function(json) {
-				if (json.success) {
-					this.reload();
-				} else {
-					alert(json.error);
-				}
-			}
-		});
-	},
-
-	_initArchive: function() {
-		var buttons = $('.controls .status-archive', this.content);
-
-		buttons.on('click', $.proxy(function(e) {
-			// $.data('status-id') results in math(status-id - 4) so use .attr()
-			this.doArchive($(e.target).parents('.status').attr('data-status-id'));
-
-			e.preventDefault();
-			return false;
-		}, this));
-	},
-
-	doArchive: function(id) {
+	doArchive: function(id, archive) {
 		$.ajax({
 			url: this.getMetaData('saveArchiveUrl'),
 			dataType: 'json',
-			data: { status_id: id },
-			context: this,
+			data: { account_status_id: id, archive: archive ? 1 : 0 },
 			success: function(json) {
-				if (json.success) {
-					this.reload();
-				} else {
+				if (json.error) {
 					alert(json.error);
 				}
 			}
-		})
+		});
+	},
+
+	doFavorite: function(id, favorite) {
+		$.ajax({
+			url: this.getMetaData('saveFavoriteUrl'),
+			dataType: 'json',
+			data: { account_status_id: id, favorite: favorite ? 1 : 0 },
+			success: function(json) {
+				if (json.error) {
+					alert(json.error);
+				}
+			}
+		});
 	}
 });

@@ -35,119 +35,19 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-
-use \Doctrine\ORM\EntityRepository;
+use \Application\DeskPRO\Entity\TwitterAccount AS TwitterAccountEntity;
 
 use Orb\Util\Numbers;
 
 class TwitterStatus extends AbstractEntityRepository
 {
-	/**
-	 * @param string $sortByDate (optional)
-	 * @return string
-	 */
-	protected function normalizeSortByDate($sortByDate = 'asc')
+	public function getByTwitterStatusId($id)
 	{
-		// check that sort by date is asc or desc
-		if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
-			$sortByDate = 'asc';
-		}
-
-		return strtoupper($sortByDate);
-	}
-
-	/**
-	 * @param integer $limit
-	 * @param integer $page
-	 * @return integer
-	 */
-	protected function calculateOffset($limit, $page)
-	{
-		if (1 <= $page) {
-			$page = 0;
-		}
-
-		return $page * $limit;
-	}
-
-	/**
-	 * @param array $userIds An array of TwitterUser ids
-	 * @param Boolean $includeArchived (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findByUserIds(array $userIds, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		$userIds = array_filter($userIds, function ($value) {
-			if (Numbers::isInteger($value)) {
-				return true;
-			}
-
-			return false;
-		});
-
-		if (!$userIds) {
-			return array();
-		}
-
-		$query = "
+		return $this->getEntityManager()->createQuery("
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
-			WHERE s.user IN (".implode(',', $userIds).")
-			AND s.recipient IS NULL
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= sprintf(" ORDER BY s.date_created %s", $this->normalizeSortByDate($sortByDate));
-
-		$statuses = $this->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute();
-
-		return $statuses;
-	}
-
-	/**
-	 * @param array $userIds An array of TwitterUser ids
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countByUserIds(array $userIds, $includeArchived = false)
-	{
-		$userIds = array_filter($userIds, function ($value) {
-			if (Numbers::isInteger($value)) {
-				return true;
-			}
-
-			return false;
-		});
-
-		if (!$userIds) {
-			return 0;
-		}
-
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.user IN (".implode(',', $userIds).")
-			AND s.recipient IS NULL
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->getSingleScalarResult();
+			WHERE s.id = ?0
+		")->setParameters(array($id))->getOneOrNullResult();
 	}
 
 	/**
@@ -188,28 +88,35 @@ class TwitterStatus extends AbstractEntityRepository
 	/**
 	 * @param integer $id
 	 * @param Boolean $includeArchived (optional)
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function countMessagesForUserId($id, $includeArchived = false)
+	public function findOutgoingForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		$query = "
-			SELECT COUNT(s.id)
+			SELECT s
 			FROM DeskPRO:TwitterStatus s
-			WHERE s.recipient IS NOT NULL
-			AND (s.user = :user_id OR s.recipient = :user_id)
+			WHERE s.user = :user_id
 		";
 
 		if (!$includeArchived) {
 			$query .= " AND s.is_archived = 0 ";
 		}
 
+		$query .= sprintf("
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
 		return $this
 			->getEntityManager()
 			->createQuery($query)
-			->setParameters(array(
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute(array(
 				'user_id' => $id
-			))
-			->getSingleScalarResult();
+			));
 	}
 
 	/**
@@ -252,36 +159,6 @@ class TwitterStatus extends AbstractEntityRepository
 
 	/**
 	 * @param integer $id
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countRepliesForUserId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(r.id)
-			FROM DeskPRO:TwitterStatus r
-			WHERE r.in_reply_to_status IN (
-				SELECT s.id
-				FROM DeskPRO:TwitterStatus s
-				WHERE s.user = :user_id
-			)
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND r.is_archived = 0 ";
-		}
-
-		return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameters(array(
-				'user_id' => $id
-			))
-			->getSingleScalarResult();
-	}
-
-	/**
-	 * @param integer $id
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
@@ -315,303 +192,31 @@ class TwitterStatus extends AbstractEntityRepository
 	}
 
 	/**
-	 * @param integer $id
-	 * @return int
-	 */
-	public function countMentionsForUserId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			LEFT JOIN s.mentions m
-			WHERE m.user = :user_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameters(array(
-				'user_id' => $id
-			))
-			->getSingleScalarResult();
-	}
-
-	/**
-	 * @todo implement
-	 */
-	public function findRetweetsForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
-	{
-	 	return array();
-	}
-
-	/**
-	 * @todo implement
-	 */
-	public function countRetweetsForUserId($id, $includeArchived = false)
-	{
-	 	return 0;
-	}
-
-	/**
-	 * @param integer $id
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
+	 * @return string
 	 */
-	public function findOutgoingByUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	protected function normalizeSortByDate($sortByDate = 'asc')
 	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.user = :user_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+		// check that sort by date is asc or desc
+		if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
+			$sortByDate = 'asc';
 		}
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'user_id' => $id
-			));
+		return strtoupper($sortByDate);
 	}
 
-	/**
-	 * @param integer $id
-	 * @return array
-	 */
-	public function countOutgoingByUserId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.user = :user_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameters(array(
-				'user_id' => $id
-			))
-			->getSingleScalarResult();
-	}
 
 	/**
-	 * Get starred tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
+	 * @param integer $limit
+	 * @param integer $page
+	 * @return integer
 	 */
-	public function findStarredTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	protected function calculateOffset($limit, $page)
 	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.user u
-			INNER JOIN u.account a
-			INNER JOIN a.persons p
-			WHERE s.is_favorited = :is_favorited
-			AND p.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
+		if (1 <= $page) {
+			$page = 0;
 		}
 
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id,
-				'is_favorited' => true
-			));
-	}
-
-	/**
-	 * Count starred tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return array
-	 */
-	public function countStarredTweetsForAgentId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.user u
-			INNER JOIN u.account a
-			INNER JOIN a.persons p
-			WHERE s.is_favorited = :is_favorited
-			AND p.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
-	}
-
-	/**
-	 * Get tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.agent = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id
-			));
-	}
-
-	/**
-	 * Counts tweets for an agent
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countTweetsForAgentId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			WHERE s.agent = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
-	}
-
-	/**
-	 * Get tweets for an agent team
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
-	 */
-	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-		$query = "
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.agent_team at
-			INNER JOIN at.members m
-			WHERE m.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-		$query .= sprintf("
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'agent_id' => $id
-			));
-	}
-
-	/**
-	 * Count tweets for an agent team
-	 *
-	 * @param integer $id Agent Id
-	 * @param Boolean $includeArchived (optional)
-	 * @return int
-	 */
-	public function countTweetsForAgentTeamByAgentId($id, $includeArchived = false)
-	{
-		$query = "
-			SELECT COUNT(s.id)
-			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.agent_team at
-			INNER JOIN at.members m
-			WHERE m.id = :agent_id
-		";
-
-		if (!$includeArchived) {
-			$query .= " AND s.is_archived = 0 ";
-		}
-
-	 	return $this
-			->getEntityManager()
-			->createQuery($query)
-			->setParameter('agent_id', $id)
-			->getSingleScalarResult();
+		return $page * $limit;
 	}
 }

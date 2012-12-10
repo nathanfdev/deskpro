@@ -1,10 +1,15 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+<nav>
+	<ul>
+		<li class="add"><a href="{{ path('admin_twitter_accounts_new', {'start': 1}) }}">{{ phrase('admin.twitter.create_new_account') }}</a></li>
+	</ul>
+</nav>
+<ul>
+	<li>Twitter Accounts</li>
+</ul>
+{% endblock %}
 {% block page %}
-
-<div style="text-align: right">
-	<a class="dp-button green" href="{{ path('admin_twitter_accounts_new') }}" target="_twitter">{{ phrase('admin.twitter.create_new_account') }}</a>
-	<br /><br />
-</div>
 
 <ul class="item-list">
 	{% for account in accounts %}

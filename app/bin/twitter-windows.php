@@ -25,125 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+if (php_sapi_name() != 'cli') {
+	echo "This script must only be run using the command line interface of PHP\n";
+	echo "Contact support@deskpro.com if you require assistance.\n";
+	exit(1);
+}
 
-namespace Orb\Service\Phirehose;
+ini_set('display_errors', true);
+error_reporting(E_ALL | E_STRICT);
+define('DP_ROOT', realpath(__DIR__ . '/../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+date_default_timezone_set('GMT');
+set_time_limit(0);
 
-/**
- * Concrete Twitter API User Stream consuming class.
- *
- */
-class UserStream extends \UserstreamPhirehose
-{
-	/**
-	 * @var array
-	 */
-	protected $account;
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
+require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
+require_once DP_ROOT.'/sys/autoload.php';
+require_once DP_ROOT.'/sys/load_config.php';
+dp_load_config();
 
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	protected $connection;
+set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
+set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
 
-	/**
-	 * @var array
-	 */
-	protected $log = array();
+$file = escapeshellarg(dirname(__FILE__) . '\\twitter.php');
+$php_path = dp_get_php_path(true);
 
-	/**
-	 * Suppress Phirehose @error_log output.
-	 *
-	 * @param string $message
-	 * @return void
-	 */
-	protected function log($message)
-	{
-		$this->log[] = $message;
-	}
+// this is needed as we need a fake window to hide the process
+$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
 
-	/**
-	 * @return \Doctrine\DBAL\Connection
-	 */
-	public function getConnection()
-	{
-		return $this->connection;
-	}
-
-	/**
-	 * @param \Doctrine\DBAL\Connection
-	 * @return void
-	 */
-	public function setConnection(\Doctrine\DBAL\Connection $connection)
-	{
-		$this->connection = $connection;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAccount()
-	{
-		return $this->account;
-	}
-
-	/**
-	 * @param array $account
-	 * @return void
-	 */
-	public function setAccount(array $account)
-	{
-		$this->account = $account;
-	}
-
-	/**
-	 * Process raw streaming data.
-	 *
-	 * @param string $status
-	 * @return void
-	 */
-	public function enqueueStatus($status)
-	{
-		// skip "ping -> pong"
-		if (null === $status || !strlen(trim($status))) {
-			return false;
-		}
-
-		// decode json
-		$status = json_decode($status, true);
-		$event = 'unknown';
-
-		// check if status is a tweet
-		if (isset($status['text'])) {
-			$event = 'status';
-		}
-
-		// check direct message
-		if (isset($status['direct_message'])) {
-			$event = 'message';
-		}
-
-		// check event
-		if (isset($status['event'])) {
-			$event = 'event';
-		}
-
-		// check friend list
-		if (isset($status['friends'])) {
-			$event = 'friends';
-		}
-
-		if (isset($status['delete'])) {
-			$event = 'delete';
-		}
-
-		$this->connection->insert('twitter_stream', array(
-			'account_id' => $this->account['id'],
-			'event' => $event,
-			'data' => serialize($status)
-		));
-	}
+if (class_exists('\COM', false)) {
+	$shell = new \COM("WScript.Shell");
+	$shell->Run("$php_path $file", 0, false);
+} else {
+	pclose(popen("start \"dptwitter\" /MIN $php_path $file", "r"));
 }

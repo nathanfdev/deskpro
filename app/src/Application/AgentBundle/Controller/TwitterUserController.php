@@ -143,9 +143,9 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccount($account_id);
 
-        return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', array(
-                'account'	=> $account,
-        ));
+		return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', array(
+			'account'	=> $account,
+		));
 
 	}
 }

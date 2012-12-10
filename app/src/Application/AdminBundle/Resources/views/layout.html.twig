@@ -310,6 +310,14 @@
 				<a {% if not app.getSetting('core.apps_chat') %}href="{{ path('admin_apps') }}"{% endif %}><span class="chat">{{ phrase('agent.general.chat') }}</span></a>
 			</li>
 		</ul>
+		{% if app.getConfig('enable_twitter') %}
+			<div class="sep">-</div>
+			<ul>
+				<li data-menu="#twitter_menu">
+					<a><span class="twitter">Twitter</span></a>
+				</li>
+			</ul>
+		{% endif %}
 	</div>
 </div>
 

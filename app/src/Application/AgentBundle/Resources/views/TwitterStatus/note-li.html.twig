@@ -1,0 +1,16 @@
+<li data-note-id="{{note.id}}" class="note">
+	<div class="message">
+		<div class="message-avatar">
+			<img src="{{ note.person.getPictureUrl(25) }}" alt="" width="25" height="25" />
+		</div>
+		<div class="message-body">
+			<div class="message-meta">
+				<time class="timeago" title="{{note.date_created|date('c', 'UTC')}}">{{note.date_created|date('day')}}</time>
+				<h4>{{note.person.name}}:</h4>
+			</div>
+			<div class="message-text">
+				{{note.text}}
+			</div>
+		</div>
+	</div>
+</li>

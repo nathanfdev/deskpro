@@ -40,6 +40,7 @@ use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountFollower;
+use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterStatus;
 use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
@@ -57,16 +58,33 @@ class TwitterStream extends AbstractJob
 	 */
 	const EVENT_LIMIT = 50;
 
+	/**
+	 * @var \Application\DeskPRO\ORM\EntityManager
+	 */
 	protected $em;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
 	protected $db;
+
+	/**
+	 * @var \Application\DeskPRO\Service\Twitter
+	 */
+	protected $twitter_service;
 
 	protected $accounts = array();
 	protected $twitter = array();
 
 	public function run()
 	{
+		if (!App::getConfig('enable_twitter')) {
+			return;
+		}
+
 		$this->db = App::getDb();
 		$this->em = App::getOrm();
+		$this->twitter_service = new \Application\DeskPRO\Service\Twitter();
 
 		$events = $this->db->fetchAll(sprintf("
 			SELECT *
@@ -80,25 +98,29 @@ class TwitterStream extends AbstractJob
 		foreach ($events as $event) {
 			$method = 'process'.ucfirst($event['event']);
 			if (!method_exists($this, $method)) {
-				// $this->logStatus('unknown event type', $event);
+				$this->logStatus('unknown event type', $event);
 				continue;
 			}
 
-			try {
-				$success = call_user_func(
-					array($this, $method),
-					$this->getAccount($event['account_id']),
-					unserialize($event['data'])
-				);
-			} catch (\Exception $e) {
-				echo $e->getMessage().PHP_EOL;
-				// $this->logStatus('exception catched', $e);
-				$success = false;
+			$account = $this->getAccount($event['account_id']);
+			if ($account) {
+				try {
+					$success = call_user_func(
+						array($this, $method),
+						$this->getAccount($event['account_id']),
+						unserialize($event['data'])
+					);
+				} catch (\Exception $e) {
+					$this->logStatus('exception caught: ' . $e->getMessage() . ' ' . $e->getFile() . ':' . $e->getLine());
+					$success = false;
+					\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+				}
+			} else {
+				// account isn't being processed anymore, just discard them
+				$success = true;
 			}
 
-		//	$this->em->clear();
-
-			if (true === $success) {
+			if ($success) {
 				$this->db->delete('twitter_stream', array(
 					'id' => $event['id']
 				));
@@ -106,20 +128,21 @@ class TwitterStream extends AbstractJob
 				$processed++;
 			}
 		}
-
-		// $this->logStatus('processed events', $processed);
 	}
 
 	/**
 	 * @param integer $id
-	 * @return \Zend\Service\Twitter
+	 * @return \EpiTwitter
 	 */
 	protected function getTwitter($id)
 	{
 		if (!isset($this->twitter[$id])) {
-			$this->twitter[$id] = \Orb\Service\Twitter\Twitter::getTwitterService(
-				$this->getAccount($id)->getOauthAccessToken()
-			);
+			$account = $this->getAccount($id);
+			if ($account) {
+				$this->twitter[$id] = $account->getTwitterApi();
+			} else {
+				$this->twitter[$id] = false;
+			}
 		}
 
 		return $this->twitter[$id];
@@ -139,12 +162,24 @@ class TwitterStream extends AbstractJob
 	}
 
 	/**
-	 * @param integer $id
+	 * @param integer $twitter_status_id
+	 *
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
-	protected function findStatus($id)
+	protected function findStatus($twitter_status_id)
 	{
-		return $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
+		return $this->em->getRepository('DeskPRO:TwitterStatus')->getByTwitterStatusId($twitter_status_id);
+	}
+
+	/**
+	 * @param integer $twitter_status_id
+	 * @param TwitterAccount $account
+	 *
+	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 */
+	protected function findAccountStatus($twitter_status_id, TwitterAccount $account)
+	{
+		return $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterStatusAndAccount($twitter_status_id, $account);
 	}
 
 	/**
@@ -158,81 +193,138 @@ class TwitterStream extends AbstractJob
 
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
-	 * @param array $data
+	 * @param object $data
 	 * @return Boolean
-	 *
-	 * @todo add in_reply_* handling
 	 */
-	protected function processStatus(TwitterAccount $account, array $data)
+	protected function processStatus(TwitterAccount $account, $data)
 	{
-		// event could be removed if status exists
-		if ($this->findStatus($data['id_str'])) {
+		if ($this->findAccountStatus($data->id_str, $account)) {
 			return true;
 		}
 
-		if (!($user = $this->findUser($data['user']['id_str']))) {
-			$user = TwitterUser::createFromJson($data['user']);
-			$this->em->persist($user);
-		}
-
-		$status = TwitterStatus::createFromJson($data);
-		$status['user'] = $user;
+		$status = $this->twitter_service->processStatus($this->getTwitter($account['id']), $data);
 		$this->em->persist($status);
 
-		// retweet
-		if (isset($data['retweeted_status'])) {
-			if (!$this->processStatus($account, $data['retweeted_status'])) {
-				return false;
+		$account_status = new TwitterAccountStatus();
+		$account_status->status = $status;
+		$account_status->account = $account;
+
+		if ($data->user->id_str == $account->getUserId()) {
+			$account_status->status_type = 'sent';
+		} else if (!empty($data->retweeted_status) && $data->retweeted_status->user->id_str == $account->getUserId()) {
+			$account_status->status_type = 'retweet';
+		} else if (!empty($data->in_reply_to_user_id_str) && $data->in_reply_to_user_id_str == $account->getUserId()) {
+			if (!empty($data->in_reply_to_status_id_str)) {
+				$account_status->status_type = 'reply';
+			} else {
+				$account_status->status_type = 'mention';
 			}
+		} else {
+			$account_status->status_type = 'timeline';
 
-			if (!($retweet = $this->findStatus($data['retweeted_status']['id_str']))) {
-				return false;
-			}
-
-			$status['retweet'] = $retweet;
-			$this->em->persist($retweet);
-
-			// @todo process retweet entities
-		}
-
-		// reply
-		if (null !== $data['in_reply_to_status_id_str']) {
-			if (!($reply = $this->findStatus($data['in_reply_to_status_id_str']))) {
-				$replyXml = $this->getTwitter($account['id'])->status->show(
-					$data['in_reply_to_status_id_str'],
-					array('include_entities' => true)
-				);
-
-				if (!($replyUser = $this->findUser((string) $replyXml->user->id))) {
-					$replyUser = TwitterUser::createFromXML($replyXml->user);
-					$this->em->persist($replyUser);
+			if (isset($data->entities)) {
+				foreach ($data->entities->user_mentions as $mention) {
+					if ($mention->id_str == $account->getUserId()) {
+						$account_status->status_type = 'mention';
+						break;
+					}
 				}
-
-				$reply = TwitterStatus::createFromXML($replyXml);
-				$reply['user'] = $replyUser;
-				$this->em->persist($reply);
-
-				// @todo process reply entities
 			}
-
-			$status['in_reply_to_status'] = $reply;
-			$status['in_reply_to_user'] = $user;
 		}
 
-		// fetch mentions
-		if (isset($data['entities'])) {
-			foreach ($data['entities']['user_mentions'] as $mention) {
-				$this->processStatusMention($account, $status, $mention);
+		$this->em->persist($account_status);
+		$this->em->flush();
+
+		return true;
+	}
+
+	protected function processMessage(TwitterAccount $account, $data)
+	{
+		$status = $this->twitter_service->processDm($this->getTwitter($account['id']), $data);
+		$this->em->persist($status);
+
+		$account_status = new TwitterAccountStatus();
+		$account_status->status = $status;
+		$account_status->account = $account;
+		$account_status->status_type = 'direct';
+
+		$this->em->persist($account_status);
+		$this->em->flush();
+
+		return true;
+	}
+
+	protected function processEvent(TwitterAccount $account, $data)
+	{
+		$source = $data->source;
+		$target = $data->target;
+
+		$eventType = $data->event;
+		$createdAt = $data->created_at;
+
+		// Check source user exists
+		if (!($sourceUser = $this->findUser($source->id_str))) {
+			$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $source->id_str));
+
+			$sourceUser = TwitterUser::createFromJson($result);
+			$this->em->persist($sourceUser);
+		}
+
+		// Check target user exists
+		if (!($targetUser = $this->findUser($target->id_str))) {
+			$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $target->id_str));
+
+			$targetUser = TwitterUser::createFromJson($result);
+			$this->em->persist($targetUser);
+		}
+
+		if (isset($data->target_object)) {
+			$targetObject = $data->target_object;
+
+			// Get the status, or create it
+			$status = $this->findAccountStatus($targetObject->id_str, $account);
+			if (!$status) {
+				$this->processStatus($account, $targetObject);
+				$this->em->flush();
+				$status = $this->findAccountStatus($targetObject, $account);
 			}
 
-			// fetch hashtags
-			foreach ($data['entities']['hashtags'] as $hashtag) {
-				$this->processStatusTag($status, $hashtag);
+			if (!$status) {
+				return true;
 			}
 
-			// fetch urls
-			foreach ($data['entities']['urls'] as $url) {
-				$this->processStatusUrl($status, $url);
+			switch ($eventType) {
+				// Process a favorite
+				case 'favorite':
+					$status->setIsFavorited(true);
+					$this->em->persist($status);
+					break;
+
+				case 'unfavorite':
+					$status->setIsFavorited(false);
+					$this->em->persist($status);
+					break;
+			}
+		} else {
+			switch ($eventType) {
+				case 'follow':
+					if ($sourceUser->id == $account->getUserId()) {
+						// following someone
+						if (!$this->em->getRepository('DeskPRO:TwitterAccountFriend')->findOneByAccountIdAndUserId($account->id, $targetUser->id)) {
+							$friend = new TwitterAccountFriend();
+							$friend->account = $account;
+							$friend->user = $targetUser;
+							$this->em->persist($friend);
+						}
+					} else if ($targetUser->id == $account->getUserId()) {
+						// being followed
+						if (!$this->em->getRepository('DeskPRO:TwitterAccountFollower')->findOneByAccountIdAndUserId($account->id, $sourceUser->id)) {
+							$follower = new TwitterAccountFollower();
+							$follower->account = $account;
+							$follower->user = $sourceUser;
+							$this->em->persist($follower);
+						}
+					}
 			}
 		}
 
@@ -241,116 +333,17 @@ class TwitterStream extends AbstractJob
 		return true;
 	}
 
-	/**
-	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
-	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
-	 * @param array $mention
-	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
-	 */
-	protected function processStatusMention(TwitterAccount $account, TwitterStatus $status, array $mention)
+	protected function processFriends(TwitterAccount $account, $data)
 	{
-		$entity = TwitterStatusMention::createFromJson($mention);
-		$entity['status'] = $status;
-
-		if (!($user = $this->findUser($mention['id_str']))) {
-			$xml = $this->getTwitter($account['id'])->user->show($mention['id_str']);
-			$user = TwitterUser::createFromXML($xml);
-			$this->em->persist($user);
-		}
-
-		$entity['user'] = $user;
-		$this->em->persist($entity);
-
-		return $entity;
-	}
-
-	/**
-	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
-	 * @param array $tag
-	 * @return \Application\DeskPRO\Entity\TwitterStatusTag
-	 */
-	protected function processStatusTag(TwitterStatus $status, array $tag)
-	{
-		$entity = TwitterStatusTag::createFromJson($tag);
-		$entity['status'] = $status;
-		$this->em->persist($entity);
-
-		return $entity;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
-	 * @param array $url
-	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
-	 */
-	protected function processStatusUrl(TwitterStatus $status, array $url)
-	{
-		$entity = TwitterStatusUrl::createFromJson($url);
-		$entity['status'] = $status;
-		$this->em->persist($entity);
-
-		return $entity;
-	}
-
-	protected function processMessage(TwitterAccount $account, array $data)
-	{
-		return false;
-	}
-
-	protected function processEvent(TwitterAccount $account, array $data)
-	{
-		$source = $data['source'];
-		$target = $data['target'];
-
-		$targetObject = $data['target_object'];
-
-		$eventType = $data['event'];
-		$createdAt = $data['created_at'];
-
-		// Check source user exists
-		if (!($user = $this->findUser($source['id_str']))) {
-			$xml = $this->getTwitter($account['id'])->user->show($source['id_str']);
-			$user = TwitterUser::createFromXML($xml);
-			$this->em->persist($user);
-		}
-
-		// Check target user exists
-		if (!($user = $this->findUser($target['id_str']))) {
-			$xml = $this->getTwitter($account['id'])->user->show($target['id_str']);
-			$user = TwitterUser::createFromXML($xml);
-			$this->em->persist($user);
-		}
-
-		// Get the status, or create it
-		$status = $this->findStatus($targetObject['id_str']);
-		if (!$status) {
-			$this->processStatus($account, $targetObject);
-			$status = $this->findStatus($targetObject);
-		}
-
-		switch ($eventType) {
-			// Process a favorite
-			case 'favorite':
-				$status->setIsFavorited(true);
-				$this->em->persist($status);
-				return true;
-				break;
-		}
-
-		return false;
-	}
-
-	protected function processFriends(TwitterAccount $account, array $data)
-	{
-		if (!count($data['friends'])) {
+		if (!count($data->friends)) {
 			return true;
 		}
 
-		$diff = array_diff(array_unique($data['friends']), $account->getFriendIds(false));
+		$diff = array_diff(array_unique($data->friends), $account->getFriendIds(false));
 		foreach ($diff as $id) {
 			if (!($user = $this->findUser($id))) {
-				$user = TwitterUser::createFromXML($this->getTwitter($account['id'])->user->show($id));
+				$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $id));
+				$user = TwitterUser::createFromJson($result);
 				$this->em->persist($user);
 			}
 
@@ -358,38 +351,32 @@ class TwitterStream extends AbstractJob
 			$friend['account'] = $account;
 			$friend['user'] = $user;
 			$this->em->persist($friend);
-			$this->em->flush();
 		}
+
+		$this->em->flush();
 
 		return true;
 	}
 
-	protected function processDelete(TwitterAccount $account, array $data)
+	protected function processDelete(TwitterAccount $account, $data)
 	{
-		if (isset($data['delete']['status'])) {
-			return $this->processDeleteStatus($data['delete']['status']);
+		if (isset($data->delete->status)) {
+			return $this->processDeleteStatus($account, $data->delete->status);
 		}
 
 		return false;
 	}
 
-	protected function processDeleteStatus(array $data)
+	protected function processDeleteStatus(TwitterAccount $account, $data)
 	{
 		// event could be removed if status does not exist
-		if (!($status = $this->findStatus($data['id_str']))) {
+		if (!($status = $this->findStatus($data->id_str, $account))) {
 			return true;
 		}
 
 		// delete long status
 		if ($status['long']) {
 			$this->em->remove($status['long']);
-		}
-
-		// delete notes
-		if ($status['notes']->count()) {
-			foreach ($status['notes'] as $tag) {
-				$this->em->remove($tag);
-			}
 		}
 
 		// delete mentions

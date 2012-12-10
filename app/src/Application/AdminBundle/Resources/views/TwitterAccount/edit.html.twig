@@ -1,45 +1,41 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% block pagebar %}
+<ul>
+	<li><a href="{{ path('admin_twitter_accounts') }}">Twitter Accounts</a></li>
+	<li>Edit Twitter Account</li>
+</ul>
 {% endblock %}
+{% block page %}
+<form action="{{ path('admin_twitter_accounts_edit', {'account_id': account.id}) }}" method="post" class="dp-form">
 
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('twitter_accounts', {{ account.id|default(0) }});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
-
-{% block page_id "twitter_accounts" %}
-
-{% block header %}
-	<h1>Modify Twitter Account "@{{ account.user.screen_name }}"</h1>
-{% endblock %}
-
-{% block content %}
-<form action="{{ path('admin_twitter_accounts_edit', {'account_id': account.id|default(0)}) }}" method="post">
-	<input type="hidden" name="process" value="1" />
-	<div class="form-panel">
-		<div class="row">
-			<label>{{ phrase('admin.twitter.oauth_token') }}</label>
-			{{ form_widget(form.oauth_token) }}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Twitter Account</label>
 		</div>
-		<div class="row">
-			<label>{{ phrase('admin.twitter.oauth_token_secret') }}</label>
-			{{ form_widget(form.oauth_token_secret) }}
+		<div class="dp-form-input">
+			@{{ account.user.screen_name }}
 		</div>
 	</div>
 
-	{{ form_rest(form) }}
-</form>
-{% endblock %}
+	<div class="dp-form-row" >
+		<div class="dp-form-label">
+			<label>Agents with Access</label>
+		</div>
+		<div class="dp-form-input">
+			<ul>
+			{% for agent in agents %}
+				<li><label><input type="checkbox" name="agents[]" value="{{ agent.id }}" {% if account.hasPerson(agent) %}checked="checked"{% endif %} /> {{ agent.display_name }}</label></li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
 
-{% block footer %}
-	<button class="dp-button small save-trigger">{{ phrase('agent.general.save') }}</button>
+	<footer class="controls">
+		<button class="clean-white">Save Account</button>
+	</footer>
+
+	{{ form_token() }}
+	<input type="hidden" name="process" value="1" />
+</form>
 {% endblock %}

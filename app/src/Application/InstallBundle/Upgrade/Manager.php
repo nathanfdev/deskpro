@@ -163,6 +163,17 @@ class Manager
 
 		$cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
 		$cache->invalidateAll();
+
+		// need to restart the Twitter daemon (pid of 0 means to not run)
+		if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
+			$twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
+		} else {
+			$twitter_pid = null;
+		}
+
+		if ($twitter_pid !== 0) {
+			@unlink(dp_get_data_dir() . '/twitter.pid');
+		}
 	}
 
 

@@ -78,6 +78,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return $group_vars;
 	}
 
+	public function getConfig($name, $default = null)
+	{
+		return App::getConfig($name, $default);
+	}
+
 	public function getSession()
 	{
 		return App::getSession();

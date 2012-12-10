@@ -4,12 +4,10 @@
 		<h4>Configure Twitter Block</h4>
 	</div>
 	<div class="overlay-content">
-		{% if not data.token or not data.secret %}
-			<div style="margin-bottom: 1em">
-				<a class="btn primary" href="{{ path('admin_portal_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
-				<div>The Twitter block cannot be enabled until this is done.</div>
-			</div>
-		{% endif %}
+		<div style="margin-bottom: 1em">
+			<a class="btn primary" href="{{ path('admin_portal_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
+			{% if not data.token or not data.secret %}<div>The Twitter block cannot be enabled until this is done.</div>{% endif %}
+		</div>
 
 		<div class="dp-form">
 			<div class="dp-form-row">

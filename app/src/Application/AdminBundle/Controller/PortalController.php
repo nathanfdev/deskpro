@@ -138,6 +138,22 @@ class PortalController extends AbstractController
 					$data = array();
 				}
 
+				if (!empty($data['token']) && !empty($data['secret'])) {
+					$api = \Application\DeskPRO\Service\Twitter::getTwitterApi($data['token'], $data['secret']);
+					$oauth_ok = false;
+					try {
+						$res = $api->get_accountVerify_credentials();
+						if (!empty($res->id_str)) {
+							$oauth_ok = true;
+						}
+					} catch (\Exception $e) {}
+
+					if (!$oauth_ok) {
+						$data['token'] = false;
+						$data['secret'] = false;
+					}
+				}
+
 				return $this->render('AdminBundle:Portal:twitter-sidebar-editor.html.twig', array('data' => $data));
 				break;
 		}
@@ -232,16 +248,12 @@ class PortalController extends AbstractController
 	{
 		$twitter = $this->em->getRepository('DeskPRO:PortalPageDisplay')->findOneByType('twitter');
 		if ($twitter) {
-			$api = new \EpiTwitter(
-				\Orb\Service\Twitter\Oauth::getConsumerKey(),
-				\Orb\Service\Twitter\Oauth::getConsumerSecret()
-			);
+			$api = \Application\DeskPRO\Service\Twitter::getTwitterApi();
 
 			if ($this->in->getBool('start')) {
 				$api->setCallback($this->generateUrl('admin_portal_twitter_oauth', array(), true));
 				return $this->redirect($api->getAuthenticateUrl());
 			}
-
 
 			try {
 				$api->setToken($this->in->getString('oauth_token'));

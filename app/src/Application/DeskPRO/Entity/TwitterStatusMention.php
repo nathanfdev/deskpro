@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status Mention
  *
  */
-abstract class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
+class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -117,27 +117,14 @@ abstract class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainOb
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $mention
+	 * @param object $mention
 	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
 	 */
-	static public function createFromXML($mention)
+	static public function createFromJson($mention)
 	{
 		$entity = new self();
-		$entity['starts'] = (integer) $mention->attributes()->start;
-		$entity['ends'] = (integer) $mention->attributes()->end;
-
-		return $entity;
-	}
-
-	/**
-	 * @param array $mention
-	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
-	 */
-	static public function createFromJson(array $mention)
-	{
-		$entity = new self();
-		$entity['starts'] = $mention['indices'][0];
-		$entity['ends'] = $mention['indices'][1];
+		$entity['starts'] = $mention->indices[0];
+		$entity['ends'] = $mention->indices[1];
 
 		return $entity;
 	}
@@ -149,16 +136,16 @@ abstract class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainOb
 	############################################################################
 
 
-	public static function x_loadMetadata(ClassMetadata $metadata)
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_mentions', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
 		$metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }
