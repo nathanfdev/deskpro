@@ -71,11 +71,21 @@ class FieldDisplayArray implements \ArrayAccess
 		$this->use_default   = $use_default;
 
 		$value = !empty($field_data[$field_def['id']]) ? $field_data[$field_def['id']] : null;
-		if (!$value && $use_default && $field_def->default_value) {
+
+		$default_value = $field_def->default_value;
+		if ($field_def->getTypeName() == 'hidden') {
+			if ($field_def->getOption('cookie_name') && !empty($_COOKIE[$field_def->getOption('cookie_name')])) {
+				$default_value = $_COOKIE[$field_def->getOption('cookie_name')];
+			} elseif ($field_def->getOption('param_name') && !empty($_REQUEST[$field_def->getOption('param_name')])) {
+				$default_value = $_REQUEST[$field_def->getOption('param_name')];
+			}
+		}
+
+		if (!$value && $use_default && $default_value) {
 			if ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$value = array('children' => array($field_def->default_value => array('value' => 1)));
+				$value = array('children' => array($default_value => array('value' => 1)));
 			} else {
-				$value = array('value' => $field_def->default_value);
+				$value = array('value' => $default_value);
 			}
 
 		}

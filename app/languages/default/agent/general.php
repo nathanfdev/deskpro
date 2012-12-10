@@ -240,6 +240,7 @@
 	'agent.general.field_type_textarea'                     => 'Multi-line text area box',
 	'agent.general.field_type_textemail'                    => 'Email text box',
 	'agent.general.field_type_texturl'                      => 'URL text box',
+	'agent.general.field_type_hidden'                       => 'Hidden field',
 	'agent.general.file_link_from_article'                  => 'link to the file from within the article',
 	'agent.general.files'                                   => 'Files',
 	'agent.general.filter'                                  => 'Filter...',

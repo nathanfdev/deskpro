@@ -76,7 +76,16 @@ abstract class AbstractFields
 		$custom_fields = array();
 		$has_value = false;
 		foreach ($field_defs as $f_def) {
-			$value = !empty($data_structured[$f_def['id']]) && $data_structured[$f_def['id']]['value'] !== null ? $data_structured[$f_def['id']] : array('value' => $f_def['default_value']);
+			$default_value = $f_def['default_value'];
+			if ($f_def->getTypeName() == 'hidden') {
+				if ($f_def->getOption('cookie_name') && !empty($_COOKIE[$f_def->getOption('cookie_name')])) {
+					$default_value = $_COOKIE[$f_def->getOption('cookie_name')];
+				} elseif ($f_def->getOption('param_name') && !empty($_REQUEST[$f_def->getOption('param_name')])) {
+					$default_value = $_REQUEST[$f_def->getOption('param_name')];
+				}
+			}
+
+			$value = !empty($data_structured[$f_def['id']]) && $data_structured[$f_def['id']]['value'] !== null ? $data_structured[$f_def['id']] : array('value' => $default_value);
 
 			$f = $f_def->getHandler()->getFormField($value);
 

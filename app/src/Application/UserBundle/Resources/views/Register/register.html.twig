@@ -211,15 +211,19 @@
 
 					{% if not custom_fields %}{% set custom_fields = app.getPersonFieldManager().getDisplayArray() %}{% endif %}
 					{% for f in custom_fields %}
-						<div class="dp-control-group {% if error_fields['field_' ~ f.field_def.id] %}dp-error{% endif %}">
-							<div class="dp-control-label">
-								<label>{{ f.field_def.title }}</label>
+						{% if f.field_def.getTypeName() == 'hidden' %}
+							<div style="display: none;">{{ render_custom_field_form(f) }}</div>
+						{% else %}
+							<div class="dp-control-group {% if error_fields['field_' ~ f.field_def.id] %}dp-error{% endif %}">
+								<div class="dp-control-label">
+									<label>{{ f.field_def.title }}</label>
+								</div>
+								<div class="dp-controls dp-fill">
+									{{ render_custom_field_form(f) }}
+								</div>
+								{% if error_fields['field_' ~ f.field_def.id] %}<div class="dp-help-inline dp-error-explain">{{ formmacro.custom_field_errors(errors, f.field_def, 'field_' ~ f.field_def.id) }}</div>{% endif %}
 							</div>
-							<div class="dp-controls dp-fill">
-								{{ render_custom_field_form(f) }}
-							</div>
-							{% if error_fields['field_' ~ f.field_def.id] %}<div class="dp-help-inline dp-error-explain">{{ formmacro.custom_field_errors(errors, f.field_def, 'field_' ~ f.field_def.id) }}</div>{% endif %}
-						</div>
+						{% endif %}
 					{% endfor %}
 
 					{% if captcha %}

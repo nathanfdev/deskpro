@@ -35,6 +35,11 @@
 		<p>{{ phrase('admin.custom_fields.explain_widget_field') }}</p>
 	{{ design.block_sections_item_end() }}
 
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Hidden" /> {{ phrase('admin.custom_fields.hidden') }}</label></h3></header>
+		<p>{{ phrase('admin.custom_fields.explain_hidden_field') }}</p>
+	{{ design.block_sections_item_end() }}
+
 	{% if def_type == 'people' and app.getDataRepository('Usersource').getAllUsersources()|length %}
 		{{ design.block_sections_item() }}
 			<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Data" /> Usersource Data</label></h3></header>
