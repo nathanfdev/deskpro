@@ -13,6 +13,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 
+		this.noIgnoreForm = true;
 		this.wrapper = el;
 
 		// Set up the tabs
