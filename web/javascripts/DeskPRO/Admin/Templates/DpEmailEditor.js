@@ -181,8 +181,8 @@ function DpEmailEditor(name, context) {
 	//# Lang overlay
 	//##################################################################################################################
 
-	var langOverlayEl = $('.lang-overlay, #lang_overlay', context);
-	var langOveralyContentEl = $('.lang-overlay-content, #lang_overlay_content', context);
+	var langOverlayEl = $('.lang-overlay', context).first();
+	var langOveralyContentEl = $('.lang_overlay_content', context).first();
 	var langHasLoaded = false;
 	var langHasNav = false;
 	var langOverlay = new DeskPRO.UI.Overlay({
@@ -210,7 +210,7 @@ function DpEmailEditor(name, context) {
 
 				if (!langHasNav) {
 					langHasNav = true;
-					var nav = $('#lang_overlay_nav');
+					var nav = $('.lang_overlay_nav', langOverlayEl);
 
 					var langSel = langOveralyContentEl.find('select.lang-langs-nav');
 					langSel.detach().appendTo(nav);
