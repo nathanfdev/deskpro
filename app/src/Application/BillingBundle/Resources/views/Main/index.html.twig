@@ -91,9 +91,9 @@
 					<td class="title">Demo License</td>
 					<td class="prop">
 						{% if not is_expired %}
-							Your demo period expires {% if expire_in_days %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+							Your demo period expires {% if expire_in_days %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day', 'UTC') }}
 						{% else %}
-							Your demo period expired on {{ lic.getExpireDate()|date('day') }}
+							Your demo period expired on {{ lic.getExpireDate()|date('day', 'UTC') }}
 						{% endif %}
 						&nbsp;&nbsp;
 						<a target="_blank" class="clean-white" href="http://www.deskpro.com/pricing/?download">Purchase your License Now</a>
@@ -108,7 +108,7 @@
 					<td class="title">Expires</td>
 					<td class="prop">
 						{% if not is_expired %}
-							Your license expires {% if expire_in_days and expire_in_days < 30 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day') }}
+							Your license expires {% if expire_in_days and expire_in_days < 30 %}in {{ expire_in_days }} days{% endif %} on {{ lic.getExpireDate()|date('day', 'UTC') }}
 						{% else %}
 							Your license has expired
 						{% endif %}

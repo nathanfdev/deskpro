@@ -198,7 +198,7 @@
 			{% if lic.isDemo() %}
 				<tr>
 					<td class="title">Demo License</td>
-					<td class="prop">Expires {{ lic.getExpireDate()|date('day') }}</td>
+					<td class="prop">{{ design.lic_expire_days('In') }}</td>
 				</tr>
 			{% else %}
 				<tr>
@@ -207,7 +207,7 @@
 				</tr>
 				<tr>
 					<td class="title">Expires</td>
-					<td class="prop">{{ lic.getExpireDate()|date('day') }}</td>
+					<td class="prop">{{ design.lic_expire_days('In') }}</td>
 				</tr>
 
 				<tr>

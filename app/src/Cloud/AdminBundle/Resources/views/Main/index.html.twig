@@ -52,7 +52,7 @@
 				<tr>
 					<td class="title">Demo License</td>
 					<td class="prop">
-						Expires {{ lic.getExpireDate()|date('day') }}
+						Expires {{ lic.getExpireDate()|date('day', 'UTC') }}
 					</td>
 				</tr>
 			{% endif %}
