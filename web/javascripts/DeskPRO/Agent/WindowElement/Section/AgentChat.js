@@ -120,6 +120,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
 			agentIds = (agentIds+"").split(',');
+			agentIds.include(window.DESKPRO_PERSON_ID);
+			agentIds = agentIds.filter(function(x) {
+				if (x) return true;
+			});
 
 			var name = $(this).data('team-name');
 
