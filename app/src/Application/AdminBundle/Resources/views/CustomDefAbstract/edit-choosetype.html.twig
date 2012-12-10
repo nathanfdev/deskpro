@@ -6,7 +6,7 @@
 {{ design.block_sections() }}
 
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\{{ phrase('admin.custom_fields.text') }}" checked="checked" /> {{ phrase('admin.custom_fields.text') }}</label></h3></header>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" checked="checked" /> {{ phrase('admin.custom_fields.text') }}</label></h3></header>
 		<p>{{ phrase('admin.custom_fields.explain_one_line_box') }}</p>
 	{{ design.block_sections_item_end() }}
 
@@ -18,6 +18,11 @@
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /> {{ phrase('admin.custom_fields.choice') }}</label></h3></header>
 		<p>{{ phrase('admin.custom_fields.explain_predefined_options') }}</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Toggle" /> {{ phrase('admin.custom_fields.toggle') }}</label></h3></header>
+		<p>{{ phrase('admin.custom_fields.explain_toggle') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}

@@ -2,6 +2,12 @@
 	{% block field_rendered %}
 		{% if field_handler_name == 'Date' %}
 			{{ data.value|date('full') }}
+		{% elseif field_handler_name == 'Toggle' %}
+			{% if data.value == 1 %}
+				{{ field_def.getOption('label_text')|default('Checked') }}
+			{% else %}
+				None
+			{% endif %}
 		{% else %}
 			{{ data.value }}
 		{% endif %}
