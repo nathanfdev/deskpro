@@ -599,7 +599,11 @@ class TicketTerms
 					return false;
 				}
 
-				$check = strtolower($choice['name']);
+				if (empty($choice['email_name'])) {
+					return true;
+				}
+
+				$check = strtolower($choice['email_name']);
 
 				$to = $ticket->email_reader->getFromAddress();
 				$to = $to->getName();
