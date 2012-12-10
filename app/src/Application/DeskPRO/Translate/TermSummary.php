@@ -558,6 +558,10 @@ class TermSummary
 				$summary = $this->_stringMatchSummary("To name", $op, $choice);
 				break;
 
+			case 'email_from_name':
+				$summary = $this->_stringMatchSummary("From name", $op, $choice);
+				break;
+
 			case 'cc_address':
 			case 'email_cc_email':
 				$summary = $this->_stringMatchSummary("CC email address", $op, $choice);
