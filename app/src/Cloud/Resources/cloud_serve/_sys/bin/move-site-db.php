@@ -74,8 +74,6 @@ define('DP_TIME_START', time());
 require __DIR__.'/../CloudConfig.php';
 require __DIR__.'/../lib/Process.php';
 
-$DO_REPORT_LOG = false;
-
 #------------------------------
 # Normalize env
 #------------------------------
@@ -83,7 +81,11 @@ $DO_REPORT_LOG = false;
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 set_time_limit(0);
+
+define('DP_START_TIME', time());
 
 ########################################################################
 # Sort out config
@@ -229,7 +231,7 @@ while (1) {
 
 dp_log("");
 dp_log("--- Preparing remote database ---");
-dp_logf("DB: %s    User: %s    Password: %s", $siteinfo['db_name'], $siteinfo['db_user'], $siteinfo['db_pass']);
+dp_logf("DB: %s    User: %s    Password: %s", $siteinfo['db_name'], $siteinfo['db_user'], $siteinfo['db_password']);
 
 #------------------------------
 # Check database
@@ -351,7 +353,7 @@ dp_log("--- Import site to new database and re-enable ---");
 # Import dump
 #------------------------------
 
-$cmd = "mysql -u'{$siteinfo['db_user']}' -p'{$siteinfo['db_password']}' -h'{$migrate_db['db_host']}' '{$siteinfo['db_name']}' < '$dump_path'";
+$cmd = "mysql -u'{$siteinfo['db_user']}' -p'{$siteinfo['db_password']}' -h'{$migrate_db_config['host']}' '{$siteinfo['db_name']}' < '$dump_path'";
 
 $t_start = microtime(true);
 dp_logf("Restoring database with command: %s", $cmd);
@@ -370,7 +372,7 @@ if ($ret) {
 # Update site record
 #------------------------------
 
-$rows = $cloud_db->exec("UPDATE cloud_sites SET db_host = '{$migrate_db['db_host']}' WHERE id = {$site_id} LIMIT 1");
+$rows = $cloud_db->exec("UPDATE cloud_sites SET db_host = '{$migrate_db_config['host']}' WHERE id = {$site_id} LIMIT 1");
 
 if ($rows != 1) {
 	dp_logf("Affected rows reported as %s, was there an error?", $rows);
