@@ -354,13 +354,13 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
  # Workflow field
  ############################}
 
-{% if term_options.ticket_categories_full %}
+{% if app.getDataRepository('TicketWorkflow').getAll()|length %}
 	<script type="text/x-deskpro-plain" id="rendered_field_ticket_workflow">
 		<div class="ticket-workflow">
-			<select class="ticket-category-input field-value">
+			<select class="ticket-workflow-input field-value">
 				<option>Workflow</option>
-				{% for id,label in term_options.ticket_categories_full %}
-					<option value="{{id}}">{{label}}</option>
+				{% for work in app.getDataRepository('TicketWorkflow').getAll() %}
+					<option value="{{ work.id }}">{{ work.title }}</option>
 				{% endfor %}
 			</select>
 			<div style="font-size: 10px">Note: This field is only displayed for agents</div>
