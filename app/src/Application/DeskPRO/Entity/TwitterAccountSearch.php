@@ -46,6 +46,8 @@ use Application\DeskPRO\Entity;
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
+	const CACHE_LENGTH = 300;
+
 	/**
 	 * @var integer
 	 */
@@ -60,6 +62,31 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $term;
+
+	/**
+	 * @var \DateTime|null
+	 */
+	protected $date_updated = null;
+
+	/**
+	 * @var integer
+	 */
+	protected $max_id;
+
+	/**
+	 * @var integer
+	 */
+	protected $min_id;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $search_statuses;
+
+	public function __construct()
+	{
+		$this->search_statuses = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
 	/**
 	 * @return integer
@@ -85,6 +112,104 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function updateSearch($do_write = true)
+	{
+		$em = App::getOrm();
+
+		$api = $this->account->getTwitterApi();
+		$results = $api->get_searchTweets(array(
+			'q' => $this->term,
+			'result_type' => 'recent',
+			'count' => 25,
+			'since_id' => $this->max_id ? $this->max_id : 0,
+			'include_entities' => true
+			// todo: min id for older pages?
+		));
+
+		if (!empty($results->statuses)) {
+			$twitter = new \Application\DeskPRO\Service\Twitter();
+			$lookups = array();
+			foreach ($results->statuses AS $status) {
+				$lookups[$status->id_str] = $twitter->processStatus($api, $status, $do_write);
+				if ($do_write) {
+					$em->persist($lookups[$status->id_str]);
+				}
+			}
+
+			$account_statuses = App::getEntityRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount(
+				array_keys($lookups), $this->account
+			);
+
+			foreach ($lookups AS $tweet_id => $status) {
+				if (isset($account_statuses[$tweet_id])) {
+					$account_status = $account_statuses[$tweet_id];
+				} else {
+					$account_status = new TwitterAccountStatus();
+					$account_status->status = $status;
+					$account_status->account = $this->account;
+					$account_status->status_type = null; // this ensures it only appears by search
+
+					if ($do_write) {
+						$em->persist($account_status);
+						$em->flush();
+					}
+				}
+
+				$search_status = new TwitterAccountSearchStatus();
+				$search_status->search = $this;
+				$search_status->account_status = $account_status;
+
+				if ($do_write) {
+					$em->persist($search_status);
+				}
+
+				$this->search_statuses->add($search_status);
+			}
+		}
+
+		if (!empty($results->search_metadata)) {
+			$this->setModelField('max_id', $results->search_metadata->max_id_str);
+			/*if (!$this->min_id || $results->search_metadata->since_id_str + 0 < $this->min_id) {
+				$this->setModelField('min_id', $results->search_metadata->since_id_str);
+			}*/
+		}
+		$this->setModelField('date_updated', new \DateTime());
+
+		if ($do_write) {
+			$em->persist($this);
+			$em->flush();
+		}
+	}
+
+	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 25, $auto_update = true)
+	{
+		if ($auto_update) {
+			if (!$this->date_updated || $this->date_updated->getTimestamp() < time() - self::CACHE_LENGTH) {
+				$this->updateSearch();
+			}
+		}
+
+		// todo: page nav and auto grabbing
+
+		$page = max(1, intval($page));
+		$offset = ($page - 1) * $per_page;
+
+		$output = array();
+		$results = App::getOrm()->createQuery("
+			SELECT s, a
+			FROM DeskPRO:TwitterAccountSearchStatus s
+			INNER JOIN s.account_status a
+			WHERE s.search = ?0
+				" . ($includeArchived ? '' : "AND a.is_archived = false") . "
+			ORDER BY s.date_created DESC
+		")->setParameters(array($this))->setMaxResults($per_page)->setFirstResult($offset)->execute();
+		foreach ($results AS $result) {
+			$output[] = $result->account_status;
+		}
+
+		return $output;
+	}
+
 
 
 	############################################################################
@@ -95,11 +220,16 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountSearch';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term', ));
+		$metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated', ));
+		$metadata->mapField(array( 'fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id', ));
+		$metadata->mapField(array( 'fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search',  ));
 	}
 }

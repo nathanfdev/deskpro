@@ -91,6 +91,7 @@ class TwitterAccountStatusNote extends \Application\DeskPRO\Domain\DomainObject
 	{
 
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_statuses_notes', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

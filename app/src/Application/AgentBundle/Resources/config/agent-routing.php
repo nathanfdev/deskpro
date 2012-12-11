@@ -1590,6 +1590,13 @@ $collection->add('agent_twitter_run_search', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_search_delete', new Route(
+	'/twitter/{account_id}/search/{search_id}/{security_token}',
+	array('_controller' => 'AgentBundle:Twitter:deleteSearch'),
+	array('account_id' => '\\d+', 'search_id' => '\\d+', '_method' => 'POST'),
+	array()
+));
+
 $collection->add('agent_twitter_new_search', new Route(
 	'/twitter/{account_id}/search/new',
 	array('_controller' => 'AgentBundle:Twitter:newSearch'),

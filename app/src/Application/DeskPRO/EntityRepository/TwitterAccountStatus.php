@@ -51,6 +51,28 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		")->setParameters(array($id, $account))->getOneOrNullResult();
 	}
 
+	public function getByTwitterIdsAndAccount(array $ids, TwitterAccountEntity $account)
+	{
+		if (!$ids) {
+			return array();
+		}
+
+		$output = array();
+		$results = $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:TwitterAccountStatus s
+			INNER JOIN s.status t
+			WHERE s.status IN (?0)
+				AND s.account = ?1
+		")->setParameters(array($ids, $account))->execute();
+
+		foreach ($results AS $result) {
+			$output[$results->status->getId()] = $result;
+		}
+
+		return $output;
+	}
+
 	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = "
@@ -99,14 +121,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
 			case 'inbox':
 				$query .= " AND s.status_type IN ('reply', 'mention', 'retweet', 'direct', 'sent')";
-				break;
-
-			case 'no_timeline':
-				$query .= " AND s.status_type <> 'timeline'";
-				break;
-
-			case 'no_direct':
-				$query .= " AND s.status_type <> 'direct'";
 				break;
 
 			case 'all':
@@ -174,14 +188,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
 			case 'inbox':
 				$query .= " AND s.status_type IN ('reply', 'mention', 'retweet', 'direct', 'sent')";
-				break;
-
-			case 'no_timeline':
-				$query .= " AND s.status_type <> 'timeline'";
-				break;
-
-			case 'no_direct':
-				$query .= " AND s.status_type <> 'direct'";
 				break;
 
 			case 'all':

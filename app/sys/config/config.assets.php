@@ -169,7 +169,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DealList.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterAccountSearch.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterAccountSearchList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
 	)

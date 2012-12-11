@@ -42,10 +42,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * Twitter Status Mention
- *
+ * Twitter Account Search Status
  */
-class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
+class TwitterAccountSearchStatus extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -53,80 +52,24 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterStatus
+	 * @var \Application\DeskPRO\Entity\TwitterAccountSearch
 	 */
-	protected $status;
+	protected $search;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
+	 * @var TwitterAccountStatus
 	 */
-	protected $user;
+	protected $account_status;
 
 	/**
-	 * @var integer
+	 * @var \DateTime
 	 */
-	protected $starts = 0;
+	protected $date_created;
 
-	/**
-	 * @var integer
-	 */
-	protected $ends = 0;
-
-	/**
-	 * @return integer
-	 */
-	public function getStatusId()
+	public function setAccountStatus(TwitterAccountStatus $status)
 	{
-		if (null !== $this->status) {
-			return $this->status->getId();
-		}
-
-		return 0;
-	}
-
-	/**
-	 * @param integer $id
-	 */
-	public function setStatusId($id)
-	{
-		$this->status = null;
-
-		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-			$this->status = $status;
-		}
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getUserId()
-	{
-		return null !== $this->user ? $this->user->getId() : null;
-	}
-
-	/**
-	 * @param integer $id
-	 */
-	public function setUserId($id)
-	{
-		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-			$this->user = $user;
-		} else {
-			$this->user = null;
-		}
-	}
-
-	/**
-	 * @param object $mention
-	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
-	 */
-	static public function createFromJson($mention)
-	{
-		$entity = new self();
-		$entity['starts'] = $mention->indices[0];
-		$entity['ends'] = $mention->indices[1];
-
-		return $entity;
+		$this->setModelField('account_status', $status);
+		$this->setModelField('date_created', $status->date_created);
 	}
 
 
@@ -140,13 +83,15 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_mentions', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'twitter_accounts_searches_statuses',
+			'indexes' => array(
+				'search_date_idx' => array('columns' => array('search_id', 'date_created'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
-		$metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'account_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'search', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => NULL, 'inversedBy' => 'search_statuses', 'joinColumns' => array( 0 => array( 'name' => 'search_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true  ));
 	}
 }

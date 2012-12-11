@@ -1,10 +1,10 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearch';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearchList';
 
-pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
 pageMeta.accountId = '{{ account.id|escape }}';
 
 pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
+{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
 
 
@@ -14,27 +14,29 @@ pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': acc
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
-<style type="text/css">
-    .search-results table { margin: 5px 5px; }
-    .search-results .user { display: inline; }
-    .search-results .user * { font-size: 10px; display: inline; }
-    .search-results .user-info .retweet { float: right; }
-    .search-results .user-info .reply { float: right; }
-    .search-results td { padding: 0 5px 5px 0; text-align: left; }
-    .search-results .status-text { }
-    .search-results .screen_name { display: inline; }
-    .search-results .status-text p.raw { background: #eee; display: block; width: 100%; min-height: 37px; }
-    .search-results .status-text p.raw span { margin: 5px; display: block; }
-</style>
-
-
 <div class="layout-content twitter">
 
-    {% include 'AgentBundle:TwitterAccount:search-control-bar.html.twig' %}
+    {% include 'AgentBundle:Twitter:search-control-bar.html.twig' %}
 
     <div class="content">
         <section class="search-results list-listing">
+		{% for search in account.searches %}
+			<article
+				class="row-item twitter-search"
+				data-route="listpane:{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}"
+				style="padding: 8px"
+			>
+				<a style="float: right" class="delete-icon" data-confirm="Are you sure you want to delete this search?" href="{{ path('agent_twitter_search_delete', {'account_id': account.id, 'search_id': search.id, 'security_token': security_token('delete_search')}) }}">Delete</a>
+				<a class="click-through">{{ search.term }}</a>
+			</article>
+		{% endfor %}
         </section>
+
+		<section class="list-listing no-results" id="{{baseId}}_no_results" {% if account.searches|length %}style="display:none"{% endif %}>
+			<article class="row-item no-results">
+				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+			</article>
+		</section>
     </div>
 </div>
 

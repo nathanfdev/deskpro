@@ -576,6 +576,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			snippetsViewer.open();
 		});
 
+		$(document).on('click', '.click-confirm', function(ev) {
+			if (!confirm($(this).data('confirm'))) {
+				ev.preventDefault();
+			}
+		});
+
 		// Used by the poller to send flag to update the last active time
 		$(document).on('click mousemove keypress', function() {
 			self.activityTime = new Date();

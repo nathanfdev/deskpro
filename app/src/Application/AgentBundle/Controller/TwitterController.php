@@ -36,6 +36,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TwitterAccountSearch;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -137,7 +138,7 @@ class TwitterController extends AbstractController
 			);
 
 		return $this->render('AgentBundle:Twitter:starred-tweets.html.twig', array(
-				'statuses' => $statuses
+			'statuses' => $statuses
 		));
 	}
 
@@ -177,7 +178,7 @@ class TwitterController extends AbstractController
 			);
 
 		return $this->render('AgentBundle:Twitter:team-tweets.html.twig', array(
-				'statuses' => $statuses
+			'statuses' => $statuses
 		));
 	}
 
@@ -186,7 +187,7 @@ class TwitterController extends AbstractController
 		$account = $this->getAccount($account_id);
 
 		return $this->render('AgentBundle:Twitter:list-searches.html.twig', array(
-				'account' => $account,
+			'account' => $account,
 		));
 	}
 
@@ -196,41 +197,61 @@ class TwitterController extends AbstractController
 		$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
 
 		if (!$search) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
 		}
 
-		// todo: need to use new api
-		$twitterSearcher = new \Zend_Service_Twitter_Search();
-		$searchResults = $twitterSearcher->search($search->getTerm());
+		if ($this->in->getBool('partial')) {
+			$tpl = 'AgentBundle:TwitterStatus:part-status.html.twig';
+		} else {
+			$tpl = 'AgentBundle:Twitter:run-search.html.twig';
+		}
 
-		return $this->render('AgentBundle:Twitter:run-search.html.twig', array(
-				'account'	   => $account,
-				'search'		=> $search,
-				'results'	   => $searchResults['results'],
+		$includeArchived = $this->in->getBool('include.archived');
+
+		return $this->render($tpl, array(
+			'account'  => $account,
+			'search'   => $search,
+			'statuses' => $search->getAccountStatuses($includeArchived),
 		));
+	}
+
+	public function deleteSearchAction($account_id, $search_id, $security_token)
+	{
+		$account = $this->getAccount($account_id);
+		$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
+
+		if (!$search) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
+		}
+
+		$this->ensureAuthToken('delete_search', $security_token);
+
+		$this->em->remove($search);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function newSearchAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$search_term = $this->in->getValue('search_term');
+		$search_term = $this->in->getString('search_term');
 
-		// Add the search term to the account
-		$twitterAccountSearch = new \Application\DeskPRO\Entity\TwitterAccountSearch();
-		$twitterAccountSearch->setAccount($account);
-		$twitterAccountSearch->setTerm($search_term);
+		$search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->getExistingSearch($search_term, $account);
 
-		$em = App::getOrm();
-		$em->persist($twitterAccountSearch);
-		$em->flush();
+		if (!$search) {
+			$search = new TwitterAccountSearch();
+			$search->account = $account;
+			$search->term = $search_term;
 
-		// todo: need to use new api
-		$twitterSearcher = new \Zend_Service_Twitter_Search();
-		$searchResults = $twitterSearcher->search($search_term);
+			$this->em->persist($search);
+			$this->em->flush();
+		}
 
-		return $this->render('AgentBundle:Twitter:search-part.html.twig', array(
-				//'search' => $search,
-				'results' => $searchResults['results'],
+		return $this->createJsonResponse(array(
+			'search_id' => $search->id,
+			'search_url' => $this->generateUrl('agent_twitter_run_search', array('account_id' => $account->id, 'search_id' => $search->id)),
+			'search_term' => $search->term
 		));
 	}
 
@@ -244,18 +265,18 @@ class TwitterController extends AbstractController
 	 */
 	protected function getAccount($id)
 	{
-			// check if account id is in persons account id list
-			if (!in_array($id, $this->person->getTwitterAccountIds())) {
-					throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
-			}
+		// check if account id is in persons account id list
+		if (!in_array($id, $this->person->getTwitterAccountIds())) {
+			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
+		}
 
-			// check if account exists
-			$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
-			if (!$account) {
-					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
-			}
+		// check if account exists
+		$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
+		}
 
-			return $account;
+		return $account;
 	}
 
 	/**

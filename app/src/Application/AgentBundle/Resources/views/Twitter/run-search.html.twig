@@ -1,10 +1,11 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearch';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
-pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
 pageMeta.accountId = '{{ account.id|escape }}';
 
 pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
+pageMeta.statusListUrl = '{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}?partial=1';
+{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
 
 
@@ -14,28 +15,24 @@ pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': acc
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
-<style type="text/css">
-    .search-results table { margin: 5px 5px; }
-    .search-results .user { display: inline; }
-    .search-results .user * { font-size: 10px; display: inline; }
-    .search-results .user-info .retweet { float: right; }
-    .search-results .user-info .reply { float: right; }
-    .search-results td { padding: 0 5px 5px 0; text-align: left; }
-    .search-results .status-text { }
-    .search-results .screen_name { display: inline; }
-    .search-results .status-text p.raw { background: #eee; display: block; width: 100%; min-height: 37px; }
-    .search-results .status-text p.raw span { margin: 5px; display: block; }
-</style>
-
-
 <div class="layout-content twitter">
+	<header class="header">
+		<div class="list-control-bar">
+			<ul class="btn-controls">
+				<li class="display-options display-options-trigger"><a></a></li>
+				<li class="right"><span class="sep"></span></li>
+			</ul>
 
+			<ul style="display:none" class="display-options-menu">
+				<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
+			</ul>
+		</div>
+	</header>
+	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 
     <div class="content">
-        <section class="search-results list-listing">
-            {% include 'AgentBundle:Twitter:search-part.html.twig' %}
-        </section>
-    </div>
+		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+	</div>
 </div>
 
 {# scroll containers #}

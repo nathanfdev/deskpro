@@ -1,7 +1,8 @@
 <header class="list-control-bar">
-    <ul>
-    <ul>
-        <li>{{ phrase('agent.twitter.new_search') }}</li>
-        <li><input type="text" placeholder="{{ phrase('agent.twitter.example') }}" class="twitter-search"/></li>
-    </ul>
+	<ul><li>
+		{{ phrase('agent.twitter.new_search') }}:
+		<input type="text" placeholder="{{ phrase('agent.twitter.example') }}" class="twitter-search" style="padding: 2px 4px" />
+		<button class="clean-white search-trigger small">Search</button>
+		<img src="{{ asset('images/spinners/loading-small.gif') }}" class="search-loading" style="display:none" />
+	</li></ul>
 </header>

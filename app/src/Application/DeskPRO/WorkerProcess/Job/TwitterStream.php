@@ -198,16 +198,21 @@ class TwitterStream extends AbstractJob
 	 */
 	protected function processStatus(TwitterAccount $account, $data)
 	{
-		if ($this->findAccountStatus($data->id_str, $account)) {
+		$account_status = $this->findAccountStatus($data->id_str, $account);
+		if ($account_status && $account_status->status_type) {
+			// won't have a status type if it didn't come through here,
+			// but if it's now coming through here we need to change the type
 			return true;
 		}
 
 		$status = $this->twitter_service->processStatus($this->getTwitter($account['id']), $data);
 		$this->em->persist($status);
 
-		$account_status = new TwitterAccountStatus();
-		$account_status->status = $status;
-		$account_status->account = $account;
+		if (!$account_status) {
+			$account_status = new TwitterAccountStatus();
+			$account_status->status = $status;
+			$account_status->account = $account;
+		}
 
 		if ($data->user->id_str == $account->getUserId()) {
 			$account_status->status_type = 'sent';

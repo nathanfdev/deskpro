@@ -163,6 +163,9 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountStatus';
 		$metadata->setPrimaryTable(array(
 			'name' => 'twitter_accounts_statuses',
+			'indexes' => array(
+				'account_type_archived_idx' => array('columns' => array('account_id', 'status_type', 'is_archived'))
+			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

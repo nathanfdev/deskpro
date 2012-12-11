@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\TwitterStatusUrl;
 class Twitter
 {
 	protected $_user_cache = array();
+	protected $_tweet_cache = array();
 
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
@@ -103,9 +104,13 @@ class Twitter
 	 *
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
-	protected function findStatus($twitter_status_id)
+	protected function findStatus($id)
 	{
-		return $this->em->getRepository('DeskPRO:TwitterStatus')->getByTwitterStatusId($twitter_status_id);
+		if (!array_key_exists($id, $this->_tweet_cache)) {
+			$this->_tweet_cache[$id] = $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
+		}
+
+		return $this->_tweet_cache[$id];
 	}
 
 	public function processStatus(\EpiTwitter $api, $data, $do_persist = true, $depth = 0)
@@ -116,6 +121,9 @@ class Twitter
 		}
 
 		$status = TwitterStatus::createFromJson($data);
+		if ($do_persist) {
+			$this->_tweet_cache[$data->id_str] = $status;
+		}
 
 		$user = $this->findUser($data->user->id_str);
 		if (!$user) {
@@ -141,17 +149,21 @@ class Twitter
 		if (!empty($data->in_reply_to_status_id_str)) {
 			$reply = $this->findStatus($data->in_reply_to_status_id_str);
 			if (!$reply) {
-				// todo: defer and bulk fetch?
-				$reply_result = $api->get_statusesShow(array(
-					'id' => $data->in_reply_to_status_id_str,
-					'include_entities' => true
-				));
+				try {
+					// todo: defer and bulk fetch?
+					$reply_result = $api->get_statusesShow(array(
+						'id' => $data->in_reply_to_status_id_str,
+						'include_entities' => true
+					));
 
-				if (!empty($reply_result->id_str)) {
-					$reply = $this->processStatus($api, $reply_result, $do_persist, $depth + 1);
-					if ($do_persist) {
-						$this->em->persist($reply);
+					if (!empty($reply_result->id_str)) {
+						$reply = $this->processStatus($api, $reply_result, $do_persist, $depth + 1);
+						if ($do_persist) {
+							$this->em->persist($reply);
+						}
 					}
+				} catch (\EpiTwitterException $e) {
+					// likely, the status was private so we can't grab it
 				}
 			}
 
@@ -195,6 +207,9 @@ class Twitter
 		}
 
 		$status = TwitterStatus::createFromDmJson($data);
+		if ($do_persist) {
+			$this->_tweet_cache[$dm->id_str] = $status;
+		}
 
 		$user = $this->findUser($dm->sender->id_str);
 		if (!$user) {
