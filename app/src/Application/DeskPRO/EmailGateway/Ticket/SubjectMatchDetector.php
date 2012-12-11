@@ -112,7 +112,9 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$subject = trim($subject);
 		$subject_orig = $subject;
 
-		if (!preg_match('#^(RE|VS|AW|SV):\s*#i', $subject)) {
+		// Common prefixes
+		// Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
+		if (!preg_match('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', $subject)) {
 			return null;
 		}
 
@@ -121,7 +123,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 		$last_subject = $subject_orig;
 		$ticket_ids = null;
 		while (true) {
-			$subject_re   = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', trim($last_subject));
+			$subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
 			$subject_re   = trim($subject_re);
 
 			if ($subject_re == $last_subject) {
