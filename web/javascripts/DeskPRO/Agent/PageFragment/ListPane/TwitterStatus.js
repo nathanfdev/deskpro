@@ -57,7 +57,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			self.doArchive(id, 1);
 
 			if (self.menuOptions && !self.menuOptions.filter('[name=archived]').is(':checked')) {
-				row.hide();
+				row.remove();
 			}
 		});
 		this.content.on('click', '.status-archived', function(e) {
@@ -82,6 +82,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			if (confirm('Are you sure you want to retweet this?')) {
 				$.ajax({
 					url: self.getMetaData('saveRetweetUrl'),
+					type: 'POST',
 					dataType: 'json',
 					data: {
 						account_status_id: id
@@ -107,6 +108,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			if (confirm('Are you sure you want to un-retweet this?')) {
 				$.ajax({
 					url: self.getMetaData('saveUnretweetUrl'),
+					type: 'POST',
 					dataType: 'json',
 					data: {
 						account_status_id: id
@@ -176,6 +178,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			$.ajax({
 				url: self.getMetaData('saveReplyUrl'),
+				type: 'POST',
 				dataType: 'json',
 				data: {
 					account_status_id: id,
@@ -235,6 +238,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			$.ajax({
 				url: self.getMetaData('saveNoteUrl'),
+				type: 'POST',
 				dataType: 'json',
 				data: {
 					account_status_id: id,
@@ -300,6 +304,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 				$.ajax({
 					url: self.getMetaData('saveAssignUrl'),
+					type: 'POST',
 					dataType: 'json',
 					data: { account_status_id: id, assign: val },
 					success: function(json) {
@@ -433,6 +438,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	doArchive: function(id, archive) {
 		$.ajax({
 			url: this.getMetaData('saveArchiveUrl'),
+			type: 'POST',
 			dataType: 'json',
 			data: { account_status_id: id, archive: archive ? 1 : 0 },
 			success: function(json) {
@@ -446,6 +452,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	doFavorite: function(id, favorite) {
 		$.ajax({
 			url: this.getMetaData('saveFavoriteUrl'),
+			type: 'POST',
 			dataType: 'json',
 			data: { account_status_id: id, favorite: favorite ? 1 : 0 },
 			success: function(json) {

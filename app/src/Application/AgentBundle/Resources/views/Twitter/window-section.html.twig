@@ -80,13 +80,13 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
-				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list_new', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count" data-count="{{ account.countNewFollowers() }}">{{ account.countNewFollowers() }}</span>
 					<span>{{ phrase('agent.twitter.new_followers') }}</span>
 				</span>
 			</div>
 			<ul class="sub-group">
-				{% for follower in account.getNewFollowers() %}
+				{% for follower in account.getNewFollowers(1, 5) %}
 					<li class="dp-cat-li">
 						<div class="item-wrap dp-cat-item">
 							<span class="user title" data-route="page:{{ path('agent_twitter_user', {'user_id': follower.user.id}) }}">
@@ -125,7 +125,7 @@
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.followers.count|default(0) }}">{{ account.followers.count|default(0) }}</span>
+					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.countFollowers() }}">{{ account.countFollowers() }}</span>
 					<span>{{ phrase('agent.general.followers') }}</span>
 				</span>
 			</div>

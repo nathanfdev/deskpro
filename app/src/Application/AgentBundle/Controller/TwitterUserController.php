@@ -91,22 +91,29 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccount($this->in->getInt('account_id'));
 		$user = $this->getUser($this->in->getInt('user_id'));
-		$success = false;
 
-		if (!in_array($user['id'], $account->getFriendIds())) {
-			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-			/* $response = */ $twitter->friendship->create($user['id']);
+		try {
+			$account->getTwitterApi()->post_friendshipsCreate(array(
+				'user_id' => $user->id
+			));
+		} catch (\EpiTwitterException $e) {
+			// likely already following
+		}
 
+		$friend = $this->em->getRepository('DeskPRO:TwitterAccountFriend')
+			->findOneByAccountIdAndUserId($account['id'], $user['id']);
+
+		if (!$friend) {
 			$friend = new TwitterAccountFriend();
 			$friend['account'] = $account;
 			$friend['user'] = $user;
 
 			$em = App::getOrm();
-			$em->persist($friend);
-			$em->flush();
-
-			$success = true;
+			$this->em->persist($friend);
+			$this->em->flush();
 		}
+
+		$success = true;
 
 		return $this->createJsonResponse(array('success' => $success));
 	}
@@ -115,25 +122,106 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccount($this->in->getInt('account_id'));
 		$user = $this->getUser($this->in->getInt('user_id'));
-		$success = false;
 
-		if (in_array($user['id'], $account->getFriendIds())) {
-			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-			/* $response = */ $twitter->friendship->destroy($user['id']);
-
-			$em = App::getOrm();
-			$friend = $em->getRepository('DeskPRO:TwitterAccountFriend')
-				->findOneByAccountIdAndUserId($account['id'], $user['id']);
-
-			if ($friend) {
-				$em->remove($friend);
-				$em->flush();
-
-				$success = true;
-			}
+		try {
+			$account->getTwitterApi()->post_friendshipsDestroy(array(
+				'user_id' => $user->id
+			));
+		} catch (\EpiTwitterException $e) {
+			// likely not following already
 		}
 
+		$friend = $this->em->getRepository('DeskPRO:TwitterAccountFriend')
+			->findOneByAccountIdAndUserId($account['id'], $user['id']);
+
+		if ($friend) {
+			$this->em->remove($friend);
+			$this->em->flush();
+		}
+
+		$success = true;
+
 		return $this->createJsonResponse(array('success' => $success));
+	}
+
+	public function ajaxSaveArchiveAction()
+	{
+		$account = $this->getAccount($this->in->getInt('account_id'));
+		$user = $this->getUser($this->in->getInt('user_id'));
+
+		$follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
+			->findOneByAccountIdAndUserId($account['id'], $user['id']);
+
+		if ($follower) {
+			$follower->is_archived = $this->in->getBool('archive');
+
+			$this->em->persist($follower);
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function ajaxSaveMessageAction()
+	{
+		$account = $this->getAccount($this->in->getInt('account_id'));
+		$user = $this->getUser($this->in->getInt('user_id'));
+
+		$success = false;
+		$error = null;
+
+		$text = $this->in->getString('text');
+		if (strlen($text)) {
+			try {
+				$type = $this->in->getValue('type');
+				if ($type == 'public') {
+					if (strpos($text, '@'.$user->screen_name) === false) {
+						$text = '@' . $user->screen_name . ' ' . $text;
+					}
+
+					if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
+						$error = 'Long statuses are todo'; // todo
+					} else {
+						$params = array(
+							'status' => $text
+						);
+
+						$api = $account->getTwitterApi();
+						$response = $api->post_statusesUpdate($params);
+						if (!empty($response->error)) {
+							$error = $response->error;
+						} else {
+							$success = true;
+
+							$twitter_service = new \Application\DeskPRO\Service\Twitter();
+							$new_status = $twitter_service->processStatus($api, $response);
+
+							$new_account_status = new \Application\DeskPRO\Entity\TwitterAccountStatus();
+							$new_account_status->status = $new_status;
+							$new_account_status->account = $account;
+							$new_account_status->status_type = 'sent';
+
+							$this->em->persist($new_status);
+							$this->em->persist($new_account_status);
+							$this->em->flush();
+						}
+					}
+				} else {
+					$error = 'Private responses are TODO'; // todo
+				}
+			} catch (\EpiTwitterException $e) {
+				$error = $e->getMessage();
+			}  catch (\EpiOAuthException $e) {
+				$error = $e->getMessage();
+			}
+		} else {
+			$error = 'No tweet specified.';
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => $success,
+			'error' => $error
+		));
 	}
 
 	/**
@@ -143,9 +231,25 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccount($account_id);
 
+		$page = 1;
+		$limit = 25;
+
 		return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', array(
 			'account'	=> $account,
+			'followers' => $account->getFollowers($page, $limit)
 		));
+	}
 
+	public function listNewFollowersAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+
+		$page = 1;
+		$limit = 25;
+
+		return $this->render('AgentBundle:TwitterUser:list-new-followers.html.twig', array(
+			'account'	=> $account,
+			'new_followers' => $account->getNewFollowers($page, $limit)
+		));
 	}
 }

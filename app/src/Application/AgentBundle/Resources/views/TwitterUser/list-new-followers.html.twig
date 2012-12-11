@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers';
 
 pageMeta.accountId = '{{ account.id|escape }}';
+pageMeta.hideArchived = true;
 
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
@@ -14,9 +15,9 @@ pageMeta.accountId = '{{ account.id|escape }}';
 
 <div class="layout-content twitter">
     <div class="content">
-        {% if followers|length %}
+		{% if new_followers|length %}
 			<section class="followers-list list-listing">
-			{% for follower in followers %}
+			{% for follower in new_followers %}
 				{% include 'AgentBundle:TwitterUser:part-follower.html.twig' %}
 			{% endfor %}
 			</section>

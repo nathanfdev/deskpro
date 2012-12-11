@@ -6,8 +6,8 @@
 		</ul>
 		<ul class="order-by-menu" >
 			<li>{{ phrase('agent.general.sort_by') }}</li>
-			<li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
-			<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
+			<li><a class="button {% if sort_by_date == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
+			<li><a class="button {% if sort_by_date == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
 		</ul>
 
 		<ul style="display:none" class="display-options-menu">

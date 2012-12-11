@@ -155,21 +155,22 @@ class TwitterStatusController extends AbstractController
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
+		$sortByDate = $this->getSortByDate('desc');
 
-		$statuses = $account->getOutgoing($includeArchived, $this->getSortByDate());
+		$statuses = $account->getOutgoing($includeArchived, $sortByDate);
 
-		return $this->renderList($account, $statuses, 'agent_twitter_outgoing_list');
+		return $this->renderList($account, $statuses, 'agent_twitter_outgoing_list', $sortByDate);
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function getSortByDate()
+	protected function getSortByDate($default = 'asc')
 	{
 		// sort by date, ascending or descending
 		$sortByDate = $this->in->getValue('sortbydate');
 		if (!$sortByDate) {
-			$sortByDate = 'asc';
+			$sortByDate = $default;
 		}
 
 		return $sortByDate;
@@ -181,14 +182,19 @@ class TwitterStatusController extends AbstractController
 	 * @param string $route
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, $route)
+	protected function renderList(TwitterAccount $account, array $statuses, $route, $sort_by_date = null)
 	{
+		if ($sort_by_date === null) {
+			$sort_by_date = $this->getSortByDate();
+		}
+
 		// view parameters
 		$parameters = array(
 			'twitter_list_route' => $route,
 			'account' => $account,
 			'statuses' => $statuses,
 			'person' => $this->getPerson(),
+			'sort_by_date' => $sort_by_date
 		);
 
 		// check if is partial

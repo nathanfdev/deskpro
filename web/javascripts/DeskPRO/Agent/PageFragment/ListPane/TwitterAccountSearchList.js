@@ -64,6 +64,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearchList = new Orb.Class({
 
 		$.ajax({
 			url: this.getMetaData('newSearchUrl'),
+			type: 'POST',
 			data: {
 				search_term: searchTerm
 			},

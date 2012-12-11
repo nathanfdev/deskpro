@@ -1492,6 +1492,13 @@ $collection->add('agent_twitter_followers_list', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_followers_list_new', new Route(
+	'/twitter/followers/{account_id}/new',
+	array('_controller' => 'AgentBundle:TwitterUser:listNewFollowers'),
+	array('account_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_twitter_outgoing_list', new Route(
 	'/twitter/outgoing/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listOutgoing'),
@@ -1502,49 +1509,49 @@ $collection->add('agent_twitter_outgoing_list', new Route(
 $collection->add('agent_twitter_status_ajaxsave_note', new Route(
 	'/twitter/status/ajax-note.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveNote'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_retweet', new Route(
 	'/twitter/status/ajax-retweet.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveRetweet'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_unretweet', new Route(
 	'/twitter/status/ajax-unretweet.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveUnretweet'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_reply', new Route(
 	'/twitter/status/ajax-reply.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveReply'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_archive', new Route(
 	'/twitter/status/ajax-archive.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveArchive'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_favorite', new Route(
 	'/twitter/status/ajax-favorite.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveFavorite'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_status_ajaxsave_assign', new Route(
 	'/twitter/status/ajax-assign.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveAssign'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1558,16 +1565,31 @@ $collection->add('agent_twitter_user', new Route(
 $collection->add('agent_twitter_user_ajaxsave_follow', new Route(
 	'/twitter/user/ajax-follow.json',
 	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveFollow'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_user_ajaxsave_unfollow', new Route(
 	'/twitter/user/ajax-unfollow.json',
 	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveUnfollow'),
-	array(),
+	array('_method' => 'POST'),
 	array()
 ));
+
+$collection->add('agent_twitter_user_ajaxsave_message', new Route(
+	'/twitter/user/ajax-message.json',
+	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveMessage'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('agent_twitter_user_ajaxsave_archive', new Route(
+	'/twitter/user/ajax-archive.json',
+	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveArchive'),
+	array('_method' => 'POST'),
+	array()
+));
+
 
 $collection->add('agent_twitter_getsectiondata', new Route(
 	'/twitter/get-section-data.json',
@@ -1600,7 +1622,7 @@ $collection->add('agent_twitter_search_delete', new Route(
 $collection->add('agent_twitter_new_search', new Route(
 	'/twitter/{account_id}/search/new',
 	array('_controller' => 'AgentBundle:Twitter:newSearch'),
-	array('account_id' => '\\d+'),
+	array('account_id' => '\\d+', '_method' => 'POST'),
 	array()
 ));
 

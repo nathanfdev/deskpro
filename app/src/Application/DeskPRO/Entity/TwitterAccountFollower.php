@@ -61,6 +61,10 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $user;
 
+	protected $follow_order;
+
+	protected $is_archived = false;
+
 	/**
 	 * @return integer
 	 */
@@ -109,6 +113,18 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function _preInsert()
+	{
+		if ($this->follow_order === null) {
+			$max = App::getDb()->fetchColumn("
+				SELECT MAX(follow_order)
+				FROM twitter_accounts_followers
+				WHERE account_id = ?
+			", array($this->account->id));
+			$this->follow_order = intval($max) + 1;
+		}
+	}
+
 
 
 	############################################################################
@@ -120,9 +136,17 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFollower';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_followers', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'twitter_accounts_followers',
+			'uniqueConstraints' => array(
+				'account_user_idx' => array('columns' => array('account_id', 'user_id'))
+			)
+		));
+		$metadata->addLifecycleCallback('_preInsert', 'prePersist');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'follow_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'follow_order', ));
+		$metadata->mapField(array( 'fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'followers', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));

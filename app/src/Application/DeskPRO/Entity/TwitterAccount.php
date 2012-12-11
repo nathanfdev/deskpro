@@ -216,17 +216,22 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return in_array($agent_id, $person_ids);
 	}
 
-	public function getNewFollowers()
+	public function getNewFollowers($page = 1, $limit = 5)
 	{
+		$page = max(1, intval($page));
+		$offset = ($page - 1) * $limit;
+
 		$query = App::getOrm()->createQuery("
 			SELECT f
 			FROM DeskPRO:TwitterAccountFollower f
 			WHERE f.account = :account_id
-			ORDER BY f.id DESC
+				AND f.is_archived = false
+			ORDER BY f.follow_order DESC
 		");
 
 		$followers = $query
-			->setMaxResults(5)
+			->setMaxResults($limit)
+			->setFirstResult($offset)
 			->setParameters(array('account_id' => $this->getId()))
 			->execute();
 
@@ -243,15 +248,56 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 			SELECT COUNT(f.id)
 			FROM DeskPRO:TwitterAccountFollower f
 			WHERE f.account = :account_id
-			ORDER BY f.id DESC
+				AND f.is_archived = false
+			ORDER BY f.follow_order DESC
 		");
 
 		$this->_cache['count_new_followers'] = $query
-			->setMaxResults(5)
 			->setParameters(array('account_id' => $this->getId()))
 			->getSingleScalarResult();
 
 		return $this->_cache['count_new_followers'];
+	}
+
+	public function getFollowers($page = 1, $limit = 5)
+	{
+		$page = max(1, intval($page));
+		$offset = ($page - 1) * $limit;
+
+		$query = App::getOrm()->createQuery("
+			SELECT f
+			FROM DeskPRO:TwitterAccountFollower f
+			WHERE f.account = :account_id
+			ORDER BY f.follow_order DESC
+		");
+
+		$followers = $query
+			->setMaxResults($limit)
+			->setFirstResult($offset)
+			->setParameters(array('account_id' => $this->getId()))
+			->execute();
+
+		return $followers;
+	}
+
+	public function countFollowers($cache = true)
+	{
+		if ($cache && isset($this->_cache['count_followers'])) {
+			return $this->_cache['count_followers'];
+		}
+
+		$query = App::getOrm()->createQuery("
+			SELECT COUNT(f.id)
+			FROM DeskPRO:TwitterAccountFollower f
+			WHERE f.account = :account_id
+			ORDER BY f.follow_order DESC
+		");
+
+		$this->_cache['count_followers'] = $query
+			->setParameters(array('account_id' => $this->getId()))
+			->getSingleScalarResult();
+
+		return $this->_cache['count_followers'];
 	}
 
 	/**

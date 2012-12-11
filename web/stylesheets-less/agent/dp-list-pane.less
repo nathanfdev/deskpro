@@ -1856,13 +1856,6 @@ section.dp-overlay > article.no-footer {
 			margin-right: 2px;
 		}
 
-		.expand-collapse-icon {
-			display: none;
-			float: right;
-			margin-right: 2px;
-			margin-top: 2px;
-		}
-
 		.item-select {
 			float: left;
 			position: relative;
@@ -2020,6 +2013,38 @@ section.dp-overlay > article.no-footer {
 		}
 	}
 
+	.new-note {
+		border-top: 1px solid #ACB6BF;
+		padding: 0px 0 0px 3px;
+		font-size: 9px;
+		line-height: 13px;
+		cursor: pointer;
+
+		.note-input {
+			padding: 5px 5px 5px 2px;
+
+			span {
+				background: url(../../images/agent/icons/bullet_toggle_minus.png) no-repeat 0 50%;
+			}
+		}
+
+		textarea {
+			width: 100%;
+			height: 45px;
+			box-sizing: border-box;
+			margin-bottom: 3px;
+		}
+
+		.cancel-note-trigger {
+			background: url(../../images/agent/icons/bullet_toggle_plus.png) no-repeat 0 50%;
+			padding-left: 15px;
+			cursor: pointer;
+		}
+	}
+}
+
+.list-listing article.twitter-status,
+.list-listing article.twitter-user {
 	.new-reply {
 		border-top: 1px solid #ACB6BF;
 		padding: 4px;
@@ -2057,37 +2082,98 @@ section.dp-overlay > article.no-footer {
 			}
 		}
 	}
-
-	.new-note {
-		border-top: 1px solid #ACB6BF;
-		padding: 0px 0 0px 3px;
-		font-size: 9px;
-		line-height: 13px;
-		cursor: pointer;
-
-		.note-input {
-			padding: 5px 5px 5px 2px;
-
-			span {
-				background: url(../../images/agent/icons/bullet_toggle_minus.png) no-repeat 0 50%;
-			}
-		}
-
-		textarea {
-			width: 100%;
-			height: 45px;
-			box-sizing: border-box;
-			margin-bottom: 3px;
-		}
-
-		.cancel-note-trigger {
-			background: url(../../images/agent/icons/bullet_toggle_plus.png) no-repeat 0 50%;
-			padding-left: 15px;
-			cursor: pointer;
-		}
-	}
 }
 
 article.twitter-status.archived .title .expand-collapse-icon {
 	display: block;
+}
+
+.list-listing article.twitter-user {
+	margin: 8px;
+	width: auto;
+	background-color: #fff;
+	border: 1px solid #ACB6BF;
+	.rounded(4px);
+	position: relative;
+
+	&.archived {
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	.user-body {
+		margin: 4px;
+		overflow: hidden;
+
+		i.status-archive {
+			.iconbase(16px, 16px);
+			background: url(../../images/agent/icons/cross.png);
+			cursor: pointer;
+			float: right;
+			margin-right: 2px;
+		}
+
+		i.status-archived {
+			.iconbase(16px, 16px);
+			background: url(../../images/agent/icons/add.png);
+			cursor: pointer;
+			float: right;
+			margin-right: 2px;
+		}
+
+		.photo {
+			float: left;
+		}
+
+		.info {
+			margin-left: 54px;
+		}
+
+		h4 {
+			font-size: 13px;
+			font-weight: normal;
+			font-family: @body-font;
+
+			.name {
+				font-weight: bold;
+			}
+
+			.screen-name {
+				font-size: 90%;
+				color: #888888;
+			}
+		}
+	}
+
+	.message-sent-confirmation {
+		border-top: 1px solid #ACB6BF;
+		padding: 4px;
+	}
+
+	.user-info {
+		border-top: 1px solid #ACB6BF;
+		padding-top: 1px;
+		overflow: hidden;
+
+		ul li {
+			float: left;
+			font-size: 10px;
+			margin: 0 4px 0 4px;
+			padding: 0 4px 0 4px;
+			cursor: pointer;
+
+			label {
+				cursor: pointer;
+			}
+		}
+
+		.drop-icon {
+			position: relative;
+			top: -1px;
+			margin-left: 4px;
+		}
+	}
 }
