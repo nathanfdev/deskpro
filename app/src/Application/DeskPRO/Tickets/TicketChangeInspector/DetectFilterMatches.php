@@ -246,8 +246,10 @@ class DetectFilterMatches
 			}
 
 			$affected_agent_ids = array();
-			foreach ($agent_scopes as $a) {
-				$affected_agent_ids[] = $a->getId();
+			if ($agent_scopes) {
+				foreach ($agent_scopes as $a) {
+					$affected_agent_ids[] = $a->getId();
+				}
 			}
 			$this->logMessage("-- Affected agents: " . implode(', ', $affected_agent_ids));
 
