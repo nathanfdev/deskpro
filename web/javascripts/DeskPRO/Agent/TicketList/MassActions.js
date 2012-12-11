@@ -77,16 +77,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		}
 
 		this.wrapperEl.detach();
-		this.wrapper = this.wrapperEl.clone();
 
-		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
-		var scrollEl = $('.with-scrollbar', this.wrapper).first();
-		if (scrollEl.length) {
-			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
-				showEvent: 'show',
-				hideEvent: 'hide'
-			});
-		}
+		this._resetWrapper();
 
 		this.backdropEls = null;
 
@@ -114,6 +106,22 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		}
 	},
 
+	_resetWrapper: function() {
+		if (this.wrapper) {
+			this.wrapper.remove();
+		}
+
+		this.wrapper = this.wrapperEl.clone().detach().html(this.wrapperEl.html());
+
+		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
+		var scrollEl = $('.with-scrollbar', this.wrapper).first();
+		if (scrollEl.length) {
+			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
+	},
 
 	/**
 	 * Resets the wrapper back to the original, and then runs all of the init again.
@@ -122,11 +130,9 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		var wasopen = this.isOpen();
 		this.close();
 
-		this.wrapper.remove();
-		this.wrapper = this.wrapperEl.clone();
-		this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, this.wrapper);
-		this._hasInit = false;
+		this._resetWrapper();
 
+		this._hasInit = false;
 		this.hasAnyChange = false;
 
 		if (wasopen) {
