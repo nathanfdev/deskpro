@@ -57,6 +57,8 @@ require __DIR__.'/../CloudConfig.php';
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 set_time_limit(0);
 
 
@@ -65,19 +67,20 @@ set_time_limit(0);
 ########################################################################
 
 $db = CloudConfig::getDb();
+$migrate_db_config = CloudConfig::getConfig('migrate_db');
 
 $st = $db->prepare("
 	SELECT
 		cloud_sites.*
 	FROM cloud_sites
-	WHERE cloud_sites.build_number > 0 AND cloud_sites.in_use = 1
+	WHERE cloud_sites.build_number > 0 AND cloud_sites.in_use = 1 AND cloud_sites.db_host != '{$migrate_db_config['host']}'
 	ORDER BY cloud_sites.id ASC
 ");
 
 $st->execute();
 $sites = $st->fetchAll(\PDO::FETCH_ASSOC);
 
-dp_logf("--------------- RUN ALL :: BEGIN (%d sites) ---------------", count($sites));
+printf("--------------- RUN ALL :: BEGIN (%d sites) ---------------\n", count($sites));
 
 #------------------------------
 # Run sites
@@ -87,7 +90,7 @@ $time_begin = microtime(true);
 
 foreach ($sites as $siteinfo) {
 	$site_time_begin = microtime(true);
-	printf("--- BEGIN SITE %d %s ---", $siteinfo['id'], $siteinfo['master_domain']);
+	printf("--- BEGIN SITE %d %s ---\n", $siteinfo['id'], $siteinfo['master_domain']);
 
 	$cmd = "php move-site-db.php --dpc-site-id {$siteinfo['id']}";
 
@@ -97,11 +100,11 @@ foreach ($sites as $siteinfo) {
 	passthru($cmd, $ret);
 
 	if ($ret) {
-		echo "!!! DETECTED ERROR STATUS !!!";
+		echo "!!! DETECTED ERROR STATUS !!!\n";
 		exit;
 	}
 
-	printf("--- END SITE %d %s (took %.4f s) ---", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);
+	printf("\n--- END SITE %d %s (took %.4f s) ---\n", $siteinfo['id'], $siteinfo['master_domain'], microtime(true) - $site_time_begin);
 }
 
-printf("--------------- RUN ALL END (took %.4f s) ---------------", microtime(true) - $time_begin);
+printf("--------------- RUN ALL END (took %.4f s) ---------------\n", microtime(true) - $time_begin);
