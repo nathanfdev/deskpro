@@ -65,9 +65,21 @@ class EzcReader extends AbstractReader
 		\ezcMailParser::setTmpDir(null);
 
 		// Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
-		\ezcMailCharsetConverter::setConvertMethod(function($text) {
-			return $text;
-		});
+		static $has_set_convert = false;
+		if (!$has_set_convert) {
+			$has_set_convert = true;
+			\ezcMailCharsetConverter::setConvertMethod(function($text) {
+				return $text;
+			});
+		}
+	}
+
+	public function _kill()
+	{
+		parent::_kill();
+
+		$this->parser = null;
+		$this->mail   = null;
 	}
 
 	protected function _setRawSource($source)

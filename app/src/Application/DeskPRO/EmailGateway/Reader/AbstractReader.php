@@ -45,6 +45,20 @@ abstract class AbstractReader
 	protected $raw_source;
 	protected $raw_headers;
 
+	public function _kill()
+	{
+		$this->vals        = null;
+		$this->properties  = null;
+		$this->raw_source  = null;
+		$this->raw_headers = null;
+	}
+
+	public function resetAll()
+	{
+		$this->vals = array();
+		$this->properties = array();
+	}
+
 	public function setProperty($name, $value)
 	{
 		$this->properties[$name] = $value;

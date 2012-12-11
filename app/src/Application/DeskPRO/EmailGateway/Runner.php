@@ -291,6 +291,8 @@ class Runner
 	 */
 	public function executeGateway(EmailGateway $gateway, $time_limit = 0)
 	{
+		gc_enable();
+
 		$this->logger->log("Start processing {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}", 'info');
 		$start_time = microtime(true);
 
@@ -300,8 +302,28 @@ class Runner
 		$fetcher->setMaxSize(App::getSetting('core.gateway_max_email'));
 
 		$exec_start = time();
+		$source = null;
+		$created_obj = null;
+		$reader = null;
 
 		while (true) {
+
+			if ($source) {
+				if ($reader) {
+					$reader->_kill();
+					$reader = null;
+				}
+
+				App::getOrm()->clear('Application\DeskPRO\Entity\Blob');
+				App::getOrm()->clear('Application\DeskPRO\Entity\EmailSource');
+				App::getOrm()->clear('Application\DeskPRO\Entity\Ticket');
+				App::getOrm()->clear('Application\DeskPRO\Entity\TicketMessage');
+				App::getOrm()->clear('Application\DeskPRO\Entity\TicketAttachment');
+				App::getOrm()->clear('Application\DeskPRO\Entity\TicketAccessCode');
+				App::getOrm()->clear('Application\DeskPRO\Entity\TicketLog');
+
+				gc_collect_cycles();
+			}
 
 			// Protection against nested transactions.
 			// This should not be needed, but its a safety against unclosed transactions.
@@ -309,7 +331,7 @@ class Runner
 			// process of emails being rolledback.
 			if (App::getDb()->isTransactionActive()) {
 				$this->logger->log("WARNING: Unclosed transaction!", 'info');
-				$e = new \Imagine\Exception\RuntimeException("WARNING: Unclosed transaction!");
+				$e = new \RuntimeException("WARNING: Unclosed transaction!");
 				KernelErrorHandler::logException($e);
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
