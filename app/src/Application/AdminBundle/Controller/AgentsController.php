@@ -400,6 +400,7 @@ class AgentsController extends AbstractController
 		$emails = explode(',', $emails);
 		$emails = Arrays::func($emails, 'trim');
 		$emails = Arrays::func($emails, 'strtolower');
+		$emails = array_unique($emails);
 
 		// Filter out non-addresses
 		$emails = array_filter($emails, function($email) {
@@ -461,6 +462,8 @@ class AgentsController extends AbstractController
 
 			$name = Strings::utf8_ucwords($name);
 			$agent->setName($name);
+
+			$this->db->beginTransaction();
 
 			try {
 
@@ -542,6 +545,8 @@ class AgentsController extends AbstractController
 					'value_array' => null,
 					'date_expire' => null
 				));
+
+				$this->db->commit();
 
 				// Send welcome email
 				$message = $this->container->getMailer()->createMessage();
