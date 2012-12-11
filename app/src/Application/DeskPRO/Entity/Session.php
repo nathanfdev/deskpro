@@ -240,7 +240,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 			return Util::generateStaticSecurityToken($this->visitor->getVisitorSecret($name), $timeout);
 		}
 
-		return Util::generateStaticSecurityToken($this->getSessionSecret($name), $timeout);
+		return Util::generateStaticSecurityToken($this->getSessionSecret($name, true), $timeout);
 	}
 
 
@@ -255,7 +255,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->visitor && $this->visitor->checkSecurityToken($name, $token)) {
 			return true;
 		}
-		return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name));
+		return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name, true));
 	}
 
 
