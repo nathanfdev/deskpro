@@ -58,6 +58,15 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
  */
 class TicketController extends AbstractController
 {
+	public function requireRequestToken($action, $arguments = null)
+	{
+		if ($action == 'viewRawMessageAction') {
+			return false;
+		}
+
+		return parent::requireRequestToken($action, $arguments);
+	}
+
 	############################################################################
 	# view
 	############################################################################
