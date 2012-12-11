@@ -125,6 +125,8 @@ class MainController extends AbstractController
 			$is_first_login_name = $this->person->getPref('agent.first_login_name');
 		}
 
+		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
+
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
 			'show_listpane'       => $this->person->getPref('agent.ui.show-listpane'),
