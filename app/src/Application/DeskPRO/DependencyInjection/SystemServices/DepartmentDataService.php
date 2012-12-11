@@ -42,6 +42,12 @@ class DepartmentDataService extends BaseRepositoryService
 	protected $cats;
 	protected $cat_ids = array();
 	protected $filtered_nodes = array();
+	protected $filtered_chat_nodes = array();
+
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $continer;
 
 	/**
 	 * @var \Application\DeskPRO\Translate\Translate
@@ -59,6 +65,7 @@ class DepartmentDataService extends BaseRepositoryService
 		$options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
 		$options['translator'] = $container->getTranslator();
 		$options['default_id'] = $container->getSetting('core.default_ticket_dep');
+		$options['container']  = $container;
 
 		$em = $container->getEm();
 		$o = new static($em, $options);
@@ -69,6 +76,7 @@ class DepartmentDataService extends BaseRepositoryService
 	{
 		$this->translator = $this->options['translator'];
 		$this->default_id = $this->options['default_id'];
+		$this->continer   = $this->options['container'];
 	}
 
 	public function get($dep_id)
@@ -195,6 +203,47 @@ class DepartmentDataService extends BaseRepositoryService
 			$nodes = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
 			return $nodes;
 		}
+	}
+
+	public function getOnlineChatDepartments(\Application\DeskPRO\Entity\Person $person_context)
+	{
+		$key = $person_context->getId();
+
+		if (isset($this->filtered_chat_nodes[$key])) {
+			return $this->filtered_chat_nodes[$key];
+		}
+
+		$online_dep_ids = array();
+
+		$agents_online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
+		foreach ($agents_online_ids as $aid) {
+			$agent = $this->continer->getDataService('Agent')->get($aid);
+			if (!$agent) continue;
+
+			$agent->loadHelper('AgentPermissions');
+
+			$online_dep_ids = array_merge(
+				$online_dep_ids,
+				$agent->getHelper('AgentPermissions')->getAllowedDepartments('chat')
+			);
+		}
+
+		$online_dep_ids = array_unique($online_dep_ids, \SORT_NUMERIC);
+
+		if (!$online_dep_ids) {
+			$this->filtered_nodes[$key] = array();
+			return array();
+		}
+
+		$filter = function ($c) use ($person_context, $online_dep_ids) {
+			if (!isset($online_dep_ids[$c->getId()])) {
+				return false;
+			}
+			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), 'chat', 'full');
+		};
+
+		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxyHasPhraseName::makeTreeProxyArray($this->getRootNodes(), $filter);
+		return $this->filtered_nodes[$key];
 	}
 
 	public function getRootNodes()
