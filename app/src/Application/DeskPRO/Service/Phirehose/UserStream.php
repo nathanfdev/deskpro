@@ -52,6 +52,11 @@ class UserStream extends \UserstreamPhirehose
 	protected $connection;
 
 	/**
+	 * @var \Closure|null
+	 */
+	protected $db_callback;
+
+	/**
 	 * @var \Closure
 	 */
 	protected $callback;
@@ -84,9 +89,25 @@ class UserStream extends \UserstreamPhirehose
 	 * @param \Doctrine\DBAL\Connection
 	 * @return void
 	 */
-	public function setConnection(\Doctrine\DBAL\Connection $connection)
+	public function setConnection(\Doctrine\DBAL\Connection $connection = null)
 	{
 		$this->connection = $connection;
+	}
+
+	/**
+	 * @param \Closure|null $callback
+	 */
+	public function setDbCallback(\Closure $callback = null)
+	{
+		$this->db_callback = $callback;
+	}
+
+	/**
+	 * @return \Closure|null
+	 */
+	public function getDbCallback()
+	{
+		return $this->db_callback;
 	}
 
 	/**
@@ -171,12 +192,23 @@ class UserStream extends \UserstreamPhirehose
 				$event = 'delete';
 			}
 
-			$this->connection->insert('twitter_stream', array(
+			$data = array(
 				'account_id' => $this->account['id'],
 				'event' => $event,
 				'data' => serialize($status),
 				'date_created' => gmdate('Y-m-d H:i:s')
-			));
+			);
+
+			if ($this->connection) {
+				$this->connection->insert('twitter_stream', $data);
+			} else if ($this->db_callback) {
+				$callback = $this->db_callback;
+				$callback(function($db) use ($data) {
+					$db->insert('twitter_stream', $data);
+				}, $this);
+			} else {
+				throw new \Exception("No connection or DB callback - can't process");
+			}
 		} catch (\Exception $e) {
 			\DeskPRO\Kernel\KernelErrorHandler::handleException($e, false);
 		}

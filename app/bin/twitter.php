@@ -53,8 +53,6 @@ $env = 'dev';
 
 $db_conf = $DP_CONFIG['db'];
 $db_conf['driver'] = 'pdo_mysql';
-/** @var $db Doctrine\DBAL\Connection */
-$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
 
 // needed for Phirehose
 define('TWITTER_CONSUMER_KEY', \Application\DeskPRO\Service\Twitter::getConsumerKey());
@@ -62,6 +60,10 @@ define('TWITTER_CONSUMER_SECRET', \Application\DeskPRO\Service\Twitter::getConsu
 
 $pid_file = dp_get_data_dir() . '/twitter.pid';
 $is_windows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+$get_db = function() use ($db_conf) {
+	return \Doctrine\DBAL\DriverManager::getConnection($db_conf);
+};
 
 $check_runner_active = function(&$pid = null) use($pid_file, $is_windows) {
 	$running = false;
@@ -115,11 +117,17 @@ $runner_pid = null;
 $runner_active = $check_runner_active($runner_pid);
 
 if (!empty($argv[1])) {
+	/** @var $db \Doctrine\DBAL\Connection */
+	$db = $get_db();
+
 	$account = $db->fetchAssoc('
 		SELECT *
 		FROM twitter_accounts
 		WHERE id = ?
 	', array($argv[1]));
+
+	$db->close();
+	$db = null;
 
 	if (!$account) {
 		$log_status("[Account] Invalid account $argv[1].");
@@ -129,9 +137,14 @@ if (!empty($argv[1])) {
 	$log_status("[Account $account[id]] Processor starting with PID " . getmypid() . ".");
 
 	$consumer = new \Application\DeskPRO\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
-	$consumer->setConnection($db);
+	$consumer->setDbCallback(function($inner_callback) use ($get_db) {
+		$db = $get_db();
+		$inner_callback($db);
+		$db->close();
+		$db = null;
+	});
 	$consumer->setAccount($account);
-	$consumer->setCallback(function($status) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $db) {
+	$consumer->setCallback(function($status, $consumer) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $get_db) {
 		$my_pid = getmypid();
 
 		$log = sprintf(
@@ -145,17 +158,24 @@ if (!empty($argv[1])) {
 			$log_status("\t\t" . trim($status), false);
 		}
 
-		gc_collect_cycles();
+		/** @var $db \Doctrine\DBAL\Connection */
+		$db = $get_db();
 
 		$test_account = $db->fetchAssoc('
 			SELECT *
 			FROM twitter_accounts
 			WHERE id = ?
 		', array($account['id']));
+
+		$db->close();
+		$db = null;
+
 		if (!$test_account || $test_account['oauth_token'] != $account['oauth_token']) {
 			$log_status("[Account $account[id], PID $my_pid] Account removed or changed. Terminating.");
 			exit;
 		}
+
+		gc_collect_cycles();
 
 		if (!$runner_active) {
 			$log_status("[Account $account[id], PID $my_pid] Started without parent runner. Continuing (can only be terminated manually).");
@@ -249,6 +269,9 @@ while (true) {
 	}
 
 	if ($timer % 30 == 0) {
+		/** @var $db \Doctrine\DBAL\Connection */
+		$db = $get_db();
+
 		$db->executeUpdate("
 			INSERT INTO settings
 				(name, value)
@@ -275,9 +298,7 @@ while (true) {
 			$log_status("[Runner, PID $my_pid] PID file removed or has a different PID. Terminating.");
 			exit;
 		}
-	}
 
-	if ($timer % 60 == 0) {
 		$matched = array();
 
 		foreach ($db->fetchAll('SELECT * FROM twitter_accounts') as $account) {
@@ -301,6 +322,11 @@ while (true) {
 				@proc_terminate($process);
 			}
 		}
+
+		$db->close();
+		$db = null;
+
+		gc_collect_cycles();
 	}
 
 	if (!count($children)) {
@@ -310,10 +336,7 @@ while (true) {
 
 	if ($max_timer && $timer >= $max_timer) {
 		$log_status("[Runner, PID $my_pid] Max timer ($max_timer) reached. Exiting.");
-	}
-
-	if ($timer % 60 == 0) {
-		gc_collect_cycles();
+		exit;
 	}
 
 	sleep($sleep_length);
