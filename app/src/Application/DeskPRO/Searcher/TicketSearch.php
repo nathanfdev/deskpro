@@ -1633,7 +1633,7 @@ class TicketSearch extends SearcherAbstract
 									case self::OP_NOT:
 										$joins[] = array(
 											'custom_data_ticket',
-											"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
+											"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
 										);
 										$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
 										break;
