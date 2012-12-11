@@ -169,6 +169,8 @@
 			<div class="page-content">
 				{% if message %}
 					{{ message }}
+				{% elseif error_message %}
+					{{ error_message }}
 				{% else %}
 					{{ phrase('admin.menu.error_no_permission') }}
 				{% endif %}
