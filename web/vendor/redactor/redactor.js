@@ -843,7 +843,11 @@ var RLANG = {
 					// convert links
 					if (this.opts.convertLinks)
 					{
-						this.$editor.linkify();
+						clearTimeout(this.linkifyTimeout);
+						var editor = this.$editor;
+						this.linkifyTimeout = setTimeout(function() {
+							editor.linkify();
+						}, 0);
 					}
 				}
 
@@ -1574,36 +1578,37 @@ var RLANG = {
 
 			if (isParentRoot || isParentP)
 			{
-				var element = $(this.getCurrentNode());
-				var isEmpty = (element.html() === '' || element.html() === '<br>');
+				var element = this.getCurrentNode();
+				var html = element.innerHtml || '';
+				var isEmpty = (html === '' || html == '<br>');
 
-				if (element.get(0).tagName === 'DIV')
+				if (element.tagName === 'DIV')
 				{
-					if (element.parent().is('p'))
+					if (element.parentNode.tagName === 'P')
 					{
-						var attachParent = element.parent();
-						while (attachParent.parent().is('p'))
+						var attachParent = element.parentNode;
+						while (attachParent.parentNode && attachParent.parentNode.tagName === 'P')
 						{
-							attachParent = attachParent.parent();
+							attachParent = attachParent.parentNode;
 						}
-						attachParent.after(element);
-						this.setSelection(element[0], 0, element[0], 0);
+						attachParent.parentNode.insertBefore(element, attachParent.nextSibling)
+						this.setSelection(element, 0, element, 0);
 					}
 
 					if (isEmpty)
 					{
-						var newElement = $('<p>').append(element.clone().get(0).childNodes);
-						element.replaceWith(newElement);
+						var $element = $(element);
+						var newElement = $('<p>').append($element.clone().get(0).childNodes);
+						$element.replaceWith(newElement);
 						newElement.html('<br />');
 						this.setSelection(newElement[0], 0, newElement[0], 0);
 					} 
 				}
-				else if (element.get(0).tagName === 'P' && !isEmpty)
+				else if (element.tagName === 'P' && !isEmpty)
 				{
 					// pressing enter at beginning of a line
-					var newElement = $('<p></p>');
-					element.before(newElement);
-					this.setSelection(element[0], 0, element[0], 0);
+					element.parentNode.insertBefore(this.document.createElement('p'), element);
+					this.setSelection(element, 0, element, 0);
 				}
 			}
 		},
@@ -4184,7 +4189,10 @@ var RLANG = {
 									.replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
 									.replace(url2, '$1<a href="$2">$2</a>$5');
 
-						$(n).after(html).remove();
+						if (html != n.nodeValue)
+						{
+							$(n).after(html).remove();
+						}
 					}
 				}
 				else if (n.nodeType === 1  &&  !/^(a|button|textarea)$/i.test(n.tagName))
