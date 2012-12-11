@@ -51,6 +51,19 @@
 		'is_managed' => true
 	),
 
+	'french' => array(
+		'id'         => 'french',
+		'lang_code'  => 'fre',
+		'title'      => 'French',
+		'locale'     => 'fr',
+		'flag_image' => 'fr.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => false,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'german' => array(
 		'id'         => 'german',
 		'lang_code'  => 'ger',
@@ -198,51 +211,12 @@
 		'is_managed' => true
 	),
 
-	'dutch' => array(
-		'id'         => 'dutch',
-		'lang_code'  => 'dut',
-		'title'      => 'Dutch',
-		'locale'     => 'nl',
-		'flag_image' => 'nl.png',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
 	'finnish' => array(
 		'id'         => 'finnish',
 		'lang_code'  => 'fin',
 		'title'      => 'Finnish',
 		'locale'     => 'fi',
 		'flag_image' => 'fi.png',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'french' => array(
-		'id'         => 'french',
-		'lang_code'  => 'fre',
-		'title'      => 'French',
-		'locale'     => 'fr',
-		'flag_image' => 'fr.png',
-		'is_rtl'     => false,
-		'has_user'   => true,
-		'has_agent'  => false,
-		'has_admin'  => false,
-		'is_managed' => true
-	),
-
-	'german' => array(
-		'id'         => 'german',
-		'lang_code'  => 'ger',
-		'title'      => 'German',
-		'locale'     => 'de',
-		'flag_image' => 'de.png',
 		'is_rtl'     => false,
 		'has_user'   => true,
 		'has_agent'  => false,
