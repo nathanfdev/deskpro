@@ -148,7 +148,9 @@
 					<option {% if not account_status.agent and not account_status.agent_team %}selected="selected"{% endif %} value="">None</option>
 					<optgroup label="Agents">
 						{% for agent in app.getDataRepository('Agent').getAgents() %}
-							<option {% if account_status.agent and agent.id == account_status.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+							{% if account_status.account.hasPerson(agent) %}
+								<option {% if account_status.agent and agent.id == account_status.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endif %}
 						{% endfor %}
 					</optgroup>
 					{% if app.getDataRepository('AgentTeam').getTeams()|length %}
