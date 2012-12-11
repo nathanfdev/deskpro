@@ -1212,9 +1212,9 @@ $collection->add('admin_langs_getphrasetext', new Route(
 ));
 
 $collection->add('admin_langs_departments', new Route(
-	'/languages/{language_id}/phrases/departments',
+	'/languages/{language_id}/phrases/departments/{type}',
 	array('_controller' => 'AdminBundle:Languages:departments'),
-	array('language_id' => '\\d+'),
+	array('language_id' => '\\d+', 'type' => '(tickets|chat)'),
 	array()
 ));
 

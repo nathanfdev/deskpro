@@ -22,8 +22,11 @@
 		</header>
 		<article>
 			<ul>
-				<li class="{% if this_page == 'departments' %}on{% endif %}">
-					<a href="{{ path('admin_langs_departments', {'language_id': language.id}) }}">Departments</a>
+				<li class="{% if this_page == 'tickets_departments' %}on{% endif %}">
+					<a href="{{ path('admin_langs_departments', {'language_id': language.id, type: 'tickets'}) }}">Ticket Departments</a>
+				</li>
+				<li class="{% if this_page == 'chat_departments' %}on{% endif %}">
+					<a href="{{ path('admin_langs_departments', {'language_id': language.id, type: 'chat'}) }}">Chat Departments</a>
 				</li>
 				{% if app.getSetting('core.use_product') %}
 					<li class="{% if this_page == 'products' %}on{% endif %}">

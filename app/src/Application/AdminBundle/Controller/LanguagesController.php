@@ -106,16 +106,25 @@ class LanguagesController extends AbstractController
 	# edit-departments
 	############################################################################
 
-	public function departmentsAction($language_id)
+	public function departmentsAction($language_id, $type)
 	{
 		$vars = $this->getLangInfo($language_id);
 
-		$all_departments = $this->em->createQuery("
-			SELECT dep
-			FROM DeskPRO:Department dep
-			WHERE dep.parent IS NULL
-			ORDER BY dep.display_order ASC
-		")->getResult();
+		if ($type == 'tickets') {
+			$all_departments = $this->em->createQuery("
+				SELECT dep
+				FROM DeskPRO:Department dep
+				WHERE dep.parent IS NULL AND dep.is_tickets_enabled = true
+				ORDER BY dep.display_order ASC
+			")->getResult();
+		} else {
+			$all_departments = $this->em->createQuery("
+				SELECT dep
+				FROM DeskPRO:Department dep
+				WHERE dep.parent IS NULL AND dep.is_chat_enabled = true
+				ORDER BY dep.display_order ASC
+			")->getResult();
+		}
 
 		$vars['all_departments'] = $all_departments;
 
