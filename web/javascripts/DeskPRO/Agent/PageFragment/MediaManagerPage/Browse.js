@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Browse = new Orb.Class({
 		wrapper.on('click', '.insert-trigger', function(ev) {
 			ev.preventDefault();
 
-			if (!MEDIA_MANAGER_WINDOW.boundEditor || !MEDIA_MANAGER_WINDOW.boundEditor.selection) {
+			if (!window.MEDIA_MANAGER_WINDOW || !MEDIA_MANAGER_WINDOW.boundEditor || !MEDIA_MANAGER_WINDOW.boundEditor.selection) {
 				return;
 			}
 
