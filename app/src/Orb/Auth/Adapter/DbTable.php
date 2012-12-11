@@ -126,7 +126,10 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 		$time_start = microtime(true);
 		if ($this->logger) {
 			$this->logger->log("START DbTable::authenticate", Logger::DEBUG);
-			$this->logger->log("Options: " . trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+
+			$log_opt = $this->options->all();
+			$log_opt['db_password'] = '***';
+			$this->logger->log("Options: " . trim(Arrays::implodeTemplate($log_opt, "{KEY}: {VAL}\n")), Logger::DEBUG);
 			$this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
 		}
 
