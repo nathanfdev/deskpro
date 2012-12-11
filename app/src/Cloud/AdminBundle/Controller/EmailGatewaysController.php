@@ -284,6 +284,6 @@ class EmailGatewaysController extends BaseEmailGatewaysController
 
 	####################################################################################################################
 
-	public function editAccountAction($id) { throw $this->createNotFoundException(); }
+	public function editAccountAction($id) { return $this->redirectRoute('admin_emailgateways'); }
 	public function ajaxTestAction() { throw $this->createNotFoundException(); }
 }
