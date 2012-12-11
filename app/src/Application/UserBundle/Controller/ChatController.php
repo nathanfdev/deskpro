@@ -477,10 +477,10 @@ class ChatController extends AbstractController
 			if ($this->in->getString('comments')) {
 				$convo->rating_comment = $this->in->getString('comments');
 			}
-			if ($this->in->getUint('rating_response_time')) {
+			if ($this->in->getInt('rating_response_time')) {
 				$convo->rating_response_time = $this->in->getInt('rating_response_time');
 			}
-			if ($this->in->getUint('rating_overall')) {
+			if ($this->in->getInt('rating_overall')) {
 				$convo->rating_overall = $this->in->getInt('rating_overall');
 			}
 		}
