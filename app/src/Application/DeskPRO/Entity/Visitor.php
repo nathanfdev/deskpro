@@ -254,6 +254,45 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * A secret hash of this session key with the app secret.
+	 *
+	 * Most notably used as the "proxy key"
+	 *
+	 * @param  string $secret Another component to add to the hash
+	 * @return string
+	 */
+	public function getVisitorSecret($name = '')
+	{
+		return md5($this->id . $this->auth . App::getAppSecret() . $name);
+	}
+
+
+	/**
+	 * Generate a security token based off of this session
+	 *
+	 * @param $name
+	 * @param int $timeout
+	 * @return string
+	 */
+	public function generateSecurityToken($name, $timeout = 43200)
+	{
+		return Util::generateStaticSecurityToken($this->getVisitorSecret($name), $timeout);
+	}
+
+
+	/**
+	 * Check a security token to see if its valid
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	public function checkSecurityToken($name, $token)
+	{
+		return Util::checkStaticSecurityToken($token, $this->getVisitorSecret($name));
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata

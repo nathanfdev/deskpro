@@ -214,10 +214,15 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * Most notably used as the "proxy key"
 	 *
 	 * @param  string $secret Another component to add to the hash
+	 * @param bool $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
 	 * @return string
 	 */
-	public function getSessionSecret($name = '')
+	public function getSessionSecret($name = '', $not_vis = false)
 	{
+		if (!$not_vis && $this->visitor) {
+			return $this->visitor->getVisitorSecret($name);
+		}
+
 		return md5($this->id . $this->auth . App::getAppSecret() . $name);
 	}
 
@@ -231,6 +236,10 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function generateSecurityToken($name, $timeout = 43200)
 	{
+		if ($this->visitor) {
+			return Util::generateStaticSecurityToken($this->visitor->getVisitorSecret($name), $timeout);
+		}
+
 		return Util::generateStaticSecurityToken($this->getSessionSecret($name), $timeout);
 	}
 
@@ -243,6 +252,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function checkSecurityToken($name, $token)
 	{
+		if ($this->visitor && $this->visitor->checkSecurityToken($name, $token)) {
+			return true;
+		}
 		return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name));
 	}
 
