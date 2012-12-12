@@ -1,6 +1,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
+pageMeta.url_fragment = '{{ url_fragment('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}';
 pageMeta.accountId = '{{ account.id|escape }}';
 
 pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';

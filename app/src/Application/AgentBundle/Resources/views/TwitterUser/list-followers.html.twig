@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers';
 
 pageMeta.accountId = '{{ account.id|escape }}';
+pageMeta.url_fragment = '{{ url_fragment('agent_twitter_followers_list', {'account_id': account.id}) }}';
 
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>

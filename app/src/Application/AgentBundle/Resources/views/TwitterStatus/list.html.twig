@@ -3,7 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
 pageMeta.title = '{{ type|capitalize|escape }}: @{{ account.user.screen_name|escape }}';
 pageMeta.accountId = '{{ account.id|escape }}';
-pageMeta.pageIdentity = 'twitter:{{ type|escape }}:{{ account.id|escape }}';
+pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id}) }}';
 
 pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id}) }}?partial=1';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}

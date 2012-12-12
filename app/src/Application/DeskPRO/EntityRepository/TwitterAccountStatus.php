@@ -70,7 +70,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		")->setParameters(array($ids, $account))->execute();
 
 		foreach ($results AS $result) {
-			$output[$results->status->getId()] = $result;
+			$output[$result->status->id] = $result;
 		}
 
 		return $output;
