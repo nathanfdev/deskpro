@@ -38,8 +38,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\TwitterAccountFriend;
-
-use Orb\Service\Twitter\Twitter;
+use Application\DeskPRO\Entity\TwitterUser;
 
 /**
  * Handles creating/editing of Twitter Users
@@ -70,6 +69,11 @@ class TwitterUserController extends AbstractController
 		return $account;
 	}
 
+	/**
+	 * @param integer $id
+	 * @return \Application\DeskPRO\Entity\TwitterUser
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
 	protected function getUserOr404($id)
 	{
 		$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($id);
@@ -87,6 +91,12 @@ class TwitterUserController extends AbstractController
 		$accounts = $this->person->getTwitterAccounts();
 		if (!$accounts) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$user->last_profile_update || $user->last_profile_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
+			$user->updateProfile();
+			$this->em->persist($user);
+			$this->em->flush();
 		}
 
 		$account = count($accounts) == 1 ? $accounts[0] : false;

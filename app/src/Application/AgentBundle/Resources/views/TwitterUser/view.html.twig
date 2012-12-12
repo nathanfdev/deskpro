@@ -31,9 +31,10 @@ pageMeta.baseId = '{{ baseId }}';
 				<span class="screen-name">@{{ user.screen_name }}</span>
 			</h1>
 			<div class="description">{{ user.description }}</div>
-			{% if user.location %}
+			{% if user.location or user.url %}
 				<ul class="extra">
 					{% if user.location %}<li>{{ user.location }}</li>{% endif %}
+					{% if user.url %}<li><a href="{{ user.url }}" target="_blank">{{ user.url }}</a></li>{% endif %}
 				</ul>
 			{% endif %}
 		</div>
@@ -55,6 +56,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<li class="follow-menu menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.follow') }} <em></em></a></li>
 				{% endif %}
 				<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
+				<li><a href="https://twitter.com/{{ user.screen_name }}" target="_blank" class="clean-white large">View Twitter Profile</a></li>
 			</ul>
 		</nav>
 	</div>

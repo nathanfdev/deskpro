@@ -3,7 +3,7 @@
 		<img src="{{ reply.status.user.profile_image_url }}" width="24" height="24" border="0" />
 	</div>
 
-	<h6>
+	<h6 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.status.user.id}) }}">
 		<span class="name">{{ reply.status.user.name }}</span>
 		<span class="screen-name">@{{ reply.status.user.screen_name }}</span>
 	</h6>
