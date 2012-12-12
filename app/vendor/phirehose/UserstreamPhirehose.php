@@ -223,7 +223,7 @@ abstract class UserstreamPhirehose extends Phirehose {
 	      }
 
 	      // Construct URL/HTTP bits
-	      $url = self::URL_BASE . $this->method . '.' . $this->format;
+	      $url = static::URL_BASE . $this->method . '.' . $this->format;
 	      $urlParts = parse_url($url);
 	      $authCredentials = base64_encode($this->username . ':' . $this->password);
 
