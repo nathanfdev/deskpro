@@ -102,6 +102,7 @@ class OpenTicketController extends AbstractController
 			$ticket->setProperty('allow_send_reply_service', true);
 
 			$ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+			$ticket->getTicketLogger()->recordExtra('suppress_agent_notify', true);
 
 			if ($my_tac = $this->in->getString('my_tac')) {
 				$ticket->setProperty('send_reply_tac', $my_tac);

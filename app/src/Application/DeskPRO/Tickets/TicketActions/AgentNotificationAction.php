@@ -202,6 +202,11 @@ class AgentNotificationAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if ($this->tracker->isExtraSet('suppress_agent_notify')) {
+			$this->tracker->logMessage("[AgentNotificationAction] Notification suppressed");
+			return;
+		}
+
 		if ($this->tracker->isExtraSet('force_email_validation')) {
 			$this->tracker->logMessage("[AgentNotificationAction] Ticket validating, no notify");
 			return;
