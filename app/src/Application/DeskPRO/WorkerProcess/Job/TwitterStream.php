@@ -104,16 +104,22 @@ class TwitterStream extends AbstractJob
 
 			$account = $this->getAccount($event['account_id']);
 			if ($account) {
-				try {
-					$success = call_user_func(
-						array($this, $method),
-						$this->getAccount($event['account_id']),
-						unserialize($event['data'])
-					);
-				} catch (\Exception $e) {
-					$this->logStatus('exception caught: ' . $e->getMessage() . ' ' . $e->getFile() . ':' . $e->getLine());
-					$success = false;
-					\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+				$data = @unserialize($event['data']);
+				if ($data) {
+					try {
+						$success = call_user_func(
+							array($this, $method),
+							$this->getAccount($event['account_id']),
+							$data
+						);
+					} catch (\Exception $e) {
+						$this->logStatus('exception caught: ' . $e->getMessage() . ' ' . $e->getFile() . ':' . $e->getLine());
+						$success = false;
+						\DeskPRO\Kernel\KernelErrorHandler::logException($e);
+					}
+				} else {
+					// couldn't unserialize the data, so just get rid of this
+					$success = true;
 				}
 			} else {
 				// account isn't being processed anymore, just discard them
