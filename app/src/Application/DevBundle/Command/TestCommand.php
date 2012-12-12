@@ -59,6 +59,13 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo "\n";
+		$cmd = 'php /Users/chris/Sites/deskpro/dp_400/cmd.php dp:gen-rand-email --from-email="chris@nadeau.ws" --to-email="dpug@nadeau.ws" --with-owl > /Users/chris/Sites/deskpro/dp_400/data/emailstore/%randfile%';
+
+		for ($i = 0; $i < 1500; $i++) {
+			$filename = uniqid('eml_', true) . '.eml';
+			$cmd_exec = str_replace('%randfile%', $filename, $cmd);
+			passthru($cmd_exec);
+			echo "Generated random email: $filename\n";
+		}
 	}
 }

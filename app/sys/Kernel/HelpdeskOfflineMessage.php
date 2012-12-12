@@ -59,6 +59,10 @@ class HelpdeskOfflineMessage
 				$message = 'You have more agents than your license allows.';
 				break;
 
+			case 'copyright':
+				$message = 'You are not allowed to remove the copyright without copyright removal.';
+				break;
+
 			case 'expired':
 				$days = License::getLicense()->isPastExpireDate();
 				if ($days == 1) {

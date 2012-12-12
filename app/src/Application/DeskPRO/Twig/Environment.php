@@ -97,6 +97,12 @@ class Environment extends \Twig_Environment
 
 	public function loadTemplate($name, $index = null)
     {
+		if (!isset($GLOBALS['DP_RENDERED_TEMPLATES'])) {
+			$GLOBALS['DP_RENDERED_TEMPLATES'] = array();
+		}
+
+		$GLOBALS['DP_RENDERED_TEMPLATES'][$name] = true;
+
         $cls = $this->getTemplateClass($name, $index);
 
         if (isset($this->loadedTemplates[$cls])) {

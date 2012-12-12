@@ -273,6 +273,13 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$response->setContent($content);
 		}
 
+		if ($this instanceof UserKernel && $response->headers->get('Content-Type') == 'text/html' && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
+			if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
+				$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
+				return $response;
+			}
+		}
+
 		return $response;
 	}
 }
@@ -334,6 +341,11 @@ final class License
 	 * @var array
 	 */
 	private $options = array();
+
+	/**
+	 * @var bool
+	 */
+	private $user_copyright_done = false;
 
 
 	/**
@@ -676,6 +688,54 @@ final class License
 	public function has($key)
 	{
 		return isset($this->data[$key]);
+	}
+
+	public static function staticGetUserCopyrightHtml()
+	{
+		return self::getLicense()->getUserCopyrightHtml();
+	}
+
+	public function getUserCopyrightHtml()
+	{
+		$this->user_copyright_done = true;
+		if ($this->isCopyfree()) {
+			return '';
+		}
+
+		$powered_by_deskpro = null;
+		if (class_exists('Application\\DeskPRO\\App')) {
+			try {
+				$powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => App::getTranslator()->phrase('user.general.deskpro')));
+			} catch (\Exception $e) {}
+		}
+
+		if (!$powered_by_deskpro || strpos($powered_by_deskpro, 'DeskPRO') === false) {
+			$powered_by_deskpro = 'Helpdesk software by <strong>{{deskpro}}</strong>';
+		}
+
+		$html = <<<STR
+<div class="dp-copy">
+	<a href="http://www.deskpro.com/">$powered_by_deskpro</a>
+</div>
+STR;
+
+		return $html;
+	}
+
+	public function hasUserCopyrightHtml($check_source = null)
+	{
+		if ($this->isCopyfree()) {
+			return true;
+		}
+
+		if ($check_source) {
+			if ($this->user_copyright_done && strpos($check_source, 'dp-copy') !== false) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return $this->user_copyright_done;
 	}
 
 	private function xorString($string, $key)
