@@ -372,6 +372,10 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
+		if (!$this->fail_trigger) {
+			return null;
+		}
+
 		return $this->_calculateTriggerDate($this->fail_trigger->getOptionSeconds(), $ticket);
 	}
 
