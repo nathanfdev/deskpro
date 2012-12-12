@@ -50,6 +50,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$this->addOption('from-email', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('with-owl', null, InputOption::VALUE_NONE);
+		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('real-send', null, InputOption::VALUE_NONE);
 	}
 
@@ -89,48 +90,8 @@ Content-Disposition: inline
 
 SRC;
 		} else {
-			$source = <<<SRC
-Return-Path: <chris.nadeau@deskpro.com>
-Received: from [172.18.24.247] (iw-01.clients.vorboss.net. [194.8.255.114])
-        by mx.google.com with ESMTPS id t17sm17495468wiv.6.2012.12.11.10.40.53
-        (version=TLSv1/SSLv3 cipher=OTHER);
-        Tue, 11 Dec 2012 10:40:54 -0800 (PST)
-Date: Tue, 11 Dec 2012 18:40:52 +0000
-From: %FROM_EMAIL%
-To: %TO_EMAIL%
-Message-ID: <B5522AAC086547DFB50EDB640A75AE8E@deskpro.com>
-Subject: Test Email - %TIME%
-X-Mailer: sparrow 1.6.4 (build 1176)
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="50c77e34_725a06fb_dfd0"
 
---50c77e34_725a06fb_dfd0
-Content-Type: multipart/alternative; boundary="50c77e34_1d4ed43b_dfd0"
-
---50c77e34_1d4ed43b_dfd0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Test Message
-%MSG_UID%
-
-
---50c77e34_1d4ed43b_dfd0
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-<div>Test Message</div>
-%MSG_UID%
-
---50c77e34_1d4ed43b_dfd0--
-
---50c77e34_725a06fb_dfd0
-Content-Type: image/jpeg
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="eastern-owl.jpeg"
-
+			$file = <<<SRC
 /9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAOAAA/+4ADkFkb2JlAGTAAAAAAf/b
 AIQABwUFBQUFBwUFBwoHBgcKDAkHBwkMDgsLDAsLDhEMDAwMDAwRDhAREREQDhUVFxcVFR4eHh4e
 IiIiIiIiIiIiIgEHCAgODQ4aEhIaHRcUFx0iIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIi
@@ -664,6 +625,53 @@ r0fm/uu6ezbv7B2b9Og6fvr0+ceeLb2z39r/AHW7vd1u7u677D/jW+WOvgvdXcvh7r/a91+/t6/7
 bbKz38nC54+320W769pvf8L104xjvdTNK6uZkl+223yrPXw1PlCTt7V7nW+l64zHXyqPcW60f21t
 9/HyrHXz4dOfjyjcD3++3f8Ar/L5Wrrx/Ln00mVu7B2dbVqsxSP3dmt92tv21itq+Tv7z9x08K+h
 /X3Hm9rmdnxr2OBp2fGgYdnxolMOz40ZMPb+NXyGHt/GqGHt/Gqhjdv41ZoYe38aoA2a9aD/2Q==
+SRC;
+
+			if ($input->getOption('owl-size')) {
+				$file = str_repeat($file, (int)$input->getOption('owl-size'));
+			}
+
+			$source = <<<SRC
+Received: from [172.18.24.247] (iw-01.clients.vorboss.net. [194.8.255.114])
+        by mx.google.com with ESMTPS id t17sm17495468wiv.6.2012.12.11.10.40.53
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 11 Dec 2012 10:40:54 -0800 (PST)
+Date: Tue, 11 Dec 2012 18:40:52 +0000
+From: %FROM_EMAIL%
+To: %TO_EMAIL%
+Message-ID: <B5522AAC086547DFB50EDB640A75AE8E@deskpro.com>
+Subject: Test Email - %TIME%
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="50c77e34_725a06fb_dfd0"
+
+--50c77e34_725a06fb_dfd0
+Content-Type: multipart/alternative; boundary="50c77e34_1d4ed43b_dfd0"
+
+--50c77e34_1d4ed43b_dfd0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Test Message
+%MSG_UID%
+
+
+--50c77e34_1d4ed43b_dfd0
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<div>Test Message</div>
+%MSG_UID%
+
+--50c77e34_1d4ed43b_dfd0--
+
+--50c77e34_725a06fb_dfd0
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="eastern-owl.jpeg"
+
+$file
 
 --50c77e34_725a06fb_dfd0--
 SRC;
