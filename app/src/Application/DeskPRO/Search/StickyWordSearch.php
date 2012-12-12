@@ -192,7 +192,9 @@ class StickyWordSearch implements PersonContextInterface
 			$entity_name = $class::getEntityName();
 			$type = strtolower(str_replace('DeskPRO:', '', $entity_name));
 
-			$typed_results[] = array(
+			$key = $type . '.' . $r->getId();
+
+			$typed_results[$key] = array(
 				'type' => $type,
 				'object' => $r
 			);

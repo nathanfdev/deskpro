@@ -325,14 +325,16 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 			if (!isset($objects_typed[$type_name])) continue;
 			if (!isset($objects_typed[$type_name][$obj_id])) continue;
 
+			$key = $type_name . '.' . $obj_id;
+
 			if ($full_info) {
-				$objects[] = array(
+				$objects[$key] = array(
 					'object' => $objects_typed[$type_name][$obj_id],
 					'type'   => $type_name,
 					'result' => $result
 				);
 			} else {
-				$objects[] = $objects_typed[$type_name][$obj_id];
+				$objects[$key] = $objects_typed[$type_name][$obj_id];
 			}
 		}
 

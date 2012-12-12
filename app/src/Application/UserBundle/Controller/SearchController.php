@@ -90,6 +90,14 @@ class SearchController extends AbstractController
 			$sticky_search  = new StickyWordSearch($this->em);
 			$sticky_results = $sticky_search->getResults($q, 5);
 
+			if ($sticky_results) {
+				foreach ($sticky_results as $key => $x) {
+					if (isset($results[$key])) {
+						unset($results[$key]);
+					}
+				}
+			}
+
 			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
 			$this->em->transactional(function($em) use ($searchlog) {
 				$em->persist($searchlog);
