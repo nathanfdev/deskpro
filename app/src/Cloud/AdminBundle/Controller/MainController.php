@@ -45,7 +45,7 @@ class MainController extends BaseMainController
 		$agents_online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
 		$online_agents = array();
 		foreach ($agents_online_ids as $aid) {
-			$online_agents[] = $this->em->getRepository('DeskPRO:Person')->getAgent($aid);
+			$online_agents[$aid] = $this->em->getRepository('DeskPRO:Person')->getAgent($aid);
 		}
 
 		$count_online_users = $this->db->fetchColumn("
