@@ -68,6 +68,13 @@ class MainController extends BaseMainController
 
 		$onboard = new \Application\AdminBundle\OnboardNotices();
 
+		if (!$this->container->getSetting('core.cloud.has_first_login')) {
+			$this->container->getSettingsHandler()->setSetting('core.cloud.has_first_login', 1);
+
+			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
+			$data_init->newDefaultTicket($this->person);
+		}
+
 		return $this->render('@index.html.twig', array(
 			'lic'                => License::getLicense(),
 			'online_agents'      => $online_agents,
