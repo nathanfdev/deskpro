@@ -9,11 +9,13 @@
 			<dt>{{ phrase('agent.general.title') }}:</dt>
 			<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
 
-			<dt>{{ phrase('agent.general.permissions') }}:</dt>
-			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
-			</dd>
+			{% if category.person.id == app.user.id %}
+				<dt>{{ phrase('agent.general.permissions') }}:</dt>
+				<dd>
+					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
+					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
+				</dd>
+			{% endif %}
 
 			<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
 			<dd class="perm-teams" style="display: none">

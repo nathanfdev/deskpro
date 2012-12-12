@@ -570,10 +570,12 @@ class TicketController extends AbstractController
 		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
 
-		if ($this->in->getString('perm_type') == 'gloabl') {
-			$cat['is_global'] = true;
-		} else {
-			$cat['is_global'] = false;
+		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
+			if ($this->in->getString('perm_type') == 'global') {
+				$cat['is_global'] = true;
+			} else {
+				$cat['is_global'] = false;
+			}
 		}
 
 		$this->em->persist($cat);
