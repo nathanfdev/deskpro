@@ -47,19 +47,35 @@ class TwitterAccountFollower extends AbstractEntityRepository
 	 */
 	public function findOneByAccountIdAndUserId($accountId, $userId)
 	{
-		$follower = $this->getEntityManager()->createQuery("
+		return $this->getEntityManager()->createQuery("
 			SELECT f
 			FROM   DeskPRO:TwitterAccountFollower f
 			WHERE  f.account = :account AND f.user = :user
-		")->setMaxResults(1)->execute(array(
+		")->setParameters(array(
 			'account' => $accountId,
 			'user'    => $userId
-		));
+		))->getOneOrNullResult();
+	}
 
-		if (!$follower || count($follower) != 1) {
-			return null;
+	public function getByAccountAndUsers($account_id, array $user_ids)
+	{
+		if (!$user_ids) {
+			return array();
 		}
 
-		return $follower[0];
+		$output = array();
+		$results = $this->getEntityManager()->createQuery("
+			SELECT f
+			FROM   DeskPRO:TwitterAccountFollower f
+			WHERE  f.account = :account AND f.user IN (:user)
+		")->setParameters(array(
+			'account' => $account_id,
+			'user'    => $user_ids
+		))->execute();
+		foreach ($results AS $result) {
+			$output[$result->user->getId()] = $result;
+		}
+
+		return $output;
 	}
 }

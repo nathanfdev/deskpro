@@ -97,6 +97,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $is_geo_enabled = false;
 
+	protected $is_stub = false;
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
@@ -133,6 +135,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
 	 */
 	protected $account;
+
+	protected static $_stubs = array();
+	protected static $_processing_stubs = false;
 
 	/**
 	 * Constructor
@@ -187,6 +192,77 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, true, 'desc');
 	}
 
+	public function offsetGet($offset)
+	{
+		if ($this->is_stub && ($offset == 'id' || $offset == 'is_stub')) {
+			return parent::offsetGet($offset);
+		}
+
+		if ($this->is_stub && self::$_stubs && !self::$_processing_stubs) {
+			self::$_processing_stubs = true;
+			$em = App::getOrm();
+			$account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
+			if ($account) {
+				// need to grab the first api we can get
+				$api = $account->getTwitterApi();
+
+				$id_sets = array_chunk(array_keys(self::$_stubs), 100);
+				foreach ($id_sets AS $ids) {
+					try {
+						$response = $api->post_usersLookup(array(
+							'user_id' => implode(',', $ids)
+						));
+						foreach ($response AS $user) {
+							if (isset(self::$_stubs[$user->id_str])) {
+								$entity = self::$_stubs[$user->id_str];
+								$entity->updateFromJson($user);
+								$em->persist($entity);
+							}
+						}
+					} catch (\EpiTwitterException $e) {
+						break;
+					} catch (\EpiOAuthException $e) {
+						break;
+					}
+					// catches prevent any twitter errors from breaking the page
+				}
+
+				$em->flush();
+			}
+
+			self::$_stubs = array();
+			self::$_processing_stubs = false;
+		}
+
+		return parent::offsetGet($offset);
+	}
+
+	public function updateFromJson($user)
+	{
+		$processing = self::$_processing_stubs;
+		self::$_processing_stubs = true; // don't want to trigger loads here
+
+		$this['name']              = $user->name;
+		$this['screen_name']       = $user->screen_name;
+		$this['profile_image_url'] = $user->profile_image_url;
+		$this['language']          = $user->lang;
+		$this['description']       = $user->description;
+		$this['is_protected']      = $user->protected;
+		$this['is_verified']       = $user->verified;
+		$this['location']          = $user->location;
+		$this['is_geo_enabled']    = $user->geo_enabled;
+		$this['is_stub']           = false;
+
+		self::$_processing_stubs = $processing;
+	}
+
+	public function _checkStub()
+	{
+		if ($this->is_stub) {
+			self::$_stubs[$this->id] = $this;
+		}
+	}
+
 	/**
 	 * @param object $user
 	 * @return \Application\DeskPRO\Entity\TwitterUser
@@ -208,6 +284,21 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return $entity;
 	}
 
+	public static function createStub($id)
+	{
+		$entity = new self();
+		$entity['id'] = $id;
+		$entity['name'] = '';
+		$entity['screen_name'] = '';
+		$entity['profile_image_url'] = '';
+		$entity['language'] = '';
+		$entity['description'] = '';
+		$entity['location'] = '';
+		$entity['is_stub'] = true;
+
+		return $entity;
+	}
+
 
 
 	############################################################################
@@ -220,6 +311,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUser';
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_users', ));
+		$metadata->addLifecycleCallback('_checkStub', 'postLoad');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
@@ -231,6 +323,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'location', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'location', ));
 		$metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 500, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'description', ));
 		$metadata->mapField(array( 'fieldName' => 'is_geo_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_geo_enabled', ));
+		$metadata->mapField(array( 'fieldName' => 'is_stub', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_stub', ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user',  ));

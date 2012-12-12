@@ -90,8 +90,8 @@
 					<li class="dp-cat-li">
 						<div class="item-wrap dp-cat-item">
 							<span class="user title" data-route="page:{{ path('agent_twitter_user', {'user_id': follower.user.id}) }}">
-	                            <span class="screen_name">@{{ follower.user.screen_name }}</span> /
-	                            <span class="name">{{ follower.user.name }}</span>
+								<span class="name">{{ follower.user.name }}</span>
+	                            <span class="screen-name" style="font-weight: normal">(@{{ follower.user.screen_name }})</span>
 	                        </span>
 						</div>
 					</li>

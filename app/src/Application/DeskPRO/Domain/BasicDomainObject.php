@@ -411,6 +411,22 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 		}
     }
 
+	public function ensureDefaultPropertyChangedListener()
+	{
+		$uow = App::getOrm()->getUnitOfWork();
+
+		if (!empty($this->_listeners['property'])) {
+			foreach ($this->_listeners['property'] AS $listener) {
+				if ($listener === $uow) {
+					return false;
+				}
+			}
+		}
+
+		$this->addPropertyChangedListener($uow);
+		return false;
+	}
+
 	public function __clone()
 	{
 		$this->_listeners = array();

@@ -269,17 +269,13 @@ class TwitterStream extends AbstractJob
 
 		// Check source user exists
 		if (!($sourceUser = $this->findUser($source->id_str))) {
-			$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $source->id_str));
-
-			$sourceUser = TwitterUser::createFromJson($result);
+			$sourceUser = TwitterUser::createFromJson($source);
 			$this->em->persist($sourceUser);
 		}
 
 		// Check target user exists
 		if (!($targetUser = $this->findUser($target->id_str))) {
-			$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $target->id_str));
-
-			$targetUser = TwitterUser::createFromJson($result);
+			$targetUser = TwitterUser::createFromJson($target);
 			$this->em->persist($targetUser);
 		}
 
@@ -347,8 +343,7 @@ class TwitterStream extends AbstractJob
 		$diff = array_diff(array_unique($data->friends), $account->getFriendIds(false));
 		foreach ($diff as $id) {
 			if (!($user = $this->findUser($id))) {
-				$result = $this->getTwitter($account['id'])->get_usersShow(array('id' => $id));
-				$user = TwitterUser::createFromJson($result);
+				$user = TwitterUser::createStub($id);
 				$this->em->persist($user);
 			}
 

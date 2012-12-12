@@ -95,9 +95,13 @@ class TwitterAccountController extends AbstractController
 
 				// check if Twitter user already exists
 				$twitter_user = $api->get_usersShow(array('screen_name' => $access->screen_name));
-				$user = $this->getOrCreateUser($twitter_user);
+				$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($twitter_user->id_str);
+				if (!$user) {
+					$user = TwitterUser::createFromJson($twitter_user);
+					$this->em->persist($user);
+				}
 
-				$em = App::getOrm();
+				$em = $this->em;
 				$em->persist($user);
 
 				// check if Twitter account already exists
@@ -118,6 +122,42 @@ class TwitterAccountController extends AbstractController
 
 				$em->persist($account);
 				$em->flush();
+
+				$followers = $this->_loadUsers($account, 'followers');
+				$em->flush();
+
+				$this->_loadUsers($account, 'friends');
+				$em->flush();
+
+				if ($followers) {
+					// look up the info for the most recent 100 in bulk.
+					// most recent are last
+					$recent_followers = array_slice($followers, -100, null, true);
+					$recent_ids = array();
+					foreach ($recent_followers AS $recent_follower) {
+						if ($recent_follower->user->is_stub) {
+							$recent_ids[] = $recent_follower->user->id;
+						}
+					}
+
+					if ($recent_ids) {
+						try {
+							$response = $api->post_usersLookup(array(
+								'user_id' => implode(',', $recent_ids)
+							));
+							foreach ($response AS $user) {
+								if (isset($recent_followers[$user->id_str])) {
+									$entity = $recent_followers[$user->id_str]->user;
+									$entity->ensureDefaultPropertyChangedListener();
+									$entity->updateFromJson($user);
+									$em->persist($entity);
+								}
+							}
+						} catch (\EpiTwitterException $e) {}
+
+						$em->flush();
+					}
+				}
 			}
 		} catch (\Exception $e) {
 			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
@@ -132,19 +172,84 @@ class TwitterAccountController extends AbstractController
 		return $this->redirectRoute('admin_twitter_accounts');
 	}
 
-	/**
-	 * @param object $user
-	 * @return \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected function getOrCreateUser($user)
+	protected function _loadUsers(TwitterAccount $account, $type)
 	{
-		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find($user->id_str);
-		if (!$entity) {
-			$entity = TwitterUser::createFromJson($user);
-			$this->em->persist($entity);
+		$ids = array();
+		$api = $account->getTwitterApi();
+		$cursor = -1;
+
+		if ($type == 'followers') {
+			$api_call = 'get_followersIds';
+			$repository_name = 'DeskPRO:TwitterAccountFollower';
+			$entity_class = '\\Application\\DeskPRO\\Entity\\TwitterAccountFollower';
+		} else {
+			$api_call = 'get_friendsIds';
+			$repository_name = 'DeskPRO:TwitterAccountFriend';
+			$entity_class = '\\Application\\DeskPRO\\Entity\\TwitterAccountFriend';
 		}
 
-		return $entity;
+		do {
+			try {
+				$response = $api->$api_call(array(
+					'user_id' => $account->user->id,
+					'stringify_ids' => 'true',
+					'cursor' => $cursor
+				));
+			} catch (\EpiTwitterException $e) {
+				break;
+			}
+			if (!empty($response->ids)) {
+				$ids = array_merge($ids, $response->ids);
+			}
+			if (!empty($response->next_cursor)) {
+				$cursor = $response->next_cursor_str;
+			}
+		} while (!empty($response->next_cursor));
+
+		if (!$ids) {
+			return array();
+		}
+
+		if ($account->id) {
+			$existing_for_type = $this->em->getRepository($repository_name)->getByAccountAndUsers(
+				$account, $ids
+			);
+		} else {
+			$existing_for_type = array();
+		}
+
+		$output = array();
+
+		$existing_users = $this->em->getRepository('DeskPRO:TwitterUser')->getByIds($ids);
+		foreach (array_reverse($ids) AS $key => $id) {
+			if (!isset($existing_users[$id])) {
+				$new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
+				$this->em->persist($new_user);
+			} else {
+				$new_user = $existing_users[$id];
+			}
+
+			if (!isset($existing_for_type[$id])) {
+				$new_for_type = new $entity_class();
+				$new_for_type->user = $new_user;
+				$new_for_type->account = $account;
+				if ($type == 'followers') {
+					$new_for_type->is_archived = true;
+				}
+			} else {
+				$new_for_type = $existing_for_type[$id];
+			}
+
+			if ($type == 'followers') {
+				$new_for_type->follow_order = $key;
+			}
+
+			$this->em->persist($new_for_type);
+
+			$output[$id] = $new_for_type;
+		}
+
+		return $output;
 	}
 
 	public function editAction($account_id)

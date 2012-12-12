@@ -29,53 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-use \Doctrine\ORM\EntityRepository;
-
-class TwitterAccountFriend extends AbstractEntityRepository
+class Build1355311146 extends AbstractBuild
 {
-	/**
-	 * @param integer $accountId
-	 * @param integer $userId
-	 * @return null|\Application\DeskPRO\Entity\TwitterAccountFriend
-	 */
-	public function findOneByAccountIdAndUserId($accountId, $userId)
+	public function run()
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT f
-			FROM DeskPRO:TwitterAccountFriend f
-			WHERE f.account = :account AND f.user = :user
-		")->setParameters(array(
-			'account' => $accountId,
-			'user'    => $userId
-		))->getOneOrNullResult();
-	}
-
-	public function getByAccountAndUsers($account_id, array $user_ids)
-	{
-		if (!$user_ids) {
-			return array();
-		}
-
-		$output = array();
-		$results = $this->getEntityManager()->createQuery("
-			SELECT f
-			FROM   DeskPRO:TwitterAccountFriend f
-			WHERE  f.account = :account AND f.user IN (:user)
-		")->setParameters(array(
-			'account' => $account_id,
-			'user'    => $user_ids
-		))->execute();
-		foreach ($results AS $result) {
-			$output[$result->user->getId()] = $result;
-		}
-
-		return $output;
+		$this->out("Support for Twitter users that are filled out on demand");
+		$this->execMutateSql("ALTER TABLE twitter_users ADD is_stub TINYINT(1) NOT NULL");
 	}
 }

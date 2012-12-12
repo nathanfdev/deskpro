@@ -40,4 +40,11 @@ use \Doctrine\ORM\EntityRepository;
 
 class TwitterAccount extends AbstractEntityRepository
 {
+	public function getFirst()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT a
+			FROM DeskPRO:TwitterAccount a
+		")->setMaxResults(1)->getOneOrNullResult();
+	}
 }

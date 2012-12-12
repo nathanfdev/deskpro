@@ -222,8 +222,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		$offset = ($page - 1) * $limit;
 
 		$query = App::getOrm()->createQuery("
-			SELECT f
+			SELECT f, u
 			FROM DeskPRO:TwitterAccountFollower f
+			INNER JOIN f.user u
 			WHERE f.account = :account_id
 				AND f.is_archived = false
 			ORDER BY f.follow_order DESC
@@ -265,8 +266,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		$offset = ($page - 1) * $limit;
 
 		$query = App::getOrm()->createQuery("
-			SELECT f
+			SELECT f, u
 			FROM DeskPRO:TwitterAccountFollower f
+			INNER JOIN f.user u
 			WHERE f.account = :account_id
 			ORDER BY f.follow_order DESC
 		");

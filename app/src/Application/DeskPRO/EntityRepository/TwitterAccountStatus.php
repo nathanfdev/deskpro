@@ -44,8 +44,10 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	public function getByTwitterStatusAndAccount($id, TwitterAccountEntity $account)
 	{
 		return $this->getEntityManager()->createQuery("
-			SELECT s
+			SELECT s, t, u
 			FROM DeskPRO:TwitterAccountStatus s
+			INNER JOIN s.status t
+			INNER JOIN t.user u
 			WHERE s.status = ?0
 				AND s.account = ?1
 		")->setParameters(array($id, $account))->getOneOrNullResult();
@@ -59,9 +61,10 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
 		$output = array();
 		$results = $this->getEntityManager()->createQuery("
-			SELECT s
+			SELECT s, t, u
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.status t
+			INNER JOIN t.user u
 			WHERE s.status IN (?0)
 				AND s.account = ?1
 		")->setParameters(array($ids, $account))->execute();
@@ -76,9 +79,11 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = "
-			SELECT s
+			SELECT s, t, u, a
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.status t
+			INNER JOIN t.user u
+			INNER JOIN s.account a
 			WHERE s.account = ?0
 		";
 		$params = array($account);

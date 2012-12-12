@@ -266,11 +266,7 @@ class Twitter
 
 		$user = $this->findUser($mention->id_str);
 		if (!$user) {
-			$result = $api->get_usersShow(array(
-				'id' => $mention->id_str
-			));
-
-			$user = TwitterUser::createFromJson($result);
+			$user = TwitterUser::createStub($mention->id_str);
 			if ($do_persist) {
 				$this->em->persist($user);
 				$this->_user_cache[$mention->id_str] = $user;
