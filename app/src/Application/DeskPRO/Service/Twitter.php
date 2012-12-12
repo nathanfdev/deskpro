@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TwitterAccount;
+use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterUser;
 use Application\DeskPRO\Entity\TwitterStatus;
 use Application\DeskPRO\Entity\TwitterStatusMention;
@@ -199,14 +201,14 @@ class Twitter
 
 	public function processDm(\EpiTwitter $api, $data, $do_persist = true)
 	{
-		$dm = $data->direct_message;
+		$dm = !empty($data->direct_message) ? $data->direct_message : $data;
 
 		$status = $this->findStatus($dm->id_str);
 		if ($status) {
 			return $status;
 		}
 
-		$status = TwitterStatus::createFromDmJson($data);
+		$status = TwitterStatus::createFromDmJson($dm);
 		if ($do_persist) {
 			$this->_tweet_cache[$dm->id_str] = $status;
 		}
@@ -284,7 +286,7 @@ class Twitter
 		return $entity;
 	}
 
-	protected function processStatusTag(TwitterStatus $status, $tag, $do_persist = true)
+	public function processStatusTag(TwitterStatus $status, $tag, $do_persist = true)
 	{
 		$entity = TwitterStatusTag::createFromJson($tag);
 		$entity['status'] = $status;
@@ -296,7 +298,7 @@ class Twitter
 		return $entity;
 	}
 
-	protected function processStatusUrl(TwitterStatus $status, $url, $do_persist = true)
+	public function processStatusUrl(TwitterStatus $status, $url, $do_persist = true)
 	{
 		$entity = TwitterStatusUrl::createFromJson($url);
 		$entity['status'] = $status;
@@ -306,5 +308,101 @@ class Twitter
 		}
 
 		return $entity;
+	}
+
+	public function sendAccountMessage($type, $text, TwitterAccount $account, TwitterAccountStatus $reply = null, TwitterUser $user = null)
+	{
+		$success = false;
+		$error = null;
+		$new_account_status = null;
+
+		$api = $account->getTwitterApi();
+		$em = App::getOrm();
+
+		try {
+			if ($type == 'public') {
+				if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
+					$error = 'Long statuses are todo'; // todo
+				} else {
+					$params = array(
+						'status' => $text
+					);
+					if ($reply && !$reply->status->recipient) {
+						// only if not a DM
+						$params['in_reply_to_status_id'] = $reply->status->id;
+					}
+
+					$response = $api->post_statusesUpdate($params);
+					if (!empty($response->error)) {
+						$error = $response->error;
+					} else {
+						$success = true;
+
+						$new_status = $this->processStatus($api, $response);
+
+						$new_account_status = new TwitterAccountStatus();
+						$new_account_status->status = $new_status;
+						$new_account_status->account = $account;
+						$new_account_status->status_type = 'sent';
+						$new_account_status->in_reply_to = $reply;
+
+						$em->persist($new_status);
+						$em->persist($new_account_status);
+						$em->flush();
+					}
+				}
+			} else {
+				if (\Orb\Util\Strings::utf8_strlen($text) <= 140) {
+					if ($user) {
+						$user_id = $user->id;
+					} else if ($reply) {
+						$user_id = $reply->status->user->id;
+					} else {
+						throw new \Exception('No user to send private message to.');
+					}
+
+					try {
+						$response = $api->post_direct_messagesNew(array(
+							'user_id' => $user_id,
+							'text' => $text
+						));
+						if (!empty($response->error)) {
+							$error = $response->error;
+						} else {
+							$success = true;
+
+							$twitter_service = new \Application\DeskPRO\Service\Twitter();
+							$new_status = $twitter_service->processDm($api, $response);
+
+							$new_account_status = new TwitterAccountStatus();
+							$new_account_status->status = $new_status;
+							$new_account_status->account = $account;
+							$new_account_status->status_type = 'direct';
+							$new_account_status->in_reply_to = $reply;
+
+							$em->persist($new_status);
+							$em->persist($new_account_status);
+							$em->flush();
+						}
+					} catch (\EpiTwitterException $e) {
+						// user isn't following so we can't send a DM
+					}
+				}
+
+				if (!$success && !$error) {
+					$error = 'Non-DM private responses are TODO'; // todo
+				}
+			}
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
+			$error = $e->getMessage();
+		}
+
+		return array(
+			'success' => $success,
+			'error' => $error,
+			'new_account_status' => $new_account_status
+		);
 	}
 }

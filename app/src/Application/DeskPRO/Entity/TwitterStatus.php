@@ -436,13 +436,9 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromDmJson($dm)
 	{
 		$entity                 = new self();
-		$entity['id']           = $dm->direct_message->id_str;
-		$entity['text']         = $dm->direct_message->text;
-		$entity['date_created'] = new \DateTime($dm->direct_message->created_at);
-
-		// @!TODO add geo informations
-		// $entity['geo_latitude'] = $json['geo'][];
-		// $entity['geo_longitude'] = $json['geo'][];
+		$entity['id']           = $dm->id_str;
+		$entity['text']         = $dm->text;
+		$entity['date_created'] = new \DateTime($dm->created_at);
 
 		return $entity;
 	}

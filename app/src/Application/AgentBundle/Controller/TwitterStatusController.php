@@ -378,61 +378,25 @@ class TwitterStatusController extends AbstractController
 		$account = $account_status->account;
 
 		$text = $this->in->getString('text');
+		$type = $this->in->getValue('type');
 		if (strlen($text)) {
-			try {
-				$type = $this->in->getValue('type');
-				if ($type == 'public') {
-					if (strpos($text, '@'.$account_status->status->user->screen_name) === false) {
-						$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
-					}
+			if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
+				$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+			}
 
-					if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
-						$error = 'Long statuses are todo'; // todo
-					} else {
-						$params = array(
-							'status' => $text
-						);
-						if (!$account_status->status->recipient) {
-							// only if not a DM
-							$params['in_reply_to_status_id'] = $account_status->status->id;
-						}
+			$twitter_service = new \Application\DeskPRO\Service\Twitter();
+			$response = $twitter_service->sendAccountMessage($type, $text, $account, $account_status);
 
-						$api = $account->getTwitterApi();
-						$response = $api->post_statusesUpdate($params);
-						if (!empty($response->error)) {
-							$error = $response->error;
-						} else {
-							$success = true;
-
-							$twitter_service = new \Application\DeskPRO\Service\Twitter();
-							$new_status = $twitter_service->processStatus($api, $response);
-
-							$new_account_status = new TwitterAccountStatus();
-							$new_account_status->status = $new_status;
-							$new_account_status->account = $account;
-							$new_account_status->status_type = 'sent';
-							$new_account_status->in_reply_to = $account_status;
-
-							$this->em->persist($new_status);
-							$this->em->persist($new_account_status);
-							$this->em->flush();
-
-							$html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
-								'account_status' => $account_status,
-								'reply' => $new_account_status
-							));
-						}
-					}
-				} else {
-					$error = 'Private responses are TODO'; // todo
-				}
-			} catch (\EpiTwitterException $e) {
-				$error = $e->getMessage();
-			}  catch (\EpiOAuthException $e) {
-				$error = $e->getMessage();
+			$success = $response['success'];
+			$error = $response['error'];
+			if ($response['new_account_status']) {
+				$html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+					'account_status' => $account_status,
+					'reply' => $response['new_account_status']
+				));
 			}
 		} else {
-			$error = 'No tweet specified.';
+			$error = 'No text specified.';
 		}
 
 		return $this->createJsonResponse(array(

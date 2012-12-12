@@ -171,51 +171,19 @@ class TwitterUserController extends AbstractController
 		$error = null;
 
 		$text = $this->in->getString('text');
+		$type = $this->in->getValue('type');
 		if (strlen($text)) {
-			try {
-				$type = $this->in->getValue('type');
-				if ($type == 'public') {
-					if (strpos($text, '@'.$user->screen_name) === false) {
-						$text = '@' . $user->screen_name . ' ' . $text;
-					}
-
-					if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
-						$error = 'Long statuses are todo'; // todo
-					} else {
-						$params = array(
-							'status' => $text
-						);
-
-						$api = $account->getTwitterApi();
-						$response = $api->post_statusesUpdate($params);
-						if (!empty($response->error)) {
-							$error = $response->error;
-						} else {
-							$success = true;
-
-							$twitter_service = new \Application\DeskPRO\Service\Twitter();
-							$new_status = $twitter_service->processStatus($api, $response);
-
-							$new_account_status = new \Application\DeskPRO\Entity\TwitterAccountStatus();
-							$new_account_status->status = $new_status;
-							$new_account_status->account = $account;
-							$new_account_status->status_type = 'sent';
-
-							$this->em->persist($new_status);
-							$this->em->persist($new_account_status);
-							$this->em->flush();
-						}
-					}
-				} else {
-					$error = 'Private responses are TODO'; // todo
-				}
-			} catch (\EpiTwitterException $e) {
-				$error = $e->getMessage();
-			}  catch (\EpiOAuthException $e) {
-				$error = $e->getMessage();
+			if ($type == 'public' && strpos($text, '@'.$user->screen_name) === false) {
+				$text = '@' . $user->screen_name . ' ' . $text;
 			}
+
+			$twitter_service = new \Application\DeskPRO\Service\Twitter();
+			$response = $twitter_service->sendAccountMessage($type, $text, $account, null, $user);
+
+			$success = $response['success'];
+			$error = $response['error'];
 		} else {
-			$error = 'No tweet specified.';
+			$error = 'No text specified.';
 		}
 
 		return $this->createJsonResponse(array(
