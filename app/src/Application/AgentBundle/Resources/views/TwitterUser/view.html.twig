@@ -4,6 +4,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
 pageMeta.title = '@{{user.screen_name|escape}}';
 pageMeta.userId = '{{ user.id|escape }}';
 pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
+pageMeta.url_fragment  = '{{ url_fragment('agent_twitter_user', {'user_id': user.id}) }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';

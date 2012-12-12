@@ -1559,7 +1559,7 @@ $collection->add('agent_twitter_user', new Route(
 	'/twitter/user/{user_id}',
 	array('_controller' => 'AgentBundle:TwitterUser:view'),
 	array('user_id' => '\\d+'),
-	array()
+	array('fragment_name' => 'twitter')
 ));
 
 $collection->add('agent_twitter_user_ajaxsave_follow', new Route(
