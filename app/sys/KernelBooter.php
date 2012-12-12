@@ -653,7 +653,7 @@ class KernelBooter
 					// don't restart
 					// need to restart the twitter runner in the background
 
-					$file = escapeshellarg(DP_ROOT . '\\bin\\twitter.php');
+					$file = escapeshellarg(DP_ROOT . '/bin/twitter.php');
 					$php_path = dp_get_php_path(false);
 
 					if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {

@@ -31,6 +31,11 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+	echo "This script is designed for Windows only. twitter.php can be run directly on Linux.\n";
+	exit(2);
+}
+
 ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
 define('DP_ROOT', realpath(__DIR__ . '/../'));
