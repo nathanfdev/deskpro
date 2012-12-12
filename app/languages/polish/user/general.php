@@ -32,6 +32,7 @@
 	'user.general.post_comment_btn'                                        => 'Opublikuj',
 	'user.general.rating_x_of_y_found_helpful'                             => '{{vote_up}} z {{vote_count}} użytkowników uznało tę stronę za przydatną',
 	'user.general.read_more'                                               => 'Więcej informacji',
+	'user.general.remember_me'                                             => 'Zapamiętaj mnie',
 	'user.general.save'                                                    => 'Zapisz',
 	'user.general.set_as_helpful'                                          => 'Ta strona była przydatna',
 	'user.general.set_as_unhelpful'                                        => 'Ta strona była nieprzydatna',

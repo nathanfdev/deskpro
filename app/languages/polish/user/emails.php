@@ -1,4 +1,5 @@
 <?php return array(
+	'user.emails.auto-close'                                               => 'Twoja petycja "{{ticket.subject}}" będzie zamknięta automatycznie, bo nie zaktualizowałeś jej później. Jeżeli nie chcesz, żeby twoja petycja została zamknięta, możesz dodać nową odpowiedź, wtedy nasi pracownicy pomogą ci później.',
 	'user.emails.chat_transcript'                                          => 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:',
 	'user.emails.comment_approved'                                         => 'Twój komentarz został opublikowany.',
 	'user.emails.comment_deleted'                                          => 'Twój komentarz został użyty, żeby udoskonalić stronę.',
