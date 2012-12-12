@@ -288,15 +288,22 @@ class DeskPRO_Cloud_ProcMail
 	protected function saveToTarget()
 	{
 		if ($this->to_domain == "UNKNOWN") {
-			$this->log("savetoTarget: to_domain unknown, do not know where to route message");
+			$this->log("saveToTarget: to_domain unknown, do not know where to route message");
 			$this->markUnknown();
 			return;
 		}
 
 		try {
-			$cloudsite = $this->findCloudSite();
+			try {
+				$cloudsite = $this->findCloudSite();
+			} catch (\Exception $e) {
+				$this->log("saveToTarget: exception connecting to cloud site: {$e->getMessage()}");
+				$this->markFailed();
+				return;
+			}
+
 			if (!$cloudsite) {
-				$this->log("savetoTarget: could not find cloud site, do not know where to route message");
+				$this->log("saveToTarget: could not find cloud site, do not know where to route message");
 				$this->markUnknown();
 				return;
 			}
