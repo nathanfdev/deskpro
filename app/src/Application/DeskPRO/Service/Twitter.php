@@ -134,6 +134,11 @@ class Twitter
 				$this->em->persist($user);
 				$this->_user_cache[$data->user->id_str] = $user;
 			}
+		} else {
+			$user->updateFromJson($data->user);
+			if ($do_persist) {
+				$this->em->persist($user);
+			}
 		}
 
 		$status->user = $user;
@@ -220,16 +225,26 @@ class Twitter
 				$this->em->persist($user);
 				$this->_user_cache[$dm->sender->id_str] = $user;
 			}
+		} else {
+			$user->updateFromJson($dm->sender);
+			if ($do_persist) {
+				$this->em->persist($user);
+			}
 		}
 
 		$status->user = $user;
 
 		$recipient = $this->findUser($dm->recipient->id_str);
-		if (!$user) {
-			$user = TwitterUser::createFromJson($dm->recipient);
+		if (!$recipient) {
+			$recipient = TwitterUser::createFromJson($dm->recipient);
 			if ($do_persist) {
-				$this->em->persist($user);
-				$this->_user_cache[$dm->recipient->id_str] = $user;
+				$this->em->persist($recipient);
+				$this->_user_cache[$dm->recipient->id_str] = $recipient;
+			}
+		} else {
+			$recipient->updateFromJson($dm->recipient);
+			if ($do_persist) {
+				$this->em->persist($recipient);
 			}
 		}
 

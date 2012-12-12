@@ -274,14 +274,22 @@ class TwitterStream extends AbstractJob
 		$createdAt = $data->created_at;
 
 		// Check source user exists
-		if (!($sourceUser = $this->findUser($source->id_str))) {
+		$sourceUser = $this->findUser($source->id_str);
+		if (!$sourceUser) {
 			$sourceUser = TwitterUser::createFromJson($source);
+			$this->em->persist($sourceUser);
+		} else {
+			$sourceUser->updateFromJson($source);
 			$this->em->persist($sourceUser);
 		}
 
 		// Check target user exists
-		if (!($targetUser = $this->findUser($target->id_str))) {
+		$targetUser = $this->findUser($target->id_str);
+		if (!$targetUser) {
 			$targetUser = TwitterUser::createFromJson($target);
+			$this->em->persist($targetUser);
+		} else {
+			$targetUser->updateFromJson($target);
 			$this->em->persist($targetUser);
 		}
 
