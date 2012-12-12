@@ -103,6 +103,12 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
 		$query .= " AND s.status_type IS NOT NULL";
 
+		if (!$includeSelf) {
+			$query .= " AND (s.status_type <> 'direct' OR t.user <> ?$i)";
+			$params[] = $account->user->getId();
+			$i++;
+		}
+
 		// note that sent should always be included - it will be filtered out above if needed
 		switch ($type) {
 			case 'timeline':
@@ -116,12 +122,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			case 'direct':
 				// direct messages are separate from sent messages - both sides are tagged as direct
 				$query .= " AND s.status_type = 'direct'";
-
-				if (!$includeSelf) {
-					$query .= " AND t.user <> ?$i";
-					$params[] = $account->user->getId();
-					$i++;
-				}
 				break;
 
 			case 'inbox':
@@ -170,6 +170,12 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
 		$query .= " AND s.status_type IS NOT NULL";
 
+		if (!$includeSelf) {
+			$query .= " AND (s.status_type <> 'direct' OR t.user <> ?$i)";
+			$params[] = $account->user->getId();
+			$i++;
+		}
+
 		// note that sent should always be included - it will be filtered out above if needed
 		switch ($type) {
 			case 'timeline':
@@ -183,12 +189,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			case 'direct':
 				// direct messages are separate from sent messages - both sides are tagged as direct
 				$query .= " AND s.status_type = 'direct'";
-
-				if (!$includeSelf) {
-					$query .= " AND t.user <> ?$i";
-					$params[] = $account->user->getId();
-					$i++;
-				}
 				break;
 
 			case 'inbox':
