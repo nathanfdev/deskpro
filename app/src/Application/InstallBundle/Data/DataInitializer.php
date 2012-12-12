@@ -309,9 +309,9 @@ class DataInitializer
 		$message->person  = $user;
 		$message->ticket  = $ticket;
 		$message->message = <<<STR
-Hello $agent_name, welcome to DeskPRO.<br /><br />
+Hello $agent_name,<br /><br />
 
-This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to close or delete this whenever you want.<br /><br />
+Welcome to DeskPRO. This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to close or delete this whenever you want.<br /><br />
 
 If you have any questions or run into any problems, you can simply reply to this ticket or you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.<br /><br />
 
