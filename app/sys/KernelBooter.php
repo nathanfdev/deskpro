@@ -668,7 +668,7 @@ class KernelBooter
 							pclose(popen("start \"dptwitter\" /MIN $php_path $file", "r"));
 						}
 					} else {
-						exec('nohup $php_path $file > /dev/null 2> /dev/null &');
+						exec("nohup $php_path $file > /dev/null 2> /dev/null &");
 					}
 				}
 			}
