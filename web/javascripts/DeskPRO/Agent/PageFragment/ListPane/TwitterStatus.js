@@ -55,8 +55,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			var row = $(this).closest('.twitter-status');
 
-			$(this).addClass('status-archived').removeClass('status-archive');
+			$(this).hide();
 			row.addClass('archived');
+			row.find('.status-archived').show();
 
 			var id = row.attr('data-status-id');
 			self.doArchive(id, 1);
@@ -68,8 +69,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.content.on('click', '.status-archived', function(e) {
 			e.preventDefault();
 
-			$(this).addClass('status-archive').removeClass('status-archived');
-			$(this).closest('.twitter-status').removeClass('archived');
+			var row = $(this).closest('.twitter-status');
+
+			$(this).hide();
+			row.removeClass('archived');
+			row.find('.status-archive').show();
 
 			var id = $(this).closest('.twitter-status').attr('data-status-id');
 			self.doArchive(id, 0);

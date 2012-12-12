@@ -18,7 +18,7 @@ pageMeta.url_fragment = '{{ url_fragment('agent_twitter_followers_list', {'accou
         {% if followers|length %}
 			<section class="followers-list list-listing">
 			{% for follower in followers %}
-				{% include 'AgentBundle:TwitterUser:part-follower.html.twig' %}
+				{% include 'AgentBundle:TwitterUser:part-follower.html.twig' with {'extra_class': 'no-archive-fade'} %}
 			{% endfor %}
 			</section>
 		{% else %}

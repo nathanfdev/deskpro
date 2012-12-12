@@ -19,11 +19,8 @@
 			data-content-type="twitter_account_status"
 			data-content-id="{{ account_status.id }}"
 		/>
-		{% if account_status.is_archived %}
-			<i class="status-archived"></i>
-		{% else %}
-			<i class="status-archive"></i>
-		{% endif %}
+		<i class="status-archived tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
+		<i class="status-archive tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
 		<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 			<span class="name">{{ status.user.name }}</span>
 			<span class="screen-name">@{{ status.user.screen_name }}</span>
@@ -33,15 +30,6 @@
 		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 			<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
 		</div>
-		<!--<div class="user-meta">
-			{% if status.user.id is not sameas(account.user.id) %}
-				{% if status.user.id in account.friend_ids %}
-					<button class="clean-white small unfollow"><a>{{ phrase('agent.general.unfollow') }}</a></button>
-				{% else %}
-					<button class="clean-white small follow"><a>{{ phrase('agent.general.follow') }}</a></button>
-				{% endif %}
-			{% endif %}
-		</div>-->
 
 		<div class="status-text">{{ status.parsed_text|raw }}</div>
 
