@@ -35,7 +35,7 @@ $(document).ready(function() {
 	<form action="{{ path('admin_portal_uploadfavicon') }}" method="POST">
 		{% if app.getSetting('core.favicon_blob_id') %}
 			<strong>Current Favicon</strong><br/>
-			<div style="padding: 10px; border: 1px solid #ccc; display: inline-block; margin-right: 10px;"><img src="{{ app.request.getBaseUrl()|replace({'/index.php': '/'}) }}{{ app.getSetting('core.favicon_blob_url') }}" /></div>
+			<div style="padding: 10px; border: 1px solid #ccc; display: inline-block; margin-right: 10px;"><img src="{{ app.request.getBaseUrl()|replace({'/index.php': ''}) }}/{{ app.getSetting('core.favicon_blob_url') }}" /></div>
 			<button class="btn">Remove</button>
 			<br/><br/>
 		{% endif %}

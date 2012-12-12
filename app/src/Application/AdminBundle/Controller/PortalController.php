@@ -94,6 +94,8 @@ class PortalController extends AbstractController
 
 						$file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
 					}
+				} else {
+					$file_content = $file;
 				}
 
 				$desc->write($file_content, array(
