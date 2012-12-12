@@ -1,0 +1,41 @@
+<div class="overlay twitter-message-overlay">
+	<div class="overlay-title">
+		<h4>Send @{{ user.screen_name }} a message on Twitter</h4>
+	</div>
+
+	<div class="new-reply overlay-content">
+		<form>
+			<ul class="reply-type">
+				<li class="on" data-type="public">
+					<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
+					<div>{{ phrase('agent.general.public') }}</div>
+				</li>
+				<li  data-type="private">
+					<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
+					<div>{{ phrase('agent.general.private') }}</div>
+				</li>
+			</ul>
+			<input type="hidden" name="type" value="public" />
+			<div class="reply-block">
+				{{ phrase('agent.twitter.from_account') }}:
+				{% if account %}
+					@{{ account.user.screen_name }}
+					<input type="hidden" name="account_id" value="{{ account.id }}" />
+				{% else %}
+					<select name="account_id">
+					{% for possible_account in accounts %}
+						<option value="{{ possible_account.id }}">@{{ possible_account.user.screen_name }}</option>
+					{% endfor %}
+					</select>
+				{% endif %}
+				<textarea name="text">@{{ user.screen_name }} </textarea>
+				<div class="is-not-loading">
+					<button class="clean-white small send-trigger">Send Message</button>
+				</div>
+				<div class="is-loading">
+					{{ phrase('agent.general.saving') }}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

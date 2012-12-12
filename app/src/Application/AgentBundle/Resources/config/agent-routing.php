@@ -1562,6 +1562,13 @@ $collection->add('agent_twitter_user', new Route(
 	array('fragment_name' => 'twitter')
 ));
 
+$collection->add('agent_twitter_user_message_overlay', new Route(
+	'/twitter/user/{user_id}/message-overlay',
+	array('_controller' => 'AgentBundle:TwitterUser:messageOverlay'),
+	array('user_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_twitter_user_ajaxsave_follow', new Route(
 	'/twitter/user/ajax-follow.json',
 	array('_controller' => 'AgentBundle:TwitterUser:ajaxSaveFollow'),

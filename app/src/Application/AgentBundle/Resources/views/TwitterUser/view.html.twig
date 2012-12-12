@@ -1,10 +1,13 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
 
-pageMeta.title = '@{{user.screen_name|escape}}';
+pageMeta.title = {{ user.name|json_encode|raw }};
 pageMeta.userId = '{{ user.id|escape }}';
-pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
+pageMeta.accountId = {{ account ? account.id|json_encode|raw : 'null' }};
+pageMeta.accountScreenName = {{ account ? account.user.screen_name|json_encode|raw : 'null' }};
 pageMeta.url_fragment  = '{{ url_fragment('agent_twitter_user', {'user_id': user.id}) }}';
+
+{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -16,36 +19,82 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 
-<header class="page-header">
-	<nav class="actions" id="{{baseId}}_action_buttons">
-		<ul>
-			{% if user.id is not sameas(account.user.id) %}
-				{% if user.id in account.friend_ids %}
-					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.general.unfollow') }}</button></li>
-				{% else %}
-					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.general.follow') }}</button></li>
-				{% endif %}
-			{% endif %}
-			<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.general.message') }}</button></li>
-		</ul>
-	</nav>
-	<div class="person-picture-box">
-		<img src="{{ user.profile_image_url }}"  />
-	</div>
-	<div class="titlewrap">
-		<h1>
-			<span class="editable">@{{ user.screen_name}}</span>
-		</h1>
-		<div class="meta-line">
-			<div class="org"><span>
-				<span>{{ user.name }}</span><br />
-
-			</span></div>
+<header class="page-header twitter-user-page">
+	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
+		<div class="person-picture-box" >
+			<a href="{{ user.getProfileImageUrl('') }}" target="_blank"><img src="{{ user.getProfileImageUrl('reasonably_small') }}" width="60" height="60" /></a>
 		</div>
+	</td><td>
+		<div class="titlewrap">
+			<h1 style="float: none; margin-left: 0">
+				<span>{{ user.name }}</span>
+				<span class="screen-name">@{{ user.screen_name }}</span>
+			</h1>
+			<div class="description">{{ user.description }}</div>
+			{% if user.location %}
+				<ul class="extra">
+					{% if user.location %}<li>{{ user.location }}</li>{% endif %}
+				</ul>
+			{% endif %}
+		</div>
+	</td></tr></table>
+
+	<br class="clear" />
+	<div class="meta-line">
+		<nav class="actions" id="{{baseId}}_action_buttons">
+			<ul>
+				{% if account %}
+					{% if user.id!= account.user.id %}
+						{% if user.id in account.friend_ids %}
+							<li class="unfollow-button"><a class="clean-white large">{{ phrase('agent.general.unfollow') }}</a></li>
+						{% else %}
+							<li class="follow-button"><a class="clean-white large">{{ phrase('agent.general.follow') }}</a></li>
+						{% endif %}
+					{% endif %}
+				{% else %}
+					<li class="follow-menu menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.follow') }} <em></em></a></li>
+				{% endif %}
+				<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
+			</ul>
+		</nav>
 	</div>
 	<br class="clear" />
-	<p>{{ user.description }}</p>
 </header>
+
+<div class="profile-box-container twitter-user-page">
+	<header id="{{baseId}}_twitter_header">
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.general.statuses') }}</li>
+				<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.general.messages') }}</li>
+				<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.general.mentions') }}</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		<article id="{{baseId}}_statuses_tab" class="on">
+			{% for status in user.statuses %}
+				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+			{% else %}
+				No statuses for user.
+			{% endfor %}
+		</article>
+		<article id="{{baseId}}_messages_tab">
+			{% for status in user.messages %}
+				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+			{% else %}
+				No messages for user.
+			{% endfor %}
+		</article>
+		<article id="{{baseId}}_mentions_tab">
+			{% for status in user.mentions %}
+				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+			{% else %}
+				No mentions for user.
+			{% endfor %}
+		</article>
+	</section>
+</div>
 
 <style type="text/css">
 	.table-content td { padding: 10px; }
@@ -53,105 +102,6 @@ pageMeta.baseId = '{{ baseId }}';
 	.tabbed article { padding: 10px; }
 </style>
 
-<table class="layout-table" cellspacing="0" cellpadding="0" width="100%">
-<tr>
-	<td valign="top" width="60%">
-		<section class="content-col">
-			{# Activity Tabs #}
-			<div class="profile-box-container tabbed">
-				<header>
-					<nav>
-						<ul>
-							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.general.statuses') }}</li>
-							<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.general.messages') }}</li>
-							<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.general.mentions') }}</li>
-						</ul>
-					</nav>
-				</header>
-				<section>
-					<article id="{{baseId}}_statuses_tab" class="on">
-						{% for status in user.statuses %}
-							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-						{% else %}
-							No Statuses for User
-						{% endfor %}
-					</article>
-					<article id="{{baseId}}_messages_tab">
-						{% for status in user.messages %}
-							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-						{% else %}
-							No Messages for User
-						{% endfor %}
-					</article>
-					<article id="{{baseId}}_mentions_tab">
-						{% for status in user.mentions %}
-							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-						{% else %}
-							No Mentions for User
-						{% endfor %}
-					</article>
-				</section>
-			</div>
-			{# /Activity Tabs #}
-		</section>
-	</td>
-	<td valign="top">
-		<section class="property-col">
-			{# Box Profile #}
-				<div class="profile-box-container summary">
-					<header>
-						<h4>{{ phrase('agent.general.profile') }}</h4>
-					</header>
-					<section>
-						<table class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display" width="100%">
-							<tr class="row-table-cotent">
-								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.general.language') }}</span>
-								</td>
-								<td width="70%"  class="col-table-content prop-val">
-									{{ user.language }}
-								</td>
-							</tr>
-							<tr class="row-table-cotent dark">
-								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitter.location') }}</span>
-								</div>
-								<td width="70%"  class="col-table-content prop-val">
-									{% if user.location is none %}{{ phrase('agent.twitter.unknown') }}{% else %}{{ user.location }}{% endif %}
-								</td>
-							</tr>
-							<tr class="row-table-cotent">
-								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitter.protected') }}</span>
-								</td>
-								<td width="70%"  class="col-table-content prop-val">
-									{% if user.is_protected %}yes{% else %}no{% endif %}
-								</td>
-							</tr>
-							<tr class="row-table-cotent dark">
-								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.general.verified') }}</span>
-								</td>
-								<td width="70%"  class="col-table-content prop-val">
-									{% if user.is_verified %}yes{% else %}no{% endif %}
-								</td>
-							</tr>
-							<tr class="row-table-cotent">
-								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitter.geo') }}</span>
-								</td>
-								<td width="70%" class="col-table-content prop-val">
-									{% if user.is_geo_enabled %}yes{% else %}no{% endif %}
-								</td>
-							</tr>
-						</table>
-					</section>
-				</div>
-			{# /Box Profile #}
-		</section>
-	</td>
-</tr>
-</table>
 {# Page Containers #}
 </div>
 </div>

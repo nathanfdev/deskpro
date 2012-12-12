@@ -64,7 +64,7 @@ class TwitterStatus extends AbstractEntityRepository
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.recipient IS NOT NULL
-			AND (s.user = :user_id OR s.recipient = :user_id)
+				AND (s.user = :user_id OR s.recipient = :user_id)
 		";
 
 		if (!$includeArchived) {
@@ -99,6 +99,7 @@ class TwitterStatus extends AbstractEntityRepository
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.user = :user_id
+				AND s.recipient IS NULL
 		";
 
 		if (!$includeArchived) {

@@ -54,7 +54,7 @@ class TwitterUserController extends AbstractController
 	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
 	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
-	protected function getAccount($id)
+	protected function getAccountOr404($id)
 	{
 		// check if account id is in persons account id list
 		if (!in_array($id, $this->person->getTwitterAccountIds())) {
@@ -70,7 +70,7 @@ class TwitterUserController extends AbstractController
 		return $account;
 	}
 
-	protected function getUser($id)
+	protected function getUserOr404($id)
 	{
 		$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($id);
 		if (!$user) {
@@ -82,15 +82,44 @@ class TwitterUserController extends AbstractController
 
 	public function viewAction($user_id)
 	{
+		$user = $this->getUserOr404($user_id);
+		
+		$accounts = $this->person->getTwitterAccounts();
+		if (!$accounts) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$account = count($accounts) == 1 ? $accounts[0] : false;
+
 		return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
-			'user' => $this->getUser($user_id)
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account
+		));
+	}
+	
+	public function messageOverlayAction($user_id)
+	{
+		$user = $this->getUserOr404($user_id);
+
+		$accounts = $this->person->getTwitterAccounts();
+		if (!$accounts) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$account = count($accounts) == 1 ? $accounts[0] : false;
+
+		return $this->render('AgentBundle:TwitterUser:message-overlay.html.twig', array(
+			'user' => $user,
+			'accounts' => $accounts,
+			'account' => $account
 		));
 	}
 
 	public function ajaxSaveFollowAction()
 	{
-		$account = $this->getAccount($this->in->getInt('account_id'));
-		$user = $this->getUser($this->in->getInt('user_id'));
+		$account = $this->getAccountOr404($this->in->getInt('account_id'));
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
 
 		try {
 			$account->getTwitterApi()->post_friendshipsCreate(array(
@@ -120,8 +149,8 @@ class TwitterUserController extends AbstractController
 
 	public function ajaxSaveUnfollowAction()
 	{
-		$account = $this->getAccount($this->in->getInt('account_id'));
-		$user = $this->getUser($this->in->getInt('user_id'));
+		$account = $this->getAccountOr404($this->in->getInt('account_id'));
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
 
 		try {
 			$account->getTwitterApi()->post_friendshipsDestroy(array(
@@ -146,8 +175,8 @@ class TwitterUserController extends AbstractController
 
 	public function ajaxSaveArchiveAction()
 	{
-		$account = $this->getAccount($this->in->getInt('account_id'));
-		$user = $this->getUser($this->in->getInt('user_id'));
+		$account = $this->getAccountOr404($this->in->getInt('account_id'));
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
 
 		$follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
 			->findOneByAccountIdAndUserId($account['id'], $user['id']);
@@ -164,8 +193,8 @@ class TwitterUserController extends AbstractController
 
 	public function ajaxSaveMessageAction()
 	{
-		$account = $this->getAccount($this->in->getInt('account_id'));
-		$user = $this->getUser($this->in->getInt('user_id'));
+		$account = $this->getAccountOr404($this->in->getInt('account_id'));
+		$user = $this->getUserOr404($this->in->getInt('user_id'));
 
 		$success = false;
 		$error = null;
@@ -197,7 +226,7 @@ class TwitterUserController extends AbstractController
 	 */
 	public function listFollowersAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		$page = 1;
 		$limit = 25;
@@ -210,7 +239,7 @@ class TwitterUserController extends AbstractController
 
 	public function listNewFollowersAction($account_id)
 	{
-		$account = $this->getAccount($account_id);
+		$account = $this->getAccountOr404($account_id);
 
 		$page = 1;
 		$limit = 25;

@@ -6468,3 +6468,89 @@ table.field-holders-table.mode-edit-on tr.mode-display { display: none; }
 	text-indent: 100px;
 	cursor: pointer;
 }
+
+.twitter-message-overlay {
+	width: 400px;
+	height: 150px;
+
+	.overlay-content {
+		padding: 10px;
+	}
+}
+
+.twitter-user-page {
+	h1 .screen-name {
+		font-size: 80%;
+		color: #888888;
+	}
+
+	.description, .extra {
+		margin-top: 5px;
+		font-size: 90%;
+		line-height: 1.4;
+	}
+
+	.description {
+		font-style: italic;
+	}
+
+	.extra {
+		li {
+			margin-right: 10px;
+		}
+	}
+
+	.twitter-status {
+		padding: 5px;
+		overflow: hidden;
+		border-top: 1px solid #E1E3E6;
+
+		&:first-child {
+			border-top: 0;
+		}
+
+		.photo {
+			float: left;
+		}
+
+		h4.user {
+			font-size: 13px;
+			font-weight: normal;
+			font-family: @body-font;
+			margin-left: 54px;
+
+			.name {
+				font-weight: bold;
+			}
+
+			.screen-name {
+				font-size: 90%;
+				color: #888888;
+			}
+		}
+
+		.status-text {
+			margin-left: 54px;
+		}
+
+		.extra-container {
+			margin-top: 5px;
+			margin-left: 55px;
+
+			.in-reply-to, .retweet {
+				color: #999999;
+				font-size: 80%;
+				line-height: 100%;
+			}
+		}
+
+		.timeago {
+			float: right;
+			margin-top: 5px;
+			margin-left: 5px;
+			color: #999999;
+			font-size: 80%;
+			line-height: 100%;
+		}
+	}
+}

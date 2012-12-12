@@ -1,38 +1,41 @@
-<style type="text/css">
-	.message { clear: both; margin-bottom: 20px; }
-	.message-avatar { margin: 0 10px 10px 0; }
-	.message h4 { display: inline-block; }
-	.message table td { padding: 0 5px 5px 0;}
-	.message {
-		border-bottom: 1px solid #E1E3E6;
-		border-top: 1px solid #FCFDFE
-	};
-</style>
+{% if status.isRetweet() %}
+	{% set retweet = status %}
+	{% set status = status.retweet %}
+{% else %}
+	{% set retweet = null %}
+{% endif %}
+<div class="twitter-status status-{{ status.id }}" data-status-id="{{ status.id }}">
+	<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+		<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
+	</div>
 
-<div class="message status-{{ status.id }}" data-status-id="{{ status.id }}">
-	<table width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-			<td colspan="2">
-				<div class="message-meta">
-					<span class="arrow-left"></span>
-					<h4>@{{ status.user.screen_name }}</h4>
-					<span class="timestamp">
-						<span class="timeago" title="{{ status.date_created|date('c', 'UTC') }}">{{ status.date_created|date('r') }}</span>
-					</span>
+	<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+		<span class="name">{{ status.user.name }}</span>
+		<span class="screen-name">@{{ status.user.screen_name }}</span>
+	</h4>
+
+	<div class="status-text">{{ status.parsed_text|raw }}</div>
+
+	{% if status.isMessage() %}
+		<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
+	{% else %}
+		<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
+	{% endif %}
+
+	{% if status.in_reply_to_status or retweet %}
+		<div class="extra-container">
+			{% if status.in_reply_to_status %}
+				{% set reply = status.in_reply_to_status %}
+				<div class="in-reply-to">
+					{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
+					"{{ reply.getClippedText(25) }}"
 				</div>
-			</td>
-		</tr>
-		<tr>
-			<td width="35px">
-				<div class="message-avatar left">
-					<img src="{{ status.user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
+			{% endif %}
+			{% if retweet %}
+				<div class="retweet">
+					Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
 				</div>
-			</td>
-			<td>
-				<div class="message-text">
-					<p>{{ status.parsed_text|raw }}</p>
-				</div>
-			</td>
-		</tr>
-	</table>
+			{% endif %}
+		</div>
+	{% endif %}
 </div>

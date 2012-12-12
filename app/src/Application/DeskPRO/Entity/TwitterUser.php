@@ -177,6 +177,15 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return (Boolean) $this->is_geo_enabled;
 	}
 
+	public function getProfileImageUrl($size = 'normal')
+	{
+		if ($size == 'normal') {
+			return $this->profile_image_url;
+		} else {
+			return str_replace('_normal.', ($size ? "_$size" : '') . '.', $this->profile_image_url);
+		}
+	}
+
 	public function getStatuses()
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findOutgoingForUserId($this->id, true, 'desc');
