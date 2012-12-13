@@ -4,10 +4,17 @@
 		<h4>Configure Twitter Block</h4>
 	</div>
 	<div class="overlay-content">
-		<div style="margin-bottom: 1em">
-			<a class="btn primary" href="{{ path('admin_portal_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
-			{% if not data.token or not data.secret %}<div>The Twitter block cannot be enabled until this is done.</div>{% endif %}
-		</div>
+		{% if not consumer_key %}
+			<div style="margin-bottom: 1em">
+				<a class="btn primary" href="{{ path('admin_twitter_apps') }}">Setup Twitter Application</a>
+				<div>The Twitter block cannot be enabled until this is done.</div>
+			</div>
+		{% else %}
+			<div style="margin-bottom: 1em">
+				<a class="btn primary" href="{{ path('admin_portal_twitter_oauth', {start: 1}) }}">Authenticate with Twitter</a>
+				{% if not data.token or not data.secret %}<div>The Twitter block cannot be enabled until this is done.</div>{% endif %}
+			</div>
+		{% endif %}
 
 		<div class="dp-form">
 			<div class="dp-form-row">

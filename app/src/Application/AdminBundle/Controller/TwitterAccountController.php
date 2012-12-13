@@ -58,6 +58,10 @@ class TwitterAccountController extends AbstractController
 	public function listAction()
 	{
 		$accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->findAll();
+		if (!$accounts && !App::getSetting('core.twitter_agent_consumer_key')) {
+			return $this->redirectRoute('admin_twitter_apps');
+		}
+
 		$verified = array();
 		foreach ($accounts as $account) {
 			$verified[$account['id']] = $account->verifyCredentials();
@@ -69,6 +73,25 @@ class TwitterAccountController extends AbstractController
 		));
 	}
 
+	public function appsAction()
+	{
+		if ($this->in->getBool('process')) {
+			$this->ensureRequestToken();
+
+			$settings = App::getContainer()->getSettingsHandler();
+			$settings->setSetting('core.twitter_agent_consumer_key', $this->in->getString('agent_consumer_key'));
+			$settings->setSetting('core.twitter_agent_consumer_secret', $this->in->getString('agent_consumer_secret'));
+			$settings->setSetting('core.twitter_user_consumer_key', $this->in->getString('user_consumer_key'));
+			$settings->setSetting('core.twitter_user_consumer_secret', $this->in->getString('user_consumer_secret'));
+
+			return $this->redirectRoute('admin_twitter_accounts');
+		}
+
+		return $this->render('AdminBundle:TwitterAccount:apps.html.twig', array(
+			'accounts' => $this->em->getRepository('DeskPRO:TwitterAccount')->findAll()
+		));
+	}
+
 	/**
 	 * Request permission from Twitter for DeskPRO application.
 	 *
@@ -76,7 +99,7 @@ class TwitterAccountController extends AbstractController
 	 */
 	public function newAction()
 	{
-		$api = \Application\DeskPRO\Service\Twitter::getTwitterApi();
+		$api = \Application\DeskPRO\Service\Twitter::getAgentTwitterApi();
 
 		if ($this->in->getBool('start')) {
 			$api->setCallback($this->generateUrl('admin_twitter_accounts_new', array(), true));

@@ -1828,6 +1828,13 @@ $collection->add('admin_twitter_accounts', new Route(
 	array()
 ));
 
+$collection->add('admin_twitter_apps', new Route(
+	'/twitter/apps',
+	array('_controller' => 'AdminBundle:TwitterAccount:apps'),
+	array(),
+	array()
+));
+
 $collection->add('admin_twitter_accounts_new', new Route(
 	'/twitter/accounts/new',
 	array('_controller' => 'AdminBundle:TwitterAccount:new'),

@@ -63,9 +63,9 @@ class Twitter
 	 *
 	 * @return string
 	 */
-	public static function getConsumerKey()
+	public static function getAgentConsumerKey()
 	{
-		return 'XefO1lVIzumaZ2zLkntbQ';
+		return App::getSetting('core.twitter_agent_consumer_key');
 	}
 
 	/**
@@ -73,14 +73,52 @@ class Twitter
 	 *
 	 * @return string
 	 */
-	public static function getConsumerSecret()
+	public static function getAgentConsumerSecret()
 	{
-		return 'OyJd8ocBXT5qjYpceo6nCbUIHz4ukekkrc27SpREG74';
+		return App::getSetting('core.twitter_agent_consumer_secret');
 	}
 
-	public static function getTwitterApi($token = null, $secret = null)
+	public static function getAgentTwitterApi($token = null, $secret = null)
 	{
-		$api = new \EpiTwitter(self::getConsumerKey(), self::getConsumerSecret());
+		$api = new \EpiTwitter(self::getAgentConsumerKey(), self::getAgentConsumerSecret());
+		if ($token && $secret) {
+			$api->setToken($token, $secret);
+		}
+
+		return $api;
+	}
+
+	/**
+	 * Retrieve Twitter Application OAuth Consumer Key.
+	 *
+	 * @return string
+	 */
+	public static function getUserConsumerKey()
+	{
+		if (App::getSetting('core.twitter_user_consumer_key')) {
+			return App::getSetting('core.twitter_user_consumer_key');
+		} else {
+			return App::getSetting('core.twitter_agent_consumer_key');
+		}
+	}
+
+	/**
+	 * Retrieve Twitter Application OAuth Consumer Secret.
+	 *
+	 * @return string
+	 */
+	public static function getUserConsumerSecret()
+	{
+		if (App::getSetting('core.twitter_user_consumer_key')) {
+			return App::getSetting('core.twitter_user_consumer_secret');
+		} else {
+			return App::getSetting('core.twitter_user_consumer_secret');
+		}
+	}
+
+	public static function getUserTwitterApi($token = null, $secret = null)
+	{
+		$api = new \EpiTwitter(self::getUserConsumerKey(), self::getUserConsumerSecret());
 		if ($token && $secret) {
 			$api->setToken($token, $secret);
 		}

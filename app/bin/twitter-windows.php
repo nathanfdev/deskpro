@@ -40,8 +40,11 @@ ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
 define('DP_ROOT', realpath(__DIR__ . '/../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_BOOT_MODE', 'cli');
 if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
-date_default_timezone_set('GMT');
+setlocale(LC_CTYPE, 'C');
+date_default_timezone_set('UTC');
+ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
 
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';

@@ -517,7 +517,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getTwitterApi()
 	{
-		$api = \Application\DeskPRO\Service\Twitter::getTwitterApi();
+		$api = \Application\DeskPRO\Service\Twitter::getAgentTwitterApi();
 		if ($this->oauth_token && $this->oauth_token_secret) {
 			$api->setToken($this->oauth_token, $this->oauth_token_secret);
 		}

@@ -344,5 +344,10 @@
 	/**
 	 * Number of allowed requests to the API per hour. 0 to disable.
 	 */
-	'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0
+	'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0,
+
+	'core.twitter_agent_consumer_key' => '',
+	'core.twitter_agent_consumer_secret' => '',
+	'core.twitter_user_consumer_key' => '',
+	'core.twitter_user_consumer_secret' => '',
 );

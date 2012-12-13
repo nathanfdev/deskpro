@@ -35,28 +35,49 @@ ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
 define('DP_ROOT', realpath(__DIR__ . '/../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_BOOT_MODE', 'cli');
 if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
-date_default_timezone_set('GMT');
+setlocale(LC_CTYPE, 'C');
+date_default_timezone_set('UTC');
+ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
 
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
-require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
-require_once DP_ROOT.'/sys/autoload.php';
-require_once DP_ROOT.'/sys/load_config.php';
+require DP_ROOT . '/sys/load_config.php';
 dp_load_config();
 
-set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
-set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+if (!empty($argv[1])) {
+	// need to be able to get settings
+	require DP_ROOT . '/sys/KernelBooter.php';
+	\DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
-$env = 'dev';
+	define('DP_INTERFACE', 'sys');
+
+	$env = 'prod';
+	$debug = false;
+
+	if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+		$env = 'dev';
+		$debug = true;
+	}
+
+	$kernel = new \DeskPRO\Kernel\UserKernel($env, $debug);
+	$kernel->boot();
+
+	if (session_id() != '') {
+		session_write_close();
+	}
+} else {
+	require DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+	require DP_ROOT.'/src/Orb/Util/ClassLoader.php';
+	require DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
+	require_once DP_ROOT.'/sys/autoload.php';
+
+	set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
+	set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+}
 
 $db_conf = $DP_CONFIG['db'];
 $db_conf['driver'] = 'pdo_mysql';
-
-// needed for Phirehose
-define('TWITTER_CONSUMER_KEY', \Application\DeskPRO\Service\Twitter::getConsumerKey());
-define('TWITTER_CONSUMER_SECRET', \Application\DeskPRO\Service\Twitter::getConsumerSecret());
 
 $pid_file = dp_get_data_dir() . '/twitter.pid';
 $is_windows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
@@ -134,7 +155,17 @@ if (!empty($argv[1])) {
 		exit(1);
 	}
 
+	// needed for Phirehose
+	define('TWITTER_CONSUMER_KEY', \Application\DeskPRO\Service\Twitter::getAgentConsumerKey());
+	define('TWITTER_CONSUMER_SECRET', \Application\DeskPRO\Service\Twitter::getAgentConsumerSecret());
+
+	\Application\DeskPRO\App::getDb()->close();
+
 	$log_status("[Account $account[id]] Processor starting with PID " . getmypid() . ".");
+
+	if (!$runner_active) {
+		$log_status("[Account $account[id], PID " . getmypid() . "] Started without parent runner. Can only be terminated manually.");
+	}
 
 	$consumer = new \Application\DeskPRO\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
 	$consumer->setDbCallback(function($inner_callback) use ($get_db) {
@@ -178,7 +209,6 @@ if (!empty($argv[1])) {
 		gc_collect_cycles();
 
 		if (!$runner_active) {
-			$log_status("[Account $account[id], PID $my_pid] Started without parent runner. Continuing (can only be terminated manually).");
 			return $status;
 		}
 
