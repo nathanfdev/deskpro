@@ -57,7 +57,7 @@ class TwitterAccountController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->findAll();
+		$accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->getAll();
 		if (!$accounts && !App::getSetting('core.twitter_agent_consumer_key')) {
 			return $this->redirectRoute('admin_twitter_apps');
 		}

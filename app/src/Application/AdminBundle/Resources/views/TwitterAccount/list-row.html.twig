@@ -7,8 +7,8 @@
 		<img src="{{ account.user.profile_image_url }}" width="28" height="28" border="0" />
 	</div>
 	<div style="float:left; margin-left: 10px">
-		<strong>@{{ account.user.screen_name }}</strong>
-		<div style="font-size: 90%; margin-top: 3px;">{{ account.user.name }}</div>
+		<strong>{{ account.user.name }}</strong>
+		<div style="font-size: 90%; margin-top: 3px;">@{{ account.user.screen_name }}</div>
 	</div>
 	<div style="float:left; margin-left: 250px;position:absolute">
 		<div>
@@ -19,7 +19,7 @@
 				<span style="color:red">{{ phrase('admin.twitter.error') }}</span>
 			{% endif %}
 		</div>
-		<div>
+		<div style="margin-top: 2px">
 			<strong>Agents with access:</strong>
 			{% for agent in account.persons -%}
 				{% if loop.index > 1 %},{% endif %}

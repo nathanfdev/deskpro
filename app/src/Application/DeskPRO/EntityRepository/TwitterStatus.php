@@ -52,20 +52,38 @@ class TwitterStatus extends AbstractEntityRepository
 
 	/**
 	 * @param integer $id
+	 * @param array|null $from_user_ids If not null, only from these users
 	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findMessagesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function findMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
+		if ($from_user_ids !== null && !$from_user_ids) {
+			return array();
+		}
+
 		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.recipient IS NOT NULL
-				AND (s.user = :user_id OR s.recipient = :user_id)
 		";
+
+		if ($from_user_ids) {
+			if (in_array($id, $from_user_ids)) {
+				// make sure we can see anything this account sent
+				$query .= " AND ((s.user = :user_id) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+			} else {
+				$from_user_ids[] = $id;
+				$query .= " AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ";
+			}
+			$params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
+		} else {
+			$query .= " AND (s.user = :user_id OR s.recipient = :user_id) ";
+			$params = array('user_id' => $id);
+		}
 
 		if (!$includeArchived) {
 			$query .= " AND s.is_archived = 0 ";
@@ -80,9 +98,7 @@ class TwitterStatus extends AbstractEntityRepository
 			->createQuery($query)
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'user_id' => $id
-			));
+			->execute($params);
 	}
 
 	/**
@@ -160,19 +176,33 @@ class TwitterStatus extends AbstractEntityRepository
 
 	/**
 	 * @param integer $id
+	 * @param array|null $from_user_ids If not null, only from these users
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findMentionsForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function findMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
+		if ($from_user_ids !== null && !$from_user_ids) {
+			return array();
+		}
+
 		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			LEFT JOIN s.mentions m
 			WHERE m.user = :user_id
 		";
+
+		$params = array(
+			'user_id' => $id
+		);
+
+		if ($from_user_ids) {
+			$query .= " AND s.user IN (:from_user_ids) ";
+			$params['from_user_ids'] = $from_user_ids;
+		}
 
 		if (!$includeArchived) {
 			$query .= " AND s.is_archived = 0 ";
@@ -187,9 +217,7 @@ class TwitterStatus extends AbstractEntityRepository
 			->createQuery($query)
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
-				'user_id' => $id
-			));
+			->execute($params);
 	}
 
 	/**

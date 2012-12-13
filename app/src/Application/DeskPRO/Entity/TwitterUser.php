@@ -240,12 +240,22 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessages()
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMessagesForUserId($this->id, true, 'desc');
+		$from_user_ids = array();
+		foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() AS $account) {
+			$from_user_ids[] = $account->user->id;
+		}
+
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMessagesForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
 	public function getMentions()
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, true, 'desc');
+		$from_user_ids = array();
+		foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() AS $account) {
+			$from_user_ids[] = $account->user->id;
+		}
+
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
 	public function offsetGet($offset)

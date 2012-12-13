@@ -1450,9 +1450,9 @@ $collection->add('agent_twitter_team_tweets_list', new Route(
 	array('fragment_name' => 'team', 'fragment_type' => 'list')
 ));
 
-$collection->add('agent_twitter_statuses_list', new Route(
-	'/twitter/statuses/{account_id}',
-	array('_controller' => 'AgentBundle:TwitterStatus:list'),
+$collection->add('agent_twitter_inbox_list', new Route(
+	'/twitter/inbox/{account_id}',
+	array('_controller' => 'AgentBundle:TwitterStatus:listInbox'),
 	array('account_id' => '\\d+'),
 	array('fragment_name' => 'inbox', 'fragment_type' => 'list')
 ));
@@ -1483,6 +1483,13 @@ $collection->add('agent_twitter_retweets_list', new Route(
 	array('_controller' => 'AgentBundle:TwitterStatus:listRetweets'),
 	array('account_id' => '\\d+'),
 	array('fragment_name' => 'retweets', 'fragment_type' => 'list')
+));
+
+$collection->add('agent_twitter_timeline_list', new Route(
+	'/twitter/timeline/{account_id}',
+	array('_controller' => 'AgentBundle:TwitterStatus:listTimeline'),
+	array('account_id' => '\\d+'),
+	array('fragment_name' => 'timeline', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_followers_list', new Route(

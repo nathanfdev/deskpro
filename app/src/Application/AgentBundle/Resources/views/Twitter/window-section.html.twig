@@ -35,7 +35,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
-				<span class="title" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_inbox_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countInbox() }}">{{ account.countInbox() }}</span>
 					<span>{{ phrase('agent.general.inbox') }}</span>
 				</span>
@@ -78,26 +78,11 @@
 
 		<li class="has-children dp-cat-li">
 			<div class="item-wrap dp-cat-item">
-				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
-
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list_new', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count" data-count="{{ account.countNewFollowers() }}">{{ account.countNewFollowers() }}</span>
 					<span>{{ phrase('agent.twitter.new_followers') }}</span>
 				</span>
 			</div>
-			<ul class="sub-group">
-				{% for follower in account.getNewFollowers(1, 5) %}
-					<li class="dp-cat-li">
-						<div class="item-wrap dp-cat-item">
-							<span class="user title" data-route="page:{{ path('agent_twitter_user', {'user_id': follower.user.id}) }}">
-								<span class="name">{{ follower.user.name }}</span>
-	                            <span class="screen-name" style="font-weight: normal">(@{{ follower.user.screen_name }})</span>
-	                        </span>
-						</div>
-					</li>
-				{% endfor %}
-
-			</ul>
 		</li>
 
 		<li class="has-children dp-cat-li">
@@ -124,9 +109,9 @@
 
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
-				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.countFollowers() }}">{{ account.countFollowers() }}</span>
-					<span>{{ phrase('agent.general.followers') }}</span>
+				<span class="title" data-route="listpane:{{ path('agent_twitter_timeline_list', {'account_id': account.id}) }}">
+					<span class="list-counter" id="twitter_{{ account.id }}_timeline_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
+					<span>Timeline</span>
 				</span>
 			</div>
 		</li>
@@ -136,6 +121,15 @@
 				<span class="title" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.countOutgoing() }}">{{ account.countOutgoing() }}</span>
 					<span>{{ phrase('agent.twitter.sent') }}</span>
+				</span>
+			</div>
+		</li>
+
+		<li class="dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
+					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.countFollowers() }}">{{ account.countFollowers() }}</span>
+					<span>{{ phrase('agent.general.followers') }}</span>
 				</span>
 			</div>
 		</li>

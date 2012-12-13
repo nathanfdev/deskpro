@@ -78,21 +78,21 @@ pageMeta.baseId = '{{ baseId }}';
 			{% for status in user.statuses %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
-				No statuses for user.
+				<div style="padding: 10px">No statuses for user.</div>
 			{% endfor %}
 		</article>
 		<article id="{{baseId}}_messages_tab">
 			{% for status in user.messages %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
-				No messages for user.
+				<div style="padding: 10px">No messages for user.</div>
 			{% endfor %}
 		</article>
 		<article id="{{baseId}}_mentions_tab">
 			{% for status in user.mentions %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
-				No mentions for user.
+				<div style="padding: 10px">No mentions for user.</div>
 			{% endfor %}
 		</article>
 	</section>

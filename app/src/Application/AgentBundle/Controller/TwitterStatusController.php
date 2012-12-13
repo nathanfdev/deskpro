@@ -47,12 +47,12 @@ use Application\DeskPRO\Entity\TwitterAccountStatusNote;
 class TwitterStatusController extends AbstractController
 {
 	/**
-	 * Display statuses for provided account.
+	 * Display inbox for provided account.
 	 *
 	 * @param integer $account_id The account id.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function listAction($account_id)
+	public function listInboxAction($account_id)
 	{
 		$account = $this->getAccountOr404($account_id);
 
@@ -63,7 +63,7 @@ class TwitterStatusController extends AbstractController
 		// fetch public timeline
 		$statuses = $account->getInbox($includeArchived, $includeAccount, $this->getSortByDate());
 
-		return $this->renderList($account, $statuses, 'agent_twitter_statuses_list');
+		return $this->renderList($account, $statuses, 'agent_twitter_inbox_list');
 	}
 
 	/**
@@ -140,6 +140,26 @@ class TwitterStatusController extends AbstractController
 		$retweets = $account->getRetweets($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $retweets, 'agent_twitter_retweets_list');
+	}
+
+	/**
+	 * Display timeline for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listTimelineAction($account_id)
+	{
+		$account = $this->getAccountOr404($account_id);
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		// fetch public timeline
+		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
+
+		return $this->renderList($account, $statuses, 'agent_twitter_timeline_list');
 	}
 
 	/**
