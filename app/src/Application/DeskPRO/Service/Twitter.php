@@ -221,7 +221,10 @@ class Twitter
 		// fetch mentions
 		if (isset($data->entities) && $depth <= 1) {
 			foreach ($data->entities->user_mentions as $mention) {
-				$status->addMention($this->processStatusMention($api, $status, $mention, $do_persist));
+				$mention_entity = $this->processStatusMention($api, $status, $mention, $do_persist);
+				if ($mention_entity) {
+					$status->addMention($mention_entity);
+				}
 			}
 
 			// fetch hashtags
@@ -291,7 +294,10 @@ class Twitter
 		// fetch mentions
 		if (isset($data->entities)) {
 			foreach ($data->entities->user_mentions as $mention) {
-				$status->addMention($this->processStatusMention($api, $status, $mention, $do_persist));
+				$mention_entity = $this->processStatusMention($api, $status, $mention, $do_persist);
+				if ($mention_entity) {
+					$status->addMention($mention_entity);
+				}
 			}
 
 			// fetch hashtags
@@ -314,6 +320,10 @@ class Twitter
 
 	public function processStatusMention(\EpiTwitter $api, TwitterStatus $status, $mention, $do_persist = true)
 	{
+		if ($mention->id_str == '-1') {
+			return false;
+		}
+
 		$entity = TwitterStatusMention::createFromJson($mention);
 		$entity['status'] = $status;
 
