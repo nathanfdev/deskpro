@@ -192,7 +192,7 @@ class EzcReader extends AbstractReader
 		$attachments = array();
 
 		foreach ($this->mail->fetchParts() as $part) {
-			if ($part instanceof \ezcMailFile || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')) {
+			if ($part instanceof \ezcMailFile || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment') || ($part instanceof \ezcMailText && $part->subType == 'calendar')) {
 
 				$attach = new Item\Attachment();
 
@@ -208,8 +208,13 @@ class EzcReader extends AbstractReader
 					}
 
 					if (!$attach->file_name) {
-						$attach->file_name = 'file.txt';
-						$attach->mime_type = 'plain/text';
+						if ($part instanceof \ezcMailText && $part->subType == 'calendar') {
+							$attach->file_name = 'icalendar.ics';
+							$attach->mime_type = 'text/calendar';
+						} else {
+							$attach->file_name = 'file.txt';
+							$attach->mime_type = 'text/plain';
+						}
 					}
 
 					if (!$attach->mime_type) {
