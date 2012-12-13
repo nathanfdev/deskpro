@@ -25,7 +25,7 @@
 		<textarea name="text">{{ default_text }}</textarea>
 		<div class="is-not-loading">
 			<span class="character-count"><em>140</em> remaining</span>
-			<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" /> Split to multiple</label></span>
+			<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" checked="checked" /> Split to multiple</label></span>
 			<button class="clean-white small save-message-trigger">{{ send_text }}</button>
 			{% if not hide_cancel %}
 				<span class="cancel-message-trigger">{{ phrase('agent.general.cancel') }}</span>

@@ -215,36 +215,17 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					textarea.val(name + ' ');
 				}
 
-				updateTweetLength();
+				self.updateTweetLength(textarea);
 
 				textarea.focus();
 			}
 		});
 
-		var newMessageArea = this.content.find('.new-message'),
-			textarea = newMessageArea.find('textarea'),
-			charCount = newMessageArea.find('.character-count'),
-			charCountCounter = charCount.find('em'),
-			overOptions = newMessageArea.find('.over-options');
-		var updateTweetLength = function() {
-			var text = textarea.val();
-			text = text.replace(/\r?\n/g, ' ')
-				.replace(/http:\/\/\S+/g, '12345678901234567890')
-				.replace(/https:\/\/\S+/g, '123456789012345678901');
-
-			if (text.length > 140) {
-				charCount.hide();
-				overOptions.show();
-			} else {
-				charCountCounter.text(140 - text.length);
-				charCount.show();
-				overOptions.hide();
-			}
-		};
-		updateTweetLength();
-
-		this.content.on('keypress keyup change', '.new-message textarea', function () {
-			setTimeout(updateTweetLength);
+		this.content.on('keypress keyup change', '.new-message textarea', function() {
+			var $this = $(this);
+			setTimeout(function() {
+				self.updateTweetLength($this);
+			}, 0);
 		});
 		this.content.on('click', '.new-message .message-type li', function() {
 			var $this = $(this);
@@ -285,9 +266,11 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					success: function(json) {
 						if (json.success) {
 							if (json.html) {
-								var html = $(json.html);
-								row.find('.twitter-replies').append(html);
-								$('.timeago', html).timeago();
+								for (var i = 0; i < json.html.length; i++) {
+									var html = $(json.html[i]);
+									row.find('.twitter-replies').append(html);
+									$('.timeago', html).timeago();
+								}
 
 								row.find('.reply-list').show();
 							}
@@ -366,6 +349,27 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				noteContainer.removeClass('loading');
 			});
 		});
+	},
+
+	updateTweetLength: function(textarea) {
+		var text = textarea.val();
+		text = text.replace(/\r?\n/g, ' ')
+			.replace(/http:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '12345678901234567890')
+			.replace(/https:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '123456789012345678901');
+
+		var newMessageArea = textarea.closest('.new-message'),
+			charCount = newMessageArea.find('.character-count'),
+			charCountCounter = charCount.find('em'),
+			overOptions = newMessageArea.find('.over-options');
+
+		if (text.length > 140) {
+			charCount.hide();
+			overOptions.show();
+		} else {
+			charCountCounter.text(140 - text.length);
+			charCount.show();
+			overOptions.hide();
+		}
 	},
 
 	closestRow: function(el) {

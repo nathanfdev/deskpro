@@ -392,28 +392,31 @@ class TwitterStatusController extends AbstractController
 	{
 		$success = false;
 		$error = null;
-		$html = null;
+		$html = array();
 
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'));
 		$account = $account_status->account;
 
 		$text = $this->in->getString('text');
 		$type = $this->in->getValue('type');
+		$split = $this->in->getBool('split');
 		if (strlen($text)) {
 			if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
 				$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
 			}
 
 			$twitter_service = new \Application\DeskPRO\Service\Twitter();
-			$response = $twitter_service->sendAccountMessage($type, $text, $account, $account_status);
+			$response = $twitter_service->sendAccountMessage($type, $text, $split, $account, $account_status);
 
 			$success = $response['success'];
 			$error = $response['error'];
-			if ($response['new_account_status']) {
-				$html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
-					'account_status' => $account_status,
-					'reply' => $response['new_account_status']
-				));
+			if ($response['new_account_statuses']) {
+				foreach ($response['new_account_statuses'] AS $new_account_status) {
+					$html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+						'account_status' => $account_status,
+						'reply' => $new_account_status
+					));
+				}
 			}
 		} else {
 			$error = 'No text specified.';

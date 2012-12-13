@@ -359,82 +359,212 @@ class Twitter
 		return $entity;
 	}
 
-	public function sendAccountMessage($type, $text, TwitterAccount $account, TwitterAccountStatus $reply = null, TwitterUser $user = null)
+	public function getTextAtTwitterLength($text)
 	{
-		$success = false;
+		$text = str_replace("\r", '', $text);
+		$text = str_replace("\t", ' ', $text);
+		$text = trim($text);
+
+		$http_length = 20;
+		$https_length = 21;
+		$replacements = array();
+
+		$text = preg_replace_callback('/(https?):\/\/(?>[^ \t\r\n[\]#]+)(?!#)/i', function($match) use(&$replacements, $http_length, $https_length) {
+			$id = count($replacements);
+			$replacements[$id] = $match[0];
+
+			$placeholder = "\x1A$id";
+			if (strtolower($match[1]) == 'https') {
+				$placeholder .= str_repeat("\x1A", $https_length - strlen($placeholder));
+			} else {
+				$placeholder .= str_repeat("\x1A", $http_length - strlen($placeholder));
+			}
+
+			return $placeholder;
+		}, $text);
+
+		return array(
+			'text' => $text,
+			'replacements' => $replacements
+		);
+	}
+
+	public function countStatusLength($text)
+	{
+		$results = $this->getTextAtTwitterLength($text);
+		return \Orb\Util\Strings::utf8_strlen($results['text']);
+	}
+
+	public function splitStatusText($text, $look_for_prefix = true)
+	{
+		$replaced = $this->getTextAtTwitterLength($text);
+		$replaced['text'] = preg_replace('/\s/', ' ', $replaced['text']);
+
+		if ($look_for_prefix && preg_match('/^(@[a-z0-9_]+\s+)+/i', $replaced['text'], $match)) {
+			$prefix = $match[0];
+			$split_text = substr($replaced['text'], strlen($prefix));
+		} else {
+			$prefix = '';
+			$split_text = $replaced['text'];
+		}
+
+		$part_max_length = 140 - \Orb\Util\Strings::utf8_strlen($prefix);
+		$text_parts = array();
+		$first_added = false;
+
+		do {
+			if (\Orb\Util\Strings::utf8_strlen($split_text) <= $part_max_length) {
+				if ($text_parts) {
+					$split_text = "...$split_text";
+				}
+
+				$text_parts[] = $prefix . $split_text;
+				break;
+			} else {
+				$test_text = substr($split_text, 0, $part_max_length - 3); // -3 for the appended ...
+				$last_space = strrpos($test_text, ' ');
+				if ($last_space !== false && $last_space >= 0) {
+					// have a space
+					$text_parts[] = $prefix
+						. ($text_parts ? '...' : '')
+						. substr($split_text, 0, $last_space)
+						. '...';
+					$split_text = ltrim(substr($split_text, $last_space + 1));
+				} else {
+					// no space - include whole thing
+					$text_parts[] = $prefix
+						. ($text_parts ? '...' : '')
+						. $test_text
+						. '...';
+					$split_text = ltrim(substr($split_text, strlen($test_text)));
+				}
+			}
+
+			if (!$first_added) {
+				$part_max_length -= 3; // for the prepended ...
+				$first_added = true;
+			}
+		} while (strlen($split_text));
+
+		foreach ($text_parts AS &$text_part) {
+			$text_part = preg_replace_callback('/\x1A(\d+)\x1A+/', function($match) use($replaced) {
+				return isset($replaced['replacements'][$match[1]])
+					? $replaced['replacements'][$match[1]]
+					: '';
+			}, $text_part);
+			$text_part = str_replace("\x1A", '', $text_part);
+		}
+
+		return $text_parts;
+	}
+
+	public function sendAccountMessage($type, $text, $split, TwitterAccount $account, TwitterAccountStatus $reply = null, TwitterUser $user = null)
+	{
 		$error = null;
-		$new_account_status = null;
+		$new_account_statuses = array();
 
 		$api = $account->getTwitterApi();
 		$em = App::getOrm();
 
+		$text = trim(str_replace("\r", '', $text));
+		$text = str_replace("\t", ' ', $text);
+
+		$replaced = $this->getTextAtTwitterLength($text);
+
 		try {
 			if ($type == 'public') {
-				if (\Orb\Util\Strings::utf8_strlen($text) > 140) {
-					$error = 'Long statuses are todo'; // todo
+				$text_parts = false;
+				if ($this->countStatusLength($text) > 140) {
+					if ($split) {
+						$text_parts = $this->splitStatusText($text);
+					} else {
+						$error = 'Long statuses are todo'; // todo
+					}
 				} else {
-					$params = array(
-						'status' => $text
-					);
-					if ($reply && !$reply->status->recipient) {
-						// only if not a DM
-						$params['in_reply_to_status_id'] = $reply->status->id;
-					}
-
-					$response = $api->post_statusesUpdate($params);
-					if (!empty($response->error)) {
-						$error = $response->error;
-					} else {
-						$success = true;
-
-						$new_status = $this->processStatus($api, $response);
-
-						$new_account_status = new TwitterAccountStatus();
-						$new_account_status->status = $new_status;
-						$new_account_status->account = $account;
-						$new_account_status->status_type = 'sent';
-						$new_account_status->in_reply_to = $reply;
-
-						$em->persist($new_status);
-						$em->persist($new_account_status);
-						$em->flush();
-					}
+					$text_parts = array($text);
 				}
-			} else {
-				if (\Orb\Util\Strings::utf8_strlen($text) <= 140) {
-					if ($user) {
-						$user_id = $user->id;
-					} else if ($reply) {
-						$user_id = $reply->status->user->id;
-					} else {
-						throw new \Exception('No user to send private message to.');
-					}
 
-					try {
-						$response = $api->post_direct_messagesNew(array(
-							'user_id' => $user_id,
-							'text' => $text
-						));
+				if (!$error && !empty($text_parts)) {
+					foreach ($text_parts AS $part) {
+						$params = array(
+							'status' => $part
+						);
+						if ($reply && !$reply->status->recipient) {
+							// only if not a DM
+							$params['in_reply_to_status_id'] = $reply->status->id;
+						}
+
+						$response = $api->post_statusesUpdate($params);
 						if (!empty($response->error)) {
 							$error = $response->error;
 						} else {
-							$success = true;
-
-							$twitter_service = new \Application\DeskPRO\Service\Twitter();
-							$new_status = $twitter_service->processDm($api, $response);
+							$new_status = $this->processStatus($api, $response);
 
 							$new_account_status = new TwitterAccountStatus();
 							$new_account_status->status = $new_status;
 							$new_account_status->account = $account;
-							$new_account_status->status_type = 'direct';
+							$new_account_status->status_type = 'sent';
 							$new_account_status->in_reply_to = $reply;
 
 							$em->persist($new_status);
 							$em->persist($new_account_status);
 							$em->flush();
+
+							$new_account_statuses[] = $new_account_status;
 						}
-					} catch (\EpiTwitterException $e) {
-						// user isn't following so we can't send a DM
+					}
+				}
+			} else {
+				if ($user) {
+					$private_user = $user;
+				} else if ($reply) {
+					$private_user = $reply->status->user;
+				} else {
+					throw new \Exception('No user to send private message to.');
+				}
+
+				$text_parts = false;
+				if ($this->countStatusLength($text) > 140) {
+					if ($split) {
+						$text_parts = $this->splitStatusText($text, false);
+					} else {
+						$error = 'Long statuses are todo'; // todo
+					}
+				} else {
+					$text_parts = array($text);
+				}
+
+				$success = false;
+				if (!$error && !empty($text_parts)) {
+					foreach ($text_parts AS $part) {
+						try {
+							$response = $api->post_direct_messagesNew(array(
+								'user_id' => $private_user->id,
+								'text' => $part
+							));
+							if (!empty($response->error)) {
+								$error = $response->error;
+							} else {
+								$twitter_service = new \Application\DeskPRO\Service\Twitter();
+								$new_status = $twitter_service->processDm($api, $response);
+
+								$new_account_status = new TwitterAccountStatus();
+								$new_account_status->status = $new_status;
+								$new_account_status->account = $account;
+								$new_account_status->status_type = 'direct';
+								$new_account_status->in_reply_to = $reply;
+
+								$em->persist($new_status);
+								$em->persist($new_account_status);
+								$em->flush();
+
+								$new_account_statuses[] = $new_account_status;
+								$success = true;
+							}
+						} catch (\EpiTwitterException $e) {
+							// user isn't following so we can't send a DM
+							break; // no point trying again
+						}
 					}
 				}
 
@@ -448,10 +578,11 @@ class Twitter
 			$error = $e->getMessage();
 		}
 
+
 		return array(
-			'success' => $success,
+			'success' => !$error,
 			'error' => $error,
-			'new_account_status' => $new_account_status
+			'new_account_statuses' => $new_account_statuses
 		);
 	}
 }

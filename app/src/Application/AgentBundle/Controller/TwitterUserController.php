@@ -211,13 +211,14 @@ class TwitterUserController extends AbstractController
 
 		$text = $this->in->getString('text');
 		$type = $this->in->getValue('type');
+		$split = $this->in->getBool('split');
 		if (strlen($text)) {
 			if ($type == 'public' && strpos($text, '@'.$user->screen_name) === false) {
 				$text = '@' . $user->screen_name . ' ' . $text;
 			}
 
 			$twitter_service = new \Application\DeskPRO\Service\Twitter();
-			$response = $twitter_service->sendAccountMessage($type, $text, $account, null, $user);
+			$response = $twitter_service->sendAccountMessage($type, $text, $split, $account, null, $user);
 
 			$success = $response['success'];
 			$error = $response['error'];

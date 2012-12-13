@@ -54,8 +54,7 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 				zIndex: 40000, // Above floating people windows
 				onAjaxDone: function() {
 					var wrapper = overlay.getWrapper();
-
-					wrapper.find('textarea[name=text]').focus();
+					var textarea = wrapper.find('textarea[name=text]');
 
 					var helper = new DeskPRO.Agent.PageHelper.Twitter(wrapper, self, {
 						saveMessageCallback: function(data) {
@@ -77,6 +76,9 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 							});
 						}
 					});
+
+					helper.updateTweetLength(textarea);
+					textarea.focus();
 				}
 			});
 			overlay.open();
