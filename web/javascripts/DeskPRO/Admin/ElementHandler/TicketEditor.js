@@ -189,6 +189,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 		this.el.on('click', '.edit-field-trigger', function() {
 			var el = $(this).closest('li.form-item');
+			el.addClass('with-rendered-rules');
 			var overlay = el.data('options-overlay');
 
 			if (!overlay) {
@@ -205,7 +206,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					}
 				});
 
-				var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
+				var tpl = $('<div></div>').addClass('.search-builder-tpl');
+				tpl.html($('#criteria_tpl').html());
+
+				var editor = new DeskPRO.Form.RuleBuilder(tpl);
 				editor.addEvent('newRow', function(new_row) {
 					$('.remove', new_row).on('click', function() {
 						new_row.remove();
@@ -213,7 +217,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				});
 				var to_el = $('.criteria-form .search-terms', overlayEl);
 
-				$('.criteria-form .add-term', this.context).data('add-count', 0).on('click', function() {
+				$('.criteria-form .add-term', overlayEl).data('add-count', 0).on('click', function() {
 					var basename = 'terms_all['+Orb.uuid()+']';
 					editor.addNewRow(to_el, basename);
 				});
@@ -379,6 +383,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				if (item.rule_match_type) {
 					$('select[name="term_match_type"]', formItem).val(item.rule_match_type);
 				}
+				formItem.data('item-data', item);
 				formItem.data('rules', item.rules);
 			}
 
@@ -433,25 +438,51 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			}
 
 			// Rules
-			var termRows = $('.search-terms .term', optionsEl);
-			if (termRows.length) {
-				data.push({ name: baseKey+'[rule_match_type]', value: $('select[name="term_match_type"]', optionsEl).val() });
+			if (el.hasClass('with-rendered-rules')) {
+				var termRows = $('.search-terms .term', optionsEl);
+				if (termRows.length) {
+					data.push({ name: baseKey+'[rule_match_type]', value: $('select[name="term_match_type"]', optionsEl).val() });
 
-				termRows.each(function(index) {
-					var type = $('.builder-type-choice select', this).val();
-					data.push({ name: baseKey+'[rules]['+index+'][type]', value: type });
+					termRows.each(function(index) {
+						var type = $('.builder-type-choice select', this).val();
+						data.push({ name: baseKey+'[rules]['+index+'][type]', value: type });
 
-					var op = $('.builder-op select', this).val();
-					data.push({ name: baseKey+'[rules]['+index+'][op]', value: op });
+						var op = $('.builder-op select', this).val();
+						data.push({ name: baseKey+'[rules]['+index+'][op]', value: op });
 
-					$('input, select, textarea', $('.builder-options', this)).each(function() {
-						var name = $(this).attr('name');
-						if (name) {
-							name = name.replace(/^(.*)\[(.*?)\]$/, '$2');
-							data.push({ name: baseKey+'[rules]['+index+'][options]['+name+']', value: $(this).val() });
-						}
+						$('input, select, textarea', $('.builder-options', this)).each(function() {
+							var name = $(this).attr('name');
+							if (name) {
+								name = name.replace(/^(.*)\[(.*?)\]$/, '$2');
+								data.push({ name: baseKey+'[rules]['+index+'][options]['+name+']', value: $(this).val() });
+							}
+						});
 					});
-				});
+				}
+			} else if (el.data('item-data')) {
+				var item = el.data('item-data');
+
+				if (item.rule_match_type) {
+					data.push({ name: baseKey+'[rule_match_type]', value: 1 });
+				}
+				if (item.agent_only) {
+					data.push({ name: baseKey+'[agent_only]', value: 1 });
+				}
+
+				if (item.rules) {
+					var rules = item.rules;
+
+					var index = 0;
+					Array.each(rules, function(termitem) {
+						data.push({ name: baseKey+'[rules]['+index+'][type]', value: termitem.type });
+						data.push({ name: baseKey+'[rules]['+index+'][op]', value: termitem.op });
+
+						Object.each(termitem.options, function(v, k) {
+							data.push({ name: baseKey+'[rules]['+index+'][options]['+k+']', value: v });
+						});
+						index++;
+					});
+				}
 			}
 
 			if (optionsEl.find('input.agent_only').is(':checked')) {
