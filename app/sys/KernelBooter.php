@@ -515,7 +515,7 @@ class KernelBooter
 			}
 		}
 
-		if (!$logged_in && !$skip_cache && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
+		if (!$logged_in && !$skip_cache && !App::isUncachableResult() && self::$_cache_file && $response->headers->get('Content-Type') == 'text/html' && $response->getStatusCode() == 200) {
 			$cache_dir = dp_get_tmp_dir() . '/page-cache';
 			if (!is_dir($cache_dir)) {
 				@mkdir($cache_dir, 0777);

@@ -628,4 +628,11 @@ $collection->add('user_widget_chat', new Route(
 	array()
 ));
 
+$collection->add('user_long_tweet_view', new Route(
+	'/long-tweet/{long_id}',
+	array('_controller' => 'UserBundle:Twitter:viewLong'),
+	array('long_id' => '\\d+'),
+	array()
+));
+
 return $collection;

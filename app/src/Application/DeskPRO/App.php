@@ -140,6 +140,14 @@ class App
 	 */
 	protected static $_skip_caching = false;
 
+	/**
+	 * If true, the current page will not be cached (but the user will still hit
+	 * the cache where possible).
+	 *
+	 * @var bool
+	 */
+	protected static $_uncachable = false;
+
 
 	/**
 	 * Set the person who is making the request, or the person who is authorizing
@@ -773,6 +781,16 @@ class App
 	public static function isCacheSkipped()
 	{
 		return self::$_skip_caching;
+	}
+
+	public static function setUncachableResult()
+	{
+		self::$_uncachable = true;
+	}
+
+	public static function isUncachableResult()
+	{
+		return self::$_uncachable;
 	}
 
 

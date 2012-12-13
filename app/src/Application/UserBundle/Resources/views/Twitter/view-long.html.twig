@@ -1,0 +1,32 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% set title -%}
+	{% if long.is_public %}
+		Long tweet by @{{ long.status.user.screen_name }}
+	{% else if long.status.recipient and not can_view %}
+		Private tweet
+	{% else %}
+		Private tweet by @{{ long.status.user.screen_name }}
+	{% endif %}
+{%- endset %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_long_tweet_view', {'long_id': long.id}) }}">{{ title }}</a></li>
+{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+
+<section class="dp-tweet dp-content-page dp-content-post">
+	<article style="border-top: none">
+		{% if can_view %}
+			{{ long.text }}
+		{% else %}
+			<p>This is a private message for @{{ long.for_user.screen_name }}. You must sign in with Twitter to view this message.</p>
+			{% if not app.session.get('twitter_user_id') %}
+				<div style="text-align: center; margin-top: 10px;">
+					<a href="{{ path('user_long_tweet_view', {'long_id': long.id, 'start': 1}) }}" class="dp-btn dp-btn-primary">Sign in with Twitter</a>
+				</div>
+			{% endif %}
+		{% endif %}
+	</article>
+</section>
+
+{% endblock %}

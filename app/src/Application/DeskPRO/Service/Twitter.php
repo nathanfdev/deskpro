@@ -469,107 +469,89 @@ class Twitter
 		$text = trim(str_replace("\r", '', $text));
 		$text = str_replace("\t", ' ', $text);
 
-		$replaced = $this->getTextAtTwitterLength($text);
+		if (strlen($text) === 0) {
+			throw new \Exception('No text given');
+		}
+
+		if ($user) {
+			$to_user = $user;
+		} else if ($reply) {
+			$to_user = $reply->status->user;
+		} else {
+			$to_user = null;
+		}
 
 		try {
 			if ($type == 'public') {
-				$text_parts = false;
+				$long_status = null;
+
 				if ($this->countStatusLength($text) > 140) {
 					if ($split) {
 						$text_parts = $this->splitStatusText($text);
 					} else {
-						$error = 'Long statuses are todo'; // todo
+						$long_status = $this->_addLongStatus($text, true, $to_user);
+
+						if ($to_user) {
+							$long_text = "@$to_user->screen_name I have sent you a long message: ";
+						} else {
+							$long_text = 'Read my long message: ';
+						}
+						$long_text .= App::getRouter()->generate('user_long_tweet_view', array(
+							'long_id' => $long_status->id
+						), true);
+
+						$text_parts = array($long_text);
 					}
 				} else {
 					$text_parts = array($text);
 				}
 
-				if (!$error && !empty($text_parts)) {
-					foreach ($text_parts AS $part) {
-						$params = array(
-							'status' => $part
-						);
-						if ($reply && !$reply->status->recipient) {
-							// only if not a DM
-							$params['in_reply_to_status_id'] = $reply->status->id;
-						}
-
-						$response = $api->post_statusesUpdate($params);
-						if (!empty($response->error)) {
-							$error = $response->error;
-						} else {
-							$new_status = $this->processStatus($api, $response);
-
-							$new_account_status = new TwitterAccountStatus();
-							$new_account_status->status = $new_status;
-							$new_account_status->account = $account;
-							$new_account_status->status_type = 'sent';
-							$new_account_status->in_reply_to = $reply;
-
-							$em->persist($new_status);
-							$em->persist($new_account_status);
-							$em->flush();
-
-							$new_account_statuses[] = $new_account_status;
-						}
-					}
-				}
+				$new_account_statuses = $this->_sendStatus(
+					$api, $to_user->id, $text_parts, $account, $reply, $long_status
+				);
 			} else {
-				if ($user) {
-					$private_user = $user;
-				} else if ($reply) {
-					$private_user = $reply->status->user;
-				} else {
+				if (!$to_user) {
 					throw new \Exception('No user to send private message to.');
 				}
 
-				$text_parts = false;
+				$long_status = null;
+
 				if ($this->countStatusLength($text) > 140) {
 					if ($split) {
 						$text_parts = $this->splitStatusText($text, false);
 					} else {
-						$error = 'Long statuses are todo'; // todo
+						$long_status = $this->_addLongStatus($text, false, $to_user);
+
+						$long_text = "I have sent you a long, private message. Sign in to see it. "
+							. App::getRouter()->generate('user_long_tweet_view', array(
+								'long_id' => $long_status->id
+							), true);
+						$text_parts = array($long_text);
 					}
 				} else {
 					$text_parts = array($text);
 				}
 
-				$success = false;
-				if (!$error && !empty($text_parts)) {
-					foreach ($text_parts AS $part) {
-						try {
-							$response = $api->post_direct_messagesNew(array(
-								'user_id' => $private_user->id,
-								'text' => $part
-							));
-							if (!empty($response->error)) {
-								$error = $response->error;
-							} else {
-								$twitter_service = new \Application\DeskPRO\Service\Twitter();
-								$new_status = $twitter_service->processDm($api, $response);
+				$new_account_statuses = $this->_sendDm(
+					$api, $to_user->id, $text_parts, $account, $reply, $long_status
+				);
+				if (!$new_account_statuses) {
+					// couldn't send a DM, send a regular status
+					if ($long_status) {
+						$text_parts[0] = "@$to_user->screen_name $text_parts[0]";
+					} else {
+						$long_status = $this->_addLongStatus($text, false, $to_user);
 
-								$new_account_status = new TwitterAccountStatus();
-								$new_account_status->status = $new_status;
-								$new_account_status->account = $account;
-								$new_account_status->status_type = 'direct';
-								$new_account_status->in_reply_to = $reply;
-
-								$em->persist($new_status);
-								$em->persist($new_account_status);
-								$em->flush();
-
-								$new_account_statuses[] = $new_account_status;
-								$success = true;
-							}
-						} catch (\EpiTwitterException $e) {
-							// user isn't following so we can't send a DM
-							break; // no point trying again
-						}
+						$long_text = "I have sent you a long, private message. Sign in to see it. "
+							. App::getRouter()->generate('user_long_tweet_view', array(
+								'long_id' => $long_status->id
+							), true);
+						$text_parts = array($long_text);
 					}
-				}
 
-				if (!$success && !$error) {
-					$error = 'Non-DM private responses are TODO'; // todo
+					$new_account_statuses = $this->_sendStatus(
+						$api, $to_user->id, $text_parts, $account, $reply, $long_status
+					);
 				}
 			}
 		} catch (\EpiTwitterException $e) {
@@ -580,9 +562,112 @@ class Twitter
 
 
 		return array(
-			'success' => !$error,
+			'success' => !$error && !empty($new_account_statuses),
 			'error' => $error,
 			'new_account_statuses' => $new_account_statuses
 		);
+	}
+
+	protected function _addLongStatus($text, $public, $to_user = null)
+	{
+		$long_status = new \Application\DeskPRO\Entity\TwitterStatusLong();
+		$long_status->text = $text;
+		$long_status->is_public = $public;
+		$long_status->for_user = $to_user;
+
+		$em = App::getOrm();
+		$em->persist($long_status);
+		$em->flush();
+
+		$long_status->ensureDefaultPropertyChangedListener();
+
+		return $long_status;
+	}
+
+	protected function _sendStatus($api, $user_id, array $text_parts, $account, $reply = null, $long_status = null)
+	{
+		$em = App::getOrm();
+
+		$new_account_statuses = array();
+
+		foreach ($text_parts AS $part) {
+			$params = array(
+				'status' => $part
+			);
+			if ($reply && !$reply->status->recipient) {
+				// only if not a DM
+				$params['in_reply_to_status_id'] = $reply->status->id;
+			}
+
+			$response = $api->post_statusesUpdate($params);
+			if (!empty($response->error)) {
+				$error = $response->error;
+			} else {
+				$new_status = $this->processStatus($api, $response);
+
+				$new_account_status = new TwitterAccountStatus();
+				$new_account_status->status = $new_status;
+				$new_account_status->account = $account;
+				$new_account_status->status_type = 'sent';
+				$new_account_status->in_reply_to = $reply;
+
+				if ($long_status) {
+					$long_status->status = $new_status;
+					$em->persist($long_status);
+				}
+
+				$em->persist($new_status);
+				$em->persist($new_account_status);
+				$em->flush();
+
+				$new_account_statuses[] = $new_account_status;
+			}
+		}
+
+		return $new_account_statuses;
+	}
+
+	protected function _sendDm($api, $user_id, array $text_parts, $account, $reply = null, $long_status = null)
+	{
+		$em = App::getOrm();
+
+		$new_account_statuses = array();
+
+		foreach ($text_parts AS $part) {
+			try {
+				$response = $api->post_direct_messagesNew(array(
+					'user_id' => $user_id,
+					'text' => $part
+				));
+				if (!empty($response->error)) {
+					$error = $response->error;
+				} else {
+					$twitter_service = new \Application\DeskPRO\Service\Twitter();
+					$new_status = $twitter_service->processDm($api, $response);
+
+					$new_account_status = new TwitterAccountStatus();
+					$new_account_status->status = $new_status;
+					$new_account_status->account = $account;
+					$new_account_status->status_type = 'direct';
+					$new_account_status->in_reply_to = $reply;
+
+						if ($long_status) {
+						$long_status->status = $new_status;
+						$em->persist($long_status);
+					}
+
+					$em->persist($new_status);
+					$em->persist($new_account_status);
+					$em->flush();
+
+					$new_account_statuses[] = $new_account_status;
+				}
+			} catch (\EpiTwitterException $e) {
+				// user isn't following so we can't send a DM
+				break; // no point trying again
+			}
+		}
+
+		return $new_account_statuses;
 	}
 }
