@@ -87,7 +87,7 @@ class TicketSla extends AbstractEntityRepository
 			$where .= "tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ") OR ";
 		}
 
-		$where .= "tickets_participants_perm.person_id = {$person_context->id}))";
+		$where .= "tickets_participants_perm.person_id IS NOT NULL))";
 
 		switch ($filter) {
 			case 'agent':
@@ -118,7 +118,7 @@ class TicketSla extends AbstractEntityRepository
 			FROM ticket_slas
 			INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
 			INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
-			LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)
+			LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id AND tickets_participants_perm.person_id = {$person_context->id})
 			WHERE $where
 			GROUP BY  ticket_slas.sla_id, ticket_slas.sla_status
 		");
