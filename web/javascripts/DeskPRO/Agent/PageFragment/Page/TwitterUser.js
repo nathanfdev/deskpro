@@ -57,44 +57,25 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 
 					wrapper.find('textarea[name=text]').focus();
 
-					wrapper.on('click', '.reply-type li', function() {
-						var $this = $(this);
+					var helper = new DeskPRO.Agent.PageHelper.Twitter(wrapper, self, {
+						saveMessageCallback: function(data) {
+							wrapper.addClass('loading');
 
-						wrapper.find('.reply-type li').removeClass('on');
-						$this.addClass('on');
-						wrapper.find('input[name=type]').val($this.data('type'));
-					});
-
-					wrapper.on('click', '.send-trigger', function(e) {
-						e.preventDefault();
-
-						var text = $.trim(wrapper.find('textarea[name=text]').val());
-						if (!text.length) {
-							return;
+							$.ajax({
+								url: self.getMetaData('saveUserMessageUrl'),
+								type: 'POST',
+								data: data,
+								dataType: 'json'
+							}).done(function(data) {
+								if (data.success) {
+									overlay.close();
+								} else if (data.error) {
+									alert(data.error);
+								}
+							}).always(function() {
+								wrapper.removeClass('loading');
+							});
 						}
-
-						wrapper.addClass('loading');
-
-						var data = wrapper.find('form').serializeArray();
-						data.push({
-							name: 'user_id',
-							value: self.getMetaData('userId')
-						});
-
-						$.ajax({
-							url: self.getMetaData('saveUserMessageUrl'),
-							type: 'POST',
-							data: data,
-							dataType: 'json'
-						}).always(function() {
-							wrapper.removeClass('loading');
-						}).done(function(data) {
-							if (data.success) {
-								overlay.close();
-							} else if (data.error) {
-								alert(data.error);
-							}
-						});
 					});
 				}
 			});

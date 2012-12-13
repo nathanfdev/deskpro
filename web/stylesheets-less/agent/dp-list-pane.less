@@ -1832,86 +1832,73 @@ section.dp-overlay > article.no-footer {
 		}
 	}
 
-	.title {
-		border-bottom: 1px solid #ACB6BF;
-		.gradient(#ffffff, #DDDEE1);
-		.border-radius(6px, 6px, 0, 0);
-		padding: 3px 0 3px 3px;
-		position: relative;
-		overflow: hidden;
-
-		i.status-archive {
-			.iconbase(16px, 16px);
-			background: url(../../images/agent/icons/delete.png);
-			cursor: pointer;
-			float: right;
-			margin-right: 2px;
-		}
-
-		i.status-archived {
-			.iconbase(16px, 16px);
-			background: url(../../images/agent/icons/add.png);
-			cursor: pointer;
-			float: right;
-			margin-right: 2px;
-		}
-
-		.item-select {
-			float: left;
-			position: relative;
-			top: 2px;
-			margin: 0;
-		}
-
-		h4 {
-			font-size: 13px;
-			font-weight: normal;
-			font-family: @body-font;
-			margin-left: 18px;
-
-			.name {
-				font-weight: bold;
-			}
-
-			.screen-name {
-				font-size: 80%;
-				color: #888888;
-			}
-		}
-	}
-
 	.status-body {
 		margin: 4px;
 		overflow: hidden;
+		position: relative;
 
 		.photo {
 			float: left;
 		}
 
-		.status-text {
+		.main-status-body {
+			/*border-bottom: 1px solid #ACB6BF;
+			.gradient(#ffffff, #DDDEE1);
+			.border-radius(6px, 6px, 0, 0);
+			padding: 3px 0 3px 3px;
+			position: relative;
+			overflow: hidden;*/
 			margin-left: 54px;
-			min-height: 32px;
-		}
 
+			i.status-archive {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/delete.png);
+				cursor: pointer;
+				float: right;
+				margin-right: 2px;
+			}
 
-		.extra-container {
-			margin-top: 5px;
-			margin-left: 55px;
+			i.status-archived {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/add.png);
+				cursor: pointer;
+				float: right;
+				margin-right: 2px;
+			}
 
-			.in-reply-to, .retweet {
+			h4 {
+				font-size: 13px;
+				font-weight: normal;
+				font-family: @body-font;
+
+				.name {
+					font-weight: bold;
+				}
+
+				.screen-name {
+					font-size: 80%;
+					color: #888888;
+				}
+			}
+
+			.extra-container {
+				margin-top: 5px;
+
+				.in-reply-to, .retweet {
+					color: #999999;
+					font-size: 80%;
+					line-height: 100%;
+				}
+			}
+
+			.timeago {
+				float: right;
+				margin-top: 5px;
+				margin-left: 5px;
 				color: #999999;
 				font-size: 80%;
 				line-height: 100%;
 			}
-		}
-
-		.timeago {
-			float: right;
-			margin-top: 5px;
-			margin-left: 5px;
-			color: #999999;
-			font-size: 80%;
-			line-height: 100%;
 		}
 	}
 
@@ -1973,13 +1960,20 @@ section.dp-overlay > article.no-footer {
 		ul li {
 			float: left;
 			font-size: 10px;
+			line-height: 17px;
 			margin: 0 4px 0 4px;
-			padding: 0 4px 0 4px;
+			/*padding: 0 4px 0 4px;*/
 			cursor: pointer;
 
 			label {
 				cursor: pointer;
 			}
+		}
+
+		.item-select {
+			margin: 0;
+			position: relative;
+			top: 2px;
 		}
 
 		.drop-icon {
@@ -1993,7 +1987,7 @@ section.dp-overlay > article.no-footer {
 			background: url(../../images/user/star-off.png)  no-repeat;
 			background-position: 1px;
 			cursor: pointer;
-			margin-left: 4px;
+			margin-left: 0px;
 		}
 
 		.favorited {
@@ -2046,41 +2040,56 @@ section.dp-overlay > article.no-footer {
 .list-listing article.twitter-status,
 .list-listing article.twitter-user,
 .twitter-message-overlay {
-	.new-reply {
+	.new-message {
 		border-top: 1px solid #ACB6BF;
 		padding: 4px;
 		font-size: 10px;
 		line-height: 13px;
 		overflow: hidden;
 
-		.reply-type {
+		.message-type {
 			float: left;
 
 			li {
 				float: left;
 				text-align: center;
 				cursor: pointer;
+				display: none;
 
-				img { .opacity(30) }
-				&.on img { .opacity(100); }
+				&.on { display: block; }
 			}
 		}
 
-		.reply-block {
-			margin-left: 135px;
+		.message-block {
+			margin-left: 65px;
 
 			textarea {
 				width: 100%;
 				height: 45px;
 				box-sizing: border-box;
-				margin-bottom: 3px;
-				margin-top: 3px;
+				margin: 3px 0 2px;
 			}
 
-			.cancel-reply-trigger {
+			.is-not-loading {
+				display: block;
+				overflow: hidden;
+			}
+
+			.cancel-message-trigger {
 				background: url(../../images/agent/icons/bullet_toggle_minus.png) no-repeat 0 50%;
 				padding-left: 15px;
 				cursor: pointer;
+			}
+
+			.character-count {
+				float: right;
+				position: relative;
+				top: 2px;
+			}
+
+			.over-options input[type="checkbox"] {
+				position: relative;
+				top: 2px;
 			}
 		}
 	}
@@ -2115,7 +2124,6 @@ article.twitter-status.archived .title .expand-collapse-icon {
 			background: url(../../images/agent/icons/delete.png);
 			cursor: pointer;
 			float: right;
-			margin-right: 2px;
 		}
 
 		i.status-archived {
@@ -2123,7 +2131,6 @@ article.twitter-status.archived .title .expand-collapse-icon {
 			background: url(../../images/agent/icons/add.png);
 			cursor: pointer;
 			float: right;
-			margin-right: 2px;
 		}
 
 		.photo {

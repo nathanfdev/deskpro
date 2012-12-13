@@ -1,0 +1,40 @@
+<form>
+	<ul class="message-type">
+		<li {% if not default_type or default_type == 'public' %}class="on"{% endif %} data-type="public">
+			<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
+			<div>{{ phrase('agent.general.public') }}</div>
+		</li>
+		<li {% if default_type == 'private' %}class="on"{% endif %} data-type="private">
+			<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
+			<div>{{ phrase('agent.general.private') }}</div>
+		</li>
+	</ul>
+	<input type="hidden" class="message-type-hidden" name="type" value="{{ default_type == 'private' ? 'private' : 'public' }}" />
+	<div class="message-block">
+		{{ phrase('agent.twitter.from_account') }}:
+		{% if account %}
+			@{{ account.user.screen_name }}
+			<input type="hidden" name="account_id" value="{{ account.id }}" />
+		{% else %}
+			<select name="account_id">
+			{% for possible_account in accounts %}
+				<option value="{{ possible_account.id }}">@{{ possible_account.user.screen_name }}</option>
+			{% endfor %}
+			</select>
+		{% endif %}
+		<textarea name="text">{{ default_text }}</textarea>
+		<div class="is-not-loading">
+			<span class="character-count"><em>140</em> remaining</span>
+			<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" /> Split to multiple</label></span>
+			<button class="clean-white small save-message-trigger">{{ send_text }}</button>
+			{% if not hide_cancel %}
+				<span class="cancel-message-trigger">{{ phrase('agent.general.cancel') }}</span>
+			{% endif %}
+		</div>
+		<div class="is-loading">
+			{{ phrase('agent.general.saving') }}
+		</div>
+	</div>
+
+	{{ reply_form_extra|raw }}
+</form>

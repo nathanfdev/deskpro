@@ -20,31 +20,14 @@
 	<div class="message-sent-confirmation" style="display: none">
 		Message sent: <span class="message"></span>
 	</div>
-	<div class="new-reply" style="display: none">
-		<form>
-			<ul class="reply-type">
-				<li class="on" data-type="public">
-					<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
-					<div>{{ phrase('agent.general.public') }}</div>
-				</li>
-				<li  data-type="private">
-					<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
-					<div>{{ phrase('agent.general.private') }}</div>
-				</li>
-			</ul>
-			<input type="hidden" class="reply-type-hidden" name="type" value="public" />
-			<div class="reply-block">
-				{{ phrase('agent.twitter.from_account') }}: @{{ account.user.screen_name }}
-				<textarea></textarea>
-				<div class="is-not-loading">
-					<button class="clean-white small save-reply-trigger">Send Message</button>
-					<span class="cancel-reply-trigger">{{ phrase('agent.general.cancel') }}</span>
-				</div>
-				<div class="is-loading">
-					{{ phrase('agent.general.saving') }}
-				</div>
-			</div>
-		</form>
+	<div class="new-message" style="display: none">
+		{% include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
+			'account': account,
+			'default_type': 'public',
+			'default_text': '@' ~ user.screen_name ~ ' ',
+			'send_text': 'Send Message',
+			'reply_form_extra': '<input type="hidden" name="user_id" value="' ~ user.id ~ '" />'
+		} %}
 	</div>
 	<div class="user-info">
 		<ul>

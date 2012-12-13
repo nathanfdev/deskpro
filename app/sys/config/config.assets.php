@@ -204,6 +204,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/EditTitle.js',
 		'javascripts/DeskPRO/Agent/PageHelper/TaskListControl.js',
 		'javascripts/DeskPRO/Agent/PageHelper/TicketBilling.js',
+		'javascripts/DeskPRO/Agent/PageHelper/Twitter.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TextSnippetViewer.js',

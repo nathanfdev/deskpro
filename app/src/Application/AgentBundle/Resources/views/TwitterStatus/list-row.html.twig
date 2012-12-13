@@ -11,50 +11,45 @@
 	data-status-id="{{ account_status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
-	<div class="title">
-		<input
-			class="item-select"
-			type="checkbox"
-			value="twitter_account_status.{{account_status.id}}"
-			data-content-type="twitter_account_status"
-			data-content-id="{{ account_status.id }}"
-		/>
-		<i class="status-archived tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
-		<i class="status-archive tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
-		<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
-			<span class="name">{{ status.user.name }}</span>
-			<span class="screen-name">@{{ status.user.screen_name }}</span>
-		</h4>
-	</div>
 	<div class="status-body">
 		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 			<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
 		</div>
+		<div class="main-status-body">
+			{% if status.user.id != account_status.account.user.id %}
+				<i class="status-archived tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
+				<i class="status-archive tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
+			{% endif %}
+			<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+				<span class="name">{{ status.user.name }}</span>
+				<span class="screen-name">@{{ status.user.screen_name }}</span>
+			</h4>
 
-		<div class="status-text">{{ status.parsed_text|raw }}</div>
+			<div class="status-text">{{ status.parsed_text|raw }}</div>
 
-		{% if status.isMessage() %}
-			<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
-		{% else %}
-			<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
-		{% endif %}
+			{% if status.isMessage() %}
+				<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
+			{% else %}
+				<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
+			{% endif %}
 
-		{% if status.in_reply_to_status or retweet %}
-			<div class="extra-container">
-				{% if status.in_reply_to_status %}
-					{% set reply = status.in_reply_to_status %}
-					<div class="in-reply-to">
-						{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
-						"{{ reply.getClippedText(25) }}"
-					</div>
-				{% endif %}
-				{% if retweet %}
-					<div class="retweet">
-						Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
-					</div>
-				{% endif %}
-			</div>
-		{% endif %}
+			{% if status.in_reply_to_status or retweet %}
+				<div class="extra-container">
+					{% if status.in_reply_to_status %}
+						{% set reply = status.in_reply_to_status %}
+						<div class="in-reply-to">
+							{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
+							"{{ reply.getClippedText(25) }}"
+						</div>
+					{% endif %}
+					{% if retweet %}
+						<div class="retweet">
+							Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+						</div>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
 	</div>
 	<div class="reply-list" {% if not account_status.replies|length %}style="display:none"{% endif %}>
 		<ul class="twitter-replies">
@@ -63,31 +58,13 @@
 		{% endfor %}
 		</ul>
 	</div>
-	<div class="new-reply" style="display: none">
-		<form>
-			<ul class="reply-type">
-				<li {% if not status.recipient %}class="on"{% endif %} data-type="public">
-					<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
-					<div>{{ phrase('agent.general.public') }}</div>
-				</li>
-				<li {% if status.recipient %}class="on"{% endif %} data-type="private">
-					<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
-					<div>{{ phrase('agent.general.private') }}</div>
-				</li>
-			</ul>
-			<input type="hidden" class="reply-type-hidden" name="type" value="{{ status.recipient ? 'private' : 'public' }}" />
-			<div class="reply-block">
-				{{ phrase('agent.twitter.from_account') }}: @{{ account_status.account.user.screen_name }}
-				<textarea></textarea>
-				<div class="is-not-loading">
-					<button class="clean-white small save-reply-trigger">Reply</button>
-					<span class="cancel-reply-trigger">{{ phrase('agent.general.cancel') }}</span>
-				</div>
-				<div class="is-loading">
-					{{ phrase('agent.general.saving') }}
-				</div>
-			</div>
-		</form>
+	<div class="new-message" style="display: none">
+		{%  include 'AgentBundle:TwitterStatus:message-block.html.twig' with {
+			'account': account_status.account,
+			'default_type': status.recipient ? 'private' : 'public',
+			'send_text': 'Reply',
+			'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ account_status.id ~ '" />'
+		} %}
 	</div>
 	<div class="status-notes notes-wrap" {% if not account_status.notes|length %}style="display: none"{% endif %}>
 		<h5>Notes</h5>
@@ -111,8 +88,17 @@
 	</div>
 	<div class="status-info">
 		<ul>
+			<li class="noval">
+				<input
+					class="item-select"
+					type="checkbox"
+					value="twitter_account_status.{{account_status.id}}"
+					data-content-type="twitter_account_status"
+					data-content-id="{{ account_status.id }}"
+				/>
+			</li>
 			<li class="noval opt-trigger {% if account_status.is_favorited %}favorited{% else %}add-favorite{% endif %}"></li>
-			<li class="noval opt-trigger reply">
+			<li class="noval opt-trigger message">
 				<label>Reply</label><span class="drop-icon"></span>
 			</li>
 			{% if not status.isMessage() and status.user.id != account_status.account.user.id and (not retweet or retweet.user.id != account_status.account.user.id) %}
