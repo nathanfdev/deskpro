@@ -169,6 +169,10 @@ class TicketCategoriesController extends AbstractController
 	{
 		$category = $this->em->getRepository('DeskPRO:TicketCategory')->find($category_id);
 
+		if (!$category) {
+			return $this->redirectRoute('admin_ticketcats');
+		}
+
 		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_category', $security_token)) {
 			return $this->renderStandardTokenError();
 		}
