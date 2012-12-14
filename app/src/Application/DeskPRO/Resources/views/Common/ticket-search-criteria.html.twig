@@ -474,7 +474,7 @@
 				</select>
 			</div>
 			<div class="builder-options">
-				<select name="workflow">
+				<select name="workflow[]" multiple="multiple">
 					{% for id,label in term_options.ticket_workflows %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
