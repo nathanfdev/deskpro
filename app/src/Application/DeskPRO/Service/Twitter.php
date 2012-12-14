@@ -570,11 +570,112 @@ class Twitter
 			$error = $e->getMessage();
 		}
 
-
 		return array(
 			'success' => !$error && !empty($new_account_statuses),
 			'error' => $error,
 			'new_account_statuses' => $new_account_statuses
+		);
+	}
+
+	public function sendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)
+	{
+		$api = $account->getTwitterApi();
+		$error = null;
+
+		try {
+			$response = $api->post("/statuses/retweet/{$account_status->status->id}.json");
+			if (!empty($response->error)) {
+				$error = $response->error;
+			} else {
+				$new_status = $this->processStatus($api, $response);
+
+				$new_account_status = new TwitterAccountStatus();
+				$new_account_status->status = $new_status;
+				$new_account_status->account = $account;
+				$new_account_status->status_type = 'sent';
+				$new_account_status->action_agent =  App::getCurrentPerson();
+
+				$account_status->retweeted = $new_account_status;
+
+				$this->em->persist($new_status);
+				$this->em->persist($new_account_status);
+				$this->em->persist($account_status);
+				$this->em->flush();
+			}
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
+			$error = $e->getMessage();
+		}
+
+		return array(
+			'success' => !$error,
+			'error' => $error
+		);
+	}
+
+	public function unsendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)
+	{
+		$api = $account->getTwitterApi();
+		$error = null;
+
+		$account_retweet = $account_status->retweeted;
+
+		if ($account_retweet) {
+			try {
+				$response = $account->getTwitterApi()->post("/statuses/destroy/{$account_retweet->status->id}.json");
+				if (!empty($response->error)) {
+					$error = $response->error;
+				} else {
+					$this->em->remove($account_retweet);
+					$this->em->remove($account_retweet->status);
+					$this->em->flush();
+				}
+			} catch (\EpiTwitterException $e) {
+				$error = $e->getMessage();
+			}  catch (\EpiOAuthException $e) {
+				$error = $e->getMessage();
+			}
+		}
+
+		return array(
+			'success' => !$error,
+			'error' => $error
+		);
+	}
+
+	public function setFavorite(TwitterAccount $account, TwitterAccountStatus $account_status, $is_favorite)
+	{
+		$api = $account->getTwitterApi();
+		$error = null;
+
+		if (!$account_status->status->isMessage()) {
+			try {
+				if ($is_favorite) {
+					$response = $api->post_favoritesCreate(array('id' => $account_status->status->id));
+				} else {
+					$response = $api->post_favoritesDestroy(array('id' => $account_status->status->id));
+				}
+				if (!empty($response->error)) {
+					$error = $response->error;
+				}
+			} catch (\EpiTwitterException $e) {
+				// likely already in the state that we want, so set it to that
+			}  catch (\EpiOAuthException $e) {
+				$error = $e->getMessage();
+			}
+
+			if (empty($error)) {
+				$account_status['is_favorited'] = $is_favorite;
+
+				$this->em->persist($account_status);
+				$this->em->flush();
+			}
+		}
+
+		return array(
+			'success' => !$error,
+			'error' => $error
 		);
 	}
 

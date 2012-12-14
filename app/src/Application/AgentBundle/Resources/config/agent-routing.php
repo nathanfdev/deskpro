@@ -1513,6 +1513,13 @@ $collection->add('agent_twitter_outgoing_list', new Route(
 	array('fragment_name' => 'sent', 'fragment_type' => 'list')
 ));
 
+$collection->add('agent_twitter_status_ajaxmasssave', new Route(
+	'/twitter/status/ajax-mass-save.json',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxMassSave'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('agent_twitter_status_ajaxsave_note', new Route(
 	'/twitter/status/ajax-note.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveNote'),

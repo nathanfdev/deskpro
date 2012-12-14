@@ -6,17 +6,189 @@
 		<span>{{ phrase('agent.general.perform_actions') }}</span>
 	</a>
 
-    <ul class="actions-menu" style="display: none" data-menu-type="twitter-status-actions-menu">
-        <li data-action="archive">
-            {{ phrase('agent.general.archive') }}
-        </li>
-        <li class="sep">-</li>
-        <li data-action="reply">
-            {{ phrase('agent.general.reply') }}
-        </li>
-        <li class="sep">-</li>
-        <li data-action="assign">
-            {{ phrase('agent.general.assign') }}
-        </li>
-    </ul>
+	{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+	<div
+		class="mass-actions-overlay-container mass-actions"
+		data-base-id="{{baseId}}"
+	>
+		<section id="twitter-mass-action-overlay" class="mass-actions-overlay">
+			<header>
+				<span class="close close-trigger"></span>
+				<h1>
+					{{ phrase('agent.general.apply_to_x_selections', {'placeholder': '<span class="selected-tickets-count"></span>'}, true) }}
+				</h1>
+			</header>
+			<article>
+				{{ agentui.scroll_containers('', '') }}
+				<div class="dp-radio-expander-form">
+					<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+						<div class="dp-form-row">
+							<div class="dp-form-input">
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="reply" />
+										Reply
+									</label>
+
+									<div class="dp-group-options twitter-message-send" style="display: none">
+										<div class="new-message" style="text-align: left; max-width: 350px; margin: 0 auto; border-top: none;">
+											<ul class="message-type">
+												<li class="on" data-type="public">
+													<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
+													<div>{{ phrase('agent.general.public') }}</div>
+												</li>
+												<li data-type="private">
+													<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
+													<div>{{ phrase('agent.general.private') }}</div>
+												</li>
+											</ul>
+											<input type="hidden" class="message-type-hidden" name="type" value="public" />
+											<div class="message-block">
+												{{ phrase('agent.twitter.from_account') }}:
+												{% if app.user.getTwitterAccounts()|length == 1 %}
+													{% set account = app.user.getTwitterAccounts()[0] %}
+												{% endif %}
+												{% if account %}
+													@{{ account.user.screen_name }}
+												{% else %}
+													<i>corresponding Twitter account</i>
+												{% endif %}
+												<textarea name="text"></textarea>
+												<div class="is-not-loading">
+													<span class="character-count"><em>140</em> remaining</span>
+													<span class="over-options" style="display: none"><label class="tipped" title="If checked, this will be sent as multiple tweets. If unchecked, a single tweet with a link to the full message will be sent."><input type="checkbox" name="split" value="1" checked="checked" /> Split to multiple</label></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="retweet" />
+										Retweet
+									</label>
+
+									<div class="dp-group-options" style="display: none">
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="unretweet" />
+										Unretweet
+									</label>
+
+									<div class="dp-group-options" style="display: none">
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="favorite" />
+										Favorite
+									</label>
+
+									<div class="dp-group-options" style="display: none">
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="unfavorite" />
+										Remove favorite
+									</label>
+
+									<div class="dp-group-options" style="display: none">
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="assign" />
+										Assign
+									</label>
+									<div class="dp-group-options" style="display: none">
+										<label>
+											Assign to:
+											<select name="assign" class="agents_sel dpe_select" style="min-width: 170px" >
+												<option value="">None</option>
+												<optgroup label="Agents">
+													{% for agent in app.getDataRepository('Agent').getAgents() %}
+														{% if not account or account.hasPerson(agent) %}
+															<option data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+														{% endif %}
+													{% endfor %}
+												</optgroup>
+												{% if app.getDataRepository('AgentTeam').getTeams()|length %}
+													<optgroup label="Teams">
+														{% for team in app.getDataRepository('AgentTeam').getTeams() %}
+															<option value="agent_team:{{ team.id }}">{{ team.name }}</option>
+														{% endfor %}
+													</optgroup>
+												{% endif %}
+											</select>
+										</label>
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="dp-input-group">
+									<label>
+										<input type="radio" class="option-trigger" name="action" value="archive" />
+										Archive
+									</label>
+									<div class="dp-group-options" style="display: none">
+										<div class="execute-row">
+											<span class="is-not-loading">
+												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+											</span>
+											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{ agentui.scroll_containers_end() }}
+			</article>
+		</section>
+	</div>
 </header>

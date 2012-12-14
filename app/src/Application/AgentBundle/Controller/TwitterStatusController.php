@@ -266,6 +266,90 @@ class TwitterStatusController extends AbstractController
 		return $account;
 	}
 
+	public function ajaxMassSaveAction()
+	{
+		$account_status_ids = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
+		$account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByIds($account_status_ids);
+		$action = $this->in->getString('action');
+
+		$twitter_service = new \Application\DeskPRO\Service\Twitter();
+
+		foreach ($account_statuses AS $account_status) {
+			/** @var $account_status TwitterAccountStatus */
+			if (!$account_status->account->hasPerson($this->person)) {
+				continue;
+			}
+
+			switch ($action) {
+				case 'retweet':
+					if (!$account_status->retweeted && $account_status->canRetweet()) {
+						$twitter_service->sendRetweet($account_status->account, $account_status);
+					}
+					break;
+
+				case 'unretweet':
+					if ($account_status->retweeted) {
+						$twitter_service->unsendRetweet($account_status->account, $account_status);
+					}
+					break;
+
+				case 'reply':
+					$text = $this->in->getString('text');
+					$type = $this->in->getValue('type');
+					$split = $this->in->getBool('split');
+					if (strlen($text)) {
+						if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
+							$text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+						}
+
+						$twitter_service = new \Application\DeskPRO\Service\Twitter();
+						$twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
+					}
+					break;
+
+				case 'favorite':
+					if (!$account_status->is_favorited) {
+						$twitter_service->setFavorite($account_status->account, $account_status, true);
+					}
+					break;
+
+				case 'unfavorite':
+					if ($account_status->is_favorited) {
+						$twitter_service->setFavorite($account_status->account, $account_status, false);
+					}
+					break;
+
+				case 'archive':
+					$account_status->is_archived = true;
+					break;
+
+				case 'unarchive':
+					$account_status->is_archived = false;
+					break;
+
+				case 'assign':
+					list($type, $id) = explode(':', $this->in->getValue('assign'));
+					if ($type == 'agent') {
+						$agent = $this->em->find('DeskPRO:Person', $id);
+						if ($agent && $agent->is_agent && $account_status->account->hasPerson($agent)) {
+							$account_status->agent = $agent;
+						}
+					} else {
+						$account_status->setAgentTeamId($id);
+					}
+					break;
+			}
+
+			$this->em->persist($account_status);
+		}
+
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
@@ -305,44 +389,17 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveRetweetAction()
 	{
-		$success = false;
-		$error = null;
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
+		$account = $account_status->account;
 
-		try {
-			$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
-			$account = $account_status->account;
-
-			if (!$account_status->retweeted) {
-				$api = $account->getTwitterApi();
-				$response = $api->post("/statuses/retweet/{$account_status->status->id}.json");
-				if (!empty($response->error)) {
-					$error = $response->error;
-				} else {
-					$success = true;
-
-					$twitter_service = new \Application\DeskPRO\Service\Twitter();
-					$new_status = $twitter_service->processStatus($api, $response);
-
-					$new_account_status = new TwitterAccountStatus();
-					$new_account_status->status = $new_status;
-					$new_account_status->account = $account;
-					$new_account_status->status_type = 'sent';
-					$new_account_status->action_agent = $this->person;
-
-					$account_status->retweeted = $new_account_status;
-
-					$this->em->persist($new_status);
-					$this->em->persist($new_account_status);
-					$this->em->persist($account_status);
-					$this->em->flush();
-				}
-			} else {
-				$success = true;
-			}
-		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
-		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
+		if (!$account_status->retweeted) {
+			$twitter_service = new \Application\DeskPRO\Service\Twitter();
+			$output = $twitter_service->sendRetweet($account, $account_status);
+			$success = $output['success'];
+			$error = $output['error'];
+		} else {
+			$success = true;
+			$error = null;
 		}
 
 		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
@@ -353,34 +410,14 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveUnretweetAction()
 	{
-		$success = false;
-		$error = null;
-
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
 		$account = $account_status->account;
 
-		try {
-			if ($account_status->retweeted) {
-				$account_retweet = $account_status->retweeted;
+		$twitter_service = new \Application\DeskPRO\Service\Twitter();
+		$output = $twitter_service->unsendRetweet($account, $account_status);
 
-				$response = $account->getTwitterApi()->post("/statuses/destroy/{$account_retweet->status->id}.json");
-				if (!empty($response->error)) {
-					$error = $response->error;
-				} else {
-					$success = true;
-
-					$this->em->remove($account_retweet);
-					$this->em->remove($account_retweet->status);
-					$this->em->flush();
-				}
-			} else {
-				$success = true;
-			}
-		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
-		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
-		}
+		$success = $output['success'];
+		$error = $output['error'];
 
 		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
@@ -431,9 +468,6 @@ class TwitterStatusController extends AbstractController
 
 	public function ajaxSaveArchiveAction()
 	{
-		$success = false;
-		$error = null;
-
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'archive');
 
 		$account_status['is_archived'] = $this->in->getBool('archive');
@@ -441,56 +475,25 @@ class TwitterStatusController extends AbstractController
 		$this->em->persist($account_status);
 		$this->em->flush();
 
-		$success = true;
-
-		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function ajaxSaveFavoriteAction()
 	{
-		$success = false;
-		$error = null;
-
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');
+		$account = $account_status->account;
 
-		try {
-			$api = $account_status->account->getTwitterApi();
+		$twitter_service = new \Application\DeskPRO\Service\Twitter();
+		$output = $twitter_service->setFavorite($account, $account_status, $this->in->getBool('favorite'));
 
-			$favorite = $this->in->getBool('favorite');
-
-			if (!$account_status->status->isMessage()) {
-				if ($favorite) {
-					$response = $api->post_favoritesCreate(array('id' => $account_status->status->id));
-				} else {
-					$response = $api->post_favoritesDestroy(array('id' => $account_status->status->id));
-				}
-				if (!empty($response->error)) {
-					$error = $response->error;
-				}
-			}
-
-			if (empty($error)) {
-				$account_status['is_favorited'] = $favorite;
-
-				$this->em->persist($account_status);
-				$this->em->flush();
-
-				$success = true;
-			}
-		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
-		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
-		}
+		$success = $output['success'];
+		$error = $output['error'];
 
 		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 
 	public function ajaxSaveAssignAction()
 	{
-		$success = false;
-		$error = null;
-
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
 
 		list($type, $id) = explode(':', $this->in->getValue('assign'));
@@ -501,10 +504,7 @@ class TwitterStatusController extends AbstractController
 		}
 
 		$this->em->persist($account_status);
-		$this->em->flush();
 
-		$success = true;
-
-		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

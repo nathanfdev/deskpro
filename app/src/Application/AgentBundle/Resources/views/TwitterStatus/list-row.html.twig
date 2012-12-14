@@ -17,8 +17,8 @@
 		</div>
 		<div class="main-status-body">
 			{% if status.user.id != account_status.account.user.id %}
-				<i class="status-archived tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
-				<i class="status-archive tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
+				<i class="status-archived status-action tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
+				<i class="status-archive status-action tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
 			{% endif %}
 			<h4>
 				<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
@@ -102,19 +102,13 @@
 	<div class="status-info">
 		<ul>
 			<li class="noval">
-				<input
-					class="item-select"
-					type="checkbox"
-					value="twitter_account_status.{{account_status.id}}"
-					data-content-type="twitter_account_status"
-					data-content-id="{{ account_status.id }}"
-				/>
+				<input class="item-select" type="checkbox" value="{{account_status.id}}" />
 			</li>
 			<li class="noval opt-trigger {% if account_status.is_favorited %}favorited{% else %}add-favorite{% endif %}"></li>
 			<li class="noval opt-trigger message">
 				<label>Reply</label><span class="drop-icon"></span>
 			</li>
-			{% if not status.isMessage() and status.user.id != account_status.account.user.id and (not retweet or retweet.user.id != account_status.account.user.id) %}
+			{% if account_status.canRetweet() %}
 				{% if account_status.retweeted %}
 					<li class="noval opt-trigger retweeted">
 						<label>Retweeted</label><span class="drop-icon"></span>

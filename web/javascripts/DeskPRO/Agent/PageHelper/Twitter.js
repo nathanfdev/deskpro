@@ -64,93 +64,101 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		});
 
 		// user archive/unarchive (status class names used)
-		this.content.on('click', '.status-archive', function(e) {
+		this.content.on('click', '.status-archive.user-action', function(e) {
 			e.preventDefault();
 
 			var row = $(this).closest('.twitter-user');
-
-			$(this).hide();
-			row.addClass('archived');
-			row.find('.status-archived').show();
-
 			var id = row.attr('data-user-id');
-			self.doArchiveUser(id, 1);
 
-			if (self.page.getMetaData('hideArchived')) {
-				row.remove();
+			if (id) {
+				$(this).hide();
+				row.addClass('archived');
+				row.find('.status-archived').show();
+
+				self.doArchiveUser(id, 1);
+
+				if (self.page.getMetaData('hideArchived')) {
+					row.remove();
+				}
 			}
 		});
-		this.content.on('click', '.status-archived', function(e) {
+		this.content.on('click', '.status-archived.user-action', function(e) {
 			e.preventDefault();
 
 			var row = $(this).closest('.twitter-user');
-
-			$(this).hide();
-			row.removeClass('archived');
-			row.find('.status-archive').show();
-
 			var id = $(this).closest('.twitter-user').attr('data-user-id');
-			self.doArchiveUser(id, 0);
+
+			if (id) {
+				$(this).hide();
+				row.removeClass('archived');
+				row.find('.status-archive').show();
+
+				self.doArchiveUser(id, 0);
+			}
 		});
 
 		// status favorite/unfavorite
 		this.content.on('click', '.add-favorite', function(e) {
 			e.preventDefault();
 
-			$(this).addClass('favorited').removeClass('add-favorite');
-
 			var id = self.closestRow(this).attr('data-status-id');
-			self.doFavorite(id, 1);
+			if (id) {
+				$(this).addClass('favorited').removeClass('add-favorite');
+				self.doFavorite(id, 1);
+			}
 		});
 		this.content.on('click', '.favorited', function(e) {
 			e.preventDefault();
 
-			$(this).addClass('add-favorite').removeClass('favorited');
-
 			var id = self.closestRow(this).attr('data-status-id');
-			self.doFavorite(id, 0);
+			if (id) {
+				$(this).addClass('add-favorite').removeClass('favorited');
+				self.doFavorite(id, 0);
+			}
 		});
 
 		// status archive/unarchive
-		this.content.on('click', '.twitter-status .status-archive', function(e) {
+		this.content.on('click', '.status-archive.status-action', function(e) {
 			e.preventDefault();
 
 			var row = self.closestRow(this);
-
-			$(this).hide();
-			row.addClass('archived');
-			row.find('.status-archived').show();
-
 			var id = row.attr('data-status-id');
-			self.doArchiveStatus(id, 1);
 
-			if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
-				row.remove();
+			if (id) {
+				$(this).hide();
+				row.addClass('archived');
+				row.find('.status-archived').show();
+
+				self.doArchiveStatus(id, 1);
+
+				if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
+					row.remove();
+				}
 			}
 		});
-		this.content.on('click', '.twitter-status .status-archived', function(e) {
+		this.content.on('click', '.status-archived.status-action', function(e) {
 			e.preventDefault();
 
 			var row = self.closestRow(this);
-
-			$(this).hide();
-			row.removeClass('archived');
-			row.find('.status-archive').show();
-
 			var id = row.attr('data-status-id');
-			self.doArchiveStatus(id, 0);
-		});
 
+			if (id) {
+				$(this).hide();
+				row.removeClass('archived');
+				row.find('.status-archive').show();
+
+				self.doArchiveStatus(id, 0);
+			}
+		});
 
 		// retweet/unretweet trigger
 		this.content.on('click', 'li.opt-trigger.retweet', function(e) {
 			e.preventDefault();
 
 			var link = $(this);
-
 			var id = self.closestRow(this).attr('data-status-id');
 
-			if (confirm('Are you sure you want to retweet this?')) {
+			if (id && confirm('Are you sure you want to retweet this?')) {
 				$.ajax({
 					url: page.getMetaData('saveRetweetUrl'),
 					type: 'POST',
@@ -173,10 +181,9 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			e.preventDefault();
 
 			var link = $(this);
-
 			var id = self.closestRow(this).attr('data-status-id');
 
-			if (confirm('Are you sure you want to un-retweet this?')) {
+			if (id && confirm('Are you sure you want to un-retweet this?')) {
 				$.ajax({
 					url: page.getMetaData('saveUnretweetUrl'),
 					type: 'POST',
@@ -216,7 +223,6 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				}
 
 				self.updateTweetLength(textarea);
-
 				textarea.focus();
 			}
 		});

@@ -24,11 +24,61 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_afterLoading: function() {
 		this._initContent();
 		this._initControls();
+
+		if (this.selectionBar) {
+			this.selectionBar.updateCount();
+		}
 	},
 
 	_initHeader: function() {
 		this._initSortByFields();
 		this._initIncludeFields();
+
+		var self = this;
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onButtonClick: function() {
+				self.massActions.open();
+			},
+			checkSelector: '.twitter-status:not(.archived) input.item-select'
+		});
+		this.ownObject(this.selectionBar);
+
+		this.massActions = new DeskPRO.Agent.PageHelper.MassActions(this, {
+			isListView: false,
+			applyAction: function(wrapper, formData) {
+				var data = formData,
+					myFormData = $('input, textarea, select', wrapper).serializeArray();
+
+				$(myFormData).each(function(index, param) {
+					data[param.name] = param.value;
+				});
+
+				wrapper.addClass('loading');
+
+				$.ajax({
+					type: 'POST',
+					url: BASE_URL + "agent/twitter/status/ajax-mass-save.json",
+					'data': data,
+					'dataType': 'json',
+					success: function() {
+						self.massActions.close();
+						self.reload();
+					}
+				}).done(function() {
+					wrapper.removeClass('loading');
+				});
+			},
+			closeOnApply: false,
+			openAction: function(wrapper) {
+				if (!wrapper.data('twitter-helper')) {
+					wrapper.data('twitter-helper',
+						new DeskPRO.Agent.PageHelper.Twitter($('#twitter-mass-action-overlay'), self)
+					);
+				}
+			}
+		});
+		this.ownObject(this.massActions);
 	},
 
 	_initContent: function() {

@@ -11,7 +11,8 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		this.options = {
 			selectionBar: null,
 			selectedCount: null,
-			button: null
+			button: null,
+			checkSelector: 'input.item-select'
 		};
 		this.setOptions(options);
 
@@ -29,7 +30,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			this.options.button = $('.perform-actions-trigger:first', this.selectionBar);
 		}
 		this.button = $(this.options.button);
-                this.button.addClass('disabled');
+        this.button.addClass('disabled');
 
 		this.button.on('click', this.buttonClicked.bind(this));
 
@@ -43,7 +44,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 		this.lastCheckBox = null;
 
-		this.page.wrapper.on('click', 'input.item-select', function(event) {
+		this.page.wrapper.on('click', this.options.checkSelector, function(event) {
 			var el = $(this);
 			self.handleCheckChange(el, el.is(':checked'));
 
@@ -66,7 +67,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	getCheckedValues: function() {
 		var values = [];
 
-		$('input.item-select:checked', this.page.wrapper).each(function() {
+		$(this.options.checkSelector + ':checked', this.page.wrapper).each(function() {
 			values.push($(this).val());
 		});
 
@@ -79,7 +80,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		if (!info) info = {};
 		info.checkedCount = 0;
 
-		$('input.item-select:checked', this.page.wrapper).each(function() {
+		$(this.options.checkSelector + ':checked', this.page.wrapper).each(function() {
 			appendArray.push({
 				name: form_name,
 				value: $(this).val()
@@ -91,15 +92,15 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	},
 
 	getChecked: function() {
-		return $('input.item-select:checked', this.page.wrapper);
+		return $(this.options.checkSelector + ':checked', this.page.wrapper);
 	},
 
 	getCount: function() {
-		return $('input.item-select:checked', this.page.wrapper).length;
+		return $(this.options.checkSelector + ':checked', this.page.wrapper).length;
 	},
 
 	checkAll: function() {
-		$('input.item-select', this.page.wrapper).attr('checked', true);
+		$(this.options.checkSelector, this.page.wrapper).attr('checked', true);
 
 		var count = this.getCount();
 		this.selectedCount.text(count);
@@ -117,7 +118,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	checkRange: function(start, end) {
 		var is_checked = start.is(':checked');
 
-		var checks = this.page.wrapper.find('input.item-select');
+		var checks = this.page.wrapper.find(this.options.checkSelector);
 		var indexStart = checks.index(start);
 		var indexEnd = checks.index(end);
 
@@ -144,7 +145,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 	},
 
 	checkNone: function() {
-		$('input.item-select:checked', this.page.wrapper).attr('checked', false);
+		$(this.options.checkSelector + ':checked', this.page.wrapper).attr('checked', false);
 
 		var count = this.getCount();
 		this.selectedCount.text(count);
@@ -166,13 +167,18 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		}
 
 
-		if (this.page.wrapper.find('input.item-select').not(':checked').length) {
+		if (this.page.wrapper.find(this.options.checkSelector).not(':checked').length) {
 			this.controlCheck.attr('checked', false);
 		} else {
 			this.controlCheck.attr('checked', true);
 		}
 
 		this.fireEvent('checkChange', [el, is_checked, count]);
+	},
+
+	updateCount: function() {
+		var count = this.getCount();
+		this.selectedCount.text(count);
 	},
 
 	resetCountLabel: function() {

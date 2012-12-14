@@ -55,9 +55,21 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			resetOnClose: true,
 
 			/**
+			 * If true, closes immediately when calling apply
+			 */
+			closeOnApply: true,
+
+			/**
 			 * Function to call when apply button is clicked.
 			 */
 			applyAction: function() {
+			},
+
+			/**
+			 * Function to call when opened
+			 */
+			openAction: function() {
+
 			}
 		};
 
@@ -226,11 +238,11 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 	apply: function() {
 		if(this.options.applyAction) {
 			var formDataInfo = {
-					checkedCount: 0,
-					actionsCount: 0
-				},
-				formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo),
-				rows = [];
+				checkedCount: 0,
+				actionsCount: 0
+			},
+			formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo),
+			rows = [];
 
 			$(formData).each(function(index, param) {
 				rows.push(param.value);
@@ -241,7 +253,9 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			}
 		}
 
-		this.close();
+		if (this.options.closeOnApply) {
+			this.close();
+		}
 	},
 
 
@@ -419,6 +433,8 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
         this.updatePositions();
         DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
         //this.updatePreview();
+
+		this.options.openAction(this.wrapper);
 	},
 
 

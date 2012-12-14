@@ -156,6 +156,15 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('date_created', $status->date_created);
 	}
 
+	public function canRetweet()
+	{
+		return (
+			!$this->status->isMessage()
+			&& $this->status->getUserId() != $this->account->getUserId()
+			&& (!$this->status->isRetweet() || $this->status->retweet->getUserId() != $this->account->getUserId())
+		);
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
