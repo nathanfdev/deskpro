@@ -841,6 +841,13 @@ $collection->add('admin_agents', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_reload', new Route(
+	'/agents/send-reload-signal',
+	array('_controller' => 'AdminBundle:Agents:reloadAgentInterface'),
+	array('_method' => 'POST'),
+	array()
+));
+
 $collection->add('admin_mass_add', new Route(
 	'/agents/mass-add-agents.json',
 	array('_controller' => 'AdminBundle:Agents:massAddAgents'),

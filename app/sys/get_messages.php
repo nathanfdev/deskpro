@@ -342,6 +342,7 @@ class AgentMessagesLoader extends LoaderAbstract
 		$channels[] = 'agent.ticket-draft-updated';
 		$channels[] = 'agent.ui.new-feedback';
 		$channels[] = 'agent.ui.new-pending';
+		$channels[] = 'agent.ui.reload';
 
 		$channels[] = 'agent.filter-update';
 

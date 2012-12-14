@@ -159,6 +159,14 @@
 	</div>
 <div>
 
+{% if online_agents|length %}
+	<form action="{{ path('admin_agents_reload') }}" style="margin: 10px 0 0 0" method="POST">
+		There are {{ online_agents|length }} online agents using the agent interface.<br/>
+		<button class="clean-white" style="font-size: 9pt; padding: 0 3px; margin-top: 2px;">Click here</button> to force everyone to reload the interface.
+		<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Some changes, like adding new departments or changing permissions, will not appear until agents reload the agent interface. Using this tool, you can prompt them to reload now so they are using the most up to date interface."></span>
+	</form>
+{% endif %}
+
 {% if count_deleted %}
 	<div class="deleted-text">
         <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.deleted_agents_exist', {'count':count_deleted}) }}</a>.

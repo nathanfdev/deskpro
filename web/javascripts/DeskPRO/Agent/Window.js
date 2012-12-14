@@ -1073,6 +1073,68 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
+	showRefreshAlert: function(admin_name) {
+
+		var self = this;
+
+		if (this._refreshAlertTimeout) {
+			window.clearTimeout(this._refreshAlertTimeout);
+			this._refreshAlertTimeout = null;
+		}
+
+		if (!this._refreshAlertOverlay) {
+			this._refreshAlertOverlay = new DeskPRO.UI.Overlay({
+				contentElement: $('#refresh_alert_overlay'),
+				zIndex: '50000',
+				escapeClose: false,
+				modalClickClose: false
+			});
+
+			$('#refresh_alert_overlay').find('button.okay-trigger').on('click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				if (self._refreshAlertTimeout) {
+					window.clearTimeout(self._refreshAlertTimeout);
+					self._refreshAlertTimeout = null;
+				}
+				window.location.reload(false);
+			});
+			$('#refresh_alert_overlay').find('button.cancel-trigger').on('click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				if (self._refreshAlertTimeout) {
+					window.clearTimeout(self._refreshAlertTimeout);
+					self._refreshAlertTimeout = null;
+				}
+
+				self._refreshAlertOverlay.closeOverlay();
+			});
+		}
+
+		$('#refresh_alert_overlay').find('.admin-name').text(admin_name);
+
+		var time = 30;
+		var timeShow = $('#refresh_alert_overlay').find('.countdown').text(30);
+
+		this._refreshAlertTimeout = window.setInterval(function() {
+			time--;
+			$('#refresh_alert_overlay').find('.countdown').text(time);
+
+			if (time <= 0) {
+				if (self._refreshAlertTimeout) {
+					window.clearTimeout(self._refreshAlertTimeout);
+					self._refreshAlertTimeout = null;
+				}
+
+				window.location.reload(false);
+			}
+		}, 1000);
+
+		this._refreshAlertOverlay.openOverlay();
+	},
+
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################
@@ -2417,6 +2479,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 		}, this);
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
+			DeskPRO_Window.showRefreshAlert(info.person_name);
+		});
 
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
