@@ -81,6 +81,15 @@ class FilestorageLoader extends LoaderAbstract
 		try {
 			$pathinfo = $this->getPathInfo();
 
+			if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
+				$_GET['s'] = $m[1];
+				$pathinfo = str_replace($m[0], '/', $pathinfo);
+			}
+			if (preg_match('#^/size-fit/#', $pathinfo, $m)) {
+				$_GET['size-fit'] = 1;
+				$pathinfo = str_replace($m[0], '/', $pathinfo);
+			}
+
 			// Default avatar: /avatar/50/default
 			if (preg_match('#^/avatar/([0-9]+)/default.jpg#', $pathinfo, $m)) {
 				$this->defaultAvatarAction($m[1]);

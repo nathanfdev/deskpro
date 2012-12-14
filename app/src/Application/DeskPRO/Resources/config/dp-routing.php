@@ -23,6 +23,20 @@ $collection->add('serve_blob', new Route(
 	array()
 ));
 
+$collection->add('serve_blob_size', new Route(
+	'/file.php/size/{s}/{blob_auth_id}/{filename}',
+	array('_controller' => '(see: serve_file.php)'),
+	array(),
+	array()
+));
+
+$collection->add('serve_blob_sizefit', new Route(
+	'/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}',
+	array('_controller' => '(see: serve_file.php)'),
+	array(),
+	array()
+));
+
 $collection->add('serve_person_picture', new Route(
 	'/file.php/avatar/{person_id}',
 	array('_controller' => '(see: serve_file.php)', 'size' => 0),
