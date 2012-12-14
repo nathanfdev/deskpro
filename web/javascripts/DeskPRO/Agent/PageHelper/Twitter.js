@@ -210,7 +210,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 				var textarea = newMessage.find('textarea');
 				if (!$.trim(textarea.val()).length && !row.hasClass('dm')) {
-					var name = row.find('.main-status-body .screen-name, h4.user .screen-name').first().text();
+					var name = row.find('.main-status-body .screen-name, h4 .screen-name').first().text();
 
 					textarea.val(name + ' ');
 				}

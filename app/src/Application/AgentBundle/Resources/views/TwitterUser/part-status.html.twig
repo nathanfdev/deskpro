@@ -9,12 +9,20 @@
 		<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
 	</div>
 
-	<h4 class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
-		<span class="name">{{ status.user.name }}</span>
-		<span class="screen-name">@{{ status.user.screen_name }}</span>
+	<h4>
+		<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+			<span class="name">{{ status.user.name }}</span>
+			<span class="screen-name">@{{ status.user.screen_name }}</span>
+		</span>
+		{% if status.isMessage() %}
+			<span class="dm-notice">DM</span>
+		{% endif %}
+		{% if status.long %}
+			<span class="long-notice">{% if status.long.is_public %}Long{% else %}Long Private{% endif %}</span>
+		{% endif %}
 	</h4>
 
-	<div class="status-text">{{ status.parsed_text|raw }}</div>
+	<div class="status-text">{{ status.long ? status.long.parsed_text|raw : status.parsed_text|raw }}</div>
 
 	{% if status.isMessage() %}
 		<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>

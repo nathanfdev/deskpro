@@ -1843,6 +1843,7 @@ section.dp-overlay > article.no-footer {
 
 		.main-status-body {
 			margin-left: 54px;
+			word-wrap: break-word;
 
 			i.status-archive {
 				.iconbase(16px, 16px);
@@ -1896,6 +1897,20 @@ section.dp-overlay > article.no-footer {
 		}
 	}
 
+	.dm-notice, .long-notice {
+		.gradient(#8bbe72, #71b058);
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+		.border-radius(3px, 3px, 3px, 3px);
+		border: 1px solid #719A5D;
+
+		font-size: 11px;
+		padding: 0 2px;
+		line-height: 100%;
+		color: #fff;
+		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+		white-space:nowrap;
+	}
+
 	.reply-list {
 		border-top: 1px solid #ACB6BF;
 		padding: 4px;
@@ -1906,6 +1921,7 @@ section.dp-overlay > article.no-footer {
 			border-top: 1px solid #ACB6BF;
 			padding-top: 4px;
 			overflow: hidden;
+			word-wrap: break-word;
 
 			.photo {
 				float: left;
