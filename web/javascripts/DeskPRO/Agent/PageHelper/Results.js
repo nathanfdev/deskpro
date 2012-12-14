@@ -45,6 +45,12 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			resultIds: null,
 
 			/**
+			 * Total count of results
+			 * @option {Integer}
+			 */
+			totalCount: 0,
+
+			/**
 			 * The wrapper around a result row item
 			 * @option {String}
 			 */
@@ -80,14 +86,14 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.prevBtn           = $('> li.prev', this.pageNav);
 		this.nextBtn           = $('> li.next', this.pageNav);
 
-		this.resultCount   = this.options.resultIds.length;
+		this.resultCount   = this.options.resultIds ? this.options.resultIds.length : this.options.totalCount;
 
 		this.scrollableEl = this.resultsContainer.closest('.with-scrollbar');
 
 		this.resultIds = this.options.resultIds;
 		delete this.options.resultIds;
 
-		this.numPages = Math.ceil(this.resultIds.length / this.options.perPage);
+		this.numPages = Math.ceil(this.resultCount / this.options.perPage);
 		this.currentPage = this.options.currentPage;
 
 		if (this.currentPage < this.numPages) {
@@ -207,12 +213,18 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			this.showLoading();
 
 			var data = [];
-			Array.each(this.getPageIds(pageNum), function(i) {
-				data.push({name: 'result_ids[]', value: i});
-			});
-			Array.each(this.displayOptions.getDisplayFields(), function(i) {
-				data.push({name: 'display_fields[]', value: i });
-			});
+			if (this.resultIds) {
+				Array.each(this.getPageIds(pageNum), function(i) {
+					data.push({name: 'result_ids[]', value: i});
+				});
+			} else {
+				data.push({name: 'page', value: pageNum});
+			}
+			if (this.displayOptions) {
+				Array.each(this.displayOptions.getDisplayFields(), function(i) {
+					data.push({name: 'display_fields[]', value: i });
+				});
+			}
 
 			$.ajax({
 				url: this.page.meta.fetchResultsUrl,
@@ -288,8 +300,14 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		var end = start + showingCount;
 		start++;
 
-		if (end > this.resultIds.length) {
-			end = this.resultIds.length;
+		if (this.resultIds) {
+			if (end > this.resultIds.length) {
+				end = this.resultIds.length;
+			}
+		} else {
+			if (end > this.resultCount) {
+				end = this.resultCount;
+			}
 		}
 
 		this.showingCountEl.empty().text(start + '-' + end);
@@ -302,7 +320,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * @param resultId
 	 */
 	prependResultId: function(resultId) {
-		this.resultIds.unshift(resultId);
+		if (this.resultIds) {
+			this.resultIds.unshift(resultId);
+		}
 	},
 
 
@@ -312,7 +332,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * @param resultId
 	 */
 	removeResultId: function(resultId) {
-		this.resultIds.erase(resultId);
+		if (this.resultIds) {
+			this.resultIds.erase(resultId);
+		}
 	},
 
 	destroy: function() {

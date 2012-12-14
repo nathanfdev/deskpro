@@ -1,13 +1,17 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
-pageMeta.title = '{{ type|capitalize|escape }}: @{{ account.user.screen_name|escape }}';
 pageMeta.accountId = '{{ account.id|escape }}';
 pageMeta.url_fragment = '{{ url_fragment(twitter_list_route, {'account_id': account.id}) }}';
+pageMeta.currentPage = {{ page }};
+pageMeta.perPage = {{ per_page }};
+pageMeta.totalCount = {{ total_count }};
 
 pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id}) }}?partial=1';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
-pageMeta.standardStatusLimit = 160;
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 
 {# scroll containers #}
@@ -23,6 +27,8 @@ pageMeta.standardStatusLimit = 160;
 	<div class="content">
 		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 	</div>
+
+	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
 </div>
 
 {# scroll containers #}

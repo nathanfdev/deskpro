@@ -50,6 +50,8 @@ use Application\DeskPRO\Entity;
  */
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
+	const DEFAULT_LIMIT = 25;
+
 	/**
 	 * @var integer
 	 */
@@ -216,7 +218,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return in_array($agent_id, $person_ids);
 	}
 
-	public function getNewFollowers($page = 1, $limit = 5)
+	public function getNewFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$page = max(1, intval($page));
 		$offset = ($page - 1) * $limit;
@@ -260,7 +262,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_cache['count_new_followers'];
 	}
 
-	public function getFollowers($page = 1, $limit = 5)
+	public function getFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$page = max(1, intval($page));
 		$offset = ($page - 1) * $limit;
@@ -308,14 +310,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return integer
 	 */
-	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -338,14 +340,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getInbox($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getInbox($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'inbox', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -367,14 +369,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getMessages($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getMessages($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'direct', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'direct', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -396,14 +398,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getReplies($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getReplies($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'reply', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'reply', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -425,14 +427,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getMentions($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getMentions($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'mention', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'mention', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -454,14 +456,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getRetweets($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getRetweets($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**
@@ -482,14 +484,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function getOutgoing($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getOutgoing($includeArchived = false, $sortByDate = 'asc', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'sent', true, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'sent', true, $includeArchived, $sortByDate, $page, $limit);
 	}
 
 	/**

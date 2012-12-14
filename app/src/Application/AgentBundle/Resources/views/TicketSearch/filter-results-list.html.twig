@@ -103,38 +103,37 @@ pageMeta.baseId = '{{ baseId }}';
 		<em>{{ phrase('agent.general.loading') }}</em>
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
-			<div class="check-count selection-bar">
-				{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}, true) }}
+		<div class="check-count selection-bar">
+			{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}, true) }}
 
-				<button class="clean-white perform-actions-trigger">
-					<span>{{ phrase('agent.general.perform_actions') }}</span>
-				</button>
+			<button class="clean-white perform-actions-trigger">
+				<span>{{ phrase('agent.general.perform_actions') }}</span>
+			</button>
+		</div>
+		<div class="pagecontrols results-nav">
+			<div class="cursor">
+				<a target="_blank"
+				   href="{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=csv&set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}">
+					<button class="clean-white">
+						<span>{{ phrase('agent.tickets.export_to_csv') }}</span>
+					</button>
+				</a>
+				{% set phrase_part1 %}
+				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+				{% endset %}
+				{% set phrase_part2 %}
+				<span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
+				{% endset %}
+				{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 			</div>
-			<div class="pagecontrols results-nav">
-				<div class="cursor">
-                    <a target="_blank"
-                       href="{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=csv&set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}">
-                        <button class="clean-white">
-                            <span>{{ phrase('agent.tickets.export_to_csv') }}</span>
-                        </button>
-                    </a>
-                    {% set phrase_part1 %}
-                    <span class="results-showing-count" id="{{baseId}}_showing_count"></span>
-                    {% endset %}
-                    {% set phrase_part2 %}
-                    <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
-                    {% endset %}
-                    {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
-				</div>
-				{% if ticket_ids|length > per_page %}
-					<ul class="pagenav no-prev">
-						<li class="prev"></li>
-						<li class="next"></li>
-					</ul>
-				{% endif %}
-			</div>
+			{% if ticket_ids|length > per_page %}
+				<ul class="pagenav no-prev">
+					<li class="prev"></li>
+					<li class="next"></li>
+				</ul>
+			{% endif %}
+		</div>
 
-        	{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
-        </div>
+		{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
 	</footer>
 </section>

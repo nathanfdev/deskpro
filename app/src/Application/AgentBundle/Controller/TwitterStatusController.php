@@ -60,10 +60,14 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		// fetch public timeline
-		$statuses = $account->getInbox($includeArchived, $includeAccount, $this->getSortByDate());
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
 
-		return $this->renderList($account, $statuses, 'agent_twitter_inbox_list');
+		// fetch inbox
+		$statuses = $account->getInbox($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+		$count = $account->countInbox($includeArchived, $includeAccount);
+
+		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_inbox_list');
 	}
 
 	/**
@@ -80,9 +84,12 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$messages = $account->getMessages($includeArchived, $includeAccount, $this->getSortByDate());
+		$count = $account->countMessages($includeArchived, $includeAccount);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $messages, 'agent_twitter_messages_list');
+		$messages = $account->getMessages($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+
+		return $this->renderList($account, $messages, $count, $page, 'agent_twitter_messages_list');
 	}
 
 	/**
@@ -99,9 +106,12 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$replies = $account->getReplies($includeArchived, $includeAccount, $this->getSortByDate());
+		$count = $account->countReplies($includeArchived, $includeAccount);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $replies, 'agent_twitter_replies_list');
+		$replies = $account->getReplies($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+
+		return $this->renderList($account, $replies, $count, $page, 'agent_twitter_replies_list');
 	}
 
 	/**
@@ -118,9 +128,12 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$mentions = $account->getMentions($includeArchived, $includeAccount, $this->getSortByDate());
+		$count = $account->countMentions($includeArchived, $includeAccount);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $mentions, 'agent_twitter_mentions_list');
+		$mentions = $account->getMentions($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+
+		return $this->renderList($account, $mentions, $count, $page, 'agent_twitter_mentions_list');
 	}
 
 	/**
@@ -137,9 +150,12 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$retweets = $account->getRetweets($includeArchived, $includeAccount, $this->getSortByDate());
+		$count = $account->countRetweets($includeArchived, $includeAccount);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $retweets, 'agent_twitter_retweets_list');
+		$retweets = $account->getRetweets($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+
+		return $this->renderList($account, $retweets, $count, $page, 'agent_twitter_retweets_list');
 	}
 
 	/**
@@ -156,10 +172,13 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		// fetch public timeline
-		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
+		$count = $account->countTimeline($includeArchived, $includeAccount);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $statuses, 'agent_twitter_timeline_list');
+		// fetch user timeline
+		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate(), $page);
+
+		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_timeline_list');
 	}
 
 	/**
@@ -176,9 +195,12 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$sortByDate = $this->getSortByDate('desc');
 
-		$statuses = $account->getOutgoing($includeArchived, $sortByDate);
+		$count = $account->countOutgoing($includeArchived);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($account, $statuses, 'agent_twitter_outgoing_list', $sortByDate);
+		$statuses = $account->getOutgoing($includeArchived, $sortByDate, $page);
+
+		return $this->renderList($account, $statuses, $count, $page, 'agent_twitter_outgoing_list', $sortByDate);
 	}
 
 	/**
@@ -195,25 +217,54 @@ class TwitterStatusController extends AbstractController
 		return $sortByDate;
 	}
 
+	protected function adjustPage($count, $page = null, $per_page = null)
+	{
+		if (!$per_page) {
+			$per_page = TwitterAccount::DEFAULT_LIMIT;
+		}
+		if ($page === null) {
+			$page = $this->in->getUint('page');
+		}
+		if (!$page) {
+			$page = 1;
+		}
+
+		$start = ($page - 1) * $per_page;
+		if ($start >= $count) {
+			$page = ($count ? ceil($count / $per_page) : 1);
+		}
+
+		return $page;
+	}
+
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
 	 * @param array $statuses
+	 * @param integer $total_count
+	 * @param integer $page
 	 * @param string $route
+	 * @param string|null $sort_by_date
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, $route, $sort_by_date = null)
+	protected function renderList(TwitterAccount $account, array $statuses, $total_count, $page, $route, $sort_by_date = null)
 	{
 		if ($sort_by_date === null) {
 			$sort_by_date = $this->getSortByDate();
 		}
 
-		// view parameters
+		$per_page = TwitterAccount::DEFAULT_LIMIT;
+
 		$parameters = array(
 			'twitter_list_route' => $route,
 			'account' => $account,
 			'statuses' => $statuses,
 			'person' => $this->getPerson(),
-			'sort_by_date' => $sort_by_date
+			'sort_by_date' => $sort_by_date,
+			'total_count' => $total_count,
+			'per_page' => $per_page,
+			'page' => $page,
+			'showing_to' => min($total_count, $page * $per_page)
 		);
 
 		// check if is partial

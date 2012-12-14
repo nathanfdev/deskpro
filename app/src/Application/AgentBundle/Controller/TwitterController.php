@@ -37,6 +37,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TwitterAccountSearch;
+use Application\DeskPRO\Entity\TwitterAccount;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -127,19 +128,18 @@ class TwitterController extends AbstractController
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
 
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')
-			->findStarredTweetsForAgentId(
-				$agentId,
-				$includeArchived,
-				$includeAccount,
-				$this->getSortByDate()
-			);
+		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countStarredTweetsForAgentId($agentId, $includeArchived);
+		$page = $this->adjustPage($count);
 
-		return $this->render('AgentBundle:Twitter:starred-tweets.html.twig', array(
-			'statuses' => $statuses
-		));
+		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findStarredTweetsForAgentId(
+			$agentId,
+			$includeArchived,
+			$this->getSortByDate(),
+			$page
+		);
+
+		return $this->renderList($statuses, 'AgentBundle:Twitter:starred-tweets.html.twig', $count, $page);
 	}
 
 	public function myTweetsAction()
@@ -148,17 +148,18 @@ class TwitterController extends AbstractController
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
 
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')
-			->findTweetsForAgentId(
-				$agentId,
-				$includeArchived,
-				$includeAccount,
-				$this->getSortByDate()
-			);
+		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentId($agentId, $includeArchived);
+		$page = $this->adjustPage($count);
 
-		return $this->renderList($statuses, 'AgentBundle:Twitter:my-tweets.html.twig');
+		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findTweetsForAgentId(
+			$agentId,
+			$includeArchived,
+			$this->getSortByDate(),
+			$page
+		);
+
+		return $this->renderList($statuses, 'AgentBundle:Twitter:my-tweets.html.twig', $count, $page);
 	}
 
 	public function teamTweetsAction()
@@ -167,19 +168,18 @@ class TwitterController extends AbstractController
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
 
-		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')
-			->findTweetsForAgentTeamByAgentId(
-				$agentId,
-				$includeArchived,
-				$includeAccount,
-				$this->getSortByDate()
-			);
+		$count = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->countTweetsForAgentTeamByAgentId($agentId, $includeArchived);
+		$page = $this->adjustPage($count);
 
-		return $this->render('AgentBundle:Twitter:team-tweets.html.twig', array(
-			'statuses' => $statuses
-		));
+		$statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->findTweetsForAgentTeamByAgentId(
+			$agentId,
+			$includeArchived,
+			$this->getSortByDate(),
+			$page
+		);
+
+		return $this->renderList($statuses, 'AgentBundle:Twitter:team-tweets.html.twig', $count, $page);
 	}
 
 	public function listSearchesAction($account_id)
@@ -293,16 +293,46 @@ class TwitterController extends AbstractController
 		return $sortByDate;
 	}
 
+	protected function adjustPage($count, $page = null, $per_page = null)
+	{
+		if (!$per_page) {
+			$per_page = TwitterAccount::DEFAULT_LIMIT;
+		}
+		if ($page === null) {
+			$page = $this->in->getUint('page');
+		}
+		if (!$page) {
+			$page = 1;
+		}
+
+		$start = ($page - 1) * $per_page;
+		if ($start >= $count) {
+			$page = ($count ? ceil($count / $per_page) : 1);
+		}
+
+		return $page;
+	}
+
 	/**
 	 * @param array $statuses
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(array $statuses, $template)
+	protected function renderList(array $statuses, $template, $total_count, $page, $sort_by_date = null)
 	{
-		// view parameters
+		if ($sort_by_date === null) {
+			$sort_by_date = $this->getSortByDate();
+		}
+
+		$per_page = TwitterAccount::DEFAULT_LIMIT;
+
 		$parameters = array(
 			'statuses' => $statuses,
 			'person' => $this->getPerson(),
+			'sort_by_date' => $sort_by_date,
+			'total_count' => $total_count,
+			'per_page' => $per_page,
+			'page' => $page,
+			'showing_to' => min($total_count, $page * $per_page)
 		);
 
 		// check if is partial

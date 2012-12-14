@@ -41,6 +41,8 @@ use Orb\Util\Numbers;
 
 class TwitterAccountStatus extends AbstractEntityRepository
 {
+	const DEFAULT_LIMIT = 25;
+
 	public function getByTwitterStatusAndAccount($id, TwitterAccountEntity $account)
 	{
 		return $this->getEntityManager()->createQuery("
@@ -76,7 +78,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		return $output;
 	}
 
-	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
 			SELECT s, t, u, a
@@ -145,7 +147,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		return $statuses;
 	}
 
-	public function countTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function countTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false)
 	{
 		$query = "
 			SELECT COUNT(s.id)
@@ -208,20 +210,19 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function findStarredTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findStarredTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.account a
 			INNER JOIN a.persons p
-			WHERE s.is_favorited = :is_favorited
+			WHERE s.is_favorited = true
 				AND p.id = :agent_id
 		";
 
@@ -239,8 +240,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
-				'agent_id' => $id,
-				'is_favorited' => true
+				'agent_id' => $id
 			));
 	}
 
@@ -258,7 +258,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.account a
 			INNER JOIN a.persons p
-			WHERE s.is_favorited = :is_favorited
+			WHERE s.is_favorited = true
 				AND p.id = :agent_id
 		";
 
@@ -277,13 +277,12 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
 			SELECT s
@@ -340,13 +339,12 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
-	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
+	 * @param integer $limit (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
 			SELECT s
@@ -423,10 +421,10 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	 */
 	protected function calculateOffset($limit, $page)
 	{
-		if (1 <= $page) {
-			$page = 0;
+		if ($page < 1) {
+			$page = 1;
 		}
 
-		return $page * $limit;
+		return ($page - 1) * $limit;
 	}
 }

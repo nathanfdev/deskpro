@@ -10,6 +10,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	initPage: function(el) {
 		this.wrapper = $(el);
+		var self = this;
+
+		this.meta.fetchResultsUrl = this.meta.statusListUrl;
 
 		this.header = $('.header', this.wrapper);
 		this.content = $('.content', this.wrapper);
@@ -17,6 +20,19 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this._initHeader();
 		this._initContent();
 		this._initControls();
+
+		var opt = {
+			perPage: this.meta.perPage || 25,
+			currentPage: this.meta.currentPage,
+			totalCount: this.meta.totalCount,
+			resultRowSelector: 'article.twitter-status',
+			resultsContainer: this.content,
+			onPostSetNewResults: function() {
+				self._afterLoading();
+			}
+		};
+		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
+		this.ownObject(this.resultsHelper);
 
 		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this);
 	},

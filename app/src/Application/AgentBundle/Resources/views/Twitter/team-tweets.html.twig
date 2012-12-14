@@ -1,9 +1,10 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 
-pageMeta.title = '{{ type|capitalize|escape }}: @{{ account.user.screen_name|escape }}';
-pageMeta.accountId = '{{ account.id|escape }}';
 pageMeta.url_fragment = '{{ url_fragment('agent_twitter_team_tweets_list') }}';
+pageMeta.currentPage = {{ page }};
+pageMeta.perPage = {{ per_page }};
+pageMeta.totalCount = {{ total_count }};
 
 pageMeta.statusListUrl = '{{ path('agent_twitter_team_tweets_list') }}?partial=1';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
@@ -20,10 +21,10 @@ pageMeta.statusListUrl = '{{ path('agent_twitter_team_tweets_list') }}?partial=1
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
 
 	<div class="content">
-		<section class="comments-list list-listing">
-			{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
-		</section>
+		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 	</div>
+
+	{% include 'AgentBundle:TwitterStatus:list-footer.html.twig' %}
 </div>
 
 {# scroll containers #}

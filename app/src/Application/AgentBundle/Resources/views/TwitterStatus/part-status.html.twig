@@ -1,4 +1,4 @@
-<section class="comments-list list-listing">
+<section class="comments-list list-listing" data-total-count="{{ total_count }}">
 {% for account_status in statuses %}
 	{% include 'AgentBundle:TwitterStatus:list-row.html.twig' %}
 {% endfor %}
