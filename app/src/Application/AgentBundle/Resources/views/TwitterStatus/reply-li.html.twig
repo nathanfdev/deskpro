@@ -16,11 +16,19 @@
 		{% endif %}
 	</h6>
 
-	<div class="status-text">{{ reply.status.long ? reply.status.long.parsed_text|raw : reply.status.parsed_text|raw }}</div>
+	<div class="status-text">
+		{{ reply.status.long ? reply.status.long.parsed_text|raw : reply.status.parsed_text|raw }}
+	</div>
 
 	{% if reply.status.isMessage() %}
 		<time class="timeago" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</time>
 	{% else %}
 		<a href="https://twitter.com/{{ reply.status.user.screen_name }}/status/{{ reply.status.id }}" target="_blank" class="timeago" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</a>
+	{% endif %}
+
+	{% if reply.action_agent %}
+		<div class="action-agent">
+			Added by agent <strong>{{ reply.action_agent.display_name }}</strong>
+		</div>
 	{% endif %}
 </li>

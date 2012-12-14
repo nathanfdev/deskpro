@@ -76,6 +76,11 @@ if (!empty($argv[1])) {
 	set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
 }
 
+if (defined('DPC_IS_CLOUD')) {
+	echo "Cannot run on a cloud install.\n";
+	exit(3);
+}
+
 $db_conf = $DP_CONFIG['db'];
 $db_conf['driver'] = 'pdo_mysql';
 

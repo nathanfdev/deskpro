@@ -222,6 +222,13 @@ class TwitterStream extends AbstractJob
 
 		if ($data->user->id_str == $account->getUserId()) {
 			$account_status->status_type = 'sent';
+
+			if (!empty($data->in_reply_to_status_id_str)) {
+				$reply_account_status = $this->findAccountStatus($data->in_reply_to_status_id_str, $account);
+				if ($reply_account_status) {
+					$account_status->in_reply_to = $reply_account_status;
+				}
+			}
 		} else if (!empty($data->retweeted_status) && $data->retweeted_status->user->id_str == $account->getUserId()) {
 			$account_status->status_type = 'retweet';
 		} else if (!empty($data->in_reply_to_user_id_str) && $data->in_reply_to_user_id_str == $account->getUserId()) {

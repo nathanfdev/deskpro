@@ -41,7 +41,7 @@
 				<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
 			{% endif %}
 
-			{% if status.in_reply_to_status or retweet %}
+			{% if status.in_reply_to_status or retweet or account_status.action_agent %}
 				<div class="extra-container">
 					{% if status.in_reply_to_status %}
 						{% set reply = status.in_reply_to_status %}
@@ -52,7 +52,12 @@
 					{% endif %}
 					{% if retweet %}
 						<div class="retweet">
-							Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+							<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+						</div>
+					{% endif %}
+					{% if account_status.action_agent %}
+						<div class="action-agent">
+							Added by agent <strong>{{ account_status.action_agent.display_name }}</strong>
 						</div>
 					{% endif %}
 				</div>

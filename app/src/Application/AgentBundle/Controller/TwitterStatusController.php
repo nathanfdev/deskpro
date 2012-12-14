@@ -327,6 +327,7 @@ class TwitterStatusController extends AbstractController
 					$new_account_status->status = $new_status;
 					$new_account_status->account = $account;
 					$new_account_status->status_type = 'sent';
+					$new_account_status->action_agent = $this->person;
 
 					$account_status->retweeted = $new_account_status;
 

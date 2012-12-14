@@ -1839,6 +1839,8 @@ section.dp-overlay > article.no-footer {
 
 		.photo {
 			float: left;
+			font-size: 1px;
+			line-height: 0;
 		}
 
 		.main-status-body {
@@ -1879,10 +1881,22 @@ section.dp-overlay > article.no-footer {
 			.extra-container {
 				margin-top: 5px;
 
-				.in-reply-to, .retweet {
+				.in-reply-to, .retweet, .action-agent {
 					color: #999999;
 					font-size: 80%;
 					line-height: 100%;
+					margin-top: 3px;
+				}
+
+				.retweet em {
+					position: relative;
+					top: 2px;
+					padding-right: 3px;
+					display: inline-block;
+					width: 14px;
+					height: 10px;
+					background: url(../../images/user/twitter-icons.png) no-repeat;
+					background-position: -80px -4px;
 				}
 			}
 
@@ -1943,6 +1957,14 @@ section.dp-overlay > article.no-footer {
 
 			.status-text {
 				margin-left: 30px;
+			}
+
+			.action-agent {
+				margin-left: 30px;
+				margin-top: 5px;
+				color: #999999;
+				font-size: 80%;
+				line-height: 100%;
 			}
 
 			.timeago {

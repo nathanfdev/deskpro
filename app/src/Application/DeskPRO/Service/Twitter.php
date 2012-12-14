@@ -620,6 +620,7 @@ class Twitter
 				$new_account_status->account = $account;
 				$new_account_status->status_type = 'sent';
 				$new_account_status->in_reply_to = $reply;
+				$new_account_status->action_agent = App::getCurrentPerson();
 
 				if ($long_status) {
 					$long_status->status = $new_status;
@@ -660,8 +661,9 @@ class Twitter
 					$new_account_status->account = $account;
 					$new_account_status->status_type = 'direct';
 					$new_account_status->in_reply_to = $reply;
+					$new_account_status->action_agent = App::getCurrentPerson();
 
-						if ($long_status) {
+					if ($long_status) {
 						$long_status->status = $new_status;
 						$em->persist($long_status);
 					}

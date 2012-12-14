@@ -640,7 +640,7 @@ class KernelBooter
 			$check_twitter = true;
 		}
 
-		if ($check_twitter && \Application\DeskPRO\App::getConfig('enable_twitter')) {
+		if ($check_twitter && !defined('DPC_IS_CLOUD') && \Application\DeskPRO\App::getConfig('enable_twitter')) {
 			$twitter_ping = \Application\DeskPRO\App::getSetting('core.twitter_ping');
 			if (!$twitter_ping || $twitter_ping < time() - 60) {
 				if (file_exists(dp_get_data_dir() . '/twitter.pid')) {

@@ -63,6 +63,11 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	protected $url;
 
 	/**
+	 * @var string
+	 */
+	protected $display_url;
+
+	/**
 	 * @var integer
 	 */
 	protected $starts = 0;
@@ -104,6 +109,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$entity = new self();
 		$entity['url'] = $url->url;
+		$entity['display_url'] = $url->display_url;
 		$entity['starts'] = $url->indices[0];
 		$entity['ends'] = $url->indices[1];
 
@@ -125,6 +131,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'url', ));
+		$metadata->mapField(array( 'fieldName' => 'display_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_url', ));
 		$metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
 		$metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

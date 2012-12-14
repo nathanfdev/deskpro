@@ -377,7 +377,11 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 					$this->_parsed_text .= sprintf('<a class="hash" data-hash="%1$s">#%1$s</a>', htmlspecialchars($replacement['hash']));
 					break;
 				case 'Application\\DeskPRO\\Entity\\TwitterStatusUrl':
-					$this->_parsed_text .= sprintf('<a class="url" href="%s" target="_twitter_url_%s">%s</a>', htmlspecialchars($replacement['url']), md5($replacement['id']), $replace);
+					$this->_parsed_text .= sprintf('<a class="url" href="%s" target="_twitter_url_%s">%s</a>',
+						htmlspecialchars($replacement['url']),
+						md5($replacement['id']),
+						htmlspecialchars($replacement['display_url'] ?: $replacement['url'])
+					);
 					break;
 				default:
 					$this->_parsed_text .= $replace;
