@@ -135,6 +135,14 @@ if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') || (isset($_SERVER['argv
 	}
 
 	if ($do_update) {
+
+		if (!is_writable(dp_get_data_dir() .'/cli-phpinfo.html')) {
+			error_log("No permission to write data/cli-phpinfo.php file");
+		}
+		if (!is_writable(dp_get_data_dir() .'/cli-server-reqs-check.dat')) {
+			error_log("No permission to write data/cli-server-reqs-check.dat file");
+		}
+
 		ob_start();
 		@phpinfo();
 		$phpinfo = ob_get_clean();
