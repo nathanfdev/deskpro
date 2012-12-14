@@ -357,7 +357,6 @@ DeskPRO.UI.Menu = new Orb.Class({
 					var pageX = $(event.target).offset().left + ($(event.target).width() / 2);
 					var pageY = $(event.target).offset().top + ($(event.target).outerHeight()) + 2;
 
-
 				// If its a click event...
 				} else if (event.pageX) {
 					var pageX = event.pageX;
@@ -390,6 +389,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 				if (top < 0) {
 					top = 5;
+				}
+
+				if (point && left >= 10) {
+					left -= 10;
 				}
 
 				this.cachePosInfo = {
