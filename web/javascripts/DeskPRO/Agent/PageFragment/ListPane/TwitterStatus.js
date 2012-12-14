@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initHeader: function() {
-		//this._initSortByFields();
+		this._initSortByFields();
 		this._initIncludeFields();
 	},
 
@@ -70,7 +70,30 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initSortByFields: function() {
-		$('.order-by-menu a', this.header).on('change', $.proxy(this.reload, this));
+		var self = this;
+
+		var sortMenuBtn = $('.order-by-menu-trigger', this.header).first();
+		this.sortingMenu = new DeskPRO.UI.Menu({
+			triggerElement: sortMenuBtn,
+			menuElement: $('.order-by-menu', this.header).first(),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+
+				var prop = item.data('order-by');
+				var label = item.find('.label').text().trim();
+
+				// Change the displayed label for some visual feedback
+				$('.label label', sortMenuBtn).text(label);
+				sortMenuBtn.find('.order-dir').hide();
+				sortMenuBtn.find('.order-dir.' + prop.split('_').pop()).show();
+
+				sortMenuBtn.data('dir', prop);
+
+				self.sortingMenu.close();
+				self.reload();
+			}
+		});
+		this.ownObject(this.sortingMenu);
 	},
 
 	_initIncludeFields: function() {
@@ -97,7 +120,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	_getDisplayOptions: function() {
 		var options = {
-			//sortbydate: $('.list-control-bar select[name=sortbydate] option:selected', this.header).val(),
+			sortbydate: this.header.find('.order-by-menu-trigger').data('dir'),
 			include: {}
 		};
 

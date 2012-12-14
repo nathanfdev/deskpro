@@ -4,10 +4,20 @@
 			<li class="display-options display-options-trigger"><a></a></li>
 			<li class="right"><span class="sep"></span></li>
 		</ul>
-		<ul class="order-by-menu" >
+		<!--<ul class="order-by-menu" >
 			<li>{{ phrase('agent.general.sort_by') }}</li>
 			<li><a class="button {% if sort_by_date == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
 			<li><a class="button {% if sort_by_date == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
+		</ul>-->
+
+		<ul>
+			<li>{{ phrase('agent.general.ordered_by') }} </li>
+			<li class="order-by-menu-trigger menu-fitted" data-dir="{{ sort_by_date }}" data-menu-button=".button"><a class="button"><span class="label"><label>Date Created</label> <i class="order-dir asc" {% if sort_by_date != 'asc' %}style="display: none"{% endif %}>ASC</i><i class="order-dir desc" {% if sort_by_date != 'desc' %}style="display: none"{% endif %}>DESC</i></span><em></em></a></li>
+		</ul>
+
+		<ul style="display: none" class="order-by-menu">
+			<li data-order-by="asc"><label class="label">Date Created</label> <i class="order-dir">ASC</i></li>
+			<li data-order-by="desc"><label class="label">Date Created</label> <i class="order-dir">DESC</i></li>
 		</ul>
 
 		<ul style="display:none" class="display-options-menu">

@@ -99,7 +99,7 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$replies = $account->getReplies($includeArchived, $this->getSortByDate());
+		$replies = $account->getReplies($includeArchived, $includeAccount, $this->getSortByDate());
 
 		return $this->renderList($account, $replies, 'agent_twitter_replies_list');
 	}
@@ -118,7 +118,7 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$mentions = $account->getMentions($includeArchived, $this->getSortByDate());
+		$mentions = $account->getMentions($includeArchived, $includeAccount, $this->getSortByDate());
 
 		return $this->renderList($account, $mentions, 'agent_twitter_mentions_list');
 	}
@@ -137,7 +137,7 @@ class TwitterStatusController extends AbstractController
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
-		$retweets = $account->getRetweets($includeArchived, $this->getSortByDate());
+		$retweets = $account->getRetweets($includeArchived, $includeAccount, $this->getSortByDate());
 
 		return $this->renderList($account, $retweets, 'agent_twitter_retweets_list');
 	}
@@ -174,7 +174,6 @@ class TwitterStatusController extends AbstractController
 
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
 		$sortByDate = $this->getSortByDate('desc');
 
 		$statuses = $account->getOutgoing($includeArchived, $sortByDate);

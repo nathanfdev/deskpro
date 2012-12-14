@@ -308,7 +308,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
-	 * @return array
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return integer
 	 */
 	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
@@ -321,7 +323,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
-	 * @return array
+	 *
+	 * @return integer
 	 */
 	public function countTimeline($includeArchived = false, $includeAccount = false)
 	{
@@ -335,6 +338,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
 	public function getInbox($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
@@ -348,7 +353,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
-	 * @return array
+	 * @return integer
 	 */
 	public function countInbox($includeArchived = false, $includeAccount = false)
 	{
@@ -377,7 +382,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
-	 * @return array
+	 * @return integer
 	 */
 	public function countMessages($includeArchived = false, $includeAccount = false)
 	{
@@ -389,79 +394,87 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * Retrieve a list of replies for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getReplies($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getReplies($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'reply', false, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'reply', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
 	 * Retrieve a list of replies for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
-	 * @return array
+	 * @param Boolean $includeAccount (optional)
+	 * @return integer
 	 */
-	public function countReplies($includeArchived = false)
+	public function countReplies($includeArchived = false, $includeAccount = false)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'reply', false, $includeArchived);
+			->countTimelineForAccount($this, 'reply', $includeAccount, $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of mentions for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getMentions($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getMentions($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'mention', false, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'mention', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
 	 * Count the mentions for this account.
 	 *
-	 * @return array
+	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
+	 * @return integer
 	 */
-	public function countMentions($includeArchived = false)
+	public function countMentions($includeArchived = false, $includeAccount = false)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'mention', false, $includeArchived);
+			->countTimelineForAccount($this, 'mention', $includeAccount, $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of retweets for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getRetweets($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	public function getRetweets($includeArchived = false, $includeAccount = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->getTimelineForAccount($this, 'retweet', false, $includeArchived, $sortByDate, $limit, $page);
+			->getTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**
 	 * Count the retweets for this account.
 	 *
-	 * @return array
+	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
+	 * @return integer
 	 */
-	public function countRetweets($includeArchived = false)
+	public function countRetweets($includeArchived = false, $includeAccount = false)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
-			->countTimelineForAccount($this, 'retweet', false, $includeArchived);
+			->countTimelineForAccount($this, 'retweet', $includeAccount, $includeArchived);
 	}
 
 	/**
@@ -482,24 +495,13 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Count the outgoings for this account.
 	 *
-	 * @return array
+	 * @param Boolean $includeArchived (optional)
+	 * @return integer
 	 */
 	public function countOutgoing($includeArchived = false)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
 			->countTimelineForAccount($this, 'sent', true, $includeArchived);
-	}
-
-	/**
-	 * @return \Zend\OAuth\Token\Access
-	 */
-	public function getOauthAccessToken()
-	{
-		$accessToken = new \Zend\OAuth\Token\Access();
-		$accessToken->setToken($this['oauth_token']);
-		$accessToken->setTokenSecret($this['oauth_token_secret']);
-
-		return $accessToken;
 	}
 
 	/**
