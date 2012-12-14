@@ -172,11 +172,12 @@ class CategoryEdit
 				}
 			}
 
-			App::getContainer()->getSystemService('publish_structure_cache')->flush();
-			App::getDb()->query("TRUNCATE TABLE permissions_cache");
 			App::getOrm()->persist($cat);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
+
+			App::getContainer()->getSystemService('publish_structure_cache')->flush();
+			App::getDb()->query("TRUNCATE TABLE permissions_cache");
 
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
