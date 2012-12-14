@@ -307,6 +307,18 @@ class Runner
 		$reader = null;
 
 		while (true) {
+			// Protection against nested transactions.
+			// This should not be needed, but its a safety against unclosed transactions.
+			// Without it, a mistake somewhere down the line can result in an entire
+			// process of emails being rolledback.
+			if (App::getDb()->isTransactionActive()) {
+				$this->logger->log("WARNING: Unclosed transaction!", 'info');
+				$e = new \RuntimeException("WARNING: Unclosed transaction!");
+				KernelErrorHandler::logException($e);
+				while (App::getDb()->isTransactionActive()) {
+					App::getDb()->commit();
+				}
+			}
 
 			if ($source) {
 				if ($reader) {
@@ -323,19 +335,6 @@ class Runner
 				App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketLog');
 
 				gc_collect_cycles();
-			}
-
-			// Protection against nested transactions.
-			// This should not be needed, but its a safety against unclosed transactions.
-			// Without it, a mistake somewhere down the line can result in an entire
-			// process of emails being rolledback.
-			if (App::getDb()->isTransactionActive()) {
-				$this->logger->log("WARNING: Unclosed transaction!", 'info');
-				$e = new \RuntimeException("WARNING: Unclosed transaction!");
-				KernelErrorHandler::logException($e);
-				while (App::getDb()->isTransactionActive()) {
-					App::getDb()->commit();
-				}
 			}
 
 			try {
