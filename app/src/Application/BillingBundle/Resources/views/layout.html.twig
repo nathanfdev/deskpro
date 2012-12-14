@@ -126,7 +126,7 @@
 				<ul>
 					{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">{{ phrase('agent.general.admin_interface') }}</span></a></li>{% endif %}
 					{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
-					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.report_interface') }}</span></a></li>{% endif %}
+					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.reports_interface') }}</span></a></li>{% endif %}
 					{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
 				</ul>
 			</div>

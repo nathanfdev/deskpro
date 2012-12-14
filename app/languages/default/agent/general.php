@@ -526,7 +526,6 @@
 	'agent.general.repeat_password'                         => 'Repeat Password',
 	'agent.general.reply'                                   => 'Reply',
 	'agent.general.reply_to_own_tickets'                    => 'Reply to own and teams tickets',
-	'agent.general.report_interface'                        => 'Report Interface',
 	'agent.general.reports_interface'                       => 'Reports Interface',
 	'agent.general.reset_password'                          => 'Reset Password',
 	'agent.general.revision'                                => 'Revision',
