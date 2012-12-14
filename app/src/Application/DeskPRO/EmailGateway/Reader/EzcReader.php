@@ -192,7 +192,12 @@ class EzcReader extends AbstractReader
 		$attachments = array();
 
 		foreach ($this->mail->fetchParts() as $part) {
-			if ($part instanceof \ezcMailFile || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment') || ($part instanceof \ezcMailText && $part->subType == 'calendar')) {
+			if (
+				$part instanceof \ezcMailFile
+				|| ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
+				|| ($part instanceof \ezcMailText && $part->subType == 'calendar')
+				|| ($part instanceof \ezcMailRfc822Digest)
+			) {
 
 				$attach = new Item\Attachment();
 
