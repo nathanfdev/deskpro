@@ -4495,6 +4495,105 @@ dp .dp-labels-search td {
 }
 
 /***********************************************************************************************************************
+* Tweet
+***********************************************************************************************************************/
+
+#dp .dp-status-body {
+	overflow: hidden;
+}
+
+#dp .dp-status-body .dp-photo {
+	float: left;
+}
+
+#dp .dp-status-body .dp-main-status-body {
+	margin-left: 54px;
+}
+
+#dp .dp-status-body .dp-main-status-body h4 {
+	font-size: 13px;
+	font-weight: normal;
+	font-family: @body-font;
+}
+
+#dp .dp-status-body .dp-main-status-body h4 .dp-name {
+	font-weight: bold;
+}
+
+#dp .dp-status-body .dp-main-status-body h4 .dp-screen-name {
+	font-size: 80%;
+	color: #888888;
+}
+
+#dp .dp-status-body .dp-main-status-body .dp-extra-container {
+	margin-top: 5px;
+}
+
+#dp .dp-status-body .dp-main-status-body .dp-extra-container .dp-in-reply-to {
+	color: #999999;
+	font-size: 80%;
+	line-height: 100%;
+}
+
+#dp .dp-status-body .dp-main-status-body .timeago {
+	float: right;
+	margin-top: 5px;
+	margin-left: 5px;
+	color: #999999;
+	font-size: 80%;
+	line-height: 100%;
+}
+
+#dp .dp-status-body .dp-status-buttons {
+	overflow: hidden;
+	list-style: none;
+	margin-top: 10px;
+	margin-left: 54px;
+	padding-top: 5px;
+	border-top: 1px solid #D2D0D0;
+}
+
+#dp .dp-status-body .dp-status-buttons li {
+	list-style: none;
+	float: left;
+	margin-right: 20px;
+}
+
+#dp .dp-status-body .dp-status-buttons li em {
+	position: relative;
+	top: 2px;
+	padding-right: 2px;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url({{ stylevar.static_path }}/images/user/twitter-icons.png) no-repeat;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-reply em {
+	background-position: 0 0;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-reply a:hover em {
+	background-position: -16px 0;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-favorite em {
+	background-position: -32px 0;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-favorite a:hover em {
+	background-position: -48px 0;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-retweet em {
+	background-position: -80px 0;
+}
+
+#dp .dp-status-body .dp-status-buttons li.dp-retweet a:hover em {
+	background-position: -96px 0;
+}
+
+/***********************************************************************************************************************
 * General styles
 ***********************************************************************************************************************/
 

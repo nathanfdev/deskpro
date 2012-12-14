@@ -121,6 +121,15 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getParsedText()
+	{
+		$text = htmlspecialchars($this->text, ENT_COMPAT, 'utf-8');
+		$text = preg_replace('/@([a-z0-9_]+)/i', '<a href="https://twitter.com/$1" target="_blank">$0</a>', $text);
+		$text = \Orb\Util\Strings::linkifyHtml($text, true);
+
+		return nl2br($text);
+	}
+
 	/**
 	 * @return Boolean
 	 */

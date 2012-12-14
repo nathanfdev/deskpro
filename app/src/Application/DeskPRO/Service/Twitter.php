@@ -552,7 +552,7 @@ class Twitter
 					} else {
 						$long_status = $this->_addLongStatus($text, false, $to_user);
 
-						$long_text = "I have sent you a long, private message. Sign in to see it. "
+						$long_text = "I have sent you a private message. Sign in to see it. "
 							. App::getRouter()->generate('user_long_tweet_view', array(
 								'long_id' => $long_status->id
 							), true);
