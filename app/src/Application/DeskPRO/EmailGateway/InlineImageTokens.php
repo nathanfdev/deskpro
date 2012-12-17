@@ -90,7 +90,11 @@ class InlineImageTokens
 			$token = $this->generateToken();
 			$body = str_replace($match[0], $token, $body);
 
-			$this->tokens[$cid] = $token;
+			if (!isset($this->tokens[$cid])) {
+				$this->tokens[$cid] = array();
+			}
+
+			$this->tokens[$cid][] = $token;
 		}
 
 		return $body;
@@ -114,9 +118,13 @@ class InlineImageTokens
 	 * @param string $cid
 	 * @return string|null
 	 */
-	public function getToken($cid)
+	public function getToken($cid, $first = true)
 	{
-		return isset($this->tokens[$cid]) ? $this->tokens[$cid] : null;
+		if ($first) {
+			return isset($this->tokens[$cid]) ? $this->tokens[$cid][0] : null;
+		} else {
+			return isset($this->tokens[$cid]) ? $this->tokens[$cid] : null;
+		}
 	}
 
 
@@ -139,12 +147,16 @@ class InlineImageTokens
 	 */
 	public function replaceToken($cid, $replacement, $body)
 	{
-		$token = $this->getToken($cid);
-		if (!$token) {
+		$tokens = $this->getToken($cid, false);
+		if (!$tokens) {
 			return $body;
 		}
 
-		return str_replace($token, $replacement, $body);
+		foreach ($tokens as $t) {
+			$body = str_replace($t, $replacement, $body);
+		}
+
+		return $body;
 	}
 
 
@@ -175,6 +187,6 @@ class InlineImageTokens
 	 */
 	public function generateToken()
 	{
-		return '__dp_' . mt_rand(1000,9999) . '_a' . count($this->tokens) . '__';
+		return '__dp_' . mt_rand(1000,9999) . '_a' . count($this->tokens) . '_' . \Orb\Util\Util::requestUniqueId() . '__';
 	}
 }

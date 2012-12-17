@@ -192,7 +192,7 @@ abstract class AbstractGatewayProcessor
 			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
-			$this->logMessage(sprintf("Processed blob %s (%i)", $blob->filename, $blob->id));
+			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;
 
 			if ($attach->getContentId()) {
