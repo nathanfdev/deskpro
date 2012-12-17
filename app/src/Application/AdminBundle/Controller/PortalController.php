@@ -72,6 +72,11 @@ class PortalController extends AbstractController
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 				}
 
+				$ext = strtolower(\Orb\Util\Strings::getExtension($orig_blob->getFilename()));
+				if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg'))) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+				}
+
 				$orig_desc = $this->container->getSystemService('filestorage')->getFileDescriptor($orig_blob['id']);
 				$file = $orig_desc->get();
 
@@ -80,12 +85,19 @@ class PortalController extends AbstractController
 				if ($orig_blob->content_type != 'image/x-icon') {
 					if (class_exists('Imagick')) {
 						$im = new \Imagick();
-						$im->readimageblob($file, $orig_blob->getFilename());
+						try {
+							$im->readimageblob($file, $orig_blob->getFilename());
+						} catch (\Exception $e) {
+							throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+						}
 						$im->scaleImage(16, 16, true);
 						$im->setImageFormat('ico');
 						$file_content = $im->getImageBlob();
 					} else {
-						$gd = imagecreatefromstring($file);
+						$gd = @imagecreatefromstring($file);
+						if (!$gd) {
+							throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
+						}
 						$width = imagesx($gd);
 						$height = imagesy($gd);
 
