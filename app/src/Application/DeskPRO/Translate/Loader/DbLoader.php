@@ -97,9 +97,9 @@ class DbLoader implements LoaderInterface
 		if (DP_INTERFACE == 'admin') {
 			$group_like = '1';
 		} elseif (DP_INTERFACE == 'agent') {
-			$group_like = 'groupname LIKE "agent.%" OR groupname LIKE "user.%" OR groupname LIKE "obj_%"';
+			$group_like = 'groupname LIKE "agent.%" OR groupname LIKE "user.%" OR groupname LIKE "obj_%" OR groupname = "custom"';
 		} else {
-			$group_like = 'groupname LIKE "user.%" OR groupname LIKE "obj_%"';
+			$group_like = 'groupname LIKE "user.%" OR groupname LIKE "obj_%" OR groupname = "custom"';
 		}
 
 		$q = $this->dbconn->query("
