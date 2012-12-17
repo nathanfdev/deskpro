@@ -517,7 +517,7 @@ class Twitter
 				}
 
 				$new_account_statuses = $this->_sendStatus(
-					$api, $to_user->id, $text_parts, $account, $reply, $long_status
+					$api, $text_parts, $account, $reply, $long_status
 				);
 			} else {
 				if (!$to_user) {
@@ -552,7 +552,7 @@ class Twitter
 					} else {
 						$long_status = $this->_addLongStatus($text, false, $to_user);
 
-						$long_text = "I have sent you a private message. Sign in to see it. "
+						$long_text = "@$to_user->screen_name I have sent you a private message. Sign in to see it. "
 							. App::getRouter()->generate('user_long_tweet_view', array(
 								'long_id' => $long_status->id
 							), true);
@@ -560,7 +560,7 @@ class Twitter
 					}
 
 					$new_account_statuses = $this->_sendStatus(
-						$api, $to_user->id, $text_parts, $account, $reply, $long_status
+						$api, $text_parts, $account, $reply, $long_status
 					);
 				}
 			}
@@ -750,7 +750,7 @@ class Twitter
 		return $long_status;
 	}
 
-	protected function _sendStatus($api, $user_id, array $text_parts, $account, $reply = null, $long_status = null)
+	protected function _sendStatus($api, array $text_parts, $account, $reply = null, $long_status = null)
 	{
 		$em = App::getOrm();
 

@@ -484,6 +484,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var tab = this.getTab(id);
 		if (!tab) {
 			DP.console.log("Cannot remove, unknown tab %s", id);
+			DP.console.trace();
 			return null;
 		}
 		this.removeTab(tab);

@@ -49,7 +49,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (DeskPRO_Window.newFeedbackLoader)      $(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
 		if (DeskPRO_Window.newPersonLoader)        $(document).bind('keydown', 'p', this.showNewPerson.bind(this));
 		if (DeskPRO_Window.newOrganizationLoader)  $(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
-		if (DeskPRO_Window.newArticleLoader)       $(document).bind('keydown', 'k', this.showNewTask.bind(this));
+		if (DeskPRO_Window.newTweetLoader)         $(document).bind('keydown', 'w', this.showNewTweet.bind(this));
+		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
 
 		this.boundShortkuts = {};
 
@@ -135,6 +136,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	showNewTask: function(ev) {
 		$('form#newTaskForm input, form#newTaskForm select').val('');
 		DeskPRO_Window.newTaskLoader.toggle();
+	},
+	showNewTweet: function(ev) {
+		DeskPRO_Window.newTweetLoader.toggle();
 	},
 	showNewDeal: function(ev) {
 		DeskPRO_Window.newDealLoader.toggle();

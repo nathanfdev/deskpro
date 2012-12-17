@@ -233,6 +233,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTweet.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',

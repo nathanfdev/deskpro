@@ -2296,6 +2296,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });
 
+		if ($('#twitter_section').length) {
+			this.newTweetLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/twitter/new',
+				autostart: autostart
+			});
+			$('#create_tweet_btn').on('click', function() { DeskPRO_Window.newTweetLoader.toggle(); });
+		}
+
 		// Create toggle
 		$('#createContentTrigger').on('click', function(ev) {
 			ev.preventDefault();

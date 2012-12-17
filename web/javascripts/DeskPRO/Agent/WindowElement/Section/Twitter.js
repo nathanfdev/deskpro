@@ -21,7 +21,19 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
 
-		this.getSectionElement($('<section id="twitter_outline"></section>')).on('click', '.sub-toggle', function(ev) {
+		this.getSectionElement().on('click', '.twitter-account-add-status', function() {
+			if (DeskPRO_Window.newTweetLoader) {
+				var accountId = $(this).data('account-id');
+				DeskPRO_Window.newTweetLoader.open(function(page) {
+					var select = page.getEl('from_account');
+					if (select.length && select.is('.with-select2')) {
+						select.select2('val', [accountId]);
+					}
+				});
+			}
+		});
+
+		this.getSectionElement().on('click', '.sub-toggle', function(ev) {
 			var row = $(this).closest('li');
 			var sub = $('> ul.sub-group', row);
 			if (sub.length) {

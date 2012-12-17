@@ -27,6 +27,7 @@
 {% for account in accounts %}
 	<section class="source-section">
 		<header>
+			<span data-account-id="{{ account.id }}" class="twitter-account-add-status add solo"></span>
 			<h1>@{{ account.user.screen_name }}</h1>
 		</header>
 	</section>

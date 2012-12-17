@@ -1,7 +1,0 @@
-{% block content %}
-	<ol>
-		<li data-route="">{{ phrase('agent.twitter.starred_tweets') }}<span class="status-counter" id="twitter_starred_statuses_count">{{ statuses.starred }}</span></li>
-		<li data-route="">{{ phrase('agent.twitter.my_tweets') }}<span class="status-counter" id="twitter_my_statuses_count">{{ statuses.account }}</span></li>
-		{% if app.getSetting('core.use_agent_team') %}<li data-route="">{{ phrase('agent.twitter.team_tweets') }}<span class="status-counter" id="twitter_team_statuses_count">{{ statuses.team }}</span></li>{% endif %}
-	</ol>
-{% endblock %}

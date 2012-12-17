@@ -253,6 +253,10 @@ class MainController extends AbstractController
 					$data[$name] = json_decode($this->forward('AgentBundle:Deal:getSectionData')->getContent());
 					break;
 
+				case 'twitter_section':
+					$data[$name] = json_decode($this->forward('AgentBundle:Twitter:getSectionData')->getContent());
+					break;
+
 				case 'agent_chat_section':
 					$data[$name] = json_decode($this->forward('AgentBundle:AgentChat:getSectionData')->getContent());
 					break;

@@ -1415,38 +1415,38 @@ $collection->add('agent_ticket_spam', new Route(
 # Twitter
 ################################################################################
 
-$collection->add('agent_twitter_accountspane', new Route(
-	'/twitter/pane/accounts',
-	array('_controller' => 'AgentBundle:Twitter:accountsPane'),
+$collection->add('agent_twitter_new', new Route(
+	'/twitter/new',
+	array('_controller' => 'AgentBundle:Twitter:newTweet'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_twitter_statusespane', new Route(
-	'/twitter/pane/statuses',
-	array('_controller' => 'AgentBundle:Twitter:statusesPane'),
-	array(),
+$collection->add('agent_twitter_new_save', new Route(
+	'/twitter/new/save',
+	array('_controller' => 'AgentBundle:Twitter:newTweetSave'),
+	array('_method' => 'POST'),
 	array()
 ));
 
 $collection->add('agent_twitter_starred_tweets_list', new Route(
 	'/twitter/starred-tweets',
 	array('_controller' => 'AgentBundle:Twitter:starredTweets'),
-	array('account_id' => '\\d+'),
+	array(),
 	array('fragment_name' => 'starred', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_my_tweets_list', new Route(
 	'/twitter/my-tweets',
 	array('_controller' => 'AgentBundle:Twitter:myTweets'),
-	array('account_id' => '\\d+'),
+	array(),
 	array('fragment_name' => 'own', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_team_tweets_list', new Route(
 	'/twitter/team-tweets',
 	array('_controller' => 'AgentBundle:Twitter:TeamTweets'),
-	array('account_id' => '\\d+'),
+	array(),
 	array('fragment_name' => 'team', 'fragment_type' => 'list')
 ));
 

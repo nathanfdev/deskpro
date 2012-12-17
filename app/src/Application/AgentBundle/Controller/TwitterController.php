@@ -80,46 +80,40 @@ class TwitterController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-
-	/**
-	 * Display accounts for Super Menu.
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function accountsPaneAction()
+	public function newTweetAction()
 	{
-		return $this->render('AgentBundle:Twitter:pane-accounts.html.twig', array(
-			'accounts' => $this->person->getTwitterAccounts()
+		$accounts = $this->person->getTwitterAccounts();
+		if (!$accounts) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$account = count($accounts) == 1 ? $accounts[0] : false;
+
+		return $this->render('AgentBundle:Twitter:new.html.twig', array(
+			'accounts' => $accounts,
+			'account' => $account
 		));
 	}
 
-	/**
-	 * Display statuses overview for Super Menu.
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function statusesPaneAction()
+	public function newTweetSaveAction()
 	{
-		// fetch persons' accounts
 		$accounts = $this->person->getTwitterAccounts();
 
-		// statuses counters
-		$statuses = array(
-			'starred' => 0,
-			'account' => 0,
-			'team'	=> 0
-		);
+		$text = $this->in->getString('text');
+		$split = $this->in->getBool('split');
+		$account_ids = $this->in->getCleanValueArray('account_ids', 'uint');
 
-		// iterate accounts, count statuses
-		foreach ($accounts as $account) {
-			$statuses['starred'] += $account->countStarredStatuses();
-			$statuses['account'] += $account->countAssignedStatusesToAgent();
-			$statuses['team'] += $account->countAssignedStatusesToTeam();
+		$twitter_service = new \Application\DeskPRO\Service\Twitter();
+
+		if (strlen($text)) {
+			foreach ($accounts AS $account) {
+				if (in_array($account->id, $account_ids)) {
+					$twitter_service->sendAccountMessage('public', $text, $split, $account);
+				}
+			}
 		}
 
-		return $this->render('AgentBundle:Twitter:pane-statuses.html.twig', array(
-			'statuses' => $statuses
-		));
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function starredTweetsAction()

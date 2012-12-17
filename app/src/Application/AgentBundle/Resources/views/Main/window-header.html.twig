@@ -157,6 +157,9 @@
 						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.general.new_download') }} <kbd>d</kbd></span></a></li>
 						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.general.new_feedback') }} <kbd>i</kbd></span></a></li>
 					{% endif %}
+					{% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
+						<li id="create_tweet_btn"><a><span class="createTweet">Tweet <kbd>w</kbd></span></a></li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>
