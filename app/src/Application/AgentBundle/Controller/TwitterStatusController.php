@@ -529,6 +529,48 @@ class TwitterStatusController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function ajaxSaveDeleteAction()
+	{
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'delete');
+
+		$twitter_service = new \Application\DeskPRO\Service\Twitter();
+		$output = $twitter_service->deleteStatus($account_status->account, $account_status);
+
+		$success = $output['success'];
+		$error = $output['error'];
+
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+	}
+
+	public function ajaxSaveEditAction()
+	{
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'edit');
+
+		if (!$account_status->status->long) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($this->in->getBool('process')) {
+			$text = $this->in->getString('text');
+
+			if (strlen($text)) {
+				$account_status->status->long->text = $text;
+				$this->em->persist($account_status->status->long);
+				$this->em->flush();
+			}
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'error' => null,
+				'parsed_text' => $account_status->status->long->getParsedText())
+			);
+		} else {
+			return $this->render('AgentBundle:TwitterStatus:edit-overlay.html.twig', array(
+				'long' => $account_status->status->long
+			));
+		}
+	}
+
 	public function ajaxSaveFavoriteAction()
 	{
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');

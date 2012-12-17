@@ -616,10 +616,13 @@ class Twitter
 
 	public function unsendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)
 	{
-		$api = $account->getTwitterApi();
 		$error = null;
 
 		$account_retweet = $account_status->retweeted;
+
+		if ($account_retweet && $account_retweet->status->getUserId() != $account->getUserId()) {
+			throw new \Exception('Trying to delete tweet for non-account user.');
+		}
 
 		if ($account_retweet) {
 			try {
@@ -629,6 +632,9 @@ class Twitter
 				} else {
 					$this->em->remove($account_retweet);
 					$this->em->remove($account_retweet->status);
+					if ($account_retweet->status->long) {
+					$this->em->remove($account_retweet->status->long);
+				}
 					$this->em->flush();
 				}
 			} catch (\EpiTwitterException $e) {
@@ -636,6 +642,55 @@ class Twitter
 			}  catch (\EpiOAuthException $e) {
 				$error = $e->getMessage();
 			}
+		}
+
+		return array(
+			'success' => !$error,
+			'error' => $error
+		);
+	}
+
+	public function deleteStatus(TwitterAccount $account, TwitterAccountStatus $account_status)
+	{
+		if ($account_status->retweeted) {
+			return $this->unsendRetweet($account, $account_status);
+		}
+
+		if ($account_status->status->recipient) {
+			if ($account_status->status->getRecipientId() != $account->getUserId()) {
+				return array(
+					'success' => false,
+					'error' => 'Direct messages may not be deleted after they have been sent.'
+				);
+			}
+		} else {
+			if ($account_status->status->getUserId() != $account->getUserId()) {
+				throw new \Exception('Trying to delete tweet for non-account user.');
+			}
+		}
+
+		$error = null;
+
+		try {
+			if ($account_status->status->recipient) {
+				$response = $account->getTwitterApi()->post("/direct_messages/destroy/{$account_status->status->id}.json");
+			} else {
+				$response = $account->getTwitterApi()->post("/statuses/destroy/{$account_status->status->id}.json");
+			}
+			if (!empty($response->error)) {
+				$error = $response->error;
+			} else {
+				$this->em->remove($account_status);
+				$this->em->remove($account_status->status);
+				if ($account_status->status->long) {
+					$this->em->remove($account_status->status->long);
+				}
+				$this->em->flush();
+			}
+		} catch (\EpiTwitterException $e) {
+			$error = $e->getMessage();
+		}  catch (\EpiOAuthException $e) {
+			$error = $e->getMessage();
 		}
 
 		return array(
@@ -726,6 +781,8 @@ class Twitter
 				if ($long_status) {
 					$long_status->status = $new_status;
 					$em->persist($long_status);
+
+					$new_status->long = $long_status;
 				}
 
 				$em->persist($new_status);
@@ -767,6 +824,8 @@ class Twitter
 					if ($long_status) {
 						$long_status->status = $new_status;
 						$em->persist($long_status);
+
+						$new_status->long = $long_status;
 					}
 
 					$em->persist($new_status);

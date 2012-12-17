@@ -99,6 +99,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	_initContent: function() {
 		$('.timeago', this.content).timeago();
+		this.content.find('textarea').TextAreaExpander();
 	},
 
 	_initControls: function() {

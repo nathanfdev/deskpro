@@ -1821,10 +1821,10 @@ section.dp-overlay > article.no-footer {
 	position: relative;
 
 	&.archived {
-		opacity: 0.5;
+		.opacity(70);
 
 		&:hover {
-			opacity: 1;
+			.opacity(100);
 		}
 
 		.status-info {
@@ -1852,7 +1852,6 @@ section.dp-overlay > article.no-footer {
 				background: url(../../images/agent/icons/delete.png);
 				cursor: pointer;
 				float: right;
-				margin-right: 2px;
 			}
 
 			i.status-archived {
@@ -1860,7 +1859,22 @@ section.dp-overlay > article.no-footer {
 				background: url(../../images/agent/icons/add.png);
 				cursor: pointer;
 				float: right;
-				margin-right: 2px;
+			}
+
+			i.status-delete {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/cross.png);
+				cursor: pointer;
+				float: right;
+				margin-left: 2px;
+			}
+
+			i.status-edit {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/pencil.png);
+				cursor: pointer;
+				float: right;
+				margin-left: 2px;
 			}
 
 			h4 {
@@ -1881,7 +1895,7 @@ section.dp-overlay > article.no-footer {
 			.extra-container {
 				margin-top: 5px;
 
-				.in-reply-to, .retweet, .action-agent {
+				.extra-row {
 					color: #999999;
 					font-size: 80%;
 					line-height: 100%;
@@ -1900,7 +1914,7 @@ section.dp-overlay > article.no-footer {
 				}
 			}
 
-			.timeago {
+			.status-time {
 				float: right;
 				margin-top: 5px;
 				margin-left: 5px;
@@ -1937,6 +1951,22 @@ section.dp-overlay > article.no-footer {
 			overflow: hidden;
 			word-wrap: break-word;
 
+			i.status-edit {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/pencil.png);
+				cursor: pointer;
+				float: right;
+				margin-left: 2px;
+			}
+
+			i.status-delete {
+				.iconbase(16px, 16px);
+				background: url(../../images/agent/icons/cross.png);
+				cursor: pointer;
+				float: right;
+				margin-left: 2px;
+			}
+
 			.photo {
 				float: left;
 			}
@@ -1959,7 +1989,7 @@ section.dp-overlay > article.no-footer {
 				margin-left: 30px;
 			}
 
-			.action-agent {
+			.extra-row {
 				margin-left: 30px;
 				margin-top: 5px;
 				color: #999999;
@@ -1967,7 +1997,7 @@ section.dp-overlay > article.no-footer {
 				line-height: 100%;
 			}
 
-			.timeago {
+			.status-time {
 				float: right;
 				margin-top: 5px;
 				margin-left: 5px;
@@ -2144,10 +2174,10 @@ article.twitter-status.archived .title .expand-collapse-icon {
 	position: relative;
 
 	&.archived {
-		opacity: 0.5;
+		.opacity(70);
 
 		&:hover, &.no-archive-fade {
-			opacity: 1;
+			.opacity(100);
 		}
 	}
 

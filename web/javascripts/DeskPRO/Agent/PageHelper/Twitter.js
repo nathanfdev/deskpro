@@ -151,6 +151,108 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			}
 		});
 
+		// status delete
+		this.content.on('click', '.status-delete.status-action', function(e) {
+			e.preventDefault();
+
+			var row = self.closestRow(this);
+			var id = row.attr('data-status-id');
+
+			if (id && confirm('Are you sure you want to delete this tweet?')) {
+				$.ajax({
+					url: self.page.getMetaData('saveDeleteUrl'),
+					type: 'POST',
+					dataType: 'json',
+					data: { account_status_id: id },
+					success: function(json) {
+						if (json.success) {
+							row.remove();
+						} else if (json.error) {
+							alert(json.error);
+						}
+					}
+				});
+			}
+		});
+
+		// reply delete
+		this.content.on('click', '.status-delete.reply-action', function(e) {
+			e.preventDefault();
+
+			var reply = $(this).closest('.twitter-reply');
+			var id = reply.attr('data-status-id');
+
+			if (id && confirm('Are you sure you want to delete this tweet?')) {
+				$.ajax({
+					url: self.page.getMetaData('saveDeleteUrl'),
+					type: 'POST',
+					dataType: 'json',
+					data: { account_status_id: id },
+					success: function(json) {
+						if (json.success) {
+							var row = self.closestRow(reply);
+							reply.remove();
+							if (!row.find('.twitter-replies .twitter-reply').length) {
+								row.find('.reply-list').hide();
+							}
+						} else if (json.error) {
+							alert(json.error);
+						}
+					}
+				});
+			}
+		});
+
+		// status/reply edit
+		this.content.on('click', '.status-edit.status-action', function(e) {
+			e.preventDefault();
+
+			var row = $(this).closest('[data-status-id]');
+			var id = row.attr('data-status-id');
+
+			if (id) {
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					contentAjax: {
+						url: BASE_URL + 'agent/twitter/status/ajax-edit',
+						data: { account_status_id: id }
+					},
+					zIndex: 40000, // Above floating people windows
+					onAjaxDone: function() {
+						var wrapper = overlay.getWrapper();
+						var textarea = wrapper.find('textarea[name=text]');
+
+						textarea.focus();
+
+						wrapper.find('.save-trigger').click(function() {
+							wrapper.addClass('loading');
+
+							$.ajax({
+								url: BASE_URL + 'agent/twitter/status/ajax-edit',
+								type: 'POST',
+								data: { account_status_id: id, text: textarea.val(), process: 1},
+								dataType: 'json',
+								success: function(data) {
+									if (data.success) {
+										overlay.close();
+
+										if (row.is('.twitter-reply')) {
+											row.find('.status-text').html(data.parsed_text);
+										} else {
+											row.find('.main-status-body .status-text').html(data.parsed_text);
+										}
+									} else if (data.error) {
+										alert(data.error);
+									}
+								}
+							}).always(function() { wrapper.removeClass('loading'); });
+						});
+					}
+				});
+				overlay.open();
+			}
+		});
+
 		// retweet/unretweet trigger
 		this.content.on('click', 'li.opt-trigger.retweet', function(e) {
 			e.preventDefault();

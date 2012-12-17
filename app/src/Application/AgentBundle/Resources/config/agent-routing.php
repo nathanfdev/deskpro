@@ -1555,6 +1555,20 @@ $collection->add('agent_twitter_status_ajaxsave_archive', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_status_ajaxsave_delete', new Route(
+	'/twitter/status/ajax-delete.json',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveDelete'),
+	array('_method' => 'POST'),
+	array()
+));
+
+$collection->add('agent_twitter_status_ajaxsave_edit', new Route(
+	'/twitter/status/ajax-edit',
+	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveEdit'),
+	array(),
+	array()
+));
+
 $collection->add('agent_twitter_status_ajaxsave_favorite', new Route(
 	'/twitter/status/ajax-favorite.json',
 	array('_controller' => 'AgentBundle:TwitterStatus:ajaxSaveFavorite'),

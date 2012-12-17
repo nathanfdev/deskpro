@@ -10,6 +10,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers = new Orb.Class({
 		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
 			messageUrl: this.getMetaData('saveUserMessageUrl')
 		});
+
+		this.content.find('textarea').TextAreaExpander();
     }
 
 });

@@ -25,23 +25,28 @@
 	<div class="status-text">{{ status.long ? status.long.parsed_text|raw : status.parsed_text|raw }}</div>
 
 	{% if status.isMessage() %}
-		<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
+		<time class="status-time timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
 	{% else %}
-		<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
+		<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="status-time timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
 	{% endif %}
 
-	{% if status.in_reply_to_status or retweet %}
+	{% if status.in_reply_to_status or retweet or (status.long and status.long.date_read) %}
 		<div class="extra-container">
 			{% if status.in_reply_to_status %}
 				{% set reply = status.in_reply_to_status %}
-				<div class="in-reply-to">
+				<div class="extra-row in-reply-to">
 					{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
 					"{{ reply.getClippedText(25) }}"
 				</div>
 			{% endif %}
 			{% if retweet %}
-				<div class="retweet">
-					Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+				<div class="extra-row retweet">
+					<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+				</div>
+			{% endif %}
+			{% if status.long and status.long.date_read %}
+				<div class="extra-row long-read">
+					Long tweet read <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
 				</div>
 			{% endif %}
 		</div>

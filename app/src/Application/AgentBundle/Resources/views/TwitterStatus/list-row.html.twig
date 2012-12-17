@@ -16,9 +16,16 @@
 			<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
 		</div>
 		<div class="main-status-body">
-			{% if status.user.id != account_status.account.user.id %}
+			{% if (not retweet and status.user.id == account_status.account.user.id) or (retweet and retweet.user.id == account_status.account.user.id) %}
+				{% if not status.recipient %}
+					<i class="status-delete status-action tipped" title="Delete"></i>
+				{% endif %}
+			{% else %}
 				<i class="status-archived status-action tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
 				<i class="status-archive status-action tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
+			{% endif %}
+			{% if status.long %}
+				<i class="status-edit status-action tipped" title="Edit"></i>
 			{% endif %}
 			<h4>
 				<span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
@@ -36,27 +43,32 @@
 			<div class="status-text">{{ status.long ? status.long.parsed_text|raw : status.parsed_text|raw }}</div>
 
 			{% if status.isMessage() %}
-				<time class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
+				<time class="timeago status-time" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
 			{% else %}
-				<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
+				<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="timeago status-time" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
 			{% endif %}
 
-			{% if status.in_reply_to_status or retweet or account_status.action_agent %}
+			{% if status.in_reply_to_status or retweet or account_status.action_agent or (status.long and status.long.date_read) %}
 				<div class="extra-container">
 					{% if status.in_reply_to_status %}
 						{% set reply = status.in_reply_to_status %}
-						<div class="in-reply-to">
+						<div class="extra-row in-reply-to">
 							{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
 							"{{ reply.getClippedText(25) }}"
 						</div>
 					{% endif %}
 					{% if retweet %}
-						<div class="retweet">
+						<div class="extra-row retweet">
 							<em></em>Retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
 						</div>
 					{% endif %}
+					{% if status.long and status.long.date_read %}
+						<div class="extra-row long-read">
+							Long tweet read <time class="timeago" title="{{status.long.date_read|date('c', 'UTC')}}">{{status.long.date_read|date('day')}}</time>
+						</div>
+					{% endif %}
 					{% if account_status.action_agent %}
-						<div class="action-agent">
+						<div class="extra-row action-agent">
 							Added by agent <strong>{{ account_status.action_agent.display_name }}</strong>
 						</div>
 					{% endif %}

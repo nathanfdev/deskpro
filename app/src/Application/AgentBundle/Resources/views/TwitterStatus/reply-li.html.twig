@@ -1,4 +1,11 @@
-<li>
+<li class="twitter-reply" data-status-id="{{ reply.id }}">
+	{% if reply.status.user.id == reply.account.user.id and not reply.status.recipient %}
+		<i class="status-delete reply-action tipped" title="Delete"></i>
+	{% endif %}
+	{% if reply.status.long %}
+		<i class="status-edit status-action tipped" title="Edit"></i>
+	{% endif %}
+
 	<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.status.user.id}) }}">
 		<img src="{{ reply.status.user.profile_image_url }}" width="24" height="24" border="0" />
 	</div>
@@ -21,13 +28,19 @@
 	</div>
 
 	{% if reply.status.isMessage() %}
-		<time class="timeago" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</time>
+		<time class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</time>
 	{% else %}
-		<a href="https://twitter.com/{{ reply.status.user.screen_name }}/status/{{ reply.status.id }}" target="_blank" class="timeago" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</a>
+		<a href="https://twitter.com/{{ reply.status.user.screen_name }}/status/{{ reply.status.id }}" target="_blank" class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</a>
+	{% endif %}
+
+	{% if reply.status.long and reply.status.long.date_read %}
+		<div class="extra-row long-read">
+			Long tweet read <time class="timeago" title="{{reply.status.long.date_read|date('c', 'UTC')}}">{{reply.status.long.date_read|date('day')}}</time>
+		</div>
 	{% endif %}
 
 	{% if reply.action_agent %}
-		<div class="action-agent">
+		<div class="extra-row action-agent">
 			Added by agent <strong>{{ reply.action_agent.display_name }}</strong>
 		</div>
 	{% endif %}

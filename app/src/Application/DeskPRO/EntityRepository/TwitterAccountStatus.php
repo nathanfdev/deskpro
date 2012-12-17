@@ -117,8 +117,14 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			case 'reply':
 			case 'mention':
 			case 'retweet':
-			case 'sent':
 				$query .= " AND s.status_type IN ('$type', 'sent')";
+				break;
+
+			case 'sent':
+				// need to get sent DMs too
+				$query .= " AND (s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
+				$params[] = $account->user->getId();
+				$i++;
 				break;
 
 			case 'direct':
@@ -184,8 +190,14 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			case 'reply':
 			case 'mention':
 			case 'retweet':
-			case 'sent':
 				$query .= " AND s.status_type IN ('$type', 'sent')";
+				break;
+
+			case 'sent':
+				// need to get sent DMs too
+				$query .= " AND (s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
+				$params[] = $account->user->getId();
+				$i++;
 				break;
 
 			case 'direct':
