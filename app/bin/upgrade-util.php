@@ -630,6 +630,9 @@ class Upgrade
 		if ($checks_fail) {
 			$write_status("error_basic_checks_fail");
 			$this->outAndLog("Failed basic checks");
+
+			$e = new \RuntimeException("Failed basic checks");
+			$this->sendLog($e);
 			exit(10);
 		}
 
@@ -644,6 +647,7 @@ class Upgrade
 		} catch (ServiceCallException $e) {
 			$write_status("error_server_comm", $e->getMessage());
 			$this->outAndLog("Error communicating with server: " . $e->getMessage());
+			$this->sendLog($e);
 			exit(13);
 		}
 
@@ -673,6 +677,7 @@ class Upgrade
 			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog($e);
 			exit(20);
 		}
 
@@ -705,6 +710,7 @@ class Upgrade
 			$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog($e);
 			exit(14);
 		}
 
@@ -732,6 +738,7 @@ class Upgrade
 			$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
+			$this->sendLog($e);
 			exit(15);
 		}
 
@@ -750,11 +757,7 @@ class Upgrade
 			$write_status("error_installing_files", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
-
-			if (!$is_error_halt) {
-				$this->revertAutoUpgrade();
-			}
-
+			$this->sendLog($e);
 			exit(25);
 		}
 
@@ -779,9 +782,11 @@ class Upgrade
 
 			if (!$is_error_halt) {
 				$write_status("reverting_files");
-				$this->revertAutoUpgrade();
 				$fileutil->touch(dp_get_data_dir().'/helpdesk-offline.trigger');
 			}
+
+			$e = new \RuntimeException("Error during upgrade");
+			$this->sendLog($e);
 
 			exit(30);
 		}
