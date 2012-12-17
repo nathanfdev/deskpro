@@ -36,7 +36,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for dep in departments if dep.is_tickets_enabled %}
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_tickets_enabled %}
 					<tr>
 						{% if dep.children|length %}
 							<td class="title title-group">{{ dep.title }}</td>
@@ -72,7 +72,7 @@
 			</thead>
 			<tbody>
 				{% set with_chat = false %}
-				{% for dep in departments if dep.is_chat_enabled %}
+				{% for dep in app.getDataRepository('Department').getRootNodes() if dep.is_chat_enabled %}
 					{% set with_chat = true %}
 					<tr>
 						{% if dep.children|length %}

@@ -41,6 +41,7 @@ class DepartmentDataService extends BaseRepositoryService
 	protected $has_init = false;
 	protected $cats;
 	protected $cat_ids = array();
+	protected $root_node_ids = array();
 	protected $filtered_nodes = array();
 	protected $filtered_chat_nodes = array();
 
@@ -117,6 +118,10 @@ class DepartmentDataService extends BaseRepositoryService
 				'parent_id' => $c->parent ? $c->parent->getId() : 0,
 				'title' => $c->getTitle()
 			);
+
+			if (!$c->parent) {
+				$this->root_node_ids[] = $c->getId();
+			}
 		}
 		foreach ($this->cats as $c) {
 			$c->children->initialize();
@@ -249,13 +254,12 @@ class DepartmentDataService extends BaseRepositoryService
 	public function getRootNodes()
 	{
 		$this->preload();
-		$root_ids = $this->repos->getRootNodeIds();
 
-		if (!$root_ids) {
+		if (!$this->root_node_ids) {
 			return array();
 		}
 
-		return $this->getByIds($root_ids);
+		return $this->getByIds($this->root_node_ids);
 	}
 
 	public function getPath($category)
