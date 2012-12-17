@@ -275,6 +275,8 @@ class WorkHoursSet
 			return $work_date;
 		}
 
+		$has_adjusted = false;
+
 		do {
 			list($dow, $year, $month, $day, $hours, $minutes, $seconds) = explode('|', $work_date->format('w|Y|n|j|G|i|s'));
 			$dow = intval($dow);
@@ -288,6 +290,7 @@ class WorkHoursSet
 			if (!isset($this->work_days[$dow])) {
 				$work_date->modify($adjust);
 				$work_date->setTime(0, 0, 0);
+				$has_adjusted = true;
 				continue;
 			}
 
@@ -300,14 +303,16 @@ class WorkHoursSet
 				if ($holiday['day'] == $day && $holiday['month'] == $month) {
 					$work_date->modify($adjust);
 					$work_date->setTime(0, 0, 0);
+					$has_adjusted = true;
 					continue 2;
 				}
 			}
 
 			$day_offset = $hours * 3600 + $minutes * 60 + $seconds;
-			if ($day_offset >= $this->work_start) {
+			if ($day_offset >= $this->work_start && !$has_adjusted) {
 				$work_date->modify($adjust);
 				$work_date->setTime(0, 0, 0);
+				$has_adjusted = true;
 				continue;
 			}
 
