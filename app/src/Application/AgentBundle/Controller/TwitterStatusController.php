@@ -443,17 +443,46 @@ class TwitterStatusController extends AbstractController
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
 		$account = $account_status->account;
 
-		if (!$account_status->retweeted) {
-			$twitter_service = new \Application\DeskPRO\Service\Twitter();
-			$output = $twitter_service->sendRetweet($account, $account_status);
-			$success = $output['success'];
-			$error = $output['error'];
+		$success = true;
+		$error = null;
+		$retweet = false;
+		$html = array();
+
+		if ($this->in->getBool('retweet')) {
+			if (!$account_status->retweeted) {
+				$twitter_service = new \Application\DeskPRO\Service\Twitter();
+				$output = $twitter_service->sendRetweet($account, $account_status);
+				$success = $output['success'];
+				$error = $output['error'];
+				if (!$error) {
+					$retweet = true;
+				}
+			}
 		} else {
-			$success = true;
-			$error = null;
+			$text = $this->in->getString('text');
+			if (strlen($text)) {
+				$twitter_service = new \Application\DeskPRO\Service\Twitter();
+				$output = $twitter_service->sendAccountMessage('public', $text, true, $account, $account_status);
+				$success = $output['success'];
+				$error = $output['error'];
+
+				if ($output['new_account_statuses']) {
+					foreach ($output['new_account_statuses'] AS $new_account_status) {
+						$html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+							'account_status' => $account_status,
+							'reply' => $new_account_status
+						));
+					}
+				}
+			}
 		}
 
-		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
+		return $this->createJsonResponse(array(
+			'success' => $success,
+			'error' => $error,
+			'retweet' => $retweet,
+			'html' => $html
+		));
 	}
 
 	/**

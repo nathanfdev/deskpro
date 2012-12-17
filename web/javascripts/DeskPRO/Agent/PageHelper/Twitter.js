@@ -253,32 +253,97 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			}
 		});
 
-		// retweet/unretweet trigger
+		// retweet trigger
 		this.content.on('click', 'li.opt-trigger.retweet', function(e) {
 			e.preventDefault();
 
-			var link = $(this);
-			var id = self.closestRow(this).attr('data-status-id');
+			var row = self.closestRow(this);
 
-			if (id && confirm('Are you sure you want to retweet this?')) {
-				$.ajax({
-					url: page.getMetaData('saveRetweetUrl'),
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						account_status_id: id
-					},
-					success: function(json) {
-						if (json.success) {
-							link.addClass('retweeted').removeClass('retweet');
-							link.find('label').text('Retweeted');
-						} else {
-							alert(json.error);
-						}
-					}
-				});
+			var retweetContainer = row.find('.new-retweet');
+			if (retweetContainer.is(':visible')) {
+				retweetContainer.hide();
+			} else {
+				retweetContainer.show();
+
+				var textarea = retweetContainer.find('textarea');
+				self.updateTweetLength(textarea);
+				textarea.focus();
 			}
 		});
+		this.content.on('change', '.new-retweet .retweet-type input[type=radio]', function() {
+			var $this = $(this), container = $this.closest('.new-retweet');
+			if ($this.val() == '1') {
+				container.find('.edit-only').hide();
+			} else {
+				container.find('.edit-only').show();
+			}
+		});
+		this.content.on('keypress keyup change', '.new-retweet textarea', function() {
+			var $this = $(this);
+			setTimeout(function() {
+				self.updateTweetLength($this);
+			}, 0);
+		});
+		this.content.on('click', '.cancel-retweet-trigger', function() {
+			var retweetContainer = $(this).closest('.new-retweet');
+			retweetContainer.hide();
+		});
+		this.content.on('click', '.save-retweet-trigger', function(e) {
+			e.preventDefault();
+
+			var row = self.closestRow(this);
+			var id = row.attr('data-status-id');
+			var retweetContainer = $(this).closest('.new-retweet');
+
+			var val = $.trim(retweetContainer.find('textarea').val());
+			if (!val.length) {
+				retweetContainer.hide();
+				return;
+			}
+
+			var data = retweetContainer.find('form').serializeArray();
+
+			data.push({
+				name: 'account_status_id',
+				value: id
+			});
+
+			retweetContainer.addClass('loading');
+
+			$.ajax({
+				url: page.getMetaData('saveRetweetUrl'),
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				success: function(json) {
+					if (json.success) {
+						if (json.html && json.html.length) {
+							for (var i = 0; i < json.html.length; i++) {
+								var html = $(json.html[i]);
+								row.find('.twitter-replies').append(html);
+								$('.timeago', html).timeago();
+							}
+
+							row.find('.reply-list').show();
+						}
+
+						if (json.retweet) {
+							var link = row.find('li.opt-trigger.retweet');
+							link.addClass('retweeted').removeClass('retweet');
+							link.find('label').text('Retweeted');
+						}
+
+						retweetContainer.hide();
+					} else {
+						alert(json.error);
+					}
+				}
+			}).always(function() {
+				retweetContainer.removeClass('loading');
+			});
+		});
+
+		// unretweet trigger
 		this.content.on('click', 'li.opt-trigger.retweeted', function(e) {
 			e.preventDefault();
 
@@ -373,7 +438,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					data: data,
 					success: function(json) {
 						if (json.success) {
-							if (json.html) {
+							if (json.html && json.html.length) {
 								for (var i = 0; i < json.html.length; i++) {
 									var html = $(json.html[i]);
 									row.find('.twitter-replies').append(html);
@@ -465,7 +530,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			.replace(/http:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '12345678901234567890')
 			.replace(/https:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '123456789012345678901');
 
-		var newMessageArea = textarea.closest('.new-message'),
+		var newMessageArea = textarea.closest('.new-message, .new-retweet'),
 			charCount = newMessageArea.find('.character-count'),
 			charCountCounter = charCount.find('em'),
 			overOptions = newMessageArea.find('.over-options');

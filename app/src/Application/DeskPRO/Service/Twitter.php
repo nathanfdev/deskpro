@@ -565,9 +565,9 @@ class Twitter
 				}
 			}
 		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}
 
 		return array(
@@ -603,9 +603,9 @@ class Twitter
 				$this->em->flush();
 			}
 		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}
 
 		return array(
@@ -638,9 +638,9 @@ class Twitter
 					$this->em->flush();
 				}
 			} catch (\EpiTwitterException $e) {
-				$error = $e->getMessage();
+				$error = $this->getTwitterError($e);
 			}  catch (\EpiOAuthException $e) {
-				$error = $e->getMessage();
+				$error = $this->getTwitterError($e);
 			}
 		}
 
@@ -688,9 +688,9 @@ class Twitter
 				$this->em->flush();
 			}
 		} catch (\EpiTwitterException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}  catch (\EpiOAuthException $e) {
-			$error = $e->getMessage();
+			$error = $this->getTwitterError($e);
 		}
 
 		return array(
@@ -717,7 +717,7 @@ class Twitter
 			} catch (\EpiTwitterException $e) {
 				// likely already in the state that we want, so set it to that
 			}  catch (\EpiOAuthException $e) {
-				$error = $e->getMessage();
+				$error = $this->getTwitterError($e);
 			}
 
 			if (empty($error)) {
@@ -841,5 +841,15 @@ class Twitter
 		}
 
 		return $new_account_statuses;
+	}
+
+	public function getTwitterError(\Exception $e)
+	{
+		$json = @json_decode($e->getMessage());
+		if ($json && !empty($json->errors[0]->message)) {
+			return "Twitter error message: " . $json->errors[0]->message;
+		} else {
+			return $e->getMessage();
+		}
 	}
 }

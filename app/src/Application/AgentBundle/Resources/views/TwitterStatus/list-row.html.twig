@@ -91,6 +91,31 @@
 			'reply_form_extra': '<input type="hidden" name="account_status_id" value="' ~ account_status.id ~ '" />'
 		} %}
 	</div>
+	<div class="new-retweet" style="display: none">
+		<form class="message-block">
+			<ul class="retweet-type">
+				<li><label><input type="radio" name="retweet" value="1" checked="checked" /> Retweet as-is</label></li>
+				<li><label><input type="radio" name="retweet" value="0" /> Retweet with edit</label>
+					<div class="edit-only" style="margin-left: 16px; display: none">
+						<textarea name="text" style="display: block; width: 100%; height: 50px; box-sizing: border-box">RT @{{ status.user.screen_name }}: {{ status.text }}</textarea>
+					</div>
+				</li>
+			</ul>
+			<div style="margin-top: 3px; margin-left: 16px">
+				<div class="is-not-loading">
+					<div class="edit-only" style="display: none; float: right">
+						<span class="character-count"><em>140</em> remaining</span>
+						<span class="over-options" style="display: none">Split to multiple messages</span>
+					</div>
+					<button class="clean-white small save-retweet-trigger">Retweet</button>
+					<span class="cancel-retweet-trigger">{{ phrase('agent.general.cancel') }}</span>
+				</div>
+				<div class="is-loading">
+					{{ phrase('agent.general.saving') }}
+				</div>
+			</div>
+		</form>
+	</div>
 	<div class="status-notes notes-wrap" {% if not account_status.notes|length %}style="display: none"{% endif %}>
 		<h5>Notes</h5>
 		<ul class="note-list">
