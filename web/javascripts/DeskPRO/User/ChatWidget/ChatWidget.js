@@ -195,7 +195,7 @@ var DpChatWidget = new (function() {
 			css.push('z-index: 90000');
 			css = css.join(';');
 
-			chatIframeHolder = util.createEl('<div id="dp_chat_iframe_holder" class="dp-chat-iframe-holder" style="' + css  +'" />');
+			chatIframeHolder = util.createEl('<div id="dp_chat_iframe_holder" class="dp-chat-iframe-holder" style="' + css  +'"></div>');
 			body.appendChild(chatIframeHolder);
 
 
@@ -543,28 +543,28 @@ var DpChatWidget = new (function() {
 		}
 
 		var tpl = '<div id="dpchat_wrap"> \
-			  <table id="dpchat_border_table" cellspacing="0" cellborder="0" border="0" width="100%"> \
+			  <table id="dpchat_border_table" cellspacing="0" border="0" width="100%"> \
 				<tbody> \
 				  <tr> \
-					<td id="dpchat_border_11"><div>&nbsp;</div></td> \
-					<td id="dpchat_border_12"><div>&nbsp;</div></td> \
+					<td id="dpchat_border_11"><div>&#160;</div></td> \
+					<td id="dpchat_border_12"><div>&#160;</div></td> \
 				  </tr> \
 				  <tr> \
-					<td id="dpchat_border_21" width="100"><div> \
-					  <em id="dpchat_btn_label_start-chat">PHRASE1</em> \
-					  <em id="dpchat_btn_label_open-chat" style="display:none;">PHRASE2</em> \
+					<td id="dpchat_border_21" style="width:100px;"><div> \
+					  <em id="dpchat_btn_label_start_chat">PHRASE1</em> \
+					  <em id="dpchat_btn_label_open_chat" style="display:none;">PHRASE2</em> \
 					</div></td> \
-					<td id="dpchat_border_22"><div>&nbsp;</div></td> \
+					<td id="dpchat_border_22"><div>&#160;</div></td> \
 				  </tr> \
 				  <tr> \
-					<td id="dpchat_border_31"><div>&nbsp;</div></td> \
-					<td id="dpchat_border_32"><div>&nbsp;</div></td> \
+					<td id="dpchat_border_31"><div>&#160;</div></td> \
+					<td id="dpchat_border_32"><div>&#160;</div></td> \
 				  </tr> \
 				</tbody> \
 			  </table> \
 			  <div id="dpchat_btn_text"> \
-				<em id="dpchat_btn_label_start-chat2">PHRASE1</em> \
-				<em id="dpchat_btn_label_open-chat2" style="display: none;">PHRASE2</em> \
+				<em id="dpchat_btn_label_start_chat2">PHRASE1</em> \
+				<em id="dpchat_btn_label_open_chat2" style="display: none;">PHRASE2</em> \
 			  </div> \
 			</div>';
 
@@ -648,10 +648,10 @@ var DpChatWidget = new (function() {
 
 		switch (messageId) {
 			case 'started':
-				util.hideEl(document.getElementById('dpchat_btn_label_start-chat'));
-				util.hideEl(document.getElementById('dpchat_btn_label_start-chat2'));
-				util.showEl(document.getElementById('dpchat_btn_label_open-chat'));
-				util.showEl(document.getElementById('dpchat_btn_label_open-chat2'));
+				util.hideEl(document.getElementById('dpchat_btn_label_start_chat'));
+				util.hideEl(document.getElementById('dpchat_btn_label_start_chat2'));
+				util.showEl(document.getElementById('dpchat_btn_label_open_chat'));
+				util.showEl(document.getElementById('dpchat_btn_label_open_chat2'));
 
 				// The button might be hidden because of doResume above,
 				// but we want to show it all the time (its overlapped anyway)
