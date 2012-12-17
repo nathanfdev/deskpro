@@ -1415,9 +1415,10 @@ class TicketsStep extends AbstractDeskpro3Step
 						$new_val = $this->getMappedNewId('ticket_def_choice', $field_info['id'].'_'.$val);
 						if ($new_val) {
 							$this->db->insert('custom_data_ticket', array(
-								'ticket_id' => $insert_ticket['id'],
-								'field_id' => $new_val,
-								'value' => 1
+								'ticket_id'     => $insert_ticket['id'],
+								'field_id'      => $new_val,
+								'root_field_id' => $field['id'],
+								'value'         => 1
 							));
 						}
 					}
