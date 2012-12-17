@@ -386,12 +386,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-sys-filter-counts'}],
 			'filters.counts',
-			{recurring: true, minDelay: 120000/*2minutes*/ }
+			{recurring: true, minDelay: 57000/*57sec*/ }
 		);
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-custom-filter-counts'}],
 			'filters.counts',
-			{recurring: true, minDelay: 600000/*10 mintues*/, minDelayAfterOne:true }
+			{recurring: true, minDelay: 57000/*57sec*/, minDelayAfterOne:true }
 		);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts, this);
