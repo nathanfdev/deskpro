@@ -61,6 +61,7 @@
 	'user.profile.set_as_primary_address'              => 'Set as primary address',
 	'user.profile.timezone'                            => 'Timezone',
 	'user.profile.trying_to_add_invalid_email'         => 'The email address you entered is invalid.',
+	'user.profile.twitter_accounts'                    => 'Twitter Accounts',
 	'user.profile.ucfirst_delete'                      => 'Delete',
 	'user.profile.upload_new_picture'                  => 'Upload a new picture:',
 	'user.profile.validation_resent_to'                => 'Validation email was resent to {{email}}',

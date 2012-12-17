@@ -258,6 +258,42 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
+	public function getVerifiedPeople()
+	{
+		$output = array();
+		$results = App::getOrm()->createQuery("
+			SELECT tu, p
+			FROM DeskPRO:PersonTwitterUser tu
+			INNER JOIN tu.person p
+			WHERE tu.twitter_user = ?0
+				AND tu.is_verified = true
+			ORDER BY p.name
+		")->execute(array($this));
+		foreach ($results AS $result) {
+			$output[] = $result->person;
+		}
+
+		return $output;
+	}
+
+	public function getPossiblePeople()
+	{
+		$output = array();
+		$results = App::getOrm()->createQuery("
+			SELECT tu, p
+			FROM DeskPRO:PersonTwitterUser tu
+			INNER JOIN tu.person p
+			WHERE tu.screen_name = ?0
+				AND tu.is_verified = false
+			ORDER BY p.name
+		")->execute(array($this->screen_name));
+		foreach ($results AS $result) {
+			$output[] = $result->person;
+		}
+
+		return $output;
+	}
+
 	public function offsetGet($offset)
 	{
 		if (self::$_processing_stubs) {

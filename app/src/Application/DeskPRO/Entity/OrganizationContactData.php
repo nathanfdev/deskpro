@@ -60,6 +60,9 @@ class OrganizationContactData extends ContactDataAbstract
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
 		$metadata->setPrimaryTable(array( 'name' => 'organizations_contact_data', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->addLifecycleCallback('_preSave', 'prePersist');
+		$metadata->addLifecycleCallback('_preSave', 'preUpdate');
+		$metadata->addLifecycleCallback('_preDelete', 'preDelete');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'contact_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'contact_type', ));
 		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));

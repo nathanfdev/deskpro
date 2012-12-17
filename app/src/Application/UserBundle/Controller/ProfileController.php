@@ -146,6 +146,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($this->person);
 
+		$enable_twitter = App::getConfig('enable_twitter') && \Application\DeskPRO\Service\Twitter::getUserConsumerKey();
+
 		return $this->render('UserBundle:Profile:index.html.twig', array(
 			'form'               => $form->createView(),
 			'validating_emails'  => $validating_emails,
@@ -155,7 +157,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'invalid_custom_fields' => $invalid_custom_fields,
 			'is_org_manager'     => $is_org_manager,
 			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
-			'new_blob_key'       => $new_blob_key
+			'new_blob_key'       => $new_blob_key,
+			'enable_twitter'     => $enable_twitter
 		));
 	}
 
@@ -187,6 +190,89 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		return $this->redirectRoute('user_profile');
 	}
 
+	############################################################################
+	# associateTwitter
+	############################################################################
+
+	public function associateTwitterAction()
+	{
+		if (\Application\DeskPRO\Service\Twitter::getUserConsumerKey()) {
+			if ($this->in->getBool('start')) {
+				$api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
+				$api->setCallback($this->generateUrl('user_profile_associate_twitter', array(), true));
+				return $this->redirect($api->getAuthenticateUrl());
+			} else if ($this->in->getString('oauth_token')) {
+				$api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
+				$api->setToken($this->in->getString('oauth_token'));
+				$access = $api->getAccessToken();
+
+				App::getDb()->executeUpdate("
+					INSERT INTO people_twitter_users
+						(person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
+					VALUES (?, ?, ?, 1, ?, ?)
+					ON DUPLICATE KEY UPDATE
+						twitter_user_id = VALUES(twitter_user_id),
+						screen_name = VALUES(screen_name),
+						is_verified = 1,
+						oauth_token = VALUES(oauth_token),
+						oauth_token_secret = VALUES(oauth_token_secret)
+				", array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
+
+				$has_account = false;
+				foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+					if ($twitter_details->field_1 == $access->screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $access->user_id)) {
+						$twitter_details->field_10 = '1';
+						$this->em->persist($twitter_details);
+						$has_account = true;
+					}
+				}
+
+				if (!$has_account) {
+					$twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+					$twitter_details->contact_type = 'twitter';
+					$twitter_details->person = $this->person;
+					$twitter_details->field_1 = $access->screen_name;
+					$twitter_details->field_2 = '0';
+					$twitter_details->field_3 = $access->user_id;
+					$twitter_details->field_10 = '1';
+					$this->em->persist($twitter_details);
+				}
+
+				$this->em->flush();
+			}
+		}
+
+		return $this->redirectRoute('user_profile');
+	}
+
+	############################################################################
+	# removeTwitter
+	############################################################################
+
+	public function removeTwitterAction($account_id)
+	{
+		$twitter_user_id = null;
+
+		foreach ($this->person->twitter_users AS $account) {
+			if ($account->id == $account_id) {
+				$this->em->remove($account);
+				$twitter_user_id = $account->twitter_user->id;
+				break;
+			}
+		}
+
+		if ($twitter_user_id) {
+			foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+				if ($twitter_details->field_3 && $twitter_details->field_3 == $twitter_user_id) {
+					$this->em->remove($twitter_details);
+				}
+			}
+		}
+
+		$this->em->flush();
+
+		return $this->redirectRoute('user_profile');
+	}
 
 	############################################################################
 	# setDefaultEmail

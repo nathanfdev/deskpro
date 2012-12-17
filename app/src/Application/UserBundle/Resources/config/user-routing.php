@@ -174,6 +174,20 @@ $collection->add('user_profile_setlang', new Route(
 	array()
 ));
 
+$collection->add('user_profile_associate_twitter', new Route(
+	'/profile/associate-twitter',
+	array('_controller' => 'UserBundle:Profile:associateTwitter'),
+	array(),
+	array()
+));
+
+$collection->add('user_profile_twitter_remove', new Route(
+	'/profile/twitter/{account_id}/remove',
+	array('_controller' => 'UserBundle:Profile:removeTwitter'),
+	array('account_id' => '\\d+'),
+	array()
+));
+
 $collection->add('user_profile_changepassword', new Route(
 	'/profile/change-password',
 	array('_controller' => 'UserBundle:Profile:changePassword'),

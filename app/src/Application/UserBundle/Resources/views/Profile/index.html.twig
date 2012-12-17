@@ -194,6 +194,40 @@
 	</div>
 </section>
 
+{% if enable_twitter %}
+	<section class="dp-portal-section">
+		<header>
+			<h1>{{ phrase('user.profile.twitter_accounts') }}</h1>
+		</header>
+		<div class="dp-content-block dp-profile-block">
+
+			<div class="dp-content-wrapper">
+				<table class="dp-twitter-table dp-table dp-table-bordered dp-table-striped">
+					<tbody>
+						{% for account in app.user.twitter_users %}
+						{% if account.is_verified %}
+							<tr>
+								<td>
+									<div class="dp-controls">
+										<a class="remove" href="{{ path('user_profile_twitter_remove', {'account_id': account.id}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
+									</div>
+									@{{ account.screen_name }}
+								</td>
+							</tr>
+						{% endif %}
+						{% endfor %}
+						<tr>
+							<td>
+								<a href="{{ path('user_profile_associate_twitter', {'start': 1}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.add') }}</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+{% endif %}
+
 {% if app.getSetting('core.deskpro_source_enabled') %}
 <section class="dp-portal-section">
 	<header>

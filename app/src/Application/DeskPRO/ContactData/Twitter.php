@@ -50,9 +50,42 @@ class Twitter extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
+		$old_name = $contact_record->field_1;
+
 		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
 		$contact_record->field_1 = $input['username'];
 		$contact_record->field_2 = isset($input['display_feed']) && $input['display_feed'] ? 1 : 0;
+
+		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
+			if ($old_name != $contact_record->field_1) {
+				// changing the name - not verified
+				$contact_record->field_10 = '';
+			}
+
+			$contact_record->addSaveCallback(function(\Application\DeskPRO\Entity\PersonContactData $contact_data) use($old_name) {
+				if ($old_name != $contact_data->field_1) {
+					App::getDb()->delete('people_twitter_users', array(
+						'person_id' => $contact_data->person->id,
+						'screen_name' => $old_name
+					));
+				}
+
+				App::getDb()->executeUpdate("
+					INSERT IGNORE INTO people_twitter_users
+						(person_id, screen_name, is_verified)
+					VALUES (?, ?, 0)
+				", array($contact_data->person->id, $contact_data->field_1));
+			});
+		}
+	}
+
+	public function deleteType(ContactDataAbstract $contact_record) {
+		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
+			App::getDb()->delete('people_twitter_users', array(
+				'person_id' => $contact_record->person->id,
+				'screen_name' => $contact_record->field_1
+			));
+		}
 	}
 
 	/**
