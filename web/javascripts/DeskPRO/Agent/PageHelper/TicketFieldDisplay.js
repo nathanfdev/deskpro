@@ -16,10 +16,20 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 
 		var depItems = [];
 		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY[this.mode]) {
+
+			if (this.mode == 'view') {
+				if (typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined' && typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined') {
+					DP.console.log('[TicketFieldDisplay] Dynamic switch mode to create');
+					this.mode = 'create';
+				}
+			}
+
 			if (typeof window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] == 'undefined') {
-				depItems = window.DESKPRO_TICKET_DISPLAY[[this.mode]][0] || [];
+				DP.console.log('[TicketFieldDisplay] Dynamic switch to dep 0');
+				depItems = window.DESKPRO_TICKET_DISPLAY[this.mode][0] || [];
 			} else {
-				depItems = window.DESKPRO_TICKET_DISPLAY[[this.mode]][department_id] || [];
+				DP.console.log('[TicketFieldDisplay] Using dep');
+				depItems = window.DESKPRO_TICKET_DISPLAY[this.mode][department_id] || [];
 			}
 		}
 
