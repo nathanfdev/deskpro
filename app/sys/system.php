@@ -176,6 +176,15 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		// This is where index.php checks take place
 		$res = $this->preResponseHandled($request, $type, $catch);
 		if ($res) {
+			if (($loc = $res->headers->get('Location')) && isset($_GET['parent_url'])) {
+				if (strpos($loc, '?') === false) {
+					$loc .= '?';
+				} else {
+					$loc .= '&';
+				}
+				$loc .= 'parent_url=' . urlencode($_GET['parent_url']);
+				$res->headers->set('Location', $loc);
+			}
 			return $res;
 		}
 
