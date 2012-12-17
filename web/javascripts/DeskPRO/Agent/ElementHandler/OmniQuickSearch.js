@@ -36,6 +36,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 		this.tplResultSection = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_section'));
 		this.tplResultRow = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_result_row'));
+		this.tplResultTwitter = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_result_row_twitter'));
 
 		this.el.on('keydown', function(ev) {
 			self._handleKeyPress(ev);
@@ -111,7 +112,11 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			// If there is a selection, then open that selection
 			var focused = this.resultWrap.find('.result-focus');
 			if (focused[0]) {
-				DeskPRO_Window.runPageRouteFromElement(focused);
+				if (focused.is('.twitter-user-find')) {
+					focused.click();
+				} else {
+					DeskPRO_Window.runPageRouteFromElement(focused);
+				}
 				this.close();
 
 			// Otherwise do the "long" search
@@ -328,7 +333,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 		Object.each(results, function(typeResults, type) {
 
-			if (!typeResults || !typeResults.length) {
+			if (!typeResults || !typeResults.length || !$.isArray(typeResults)) {
 				return;
 			}
 
@@ -382,6 +387,21 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				sectionEl.find('.expand-btn').text(title).data('more-text', title).show();
 			}
 		}, this);
+
+		if (results.twitter) {
+			var type = 'twitter';
+			var sectionEl = this.resultWrap.find('section.' + type);
+			if (!sectionEl.length) {
+				sectionEl = $(this.tplResultSection.replace(/\{TITLE\}/g, type).replace(/\{TYPE\}/g, type));
+				sectionEl.appendTo(this.resultWrap);
+			}
+			sectionEl.find('.expand-btn').removeClass('expanded').hide();
+
+			var resultElHtml = this.tplResultTwitter.replace(/\{TITLE\}/g, results.twitter).replace(/\{TYPE\}/g, type);
+			$(resultElHtml).appendTo($('ul.result-list', sectionEl));
+
+			count++;
+		}
 
 		if (count) {
 			this.open();

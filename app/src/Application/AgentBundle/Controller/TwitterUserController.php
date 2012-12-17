@@ -84,9 +84,64 @@ class TwitterUserController extends AbstractController
 		return $user;
 	}
 
+	public function findAction()
+	{
+		$accounts = $this->person->getTwitterAccounts();
+		if (!$accounts) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$name = $this->in->getString('name');
+		if ($name && $name[0] == '@') {
+			$name = substr($name, 1);
+		}
+		$user = $this->em->getRepository('DeskPRO:TwitterUser')->getByScreenName($name);
+		if (!$user) {
+			$account = $this->em->getRepository('DeskPRO:TwitterAccount')->getFirst();
+
+			try {
+				$response = $account->getTwitterApi()->get_usersShow(array('screen_name' => $name));
+				if ($response->id_str) {
+					$user = \Application\DeskPRO\Entity\TwitterUser::createFromJson($response);
+					$this->em->persist($user);
+					$this->em->flush();
+				}
+			} catch (\EpiTwitterException $e) {
+			} catch (\EpiOAuthException $e) {
+			}
+		}
+
+		if ($user) {
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'url' => $this->generateUrl('agent_twitter_user', array('user_id' => $user->id))
+			));
+		} else {
+			return $this->createJsonResponse(array('success' => false));
+		}
+	}
+
 	public function viewAction($user_id)
 	{
-		$user = $this->getUserOr404($user_id);
+		$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($user_id);
+		if (!$user) {
+			$account = $this->em->getRepository('DeskPRO:TwitterAccount')->getFirst();
+
+			try {
+				$response = $account->getTwitterApi()->get_usersShow(array('user_id' => $user_id));
+				if ($response->id_str) {
+					$user = \Application\DeskPRO\Entity\TwitterUser::createFromJson($response);
+					$this->em->persist($user);
+					$this->em->flush();
+				}
+			} catch (\EpiTwitterException $e) {
+			} catch (\EpiOAuthException $e) {
+			}
+		}
+
+		if (!$user) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 		
 		$accounts = $this->person->getTwitterAccounts();
 		if (!$accounts) {

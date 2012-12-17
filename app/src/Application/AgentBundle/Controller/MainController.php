@@ -433,6 +433,10 @@ class MainController extends AbstractController
 					}
 				}
 			}
+
+			if (App::getConfig('enable_twitter') && count(App::getCurrentPerson()->getTwitterAccountIds()) && preg_match('/^@[a-z0-9_]+$/i', $q)) {
+				$results['twitter'] = $q;
+			}
 		}
 
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(

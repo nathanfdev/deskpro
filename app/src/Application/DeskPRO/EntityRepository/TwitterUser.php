@@ -40,4 +40,13 @@ use \Doctrine\ORM\EntityRepository;
 
 class TwitterUser extends AbstractEntityRepository
 {
+	public function getByScreenName($name)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT u
+			FROM DeskPRO:TwitterUser u
+			WHERE u.screen_name = ?0
+		")->setParameters(array($name))->getOneOrNullResult();
+	}
+
 }

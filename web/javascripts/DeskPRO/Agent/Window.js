@@ -582,6 +582,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		$(document).on('click', '.twitter-user-find', function(ev) {
+			var name = $(this).data('name');
+			if (name.indexOf('@') != 0) {
+				name = '@' + name;
+			}
+			if (name.length > 1) {
+				ev.preventDefault();
+
+				$.ajax({
+					url: BASE_URL + 'agent/twitter/user/find',
+					data: {name: name},
+					type: 'GET',
+					dataType: 'json',
+					success: function(data) {
+						if (data.success) {
+							var route = 'page:' + data.url;
+							DeskPRO_Window.runPageRoute(route);
+						} else {
+							alert("There is no Twitter user named " + name);
+						}
+					}
+				});
+			}
+		});
+
 		// Used by the poller to send flag to update the last active time
 		$(document).on('click mousemove keypress', function() {
 			self.activityTime = new Date();

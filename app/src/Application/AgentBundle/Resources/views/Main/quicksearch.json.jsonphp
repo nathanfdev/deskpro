@@ -113,3 +113,7 @@ if ($people_top && !empty($OUTPUT['person'])) {
 	\Orb\Util\Arrays::unshiftAssoc($OUTPUT, 'person', $people);
 	unset($people);
 }
+
+if (!empty($results['twitter'])) {
+	$OUTPUT['twitter'] = $results['twitter'];
+}
