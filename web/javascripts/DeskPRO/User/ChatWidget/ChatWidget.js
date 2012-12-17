@@ -291,7 +291,25 @@ var DpChatWidget = new (function() {
 			qs += '&parent_url=' + encodeURIComponent(window.location.href);
 
 			frameSrc = options.deskproUrl + 'widget/chat.html' + qs;
-			chatIframe = util.createEl('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
+			chatIframe = document.createElement('iframe');
+			chatIframe.setAttribute('src', frameSrc);
+			chatIframe.setAttribute('id', 'dp_chat_iframe');
+			chatIframe.frameBorder = 'no';
+			chatIframe.scrolling = 'no';
+			chatIframe.marginWidth = '0';
+			chatIframe.marginHeight = '0';
+			chatIframe.align = 'middle';
+			chatIframe.style.position = 'absolute';
+			chatIframe.style.bottom = '0';
+			chatIframe.style.top = '0';
+			chatIframe.style.width = '340px';
+			chatIframe.style.height = '350px';
+			chatIframe.style.margin = '0';
+			chatIframe.style.padding = '0';
+			chatIframe.style.boxShadow = 'none';
+			chatIframe.style.overflow = 'hidden';
+			chatIframe.style.border = 'none';
+
 			chatIframeHolder.appendChild(chatIframe);
 
 			comms.setupReciever(childListen, frameSrc);
