@@ -4,7 +4,6 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 	Extends: DeskPRO.Agent.RuleBuilder.TermAbstract,
 
 	initRow: function() {
-
 		this._initUi();
 	},
 
@@ -21,6 +20,26 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 		if (timestamp) {
 			date = new Date(timestamp * 1000);
 			this.date2Widget.datepicker('setDate', date);
+		}
+
+		//------------------------------
+		// Existing values
+		//------------------------------
+
+		if (parseInt($('.date1-relative-input', this.rowEl).val())) {
+			$('.relative1-input', this.date1).val($('.date1-relative-input', this.rowEl).val());
+			$('.relative1-type', this.date1).val($('.date1-relative-type', this.rowEl).val());
+
+			$('.date', this.date1).hide();
+			$('.relative', this.date1).show().addClass('on');
+		}
+
+		if (parseInt($('.date2-relative-input', this.rowEl).val())) {
+			$('.relative2-input', this.date2).val($('.date2-relative-input', this.rowEl).val());
+			$('.relative2-type', this.date2).val($('.date2-relative-type', this.rowEl).val());
+
+			$('.date', this.date2).hide();
+			$('.relative', this.date2).show().addClass('on');
 		}
 
 		this.updateStatus();
@@ -130,9 +149,9 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 
 			if (date.is(':visible')) {
 				date.hide();
-				rel.show();
+				rel.show().addClass('on');
 			} else {
-				rel.hide();
+				rel.hide().removeClass('on');
 				date.show();
 			}
 		}).bind(this));
@@ -143,9 +162,9 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 
 			if (date.is(':visible')) {
 				date.hide();
-				rel.show();
+				rel.show().addClass('on');
 			} else {
-				rel.hide();
+				rel.hide().removeClass('on');
 				date.show();
 			}
 		}).bind(this));
@@ -176,7 +195,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 		var relative1 = $('.relative1', this.date1);
 		var relative2 = $('.relative2', this.date2);
 
-		if (relative1.is(':visible')) {
+		if ($('.relative', this.date1).hasClass('on')) {
 			$('.date1-relative-input', this.rowEl).val($('.relative1-input', this.date1).val());
 			$('.date1-relative-type', this.rowEl).val($('.relative1-type', this.date1).val());
 
@@ -193,7 +212,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 			}
 		}
 
-		if (relative2.is(':visible')) {
+		if ($('.relative', this.date2).hasClass('on')) {
 			$('.date2-relative-input', this.rowEl).val($('.relative2-input', this.date2).val());
 			$('.date2-relative-type', this.rowEl).val($('.relative2-type', this.date2).val());
 
