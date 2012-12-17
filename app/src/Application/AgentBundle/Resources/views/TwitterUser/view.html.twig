@@ -59,7 +59,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav class="actions" id="{{baseId}}_action_buttons">
 			<ul>
 				{% if account %}
-					{% if user.id!= account.user.id %}
+					{% if user.id != account.user.id %}
 						{% if user.id in account.friend_ids %}
 							<li class="unfollow-button"><a class="clean-white large">{{ phrase('agent.general.unfollow') }}</a></li>
 						{% else %}
@@ -67,7 +67,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% endif %}
 					{% endif %}
 				{% else %}
-					<li class="follow-menu menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.follow') }} <em></em></a></li>
+					<li class="follow-menu menu-fitted" id="{{ baseId }}_follow_menu_trigger" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.follow') }} <em></em></a></li>
 				{% endif %}
 				<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
 				<li><a href="https://twitter.com/{{ user.screen_name }}" target="_blank" class="clean-white large">View Twitter Profile</a></li>
@@ -76,6 +76,12 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<br class="clear" />
 </header>
+
+<ul style="display:none" id="{{baseId}}_follow_menu">
+	{% for possible_account in accounts %}
+		<li data-account-id="{{ possible_account.id }}" data-following="{{ user.id in possible_account.friend_ids ? 1 : 0 }}">@{{ possible_account.user.screen_name }}: <em>{{ user.id in possible_account.friend_ids ? 'Unfollow' : 'Follow' }}</em></li>
+	{% endfor %}
+</ul>
 
 <div class="profile-box-container twitter-user-page">
 	<header id="{{baseId}}_twitter_header">
