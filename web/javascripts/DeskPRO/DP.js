@@ -24,7 +24,16 @@ var DP = {
 	},
 
 	rteTextarea: function(field, options) {
+
+		if (!field) {
+			return;
+		}
+
 		field = $(field);
+
+		if (!field.closest('body')) {
+			return;
+		}
 
 		defaultOptions = {
 			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce_src.js',
