@@ -59,23 +59,40 @@ class Twitter extends AbstractContactData
 		if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
 			if ($old_name != $contact_record->field_1) {
 				// changing the name - not verified
+				$contact_record->field_3 = '';
 				$contact_record->field_10 = '';
 			}
 
-			$contact_record->addSaveCallback(function(\Application\DeskPRO\Entity\PersonContactData $contact_data) use($old_name) {
-				if ($old_name != $contact_data->field_1) {
-					App::getDb()->delete('people_twitter_users', array(
-						'person_id' => $contact_data->person->id,
-						'screen_name' => $old_name
-					));
-				}
+			if ($old_name !== $contact_record->field_1) {
+				$contact_record->addSaveCallback(function(\Application\DeskPRO\Entity\PersonContactData $contact_data) use($old_name) {
+					if ($contact_data->id) {
+						App::getDb()->delete('people_twitter_users', array(
+							'person_id' => $contact_data->person->id,
+							'screen_name' => $old_name
+						));
+					}
 
-				App::getDb()->executeUpdate("
-					INSERT IGNORE INTO people_twitter_users
-						(person_id, screen_name, is_verified)
-					VALUES (?, ?, 0)
-				", array($contact_data->person->id, $contact_data->field_1));
-			});
+					App::getDb()->executeUpdate("
+						INSERT IGNORE INTO people_twitter_users
+							(person_id, screen_name, is_verified)
+						VALUES (?, ?, 0)
+					", array($contact_data->person->id, $contact_data->field_1));
+					$last_id = App::getDb()->lastInsertId();
+
+					if ($contact_data->field_3 === '') {
+						$user = App::getEntityRepository('DeskPRO:TwitterUser')->getByScreenName($contact_data->field_1, true);
+						if ($user) {
+							$contact_data->field_3 = $user->id;
+
+							App::getOrm()->delayedUpdate(function($em) use($user, $last_id) {
+								$em->persist($user);
+							});
+						} else {
+							$contact_data->field_3 = '0';
+						}
+					}
+				});
+			}
 		}
 	}
 
