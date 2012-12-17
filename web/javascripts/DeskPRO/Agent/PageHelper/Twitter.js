@@ -382,6 +382,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			} else {
 				newMessage.show();
 
+				var link = row.find('.photo, .user').first();
+				if (link.length) {
+					link.data('route-notabreload', true);
+					DeskPRO_Window.runPageRouteFromElement(link);
+				}
+
 				var textarea = newMessage.find('textarea');
 				if (!$.trim(textarea.val()).length && !row.hasClass('dm')) {
 					var name = row.find('.main-status-body .screen-name, h4 .screen-name').first().text();

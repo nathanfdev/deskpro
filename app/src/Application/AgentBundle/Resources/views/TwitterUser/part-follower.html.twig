@@ -16,6 +16,10 @@
 			</h4>
 			<div class="description">{{ user.description }}</div>
 		</div>
+
+		<div class="extra-container">
+			<div class="account-interactions extra-row user" data-route="page:{{ path('agent_twitter_user', {'user_id': user.id}) }}">Interactions: {{ user.countAccountInteractions(account) }}</div>
+		</div>
 	</div>
 	<div class="message-sent-confirmation" style="display: none">
 		Message sent: <span class="message"></span>
@@ -40,7 +44,7 @@
 					<label>Follow</label><span class="drop-icon"></span>
 				</li>
 			{% endif %}
-			<li class="noval opt-trigger message" style="float: right">
+			<li class="noval opt-trigger message">
 				<label>Message</label><span class="drop-icon"></span>
 			</li>
 		</ul>

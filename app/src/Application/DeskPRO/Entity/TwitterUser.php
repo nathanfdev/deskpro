@@ -258,6 +258,14 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')->findMentionsForUserId($this->id, $from_user_ids, true, 'desc');
 	}
 
+	public function countAccountInteractions(TwitterAccount $account)
+	{
+		$repo = App::getOrm()->getRepository('DeskPRO:TwitterStatus');
+
+		return $repo->countMessagesForUserId($this->id, array($account->user->id), true)
+			+ $repo->countMentionsForUserId($this->id, array($account->user->id), true);
+	}
+
 	public function getVerifiedPeople()
 	{
 		$output = array();

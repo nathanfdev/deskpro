@@ -294,25 +294,51 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccountOr404($account_id);
 
-		$page = 1;
-		$limit = 25;
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$per_page = 25;
 
-		return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', array(
+		$total_count = $account->countFollowers();
+
+		$params = array(
 			'account'	=> $account,
-			'followers' => $account->getFollowers($page, $limit)
-		));
+			'followers' => $account->getFollowers($page, $per_page),
+			'page' => $page,
+			'per_page' => $per_page,
+			'total_count' => $total_count,
+			'showing_to' => min($total_count, $page * $per_page)
+		);
+
+		if ($this->in->getBool('partial')) {
+			return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
+		}
+
+		return $this->render('AgentBundle:TwitterUser:list-followers.html.twig', $params);
 	}
 
 	public function listNewFollowersAction($account_id)
 	{
 		$account = $this->getAccountOr404($account_id);
 
-		$page = 1;
-		$limit = 25;
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$per_page = 25;
 
-		return $this->render('AgentBundle:TwitterUser:list-new-followers.html.twig', array(
+		$total_count = $account->countNewFollowers();
+
+		$params = array(
 			'account'	=> $account,
-			'new_followers' => $account->getNewFollowers($page, $limit)
-		));
+			'followers' => $account->getNewFollowers($page, $per_page),
+			'page' => $page,
+			'per_page' => $per_page,
+			'total_count' => $total_count,
+			'showing_to' => min($total_count, $page * $per_page)
+		);
+
+		if ($this->in->getBool('partial')) {
+			return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
+		}
+
+		return $this->render('AgentBundle:TwitterUser:list-new-followers.html.twig', $params);
 	}
 }
