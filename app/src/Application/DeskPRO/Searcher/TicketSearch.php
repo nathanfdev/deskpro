@@ -1846,6 +1846,9 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_PRIORITY:
 					if (!$this->_testChoiceMatch($ticket['priority_id'], $op, $choice)) return false;
 					break;
+				case self::TERM_WORKFLOW:
+					if (!$this->_testChoiceMatch($ticket['workflow_id'], $op, $choice)) return false;
+					break;
 				case self::TERM_ORGANIZATION:
 					if (!$this->_testChoiceMatch($ticket['organization_id'], $op, $choice)) return false;
 					break;

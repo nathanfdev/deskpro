@@ -1282,15 +1282,15 @@ class TicketTerms
 	protected function _testChoiceMatch($value, $op, $choice)
 	{
 		if (is_array($choice)) {
-			if ($op == self::OP_IS) {
+			if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 				return in_array($value, $choice);
-			} elseif ($op == self::OP_NOT) {
+			} elseif ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
 				return !in_array($value, $choice);
 			}
 		} else {
-			if ($op == self::OP_IS) {
+			if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
 				return $value == $choice;
-			} elseif ($op == self::OP_NOT) {
+			} elseif ($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) {
 				return $value != $choice;
 			}
 		}
