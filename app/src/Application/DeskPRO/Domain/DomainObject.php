@@ -203,4 +203,21 @@ abstract class DomainObject extends BasicDomainObject
 	{
 		return $this->_no_persist;
 	}
+
+	public function __toString()
+	{
+		$me = get_class($this);
+		$me = explode('\\', $me);
+		$me = array_pop($me);
+
+		if (property_exists($this, 'id')) {
+			if ($this->id) {
+				return "<$me:#" . $this->id . ">";
+			} else {
+				return "<$me:#0:" . spl_object_hash($this) . ">";
+			}
+		} else {
+			return "<$me:" . spl_object_hash($this) . ">";
+		}
+	}
 }
