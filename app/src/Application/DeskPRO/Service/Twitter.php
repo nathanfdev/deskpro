@@ -195,8 +195,7 @@ class Twitter
 
 		// retweet
 		if (!empty($data->retweeted_status)) {
-			// @todo process retweet entities
-			$status['retweet'] = $this->processStatus($api, $data->retweeted_status);
+			$status['retweet'] = $this->processStatus($api, $data->retweeted_status, $do_persist, $depth);
 			if ($do_persist) {
 				$this->em->persist($status['retweet']);
 			}
@@ -207,7 +206,6 @@ class Twitter
 			$reply = $this->findStatus($data->in_reply_to_status_id_str);
 			if (!$reply) {
 				try {
-					// todo: defer and bulk fetch?
 					$reply_result = $api->get_statusesShow(array(
 						'id' => $data->in_reply_to_status_id_str,
 						'include_entities' => true

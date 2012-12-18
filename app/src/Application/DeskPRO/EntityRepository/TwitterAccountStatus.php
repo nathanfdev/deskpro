@@ -41,7 +41,7 @@ use Orb\Util\Numbers;
 
 class TwitterAccountStatus extends AbstractEntityRepository
 {
-	const DEFAULT_LIMIT = 25;
+	const DEFAULT_LIMIT = 100;
 
 	public function getByTwitterStatusAndAccount($id, TwitterAccountEntity $account)
 	{

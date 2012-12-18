@@ -295,7 +295,7 @@ class TwitterUserController extends AbstractController
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
-		$per_page = 25;
+		$per_page = 100;
 
 		$total_count = $account->countFollowers();
 
@@ -321,7 +321,7 @@ class TwitterUserController extends AbstractController
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
-		$per_page = 25;
+		$per_page = 100;
 
 		$total_count = $account->countNewFollowers();
 

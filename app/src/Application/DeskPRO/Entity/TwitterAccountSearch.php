@@ -46,7 +46,8 @@ use Application\DeskPRO\Entity;
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
-	const CACHE_LENGTH = 300;
+	const CACHE_LENGTH = 900;
+	const SEARCH_RESULTS = 100;
 
 	/**
 	 * @var integer
@@ -120,7 +121,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		$results = $api->get_searchTweets(array(
 			'q' => $this->term,
 			'result_type' => 'recent',
-			'count' => 25,
+			'count' => self::SEARCH_RESULTS,
 			'since_id' => $this->max_id ? $this->max_id : 0,
 			'include_entities' => true
 			// todo: min id for older pages?
@@ -130,7 +131,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			$twitter = new \Application\DeskPRO\Service\Twitter();
 			$lookups = array();
 			foreach ($results->statuses AS $status) {
-				$lookups[$status->id_str] = $twitter->processStatus($api, $status, $do_write);
+				$lookups[$status->id_str] = $twitter->processStatus($api, $status, $do_write, 1);
 				if ($do_write) {
 					$em->persist($lookups[$status->id_str]);
 				}
