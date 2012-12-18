@@ -51,6 +51,10 @@ class Twitter extends PortalItemAbstract implements CacheableItem
 
 	public function getHtml()
 	{
+		if (!App::getConfig('enable_twitter')) {
+			return '';
+		}
+
 		if ($this->section == 'sidebar') {
 			return $this->getSidebarHtml();
 		}
