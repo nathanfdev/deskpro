@@ -787,6 +787,16 @@ class TicketSearch extends SearcherAbstract
 				);
 				break;
 
+			case 'ticket.date_last_user_reply':
+				$this->order_summary = 'Date of Last User Reply';
+				$order_by = "ORDER BY tickets.date_last_user_reply $dir";
+				break;
+
+			case 'ticket.date_last_agent_reply':
+				$this->order_summary = 'Date of Last Agent Reply';
+				$order_by = "ORDER BY tickets.date_last_agent_reply $dir";
+				break;
+
 			case 'ticket.ticket_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
 				if (!$field) break;
