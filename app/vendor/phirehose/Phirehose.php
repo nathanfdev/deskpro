@@ -637,3 +637,7 @@ abstract class Phirehose
   abstract public function enqueueStatus($status);
   
 } // End of class
+
+class PhirehoseException extends Exception {}
+class PhirehoseNetworkException extends PhirehoseException {}
+class PhirehoseConnectLimitExceeded extends PhirehoseException {}

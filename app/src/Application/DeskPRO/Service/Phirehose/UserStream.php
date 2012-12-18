@@ -54,7 +54,7 @@ class UserStream extends \UserstreamPhirehose
 	/**
 	 * @var \Closure|null
 	 */
-	protected $db_callback;
+	protected $write_callback;
 
 	/**
 	 * @var \Closure
@@ -97,17 +97,17 @@ class UserStream extends \UserstreamPhirehose
 	/**
 	 * @param \Closure|null $callback
 	 */
-	public function setDbCallback(\Closure $callback = null)
+	public function setWriteCallback(\Closure $callback = null)
 	{
-		$this->db_callback = $callback;
+		$this->write_callback = $callback;
 	}
 
 	/**
 	 * @return \Closure|null
 	 */
-	public function getDbCallback()
+	public function getWriteCallback()
 	{
-		return $this->db_callback;
+		return $this->write_callback;
 	}
 
 	/**
@@ -199,15 +199,13 @@ class UserStream extends \UserstreamPhirehose
 				'date_created' => gmdate('Y-m-d H:i:s')
 			);
 
-			if ($this->connection) {
+			if ($this->write_callback) {
+				$callback = $this->write_callback;
+				$callback($data);
+			} else if ($this->connection) {
 				$this->connection->insert('twitter_stream', $data);
-			} else if ($this->db_callback) {
-				$callback = $this->db_callback;
-				$callback(function($db) use ($data) {
-					$db->insert('twitter_stream', $data);
-				}, $this);
 			} else {
-				throw new \Exception("No connection or DB callback - can't process");
+				throw new \Exception("No connection or write callback - can't process");
 			}
 		} catch (\Exception $e) {
 			\DeskPRO\Kernel\KernelErrorHandler::handleException($e, false);

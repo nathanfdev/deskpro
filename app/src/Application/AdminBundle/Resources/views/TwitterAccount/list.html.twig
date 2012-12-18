@@ -2,7 +2,7 @@
 {% block pagebar %}
 <nav>
 	<ul>
-		{% if not app.getConfig('twitter.agent_consumer_key') %}<li style="margin-right: 5px"><a href="{{ path('admin_twitter_apps') }}">Setup Applications</a></li>{% endif %}
+		{% if not app.getConfig('twitter.agent_consumer_key') and not app.isCloud() %}<li style="margin-right: 5px"><a href="{{ path('admin_twitter_apps') }}">Setup Applications</a></li>{% endif %}
 		<li class="add"><a href="{{ path('admin_twitter_accounts_new', {'start': 1}) }}">{{ phrase('admin.twitter.create_new_account') }}</a></li>
 	</ul>
 </nav>

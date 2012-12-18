@@ -80,7 +80,7 @@ class Twitter
 	public static function getAgentConsumerSecret()
 	{
 		if (App::getConfig('twitter.agent_consumer_key')) {
-			return App::getConfig('twitter.agent_consumer_key');
+			return App::getConfig('twitter.agent_consumer_secret');
 		} else {
 			return App::getSetting('core.twitter_agent_consumer_secret');
 		}

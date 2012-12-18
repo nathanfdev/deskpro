@@ -173,9 +173,9 @@ if (!empty($argv[1])) {
 	}
 
 	$consumer = new \Application\DeskPRO\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
-	$consumer->setDbCallback(function($inner_callback) use ($get_db) {
+	$consumer->setWriteCallback(function($data) use ($get_db) {
 		$db = $get_db();
-		$inner_callback($db);
+		$db->insert('twitter_stream', $data);
 		$db->close();
 		$db = null;
 	});
@@ -234,6 +234,15 @@ if (!empty($argv[1])) {
 	$consumer->consume();
 
 	$my_pid = getmypid();
+
+	try {
+		$consumer->consume();
+	} catch (PhirehoseConnectLimitExceeded $e) {
+		$log_status("[Account $account[id], PID $my_pid] Connection limit exceeded: " . $e->getMessage() . ". Likely no permission.");
+	} catch (Exception $e) {
+		$log_status("[Account $account[id], PID $my_pid] General processor exception: " . $e->getMessage() . " at " . $e->getFile() . ':' . $e->getLine());
+	}
+
 	$log_status("[Account $account[id], PID $my_pid] Exiting Normally.");
 
 	exit(0);

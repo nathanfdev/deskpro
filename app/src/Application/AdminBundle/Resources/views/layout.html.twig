@@ -310,7 +310,7 @@
 				<a {% if not app.getSetting('core.apps_chat') %}href="{{ path('admin_apps') }}"{% endif %}><span class="chat">{{ phrase('agent.general.chat') }}</span></a>
 			</li>
 		</ul>
-		{% if app.getConfig('enable_twitter') %}
+		{% if app.getConfig('enable_twitter') and (not app.isCloud() or app.getConfig('twitter.agent_consumer_key')) %}
 			<div class="sep">-</div>
 			<ul>
 				<li data-menu="#twitter_menu">

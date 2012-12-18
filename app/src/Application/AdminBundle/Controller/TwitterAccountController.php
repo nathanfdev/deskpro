@@ -75,7 +75,7 @@ class TwitterAccountController extends AbstractController
 
 	public function appsAction()
 	{
-		if (App::getConfig('twitter.agent_consumer_key')) {
+		if (App::getConfig('twitter.agent_consumer_key') || defined('DPC_IS_CLOUD')) {
 			return $this->redirectRoute('admin_twitter_accounts');
 		}
 
@@ -114,89 +114,91 @@ class TwitterAccountController extends AbstractController
 			return $this->redirectRoute('admin_twitter_accounts');
 		}
 
-		try {
-			$api->setToken($this->in->getString('oauth_token'));
-			$access = $api->getAccessToken();
-			if ($access->oauth_token && $access->oauth_token_secret) {
-				$api->setToken($access->oauth_token, $access->oauth_token_secret);
+		if (!$this->in->getString('oauth_token')) {
+			return $this->redirectRoute('admin_twitter_accounts');
+		}
 
-				// check if Twitter user already exists
-				$twitter_user = $api->get_usersShow(array('screen_name' => $access->screen_name));
-				$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($twitter_user->id_str);
-				if (!$user) {
-					$user = TwitterUser::createFromJson($twitter_user);
-					$this->em->persist($user);
-				}
+		$api->setToken($this->in->getString('oauth_token'));
+		$access = $api->getAccessToken();
+		if ($access->oauth_token && $access->oauth_token_secret) {
+			$api->setToken($access->oauth_token, $access->oauth_token_secret);
 
-				$em = $this->em;
-				$em->persist($user);
+			// check if Twitter user already exists
+			$twitter_user = $api->get_usersShow(array('screen_name' => $access->screen_name));
+			$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($twitter_user->id_str);
+			if (!$user) {
+				$user = TwitterUser::createFromJson($twitter_user);
+				$this->em->persist($user);
+			}
 
-				// check if Twitter account already exists
-				$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
-				if (!$account) {
-					$account = new TwitterAccount();
-					$account['user'] = $user;
-				}
+			$em = $this->em;
+			$em->persist($user);
+			$existed = true;
 
-				// update OAuth credentials, regardless if its a new or an old account
-				$account['oauth_token'] = $access->oauth_token;
-				$account['oauth_token_secret'] = $access->oauth_token_secret;
+			// check if Twitter account already exists
+			$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
+			if (!$account) {
+				$account = new TwitterAccount();
+				$account['user'] = $user;
+				$existed = false;
+			}
 
-				// add person to account
-				if (!$account->hasPerson($this->person)) {
-					$account['persons']->add($this->person);
-				}
+			// update OAuth credentials, regardless if its a new or an old account
+			$account['oauth_token'] = $access->oauth_token;
+			$account['oauth_token_secret'] = $access->oauth_token_secret;
 
-				$em->persist($account);
-				$em->flush();
+			// add person to account
+			if (!$account->hasPerson($this->person)) {
+				$account['persons']->add($this->person);
+			}
 
-				$followers = $this->_loadUsers($account, 'followers');
-				$em->flush();
+			$em->persist($account);
+			$em->flush();
 
-				$this->_loadUsers($account, 'friends');
-				$em->flush();
+			$followers = $this->_loadUsers($account, 'followers');
+			$em->flush();
 
-				if ($followers) {
-					// look up the info for the most recent 100 in bulk.
-					// most recent are last
-					$recent_followers = array_slice($followers, -100, null, true);
-					$recent_ids = array();
-					foreach ($recent_followers AS $recent_follower) {
-						if ($recent_follower->user->is_stub) {
-							$recent_ids[] = $recent_follower->user->id;
-						}
+			$this->_loadUsers($account, 'friends');
+			$em->flush();
+
+			if ($followers) {
+				// look up the info for the most recent 100 in bulk.
+				// most recent are last
+				$recent_followers = array_slice($followers, -100, null, true);
+				$recent_ids = array();
+				foreach ($recent_followers AS $recent_follower) {
+					if ($recent_follower->user->is_stub) {
+						$recent_ids[] = $recent_follower->user->id;
 					}
+				}
 
-					if ($recent_ids) {
-						try {
-							$response = $api->post_usersLookup(array(
-								'user_id' => implode(',', $recent_ids)
-							));
-							foreach ($response AS $user) {
-								if (isset($recent_followers[$user->id_str])) {
-									$entity = $recent_followers[$user->id_str]->user;
-									$entity->ensureDefaultPropertyChangedListener();
-									$entity->updateFromJson($user);
-									$em->persist($entity);
-								}
+				if ($recent_ids) {
+					try {
+						$response = $api->post_usersLookup(array(
+							'user_id' => implode(',', $recent_ids)
+						));
+						foreach ($response AS $user) {
+							if (isset($recent_followers[$user->id_str])) {
+								$entity = $recent_followers[$user->id_str]->user;
+								$entity->ensureDefaultPropertyChangedListener();
+								$entity->updateFromJson($user);
+								$em->persist($entity);
 							}
-						} catch (\EpiTwitterException $e) {}
+						}
+					} catch (\EpiTwitterException $e) {}
 
-						$em->flush();
-					}
+					$em->flush();
 				}
 			}
-		} catch (\Exception $e) {
-			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
-				'error' => array(
-					'class' => get_class($e),
-					'message' => $e->getMessage(),
-					'code' => $e->getCode(),
-				)
-			));
+
+			$this->_accountCreate($account, $existed);
 		}
 
 		return $this->redirectRoute('admin_twitter_accounts');
+	}
+
+	protected function _accountCreate(TwitterAccount $account, $existed)
+	{
 	}
 
 	protected function _loadUsers(TwitterAccount $account, $type)
@@ -321,6 +323,12 @@ class TwitterAccountController extends AbstractController
 		$this->em->remove($account);
 		$this->em->flush();
 
+		$this->_accountRemove($account);
+
 		return $this->redirectRoute('admin_twitter_accounts');
+	}
+
+	protected function _accountRemove(TwitterAccount $account)
+	{
 	}
 }

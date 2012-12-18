@@ -21,6 +21,9 @@
 /auto-update-status.php
 /auto-update-is-running.trigger
 /app/src/Application/DeskPRO/Dpql/Parser.out
+/app/src/Cloud/bin/twitter-cloud.log
+/app/src/Cloud/bin/twitter-cloud-control.txt
+/app/src/Cloud/bin/twitter-cloud.pid
 
 /data/last-email_error.dat
 /data/is_installed.dat

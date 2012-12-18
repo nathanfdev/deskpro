@@ -495,4 +495,22 @@ $collection->add('admin_agents_groups_new', new Route(
 	array()
 ));
 
+################################################################################
+# Twitter override
+################################################################################
+
+$collection->add('admin_twitter_accounts_new', new Route(
+	'/twitter/accounts/new',
+	array('_controller' => 'CloudAdminBundle:TwitterAccount:new'),
+	array(),
+	array()
+));
+
+$collection->add('admin_twitter_accounts_delete', new Route(
+	'/twitter/accounts/{account_id}/delete/{security_token}',
+	array('_controller' => 'CloudAdminBundle:TwitterAccount:delete'),
+	array(),
+	array()
+));
+
 return $collection;
