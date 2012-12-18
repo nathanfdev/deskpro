@@ -111,7 +111,7 @@ class RuleBuilder
 
 	/**
 	 * Read an array of terms based from the form, using structure defined.
-	 * 
+	 *
 	 * @param array $form
 	 * @return array
 	 */
@@ -141,7 +141,7 @@ class RuleBuilder
 					$is_blank = false;
 					continue;
 				}
-				
+
 				if (in_array($k, $this->special_keys)) {
 					$data_item[$k] = $v;
 				} else {
@@ -157,8 +157,11 @@ class RuleBuilder
 								$is_blank = false;
 							}
 						}
+					} elseif (!is_array($v) && trim($v) !== '') {
+						$is_blank = false;
+					} elseif (is_array($v) && !$v) {
+						$is_blank = false;
 					}
-					elseif (trim($v) !== '') $is_blank = false;
 					$data_item['options'][$k] = $v;
 				}
 			}
