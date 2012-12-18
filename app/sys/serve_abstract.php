@@ -289,6 +289,8 @@ abstract class LoaderAbstract
 			return $this->base_url;
 		}
 
+		$strpos = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'stripos' : 'strpos';
+
 		$filename = basename((isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null));
 
 		if (basename((isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null)) === $filename) {
@@ -311,7 +313,7 @@ abstract class LoaderAbstract
 				$seg     = $segs[$index];
 				$baseUrl = '/'.$seg.$baseUrl;
 				++$index;
-			} while (($last > $index) && (false !== ($pos = strpos($path, $baseUrl))) && (0 != $pos));
+			} while (($last > $index) && (false !== ($pos = $strpos($path, $baseUrl))) && (0 != $pos));
 		}
 
 		// Does the baseUrl have anything in common with the request_uri?
@@ -322,7 +324,7 @@ abstract class LoaderAbstract
 			return $baseUrl;
 		}
 
-		if ($baseUrl && 0 === strpos($requestUri, dirname($baseUrl))) {
+		if ($baseUrl && 0 === $strpos($requestUri, dirname($baseUrl))) {
 			// directory portion of $baseUrl matches
 			return rtrim(dirname($baseUrl), '/');
 		}
