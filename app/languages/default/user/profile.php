@@ -56,6 +56,8 @@
 	'user.profile.repeat_password'                     => 'Repeat Password',
 	'user.profile.resend_validation_email'             => 'Resend Validation Email',
 	'user.profile.reset_password'                      => 'Reset Password',
+	'user.profile.reset_password_badcode'              => 'The reset link you followed is invalid or has expired. Make sure you have typed in the URL exactly as it appears in your email. Note that the password reset link is only valid for three days and can only be used once.',
+	'user.profile.reset_password_tryagain'             => 'Send another reset link',
 	'user.profile.reset_password_current_logged_in'    => 'Note you are currently logged in as {{email}}. Requesting a password reset will log you out.',
 	'user.profile.reset_password_done'                 => 'A special password reset link has been sent to your email address. Check your email and click on the link to reset your password.',
 	'user.profile.set_as_primary_address'              => 'Set as primary address',

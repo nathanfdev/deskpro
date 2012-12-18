@@ -664,7 +664,7 @@ HTML;
 
 		// If they're still here, then we just send them through the normal DeskPRO reset procedure
 
-		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+2 days');
+		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+3 days');
 		$this->em->persist($code_data);
 		$this->em->flush();
 
@@ -698,8 +698,8 @@ HTML;
 			$person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
 		}
 
-		if (!$code_data OR !$person) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		if (!$code_data OR !$person OR $code_data->getData('is_used')) {
+			return $this->render('UserBundle:Login:reset-password-badcode.html.twig');
 		}
 
 		$errors = array();
@@ -715,9 +715,11 @@ HTML;
 
 			if (!$errors) {
 				$person->setPassword($pass);
+				$code_data->setData('is_used', true);
+
 				$this->em->transactional(function ($em) use ($person, $code_data) {
 					$em->persist($person);
-					$em->remove($code_data);
+					$em->persist($code_data);
 					$em->flush();
 				});
 
