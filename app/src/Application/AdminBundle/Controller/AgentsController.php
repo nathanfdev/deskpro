@@ -1286,7 +1286,7 @@ class AgentsController extends AbstractController
 			$this->container->getDb()->delete('people_prefs', array('name' => 'agent_notif.no_allow_set_email'));
 			$this->container->getDb()->delete('people_prefs', array('name' => 'agent_notif.no_allow_set_browser'));
 
-			if ($this->in->getBool('core_tickets.disable_agent_notifications')) {
+			if (isset($_REQUEST['settings']['core_tickets.disable_agent_notifications']) && $_REQUEST['settings']['core_tickets.disable_agent_notifications']) {
 				$this->container->getSettingsHandler()->setSetting('core_tickets.disable_agent_notifications', 1);
 				$this->container->getDb()->executeUpdate("DELETE FROM ticket_filter_subscriptions");
 			} else {
