@@ -86,6 +86,8 @@ class EmailDomainManager
 	 */
 	public function assignDomain($domain, Organization $org)
 	{
+		$domain = ltrim($domain, '@');
+
 		$orgdomain = new OrganizationEmailDomain();
 		$orgdomain->domain = $domain;
 		$orgdomain->organization = $org;
