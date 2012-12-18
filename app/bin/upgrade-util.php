@@ -2964,7 +2964,7 @@ class Zip_PHP implements DpZip
 
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
+		$out_filepath = dp_get_tmp_dir() . '/' . $out_filename;
 
 		$zip = new \ZipArchive();
 		if ($zip->open($out_filepath, \ZipArchive::CREATE) !== true) {
@@ -3004,7 +3004,7 @@ class Zip_PHP implements DpZip
 			return false;
 		}
 
-		$tmpdir = sys_get_temp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
 		mkdir($tmpdir);
 
 		if (!$zip->extractTo($tmpdir)) {
@@ -3040,7 +3040,7 @@ class Zip_PclZip implements DpZip
 
 		$filename     = basename($path);
 		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
+		$out_filepath = dp_get_tmp_dir() . '/' . $out_filename;
 
 		$zip = new \PclZip($out_filepath);
 		$zip->add(
@@ -3056,7 +3056,7 @@ class Zip_PclZip implements DpZip
 	{
 		$zip = new \PclZip($path);
 
-		$tmpdir = sys_get_temp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		$tmpdir = dp_get_tmp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
 		mkdir($tmpdir);
 
 		if (!is_array($zip->extract(\PCLZIP_OPT_PATH, $tmpdir))) {
