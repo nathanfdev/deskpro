@@ -75,6 +75,10 @@ class TwitterAccountController extends AbstractController
 
 	public function appsAction()
 	{
+		if (App::getConfig('twitter.agent_consumer_key')) {
+			return $this->redirectRoute('admin_twitter_accounts');
+		}
+
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken();
 

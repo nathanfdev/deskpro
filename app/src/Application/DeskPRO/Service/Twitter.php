@@ -65,7 +65,11 @@ class Twitter
 	 */
 	public static function getAgentConsumerKey()
 	{
-		return App::getSetting('core.twitter_agent_consumer_key');
+		if (App::getConfig('twitter.agent_consumer_key')) {
+			return App::getConfig('twitter.agent_consumer_key');
+		} else {
+			return App::getSetting('core.twitter_agent_consumer_key');
+		}
 	}
 
 	/**
@@ -75,7 +79,11 @@ class Twitter
 	 */
 	public static function getAgentConsumerSecret()
 	{
-		return App::getSetting('core.twitter_agent_consumer_secret');
+		if (App::getConfig('twitter.agent_consumer_key')) {
+			return App::getConfig('twitter.agent_consumer_key');
+		} else {
+			return App::getSetting('core.twitter_agent_consumer_secret');
+		}
 	}
 
 	public static function getAgentTwitterApi($token = null, $secret = null)
@@ -95,10 +103,12 @@ class Twitter
 	 */
 	public static function getUserConsumerKey()
 	{
-		if (App::getSetting('core.twitter_user_consumer_key')) {
+		if (App::getConfig('twitter.user_consumer_key')) {
+			return App::getConfig('twitter.user_consumer_key');
+		} else if (App::getSetting('core.twitter_user_consumer_key')) {
 			return App::getSetting('core.twitter_user_consumer_key');
 		} else {
-			return App::getSetting('core.twitter_agent_consumer_key');
+			return self::getAgentConsumerKey();
 		}
 	}
 
@@ -109,10 +119,12 @@ class Twitter
 	 */
 	public static function getUserConsumerSecret()
 	{
-		if (App::getSetting('core.twitter_user_consumer_key')) {
+		if (App::getConfig('twitter.user_consumer_key')) {
+			return App::getConfig('twitter.user_consumer_secret');
+		} else if (App::getSetting('core.twitter_user_consumer_key')) {
 			return App::getSetting('core.twitter_user_consumer_secret');
 		} else {
-			return App::getSetting('core.twitter_user_consumer_secret');
+			return self::getAgentConsumerSecret();
 		}
 	}
 
