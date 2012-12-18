@@ -307,6 +307,9 @@ class Runner
 		$reader = null;
 
 		while (true) {
+			// Make sure any records are flusehd
+			App::getOrm()->flush();
+
 			// Protection against nested transactions.
 			// This should not be needed, but its a safety against unclosed transactions.
 			// Without it, a mistake somewhere down the line can result in an entire
