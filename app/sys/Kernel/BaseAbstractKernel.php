@@ -418,6 +418,9 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		$correct_host   = strtolower($urlinfo['host']);
+		if (!empty($urlinfo['port'])) {
+			$correct_host .= ':' . $urlinfo['port'];
+		}
 		$correct_scheme = strtolower($urlinfo['scheme']);
 		$now_host       = strtolower($request->getHttpHost());
 		$now_scheme     = strtolower($request->getScheme());
