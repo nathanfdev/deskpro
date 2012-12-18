@@ -124,7 +124,6 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			'count' => self::SEARCH_RESULTS,
 			'since_id' => $this->max_id ? $this->max_id : 0,
 			'include_entities' => true
-			// todo: min id for older pages?
 		));
 
 		if (!empty($results->statuses)) {
@@ -182,7 +181,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 25, $auto_update = true)
+	public function getAccountStatuses($includeArchived = false, $page = 1, $per_page = 100, $auto_update = true)
 	{
 		if ($auto_update) {
 			if (!$this->date_updated || $this->date_updated->getTimestamp() < time() - self::CACHE_LENGTH) {
@@ -190,16 +189,30 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		// todo: page nav and auto grabbing
-
 		$page = max(1, intval($page));
 		$offset = ($page - 1) * $per_page;
 
 		$output = array();
 		$results = App::getOrm()->createQuery("
-			SELECT s, a
+			SELECT s,
+				a, account, action_agent, agent, agent_team, retweeted,
+				notes, replies,
+				t, u, ret, recip, long, in_reply
 			FROM DeskPRO:TwitterAccountSearchStatus s
 			INNER JOIN s.account_status a
+			INNER JOIN a.account account
+			LEFT JOIN a.action_agent action_agent
+			LEFT JOIN a.agent agent
+			LEFT JOIN a.agent_team agent_team
+			LEFT JOIN a.retweeted retweeted
+			LEFT JOIN a.notes notes
+			LEFT JOIN a.replies replies
+			INNER JOIN a.status t
+			INNER JOIN t.user u
+			LEFT JOIN t.retweet ret
+			LEFT JOIN t.recipient recip
+			LEFT JOIN t.long long
+			LEFT JOIN t.in_reply_to_status in_reply
 			WHERE s.search = ?0
 				" . ($includeArchived ? '' : "AND a.is_archived = false") . "
 			ORDER BY s.date_created DESC
@@ -209,6 +222,42 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $output;
+
+		$ids = App::getDb()->fetchAllCol("
+			SELECT s.account_status_id
+			FROM twitter_accounts_searches_statuses AS s
+			INNER JOIN twitter_accounts_statuses AS accs ON (accs.id = s.account_status_id)
+			WHERE s.search_id = ?
+				" . ($includeArchived ? '' : "AND accs.is_archived = 0") . "
+			ORDER BY s.date_created DESC
+			LIMIT $offset, $per_page
+		", array($this->id));
+		if ($ids) {
+			return App::getOrm()->createQuery("
+				SELECT a,
+				account, action_agent, agent, agent_team, retweeted,
+					notes, replies,
+					t, u, ret, recip, long, in_reply
+				FROM DeskPRO:TwitterAccountStatus a
+				INNER JOIN a.account account
+				LEFT JOIN a.action_agent action_agent
+				LEFT JOIN a.agent agent
+				LEFT JOIN a.agent_team agent_team
+				LEFT JOIN a.retweeted retweeted
+				LEFT JOIN a.notes notes
+				LEFT JOIN a.replies replies
+				INNER JOIN a.status t
+				INNER JOIN t.user u
+				LEFT JOIN t.retweet ret
+				LEFT JOIN t.recipient recip
+				LEFT JOIN t.long long
+				LEFT JOIN t.in_reply_to_status in_reply
+				WHERE a.id IN (?0)
+				ORDER BY a.date_created DESC
+			")->execute(array($ids));
+		} else {
+			return artay();
+		}
 	}
 
 

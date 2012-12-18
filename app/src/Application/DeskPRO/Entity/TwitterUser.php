@@ -302,17 +302,27 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return $output;
 	}
 
+	protected static $_stub_read = array(
+		'id' => true,
+		'is_stub' => true,
+		'last_profile_update' => true
+	);
+
 	public function offsetGet($offset)
 	{
 		if (self::$_processing_stubs) {
 			return parent::offsetGet($offset);
 		}
 
-		if ($this->is_stub && ($offset == 'id' || $offset == 'is_stub')) {
+		if ($this->is_stub && isset(self::$_stub_read[$offset])) {
 			return parent::offsetGet($offset);
 		}
 
 		if ($this->is_stub && self::$_stubs) {
+			if (!empty($this->$offset)) {
+				return $this->$offset;
+			}
+
 			self::$_processing_stubs = true;
 			$em = App::getOrm();
 			$account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
@@ -329,8 +339,23 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 						foreach ($response AS $user) {
 							if (isset(self::$_stubs[$user->id_str])) {
 								$entity = self::$_stubs[$user->id_str];
+								$entity->ensureDefaultPropertyChangedListener();
 								$entity->updateFromJson($user);
 								$em->persist($entity);
+								unset(self::$_stubs[$user->id_str]);
+							}
+						}
+						foreach ($ids AS $id) {
+							if (isset(self::$_stubs[$id])) {
+								// can't get information for this user, so un-stub
+								$entity = self::$_stubs[$id];
+								$entity->ensureDefaultPropertyChangedListener();
+								$entity['name']              = 'Unknown';
+								$entity['is_stub']           = false;
+								$entity['last_profile_update'] = new \DateTime();
+
+								$em->persist($entity);
+								unset(self::$_stubs[$id]);
 							}
 						}
 					} catch (\EpiTwitterException $e) {
@@ -417,12 +442,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return $entity;
 	}
 
-	public static function createStub($id)
+	public static function createStub($id, $screen_name = '', $name = '')
 	{
 		$entity = new self();
 		$entity['id'] = $id;
-		$entity['name'] = '';
-		$entity['screen_name'] = '';
+		$entity['name'] = $name;
+		$entity['screen_name'] = $screen_name;
 		$entity['profile_image_url'] = '';
 		$entity['url'] = '';
 		$entity['language'] = '';

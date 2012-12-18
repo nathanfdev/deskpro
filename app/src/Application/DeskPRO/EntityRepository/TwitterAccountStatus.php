@@ -81,11 +81,24 @@ class TwitterAccountStatus extends AbstractEntityRepository
 	public function getTimelineForAccount(TwitterAccountEntity $account, $type = 'all', $includeSelf = false, $includeArchived = false, $sortByDate = 'ASC', $page = 1, $limit = self::DEFAULT_LIMIT)
 	{
 		$query = "
-			SELECT s, t, u, a
+			SELECT s,
+				a, action_agent, agent, agent_team, retweeted,
+				notes, replies,
+				t, u, ret, recip, long, in_reply
 			FROM DeskPRO:TwitterAccountStatus s
+			INNER JOIN s.account a
+			LEFT JOIN s.action_agent action_agent
+			LEFT JOIN s.agent agent
+			LEFT JOIN s.agent_team agent_team
+			LEFT JOIN s.retweeted retweeted
+			LEFT JOIN s.notes notes
+			LEFT JOIN s.replies replies
 			INNER JOIN s.status t
 			INNER JOIN t.user u
-			INNER JOIN s.account a
+			LEFT JOIN t.retweet ret
+			LEFT JOIN t.recipient recip
+			LEFT JOIN t.long long
+			LEFT JOIN t.in_reply_to_status in_reply
 			WHERE s.account = ?0
 		";
 		$params = array($account);

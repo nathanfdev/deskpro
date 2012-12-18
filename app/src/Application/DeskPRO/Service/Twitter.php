@@ -202,7 +202,8 @@ class Twitter
 		}
 
 		// reply
-		if (!empty($data->in_reply_to_status_id_str)) {
+		if (!empty($data->in_reply_to_status_id_str) && $depth == 0) {
+			// todo: if we're not fetching, create a stub for it for use later
 			$reply = $this->findStatus($data->in_reply_to_status_id_str);
 			if (!$reply) {
 				try {
@@ -229,7 +230,7 @@ class Twitter
 		}
 
 		// fetch mentions
-		if (isset($data->entities) && $depth <= 1) {
+		if (isset($data->entities)) {
 			foreach ($data->entities->user_mentions as $mention) {
 				$mention_entity = $this->processStatusMention($api, $status, $mention, $do_persist);
 				if ($mention_entity) {
@@ -339,7 +340,7 @@ class Twitter
 
 		$user = $this->findUser($mention->id_str);
 		if (!$user) {
-			$user = TwitterUser::createStub($mention->id_str);
+			$user = TwitterUser::createStub($mention->id_str, $mention->screen_name, $mention->name);
 			if ($do_persist) {
 				$this->em->persist($user);
 				$this->_user_cache[$mention->id_str] = $user;
