@@ -329,6 +329,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
+	protected $twitter_users;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
 	protected $preferences;
 
 	/**
@@ -481,6 +486,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->personscraper_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
