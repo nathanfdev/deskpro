@@ -101,7 +101,7 @@ class Environment extends \Twig_Environment
 			$GLOBALS['DP_RENDERED_TEMPLATES'] = array();
 		}
 
-		$GLOBALS['DP_RENDERED_TEMPLATES'][$name] = true;
+		$GLOBALS['DP_RENDERED_TEMPLATES'][(string)$name] = true;
 
         $cls = $this->getTemplateClass($name, $index);
 
