@@ -238,43 +238,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 			return;
 		}
 
-		$change = false;
-		$email_address = $this->email;
-
-		$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($email_address);
-		if ($rules) {
-			foreach ($rules as $r) {
-				if ($r->add_usergroup) {
-					$change = true;
-					$this->person->addUsergroup($r->add_usergroup);
-				}
-				if ($r->add_organization && !$this->person->organization) {
-					$change = true;
-					$this->person->setOrganization($r->add_organization);
-				}
-			}
-		}
-
-		// And check orgs with domain assocs
-		if (!$this->person->organization) {
-			$domain = $this->email_domain;
-			$orgem = App::getContainer()->getEm()->createQuery("
-				SELECT od, org
-				FROM DeskPRO:OrganizationEmailDomain od
-				LEFT JOIN od.organization org
-				WHERE od.domain = ?1
-			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
-
-			if ($orgem) {
-				$change = true;
-				$this->person->setOrganization($orgem->organization);
-			}
-
-			if ($change) {
-				App::getOrm()->persist($this->person);
-				App::getOrm()->flush();
-			}
-		}
+		$user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
+		$user_rule_proc->newEmail($this->person, $this);
 	}
 
 

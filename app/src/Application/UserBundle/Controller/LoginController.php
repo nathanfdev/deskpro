@@ -714,6 +714,9 @@ HTML;
 			}
 
 			if (!$errors) {
+
+				$is_new_user = !$person->is_user;
+
 				$person->setPassword($pass);
 				$code_data->setData('is_used', true);
 
@@ -722,6 +725,11 @@ HTML;
 					$em->persist($code_data);
 					$em->flush();
 				});
+
+				if ($is_new_user) {
+					$user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
+					$user_rule_proc->newRegister($this->person);
+				}
 
 				$this->session->setFlash('password_reset', 1);
 
