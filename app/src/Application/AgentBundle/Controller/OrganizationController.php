@@ -415,6 +415,9 @@ class OrganizationController extends AbstractController
 		foreach ($this->in->getCleanValueArray('new_org_email_domain') as $domain) {
 			$check = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
 			if (!$check) {
+
+				$domain = ltrim($domain, '@');
+
 				$org_email_domain = new \Application\DeskPRO\Entity\OrganizationEmailDomain();
 				$org_email_domain->organization = $org;
 				$org_email_domain->domain = $domain;
