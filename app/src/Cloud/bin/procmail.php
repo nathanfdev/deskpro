@@ -198,6 +198,11 @@ class DeskPRO_Cloud_ProcMail
 	 */
 	protected $is_retry = 0;
 
+	/**
+	 * @var bool
+	 */
+	protected $is_old_corphelp = false;
+
 	public static function exec()
 	{
 		new self();
@@ -238,6 +243,17 @@ class DeskPRO_Cloud_ProcMail
 			$this->to_addr = $this->to_mailbox = $this->to_domain = 'UNKNOWN';
 		}
 
+		if ($this->to_domain == 'corphelp.com' && strpos($this->to_mailbox, '.') !== false) {
+			$this->log(sprintf("corphelp_to(%s)", $this->to_addr));
+
+			$this->is_old_corphelp = $this->to_addr;
+
+			list ($name, $site_name) = explode('.', $this->to_mailbox);
+			$this->to_domain  = $site_name . '.deskpro.com';
+			$this->to_mailbox = $name;
+			$this->to_addr    = $this->to_mailbox . '@' . $this->to_domain;
+		}
+
 		$this->log(sprintf("to_mailbox(%s)   to_domain(%s)", $this->to_mailbox, $this->to_domain));
 
 		if (isset($_SERVER['argv'][2]) && $_SERVER['argv'][2] == 'retry' && isset($_SERVER['argv'][3])) {
@@ -246,6 +262,12 @@ class DeskPRO_Cloud_ProcMail
 		}
 
 		$this->saveToFilesystem();
+
+		if ($this->is_old_corphelp) {
+			$arg = escapeshellarg('s/' . preg_quote($this->is_old_corphelp, '/') . '/' . preg_quote($this->to_addr, '/') . '/g');
+			exec(sprintf('sed -i %s %s', $arg, $this->savepath));
+		}
+
 		$this->saveToTarget();
 	}
 
