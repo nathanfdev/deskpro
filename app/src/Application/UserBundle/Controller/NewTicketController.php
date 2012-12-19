@@ -109,7 +109,7 @@ class NewTicketController extends AbstractController
 		}
 
 		$captcha = null;
-		if (isset($unique_items['captcha'])) {
+		if (isset($unique_items['captcha']) && empty($this->person->id)) {
 			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
 		}
 
