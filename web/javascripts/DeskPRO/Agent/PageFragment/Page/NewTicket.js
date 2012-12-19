@@ -438,19 +438,31 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		}
 	},
 
-	setMessageText: function(content) {
+	setMessageText: function(content, is_quote) {
 		var textarea = this.getEl('message');
 
+		if (is_quote) {
+			content = "> " + content.replace(/\r\n|\n/, "\n> ");
+		}
+
 		if (textarea.data('redactor')) {
-			textarea.setCode(DP.convertTextToWysiwygHtml(content, true));
+			content = DP.convertTextToWysiwygHtml(content, true);
+			if (is_quote) {
+				content = "<br/><br/><blockquote>" + content + '</blockquote>';
+			}
+			textarea.setCode(content);
 		} else {
+			if (is_quote) {
+				content = "\n\n" + content;
+			}
 			textarea.val(content);
 			textarea.trigger('textareaexpander_fire');
 		}
 	},
 
 	setNewByComment: function(data) {
-		this.setMessageText(data.message);
+
+		this.setMessageText(data.name + " <" + data.email + "> wrote:\n" + data.message, true);
 		this.getEl('for_comment_type').val(data.content_type);
 		this.getEl('for_comment_id').val(data.comment_id);
 		$('.pending-info.comment', this.wrapper).show();
