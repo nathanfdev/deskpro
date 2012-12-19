@@ -105,7 +105,7 @@
 				</td>
 			{% elseif field == 'date_last_user_reply' %}
 				<td class="{{field}}">
-					{% if ticket.date_last_agent_reply %}
+					{% if ticket.date_last_user_reply %}
 						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}">{{ticket.date_last_user_reply|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}

@@ -28,7 +28,9 @@
 		<li data-order-by="date_last_agent_reply_desc"><label class="label">Date of Last Agent Reply</label> <i class="order-dir">DESC</i></li>
 		<li data-order-by="date_last_user_reply_asc"><label class="label">Date of Last User Reply</label> <i class="order-dir">ASC</i></li>
 		<li data-order-by="date_last_user_reply_desc"><label class="label">Date of Last User Reply</label> <i class="order-dir">DESC</i></li>
-        {% if app.getSetting('core.use_ticket_priority') %}
+        <li data-order-by="date_last_reply_asc"><label class="label">Date of Last Reply</label> <i class="order-dir">ASC</i></li>
+		<li data-order-by="date_last_reply_desc"><label class="label">Date of Last Reply</label> <i class="order-dir">DESC</i></li>
+		{% if app.getSetting('core.use_ticket_priority') %}
         <li data-order-by="priority_asc"><label class="label">{{ phrase('agent.general.priority') }}</label> <i class="order-dir">ASC</i></li>
         <li data-order-by="priority_desc"><label class="label">{{ phrase('agent.general.priority') }}</label> <i class="order-dir">DESC</i></li>
         {% endif %}

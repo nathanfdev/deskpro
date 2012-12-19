@@ -66,6 +66,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DATE_CLOSED               = 'date_closed';
 	const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
 	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
+	const TERM_DATE_LAST_REPLY           = 'date_last_reply';
 	const TERM_URGENCY                   = 'urgency';
 	const TERM_USER_WAITING              = 'user_waiting';
 	const TERM_TOTAL_USER_WAITING        = 'total_user_waiting';
@@ -797,6 +798,11 @@ class TicketSearch extends SearcherAbstract
 				$order_by = "ORDER BY tickets.date_last_agent_reply $dir";
 				break;
 
+			case 'ticket.date_last_reply':
+				$this->order_summary = 'Date of Last Reply';
+				$order_by = "ORDER BY GREATEST(COALESCE(tickets.date_last_agent_reply, '0000-00-00'), COALESCE(tickets.date_last_user_reply, '0000-00-00'), tickets.date_created) $dir";
+				break;
+
 			case 'ticket.ticket_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
 				if (!$field) break;
@@ -1018,6 +1024,12 @@ class TicketSearch extends SearcherAbstract
 						$this->affected_fields[] = 'ticket.date_last_agent_reply';
 						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
+						break;
+					case self::TERM_DATE_LAST_REPLY:
+						$this->enableArchiveSearch();
+						$this->affected_fields[] = 'ticket.date_last_reply';
+						$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_reply'), $op, $choice);
+						$wheres[] = $this->_dateMatch("GREATEST(COALESCE($tickets_table.date_last_agent_reply, '0000-00-00'), COALESCE($tickets_table.date_last_user_reply, '0000-00-00'), $tickets_table.date_created)", $op, $choice);
 						break;
 					case self::TERM_WORKFLOW:
 						$this->affected_fields[] = 'ticket.workflow_id';
@@ -2042,6 +2054,17 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_DATE_LAST_AGENT_REPLY:
 					if (!$ticket['date_last_agent_reply']) return false;
 					if (!$this->_testDateMatch($ticket['date_last_agent_reply'], $op, $choice)) return false;
+					break;
+
+				case self::TERM_DATE_LAST_REPLY:
+					$ts = $ticket->date_created;
+					if ($ticket->date_last_agent_reply && $ticket->date_last_agent_reply->getTimestamp() > $ts) {
+						$ts = $ticket->date_last_agent_reply;
+					}
+					if ($ticket->date_last_user_reply && $ticket->date_last_user_reply->getTimestamp() > $ts) {
+						$ts = $ticket->date_last_user_reply;
+					}
+					if (!$this->_testDateMatch($ts, $op, $choice)) return false;
 					break;
 
 				case self::TERM_DATE_LAST_USER_REPLY:
