@@ -1203,7 +1203,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$this.find('.body-text-message').css('max-height', '');
 					} else {
 						$this.find('.fade-bar').show();
-						$this.find('.body-text-message').css('max-height', '35px');
+						$this.find('.body-text-message').css('max-height', '70px');
 					}
 				});
 
