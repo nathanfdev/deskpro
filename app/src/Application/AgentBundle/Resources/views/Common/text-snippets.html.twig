@@ -11,11 +11,20 @@ pageMeta.baseId = '{{ baseId }}';
 			<span class="new-category"></span>
 			<h4>{{ phrase('agent.general.categories') }}</h4>
 		</header>
-		<ul>
-			{% for category in text_snippet_cats %}
-				{% include 'AgentBundle:Common:text-snippets-catrow.html.twig' %}
-			{% endfor %}
-		</ul>
+		{# Page Containers #}
+		<div class="layout-content with-scrollbar" style="top: 21px">
+		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content" data-extra-height="21">
+		{# /Page Containers #}
+			<ul id="{{ baseId }}_catlist">
+				{% for category in text_snippet_cats %}
+					{% include 'AgentBundle:Common:text-snippets-catrow.html.twig' %}
+				{% endfor %}
+			</ul>
+		{# Page Containers #}
+        </div></div>
+        </div>
+        {# /Page Containers #}
 	</nav>
 	<div class="snippet-sections-wrap">
 		{# Page Containers #}
@@ -26,28 +35,37 @@ pageMeta.baseId = '{{ baseId }}';
 			{% for category in text_snippet_cats %}
 				{% set group = text_snippets[category.id] %}
 				{% include 'AgentBundle:Common:text-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
-			{% else %}
-				<div class="no-cats-message" {% if ticket_snippet_cats|length %}style="display: none"{% endif %}>
-					{{ phrase('agent.general.snippets_none_explain') }}
-				</div>
 			{% endfor %}
+
+			<div class="no-cats-message" {% if text_snippet_cats|length %}style="display: none"{% endif %}>
+				{{ phrase('agent.general.snippets_none_explain') }}
+			</div>
         {# Page Containers #}
         </div></div>
         </div>
         {# /Page Containers #}
 	</div>
 
-	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 500px; height: 280px; display: none;">
+	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 500px; height: 300px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4 class="is-new-snippet">New Snippet</h4>
 			<h4 class="is-edit-snippet">Edit Snippet</h4>
 		</div>
 		<div class="overlay-content">
+			<div class="overlay-content-block is-edit-snippet" style="text-align: center">
+				<div class="is-not-loading">
+					<button class="clean-white small delete-snippet-trigger" data-confirm="Are you sure you want to delete this snippet?">{{ phrase('agent.general.ucfirst_delete') }}</button>
+				</div>
+				<div class="is-loading">
+					<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+				</div>
+			</div>
+
 			<input type="hidden" name="snippet_id" value="0" />
-			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box" />
+			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box" />
 			<div style="width: 100%">
-				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; height: 150px"></textarea>
+				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 130px"></textarea>
 			</div>
 		</div>
 		<div class="overlay-footer">
@@ -61,65 +79,44 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</div>
 
-	<div class="new-snippet-category field-overlay" style="display: none">
-		<span class="close">{{ phrase('agent.general.close_lc') }}</span>
-		<dl>
-			<dt>{{ phrase('agent.general.title') }}:</dt>
-			<dd>
-				<input type="text" name="title" value="New Category" />
-				<input type="hidden" name="typename" value="{{ typename }}" />
-			</dd>
 
-			<dt>{{ phrase('agent.general.permissions') }}:</dt>
-			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.general.teams') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
-			</dd>
-
-			<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
-			<dd class="perm-teams" style="display: none">
-				<select name="teams[]" multiple="multiple" size="6">
-					{% for team in agent_teams %}
-						<option value="{{ team.id }}">{{ team.name }}</option>
-					{% endfor %}
-				</select>
-			</dd>
-		</dl>
-
-		<div class="controls">
-			<button class="clean-white small new-cat-trigger">{{ phrase('agent.general.add') }}</button>
+	<div id="{{baseId}}_new_snippet_cat" style="width: 360px; height: 250px; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay"></span>
+			<h4>{{ phrase('agent.tickets.new_snippet_category') }}</h4>
 		</div>
-	</div>
+		<div class="overlay-content">
+			<form>
+				<dl class="generic-form-list">
+					<dt>{{ phrase('agent.general.title') }}:</dt>
+					<dd><input type="text" name="title" value="New Category" /></dd>
 
-	<div class="new-snippet-category field-overlay" style="display: none">
-		<span class="close">{{ phrase('agent.general.close_lc') }}</span>
-		<dl>
-			<dt>{{ phrase('agent.general.title') }}:</dt>
-			<dd>
-				<input type="text" name="title" value="New Category" />
-				<input type="hidden" name="typename" value="{{ typename }}" />
-			</dd>
+					<dt>{{ phrase('agent.general.permissions') }}:</dt>
+					<dd>
+						<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label><br />
+						<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
+					</dd>
 
-			<dt>{{ phrase('agent.general.permissions') }}:</dt>
-			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.general.teams') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
-			</dd>
+					<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
+					<dd class="perm-teams" style="display: none">
+						<select name="teams[]" multiple="multiple" size="6">
+							{% for team in agent_teams %}
+								<option value="{{ team.id }}">{{ team.name }}</option>
+							{% endfor %}
+						</select>
+					</dd>
 
-			<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
-			<dd class="perm-teams" style="display: none">
-				<select name="teams[]" multiple="multiple" size="6">
-					{% for team in agent_teams %}
-						<option value="{{ team.id }}">{{ team.name }}</option>
-					{% endfor %}
-				</select>
-			</dd>
-		</dl>
-
-		<div class="controls">
-			<button class="clean-white small new-cat-trigger">{{ phrase('agent.general.add') }}</button>
+					<input type="hidden" name="typename" value="{{ typename }}" />
+				</dl>
+			</form>
+		</div>
+		<div class="overlay-footer">
+			<div class="is-not-loading">
+				<button class="clean-white small new-cat-trigger">{{ phrase('agent.general.add') }}</button>
+			</div>
+			<div class="is-loading">
+				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+			</div>
 		</div>
 	</div>
 </div>

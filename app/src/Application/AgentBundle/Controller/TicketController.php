@@ -573,6 +573,14 @@ class TicketController extends AbstractController
 		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
 			if ($this->in->getString('perm_type') == 'global') {
 				$cat['is_global'] = true;
+			} elseif ($this->in->getString('perm_type') == 'team') {
+				$cat['is_global'] = false;
+				$team_ids = $this->in->getArrayValue('teams');
+				$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
+
+				foreach ($teams as $t) {
+					$cat->agent_teams->add($t);
+				}
 			} else {
 				$cat['is_global'] = false;
 			}

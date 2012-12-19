@@ -274,13 +274,24 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var bottom = 10;
 		var height = '';
 
-		var scrollContent = $('.scroll-content', this.popoverOuter).first();
 		var contentH = false;
 		var hasHeader = !!($('> section > header', this.popoverOuter).length);
 		var hasFooter = !!($('> section > footer', this.popoverOuter).length);
+		var scrollContentHeight = false;
 
-		if (scrollContent.length) {
-			contentH = scrollContent.height();
+		$('.scroll-content', this.popoverOuter).each(function() {
+			var $this = $(this);
+			var height = $this.height();
+			if ($this.data('extra-height')) {
+				height += parseInt($this.data('extra-height'), 10);
+			}
+			if (scrollContentHeight === false || height > scrollContentHeight) {
+				scrollContentHeight = height;
+			}
+		})
+
+		if (scrollContentHeight !== false) {
+			contentH = scrollContentHeight;
 			if (hasHeader) {
 				contentH += 36;
 			}

@@ -66,13 +66,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
-	 * Teams who can use this snippet
-	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $agent_teams = null;
-
-	/**
 	 * Everyone can see it?
 	 *
 	 * @var bool
@@ -84,17 +77,21 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $title;
 
-	public function __construct()
-	{
-		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
 	/**
 	 * @return int
 	 */
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	public function getPermType()
+	{
+		if ($this->is_global) {
+			return 'global';
+		} else {
+			return 'me';
+		}
 	}
 
 

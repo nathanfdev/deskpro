@@ -2,7 +2,7 @@
 	<div class="show">
 		<div class="controls">
 			<span class="edit-trigger"></span>
-			<span class="delete-trigger" data-snippet-id="{{ snippet.id }}" data-confirm="Are you sure you want to delete this snippet?"></span>
+			<div><span class="expand-trigger"></span></div>
 		</div>
 		<div class="snippet-content tipped" title="Click to insert this snippet" data-snippet-id="{{ snippet.id }}">
 			<label>{{ snippet.title }}</label>
@@ -18,10 +18,7 @@
 						<textarea class="value formatted" style="display: none;">{{ snippet.format() }}</textarea>
 					{% endif %}
 				</div>
-				<div class="fadeaway">
-					<span class="expand"></span>
-					<span class="unexpand"></span>
-				</div>
+				<div class="fadeaway"></div>
 			</div>
 		</div>
 	</div>

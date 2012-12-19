@@ -54,6 +54,7 @@ class TextSnippet extends AbstractEntityRepository
 			WHERE
 				c.typename = ?1
 				AND (c.person = ?2 OR c.is_global = true)
+			ORDER BY s.title
 		";
 
 		$coll = $this->getEntityManager()->createQuery($dql)

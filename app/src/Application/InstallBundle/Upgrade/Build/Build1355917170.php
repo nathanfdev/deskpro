@@ -29,55 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-use Application\DeskPRO\Entity\Person as PersonEntity;
-
-use Orb\Util\Arrays;
-
-class TicketSnippet extends AbstractEntityRepository
+class Build1355917170 extends AbstractBuild
 {
-	public function getSnippetsForAgent(PersonEntity $agent)
+	public function run()
 	{
-		$agent->loadHelper('AgentTeam');
-		$agent_teams = $agent->getAgentTeamIds();
-
-		$dql = "
-			SELECT s, c
-			FROM DeskPRO:TicketSnippet s
-			LEFT JOIN s.category c
-			WHERE
-				c.person = ?1
-				OR c.is_global = true
-			ORDER BY s.title
-		";
-
-		$coll = $this->getEntityManager()->createQuery($dql)
-			->setParameter(1, $agent)
-			->execute();
-
-		if (!$coll) return array();
-
-		return $this->groupSnippetCollection($coll);
-	}
-
-	public function groupSnippetCollection($collection)
-	{
-		$ret = array();
-
-		foreach ($collection as $snippet) {
-			if (!isset($ret[$snippet->category['id']])) {
-				$ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
-			}
-
-			$ret[$snippet->category['id']]['snippets'][] = $snippet;
-		}
-
-		return $ret;
+		$this->out("Ensure that snippets are deleted with their categories");
+		$this->execMutateSql("ALTER TABLE text_snippets DROP FOREIGN KEY FK_5B6379CE12469DE2");
+		$this->execMutateSql("ALTER TABLE text_snippets ADD CONSTRAINT FK_5B6379CE12469DE2 FOREIGN KEY (category_id) REFERENCES text_snippet_categories (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE ticket_snippets DROP FOREIGN KEY FK_6848095D12469DE2");
+		$this->execMutateSql("ALTER TABLE ticket_snippets ADD CONSTRAINT FK_6848095D12469DE2 FOREIGN KEY (category_id) REFERENCES ticket_snippet_categories (id) ON DELETE CASCADE");
+		$this->execMutateSql("DELETE FROM text_snippets WHERE category_id IS NULL");
+		$this->execMutateSql("DELETE FROM ticket_snippets WHERE category_id IS NULL");
 	}
 }

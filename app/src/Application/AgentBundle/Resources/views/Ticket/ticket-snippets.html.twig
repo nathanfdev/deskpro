@@ -12,11 +12,20 @@ pageMeta.baseId = '{{ baseId }}';
 			<span class="new-category"></span>
 			<h4>{{ phrase('agent.general.categories') }}</h4>
 		</header>
-		<ul id="{{ baseId }}_catlist">
-			{% for category in ticket_snippet_cats %}
-				{% include 'AgentBundle:Ticket:ticket-snippets-catrow.html.twig' %}
-			{% endfor %}
-		</ul>
+		{# Page Containers #}
+		<div class="layout-content with-scrollbar" style="top: 21px">
+		<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content" data-extra-height="21">
+		{# /Page Containers #}
+			<ul id="{{ baseId }}_catlist">
+				{% for category in ticket_snippet_cats %}
+					{% include 'AgentBundle:Ticket:ticket-snippets-catrow.html.twig' %}
+				{% endfor %}
+			</ul>
+	 	{# Page Containers #}
+        </div></div>
+        </div>
+        {# /Page Containers #}
 	</nav>
 	<div class="snippet-sections-wrap">
 		{# Page Containers #}
@@ -38,18 +47,28 @@ pageMeta.baseId = '{{ baseId }}';
         {# /Page Containers #}
 	</div>
 
-	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 550px; height: 400px; display: none;">
+	<div id="{{baseId}}_new_snippet" class="snippet-editor-overlay" style="width: 550px; height: 420px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4 class="is-new-snippet">New Snippet</h4>
 			<h4 class="is-edit-snippet">Edit Snippet</h4>
 		</div>
 		<div class="overlay-content">
-			<input type="hidden" name="snippet_id" value="0" />
-			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box" />
-			<div style="width: 100%">
-				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; height: 220px"></textarea>
+			<div class="overlay-content-block is-edit-snippet" style="text-align: center">
+				<div class="is-not-loading">
+					<button class="clean-white small delete-snippet-trigger" data-confirm="Are you sure you want to delete this snippet?">{{ phrase('agent.general.ucfirst_delete') }}</button>
+				</div>
+				<div class="is-loading">
+					<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />
+				</div>
 			</div>
+
+			<input type="hidden" name="snippet_id" value="0" />
+			<input type="text" name="title" value="" placeholder="{{ phrase('agent.general.title') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box" />
+			<div style="width: 100%">
+				<textarea name="snippet" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
+			</div>
+			<div style="padding-left: 13px; background: url({{ asset('images/agent/icons/small-light-off.png') }}) no-repeat 1px 4px;">You can include variables in snippets. <a href="http://support.deskpro.com/kb/articles/133-using-variables-in-snippets" target="_blank">Learn more.</a></a> </div>
 			<input type="hidden" name="is_html" value="0" />
 		</div>
 		<div class="overlay-footer">
@@ -69,26 +88,27 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4>{{ phrase('agent.tickets.new_snippet_category') }}</h4>
 		</div>
 		<div class="overlay-content">
-			<dl class="generic-form-list">
-				<dt>{{ phrase('agent.general.title') }}:</dt>
-				<dd><input type="text" name="title" value="New Category" /></dd>
+			<form>
+				<dl class="generic-form-list">
+					<dt>{{ phrase('agent.general.title') }}:</dt>
+					<dd><input type="text" name="title" value="New Category" /></dd>
 
-				<dt>{{ phrase('agent.general.permissions') }}:</dt>
-				<dd>
-					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label><br />
-					{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
-					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
-				</dd>
+					<dt>{{ phrase('agent.general.permissions') }}:</dt>
+					<dd>
+						<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label><br />
+						<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
+					</dd>
 
-				<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
-				<dd class="perm-teams" style="display: none">
-					<select name="teams[]" multiple="multiple" size="6">
-						{% for team in agent_teams %}
-							<option value="{{ team.id }}">{{ team.name }}</option>
-						{% endfor %}
-					</select>
-				</dd>
-			</dl>
+					<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
+					<dd class="perm-teams" style="display: none">
+						<select name="teams[]" multiple="multiple" size="6">
+							{% for team in agent_teams %}
+								<option value="{{ team.id }}">{{ team.name }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+				</dl>
+			</form>
 		</div>
 		<div class="overlay-footer">
 			<div class="is-not-loading">

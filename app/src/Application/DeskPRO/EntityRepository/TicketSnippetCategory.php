@@ -60,6 +60,16 @@ class TicketSnippetCategory extends AbstractEntityRepository
 			->setParameter(1, $agent)
 			->execute();
 
-		return $coll;
+		$results = array();
+
+		foreach ($coll AS $k => $result) {
+			if ($result->title == 'Top Level') {
+				array_unshift($results, $result);
+			} else {
+				$results[] = $result;
+			}
+		}
+
+		return $results;
 	}
 }

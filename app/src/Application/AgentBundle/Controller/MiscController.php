@@ -639,6 +639,22 @@ JS;
 		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
 
+		if ($cat->person && $cat->person->getId() == $this->person->getId()) {
+			if ($this->in->getString('perm_type') == 'global') {
+				$cat['is_global'] = true;
+			} elseif ($this->in->getString('perm_type') == 'team') {
+				$cat['is_global'] = false;
+				$team_ids = $this->in->getArrayValue('teams');
+				$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
+
+				foreach ($teams as $t) {
+					$cat->agent_teams->add($t);
+				}
+			} else {
+				$cat['is_global'] = false;
+			}
+		}
+
 		$this->em->persist($cat);
 		$this->em->flush();
 

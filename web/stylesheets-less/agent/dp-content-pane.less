@@ -3147,6 +3147,7 @@ article.content-message .content .body-text .fade-bar {
 	label {
 		padding: 8px;
 		padding-bottom: 0;
+		cursor: pointer;
 	}
 
 	.main-content {
@@ -3167,41 +3168,19 @@ article.content-message .content .body-text .fade-bar {
 	min-height: 28px;
 }
 
+.snippets-overlay .snippet-sections li .content.show .main-content {
+	margin-right: 28px;
+	padding-right: 0;
+}
+
 .snippets-overlay .snippet-sections li .content.show .fadeaway {
     display: none;
 	.fade-away-v(rgba(250,250,250,0), rgba(250,250,250,1), 25px);
 }
 
-.snippets-overlay .snippet-sections li .content.show .fadeaway .expand {
-	position: absolute;
-	right: 0; bottom: 0; left: 0;
-	height: 7px;
-
-	background: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
-	.opacity(60);
-
-	.rounded(5px);
-}
-.snippets-overlay .snippet-sections li .content.show .fadeaway .unexpand {
-	display: none;
-	position: static;
-	right: 0; bottom: 0; left: 0;
-	height: 7px;
-
-	background: url(../../images/agent/button-uparrow.png) no-repeat 50% 50%;
-	.opacity(60);
-	.rounded(5px);
-}
-
 .snippets-overlay .snippet-sections li .content.long .fadeaway { display: block; }
-.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway { background: transparent; }
+.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway { display: none; }
 .snippets-overlay .snippet-sections li .content.long.expanded { padding-bottom: 15px; }
-.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .expand { display: none; }
-.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .unexpand { display: block; }
-
-.snippets-overlay .snippet-sections li .content.expanded .fadeaway {
-	position: static;
-}
 
 .snippets-overlay .snippet-sections li .content.show .nobreak { display: none; }
 .snippets-overlay .snippet-sections li .content.show-nobreak .nobreak { display: block; }
@@ -3214,13 +3193,6 @@ article.content-message .content .body-text .fade-bar {
 	overflow: auto;
 }
 
-.snippets-overlay .snippet-sections li .content .fadeaway .expand:hover,
-.snippets-overlay .snippet-sections li .content .fadeaway .unexpand:hover {
-	cursor: pointer;
-	background-color: #CED0D0;
-	.opacity(100);
-}
-
 .snippets-overlay .snippet-sections li label {
 	color: #2D5680;
 	font-weight: bold;
@@ -3229,36 +3201,43 @@ article.content-message .content .body-text .fade-bar {
 }
 
 .snippets-overlay .show .controls {
-	float: right;
-	margin-right: 8px;
+	position: absolute;
+	right: 0;
+	padding-right: 8px;
+	font-size: 1px;
+	line-height: 1px;
+	z-index: 1;
 }
 
 .snippets-overlay .controls .edit-trigger {
-	.iconbase(11px, 11px);
+	.iconbase(16px, 16px);
 	background-repeat: no-repeat;
-	background-image: url(../../images/agent/icons/gear-dark.png) /** sprite-ref: ui-v */;
-	margin-right: 4px;
-	margin-top: 4px;
-	float: left;
+	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v */;
 	cursor: pointer;
+	margin-top: 4px;
+	margin-bottom: 4px;
 	.opacity(50);
 
 	&:hover {
 		.opacity(100);
 	}
 }
-.snippets-overlay .controls .delete-trigger {
+.snippets-overlay .long .controls .expand-trigger {
 	.iconbase(11px, 11px);
 	background-repeat: no-repeat;
-	background-image: url(../../images/agent/icons/delete-small.png) /** sprite-ref: ui-v */;
-	margin-right: 4px;
-	margin-top: 4px;
-	float: left;
+	background-image: url(../../images/agent/expand.png) /** sprite-ref: ui-v */;
 	cursor: pointer;
+	margin-left: 2px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 	.opacity(50);
 
 	&:hover {
 		.opacity(100);
+	}
+
+	&.expanded {
+		background-image: url(../../images/agent/collapse.png) /** sprite-ref: ui-v */;
 	}
 }
 
