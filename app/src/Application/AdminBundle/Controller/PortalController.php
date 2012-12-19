@@ -127,6 +127,9 @@ class PortalController extends AbstractController
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_url', null);
 			}
 
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateAll();
+
 			return $this->redirectRoute('admin_portal_uploadfavicon');
 		}
 
@@ -305,6 +308,9 @@ class PortalController extends AbstractController
 		$this->em->remove($pd);
 		$this->em->flush();
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'pid'     => $pd->getId()
@@ -333,6 +339,9 @@ class PortalController extends AbstractController
 		$this->em->persist($pd);
 		$this->em->flush();
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'pid'     => $pd->getId()
@@ -360,13 +369,21 @@ class PortalController extends AbstractController
 		$enable = $this->in->getBoolInt('enable');
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('user.portal_enabled', $enable);
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->redirectRoute('admin_portal');
 	}
 
 	public function updateBlockOrdersAction()
 	{
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
-		return $helper->doUpdate('portal_page_display');
+		$result =  $helper->doUpdate('portal_page_display');
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
+		return $result;
 	}
 
 	public function blockToggleAction($pid)
@@ -389,6 +406,9 @@ class PortalController extends AbstractController
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
 
 		return $this->createJsonResponse(array('success'=>1));
 	}
@@ -414,6 +434,9 @@ class PortalController extends AbstractController
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
 
 		return $this->createJsonResponse(array('success'=>1));
 	}
@@ -448,6 +471,9 @@ class PortalController extends AbstractController
 
 			$this->em->persist($ds);
 			$this->em->flush();
+
+			$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+			$cache->invalidateAll();
 		}
 
 		$selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
