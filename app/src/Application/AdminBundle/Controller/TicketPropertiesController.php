@@ -155,6 +155,9 @@ class TicketPropertiesController extends AbstractController
 			$em->flush();
 		});
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 
@@ -177,6 +180,9 @@ class TicketPropertiesController extends AbstractController
 			$em->persist($page_display);
 			$em->flush();
 		});
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
 
 		if ($department) {
 			return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department->id, 'section' => $section));
@@ -201,6 +207,9 @@ class TicketPropertiesController extends AbstractController
 			});
 		}
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		if ($department_id) {
 			return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id, 'section' => $section));
 		} else {
@@ -220,6 +229,9 @@ class TicketPropertiesController extends AbstractController
 			");
 		}
 
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
+
 		return $this->redirectRoute('admin_tickets_editor');
 	}
 
@@ -232,6 +244,9 @@ class TicketPropertiesController extends AbstractController
 		");
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', 0);
+
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->invalidateAll();
 
 		return $this->redirectRoute('admin_tickets_editor');
 	}

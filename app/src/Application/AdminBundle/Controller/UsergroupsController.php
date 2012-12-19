@@ -172,6 +172,13 @@ class UsergroupsController extends AbstractController
 				}
 
 				$this->em->getConnection()->commit();
+
+				if ($usergroup->id == 1) {
+					// editing guest permissions - might change the available options
+					$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+					$cache->invalidateAll();
+				}
+
 				return $this->redirectRoute('admin_usergroups');
 			} catch (\Exception $e) {
 				$this->em->getConnection()->rollback();
