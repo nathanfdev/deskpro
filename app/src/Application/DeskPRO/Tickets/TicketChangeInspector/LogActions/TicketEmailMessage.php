@@ -45,7 +45,12 @@ class TicketEmailMessage extends AbstractLogAction
 
 	public function __construct(array $info)
 	{
-		$this->message = $info['message'];
+		$this->message = '';
+		if (!empty($info['message'])) {
+			$this->message = $info['message'];
+		} elseif (!empty($info['template'])) {
+			$this->message = $info['template'];
+		}
 		$this->who_emailed = $info['emailed'];
 		$this->who_cced = $info['cced'];
 	}
