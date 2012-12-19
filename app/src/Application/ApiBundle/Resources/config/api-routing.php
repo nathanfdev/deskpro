@@ -799,7 +799,7 @@ $collection->add('api_organizations_organization_sla', new Route(
 	array()
 ));
 
-$collection->add('api_organizations_organization_delete', new Route(
+$collection->add('api_organizations_organization_sla_delete', new Route(
 	'/organizations/{organization_id}/slas/{sla_id}',
 	array('_controller' => 'ApiBundle:Organization:deleteOrganizationSla'),
 	array('_method' => 'DELETE', 'organization_id' => '\\d+', 'sla_id' => '\\d+'),
