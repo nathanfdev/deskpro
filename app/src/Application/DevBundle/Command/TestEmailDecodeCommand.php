@@ -80,6 +80,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
 
+		echo "Subject: " . $r->getSubject()->getSubjectUtf8();
+		echo "\n";
+
 		foreach ($r->getToAddresses() as $email) {
 			if ($email->getNameUtf8()) {
 				echo "To: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">\n";
@@ -88,6 +91,22 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			}
 		}
 		echo "\n";
+
+		foreach ($r->getCcAddresses() as $email) {
+			if ($email->getNameUtf8()) {
+				echo "CC: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">\n";
+			} else {
+				echo "CC: <" . $email->getEmail() . ">\n";
+			}
+		}
+		echo "\n";
+
+		if ($attaches = $r->getAttachments()) {
+			foreach ($attaches as $attach) {
+				echo "Attachment: " . $attach->getFileName() . "\n";
+			}
+			echo "\n";
+		}
 
 		if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
 			$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
