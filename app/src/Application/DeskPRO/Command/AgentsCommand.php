@@ -104,7 +104,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			return 0;
 		} else {
-			$output->writeln("Use --help to see available comamnds");
+			$output->writeln("Use --help to see available commands");
 			return 0;
 		}
 	}

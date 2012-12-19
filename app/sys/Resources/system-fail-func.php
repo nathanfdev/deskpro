@@ -33,7 +33,7 @@ if (!$url) {
 }
 
 if (php_sapi_name() == 'cli') {
-	$url = 'Comamnd: ' . implode(' ', $_SERVER['argv']);
+	$url = 'Command: ' . implode(' ', $_SERVER['argv']);
 }
 
 $stats['url'] = $url;

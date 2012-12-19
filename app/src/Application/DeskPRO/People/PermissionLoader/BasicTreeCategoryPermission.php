@@ -77,7 +77,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 
 
 	/**
-	 * Get an array of specific categories allowed as defiend by the db.
+	 * Get an array of specific categories allowed as defined by the db.
 	 * This is before inheritance is considered.
 	 *
 	 * @return array

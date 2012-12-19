@@ -27,7 +27,7 @@ DeskPRO.ElementHandler_Exec = function(context) {
 
 /**
  * An element handler takes a single element, usually a central wrapper element
- * of some kind, and adds functionality to it. Generally handlers are defiend in
+ * of some kind, and adds functionality to it. Generally handlers are defined in
  * HTML source with data-element-handler="xxx" and attached at runtime.
  *
  * A handler can optionally register itself with a parent elements handler by defining

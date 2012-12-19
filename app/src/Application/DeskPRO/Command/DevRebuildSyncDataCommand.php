@@ -97,7 +97,7 @@ class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 			$output->writeln(sprintf("Available sync data options:\n\t%s", implode("\n\t", $names)));
 			return 0;
 		} else {
-			$output->writeln("Use --help to see available comamnds");
+			$output->writeln("Use --help to see available commands");
 			return 0;
 		}
 	}

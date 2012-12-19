@@ -100,7 +100,7 @@ class ErrorReporter
 		}
 
 		if (php_sapi_name() == 'cli') {
-			$url = 'Comamnd: ' . implode(' ', $_SERVER['argv']);
+			$url = 'Command: ' . implode(' ', $_SERVER['argv']);
 		}
 
 		$info['url'] = $url;

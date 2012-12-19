@@ -735,8 +735,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 
 			// Install default data
-			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
-			$USERGROUP_EVERYONE = null; // should be defiend by the time we finish processing data.php
+			$AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+			$USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
 			$WEB_INSTALL = false;
 			$IMPORT_INSTALL = true;
 

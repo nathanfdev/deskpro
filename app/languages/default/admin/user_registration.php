@@ -65,7 +65,7 @@
 	'admin.user_registration.mysql'                                 => 'MySQL',
 	'admin.user_registration.new_usersource'                        => 'New Usersource',
 	'admin.user_registration.notice_closed_helpdesk'                => 'With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created manually by an agent.',
-	'admin.user_registration.notice_enable_twitter'                 => 'To enable Twitter integration, you must register with Twitterto get your own key and secret.',
+	'admin.user_registration.notice_enable_twitter'                 => 'To enable Twitter integration, you must register with Twitter to get your own key and secret.',
 	'admin.user_registration.notice_enabled_facebook'               => 'To enable Facebook integration, you must register with Facebook to get your own application key and application secret.',
 	'admin.user_registration.notice_force_validate_email'           => 'Force users to validate their email address when they first register.
 

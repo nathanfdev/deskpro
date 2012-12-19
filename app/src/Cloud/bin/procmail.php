@@ -433,7 +433,7 @@ class DeskPRO_Cloud_ProcMail
 		$this->log(sprintf("uploadToSite: out: %s", $out));
 
 		if (strpos($out, 'DP_UNKNOWN_CAT') !== false) {
-			$this->log("uploadToSite: Site has no defiend address");
+			$this->log("uploadToSite: Site has no defined address");
 			$this->markUnknown();
 			$this->exit_string = "Site has no such defined address";
 			$this->exit_code = 3;

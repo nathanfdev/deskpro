@@ -41,7 +41,7 @@ use \Doctrine\ORM\EntityRepository;
 class PersonPref extends AbstractEntityRepository
 {
 	/**
-	 * Fetch all preferences in a related group. A group is defiend by some common
+	 * Fetch all preferences in a related group. A group is defined by some common
 	 * prefix and a dot. For example: some.group.mysetting, some.group.myothersetting
 	 *
 	 * Supply some.group to get an array of mysetting and myothersetting.
