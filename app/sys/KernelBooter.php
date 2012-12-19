@@ -1044,15 +1044,21 @@ HTML;
 			return self::$base_url;
 		}
 
-		$strpos = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'stripos' : 'strpos';
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			$strpos = 'stripos';
+			$filter = 'strtolower';
+		} else {
+			$strpos = 'strpos';
+			$filter = function($in) { return $in; };
+		}
 
-		$filename = basename((isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null));
+		$filename = $filter(basename((isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null)));
 
-		if (basename((isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null)) === $filename) {
+		if ($filter(basename((isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null))) === $filename) {
 			$baseUrl = (isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null);
-		} elseif (basename((isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : null)) === $filename) {
+		} elseif ($filter(basename((isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : null))) === $filename) {
 			$baseUrl = (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : null);
-		} elseif (basename((isset($_SERVER['ORIG_SCRIPT_NAME']) ? $_SERVER['ORIG_SCRIPT_NAME'] : null)) === $filename) {
+		} elseif ($filter(basename((isset($_SERVER['ORIG_SCRIPT_NAME']) ? $_SERVER['ORIG_SCRIPT_NAME'] : null))) === $filename) {
 			$baseUrl = (isset($_SERVER['ORIG_SCRIPT_NAME']) ? $_SERVER['ORIG_SCRIPT_NAME'] : null); // 1and1 shared hosting compatibility
 		} else {
 			// Backtrack up the script_filename to find the portion matching

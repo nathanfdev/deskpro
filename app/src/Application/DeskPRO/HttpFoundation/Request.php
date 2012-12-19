@@ -136,14 +136,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 		}
 
 		// Below is the same except for a few cases where
-		// strpos is replaced with stripos
-        $filename = basename($this->server->get('SCRIPT_FILENAME'));
+		// strpos is replaced with stripos and some strtolowers
+        $filename = strtolower(basename($this->server->get('SCRIPT_FILENAME')));
 
-        if (basename($this->server->get('SCRIPT_NAME')) === $filename) {
+        if (strtolower(basename($this->server->get('SCRIPT_NAME'))) === $filename) {
             $baseUrl = $this->server->get('SCRIPT_NAME');
-        } elseif (basename($this->server->get('PHP_SELF')) === $filename) {
+        } elseif (strtolower(basename($this->server->get('PHP_SELF'))) === $filename) {
             $baseUrl = $this->server->get('PHP_SELF');
-        } elseif (basename($this->server->get('ORIG_SCRIPT_NAME')) === $filename) {
+        } elseif (strtolower(basename($this->server->get('ORIG_SCRIPT_NAME'))) === $filename) {
             $baseUrl = $this->server->get('ORIG_SCRIPT_NAME'); // 1and1 shared hosting compatibility
         } else {
             // Backtrack up the script_filename to find the portion matching
