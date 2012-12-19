@@ -137,6 +137,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$cookie->send();
 		}
 
+		App::setCurrentPerson(new \Application\DeskPRO\People\PersonGuest());
+
 		\Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplogout', 1, 0)->send();
 		// delete this, we'll recreate it as some settings may have changed
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
@@ -186,10 +188,6 @@ HTML;
 	public function authenticateLocalAction($usersource_id)
 	{
 		if ($this->request->getMethod() != 'POST') {
-			return $this->redirectRoute('user_login');
-		}
-
-		if (!empty($_REQUEST['_dp_security_token']) && !$this->consumeRequest('user_login')) {
 			return $this->redirectRoute('user_login');
 		}
 
@@ -250,6 +248,8 @@ HTML;
 		$this->session->set('auth_person_id', $identity->getIdentity());
 		$this->session->set('dp_interface', DP_INTERFACE);
 		$this->session->save();
+
+		App::setCurrentPerson($person);
 
 		if ($person['is_agent']) {
 
@@ -860,6 +860,8 @@ HTML;
 		$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 		$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 		$this->session->save();
+
+		App::setCurrentPerson($person);
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
