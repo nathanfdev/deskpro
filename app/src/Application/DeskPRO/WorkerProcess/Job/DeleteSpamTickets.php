@@ -53,6 +53,7 @@ class DeleteSpamTickets extends AbstractJob
 			return;
 		}
 
+		$secs = 0;
 		$date_cut = new \DateTime('@' . (time() - $secs));
 
 		#------------------------------
@@ -60,72 +61,43 @@ class DeleteSpamTickets extends AbstractJob
 		#------------------------------
 
 		$ticket_count = 0;
-		$user_count = 0;
-		$open_trans = false;
 
-		$all_tickets = App::getOrm()->createQuery("
-			SELECT ticket, person
-			FROM DeskPRO:Ticket ticket
-			LEFT JOIN ticket.person person
-			WHERE ticket.status = 'hidden' AND ticket.hidden_status = 'spam' AND ticket.date_status < ?0
-		")->setMaxResults(1000)->execute(array($date_cut));
+		$all_tickets = App::getDb()->fetchAll("
+			SELECT id, person_id
+			FROM tickets
+			WHERE tickets.hidden_status = 'spam' AND tickets.date_status < ?
+			LIMIT 1000
+		", array($date_cut->format('Y-m-d H:i:s')));
 
 		$this->logger->log(sprintf("[DeleteSpamTickets] %d tickets to delete", count($all_tickets)), 'DEBUG');
+		$date_str = date('Y-m-d H:i:s');
 
 		foreach ($all_tickets as $ticket) {
 
-			if (!$open_trans) {
-				$open_trans = true;
-				App::getOrm()->beginTransaction();
-			}
-
+			App::getDb()->beginTransaction();
 			try {
+				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket['id']), 'DEBUG');
 
-				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket->id), 'DEBUG');
+				App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
+				App::getDb()->insert('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
 
-				// See if the user has only this one spam ticket
-				$count = App::getDb()->fetchColumn("
-					SELECT COUNT(*)
-					FROM tickets
-					WHERE person_id = ?
-					LIMIT 2
-				", array($ticket->person->id));
-
-				App::getOrm()->remove($ticket);
-
-				if ($count == 1) {
-					$this->logger->log(sprintf("[DeleteSpamTickets] Deleted person %d", $ticket->person->id), 'DEBUG');
-
-					$user_count++;
-					App::getOrm()->remove($ticket->person);
-				}
+				App::getDb()->delete('tickets', array('id' => $ticket['id']));
+				App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));
+				App::getDb()->delete('tickets_search_message', array('id' => $ticket['id']));
+				App::getDb()->delete('tickets_search_message_active', array('id' => $ticket['id']));
+				App::getDb()->executeUpdate("DELETE FROM tickets_search_subject WHERE id = ?", array($ticket['id']));
 
 				$ticket_count++;
+
+				App::getDb()->commit();
 			} catch (\Exception $e) {
-				if ($open_trans) {
-					App::getOrm()->rollback();
-				}
-				$open_trans = false;
+				App::getDb()->rollback();
 				throw $e;
 			}
-
-			if ($ticket_count % 250 == 0) {
-				if ($open_trans) {
-					App::getOrm()->commit();
-				}
-				$open_trans = false;
-			}
-		}
-
-		if ($open_trans) {
-			App::getOrm()->commit();
 		}
 
 		if ($ticket_count) {
 			$this->logStatus("Removed " . count($ticket_count) . " spam tickets");
-			if ($user_count) {
-				$this->logStatus("Removed " . count($user_count) . " users who had only one spam ticket");
-			}
 		}
 	}
 }
