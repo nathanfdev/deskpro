@@ -386,8 +386,8 @@ class Twitter
 		$text = str_replace("\t", ' ', $text);
 		$text = trim($text);
 
-		$http_length = 20;
-		$https_length = 21;
+		$http_length = 22;
+		$https_length = 23;
 		$replacements = array();
 
 		$text = preg_replace_callback('/(https?):\/\/(?>[^ \t\r\n[\]#]+)(?!#)/i', function($match) use(&$replacements, $http_length, $https_length) {

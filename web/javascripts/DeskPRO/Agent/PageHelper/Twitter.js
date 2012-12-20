@@ -541,8 +541,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 	updateTweetLength: function(textarea) {
 		var text = textarea.val();
 		text = text.replace(/\r?\n/g, ' ')
-			.replace(/http:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '12345678901234567890')
-			.replace(/https:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '123456789012345678901');
+			.replace(/http:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '1234567890123456789012')
+			.replace(/https:\/\/(?=([^ \t\r\n[\]#]+))\1(?!#)/g, '1234567890123456789013');
 
 		var newMessageArea = textarea.closest('.new-message, .new-retweet'),
 			charCount = newMessageArea.find('.character-count'),
