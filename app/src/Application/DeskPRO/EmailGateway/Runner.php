@@ -329,14 +329,6 @@ class Runner
 					$reader = null;
 				}
 
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\Blob');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\EmailSource');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketMessage');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketAttachment');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketAccessCode');
-				App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketLog');
-
 				gc_collect_cycles();
 			}
 
