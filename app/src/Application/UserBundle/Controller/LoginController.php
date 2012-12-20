@@ -728,7 +728,7 @@ HTML;
 
 				if ($is_new_user) {
 					$user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
-					$user_rule_proc->newRegister($this->person);
+					$user_rule_proc->newRegister($person);
 				}
 
 				$this->session->setFlash('password_reset', 1);
