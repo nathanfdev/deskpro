@@ -1433,84 +1433,84 @@ $collection->add('agent_twitter_starred_tweets_list', new Route(
 	'/twitter/starred-tweets',
 	array('_controller' => 'AgentBundle:Twitter:starredTweets'),
 	array(),
-	array('fragment_name' => 'starred', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-starred', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_my_tweets_list', new Route(
 	'/twitter/my-tweets',
 	array('_controller' => 'AgentBundle:Twitter:myTweets'),
 	array(),
-	array('fragment_name' => 'own', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-own', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_team_tweets_list', new Route(
 	'/twitter/team-tweets',
 	array('_controller' => 'AgentBundle:Twitter:TeamTweets'),
 	array(),
-	array('fragment_name' => 'team', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-team', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_inbox_list', new Route(
 	'/twitter/inbox/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listInbox'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'inbox', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-inbox', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_messages_list', new Route(
 	'/twitter/messages/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listMessages'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'direct', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-direct', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_replies_list', new Route(
 	'/twitter/replies/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listReplies'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'replies', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-replies', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_mentions_list', new Route(
 	'/twitter/mentions/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listMentions'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'mentions', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-mentions', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_retweets_list', new Route(
 	'/twitter/retweets/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listRetweets'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'retweets', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-retweets', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_timeline_list', new Route(
 	'/twitter/timeline/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listTimeline'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'timeline', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-timeline', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_followers_list', new Route(
 	'/twitter/followers/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterUser:listFollowers'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'followers', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-followers', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_followers_list_new', new Route(
 	'/twitter/followers/{account_id}/new',
 	array('_controller' => 'AgentBundle:TwitterUser:listNewFollowers'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'newfollowers', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-newfollowers', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_outgoing_list', new Route(
 	'/twitter/outgoing/{account_id}',
 	array('_controller' => 'AgentBundle:TwitterStatus:listOutgoing'),
 	array('account_id' => '\\d+'),
-	array('fragment_name' => 'sent', 'fragment_type' => 'list')
+	array('fragment_name' => 'tw-sent', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_twitter_status_ajaxmasssave', new Route(
