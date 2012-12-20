@@ -232,7 +232,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 			$ticket,
 			$person,
 			array('<span class="replacement">', '</span>', true),
-			$this->snippet_html ? $this->snippet_html : $this->snippet
+			$this->snippet_html ? $this->snippet_html : nl2br(htmlspecialchars($this->snippet))
 		);
 
 		return $snippet;

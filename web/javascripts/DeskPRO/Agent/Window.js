@@ -2899,11 +2899,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		if (page) {
-			var scrollEl = $('.with-scrollbar', context).first();
-			if (scrollEl.length) {
-				this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
-					showEvent: 'show',
-					hideEvent: 'hide'
+			var scrollEls = $('.with-scrollbar', context);
+			if (scrollEls.length) {
+				scrollEls.each(function() {
+					new DeskPRO.Agent.ScrollerHandler(page, $(this), {
+						showEvent: 'show',
+						hideEvent: 'hide'
+					});
 				});
 			}
 		}
