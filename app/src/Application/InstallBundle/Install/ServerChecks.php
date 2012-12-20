@@ -708,6 +708,12 @@ class ServerChecks
 
 			if ($db_conf) {
 				$db_conf['driver'] = 'pdo_mysql';
+
+				if (isset($db_conf['host']) && preg_match('#^(.*?):([0-9]+)$#', $db_conf['host'], $m)) {
+					$db_conf['host'] = $m[1];
+					$db_conf['port'] = $m[2];
+				}
+
 				$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
 				$db->connect();
 			} else {
