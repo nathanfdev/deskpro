@@ -47,10 +47,12 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 {
 	protected $agent_id;
 	protected $person_context;
+	protected $tracker;
 
-	public function __construct($agent)
+	public function __construct($agent, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
 	{
 		$this->agent_id = $agent;
+		$this->tracker = $tracker;
 	}
 
 
@@ -87,12 +89,16 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
 		$agent_id = $this->agent_id;
 
 		if ($agent_id == -1) {
-			// Invalid context
-			if (!$this->person_context OR !$this->person_context['is_agent']) {
-				return;
-			}
+			if ($this->tracker && $this->tracker->isExtraSet('fwd_via_agent')) {
+				$agent_id = $this->tracker->getExtra('fwd_via_agent')->getId();
+			} else {
+				// Invalid context
+				if (!$this->person_context OR !$this->person_context['is_agent']) {
+					return;
+				}
 
-			$agent_id = $this->person_context['id'];
+				$agent_id = $this->person_context['id'];
+			}
 		}
 
 		$ticket['agent_id'] = $agent_id;

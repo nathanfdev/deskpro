@@ -1289,7 +1289,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$body = $fwd_cutter->getForwardedMessage();
 		$newticket->ticket->message = $body;
 
-		$tracker_extras = array();
+		$tracker_extras = array(
+			'fwd_via_agent' => $agent
+		);
 		if ($agent->getPref("agent_notify_override.forward.email")) {
 			$tracker_extras['force_notify_email'] = array($agent->id);
 		}
