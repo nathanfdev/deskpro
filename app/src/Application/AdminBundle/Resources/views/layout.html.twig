@@ -332,7 +332,7 @@
 			{% if app.isCloud() %}
 				Your DeskPRO demo expires
 				<em class="days">
-					{% if app.getLicense().getExpireDays() == 1 %}
+					{% if app.getLicense().getExpireDays() == 1 or app.getLicense().getExpireDays() == 2 %}
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}
@@ -353,7 +353,7 @@
 			{% else %}
 				Your DeskPRO demo expires
 				<em class="days">
-					{% if app.getLicense().getExpireDays() == 1 %}
+					{% if app.getLicense().getExpireDays() == 1 or app.getLicense().getExpireDays() == 2 %}
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}
