@@ -631,7 +631,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			'date_created' => $ticket['date_created']
 		);
 		$db->insert('tickets_messages', $message);
-		// todo: attachments
+		$message['id'] = $db->lastInsertId();
+		$this->_addTicketMessageAttachments($ticket['id'], $message);
 
 		$message_count = rand(0, 10);
 		if ($message_count > 0) {
@@ -646,7 +647,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'date_created' => $this->_getOffsetDate($i + $j + 1, 'string')
 				);
 				$db->insert('tickets_messages', $message);
-				// todo: attachments
+				$message['id'] = $db->lastInsertId();
+				$this->_addTicketMessageAttachments($ticket['id'], $message);
 			}
 		}
 
@@ -665,6 +667,43 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			if ($batch) {
 				$db->batchInsert('custom_data_ticket', $batch);
 			}
+		}
+	}
+
+	protected function _addTicketMessageAttachments($ticket_id, array $message)
+	{
+		if (rand(1, 10) != 1) {
+			return;
+		}
+
+		$files = array(
+			DP_WEB_ROOT . '/web/images/dp-logo-16.png' => 'data-load1.png',
+			DP_WEB_ROOT . '/web/images/dp-logo-130.png' => 'data-load2.png',
+			DP_WEB_ROOT . '/web/images/agent/icons/big-plus.png' => 'data-load3.png',
+			DP_WEB_ROOT . '/web/images/admin/portal-off.png' => 'data-load4.png',
+			DP_WEB_ROOT . '/README.txt' => 'data-load1.txt',
+			DP_WEB_ROOT . '/robots.txt' => 'data-load2.txt',
+		);
+
+		$amount = rand(1, 3);
+		for ($i = 0; $i < $amount; $i++) {
+			$key = array_rand($files);
+			$name = $files[$key];
+			$mime = substr($name, -3) == 'png' ? 'image/png' : 'text/plain';
+
+			$key = str_replace('/', DIRECTORY_SEPARATOR, $key);
+
+			$upload = new \Symfony\Component\HttpFoundation\File\UploadedFile($key, $name, $mime, filesize($key), 0);
+			$blob = App::getContainer()->getAttachmentAccepter()->accept($upload);
+
+			App::getDb()->insert('tickets_attachments', array(
+				'ticket_id' => $ticket_id,
+				'person_id' => $message['person_id'],
+				'message_id' => $message['id'],
+				'blob_id' => $blob->id,
+				'is_agent_note' => 0,
+				'is_inline' => 0
+			));
 		}
 	}
 
