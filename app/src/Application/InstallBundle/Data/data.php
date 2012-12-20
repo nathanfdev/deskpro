@@ -1144,6 +1144,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TwitterStream::DEFAULT_I
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.cleanup_twitter##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_twitter';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Twitter';
+$j['description'] = 'Cleans up old data from Twitter';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTwitter';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTwitter::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

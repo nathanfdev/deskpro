@@ -330,8 +330,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countTimeline($includeArchived = false, $includeAccount = false)
 	{
-		return App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
+		$count = App::getOrm()->getRepository('DeskPRO:TwitterAccountStatus')
 			->countTimelineForAccount($this, 'timeline', $includeAccount, $includeArchived);
+
+		// can never go over 1000
+		return min($count, 1000);
 	}
 
 	/**
