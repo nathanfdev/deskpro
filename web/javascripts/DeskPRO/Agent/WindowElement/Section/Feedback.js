@@ -15,6 +15,10 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-feedback', this.reload, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.feedback-status-update', this.reload, this);
 
+		window.setInterval(function() {
+			self.reload();
+		}, 420000);
+
 		this.currentNavSelection = null;
 		this.currentNavSelectionOldCount = null;
 	},
