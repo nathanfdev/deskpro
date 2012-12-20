@@ -365,8 +365,8 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$cursor = 0;
 		$this->_parsed_text = '';
 		foreach ($replacements as $starts => $replacement) {
-			$this->_parsed_text .= substr($this['text'], $cursor, $starts - $cursor);
-			$replace = substr($this['text'], $starts, $replacement['ends'] - $starts);
+			$this->_parsed_text .= \Orb\Util\Strings::utf8_substr($this['text'], $cursor, $starts - $cursor);
+			$replace = \Orb\Util\Strings::utf8_substr($this['text'], $starts, $replacement['ends'] - $starts);
 			$cursor = $replacement['ends'];
 
 			switch (get_class($replacement)) {
@@ -389,8 +389,8 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		if (strlen($this['text']) != $cursor) {
-			$this->_parsed_text .= substr($this['text'], $cursor);
+		if ( \Orb\Util\Strings::utf8_strlen($this['text']) != $cursor) {
+			$this->_parsed_text .=  \Orb\Util\Strings::utf8_substr($this['text'], $cursor);
 		}
 
 		return $this->_parsed_text;

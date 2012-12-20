@@ -32,7 +32,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers = new Orb.Class({
 							success: function(html) {
 								var $html = $(html);
 								self.content.find('.followers-list').append($html);
-								self._afterLoading($html);
 							}
 						});
 					}, 200);
