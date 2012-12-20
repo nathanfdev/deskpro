@@ -333,8 +333,6 @@
 				Your DeskPRO demo expires
 				<em class="days">
 					{% if app.getLicense().getExpireDays() == 1 %}
-						TODAY
-					{% elseif app.getLicense().getExpireDays() == 2 %}
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}
@@ -356,8 +354,6 @@
 				Your DeskPRO demo expires
 				<em class="days">
 					{% if app.getLicense().getExpireDays() == 1 %}
-						TODAY
-					{% elseif app.getLicense().getExpireDays() == 2 %}
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}

@@ -646,8 +646,8 @@ final class License
 		switch ($unit) {
 			case 'days':
 				$diff = $d->diff(new \DateTime());
-				// round up if more than 1 day + 18 hours left
-				return ($diff->days + (($diff->days && $diff->h >= 18) ? 1 : 0));
+				// round up if more than 1 day + > 0 hours left
+				return ($diff->days + (($diff->days && $diff->h) ? 1 : 0));
 			case 'hours':
 				return $d->diff(new \DateTime())->h;
 			case 'mins':

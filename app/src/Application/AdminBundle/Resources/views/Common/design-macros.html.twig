@@ -104,8 +104,6 @@
 
 {% macro lic_expire_days(in_word) %}
 	{% if app.getLicense().getExpireDays() == 1 %}
-		TODAY
-	{% elseif app.getLicense().getExpireDays() == 2 %}
 		TOMORROW
 	{% elseif app.getLicense().getExpireDays() == 0 %}
 		{% if app.getLicense().getExpireTime('hours') == 0 %}
