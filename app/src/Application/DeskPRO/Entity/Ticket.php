@@ -2353,7 +2353,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$hashes = array();
 		$hashes[] = sha1(
 			$this->subject
-			. $this->person->id
+			. ($this->person ? $this->person->id : '')
 			. $this->getAgentId()
 			. $this->getAgentTeamId()
 			. $this->getDepartmentId()

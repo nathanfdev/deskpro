@@ -242,13 +242,15 @@ class TicketSla extends \Application\DeskPRO\Domain\DomainObject
 			$tracker->recordExtra('sla_status', $status);
 		}
 
-		$trigger_log = array(
-			'ticket_id'     => $this->ticket->id,
-			'trigger_id'    => $trigger->id,
-			'date_ran'      => date('Y-m-d H:i:s'),
-			'date_criteria' => ($date ? $date->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'))
-		);
-		App::getDb()->insert('ticket_trigger_logs', $trigger_log);
+		if ($this->ticket->id) {
+			$trigger_log = array(
+				'ticket_id'     => $this->ticket->id,
+				'trigger_id'    => $trigger->id,
+				'date_ran'      => date('Y-m-d H:i:s'),
+				'date_criteria' => ($date ? $date->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'))
+			);
+			App::getDb()->insert('ticket_trigger_logs', $trigger_log);
+		}
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 		if ($tracker) {

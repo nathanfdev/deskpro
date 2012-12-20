@@ -63,6 +63,11 @@ class EntityManager extends UnprivateEntityManager
 		);
 	}
 
+	public function clearRepositoryCache()
+	{
+		$this->repositories = array();
+	}
+
 	public function persist($entity)
 	{
 		if (dp_get_config('debug.em_persist_log')) {

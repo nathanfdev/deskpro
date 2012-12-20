@@ -195,6 +195,30 @@ abstract class DomainObject extends BasicDomainObject
 		return $values;
 	}
 
+	public function getScalarData()
+	{
+		$repository = static::getRepository();
+		if (!method_exists($repository, 'getFieldMappings')) {
+			return array();
+		}
+
+		$values = array();
+
+		foreach ($repository->getFieldMappings() AS $name => $field) {
+			$val = $this[$name];
+
+			if ($val instanceof \DateTime) {
+				$values[$name] = $val->format('Y-m-d H:i:s');
+			} else if (is_array($val)) {
+				$values[$name] = serialize($val);
+			} else {
+				$values[$name] = $val;
+			}
+		}
+
+		return $values;
+	}
+
 	public function _setNoPersist()
 	{
 		$this->_no_persist = true;

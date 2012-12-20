@@ -1774,7 +1774,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$url = $this->primary_email->getGravatarUrl($secure);
+		$url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
 		if ($size != 80) {
 			$url .= '&s=' . $size;
 		}
