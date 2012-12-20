@@ -222,7 +222,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$agent = new Entity\Person();
 		$agent->name = $this->_getRandomText(2);
 		$agent->setEmail($this->_getRandomText(1) . microtime(true) . '@example.com', true);
-		$agent->date_created = $this->_getOffsetDate(0);
+		$agent->date_created = $this->_getRandomDate();
 		$agent->is_user = true;
 		$agent->is_confirmed = true;
 		$agent->is_agent = true;
@@ -316,7 +316,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$org_field = new Entity\CustomDefOrganization();
 		$org_field->title = $this->_getRandomText(2);
-		$org_field->description = $this->_getRandomText(rand(1, 10));
+		$org_field->description = $this->_getRandomText(mt_rand(1, 10));
 		$org_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($org_field);
@@ -332,8 +332,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$org = array(
-			'name' => $this->_getRandomText(rand(1, 3)),
-			'date_created' => $this->_getOffsetDate($i, 'string')
+			'name' => $this->_getRandomText(mt_rand(1, 3)),
+			'date_created' => $this->_getRandomDate('string')
 		);
 		$org_ent = new Entity\Organization();
 		$org = array_merge($org_ent->getScalarData(), $org);
@@ -344,8 +344,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		$this->_applyLabelsDb('organization', $org['id']);
 
-		if (rand(1, 4) == 1) {
-			$count = rand(1, 3);
+		if (mt_rand(1, 4) == 1) {
+			$count = mt_rand(1, 3);
 			for ($i = 0; $i < $count; $i++) {
 				$ug_id = $this->_getRandomFromCache('usergroups', 'id');
 				$db->executeUpdate("
@@ -364,7 +364,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(rand(1, 5))
+					'input' => $this->_getRandomText(mt_rand(1, 5))
 				));
 			}
 		}
@@ -376,7 +376,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$usergroup = new Entity\Usergroup();
 		$usergroup->title = $this->_getRandomText(2);
-		$usergroup->note = $this->_getRandomText(rand(1, 5));
+		$usergroup->note = $this->_getRandomText(mt_rand(1, 5));
 
 		App::getOrm()->persist($usergroup);
 	}
@@ -385,7 +385,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$field = new Entity\CustomDefPerson();
 		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->description = $this->_getRandomText(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -402,10 +402,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		$person = array(
 			'name' => $this->_getRandomText(2),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'date_created' => $this->_getRandomDate('string'),
 			'gravatar_url' => ''
 		);
-		if (rand(1, 3) == 1) {
+		if (mt_rand(1, 3) == 1) {
 			$person['organization_id'] = $this->_getRandomOrgId();
 		}
 
@@ -435,8 +435,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		$this->_applyLabelsDb('person', $person['id']);
 
-		if (rand(1, 4) == 1) {
-			$count = rand(1, 3);
+		if (mt_rand(1, 4) == 1) {
+			$count = mt_rand(1, 3);
 			for ($i = 0; $i < $count; $i++) {
 				$ug_id = $this->_getRandomFromCache('usergroups', 'id');
 				$db->executeUpdate("
@@ -456,7 +456,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(rand(1, 5))
+					'input' => $this->_getRandomText(mt_rand(1, 5))
 				);
 			}
 
@@ -471,7 +471,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadSla()
 	{
 		$sla = new Entity\Sla();
-		$sla->title = $this->_getRandomText(rand(1, 4));
+		$sla->title = $this->_getRandomText(mt_rand(1, 4));
 		$types = array(
 			\Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
 			\Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
@@ -479,7 +479,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		);
 		$sla->sla_type = $types[array_rand($types)];
 		$sla->active_time = \Orb\Util\WorkHoursSet::ACTIVE_24X7;
-		$sla->apply_type = rand(1, 6) == 1 ? 'all' : 'manual';
+		$sla->apply_type = mt_rand(1, 6) == 1 ? 'all' : 'manual';
 
 		App::getOrm()->persist($sla);
 		App::getOrm()->flush();
@@ -487,7 +487,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$warning_trigger = new Entity\TicketTrigger();
 		$warning_trigger->title = $sla->title . " - SLA Warning";
 		$warning_trigger->event_trigger = 'sla.warning';
-		$warning_time = rand(30, 500);
+		$warning_time = mt_rand(30, 500);
 		$time = $warning_time . ' minutes';
 		$warning_trigger->setEventTriggerOption('time', $time);
 		$warning_trigger->terms = array(
@@ -502,7 +502,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$fail_trigger = new Entity\TicketTrigger();
 		$fail_trigger->title = $sla->title . " - SLA Failure";
 		$fail_trigger->event_trigger = 'sla.fail';
-		$time = rand($warning_time, 600) . ' minutes';
+		$time = mt_rand($warning_time, 600) . ' minutes';
 		$fail_trigger->setEventTriggerOption('time', $time);
 		$fail_trigger->terms = array(
 			array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'fail', 'sla_id' => $sla->id)),
@@ -522,7 +522,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$field = new Entity\CustomDefTicket();
 		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->description = $this->_getRandomText(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -531,10 +531,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketDepartment()
 	{
 		$department = new Entity\Department();
-		$department->title = $this->_getRandomText(rand(2, 4));
+		$department->title = $this->_getRandomText(mt_rand(2, 4));
 		$department->is_tickets_enabled = true;
 		$department->is_chat_enabled = false;
-		$department->display_order = rand(1, 1000000);
+		$department->display_order = mt_rand(1, 1000000);
 		if (!empty($this->_data_cache['ticket_department_parent'])) {
 			$department->parent = $this->_data_cache['ticket_department_parent'];
 		}
@@ -590,19 +590,21 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['ticket_fields'] = App::getEntityRepository('DeskPRO:CustomDefTicket')->findAll();
 		}
 
+		$date_created = $this->_getRandomDate();
+
 		$ticket = array(
-			'subject' => $this->_getRandomText(rand(2, 6)),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'subject' => $this->_getRandomText(mt_rand(2, 6)),
+			'date_created' => $date_created->format('Y-m-d H:i:s'),
 			'person_id' => $this->_getRandomPersonId(),
 			'department_id' => $this->_getRandomFromCache('ticket_departments', 'id'),
 			'creation_system' => Entity\Ticket::CREATED_WEB_API,
 			'ref' => App::getRefGenerator()->generateReference('DeskPRO:Ticket')
 		);
-		if (rand(0, 2) == 0) {
+		if (mt_rand(0, 2) == 0) {
 			$rand = $this->_getRandomAgent();
 			$ticket['agent_id'] = $rand->id;
 		}
-		if (time() - $this->_getOffsetDate($i)->getTimestamp() > 90*86400) {
+		if (time() - $date_created->getTimestamp() > 90*86400) {
 			$ticket['status'] = 'closed';
 		} else {
 			$statuses = array(
@@ -611,7 +613,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 				2 => 'closed',
 				3 => 'resolved'
 			);
-			$ticket['status'] = $statuses[rand(0, 3)];
+			$ticket['status'] = $statuses[mt_rand(0, 3)];
 		}
 
 		$ticket_ent = new Entity\Ticket(false);
@@ -627,24 +629,25 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			'ticket_id' => $ticket['id'],
 			'person_id' => $ticket['person_id'],
 			'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-			'message' => $this->_getRandomText(rand(50, 500)),
+			'message' => $this->_getRandomText(mt_rand(50, 500)),
 			'date_created' => $ticket['date_created']
 		);
 		$db->insert('tickets_messages', $message);
 		$message['id'] = $db->lastInsertId();
 		$this->_addTicketMessageAttachments($ticket['id'], $message);
 
-		$message_count = rand(0, 10);
+		$message_count = mt_rand(0, 10);
 		if ($message_count > 0) {
+			$range = $date_created->getTimestamp() + mt_rand(200, time() - $date_created->getTimestamp());
 			for ($j = 0; $j < $message_count; $j++) {
-				$is_agent = !empty($ticket['agent']) && rand(0, 1);
+				$is_agent = !empty($ticket['agent']) && mt_rand(0, 1);
 				$message = array(
 					'ticket_id' => $ticket['id'],
 					'person_id' => $is_agent ? $ticket['agent_id'] : $ticket['person_id'],
-					'is_agent_note' => ($is_agent && rand(0, 1) ? 1 : 0),
+					'is_agent_note' => ($is_agent && mt_rand(0, 1) ? 1 : 0),
 					'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-					'message' => $this->_getRandomText(rand(50, 500)),
-					'date_created' => $this->_getOffsetDate($i + $j + 1, 'string')
+					'message' => $this->_getRandomText(mt_rand(50, 500)),
+					'date_created' => $this->_getRandomDate('string', $ticket['date_created'], $range)
 				);
 				$db->insert('tickets_messages', $message);
 				$message['id'] = $db->lastInsertId();
@@ -660,7 +663,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(rand(1, 5))
+					'input' => $this->_getRandomText(mt_rand(1, 5))
 				);
 			}
 
@@ -672,7 +675,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _addTicketMessageAttachments($ticket_id, array $message)
 	{
-		if (rand(1, 10) != 1) {
+		if (mt_rand(1, 10) != 1) {
 			return;
 		}
 
@@ -685,7 +688,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			DP_WEB_ROOT . '/robots.txt' => 'data-load2.txt',
 		);
 
-		$amount = rand(1, 3);
+		$amount = mt_rand(1, 3);
 		for ($i = 0; $i < $amount; $i++) {
 			$key = array_rand($files);
 			$name = $files[$key];
@@ -722,8 +725,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketMacro()
 	{
 		$macro = new Entity\TicketMacro();
-		$macro->title = $this->_getRandomText(rand(2, 4));
-		$macro->is_global = (rand(0, 1) == 1);
+		$macro->title = $this->_getRandomText(mt_rand(2, 4));
+		$macro->is_global = (mt_rand(0, 1) == 1);
 		$macro->is_enabled = true;
 		$macro->actions = array(
 			array('type' => 'agent', 'options' => array('agent' => '-1'))
@@ -737,7 +740,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$category = new Entity\TicketSnippetCategory();
 		$category->is_global = true;
-		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
 		$category->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($category);
@@ -750,8 +753,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$snippet = new Entity\TicketSnippet();
-		$snippet->title = $this->_getRandomText(rand(2, 5));
-		$text = $this->_getRandomText(rand(10, 200));
+		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
+		$text = $this->_getRandomText(mt_rand(10, 200));
 		$snippet->snippet = $text;
 		$snippet->snippet_html = '<p>' . $text . '</p>';
 
@@ -767,7 +770,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$category = new Entity\TextSnippetCategory();
 		$category->typename = 'chat';
 		$category->is_global = true;
-		$category->title = $this->_getRandomText(rand(1, 4));
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
 		$category->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($category);
@@ -780,8 +783,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$snippet = new Entity\TextSnippet();
-		$snippet->title = $this->_getRandomText(rand(2, 5));
-		$snippet->snippet = $this->_getRandomText(rand(10, 200));
+		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
+		$snippet->snippet = $this->_getRandomText(mt_rand(10, 200));
 
 		$category_id = array_rand($this->_data_cache['chat_snippet_categories']);
 		$snippet->category = $this->_data_cache['chat_snippet_categories'][$category_id];
@@ -793,10 +796,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadChatDepartment()
 	{
 		$department = new Entity\Department();
-		$department->title = $this->_getRandomText(rand(2, 4));
+		$department->title = $this->_getRandomText(mt_rand(2, 4));
 		$department->is_tickets_enabled = false;
 		$department->is_chat_enabled = true;
-		$department->display_order = rand(1, 1000000);
+		$department->display_order = mt_rand(1, 1000000);
 		if (!empty($this->_data_cache['chat_department_parent'])) {
 			$department->parent = $this->_data_cache['chat_department_parent'];
 		}
@@ -837,8 +840,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadFeedbackType()
 	{
 		$category = new Entity\FeedbackCategory();
-		$category->title = $this->_getRandomText(rand(1, 4));
-		$category->display_order = rand(1, 1000000);
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
 		App::getOrm()->flush();
@@ -852,9 +855,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadFeedbackStatus()
 	{
 		$category = new Entity\FeedbackStatusCategory();
-		$category->title = $this->_getRandomText(rand(1, 4));
-		$category->display_order = rand(1, 1000000);
-		$category->status_type = rand(1, 2) == 1 ? 'active' : 'closed';
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->display_order = mt_rand(1, 1000000);
+		$category->status_type = mt_rand(1, 2) == 1 ? 'active' : 'closed';
 
 		App::getOrm()->persist($category);
 	}
@@ -868,19 +871,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(rand(2, 6));
+		$title = $this->_getRandomText(mt_rand(2, 6));
 
 		$feedback = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
 			'content' => htmlspecialchars($this->_getRandomText(30)),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
 			'category_id' => $this->_getRandomFromCache('feedback_types', 'id')
 		);
 
-		if (rand(1, 3) == 1) {
+		if (mt_rand(1, 3) == 1) {
 			$feedback['status'] = 'new';
 		} else {
 			$status = $this->_getRandomFromCache('feedback_statuses');
@@ -904,7 +907,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$field = new Entity\CustomDefArticle();
 		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(rand(1, 10));
+		$field->description = $this->_getRandomText(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -913,8 +916,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadArticleCategory()
 	{
 		$category = new Entity\ArticleCategory();
-		$category->title = $this->_getRandomText(rand(1, 4));
-		$category->display_order = rand(1, 1000000);
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
 		App::getOrm()->flush();
@@ -934,13 +937,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['article_fields'] = App::getEntityRepository('DeskPRO:CustomDefArticle')->findAll();
 		}
 
-		$title = $this->_getRandomText(rand(2, 6));
+		$title = $this->_getRandomText(mt_rand(2, 6));
 
 		$article = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
 			'content' => htmlspecialchars($this->_getRandomText(30)),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true)
 		);
@@ -966,7 +969,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(rand(1, 5))
+					'input' => $this->_getRandomText(mt_rand(1, 5))
 				));
 			}
 		}
@@ -977,8 +980,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadNewsCategory()
 	{
 		$category = new Entity\NewsCategory();
-		$category->title = $this->_getRandomText(rand(1, 4));
-		$category->display_order = rand(1, 1000000);
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
 		App::getOrm()->flush();
@@ -995,13 +998,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(rand(2, 6));
+		$title = $this->_getRandomText(mt_rand(2, 6));
 
 		$news = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
 			'content' => htmlspecialchars($this->_getRandomText(30)),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
 			'category_id' =>  $this->_getRandomFromCache('news_categories', 'id')
@@ -1022,8 +1025,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadDownloadCategory()
 	{
 		$category = new Entity\DownloadCategory();
-		$category->title = $this->_getRandomText(rand(1, 4));
-		$category->display_order = rand(1, 1000000);
+		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
 		App::getOrm()->flush();
@@ -1040,13 +1043,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(rand(2, 6));
+		$title = $this->_getRandomText(mt_rand(2, 6));
 
 		$download = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
 			'content' => htmlspecialchars($this->_getRandomText(30)),
-			'date_created' => $this->_getOffsetDate($i, 'string'),
+			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
 			'category_id' =>  $this->_getRandomFromCache('download_categories', 'id')
@@ -1067,10 +1070,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadGlossary()
 	{
 		$def = new Entity\GlossaryWordDefinition();
-		$def->definition = $this->_getRandomText(rand(5, 10));
-		$word_count = rand(1, 5);
+		$def->definition = $this->_getRandomText(mt_rand(5, 10));
+		$word_count = mt_rand(1, 5);
 		for ($i = 0; $i < $word_count; $i++) {
-			$start = chr(rand(64, 90)); // @ and A-Z
+			$start = chr(mt_rand(64, 90)); // @ and A-Z
 			$def->addWord($start . $this->_getRandomText(1));
 		}
 
@@ -1083,20 +1086,20 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTask($i)
 	{
 		$task = new Entity\Task();
-		$task->title = $this->_getRandomText(rand(2, 8));
+		$task->title = $this->_getRandomText(mt_rand(2, 8));
 		$task->person = $this->_getRandomAgent();
-		$task->setVisibility(rand(1, 3) == 1 ? 0 : 1);
-		$task->date_created = $this->_getOffsetDate($i);
-		if (rand(0, 1)) {
-			$task->due_date = new \DateTime('@' . ($task->date_created->getTimestamp() + rand(10000, 10000000)));
+		$task->setVisibility(mt_rand(1, 3) == 1 ? 0 : 1);
+		$task->date_created = $this->_getRandomDate();
+		if (mt_rand(0, 1)) {
+			$task->due_date = new \DateTime('@' . ($task->date_created->getTimestamp() + mt_rand(10000, 10000000)));
 		}
-		if (rand(1, 3) == 1) {
+		if (mt_rand(1, 3) == 1) {
 			$task->assigned_agent = $this->_getRandomAgent();
-		} else if (rand(1, 3) == 1) {
+		} else if (mt_rand(1, 3) == 1) {
 			$task->assigned_agent_team = $this->_getRandomAgentTeam();
 		}
 
-		$task->setCompleted(rand(1, 3) == 1);
+		$task->setCompleted(mt_rand(1, 3) == 1);
 
 		// todo: comments, ticket linking
 
@@ -1104,9 +1107,30 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_applyLabels($task);
 	}
 
-	protected function _getOffsetDate($i, $format = null)
+	protected function _getRandomDate($format = null, $start = null, $end = null)
 	{
-		$date = new \DateTime('@' . floor($this->_start_ts + $i * $this->_date_offset));
+		if ($start === null) {
+			$start = $this->_start_ts;
+		}
+		if ($start instanceof \DateTime) {
+			$start = $start->getTimestamp();
+		}
+		$start = intval($start);
+
+		if ($end === null) {
+			$end = time();
+		}
+		if ($end instanceof \DateTime) {
+			$end = $end->getTimestamp();
+		}
+		$end = intval($end);
+		if ($end <= $start) {
+			$end = $start + 1000;
+		}
+
+		$rand = mt_rand($start, $end);
+
+		$date = new \DateTime('@' . $rand);
 		switch ($format) {
 			case 'ts':
 				return $date->getTimestamp();
@@ -1200,7 +1224,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			throw new \Exception("Unknown label type $type");
 		}
 
-		$labels = rand(0, 4);
+		$labels = mt_rand(0, 4);
 		if ($labels && isset($type_map[$type])) {
 			$db = App::getDb();
 			$batch_label = array();
@@ -1237,7 +1261,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		/** @var $manager \Application\DeskPRO\Labels\LabelManager */
 		$manager = $entity->getLabelManager();
 
-		$labels = rand(0, 4);
+		$labels = mt_rand(0, 4);
 		if ($labels) {
 			App::getOrm()->flush(); // must generate an ID first
 
