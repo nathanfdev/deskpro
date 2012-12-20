@@ -59,35 +59,39 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->obj_start_time = microtime(true);
 
 		global $DP_CONFIG;
-		if (isset($DP_CONFIG['debug']['querylog']) && $DP_CONFIG['debug']['querylog']['enabled']) {
+		if (!empty($DP_CONFIG['debug']['querylog']['enabled'])) {
 			$this->is_enabled = true;
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_maxtime'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_maxtime'])) {
 				$this->log_maxtime = $DP_CONFIG['debug']['querylog']['log_maxtime'];
 			}
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_nowhere'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_nowhere'])) {
 				$this->log_nowhere = $DP_CONFIG['debug']['querylog']['log_nowhere'];
 			}
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_countstar'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_countstar'])) {
 				$this->log_countstar = $DP_CONFIG['debug']['querylog']['log_countstar'];
 			}
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_all'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_all'])) {
 				$this->log_all = $DP_CONFIG['debug']['querylog']['log_all'];
 			}
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_explain'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_explain'])) {
 				$this->log_explain = $DP_CONFIG['debug']['querylog']['log_explain'];
 			}
 
-			if (isset($DP_CONFIG['debug']['querylog']['log_trace'])) {
+			if (!empty($DP_CONFIG['debug']['querylog']['log_trace'])) {
 				$this->log_trace = $DP_CONFIG['debug']['querylog']['log_trace'];
 			}
 		}
 
-		if (isset($DP_CONFIG['debug']['enable_slow_page_log_trace'])) {
+		if (!empty($DP_CONFIG['debug']['enable_slow_page_log'])) {
+			$this->is_enabled = true;
+		}
+
+		if (!empty($DP_CONFIG['debug']['enable_slow_page_log_trace'])) {
 			$this->log_trace = true;
 		}
 
@@ -215,7 +219,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->last_query['time_end']   = microtime(true);
 		$this->last_query['time_taken'] = $this->last_query['time_end'] - $this->last_query['time_start'];
 		$this->last_query['memory']     = memory_get_usage();
-		$this->queries[] = $this->last_query;
+
+		if ($this->is_enabled) {
+			$this->queries[] = $this->last_query;
+		}
 
 		$this->query_count++;
 		$this->total_time += $this->last_query['time_taken'];
@@ -252,7 +259,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$min_log_query = $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'];
 		}
 
-		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
+		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log'] || $DP_CONFIG['debug']['enable_slow_page_log'] === true) {
 			$write = array("--- Page Log Begin ---\n");
 			if (defined('DP_REQUEST_URL')) {
 				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
@@ -386,7 +393,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$db_time    = $this->total_time;
 		$php_time   = $total_time - $db_time;
 
-		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log']) {
+		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log'] && $DP_CONFIG['debug']['enable_slow_page_log'] !== true) {
 			return;
 		}
 

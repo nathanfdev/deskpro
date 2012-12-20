@@ -49,6 +49,16 @@ class DelegateLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	{
 		$this->registered_loggers[$identifier] = $logger;
 	}
+
+	public function removeLogger($identifier)
+	{
+		unset($this->registered_loggers[$identifier]);
+	}
+
+	public function getLoggers()
+	{
+		return $this->registered_loggers;
+	}
 	
 	public function getLogger($identifier)
 	{
