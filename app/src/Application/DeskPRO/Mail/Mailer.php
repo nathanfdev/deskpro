@@ -113,7 +113,22 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 			$this->getLogger()->logInfo(sprintf("debug.mail.save_to_file on: %s", $filepath));
 
-			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath, App::getConfig('debug.mail.disable_send', false)));
+			$plugin = new \Orb\Mail\Plugins\DebugToFile($filepath, App::getConfig('debug.mail.disable_send', false));
+
+			if ($info_path = App::getConfig('debug.mail.save_to_file_info')) {
+				if ($info_path === true || is_numeric($info_path)) {
+					$info_path = '%log_dir%/emails-info';
+				}
+
+				$info_path = str_replace('%log_dir%', App::getLogDir(), $info_path);
+				if (!is_dir($info_path)) {
+					@mkdir($info_path, 0777);
+				}
+
+				$plugin->setInfoFilePath($info_path);
+			}
+
+			$this->registerPlugin($plugin);
 
 		} else if (App::getConfig('debug.mail.disable_send')) {
 			// As an elseif becaue the DebugToFile can also disable send

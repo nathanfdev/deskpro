@@ -44,6 +44,7 @@ class DebugToFile implements \Swift_Events_SendListener
 {
 	protected $filepath;
 	protected $cancel_send = false;
+	protected $info_file_path = false;
 
 	public function __construct($filepath, $cancel_send = false)
 	{
@@ -63,11 +64,51 @@ class DebugToFile implements \Swift_Events_SendListener
 		}
 
 		$message = $evt->getMessage();
-		$name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50)) . '.txt';
+		$name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50));
 		$name = preg_replace('#-{,2}#', '-', $name);
 
-		$path = $this->filepath . DIRECTORY_SEPARATOR . $name;
+		$path = $this->filepath . DIRECTORY_SEPARATOR . $name . '.txt';
 
 		file_put_contents($path, $message->toString());
+
+		if ($this->info_file_path) {
+			if ($tos = $message->getTo()) {
+				$tos = $tos;
+			} else {
+				$tos = array();
+			}
+
+			if ($ccs = $message->getCc()) {
+				$ccs = $ccs;
+			} else {
+				$ccs = array();
+			}
+
+			if ($from = $message->getFrom()) {
+				$from = $from;
+			} else {
+				$from = array();
+			}
+
+			$domain = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
+			if (defined('DPC_SITE_DOMAIN')) {
+				$domain = DPC_SITE_DOMAIN;
+			}
+
+			file_put_contents($this->info_file_path . DIRECTORY_SEPARATOR . $name . '.json', json_encode(array(
+				'date'       => date('Y-m-d H:i:s'),
+				'tos'        => $tos,
+				'ccs'        => $ccs,
+				'from'       => $from,
+				'subject'    => $message->getSubject(),
+				'domain'     => $domain,
+				'store_path' => $path
+			)));
+		}
+	}
+
+	public function setInfoFilePath($path)
+	{
+		$this->info_file_path = $path;
 	}
 }
