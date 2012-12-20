@@ -112,6 +112,12 @@ class SendAgentEmailAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->tracker) {
+			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo(new \RuntimeException("Tracker not provided"));
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+			return;
+		}
+
 		if (!$this->notify_agents) {
 			$this->tracker->logMessage("[SendAgentEmail] No agents");
 			return;

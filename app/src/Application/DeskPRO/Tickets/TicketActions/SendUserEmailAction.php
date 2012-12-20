@@ -83,6 +83,12 @@ class SendUserEmailAction extends AbstractAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->tracker) {
+			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo(new \RuntimeException("Tracker not provided"));
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+			return;
+		}
+
 		if (!App::getDataService('Template')->customEmailExists($this->template)) {
 			return;
 		}
