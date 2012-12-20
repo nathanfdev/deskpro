@@ -15,11 +15,21 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		element.data('scroll_handler', this);
 		element.addClass('with-scroll-handler');
 
+		var onScrollTimer = false;
+
 		function initScroll() {
 			if (!element) return;
 			if (hasInit) return;
 			hasInit = true;
 			element.tinyscrollbar();
+			element.on('dp_scroll', function() {
+				if (!onScrollTimer) {
+					onScrollTimer = setTimeout(function() {
+						onScrollTimer = false;
+						element.find('.select2-dropdown-open').select2("positionDropdown");
+					}, 25);
+				}
+			});
 		}
 
 		function updateSize() {

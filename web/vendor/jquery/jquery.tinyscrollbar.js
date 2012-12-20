@@ -46,6 +46,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oContent.obj.css(sDirection, 0);
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
+
+				oWrapper.trigger('dp_scroll');
 			});
 			oWrapper.on('goscrollto', function(ev, scrollTo) {
 				iScroll = scrollTo;
@@ -54,6 +56,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+
+				oWrapper.trigger('dp_scroll');
 			});
 			oWrapper.on('goscrollbottom', function() {
 
@@ -68,6 +72,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+
+				oWrapper.trigger('dp_scroll');
 			});
 			oWrapper.on('restorescroll', function() {
 
@@ -321,6 +327,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					if (!oScrollbar.obj.is('.disable') /*&& origScroll > 0 && origScroll < oViewport[options.axis]*/) {
 						oEvent.stopPropagation();
 					}
+
+					oWrapper.trigger('dp_scroll');
 				};
 			};
 
@@ -349,6 +357,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					} else {
 						oScrollbar.obj.removeClass('stuck-btm');
 					}
+
+					oWrapper.trigger('dp_scroll');
 				}
 				return false;
 			};
