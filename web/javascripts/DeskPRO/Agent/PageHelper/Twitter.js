@@ -10,7 +10,9 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 
 		this.options = {
 			saveMessageCallback: 'default',
-			messageUrl: page.getMetaData('saveReplyUrl')
+			messageUrl: page.getMetaData('saveReplyUrl'),
+			statusArchiveHideCallback: null,
+			userArchiveHideCallback: null
 		};
 
 		options = options || {};
@@ -78,6 +80,9 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				self.doArchiveUser(id, 1);
 
 				if (self.page.getMetaData('hideArchived')) {
+					if (self.options.userArchiveHideCallback) {
+						self.options.userArchiveHideCallback(row);
+					}
 					row.remove();
 				}
 			}
@@ -132,6 +137,9 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				self.doArchiveStatus(id, 1);
 
 				if (page.menuOptions && !page.menuOptions.filter('[name=archived]').is(':checked')) {
+					if (self.options.statusArchiveHideCallback) {
+						self.options.statusArchiveHideCallback(row);
+					}
 					row.remove();
 				}
 			}

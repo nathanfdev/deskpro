@@ -83,7 +83,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		$query = "
 			SELECT s,
 				a, action_agent, agent, agent_team, retweeted,
-				notes, replies,
 				t, u, ret, recip, long, in_reply
 			FROM DeskPRO:TwitterAccountStatus s
 			INNER JOIN s.account a
@@ -91,8 +90,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 			LEFT JOIN s.agent agent
 			LEFT JOIN s.agent_team agent_team
 			LEFT JOIN s.retweeted retweeted
-			LEFT JOIN s.notes notes
-			LEFT JOIN s.replies replies
 			INNER JOIN s.status t
 			INNER JOIN t.user u
 			LEFT JOIN t.retweet ret

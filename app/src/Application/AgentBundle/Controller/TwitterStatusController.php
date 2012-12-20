@@ -267,6 +267,11 @@ class TwitterStatusController extends AbstractController
 			'showing_to' => min($total_count, $page * $per_page)
 		);
 
+		if ($this->in->getBool('last')) {
+			$parameters['account_status'] = end($statuses);
+			return $this->render('AgentBundle:TwitterStatus:list-row.html.twig', $parameters);
+		}
+
 		// check if is partial
 		if ($this->in->getBool('partial')) {
 			return $this->render('AgentBundle:TwitterStatus:part-status.html.twig', $parameters);

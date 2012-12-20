@@ -11,7 +11,36 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers = new Orb.Class({
 		this.meta.fetchResultsUrl = this.meta.listUrl;
 
 		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
-			messageUrl: this.getMetaData('saveUserMessageUrl')
+			messageUrl: this.getMetaData('saveUserMessageUrl'),
+			userArchiveHideCallback: function(row) {
+				var pageHelper = self.resultsHelper,
+					page = pageHelper.getCurrentPage(),
+					numPages = pageHelper.getNumPages();
+
+				pageHelper.adjustResultCount(-1);
+
+				if (page < numPages) {
+					var data = {};
+					data.last = 1;
+					data.page = page;
+
+					setTimeout(function() {
+						$.ajax({
+							url: self.getMetaData('listUrl'),
+							dataType: 'html',
+							data: data,
+							success: function(html) {
+								var $html = $(html);
+								self.content.find('.followers-list').append($html);
+								self._afterLoading($html);
+							}
+						});
+					}, 200);
+				} else if (pageHelper.resultCount <= 0) {
+					self.wrapper.find('.list-listing.no-results').show();
+					self.wrapper.find('.results-nav').hide();
+				}
+			}
 		});
 
 		this.content.find('textarea').TextAreaExpander();

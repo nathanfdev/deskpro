@@ -334,6 +334,11 @@ class TwitterUserController extends AbstractController
 			'showing_to' => min($total_count, $page * $per_page)
 		);
 
+		if ($this->in->getBool('last')) {
+			$params['follower'] = end($params['followers']);
+			return $this->render('AgentBundle:TwitterUser:part-follower.html.twig', $params);
+		}
+
 		if ($this->in->getBool('partial')) {
 			return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
 		}

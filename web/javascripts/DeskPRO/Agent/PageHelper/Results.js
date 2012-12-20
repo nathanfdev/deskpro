@@ -73,7 +73,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			/**
 			 * @option {Integer}
 			 */
-			currentPage: 1
+			currentPage: 1,
+
+			preFetchCallback: null
 		};
 		this.setOptions(options);
 
@@ -81,6 +83,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.resultsContainer  = this.options.resultsContainer || $('.list-listing', this.wrapper);
 		this.navEl             = this.options.navEl || $('footer.results-nav', this.wrapper);
 		this.showingCountEl    = this.options.showingCountEl || $('.results-showing-count', this.wrapper);
+		this.totalCountEl      = this.options.totalCountEl || $('.results-total-count', this.wrapper);
 
 		this.pageNav           = $('ul.pagenav', this.navEl);
 		this.prevBtn           = $('> li.prev', this.pageNav);
@@ -149,6 +152,25 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		return this.resultIds.slice((pageNum-1) * this.options.perPage, pageNum * this.options.perPage);
 	},
 
+	setResultCount: function(count) {
+		this.resultCount = count;
+		this.numPages = Math.ceil(this.resultCount / this.options.perPage);
+
+		this.pageNav.removeClass('no-prev no-next');
+		if (this.currentPage == 1) {
+			this.pageNav.addClass('no-prev');
+		} else if (this.currentPage >= this.numPages) {
+			this.pageNav.addClass('no-next');
+		}
+
+		this.totalCountEl.text(this.resultCount);
+		this.updateShowingCount();
+	},
+
+	adjustResultCount: function(adjust) {
+		this.setResultCount(this.resultCount + adjust);
+	},
+
 
 	/**
 	 * Load the next page in the results
@@ -195,14 +217,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 		var evData = {html: null}, html = null;
 
-		this.currentPage = pageNum;
-
-		this.pageNav.removeClass('no-prev no-next');
-		if (pageNum == 1) {
-			this.pageNav.addClass('no-prev');
-		} else if (pageNum == this.numPages) {
-			this.pageNav.addClass('no-next');
-		}
+		this.setPage(pageNum);
 
 		this.fireEvent('loadResultPage', [evData]);
 
@@ -226,6 +241,10 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 				});
 			}
 
+			if (this.options.preFetchCallback) {
+				data = this.options.preFetchCallback(data);
+			}
+
 			$.ajax({
 				url: this.page.meta.fetchResultsUrl,
 				data: data,
@@ -239,6 +258,21 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 					this.setNewResults(html);
 				}
 			});
+		}
+	},
+
+	setPage: function(pageNum, updateShowing) {
+		this.currentPage = pageNum;
+
+		this.pageNav.removeClass('no-prev no-next');
+		if (pageNum == 1) {
+			this.pageNav.addClass('no-prev');
+		} else if (pageNum == this.numPages) {
+			this.pageNav.addClass('no-next');
+		}
+
+		if (updateShowing) {
+			this.updateShowingCount();
 		}
 	},
 

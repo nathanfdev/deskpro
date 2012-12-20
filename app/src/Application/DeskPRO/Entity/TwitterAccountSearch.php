@@ -236,7 +236,6 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 			return App::getOrm()->createQuery("
 				SELECT a,
 				account, action_agent, agent, agent_team, retweeted,
-					notes, replies,
 					t, u, ret, recip, long, in_reply
 				FROM DeskPRO:TwitterAccountStatus a
 				INNER JOIN a.account account
@@ -244,8 +243,6 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 				LEFT JOIN a.agent agent
 				LEFT JOIN a.agent_team agent_team
 				LEFT JOIN a.retweeted retweeted
-				LEFT JOIN a.notes notes
-				LEFT JOIN a.replies replies
 				INNER JOIN a.status t
 				INNER JOIN t.user u
 				LEFT JOIN t.retweet ret

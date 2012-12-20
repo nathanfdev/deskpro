@@ -18,8 +18,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.content = $('.content', this.wrapper);
 
 		this._initHeader();
-		this._initContent();
-		this._initControls();
+		this._initContent(this.content);
+		this._initControls(this.content);
 
 		var opt = {
 			perPage: this.meta.perPage || 25,
@@ -27,6 +27,18 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			totalCount: this.meta.totalCount,
 			resultRowSelector: 'article.twitter-status',
 			resultsContainer: this.content,
+			preFetchCallback: function(data) {
+				$.each(self._getDisplayOptions(), function(k, v) {
+					if (/boolean|number|string/.test(typeof v)) {
+						data.push({name: k, value: v});
+					} else {
+						$.each(v, function(kk, vv) {
+							data.push({name: k + '[' + kk + ']', value: vv});
+						});
+					}
+				});
+				return data;
+			},
 			onPostSetNewResults: function() {
 				self._afterLoading();
 			}
@@ -34,12 +46,43 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
 
-		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this);
+		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
+			statusArchiveHideCallback: function(row) {
+				var pageHelper = self.resultsHelper,
+					page = pageHelper.getCurrentPage(),
+					numPages = pageHelper.getNumPages();
+
+				pageHelper.adjustResultCount(-1);
+
+				if (page < numPages) {
+					var data = self._getDisplayOptions();
+					data.last = 1;
+					data.page = page;
+
+					setTimeout(function() {
+						$.ajax({
+							url: self.getMetaData('statusListUrl'),
+							dataType: 'html',
+							data: data,
+							success: function(html) {
+								var $html = $(html);
+								self.content.find('.twitter-status-list').append($html);
+								self._afterLoading($html);
+							}
+						});
+					}, 200);
+				} else if (pageHelper.resultCount <= 0) {
+					self.wrapper.find('.list-listing.no-results').show();
+					self.wrapper.find('.results-nav').hide();
+				}
+			}
+		});
 	},
 
-	_afterLoading: function() {
-		this._initContent();
-		this._initControls();
+	_afterLoading: function(content) {
+		if (!content) { content = this.content; }
+		this._initContent(content);
+		this._initControls(content);
 
 		if (this.selectionBar) {
 			this.selectionBar.updateCount();
@@ -97,15 +140,21 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.ownObject(this.massActions);
 	},
 
-	_initContent: function() {
-		$('.timeago', this.content).timeago();
-		this.content.find('textarea').TextAreaExpander();
+	_initContent: function(content) {
+		$('.timeago', content).timeago();
+		content.find('textarea').TextAreaExpander();
+
+		var list = content.find('.twitter-status-list');
+		if (list.length && list.data('page') && this.resultsHelper) {
+			this.resultsHelper.setPage(parseInt(list.data('page'), 10), true);
+			this.resultsHelper.setResultCount(parseInt(list.data('total-count'), 10));
+		}
 	},
 
-	_initControls: function() {
+	_initControls: function(content) {
 		var self = this;
 
-		this.content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
+		content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
 			var row = $(this).closest('article.twitter-status');
 			DP.select($(this));
 
