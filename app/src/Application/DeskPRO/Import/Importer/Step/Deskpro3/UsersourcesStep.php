@@ -171,17 +171,31 @@ class UsersourcesStep extends AbstractDeskpro3Step
 
 			case 'LDAP':
 
-				$new_usersource->source_type = 'dp3_ldap';
-				$new_usersource->options = array(
-					'host'                     => $usersource['config']['ldap_host'],
-					'port'                     => $usersource['config']['ldap_port'],
-					'baseDn'                   => $usersource['config']['ldap_base_dn'],
-					'username'                 => $usersource['config']['ldap_service_dn'],
-					'password'                 => $usersource['config']['ldap_service_pass'],
-					'field_id'                 => 'dn',
-					'field_username'           => $usersource['config']['ldap_attr_uid'],
-					'field_email'              => $usersource['config']['ldap_attr_mail'],
-				);
+				// Active Directory: Use new AD usersource type
+				if ($usersource['config']['ldap_attr_uid'] == 'sAMAccountName') {
+					$new_usersource->source_type = 'active_directory';
+					$new_usersource->options = array(
+						'host'                     => $usersource['config']['ldap_host'],
+						'port'                     => $usersource['config']['ldap_port'],
+						'baseDn'                   => $usersource['config']['ldap_base_dn'],
+						'username'                 => $usersource['config']['ldap_service_dn'],
+						'password'                 => $usersource['config']['ldap_service_pass'],
+						'accountDomainName'        => '',
+						'accountDomainNameShort'   => ''
+					);
+				} else {
+					$new_usersource->source_type = 'dp3_ldap';
+					$new_usersource->options = array(
+						'host'                     => $usersource['config']['ldap_host'],
+						'port'                     => $usersource['config']['ldap_port'],
+						'baseDn'                   => $usersource['config']['ldap_base_dn'],
+						'username'                 => $usersource['config']['ldap_service_dn'],
+						'password'                 => $usersource['config']['ldap_service_pass'],
+						'field_id'                 => 'dn',
+						'field_username'           => $usersource['config']['ldap_attr_uid'],
+						'field_email'              => $usersource['config']['ldap_attr_mail'],
+					);
+				}
 
 				break;
 
