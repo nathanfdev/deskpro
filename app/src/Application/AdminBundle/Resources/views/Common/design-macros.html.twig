@@ -109,9 +109,9 @@
 		TOMORROW
 	{% elseif app.getLicense().getExpireDays() == 0 %}
 		{% if app.getLicense().getExpireTime('hours') == 0 %}
-			{{ app.getLicense().getExpireTime('mins') }} minutes
+			{{ in_word|default('in') }} {{ app.getLicense().getExpireTime('mins') }} minutes
 		{% else %}
-			{{ app.getLicense().getExpireTime('hours') }} hours
+			{{ in_word|default('in') }} {{ app.getLicense().getExpireTime('hours') }} hours
 		{% endif %}
 	{% else %}
 		{{ in_word|default('in') }} {{ app.getLicense().getExpireDays() }} days

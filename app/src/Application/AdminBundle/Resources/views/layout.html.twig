@@ -338,22 +338,22 @@
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}
-							{{ app.getLicense().getExpireTime('mins') }} minutes
+							in {{ app.getLicense().getExpireTime('mins') }} minutes
 						{% else %}
-							{{ app.getLicense().getExpireTime('hours') }} hours
+							in {{ app.getLicense().getExpireTime('hours') }} hours
 						{% endif %}
 					{% else %}
 						in {{ app.getLicense().getExpireDays() }} days
 					{% endif %}
 				</em>.
 
-				To dismiss this notice and ensure uninterupted access, please enter your billing information.
+				To dismiss this notice and ensure uninterrupted access, please enter your billing information.
 
 				<div class="enter-wrap">
 					<a href="{{ app.request.getBaseUrl() }}/billing/" class="btn primary">Enter your billing information now &rarr;</a>
 				</div>
 			{% else %}
-				Your DeskPRO demo expire
+				Your DeskPRO demo expires
 				<em class="days">
 					{% if app.getLicense().getExpireDays() == 1 %}
 						TODAY
@@ -361,9 +361,9 @@
 						TOMORROW
 					{% elseif app.getLicense().getExpireDays() == 0 %}
 						{% if app.getLicense().getExpireTime('hours') == 0 %}
-							{{ app.getLicense().getExpireTime('mins') }} minutes
+							in {{ app.getLicense().getExpireTime('mins') }} minutes
 						{% else %}
-							{{ app.getLicense().getExpireTime('hours') }} hours
+							in {{ app.getLicense().getExpireTime('hours') }} hours
 						{% endif %}
 					{% else %}
 						in {{ app.getLicense().getExpireDays() }} days
