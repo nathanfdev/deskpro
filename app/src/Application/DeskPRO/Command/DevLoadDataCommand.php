@@ -54,6 +54,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->setName('dpdev:load-data');
 		$this->addOption('count', null, InputOption::VALUE_REQUIRED, 'Amount of data for each type to create', 0);
 		$this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
+		$this->addOption('types-not', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types to skip (implies --types=*)', '');
 		$this->addOption('range', null, InputOption::VALUE_REQUIRED, 'Range of dates to cover data for (eg, "3 years")', '');
 	}
 
@@ -90,6 +91,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$type_input = $input->getOption('types');
+		$types_not = $input->getOption('types-not');
+		if ($types_not) {
+			if (!$type_input) {
+				$type_input = '*';
+			} else {
+				echo "Cannot specify --types and --types-not together.\n";
+				return 1;
+			}
+		}
+
 		if ($type_input === '*') {
 			$types = $available_types;
 
@@ -97,6 +108,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$agent_type_key = array_search('agent', $types);
 			if ($agent_type_key !== false) {
 				unset($types[$agent_type_key]);
+			}
+
+			if ($types_not) {
+				$type_not_list = preg_split('/,\s*/', $types_not, -1, PREG_SPLIT_NO_EMPTY);
+				foreach ($type_not_list AS $not) {
+					$type_key = array_search($not, $types);
+					if ($type_key !== false) {
+						unset($types[$type_key]);
+					}
+				}
 			}
 		} else {
 			$types = preg_split('/,\s*/', $type_input, -1, PREG_SPLIT_NO_EMPTY);
