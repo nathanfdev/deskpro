@@ -194,7 +194,14 @@ abstract class LoaderAbstract
 		}
 
 		global $DP_CONFIG;
-		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+
+		$port = '';
+		if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
+			$DP_CONFIG['db']['host'] = $m[1];
+			$port = ";port={$m[2]};";
+		}
+
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo->exec("SET sql_mode=''");
 		$this->pdo->exec("SET NAMES 'UTF8'");
