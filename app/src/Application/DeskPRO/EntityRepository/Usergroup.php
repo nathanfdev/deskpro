@@ -145,15 +145,29 @@ class Usergroup extends AbstractEntityRepository
 	 */
 	public function getCountsForAll()
 	{
-		return App::getDb()->fetchAllKeyValue("
-			SELECT usergroups.id, COUNT(DISTINCT people.id)
-			FROM people
-			INNER JOIN usergroups
-			LEFT JOIN person2usergroups ON (usergroups.id = person2usergroups.usergroup_id AND people.id = person2usergroups.person_id)
-			LEFT JOIN organization2usergroups ON (usergroups.id = organization2usergroups.usergroup_id AND people.organization_id = organization2usergroups.organization_id)
-			WHERE (person2usergroups.person_id IS NOT NULL OR organization2usergroups.organization_id IS NOT NULL)
-			GROUP BY usergroups.id
+		$output = App::getDb()->fetchAllKeyValue("
+			SELECT usergroup_id, COUNT(*)
+			FROM person2usergroups
+			GROUP BY usergroup_id
 		");
+		$output = array_map('intval', $output);
+
+		$results = App::getDb()->fetchAll("
+			SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
+			FROM organization2usergroups AS o2u
+		");
+		foreach ($results AS $result) {
+			if (!$result['total']) {
+				continue;
+			}
+			if (isset($output[$result['usergroup_id']])) {
+				$output[$result['usergroup_id']] += $result['total'];
+			} else {
+				$output[$result['usergroup_id']] = $result['total'];
+			}
+		}
+
+		return $output;
 	}
 
 
@@ -169,16 +183,31 @@ class Usergroup extends AbstractEntityRepository
 
 		$ids_comma = implode(',', $ids);
 
-		return App::getDb()->fetchAllKeyValue("
-			SELECT usergroups.id, COUNT(DISTINCT people.id)
-			FROM people
-			INNER JOIN usergroups
-			LEFT JOIN person2usergroups ON (usergroups.id = person2usergroups.usergroup_id AND people.id = person2usergroups.person_id)
-			LEFT JOIN organization2usergroups ON (usergroups.id = organization2usergroups.usergroup_id AND people.organization_id = organization2usergroups.organization_id)
-			WHERE usergroups.id IN ($ids_comma)
-				AND (person2usergroups.person_id IS NOT NULL OR organization2usergroups.organization_id IS NOT NULL)
-			GROUP BY usergroups.id
+		$output = App::getDb()->fetchAllKeyValue("
+			SELECT usergroup_id, COUNT(*)
+			FROM person2usergroups
+			WHERE usergroup_id IN ($ids_comma)
+			GROUP BY usergroup_id
 		");
+		$output = array_map('intval', $output);
+
+		$results = App::getDb()->fetchAll("
+			SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
+			FROM organization2usergroups AS o2u
+			WHERE o2u.usergroup_id IN ($ids_comma)
+		");
+		foreach ($results AS $result) {
+			if (!$result['total']) {
+				continue;
+			}
+			if (isset($output[$result['usergroup_id']])) {
+				$output[$result['usergroup_id']] += $result['total'];
+			} else {
+				$output[$result['usergroup_id']] = $result['total'];
+			}
+		}
+
+		return $output;
 	}
 
 
