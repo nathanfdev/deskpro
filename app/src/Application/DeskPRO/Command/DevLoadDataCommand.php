@@ -188,7 +188,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					$time = microtime(true) - $start;
 					$memory = memory_get_usage() / 1024 / 1024;
 
-					if ($memory > 100 || $i % 1000 == 0) {
+					if ($i % 500 == 0) {
 						$this->_flushAndClear();
 					}
 
