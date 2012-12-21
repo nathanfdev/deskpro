@@ -416,28 +416,16 @@ class Person extends AbstractEntityRepository
 	 * Get a count of how many people there are
 	 *
 	 * @param boolean $only_users
-	 * @param boolean $approx
 	 *
 	 * @return int
 	 */
-	public function getCount($only_users = false, $approx = true)
+	public function getCount($only_users = false)
 	{
-		if ($approx) {
-			$result = App::getDb()->fetchAssoc("SHOW TABLE STATUS LIKE 'people'");
-			$rows = $result['Rows'];
-			if ($rows < 1500) {
-				$rows = false; // fall back here and get an exact amount
-			}
-		} else {
-			$rows = false;
-
-		if ($rows === false)
-			$rows = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM people
-				WHERE is_agent IN (0, 1)
-			");
-		}
+		$rows = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent IN (0, 1)
+		");
 
 		if ($only_users) {
 			return $rows - count($this->getAgents());
