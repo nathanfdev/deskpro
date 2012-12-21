@@ -663,7 +663,6 @@ $CONFIG['agent_interface_css'] = array(
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/navigation.less',
 		'stylesheets-less/agent/header.less',
-		'stylesheets-less/agent/overlayMacro.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
 	)
 );

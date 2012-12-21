@@ -205,48 +205,6 @@
 	.header-btn-over();
 }
 
-.notifMenuWrap{
-	position: absolute;
-	top: 0;
-}
-.notifMenuWrap a.iconImg{
-    background-position:top left;
-    background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	font-size: 10px;
-	color: #fff;
-	cursor: pointer;
-	display: block;
-	text-indent: -999px;
-}
-.notifMenuWrap a.chat{
-  	background-position:top left;
-    background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-    float: left;
-    height: 13px;
-    padding: 5px 4px;
-    width: 20px;
-}
-.notifMenuWrap a.mail{
-	background-position: 7px -42px;
- 	border-right: 1px solid #314559;
-	box-shadow: 1px 0 0 #4A8FC8;
-	float: left;
-	height: 12px;
-	padding: 6px 7px 5px;
-	width: 16px;
-}
-.notifMenuWrap a.warning{
-	background-position: 6px -1362px;
-	border-right: 1px solid #314559;
-	box-shadow: 1px 0 0 #4A8FC8;
-	float: left;
-	height: 13px;
-	padding: 6px 7px;
-	width: 15px;
-}
-
 .notif-item .counter {
 	.gradient(#bf6060, #804040);
 	.border-radius(10px, 10px, 10px, 10px);
@@ -265,12 +223,6 @@
 	z-index: 99;
 	text-indent: 0;
 	font-family: @count-badge-font;
-}
-.notifMenuWrap span#ticketsCounter{
-	left: 17px;
-}
-.notifMenuWrap span#chatCounter{
-	left: 51px;
 }
 
 /* Notification Dropdown */
@@ -393,14 +345,6 @@ ul#dp_notify_list li.ticket.new-ticket a i.row-icon {
 ul#dp_notify_list li em:hover {
 	.opacity(100);
 }
-ul#dp_notify_list li span.dismissHover{
-	position: absolute;
-	right: 10px;
-	top: 5px;
-	color: red;
-	padding: 0;
-	display: none;
-}
 ul#dp_notify_list li:hover{
 	background: rgb(255,255,255);
 }
@@ -432,14 +376,6 @@ ul#dp_notify_list li.dismissAll a:hover{
 	position: relative;
 }
 
-ul#dp_notify_list li.notifPaging{
-	.gradient(#f6f6f6, #e9e9e9);
-	position: relative;
-}
-ul#dp_notify_list li.notifPaging span{
-	float: left;
-	padding: 5px 0 5px 9px;
-}
 
 ul#dp_notify_list li .info {
 	clear: both;
@@ -533,52 +469,7 @@ ul#dp_notify_list li .info {
 	position: absolute;
 	top: -5px;
 }
-/* Pagination Notification Menu*/
-ul#dp_notify_list li.notifPaging ul#notifPages{}
-ul#dp_notify_list li.notifPaging ul#notifPages li{
-	border-bottom: medium none;
-	display: inline;
-	width: auto;
-	color: #737a80;
-	text-shadow: 0 1px 0 #fff;
-	padding: 0 2px;
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.mark{
-	color: #BEBEBE;
-	font-size: 10px;
-	font-weight: normal;
-	padding: 6px 0 0;
-	cursor: text;
-	background: transparent !important;
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.active,
-ul#dp_notify_list li.notifPaging ul#notifPages li.pages:hover,
-ul#dp_notify_list li.notifPaging ul#notifPages li.pText:hover{
-	padding: 4px 2px;
-	background: transparent;
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.right{
-	float: right;
 
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.off a{
-	color: #b8c0c5 !important;
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.off:hover a{
-	background: transparent;
-	border: 1px solid transparent;
-}
-
-ul#dp_notify_list li.notifPaging ul#notifPages li a{
-	padding: 5px 4px;
-}
-ul#dp_notify_list li.notifPaging ul#notifPages li.active a,
-ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
-	background: #fff;
-	border: 1px solid #a5a6a7;
-	.border-radius(10px, 10px, 10px, 10px);
-	padding: 0px 3px;
-}
 
 ul#dp_notify_list li#dp_notify_list_none {
 	text-align: center;
@@ -783,23 +674,6 @@ ul#dp_notify_list li#dp_notify_list_none {
 	float: right;
 }
 
-#DP-UserSection{
-	position: relative;
-	float: right;
-	padding-right: 5px;
-}
-
-
-
-.floatLeft{
-	position: relative;
-	float: left;
-}
-
-.floatRight{
-	position: relative;
-	float: right;
-}
 
 #dp_header{
 	background-color:#2d5680;
@@ -936,9 +810,6 @@ ul#dp_notify_list li#dp_notify_list_none {
 #agent_status.away .label-away { display: block; }
 #agent_status.dnd .label-dnd{ display: block; }
 
-.DP-adminStatus li.agentStatus a {
-
-}
 
 #agent_status_menu {
 	position: absolute;
@@ -1382,24 +1253,6 @@ ul#dp_notify_list li#dp_notify_list_none {
 	width: 16px;
 }
 
-.DP-adminStatus li.agentStatus a {
-	background-repeat: no-repeat;
-    background-image: url(../../images/agent/header/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-    margin-right: 15px;
-	position: relative;
-	height: 12px;
-}
-.DP-adminStatus li.agentStatus a.away{
-	background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-away-red.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-    height: 13px;
-}
-
-.DP-adminStatus li.agentStatus a.dnd {
-	background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-dnd-red.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-    height: 13px;
-}
 .DP-adminStatus li.keyboardIcon a{
 	background-repeat: no-repeat;
     background-image: url(../../images/agent/header/keyboard.png) /** sprite-ref: ui-v; sprite-alignment: left */;
@@ -1434,10 +1287,6 @@ ul#dp_notify_list li#dp_notify_list_none {
     background-repeat: no-repeat;
     background-image: url(../../images/agent/header/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
-.DP-adminStatus li a .dropdowninfo{
-	position: relative;
-	z-index: 40000;
-}
 
 .DP-adminStatus li a span{
 	.gradient(#262626, #111111);
@@ -1471,25 +1320,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 	border-width: 5px;
 }
 
-.firefox .windows li.networkStatIndicator a .dropdowninfo{
-	left: -85px;
-}
-.DP-adminStatus li.agentStatus a span{
-	left: -158px;
-	padding: 5px 10px 5px 10px;
-	top: 10px;
-	width: 160px;
-}
-.DP-adminStatus li.agentStatus a span:after{
-	left: 160px;
-}
-.ie .DP-adminStatus li.agentStatus a span{
-	width: 170px;
-	left: -170px;
-}
-.ie .DP-adminStatus li.agentStatus a span:after{
-	left: 170px;
-}
+
 
 #network_status_tip { width: 200px; }
 #network_status_tip .network-status-red { display: none; }
@@ -1513,87 +1344,8 @@ ul#dp_notify_list li#dp_notify_list_none {
 	left: 155px;
 }
 
-.DP-adminStatus li.agentStatus a:hover .dropdowninfo span, .DP-adminStatus li.networkStatIndicator a:hover .dropdowninfo span{
-	display: block;
-	text-indent: 0;
-}
 
 
-/* User Control Section */
-#DP-UserSection{
-	background-repeat: no-repeat;
-	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
-	padding-left: 6px;
-	margin-left: -2px;
-	position: relative;
-	float: right;
-	height: 41px;
-}
-
-#DP-userControl{
-	font-family: @toolbar-font;
-	height: 35px;
-	overflow: hidden;
-	padding: 5px 2px 0 7px;
-	position: relative;
-}
-
-#DP-userControl .drop {
-	float: right;
-	position: relative;
-	top: 10px;
-
-	background-image: url("../../images/agent/dropdown-white.png");
-	background-repeat: no-repeat;
-	background-position: 50% 50% !important;
-
-	width: 6px;
-	height: 5px;
-	display: block;
-	padding: 0;
-	margin: 0 4px 0 7px !important;
-}
-
-
-.currentUserAvatar .userWrapper{
-	.gradient(#5a90b8, #3c6094);
-	border: 1px solid #314559;
-	.border-radius(3px, 3px, 3px, 3px);
-	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #6DA6CD inset, 0 0 1px #5283AF inset;
-	float: left;
-	position: relative;
-	margin-right: 4px;
-}
-.userWrapper a{
-	cursor: pointer;
-	float: left;
-	padding: 2px 3px 0px 3px;
-	line-height: 100%;
-}
-
-.userWrapper a em {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    padding: 2px;
-	position: relative;
-	.rounded(4px);
-	-webkit-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.8);
-    -moz-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
-    box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.8);
-}
-
-.currentUserAvatar span{
-	background-position: left -1184px !important;
-	cursor: pointer;
-	float: left;
-	margin-left: 1px;
-	margin-top: 6px;
-	padding: 5px;
-}
 /* User Profile Dropdown */
 .userProfileDropdownHeader{
     position: relative;
