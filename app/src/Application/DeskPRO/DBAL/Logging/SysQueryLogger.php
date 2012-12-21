@@ -51,6 +51,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	public $log_all       = false;
 	public $log_explain   = false;
 	public $log_trace     = false;
+	public $min_log_query = 0;
 
 	public $queries = array();
 
@@ -95,6 +96,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$this->log_trace = true;
 		}
 
+		if ($this->is_enabled && isset($DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) && $DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) {
+			$this->min_log_query = $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'];
+		}
+
 		\DpShutdown::add(array($this, 'writeLogQuiet'));
 	}
 
@@ -117,11 +122,6 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			'time_taken'     => 0,
 			'trans_level'    => 0
 		);
-
-		if ($this->log_trace) {
-			try { throw new \Exception(); } catch (\Exception $e) { $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace()); }
-			$this->last_query['trace'] = $trace;
-		}
 	}
 
 	public function processLast()
@@ -220,7 +220,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->last_query['time_taken'] = $this->last_query['time_end'] - $this->last_query['time_start'];
 		$this->last_query['memory']     = memory_get_usage();
 
-		if ($this->is_enabled) {
+		if ($this->is_enabled && (!$this->min_log_query || $this->last_query['time_taken'] >= $this->min_log_query)) {
+			if ($this->log_trace) {
+				try { throw new \Exception(); } catch (\Exception $e) { $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace()); }
+				$this->last_query['trace'] = $trace;
+			}
 			$this->queries[] = $this->last_query;
 		}
 
@@ -254,11 +258,6 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$db_time    = $this->total_time;
 		$php_time   = $total_time - $db_time;
 
-		$min_log_query = 0;
-		if (isset($DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) && $DP_CONFIG['debug']['enable_slow_page_log_minquerytime']) {
-			$min_log_query = $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'];
-		}
-
 		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
 			$write = array("--- Page Log Begin ---\n");
 			if (defined('DP_REQUEST_URL')) {
@@ -273,10 +272,6 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$name_counts_time = array();
 
 			foreach ($this->queries as $q) {
-
-				if ($min_log_query && $min_log_query > $q['time_taken']) {
-					continue;
-				}
 
 				$sql = trim($q['sql']);
 				$hash = md5($q['sql']);
