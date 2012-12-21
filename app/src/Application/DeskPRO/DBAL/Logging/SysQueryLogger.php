@@ -87,7 +87,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 		}
 
-		if (!empty($DP_CONFIG['debug']['enable_slow_page_log'])) {
+		if (!empty($DP_CONFIG['debug']['enable_slow_page_log']) && is_numeric($DP_CONFIG['debug']['enable_slow_page_log'])) {
 			$this->is_enabled = true;
 		}
 
@@ -259,7 +259,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$min_log_query = $DP_CONFIG['debug']['enable_slow_page_log_minquerytime'];
 		}
 
-		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log'] || $DP_CONFIG['debug']['enable_slow_page_log'] === true) {
+		if ($total_time > $DP_CONFIG['debug']['enable_slow_page_log']) {
 			$write = array("--- Page Log Begin ---\n");
 			if (defined('DP_REQUEST_URL')) {
 				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
@@ -393,7 +393,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$db_time    = $this->total_time;
 		$php_time   = $total_time - $db_time;
 
-		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log'] && $DP_CONFIG['debug']['enable_slow_page_log'] !== true) {
+		if ($total_time < $DP_CONFIG['debug']['enable_slow_page_log']) {
 			return;
 		}
 
