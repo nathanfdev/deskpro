@@ -608,12 +608,22 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$ticket['status'] = 'closed';
 		} else {
 			$statuses = array(
-				0 => 'awaiting_agent',
+				0 => 'awaiting_user',
 				1 => 'awaiting_user',
-				2 => 'closed',
-				3 => 'resolved'
+				2 => 'awaiting_user',
+				3 => 'awaiting_user',
+				4 => 'awaiting_user',
+				5 => 'resolved',
+				6 => 'resolved',
+				7 => 'resolved',
+				8 => 'closed',
+				9 => 'closed',
 			);
-			$ticket['status'] = $statuses[mt_rand(0, 3)];
+			if (mt_rand(0, 100) == 0) {
+				$ticket['status'] = 'awaiting_agent';
+			} else {
+				$ticket['status'] = $statuses[mt_rand(0, 9)];
+			}
 		}
 
 		$ticket_ent = new Entity\Ticket(false);
