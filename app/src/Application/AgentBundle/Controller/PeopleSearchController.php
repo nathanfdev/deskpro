@@ -500,6 +500,16 @@ class PeopleSearchController extends AbstractController
 		return $this->searchAction('*', array('person_usergroup' => $id), 'usergroup.' . $id);
 	}
 
+	public function showOrganizationMembersAction($id)
+	{
+		$organization = $this->em->find('DeskPRO:Organization', $id);
+		if (!$organization) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->searchAction('*', array('person_organization' => $id), 'organization.' . $id);
+	}
+
 	protected function applyLetterToSearcher($letter, $searcher)
 	{
 		$selected_letter = '*';

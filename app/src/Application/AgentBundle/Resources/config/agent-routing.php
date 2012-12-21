@@ -609,6 +609,13 @@ $collection->add('agent_peoplesearch_usergroup', new Route(
 	array('fragment_name' => 'usergroup', 'fragment_type' => 'list')
 ));
 
+$collection->add('agent_peoplesearch_organization', new Route(
+	'/people-search/organization/{id}',
+	array('_controller' => 'AgentBundle:PeopleSearch:showOrganizationMembers'),
+	array(),
+	array('fragment_name' => 'organization-members', 'fragment_type' => 'list')
+));
+
 
 $collection->add('agent_peoplesearch_customfilter', new Route(
 	'/people-search/search/{letter}',

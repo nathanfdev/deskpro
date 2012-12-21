@@ -317,14 +317,16 @@ class Person extends AbstractEntityRepository
 	}
 
 
-	public function getOrganizationMembers(OrganizationEntity $org)
+	public function getOrganizationMembers(OrganizationEntity $org, $page = 1, $limit = 50)
 	{
+		$page = max(1, $page);
+
 		return $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
 			WHERE p.organization = ?1
 			ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
-		")->execute(array(1=> $org));
+		")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1=> $org));
 	}
 
 	public function getOrganizationMemberIds(OrganizationEntity $org)

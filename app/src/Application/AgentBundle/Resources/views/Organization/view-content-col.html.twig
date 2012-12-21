@@ -108,6 +108,13 @@
 							<tr><td colspan="2">{{ phrase('agent.organizations.is_empty') }}</td></tr>
 						{% endif %}
 					{% endfor %}
+					{% if members_count > 50 %}
+						<tr class="more">
+							<td colspan="2">
+								<a class="clean-white" data-route="listpane:{{ path('agent_peoplesearch_organization', {id: org.id}) }}">Browse all members</a>
+							</td>
+						</tr>
+					{% endif %}
 				</tbody>
 			</table>
 		</article>
