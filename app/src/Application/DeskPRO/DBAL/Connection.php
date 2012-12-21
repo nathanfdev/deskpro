@@ -258,8 +258,9 @@ class Connection extends \Doctrine\DBAL\Connection
 	 *
 	 * @param string $table
 	 * @param array $multiple_values
+	 * @param boolean $ignore
 	 */
-	public function batchInsert($table, array $multiple_values)
+	public function batchInsert($table, array $multiple_values, $ignore = false)
 	{
 		$cols = null;
 		$cols_count = 0;
@@ -304,7 +305,7 @@ class Connection extends \Doctrine\DBAL\Connection
 		# Build sql
 		#------------------------------
 
-		$sql = "INSERT INTO `$table` (`" . implode('`,`', $cols) ."`) VALUES " . implode(',', $value_parts);
+		$sql = "INSERT " . ($ignore ? 'IGNORE' : '') . " INTO `$table` (`" . implode('`,`', $cols) ."`) VALUES " . implode(',', $value_parts);
 
 		return $this->executeUpdate($sql, $params);
 	}

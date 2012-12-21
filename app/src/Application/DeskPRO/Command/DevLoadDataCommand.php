@@ -59,6 +59,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	}
 
 	protected $_data_cache = array();
+	protected $_batch_insert = array();
+	protected $_batch_insert_ignore = array();
 	protected $_start_ts = null;
 	protected $_date_offset = null;
 
@@ -146,10 +148,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_date_offset = (time() - $start_date->getTimestamp()) / $amount;
 
 		$total = count($types);
-
+		$db = App::getDb();
 		$begin = microtime(true);
 
-		App::getOrm()->beginTransaction();
+		$db->exec("SET unique_checks=0");
+		$db->exec("SET foreign_key_checks=0");
+		$db->beginTransaction();
 
 		// loop through all to keep the order the same as we create some dependent stuff first
 		$type_count = 0;
@@ -184,7 +188,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					$time = microtime(true) - $start;
 					$memory = memory_get_usage() / 1024 / 1024;
 
-					if ($memory > 100 || $i % 250 == 0) {
+					if ($memory > 100 || $i % 1000 == 0) {
 						$this->_flushAndClear();
 					}
 
@@ -217,7 +221,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			) . "\n";
 		}
 
-		App::getOrm()->commit();
+		$db->commit();
+		$db->exec("SET unique_checks=1");
+		$db->exec("SET foreign_key_checks=1");
 
 		$time = microtime(true) - $begin;
 		$memory = memory_get_usage() / 1024 / 1024;
@@ -228,14 +234,27 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _flushAndClear()
 	{
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-		App::getOrm()->clear();
-		App::getOrm()->clearRepositoryCache();
+		$orm = App::getOrm();
+		$db = App::getDb();
+
+		$orm->flush();
+
+		foreach ($this->_batch_insert AS $table => $batches) {
+			$db->batchInsert($table, $batches);
+		}
+		foreach ($this->_batch_insert_ignore AS $table => $batches) {
+			$db->batchInsert($table, $batches, true);
+		}
+
+		$orm->commit();
+		$orm->clear();
+		$orm->clearRepositoryCache();
 		$this->_data_cache = array();
+		$this->_batch_insert = array();
+		$this->_batch_insert_ignore = array();
 		gc_collect_cycles();
 
-		App::getOrm()->beginTransaction();
+		$db->beginTransaction();
 	}
 
 	protected function _loadAgent($i)
@@ -459,30 +478,22 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if (mt_rand(1, 4) == 1) {
 			$count = mt_rand(1, 3);
 			for ($i = 0; $i < $count; $i++) {
-				$ug_id = $this->_getRandomFromCache('usergroups', 'id');
-				$db->executeUpdate("
-					INSERT IGNORE INTO person2usergroups
-						(person_id, usergroup_id)
-					VALUES
-						(?, ?)
-				", array($person['id'], $ug_id));
+				$this->_addBatchInsert('person2usergroups', array(
+					'person_id' => $person['id'],
+					'usergroup_id' => $this->_getRandomFromCache('usergroups', 'id')
+				), true);
 			}
 		}
 
 		foreach ($this->_data_cache['person_fields'] AS $field) {
-			$batch = array();
 			if ($field->getTypeName() == 'text') {
-				$batch[] = array(
+				$this->_addBatchInsert('custom_data_person', array(
 					'person_id' => $person['id'],
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
 					'input' => $this->_getRandomText(mt_rand(1, 5))
-				);
-			}
-
-			if ($batch) {
-				$db->batchInsert('custom_data_person', $batch);
+				));
 			}
 		}
 
@@ -494,11 +505,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$sla = new Entity\Sla();
 		$sla->title = $this->_getRandomText(mt_rand(1, 4));
 		$types = array(
-			\Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
-			\Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
-			\Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME
+			0 => \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
+			1 => \Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
+			2 => \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME
 		);
-		$sla->sla_type = $types[array_rand($types)];
+		$sla->sla_type = $types[mt_rand(0, 2)];
 		$sla->active_time = \Orb\Util\WorkHoursSet::ACTIVE_24X7;
 		$sla->apply_type = mt_rand(1, 6) == 1 ? 'all' : 'manual';
 
@@ -602,6 +613,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 	}
 
+	protected $_ticket_statuses = array(
+		0 => 'awaiting_user',
+		1 => 'awaiting_user',
+		2 => 'awaiting_user',
+		3 => 'awaiting_user',
+		4 => 'awaiting_user',
+		5 => 'resolved',
+		6 => 'resolved',
+		7 => 'resolved',
+		8 => 'closed',
+		9 => 'closed',
+	);
+
 	protected function _loadTicket($i)
 	{
 		if (!isset($this->_data_cache['ticket_departments'])) {
@@ -628,22 +652,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		if (time() - $date_created->getTimestamp() > 90*86400) {
 			$ticket['status'] = 'closed';
 		} else {
-			$statuses = array(
-				0 => 'awaiting_user',
-				1 => 'awaiting_user',
-				2 => 'awaiting_user',
-				3 => 'awaiting_user',
-				4 => 'awaiting_user',
-				5 => 'resolved',
-				6 => 'resolved',
-				7 => 'resolved',
-				8 => 'closed',
-				9 => 'closed',
-			);
 			if (mt_rand(0, 100) == 0) {
 				$ticket['status'] = 'awaiting_agent';
 			} else {
-				$ticket['status'] = $statuses[mt_rand(0, 9)];
+				$ticket['status'] = $this->_ticket_statuses[mt_rand(0, 9)];
 			}
 		}
 
@@ -659,19 +671,24 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$message = array(
 			'ticket_id' => $ticket['id'],
 			'person_id' => $ticket['person_id'],
+			'is_agent_note' => 0,
 			'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
 			'message' => $this->_getRandomText(mt_rand(50, 500)),
 			'date_created' => $ticket['date_created']
 		);
-		$db->insert('tickets_messages', $message);
-		$message['id'] = $db->lastInsertId();
-		$this->_addTicketMessageAttachments($ticket['id'], $message);
+		if (mt_rand(1, 50) == 1) {
+			$db->insert('tickets_messages', $message);
+			$message['id'] = $db->lastInsertId();
+			$this->_addTicketMessageAttachments($ticket['id'], $message);
+		} else {
+			$this->_addBatchInsert('tickets_messages', $message);
+		}
 
 		$message_count = mt_rand(0, 10);
 		if ($message_count > 0) {
 			$range = $date_created->getTimestamp() + mt_rand(200, max(201, time() - $date_created->getTimestamp()));
 			for ($j = 0; $j < $message_count; $j++) {
-				$is_agent = !empty($ticket['agent']) && mt_rand(0, 1);
+				$is_agent = !empty($ticket['agent_id']) && mt_rand(0, 1);
 				$message = array(
 					'ticket_id' => $ticket['id'],
 					'person_id' => $is_agent ? $ticket['agent_id'] : $ticket['person_id'],
@@ -680,36 +697,31 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'message' => $this->_getRandomText(mt_rand(50, 500)),
 					'date_created' => $this->_getRandomDate('string', $ticket['date_created'], $range)
 				);
-				$db->insert('tickets_messages', $message);
-				$message['id'] = $db->lastInsertId();
-				$this->_addTicketMessageAttachments($ticket['id'], $message);
+				if (mt_rand(1, 50) == 1) {
+					$db->insert('tickets_messages', $message);
+					$message['id'] = $db->lastInsertId();
+					$this->_addTicketMessageAttachments($ticket['id'], $message);
+				} else {
+					$this->_addBatchInsert('tickets_messages', $message);
+				}
 			}
 		}
 
 		foreach ($this->_data_cache['ticket_fields'] AS $field) {
-			$batch = array();
 			if ($field->getTypeName() == 'text') {
-				$batch[] = array(
+				$this->_addBatchInsert('custom_data_ticket', array(
 					'ticket_id' => $ticket['id'],
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
 					'input' => $this->_getRandomText(mt_rand(1, 5))
-				);
-			}
-
-			if ($batch) {
-				$db->batchInsert('custom_data_ticket', $batch);
+				));
 			}
 		}
 	}
 
 	protected function _addTicketMessageAttachments($ticket_id, array $message)
 	{
-		if (mt_rand(1, 10) != 1) {
-			return;
-		}
-
 		$files = array(
 			DP_WEB_ROOT . '/web/images/dp-logo-16.png' => 'data-load1.png',
 			DP_WEB_ROOT . '/web/images/dp-logo-130.png' => 'data-load2.png',
@@ -730,7 +742,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$upload = new \Symfony\Component\HttpFoundation\File\UploadedFile($key, $name, $mime, filesize($key), 0);
 			$blob = App::getContainer()->getAttachmentAccepter()->accept($upload);
 
-			App::getDb()->insert('tickets_attachments', array(
+			$this->_addBatchInsert('tickets_attachments', array(
 				'ticket_id' => $ticket_id,
 				'person_id' => $message['person_id'],
 				'message_id' => $message['id'],
@@ -744,16 +756,16 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketFilter()
 	{
 		$possible_terms = array(
-			array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
-			array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
-			array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
-			array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-			array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
-			array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
-			array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-			array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
-			array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
-			array(
+			0 => array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
+			1 => array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
+			2 => array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
+			3 => array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+			4 => array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
+			5 => array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
+			6 => array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+			7 => array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
+			8 => array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
+			9 => array(
 				'type' => 'date_created',
 				'op' => 'lte',
 				'options' => array(
@@ -774,8 +786,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$terms = array();
 		$count = mt_rand(1, 4);
 		for ($i = 0; $i < $count; $i++) {
-			$k = array_rand($possible_terms);
-			$terms[$k] = $possible_terms[array_rand($possible_terms)];
+			$k = mt_rand(0, 9);
+			$terms[$k] = $possible_terms[$k];
 		}
 		$filter->terms = array_values($terms);
 
@@ -818,8 +830,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$snippet->snippet = $text;
 		$snippet->snippet_html = '<p>' . $text . '</p>';
 
-		$category_id = array_rand($this->_data_cache['ticket_snippet_categories']);
-		$snippet->category = $this->_data_cache['ticket_snippet_categories'][$category_id];
+		$snippet->category = $this->_getRandomFromCache('ticket_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($snippet);
@@ -846,8 +857,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
 		$snippet->snippet = $this->_getRandomText(mt_rand(10, 200));
 
-		$category_id = array_rand($this->_data_cache['chat_snippet_categories']);
-		$snippet->category = $this->_data_cache['chat_snippet_categories'][$category_id];
+		$snippet->category = $this->_getRandomFromCache('chat_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($snippet);
@@ -1189,17 +1199,15 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$rand = mt_rand($start, $end);
-
-		$date = new \DateTime('@' . $rand);
 		switch ($format) {
 			case 'ts':
-				return $date->getTimestamp();
+				return $rand;
 
 			case 'string':
-				return $date->format('Y-m-d H:i:s');
+				return gmdate('Y-m-d H:i:s', $rand);
 
 			default:
-				return $date;
+				return new \DateTime('@' . $rand);
 		}
 	}
 
@@ -1268,47 +1276,54 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		return $obj_field ? $data->$obj_field : $data;
 	}
 
+	protected function _addBatchInsert($table, array $data, $ignore = false)
+	{
+		if ($ignore) {
+			if (!isset($this->_batch_insert_ignore[$table])) {
+				$this->_batch_insert_ignore[$table] = array();
+			}
+
+			$this->_batch_insert_ignore[$table][] = $data;
+		} else {
+			if (!isset($this->_batch_insert[$table])) {
+				$this->_batch_insert[$table] = array();
+			}
+
+			$this->_batch_insert[$table][] = $data;
+		}
+	}
+
+	protected $_label_type_map = array(
+		'article' => array('labels_articles', 'article_id'),
+		'download' => array('labels_downloads', 'download_id'),
+		'feedback' => array('labels_feedback', 'feedback_id'),
+		'news' => array('labels_news', 'news_id'),
+		'organization' => array('labels_organizations', 'organization_id'),
+		'person' => array('labels_people', 'person_id'),
+		'ticket' => array('labels_tickets', 'ticket_id'),
+	);
+
 	protected function _applyLabelsDb($type, $id)
 	{
-		$type_map = array(
-			'article' => array('labels_articles', 'article_id'),
-			'download' => array('labels_downloads', 'download_id'),
-			'feedback' => array('labels_feedback', 'feedback_id'),
-			'news' => array('labels_news', 'news_id'),
-			'organization' => array('labels_organizations', 'organization_id'),
-			'person' => array('labels_people', 'person_id'),
-			'ticket' => array('labels_tickets', 'ticket_id'),
-		);
-
-		if (!isset($type_map[$type])) {
+		if (!isset($this->_label_type_map[$type])) {
 			throw new \Exception("Unknown label type $type");
 		}
 
 		$labels = mt_rand(0, 4);
-		if ($labels && isset($type_map[$type])) {
-			$db = App::getDb();
-			$batch_label = array();
-			$batch_def = array();
+		if ($labels && isset($this->_label_type_map[$type])) {
 			for ($i = 0; $i < $labels; $i++) {
-				list($table, $field) = $type_map[$type];
+				list($table, $field) = $this->_label_type_map[$type];
 				$label = $this->_getRandomText(1);
 
-				$batch_label[] = "($id, " . $db->quote($label) . ")";
-				$batch_def[] = "('$type', " . $db->quote($label) . ")";
+				$this->_addBatchInsert($table, array(
+					$field => $id,
+					'label' => $label
+				), true);
+				$this->_addBatchInsert('label_defs', array(
+					'label_type' => $type,
+					'label' => $label
+				), true);
 			}
-
-			$db->executeUpdate("
-				INSERT IGNORE INTO $table
-					($field, label)
-				VALUES
-					" . implode(', ', $batch_label)
-			);
-			$db->executeUpdate("
-				INSERT IGNORE INTO label_defs
-					(label_type, label)
-				VALUES
-					" . implode(', ', $batch_def)
-			);
 		}
 	}
 
@@ -1333,17 +1348,18 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	}
 
 	protected $_words = null;
+	protected $_max_word_index;
 
 	protected function _getRandomText($word_length = 1)
 	{
 		if (!is_array($this->_words)) {
 			$this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat a venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque a risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis a mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur a nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis a massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam a ornare tortor Vestibulum a tellus in orci ultrices semper Aenean sit amet libero a ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices a adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla a metus a augue viverra placerat dapibus ac lacus Integer lectus metus laoreet a semper eget dictum at purus Sed');
+			$this->_max_word_index = count($this->_words) - 1;
 		}
 
 		$output = array();
 		for ($i = 0; $i < $word_length; $i++) {
-			$key = array_rand($this->_words);
-			$output[] = $this->_words[$key];
+			$output[] = $this->_words[mt_rand(0, $this->_max_word_index)];
 		}
 
 		return implode(' ', $output);
