@@ -638,7 +638,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		$message_count = mt_rand(0, 10);
 		if ($message_count > 0) {
-			$range = $date_created->getTimestamp() + mt_rand(200, time() - $date_created->getTimestamp());
+			$range = $date_created->getTimestamp() + mt_rand(200, max(201, time() - $date_created->getTimestamp()));
 			for ($j = 0; $j < $message_count; $j++) {
 				$is_agent = !empty($ticket['agent']) && mt_rand(0, 1);
 				$message = array(
