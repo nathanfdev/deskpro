@@ -316,24 +316,44 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
 					break;
                 case self::TERM_USERGROUP:
-                    $joins[] = array(
-                        'person2usergroups',
-                        "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
-                    );
-
-	                $join_name_org = "{$join_name}_org";
-
-	                $joins[] = array(
-                        'organization2usergroups',
-                        "LEFT JOIN organization2usergroups AS $join_name_org ON ($join_name_org.organization_id = $people_table.organization_id)"
-                    );
-
                     $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.usergroup'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
 						return $titles;
 					});
 
-					$wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . ' OR ' . $this->_choiceMatch("$join_name_org.usergroup_id", $op, $choice) . ')';
+					$choice = array_map('intval', (array)$choice);
+					$person_ids = App::getDb()->fetchAllCol("
+						SELECT person_id
+						FROM person2usergroups
+						WHERE usergroup_id IN (" . implode(',', $choice) . ")
+						LIMIT 5001
+					");
+					if (!$person_ids) {
+						$person_ids = array(0);
+					}
+					$org_ids = App::getDb()->fetchAllCol("
+						SELECT organization_id
+						FROM organization2usergroups
+						WHERE usergroup_id IN (" . implode(',', $choice) . ")
+					");
+					if (count($person_ids) == 1001) {
+						// too many, need to do the join method
+						$joins[] = array(
+							'person2usergroups',
+							"LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
+						);
+						if ($org_ids) {
+							$wheres[] = '(' . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice) . " OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+						} else {
+							$wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
+						}
+					} else {
+						if ($org_ids) {
+							$wheres[] = "($people_table.id IN (" .  implode(',', $person_ids) . ") OR $people_table.organization_id IN (" . implode(',', $org_ids) . "))";
+						} else {
+							$wheres[] = "$people_table.id IN (" .  implode(',', $person_ids) . ")";
+						}
+					}
 					break;
 				case self::TERM_EMAIL:
 					$joins[] = array(

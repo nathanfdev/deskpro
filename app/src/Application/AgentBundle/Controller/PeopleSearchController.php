@@ -404,7 +404,7 @@ class PeopleSearchController extends AbstractController
 		$order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . 0);
 
 		if (($order_pref && $order_pref != $result_cache['criteria']['order_by'])
-		||  $order_pref != $result_cache['criteria']['selected_letter']) {
+		||  $user_letter != $result_cache['criteria']['selected_letter']) {
 			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 
 			$criteria = $result_cache['criteria'];
