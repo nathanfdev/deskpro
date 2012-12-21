@@ -125,7 +125,13 @@ class FeedbackController extends AbstractController
 		# Article props
 		#------------------------------
 
-		$feedback_comments = $feedback->comments;
+		$feedback_comments_raw = $feedback->comments;
+		$feedback_comments = array();
+		foreach ($feedback_comments_raw as $c) {
+			if ($c->status != 'temp') {
+				$feedback_comments[] = $c;
+			}
+		}
 
 		$feedback_revisions = $feedback->getRevisions();
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($feedback);

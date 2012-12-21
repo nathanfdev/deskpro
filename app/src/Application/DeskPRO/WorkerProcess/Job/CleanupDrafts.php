@@ -52,5 +52,26 @@ class CleanupDrafts extends AbstractJob
 		if ($num) {
 			$this->logStatus("Cleaned up $num drafts");
 		}
+
+		$datetime = date('Y-m-d H:i:s', time() - 28800);
+		$num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp article comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp download comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp feedback comments");
+		}
+
+		$num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+		if ($num) {
+			$this->logStatus("Cleaned up $num temp news comments");
+		}
 	}
 }

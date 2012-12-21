@@ -40,6 +40,12 @@
 		</div>
 	{% endif %}
 
+	{% if app.getSession().get('login_validate_comments') %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.explain_login_comment') }}
+		</div>
+	{% endif %}
+
 	{#####################################################################}
 
 	<section class="dp-well">

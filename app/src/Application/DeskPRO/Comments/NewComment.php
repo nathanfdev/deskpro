@@ -194,6 +194,11 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 			if ($email_validating) {
 				$email_validating->addValidatingContent($this->class, $obj->id);
 				App::getOrm()->flush();
+			} elseif ($this->require_login) {
+				$login_validate_comments = App::getSession()->get('login_validate_comments', array());
+				$login_validate_comments[] = array($this->class, $obj->id);
+				App::getSession()->set('login_validate_comments', $login_validate_comments);
+				App::getSession()->save();
 			}
 
 			// Send confirmation email

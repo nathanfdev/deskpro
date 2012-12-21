@@ -306,6 +306,32 @@ HTML;
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
+		if ($login_validate_comments = App::getSession()->get('login_validate_comments')) {
+
+			foreach ($login_validate_comments as $validate_info) {
+				$comment = $this->em->find($validate_info[0], $validate_info[1]);
+				if (!$comment) {
+					continue;
+				}
+
+				$comment->status = 'validating';
+				$this->em->getConnection()->beginTransaction();
+
+				try {
+					$this->em->persist($comment);
+					$this->em->flush();
+
+					$this->em->getConnection()->commit();
+				} catch (\Exception $e) {
+					$this->em->getConnection()->rollback();
+					throw $e;
+				}
+			}
+
+			App::getSession()->remove('login_validate_comments');
+			App::getSession()->save();
+		}
+
 		if ($return) {
 			return $this->redirect($return);
 		} else {

@@ -19,6 +19,7 @@
 	'user.profile.email_was_added_validate_it'         => 'Email {{email}} was added. To start using this email address, you must validate it by clicking on the link we just sent you.',
 	'user.profile.email_was_removed'                   => 'Email {{email}} was removed',
 	'user.profile.explain_register_for_online_tickets' => 'To view and manage your ticket online, register for an account or log in. This step is optional; you will still get replies from our agents to your email address.',
+	'user.profile.explain_login_comment'               => 'Your email address belongs to a registered user account. Before your comment is accepted, you must log in to your account.',
 	'user.profile.im_already_registered'               => 'I am already a registered user',
 	'user.profile.im_new_user'                         => 'I am a new user',
 	'user.profile.invalid_name'                        => 'Please enter your name.',
