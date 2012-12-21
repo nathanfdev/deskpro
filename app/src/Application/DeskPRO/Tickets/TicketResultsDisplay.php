@@ -300,6 +300,10 @@ class TicketResultsDisplay implements PersonContextInterface
 			return null;
 		}
 
+		if (!isset($this->dep_names[$ticket->department->getId()])) {
+			return '';
+		}
+
 		return $this->dep_names[$ticket->department->getId()];
 	}
 
