@@ -494,7 +494,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var count_str = count;
 		filter_id = parseInt(filter_id);
 
-		if (count > 1000) count_str = '1000+';
+		var count_str_real = count_str;
+		if (count >= 10000) count_str = '10000+';
 
 		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
 		if (system_name) {
@@ -504,14 +505,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
-			$('#ticket_filter_' + filter_id + '_count2').html(count_str);
+			$('#ticket_filter_' + filter_id + '_count2').html(count_str_real);
 
 			if (el.is('.is-hold-filter')) {
 				this._recountHold();
 			}
 		} else {
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
-			$('#ticket_filter_' + filter_id + '_count2').html(count_str);
+			$('#ticket_filter_' + filter_id + '_count2').html(count_str_real);
 		}
 	},
 
@@ -1019,8 +1020,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	updateFlagCountFor: function(flag, count) {
 		var count_str = count;
-		if (count >= 1000) {
-			count_str = '1000+';
+		if (count >= 10000) {
+			count_str = '10000+';
 		} else if (count < 0) {
 			count = 0;
 			count_str = '0';

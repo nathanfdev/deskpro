@@ -141,7 +141,7 @@ class TicketSearch extends SearcherAbstract
      *
      * @var string
      */
-    protected $limit = '1000';
+    protected $limit = '10000';
 
 	/**
 	 * @var array
@@ -333,10 +333,8 @@ class TicketSearch extends SearcherAbstract
 
 	/**
 	 * Run the search and get the count
-	 *
-	 * @param int $limit Null for no limit
 	 */
-	public function getCount($limit = 1000)
+	public function getCount()
 	{
 		$ticket_parts = $this->getSqlParts();
 		$user_parts   = null;
