@@ -743,12 +743,41 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function _loadTicketFilter()
 	{
+		$possible_terms = array(
+			array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
+			array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
+			array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
+			array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+			array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
+			array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
+			array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+			array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
+			array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
+			array(
+				'type' => 'date_created',
+				'op' => 'lte',
+				'options' => array(
+					'date1' => '',
+					'date2' => '',
+					'date1_relative' => '5',
+					'date1_relative_type' => 'days',
+					'date2_relative' => '',
+					'date2_relative_type' => '',
+				),
+			),
+		);
+
 		$filter = new Entity\TicketFilter();
 		$filter->title = $this->_getRandomText(2);
 		$filter->is_global = true;
-		$filter->terms = array(
-			array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'))
-		);
+
+		$terms = array();
+		$count = mt_rand(1, 4);
+		for ($i = 0; $i < $count; $i++) {
+			$k = array_rand($possible_terms);
+			$terms[$k] = $possible_terms[array_rand($possible_terms)];
+		}
+		$filter->terms = array_values($terms);
 
 		App::getOrm()->persist($filter);
 	}

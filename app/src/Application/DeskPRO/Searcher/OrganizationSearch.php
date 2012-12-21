@@ -402,8 +402,6 @@ class OrganizationSearch extends SearcherAbstract
 			}
 		}
 
-		$joins = array_unique($joins);
-
 		return array(
 			'joins' => $joins,
 			'wheres' => $wheres
