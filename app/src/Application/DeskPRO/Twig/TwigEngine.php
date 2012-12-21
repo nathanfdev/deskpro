@@ -50,18 +50,22 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 			return $code;
 		} else {
 			try {
+				$GLOBALS['DP_IS_RENDERING_TPL'] = true;
 				$code = parent::render($name, $parameters);
 				if (strpos($name, 'DeskPRO:emails_') !== false) {
 					$proc = new \Application\DeskPRO\Twig\PostRenderFilter\EmailPostRenderFilter();
 					$code = $proc->process($name, $code);
 				}
-
+				$GLOBALS['DP_IS_RENDERING_TPL'] = false;
 				return $code;
 			} catch (\Twig_Error_Syntax $e) {
+				$GLOBALS['DP_IS_RENDERING_TPL'] = false;
 				$exception = $e;
 			} catch (\Twig_Error_Runtime $e) {
+				$GLOBALS['DP_IS_RENDERING_TPL'] = false;
 				$exception = $e;
 			} catch (\Exception $e) {
+				$GLOBALS['DP_IS_RENDERING_TPL'] = false;
 				throw $e;
 			}
 
