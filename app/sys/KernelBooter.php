@@ -357,7 +357,7 @@ class KernelBooter
 						}
 
 						$cache_time = intval($parts[0]);
-						if ($cache_time && $cache_time < time()) {
+						if ($cache_time && $cache_time > time()) {
 							$use_cache = false;
 						}
 					}
@@ -499,7 +499,9 @@ class KernelBooter
 			}
 		} else {
 			if (App::isCacheSkipped()) {
-				$cache_time = time() + App::getSetting('core.page_cache_ttl');
+				global $DP_CONFIG;
+				$ttl = isset($DP_CONFIG['cache']['page_cache']['ttl']) ? $DP_CONFIG['cache']['page_cache']['ttl'] : 900;
+				$cache_time = time() + $ttl;
 			} else {
 				$cache_time = !empty($_COOKIE['dp-guest-cache']) ? intval($_COOKIE['dp-guest-cache']) : 0;
 				if ($cache_time < time()) {
