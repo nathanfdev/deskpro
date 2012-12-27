@@ -347,7 +347,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
 		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
-			$date1 = date_create("-" . (int)$choice['date2_relative'] . " {$choice['date2_relative_type']}", $timezone_context);
+			$date2 = date_create("-" . (int)$choice['date2_relative'] . " {$choice['date2_relative_type']}", $timezone_context);
 		} else if (!empty($choice[1])) {
 			$date2 = $choice[1];
 		}
@@ -532,25 +532,21 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$choice = (array)$choice;
 
 		$date1 = null;
+		$date1_relative = null;
 		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
 		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
-			return App::getTranslator()->phrase('agent.general.x_before_y', array(
-				'field' => $field,
-				'value' => (int)$choice['date1_relative'] . " {$choice['date1_relative_type']} ago"
-			));
+			$date1_relative = (int)$choice['date1_relative'] . " {$choice['date1_relative_type']} ago";
 		} else if (!empty($choice[0])) {
 			$date1 = $choice[0];
 		}
 
 		$date2 = null;
+		$date2_relative = null;
 		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
 		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
-			return App::getTranslator()->phrase('agent.general.x_before_y', array(
-				'field' => $field,
-				'value' => (int)$choice['date2_relative'] . " {$choice['date2_relative_type']} ago"
-			));
+			$date2_relative = (int)$choice['date2_relative'] . " {$choice['date2_relative_type']} ago";
 		} else if (!empty($choice[1])) {
 			$date2 = $choice[1];
 		}
@@ -567,6 +563,13 @@ abstract class SearcherAbstract implements PersonContextInterface
 			return '';
 		}
 
+		if ($date1 === null AND $date2 !== null) {
+			$date1 = $date2;
+			$date1_relative = $date2_relative;
+			$date2 = null;
+			$date2_relative = null;
+		}
+
 		// Normalize operations
 		if ($op == self::OP_LT) $op = self::OP_LTE;
 		if ($op == self::OP_GT) $op = self::OP_GTE;
@@ -580,20 +583,30 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if ($op == self::OP_BETWEEN) {
+			if ($date1 > $date2) {
+				$tmp = $date2;
+				$date2 = $date1;
+				$date1 = $tmp;
+
+				$tmp = $date2_relative;
+				$date2_relative = $date1_relative;
+				$date1_relative = $tmp;
+			}
+
 			$summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
 				'field' => $field,
-				'value1' => $date1->format('M j, Y'),
-				'value2' => $date2->format('M j, Y')
+				'value1' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
+				'value2' => $date2_relative ? $date2_relative : $date2->format('M j, Y')
 			));
 		} elseif ($op == self::OP_GTE) {
 			$summary = App::getTranslator()->phrase('agent.general.x_after_y', array(
 				'field' => $field,
-				'value' => $date1->format('M j, Y'),
+				'value' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
 			));
 		} else {
 			$summary = App::getTranslator()->phrase('agent.general.x_before_y', array(
 				'field' => $field,
-				'value' => $date1->format('M j, Y'),
+				'value' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
 			));
 		}
 
