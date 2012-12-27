@@ -5,6 +5,7 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 
 	init: function() {
 		this.buttonEl = $('#feedback_section');
+		var self = this;
 
 		this.urlFragmentName = 'feedback';
 
