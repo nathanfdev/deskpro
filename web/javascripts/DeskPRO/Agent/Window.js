@@ -3046,7 +3046,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			type: 'GET',
 			data: data,
 			dataType: 'json',
-			timeout: 15000,
+			timeout: 30000,
 			tryCount : 0,
 		    retryLimit: 3,
 			error: function(xhr, textStatus, errorThrown) {
