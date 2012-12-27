@@ -84,7 +84,7 @@ class DatabaseStats
 		");
 		$this->stats['age_last_user_message'] = $this->db->fetchColumn("
 			SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(tickets_messages.date_created)
-			FROM tickets_messages
+			FROM tickets_messages FORCE INDEX (PRIMARY)
 			LEFT JOIN people ON (people.id = tickets_messages.person_id)
 			WHERE people.is_agent = 0
 			ORDER BY tickets_messages.id DESC
@@ -92,7 +92,7 @@ class DatabaseStats
 		");
 		$this->stats['age_last_agent_message'] = $this->db->fetchColumn("
 			SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(tickets_messages.date_created)
-			FROM tickets_messages
+			FROM tickets_messages FORCE INDEX (PRIMARY)
 			LEFT JOIN people ON (people.id = tickets_messages.person_id)
 			WHERE people.is_agent = 1
 			ORDER BY tickets_messages.id DESC
