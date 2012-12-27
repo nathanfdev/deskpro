@@ -61,6 +61,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected $_data_cache = array();
 	protected $_batch_insert = array();
 	protected $_batch_insert_ignore = array();
+	protected $_batch_insert_label_def = array();
 	protected $_start_ts = null;
 	protected $_date_offset = null;
 
@@ -245,6 +246,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		foreach ($this->_batch_insert_ignore AS $table => $batches) {
 			$db->batchInsert($table, $batches, true);
 		}
+		foreach ($this->_batch_insert_label_def AS $type => $labels) {
+			$batches = array();
+			foreach ($labels AS $label => $total) {
+				$batches[] = "('$type', '$label', $total)";
+			}
+			$db->executeUpdate("
+				INSERT INTO label_defs
+					(label_type, label, total)
+				VALUES
+					" . implode(',', $batches) . "
+				ON DUPLICATE KEY UPDATE total = VALUES(total);
+			");
+		}
 
 		$orm->commit();
 		$orm->clear();
@@ -252,6 +266,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->_data_cache = array();
 		$this->_batch_insert = array();
 		$this->_batch_insert_ignore = array();
+		$this->_batch_insert_label_def = array();
 		gc_collect_cycles();
 
 		$db->beginTransaction();
@@ -1309,20 +1324,32 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			throw new \Exception("Unknown label type $type");
 		}
 
+		if (mt_rand(0, 1) == 0) {
+			return;
+		}
+
 		$labels = mt_rand(0, 4);
 		if ($labels && isset($this->_label_type_map[$type])) {
 			for ($i = 0; $i < $labels; $i++) {
 				list($table, $field) = $this->_label_type_map[$type];
+
 				$label = $this->_getRandomText(1);
+				$label = strtolower(trim($label));
 
 				$this->_addBatchInsert($table, array(
 					$field => $id,
 					'label' => $label
 				), true);
-				$this->_addBatchInsert('label_defs', array(
-					'label_type' => $type,
-					'label' => $label
-				), true);
+
+				$type_name = $type . 's';
+				if (!isset($this->_batch_insert_label_def[$type_name])) {
+					$this->_batch_insert_label_def[$type_name] = array();
+				}
+				if (!isset($this->_batch_insert_label_def[$type_name][$label])) {
+					$this->_batch_insert_label_def[$type_name][$label] = 1;
+				} else {
+					$this->_batch_insert_label_def[$type_name][$label]++;
+				}
 			}
 		}
 	}
