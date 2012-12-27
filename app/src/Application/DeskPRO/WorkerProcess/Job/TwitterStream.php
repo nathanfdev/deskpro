@@ -300,7 +300,7 @@ class TwitterStream extends AbstractJob
 			$this->em->persist($targetUser);
 		}
 
-		if (isset($data->target_object)) {
+		if (isset($data->target_object) && isset($data->target_object->text)) {
 			$targetObject = $data->target_object;
 
 			// Get the status, or create it
