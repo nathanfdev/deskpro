@@ -29,52 +29,48 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-use Application\DeskPRO\App;
-
-/**
- * Base labels associations class
- *
- */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
+class Build1356604502 extends AbstractBuild
 {
-	/**
-	 * The 'type' of label this is for, as it could be found in the
-	 * LabelDef.
-	 */
-	const LABEL_TYPENAME = 'OVERRIDE';
-
-	/**
-	 * @var string
-	 */
-	protected $label;
-
-
-
-	/**
-	 * After a new association is made, we need to make sure the def table has this
-	 * record.
-	 *
-	 */
-	public function syncWithDef()
+	public function run()
 	{
-		App::getDb()->executeUpdate("
-			INSERT INTO label_defs (label_type, label, total)
-			VALUES (?, ?, 1)
-			ON DUPLICATE KEY UPDATE total = total + 1
-		", array(static::LABEL_TYPENAME, $this->label));
-	}
+		$this->out("Improve label count speed");
+		$this->execMutateSql("ALTER TABLE label_defs ADD total INT NOT NULL");
 
+		$types = array(
+			'article'             => 'labels_articles',
+			'chat_conversation'   => 'labels_chat_conversations',
+			'download'            => 'labels_downloads',
+			'feedback'            => 'labels_feedback',
+			'news'                => 'labels_news',
+			'organization'        => 'labels_organizations',
+			'person'              => 'labels_people',
+			'task'                => 'labels_tasks',
+			'ticket'              => 'labels_tickets',
+		);
 
-	public function __toString()
-	{
-		return $this->label;
+		$db = $this->container->getDb();
+		foreach ($types AS $type => $table) {
+			$totals = $db->fetchAllKeyValue("
+				SELECT label, COUNT(*)
+				FROM $table
+				GROUP BY label
+			");
+			$db->beginTransaction();
+			foreach ($totals AS $label => $total) {
+				$db->executeUpdate("
+					INSERT INTO label_defs (label_type, label, total)
+					VALUES (?, ?, ?)
+					ON DUPLICATE KEY UPDATE total = total + VALUES(total)
+				", array($type . 's', $label, $total));
+			}
+			$db->commit();
+		}
+
+		$this->execMutateSql("CREATE INDEX type_total_idx ON label_defs (label_type, total)");
 	}
 }

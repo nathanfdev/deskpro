@@ -95,89 +95,40 @@ class LabelDef extends AbstractEntityRepository
 		switch ($type) {
 			case 'tickets':
 			case 'ticket':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_tickets
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
+				$label_type = 'tickets';
 				break;
 
 			case 'people':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_people
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
-				break;
-
-			case 'organizations':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_organizations
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
-				break;
-
-			case 'chat_conversations':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_chat_conversations
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
-				break;
-
-			case 'articles':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_articles
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
+				$label_type = 'persons';
 				break;
 
 			case 'feedback':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_feedback
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
-				break;
-
-			case 'downloads':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_downloads
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
+				$label_type = 'feedbacks';
 				break;
 
 			case 'news':
-				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-					SELECT label, COUNT(*) AS count
-					FROM labels_news
-					GROUP BY label
-					ORDER BY count DESC
-					" . ($limit ? "LIMIT $limit" : '') . "
-				");
+				$label_type = 'newss';
+				break;
+
+			case 'organizations':
+			case 'chat_conversations':
+			case 'articles':
+			case 'downloads':
+				$label_type = $type;
 				break;
 
 			default:
-				throw new \InvalidArgumentException("`$type` is an invlaid label type");
+				throw new \InvalidArgumentException("`$type` is an invalid label type");
 				break;
 		}
+
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+			SELECT label, total
+			FROM label_defs
+			WHERE label_type = ?
+			ORDER BY total DESC
+			" . ($limit ? "LIMIT $limit" : '') . "
+		", array($label_type));
 	}
 
 	/**
