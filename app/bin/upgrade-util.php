@@ -262,10 +262,8 @@ class Upgrade
 		}
 
 		try {
-			global $DP_CONFIG;
-
 			// Empty the db first
-			$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+			$pdo = $this->newDb();
 		} catch (\Exception $e) {
 			$this->outAndLog("There was a problem connecting to the database: " . $e->getMessage());
 			exit(1);
@@ -1182,7 +1180,7 @@ class Upgrade
 		global $DP_CONFIG;
 
 		// Empty the db first
-		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$pdo = $this->newDb();
 		$tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_NUM);
 
 		$pdo->exec("SET foreign_key_checks = 0");
@@ -1522,8 +1520,7 @@ class Upgrade
 		}
 
 		try {
-			global $DP_CONFIG;
-			$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+			$pdo = $this->newDb();
 
 			$q = $pdo->query("SELECT name, value FROM settings");
 			$settings = $q->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -1886,6 +1883,24 @@ class Upgrade
 		);
 
 		return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
+	}
+
+	/**
+	 * @return \PDO
+	 */
+	public function newDb()
+	{
+		global $DP_CONFIG;
+
+		if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
+			$host = $m[1];
+			$port = ";port={$m[2]};";
+		} else {
+			$host = $DP_CONFIG['db']['host'];
+			$port = '';
+		}
+
+		return new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 	}
 }
 
@@ -2584,7 +2599,14 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Check versions
 		#------------------------------
 
-		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
+			$host = $m[1];
+			$port = ";port={$m[2]};";
+		} else {
+			$host = $DP_CONFIG['db']['host'];
+			$port = '';
+		}
+		$pdo = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
 
 		if (!$version) {
