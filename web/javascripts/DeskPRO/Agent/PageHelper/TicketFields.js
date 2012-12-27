@@ -207,9 +207,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	},
 
 	replaceHolders: function(html) {
+		var isEdit = this.display.hasClass('mode-edit-on');
 		this.display.parent().html(html);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 		this.currentDisplay = [];
 		this.updateDisplay();
+		if (isEdit) {
+			this.openEditMode();
+		}
 	}
 });

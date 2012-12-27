@@ -1,3 +1,4 @@
+{% if not baseId %}{% set baseId = el_uid() %}{% endif %}
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
 	{% if app.getDataRepository('Language').isMultiLang() %}
 		<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
@@ -14,7 +15,7 @@
 				<td>
 					{% include 'AgentBundle:Common:select-language.html.twig' with {
 						'name': 'ticket[language_id]',
-						'id': '{{baseId}}_ticket_language_id',
+						'id': baseId ~ '_ticket_language_id',
 						'selected': ticket.language.id,
 						'languages': app.getDataRepository('Language').getAll(),
 						'add_classname': 'prop-input-language_id',
