@@ -344,6 +344,8 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 					}
 				});
 			}
+
+			DP.select(row.find('.select2'));
 		}
 
 		if (row.data('form-base-name')) {

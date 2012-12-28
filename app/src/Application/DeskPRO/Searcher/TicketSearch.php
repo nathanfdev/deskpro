@@ -1440,6 +1440,9 @@ class TicketSearch extends SearcherAbstract
 
 						break;
 					case self::TERM_ORGANIZATION:
+						if (!is_array($choice)) {
+							$choice = explode(',', $choice);
+						}
 						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.organization'), $op, $choice, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
 							return $titles;

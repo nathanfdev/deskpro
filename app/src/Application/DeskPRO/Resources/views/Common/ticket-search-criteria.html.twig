@@ -339,11 +339,11 @@
 			</select>
 		</div>
 		<div class="builder-options">
-			<select name="organization[]" multiple="multiple">
-				{% for id,title in app.getDataRepository('Organization').getOrganizationNames() %}
-				<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
+			<input type="text" class="select2" name="organization"
+				data-multiple="true"
+				data-autocomplete-url="{{ organization_autocomplete_path ? organization_autocomplete_path : path('agent_orgsearch_quicknamesearch') }}"
+				data-select-width="auto"
+			/>
 		</div>
 	</div>
 	{% endif %}

@@ -367,7 +367,16 @@ class MainController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		if ($q) {
+		$ids = $this->in->getCleanValueArray('ids', 'uint');
+
+		if ($ids) {
+			$orgs_list = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:Organization o
+				WHERE o.id IN (?0)
+				ORDER BY o.name ASC
+			")->execute(array($ids));
+		} else if ($q) {
 			$orgs_list = $this->em->createQuery("
 				SELECT o
 				FROM DeskPRO:Organization o

@@ -169,5 +169,10 @@ $(document).ready(function() {
 
 </form>
 
-{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options, 'search_context': 'filter' } %}
+{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
+	'classname': 'criteria-tpl',
+	'term_options': term_options,
+	'search_context': 'filter',
+	'organization_autocomplete_path': path('admin_quick_organization_search')
+} %}
 {% endblock %}

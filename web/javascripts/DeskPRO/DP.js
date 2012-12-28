@@ -269,6 +269,72 @@ var DP = {
 			options.placeholder = el.data('placeholder');
 		}
 
+		if (el.data('autocomplete-url')) {
+			options = $.extend(true, {
+				ajax: {
+					url: el.data('autocomplete-url'),
+					dataType: 'json',
+					quietMillis: 250,
+					data: function(term, page) {
+						return {
+							q: term
+						};
+					},
+					results: function(data, page) {
+						if (data.results) {
+								data = data.results;
+							}
+						var results = [];
+						for (var i = 0; i < data.length; i++) {
+							results.push({
+								id: data[i].id,
+								text: data[i].name
+							});
+						}
+
+						return {
+							more: false,
+							results: results
+						};
+					}
+				},
+				initSelection: function(element, callback) {
+					var data = [];
+					if (element.val().length) {
+						$.ajax({
+							url: el.data('autocomplete-url'),
+							method: 'get',
+							data: {ids: element.val().split(',')},
+							success: function(json) {
+								if (json.results) {
+									json = json.results;
+								}
+								var data = [];
+								for (var i = 0; i < json.length; i++) {
+									data.push({
+										id: json[i].id,
+										text: json[i].name
+									});
+								}
+								callback(data);
+							},
+							failure: function() {
+								callback([]);
+							}
+						});
+					} else {
+						callback([]);
+					}
+
+					callback(data);
+				}
+			}, options);
+
+			if (el.data('multiple')) {
+				options.multiple = true;
+			}
+		}
+
 		el.find('option').each(function() {
 			var opt = $(this);
 			if (!$.trim(opt.text())) {
