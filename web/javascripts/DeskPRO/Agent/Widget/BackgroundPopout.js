@@ -31,7 +31,13 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			/**
 			 * Auto-start the timeout timer to load in the bg
 			 */
-			autostart: true
+			autostart: true,
+
+			/**
+			 * Maximum amount of jitter, to prevent all popouts from triggering
+			 * simultaneously.
+			 */
+			maxJitter: 2000
 		};
 
 		this.setOptions(options);
@@ -80,6 +86,8 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		} else {
 			t = this.options.initialTimeout;
 		}
+
+		t += Math.random()*this.options.maxJitter;
 
 		this.timeout = window.setTimeout(this.loadTemplate.bind(this, null), t);
 	},
