@@ -215,28 +215,12 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initIncludeFields: function() {
 		var self = this;
 
-		this.menuOptions = this.header.find('.display-options-menu input:checkbox');
-
-		var timer = false;
-
-		var optionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.header.find('.display-options-trigger'),
-			menuElement: this.header.find('.display-options-menu'),
-			onItemClicked: function(info) {
-				// this can be called twice so use the timer to ensure only one run happens
-				if (timer) {
-					clearTimeout(timer);
-				}
-				timer = setTimeout(function() {
-					self.reload();
-				}, 0);
-			}
-		});
+		this.menuOptions = this.header.find('.btn-controls input:checkbox');
+		this.menuOptions.click(function() { self.reload(); });
 	},
 
 	_getDisplayOptions: function() {
 		var options = {
-			sortbydate: this.header.find('.order-by-menu-trigger').data('dir'),
 			include: {}
 		};
 

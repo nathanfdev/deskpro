@@ -281,7 +281,7 @@ class TwitterController extends AbstractController
 		// sort by date, ascending or descending
 		$sortByDate = $this->in->getValue('sortbydate');
 		if (!$sortByDate) {
-			$sortByDate = 'asc';
+			$sortByDate = 'desc';
 		}
 
 		return $sortByDate;

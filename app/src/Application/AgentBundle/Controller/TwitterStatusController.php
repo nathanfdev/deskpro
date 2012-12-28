@@ -206,7 +206,7 @@ class TwitterStatusController extends AbstractController
 	/**
 	 * @return string
 	 */
-	protected function getSortByDate($default = 'asc')
+	protected function getSortByDate($default = 'desc')
 	{
 		// sort by date, ascending or descending
 		$sortByDate = $this->in->getValue('sortbydate');
