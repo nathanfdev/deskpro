@@ -266,9 +266,13 @@ class DetectFilterMatches
 
 				$reset_status = false;
 				if ($filter->sys_name) {
-					// System filters are special in that we ignore status
+					// System filters are special in that we ignore status/hold
 					// for notifications
-					$searcher = $filter->getSearcher(array(array('type' => 'status', 'op' => 'ignore'), array('type' => 'hidden_status', 'op' => 'ignore')));
+					$searcher = $filter->getSearcher(array(
+						array('type' => 'status', 'op' => 'ignore'),
+						array('type' => 'hidden_status', 'op' => 'ignore'),
+						array('type' => 'is_hold', 'op' => 'ignore')
+					));
 
 					// Reset because we have to re-run to get proper result for add/del lists
 					$reset_status = true;
