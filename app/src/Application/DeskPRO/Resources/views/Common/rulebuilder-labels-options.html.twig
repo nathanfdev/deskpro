@@ -7,6 +7,6 @@
 		class="dpe_select dpe_select_noborder labels-box"
 		data-select-width="auto"
 		data-placeholder="Add a label"
-		value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+		value="{% if ticket and ticket.labels %}{% for label in ticket.labels %}{{ label.label }},{% endfor %}{% endif %}"
 	/>
 </div>

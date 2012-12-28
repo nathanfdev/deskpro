@@ -35,10 +35,10 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 			var vals = self.currentValue.data('select-texts');
 			if (vals) {
 				Array.each(vals, function(val) {
-				var input = $('<option value="" selected="selected" />');
-				input.val(val);
+					var input = $('<option value="" selected="selected" />');
+					input.val(val);
 
-				input.appendTo(self.values);
+					input.appendTo(self.values);
 				});
 			}
 		}, 450);
@@ -67,6 +67,12 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 	},
 
 	show: function() {
+		var vals = [];
+		this.values.find('option').each(function() {
+			vals.push($(this).val());
+		});
+		this.labelsList.select2('val', vals);
+
 		this.wrapper.css({
 			left: this.currentValue.offset().left,
 			top: this.currentValue.offset().top

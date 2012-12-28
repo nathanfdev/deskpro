@@ -135,13 +135,13 @@
 {% if 'person_label' not in no_show_fields %}
 <div class="builder-type" title="{{ phrase('agent.general.labels') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-term-triggers="label,labelled,labels">
 	<div class="builder-op">
-		<select name="op">
-			<option value="is">{{ phrase('agent.general.includes_label') }}</option>
-			<option value="not">{{ phrase('agent.general.does_not_include_label') }}</option>
+		<select name="op" class="op">
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
 		</select>
 	</div>
 	<div class="builder-options">
-		<input type="text" name="label" value="" />
+		{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 	</div>
 </div>
 {% endif %}

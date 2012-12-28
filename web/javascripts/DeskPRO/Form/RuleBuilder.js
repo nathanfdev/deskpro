@@ -235,7 +235,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 							var texts = [];
 							var labelval = $('.builder-options select.label-values', new_row);
 							Array.each(val, function(subval) {
-								texts.push(val);
+								texts.push(subval);
 							});
 
 							$('.builder-options .menu-trigger', new_row).text(texts.join(', ')).data('select-texts', texts);
