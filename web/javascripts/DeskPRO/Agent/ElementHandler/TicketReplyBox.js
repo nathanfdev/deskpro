@@ -5,6 +5,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 	init: function() {
 		this.baseId = this.el.data('base-id');
+		this.agentNotifyListShown = false;
 	},
 
 	initPage: function() {
@@ -424,8 +425,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	hideAgentNotifyList: function() {
-		if (this.agentNotifyList) {
+		if (this.agentNotifyList && this.agentNotifyListShown) {
 			this.agentNotifyList.empty().hide();
+			this.agentNotifyListShown = false;
 		}
 	},
 
@@ -660,6 +662,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				});
 
 				self.agentNotifyList.show();
+				self.agentNotifyListShown = true;
 			} else {
 				self.hideAgentNotifyList();
 			}
