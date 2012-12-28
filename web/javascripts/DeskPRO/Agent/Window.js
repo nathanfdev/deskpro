@@ -444,7 +444,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initPage: function() {
-
 		$.fn.qtip.zindex = 999999999;
 		if (!$('html').hasClass('browser-ie')) {
 			// Prevents default browser action of navigating to a dropped file
@@ -3297,6 +3296,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					}
 				}
 			}
+		});
+
+		editor.bind('keypress', function(ev) {
+			ev.stopPropagation();
 		});
 
 		editor.bind('dragover drop', function(ev) {

@@ -58,6 +58,9 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	},
 
 	disableCrazyMode: function() {
+		if (!this.crazyMode) {
+			return;
+		}
 		this.crazyMode = false;
 		this.crazyTitle = null;
 		document.title = this.origWindowTitle;
