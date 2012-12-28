@@ -442,6 +442,7 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
 
+					$this->summary[] = $this->_choiceSummary('Phone Number', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
@@ -451,6 +452,7 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
+					$this->summary[] = $this->_choiceSummary('Address', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_IM:
@@ -461,6 +463,7 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
+					$this->summary[] = $this->_choiceSummary('IM', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -473,6 +476,8 @@ class PersonSearch extends SearcherAbstract
 						}
 						$choices_in = implode(',', $choices_in);
 					}
+
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

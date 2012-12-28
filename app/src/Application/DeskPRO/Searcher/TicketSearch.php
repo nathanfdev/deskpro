@@ -238,13 +238,13 @@ class TicketSearch extends SearcherAbstract
 		if ($this->person_search) {
 			$person_summary = $this->person_search->getSummary();
 			if ($person_summary) {
-				$summary = array_merge($summary, $this->person_search->getSummary());
+				$summary = array_merge($summary, $person_summary);
 			}
 		}
 		if ($this->org_search) {
-			$person_summary = $this->org_search->getSummary();
-			if ($person_summary) {
-				$summary = array_merge($summary, $this->org_search->getSummary());
+			$org_summary = $this->org_search->getSummary();
+			if ($org_summary) {
+				$summary = array_merge($summary, $org_summary);
 			}
 		}
 
@@ -1432,11 +1432,11 @@ class TicketSearch extends SearcherAbstract
 
 						if ($choice) {
 							$wheres[] = "tickets.is_hold = 1";
+							$this->summary[] = $tr->phrase('agent.general.is_x', array('field' => 'on hold'));
 						} else {
 							$wheres[] = "tickets.is_hold = 0";
+							$this->summary[] = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
 						}
-
-						$this->summary[] = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
 
 						break;
 					case self::TERM_ORGANIZATION:
