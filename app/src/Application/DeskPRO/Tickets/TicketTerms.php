@@ -616,6 +616,10 @@ class TicketTerms
 
 			case 'email_account_bcc':
 
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
 				$matcher_service = App::getSystemService('GatewayAddressMatcher');
 				$found_match = $matcher_service->getMatchingAddressFromReader($ticket->email_reader);
 
