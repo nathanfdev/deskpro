@@ -139,6 +139,27 @@ $log_status = function($status, $print = true) use ($log_file, $DP_CONFIG) {
 	}
 };
 
+$php_path = dp_get_php_path(true);
+if ($is_windows) {
+	// this prevents black boxes when started via twitter-windows.php
+	$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
+}
+
+$start_process = function($account_id, $rest = false) use ($php_path, $is_windows) {
+	$rest_arg = ($rest ? ' rest' : '');
+	$pipes = array();
+
+	// todo: windows doesn't like the arguments being quoted for some reason...
+	$file = basename(__FILE__);
+	if (!$is_windows) {
+		$file = escapeshellarg($file);
+	}
+
+	$account_id = intval($account_id);
+
+	return proc_open("$php_path $file $account_id$rest_arg", array(), $pipes, __DIR__);
+};
+
 $runner_pid = null;
 $runner_active = $check_runner_active($runner_pid);
 
@@ -152,9 +173,6 @@ if (!empty($argv[1])) {
 		WHERE id = ?
 	', array($argv[1]));
 
-	$db->close();
-	$db = null;
-
 	if (!$account) {
 		$log_status("[Account] Invalid account $argv[1].");
 		exit(1);
@@ -164,14 +182,6 @@ if (!empty($argv[1])) {
 	define('TWITTER_CONSUMER_KEY', \Application\DeskPRO\Service\Twitter::getAgentConsumerKey());
 	define('TWITTER_CONSUMER_SECRET', \Application\DeskPRO\Service\Twitter::getAgentConsumerSecret());
 
-	\Application\DeskPRO\App::getDb()->close();
-
-	$log_status("[Account $account[id]] Processor starting with PID " . getmypid() . ".");
-
-	if (!$runner_active) {
-		$log_status("[Account $account[id], PID " . getmypid() . "] Started without parent runner. Can only be terminated manually.");
-	}
-
 	$consumer = new \Application\DeskPRO\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
 	$consumer->setWriteCallback(function($data) use ($get_db) {
 		$db = $get_db();
@@ -180,7 +190,124 @@ if (!empty($argv[1])) {
 		$db = null;
 	});
 	$consumer->setAccount($account);
-	$consumer->setCallback(function($status, $consumer) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $get_db) {
+
+	if (!empty($argv[2]) && $argv[2] == 'rest') {
+		$log_status("[Account $account[id] REST] Processor starting with PID " . getmypid() . ". Last processed: $account[last_processed_id]");
+
+		if ($account['last_processed_id']) {
+			$api = new EpiTwitter(
+				\Application\DeskPRO\Service\Twitter::getAgentConsumerKey(),
+				\Application\DeskPRO\Service\Twitter::getAgentConsumerSecret(),
+				$account['oauth_token'],
+				$account['oauth_token_secret']
+			);
+			$max_id = false;
+
+			try {
+				$results = $api->get('/statuses/home_timeline.json', array(
+					'count' => 200,
+					'since_id' => $account['last_processed_id']
+				));
+				$total = 0;
+				foreach ($results AS $result) {
+					if (!$max_id || $result->id_str > $max_id) {
+						$max_id = $result->id_str;
+					}
+
+					$consumer->enqueueStatus(json_encode($result));
+					$total++;
+				}
+				$log_status("[Account $account[id] REST] Missed home timeline: $total");
+			} catch (EpiOAuthException $e) {
+			} catch (EpiTwitterException $e) {}
+
+			try {
+				$results = $api->get('/statuses/mentions_timeline.json', array(
+					'count' => 200,
+					'include_rts' => 1,
+					'since_id' => $account['last_processed_id']
+				));
+				$total = 0;
+				foreach ($results AS $result) {
+					if (!$max_id || $result->id_str > $max_id) {
+						$max_id = $result->id_str;
+					}
+
+					$consumer->enqueueStatus(json_encode($result));
+					$total++;
+				}
+				$log_status("[Account $account[id] REST] Missed mentions: $total");
+			} catch (EpiOAuthException $e) {
+			} catch (EpiTwitterException $e) {}
+
+			try {
+				$results = $api->get('/direct_messages.json', array(
+					'count' => 200,
+					'since_id' => $account['last_processed_id']
+				));
+				$total = 0;
+				foreach ($results AS $result) {
+					if (!$max_id || $result->id_str > $max_id) {
+						$max_id = $result->id_str;
+					}
+
+					$res = new StdClass();
+					$res->direct_message = $result;
+
+					$consumer->enqueueStatus(json_encode($res));
+					$total++;
+				}
+				$log_status("[Account $account[id] REST] Missed received DMs: $total");
+			} catch (EpiOAuthException $e) {
+			} catch (EpiTwitterException $e) {}
+
+			try {
+				$results = $api->get('/direct_messages/sent.json', array(
+					'count' => 200,
+					'since_id' => $account['last_processed_id']
+				));
+				$total = 0;
+				foreach ($results AS $result) {
+					if (!$max_id || $result->id_str > $max_id) {
+						$max_id = $result->id_str;
+					}
+
+					$res = new StdClass();
+					$res->direct_message = $result;
+
+					$consumer->enqueueStatus(json_encode($res));
+					$total++;
+				}
+				$log_status("[Account $account[id] REST] Missed sent DMs: $total");
+			} catch (EpiOAuthException $e) {
+			} catch (EpiTwitterException $e) {}
+
+			if ($max_id) {
+				$db->executeUpdate("
+					UPDATE twitter_accounts
+					SET last_processed_id = ?
+					WHERE id = ? AND last_processed_id < ?
+				", array($max_id, $account['id'], $max_id));
+			}
+
+			$log_status("[Account $account[id] REST] Completed.");
+		} else {
+			$log_status("[Account $account[id] REST] Completed (no work).");
+		}
+		exit;
+	}
+
+	$db->close();
+	$db = null;
+	\Application\DeskPRO\App::getDb()->close();
+
+	$log_status("[Account $account[id]] Processor starting with PID " . getmypid() . ".");
+
+	if (!$runner_active) {
+		$log_status("[Account $account[id], PID " . getmypid() . "] Started without parent runner. Can only be terminated manually.");
+	}
+
+	$consumer->setCallback(function($status) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $get_db, $start_process) {
 		$my_pid = getmypid();
 
 		$log = sprintf(
@@ -203,34 +330,56 @@ if (!empty($argv[1])) {
 			WHERE id = ?
 		', array($account['id']));
 
-		$db->close();
-		$db = null;
-
 		if (!$test_account || $test_account['oauth_token'] != $account['oauth_token']) {
 			$log_status("[Account $account[id], PID $my_pid] Account removed or changed. Terminating.");
 			exit;
 		}
 
+		if ($runner_active) {
+			$new_pid = null;
+			if (!$check_runner_active($new_pid)) {
+				$log_status("[Account $account[id], PID $my_pid] Parent process no longer running. Terminating.");
+				exit;
+			}
+
+			if ($runner_pid && $new_pid != $runner_pid) {
+				$log_status("[Account $account[id], PID $my_pid] Parent process no longer running - new process running in its place. Terminating.");
+				exit;
+			}
+		}
+
+		$status_test = trim($status);
+		$status_test = json_decode($status_test);
+
+		if (isset($status_test->text)) {
+			$new_id = $status_test->id_str;
+		} else if (isset($status_test->direct_message)) {
+			$new_id = $status_test->direct_message->id_str;
+		} else {
+			$new_id = false;
+		}
+
+		if ($new_id) {
+			$db->executeUpdate("
+				UPDATE twitter_accounts
+				SET last_processed_id = ?
+				WHERE id = ? AND last_processed_id < ?
+			", array($new_id, $account['id'], $new_id));
+		}
+
+		if (isset($status_test->friends) && $test_account['last_processed_id']) {
+			// this is the first message we see when we connect to a stream,
+			// so check with the rest API for anything missing
+			$start_process($account['id'], true);
+		}
+
+		$db->close();
+		$db = null;
+
 		gc_collect_cycles();
-
-		if (!$runner_active) {
-			return $status;
-		}
-
-		$new_pid = null;
-		if (!$check_runner_active($new_pid)) {
-			$log_status("[Account $account[id], PID $my_pid] Parent process no longer running. Terminating.");
-			exit;
-		}
-
-		if ($runner_pid && $new_pid != $runner_pid) {
-			$log_status("[Account $account[id], PID $my_pid] Parent process no longer running - new process running in its place. Terminating.");
-			exit;
-		}
 
 		return $status;
 	});
-
 	$consumer->consume();
 
 	$my_pid = getmypid();
@@ -252,13 +401,6 @@ $timer = 0;
 $max_timer = 0;
 $sleep_length = 1; // needs to be divisible by 30
 $children = array();
-$php_path = dp_get_php_path(true);
-
-if ($is_windows) {
-	// this prevents black boxes when started via twitter-windows.php
-	$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
-}
-
 $my_pid = getmypid();
 
 if ($runner_active) {
@@ -348,13 +490,10 @@ while (true) {
 		foreach ($db->fetchAll('SELECT * FROM twitter_accounts') as $account) {
 			$account_id = $account['id'];
 			if (!isset($children[$account_id])) {
-				$pipes = array();
-				// windows doesn't like the arguments being quoted for some reason...
 				if ($timer > 0) {
 					$log_status("[Runner, PID $my_pid] Starting or restarting processor for account $account_id.");
 				}
-				$process = proc_open("$php_path " . basename(__FILE__) . " $account_id", array(), $pipes, __DIR__);
-				$children[$account_id] = $process;
+				$children[$account_id] = $start_process($account_id, false);
 			}
 			$matched[] = $account_id;
 		}
