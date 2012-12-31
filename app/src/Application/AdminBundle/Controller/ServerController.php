@@ -159,6 +159,20 @@ class ServerController extends AbstractController
 			}
 		}
 
+		if (dp_get_config('cache.page_cache')) {
+			foreach (dp_get_config('cache.page_cache') as $k => $v) {
+				$debug_settings['cache.page_cache.'.$k] = $v;
+			}
+		}
+
+		if (dp_get_config('SETTINGS')) {
+			foreach (dp_get_config('SETTINGS') as $k => $v) {
+				$debug_settings['SETTINGS.'.$k] = $v;
+			}
+		}
+
+		$debug_settings['rewrite_urls'] = print_r(dp_get_config('rewrite_urls', false), true);
+
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
 			'binary_paths'   => $binary_paths,
 			'web_php'        => $web_php,
