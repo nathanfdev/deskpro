@@ -16,7 +16,7 @@ dp_load_config();
 # See if we need to clear apc
 #------------------------------
 
-if (file_exists(dp_get_tmp_dir() . '/apc-clear.trigger')) {
+if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigger')) {
 	error_log("cleared");
 	if (function_exists('apc_clear_cache')) {
 		apc_clear_cache();
@@ -114,7 +114,7 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 # Handle CLI logging of info
 #------------------------------
 
-if ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') || (isset($_SERVER['argv']) && in_array('dp_write_cli_info', $_SERVER['argv']))) {
+if (!defined('DPC_IS_CLOUD') && ((defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') || (isset($_SERVER['argv']) && in_array('dp_write_cli_info', $_SERVER['argv'])))) {
 
 	$do_update = false;
 	$last_error_log_hash = null;
