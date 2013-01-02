@@ -61,6 +61,9 @@ class PortalOffEvent
 			return;
 		}
 
-		$event->getRequest()->attributes->set('_controller', 'UserBundle:PortalOff:portalOff');
+		$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/portal-off.html');
+		$response = new \Symfony\Component\HttpFoundation\Response($page_html);
+
+		$event->setResponse($response);
 	}
 }
