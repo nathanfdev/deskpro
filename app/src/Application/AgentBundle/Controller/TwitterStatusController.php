@@ -555,10 +555,18 @@ class TwitterStatusController extends AbstractController
 	{
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'archive');
 
+		$old_archived = $account_status->is_archived;
+
 		$account_status['is_archived'] = $this->in->getBool('archive');
 
 		$this->em->persist($account_status);
 		$this->em->flush();
+
+		if ($old_archived != $account_status->is_archived) {
+			$this->_insertUpdatedTweetClientMessage($account_status,
+				array('change_archived' => true, 'is_archived' => $account_status->is_archived)
+			);
+		}
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -633,5 +641,11 @@ class TwitterStatusController extends AbstractController
 		$this->em->persist($account_status);
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	protected function _insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
+	{
+		$twitter = new \Application\DeskPRO\Service\Twitter();
+		return $twitter->insertUpdatedTweetClientMessage($account_status, $changes);
 	}
 }

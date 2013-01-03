@@ -31,13 +31,13 @@
 			<h1>@{{ account.user.screen_name }}</h1>
 		</header>
 	</section>
-	<ul class="source-list with-tree no-editor" style="margin-bottom: 10px">
+	<ul class="source-list with-tree no-editor" id="twitter-section-counts-{{ account.id }}" style="margin-bottom: 10px">
 		<li class="has-children dp-cat-li sub-expanded">
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_inbox_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countInbox() }}">{{ account.countInbox() }}</span>
+					<span class="list-counter twitter-inbox-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countInbox() }}">{{ account.countInbox() }}</span>
 					<span>{{ phrase('agent.general.inbox') }}</span>
 				</span>
 			</div>
@@ -45,7 +45,7 @@
 				<li class="dp-cat-li">
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">
-							<span class="list-counter" id="twitter_{{ account.id }}_direct_count" data-count="{{ account.countMessages() }}">{{ account.countMessages() }}</span>
+							<span class="list-counter twitter-direct-counter" id="twitter_{{ account.id }}_direct_count" data-count="{{ account.countMessages() }}">{{ account.countMessages() }}</span>
 							<span>{{ phrase('agent.twitter.direct') }}</span>
 						</span>
 					</div>
@@ -53,7 +53,7 @@
 				<li class="dp-cat-li">
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_replies_list', {'account_id': account.id}) }}">
-							<span class="list-counter" id="twitter_{{ account.id }}_replies_count" data-count="{{ account.countReplies() }}">{{ account.countReplies() }}</span>
+							<span class="list-counter twitter-reply-counter" id="twitter_{{ account.id }}_replies_count" data-count="{{ account.countReplies() }}">{{ account.countReplies() }}</span>
 							<span>{{ phrase('agent.twitter.replies') }}</span>
 						</span>
 					</div>
@@ -61,7 +61,7 @@
 				<li class="dp-cat-li">
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_mentions_list', {'account_id': account.id}) }}">
-							<span class="list-counter" id="twitter_{{ account.id }}_mentions_count" data-count="{{ account.countMentions() }}">{{ account.countMentions() }}</span>
+							<span class="list-counter twitter-mention-counter" id="twitter_{{ account.id }}_mentions_count" data-count="{{ account.countMentions() }}">{{ account.countMentions() }}</span>
 							<span>{{ phrase('agent.general.mentions') }}</span>
 						</span>
 					</div>
@@ -69,7 +69,7 @@
 				<li class="dp-cat-li">
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_retweets_list', {'account_id': account.id}) }}">
-							<span class="list-counter" id="twitter_{{ account.id }}_retweets_count" data-count="{{ account.countRetweets() }}">{{ account.countRetweets() }}</span>
+							<span class="list-counter twitter-retweet-counter" id="twitter_{{ account.id }}_retweets_count" data-count="{{ account.countRetweets() }}">{{ account.countRetweets() }}</span>
 							<span>{{ phrase('agent.twitter.retweets') }}</span>
 						</span>
 					</div>
@@ -111,7 +111,7 @@
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_timeline_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_timeline_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
+					<span class="list-counter twitter-timeline-counter" id="twitter_{{ account.id }}_timeline_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
 					<span>Timeline</span>
 				</span>
 			</div>
@@ -120,7 +120,7 @@
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.countOutgoing() }}">{{ account.countOutgoing() }}</span>
+					<span class="list-counter twitter-sent-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.countOutgoing() }}">{{ account.countOutgoing() }}</span>
 					<span>{{ phrase('agent.twitter.sent') }}</span>
 				</span>
 			</div>

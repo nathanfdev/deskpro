@@ -7,6 +7,7 @@ pageMeta.perPage = {{ per_page }};
 pageMeta.totalCount = {{ total_count }};
 
 pageMeta.statusListUrl = '{{ path('agent_twitter_team_tweets_list') }}?partial=1';
+pageMeta.listRoute = 'agent_twitter_team_tweets_list';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 </script>
 

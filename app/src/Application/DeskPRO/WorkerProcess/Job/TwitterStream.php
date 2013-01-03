@@ -253,6 +253,8 @@ class TwitterStream extends AbstractJob
 		$this->em->persist($account_status);
 		$this->em->flush();
 
+		$this->twitter_service->insertNewTweetClientMessage($account_status);
+
 		return true;
 	}
 

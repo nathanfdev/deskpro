@@ -6,6 +6,15 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	initializeProperties: function() {
 		this.parent();
 		this.TYPENAME = 'twitter-status-list';
+		this.typeMap = {
+			direct: 'agent_twitter_messages_list',
+			reply: 'agent_twitter_replies_list',
+			mention: 'agent_twitter_mentions_list',
+			retweet: 'agent_twitter_retweets_list',
+			timeline: 'agent_twitter_timeline_list',
+			sent: 'agent_twitter_outgoing_list'
+		};
+		this.countReflected = {};
 	},
 
 	initPage: function(el) {
@@ -48,35 +57,209 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
 			statusArchiveHideCallback: function(row) {
-				var pageHelper = self.resultsHelper,
-					page = pageHelper.getCurrentPage(),
-					numPages = pageHelper.getNumPages();
-
-				pageHelper.adjustResultCount(-1);
-
-				if (page < numPages) {
-					var data = self._getDisplayOptions();
-					data.last = 1;
-					data.page = page;
-
-					setTimeout(function() {
-						$.ajax({
-							url: self.getMetaData('statusListUrl'),
-							dataType: 'html',
-							data: data,
-							success: function(html) {
-								var $html = $(html);
-								self.content.find('.twitter-status-list').append($html);
-								self._afterLoading($html);
-							}
-						});
-					}, 200);
-				} else if (pageHelper.resultCount <= 0) {
-					self.wrapper.find('.list-listing.no-results').show();
-					self.wrapper.find('.results-nav').hide();
+				var id = parseInt(row.data('status-id'), 10);
+				if (!self.countReflected[id]) {
+					self.countReflected[id] = true;
+					self.resultsHelper.adjustResultCount(-1);
 				}
+				self._afterTweetRemoved(200);
 			}
 		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-added', function (data) {
+			self.adjustTweetCountsFromClientMessage(data, 1);
+			self.adjustShownTweetsForTweetAdded(data);
+
+			self.countReflected = {};
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-updated', function (data) {
+			if (data.change_archived) {
+				if (data.is_archived) {
+					// moved to archived, reduce counts
+					self.adjustTweetCountsFromClientMessage(data, -1);
+				} else {
+					// moved to unarchived, increase counts
+					self.adjustTweetCountsFromClientMessage(data, 1);
+				}
+			} else if (data.deleted) {
+				self.adjustTweetCountsFromClientMessage(data, -1);
+			}
+
+			self.adjustShownTweetsForTweetUpdated(data);
+
+			self.countReflected = {};
+		});
+	},
+
+	adjustTweetCountsFromClientMessage: function(data, adjustAmount) {
+		var accountId = data.account_id;
+
+		if (this.countReflected[data.account_status_id]) {
+			return;
+		}
+
+		if (this._tweetAppliesToPage(data) && this.resultsHelper && this.resultsHelper.options) {
+			this.countReflected[data.account_status_id] = true;
+			this.resultsHelper.adjustResultCount(adjustAmount);
+
+			if (this.meta.listRoute == this.typeMap.timeline && this.resultsHelper.resultCount > 1000) {
+				this.resultsHelper.setResultCount(1000);
+			}
+		}
+	},
+
+	adjustShownTweetsForTweetAdded: function(data) {
+		if (this.content.find('.row-item.status-' + data.account_status_id).length) {
+			// tweet already shown
+			return;
+		}
+
+		if (this._tweetAppliesToPage(data)) {
+			this.addTweetToPage(data.account_status_id, data.tweet_html);
+		}
+	},
+
+	_tweetAppliesToPage: function(data) {
+		if (this.meta.accountId && this.meta.accountId != data.account_id) {
+			return false;
+		}
+
+		if (this.typeMap[data.status_type] && this.meta.listRoute == this.typeMap[data.status_type]) {
+			return true;
+		}
+
+		switch (data.status_type) {
+			case 'reply':
+			case 'mention':
+			case 'retweet':
+			case 'direct':
+				if (this.meta.listRoute == 'agent_twitter_inbox_list') {
+					return true;
+				}
+		}
+
+		if (data.is_from_self) {
+			if (this.meta.listRoute == this.typeMap.sent) {
+				return true;
+			} else if (this.menuOptions.filter('[name=account]').is(':checked')) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+
+	adjustShownTweetsForTweetUpdated: function(data) {
+		if (this.content.find('.row-item.status-' + data.account_status_id).length) {
+			if (data.change_archived) {
+				var showArchived = this.menuOptions.filter('[name=archived]').is(':checked');
+				if (data.is_archived && !showArchived) {
+					this.removeTweetFromPage(data.account_status_id);
+				} else if (!data.is_archived) {
+					this.addTweetToPage(data.account_status_id, data.tweet_html);
+				}
+			}
+			if (data.deleted) {
+				this.removeTweetFromPage(data.account_status_id);
+			}
+			if (data.reply_added_html) {
+
+			}
+			if (data.note_added_html) {
+
+			}
+			if (data.note_deleted_id) {
+
+			}
+		} else {
+			if (data.change_archived && !data.is_archived) {
+				this.addTweetToPage(data.account_status_id, data.tweet_html);
+			}
+		}
+
+		if (this.content.find('.twitter-reply-' + data.account_status_id).length) {
+			if (data.deleted) {
+				this.removeReplyFromPage(data.account_status_id);
+			}
+		}
+	},
+
+	addTweetToPage: function(account_status_id, html) {
+		// todo: remove last one from page if showing too many
+
+		if (!this.resultsHelper || !this.resultsHelper.options) {
+			// page destroyed
+			return;
+		}
+
+		if (!this.countReflected[account_status_id]) {
+			this.resultsHelper.adjustResultCount(1);
+			this.countReflected[account_status_id] = true;
+		}
+
+		var $html = $(html);
+		this.content.find('.twitter-status-list').prepend($html);
+		this._afterLoading($html);
+	},
+
+	removeTweetFromPage: function(account_status_id) {
+		var el = this.content.find('.row-item.status-' + account_status_id);
+		if (el.length) {
+			el.remove();
+			if (!this.countReflected[account_status_id]) {
+				this.resultsHelper.adjustResultCount(-1);
+				this.countReflected[account_status_id] = true;
+			}
+			this._afterTweetRemoved(0);
+		}
+	},
+
+	removeReplyFromPage: function(account_status_id) {
+		var el = this.content.find('.twitter-reply-' + account_status_id);
+		if (el.length) {
+			var row = this.twitterHelper.closestRow(el);
+			el.remove();
+			if (!row.find('.twitter-replies .twitter-reply').length) {
+				row.find('.reply-list').hide();
+			}
+		}
+	},
+
+	_afterTweetRemoved: function(delay) {
+		var pageHelper = this.resultsHelper,
+			page = pageHelper.getCurrentPage(),
+			numPages = pageHelper.getNumPages();
+		var self = this;
+
+		if (!this.resultsHelper || !this.resultsHelper.options) {
+			// page destroyed
+			return;
+		}
+
+		pageHelper.updateShowingCount();
+
+		if (page < numPages) {
+			var data = this._getDisplayOptions();
+			data.last = 1;
+			data.page = page;
+
+			setTimeout(function() {
+				$.ajax({
+					url: this.getMetaData('statusListUrl'),
+					dataType: 'html',
+					data: data,
+					success: function(html) {
+						var $html = $(html);
+						self.content.find('.twitter-status-list').append($html);
+						self._afterLoading($html);
+					}
+				});
+			}, delay || 0);
+		} else if (pageHelper.resultCount <= 0) {
+			this.wrapper.find('.list-listing.no-results').show();
+			this.wrapper.find('.results-nav').hide();
+		}
 	},
 
 	_afterLoading: function(content) {
@@ -86,6 +269,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 		if (this.selectionBar) {
 			this.selectionBar.updateCount();
+		}
+		if (this.resultsHelper && this.resultsHelper.options) {
+			this.resultsHelper.updateShowingCount();
 		}
 	},
 

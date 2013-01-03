@@ -8,6 +8,7 @@ pageMeta.perPage = {{ per_page }};
 pageMeta.totalCount = {{ total_count }};
 
 pageMeta.statusListUrl = '{{ path(twitter_list_route, {'account_id': account.id}) }}?partial=1';
+pageMeta.listRoute = '{{ twitter_list_route }}';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
 
 {% set baseId = el_uid() %}

@@ -5,12 +5,84 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 
 	init: function() {
 		this.buttonEl = $('#twitter_section');
-
 		this.urlFragmentName = 'twitter';
+		var self = this;
 
 		this.setSectionElement($('<section id="twitter_outline"></section>'));
 
 		this.refresh();
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-added', function (data) {
+			self.adjustTweetCountsFromClientMessage(data, 1);
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-updated', function (data) {
+			if (data.change_archived) {
+				if (data.is_archived) {
+					// moved to archived, reduce counts
+					self.adjustTweetCountsFromClientMessage(data, -1);
+				} else {
+					// moved to unarchived, increase counts
+					self.adjustTweetCountsFromClientMessage(data, 1);
+				}
+			} else if (data.deleted) {
+				self.adjustTweetCountsFromClientMessage(data, -1);
+			}
+		});
+	},
+
+	adjustTweetCountsFromClientMessage: function(data, adjustAmount) {
+		var accountId = data.account_id;
+
+		switch (data.status_type) {
+			case 'timeline':
+				var el = this.getSectionElement().find('#twitter-section-counts-' + accountId + ' .twitter-timeline-counter');
+				var count = parseInt(el.text().trim(), 10);
+				count += adjustAmount;
+				if (count > 1000) {
+					count = 1000;
+				} else if (count < 0) {
+					count = 0;
+				}
+				el.text(count);
+				break;
+
+			case 'sent':
+				var el = this.getSectionElement().find('#twitter-section-counts-' + accountId + ' .twitter-sent-counter');
+				var count = parseInt(el.text().trim(), 10) + adjustAmount;
+				if (count < 0) {
+					count = 0;
+				}
+				el.text(count);
+				break;
+
+			case 'direct':
+				if (data.is_from_self) {
+					// own DM, consider as sent
+					break;
+				}
+				// break missing intentionally
+
+			case 'reply':
+			case 'mention':
+			case 'retweet':
+				var el = this.getSectionElement().find('#twitter-section-counts-' + accountId + ' .twitter-' + data.status_type + '-counter');
+				var count = parseInt(el.text().trim(), 10) + adjustAmount;
+				if (count < 0) {
+					count = 0;
+				}
+				el.text(count);
+
+				var inbox = this.getSectionElement().find('#twitter-section-counts-' + accountId + ' .twitter-inbox-counter');
+				var count = parseInt(inbox.text().trim(), 10) + adjustAmount;
+				if (count < 0) {
+					count = 0;
+				}
+				inbox.text(count);
+
+				this.recountBadge();
+				break;
+		}
 	},
 
 	refresh: function() {
@@ -46,5 +118,15 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 				}
 			}
 		});
+
+		this.recountBadge();
+	},
+
+	recountBadge: function() {
+		var count = 0;
+		this.contentEl.find('.twitter-inbox-counter').each(function() {
+			count += parseInt($(this).text().trim(), 10) || 0;
+		});
+		this.updateBadge(count);
 	}
 });

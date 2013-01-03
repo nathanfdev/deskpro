@@ -1,4 +1,4 @@
-<li class="twitter-reply" data-status-id="{{ reply.id }}">
+<li class="twitter-reply twitter-reply-{{ reply.id }}" data-status-id="{{ reply.id }}">
 	{% if reply.status.user.id == reply.account.user.id and not reply.status.recipient %}
 		<i class="status-delete reply-action tipped" title="Delete"></i>
 	{% endif %}

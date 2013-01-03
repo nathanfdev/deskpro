@@ -612,6 +612,8 @@ class Twitter
 				$this->em->persist($new_account_status);
 				$this->em->persist($account_status);
 				$this->em->flush();
+
+				$this->insertNewTweetClientMessage($account_status);
 			}
 		} catch (\EpiTwitterException $e) {
 			$error = $this->getTwitterError($e);
@@ -644,8 +646,8 @@ class Twitter
 					$this->em->remove($account_retweet);
 					$this->em->remove($account_retweet->status);
 					if ($account_retweet->status->long) {
-					$this->em->remove($account_retweet->status->long);
-				}
+						$this->em->remove($account_retweet->status->long);
+					}
 					$this->em->flush();
 				}
 			} catch (\EpiTwitterException $e) {
@@ -697,6 +699,10 @@ class Twitter
 					$this->em->remove($account_status->status->long);
 				}
 				$this->em->flush();
+
+				$this->insertUpdatedTweetClientMessage($account_status,
+					array('deleted' => true)
+				);
 			}
 		} catch (\EpiTwitterException $e) {
 			$error = $this->getTwitterError($e);
@@ -801,6 +807,8 @@ class Twitter
 				$em->flush();
 
 				$new_account_statuses[] = $new_account_status;
+
+				$this->insertNewTweetClientMessage($new_account_status);
 			}
 		}
 
@@ -844,6 +852,8 @@ class Twitter
 					$em->flush();
 
 					$new_account_statuses[] = $new_account_status;
+
+					$this->insertNewTweetClientMessage($new_account_status);
 				}
 			} catch (\EpiTwitterException $e) {
 				// user isn't following so we can't send a DM
@@ -852,6 +862,52 @@ class Twitter
 		}
 
 		return $new_account_statuses;
+	}
+
+	public function insertNewTweetClientMessage(TwitterAccountStatus $account_status)
+	{
+		$tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
+			'account_status' => $account_status
+		));
+
+		App::getDb()->insert('client_messages', array(
+			'channel' => 'agent.tweet-added',
+			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+			'date_created' => date('Y-m-d H:i:s'),
+			'data' => serialize(array(
+				'account_status_id' => $account_status->id,
+				'account_id' => $account_status->account->id,
+				'status_type' => $account_status->status_type,
+				'status_id' => $account_status->status->id,
+				'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
+				'tweet_html' => $tweet_html
+			)),
+			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+		));
+	}
+
+	public function insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
+	{
+		$tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
+			'account_status' => $account_status
+		));
+
+		$data = array(
+			'account_status_id' => $account_status->id,
+			'account_id' => $account_status->account->id,
+			'status_type' => $account_status->status_type,
+			'status_id' => $account_status->status->id,
+			'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
+			'tweet_html' => $tweet_html
+		) + $changes;
+
+		App::getDb()->insert('client_messages', array(
+			'channel' => 'agent.tweet-updated',
+			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+			'date_created' => date('Y-m-d H:i:s'),
+			'data' => serialize($data),
+			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+		));
 	}
 
 	public function getTwitterError(\Exception $e)

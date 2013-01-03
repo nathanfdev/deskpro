@@ -167,6 +167,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			var id = row.attr('data-status-id');
 
 			if (id && confirm('Are you sure you want to delete this tweet?')) {
+				row.hide();
+
 				$.ajax({
 					url: self.page.getMetaData('saveDeleteUrl'),
 					type: 'POST',
@@ -176,6 +178,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 						if (json.success) {
 							row.remove();
 						} else if (json.error) {
+							row.show();
 							alert(json.error);
 						}
 					}
