@@ -147,12 +147,17 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				if ($email) {
 					if (App::getSetting('core.existing_account_login')) {
 						$person = $email->person;
-						$person->name = $this->person->name;
+						if ($this->person->name) {
+							$person->name = $this->person->name;
+						}
 						$this->require_login = true;
 
 					} else {
 						$person = $email->person;
-						$person->name = $this->person->name;
+						if ($this->person->name) {
+							$person->name = $this->person->name;
+							App::getOrm()->persist($person);
+						}
 					}
 
 				// If we get here, then its a new user. We add the email address
@@ -160,7 +165,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				// NewticketAction toggles it off
 				} else {
 					$person = Entity\Person::newContactPerson();
-					$person->name = $this->person->name;
+					if ($this->person->name) {
+						$person->name = $this->person->name;
+					}
 					$person->getChangeTracker()->recordExtra('email_validating', $this->person->email);
 					$person->is_confirmed = false;
 
