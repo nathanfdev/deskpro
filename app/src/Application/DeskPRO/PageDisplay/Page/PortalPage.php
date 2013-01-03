@@ -365,6 +365,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				$block_html = $item->getHtml();
 			}
 
+			if (!$block_html && $this->is_admin_mode && $item instanceof \Application\DeskPRO\PageDisplay\Item\Portal\Template) {
+				$block_html = '<div style="margin: 8px 0 8px 0; font-size: 11px; background-color: #fff; padding: 6px; border-radius: 4px;">(This block has no content)</div>';
+			}
+
 			if ($block_html) {
 				$pid = $item->getOption('pid');
 				$type = strtolower(\Orb\Util\Util::getBaseClassname($item));
