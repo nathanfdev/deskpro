@@ -68,11 +68,7 @@ class UsergroupsController extends AbstractController
 			}
 		}
 
-		$member_counts = $this->db->fetchAllKeyValue("
-			SELECT usergroup_id, COUNT(*)
-			FROM person2usergroups
-			GROUP BY usergroup_id
-		");
+		$member_counts = $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll();
 
 		$member_counts[0] = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM people
