@@ -75,7 +75,15 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			 */
 			currentPage: 1,
 
-			preFetchCallback: null
+			preFetchCallback: null,
+
+			infiniteScroll: false,
+
+			infiniteScrollTriggerOffset: 800,
+
+			infiniteScrollLoadFilter: null,
+
+			infiniteScrollTarget: null
 		};
 		this.setOptions(options);
 
@@ -92,6 +100,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.resultCount   = this.options.resultIds ? this.options.resultIds.length : this.options.totalCount;
 
 		this.scrollableEl = this.resultsContainer.closest('.with-scrollbar');
+		if (this.options.infiniteScroll) {
+			this.options.infiniteScroll = this.scrollableEl.length > 0;
+		}
 
 		this.resultIds = this.options.resultIds;
 		delete this.options.resultIds;
@@ -115,6 +126,34 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 		this.pageNav.on('click', '.prev', this.loadPrevPage.bind(this));
 		this.pageNav.on('click', '.next', this.loadNextPage.bind(this));
+
+		if (this.options.infiniteScroll) {
+			this.pageNav.closest('.results-nav').hide();
+
+			var onScrollTimer;
+			var self = this;
+
+			this.scrollableEl.on('dp_scroll.infinite', function() {
+				if (!onScrollTimer) {
+					var scrollEl = $(this);
+					onScrollTimer = setTimeout(function() {
+						onScrollTimer = false;
+
+						if (self.getCurrentPage() + 1 > self.getNumPages()) {
+							self.scrollableEl.unbind('dp_scroll.infinite');
+							return;
+						}
+
+						var scrollBottom = (scrollEl.data('dp-scroll-pos') + scrollEl.data('dp-scroll-viewport')),
+							totalHeight = scrollEl.data('dp-scroll-height');
+
+						if (totalHeight - scrollBottom < self.options.infiniteScrollTriggerOffset) {
+							self.loadNextPage();
+						}
+					}, 25);
+				}
+			})
+		}
 	},
 
 
@@ -215,6 +254,10 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			return;
 		}
 
+		if (this.options.infiniteScroll) {
+			pageNum = this.getCurrentPage() + 1; // only thing that can be loaded
+		}
+
 		var evData = {html: null}, html = null;
 
 		this.setPage(pageNum);
@@ -283,15 +326,29 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * @param html
 	 */
 	setNewResults: function(html) {
-		this.resultsContainer.empty().html(html);
+		var results = $(html);
 
-		if (this.scrollableEl.length) {
-			this.scrollableEl.trigger('goscrolltop');
+		if (this.options.infiniteScroll) {
+			if (this.options.infiniteScrollLoadFilter) {
+				results = this.options.infiniteScrollLoadFilter(results);
+			}
+			if (this.options.infiniteScrollTarget) {
+				this.options.infiniteScrollTarget.append(results);
+			} else {
+				this.resultsContainer.append(results);
+			}
+			this.scrollableEl.trigger('scrollupdate');
+		} else {
+			this.resultsContainer.empty().html(results);
+
+			if (this.scrollableEl.length) {
+				this.scrollableEl.trigger('goscrolltop');
+			}
 		}
 
 		this.updateShowingCount();
 
-		this.fireEvent('postSetNewResults', [this, this.resultsContainer]);
+		this.fireEvent('postSetNewResults', [this, this.resultsContainer, results]);
 	},
 
 

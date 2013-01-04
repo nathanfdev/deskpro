@@ -46,9 +46,11 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oContent.obj.css(sDirection, 0);
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
+				oWrapper.data('dp-scroll-pos', 0);
 
 				oWrapper.trigger('dp_scroll');
 			});
+			oWrapper.on('scrollupdate', function() {});
 			oWrapper.on('goscrollto', function(ev, scrollTo) {
 				iScroll = scrollTo;
 				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
@@ -56,6 +58,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+				oWrapper.data('dp-scroll-pos', iScroll);
 
 				oWrapper.trigger('dp_scroll');
 			});
@@ -72,6 +75,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+				oWrapper.data('dp-scroll-pos', iScroll);
 
 				oWrapper.trigger('dp_scroll');
 			});
@@ -173,6 +177,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+				oWrapper.data('dp-scroll-pos', iScroll);
 			}
 			function _update() {
 				scrollbarUpdate();
@@ -197,6 +202,8 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 
 				oViewport[options.axis] = newViewportS;
 				oContent[options.axis] = newContentS;
+				oWrapper.data('dp-scroll-height', newContentS);
+				oWrapper.data('dp-scroll-viewport', newViewportS);
 				oContent.ratio = oViewport[options.axis] / oContent[options.axis];
 				if (oContent.ratio >= 1) {
 					oScrollbar.obj.addClass('disable');
@@ -236,8 +243,10 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oContent.obj.css(sDirection, 0);
 				iScroll = 0;
 				iMouse['start'] = oThumb.obj.offset()[sDirection];
+				oWrapper.data('dp-scroll-pos', 0);
 			});
 			oWrapper.on('goscrollto', goscrollto);
+			oWrapper.on('scrollupdate', scrollbarUpdate);
 			oWrapper.on('goscrollbottom', goscrollbottom);
 			oWrapper.on('goscrollbottom_stick', goscrollbottom_stick);
 			oWrapper.on('restorescroll', restorescroll);
@@ -279,6 +288,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 				oTrack.obj.css(sCssSize, oTrack[options.axis]);
 				oThumb.obj.css(sCssSize, oThumb[options.axis]);
 			};
+
 			function setEvents(){
 				oThumb.obj.bind('mousedown', start);
 				oThumb.obj[0].ontouchstart = function(oEvent){
@@ -351,6 +361,7 @@ if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
 					iScroll = iPosition.now * oScrollbar.ratio;
 					oContent.obj.css(sDirection, -iScroll);
 					oThumb.obj.css(sDirection, iPosition.now);
+					oWrapper.data('dp-scroll-pos', iScroll);
 
 					if (iScroll >= oContent[options.axis] - oViewport[options.axis]) {
 						oScrollbar.obj.addClass('stuck-btm');

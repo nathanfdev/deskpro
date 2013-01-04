@@ -48,8 +48,13 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				});
 				return data;
 			},
-			onPostSetNewResults: function() {
-				self._afterLoading();
+			onPostSetNewResults: function(x, y, results) {
+				self._afterLoading(results);
+			},
+			infiniteScroll: true,
+			infiniteScrollTarget: this.content.find('.twitter-status-list'),
+			infiniteScrollLoadFilter: function(results) {
+				return results.find('.row-item.twitter-status');
 			}
 		};
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
