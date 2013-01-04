@@ -68,6 +68,26 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 				}
 			}
 		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.twitter-follower', function (data) {
+			var newCount = $('#twitter_' + data.account_id + '_new_followers_count');
+			var totalCount = $('#twitter_' + data.account_id + '_followers_count');
+
+			switch (data.action) {
+				case 'new':
+					newCount.text(parseInt(newCount.text().trim(), 10) + 1);
+					totalCount.text(parseInt(totalCount.text().trim(), 10) + 1);
+					break;
+
+				case 'archived':
+					newCount.text(Math.max(0, parseInt(newCount.text().trim(), 10) - 1));
+					break;
+
+				case 'unarchived':
+					newCount.text(parseInt(newCount.text().trim(), 10) + 1);
+					break;
+			}
+		});
 	},
 
 	adjustTweetCountsFromClientMessage: function(data, adjustAmount) {

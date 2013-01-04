@@ -302,6 +302,8 @@ class TwitterStream extends AbstractJob
 			$this->em->persist($targetUser);
 		}
 
+		$follower = null;
+
 		if (isset($data->target_object) && isset($data->target_object->text)) {
 			$targetObject = $data->target_object;
 
@@ -353,6 +355,16 @@ class TwitterStream extends AbstractJob
 		}
 
 		$this->em->flush();
+
+		if ($follower) {
+			App::getDb()->insert('client_messages', array(
+				'channel' => 'agent.twitter-follower',
+				'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
+				'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+			));
+		}
 
 		return true;
 	}
