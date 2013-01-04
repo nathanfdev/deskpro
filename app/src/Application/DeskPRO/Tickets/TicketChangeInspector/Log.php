@@ -437,6 +437,11 @@ class Log
 
 		if ($this->tracker->isExtraSet('ticket_created')) {
 			$action = new LogActions\Created($this->ticket);
+
+			if ($this->tracker->isExtraSet('created_via_comment')) {
+				$action->setViaComment($this->tracker->getExtra('created_via_comment'));
+			}
+
 			$l = $this->createNewTicketLog($action);
 			if ($l) {
 				$log_items[] = $l;

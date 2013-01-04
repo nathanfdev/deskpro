@@ -19,6 +19,20 @@
 	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.email}}</span>
 {% elseif log.action_type == 'ticket_created' %}
 	{{ phrase('agent.general.ticket') }} <span class="new-val">ID {{log.details.ticket_id}}</span> {{ phrase('agent.tickets.lc_created') }}
+	{% if log.details.via_comment %}
+		<div stye="font-size:11px;">
+			&bull;
+			{% if log.details.via_comment.comment_type == 'articles' %}
+				Created via comment (ID {{ log.details.via_comment.comment_id }}) on article "{{ log.details.via_comment.comment_content_title }}" (ID {{ log.details.via_comment.comment_content_id }})
+			{% elseif log.details.via_comment.comment_type == 'downloads' %}
+				Created via comment (ID {{ log.details.via_comment.comment_id }}) on download "{{ log.details.via_comment.comment_content_title }}" (ID {{ log.details.via_comment.comment_content_id }})
+			{% elseif log.details.via_comment.comment_type == 'news' %}
+				Created via comment (ID {{ log.details.via_comment.comment_id }}) on news "{{ log.details.via_comment.comment_content_title }}" (ID {{ log.details.via_comment.comment_content_id }})
+			{% elseif log.details.via_comment.comment_type == 'feedback' %}
+				Created via comment (ID {{ log.details.via_comment.comment_id }}) on feedback "{{ log.details.via_comment.comment_content_title }}" (ID {{ log.details.via_comment.comment_content_id }})
+			{% endif %}
+		</div>
+	{% endif %}
 {% elseif log.action_type == 'subject' %}
 	{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
 {% elseif log.action_type == 'ticket_split' %}

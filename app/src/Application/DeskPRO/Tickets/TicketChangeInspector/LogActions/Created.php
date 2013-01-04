@@ -40,10 +40,16 @@ use Application\DeskPRO\Entity;
 class Created extends AbstractLogAction
 {
 	protected $ticket;
+	protected $via_comment;
 
 	public function __construct($ticket)
 	{
 		$this->ticket = $ticket;
+	}
+
+	public function setViaComment(array $via_comment)
+	{
+		$this->via_comment = $via_comment;
 	}
 
 	public function getLogName()
@@ -53,9 +59,16 @@ class Created extends AbstractLogAction
 
 	public function getLogDetails()
 	{
-		return array(
-			'ticket_id' => $this->ticket['id']
-		);
+		if ($this->via_comment) {
+			return array(
+				'ticket_id'   => $this->ticket['id'],
+				'via_comment' => $this->via_comment,
+			);
+		} else {
+			return array(
+				'ticket_id' => $this->ticket['id']
+			);
+		}
 	}
 
 	public function getEventType()

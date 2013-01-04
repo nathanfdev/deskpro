@@ -82,6 +82,11 @@ class NewTicket
 	protected $_ticket;
 
 	/**
+	 * @var callable
+	 */
+	protected $_pre_save_callback;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $_person_context;
@@ -94,6 +99,14 @@ class NewTicket
 		$this->_person_context = $person_context;
 
 		$this->person = new NewTicketPerson();
+	}
+
+	/**
+	 * @param callable $callback
+	 */
+	public function setPreSaveCallback($callback)
+	{
+		$this->_pre_save_callback = $callback;
 	}
 
 	/**
@@ -260,6 +273,10 @@ class NewTicket
 		}
 
 		$this->_em->persist($ticket);
+
+		if ($this->_pre_save_callback) {
+			call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
+		}
 
 		$field_manager = App::getSystemService('ticket_fields_manager');
 		$post_custom_fields = $this->ticket_fields;

@@ -2706,6 +2706,29 @@ class TicketController extends AbstractController
 			$this->db->beginTransaction();
 
 			try {
+
+				$comment_type   = $this->in->getString('for_comment_type');
+				$comment_id     = $this->in->getUint('for_comment_id');
+				$comment_action = $this->in->getString('comment_action');
+				$comment = null;
+
+				if ($comment_id && $comment_type && $comment_action) {
+					$entity = $this->_getCommentEntityName($comment_type);
+					$comment = $this->em->find($entity, $comment_id);
+				}
+
+				if ($comment) {
+					$newticket->setPreSaveCallback(function(\Application\DeskPRO\Entity\Ticket $ticket) use ($comment, $comment_type, $comment_id, $comment_action) {
+						$ticket->getTicketLogger()->recordExtra('created_via_comment', array(
+							'comment_type'          => $comment_type,
+							'comment_id'            => $comment_id,
+							'comment_action'        => $comment_action,
+							'comment_content_id'    => $comment->getObject()->getId(),
+							'comment_content_title' => $comment->getObject()->getTitle()
+						));
+					});
+				}
+
 				$newticket->ticket_fields = $this->request->request->get('custom_fields', array());
 				$newticket->save();
 				$ticket = $newticket->getTicket();
@@ -2810,14 +2833,7 @@ class TicketController extends AbstractController
 				# Related comment
 				#------------------------------
 
-				$comment_type   = $this->in->getString('for_comment_type');
-				$comment_id     = $this->in->getUint('for_comment_id');
-				$comment_action = $this->in->getString('comment_action');
-
-				if ($comment_id && $comment_type && $comment_action) {
-					$entity = $this->_getCommentEntityName($comment_type);
-					$comment = $this->em->find($entity, $comment_id);
-
+				if ($comment) {
 					switch ($comment_action) {
 						case 'delete':
 							$comment->setStatus('deleted');
