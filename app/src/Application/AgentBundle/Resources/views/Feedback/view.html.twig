@@ -4,6 +4,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.FeedbackView';
 pageMeta.title = {{feedback.title|json_encode|raw}};
 pageMeta.feedback_id = {{feedback.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_feedback_view', {'feedback_id': feedback.id}) }}';
+pageMeta.obj_code = 'feedback_{{ feedback.id }}';
 
 pageMeta.permalink = '{{ feedback.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_feedback_ajax_labels_save', {'feedback_id': feedback.id}) }}';

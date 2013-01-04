@@ -6,6 +6,7 @@ pageMeta.news_id = {{news.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_news_view', {'news_id': news.id}) }}';
 pageMeta.permalink = '{{news.permalink}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_news_ajax_labels_save', {'news_id': news.id}) }}';
+pageMeta.obj_code = 'news_{{ news.id }}';
 
 {% if news.hidden_status == 'validating' %}
 pageMeta.isValidating = true;

@@ -5,6 +5,7 @@ DeskPRO.Agent.PageFragment.Page.EditTitle = new Orb.Class({
 		var editName    = page.getEl('editname');
 		var startBtn    = page.getEl('editname_start');
 		var stopBtn     = page.getEl('editname_end');
+		var codeid      = page.getMetaData('obj_code') || null;
 
 		var startEditable = function() {
 			namef.hide();
@@ -36,6 +37,10 @@ DeskPRO.Agent.PageFragment.Page.EditTitle = new Orb.Class({
 				name: 'title',
 				value: setName
 			});
+
+			if (codeid) {
+				$('span.obj-title-' + codeid).text(setName);
+			}
 
 			$.ajax({
 				url: saveUrl,

@@ -4,6 +4,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_kb_article', {'article_id': article.id}) }}';
+pageMeta.obj_code = 'article_{{ article.id }}';
 
 pageMeta.permalink = '{{ article.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';

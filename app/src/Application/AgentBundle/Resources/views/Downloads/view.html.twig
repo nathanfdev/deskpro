@@ -7,6 +7,7 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_downloads_view', {'download_id'
 pageMeta.permalink = '{{ url('user_downloads_file', {'slug': download.url_slug }) }}';
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'downloads'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_downloads_ajax_labels_save', {'download_id': download.id}) }}';
+pageMeta.obj_code = 'download_{{ download.id }}';
 
 {% if download.hidden_status == 'validating' %}
 pageMeta.isValidating = true;
