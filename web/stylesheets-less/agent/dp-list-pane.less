@@ -2119,8 +2119,13 @@ section.dp-overlay > article.no-footer {
 				text-align: center;
 				cursor: pointer;
 				display: none;
+				background: none no-repeat;
+				padding-top: 64px;
+				width: 64px;
 
 				&.on { display: block; }
+				&.public { background-image: url(../../images/agent/icons/twitter_public.png); }
+				&.private { background-image: url(../../images/agent/icons/twitter_private.png); }
 			}
 		}
 

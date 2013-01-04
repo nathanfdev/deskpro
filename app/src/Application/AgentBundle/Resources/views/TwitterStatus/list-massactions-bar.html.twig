@@ -33,13 +33,11 @@
 									<div class="dp-group-options twitter-message-send" style="display: none">
 										<div class="new-message" style="text-align: left; max-width: 350px; margin: 0 auto; border-top: none;">
 											<ul class="message-type">
-												<li class="on" data-type="public">
-													<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
-													<div>{{ phrase('agent.general.public') }}</div>
+												<li class="on public" data-type="public">
+													{{ phrase('agent.general.public') }}
 												</li>
-												<li data-type="private">
-													<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
-													<div>{{ phrase('agent.general.private') }}</div>
+												<li class="private" data-type="private">
+													{{ phrase('agent.general.private') }}
 												</li>
 											</ul>
 											<input type="hidden" class="message-type-hidden" name="type" value="public" />

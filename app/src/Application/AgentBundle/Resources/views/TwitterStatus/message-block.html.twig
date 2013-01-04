@@ -1,12 +1,10 @@
 <form>
 	<ul class="message-type">
-		<li {% if not default_type or default_type == 'public' %}class="on"{% endif %} data-type="public">
-			<img src="{{ asset('images/agent/icons/twitter_public.png') }}" />
-			<div>{{ phrase('agent.general.public') }}</div>
+		<li class="public {% if not default_type or default_type == 'public' %}on{% endif %}" data-type="public">
+			{{ phrase('agent.general.public') }}
 		</li>
-		<li {% if default_type == 'private' %}class="on"{% endif %} data-type="private">
-			<img src="{{ asset('images/agent/icons/twitter_private.png') }}" />
-			<div>{{ phrase('agent.general.private') }}</div>
+		<li class="private {% if default_type == 'private' %}on{% endif %}" data-type="private">
+			{{ phrase('agent.general.private') }}
 		</li>
 	</ul>
 	<input type="hidden" class="message-type-hidden" name="type" value="{{ default_type == 'private' ? 'private' : 'public' }}" />
