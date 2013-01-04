@@ -433,6 +433,10 @@ class TwitterStatusController extends AbstractController
 			'note' => $note
 		));
 
+		$this->_insertUpdatedTweetClientMessage($account_status,
+			array('note_added_html' => $html, 'note_added_id' => $note->id)
+		);
+
 		return $this->createJsonResponse(array(
 			'success' => $success,
 			'error' => $error,
@@ -534,10 +538,15 @@ class TwitterStatusController extends AbstractController
 			$error = $response['error'];
 			if ($response['new_account_statuses']) {
 				foreach ($response['new_account_statuses'] AS $new_account_status) {
-					$html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
+					$reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
 						'account_status' => $account_status,
 						'reply' => $new_account_status
 					));
+					$html[] = $reply_html;
+
+					$this->_insertUpdatedTweetClientMessage($account_status,
+						array('reply_added_html' => $reply_html, 'reply_added_id' => $new_account_status->id)
+					);
 				}
 			}
 		} else {
@@ -564,7 +573,7 @@ class TwitterStatusController extends AbstractController
 
 		if ($old_archived != $account_status->is_archived) {
 			$this->_insertUpdatedTweetClientMessage($account_status,
-				array('change_archived' => true, 'is_archived' => $account_status->is_archived)
+				array('change_archived' => $account_status->is_archived)
 			);
 		}
 
@@ -599,6 +608,10 @@ class TwitterStatusController extends AbstractController
 				$account_status->status->long->text = $text;
 				$this->em->persist($account_status->status->long);
 				$this->em->flush();
+
+				$this->_insertUpdatedTweetClientMessage($account_status,
+					array('edited_html' => $account_status->status->long->parsed_text)
+				);
 			}
 
 			return $this->createJsonResponse(array(
@@ -631,6 +644,14 @@ class TwitterStatusController extends AbstractController
 	{
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'assign');
 
+		if ($account_status->agent) {
+			$old_assign = 'agent:' . $account_status->agent->id;
+		} else if ($account_status->agent_team) {
+			$old_assign = 'agent_team:' . $account_status->agent_team->id;
+		} else {
+			$old_assign = '';
+		}
+
 		list($type, $id) = explode(':', $this->in->getValue('assign'));
 		if ($type == 'agent') {
 			$account_status->setAgentId($id);
@@ -639,6 +660,21 @@ class TwitterStatusController extends AbstractController
 		}
 
 		$this->em->persist($account_status);
+		$this->em->flush();
+
+		if ($account_status->agent) {
+			$new_assignment = 'agent:' . $account_status->agent->getId();
+		} else if ($account_status->agent_team) {
+			$new_assignment = 'agent_team:' . $account_status->agent_team->getId();
+		} else {
+			$new_assignment = '';
+		}
+
+		if ($new_assignment != $old_assign) {
+			$this->_insertUpdatedTweetClientMessage($account_status,
+				array('change_assignment' => $new_assignment, 'old_assignment' => $old_assign)
+			);
+		}
 
 		return $this->createJsonResponse(array('success' => true));
 	}

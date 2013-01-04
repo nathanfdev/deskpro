@@ -74,8 +74,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-updated', function (data) {
-			if (data.change_archived) {
-				if (data.is_archived) {
+			if (typeof data.change_archived !== 'undefined') {
+				if (data.change_archived) {
 					// moved to archived, reduce counts
 					self.adjustTweetCountsFromClientMessage(data, -1);
 				} else {
@@ -152,28 +152,69 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	adjustShownTweetsForTweetUpdated: function(data) {
 		if (this.content.find('.row-item.status-' + data.account_status_id).length) {
-			if (data.change_archived) {
+			var row = this.content.find('.row-item.status-' + data.account_status_id);
+
+			if (typeof data.change_archived !== 'undefined') {
 				var showArchived = this.menuOptions.filter('[name=archived]').is(':checked');
-				if (data.is_archived && !showArchived) {
+				if (data.change_archived && !showArchived) {
 					this.removeTweetFromPage(data.account_status_id);
-				} else if (!data.is_archived) {
+				} else if (!data.change_archived) {
 					this.addTweetToPage(data.account_status_id, data.tweet_html);
 				}
 			}
 			if (data.deleted) {
 				this.removeTweetFromPage(data.account_status_id);
 			}
-			if (data.reply_added_html) {
+			if (data.reply_added_html && data.reply_added_id) {
+				if (!row.find('.twitter-reply-' + data.reply_added_id).length) {
+					var html = $(data.reply_added_html);
+					row.find('.twitter-replies').append(html);
+					$('.timeago', html).timeago();
 
+					row.find('.reply-list').show();
+				}
 			}
-			if (data.note_added_html) {
+			if (data.note_added_html  && data.note_added_id) {
+				if (!row.find('.twitter-note-' + data.note_added_id).length) {
+					var html = $(data.note_added_html);
+					row.find('.note-list').append(html);
+					$('.timeago', html).timeago();
 
+					row.find('.notes-wrap').show();
+				}
 			}
-			if (data.note_deleted_id) {
-
+			if (data.edited_html) {
+				row.find('.main-status-body .status-text').html(data.edited_html);
+			}
+			if (data.retweeted) {
+				var link = row.find('li.opt-trigger.retweet, li.opt-trigger.retweeted');
+				link.addClass('retweeted').removeClass('retweet');
+				link.find('label').text('Retweeted');
+			}
+			if (data.unretweeted) {
+				var link = row.find('li.opt-trigger.retweet, li.opt-trigger.retweeted');
+				link.addClass('retweet').removeClass('retweeted');
+				link.find('label').text('Retweet');
+			}
+			if (data.favorited) {
+				row.find('.add-favorite, .favorited').addClass('favorited').removeClass('add-favorite');
+			}
+			if (data.unfavorited) {
+				row.find('.add-favorite, .favorited').addClass('add-favorite').removeClass('favorited');
+			}
+			if (typeof data.change_assignment !== 'undefined') {
+				var opt = row.find('.agents_sel option[value="' + data.change_assignment + '"]');
+				if (opt.length) {
+					opt.closest('select').val(data.change_assignment);
+					var label = opt.text().trim();
+					if (data.change_assignment == 'agent:' + DESKPRO_PERSON_ID) {
+						label = 'Me';
+					}
+					row.find('li.opt-trigger.agent label').text(label);
+				}
 			}
 		} else {
-			if (data.change_archived && !data.is_archived) {
+			if (typeof data.change_archived !== 'undefined' && !data.change_archived) {
 				this.addTweetToPage(data.account_status_id, data.tweet_html);
 			}
 		}
@@ -181,6 +222,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		if (this.content.find('.twitter-reply-' + data.account_status_id).length) {
 			if (data.deleted) {
 				this.removeReplyFromPage(data.account_status_id);
+			}
+			if (data.edited_html) {
+				var row = this.content.find('.twitter-reply-' + data.account_status_id);
+				row.find('.status-text').html(data.edited_html);
 			}
 		}
 	},
@@ -217,9 +262,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	removeReplyFromPage: function(account_status_id) {
 		var el = this.content.find('.twitter-reply-' + account_status_id);
+		console.log('removing');
 		if (el.length) {
 			var row = this.twitterHelper.closestRow(el);
 			el.remove();
+			console.log('removed');
 			if (!row.find('.twitter-replies .twitter-reply').length) {
 				row.find('.reply-list').hide();
 			}

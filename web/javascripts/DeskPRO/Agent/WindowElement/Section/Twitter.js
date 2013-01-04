@@ -17,8 +17,8 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-updated', function (data) {
-			if (data.change_archived) {
-				if (data.is_archived) {
+			if (typeof data.change_archived !== 'undefined') {
+				if (data.change_archived) {
 					// moved to archived, reduce counts
 					self.adjustTweetCountsFromClientMessage(data, -1);
 				} else {
@@ -28,11 +28,68 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 			} else if (data.deleted) {
 				self.adjustTweetCountsFromClientMessage(data, -1);
 			}
+
+			if (!data.is_archived) {
+				if (data.favorited || data.unfavorited) {
+					var el = $('#twitter_starred_statuses_count');
+					var count = parseInt(el.text().trim(), 10);
+					if (data.favorited) {
+						count++;
+					} else {
+						count--;
+					}
+					if (count < 0) {
+						count = 0;
+					}
+					el.text(count);
+				}
+
+				if (data.change_assignment) {
+					if (data.change_assignment === 'agent:' + DESKPRO_PERSON_ID) {
+						var el = $('#twitter_my_statuses_count');
+						el.text(parseInt(el.text().trim(), 10) + 1);
+					}
+					if (data.old_assignment === 'agent:' + DESKPRO_PERSON_ID) {
+						var el = $('#twitter_my_statuses_count');
+						el.text(Math.max(0, parseInt(el.text().trim(), 10) - 1));
+					}
+
+					for (var i = 0; i < DESKPRO_TEAM_IDS.length; i++) {
+						var teamId = DESKPRO_TEAM_IDS[i];
+						if (data.change_assignment === 'agent_team:' + teamId) {
+							var el = $('#twitter_team_statuses_count');
+							el.text(parseInt(el.text().trim(), 10) + 1);
+						}
+						if (data.old_assignment === 'agent_team:' + teamId) {
+							var el = $('#twitter_team_statuses_count');
+							el.text(Math.max(0, parseInt(el.text().trim(), 10) - 1));
+						}
+					}
+				}
+			}
 		});
 	},
 
 	adjustTweetCountsFromClientMessage: function(data, adjustAmount) {
 		var accountId = data.account_id;
+
+		if (data.is_favorited) {
+			var el = $('#twitter_starred_statuses_count');
+			el.text(Math.max(0, parseInt(el.text().trim(), 10) + adjustAmount));
+		}
+
+		if (data.assignment === 'agent:' + DESKPRO_PERSON_ID) {
+			var el = $('#twitter_my_statuses_count');
+			el.text(Math.max(0, parseInt(el.text().trim(), 10) + adjustAmount));
+		}
+
+		for (var i = 0; i < DESKPRO_TEAM_IDS.length; i++) {
+			var teamId = DESKPRO_TEAM_IDS[i];
+			if (data.assignment === 'agent_team:' + teamId) {
+				var el = $('#twitter_team_statuses_count');
+				el.text(Math.max(0, parseInt(el.text().trim(), 10) + adjustAmount));
+			}
+		}
 
 		switch (data.status_type) {
 			case 'timeline':

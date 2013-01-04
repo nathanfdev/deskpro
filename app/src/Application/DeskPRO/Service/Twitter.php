@@ -613,7 +613,12 @@ class Twitter
 				$this->em->persist($account_status);
 				$this->em->flush();
 
-				$this->insertNewTweetClientMessage($account_status);
+				$this->insertNewTweetClientMessage($new_account_status,
+					array('retweeted' => $account_status->id)
+				);
+				$this->insertUpdatedTweetClientMessage($account_status,
+					array('retweeted' => true)
+				);
 			}
 		} catch (\EpiTwitterException $e) {
 			$error = $this->getTwitterError($e);
@@ -637,6 +642,8 @@ class Twitter
 			throw new \Exception('Trying to delete tweet for non-account user.');
 		}
 
+		$id = $account_retweet->id;
+
 		if ($account_retweet) {
 			try {
 				$response = $account->getTwitterApi()->post("/statuses/destroy/{$account_retweet->status->id}.json");
@@ -649,6 +656,13 @@ class Twitter
 						$this->em->remove($account_retweet->status->long);
 					}
 					$this->em->flush();
+
+					$this->insertUpdatedTweetClientMessage($account_retweet,
+						array('deleted' => true, 'account_status_id' => $id)
+					);
+					$this->insertUpdatedTweetClientMessage($account_status,
+						array('unretweeted' => true)
+					);
 				}
 			} catch (\EpiTwitterException $e) {
 				$error = $this->getTwitterError($e);
@@ -683,6 +697,7 @@ class Twitter
 		}
 
 		$error = null;
+		$id = $account_status->id;
 
 		try {
 			if ($account_status->status->recipient) {
@@ -701,7 +716,7 @@ class Twitter
 				$this->em->flush();
 
 				$this->insertUpdatedTweetClientMessage($account_status,
-					array('deleted' => true)
+					array('deleted' => true, 'account_status_id' => $id)
 				);
 			}
 		} catch (\EpiTwitterException $e) {
@@ -742,6 +757,10 @@ class Twitter
 
 				$this->em->persist($account_status);
 				$this->em->flush();
+
+				$this->insertUpdatedTweetClientMessage($account_status,
+					$is_favorite ? array('favorited' => true) : array('unfavorited' => true)
+				);
 			}
 		}
 
@@ -866,40 +885,18 @@ class Twitter
 
 	public function insertNewTweetClientMessage(TwitterAccountStatus $account_status)
 	{
-		$tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
-			'account_status' => $account_status
-		));
-
 		App::getDb()->insert('client_messages', array(
 			'channel' => 'agent.tweet-added',
 			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
 			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize(array(
-				'account_status_id' => $account_status->id,
-				'account_id' => $account_status->account->id,
-				'status_type' => $account_status->status_type,
-				'status_id' => $account_status->status->id,
-				'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
-				'tweet_html' => $tweet_html
-			)),
+			'data' => serialize($this->_getCmBaseData($account_status)),
 			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 		));
 	}
 
 	public function insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
 	{
-		$tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
-			'account_status' => $account_status
-		));
-
-		$data = array(
-			'account_status_id' => $account_status->id,
-			'account_id' => $account_status->account->id,
-			'status_type' => $account_status->status_type,
-			'status_id' => $account_status->status->id,
-			'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
-			'tweet_html' => $tweet_html
-		) + $changes;
+		$data = array_merge($this->_getCmBaseData($account_status), $changes);
 
 		App::getDb()->insert('client_messages', array(
 			'channel' => 'agent.tweet-updated',
@@ -908,6 +905,33 @@ class Twitter
 			'data' => serialize($data),
 			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 		));
+	}
+
+	protected function _getCmBaseData(TwitterAccountStatus $account_status)
+	{
+		$tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
+			'account_status' => $account_status
+		));
+
+		if ($account_status->agent) {
+			$assignment = 'agent:' . $account_status->agent->id;
+		} else if ($account_status->agent_team) {
+			$assignment = 'agent_team:' . $account_status->agent_team->id;
+		} else {
+			$assignment = '';
+		}
+
+		return array(
+			'account_status_id' => $account_status->id,
+			'account_id' => $account_status->account->id,
+			'status_type' => $account_status->status_type,
+			'status_id' => $account_status->status->id,
+			'is_from_self' => $account_status->account->user->id == $account_status->status->user->id,
+			'is_archived' => $account_status->is_archived,
+			'is_favorited' => $account_status->is_favorited,
+			'assignment' => $assignment,
+			'tweet_html' => $tweet_html
+		);
 	}
 
 	public function getTwitterError(\Exception $e)
