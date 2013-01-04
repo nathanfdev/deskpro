@@ -9,7 +9,7 @@
 			var scr   = document.createElement('script');
 			scr.type  = 'text/javascript';
 			scr.async = true;
-			scr.src   = DpOverlayWidget_Options.deskproUrl + 'web/javascripts/DeskPRO/User/WebsiteWidget/Overlay.js';
+			scr.src   = DpOverlayWidget_Options.protocol + '://{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js')|url_trim_scheme }}';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
 		})();
 	}
