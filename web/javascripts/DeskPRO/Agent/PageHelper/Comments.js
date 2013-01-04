@@ -184,7 +184,7 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			error: function() {
-				commentEl.addClass('validating');
+				commentEl.find('.comment-validate-btn').hide();
 			}
 		});
 	}

@@ -11,9 +11,9 @@
 	</div>
 	<div class="content">
 		<header>
-			<span class="message-counter with-gear comment-edit-btn count">
-				#{{ loop.index }}
-			</span>
+			<span class="edit-gear comment-edit-btn"></span>
+			<span class="message-counter">#{{ loop.index }}</span>
+			<span class="comment-validate-btn count tipped" title="Comment is awaiting validation. Click to manage.">Validate comment</span>
 			{% if comment.person %}
 				<h4
 					class="with-route person-popover"
