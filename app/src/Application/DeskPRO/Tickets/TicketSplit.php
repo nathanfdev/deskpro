@@ -121,7 +121,8 @@ class TicketSplit
 			$new_ticket->organization = $message->person->organization;
 		}
 
-		$new_ticket->resetTicketLogger();// we dont want any of the usual logs to do with new items etc
+		$new_ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+		$new_ticket->getTicketLogger()->recordExtra('suppress_agent_notify', true);
 		$new_ticket->getTicketLogger()->recordExtra('ticket_split', array('old_ticket' => $ticket)); // just the split
 
 		if (count($ticket->messages) == 0) {

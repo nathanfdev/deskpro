@@ -109,7 +109,7 @@ class TicketChangeTracker extends ChangeTracker
 	protected $applying_trigger = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Sla\null
+	 * @var \Application\DeskPRO\Entity\Sla|null
 	 */
 	protected $applying_sla = null;
 
