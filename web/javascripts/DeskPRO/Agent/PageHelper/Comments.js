@@ -102,6 +102,8 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 
 
 	editComment: function(commentEl, typename, commentId) {
+		commentEl.addClass('gear-loading');
+
 		var self = this;
 		$.ajax({
 			url: BASE_URL + 'agent/publish/comments/info/'+typename+'/'+commentId,
@@ -128,11 +130,16 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 				rendered.slideUp('fast', function() {
 					editEl.slideDown('fast');
 				});
+			},
+			complete: function() {
+				commentEl.removeClass('gear-loading');
 			}
 		});
 	},
 
 	_saveEditComment: function(commentEl, editEl, typename, commentId) {
+		commentEl.addClass('gear-loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/publish/comments/save-comment/'+typename+'/'+commentId,
 			type: 'POST',
@@ -148,6 +155,9 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 				var rendered = $('.rendered-message', commentEl);
 				rendered.html(data.comment_html);
 				this._closeEditComment(commentEl, editEl);
+			},
+			complete: function() {
+				commentEl.removeClass('gear-loading');
 			}
 		});
 	},
@@ -177,14 +187,21 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 	},
 
 	approveComment: function(commentEl, typename, commentId) {
-		commentEl.removeClass('validating');
+		commentEl.removeClass('validating').addClass('gear-loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/publish/comments/approve/'+typename+'/'+commentId,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
-			error: function() {
+			success: function() {
 				commentEl.find('.comment-validate-btn').hide();
+			},
+			error: function() {
+				commentEl.addClass('validating');
+			},
+			complete: function() {
+				commentEl.removeClass('gear-loading');
 			}
 		});
 	}

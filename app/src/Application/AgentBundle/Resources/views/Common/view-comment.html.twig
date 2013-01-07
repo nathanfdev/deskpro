@@ -13,7 +13,7 @@
 		<header>
 			<span class="edit-gear comment-edit-btn"></span>
 			<span class="message-counter">#{{ loop.index }}</span>
-			<span class="comment-validate-btn count tipped" title="Comment is awaiting validation. Click to manage.">Validate comment</span>
+			{% if comment.status == 'validating' or (comment.status == 'visible' and comment.is_reviewed == 0) %}<span class="comment-validate-btn count tipped" title="Comment is awaiting validation. Click to manage.">Validate comment</span>{% endif %}
 			{% if comment.person %}
 				<h4
 					class="with-route person-popover"
