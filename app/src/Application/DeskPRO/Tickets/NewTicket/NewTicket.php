@@ -399,7 +399,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
 
 			if ($this->ticket->cc_emails) {
 				$ccs = explode(',', $this->ticket->cc_emails);
@@ -418,10 +417,10 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 					foreach ($ccs as $cc) {
 						$this->handleCc($ticket, $cc);
 					}
-					App::getOrm()->flush();
 				}
 			}
 
+			App::getOrm()->flush();
 			App::getOrm()->commit();
 
 		} catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
