@@ -1899,7 +1899,12 @@ var RLANG = {
 		},
 		formattingEmptyTags: function(html)
 		{
-			var etags = ["<pre></pre>","<blockquote>\\s*</blockquote>","<em>\\s*</em>","<ul></ul>","<ol></ol>","<li></li>","<table></table>","<tr></tr>","<span>\\s*<span>", "<span>&nbsp;<span>", "<b>\\s*</b>", "<b>&nbsp;</b>", "<p>\\s*</p>", "<p>&nbsp;</p>",  "<p>\\s*<br>\\s*</p>", "<div>\\s*</div>", "<div>\\s*<br>\\s*</div>"];
+			var etags = ["<pre></pre>","<blockquote>\\s*</blockquote>","<em>\\s*</em>","<ul></ul>","<ol></ol>","<li></li>","<table></table>","<tr></tr>","<span>\\s*<span>", "<span>&nbsp;<span>", "<b>\\s*</b>", "<b>&nbsp;</b>"];
+			if (!$.browser.msie) {
+				etags.push("<p>\\s*</p>");
+				etags.push("<p>&nbsp;</p>");
+				etags.push("<div>\\s*</div>");
+			}
 			for (var i = 0; i < etags.length; ++i)
 			{
 				var bbb = etags[i];
@@ -1929,6 +1934,8 @@ var RLANG = {
 				var aaa = atags[i];
 				html = html.replace(new RegExp(aaa,'gi'),aaa+lb);
 			}
+
+			html = html.replace(/<br\s*\/?>\s*<\/p>/gi, '<br /></p>');
 
 			return html;
 		},
@@ -1966,7 +1973,7 @@ var RLANG = {
 				html = this.$editor.html();
 				html = $.trim(this.formatting(html));
 
-				this.$el.height(height).val(html).show().focus();
+				this.$el.height(height).val(html).css('display', 'block').show().focus();
 
 				this.setBtnActive('html');
 				this.opts.visual = false;
