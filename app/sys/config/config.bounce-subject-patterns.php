@@ -10,4 +10,5 @@
 	'#^Delivery Status Notification (?P<subject>.*?)$#',
 	'#^Undeliverable: (?P<subject>.*?)$#',
 	'#^Out of Office: (?P<subject>.*?)$#',
+	'#^Automatic reply: (?P<subject>.*?)$#i'
 );
