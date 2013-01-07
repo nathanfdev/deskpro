@@ -253,27 +253,6 @@ $collection->add('admin_tickets_filters', new Route(
 	array()
 ));
 
-$collection->add('admin_tickets_filters_getgloballist', new Route(
-	'/tickets/filters/get-global-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getGlobalList'),
-	array(),
-	array()
-));
-
-$collection->add('admin_tickets_filters_getteamlist', new Route(
-	'/tickets/filters/get-team-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getTeamList'),
-	array(),
-	array()
-));
-
-$collection->add('admin_tickets_filters_getagentlist', new Route(
-	'/tickets/filters/get-agent-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getAgentList'),
-	array(),
-	array()
-));
-
 $collection->add('admin_tickets_filters_edit', new Route(
 	'/tickets/filters/{filter_id}',
 	array('_controller' => 'AdminBundle:TicketFilters:edit'),
@@ -1105,60 +1084,6 @@ $collection->add('admin_templates_previewemail', new Route(
 ));
 
 ################################################################################
-# Styles
-################################################################################
-
-$collection->add('admin_styles', new Route(
-	'/styles',
-	array('_controller' => 'AdminBundle:Styles:listStyles'),
-	array(),
-	array()
-));
-
-$collection->add('admin_styles_showstyle', new Route(
-	'/styles/{style_id}',
-	array('_controller' => 'AdminBundle:Styles:showStyle'),
-	array('style_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_styles_editstyle', new Route(
-	'/styles/{style_id}/edit',
-	array('_controller' => 'AdminBundle:Styles:editStyle'),
-	array('style_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_styles_templates', new Route(
-	'/styles/{style_id}/templates',
-	array('_controller' => 'AdminBundle:Styles:styleTemplateList'),
-	array('style_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_styles_edittemplate', new Route(
-	'/styles/{style_id}/templates/edit-template',
-	array('_controller' => 'AdminBundle:Styles:editTemplate'),
-	array('style_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_styles_reverttemplate', new Route(
-	'/styles/{style_id}/templates/revert-template',
-	array('_controller' => 'AdminBundle:Styles:revertTemplate'),
-	array('style_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_styles_editorpopup', new Route(
-	'/styles/editor-popup',
-	array('_controller' => 'AdminBundle:Styles:editorPopup'),
-	array(),
-	array()
-));
-
-
-################################################################################
 # Language
 ################################################################################
 
@@ -1194,13 +1119,6 @@ $collection->add('admin_langs_install_pack', new Route(
 	'/languages/install-pack/{id}',
 	array('_controller' => 'AdminBundle:Languages:installPack'),
 	array(),
-	array()
-));
-
-$collection->add('admin_langs_newlang_save', new Route(
-	'/languages/new-lang/save',
-	array('_controller' => 'AdminBundle:Languages:newLanguageSave'),
-	array('_method' => 'POST'),
 	array()
 ));
 
@@ -1353,14 +1271,6 @@ $collection->add('admin_customdefpeople_setenabled', new Route(
 	array()
 ));
 
-$collection->add('admin_customdefpeople_test', new Route(
-	'/people-fields/{field_id}/test',
-	array('_controller' => 'AdminBundle:CustomDefPeople:test'),
-	array('field_id' => '\\d+'),
-	array()
-));
-
-
 $collection->add('admin_features', new Route(
 	'/tickets/features',
 	array('_controller' => 'AdminBundle:TicketFeatures:index'),
@@ -1427,13 +1337,6 @@ $collection->add('admin_customdeftickets_delete', new Route(
 $collection->add('admin_customdeftickets_setenabled', new Route(
 	'/ticket-fields/{field_id}/set-enabled',
 	array('_controller' => 'AdminBundle:CustomDefTickets:setEnabled'),
-	array('field_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_customdeftickets_test', new Route(
-	'/ticket-fields/{field_id}/test',
-	array('_controller' => 'AdminBundle:CustomDefTickets:test'),
 	array('field_id' => '\\d+'),
 	array()
 ));
@@ -1560,13 +1463,6 @@ $collection->add('admin_customdeforganizations_delete', new Route(
 $collection->add('admin_customdeforganizations_setenabled', new Route(
 	'/organization-fields/{field_id}/set-enabled',
 	array('_controller' => 'AdminBundle:CustomDefOrganizations:setEnabled'),
-	array('field_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_customdeforganizations_test', new Route(
-	'/organization-fields/{field_id}/test',
-	array('_controller' => 'AdminBundle:CustomDefOrganizations:test'),
 	array('field_id' => '\\d+'),
 	array()
 ));
@@ -1760,13 +1656,6 @@ $collection->add('admin_departments_setphrase', new Route(
 	array()
 ));
 
-$collection->add('admin_departments_saveusergroups', new Route(
-	'/departments/{department_id}/save-usergroups.json',
-	array('_controller' => 'AdminBundle:Departments:saveUsergroups'),
-	array('department_id' => '\\d+', '_method' => 'POST'),
-	array()
-));
-
 $collection->add('admin_departments_savenew', new Route(
 	'/departments/{type}/save-new',
 	array('_controller' => 'AdminBundle:Departments:saveNew'),
@@ -1792,27 +1681,6 @@ $collection->add('admin_departments_dodel', new Route(
 	'/departments/{department_id}/delete/{security_token}',
 	array('_controller' => 'AdminBundle:Departments:doDelete'),
 	array('department_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
-	array()
-));
-
-$collection->add('admin_departments_designer', new Route(
-	'/departments/{department_id}/designer',
-	array('_controller' => 'AdminBundle:Departments:designer'),
-	array('department_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_departments_designer_ajaxfetchfield', new Route(
-	'/departments/{department_id}/designer/ajax-fetch-field/{field_id}',
-	array('_controller' => 'AdminBundle:Departments:designerAjaxFetchField'),
-	array('department_id' => '\\d+', 'field_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_departments_designer_ajaxfetchwidget', new Route(
-	'/departments/{department_id}/designer/ajax-fetch-widget/{widget_id}',
-	array('_controller' => 'AdminBundle:Departments:designerAjaxFetchWidget'),
-	array('department_id' => '\\d+', 'widget_id' => '\\d+'),
 	array()
 ));
 
@@ -1921,13 +1789,6 @@ $collection->add('admin_plugins_run', new Route(
 # Publish
 ################################################################################
 
-$collection->add('admin_feedback_settings', new Route(
-	'/portal/feedback/settings',
-	array('_controller' => 'AdminBundle:Feedback:feedbackSettings'),
-	array(),
-	array()
-));
-
 $collection->add('admin_feedback_statuses', new Route(
 	'/portal/feedback/statuses',
 	array('_controller' => 'AdminBundle:Feedback:statuses'),
@@ -2033,13 +1894,6 @@ $collection->add('admin_customdefarticles_setenabled', new Route(
 	array()
 ));
 
-$collection->add('admin_customdefarticles_test', new Route(
-	'/article-fields/{field_id}/test',
-	array('_controller' => 'AdminBundle:CustomDefArticles:test'),
-	array('field_id' => '\\d+'),
-	array()
-));
-
 $collection->add('admin_customdeffeedback', new Route(
 	'/feedback-fields',
 	array('_controller' => 'AdminBundle:CustomDefFeedback:index'),
@@ -2074,14 +1928,6 @@ $collection->add('admin_customdeffeedback_setenabled', new Route(
 	array('field_id' => '\\d+'),
 	array()
 ));
-
-$collection->add('admin_customdeffeedback_test', new Route(
-	'/feedback-fields/{field_id}/test',
-	array('_controller' => 'AdminBundle:CustomDefFeedback:test'),
-	array('field_id' => '\\d+'),
-	array()
-));
-
 
 ################################################################################
 # Email Gatewayss
@@ -2512,13 +2358,6 @@ $collection->add('admin_kb_gateways', new Route(
 	'/kb/gateways',
 	array('_controller' => 'AdminBundle:Kb:gateways'),
 	array(),
-	array()
-));
-
-$collection->add('admin_kb_gateways_savehdaddr', new Route(
-	'/kb/gateways/save-helpdesk-addresses',
-	array('_controller' => 'AdminBundle:Kb:saveHelpdeskAddresses'),
-	array('_method' => 'POST'),
 	array()
 ));
 

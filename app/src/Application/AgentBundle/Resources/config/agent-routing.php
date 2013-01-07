@@ -30,20 +30,6 @@ $collection->add('agent_load_search_sheet', new Route(
 	array()
 ));
 
-$collection->add('agent_test', new Route(
-	'/test',
-	array('_controller' => 'AgentBundle:Test:index'),
-	array(),
-	array()
-));
-
-$collection->add('agent_test_tab', new Route(
-	'/test-tab',
-	array('_controller' => 'AgentBundle:Test:tab'),
-	array(),
-	array()
-));
-
 $collection->add('agent_accept_upload', new Route(
 	'/misc/accept-upload',
 	array('_controller' => 'AgentBundle:Misc:acceptTempUpload'),
@@ -89,13 +75,6 @@ $collection->add('agent_get_server_time', new Route(
 $collection->add('agent_ajax_save_prefs', new Route(
 	'/misc/ajax-save-prefs',
 	array('_controller' => 'AgentBundle:Misc:ajaxSavePrefs'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ajax_save_state', new Route(
-	'/misc/ajax-save-state',
-	array('_controller' => 'AgentBundle:Misc:ajaxSaveState'),
 	array(),
 	array()
 ));
@@ -769,13 +748,6 @@ $collection->add('agent_org_ajaxsave_note', new Route(
 	array()
 ));
 
-$collection->add('agent_org_ajaxsave_organization', new Route(
-	'/organizations/{organization_id}/ajax-save-organization',
-	array('_controller' => 'AgentBundle:Organization:ajaxSaveOrganization'),
-	array('organization_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_org_ajax_labels_save', new Route(
 	'/organizations/{organization_id}/ajax-save-labels',
 	array('_controller' => 'AgentBundle:Organization:ajaxSaveLabels'),
@@ -900,13 +872,6 @@ $collection->add('agent_ticketsearch_runcustomfilter', new Route(
 	array()
 ));
 
-$collection->add('agent_ticketsearch_search', new Route(
-	'/ticket-search/search',
-	array('_controller' => 'AgentBundle:TicketSearch:search'),
-	array(),
-	array()
-));
-
 $collection->add('agent_ticketsearch_quicksearch', new Route(
 	'/ticket-search/quick-search',
 	array('_controller' => 'AgentBundle:TicketSearch:quickSearch'),
@@ -1001,13 +966,6 @@ $collection->add('agent_ticket_new_getpersonrow', new Route(
 $collection->add('agent_ticket_getmessagetpl', new Route(
 	'/tickets/get-message-template/{id}.json',
 	array('_controller' => 'AgentBundle:Ticket:getTicketMessageTemplate'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticket_new_ajaxsave', new Route(
-	'/tickets/new-ajax-save',
-	array('_controller' => 'AgentBundle:Ticket:newAjaxSave'),
 	array(),
 	array()
 ));
@@ -1369,13 +1327,6 @@ $collection->add('agent_ticket_saveagentparts', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_saveuserparts', new Route(
-	'/ticket/{ticket_id}/save-user-parts',
-	array('_controller' => 'AgentBundle:Ticket:saveUserParts'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_addcharge', new Route(
 	'/ticket/{ticket_id}/add-charge',
 	array('_controller' => 'AgentBundle:Ticket:addCharge'),
@@ -1680,13 +1631,6 @@ $collection->add('agent_twitter_new_search', new Route(
 # Tasks
 ################################################################################
 
-$collection->add('agent_tasks_list_pending', new Route(
-	'/tasks/pending/list',
-	array('_controller' => 'AgentBundle:Task:listPending'),
-	array(),
-	array()
-));
-
 $collection->add('agent_task_new', new Route(
 	'/tasks/new',
 	array('_controller' => 'AgentBundle:Task:new'),
@@ -1698,13 +1642,6 @@ $collection->add('agent_task_save', new Route(
 	'/tasks/save',
 	array('_controller' => 'AgentBundle:Task:create'),
 	array('_method' => 'POST'),
-	array()
-));
-
-$collection->add('agent_task_view', new Route(
-	'/tasks/{task_id}',
-	array('_controller' => 'AgentBundle:Task:view'),
-	array('task_id' => '\\d+'),
 	array()
 ));
 
@@ -1736,30 +1673,9 @@ $collection->add('agent_task_ajax_labels_save', new Route(
 	array()
 ));
 
-$collection->add('agent_task_set_visibility', new Route(
-	'/tasks/visibility/{task_id}/{visibility}',
-	array('_controller' => 'AgentBundle:Task:setVisibility', 'task_id' => NULL, 'visibility' => NULL),
-	array('task_id' => '\\d+', 'visibility' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_task_ajaxsave_comment', new Route(
 	'/tasks/{task_id}/ajax-save-comment',
 	array('_controller' => 'AgentBundle:Task:ajaxSaveComment'),
-	array('task_id' => '\\d+', 'person_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_task_ajaxsave_duedate', new Route(
-	'/tasks/{task_id}/ajax-save-due-date',
-	array('_controller' => 'AgentBundle:Task:ajaxSaveDueDate'),
-	array('task_id' => '\\d+', 'person_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_task_ajaxsave_delegate', new Route(
-	'/tasks/{task_id}/ajax-save-delegate',
-	array('_controller' => 'AgentBundle:Task:ajaxSaveDelegate'),
 	array('task_id' => '\\d+', 'person_id' => '\\d+'),
 	array()
 ));
@@ -2485,13 +2401,6 @@ $collection->add('agent_feedback_who_voted', new Route(
 	'/feedback/view/{feedback_id}/who-voted',
 	array('_controller' => 'AgentBundle:Feedback:whoVoted'),
 	array(),
-	array()
-));
-
-$collection->add('agent_feedback_revisionstab', new Route(
-	'/feedback/view/{feedback_id}/view-revisions',
-	array('_controller' => 'AgentBundle:Feedback:viewRevisions'),
-	array('news_id' => '\\d+'),
 	array()
 ));
 

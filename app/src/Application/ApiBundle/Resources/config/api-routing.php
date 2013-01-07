@@ -578,13 +578,6 @@ $collection->add('api_people_person_notes_post', new Route(
 	array()
 ));
 
-$collection->add('api_people_person_notes_note', new Route(
-	'/people/{person_id}/notes/{note_id}',
-	array('_controller' => 'ApiBundle:Person:getPersonNote'),
-	array('_method' => 'GET', 'person_id' => '\\d+', 'note_id' => '\\d+'),
-	array()
-));
-
 $collection->add('api_people_person_billing_charges', new Route(
 	'/people/{person_id}/billing-charges',
 	array('_controller' => 'ApiBundle:Person:getPersonBillingCharges'),
@@ -1024,13 +1017,6 @@ $collection->add('api_chats_chat_messages_post', new Route(
 	'/chats/{chat_id}/messages',
 	array('_controller' => 'ApiBundle:Chat:newMessage'),
 	array('_method' => 'POST', 'chat_id' => '\\d+'),
-	array()
-));
-
-$collection->add('api_chats_chat_message', new Route(
-	'/chats/{chat_id}/messages/{message_id}',
-	array('_controller' => 'ApiBundle:Chat:getMessage'),
-	array('_method' => 'GET', 'chat_id' => '\\d+', 'message_id' => '\\d+'),
 	array()
 ));
 

@@ -135,24 +135,10 @@ $collection->add('report_trend_dashboard_stat_edit', new Route(
 	array()
 ));
 
-$collection->add('report_trend_dashboard_remove_stat', new Route(
-	'/trends/dashboards/{dashboard_id}/remove-stat/{dashboard_stat_id}',
-	array('_controller' => 'ReportBundle:Dashboard:removeStat'),
-	array('dashboard_id' => '\\d+', 'dashboard_stat_id' => '\\d+'),
-	array()
-));
-
 $collection->add('report_dashboard_ajaxfetchwidgets', new Route(
 	'/trends/dashboards/{dashboard_id}/ajax-fetch-widget',
 	array('_controller' => 'ReportBundle:Dashboard:ajaxFetchWidgets'),
 	array('dashboard_id' => '\\d+'),
-	array()
-));
-
-$collection->add('report_dashboard_ajaxcreatewidget', new Route(
-	'/trends/dashboards/{dashboard_id}/ajax-create-widget/{stat_id}',
-	array('_controller' => 'ReportBundle:Dashboard:ajaxCreateWidget'),
-	array('dashboard_id' => '\\d+', 'stat_id' => '\\d+'),
 	array()
 ));
 

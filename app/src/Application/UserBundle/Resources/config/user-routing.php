@@ -146,13 +146,6 @@ $collection->add('user_login_resetpass_newpass', new Route(
 	array()
 ));
 
-$collection->add('user_login_resetpass_newpass_querycode', new Route(
-	'/login/reset-password/query-code',
-	array('_controller' => 'UserBundle:Login:resetPasswordNewPassQueryCode'),
-	array(),
-	array()
-));
-
 $collection->add('user_register', new Route(
 	'/register',
 	array('_controller' => 'UserBundle:Register:register'),
@@ -293,13 +286,6 @@ $collection->add('user_tickets_new_simple', new Route(
 	array()
 ));
 
-$collection->add('user_tickets_new_login', new Route(
-	'/tickets/new/login',
-	array('_controller' => 'UserBundle:NewTicket:handleLogin'),
-	array(),
-	array()
-));
-
 $collection->add('user_tickets_new_savestatus', new Route(
 	'/tickets/new/save-status',
 	array('_controller' => 'UserBundle:NewTicket:saveStatus'),
@@ -346,13 +332,6 @@ $collection->add('user_tickets_addreply', new Route(
 	'/ticket-edit/{ticket_ref}/add-reply',
 	array('_controller' => 'UserBundle:Tickets:addReply'),
 	array('_method' => 'POST'),
-	array()
-));
-
-$collection->add('user_tickets_modify', new Route(
-	'/ticket-edit/{ticket_ref}/modify',
-	array('_controller' => 'UserBundle:Tickets:modify'),
-	array(),
 	array()
 ));
 
