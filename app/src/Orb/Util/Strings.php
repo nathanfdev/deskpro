@@ -1578,7 +1578,11 @@ class Strings
 	 */
 	public static function htmlEntityEncodeUtf8($string, $encodeString = null)
 	{
-		$string = preg_replace_callback('/[\x{80}-\x{1FFFFF}]/u', function($match) use ($encodeString) {
+		if (!$string) {
+			return $string;
+		}
+
+		$new_string = preg_replace_callback('/[^\x00-\x7F]/u', function($match) use ($encodeString) {
 			$string = $match[0];
 			$c1 = ord($string[0]);
 			if ($c1 < 0x80) {
@@ -1609,7 +1613,11 @@ class Strings
 			}
 		}, $string);
 
-		return $string;
+		if (!$new_string) {
+			return $string;
+		}
+
+		return $new_string;
 	}
 
 
