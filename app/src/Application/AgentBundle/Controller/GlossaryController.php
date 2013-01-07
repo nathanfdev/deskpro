@@ -46,18 +46,6 @@ use Orb\Util\Util;
  */
 class GlossaryController extends AbstractController
 {
-	public function glossaryListAction()
-	{
-		$words = $this->em->getRepository('DeskPRO:GlossaryWord')->getWords();
-		$word_count = count($words);
-		$words = Arrays::sortIntoAlphabeticalIndex($words, null, true, true);
-
-		return $this->render('AgentBundle:Glossary:list-glossary.html.twig', array(
-			'words'      => $words,
-			'word_count' => $word_count,
-		));
-	}
-
 	public function glossaryNewWordJsonAction()
 	{
 		$words = $this->in->getCleanValueArray('words', 'string');

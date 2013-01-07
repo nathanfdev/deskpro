@@ -140,7 +140,7 @@ class PortalController extends AbstractController
 	{
 		switch ($type) {
 			case 'logo':
-				return $this->getLogoEditorAction();
+				return $this->render('AdminBundle:Portal:portal-editor-logo.html.twig');
 				break;
 
 			case 'portal-title':
@@ -179,11 +179,6 @@ class PortalController extends AbstractController
 		}
 
 		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-	}
-
-	public function getLogoEditorAction()
-	{
-		return $this->render('AdminBundle:Portal:portal-editor-logo.html.twig');
 	}
 
 	public function saveEditorAction($type)
@@ -439,15 +434,6 @@ class PortalController extends AbstractController
 		$cache->invalidateAll();
 
 		return $this->createJsonResponse(array('success'=>1));
-	}
-
-	############################################################################
-	# Portal Sections
-	############################################################################
-
-	public function feedbackSettingsAction()
-	{
-		return $this->render('AdminBundle:Portal:feedback-settings.html.twig');
 	}
 
 	############################################################################

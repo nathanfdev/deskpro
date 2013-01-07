@@ -82,6 +82,10 @@ class FindBadRoutesCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			'CloudBillingBundle' => 'Cloud\\BillingBundle\\Controller'
 		);
 
+		#----------------------------------------
+		# Bad route to controller refs
+		#----------------------------------------
+
 		foreach ($route_files as $f) {
 			/** @var $coll \Symfony\Component\Routing\RouteCollection */
 			$coll = require($f);
@@ -130,6 +134,77 @@ class FindBadRoutesCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 				if (!$refl->hasMethod($controller[2] . 'Action')) {
 					echo "Bad method: " . $dead_str;
 					continue;
+				}
+			}
+		}
+
+		#----------------------------------------
+		# Missing routes for action methods
+		#----------------------------------------
+
+		$route_file_contents = array();
+		foreach ($route_files as $f) {
+			$route_file_contents[] = file_get_contents($f);
+		}
+
+		$controller_files = array(
+			DP_ROOT  . '/src/Application/AdminBundle/Controller',
+			DP_ROOT  . '/src/Application/AgentBundle/Controller',
+			DP_ROOT  . '/src/Application/ApiBundle/Controller',
+			DP_ROOT  . '/src/Application/UserBundle/Controller',
+			DP_ROOT  . '/src/Application/ReportBundle/Controller',
+			DP_ROOT  . '/src/Application/InstallBundle/Controller',
+		);
+
+		foreach ($controller_files as $c_dir) {
+			$files = \Symfony\Component\Finder\Finder::create()->in($c_dir)->name("*.php")->files();
+
+			foreach ($files as $f) {
+				$class = Strings::extractRegexMatch("#((Application)/(.*?)/Controller/(.*?)).php$#", $f);
+				$class = str_replace('/', '\\', $class);
+
+				$symfony_name = str_replace('Application\\', '', $class);
+				$symfony_name = str_replace('\\Controller\\', '\\', $symfony_name);
+				$symfony_name = str_replace('\\', ':', $symfony_name);
+				$symfony_name = preg_replace('#Controller$#', '', $symfony_name);
+
+				try {
+					$refl = new \ReflectionClass($class);
+				} catch (\Exception $e) {
+					echo "Bad source file {$e->getMessage()}: " . $f;
+					echo "\n";
+					continue;
+				}
+
+				if ($refl->isAbstract()) {
+					continue;
+				}
+
+				$methods = $refl->getMethods(\ReflectionMethod::IS_PUBLIC);
+				foreach ($methods as $method) {
+
+					if ($method->name == 'DeskPRO_onControllerPreAction' || $method->name == 'DeskPRO_onControllerPostAction' || $method->name == 'preAction' || $method->name == 'postAction') {
+						continue;
+					}
+
+					$name = Strings::extractRegexMatch('#^(.*?)Action$#', $method->name);
+					if (!$name) {
+						continue;
+					}
+
+					$symfony_action_name = $symfony_name . ':' . $name;
+					$found = false;
+
+					foreach ($route_file_contents as $f) {
+						if (strpos($f, $symfony_action_name) !== false) {
+							$found = true;
+							break;
+						}
+					}
+
+					if (!$found) {
+						echo "Warning: Not found $class::{$method->name}: $symfony_action_name\n";
+					}
 				}
 			}
 		}

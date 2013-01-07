@@ -98,25 +98,6 @@ class AgentChatController extends AbstractController
 		));
 	}
 
-	/**
-	 * Replay the last few messages between these same participants
-	 */
-	public function replayLastConversationAction()
-	{
-		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
-
-		$info = $this->agent_chat->getLastConversationMessages($this->in->getString('content'), $agent_ids, $convo_id);
-
-		// Recreating the payload used with client messages
-
-
-		return $this->createJsonResponse(array(
-			'last_conversation_id' => $info['conversation']['id'],
-			'messages'  => $message_info
-		));
-	}
-
-
 	public function getOnlineAgentsAction()
 	{
 		$cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));

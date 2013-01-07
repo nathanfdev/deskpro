@@ -49,19 +49,6 @@ use Application\DeskPRO\App;
  */
 class OrganizationController extends AbstractController
 {
-	public function newOrgFromPaneAction()
-	{
-		$org = new Organization();
-		$org['name'] = $this->in->getString('name');
-
-		$this->em->persist($org);
-		$this->em->flush();
-
-		return $this->createJsonResponse(array(
-			'organization_id' => $org['id']
-		));
-	}
-
 	############################################################################
 	# view
 	############################################################################
@@ -154,49 +141,6 @@ class OrganizationController extends AbstractController
 			'custom_fields'      => $custom_fields,
 		));
 	}
-
-
-	public function ajaxGetNotesAction($organization_id)
-	{
-		$org = $this->getOrgOr404($organization_id);
-
-		$per_page = min($this->in->getUint('pp'), 20);
-		$page = $this->in->getUint('p');
-		if (!$page) {
-			$page = 1;
-		}
-
-		$start = ($page - 1) * $per_page;
-
-		$em = App::getOrm();
-
-		$notes = $em->createQuery("
-			SELECT n, a
-			FROM DeskPRO:OrganizationNote n
-			LEFT JOIN n.agent a
-			WHERE n.organization_id = ?1
-			ORDER BY n.id DESC
-		")->setParameter(1, $org['id'])
-			->setMaxResults($per_page)
-			->setFirstResult($start)
-			->execute();
-
-		$html = array();
-
-		foreach ($notes as $note) {
-			$html[] = $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note));
-		}
-
-		$html = implode('', $html);
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'organization_id' => $org['id'],
-			'notes_html' => $html,
-			'page' => $page
-		));
-	}
-
 
 	############################################################################
 	# ajax-save

@@ -618,42 +618,6 @@ class SettingsController extends AbstractController
 		));
 	}
 
-	public function checkInternetAccessAction()
-	{
-		$time = $this->container->getSetting('core.last_network_check');
-		$checked = $this->container->getSetting('core.network_check');
-
-		$is_connected = false;
-
-		// If we've never done it, or the check is an hour old
-		if ((!$time || time()-$time > 3600) || !$checked) {
-			\DeskPRO\Kernel\License::getLicense();// loads DP_MA_SERVER
-
-			$client = new \Zend\Http\Client(null, array('timeout' => 15));
-			$client->setMethod(\Zend\Http\Request::METHOD_GET);
-			$client->setUri(DP_MA_SERVER . '/api/ping.json');
-			try {
-				$result = $client->send();
-				$is_connected = true;
-			} catch (\Exception $e) {
-				$is_connected = false;
-			}
-
-			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.last_network_check', time());
-			if ($is_connected) {
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.network_check', '1');
-			} else {
-				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.network_check', '0');
-			}
-		} else {
-			$is_connected = true;
-		}
-
-		return $this->createJsonResponse(array(
-			'is_connected' => $is_connected
-		));
-	}
-
 	############################################################################
 	# cron-info
 	############################################################################

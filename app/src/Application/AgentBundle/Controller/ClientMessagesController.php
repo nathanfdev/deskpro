@@ -129,19 +129,6 @@ class ClientMessagesController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function pingSubscriptionsAction()
-	{
-		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
-		$this->person->getClientChannelSubs()->pingSubscriptions();
-
-		$sub_channels = array();
-		foreach ($subs as $sub) {
-			$sub_channels[] = $sub['channel'];
-		}
-
-		return $this->createJsonResponse(array('channels' => $sub_channels));
-	}
-
 	public function subscribeChannelsAction()
 	{
 		$channels = $this->in->getCleanValueArray('channels', 'string', 'discard');

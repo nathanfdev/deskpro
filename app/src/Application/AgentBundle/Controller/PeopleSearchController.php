@@ -570,6 +570,7 @@ class PeopleSearchController extends AbstractController
 		return $letters;
 	}
 
+	/* TODO
 	public function massActionsAction($action)
 	{
 		$this->em->beginTransaction();
@@ -637,7 +638,7 @@ class PeopleSearchController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => 1
 		));
-	}
+	}*/
 
 	############################################################################
 	# quick-find
@@ -746,57 +747,6 @@ class PeopleSearchController extends AbstractController
 		return $this->render($tpl, array(
 			'people_list' => $people_list
 		));
-	}
-
-	############################################################################
-	# org-labels-pane
-	############################################################################
-
-	public function orgLabelsPaneAction()
-	{
-		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-org-labels.html.twig', array(
-			'cloud' => $cloud
-		));
-	}
-
-	public function orgLabelsIndexPaneAction()
-	{
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
-		$index = $label_lister->getIndexList();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-org-labels-index.html.twig', array(
-			'labels_index' => $index
-		));
-	}
-
-	############################################################################
-	# usergroups-pane
-	############################################################################
-
-	public function usergroupsPaneAction()
-	{
-		$all_usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-
-		$usergroup_counts = $this->db->fetchAllKeyValue("
-			SELECT usergroup_id, COUNT(*)
-			FROM person2usergroups
-			GROUP BY usergroup_id
-		");
-
-		return $this->render('AgentBundle:PeopleSearch:pane-usergroups.html.twig', array(
-			'all_usergroups' => $all_usergroups,
-			'usergroup_counts' => $usergroup_counts
-		));
-	}
-
-
-	public function findPaneAction()
-	{
-		return $this->render('AgentBundle:PeopleSearch:pane-find.html.twig');
 	}
 
 	############################################################################

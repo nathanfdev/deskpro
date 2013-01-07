@@ -888,7 +888,7 @@ $collection->add('agent_ticketsearch_singleticketrow', new Route(
 
 $collection->add('agent_ticketsearch_runfilter', new Route(
 	'/ticket-search/filter/{filter_id}',
-	array('_controller' => 'AgentBundle:TicketSearch:runfilter'),
+	array('_controller' => 'AgentBundle:TicketSearch:runFilter'),
 	array('filter_id' => '\\d+'),
 	array('fragment_name' => 'filter', 'fragment_type' => 'list')
 ));
