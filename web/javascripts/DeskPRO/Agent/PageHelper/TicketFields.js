@@ -10,6 +10,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 
 		this.currentDisplay = [];
+		this.currentDisplayModify = [];
 
 		this.ticketReader = {
 			getDepartmentId: function() {
@@ -38,6 +39,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		this.fieldDisplay = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'view');
+		this.fieldDisplayModify = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'modify');
 
 		this.page.getEl('department').on('change', function() {
 			self.updateDisplay();
@@ -109,6 +111,63 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				},1);
 			}
 		});
+
+		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
+		if (!fields || !fields['default']) {
+			fields['default'] = [];
+		}
+
+		fields = fields['default'];
+
+		// Check to see if the fields are the same and in the same order
+		if (fields.length == this.currentDisplayModify.length) {
+			var change = false;
+			for (var i = 0; i < fields.length; i++) {
+				if (fields[i].field_type == this.currentDisplay[i].field_type) {
+					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplay[i].field_id) {
+						change = true;
+						break;
+					}
+				} else {
+					change = true;
+					break;
+				}
+			}
+		} else {
+			var change = true;
+		}
+
+		// No Changes, dont need to do any expensive dom work
+		if (!change) {
+			console.log("[TicketFields] No change");
+			return;
+		}
+
+		this.currentDisplayModify = fields;
+
+		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+
+		Array.each(this.currentDisplayModify, function(f) {
+			if (f.field_type == 'ticket_field') {
+				var classname = 'ticket_field_' + f.field_id;
+			} else {
+				var classname = f.field_type;
+			}
+
+			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
+		}, this);
+
+		var ons = this.display.find('tbody.item-on');
+		if (ons[0]) {
+			ons.removeClass('last');
+			ons.last().addClass('last');
+			this.page.getEl('fields_display_main_wrap_tab').show();
+		} else {
+			this.page.getEl('fields_display_main_wrap_tab').hide();
+			if (this.page.getEl('fields_display_main_wrap_tab').hasClass('on')) {
+				this.page.getEl('fields_display_main_wrap_tab').next().trigger('click');
+			}
+		}
 	},
 
 	closeEditMode: function() {
@@ -117,6 +176,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.page.getEl('field_edit_cancel').hide();
 		this.page.getEl('field_edit_start').show();
 		this.page.getEl('field_edit_controls').removeClass('loading');
+		this.updateDisplay();
 	},
 
 	updateDisplay: function() {

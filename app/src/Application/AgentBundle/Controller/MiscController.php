@@ -131,6 +131,10 @@ class MiscController extends AbstractController
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = {}";
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.create = " . $ticket_display->compileJs() . ";";
 
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('modify');
+		$ticket_display->addPagesFromDb();
+		$js[] = "window.DESKPRO_TICKET_DISPLAY.modify = " . $ticket_display->compileJs() . ";";
+
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('view');
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY.view = " . $ticket_display->compileJs() . ";";
