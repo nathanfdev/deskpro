@@ -652,6 +652,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var activateSection = null;
 		var activateTabId = null;
 		var firstTabId = null;
+		var activateSettings = null;
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
@@ -659,7 +660,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var m;
 			if (m = hash.match(/app\.([a-zA-Z]+)/)) {
-				activateSection = m[1]
+				activateSection = m[1];
+				return;
+			}
+
+			if (m = hash.match(/settings\.([a-zA-Z0-9-]+)/)) {
+				activateSettings = m[1];
 				return;
 			}
 
@@ -761,6 +767,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.fragLoadingSection = activateSectionId;
 				this.switchToSection(activateSectionId);
 			}
+		}
+
+		if (activateSettings) {
+			var settingsInterval = setInterval(function() {
+				if (window.SETTINGS_WINDOW) {
+					clearInterval(settingsInterval);
+					settingsInterval = false;
+					$('#settingswin').trigger('dp_open', activateSettings);
+				}
+			}, 250);
 		}
 
 		DeskPRO_Window.TabBar.options.activateNew = true;

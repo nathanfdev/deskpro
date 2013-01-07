@@ -1,3 +1,4 @@
+{% set agent_notification_footer = 'notify' %}
 <dp:subject>Task {{ task.title }} assigned to you by {{ performer.getDisplayName() }}</dp:subject>
 {% if task.assigned_agent %}
 

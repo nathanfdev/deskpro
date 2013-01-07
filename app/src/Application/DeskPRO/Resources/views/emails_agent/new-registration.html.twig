@@ -1,5 +1,6 @@
+{% set agent_notification_footer = 'notify' %}
 <dp:subject>
-	New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
+	New registration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
 </dp:subject>
 <dp:body>
-New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
+New registration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}

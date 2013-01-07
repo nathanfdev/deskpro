@@ -1,3 +1,4 @@
+{% set agent_notification_footer = 'notify' %}
 <dp:subject>
 	New comment by {{ comment.getUserName() }} on "{{ comment.getObject().title }}"
 	{% if comment.status == 'validating' %}(requires validation){% endif %}
