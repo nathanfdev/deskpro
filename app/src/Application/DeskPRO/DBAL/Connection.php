@@ -418,11 +418,16 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	public function executeUpdate($query, array $params = array(), array $types = array(), $is_retry = 0)
 	{
+		if (!$is_retry && isset($GLOBALS['DP_CONFIG']['debug']['log_delete_queries']) && $GLOBALS['DP_CONFIG']['debug']['log_delete_queries'] && preg_match('#^\s*DELETE|TRUNCATE|DROP#', $query)) {
+			$this->_writeDeleteQuery($query, $params);
+		}
+
 		try {
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\PDOException $e) {
 
 			if ($is_retry <= 2 && stripos($e->getMessage(), 'deadlock') !== false) {
+				usleep(333333);
 				return $this->executeUpdate($query, $params, $types, $is_retry+1);
 			}
 
@@ -432,6 +437,70 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 	}
 
+	private function _writeDeleteQuery($query, $query_params = null) {
+
+		// Ignore trivial tables
+		if (preg_match('#agent_activity|cache|chat_conversation_pings|client_channel_subscriptions|client_messages|content_search|datastore|department_permissions|drafts|login_log|log_items|page_view_log|people_prefs|permissions|permissions_cache|queue_items|result_cache|searchlog|sendmail_queue|sendmail_queue_part|sessions|stat|stat_value|stat_value_group|ticket_access_codes|tickets_search|tmp_data|visitors#', $query)) {
+			return;
+		}
+
+		if (!function_exists('dp_get_log_dir')) {
+			return;
+		}
+
+		$params = array();
+		if ($query_params && is_array($query_params)) {
+			foreach ($query_params as $v) {
+				if (is_numeric($v) || ctype_digit($v)) {
+					$params[] = $v;
+				} elseif (is_string($v)) {
+					$v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
+					$v = preg_replace('# {2,}#', ' ', $v);
+
+					if (strlen($v) > 100) {
+						$v = substr($v, 0, 100);
+					}
+
+					$params[] = 'string:' . $v;
+				} elseif ($v === null) {
+					$params[] = 'NULL';
+				} elseif (is_array($v)) {
+					$params[] = substr(\DeskPRO\Kernel\KernelErrorHandler::varToString($v), 0, 200);
+				} elseif (is_object($v)) {
+					$params[] = get_class($v);
+				} else {
+					$params[] = gettype($v);
+				}
+			}
+		}
+
+		$write = array();
+		$write[] = "[" . date("Y-m-d H:i:s") . "]";
+
+		if (defined('DP_REQUEST_URL')) {
+			$write[] = "Page_Url: " . DP_REQUEST_URL;
+			if (!empty($_SERVER['REQUEST_METHOD'])) {
+				$writep[] = "Method: " . $_SERVER['REQUEST_METHOD'];
+			}
+		} elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+			$write[] = "Command: " . implode(' ', $_SERVER['argv']);
+		} else {
+			$write[] = "UnknownPage";
+		}
+
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			$write[] = "IP: " . $_SERVER['REMOTE_ADDR'];
+		}
+
+		$write[] = "Query: " . $query;
+		if ($params) {
+			$write[] = "Params: " . implode($params);
+		}
+
+		$write = implode("\t", $write);
+
+		@file_put_contents(dp_get_log_dir() . '/db_delete.log', $write, \FILE_APPEND);
+	}
 
 	/**
 	 * Delete all records from table with an $field id in $ids.
