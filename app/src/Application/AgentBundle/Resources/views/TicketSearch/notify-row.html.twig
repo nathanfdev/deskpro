@@ -22,9 +22,14 @@
             {{ phrase('agent.chat.new_user_reply_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% else %}
 			{% if performer %}({{ performer.display_name }}){% endif %}
+			<ul class="log-list">
 			{% for log in log_items %}
-				{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}
+				{% set notify_html %}{% include 'AgentBundle:TicketSearch:notify-row-log.html.twig' %}{% endset %}
+				{% if notify_html %}
+					<li>{{ notify_html|raw }}</li>
+				{% endif %}
 			{% endfor %}
+			</ul>
 		{% endif %}
 	</div>
 </li>

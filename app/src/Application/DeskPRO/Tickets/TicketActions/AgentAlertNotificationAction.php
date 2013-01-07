@@ -144,6 +144,12 @@ class AgentAlertNotificationAction extends AbstractAction
 			return;
 		}
 
+		$log_item_types = array();
+		foreach ($log_items AS $log_item) {
+			$log_item_types[] = $log_item->action_type;
+		}
+		$this->tracker->logMessage("[AgentAlertNotificationAction] Alerting " . count($log_items) . " change(s): " . implode(', ', $log_item_types));
+
 		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
 
 		$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents: " . implode(', ', $this->notify_agents));
@@ -266,7 +272,7 @@ class AgentAlertNotificationAction extends AbstractAction
 		$ret_logs = array();
 
 		foreach ($ticket_logs as $log) {
-			if ($log->action_type == 'executed_triggers') {
+			if ($log->action_type == 'executed_triggers' || $log->action_type == 'agent_notify') {
 				continue;
 			}
 

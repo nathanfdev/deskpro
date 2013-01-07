@@ -255,7 +255,7 @@
 ul#dp_notify_list{
 	background: transparent;
 }
-ul#dp_notify_list li{
+ul#dp_notify_list > li{
 	cursor: pointer;
 	position: relative;
 	display: block;
@@ -266,7 +266,7 @@ ul#dp_notify_list li{
 	overflow: hidden;
 	min-height: 24px;
 }
-ul#dp_notify_list li a{
+ul#dp_notify_list > li a{
 	line-height: 24px;
 	position: absolute;
 	top: 0px;
@@ -275,16 +275,16 @@ ul#dp_notify_list li a{
 	color: #5F5D5E;
 	white-space: nowrap;
 }
-ul#dp_notify_list li:hover a{
+ul#dp_notify_list > li:hover a{
 	color: #302F2F;
 }
-ul#dp_notify_list li span{
+ul#dp_notify_list > li span{
 	font-size: 13px;
 	color: #9DA2A6;
 	text-shadow: 0 1px 0 #fff;
 	float: right;
 }
-ul#dp_notify_list li .timeago {
+ul#dp_notify_list > li .timeago {
 	position: absolute;
 	top: 2px;
 	padding-right: 19px;
@@ -295,10 +295,10 @@ ul#dp_notify_list li .timeago {
 	background-color: #F1F1F1;
 	z-index: 1;
 }
-ul#dp_notify_list li:hover .timeago {
+ul#dp_notify_list > li:hover .timeago {
 	background-color: white;
 }
-ul#dp_notify_list li .dismiss {
+ul#dp_notify_list > li .dismiss {
 	position: absolute;
 	top: 7px;
 	right: 4px;
@@ -309,19 +309,19 @@ ul#dp_notify_list li .dismiss {
 	z-index: 2;
 }
 
-ul#dp_notify_list li a i.row-icon {
+ul#dp_notify_list > li a i.row-icon {
 	display: inline-block;
 	margin-right: 4px;
 	height: 10px;
 }
 
-ul#dp_notify_list li.chat a i.row-icon {
+ul#dp_notify_list > li.chat a i.row-icon {
 	background: url("../../images/agent/tabs/tabtype-chat.png") no-repeat 0 50%;
 	width: 17px;
 	height: 12px;
 }
 
-ul#dp_notify_list li.feedback a i.row-icon {
+ul#dp_notify_list > li.feedback a i.row-icon {
 	background: url("../../images/agent/tabs/tabtype-feedback.png") no-repeat 0 50%;
 	width: 10px;
 	height: 13px;
@@ -329,37 +329,37 @@ ul#dp_notify_list li.feedback a i.row-icon {
 	top: 1px;
 }
 
-ul#dp_notify_list li.ticket a i.row-icon {
+ul#dp_notify_list > li.ticket a i.row-icon {
 	background: url("../../images/agent/tabs/tabtype-ticket.png") no-repeat 0 50%;
 	width: 14px;
 }
 
-ul#dp_notify_list li.ticket.new-ticket a i.row-icon {
+ul#dp_notify_list > li.ticket.new-ticket a i.row-icon {
 	background: url("../../images/agent/tabs/tabtype-ticket-new.png.png") no-repeat 0 50%;
 	width: 14px;
 
 }
 
-ul#dp_notify_list li.ticket.new-ticket a i.row-icon {
+ul#dp_notify_list > li.ticket.new-ticket a i.row-icon {
 	background: url("../../images/agent/tabs/tabtype-ticket-reply.png") no-repeat 0 50%;
 	width: 14px;
 }
 
-ul#dp_notify_list li em:hover {
+ul#dp_notify_list > li em:hover {
 	.opacity(100);
 }
-ul#dp_notify_list li:hover{
+ul#dp_notify_list > li:hover{
 	background: rgb(255,255,255);
 }
-ul#dp_notify_list li:last-child:hover{
+ul#dp_notify_list > li:last-child:hover{
 	background: transparent;
 }
 
-ul#dp_notify_list li.dismissAll{
+ul#dp_notify_list > li.dismissAll{
 	padding: 5px 10px;
 	text-align: center;
 }
-ul#dp_notify_list li.dismissAll a{
+ul#dp_notify_list > li.dismissAll a{
     display: inline;
 	.gradient(#6baccc, #5182b3);
 	border: 1px solid #4B7095;
@@ -374,17 +374,33 @@ ul#dp_notify_list li.dismissAll a{
 	position: relative;
 	font-family: @heading-font;
 }
-ul#dp_notify_list li.dismissAll a:hover{
+ul#dp_notify_list > li.dismissAll a:hover{
 	.gradient(#72b8d8, #578bbf);
 	position: relative;
 }
 
 
-ul#dp_notify_list li .info {
+ul#dp_notify_list > li .info {
 	clear: both;
 	margin-top: 20px;
 	margin-left: 10px;
 	font-size: 9px;
+}
+
+ul#dp_notify_list .log-list {
+	display: inline;
+
+	li {
+		display: inline;
+
+		&:after {
+			content: ' \00B7 ';
+		}
+
+		&:last-child:after {
+			content: '';
+		}
+	}
 }
 
 .notifHead{
