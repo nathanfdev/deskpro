@@ -43,7 +43,7 @@ var DP = {
 
 			theme: 'advanced',
 			plugins : "fullscreen,table,contextmenu,wordcount",
-			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,styleselect,fontselect,fontsizeselect',
+			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,forecolor,backcolor,|,styleselect,fontselect,fontsizeselect',
 			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,dp_media,image,|,hr,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
 			theme_advanced_buttons3: '',
 			theme_advanced_toolbar_location: 'top',
