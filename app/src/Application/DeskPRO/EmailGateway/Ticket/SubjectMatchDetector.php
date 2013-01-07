@@ -93,6 +93,12 @@ class SubjectMatchDetector implements TicketDetectorInterface, Loggable
 	{
 		$ticket = $this->_findExistingTicket($reader, $reader->getSubject()->getSubjectUtf8());
 
+		if ($this->is_bounce_mode) {
+			if ($reader->getOriginalSubject()) {
+				$ticket = $this->_findExistingTicket($reader, $reader->getOriginalSubject()->getSubjectUtf8());
+			}
+		}
+
 		if (!$ticket && $this->is_bounce_mode && $body = $reader->getBodyText()->getBody()) {
 			$body_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $body);
 			if ($body_subject) {

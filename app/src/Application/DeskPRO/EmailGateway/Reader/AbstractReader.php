@@ -145,6 +145,20 @@ abstract class AbstractReader
 	}
 
 	/**
+	 * If the email contains a Thread-Topic that tells us the original subject, then that.
+	 *
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\Subject
+	 */
+	public function getOriginalSubject()
+	{
+		if (!isset($this->vals['original_subject'])) {
+			$this->vals['original_subject'] = $this->_getOriginalSubject();
+		}
+
+		return $this->vals['original_subject'];
+	}
+
+	/**
 	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
 	 */
 	public function getFromAddress()

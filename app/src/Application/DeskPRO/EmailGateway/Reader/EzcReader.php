@@ -187,6 +187,21 @@ class EzcReader extends AbstractReader
 		return $subject;
 	}
 
+	protected function _getOriginalSubject()
+	{
+		$header = $this->getHeader('Thread-Topic');
+		if (!$header || empty($header->header_parts)) {
+			return null;
+		}
+
+		$subject = new Item\Subject();
+		$subject->subject = $header->getHeader();
+		$subject->subject_utf8 = $subject->subject;
+		$subject->original_charset = 'UTF-8';
+
+		return $subject;
+	}
+
 	protected function _getAttachments()
 	{
 		$attachments = array();
