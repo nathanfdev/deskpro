@@ -172,4 +172,19 @@ class EntityManager extends UnprivateEntityManager
 			}
 		}
 	}
+
+	public function clearNot($class_name)
+	{
+		if (!is_array($class_name)) {
+			$skip = array($class_name);
+		} else {
+			$skip = $class_name;
+		}
+
+		foreach ($this->unitOfWork->getIdentityMap() AS $class => $entity_name) {
+			if (!in_array($class, $skip)) {
+				$this->unitOfWork->clear($class);
+			}
+		}
+	}
 }

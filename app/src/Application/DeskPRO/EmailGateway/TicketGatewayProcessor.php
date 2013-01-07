@@ -1191,6 +1191,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		));
 		$this->event_dispatcher->dispatch(self::EVENT_NEWTICKET, $ev);
 
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\Ticket');
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\TicketMessage');
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\TicketAttachment');
+
 		return $ticket;
 	}
 

@@ -323,6 +323,8 @@ class Runner
 				}
 			}
 
+			$m = memory_get_usage();
+
 			if ($source) {
 				if ($reader) {
 					$reader->_kill();
@@ -465,6 +467,11 @@ class Runner
 			$this->_updateSource($source);
 			$this->log_messages->clear();
 
+			$m_end = memory_get_usage();
+			$m_diff = $m_end - $m;
+
+			$this->logger->log(sprintf("Memory usage: %.2f MB (total: %.2f MB)", $m_diff / 1024 / 1024, $m_end / 1024 / 1024), 'debug');
+
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
 				break;
@@ -474,7 +481,8 @@ class Runner
 		$fetcher->close();
 
 		$end_time = microtime(true);
-		$this->logger->log(sprintf("Finished processing gateway. Took %.2f seconds.", $end_time - $start_time), 'info');
+		$peak_memory = memory_get_peak_usage() / 1024 / 1024;
+		$this->logger->log(sprintf("Finished processing gateway. Took %.2f seconds. Peak memory %.2f MB.", $end_time - $start_time, $peak_memory), 'info');
 	}
 
 	/**
