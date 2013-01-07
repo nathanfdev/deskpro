@@ -163,9 +163,12 @@ $stats['error_type'] = 'php';
 $stats['local_hash'] = sha1($__fail_message . __FILE__ . php_uname());
 
 error_log($__fail_message);
-DeskPRO_LowUtil_RemoteRequester::create()->request(
-	'https://www.deskpro.com/members/api/data-submit/report-error-manual.json',
-	$stats,
-	'POST',
-	15
-);
+
+try {
+	DeskPRO_LowUtil_RemoteRequester::create()->request(
+		'https://www.deskpro.com/members/api/data-submit/report-error-manual.json',
+		$stats,
+		'POST',
+		15
+	);
+} catch (\Exception $e) {}
