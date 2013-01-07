@@ -267,11 +267,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	removeReplyFromPage: function(account_status_id) {
 		var el = this.content.find('.twitter-reply-' + account_status_id);
-		console.log('removing');
 		if (el.length) {
 			var row = this.twitterHelper.closestRow(el);
 			el.remove();
-			console.log('removed');
 			if (!row.find('.twitter-replies .twitter-reply').length) {
 				row.find('.reply-list').hide();
 			}

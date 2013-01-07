@@ -490,11 +490,14 @@ class Sla extends \Application\DeskPRO\Domain\DomainObject
 			$dates[] = $ticket->date_closed->getTimestamp();
 		}
 
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_first_agent_reply) {
-			$dates[] = $ticket->date_first_agent_reply->getTimestamp();
+		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
+			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
+				// don't auto resolve sla on ticket creation, even if created by an agent
+				$dates[] = $ticket->date_first_agent_reply->getTimestamp();
+			}
 		}
 
-		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
+		if ($this->sla_type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->date_status->getTimestamp() > $ticket->date_created->getTimestamp() && $ticket->status != 'awaiting_agent') {
 			$dates[] = $ticket->date_status->getTimestamp();
 		}
 
