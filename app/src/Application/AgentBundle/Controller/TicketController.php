@@ -3095,7 +3095,8 @@ class TicketController extends AbstractController
 	{
 		$q = $this->em->createQuery("
 			SELECT t, person, person_primary_email, agent,
-				agent_team, language, department, organization, locked_by_agent
+				agent_team, language, department, product, category, workflow, priority,
+				organization, locked_by_agent
 			FROM DeskPRO:Ticket t
 			LEFT JOIN t.person person
 			LEFT JOIN person.primary_email person_primary_email
@@ -3103,6 +3104,10 @@ class TicketController extends AbstractController
 			LEFT JOIN t.agent_team agent_team
 			LEFT JOIN t.language language
 			LEFT JOIN t.department department
+			LEFT JOIN t.product product
+			LEFT JOIN t.category category
+			LEFT JOIN t.workflow workflow
+			LEFT JOIN t.priority priority
 			LEFT JOIN t.organization organization
 			LEFT JOIN t.locked_by_agent locked_by_agent
 			WHERE t.id = ?0
