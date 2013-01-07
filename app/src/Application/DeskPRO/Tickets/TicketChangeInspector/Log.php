@@ -256,7 +256,17 @@ class Log
 		if ($info = $this->tracker->getChangedProperty('label_added')) {
 			$labels = array();
 			foreach ($info as $i) {
-				$labels[] = $i['new'];
+				$i['new'] = trim($i['new']);
+				if (strpos($i['new'], ',') !== false) {
+					foreach (explode(',', $i['new']) AS $n) {
+						$n = trim($n);
+						if (strlen($n)) {
+							$labels[] =$n;
+						}
+					}
+				} else if (strlen($i['new'])) {
+					$labels[] = $i['new'];
+				}
 			}
 
 			if ($labels) {
@@ -267,7 +277,17 @@ class Log
 		if ($info = $this->tracker->getChangedProperty('label_removed')) {
 			$labels = array();
 			foreach ($info as $i) {
-				$labels[] = $i['old'];
+				$i['old'] = trim($i['old']);
+				if (strpos($i['old'], ',') !== false) {
+					foreach (explode(',', $i['old']) AS $n) {
+						$n = trim($n);
+						if (strlen($n)) {
+							$labels[] =$n;
+						}
+					}
+				} else if (strlen($i['old'])) {
+					$labels[] = $i['old'];
+				}
 			}
 
 			if ($labels) {
