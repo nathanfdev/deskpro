@@ -1913,6 +1913,8 @@ class Upgrade
  */
 function Upgrade_Shutdown_Function()
 {
+	@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+
 	global $UPGRADE_CLEANUP;
 	if (!$UPGRADE_CLEANUP) {
 		return;
@@ -1937,8 +1939,6 @@ function Upgrade_Shutdown_Function()
 	try {
 		$fileutil->remove(dp_get_data_dir().'/helpdesk-offline.trigger');
 	} catch (\Exception $e) {}
-
-	@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
 
 	$UPGRADE_CLEANUP = null;
 }
