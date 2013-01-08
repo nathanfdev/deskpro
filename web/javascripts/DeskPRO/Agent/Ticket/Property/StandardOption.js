@@ -77,7 +77,12 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		}
 
 		var fieldEl = $('.prop-input-' + this.optionName, this.ticketPage.wrapper);
-		fieldEl.val(value);
+
+		if (fieldEl.hasClass('with-select2')) {
+			fieldEl.select2('val', value);
+		} else {
+			fieldEl.val(value);
+		}
 	},
 
 	getInterfaceElement: function() {

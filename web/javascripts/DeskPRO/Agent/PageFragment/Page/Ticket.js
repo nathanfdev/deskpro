@@ -388,26 +388,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-		if (data.status) {
-			var statusProp = this.changeManager.getPropertyManager('status');
-			statusProp.setIncomingValue(data.status);
-		}
-
-		if (data.dupe_message) {
-			// If its a dupe then it'd already be added ot the message list,
-			// we can just clear out the message box
-			var sig = this.getEl('replybox_wrap').find('textarea.signature-value').val();
-			if (sig) sig = "\n\n" + sig;
-
-			var textarea = this.getReplyTextArea();
-			if (textarea.data('redactor')) {
-				textarea.setCode(DP.convertTextToWysiwygHtml(sig, true));
-			} else {
-				textarea.val(sig);
-			}
-			return;
-		}
-
 		var new_messages = null;
 		if (data.ticket_messages_block) {
 			new_messages = $(data.ticket_messages_block);
@@ -464,6 +444,43 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			} else {
 				billing.updateBillingForm(false);
 			}
+		}
+
+		if (data.locked_by_agent_id && data.locked_by_agent_id != DESKPRO_PERSON_ID) {
+			// Reload the ticket page
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+			self.closeSelf();
+			return;
+		} else {
+			this.wrapper.find('.lock-overlay').remove();
+			this.getEl('locked_message').hide();
+			this.getEl('locked_message').data('locked-self', false);
+			this.getEl('lock_ticket').show();
+		}
+
+		Array.each(['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold', 'agent_id', 'agent_team_id'], function(propId) {
+			var val = '0';
+			if (data[propId]) {
+				val = data[propId];
+			}
+
+			var prop = this.changeManager.getPropertyManager(propId);
+			prop.setIncomingValue(val);
+		}, this);
+
+		if (data.dupe_message) {
+			// If its a dupe then it'd already be added ot the message list,
+			// we can just clear out the message box
+			var sig = this.getEl('replybox_wrap').find('textarea.signature-value').val();
+			if (sig) sig = "\n\n" + sig;
+
+			var textarea = this.getReplyTextArea();
+			if (textarea.data('redactor')) {
+				textarea.setCode(DP.convertTextToWysiwygHtml(sig, true));
+			} else {
+				textarea.val(sig);
+			}
+			return;
 		}
 	},
 

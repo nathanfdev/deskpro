@@ -18,7 +18,11 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 	},
 
 	setValue: function(value) {
-		value = parseInt(value);
+		if (typeof value === 'boolean') {
+			value = value ? 1 : 0;
+		} else {
+			value = parseInt(value);
+		}
 
 		$('.set-hold', this.ticketPage.wrapper).hide();
 

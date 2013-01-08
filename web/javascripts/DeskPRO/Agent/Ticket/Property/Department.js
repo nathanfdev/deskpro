@@ -18,7 +18,7 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 	},
 
 	setValue: function(value) {
-		this.getFormEl().val(value);
+		this.getFormEl().select2('val', value);
 
 		if (value == "0") value = 0;
 

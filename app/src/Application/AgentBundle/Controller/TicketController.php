@@ -341,7 +341,7 @@ class TicketController extends AbstractController
 		return $ticket_perms;
 	}
 
-	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null, $is_pdf = false)
+	protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null, $is_pdf = false)
 	{
 		$message_count = 0;
 		$note_count = 0;
@@ -442,26 +442,40 @@ class TicketController extends AbstractController
                 $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';
             }
 			$ticket_messages_block = $this->renderView($tpl, array(
-				'ticket' => $ticket,
-				'ticket_messages' => $ticket_messages,
-				'ticket_messages_num' => $ticket_messages_num,
+				'ticket'                     => $ticket,
+				'ticket_messages'            => $ticket_messages,
+				'ticket_messages_num'        => $ticket_messages_num,
 				'ticket_message_attachments' => $ticket_message_attachments,
-				'ticket_attachments' => $ticket_attachments,
-				'ticket_message_logs' => $ticket_message_logs,
-				'ticket_logs' => $ticket_logs,
-				'all_feedback' => $all_feedback,
+				'ticket_attachments'         => $ticket_attachments,
+				'ticket_message_logs'        => $ticket_message_logs,
+				'ticket_logs'                => $ticket_logs,
+				'all_feedback'               => $all_feedback,
 			));
 		}
 
 		$ticket_messages_blockcache = array(
-			'ticket_messages_block' => $ticket_messages_block,
-			'ticket_messages' => $ticket_messages,
-			'ticket_attachments' => $ticket_attachments,
+			'status'                     => $ticket->getStatusCode(),
+			'urgency'                    => $ticket->urgency,
+			'department_id'              => $ticket->getDepartmentId(),
+			'category_id'                => $ticket->getCategoryId(),
+			'product_id'                 => $ticket->getProductId(),
+			'workflow_id'                => $ticket->getWorkflowId(),
+			'priority_id'                => $ticket->getPriorityId(),
+			'is_hold'                    => $ticket->is_hold,
+			'agent_id'                   => $ticket->getAgentId(),
+			'agent_team_id'              => $ticket->getAgentTeamId(),
+			'is_locked'                  => $ticket->hasLock(),
+			'locked_by_agent_id'         => $ticket->hasLock() ? $ticket->locked_by_agent->getId() : null,
+			'locked_by_agent_name'       => $ticket->hasLock() ? $ticket->locked_by_agent->getDisplayName() : null,
+
+			'ticket_messages_block'      => $ticket_messages_block,
+			'ticket_messages'            => $ticket_messages,
+			'ticket_attachments'         => $ticket_attachments,
 			'ticket_message_attachments' => $ticket_message_attachments,
-			'message_count' => $message_count,
-			'note_count' => $note_count,
-			'last_message_id' => $last_message_id,
-			'last_log_id' => $last_log_id,
+			'message_count'              => $message_count,
+			'note_count'                 => $note_count,
+			'last_message_id'            => $last_message_id,
+			'last_log_id'                => $last_log_id,
 		);
 
 		return $ticket_messages_blockcache;
@@ -1358,19 +1372,6 @@ class TicketController extends AbstractController
 			'client_messages' => $client_messages,
 			'cc_list' => $cc_list,
 		));
-
-		return $this->createJsonResponse($data);
-	}
-
-	public function ajaxUpdateCheckAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$data = $this->_getMessageBlockInfo(
-			$ticket,
-			$this->in->getUint('last_message_id'),
-			$this->in->getUint('last_log_id')
-		);
 
 		return $this->createJsonResponse($data);
 	}
@@ -2951,7 +2952,9 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id);
 
 		if ($ticket->hasLock()) {
-			return $this->createJsonResponse(array('error' => true));
+			return $this->createJsonResponse(array(
+				'error' => true,
+			));
 		}
 
 		$lock_cm = new ClientMessage();

@@ -4,7 +4,7 @@ DeskPRO.Agent.Ticket.Property.Urgency = new Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
 	setValue: function(value) {
-		this.ticketPage.getEl('urgency').val(value);
+		this.ticketPage.getEl('urgency').select2('val', value);
 	},
 
 	getValue: function() {
