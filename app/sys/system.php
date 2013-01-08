@@ -554,6 +554,10 @@ final class License
 				$this->data['demo'] = false;
 				$this->data['expire'] = null;
 			}
+
+			if (defined('DPC_COPYFREE') && DPC_COPYFREE) {
+				$this->data['copyfree'] = true;
+			}
 		}
 
 		if (isset($this->options['die'])) {
