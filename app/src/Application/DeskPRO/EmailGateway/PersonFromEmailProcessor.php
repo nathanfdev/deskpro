@@ -109,6 +109,7 @@ class PersonFromEmailProcessor
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
 		$person = Entity\Person::newContactPerson();
+		$person->creation_system = 'gateway.person';
 		$person->name = $from->getNameUtf8();
 
 		$email = new \Application\DeskPRO\Entity\PersonEmail();
