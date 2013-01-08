@@ -50,6 +50,8 @@ class DeleteModifier implements CollectionModifierInterface
 		$notify_types[] = 'AgentNotification';
 		$notify_types[] = 'AgentAlertNotification';
 		$notify_types[] = 'UserNotificationNewReply';
+		$notify_types[] = 'UserNotificationNewReplyUser';
+		$notify_types[] = 'UserNotificationNewReplyUserOther';
 		$notify_types[] = 'UserNotificationNewReplyAgent';
 		$notify_types[] = 'NewTicket';
 

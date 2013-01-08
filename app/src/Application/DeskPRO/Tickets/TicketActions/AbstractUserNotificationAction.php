@@ -175,16 +175,33 @@ abstract class AbstractUserNotificationAction extends AbstractAction
 			$message->setContextId('ticket_gateway');
 			$message->setTemplate($tpl, $vars);
 
-			if (!empty($vars['validating_email'])) {
-				$message->setTo($vars['validating_email']->getEmail());
-			} else {
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-			}
-			foreach ($parts as $part) {
-				if ($part['email_address']) {
-					$message->addCc($part['email_address'], $part->person->getDisplayName());
+			if (empty($vars['skip_person_id']) || $vars['skip_person_id'] != $person->getId()) {
+				if (!empty($vars['validating_email'])) {
+					$message->setTo($vars['validating_email']->getEmail());
+				} else {
+					$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				}
 			}
+
+			foreach ($parts as $part) {
+				if (!empty($vars['skip_person_id']) && $vars['skip_person_id'] == $part->person->getId()) {
+					continue;
+				}
+
+				if ($part['email_address']) {
+					if (!$message->getTo()) {
+						$message->setTo($part['email_address'], $part->person->getDisplayName());
+					} else {
+						$message->addCc($part['email_address'], $part->person->getDisplayName());
+					}
+				}
+			}
+
+			if (!$message->getTo()) {
+				// no one to send to
+				return;
+			}
+
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 			$message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());

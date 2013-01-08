@@ -34,34 +34,53 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
-class DisableNotificationsModifier implements CollectionModifierInterface
+class UserNotificationNewReplyUserOtherAction extends AbstractUserNotificationAction
 {
-	public function __construct()
-	{
+	protected $skip_person_id;
 
+	public function __construct(TicketChangeTracker $tracker, $skip_person_id)
+	{
+		$this->tracker = $tracker;
+		$this->skip_person_id = $skip_person_id;
 	}
 
-	public function modifyCollection(ActionsCollection $collection)
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
 	{
-		$notify_types = array();
-		$notify_types[] = 'AgentNotification';
-		$notify_types[] = 'AgentAlertNotification';
-		$notify_types[] = 'UserNotificationNewReply';
-		$notify_types[] = 'UserNotificationNewReplyUser';
-		$notify_types[] = 'UserNotificationNewReplyUserOther';
-		$notify_types[] = 'UserNotificationNewReplyAgent';
-
-		foreach ($notify_types as $type) {
-			if ($collection->hasActionType($type)) {
-				$collection->removeActionType($type);
-			}
+		if (!count($ticket->getUserParticipants())) {
+			return;
 		}
 
-		if ($collection->hasActionType('NewTicket')) {
-			$collection->getActionType('NewTicket')->disableNotifications();
-		}
+		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-user-other.html.twig');
+
+		$change_info = array(
+			'type' => 'user_notify',
+			'notify_type' => 'newreply',
+			'emailed' => array(),
+			'cced' => array()
+		);
+
+		$vars = array(
+			'action' => 'new_user_reply',
+			'skip_person_id' => $this->skip_person_id
+		);
+
+		$this->doSend($tpl, $vars, $ticket, $change_info);
+
+		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
 	/**
@@ -69,7 +88,6 @@ class DisableNotificationsModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		$tr = App::getTranslator();
-		return $tr->phrase('agent.tickets.disable_all_notifs_action');
+		return '';
 	}
 }

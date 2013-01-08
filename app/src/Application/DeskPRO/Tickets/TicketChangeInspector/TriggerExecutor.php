@@ -293,6 +293,20 @@ class TriggerExecutor
 				);
 
 				$all_triggers[] = $trigger;
+
+				if (DP_INTERFACE == 'user') {
+					$message = $this->tracker->getNewUserReply();
+
+					$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+					$trigger->terms = array();
+					$trigger->actions = array(
+						array('type' => 'user_notification_new_reply_user_other', 'options' => array(
+							'skip_person_id' => $message->getPersonId()
+						))
+					);
+
+					$all_triggers[] = $trigger;
+				}
 			}
 		}
 
