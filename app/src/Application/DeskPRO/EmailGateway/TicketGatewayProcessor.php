@@ -124,7 +124,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			}
 		}
 
-
 		$person_processor = new PersonFromEmailProcessor();
 
 		#-------------------------
@@ -536,6 +535,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			'message' => $message
 		));
 		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
+
+		// prevent a memory leak with a large message
+		App::getOrm()->detach($message);
+		$message->email_source = null;
+		$message = null;
 
 		return $message;
 	}
@@ -1142,6 +1146,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$message = $newticket->new_message;
 			$message['email'] = $this->reader->getFromAddress()->getEmail();
 
+			$newticket = null;
+
 			if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
 				$this->logMessage('[TicketGatewayProcessor] Has CC');
 				$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
@@ -1180,6 +1186,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
 
 			App::getDb()->commit();
+
+			App::getOrm()->detach($message);
+			$message->email_source = null;
+			$message = null;
 		} catch (\Exception $e) {
 			App::getDb()->rollback();
 			throw $e;
@@ -1190,10 +1200,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			'person' => $person,
 		));
 		$this->event_dispatcher->dispatch(self::EVENT_NEWTICKET, $ev);
-
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\TicketMessage');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\TicketAttachment');
 
 		return $ticket;
 	}
@@ -1331,6 +1337,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$message->addAttachment($attach);
 				App::getOrm()->persist($attach);
 			}
+
+			App::getOrm()->detach($message);
+			$message->email_source = null;
+			$message = null;
 		}
 
 		App::getOrm()->commit();

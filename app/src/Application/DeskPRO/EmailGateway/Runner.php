@@ -325,15 +325,6 @@ class Runner
 
 			$m = memory_get_usage();
 
-			if ($source) {
-				if ($reader) {
-					$reader->_kill();
-					$reader = null;
-				}
-
-				gc_collect_cycles();
-			}
-
 			try {
 				$source = $fetcher->readNext($gateway->getSourceObjectType());
 				if (!$source) {
@@ -390,6 +381,7 @@ class Runner
 
 				$created_obj = null;
 				if ($pre_processor->isValid()) {
+					$pre_processor = null;
 
 					$this->logger->log("Preprocessor complete", 'info');
 
@@ -407,6 +399,7 @@ class Runner
 						}
 
 						$source['source_info'] = $proc->getSourceInfo();
+						$proc = null;
 
 						App::getOrm()->commit();
 
@@ -439,6 +432,7 @@ class Runner
 					$source['status'] = 'error';
 					$source['error_code'] = $pre_processor->getErrorCode();
 					$source['source_info'] = $pre_processor->getSourceInfo();
+					$pre_processor = null;
 
 					$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
 
@@ -467,6 +461,18 @@ class Runner
 			$this->_updateSource($source);
 			$this->log_messages->clear();
 
+			$created_obj = null;
+
+			App::getOrm()->detach($source);
+			$source = null;
+
+			if ($reader) {
+				$reader->_kill();
+				$reader = null;
+			}
+
+			gc_collect_cycles();
+
 			$m_end = memory_get_usage();
 			$m_diff = $m_end - $m;
 
@@ -481,8 +487,12 @@ class Runner
 		$fetcher->close();
 
 		$end_time = microtime(true);
-		$peak_memory = memory_get_peak_usage() / 1024 / 1024;
-		$this->logger->log(sprintf("Finished processing gateway. Took %.2f seconds. Peak memory %.2f MB.", $end_time - $start_time, $peak_memory), 'info');
+		$this->logger->log(sprintf(
+			"Finished processing gateway. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).",
+			$end_time - $start_time,
+			memory_get_peak_usage() / 1024 / 1024,
+			memory_get_usage() / 1024 / 1024
+		), 'info');
 	}
 
 	/**
