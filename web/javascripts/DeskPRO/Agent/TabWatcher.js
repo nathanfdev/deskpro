@@ -296,5 +296,25 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		}, this);
 
 		return found;
+	},
+
+	/**
+	 * Finds multiple tabs that match a filter
+	 *
+	 * @param typename
+	 * @param filter
+	 * @return {Array}
+	 */
+	findTabs: function(typename, filter) {
+		var tabs = [];
+		Object.each(this.tabManager.getTabs(), function(tab) {
+			if (!typename || this.getTabType(tab) == typename) {
+				if (!filter || filter(tab)) {
+					tabs.push(tab);
+				}
+			}
+		}, this);
+
+		return tabs;
 	}
 });

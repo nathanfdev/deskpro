@@ -331,6 +331,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								success: function() {
 									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
 									DeskPRO_Window.showAlert('The user was deleted');
+
+									var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
+										return (tab && tab.page && tab.page && tab.page.meta.person_id == person_id);
+									});
+									$.each(tabs, function(k, tab) {
+										DeskPRO_Window.removePage(tab.page);
+									});
 								}
 							});
 							self.closeSelf();

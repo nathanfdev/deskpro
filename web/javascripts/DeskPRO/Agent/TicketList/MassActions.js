@@ -523,8 +523,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 				if (statusUpdate === 'hidden.deleted' || statusUpdate === 'hidden.spam') {
 					// hide any open tickets
-					var watcher = DeskPRO_Window.getTabWatcher();
-
 					$.each(data.success_tickets, function(k, ticketId) {
 						var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
 							return (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId);
