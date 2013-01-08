@@ -488,6 +488,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapper.addClass('loading');
 
+		var statusUpdate = this.wrapper.find('input[name="actions[status]"]:checked').val();
+
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
 			type: 'POST',
@@ -517,6 +519,20 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 				if (data && data.failed_tickets && data.failed_tickets.length) {
 					DeskPRO_Window.showAlert('Note: ' + data.failed_tickets.length + ' tickets were not updated because you do not have permission to make the requested changed.');
+				}
+
+				if (statusUpdate === 'hidden.deleted' || statusUpdate === 'hidden.spam') {
+					// hide any open tickets
+					var watcher = DeskPRO_Window.getTabWatcher();
+
+					$.each(data.success_tickets, function(k, ticketId) {
+						var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
+							return (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId);
+						});
+						if (tab) {
+							DeskPRO_Window.removePage(tab.page);
+						}
+					});
 				}
 			}
 		});
