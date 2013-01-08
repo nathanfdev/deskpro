@@ -207,7 +207,7 @@ class DetectInlineReply implements Loggable
 		}
 
 		$matches = 0;
-		if (!preg_match_all('#dp_message_([0-9]+)_begin(.*?)dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
+		if (!preg_match_all('#dp_message_([0-9]+)_begin.*?</a>(.*?)<a.*?dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
 			if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No message texts');
 			return $this->message_texts;
 		}
