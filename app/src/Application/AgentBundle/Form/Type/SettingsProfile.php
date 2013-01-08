@@ -52,6 +52,7 @@ class SettingsProfile extends AbstractType
 
 	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
 	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
+		$builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
 
 		$builder->add('default_team_id', 'hidden', array('required' => false));
 

@@ -276,6 +276,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (!keepOpen) {
 				self.closeSelf();
+
+				if (self.getMetaData('goNextOnReply')) {
+					var listPage = DeskPRO_Window.getListPage();
+					if (listPage && listPage.wrapper) {
+						console.log(listPage.wrapper);
+						var ticketListEl = listPage.wrapper.find('article.row-item.ticket-' + self.getMetaData('ticket_id'));
+						if (ticketListEl.length) {
+							var next = ticketListEl.next('article.row-item');
+							console.log(ticketListEl);
+							console.log(next);
+							if (next.length) {
+								DeskPRO_Window.runPageRouteFromElement(next);
+							}
+						}
+					}
+				}
+
 				return;
 			}
 
