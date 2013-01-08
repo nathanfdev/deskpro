@@ -143,6 +143,11 @@ var DpChatWidget = new (function() {
 	var isRtl = false;
 
 	/**
+	 * Location of the tab (defaults to right for LTR and left for RTL).
+	 */
+	var tabLocation = 'right';
+
+	/**
 	 * The child iframe talks to us
 	 *
 	 * @param {String} messageId
@@ -169,17 +174,29 @@ var DpChatWidget = new (function() {
 
 		if (!chatIframe) {
 
+			var bgColor = '#2A69A9';
+			var textColor = '#fff';
+
+			if (DpChatWidget_Options && DpChatWidget_Options.frameStyle) {
+				if (DpChatWidget_Options.frameStyle.bgColor) {
+					bgColor = DpChatWidget_Options.frameStyle.bgColor;
+				}
+				if (DpChatWidget_Options.frameStyle.textColor) {
+					textColor = DpChatWidget_Options.frameStyle.textColor;
+				}
+			}
+
 			var css = [];
 			css.push('position: fixed');
 			css.push('bottom: 0');
-			css.push((isRtl ? 'left' : 'right') + ': 20px');
+			css.push((tabLocation ? 'left' : 'right') + ': 20px');
 			css.push('width: 340px');
 			css.push('height: 350px');
 			css.push('background: #ffffff');
 			css.push('margin: 0');
 			css.push('padding: 0');
 			css.push('box-shadow: none');
-			css.push('border: 3px solid #2A69A9');
+			css.push('border: 3px solid ' + bgColor);
 			css.push('border-bottom: none');
 			css.push('-moz-background-clip: padding');
 			css.push('-webkit-background-clip: padding-box');
@@ -201,8 +218,8 @@ var DpChatWidget = new (function() {
 
 			// The little tabby thing at the top
 			var css = [];
-			css.push('background: #2A69A9');
-			css.push('color: #ffffff');
+			css.push('background: ' + bgColor);
+			css.push('color: ' + textColor);
 			css.push('-webkit-border-top-left-radius: 4px');
 			css.push('-webkit-border-top-right-radius: 4px');
 			css.push('-moz-border-radius-topleft: 4px');
@@ -215,7 +232,7 @@ var DpChatWidget = new (function() {
 			css.push('padding: 3px 5px 3px 5px');
 			css.push('position: absolute');
 			css.push('top: -18px');
-			css.push((isRtl ? 'left' : 'right') + ': 28px');
+			css.push((tabLocation ? 'left' : 'right') + ': 28px');
 			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
 			css.push('cursor: pointer');
 			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
@@ -232,8 +249,8 @@ var DpChatWidget = new (function() {
 
 			// Minmize button
 			var css = [];
-			css.push('background: #2A69A9');
-			css.push('color: #ffffff');
+			css.push('background: ' + bgColor);
+			css.push('color: ' + textColor);
 			css.push('-webkit-border-top-left-radius: 4px');
 			css.push('-webkit-border-top-right-radius: 4px');
 			css.push('-moz-border-radius-topleft: 4px');
@@ -380,6 +397,13 @@ var DpChatWidget = new (function() {
 		// Now load our session script
 		// DeskPRO script that sets/gets session and initial messages
 		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
+		if (isRtl) {
+			tabLocation = 'left';
+		}
+
+		if (DpChatWidget_Options && DpChatWidget_Options.tabLocation) {
+			tabLocation = DpChatWidget_Options.tabLocation;
+		}
 
 		var url = DpChatWidget_Options.deskproUrl.replace(/index\.php\//, '') + 'dp.php/chat/is-available.js?_1=';
 		if (DpChatWidget_Options && DpChatWidget_Options.currentPageUrl) {
@@ -444,18 +468,26 @@ var DpChatWidget = new (function() {
 		}
 
 		var bgColor  = 'rgb(63,63,63)';
-		var bgColorA = 'rgb(63,63,63)';
 		var border   = '2px solid #727272';
+		var textColor = '#fff';
+		var textShadow = '0px 1px 2px #000000';
+		var font = 'bold 12px Arial, sans-serif';
 
 		if (DpChatWidget_Options && DpChatWidget_Options.btnStyle) {
 			if (DpChatWidget_Options.btnStyle.bgColor) {
 				bgColor = DpChatWidget_Options.btnStyle.bgColor;
 			}
-			if (DpChatWidget_Options.btnStyle.bgColorA) {
-				bgColorA = DpChatWidget_Options.btnStyle.bgColorA;
-			}
 			if (DpChatWidget_Options.btnStyle.border) {
 				border = DpChatWidget_Options.btnStyle.border;
+			}
+			if (DpChatWidget_Options.btnStyle.textColor) {
+				textColor = DpChatWidget_Options.btnStyle.textColor;
+			}
+			if (DpChatWidget_Options.btnStyle.textShadow) {
+				textShadow = DpChatWidget_Options.btnStyle.textShadow;
+			}
+			if (DpChatWidget_Options.btnStyle.font) {
+				font = DpChatWidget_Options.btnStyle.font;
 			}
 		}
 
@@ -463,7 +495,7 @@ var DpChatWidget = new (function() {
 			#dpchat_wrap { \
 			  position: fixed; \
 			  bottom: 0; \
-			  right: 20px; \
+			  " + tabLocation + ": 20px; \
 			  cursor: pointer; \
 			  z-index: 10000; \
 			  opacity: 0.85; \
@@ -480,8 +512,8 @@ var DpChatWidget = new (function() {
 			  margin: 0; \
 			} \
 			#dpchat_border_table td#dpchat_border_11 div { \
-			  background: rgb(63,63,63); \
-			  border: 2px solid #727272; \
+			  background: " + bgColor + "; \
+			  border: " + border + "; \
 			  border-bottom: none; \
 			  border-radius: 6px 6px 0 0; \
 			  height: 6px; \
@@ -492,8 +524,8 @@ var DpChatWidget = new (function() {
 			  overflow: hidden; \
 			} \
 			#dpchat_border_table td#dpchat_border_21 div { \
-			  background: rgb(63,63,63); \
-			  border: 2px solid #727272; \
+			  background: " + bgColor + "; \
+			  border: " + border + "; \
 			  border-top: none; \
 			  border-bottom: none; \
 			  height: 11px; \
@@ -503,9 +535,7 @@ var DpChatWidget = new (function() {
 			} \
 			 \
 			#dpchat_border_table td#dpchat_border_21 div em { \
-			  font-family: Arial, sans-serif; \
-			  font-size: 12px; \
-			  font-weight: bold; \
+			  font: " + font + "; \
 			  color: transparent; \
 			  padding: 0 15px; \
 			} \
@@ -516,15 +546,15 @@ var DpChatWidget = new (function() {
 			} \
 			 \
 			#dpchat_border_table td#dpchat_border_31 div { \
-			  background: rgb(63,63,63); \
-			  border-left: 2px solid #727272; \
+			  background: " + bgColor + "; \
+			  border-left: " + border + "; \
 			  height: 9px; \
 			  overflow: hidden; \
 			} \
 			 \
 			#dpchat_border_table td#dpchat_border_32 div { \
-			  background: rgb(63,63,63); \
-			  border: 2px solid #727272; \
+			  background: " + bgColor + "; \
+			  border: " + border + "; \
 			  border-bottom: none; \
 			  border-left: none; \
 			  height: 7px; \
@@ -536,7 +566,7 @@ var DpChatWidget = new (function() {
 			  position: absolute; \
 			  left: 0; \
 			  bottom: 5px; \
-			  color: #fff; \
+			  color: " + textColor + "; \
 			  text-align: center; \
 			  padding: 0 16px; \
 			} \
@@ -544,10 +574,8 @@ var DpChatWidget = new (function() {
 			  display: block; \
 			  text-align: center; \
 			  font-style: normal; \
-			  font-family: Arial, sans-serif; \
-			  font-size: 12px; \
-			  font-weight: bold; \
-			  text-shadow: 0px 1px 2px #000000; \
+			  font: " + font + "; \
+			  text-shadow: " + textShadow + "; \
 			} \
 		";
 
@@ -595,6 +623,13 @@ var DpChatWidget = new (function() {
 			if (DpChatWidget_Options.lang['user.chat.window_resume-button']) {
 				phrase2 = DpChatWidget_Options.lang['user.chat.window_resume-button'];
 			}
+		}
+
+		if (DpChatWidget_Options && DpChatWidget_Options.startPhrase) {
+			phrase1 = DpChatWidget_Options.startPhrase;
+		}
+		if (DpChatWidget_Options && DpChatWidget_Options.resumePhrase) {
+			phrase2 = DpChatWidget_Options.resumePhrase;
 		}
 
 		tpl = tpl.replace(/PHRASE1/g, phrase1);

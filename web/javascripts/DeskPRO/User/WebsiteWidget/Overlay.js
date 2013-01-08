@@ -595,7 +595,7 @@ var DpOverlayWidget = new (function() {
 		isRtl = (document.documentElement && document.documentElement.dir && document.documentElement.dir == 'rtl');
 
 		if (window.DpOverlayWidget_Options) {
-			if (isRtl) {
+			if (isRtl && !window.DpOverlayWidget_Options.tabLocation) {
 				window.DpOverlayWidget_Options.tabLocation = 'right';
 			}
 			util.extend(options, window.DpOverlayWidget_Options);
@@ -607,6 +607,9 @@ var DpOverlayWidget = new (function() {
 
 		var bgColor  = 'rgb(63,63,63)';
 		var border   = '2px solid #727272';
+		var textColor = 'white';
+		var textShadow = '0px 0px 2px #000000';
+		var font = 'bold 13px Arial, sans-serif';
 
 		if (DpOverlayWidget_Options && DpOverlayWidget_Options.btnStyle) {
 			if (DpOverlayWidget_Options.btnStyle.bgColor) {
@@ -614,6 +617,15 @@ var DpOverlayWidget = new (function() {
 			}
 			if (DpOverlayWidget_Options.btnStyle.border) {
 				border = DpOverlayWidget_Options.btnStyle.border;
+			}
+			if (DpOverlayWidget_Options.btnStyle.textColor) {
+				textColor = DpOverlayWidget_Options.btnStyle.textColor;
+			}
+			if (DpOverlayWidget_Options.btnStyle.textShadow) {
+				textShadow = DpOverlayWidget_Options.btnStyle.textShadow;
+			}
+			if (DpOverlayWidget_Options.btnStyle.font) {
+				font = DpOverlayWidget_Options.btnStyle.font;
 			}
 		}
 
@@ -627,11 +639,9 @@ var DpOverlayWidget = new (function() {
 		css.push('overflow: hidden');
 		css.push('top: 200px');
 		css.push('cursor: pointer');
-		css.push('text-shadow: 0px 0px 2px #000000');
-		css.push('color: #fff');
-		css.push('font-family: Arial, sans-serif');
-		css.push('font-weight: bold');
-		css.push('font-size: 13px');
+		css.push('text-shadow: ' + textShadow);
+		css.push('color: ' + textColor);
+		css.push('font: ' + font);
 		css.push('letter-spacing: 1px');
 		css.push('height: 34px');
 		css.push('line-height: 25px');
@@ -669,12 +679,17 @@ var DpOverlayWidget = new (function() {
 
 		css = css.join(';');
 
-		var phrase = 'Feedback &amp; Support';
+		var phrase = 'Feedback & Support';
 		if (DpOverlayWidget_Options && DpOverlayWidget_Options.lang) {
 			if (DpOverlayWidget_Options.lang['user.widget.btn']) {
 				phrase = DpOverlayWidget_Options.lang['user.widget.btn'];
 			}
 		}
+		if (DpOverlayWidget_Options && DpOverlayWidget_Options.phrase) {
+			phrase = DpOverlayWidget_Options.phrase;
+		}
+
+		phrase = phrase.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 		tmp = util.createEl('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '">' + phrase + '</div>');
 		body.appendChild(tmp);
