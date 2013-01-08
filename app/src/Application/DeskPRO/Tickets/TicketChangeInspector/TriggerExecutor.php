@@ -113,8 +113,13 @@ class TriggerExecutor
 		$factory->addGlobalOption('ticket', $this->tracker->getTicket());
 
 		$actions_collection = new ActionsCollection();
+		$stop_actions = false;
 
 		foreach ($all_triggers as $trigger) {
+			if ($trigger->getId() && $stop_actions) {
+				continue;
+			}
+
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
 
@@ -142,7 +147,7 @@ class TriggerExecutor
 			}
 
 			if ($actions_collection->hasModifierType('StopActions')) {
-				break;
+				$stop_actions = true;
 			}
 		}
 
