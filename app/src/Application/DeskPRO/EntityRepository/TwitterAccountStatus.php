@@ -43,7 +43,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 {
 	const DEFAULT_LIMIT = 100;
 
-	public function getByTwitterStatusAndAccount($id, TwitterAccountEntity $account)
+	public function getByTwitterStatusAndAccount($id, $account)
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT s, t, u
@@ -55,7 +55,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		")->setParameters(array($id, $account))->getOneOrNullResult();
 	}
 
-	public function getByTwitterIdsAndAccount(array $ids, TwitterAccountEntity $account)
+	public function getByTwitterIdsAndAccount(array $ids, $account)
 	{
 		if (!$ids) {
 			return array();

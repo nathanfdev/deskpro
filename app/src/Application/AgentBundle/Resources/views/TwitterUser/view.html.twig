@@ -94,21 +94,21 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<section>
 		<article id="{{baseId}}_statuses_tab" class="on">
-			{% for status in user.statuses %}
+			{% for status in statuses %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
 				<div style="padding: 10px">No statuses for user.</div>
 			{% endfor %}
 		</article>
 		<article id="{{baseId}}_messages_tab">
-			{% for status in user.messages %}
+			{% for status in messages %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
 				<div style="padding: 10px">No messages for user.</div>
 			{% endfor %}
 		</article>
 		<article id="{{baseId}}_mentions_tab">
-			{% for status in user.mentions %}
+			{% for status in mentions %}
 				{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 			{% else %}
 				<div style="padding: 10px">No mentions for user.</div>

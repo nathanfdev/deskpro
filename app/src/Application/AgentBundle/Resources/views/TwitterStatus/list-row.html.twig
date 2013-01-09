@@ -7,7 +7,7 @@
 {% endif %}
 
 <article
-	class="row-item twitter-status status-{{ account_status.id }} {% if account_status.is_archived %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
+	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
 	data-status-id="{{ account_status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
@@ -166,7 +166,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="status-notes notes-wrap" {% if not account_status.notes|length %}style="display: none"{% endif %}>
+	<div class="status-notes" {% if not account_status.notes|length %}style="display: none"{% endif %}>
 		<ul class="note-list">
 			{% for note in account_status.notes %}
 				{% include 'AgentBundle:TwitterStatus:note-li.html.twig' with {'note': note} %}

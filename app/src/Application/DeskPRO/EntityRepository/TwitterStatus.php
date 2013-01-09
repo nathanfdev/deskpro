@@ -67,7 +67,7 @@ class TwitterStatus extends AbstractEntityRepository
 
 		$query = "
 			SELECT s
-			FROM DeskPRO:TwitterStatus s
+			FROM DeskPRO:TwitterStatus s INDEX BY s.id
 			WHERE s.recipient IS NOT NULL
 		";
 
@@ -156,7 +156,7 @@ class TwitterStatus extends AbstractEntityRepository
 	{
 		$query = "
 			SELECT s
-			FROM DeskPRO:TwitterStatus s
+			FROM DeskPRO:TwitterStatus s INDEX BY s.id
 			WHERE s.user = :user_id
 				AND s.recipient IS NULL
 		";
@@ -191,7 +191,7 @@ class TwitterStatus extends AbstractEntityRepository
 	{
 		$query = "
 			SELECT r
-			FROM DeskPRO:TwitterStatus r
+			FROM DeskPRO:TwitterStatus r INDEX BY s.id
 			WHERE r.in_reply_to_status IN (
 				SELECT s.id
 				FROM DeskPRO:TwitterStatus s
@@ -234,7 +234,7 @@ class TwitterStatus extends AbstractEntityRepository
 
 		$query = "
 			SELECT s
-			FROM DeskPRO:TwitterStatus s
+			FROM DeskPRO:TwitterStatus s INDEX BY s.id
 			LEFT JOIN s.mentions m
 			WHERE m.user = :user_id
 		";

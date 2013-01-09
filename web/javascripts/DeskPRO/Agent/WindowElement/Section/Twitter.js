@@ -44,7 +44,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 					el.text(count);
 				}
 
-				if (data.change_assignment) {
+				if (typeof data.change_assignment !== 'undefined') {
 					if (data.change_assignment === 'agent:' + DESKPRO_PERSON_ID) {
 						var el = $('#twitter_my_statuses_count');
 						el.text(parseInt(el.text().trim(), 10) + 1);

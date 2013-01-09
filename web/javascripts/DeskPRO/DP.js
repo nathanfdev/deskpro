@@ -362,6 +362,9 @@ var DP = {
 		if (el.data('invisible-trigger')) {
 			options.containerCssClass = (options.containerCssClass || '') + ' invisible-trigger';
 			options.dropdownCssClass = (options.dropdownCssClass || '') + ' invisible-trigger';
+		} else if (el.data('invisible-trigger-right')) {
+			options.containerCssClass = (options.containerCssClass || '') + ' invisible-trigger right';
+			options.dropdownCssClass = (options.dropdownCssClass || '') + ' invisible-trigger right';
 		}
 
 		el.addClass('with-select2');

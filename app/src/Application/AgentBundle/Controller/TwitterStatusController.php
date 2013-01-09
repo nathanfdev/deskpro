@@ -253,6 +253,8 @@ class TwitterStatusController extends AbstractController
 			$sort_by_date = $this->getSortByDate();
 		}
 
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
+
 		$per_page = TwitterAccount::DEFAULT_LIMIT;
 
 		$parameters = array(
@@ -288,14 +290,43 @@ class TwitterStatusController extends AbstractController
 	 */
 	protected function getAccountStatusOr404($id, $check_perm = '')
 	{
-		$status = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->find($id);
-		if (!$status) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
-		}
+		if (preg_match('/^status:(\d+)$/', $id, $match)) {
+			$twitter_status = $this->em->getRepository('DeskPRO:TwitterStatus')->find($match[1]);
+			if (!$twitter_status) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $match[1]));
+			}
 
-		$account = $status->account;
-		if (!$account || !$account->hasPerson($this->person)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
+			$account_id = $this->person->getPref('agent.ui.last_twitter_account');
+			if ($account_id) {
+				$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($account_id);
+			} else {
+				$account = $this->person->getTwitterAccounts()->first();
+			}
+
+			if (!$account || !$account->hasPerson($this->person)) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			}
+
+			$status = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterStatusAndAccount($twitter_status->id, $account);
+			if (!$status) {
+				$status = new TwitterAccountStatus();
+				$status->status = $twitter_status;
+				$status->account = $account;
+				$status->status_type = null; // this ensures it only appears where requested
+
+				App::getOrm()->persist($status);
+				App::getOrm()->flush();
+			}
+		} else {
+			$status = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->find($id);
+			if (!$status) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
+			}
+
+			$account = $status->account;
+			if (!$account || !$account->hasPerson($this->person)) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
+			}
 		}
 
 		// todo: more fine grained permissions?

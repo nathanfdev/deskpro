@@ -26,6 +26,17 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this.header = $('.header', this.wrapper);
 		this.content = $('.content', this.wrapper);
 
+		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
+			statusArchiveHideCallback: function(row) {
+				var id = parseInt(row.data('status-id'), 10);
+				if (id && !self.countReflected[id]) {
+					self.countReflected[id] = true;
+					self.resultsHelper.adjustResultCount(-1);
+				}
+				self._afterTweetRemoved(200);
+			}
+		});
+
 		this._initHeader();
 		this._initContent(this.content);
 		this._initControls(this.content);
@@ -59,17 +70,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		};
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
-
-		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.content, this, {
-			statusArchiveHideCallback: function(row) {
-				var id = parseInt(row.data('status-id'), 10);
-				if (!self.countReflected[id]) {
-					self.countReflected[id] = true;
-					self.resultsHelper.adjustResultCount(-1);
-				}
-				self._afterTweetRemoved(200);
-			}
-		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.tweet-added', function (data) {
 			self.adjustTweetCountsFromClientMessage(data, 1);
@@ -115,7 +115,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	adjustShownTweetsForTweetAdded: function(data) {
-		if (this.content.find('.row-item.status-' + data.account_status_id).length) {
+		if (this.content.find('.twitter-status-' + data.account_status_id).length) {
 			// tweet already shown
 			return;
 		}
@@ -156,9 +156,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	adjustShownTweetsForTweetUpdated: function(data) {
-		if (this.content.find('.row-item.status-' + data.account_status_id).length) {
-			var row = this.content.find('.row-item.status-' + data.account_status_id);
+		var row = this.content.find('.twitter-status-' + data.account_status_id);
 
+		if (row.length) {
 			if (typeof data.change_archived !== 'undefined') {
 				var showArchived = this.menuOptions.filter('[name=archived]').is(':checked');
 				if (data.change_archived && !showArchived) {
@@ -185,7 +185,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 					row.find('.note-list').append(html);
 					$('.timeago', html).timeago();
 
-					row.find('.notes-wrap').show();
+					row.find('.status-notes').show();
 				}
 			}
 			if (data.edited_html) {
@@ -260,7 +260,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	removeTweetFromPage: function(account_status_id) {
-		var el = this.content.find('.row-item.status-' + account_status_id);
+		var el = this.content.find('.twitter-status-' + account_status_id);
 		if (el.length) {
 			el.remove();
 			if (!this.countReflected[account_status_id]) {
@@ -394,43 +394,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initControls: function(content) {
-		var self = this;
-
-		content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
-			var row = $(this).closest('article.twitter-status');
-			DP.select($(this));
-
-			$(this).on('change', function() {
-				var val = $(this).val();
-				var sel = $(this).find(':selected');
-				var label = sel.text().trim();
-
-				if (val == 'agent:' + DESKPRO_PERSON_ID) {
-					label = 'Me';
-				}
-
-				var labelEl = row.find('li.opt-trigger.agent label');
-				if (sel.data('icon')) {
-					labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
-				} else {
-					labelEl.text(label);
-				}
-
-				var id = $(this).closest('.twitter-status').attr('data-status-id');
-
-				$.ajax({
-					url: self.getMetaData('saveAssignUrl'),
-					type: 'POST',
-					dataType: 'json',
-					data: { account_status_id: id, assign: val },
-					success: function(json) {
-						if (json.error) {
-							alert(json.error);
-						}
-					}
-				});
-			});
-		});
+		this.twitterHelper.initAgentSelect(content, this.getMetaData('saveAssignUrl'));
 	},
 
 	_initSortByFields: function() {

@@ -180,6 +180,8 @@ class TwitterController extends AbstractController
 	{
 		$account = $this->getAccount($account_id);
 
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
+
 		return $this->render('AgentBundle:Twitter:list-searches.html.twig', array(
 			'account' => $account,
 		));
@@ -193,6 +195,8 @@ class TwitterController extends AbstractController
 		if (!$search) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
 		}
+
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
 		if ($this->in->getBool('partial')) {
 			$tpl = 'AgentBundle:TwitterStatus:part-status.html.twig';

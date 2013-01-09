@@ -9,12 +9,10 @@
 			{% endset %}
 			{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
 		</div>
-		{% if total_count > per_page %}
 			<ul class="pagenav no-prev">
 				<li class="prev"></li>
 				<li class="next"></li>
 			</ul>
-		{% endif %}
 		<div class="loading">
 
 		</div>

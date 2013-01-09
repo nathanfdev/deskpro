@@ -128,6 +128,7 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_widget_tabs'                   => new \Twig_Function_Method($this, 'getWidgetTabsBody', array('is_safe' => array('html'))),
 			'dp_js_sso_loader'                 => new \Twig_Function_Method($this, 'getJsSsoLoader', array('is_safe' => array('html'))),
 			'base_template_name'               => new \Twig_Function_Method($this, 'getBaseTemplateName', array('is_safe' => array('html'))),
+			'array_attr'                       => new \Twig_Function_Method($this, 'getArrayAttribute'),
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1269,6 +1270,21 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return implode("\n\n", $output);
+	}
+
+	/**
+	 * This gets an attribute from an array without casting the key to
+	 * an int or a string. This is useful when the key is a number that
+	 * is larger than what an int can hold.
+	 *
+	 * @param array $array
+	 * @param mixed $key
+	 *
+	 * @return mixed
+	 */
+	public function getArrayAttribute($array, $key)
+	{
+		return array_key_exists($key, $array) ? $array[$key] : null;
 	}
 }
 

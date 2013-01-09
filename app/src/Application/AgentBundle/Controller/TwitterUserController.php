@@ -141,10 +141,24 @@ class TwitterUserController extends AbstractController
 		if (!$user) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-		
-		$accounts = $this->person->getTwitterAccounts();
-		if (!$accounts) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+
+		$account_id = $this->in->getUint('account_id');
+		if ($account_id) {
+			$this->person->setPreference('agent.ui.last_twitter_account', $account_id);
+		} else {
+			$account_id = $this->person->getPref('agent.ui.last_twitter_account');
+		}
+
+		if ($account_id) {
+			$accounts = $this->person->getTwitterAccounts();
+			$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($account_id);
+		} else {
+			$accounts = $this->person->getTwitterAccounts();
+			$account = $accounts->first();
+		}
+
+		if (!$account || !$account->hasPerson($this->person)) {
+			$account = null;
 		}
 
 		if (!$user->last_profile_update || $user->last_profile_update->getTimeStamp() < time() - TwitterUser::PROFILE_UPDATE_FREQUENCY) {
@@ -153,12 +167,27 @@ class TwitterUserController extends AbstractController
 			$this->em->flush();
 		}
 
-		$account = count($accounts) == 1 ? $accounts[0] : false;
+		$statuses = $user->getStatuses();
+		$messages = $user->getMessages();
+		$mentions = $user->getMentions();
+
+		if ($account) {
+			$status_ids = array_merge(array_keys($statuses), array_keys($messages), array_keys($mentions));
+			$status_ids = array_unique($status_ids);
+			$status_ids = array_values($status_ids);
+			$account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
+		} else {
+			$account_statuses = array();
+		}
 
 		return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
 			'user' => $user,
 			'accounts' => $accounts,
-			'account' => $account
+			'account' => $account,
+			'statuses' => $statuses,
+			'messages' => $messages,
+			'mentions' => $mentions,
+			'account_statuses' => $account_statuses
 		));
 	}
 	
@@ -305,6 +334,8 @@ class TwitterUserController extends AbstractController
 	{
 		$account = $this->getAccountOr404($account_id);
 
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
+
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 		$per_page = 100;
@@ -330,6 +361,8 @@ class TwitterUserController extends AbstractController
 	public function listNewFollowersAction($account_id)
 	{
 		$account = $this->getAccountOr404($account_id);
+
+		$this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;

@@ -194,6 +194,8 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			var id = reply.attr('data-status-id');
 
 			if (id && confirm('Are you sure you want to delete this tweet?')) {
+				reply.hide();
+
 				$.ajax({
 					url: self.page.getMetaData('saveDeleteUrl'),
 					type: 'POST',
@@ -207,6 +209,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 								row.find('.reply-list').hide();
 							}
 						} else if (json.error) {
+							reply.show();
 							alert(json.error);
 						}
 					}
@@ -526,7 +529,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 							row.find('.note-list').append(html);
 							$('.timeago', html).timeago();
 
-							row.find('.notes-wrap').show();
+							row.find('.status-notes').show();
 						}
 
 						noteContainer.hide();
@@ -563,7 +566,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 	},
 
 	closestRow: function(el) {
-		return $(el).closest('.row-item, .overlay-content');
+		return $(el).closest('.row-item, .overlay-content, .twitter-status-inline');
 	},
 
 	doArchiveStatus: function(id, archive) {
@@ -609,6 +612,44 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					alert(json.error);
 				}
 			}
+		});
+	},
+
+	initAgentSelect: function(content, assignUrl) {
+		content.find('li.opt-trigger.agent select').not('.has-init').each(function() {
+			var row = $(this).closest('article.twitter-status');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var sel = $(this).find(':selected');
+				var label = sel.text().trim();
+
+				if (val == 'agent:' + DESKPRO_PERSON_ID) {
+					label = 'Me';
+				}
+
+				var labelEl = row.find('li.opt-trigger.agent label');
+				if (sel.data('icon')) {
+					labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
+				} else {
+					labelEl.text(label);
+				}
+
+				var id = $(this).closest('.twitter-status').attr('data-status-id');
+
+				$.ajax({
+					url: assignUrl,
+					type: 'POST',
+					dataType: 'json',
+					data: { account_status_id: id, assign: val },
+					success: function(json) {
+						if (json.error) {
+							alert(json.error);
+						}
+					}
+				});
+			});
 		});
 	}
 

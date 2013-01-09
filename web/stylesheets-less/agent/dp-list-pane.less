@@ -1820,7 +1820,10 @@ section.dp-overlay > article.no-footer {
 	border: 1px solid #ACB6BF;
 	.rounded(4px);
 	position: relative;
+}
 
+.list-listing article.twitter-status,
+.twitter-status-inline {
 	&.archived {
 		.opacity(70);
 
@@ -2071,15 +2074,27 @@ section.dp-overlay > article.no-footer {
 	.status-notes {
 		border-top: 1px solid #ACB6BF;
 
-		h5 {
-			margin: 4px 0 0 4px;
+		.message {
+			overflow: hidden;
+			margin: 8px 0 4px 58px;
 		}
 
-		.message .message-meta time {
-			float: none;
-			font-weight: normal;
-			font-size: 11px;
-			color: #606060;
+		.message-avatar {
+			float: left;
+		}
+
+		.message-body {
+			margin-left: 35px;
+
+			h5 {
+				font-size: 11px;
+				font-weight: bold;
+				margin-bottom: 2px;
+			}
+
+			.message-meta time {
+				font-weight: normal;
+			}
 		}
 	}
 
@@ -2116,7 +2131,8 @@ section.dp-overlay > article.no-footer {
 
 .list-listing article.twitter-status,
 .list-listing article.twitter-user,
-.twitter-message-send {
+.twitter-message-send,
+.twitter-status-inline {
 	.new-message, .new-retweet {
 		border-top: 1px solid #ACB6BF;
 		padding: 4px;
