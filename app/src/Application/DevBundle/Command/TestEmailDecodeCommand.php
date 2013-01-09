@@ -51,6 +51,8 @@ use Symfony\Component\Routing\Route;
 
 class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	protected $reader;
+
 	protected function configure()
 	{
 		$this->setDefinition(array(
@@ -60,6 +62,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
+		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,6 +82,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 		$r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 		$r->setRawSource($source);
+
+		$this->reader = $r;
+
 
 		echo "Subject: " . $r->getSubject()->getSubjectUtf8();
 		echo "\n";
@@ -108,59 +114,97 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			echo "\n";
 		}
 
-		if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
-			$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
-
-			if ($input->getOption('raw')) {
-				echo $body;
-				echo "\n";
-				return 0;
+		if ($input->getOption('forward')) {
+			$email_info = array();
+			$email_info['subject'] = $r->getSubject()->subject;
+			if ($email_info['body'] = $r->getBodyText()->getBodyUtf8()) {
+				$email_info['body_is_html'] = false;
+			} else {
+				$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+				$email_info['body_is_html'] = false;
+				$email_info['body'] = \Orb\Util\Strings::html2Text($email_info['body']);
 			}
 
-			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
+			$cutter = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
+			$fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
 
-			if (!$input->getOption('no-cut')) {
+			echo "IS VALID FORWARD: " . ($fwd_cutter->isValid() ? "TRUE" : "FALSE");
+			echo "\n\n\n\n\n";
 
-				$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-				$body = $generic_cutter->cutQuoteBlock($body, true);
+			$data = $fwd_cutter->getData();
 
-				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-				$cutter->addPatterns($pattern_config->all());
+			$data['message_body'] = $this->cleanBodyText($data['message_body']);
+			$data['fwd_message_body'] = $this->cleanBodyText($data['fwd_message_body']);
 
-				$body = $cutter->cutQuoteBlock($body, true);
-				$body .= $generic_cutter->cutBottomBlock($raw_body, true);
-			}
+			print_r($fwd_cutter->getData());
 
-			$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
-			$body = $inline_image->processTokens($body);
-			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
-			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
-			$body = Strings::trimHtmlAdvanced($body);
-
-			foreach ($r->getAttachments() as $attach) {
-				$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
-			}
-
-			$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
 		} else {
-			$body = $r->getBodyText()->getBodyUtf8();
+			if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
+				$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
 
-			if ($input->getOption('raw')) {
-				echo $body;
-				echo "\n";
-				return 0;
+				if ($input->getOption('raw')) {
+					echo $body;
+					echo "\n";
+					return 0;
+				}
+
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
+
+				if (!$input->getOption('no-cut')) {
+
+					$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+					$body = $generic_cutter->cutQuoteBlock($body, true);
+
+					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+					$cutter->addPatterns($pattern_config->all());
+
+					$body = $cutter->cutQuoteBlock($body, true);
+					$body .= $generic_cutter->cutBottomBlock($raw_body, true);
+				}
+
+				$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
+				$body = $inline_image->processTokens($body);
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
+				$body = Strings::trimHtmlAdvanced($body);
+
+				foreach ($r->getAttachments() as $attach) {
+					$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
+				}
+
+				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
+			} else {
+				$body = $r->getBodyText()->getBodyUtf8();
+
+				if ($input->getOption('raw')) {
+					echo $body;
+					echo "\n";
+					return 0;
+				}
+
+				if (!$input->getOption('no-cut')) {
+					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+					$cutter->addPatterns($pattern_config->all());
+					$body = $cutter->cutQuoteBlock($body, false);
+				}
 			}
 
-			if (!$input->getOption('no-cut')) {
-				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
-				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
-				$cutter->addPatterns($pattern_config->all());
-				$body = $cutter->cutQuoteBlock($body, false);
-			}
+			echo $body;
+			echo "\n";
 		}
 
-		echo $body;
-		echo "\n";
+		return 0;
+	}
+
+	public function cleanBodyText($text)
+	{
+		if ($this->reader->isOutlookMailer()) {
+			$text = \Orb\Util\Strings::standardEol($text);
+			$text = str_replace("\n\n", "\n", $text);
+		}
+
+		return $text;
 	}
 }

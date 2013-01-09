@@ -1220,7 +1220,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
-		if ($email_info['body'] = $this->getBodyPlain()) {
+		if ($email_info['body'] = $this->reader->getBodyText()->getBodyUtf8()) {
 			$email_info['body_is_html'] = false;
 		} else {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -1263,6 +1263,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$agent_reply = $fwd_cutter->getReply();
 
+		if ($agent_reply) {
+			$agent_reply = $this->cleanBodyText($agent_reply);
+		}
+
 		#------------------------------
 		# Find person
 		#------------------------------
@@ -1297,6 +1301,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->subject = $email_info['subject'];
 
 		$body = $fwd_cutter->getForwardedMessage();
+		$body = $this->cleanBodyText($body);
 		$newticket->ticket->message = $body;
 
 		$tracker_extras = array(
@@ -1454,34 +1459,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		return $messages;
 	}
 
-	public function getBodyPlain()
+	public function cleanBodyText($text)
 	{
-		$plain = $this->reader->getBodyText()->getBodyUtf8();
-		if (!$plain) {
-			return false;
+		if ($this->reader->isOutlookMailer()) {
+			$text = \Orb\Util\Strings::standardEol($text);
+			$text = str_replace("\n\n", "\n", $text);
 		}
 
-		// Outlook enters two line breaks for every one the user actually entered
-		// because its stupid and selfish.
-		// Lets clean up that superfluous whitespace now.
-		$is_outlook = false;
-
-		$mailer = $this->reader->getHeader('X-Mailer');
-		if ($mailer && strpos($mailer->getHeader(), 'Outlook') !== false) {
-			$is_outlook = true;
-		}
-		if (!$is_outlook) {
-			$headers = $this->reader->getRawHeaders();
-			if (preg_match('#^X\-MS\-#', $headers)) {
-				$is_outlook = true;
-			}
-		}
-
-		if ($is_outlook) {
-			$plain = \Orb\Util\Strings::standardEol($plain);
-			$plain = str_replace("\n\n", "\n", $plain);
-		}
-
-		return $plain;
+		return $text;
 	}
 }

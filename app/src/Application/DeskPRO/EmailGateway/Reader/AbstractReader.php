@@ -294,4 +294,34 @@ abstract class AbstractReader
 
 		return false;
 	}
+
+
+	/**
+	 * Checks if the email was sent via outlook
+	 *
+	 * @return bool
+	 */
+	public function isOutlookMailer()
+	{
+		if (isset($this->vals['is_outlook'])) {
+			return $this->vals['is_outlook'];
+		}
+
+		$is_outlook = false;
+
+		$mailer = $this->getHeader('X-Mailer');
+		if ($mailer && strpos($mailer->getHeader(), 'Outlook') !== false) {
+			$is_outlook = true;
+		}
+		if (!$is_outlook) {
+			$headers = $this->getRawHeaders();
+			if (preg_match('#^X\-MS\-#', $headers)) {
+				$is_outlook = true;
+			}
+		}
+
+		$this->vals['is_outlook'] = $is_outlook;
+
+		return $this->vals['is_outlook'];
+	}
 }
