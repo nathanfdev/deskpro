@@ -262,7 +262,46 @@ var DP = {
 				} // otherwise we didn't find something that wasn't hidden
 			}
 		} else {
-			options.width = 'resolve';
+			options.width = function() {
+				var select_el = el;
+				var w = select_el.outerWidth();
+
+				if (w === 0) {
+					return 'auto';
+				} else {
+					var largest = 0, label, charsize = 6, tmp;
+					select_el.find('> *').each(function() {
+						var el = $(this);
+						if (el.is('optgroup')) {
+							tmp = $.trim(el.attr('label')).length * charsize;
+							if (tmp > largest) {
+								largest = tmp;
+							}
+
+							el.find('option').each(function() {
+								var s_el = $(this);
+								if (s_el.data('single-title')) {
+									tmp = ($.trim(s_el.data('single-title')).length * charsize) + 15; // +15 for optgroup indent
+								} else {
+									tmp = ($.trim(s_el.text()).length * charsize) + 15; // +15 for optgroup indent
+								}
+								if (tmp > largest) {
+									largest = tmp;
+								}
+							});
+						} else {
+							tmp = ($.trim(el.text()).length * charsize);
+							if (tmp > largest) {
+								largest = tmp;
+							}
+						}
+					});
+
+					largest += 35;
+
+					return largest;
+				}
+			};
 		}
 
 		if (el.data('select-clear')) {
