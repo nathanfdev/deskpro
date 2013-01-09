@@ -30,7 +30,7 @@
 		{% if status.isMessage() %}
 			<time class="status-time timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
 		{% else %}
-			<a href="https://twitter.com/{{ status.user.screen_name }}/status/{{ status.id }}" target="_blank" class="status-time timeago" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</a>
+			<a href="https://twitter.com/{{ retweet ? retweet.user.screen_name : status.user.screen_name }}/status/{{ retweet ? retweet.id : status.id }}" target="_blank" class="status-time timeago" title="{{retweet ? retweet.date_created|date('c', 'UTC') : status.date_created|date('c', 'UTC')}}">{{retweet ? status.date_created|date('day') : status.date_created|date('day')}}</a>
 		{% endif %}
 
 		{% if status.in_reply_to_status or retweet or (status.long and status.long.date_read) %}
