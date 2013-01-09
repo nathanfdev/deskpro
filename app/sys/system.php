@@ -653,9 +653,11 @@ final class License
 				// round up if more than 1 day + > 0 hours left
 				return ($diff->days + (($diff->days && $diff->h) ? 1 : 0));
 			case 'hours':
-				return $d->diff(new \DateTime())->h;
+				$diff = $d->diff(new \DateTime());
+				return $diff->h + $diff->days * 24;
 			case 'mins':
-				return $d->diff(new \DateTime())->i;
+				$diff = $d->diff(new \DateTime());
+				return $diff->i + $diff->days * 24 * 60 + $diff->h * 60;
 		}
 
 		return 0;

@@ -103,15 +103,11 @@
 {% endmacro %}
 
 {% macro lic_expire_days(in_word) %}
-	{% if app.getLicense().getExpireDays() == 1 or app.getLicense().getExpireDays() == 2 %}
-		TOMORROW
-	{% elseif app.getLicense().getExpireDays() == 0 %}
-		{% if app.getLicense().getExpireTime('hours') == 0 %}
-			{{ in_word|default('in') }} {{ app.getLicense().getExpireTime('mins') }} minutes
-		{% else %}
-			{{ in_word|default('in') }} {{ app.getLicense().getExpireTime('hours') }} hours
-		{% endif %}
+	{% if app.getLicense().getExpireDays() == 0 and app.getLicense().getExpireTime('hours') == 0 %}
+		In {{ app.getLicense().getExpireTime('mins') }} minutes
+	{% elseif app.getLicense().getExpireDays() < 3 %}
+		In {{ app.getLicense().getExpireTime('hours') }} hours
 	{% else %}
-		{{ in_word|default('in') }} {{ app.getLicense().getExpireDays() }} days
+		In {{ app.getLicense().getExpireDays() }} days
 	{% endif %}
 {% endmacro %}
