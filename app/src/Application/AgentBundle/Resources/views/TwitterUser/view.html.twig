@@ -65,20 +65,27 @@ pageMeta.baseId = '{{ baseId }}';
 							<li class="follow-button"><a class="clean-white large">{{ phrase('agent.general.follow') }}</a></li>
 						{% endif %}
 					{% endif %}
-				{% else %}
-					<li class="follow-menu menu-fitted" id="{{ baseId }}_follow_menu_trigger" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.follow') }} <em></em></a></li>
+					<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
 				{% endif %}
-				<li class="send-message-button"><a class="clean-white large">{{ phrase('agent.general.message') }}</a></li>
 				<li><a href="https://twitter.com/{{ user.screen_name }}" target="_blank" class="clean-white large">View Twitter Profile</a></li>
+				{% if account and accounts|length > 1 %}
+					<li id="{{ baseId }}_switch_account_trigger" style="float: right"><a class="clean-white large">
+						<img src="{{ account.user.profile_image_url }}" width="14" height="14" alt="" style="vertical-align: middle" />
+						@{{ account.user.screen_name }}
+					</a></li>
+				{% endif %}
 			</ul>
 		</nav>
 	</div>
 	<br class="clear" />
 </header>
 
-<ul style="display:none" id="{{baseId}}_follow_menu">
+<ul style="display:none" id="{{baseId}}_switch_account_menu">
 	{% for possible_account in accounts %}
-		<li data-account-id="{{ possible_account.id }}" data-following="{{ user.id in possible_account.friend_ids ? 1 : 0 }}">@{{ possible_account.user.screen_name }}: <em>{{ user.id in possible_account.friend_ids ? 'Unfollow' : 'Follow' }}</em></li>
+		<li data-load-route="{{ path('agent_twitter_user', {'user_id': user.id, 'account_id': possible_account.id}) }}">
+			<img src="{{ possible_account.user.profile_image_url }}" width="14" height="14" alt="" style="vertical-align: middle" />
+			@{{ possible_account.user.screen_name }}
+		</li>
 	{% endfor %}
 </ul>
 

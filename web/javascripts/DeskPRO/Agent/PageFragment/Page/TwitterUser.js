@@ -45,34 +45,15 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 			});
 		});
 
-		var followMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('follow_menu_trigger'),
-			menuElement: this.getEl('follow_menu'),
+		var switchAccountMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('switch_account_trigger'),
+			menuElement: this.getEl('switch_account_menu'),
 			onItemClicked: function(info) {
-				var it = $(info.itemEl);
+				var loadRoute = $(info.itemEl).data('load-route');
+				switchAccountMenu.close();
 
-				var accountId = it.data('account-id');
-				var url;
-				if (it.data('following') == '1') {
-					url = self.getMetaData('saveUnfollowUrl');
-					it.data('following', '0');
-					it.find('em').text('Follow');
-				} else {
-					url = self.getMetaData('saveFollowUrl');
-					it.data('following', '1');
-					it.find('em').text('Unfollow');
-				}
-
-				$.ajax({
-					url: url,
-					type: 'POST',
-					data: {
-						user_id: self.getMetaData('userId'),
-						account_id: accountId
-					}
-				});
-
-				followMenu.close();
+				DeskPRO_Window.removePage(self);
+				DeskPRO_Window.runPageRoute('page:' + loadRoute);
 			}
 		});
 
