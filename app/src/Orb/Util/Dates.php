@@ -360,22 +360,53 @@ class Dates
 
 
 	/**
-	 * Converts a datetime object into a datetime object.
-	 *
-	 * When using setTimezone on a datetime, it doesn't change the internal representation of the date, only the output.
-	 * (eg if you were to getTimezone() on each, they'd be the same value).
-	 *
-	 * So if you want a "real" UTC datetime object with the time adjusted, you need to do the conversion.
+	 * Converts a timezone into a UTC timezone. This does actual time conversion between timezones.
 	 *
 	 * @param \DateTime $datetime
 	 * @return \DateTime
 	 */
 	public static function convertToUtcDateTime(\DateTime $datetime)
 	{
+		$datetime2 = clone $datetime;
+		$datetime2->setTimezone(self::tzUtc());
+
+		return self::makeUtcDateTime($datetime2);
+	}
+
+
+	/**
+	 * Creates a 'true' UTC time with an adjusted timestamp. This does NOT do any time conversions,
+	 * it just re-creates a datetime object with the same date and time but with a UTC timezone. If you need
+	 * to convert between timezones, use convertToUtcDateTime.
+	 *
+	 * When using setTimezone on a datetime, it doesn't change the internal representation of the date, only the output.
+	 * (eg if you were to getTimezone() on each, they'd be the same value).
+	 *
+	 * So if you want a "real" UTC datetime object with the timestamp adjusted, you need to do the conversion based on setting
+	 * the date.
+	 *
+	 * @param \DateTime $datetime
+	 * @return \DateTime
+	 */
+	public static function makeUtcDateTime(\DateTime $datetime)
+	{
 		$utc_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $datetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
 		return $utc_datetime;
 	}
 
+
+	/**
+	 * @return \DateTimeZone
+	 */
+	public static function tzUtc()
+	{
+		static $tz;
+		if (!$tz) {
+			$tz = new \DateTimeZone('UTC');
+		}
+
+		return $tz;
+	}
 
 	/**
 	 * Tries to find the name of the timezone for a given offset. Returns false if no timezone found.

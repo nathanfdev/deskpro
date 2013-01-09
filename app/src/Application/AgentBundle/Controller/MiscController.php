@@ -793,7 +793,7 @@ JS;
 
 	public function getServerTimeAction()
 	{
-		$d = \Orb\Util\Dates::convertToUtcDateTime($this->person->getDateTime());
+		$d = \Orb\Util\Dates::makeUtcDateTime($this->person->getDateTime());
 
 		return $this->createJsonResponse(array(
 			'timestamp_utc' => time(),

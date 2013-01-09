@@ -55,7 +55,7 @@ class MainController extends AbstractController
 		$stats = array();
 		$today = $this->person->getDateTime();
 		$today->setTime(0,0,0);
-		$today = \Orb\Util\Dates::convertToUtcDateTime($today);
+		$today->setTimezone(\Orb\Util\Dates::tzUtc());
 		$today = $today->format('Y-m-d H:i:s');
 
 		$stats['created_today']  = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE date_created > ?", array($today));

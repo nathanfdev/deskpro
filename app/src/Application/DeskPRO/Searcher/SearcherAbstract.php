@@ -353,10 +353,12 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if ($date1 AND !($date1 instanceof \DateTime)) {
-			$date1 = new \DateTime("@{$date1}", $timezone_context);
+			$date1 = new \DateTime("@{$date1}");
+			$date1->setTimezone($timezone_context);
 		}
 		if ($date2 AND !($date2 instanceof \DateTime)) {
-			$date2 = new \DateTime("@{$date2}", $timezone_context);
+			$date2 = new \DateTime("@{$date2}");
+			$date2->setTimezone($timezone_context);
 		}
 
 		// There should always be at least one date
