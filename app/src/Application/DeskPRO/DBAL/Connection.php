@@ -498,6 +498,7 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		$write = implode("\t", $write);
+		$write .= "\n";
 
 		@file_put_contents(dp_get_log_dir() . '/db_delete.log', $write, \FILE_APPEND);
 	}
