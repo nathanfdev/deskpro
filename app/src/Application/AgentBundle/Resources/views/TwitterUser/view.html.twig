@@ -39,12 +39,11 @@ pageMeta.baseId = '{{ baseId }}';
 			{% endif %}
 		</div>
 	</td></tr></table>
-	<br class="clear" />
 
 	{% set verified_people = user.getVerifiedPeople() %}
 	{% set possible_people = user.getPossiblePeople() %}
 	{% if verified_people|length or possible_people|length %}
-		<div>
+		<div style="margin-top: 10px;" style="clear: both">
 			Associated people:
 			{% for person in verified_people %}
 				<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Verified">{{ person.display_name }}<em></em></a>
@@ -55,7 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	{% endif %}
 
-	<div class="meta-line">
+	<div class="meta-line" style="clear: both">
 		<nav class="actions" id="{{baseId}}_action_buttons">
 			<ul>
 				{% if account %}

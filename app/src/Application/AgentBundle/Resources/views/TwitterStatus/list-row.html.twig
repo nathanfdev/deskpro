@@ -116,26 +116,6 @@
 			</div>
 		</form>
 	</div>
-	<div class="status-notes notes-wrap" {% if not account_status.notes|length %}style="display: none"{% endif %}>
-		<h5>Notes</h5>
-		<ul class="note-list">
-			{% for note in account_status.notes %}
-				{% include 'AgentBundle:TwitterStatus:note-li.html.twig' with {'note': note} %}
-			{% endfor %}
-		</ul>
-	</div>
-	<div class="new-note" style="display: none">
-		<div class="note-input">
-			<textarea></textarea>
-			<div class="is-not-loading">
-				<button class="clean-white small save-note-trigger">Add Note</button>
-				<span class="cancel-note-trigger">{{ phrase('agent.general.cancel') }}</span>
-			</div>
-			<div class="is-loading">
-				{{ phrase('agent.general.saving') }}
-			</div>
-		</div>
-	</div>
 	<div class="status-info">
 		<ul>
 			<li class="noval">
@@ -161,29 +141,48 @@
 			</li>
 			<li class="noval opt-trigger agent" style="overflow:hidden; height: 18px; position: relative; float: right;">
 				<label>
-					{% if account_status.agent and account_status.agent.id != app.user.id %}{{ account_status.agent.display_name }}
-					{% elseif account_status.agent and account_status.agent.id == app.user.id %}Me
-					{% elseif account_status.agent_team %}{{ account_status.agent_team.name }}
-					{% else %}None{% endif %}
+					{% if account_status.agent and account_status.agent.id != app.user.id %}<img src="{{ account_status.agent.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent.display_name }}
+					{% elseif account_status.agent and account_status.agent.id == app.user.id %}<img src="{{ app.user.getPictureUrl(16) }}" alt="" class="agent-assign-icon" /> Me
+					{% elseif account_status.agent_team %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> {{ account_status.agent_team.name }}
+					{% else %}<img src="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}" alt="" class="agent-assign-icon" /> None{% endif %}
 				</label><span class="drop-icon"></span>
-				<select class="agents_sel dpe_select"  style="min-width: 170px; display: none" data-invisible-trigger="1">
-					<option {% if not account_status.agent and not account_status.agent_team %}selected="selected"{% endif %} value="">None</option>
+				<select class="agents_sel dpe_select"  style="min-width: 170px; display: none" data-invisible-trigger="1" data-style-type="icons">
+					<option {% if not account_status.agent and not account_status.agent_team %}selected="selected"{% endif %} value="" data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">None</option>
 					<optgroup label="Agents">
 						{% for agent in app.getDataRepository('Agent').getAgents() %}
 							{% if account_status.account.hasPerson(agent) %}
-								<option {% if account_status.agent and agent.id == account_status.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+								<option {% if account_status.agent and agent.id == account_status.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(16) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 							{% endif %}
 						{% endfor %}
 					</optgroup>
 					{% if app.getDataRepository('AgentTeam').getTeams()|length %}
 						<optgroup label="Teams">
 							{% for team in app.getDataRepository('AgentTeam').getTeams() %}
-								<option value="agent_team:{{ team.id }}" {% if account_status.agent_team and account_status.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+								<option value="agent_team:{{ team.id }}" {% if account_status.agent_team and account_status.agent_team.id == team.id %}selected="selected"{% endif %} data-icon="{{ path('serve_default_picture', {'s': 16, 'size-fit': 1}, true) }}">{{ team.name }}</option>
 							{% endfor %}
 						</optgroup>
 					{% endif %}
 				</select>
 			</li>
 		</ul>
+	</div>
+	<div class="status-notes notes-wrap" {% if not account_status.notes|length %}style="display: none"{% endif %}>
+		<ul class="note-list">
+			{% for note in account_status.notes %}
+				{% include 'AgentBundle:TwitterStatus:note-li.html.twig' with {'note': note} %}
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="new-note" style="display: none">
+		<div class="note-input">
+			<textarea></textarea>
+			<div class="is-not-loading">
+				<button class="clean-white small save-note-trigger">Add Note</button>
+				<span class="cancel-note-trigger">{{ phrase('agent.general.cancel') }}</span>
+			</div>
+			<div class="is-loading">
+				{{ phrase('agent.general.saving') }}
+			</div>
+		</div>
 	</div>
 </article>

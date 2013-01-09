@@ -161,6 +161,10 @@ var DP = {
 
 					options.addResultClass = 'with-icon';
 					options.formatResult = function(result) {
+						if (typeof result.id === 'undefined') {
+							return Orb.escapeHtml(result.text);
+						}
+
 						var opt = el.find('option[value="' + result.id + '"]');
 						var name = Orb.escapeHtml(opt.text());
 						if (opt.data('icon')) {

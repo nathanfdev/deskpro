@@ -1,6 +1,6 @@
 <header class="list-selection-bar">
-	<input class="selection-control" type="checkbox" />
-	{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}, true) }}
+	<input class="selection-control" type="checkbox" style="left: 14px" />
+	{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count" style="margin-left: 5px">0</span>'}, true) }}
 
 	<a class="perform-action perform-actions-trigger disabled">
 		<span>{{ phrase('agent.general.perform_actions') }}</span>
@@ -31,7 +31,7 @@
 									</label>
 
 									<div class="dp-group-options twitter-message-send" style="display: none">
-										<div class="new-message" style="text-align: left; max-width: 350px; margin: 0 auto; border-top: none;">
+										<div class="new-message" style="text-align: left; max-width: 350px; border-top: none;">
 											<ul class="message-type">
 												<li class="on public" data-type="public">
 													{{ phrase('agent.general.public') }}
@@ -59,7 +59,7 @@
 											</div>
 										</div>
 
-										<div class="execute-row">
+										<div class="execute-row" style="text-align: left">
 											<span class="is-not-loading">
 												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 											</span>
@@ -74,14 +74,12 @@
 										Retweet
 									</label>
 
-									<div class="dp-group-options" style="display: none">
-										<div class="execute-row">
-											<span class="is-not-loading">
-												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
-											</span>
-											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
-										</div>
-									</div>
+									<span class="dp-group-options" style="display: none">
+										<span class="is-not-loading">
+											<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+										</span>
+										<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+									</span>
 								</div>
 
 								<div class="dp-input-group">
@@ -90,14 +88,12 @@
 										Unretweet
 									</label>
 
-									<div class="dp-group-options" style="display: none">
-										<div class="execute-row">
-											<span class="is-not-loading">
-												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
-											</span>
-											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
-										</div>
-									</div>
+									<span class="dp-group-options" style="display: none">
+										<span class="is-not-loading">
+											<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+										</span>
+										<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+									</span>
 								</div>
 
 								<div class="dp-input-group">
@@ -106,14 +102,12 @@
 										Favorite
 									</label>
 
-									<div class="dp-group-options" style="display: none">
-										<div class="execute-row">
-											<span class="is-not-loading">
-												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
-											</span>
-											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
-										</div>
-									</div>
+									<span class="dp-group-options" style="display: none">
+										<span class="is-not-loading">
+											<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+										</span>
+										<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+									</span>
 								</div>
 
 								<div class="dp-input-group">
@@ -122,14 +116,12 @@
 										Remove favorite
 									</label>
 
-									<div class="dp-group-options" style="display: none">
-										<div class="execute-row">
-											<span class="is-not-loading">
-												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
-											</span>
-											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
-										</div>
-									</div>
+									<span class="dp-group-options" style="display: none">
+										<span class="is-not-loading">
+											<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+										</span>
+										<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+									</span>
 								</div>
 
 								<div class="dp-input-group">
@@ -137,7 +129,7 @@
 										<input type="radio" class="option-trigger" name="action" value="assign" />
 										Assign
 									</label>
-									<div class="dp-group-options" style="display: none">
+									<div class="dp-group-options" style="display: none; text-align: left; padding-top: 3px">
 										<label>
 											Assign to:
 											<select name="assign" class="agents_sel dpe_select" style="min-width: 170px" >
@@ -158,7 +150,7 @@
 												{% endif %}
 											</select>
 										</label>
-										<div class="execute-row">
+										<div class="execute-row" style="text-align: left">
 											<span class="is-not-loading">
 												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 											</span>
@@ -172,14 +164,13 @@
 										<input type="radio" class="option-trigger" name="action" value="archive" />
 										Archive
 									</label>
-									<div class="dp-group-options" style="display: none">
-										<div class="execute-row">
-											<span class="is-not-loading">
-												<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
-											</span>
-											<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
-										</div>
-									</div>
+
+									<span class="dp-group-options" style="display: none">
+										<span class="is-not-loading">
+											<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
+										</span>
+										<span class="is-loading"><img src="{{ asset('images/spinners/loading-small.gif') }}" /></span>
+									</span>
 								</div>
 							</div>
 						</div>

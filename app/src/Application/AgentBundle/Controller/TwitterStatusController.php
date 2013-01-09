@@ -652,11 +652,17 @@ class TwitterStatusController extends AbstractController
 			$old_assign = '';
 		}
 
-		list($type, $id) = explode(':', $this->in->getValue('assign'));
-		if ($type == 'agent') {
-			$account_status->setAgentId($id);
+		$assign = $this->in->getValue('assign');
+		if ($assign) {
+			list($type, $id) = explode(':', $this->in->getValue('assign'));
+			if ($type == 'agent') {
+				$account_status->setAgentId($id);
+			} else {
+				$account_status->setAgentTeamId($id);
+			}
 		} else {
-			$account_status->setAgentTeamId($id);
+			$account_status->agent = null;
+			$account_status->agent_team = null;
 		}
 
 		$this->em->persist($account_status);
@@ -672,7 +678,14 @@ class TwitterStatusController extends AbstractController
 
 		if ($new_assignment != $old_assign) {
 			$this->_insertUpdatedTweetClientMessage($account_status,
-				array('change_assignment' => $new_assignment, 'old_assignment' => $old_assign)
+				array(
+					'change_assignment' => $new_assignment,
+					'assignment_picture' => ($account_status->agent
+						? $account_status->agent->getPictureUrl(16)
+						: $this->generateUrl('serve_default_picture', array('s' => 16, 'size-fit' => 1), true)
+					),
+					'old_assignment' => $old_assign
+				)
 			);
 		}
 

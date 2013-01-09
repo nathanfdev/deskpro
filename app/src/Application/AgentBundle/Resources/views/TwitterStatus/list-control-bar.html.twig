@@ -2,25 +2,8 @@
 <header class="header">
 	<div class="list-control-bar">
 		<ul class="btn-controls">
-			<!--<li class="display-options display-options-trigger"><a></a></li>
-			<li class="right"><span class="sep"></span></li>-->
-			{% if account %}<li><label><input name="account" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets</label></li>{% endif %}
-			<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
-		</ul>
-
-		{#<ul>
-			<li>{{ phrase('agent.general.ordered_by') }} </li>
-			<li class="order-by-menu-trigger menu-fitted" data-dir="{{ sort_by_date }}" data-menu-button=".button"><a class="button"><span class="label"><label>Date Created</label> <i class="order-dir asc" {% if sort_by_date != 'asc' %}style="display: none"{% endif %}>ASC</i><i class="order-dir desc" {% if sort_by_date != 'desc' %}style="display: none"{% endif %}>DESC</i></span><em></em></a></li>
-		</ul>
-
-		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="asc"><label class="label">Date Created</label> <i class="order-dir">ASC</i></li>
-			<li data-order-by="desc"><label class="label">Date Created</label> <i class="order-dir">DESC</i></li>
-		</ul>#}
-
-		<ul style="display:none" class="display-options-menu">
-			{% if account %}<li><label><input name="account" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets</label></li>{% endif %}
-			<li><label><input name="archived" type="checkbox" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
+			{% if account %}<li><label><input name="account" type="checkbox" style="position: relative; top: 2px" /> Show <img src="{{ account.user.profile_image_url }}" width="16" height="16" alt="" style="position: relative; top: 4px" /> @{{ account.user.screen_name }}'s tweets</label></li>{% endif %}
+			<li><label><input name="archived" type="checkbox" style="position: relative; top: 2px" /> {{ phrase('agent.twitter.show_archived_tweets') }}</label></li>
 		</ul>
 	</div>
 </header>

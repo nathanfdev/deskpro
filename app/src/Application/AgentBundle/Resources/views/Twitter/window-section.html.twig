@@ -1,7 +1,10 @@
 
 <section class="source-section">
+	<header>
+		<h1>Tweets</h1>
+	</header>
 	<ul class="source-list">
-		<li class="auto-load-route" data-route="listpane:{{ path('agent_twitter_starred_tweets_list') }}">
+		<li data-route="listpane:{{ path('agent_twitter_starred_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred|default(0) }}</span>
 				{{ phrase('agent.twitter.starred_tweets') }}
@@ -17,7 +20,7 @@
 		<li data-route="listpane:{{ path('agent_twitter_team_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_team_statuses_count">{{ statuses.team|default(0) }}</span>
-				{{ phrase('agent.twitter.team_tweets') }}
+				{{ phrase('agent.twitter.my_teams_tweets') }}
 			</h3>
 		</li>
 		{% endif %}
@@ -36,7 +39,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
-				<span class="title" data-route="listpane:{{ path('agent_twitter_inbox_list', {'account_id': account.id}) }}">
+				<span class="title auto-load-route" data-route="listpane:{{ path('agent_twitter_inbox_list', {'account_id': account.id}) }}">
 					<span class="list-counter twitter-inbox-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countInbox() }}">{{ account.countInbox() }}</span>
 					<span>{{ phrase('agent.general.inbox') }}</span>
 				</span>

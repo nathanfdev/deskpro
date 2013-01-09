@@ -215,7 +215,13 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 					if (data.change_assignment == 'agent:' + DESKPRO_PERSON_ID) {
 						label = 'Me';
 					}
-					row.find('li.opt-trigger.agent label').text(label);
+
+					var labelEl = row.find('li.opt-trigger.agent label');
+					if (data.assignment_picture) {
+						labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', data.assignment_picture));
+					} else {
+						labelEl.text(label);
+					}
 				}
 			}
 		} else {
@@ -396,13 +402,19 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 			$(this).on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var sel = $(this).find(':selected');
+				var label = sel.text().trim();
 
 				if (val == 'agent:' + DESKPRO_PERSON_ID) {
 					label = 'Me';
 				}
 
-				row.find('li.opt-trigger.agent label').text(label);
+				var labelEl = row.find('li.opt-trigger.agent label');
+				if (sel.data('icon')) {
+					labelEl.text(' ' + label).prepend($('<img class="agent-assign-icon" />').attr('src', sel.data('icon')));
+				} else {
+					labelEl.text(label);
+				}
 
 				var id = $(this).closest('.twitter-status').attr('data-status-id');
 

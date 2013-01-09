@@ -37,15 +37,15 @@
 		<ul>
 			{% if user.id in account.friend_ids %}
 				<li class="noval opt-trigger unfollow">
-					<label>Unfollow</label><span class="drop-icon"></span>
+					<label>Unfollow</label>
 				</li>
 			{% else %}
 				<li class="noval opt-trigger follow">
-					<label>Follow</label><span class="drop-icon"></span>
+					<label>Follow</label>
 				</li>
 			{% endif %}
-			<li class="noval opt-trigger message">
-				<label>Message</label><span class="drop-icon"></span>
+			<li class="noval opt-trigger message" style="float: right">
+				<label>Send Tweet</label><span class="drop-icon"></span>
 			</li>
 		</ul>
 	</div>

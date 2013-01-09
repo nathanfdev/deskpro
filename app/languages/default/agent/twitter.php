@@ -8,6 +8,7 @@
 	'agent.twitter.geo'                  => 'GEO',
 	'agent.twitter.in_reply_to'          => 'In reply to',
 	'agent.twitter.location'             => 'Location',
+	'agent.twitter.my_teams_tweets'      => 'My Teams\' Tweets',
 	'agent.twitter.my_tweets'            => 'My Tweets',
 	'agent.twitter.new_followers'        => 'New Followers',
 	'agent.twitter.new_search'           => 'New Search',
@@ -25,6 +26,5 @@
 	'agent.twitter.sent'                 => 'Sent',
 	'agent.twitter.show_archived_tweets' => 'Show archived tweets',
 	'agent.twitter.starred_tweets'       => 'Starred Tweets',
-	'agent.twitter.team_tweets'          => 'Team Tweets',
 	'agent.twitter.unknown'              => 'unknown',
 );

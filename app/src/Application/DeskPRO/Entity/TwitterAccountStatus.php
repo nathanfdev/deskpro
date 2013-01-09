@@ -130,9 +130,13 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAgentId($agent_id)
 	{
-		$agent = App::getOrm()->find('DeskPRO:Person', $agent_id);
-		if ($agent && $agent->is_agent) {
-			$this->setModelField('agent', $agent);
+		if ($agent_id) {
+			$agent = App::getOrm()->find('DeskPRO:Person', $agent_id);
+			if ($agent && $agent->is_agent) {
+				$this->setModelField('agent', $agent);
+			} else {
+				$this->setModelField('agent', null);
+			}
 		} else {
 			$this->setModelField('agent', null);
 		}
@@ -141,9 +145,13 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAgentTeamId($agent_team_id)
 	{
-		$team = App::getOrm()->find('DeskPRO:AgentTeam', $agent_team_id);
-		if ($team) {
-			$this->setModelField('agent_team', $team);
+		if ($agent_team_id) {
+			$team = App::getOrm()->find('DeskPRO:AgentTeam', $agent_team_id);
+			if ($team) {
+				$this->setModelField('agent_team', $team);
+			} else {
+				$this->setModelField('agent_team', null);
+			}
 		} else {
 			$this->setModelField('agent_team', null);
 		}
