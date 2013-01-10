@@ -104,9 +104,13 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 		});
 
 		$('.timeago', this.el).timeago();
-		this.el.find('textarea').TextAreaExpander();
+		this.el.find('textarea:not(.note-textarea)').TextAreaExpander();
 
 		this.twitterHelper = new DeskPRO.Agent.PageHelper.Twitter(this.el, this);
 		this.twitterHelper.initAgentSelect(this.el, this.getMetaData('saveAssignUrl'));
+
+		this.el.find('.note-textarea').each(function() {
+			self.twitterHelper.initializeNoteEditor($(this), self.getMetaData('agentMap'));
+		});
 	}
 });

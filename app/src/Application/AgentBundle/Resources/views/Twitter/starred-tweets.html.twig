@@ -9,6 +9,15 @@ pageMeta.totalCount = {{ total_count }};
 pageMeta.statusListUrl = '{{ path('agent_twitter_starred_tweets_list') }}?partial=1';
 pageMeta.listRoute = 'agent_twitter_starred_tweets_list';
 {% include 'AgentBundle:Twitter:list-urls.js.twig' %}
+
+pageMeta.agentMap = {
+{% for person in agents %}
+	{% if person.id != app.user.id %}
+		{{ person.id }}: {name: {{ person.display_name|json_encode|raw }}, picture_url: {{ person.getPictureUrl(20)|json_encode|raw }}},
+	{% endif %}
+{% endfor %}
+	0: null
+};
 </script>
 
 {# scroll containers #}

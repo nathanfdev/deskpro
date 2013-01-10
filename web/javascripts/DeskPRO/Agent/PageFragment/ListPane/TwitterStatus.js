@@ -163,8 +163,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				var showArchived = this.menuOptions.filter('[name=archived]').is(':checked');
 				if (data.change_archived && !showArchived) {
 					this.removeTweetFromPage(data.account_status_id);
-				} else if (!data.change_archived) {
-					this.addTweetToPage(data.account_status_id, data.tweet_html);
 				}
 			}
 			if (data.deleted) {
@@ -383,8 +381,14 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initContent: function(content) {
+		var self = this;
+
 		$('.timeago', content).timeago();
-		content.find('textarea').TextAreaExpander();
+		content.find('textarea:not(.note-textarea)').TextAreaExpander();
+
+		content.find('.note-textarea').each(function() {
+			self.twitterHelper.initializeNoteEditor($(this), self.getMetaData('agentMap'));
+		});
 
 		var list = content.find('.twitter-status-list');
 		if (list.length && list.data('page') && this.resultsHelper) {

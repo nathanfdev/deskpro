@@ -511,7 +511,14 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				newNote.hide();
 			} else {
 				newNote.show();
-				newNote.find('textarea').focus();
+
+				var textarea = newNote.find('textarea');
+
+				if (textarea.data('redactor')) {
+					textarea.setFocus();
+				} else {
+					textarea.focus();
+				}
 			}
 		});
 		this.content.on('click', '.cancel-note-trigger', function() {
@@ -525,7 +532,12 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 			var id = row.attr('data-status-id');
 			var noteContainer = $(this).closest('.new-note');
 
-			var val = $.trim(noteContainer.find('textarea').val());
+			var textarea = noteContainer.find('textarea');
+			if (textarea.data('redactor')) {
+				textarea.data('redactor').syncCode();
+			}
+
+			var val = $.trim(textarea.val());
 			if (!val.length) {
 				noteContainer.hide();
 				return;
@@ -552,7 +564,10 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 						}
 
 						noteContainer.hide();
-						noteContainer.find('textarea').val('')
+						textarea.val('');
+						if (textarea.data('redactor')) {
+							textarea.setCode('');
+						}
 					} else {
 						alert(json.error);
 					}
@@ -670,6 +685,60 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 				});
 			});
 		});
+	},
+
+	initializeNoteEditor: function(textarea, agentMap) {
+		if (textarea.data('redactor')) {
+			return;
+		}
+
+		textarea.redactor({
+			toolbar: false,
+			buttons: [],
+			shortcuts: false,
+			minHeight: 50
+		});
+
+		var api = textarea.data('redactor');
+		if (!api) {
+			return;
+		}
+
+		var editor = textarea.getEditor();
+		if (!editor) {
+			return false
+		}
+
+		editor.bind('keydown', function(ev) {
+			ev.stopPropagation();
+
+			if (ev.metaKey && !ev.ctrlKey) { // pressing "cmd" on a mac
+				var sel;
+				if (window.getSelection && (sel = window.getSelection()) && sel.modify) {
+					var adjustmentType = ev.shiftKey ? "extend" : "move";
+
+					switch (ev.keyCode) {
+						case 39: // right - act like "end" in windows
+							sel.modify(adjustmentType, "right", "lineboundary");
+							ev.preventDefault();
+							break;
+
+						case 37: // left - act like "home" in windows
+							sel.modify(adjustmentType, "left", "lineboundary");
+							ev.preventDefault();
+							break;
+					}
+				}
+			}
+		});
+
+		editor.bind('keypress', function(ev) {
+			ev.stopPropagation();
+		});
+
+		DeskPRO_Window.initAgentNotifierForRte(
+			self, textarea, agentMap || false, true
+		);
 	}
 
 	/*_initFollow: function() {

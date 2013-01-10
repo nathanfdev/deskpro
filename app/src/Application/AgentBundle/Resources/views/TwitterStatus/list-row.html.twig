@@ -7,7 +7,7 @@
 {% endif %}
 
 <article
-	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived and not hideArchiveTools %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
+	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived and (not hideArchiveTools or account_status.status_type) %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
 	data-status-id="{{ account_status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
@@ -20,7 +20,7 @@
 				{% if not status.recipient %}
 					<i class="status-delete status-action tipped" title="Delete"></i>
 				{% endif %}
-			{% elseif not hideArchiveTools %}
+			{% elseif not hideArchiveTools or account_status.status_type %}
 				<i class="status-archived status-action tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
 				<i class="status-archive status-action tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
 			{% endif %}
@@ -174,7 +174,7 @@
 	</div>
 	<div class="new-note" style="display: none">
 		<div class="note-input">
-			<textarea></textarea>
+			<textarea class="note-textarea"></textarea>
 			<div class="is-not-loading">
 				<button class="clean-white small save-note-trigger">Add Note</button>
 				<span class="cancel-note-trigger">{{ phrase('agent.general.cancel') }}</span>

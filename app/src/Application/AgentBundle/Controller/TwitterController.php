@@ -330,7 +330,8 @@ class TwitterController extends AbstractController
 			'total_count' => $total_count,
 			'per_page' => $per_page,
 			'page' => $page,
-			'showing_to' => min($total_count, $page * $per_page)
+			'showing_to' => min($total_count, $page * $per_page),
+			'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents()
 		);
 
 		// check if is partial

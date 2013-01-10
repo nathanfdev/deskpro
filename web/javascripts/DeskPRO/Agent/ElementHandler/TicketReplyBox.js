@@ -426,13 +426,21 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	hideAgentNotifyList: function() {
-		if (this.agentNotifyList && this.agentNotifyListShown) {
+		DeskPRO_Window.hideAgentNotifyList(this);
+		/*if (this.agentNotifyList && this.agentNotifyListShown) {
 			this.agentNotifyList.empty().hide();
 			this.agentNotifyListShown = false;
-		}
+		}*/
 	},
 
 	_initAgentNotifier: function(textarea) {
+		DeskPRO_Window.initAgentNotifierForRte(
+			this, textarea,
+			this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false
+		);
+	},
+
+	/*_initAgentNotifier: function(textarea) {
 		var api = textarea.data('redactor');
 		if (!api) {
 			return;
@@ -671,7 +679,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		// this is important as I need this keyup handler to run before redactor's own because of new line handling
 		ed.data('events').keyup.reverse();
-	},
+	},*/
 
 	getElById: function(id) {
 		var el = $('#' + this.baseId + '_' + id);

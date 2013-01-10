@@ -333,6 +333,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			message = message.replace(re, '<a data-route="page:'+info.url+'$1">'+info.title+' #$1</a>');
 		});
 
+		var re = new RegExp('\{\{\s*tw\-([0-9]+)\s*\}\}', 'g');
+		message = message.replace(re, '<a data-route="poppage:' + BASE_URL + 'agent/twitter/status/tweet-overlay?account_status_id=$1">Tweet #$1</a>');
+
 		message = message.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
 
 		return message;

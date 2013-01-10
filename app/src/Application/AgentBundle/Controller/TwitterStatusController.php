@@ -470,10 +470,23 @@ class TwitterStatusController extends AbstractController
 
 		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'), 'note');
 
+		$text = $this->in->getValue('text');
+		$text = \Orb\Util\Strings::prepareWysiwygHtml($text);
+
+		$notify_agent_ids = array();
+		preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('text'), $matches, PREG_SET_ORDER);
+		foreach ($matches AS $match) {
+			$notify_agent_ids[] = $match[1];
+		}
+
+		$text = strip_tags($text);
+		$text = str_replace('&nbsp;', ' ', $text);
+		$text = html_entity_decode($text);
+
 		$note = new TwitterAccountStatusNote();
 		$note['account_status'] = $account_status;
 		$note['person'] = $this->person;
-		$note['text'] = $this->in->getValue('text');
+		$note['text'] = $text;
 
 		$em = App::getOrm();
 		$em->persist($note);
@@ -489,6 +502,22 @@ class TwitterStatusController extends AbstractController
 		$this->_insertUpdatedTweetClientMessage($account_status,
 			array('note_added_html' => $html, 'note_added_id' => $note->id)
 		);
+
+		if ($notify_agent_ids) {
+			$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+
+			$notify_agent_ids = array_unique($notify_agent_ids);
+			foreach ($notify_agent_ids AS $k => $agent_id) {
+				if ($agent_id == $this->person->id || !isset($agents[$agent_id])) {
+					unset($notify_agent_ids[$k]);
+				}
+			}
+			if ($notify_agent_ids) {
+				$notify_text = $this->person->getDisplayName() . " alerted you in a note for {{tw-$account_status->id}}: " . $account_status->status->getClippedText(70);
+				$agent_chat->sendAgentMessage($notify_text, $notify_agent_ids);
+			}
+		}
 
 		return $this->createJsonResponse(array(
 			'success' => $success,
