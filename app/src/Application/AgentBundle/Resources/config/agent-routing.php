@@ -1541,6 +1541,13 @@ $collection->add('agent_twitter_status_ajaxsave_assign', new Route(
 	array()
 ));
 
+$collection->add('agent_twitter_status_tweet_overlay', new Route(
+	'/twitter/status/tweet-overlay',
+	array('_controller' => 'AgentBundle:TwitterStatus:tweetOverlay'),
+	array(),
+	array()
+));
+
 $collection->add('agent_twitter_user', new Route(
 	'/twitter/user/{user_id}',
 	array('_controller' => 'AgentBundle:TwitterUser:view'),

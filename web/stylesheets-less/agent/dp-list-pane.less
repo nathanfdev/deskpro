@@ -1523,6 +1523,10 @@ section.dp-overlay > article {
 	position: absolute;
 	top: 36px; right: 0; bottom: 45px; left: 0;
 	overflow: auto;
+
+	&.full {
+		bottom: 0;
+	}
 }
 
 section.dp-overlay > article.padded {
@@ -2304,4 +2308,8 @@ article.twitter-status.archived .title .expand-collapse-icon {
 			margin-left: 4px;
 		}
 	}
+}
+
+.tweet-overlay-trigger {
+	cursor: pointer;
 }

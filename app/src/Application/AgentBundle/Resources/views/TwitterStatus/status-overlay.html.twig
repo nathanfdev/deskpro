@@ -1,0 +1,14 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterStatusOverlay';
+{% include 'AgentBundle:Twitter:list-urls.js.twig' %}
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+<header>
+	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
+	<h1>View Tweet</h1>
+</header>
+<article class="padded full twitter-status-inline" data-width="600" data-height="300">
+	{% include 'AgentBundle:TwitterStatus:list-row.html.twig' with {'hideArchiveTools': true} %}
+</article>

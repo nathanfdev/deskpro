@@ -18,6 +18,21 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		options = options || {};
 		this.setOptions(options);
 
+		// tweet overlay links
+		this.content.on('click', '.tweet-overlay-trigger', function() {
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'ajax',
+				contentAjax: { url: page.getMetaData('tweetOverlayUrl'), data: {account_status_id: $(this).attr('data-status-id')} },
+				zIndex: 40000, // Above floating people windows
+				onAjaxDone: function() {
+					var wrapper = overlay.getWrapper();
+
+
+				}
+			});
+			overlay.open();
+		});
+
 		// user links
 		this.content.on('click', '.photo, .user', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);

@@ -38,8 +38,7 @@
 				{% if status.in_reply_to_status %}
 					{% set reply = status.in_reply_to_status %}
 					<div class="extra-row in-reply-to">
-						{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
-						"{{ reply.getClippedText(25) }}"
+						<a data-route="poppage:{{ path('agent_twitter_status_tweet_overlay', {'account_status_id': 'status:' ~reply.id}) }}" style="color: inherit">{{ phrase('agent.twitter.in_reply_to') }} @{{ reply.user.screen_name }} "{{ reply.getClippedText(25) }}"</a>
 					</div>
 				{% endif %}
 				{% if retweet %}

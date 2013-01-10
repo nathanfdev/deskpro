@@ -7,7 +7,7 @@
 {% endif %}
 
 <article
-	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
+	class="row-item twitter-status twitter-status-{{ account_status.id }} {% if account_status.is_archived and not hideArchiveTools %}archived{% endif %} {% if retweet %}retweet{% endif %} {%if status.in_reply_to_status %}reply{% endif %} {% if status.recipient %}dm{% endif %}"
 	data-status-id="{{ account_status.id }}"
 	data-user-id="{{ status.user.id }}"
 >
@@ -20,7 +20,7 @@
 				{% if not status.recipient %}
 					<i class="status-delete status-action tipped" title="Delete"></i>
 				{% endif %}
-			{% else %}
+			{% elseif not hideArchiveTools %}
 				<i class="status-archived status-action tipped" title="Unarchive" {% if not account_status.is_archived %}style="display:none"{% endif %}></i>
 				<i class="status-archive status-action tipped" title="Archive" {% if account_status.is_archived %}style="display:none"{% endif %}></i>
 			{% endif %}
@@ -53,8 +53,7 @@
 					{% if status.in_reply_to_status %}
 						{% set reply = status.in_reply_to_status %}
 						<div class="extra-row in-reply-to">
-							{{ phrase('agent.twitter.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
-							"{{ reply.getClippedText(25) }}"
+							<a data-route="poppage:{{ path('agent_twitter_status_tweet_overlay', {'account_status_id': 'status:' ~reply.id}) }}" style="color: inherit">{{ phrase('agent.twitter.in_reply_to') }} @{{ reply.user.screen_name }} "{{ reply.getClippedText(25) }}"</a>
 						</div>
 					{% endif %}
 					{% if retweet %}

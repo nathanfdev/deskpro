@@ -238,6 +238,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterStatusOverlay.js',
 
 	)
 );

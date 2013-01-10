@@ -353,6 +353,15 @@ class TwitterStatusController extends AbstractController
 		return $account;
 	}
 
+	public function tweetOverlayAction()
+	{
+		$account_status = $this->getAccountStatusOr404($this->in->getValue('account_status_id'));
+
+		return $this->render('AgentBundle:TwitterStatus:status-overlay.html.twig', array(
+			'account_status' => $account_status
+		));
+	}
+
 	public function ajaxMassSaveAction()
 	{
 		$account_status_ids = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
