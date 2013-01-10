@@ -424,14 +424,27 @@ class TwitterStatusController extends AbstractController
 					break;
 
 				case 'assign':
-					list($type, $id) = explode(':', $this->in->getValue('assign'));
-					if ($type == 'agent') {
-						$agent = $this->em->find('DeskPRO:Person', $id);
-						if ($agent && $agent->is_agent && $account_status->account->hasPerson($agent)) {
-							$account_status->agent = $agent;
+					$old_agent = $account_status->agent;
+					$old_team = $account_status->team;
+
+					if ($this->in->getValue('assign')) {
+						list($type, $id) = explode(':', $this->in->getValue('assign'));
+						if ($type == 'agent') {
+							$agent = $this->em->find('DeskPRO:Person', $id);
+							if ($agent && $agent->is_agent && $account_status->account->hasPerson($agent)) {
+								$account_status->agent = $agent;
+							}
+						} else {
+							$account_status->setAgentTeamId($id);
 						}
 					} else {
-						$account_status->setAgentTeamId($id);
+						$account_status->agent = null;
+						$account_status->agent_team = null;
+					}
+
+					if ($account_status->agent !== $old_agent || $account_status->agent_team !== $old_team) {
+						$notify = new \Application\DeskPRO\Notifications\TweetAssignNotification($account_status);
+						$notify->send();
 					}
 					break;
 			}
@@ -727,6 +740,11 @@ class TwitterStatusController extends AbstractController
 					'old_assignment' => $old_assign
 				)
 			);
+
+			if ($new_assignment) {
+				$notify = new \Application\DeskPRO\Notifications\TweetAssignNotification($account_status);
+				$notify->send();
+			}
 		}
 
 		return $this->createJsonResponse(array('success' => true));

@@ -179,6 +179,12 @@ class DataInitializer
 		$prefs['task_complete.alert'] = 1;
 		$prefs['task_due.email'] = 1;
 		$prefs['task_due.alert'] = 1;
+		$prefs['tweet_assign_self.email'] = 1;
+		$prefs['tweet_assign_self.alert'] = 1;
+		$prefs['tweet_assign_team.email'] = 1;
+		$prefs['tweet_assign_team.alert'] = 1;
+		$prefs['tweet_reply.email'] = 1;
+		$prefs['tweet_reply.alert'] = 1;
 		$prefs['new_feedback.email'] = 1;
 		$prefs['new_feedback.alert'] = 1;
 		$prefs['new_feedback_validate.email'] = 1;

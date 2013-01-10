@@ -66,7 +66,7 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $status;
 
 	/**
-	 * @var Agent
+	 * @var Person
 	 */
 	protected $agent;
 
@@ -76,7 +76,7 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $agent_team;
 
 	/**
-	 * @var Agent
+	 * @var Person
 	 */
 	protected $action_agent;
 

@@ -1,0 +1,13 @@
+<li class="ticket"
+	data-type="tickets"
+	data-route="listpane:{{ path('agent_twitter_inbox_list', {'account_id': account_status.account.id}) }}"
+	data-route-notabreload="1"
+	data-icon="images/agent/app-nav/app-twitter.png"
+>
+	<em class="dismiss"></em>
+	<time class="timeago"></time>
+	<a><i class="row-icon"></i> Tweet Reply</a>
+	<div class="info">
+		@{{ account_status.status.user.screen_name }} replied to your tweet
+	</div>
+</li>

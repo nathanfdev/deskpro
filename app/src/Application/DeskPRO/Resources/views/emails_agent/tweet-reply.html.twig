@@ -1,0 +1,6 @@
+{% set agent_notification_footer = 'notify' %}
+<dp:subject>@{{ account_status.status.user.screen_name }} replied to your tweet</dp:subject>
+
+@{{ account_status.status.user.screen_name }} replied to a tweet you wrote for @{{ account_status.account.user.screen_name }}.
+<br /><br />
+<a href="{{ url_full('agent') }}#app.twitter,tw-inbox:{{ account_status.account.id }}">View @{{ account_status.account.user.screen_name }}'s tweets</a>

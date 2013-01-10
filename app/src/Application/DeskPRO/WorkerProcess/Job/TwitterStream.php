@@ -222,13 +222,6 @@ class TwitterStream extends AbstractJob
 
 		if ($data->user->id_str == $account->getUserId()) {
 			$account_status->status_type = 'sent';
-
-			if (!empty($data->in_reply_to_status_id_str)) {
-				$reply_account_status = $this->findAccountStatus($data->in_reply_to_status_id_str, $account);
-				if ($reply_account_status) {
-					$account_status->in_reply_to = $reply_account_status;
-				}
-			}
 		} else if (!empty($data->retweeted_status) && $data->retweeted_status->user->id_str == $account->getUserId()) {
 			$account_status->status_type = 'retweet';
 		} else if (!empty($data->in_reply_to_user_id_str) && $data->in_reply_to_user_id_str == $account->getUserId()) {
@@ -250,10 +243,24 @@ class TwitterStream extends AbstractJob
 			}
 		}
 
+		$reply_account_status = null;
+
+		if (!empty($data->in_reply_to_status_id_str)) {
+			$reply_account_status = $this->findAccountStatus($data->in_reply_to_status_id_str, $account);
+			if ($reply_account_status) {
+				$account_status->in_reply_to = $reply_account_status;
+			}
+		}
+
 		$this->em->persist($account_status);
 		$this->em->flush();
 
 		$this->twitter_service->insertNewTweetClientMessage($account_status);
+
+		if ($reply_account_status && $account_status->status_type != 'sent') {
+			$notify = new \Application\DeskPRO\Notifications\TweetReplyNotification($account_status, $reply_account_status);
+			$notify->send();
+		}
 
 		return true;
 	}
