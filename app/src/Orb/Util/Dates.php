@@ -183,6 +183,9 @@ class Dates
 	 * Add or remove months from a date. This differs from DateTime::modify(x) in that
 	 * only the month changes. That is, 2012-11-15 +1 month is 2012-12-15 (e.g., always 15th).
 	 *
+	 * If the day is over the next months number of days, the day is reset to the last day
+	 * of the month. E.g., Jan 30 +1 month becomes Feb 28.
+	 *
 	 * @param \DateTime $date
 	 * @param int       $mod_months  Months to modify by, can be negative
 	 */
@@ -215,6 +218,11 @@ class Dates
 				}
 			}
 		} while (--$mod_months);
+
+		$max_day = self::daysInMonth($month, $year);
+		if ($day > $max_day) {
+			$day = $max_day;
+		}
 
 		$new_date->setDate($year, $month, $day);
 		return $new_date;
