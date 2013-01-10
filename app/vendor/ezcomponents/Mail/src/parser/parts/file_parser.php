@@ -134,7 +134,10 @@ class ezcMailFileParser extends ezcMailPartParser
 		}
 
         // clean file name (replace unsafe characters with underscores)
-        $fileName = strtr( $fileName, "/\\\0\"|?*<:;>+[]", '______________' );
+		$fileName = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $fileName);
+		if (strlen($fileName) > 50) {
+			$fileName = md5($fileName);
+		}
 
         $this->fp = $this->openFile( $fileName ); // propagate exception
     }
