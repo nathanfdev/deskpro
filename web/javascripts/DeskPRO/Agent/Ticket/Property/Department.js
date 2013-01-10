@@ -26,6 +26,7 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 
 		var name = DeskPRO_Window.getDisplayName('department_full', value);
 		this.getInterfaceElement().text(name);
+		this.ticketPage.getEl('value_form').find('.department_id').val(value);
 	},
 
 	getInterfaceElement: function() {

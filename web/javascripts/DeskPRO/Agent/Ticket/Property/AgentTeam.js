@@ -19,6 +19,7 @@ DeskPRO.Agent.Ticket.Property.AgentTeam = new Class({
 
 	setValue: function(value) {
 		this.getFormEl().select2('val', value);
+		this.ticketPage.getEl('value_form').find('.agent_id').val(value);
 		this.getInterfaceElement().addClass('eat-change').val(value).change();
 	},
 

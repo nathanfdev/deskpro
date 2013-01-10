@@ -9,31 +9,52 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.page = page;
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 
+		this.mode = 'view';
 		this.currentDisplay = [];
 		this.currentDisplayModify = [];
 
 		this.ticketReader = {
 			getDepartmentId: function() {
-				var catId = self.page.getEl('department_id').val();
+				if (self.mode == 'edit') {
+					var catId = self.page.getEl('department_id').val();
+				} else {
+					var catId = self.page.getEl('value_form').find('.department_id').val();
+				}
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
-				var catId = self.page.getEl('ticket_category_id').val();
+				if (self.mode == 'edit') {
+					var catId = self.page.getEl('ticket_category_id').val();
+				} else {
+					var catId = self.page.getEl('value_form').find('.category_id').val();
+				}
 				return parseInt(catId) || 0;
 			},
 			getPriorityId: function() {
-				var catId = self.page.getEl('ticket_priority_id').val();
+				if (self.mode == 'edit') {
+					var catId = self.page.getEl('ticket_priority_id').val();
+				} else {
+					var catId = self.page.getEl('value_form').find('.priority_id').val();
+				}
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var catId = self.page.getEl('ticket_product_id').val();
+				if (self.mode == 'edit') {
+					var catId = self.page.getEl('ticket_product_id').val();
+				} else {
+					var catId = self.page.getEl('value_form').find('.product_id').val();
+				}
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
 				return 0;
 			},
 			getWorkflow: function() {
-				var catId = self.page.getEl('ticket_workflow_id').val();
+				if (self.mode == 'edit') {
+					self.page.getEl('value_form').find('.workflow_id').val();
+				} else {
+					var catId = self.page.getEl('ticket_workflow_id').val();
+				}
 				return parseInt(catId) || 0;
 			}
 		};
@@ -78,6 +99,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	},
 
 	openEditMode: function() {
+		this.mode = 'edit';
+
 		this.display.addClass('mode-edit-on');
 		this.page.getEl('field_edit_start').hide();
 		this.page.getEl('field_edit_cancel').show();
@@ -93,6 +116,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			$(this).width(min);
 		});
 		DP.select(this.display.find('select'));
+
+		this.updateDisplay();
 
 		$('.Date.customfield input', this.display).datepicker({
 			dateFormat: 'yy-mm-dd',
@@ -111,7 +136,28 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				},1);
 			}
 		});
+	},
 
+	closeEditMode: function() {
+		this.mode = 'view';
+
+		this.display.removeClass('mode-edit-on');
+		this.page.getEl('field_edit_save').hide();
+		this.page.getEl('field_edit_cancel').hide();
+		this.page.getEl('field_edit_start').show();
+		this.page.getEl('field_edit_controls').removeClass('loading');
+		this.updateDisplay();
+	},
+
+	updateDisplay: function() {
+		if (this.mode == 'view') {
+			this.updateDisplay_view();
+		} else {
+			this.updateDisplay_modify();
+		}
+	},
+
+	updateDisplay_modify: function() {
 		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
@@ -170,16 +216,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 	},
 
-	closeEditMode: function() {
-		this.display.removeClass('mode-edit-on');
-		this.page.getEl('field_edit_save').hide();
-		this.page.getEl('field_edit_cancel').hide();
-		this.page.getEl('field_edit_start').show();
-		this.page.getEl('field_edit_controls').removeClass('loading');
-		this.updateDisplay();
-	},
-
-	updateDisplay: function() {
+	updateDisplay_view: function() {
 		var fields = this.fieldDisplay.getFields(this.ticketReader.getDepartmentId());
 		if (!fields || !fields['default']) {
 			fields['default'] = [];

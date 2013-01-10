@@ -64,9 +64,14 @@ pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply', true)
 
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
 
-<form class="value-form" style="display:none">
+<form class="value-form" id="{{ baseId }}_value_form" style="display:none">
+	<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 	<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
+	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
+	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
+	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
+	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
 	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />

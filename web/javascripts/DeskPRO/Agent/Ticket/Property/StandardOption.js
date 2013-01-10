@@ -83,6 +83,8 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		} else {
 			fieldEl.val(value);
 		}
+
+		this.ticketPage.getEl('value_form').find('.' + this.optionName).val(value);
 	},
 
 	getInterfaceElement: function() {
