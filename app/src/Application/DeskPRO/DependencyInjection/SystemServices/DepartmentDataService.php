@@ -234,6 +234,7 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		$online_dep_ids = array_unique($online_dep_ids, \SORT_NUMERIC);
+		$online_dep_ids = array_combine($online_dep_ids, $online_dep_ids);
 
 		if (!$online_dep_ids) {
 			$this->filtered_nodes[$key] = array();
