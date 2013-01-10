@@ -160,6 +160,7 @@ class SettingsController extends AbstractController
         return $this->render('AgentBundle:Settings:signature.html.twig', array(
 	        'signature' => $this->person->getSignature(),
 	        'signature_html' => $this->person->getSignatureHtml(),
+			'tweet_signature' => $this->person->getTweetSignature(),
 
 	        'can_signature_html' => $this->person->PermissionsManager->GeneralChecker->canSetSignatureRte(),
 		));
@@ -201,6 +202,8 @@ class SettingsController extends AbstractController
 
 		$this->person->setPreference('agent.ticket_signature', $signature);
 		$this->person->setPreference('agent.ticket_signature_html', $signature_html);
+
+		$this->person->setPreference('agent.tweet_signature', $this->in->getString('tweet_signature'));
 
 		$this->em->persist($this->person);
 		$this->em->flush();

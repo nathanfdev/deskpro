@@ -5,7 +5,7 @@
 			<nav>
 				<ul id="settingswin_nav">
 					<li class="tab-profile" data-tab-for="#settingswin_profile">{{ phrase('agent.general.profile') }}</li>
-					{% if app.user.getPermissionsManager().get('GeneralChecker').canSetSignature() %}<li class="tab-signature" data-tab-for="#settingswin_signature">{{ phrase('agent.settings.ticket_signature') }}</li>{% endif %}
+					{% if app.user.getPermissionsManager().get('GeneralChecker').canSetSignature() %}<li class="tab-signature" data-tab-for="#settingswin_signature">{{ phrase('agent.settings.signature') }}</li>{% endif %}
 					<li class="tab-ticket-notify" data-tab-for="#settingswin_ticket_notifications">{{ phrase('agent.settings.title_ticket_notifs') }}</li>
 					<li class="tab-notify" data-tab-for="#settingswin_notifications">{{ phrase('agent.settings.title_other_notifs') }}</li>
 					<li class="tab-macros" data-tab-for="#settingswin_macros">{{ phrase('agent.general.macros') }}</li>

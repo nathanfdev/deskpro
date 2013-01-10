@@ -2,6 +2,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTweet';
 pageMeta.title = 'New Tweet';
+pageMeta.tweetSignature = {{ app.user.getTweetSignature()|json_encode|raw }};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';

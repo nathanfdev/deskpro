@@ -20,6 +20,7 @@
 	'agent.settings.notif_new_feedback_validate' => 'New feedback is submitted that requires validation',
 	'agent.settings.notif_new_user'              => 'A new user registered',
 	'agent.settings.notif_new_user_validate'     => 'A new user registered and requires validation',
+	'agent.settings.signature'                   => 'Signature',
 	'agent.settings.ticket_signature'            => 'Ticket Signature',
 	'agent.settings.ticket_signature_desc'       => 'This signature will be appended automatically when you send ticket replies',
 	'agent.settings.title_other_notifs'          => 'Notifications',

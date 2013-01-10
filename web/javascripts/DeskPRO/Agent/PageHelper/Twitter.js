@@ -424,6 +424,10 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 					textarea.val(name + ' ');
 				}
 
+				if (self.page.getMetaData('tweetSignature')) {
+					textarea.val(textarea.val() + self.page.getMetaData('tweetSignature'));
+				}
+
 				self.updateTweetLength(textarea);
 				textarea.focus();
 			}

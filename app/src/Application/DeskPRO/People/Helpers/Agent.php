@@ -88,7 +88,8 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 			'getHasTeams' => 'hasTeams',
 
 			'getSignature' => 'getSignature',
-			'getSignatureHtml' => 'getSignatureHtml'
+			'getSignatureHtml' => 'getSignatureHtml',
+			'getTweetSignature' => 'getTweetSignature'
 		);
 	}
 
@@ -356,5 +357,15 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		}
 
 		return '';
+	}
+
+	/**
+	 * Gets the agent's Tweet signature
+	 *
+	 * @return string
+	 */
+	public function getTweetSignature()
+	{
+		return (string)$this->person->getPref('agent.tweet_signature');
 	}
 }

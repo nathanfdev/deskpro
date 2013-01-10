@@ -17,7 +17,14 @@ DeskPRO.Agent.PageFragment.Page.NewTweet = new Orb.Class({
 
 		var helper = new DeskPRO.Agent.PageHelper.Twitter(this.wrapper, this);
 
-		this.wrapper.find('textarea').TextAreaExpander();
+		var textarea = this.wrapper.find('textarea');
+		textarea.TextAreaExpander();
+
+		if (this.getMetaData('tweetSignature')) {
+			textarea.val(' ' + this.getMetaData('tweetSignature'));
+			helper.updateTweetLength(textarea);
+		}
+		textarea.focus();
 
 		DP.select(this.getEl('from_account'));
 
