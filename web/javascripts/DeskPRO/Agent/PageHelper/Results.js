@@ -192,6 +192,10 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	},
 
 	setResultCount: function(count) {
+		if (!this.options) {
+			return;
+		}
+
 		this.resultCount = count;
 		this.numPages = Math.ceil(this.resultCount / this.options.perPage);
 

@@ -43,9 +43,9 @@
 			<div class="status-text">{{ status.long ? status.long.parsed_text|raw : status.parsed_text|raw }}</div>
 
 			{% if status.isMessage() %}
-				<time class="timeago status-time" title="{{status.date_created|date('c', 'UTC')}}">{{status.date_created|date('day')}}</time>
+				<time class="timeago status-time" title="{{status.date_created|date('c', 'UTC')}}" data-relative-cutoff="86400">{{status.date_created|date('day')}}</time>
 			{% else %}
-				<a href="https://twitter.com/{{ retweet ? retweet.user.screen_name : status.user.screen_name }}/status/{{ retweet ? retweet.id : status.id }}" target="_blank" class="timeago status-time" title="{{retweet ? retweet.date_created|date('c', 'UTC') : status.date_created|date('c', 'UTC')}}">{{etweet ? retweet.date_created|date('day') : status.date_created|date('day')}}</a>
+				<a href="https://twitter.com/{{ retweet ? retweet.user.screen_name : status.user.screen_name }}/status/{{ retweet ? retweet.id : status.id }}" target="_blank" class="timeago status-time" title="{{retweet ? retweet.date_created|date('c', 'UTC') : status.date_created|date('c', 'UTC')}}" data-relative-cutoff="86400">{{retweet ? retweet.date_created|date('day') : status.date_created|date('day')}}</a>
 			{% endif %}
 
 			{% if status.in_reply_to_status or retweet or account_status.action_agent or (status.long and status.long.date_read) %}

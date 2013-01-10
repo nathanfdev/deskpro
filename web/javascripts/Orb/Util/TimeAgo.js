@@ -37,8 +37,8 @@ Orb.Util.TimeAgo = {
 	 *
 	 * @param date
 	 */
-	get: function(date, ago) {
-		return this.getForMs(this.getDateDiff(date), ago);
+	get: function(date, ago, relativeCutoff, title) {
+		return this.getForMs(this.getDateDiff(date), ago, relativeCutoff, title);
 	},
 
 
@@ -153,10 +153,10 @@ Orb.Util.TimeAgo = {
 				s = s.replace(/T/," ").replace(/Z/," UTC");
 				s = s.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
 
-				el.data("timeago", { datetime: new Date(s) });
-
 				var titleText = $.trim(el.text());
 				if (titleText.length > 0) el.attr("title", titleText);
+
+				el.data("timeago", { datetime: new Date(s), relativeCutoff: el.data('relative-cutoff') || 0, title: titleText });
 			}
 
 			var data = el.data('timeago');
@@ -169,7 +169,7 @@ Orb.Util.TimeAgo = {
 						ago = false;
 					}
 				}
-                var text = self.get(data.datetime, ago);
+                var text = self.get(data.datetime, ago, data.relativeCutoff, data.title);
 				el.text(text);
 			}
 		});
@@ -213,9 +213,13 @@ Orb.Util.TimeAgo = {
 	 *
 	 * @param ms
 	 */
-	getForMs: function(ms, ago) {
+	getForMs: function(ms, ago, relativeCutoff, title) {
 		var info = this.getRelativeInfo(ms);
 		var total_secs = parseInt(ms / 1000);
+
+		if (title && relativeCutoff && total_secs > relativeCutoff) {
+			return title;
+		}
 
 		// less than 60 secons: 20 seconds
 		if (total_secs < 60) {

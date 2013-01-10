@@ -28,9 +28,9 @@
 	</div>
 
 	{% if reply.status.isMessage() %}
-		<time class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</time>
+		<time class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}" data-relative-cutoff="86400">{{reply.status.date_created|date('day')}}</time>
 	{% else %}
-		<a href="https://twitter.com/{{ reply.status.user.screen_name }}/status/{{ reply.status.id }}" target="_blank" class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}">{{reply.status.date_created|date('day')}}</a>
+		<a href="https://twitter.com/{{ reply.status.user.screen_name }}/status/{{ reply.status.id }}" target="_blank" class="timeago status-time" title="{{reply.status.date_created|date('c', 'UTC')}}" data-relative-cutoff="86400">{{reply.status.date_created|date('day')}}</a>
 	{% endif %}
 
 	{% if reply.status.long and reply.status.long.date_read %}
